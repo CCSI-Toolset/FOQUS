@@ -19,7 +19,7 @@
 
 import argparse, sys
 
-version = "2016.04.00.0" #Build in Jenkins inserts build number
+version = "2016.06.00.0" #Build in Jenkins inserts build number
 copyright = \
 'This Material was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and \
 copyright is held by the software owners: ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et \

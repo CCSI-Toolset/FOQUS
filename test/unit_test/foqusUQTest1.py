@@ -4,7 +4,7 @@ from foqus_lib.framework.uq.Common import Common
 
 global TIME_STEP, HAVE_TEXT
 MAX_RUN_TIME = 5000000 #Maximum time to let script run in ms.
-TIME_STEP = 5
+TIME_STEP = 1
 HAVE_TEXT = 1
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f:
@@ -284,32 +284,32 @@ try:
         time.sleep(TIME_STEP)
 
         #MainWin.nodeDock.inputVarTable.item(0, 4).setText("-1.5708")
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("-2")
+        MainWin.nodeDock.inputVarTable.item(0, 5).setText("-2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### set X1 max to be pi/2
         #MainWin.nodeDock.inputVarTable.item(0, 5).setText("1.5708")
-        MainWin.nodeDock.inputVarTable.item(0, 5).setText("2")
+        MainWin.nodeDock.inputVarTable.item(0, 6).setText("2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### set X2 min to be -pi/2
-        #MainWin.nodeDock.inputVarTable.item(1, 4).setText("-1.5708")
-        MainWin.nodeDock.inputVarTable.item(1, 4).setText("-2")
+        #MainWin.nodeDock.inputVarTable.item(1, 5).setText("-1.5708")
+        MainWin.nodeDock.inputVarTable.item(1, 5).setText("-2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### set X2 max to be pi/2
-        #MainWin.nodeDock.inputVarTable.item(1, 5).setText("1.5708")
-        MainWin.nodeDock.inputVarTable.item(1, 5).setText("2")
+        #MainWin.nodeDock.inputVarTable.item(1, 6).setText("1.5708")
+        MainWin.nodeDock.inputVarTable.item(1, 6).setText("2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### set X3 min to be -pi/2
-        #MainWin.nodeDock.inputVarTable.item(2, 4).setText("-1.5708")
-        MainWin.nodeDock.inputVarTable.item(2, 4).setText("-2")
+        #MainWin.nodeDock.inputVarTable.item(2, 5).setText("-1.5708")
+        MainWin.nodeDock.inputVarTable.item(2, 5).setText("-2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### set X3 max to be pi/2
-        #MainWin.nodeDock.inputVarTable.item(2, 5).setText("1.5708")
-        MainWin.nodeDock.inputVarTable.item(2, 5).setText("2")
+        #MainWin.nodeDock.inputVarTable.item(2, 6).setText("1.5708")
+        MainWin.nodeDock.inputVarTable.item(2, 6).setText("2")
         if not go(): break
         time.sleep(TIME_STEP)
         ### select 'Output Variables'
@@ -425,7 +425,7 @@ try:
         if (HAVE_TEXT == 1):
            textedit.insertPlainText('This test will terminate in 30 seconds\n')
            textedit.ensureCursorVisible() # Scroll the window to the bottom
-        for ii in range(30):
+        for ii in range(5000):
            if not go(): break
            time.sleep(1)
 

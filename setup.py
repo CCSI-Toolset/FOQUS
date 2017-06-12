@@ -369,7 +369,6 @@ if usePy2exe:
         packages         = pkg_packages,
         console          = [
             "foqusClient.py",
-            "foqusTest.py",
             "foqus_console.py",
             "DMF_Browser.py",
             "DMF_BasicDataIngest.py",
@@ -563,7 +562,6 @@ elif not buildMSI:
         scripts          = [
             'foqus.py',
             'foqusClient.py',
-            'foqusTest.py',
             'DMF_Browser.py',
             'DMF_BasicDataIngest.py',
             'DMF_Sim_Ingester.py']

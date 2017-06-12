@@ -1,6 +1,8 @@
 import sys
+import math
 from PySide import QtGui, QtCore
 from nodeToUQModel import nodeToUQModel
+from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
 
@@ -26,6 +28,10 @@ from foqus_lib.framework.ouu.OUU import OUU
 
 class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     plotSignal = QtCore.Signal(dict)
+    NotUsedText = "Not used"
+    ObjFuncText = "Objective Function"
+    ConstraintText = "Inequality constraint"
+    DerivativeText = "Derivative"
 
     def __init__(self, dat = None, parent=None):
         QtGui.QFrame.__init__(self, parent)
@@ -34,6 +40,9 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.filesDir = ''
         self.scenariosCalculated = False
         self.result = None
+        self.useAsConstraint = None
+        self.plotsToUpdate = [0]
+        self.objLine = None
 
         # Refresh table
         self.refresh()
@@ -41,6 +50,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
 
         self.setFixed_button.setEnabled(False)
         self.setX1_button.setEnabled(False)
+        self.setX1d_button.setEnabled(False)
         self.setX2_button.setEnabled(False)
         self.setX3_button.setEnabled(False)
         self.setX4_button.setEnabled(False)
@@ -48,10 +58,12 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.input_table.setColumnHidden(3, True) # Hide scale column
         self.modelFile_edit.clear()
         self.modelFile_radio.setChecked(True)
-        self.uqTab = self.tabs.widget(1)
-        self.tabs.removeTab(1)
+        self.uqTab = self.tabs.widget(2)
+        self.tabs.removeTab(2)
         self.tabs.setCurrentIndex(0)
         self.tabs.setEnabled(False)
+        self.output_label.setHidden(True)
+        self.output_combo.setHidden(True)
         self.output_combo.setEnabled(False)
         self.mean_radio.setChecked(True)
         self.betaDoubleSpin.setValue(0)
@@ -95,6 +107,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         #self.input_table.typeChanged.connect(self.manageBestValueTable)
         self.setFixed_button.clicked.connect(self.setFixed)
         self.setX1_button.clicked.connect(self.setX1)
+        self.setX1d_button.clicked.connect(self.setX1d)
         self.setX2_button.clicked.connect(self.setX2)
         self.setX3_button.clicked.connect(self.setX3)
         self.setX4_button.clicked.connect(self.setX4)
@@ -111,6 +124,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.run_button.clicked.connect(self.analyze)
         self.z3_table.cellChanged.connect(self.z3TableCellChanged)
         self.z4_table.cellChanged.connect(self.z4TableCellChanged)
+        self.progressScrollArea.verticalScrollBar().valueChanged.connect(self.scrollProgressPlots)
 
     def freeze(self):
         QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
@@ -126,6 +140,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             nodes = sorted(self.dat.flowsheet.nodes.keys())
             items = ['Select node']
             items.extend(nodes)
+            items.append('Full flowsheet')
             self.node_combo.clear()
             self.node_combo.addItems(items)
             self.node_radio.setChecked(True)
@@ -157,11 +172,15 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         nodeName = self.node_combo.currentText()
         if nodeName in ['', 'Select node']:
             return
-        node = self.dat.flowsheet.nodes[nodeName]
-        self.model = nodeToUQModel(nodeName, node)
+        if nodeName == 'Full flowsheet':
+            self.model = flowsheetToUQModel(self.dat.flowsheet)
+        else:
+            node = self.dat.flowsheet.nodes[nodeName]
+            self.model = nodeToUQModel(nodeName, node)
         self.input_table.init(self.model, InputPriorTable.OUU)
         self.setFixed_button.setEnabled(True)
         self.setX1_button.setEnabled(True)
+        self.setX1d_button.setEnabled(True)
         self.setX2_button.setEnabled(True)
         self.setX3_button.setEnabled(True)
         self.setX4_button.setEnabled(True)
@@ -185,6 +204,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.input_table.init(self.model, InputPriorTable.OUU)
         self.setFixed_button.setEnabled(True)
         self.setX1_button.setEnabled(True)
+        self.setX1d_button.setEnabled(True)
         self.setX2_button.setEnabled(True)
         self.setX3_button.setEnabled(True)
         self.setX4_button.setEnabled(True)
@@ -224,7 +244,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         fname, data = self.getSampleFileData()
         if fname is None: return
         numInputs = data.shape[1]
-        M3 = len(self.input_table.getDiscreteVariables()[0])
+        M3 = len(self.input_table.getUQDiscreteVariables()[0])
         if numInputs != M3:
             QtGui.QMessageBox.warning(self, "Number of variables don't match",
                                       'The number of variables from the file (%d) does not match the number of Z3 discrete variables (%d).  You will not be able to perform analysis until this is corrected.' % (numInputs, M3))
@@ -244,6 +264,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
 
     def z3TableCellChanged(self, row, col):
         self.randomVarTableCellChanged(self.z3_table, row, col)
+        self.compressSamples_chk.setEnabled(True)
 
     def z4TableCellChanged(self, row, col):
         self.randomVarTableCellChanged(self.z4_table, row, col)
@@ -288,17 +309,21 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     def activateCompressSample(self, on):
         if on:
             rowCount = 0
-            for r in self.z3_table.rowCount():
-                for c in self.z3_table.columnCount():
+            for r in xrange(self.z3_table.rowCount()):
+                for c in xrange(self.z3_table.columnCount()):
                     rowFull = True
-                    text = self.z3_table.item(r,c).text()
-                    if not text:
-                        rowFull = False
-                        break
-                    try:
-                        float(text)
-                    except ValueError:
-                        rowFull = False
+                    item = self.z3_table.item(r,c)
+                    if item:
+                        text = item.text()
+                        if not text:
+                            rowFull = False
+                            break
+                        try:
+                            float(text)
+                        except ValueError:
+                            rowFull = False
+                            break
+                    else:
                         break
                 if rowFull:
                     rowCount += 1
@@ -314,7 +339,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
 
     def calcScenarios(self):
         self.freeze()
-        self.writeTableToFile(self.z3_table, 'z3Samples.smp', len(self.input_table.getDiscreteVariables()[0]))
+        self.writeTableToFile(self.z3_table, 'z3Samples.smp', len(self.input_table.getUQDiscreteVariables()[0]))
         self.scenarioFiles = OUU.compress('z3Samples.smp')
         if self.scenarioFiles is not None:
             self.scenarioSelect_combo.clear()
@@ -359,13 +384,50 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     def initTabs(self):
         self.tabs.setEnabled(True)
         self.tabs.setCurrentIndex(0)
+        outputNames = self.model.getOutputNames()
+
+        # Optimization Setup
         self.output_combo.setEnabled(True)
         self.output_combo.clear()
-        self.output_combo.addItems(self.model.getOutputNames())
+        self.output_combo.addItems(outputNames)
         self.mean_radio.setChecked(True)
         self.betaDoubleSpin.setValue(0)
         self.alphaDoubleSpin.setValue(0.5)
         self.secondarySolver_combo.setCurrentIndex(0)
+
+        # Outputs
+        self.outputs_table.blockSignals(True)
+        self.outputs_table.setColumnCount(2)
+        self.outputs_table.setRowCount(len(outputNames))
+        self.useAsConstraint = [False] * len(outputNames)
+        for r in xrange(len(outputNames)):
+            # radio = QtGui.QRadioButton()
+            # if r == 0:
+            #     radio.setChecked(True)
+            # radio.setProperty('row', r)
+            # radio.toggled.connect(self.setObjectiveFunction)
+            # self.outputs_table.setCellWidget(r, 0, radio)
+            combobox = QtGui.QComboBox()
+            combobox.addItems([ouuSetupFrame.NotUsedText, ouuSetupFrame.ObjFuncText,
+                               ouuSetupFrame.ConstraintText, ouuSetupFrame.DerivativeText])
+
+            if r == 0:
+                combobox.setCurrentIndex(1)
+            self.outputs_table.setCellWidget(r, 0, combobox)
+
+            item = QtGui.QTableWidgetItem(outputNames[r])
+            self.outputs_table.setItem(r, 1, item)
+            # item = QtGui.QTableWidgetItem()
+            # item.setCheckState(QtCore.Qt.Unchecked)
+            # self.outputs_table.setItem(r, 2, item)
+            # if r == 0:
+            #     flags = item.flags()
+            #     flags &= (~QtCore.Qt.ItemIsEnabled)
+            #     item.setFlags(flags)
+        self.outputs_table.resizeColumnsToContents()
+        self.outputs_table.blockSignals(False)
+
+        # UQ Setup
         self.compressSamples_chk.setChecked(False)
         self.compressSamples_chk.setEnabled(False)
         self.scenariosCalculated = False
@@ -377,11 +439,11 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.x4SampleSize_spin.setValue(5)
         self.x4SampleSize_spin.setRange(5,1000)
         self.x4RSMethod_check.setChecked(False)
-        self.run_button.setEnabled(True)      # TO DO: disable until inputs are validated
 
+        # Launch/Progress
+        self.run_button.setEnabled(True)      # TO DO: disable until inputs are validated
         self.bestValue_table.setColumnCount(1)
         self.bestValue_table.clearContents()
-        
         # Plots
         self.plots_group = QtGui.QGroupBox()
         self.plotsLayout = QtGui.QVBoxLayout()
@@ -400,6 +462,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.objFigAx.set_title('OUU Progress')
         self.objFigAx.set_ylabel('Objective')
         self.objFigAx.set_xlabel('Iteration')
+        self.objLine = None
         self.plotsLayout.addWidget(self.objCanvas)
         self.objCanvas.setParent(self.plots_group)
         self.inputPlots = []
@@ -407,6 +470,24 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.objXPoints = []
         self.objYPoints = []
         self.objPlotPoints = None
+
+    # def setObjectiveFunction(self, on):
+    #     self.outputs_table.blockSignals(True)
+    #     row = self.sender().property('row')
+    #     item = self.outputs_table.item(row, 2) # Checkbox for inequality constraint
+    #     flags = item.flags()
+    #     if on:
+    #         flags &= ~QtCore.Qt.ItemIsEnabled
+    #         item.setCheckState(QtCore.Qt.Unchecked)
+    #     else:
+    #         flags |= QtCore.Qt.ItemIsEnabled
+    #         item.setCheckState(QtCore.Qt.Checked if self.useAsConstraint[row] else QtCore.Qt.Unchecked)
+    #     item.setFlags(flags)
+
+
+    # def toggleConstraintStatus(self, item):
+    #     self.useAsConstraint[item.row()] = (item.checkState() == QtCore.Qt.Checked)
+    #
 
     def manageBestValueTable(self):
         self.bestValue = None
@@ -447,15 +528,40 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     def addPointToObjPlot(self, x):
         self.objXPoints.append(x[0])
         self.objYPoints.append(x[1])
-        self.objFigAx.plot(self.objXPoints, self.objYPoints, 'bo')
-        self.objCanvas.draw()
+        if 0 in self.plotsToUpdate:
+            numPoints = len(self.objXPoints)
+            if numPoints % math.ceil(float(numPoints)/30) == 0: # limit refresh rate as number of points gets large
+                self.updateObjPlot()
+            
+    def updateObjPlot(self):
+        #if not self.objLine:
+        if True:
+            self.objLine, = self.objFigAx.plot(self.objXPoints, self.objYPoints, 'bo')
+            self.objCanvas.draw()
+        else:
+            self.objLine.set_xdata(self.objXPoints)
+            self.objLine.set_ydata(self.objYPoints)
+            self.objFigAx.draw_artist(self.objFigAx.patch)
+            self.objFigAx.draw_artist(self.objFigAx.xaxis)
+            self.objFigAx.draw_artist(self.objFigAx.yaxis)
+            self.objFigAx.draw_artist(self.objLine)
+            self.objCanvas.update()
+            self.objCanvas.flush_events()
+           
 
     def addToInputPlots(self, x):
         for i in xrange(len(self.inputPoints)):
             self.inputPoints[i].append(x[i])
-            if i > 0:
-                self.inputPlots[i - 1]['ax'].plot(self.inputPoints[0], self.inputPoints[i], 'bo')
-                self.inputPlots[i - 1]['canvas'].draw()
+            if i > 0 and i in self.plotsToUpdate:
+                numPoints = len(self.inputPoints[i])
+                if numPoints % math.ceil(float(numPoints)/30) == 0: # limit refresh rate as number of points gets large
+                  self.updateInputPlot(i)
+              
+                
+    def updateInputPlot(self, index): # Index starts at 1 for first input plot
+        self.inputPlots[index - 1]['ax'].plot(self.inputPoints[0], self.inputPoints[index], 'bo')
+        self.inputPlots[index - 1]['canvas'].draw()
+        
 
     def managePlots(self):
         names, indices = self.input_table.getPrimaryVariables()
@@ -480,8 +586,9 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 del self.inputPlots[i]
 
         for i, name in enumerate(names):
-            self.inputPlots[i]['ax'].set_ylabel('Primary Input %s' % name)
-        
+            #self.inputPlots[i]['ax'].set_ylabel('Primary Input %s' % name)
+            self.inputPlots[i]['ax'].set_ylabel(name)
+
         self.plots_group.setMinimumHeight(190 * (len(names) + 1))
 
         self.inputPoints = [[] for i in xrange(len(names) + 1)]
@@ -502,6 +609,22 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 if len(self.inputPlots[i - 1]['ax'].lines) > 0:
                     self.inputPlots[i - 1]['ax'].lines = []
                     self.inputPlots[i - 1]['canvas'].draw()
+                    
+    def scrollProgressPlots(self, value):
+        names, indices = self.input_table.getPrimaryVariables()
+        numPlots = len(names) + 1
+        firstPlotToUpdate = int(value/190)
+        firstPlotToUpdate = min(firstPlotToUpdate, numPlots - 1)
+        self.plotsToUpdate = [firstPlotToUpdate]
+        if firstPlotToUpdate < numPlots - 1:
+            self.plotsToUpdate.append(firstPlotToUpdate + 1)
+        #print "Scroll", value,self.plotsToUpdate
+        for index in self.plotsToUpdate:
+            if index == 0:
+                self.updateObjPlot()
+            else:
+                self.updateInputPlot(index)
+        
 
     def setFixed(self):
         self.input_table.setCheckedToType(0)
@@ -509,14 +632,17 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     def setX1(self):
         self.input_table.setCheckedToType(1)
 
-    def setX2(self):
+    def setX1d(self):
         self.input_table.setCheckedToType(2)
 
+    def setX2(self):
+        self.input_table.setCheckedToType(3)
+
     def setX3(self):
-        varNames = self.input_table.setCheckedToType(3)
+        varNames = self.input_table.setCheckedToType(4)
 
     def setX4(self):
-        varNames = self.input_table.setCheckedToType(4)
+        varNames = self.input_table.setCheckedToType(5)
 
     def setCounts(self):
         # update counts
@@ -524,7 +650,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         M0 = len(self.input_table.getFixedVariables()[0])
         M1 = len(self.input_table.getPrimaryVariables()[0])
         M2 = len(self.input_table.getRecourseVariables()[0])
-        M3Vars = self.input_table.getDiscreteVariables()[0]
+        M3Vars = self.input_table.getUQDiscreteVariables()[0]
         M3 = len(M3Vars)
         M4Vars = self.input_table.getContinuousVariables()[0]
         M4 = len(M4Vars)
@@ -541,13 +667,13 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         hideZ3Group = (M3 == 0)
         hideZ4Group = (M4 == 0)
         if hideZ3Group and hideZ4Group: #Hide tab
-            if self.tabs.widget(1) == self.uqTab:
-                if self.tabs.currentIndex() == 1:
+            if self.tabs.widget(2) == self.uqTab:
+                if self.tabs.currentIndex() == 2:
                     self.tabs.setCurrentIndex(0)
-                self.tabs.removeTab(1)
+                self.tabs.removeTab(2)
         else: #Show tab
-            if self.tabs.widget(1) != self.uqTab:
-                self.tabs.insertTab(1, self.uqTab, 'UQ Setup')
+            if self.tabs.widget(2) != self.uqTab:
+                self.tabs.insertTab(2, self.uqTab, 'UQ Setup')
 
         numCols = max(len(M3Vars), self.z3_table.columnCount())
         self.z3_table.setColumnCount(numCols)
@@ -625,15 +751,21 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                                               'At least one input must be a primary variable!')
                 return
 
-            if not self.input_table.checkValidInputs():
+            valid, error = self.input_table.checkValidInputs()
+            if not valid:
                 QtGui.QMessageBox.information(self, 'Input Table Distributions',
-                                              'Input table distributions are either not correct or not filled out completely!')
+                                              'Input table distributions are either not correct or not filled out completely! %s' % error)
                 return
 
             if self.compressSamples_chk.isChecked() and not self.scenariosCalculated:
                 QtGui.QMessageBox.information(self, 'Compress Samples Not Calculated',
                                               'You have elected to compress samples for discrete random variables (Z3), but have not selected the sample size to use!')
                 return
+
+            M1 = len(self.input_table.getPrimaryVariables()[0])
+            M2 = len(self.input_table.getRecourseVariables()[0])
+            M3 = len(self.input_table.getUQDiscreteVariables()[0])
+            M4 = len(self.input_table.getContinuousVariables()[0])
 
             Common.initFolder(OUU.dname)
 
@@ -662,12 +794,20 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             fname = 'ouuTemp.dat'
             data.writeToPsuade(fname)
 
-            M1 = len(self.input_table.getPrimaryVariables()[0])
-            M2 = len(self.input_table.getRecourseVariables()[0])
-            M3 = len(self.input_table.getDiscreteVariables()[0])
-            M4 = len(self.input_table.getContinuousVariables()[0])
+            # Outputs
+            numOutputs = self.outputs_table.rowCount()
+            y = []
+            self.useAsConstraint = [False] * numOutputs
+            self.useAsDerivative = [False] * numOutputs
+            for r in xrange(numOutputs):
+                type = self.outputs_table.cellWidget(r,0).currentText()
+                if type == ouuSetupFrame.ObjFuncText:
+                    y.append(r + 1)
+                elif type == ouuSetupFrame.ConstraintText:
+                    self.useAsConstraint[r] = True
+                elif type == ouuSetupFrame.DerivativeText:
+                    self.useAsDerivative[r] = True
 
-            y = self.output_combo.currentIndex() + 1
             if self.mean_radio.isChecked():
                 phi = {'type':1}
             elif self.meanWithBeta_radio.isChecked():
@@ -742,7 +882,13 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                     Nrs = self.z4SubsetSize_spin.value()     # add spinbox to get number of samples to generate RS
                     x4sample['nsamplesRS'] = Nrs               # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
 
+            # Charles TODO: Change this behavior to accomodate NEWUOA
             useBobyqa = False
+            method = self.primarySolver_combo.currentText()
+            if method == "BOBYQA":
+                pass
+            elif method == "NEWUOA":
+                pass
             if 'simulator' in self.secondarySolver_combo.currentText():
                 useBobyqa = True  # use BOBYQA if driver is a simulator, not an optimizer
 
@@ -765,7 +911,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 #print variableNames + fixedNames
                 listener.inputNames = variableNames + fixedNames
                 outputNames = self.model.getOutputNames()
-                listener.outputNames = [outputNames[y-1]]
+                listener.outputNames = [outputNames[yItem-1] for yItem in y]
                 listener.failValue = -111111
                 self.listenerAddress = listener.address
                 listener.start()
@@ -773,18 +919,10 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             # print M1, M2, M3, M4, useBobyqa
             self.OUUobj = OUU()
             try:
-                if self.modelFile_radio.isChecked():
-                    results = self.OUUobj.ouu(fname,y,xtable,phi,x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                      plotSignal = self.plotSignal, endFunction=self.finishOUU)
-
-                elif (M3 + M4 == 0) or (M2 > 0 and useBobyqa):
-                    # print 'optdriver'
-                    results = self.OUUobj.ouu(fname,y,xtable,phi,x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                      optDriver = ensembleOptDriver, plotSignal = self.plotSignal, endFunction=self.finishOUU)
-                else:
-                    # print 'ensembleoptdriver'
-                    results = self.OUUobj.ouu(fname,y,xtable,phi,x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                      ensOptDriver = ensembleOptDriver, plotSignal = self.plotSignal, endFunction=self.finishOUU)
+                results = self.OUUobj.ouu(fname,y,self.useAsConstraint,self.useAsDerivative,xtable,phi,
+                                          x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
+                                          optDriver = optDriver, ensOptDriver = ensembleOptDriver, plotSignal = self.plotSignal,
+                                          endFunction=self.finishOUU)
             except:
                 import traceback
                 traceback.print_exc()
@@ -799,7 +937,9 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 return
         else: # Stop OUU
             self.OUUobj.stopOUU()
-            self.run_button.setText('Run OUU')
+            self.run_button.setEnabled(False)
+            self.freeze()
+
 
     def finishOUU(self):
         if self.node_radio.isChecked():
@@ -809,6 +949,8 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             conn.close()
 
         # enable run button
+        if not self.run_button.isEnabled():
+            self.unfreeze()
         self.run_button.setText('Run OUU')
         self.run_button.setEnabled(True)
 

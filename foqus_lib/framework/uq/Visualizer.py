@@ -58,7 +58,7 @@ class Visualizer:
                     fname = win32api.GetShortPathName(fname)
                 f.write('load %s\n' % fname)
                 f.write('%s\n' % cmd)
-                f.write('%d\n' % (variableIndices.index(i) + 1))   # select input
+                f.write('%d\n' % (variableIndices.index(i) + 1))  # select input
                 f.write('quit\n')
                 f.seek(0)
 
@@ -409,6 +409,8 @@ class Visualizer:
                                   ### TO DO: revert back to 100 for deployment
             f.write('%d\n' % marsBases)
             f.write('%d\n' % marsInteractions)
+            if rsIndex == ResponseSurfaces.MARS:
+                f.write('%s\n' % marsNormOutputs)
         nInputs = SampleData.getNumInputs(data)
         if nInputs > rsdim:
             for d in xrange(0,rsdim):
@@ -426,16 +428,15 @@ class Visualizer:
         f.write('%d\n' % y)   # select output
         if rsIndex == ResponseSurfaces.LEGENDRE:
             f.write('%d\n' % order)
-        elif setMARS and rsIndex == ResponseSurfaces.MARS:
-            f.write('%s\n' % marsNormOutputs) 
         f.write('n\n')            # select no for selecting lower threshold
         f.write('n\n')            # select no for selecting upper threshold
         f.write('quit\n')
         f.seek(0)
 
-        for line in f:
-            print line.strip()
-        f.seek(0)
+        # print the psuade script to screen
+        #for line in f:
+        #    print line.strip()
+        #f.seek(0)
 
         # invoke psuade
         out, error = Common.invokePsuade(f)
@@ -525,5 +526,9 @@ class Visualizer:
             vlabel = outVarName
             ftitle = '"3-Input to 1-Output" Visualization of %s Response Surface' % rsMethodName.upper()
             ptitle = 'Isosurface Plot of "%s = %s(%s, %s, %s)"' % (vlabel, rsMethodName.upper(), xlabel, ylabel, zlabel)
-            Plotter.plotisosurface(np.array(xdat),np.array(ydat),np.array(zdat),vdatm,
-                                   ftitle,ptitle,xlabel,ylabel,zlabel,vlabel)
+            #Chares (Feb/2017): This call seems to confusion between X and Y
+            #                   axis label, so it is switched here (the bug
+            #                   must be in Plotter.
+            #Plotter.plotisosurface(np.array(xdat),np.array(ydat),np.array(zdat),                        vdatm,ftitle,ptitle,xlabel,ylabel,zlabel,vlabel)
+            Plotter.plotisosurface(np.array(xdat),np.array(ydat),np.array(zdat),                        vdatm,ftitle,ptitle,ylabel,xlabel,zlabel,vlabel)
+

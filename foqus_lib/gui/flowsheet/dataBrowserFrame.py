@@ -23,6 +23,7 @@ from foqus_lib.gui.flowsheet.columns import *
 import dataFilterDialog
 from foqus_lib.gui.flowsheet.dataModel import *
 import json
+from foqus_lib.gui.flowsheet.runRowsDialog import *
 
 class dataBrowserFrame(QtGui.QWidget, Ui_dataBrowserWidget):
     def __init__(self, dat, parent):
@@ -34,6 +35,7 @@ class dataBrowserFrame(QtGui.QWidget, Ui_dataBrowserWidget):
         self.expMenu = self.menu.addMenu("Export")
         self.editMenu = self.menu.addMenu("Edit")
         self.viewMenu = self.menu.addMenu("View")
+        self.runMenu = self.menu.addMenu("Run")
         self.addMenuActions()
         self.menuButton.setMenu(self.menu)
         self.editFiltersButton.clicked.connect(self.editFilters)
@@ -142,19 +144,42 @@ class dataBrowserFrame(QtGui.QWidget, Ui_dataBrowserWidget):
         self.flattenAct.setCheckable(True)
         self.flattenAct.triggered.connect(self.flattenTable)
         self.viewMenu.addAction(self.flattenAct)
+        #Run menu
+        self.runRowsAct = QtGui.QAction('Run Selected Rows', self)
+        self.runRowsAct.triggered.connect(self.runSelectedRows)
+        self.runMenu.addAction(self.runRowsAct)
     
     def rowToFlow(self):
         rows = self.selectedRows()
         if len(rows) < 1:
             return
-        elif len(rows) > 1:
-            pass
         self.dat.flowsheet.results.rowToFlowsheet(
             rows[0], self.dat.flowsheet, fltr=True)
-        
-    def runSet(self):
-        self.dat.flowsheet.results.runList(
-            callback = self.refreshContents)
+        self.dat.mainWin.refresh()
+    
+    def runSelectedRows(self):
+        rows = self.selectedRows()
+        n = len(rows)
+        if n < 1:
+            return
+        elif n == 1:
+            s = ""
+        else:
+            s = "s"
+        msgBox = QtGui.QMessageBox()
+        msgBox.setText("Do you want to run {} sample{}?".format(n, s))
+        msgBox.setStandardButtons(
+            QtGui.QMessageBox.No |
+            QtGui.QMessageBox.Yes)
+        msgBox.setDefaultButton(QtGui.QMessageBox.No)
+        ret = msgBox.exec_()
+        if ret == QtGui.QMessageBox.No: return
+        if self.dat.foqusSettings.runFlowsheetMethod == 1:
+            useTurbine=True
+        else:
+            useTurbine=False
+        rows, valList = self.dat.flowsheet.results.runSet(rows)
+        self.dat.mainWin.runSim(rows=rows, valList=valList)
         
     def refreshContents(self):
         self.tableView.setModel(

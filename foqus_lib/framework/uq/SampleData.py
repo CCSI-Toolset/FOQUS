@@ -140,7 +140,6 @@ class SampleData(object):
         self.inputData = []
         self.outputData = []
         self.runState = []
-        self.inputDists = model.getInputDistributions()
         self.legendreOrder = None
         self.fromFile = False
         self.sampleRSType = None
@@ -186,9 +185,6 @@ class SampleData(object):
         sd["turbineJobIds"] = self.turbineJobIds
         sd["turbineSession"] = self.turbineSession
         sd["turbineResub"] = self.turbineResub
-        sd['inputDists'] = []
-        for dist in self.inputDists:
-            sd['inputDists'].append(dist.saveDict())
         sd['analyses'] = []
         for analysis in self.analyses:
             sd['analyses'].append(analysis.saveDict())
@@ -217,12 +213,13 @@ class SampleData(object):
         self.turbineJobIds = sd.get("turbineJobIds", [])
         self.turbineSession = sd.get("turbineSession", None)
         self.turbineResub = sd.get("turbineResub", [])
-        self.inputDists = []
+        inputDists = []
         if 'inputDists' in sd:
             for distDict in sd['inputDists']:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
-                self.inputDists.append(distr)
+                inputDists.append(distr)
+        self.setInputDistributions(inputDists)
         self.analyses = []
         if 'analyses' in sd:
             for analDict in sd['analyses']:
@@ -414,29 +411,10 @@ class SampleData(object):
         return self.model.getEmulatorTrainingFile()
 
     def setInputDistributions(self, distTypes, param1Vals = None, param2Vals = None):
-        if len(distTypes) == 0 or distTypes == None:
-            self.inputDists = []
-        # Check if distTypes is a collection of Distribution objects
-        elif all([isinstance(dist, Distribution) for dist in distTypes]):
-            self.inputDists = distTypes
-        else:
-            inputDists = []
-            if not param1Vals:
-                param1Vals = [None]
-            if not param2Vals:
-                param2Vals = [None]
-            #print distTypes, param1Vals, param2Vals
-            for dist, val1, val2 in map(None, distTypes, param1Vals, param2Vals):
-                if dist is None:
-                    distribObj = None
-                else:
-                    distribObj = Distribution(dist)
-                    distribObj.setParameterValues(val1, val2)
-                inputDists = inputDists + [distribObj]
-            self.inputDists = tuple(inputDists)
+        self.model.setInputDistributions(distTypes, param1Vals, param2Vals)
 
     def getInputDistributions(self):
-        return self.inputDists
+        return self.model.getInputDistributions()
 
     def setInputData(self, data):
         temp = numpy.array(data, dtype = float, ndmin = 2)
@@ -554,29 +532,57 @@ class SampleData(object):
         return self.session.existsInArchive(fileName, folderStructure)
 
     def getValidSamples(self):
-        #Create new samples
-        newSamples = copy.deepcopy(self)
- 
         # Get indices of valid samples
         validSamples = numpy.flatnonzero(self.runState)
+        return self.getSubSample(validSamples)
 
-        numSamples = validSamples.size
+    def getSubSample(self, indices):
+        #Create new samples
+        newSamples = copy.deepcopy(self)
+
+        indices = numpy.array(indices)
+        numSamples = indices.size
         newSamples.setNumSamples(numSamples)
 
         #Filter data and assign to new data object
         inputs = self.inputData
-        newSamples.setInputData(inputs[validSamples])
+        newSamples.setInputData(inputs[indices])
         outputs = self.outputData
-        if not isinstance(outputs, numpy.ndarray):
-            newSamples.setOutputData([])
-        elif outputs.shape[0] == 0:
+        if not isinstance(outputs, numpy.ndarray) or outputs.shape[0] == 0:
             newSamples.setOutputData([])
         else:
-            newSamples.setOutputData(outputs[validSamples])
+            newSamples.setOutputData(outputs[indices])
         runState = self.runState
-        newSamples.setRunState(runState[validSamples])
+        newSamples.setRunState(runState[indices])
         
         return newSamples
+
+    def deleteInputs(self, indices):
+        indices = [ind for ind in indices if 0 <= ind < self.getNumInputs()]
+        mask = numpy.ones(self.getNumInputs(), dtype=bool)
+        mask[indices] = False
+        self.model.setInputNames([name for i,name in enumerate(self.getInputNames()) if i not in indices])
+        self.model.setInputTypes([type for i,type in enumerate(self.getInputTypes()) if i not in indices])
+        self.model.setInputMins(self.getInputMins()[mask])
+        self.model.setInputMaxs(self.getInputMaxs()[mask])
+        self.model.setInputDistributions([dist for i,dist in enumerate(self.getInputDistributions()) if i not in indices])
+        self.model.setInputDefaults(self.getInputDefaults()[mask])
+        self.inputData = self.inputData[..., mask]
+
+    def deleteOutputs(self, indices):
+        indices = [ind for ind in indices if 0 <= ind < self.getNumOutputs()]
+        mask = numpy.ones(self.getNumOutputs(), dtype=bool)
+        mask[indices] = False
+        selected = numpy.zeros(self.getNumOutputs(), dtype=bool)
+        self.model.setOutputNames([name for i,name in enumerate(self.getOutputNames()) if i not in indices])
+        selectedOutputs = self.model.getSelectedOutputs()
+        selected[selectedOutputs] = True
+        selected = selected[mask]
+        selectedOutputs = numpy.flatnonzero(selected)
+        self.model.setSelectedOutputs(selectedOutputs)
+        self.outputData = self.outputData[..., mask]
+
+
 
     def writeToPsuade(self, filename, fixedAsVariables = False):
         outf = open(filename, 'w')

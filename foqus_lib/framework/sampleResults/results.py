@@ -26,6 +26,8 @@ import datetime
 import logging
 import re
 import math
+import time
+from foqus_lib.framework.session.hhmmss import *
 
 class dataFilter():
     DF_NOT = 0
@@ -1109,7 +1111,8 @@ class results():
         sampleTime = None,
         valDict = {'input':{}, 'output':{}},
         tags = [],
-        nodeSid={}):
+        nodeSid={},
+        append=True):
         if valDict == None:
             # if there is no result just add an empty row with not run 
             # error not best but shows the run failed somehow, would be 
@@ -1193,14 +1196,17 @@ class results():
                 r[col] = settings[nkey][skey]
             else:
                 r[col] = numpy.nan
-        self.rlist.append(r)
-        if self.curFilter in self.filters:
-            df = self.filters[self.curFilter]
-            if self.dataFilterEval2(df, len(self.rlist)-1):
+        if append:
+            self.rlist.append(r)
+            if self.curFilter in self.filters:
+                df = self.filters[self.curFilter]
+                if self.dataFilterEval2(df, len(self.rlist)-1):
+                    self.rowSortOrder.append(len(self.rlist)-1)
+            else:
                 self.rowSortOrder.append(len(self.rlist)-1)
+            return(len(self.rlist)-1)
         else:
-            self.rowSortOrder.append(len(self.rlist)-1)
-        return(len(self.rlist)-1)
+            return r
 
     def saveDict(self):
         sd = {
@@ -1641,7 +1647,15 @@ class results():
                         col = self.headStringsFlat.index(h)
                         valmap[i] = self.headMapFlat[col]
                     except:
-                        pass
+                        try: 
+                            col = self.headStringsFlat.index(".".join(["Input", h]))
+                            valmap[i] = self.headMapFlat[col]
+                        except:
+                            try:
+                                col = self.headStringsFlat.index(".".join(["Output", h]))
+                                valmap[i] = self.headMapFlat[col]
+                            except:
+                                pass
             else:
                 for i, h in enumerate(dataHead):
                     if overwrite == True and h == 'SetName':
@@ -1732,7 +1746,15 @@ class results():
                     col = self.headStringsFlat.index(h)
                     valmap[i] = self.headMapFlat[col]
                 except:
-                    pass
+                    try: 
+                        col = self.headStringsFlat.index(".".join(["Input", h]))
+                        valmap[i] = self.headMapFlat[col]
+                    except:
+                        try:
+                            col = self.headStringsFlat.index(".".join(["Output", h]))
+                            valmap[i] = self.headMapFlat[col]
+                        except:
+                            pass
         else:
             for i, h in enumerate(dataHead):
                 if overwrite == True and h == 'SetName':
@@ -1795,6 +1817,30 @@ class results():
 
     def importPSUADE(self):
         pass
+        
+    def runSet(self, rows, fltr=True):
+        """
+        Run a set of samples again or for the first time.  Running these
+        will replace the original result if any.
+        """
+        # First step is to create the sample dict
+        gr = self.gr
+        runList = []
+        n = len(rows)
+        rows2 = []
+        for row in rows:
+            if fltr:
+                row = self.rowSortOrder[row]
+            rows2.append(row)
+            rdat = self.rlist[row]
+            runList.append({})
+            idict = runList[-1]
+            for nkey in gr.input:
+                if idict.get(nkey, None) is None: idict[nkey] = {}
+                for vkey, var in gr.input[nkey].iteritems():
+                    if nkey in self.inputMap and vkey in self.inputMap[nkey]:
+                        idict[nkey][vkey] = copy.deepcopy(rdat[self.inputMap[nkey][vkey]])
+        return rows2, runList
 
 if __name__ == '__main__':
     r = results()

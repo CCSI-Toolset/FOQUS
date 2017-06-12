@@ -692,7 +692,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
         
         showList = self.inputPrior_table.getShowInputList()
         if self.checkOutputTable() and self.checkObs() and \
-           self.inputPrior_table.checkValidInputs() and len(showList) > 0:
+           self.inputPrior_table.checkValidInputs()[0] and len(showList) > 0:
             self.saveObs_button.setEnabled(True)
             self.inf_button.setEnabled(True)
             if self.newAnalysis_radio.isChecked():

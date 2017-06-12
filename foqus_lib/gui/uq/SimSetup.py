@@ -296,114 +296,116 @@ class SimSetup(QDialog, Ui_Dialog):
         if self.distTable.getNumVariables() == 0:
             showMessage = True
             message = 'All inputs are fixed! One needs to be variable.'
-        elif self.distTable.checkValidInputs() == False:
-            showMessage = True
-            message = 'Distribution settings not correct or entirely filled out! Please fix before continuing.'
-        else:   
-            rowsToWarnAboutMass = []
-            for row in xrange(self.distTable.rowCount()):
-                for col in [3,4]:                
-                    item = self.distTable.item(row,col)
-                    if col == 3:
-                        minVal = float(item.text())
-                    else:
-                        maxVal = float(item.text())
-
-                #### Get distribution parameters
-                for col in [6,7]:
-                    cellTable = self.distTable.cellWidget(row, col)
-                    if isinstance(cellTable, QComboBox):
-                        continue
-                    item = None
-                    if cellTable is not None:
-                        item = cellTable.item(0, 1)
-                    if item is not None and item.text():
-                        if col == 6:
-                            distParam1 = float(item.text())
+        else:
+            valid, error = self.distTable.checkValidInputs()
+            if not valid:
+                showMessage = True
+                message = 'Distribution settings not correct or entirely filled out! %s' % error
+            else:
+                rowsToWarnAboutMass = []
+                for row in xrange(self.distTable.rowCount()):
+                    for col in [3,4]:
+                        item = self.distTable.item(row,col)
+                        if col == 3:
+                            minVal = float(item.text())
                         else:
-                            distParam2 = float(item.text())
-                    else:
-                        if col == 6:
-                            distParam1 = None
+                            maxVal = float(item.text())
+
+                    #### Get distribution parameters
+                    for col in [6,7]:
+                        cellTable = self.distTable.cellWidget(row, col)
+                        if isinstance(cellTable, QComboBox):
+                            continue
+                        item = None
+                        if cellTable is not None:
+                            item = cellTable.item(0, 1)
+                        if item is not None and item.text():
+                            if col == 6:
+                                distParam1 = float(item.text())
+                            else:
+                                distParam2 = float(item.text())
                         else:
-                            distParam2 = None
+                            if col == 6:
+                                distParam1 = None
+                            else:
+                                distParam2 = None
 
-                #### Check mass and warn if below 50%
-                # Only collect those that are not fixed to generate inputs
-                combobox = self.distTable.cellWidget(row, 5)
-                dist = combobox.currentIndex()
-                # Create file for psuade input
-                if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
-                    f = tempfile.SpooledTemporaryFile()
-                    for i in range(2):
-                        f.write('cdf_lookup\n') 
-                        distNum = dist
-                        if dist == Distribution.BETA: 
-                            distNum = 4
-                        elif dist == Distribution.WEIBULL:
-                            distNum = 5
-                        elif dist == Distribution.GAMMA:
-                            distNum = 6
-                        elif dist == Distribution.EXPONENTIAL:
-                            distNum = 7
-                        f.write('%d\n' % distNum) # Number of distribution
-                        f.write('%f\n' % distParam1) # Parameter 1
-                        if distParam2 is not None:
-                            f.write('%f\n' % distParam2) # Parameter 2
-                        if i == 0:
-                            val = minVal
-                        else:
-                            val = maxVal
-                        f.write('%f\n' % val) # Min or max value
-                    f.write('quit\n')
-                    f.seek(0)
+                    #### Check mass and warn if below 50%
+                    # Only collect those that are not fixed to generate inputs
+                    combobox = self.distTable.cellWidget(row, 5)
+                    dist = combobox.currentIndex()
+                    # Create file for psuade input
+                    if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
+                        f = tempfile.SpooledTemporaryFile()
+                        for i in range(2):
+                            f.write('cdf_lookup\n')
+                            distNum = dist
+                            if dist == Distribution.BETA:
+                                distNum = 4
+                            elif dist == Distribution.WEIBULL:
+                                distNum = 5
+                            elif dist == Distribution.GAMMA:
+                                distNum = 6
+                            elif dist == Distribution.EXPONENTIAL:
+                                distNum = 7
+                            f.write('%d\n' % distNum) # Number of distribution
+                            f.write('%f\n' % distParam1) # Parameter 1
+                            if distParam2 is not None:
+                                f.write('%f\n' % distParam2) # Parameter 2
+                            if i == 0:
+                                val = minVal
+                            else:
+                                val = maxVal
+                            f.write('%f\n' % val) # Min or max value
+                        f.write('quit\n')
+                        f.seek(0)
 
-                    # invoke psuade
-                    psuadePath = LocalExecutionModule.getPsuadePath()
-                    if psuadePath is None:
-                        return
-                    p = subprocess.Popen(psuadePath,
-                                         stdin=f,
-                                         stdout=subprocess.PIPE,
-                                         stderr=subprocess.PIPE,
-                                         shell=True)
-                    f.close()
+                        # invoke psuade
+                        psuadePath = LocalExecutionModule.getPsuadePath()
+                        if psuadePath is None:
+                            return
+                        p = subprocess.Popen(psuadePath,
+                                             stdin=f,
+                                             stdout=subprocess.PIPE,
+                                             stderr=subprocess.PIPE,
+                                             shell=True)
+                        f.close()
 
-                    # process error
-                    out, error = p.communicate()
-                    if error:
-                        Common.showError(error, out)
-                        return None
+                        # process error
+                        out, error = p.communicate()
+                        if error:
+                            Common.showError(error, out)
+                            return None
 
-                    # parse output
-                    lines = out.splitlines()
-                    vals = []
-                    for line in lines:
-                        if 'Cumulative probability = ' in line:
-                            words = line.split()
-                            vals.append(float(words[-1]))
+                        # parse output
+                        lines = out.splitlines()
+                        vals = []
+                        for line in lines:
+                            if 'Cumulative probability = ' in line:
+                                words = line.split()
+                                vals.append(float(words[-1]))
 
-                    mass = vals[1] - vals[0]
-                    if mass < 0.5:
-                        rowsToWarnAboutMass.append(row)
-            
-            if len(rowsToWarnAboutMass) > 0:
-                self.samplingTabs.setCurrentIndex(0)
-                for row in rowsToWarnAboutMass:
-                    msgbox = QMessageBox()
-                    msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                    msgbox.setText('Regarding input ' + self.model.getInputNames()[row] + \
-                                   ': Min/max range is narrow for its distribution. ' + \
-                                   'This could cause sample generation to take more time.  Continue?')
-                    msgbox.setIcon(QMessageBox.Warning)
-                    msgbox.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
-                    msgbox.setDefaultButton(QMessageBox.Yes)
-                    ret = msgbox.exec_()
-                    if ret != QMessageBox.Yes:
-                        self.distTable.selectRow(row)
-                        return
-                self.ignoreDistributionCheck = True
-                self.samplingTabs.setCurrentIndex(1)
+                        mass = vals[1] - vals[0]
+                        if mass < 0.5:
+                            rowsToWarnAboutMass.append(row)
+
+                if len(rowsToWarnAboutMass) > 0:
+                    self.samplingTabs.setCurrentIndex(0)
+                    for row in rowsToWarnAboutMass:
+                        msgbox = QMessageBox()
+                        msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                        msgbox.setText('Regarding input ' + self.model.getInputNames()[row] + \
+                                       ': Min/max range is narrow for its distribution. ' + \
+                                       'This could cause sample generation to take more time.  Continue?')
+                        msgbox.setIcon(QMessageBox.Warning)
+                        msgbox.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+                        msgbox.setDefaultButton(QMessageBox.Yes)
+                        ret = msgbox.exec_()
+                        if ret != QMessageBox.Yes:
+                            self.distTable.selectRow(row)
+                            return
+                    self.ignoreDistributionCheck = True
+                    self.samplingTabs.setCurrentIndex(1)
 
         if showMessage:
             self.samplingTabs.setCurrentIndex(0)

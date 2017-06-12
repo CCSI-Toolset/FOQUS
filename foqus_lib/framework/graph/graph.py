@@ -159,11 +159,15 @@ class graph(threading.Thread):
 
     def terminate(self):
         '''
-            This will tell a graph thread to stop running.
+        This will tell a graph thread to stop running.
         '''
         self.stop.set()
 
     def remoteDisconnect(self):
+        """
+        Graph thread will stop but leaves the jobs submitted to Turbine
+        running. (just batches to remote Turbine).
+        """
         self.rtDisconnect.set()
 
     def errorLookup(self, i):
@@ -438,10 +442,17 @@ class graph(threading.Thread):
 
     def uploadFlowseetToTurbine(self,
         simname,
-        sessionFile,
+        dat,
         reset=False):
         '''
         '''
+        sessionFile = "tmp_to_turbine"
+        dat.save(
+            filename = sessionFile,
+            updateCurrentFile = False,
+            changeLogMsg = "Save for turbine submission",
+            indent = 0,
+            keepData = False)
         self.turbineSim = "zzfoqus_{0}".format(simname.replace(" ", "_"))
         self.turbineReset = reset
         self.sessionFile = sessionFile
@@ -853,8 +864,8 @@ class graph(threading.Thread):
                 self.solveListValTurbine(
                     sid=self.turbineSession, jobIds=self.jobIds)
 
-    def runListAsThread(self, runList=None, useTurbine = False,
-        sid=None, jobIds=[], resubs=None):
+    def runListAsThread(self, runList=None, useTurbine=False,
+        sid=None, jobIds=[], resubs=None, dat=None):
         '''
             Open a new thread and run a list of simulations
             with the inputs specified in runList.  runList is
@@ -895,7 +906,7 @@ class graph(threading.Thread):
         newGr.start()
         return newGr
 
-    def runAsThread(self, useTurbine=False, sid=None):
+    def runAsThread(self, useTurbine=False, sid=None, dat=None):
         '''
             Run current graph setting in a separate thread the
             results are stored in the res attribute of the returned

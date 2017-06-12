@@ -17,7 +17,7 @@ class InputPriorTable(QTableWidget):
     typeItems[SIMSETUP] = ['Variable', 'Fixed']
     typeItems[RSANALYSIS] = ['Aleatory', 'Epistemic', 'Fixed']
     typeItems[INFERENCE] = ['Variable', 'Fixed', 'Design']
-    typeItems[OUU] = ['Fixed', 'Opt: Primary (Z1)', 'Opt: Recourse (Z2)', 'UQ: Discrete (Z3)', 'UQ: Continuous (Z4)']
+    typeItems[OUU] = ['Fixed', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)', 'UQ: Discrete (Z3)', 'UQ: Continuous (Z4)']
 
 
     def __init__(self, parent = None):
@@ -85,10 +85,12 @@ class InputPriorTable(QTableWidget):
         else: # OUU
             col_index = {'check': 0, 'name':1, 'type':2, 'scale': 3, 'min':4, 'max':5, 'value':6, 'pdf':7, 'p1':8, 'p2':9}
         self.col_index = col_index            
-        #self.setRowCount(nVariableInputs)
         flowsheetFixed = data.getInputFlowsheetFixed()
         #rowCount = 0
-        rowCount = nVariableInputs
+        if self.mode == InputPriorTable.SIMSETUP:
+            rowCount = nInputs
+        else:
+            rowCount = nVariableInputs
         # for i in xrange(nInputs):
         #     if not flowsheetFixed[i] and inVarTypes[i] != Model.FIXED:
         #         rowCount += 1
@@ -100,12 +102,12 @@ class InputPriorTable(QTableWidget):
         r = 0   # row index
 
         for i in xrange(nInputs):
-            # do not add fixed input variables to table
-            if (self.mode != InputPriorTable.SIMSETUP and inVarTypes[i] == Model.FIXED) or \
-               (self.mode == InputPriorTable.SIMSETUP and data.getInputFlowsheetFixed(i)):
+            # # do not add fixed input variables to table
+            if (self.mode != InputPriorTable.SIMSETUP and inVarTypes[i] == Model.FIXED): # or \
+            #    (self.mode == InputPriorTable.SIMSETUP and data.getInputFlowsheetFixed(i)):
                 continue
 
-            if dist is None:
+            if not dist:
                 dtype = Distribution.UNIFORM
                 d = Distribution(dtype)
             else:
@@ -479,7 +481,8 @@ class InputPriorTable(QTableWidget):
                 if 'max' in col_index:
                     self.clearCell(r, col_index['max'])
             else:
-                self.clearCell(r, col_index['value'])
+                if self.mode != InputPriorTable.OUU:
+                    self.clearCell(r, col_index['value'])
                 if 'min' in col_index:
                     self.activateCell(r, col_index['min'])
                 if 'max' in col_index:
@@ -914,16 +917,16 @@ class InputPriorTable(QTableWidget):
         return self.getVariablesWithType('Epistemic')
 
     def getPrimaryVariables(self):
-        return self.getVariablesWithType('Primary')
+        return self.getVariablesWithType('Z1')
 
     def getRecourseVariables(self):
-        return self.getVariablesWithType('Recourse')
+        return self.getVariablesWithType('Z2')
 
-    def getDiscreteVariables(self):
-        return self.getVariablesWithType('Discrete')
+    def getUQDiscreteVariables(self):
+        return self.getVariablesWithType('Z3')
 
     def getContinuousVariables(self):
-        return self.getVariablesWithType('Continuous')
+        return self.getVariablesWithType('Z4')
 
     def getVariablesWithType(self, typeString):
         col_index = self.col_index
@@ -988,6 +991,7 @@ class InputPriorTable(QTableWidget):
         nInputs = self.rowCount()
         col_index = self.col_index
         for i in xrange(nInputs):
+            inputName = self.item(i, col_index['name']).text()
             type = 'Variable'
             if 'type' in col_index:
                 combobox = self.cellWidget(i, col_index['type'])
@@ -1004,10 +1008,10 @@ class InputPriorTable(QTableWidget):
                             minVal = float(xmin.text())
                             maxVal = float(xmax.text())
                             if minVal >= maxVal:
-                                return False
+                                return (False, 'Minimum value is not less than max value for %s!' % inputName)
                             b = True
                         else:
-                            return False
+                            return (False,  'Min or max value for %s is not a number!' % inputName)
                     if dtype == Distribution.UNIFORM:
                         xmin = self.item(i, col_index['min'])
                         xmax = self.item(i, col_index['max'])
@@ -1015,26 +1019,26 @@ class InputPriorTable(QTableWidget):
                             minVal = float(xmin.text())
                             maxVal = float(xmax.text())
                             if minVal >= self.ubVariable[i] or maxVal <= self.lbVariable[i] or minVal >= maxVal :
-                                    return False
+                                    return (False,  'Minimum value is not less than max value for %s!' % inputName)
                             b = True
                         else:
-                            return False
+                            return (False,  'Min or max value for %s is not a number!' % inputName)
                     elif dtype == Distribution.LOGNORMAL: # Lognormal mean less than 0
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)
                         if (param1 is not None) and self.isnumeric(param1.text()):
                             if float(param1.text()) < 0:
-                                return False
+                                return (False,  'Mean value for %s cannot be negative!' % inputName)
                             b = True
                         else:
-                            return False
+                            return (False,  'Mean value for %s is not a number!' % inputName)
                     elif dtype == Distribution.EXPONENTIAL:
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)
                         if (param1 is not None) and self.isnumeric(param1.text()):
                             b = True
                         else:
-                            return False
+                            return (False,  'Lambda value for %s is not a number!' % inputName)
                     elif dtype == Distribution.GAMMA or \
                          dtype == Distribution.BETA or \
                          dtype == Distribution.WEIBULL: # Parameters less than 0
@@ -1045,16 +1049,16 @@ class InputPriorTable(QTableWidget):
                         if (param1 is not None) and self.isnumeric(param1.text()) and \
                            (param2 is not None) and self.isnumeric(param2.text()):
                             if float(param1.text()) < 0 or float(param2.text()) < 0:
-                                return False
+                                return (False,  'Distribution parameter value for %s cannot be negative!' % inputName)
                             b = True
                         else:
-                            return False                   
+                            return (False,  'Distribution parameter value for %s is not a number!' % inputName)
                         
                     elif dtype == Distribution.SAMPLE:
                         combo = self.cellWidget(i, col_index['p1'])
                         text = combo.currentText()
                         if text == 'Browse...' or text == 'Select File':
-                            return False
+                            return (False,  'No file selected for %s!' % inputName)
                         b = True
                         
                     else:
@@ -1065,7 +1069,7 @@ class InputPriorTable(QTableWidget):
                         if (param1 is not None) and self.isnumeric(param1.text()) and (param2 is not None) and self.isnumeric(param2.text()):
                             b = True
                         else:
-                            return False
+                            return (False,  'Distribution parameter value for %s is not a number!' % inputName)
                 else:
                     b = True
             elif type == 'Fixed':
@@ -1073,14 +1077,14 @@ class InputPriorTable(QTableWidget):
                 if value is not None and self.isnumeric(value.text()):
                     value = float(value.text())
                     if value < self.lbVariable[i] or value > self.ubVariable[i]:
-                        return False
+                        return (False,  'Fixed value is not between min and max for %s!' % inputName)
                     b = True
                 else:
-                    return False
+                    return (False,  'Fixed value for %s is not a number!' % inputName)
             else: # Design
                 b = True
 
-        return b
+        return (b, None)
 
 
     def getTableValues(self):

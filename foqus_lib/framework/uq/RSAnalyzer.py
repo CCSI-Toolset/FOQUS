@@ -282,13 +282,17 @@ class RSAnalyzer:
                             vmin = prior['min']
                             vmax = prior['max']
                             if vmin < inputLB[i]:
-                                error = 'RSAnalyzer: In function parsePrior(), minimum value for %s needs to equal or greater than %f.' % (inVarNames[i], inputLB[i])
-                                Common.showError(error)
-                                return None
+                                error = 'RSAnalyzer WARNING: In function parsePrior(), minimum value for %s needs to equal or greater than %f (%f).' % (inVarNames[i], inputLB[i], vmin)
+                                #Charles Tong (Feb 2017)
+                                #disable for now because the prior[''] function
+                                # only takes limited number of digits so it may
+                                # send out erroneous results ==> no checking
+                                #Common.showError(error)
+                                #return None
                             if vmax > inputUB[i]:
-                                error = 'RSAnalyzer: In function parsePrior(), maximum value for %s needs to equal or less than %f.' % (inVarNames[i], inputUB[i])
-                                Common.showError(error)
-                                return None
+                                error = 'RSAnalyzer WARNING: In function parsePrior(), maximum value for %s needs to equal or less than %f (%f).' % (inVarNames[i], inputUB[i], vmax)
+                                #Common.showError(error)
+                                #return None
                             # ... set new bounds for uniform random variables only
                             inputLB[i] = vmin
                             inputUB[i] = vmax
@@ -307,18 +311,24 @@ class RSAnalyzer:
     def checkMARS(data, rsOptions):
         if rsOptions is not None:
             nSamples = SampleData.getNumSamples(data)
+            if nSamples < 12:
+                error = 'RSAnalyzer ERROR: In function checkMARS(), "nSamples" needs to be > 11 to work.'
+                Common.showError(error)
+                return None
             inVarTypes = SampleData.getInputTypes(data)
             nVariableInputs = inVarTypes.count(Model.VARIABLE)
             marsBases = rsOptions['marsBases']
             if marsBases < 10 or marsBases > nSamples:
-                error = 'RSAnalyzer: In function checkMARS(), "marsBases" is out of range for MARS response surface.'
+                error = 'RSAnalyzer WARNING: In function checkMARS(), "marsBases" is out of range for MARS response surface (will reset).'
                 Common.showError(error)
-                return None
+                marsBases = nSamples
+                #return None
             marsInteractions = rsOptions['marsInteractions']
             if marsInteractions < 2 or marsInteractions > nVariableInputs:
-                error = 'RSAnalyzer: In function checkMARS(), "marsInteractions" is out of range for MARS response surface.'
+                error = 'RSAnalyzer WARNING: In function checkMARS(), "marsInteractions" is out of range for MARS response surface.'
                 Common.showError(error)
-                return None
+                #return None
+                marsInteractions = nVariableInputs
             marsNormOutputs = 'n'
             return (marsBases, marsInteractions, marsNormOutputs)
         return None

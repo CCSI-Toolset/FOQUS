@@ -26,8 +26,11 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         self.ignoreResults = False
 
     @staticmethod
-    def writeOUUdata(outfile, y, data, **kwargs):
+    def writeOUUdata(outfile, yOuts, constraints, derivatives, data, 
+                     opttypes, **kwargs):
 
+        # Charles TODO: Handle y is now a list of inputs
+        # Charles TODO: Handle derivatives
         # defaults
         rseed = None
         driver = data.getDriverName()
@@ -79,7 +82,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         nVariableInputs = inputTypes.count(Model.VARIABLE)
         numFixed = nInputs - nVariableInputs
         if numFixed > 0:
-            f.write('   num_fixed %d\n' % numFixed)
+          f.write('   num_fixed %d\n' % numFixed)
         f.write('   dimension = %d\n' % nVariableInputs)
         if inputLB is None:
             inputLB = data.getInputMins()
@@ -90,44 +93,97 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         indices = range(nInputs)
         variableIndex = 1
         fixedIndex = 1
-        for i, name, inType, lb, ub, default in zip(indices, inputNames, inputTypes, inputLB, inputUB, inputDefaults):
-            if inType == Model.VARIABLE:
-                f.write('   variable %d %s  =  % .16e  % .16e\n' % (variableIndex, name, lb, ub))
-                variableIndex = variableIndex + 1
-            else:
-                f.write('   fixed %d %s = % .16e\n' % (fixedIndex, name, default))
-                fixedIndex = fixedIndex + 1
+        for i, name, inType, lb, ub, default in zip(indices, inputNames, \
+                             inputTypes, inputLB, inputUB, inputDefaults):
+          if inType == Model.VARIABLE:
+            f.write('   variable %d %s  =  % .16e  % .16e\n' % \
+                    (variableIndex, name, lb, ub))
+            variableIndex = variableIndex + 1
+          else:
+            f.write('   fixed %d %s = % .16e\n' % (fixedIndex, name, default))
+            fixedIndex = fixedIndex + 1
+        # inject discrete variables in psuade
+        nn = len(opttypes)
+        for ii in range(nn):
+          jj = opttypes[ii];
+          f.write('   discrete %d\n' % (jj))
+
         if distributions is None:
-            distributions = SampleData.getInputDistributions(data)
+          distributions = SampleData.getInputDistributions(data)
         for i, inType, dist in zip(indices, inputTypes, distributions):
-            if inType == Model.VARIABLE:
-                distType = dist.getDistributionType()
-                distParams = dist.getParameterValues()
-                if distType != Distribution.UNIFORM:
-                    f.write('   PDF %d %c' % (i+1, Distribution.getPsuadeName(distType)))
-                    if distType == Distribution.SAMPLE:
-                        error = 'OUU: In function writeOUUdata(), SAMPLE distribution is not supported.'
-                        Common.showError(error)
-                        return None
-                    else:
-                        if distParams[0] is not None:
-                            f.write(' % .16e' % distParams[0])
-                        if distParams[1] is not None:
-                            f.write(' % .16e' % distParams[1])
-                    f.write('\n')
+          if inType == Model.VARIABLE:
+            distType = dist.getDistributionType()
+            distParams = dist.getParameterValues()
+            if distType != Distribution.UNIFORM:
+              f.write('   PDF %d %c' % (i+1, \
+                      Distribution.getPsuadeName(distType)))
+              if distType == Distribution.SAMPLE:
+                error = 'OUU: In function writeOUUdata(), '
+                error = error + 'SAMPLE distribution is not supported.'
+                Common.showError(error)
+                return None
+              else:
+                if distParams[0] is not None:
+                  f.write(' % .16e' % distParams[0])
+                if distParams[1] is not None:
+                  f.write(' % .16e' % distParams[1])
+              f.write('\n')
         f.write('END\n')
 
         # ... output ...
+        outActive = len(yOuts)
+        nOuts    = len(yOuts)
+        nConstrs = 0
+        nDerivs  = 0
+        for ii in range(len(constraints)):
+          if constraints[ii]:
+            outActive = outActive + 1
+            nConstrs  = nConstrs + 1
+        for ii in range(len(derivatives)):
+          if derivatives[ii]:
+            outActive = outActive + 1
+            nDerivs = nDerivs + 1
+        if (nOuts != 1):
+          error = 'OUU: In function writeOUUdata(), '
+          error = error + 'multi-objective optimization not supported.'
+          Common.showError(error)
+          return None
+        else:
+          if ((nConstrs > 0) and (nDerivs > 0)):
+            error = 'OUU: In function writeOUUdata(), '
+            error = error + 'LBFGS does not support inequality constraints.'
+            Common.showError(error)
+            return None
+          elif ((nDerivs > 0) and (nDerivs != nVariableInputs)):
+            error = 'OUU: In function writeOUUdata(), '
+            error = error + 'Number of derivatives not correct'
+            Common.showError(error)
+            return None
+
         f.write('OUTPUT\n')
-        f.write('   dimension = 1\n')   # OUU supports only 1 output
+        f.write('   dimension = %d\n' % (outActive))  
         outputNames = SampleData.getOutputNames(data)
-        f.write('   variable 1 %s\n' % outputNames[y-1])
+        for ii in range(len(yOuts)):
+          ind = yOuts[ii]  
+          f.write('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
+          print('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
+        outActive = len(yOuts) + 1
+        for ii in range(len(constraints)):
+          if constraints[ii]:
+            f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            outActive = outActive + 1
+        for ii in range(len(derivatives)):
+          if derivatives[ii]:
+            f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            outActive = outActive + 1
         f.write('END\n')
 
         # ... method ...
         f.write('METHOD\n')
-        f.write('   sampling = LPTAU\n')  # OUU does not use this
-        f.write('   num_samples = 10\n')  # OUU does not use this
+        f.write('   sampling = MC\n')    # OUU uses this to create
+        f.write('   num_samples = 1\n')  # initial guess 
         if rseed is not None:
             f.write('random_seed = %d\n' % rseed)  # random seed
         f.write('END\n')
@@ -153,16 +209,20 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # ... analysis ...
         f.write('ANALYSIS\n')
-        f.write('   optimization method = ouu\n')
+        if (nDerivs > 0): 
+          f.write('   optimization method = ouu_lbfgs\n')
+        else:
+          f.write('   optimization method = ouu\n')
         f.write('   optimization num_local_minima = 1\n')
         f.write('   optimization max_feval = 1000000\n')
         f.write('   optimization fmin = 0.0\n')
         f.write('   optimization tolerance = 1.000000e-06\n')
         f.write('   optimization num_fmin = 1\n')
         f.write('   optimization print_level = 3\n')
-        f.write('   analyzer output_id  = %d\n' % y)
+        #f.write('   analyzer output_id = %d\n' % y)
+        f.write('   analyzer output_id = 1\n')
         f.write('   opt_expert\n')
-        f.write('   printlevel 2\n')
+        f.write('   printlevel 0\n')
         f.write('END\n')
 
         f.write('END\n')
@@ -173,8 +233,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
     @staticmethod
     def compress(fname):
 
-        N = 0                     # number of samples in x3sample['file']
-        with open(fname) as f:    ### TO DO for Jeremy: check sample size in GUI  
+        N = 0                   # number of samples in x3sample['file']
+        with open(fname) as f:  ### TO DO for Jeremy: check sample size in GUI  
             header = f.readline()
             header = header.split()
             N = int(header[0])
@@ -182,9 +242,10 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         Nmin = 100                # psuade minimum for genhistogram
         if N < Nmin:
-            warn = 'OUU: In function compress(), "x3sample file" requires at least %d samples.' % Nmin
-            Common.showError(warn)
-            return {N: fname}  # return original sample file
+          warn = 'OUU: In function compress(), "x3sample file" requires '
+          warn = warn + 'at least %d samples.' % Nmin
+          Common.showError(warn)
+          return {N: fname}  # return original sample file
 
         outfiles = {}
         nbins_max = 20
@@ -212,12 +273,13 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             # check output file
             sfile = 'psuade_pdfhist_sample'
             if os.path.exists(sfile):
-                Ns = 0                    # number of samples in psuade_pdfhist_sample
+                Ns = 0          # number of samples in psuade_pdfhist_sample
                 with open(sfile) as f:
                     header = f.readline()
                     header = header.split()
                     Ns = int(header[0])                
-                sfile_ = Common.getLocalFileName(OUU.dname, fname, '.compressed' + str(Ns)) 
+                sfile_ = Common.getLocalFileName(OUU.dname, fname, 
+                                  '.compressed' + str(Ns)) 
                 if os.path.exists(sfile_):
                     os.remove(sfile_)
                 os.rename(sfile, sfile_)
@@ -235,7 +297,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         return outfiles
 
-    def ouu(self, fname,y,xtable,phi,x3sample=None,x4sample=None,useRS=False,useBobyqa=True,
+    def ouu(self, fname,y,outputsAsConstraint, outputsAsDerivative, xtable,
+            phi,x3sample=None,x4sample=None,useRS=False,useBobyqa=True,
             driver=None, optDriver=None, auxDriver=None, ensOptDriver=None,
             plotSignal=None, endFunction = None):
             
@@ -245,12 +308,15 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # read data, assumes data already have fixed variables written to file
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
-        if optDriver == None and ensOptDriver == None and data.getOptDriverName() == None and data.getEnsembleOptDriverName() == None:
-            Common.showError('Model file does not have any drivers set!', showDeveloperHelpMessage = False)
-            self.hadError = True
-            if endFunction is not None:
-                endFunction()
-            return
+        if optDriver == None and ensOptDriver == None and \
+               data.getOptDriverName() == None and \
+               data.getEnsembleOptDriverName() == None:
+          Common.showError('Model file does not have any drivers set!', \
+                           showDeveloperHelpMessage = False)
+          self.hadError = True
+          if endFunction is not None:
+            endFunction()
+          return
         if driver != None:
             data.setDriverName(driver)
         if optDriver != None:
@@ -259,6 +325,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             data.setAuxDriverName(auxDriver)
         if ensOptDriver != None:
             data.setEnsembleOptDriverName(ensOptDriver)
+        else:
+            ensOptDriver = data.getEnsembleOptDriverName()
 
         # Remove file that tells OUU to stop
         if os.path.exists(OUU.stopFile):
@@ -279,20 +347,31 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             inputLB = p['inputLB']
             inputUB = p['inputUB']
             dist = p['dist']
-        OUU.writeOUUdata(fnameOUU, y, data, randSeed=41491431,   # TO DO: remove randSeed
-                         inputLowerBounds=inputLB, inputUpperBounds=inputUB, inputPDF=dist, 
-                         useEnsOptDriver = (ensOptDriver != None))
+
+        # Tong: added here to record discrete optimization variables
+        opttypes = []
+        cnt = 0;
+        for e in xtable:
+            cnt = cnt + 1
+            t = e['type']
+            if t == u'Opt: Primary Discrete (Z1d)':
+                opttypes.append(cnt)
+
         vartypes = []
         for e in xtable:
-            t = e['type']
-            if t == u'Opt: Primary (Z1)':
-                vartypes.append(1)
-            elif t == u'Opt: Recourse (Z2)':
-                vartypes.append(2)
-            elif t == u'UQ: Discrete (Z3)':
-                vartypes.append(3)
-            elif t == u'UQ: Continuous (Z4)':
-                vartypes.append(4)
+          t = e['type']
+          if t == u'Opt: Primary Continuous (Z1)':
+            vartypes.append(1)
+          elif t == u'Opt: Primary Continuous (Z1c)':
+            vartypes.append(1)
+          elif t == u'Opt: Primary Discrete (Z1d)':
+            vartypes.append(1)
+          elif t == u'Opt: Recourse (Z2)':
+            vartypes.append(2)
+          elif t == u'UQ: Discrete (Z3)':
+            vartypes.append(3)
+          elif t == u'UQ: Continuous (Z4)':
+            vartypes.append(4)
         M1 = vartypes.count(1)
         M2 = vartypes.count(2)
         M3 = vartypes.count(3)
@@ -300,49 +379,65 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # check arguments
         if M1 < 1:
-            error = 'OUU: In function ouu(), number of Z1 (design opt) must be at least 1.'
+          error = 'OUU: In function ouu(), number of Z1 (design opt) '
+          error = error + 'must be at least 1.'
         if M3 > 0: 
-            if x3sample == None:
-                error = 'OUU: In function ouu(), "x3sample" is undefined.'
-                Common.showError(error)
-                return None
+          if x3sample == None:
+            error = 'OUU: In function ouu(), "x3sample" is undefined.'
+            Common.showError(error)
+            return None
 
         if M4 > 0:
-            if x4sample == None:
-                error = 'OUU: In function ouu(), "x4sample" is undefined.'
+          if x4sample == None:
+            error = 'OUU: In function ouu(), "x4sample" is undefined.'
+            Common.showError(error)
+            return None
+          loadcs = 'file' in x4sample
+          if loadcs:
+            N = 0          # number of samples in x4sample['file']
+
+            ### TO DO for Jeremy: check sample size in GUI  
+            with open(x4sample['file']) as f:    
+              header = f.readline()
+              header = header.split()
+              N = int(header[0])
+
+            Nmin = M4+1    # minimum number of samples
+            if N < Nmin:
+              error = 'OUU: In function ouu(), "x4sample file" requires '
+              error = error + 'at least %d samples.' % Nmin
+              Common.showError(error)
+              return None
+            if useRS:
+              Nrs = 'nsamplesRS' in x4sample
+              if not Nrs:
+                error = 'OUU: In function ouu(), "x4sample nsamplesRS" is '
+                error = error + 'required for setting up response surface.'
                 Common.showError(error)
                 return None
-            loadcs = 'file' in x4sample
-            if loadcs:
-                N = 0          # number of samples in x4sample['file']
-                with open(x4sample['file']) as f:    ### TO DO for Jeremy: check sample size in GUI  
-                    header = f.readline()
-                    header = header.split()
-                    N = int(header[0])
+              Nrs = x4sample['nsamplesRS']
+              Nrs = min(max(Nrs,Nmin),N)  ### TO DO for Jeremy: check in GUI
 
-                Nmin = M4+1    # minimum number of samples
-                if N < Nmin:
-                    error = 'OUU: In function ouu(), "x4sample file" requires at least %d samples.' % Nmin
-                    Common.showError(error)
-                    return None
-                if useRS:
-                    Nrs = 'nsamplesRS' in x4sample
-                    if not Nrs:
-                        error = 'OUU: In function ouu(), "x4sample nsamplesRS" is required for setting up response surface.'
-                        Common.showError(error)
-                        return None
-                    Nrs = x4sample['nsamplesRS']
-                    Nrs = min(max(Nrs,Nmin),N)       ### TO DO for Jeremy: check in GUI
+        # TO DO: remove randSeed
+        ouuFile = OUU.writeOUUdata(fnameOUU,y,outputsAsConstraint,
+                         outputsAsDerivative, data, opttypes, 
+                         randSeed=41491431, inputLowerBounds=inputLB, 
+                         inputUpperBounds=inputUB, inputPDF=dist, 
+                         useEnsOptDriver = (ensOptDriver != None))
+        if (ouuFile == None):
+          return None
 
         # write script
-        f = OUU.writescript(vartypes,fnameOUU,phi,x3sample,x4sample,useRS,useBobyqa)
+        f = OUU.writescript(vartypes,fnameOUU,phi,x3sample,x4sample,useRS,
+                    useBobyqa, useEnsOptDriver = (ensOptDriver != None))
         
         # delete previous history file
         if os.path.exists(OUU.hfile):
             os.remove(OUU.hfile)
 
         self.textDialog = Common.textDialog()
-        self.thread = psuadeThread(self, f, self.finishOUU, self.textDialog, plotSignal)
+        self.thread = psuadeThread(self, f, self.finishOUU, self.textDialog, 
+                                   plotSignal)
         self.thread.start()
 
     def stopOUU(self):
@@ -389,7 +484,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         return self.results
 
     @staticmethod
-    def writescript(vartypes,fnameOUU,phi=None,x3sample=None,x4sample=None,useRS=False,useBobyqa=False,useEnsOptDriver=None):
+    def writescript(vartypes,fnameOUU,phi=None,x3sample=None,x4sample=None,
+                    useRS=False,useBobyqa=False,useEnsOptDriver=None):
 
         M1 = vartypes.count(1)
         M2 = vartypes.count(2)
@@ -520,14 +616,15 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 f.write('y\n')    # use own driver as optimizer
 
         # ... choose ensemble optimization driver
-        if M2 == 0 or not useBobyqa:
+        if M3+M4 > 0 and not useBobyqa:
             if useEnsOptDriver:
                 f.write('y\n')   # use ensemble driver
             else:
                 f.write('n\n')
 
         # ... choose mode to run simulations for computing statistics
-        f.write('n\n')  # do not use asynchronous mode (not tested)
+        if M3+M4 > 0:
+            f.write('n\n')  # do not use asynchronous mode (not tested)
 
         f.write('quit\n')
         f.seek(0)

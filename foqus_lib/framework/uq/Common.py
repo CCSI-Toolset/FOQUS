@@ -5,6 +5,7 @@ import shutil
 import subprocess
 import tempfile
 import time
+import platform
 
 try:
     from PySide import QtGui, QtCore
@@ -175,10 +176,14 @@ class Common(obj):
                            plotOuuValuesSignal = None,
                            ):
 
+        executable = None
+        if platform.system() == 'Linux':
+            executable = '/bin/bash'
         p = subprocess.Popen(command,
                              stdin=scriptHandle,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
+                             executable=executable,
                              shell=True)
             
 
@@ -202,11 +207,11 @@ class Common(obj):
         grabz = False    # set to True when listening for objective values
         while True:
             if p.poll() is None:
-                sleepTime = 0.03
+                sleepTime = 0.01
             else:
                 sleepTime = 0.0001
             time.sleep(sleepTime)
-            if time.time() - startTime > 0.1:
+            if time.time() - startTime > 0.2:
                 if usePyside:
                     QtCore.QCoreApplication.processEvents()
                 startTime = time.time()
@@ -270,6 +275,7 @@ class Common(obj):
                     grabx = False
                     grabz = True
                     z = []
+                    i = int(regex[0])
                     z.append(i)
                     continue
 

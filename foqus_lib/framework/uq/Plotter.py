@@ -94,7 +94,7 @@ class Plotter:
             else:
                 p = np.sqrt(nseries)
                 ncols = int(np.floor(p))
-                nrows = int(np.ceil(p))
+                nrows = int(np.ceil(float(nseries) / ncols))
 
             fig, axes = plt.subplots(nrows=nrows, ncols=ncols)  
             i = 0

@@ -757,7 +757,7 @@ METHOD
    random_seed = 1211319841
 END
 APPLICATION
-   driver = ./simulator
+   driver = /g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/MCMCTest/Sample.psuade
    opt_driver = NONE
    aux_opt_driver = NONE
    ensemble_driver = NONE

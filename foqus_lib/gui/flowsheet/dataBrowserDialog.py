@@ -38,7 +38,9 @@ class dataBrowserDialog(QtGui.QDialog, Ui_dataBrowserDialog):
         # so it a lot faster.  This arrangement is much better
         # if the table has a lot of rows there could be a few second
         # delay.
-        self.dataFrame.tableView.resizeColumnsToContents()
+        #
+        # Turned off takes too long with a lot of columns.
+        #self.dataFrame.tableView.resizeColumnsToContents()
     
     def closeButtonClick(self):
         self.hide()

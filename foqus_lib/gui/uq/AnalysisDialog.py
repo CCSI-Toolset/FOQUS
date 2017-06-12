@@ -1693,7 +1693,7 @@ class AnalysisDialog(QDialog, Ui_Dialog):
             self.RSAnalyze_button.setEnabled(False)
             return False
         else:
-            if self.inputPrior_table.checkValidInputs():
+            if self.inputPrior_table.checkValidInputs()[0]:
                 self.RSAnalyze_button.setEnabled(True)
                 return True
             else:

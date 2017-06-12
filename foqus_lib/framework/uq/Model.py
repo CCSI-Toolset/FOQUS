@@ -182,6 +182,8 @@ class Model:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 self.inputDists.append(distr)
+        if not self.inputDists:
+            self.inputDists = None
         self.setInputDefaults( sd.get("inputDefaults", None) )
         self.setSelectedOutputs( sd.get("outputSelections", None) )
         self.setNamesIncludeNodes( sd.get("namesIncludeNodes", None) )

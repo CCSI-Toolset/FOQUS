@@ -1154,6 +1154,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         newdata = LocalExecutionModule.readSampleFromPsuadeFile(outfile)
         newdata.setModelName(data.getModelName().split('.')[0] + '.filtered')
         newdata.setSession(self.dat)
+        newdata.setFromFile(False)
+        newdata.setRunType(data.getRunType())
 
         # add to simulation table, select new data
         self.dat.uqSimList.append(newdata)  
@@ -1413,21 +1415,21 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         for i in xrange(1,nSamples+1):
             item = self.delete_table.item(i, 0)
             if (item is not None) and item.checkState() == Qt.Checked:
-                samples.append(i)
+                samples.append(i - 1)
         for i in xrange(1,nVars+1):
             item = self.delete_table.item(0, i)
             if (item is not None) and item.checkState() == Qt.Checked:
-                vars.append(i)
+                vars.append(i - 1)
 
         # partition selections into inputs and outputs
         inVars = []
         outVars = []
         if vars:
             vars = numpy.array(vars)
-            k = numpy.where(vars <= nInputs)
+            k = numpy.where(vars < nInputs)
             inVars = vars[k]
             inVars = inVars.tolist()
-            k = numpy.where(vars > nInputs)
+            k = numpy.where(vars >= nInputs)
             outVars = vars[k]
             outVars = outVars.tolist()
             outVars = [x-nInputs for x in outVars]
@@ -1452,7 +1454,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         
     def delete(self):
 
-       # check arguments
+        # check arguments
         if not self.activateDeleteButton(0, 0):
             return
 
@@ -1468,14 +1470,24 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # perform deletion
         samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
-        outfile = DataProcessor.delete(fname, nInputs, nOutputs, nSamples, inVars, outVars, samples)
+        if samples:
+            samplesToKeep = [i for i in xrange(nSamples) if i not in samples]
+            newdata = data.getSubSample(samplesToKeep)
+        else:
+            newdata = copy.deepcopy(data)
+        if inVars:
+            newdata.deleteInputs(inVars)
+        if outVars:
+            newdata.deleteOutputs(outVars)
 
-        newdata = LocalExecutionModule.readSampleFromPsuadeFile(outfile)
+        # outfile = DataProcessor.delete(fname, nInputs, nOutputs, nSamples, inVars, outVars, samples)
+        #
+        # newdata = LocalExecutionModule.readSampleFromPsuadeFile(outfile)
         newdata.setModelName(data.getModelName().split('.')[0] + '.deleted')
         newdata.setSession(self.dat)
 
         # add to simulation table, select new data
-        self.dat.uqSimList.append(newdata)  
+        self.dat.uqSimList.append(newdata)
         self.updateSimTable()
 
         self.delete_table.resizeColumnsToContents()

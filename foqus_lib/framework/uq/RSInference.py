@@ -686,6 +686,8 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         plotvars = {'hist':'D','heatmap':'NC'}
         xdat,ydat,zdat,xlabel,ylabel,xlim,ylim,zlim,sb_indices,loglik = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
         ptitle = 'Input POSTERIOR Probabilities'
+        if (loglik != None):
+           ptitle = ptitle + ' (loglikelihood=' + str(loglik) + ')' 
         ftitle = 'Input Distribution Plots *after* Bayesian Inference'
         Plotter.plotinf(xdat,ydat,zdat,ftitle,ptitle,xlabel,ylabel,sb_indices,xlim,ylim,zlim,lastplot=True)
 

@@ -252,24 +252,6 @@ class surrogateMethod(surrogate):
             desc="Cosine functions are considered as basis functions if "
                 "true; otherwise, they are not considered.")
         self.options.add(
-            name="RBF",
-            section="Model Settings",            
-            default=False,
-            dtype=bool,
-            desc="Radial basis functions centered around the data set "
-                "provided by the user.",
-            hint="These functions are Gaussian and are deactivated if "
-                "their textual representation requires more than 128 "
-                "characters (in the case of too many input variables "
-                "and/or datapoints).")
-        self.options.add(
-            name="RBFPARAM",
-            section="Model Settings",
-            default=1.0,
-            dtype=float,
-            desc="Multiplicative constant used in the Gaussian radial "
-                "basis functions.")
-        self.options.add(
             name="CUSTOMBAS",
             section="Model Settings",
             default = [],
@@ -637,9 +619,7 @@ class surrogateMethod(surrogate):
         logfcns = int(self.options['LOGFCNS'].value)
         sinfcns = int(self.options['SINFCNS'].value)
         cosfcns = int(self.options['COSFCNS'].value)
-        rbf = int(self.options['RBF'].value)
         custombas = map(str, self.options['CUSTOMBAS'].value)
-        rbfparam = self.options['RBFPARAM'].value
         convpen = self.options['CONVPEN'].value
         regularizer = int(self.options['REGULARIZER'].value)
         mipoptca = self.options['MIPOPTCA'].value
@@ -789,8 +769,6 @@ class surrogateMethod(surrogate):
             af.write("logfcns {0}\n".format(logfcns))
             af.write("sinfcns {0}\n".format(sinfcns))
             af.write("cosfcns {0}\n".format(cosfcns)) 
-            af.write("rbf {0}\n".format(rbf))
-            af.write("rbfparam {0}\n".format(rbfparam))
             #Custom basis functions
             if len(custombas) > 0:
                 af.write("ncustombas {0}\n".format(len(custombas)))

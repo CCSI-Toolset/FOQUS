@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>995</width>
+    <width>1003</width>
     <height>835</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
   <property name="frameShadow">
    <enum>QFrame::Raised</enum>
   </property>
-  <layout class="QGridLayout" name="gridLayout_9">
+  <layout class="QGridLayout" name="gridLayout_13">
    <item row="0" column="0">
     <widget class="QGroupBox" name="groupBox_6">
      <property name="title">
@@ -107,9 +107,15 @@ and the model is specified as a “driver” within.</string>
      <property name="title">
       <string>Variables</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_13">
+     <layout class="QGridLayout" name="gridLayout_9">
       <item row="0" column="0">
        <widget class="InputPriorTable" name="input_table">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>150</height>
+         </size>
+        </property>
         <property name="toolTip">
          <string>Designate input type:
 Fixed for deterministic inputs
@@ -171,8 +177,8 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
        </widget>
       </item>
       <item row="1" column="0">
-       <layout class="QGridLayout" name="gridLayout_11">
-        <item row="0" column="1">
+       <layout class="QGridLayout" name="gridLayout_7">
+        <item row="0" column="0">
          <widget class="QLabel" name="label">
           <property name="font">
            <font>
@@ -185,92 +191,62 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="2">
+        <item row="0" column="1">
          <widget class="QPushButton" name="setFixed_button">
           <property name="text">
            <string>Fixed Vars</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
-         <widget class="QPushButton" name="setX1_button">
-          <property name="text">
-           <string>Primary Opt Vars (Z1)</string>
-          </property>
-         </widget>
+        <item row="0" column="2">
+         <layout class="QHBoxLayout" name="horizontalLayout_8">
+          <item>
+           <widget class="QGroupBox" name="groupBox">
+            <property name="title">
+             <string>Primary Opt Vars</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_11">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="setX1_button">
+               <property name="text">
+                <string>Continuous (Z1)</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="setX1d_button">
+               <property name="text">
+                <string>Discrete (Z1d)</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </item>
-        <item row="0" column="4">
+        <item row="0" column="3">
          <widget class="QPushButton" name="setX2_button">
           <property name="text">
            <string>Recourse Opt Vars (Z2) </string>
           </property>
          </widget>
         </item>
-        <item row="0" column="5">
+        <item row="0" column="4">
          <widget class="QPushButton" name="setX3_button">
           <property name="text">
            <string>Discrete RVs (Z3)</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="6">
+        <item row="0" column="5">
          <widget class="QPushButton" name="setX4_button">
           <property name="text">
            <string>Continuous RVs (Z4)</string>
           </property>
          </widget>
         </item>
-        <item row="1" column="2">
-         <widget class="QLabel" name="fixedCount_static">
-          <property name="text">
-           <string> 0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="3">
-         <widget class="QLabel" name="x1Count_static">
-          <property name="text">
-           <string> 0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="4">
-         <widget class="QLabel" name="x2Count_static">
-          <property name="text">
-           <string>0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="5">
-         <widget class="QLabel" name="x3Count_static">
-          <property name="text">
-           <string>0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="6">
-         <widget class="QLabel" name="x4Count_static">
-          <property name="text">
-           <string>0</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="1">
+        <item row="1" column="0">
          <widget class="QLabel" name="label_2">
           <property name="font">
            <font>
@@ -283,31 +259,55 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="0">
-         <spacer name="horizontalSpacer_10">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="1" column="1">
+         <widget class="QLabel" name="fixedCount_static">
+          <property name="text">
+           <string> 0</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
-         </spacer>
+         </widget>
         </item>
-        <item row="0" column="7">
-         <spacer name="horizontalSpacer_11">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
+        <item row="1" column="2">
+         <widget class="QLabel" name="x1Count_static">
+          <property name="text">
+           <string> 0</string>
           </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>40</width>
-            <height>20</height>
-           </size>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
-         </spacer>
+         </widget>
+        </item>
+        <item row="1" column="3">
+         <widget class="QLabel" name="x2Count_static">
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="4">
+         <widget class="QLabel" name="x3Count_static">
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="5">
+         <widget class="QLabel" name="x4Count_static">
+          <property name="text">
+           <string>0</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -319,7 +319,7 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabs">
      <property name="currentIndex">
-      <number>1</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -352,12 +352,12 @@ As an optimizer, the model itself will compute the optimal values.</string>
               </property>
               <item>
                <property name="text">
-                <string>Use model as simulator: G(Z1,Z2,Z3,Z4)</string>
+                <string>Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)</string>
                </property>
               </item>
               <item>
                <property name="text">
-                <string>Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)</string>
+                <string>Use model as simulator: G(Z1,Z2,Z3,Z4)</string>
                </property>
               </item>
              </widget>
@@ -382,6 +382,11 @@ for the primary optimization inputs (Z1).</string>
               <item>
                <property name="text">
                 <string>BOBYQA</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>NEWUOA</string>
                </property>
               </item>
              </widget>
@@ -450,7 +455,14 @@ for the primary optimization inputs (Z1).</string>
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="output_combo"/>
+             <widget class="QComboBox" name="output_combo">
+              <property name="minimumSize">
+               <size>
+                <width>125</width>
+                <height>0</height>
+               </size>
+              </property>
+             </widget>
             </item>
            </layout>
           </item>
@@ -593,7 +605,28 @@ Choose the one that fits your analysis.</string>
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="tab">
+     <widget class="QWidget" name="tab_4">
+      <attribute name="title">
+       <string>Outputs</string>
+      </attribute>
+      <layout class="QGridLayout" name="gridLayout_14">
+       <item row="0" column="0">
+        <widget class="QTableWidget" name="outputs_table">
+         <column>
+          <property name="text">
+           <string>Name</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Type</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="uqTab">
       <attribute name="title">
        <string>UQ Setup</string>
       </attribute>
@@ -939,8 +972,8 @@ Progress will be shown below. </string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>410</width>
-               <height>364</height>
+               <width>414</width>
+               <height>341</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_16"/>

@@ -34,13 +34,14 @@ class RSCombo1(QComboBox):
         
         rs = ['Polynomial ->', 'MARS ->']
         #rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.SVM))
+        rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.GP))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.KRIGING))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.SOT))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.KNN))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.RBF))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.USER))
         #poly, mars, svm, krig, sot, knn, rbf, user = range(0, len(rs))
-        poly, mars, krig, sot, knn, rbf, user = range(0, len(rs))
+        poly, mars, gp, krig, sot, knn, rbf, user = range(0, len(rs))
         # ... disable polynomial RS if not sufficient samples for linear regression
         disable = []
         items = [None]*len(rs)
@@ -103,7 +104,7 @@ class RSCombo1(QComboBox):
             combo2.showNothing()
         else:            
             # enableSet = set([poly, mars, svm, krig, sot, knn, rbf, user]) - set(disable)
-            enableSet = set([poly, mars, krig, sot, knn, rbf, user]) - set(disable)
+            enableSet = set([poly, mars, gp, krig, sot, knn, rbf, user]) - set(disable)
             enableFirstItem = min(enableSet)
             showMarsWidgets = False
             # populate combo2 as needed
@@ -314,6 +315,7 @@ def lookupRS(combo1, combo2):
 
     otherRS = []
     #otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.SVM))
+    otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.GP))
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.KRIGING))
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.SOT))
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.KNN))

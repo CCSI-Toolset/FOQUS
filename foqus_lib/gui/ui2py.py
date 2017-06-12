@@ -19,6 +19,7 @@ ofiles = {
     "modelSetupFrame_UI": "model",
     "edgePanel_UI": "flowsheet",
     "nodePanel_UI": "flowsheet",
+    "runRowsDialog_UI": "flowsheet",
     "optMonitor_UI": "optimization",
     "optSetupFrame_UI": "optimization",
     "optMessageWindow_UI": "optimization",

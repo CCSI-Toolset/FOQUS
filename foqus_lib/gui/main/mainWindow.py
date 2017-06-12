@@ -162,6 +162,7 @@ class mainWindow(QtGui.QMainWindow):
         self.resize(w,h)
         self.setWindowTitle(title)
         self.dat = dat # This is a session object
+        self.dat.mainWin = self
         self.splash = splash
         self.showOuu = showOuu
         self.showDRM = showDRM
@@ -633,6 +634,13 @@ class mainWindow(QtGui.QMainWindow):
             Make the menu for the session
         '''
         self.mainMenu = QtGui.QMenu(self)
+        # Upload FOQUS session to turbine
+        self.addFoqusTurbineAction = QtGui.QAction(
+            QtGui.QIcon(self.iconPaths['add']),
+            'Add Current FOQUS Session to Turbine...',
+            self)
+        self.addFoqusTurbineAction.triggered.connect(self.uploadSession)
+        self.mainMenu.addAction(self.addFoqusTurbineAction)
         # Add/update model in Turbine Action
         self.addTurbineModelAction = QtGui.QAction(
             QtGui.QIcon(self.iconPaths['add']),
@@ -1899,10 +1907,26 @@ class mainWindow(QtGui.QMainWindow):
             to stop optimization or UQ they have their own ways
         '''
         if self.runningSingle:
-            self.singleRun.terminate()
+            if self.singleRun is not None:
+                self.singleRun.terminate()
+            elif self.multiRun is not None:
+                self.multiRun.terminate()
             self.stopSim()
 
-    def runSim(self, node=None):
+    def uploadSession(self):
+        """
+        Uploading FOQUS session to current Turbine
+        """
+        self.dat.flowsheet.uploadFlowseetToTurbine(
+            self.dat.name,
+            dat=self.dat,
+            reset=False)
+        msgBox = QtGui.QMessageBox()
+        msgBox.setWindowTitle("Success")
+        msgBox.setText("The current FOQUS session has been uploaded to Turbine")
+        msgBox.exec_()
+
+    def runSim(self, node=None, valList=None, rows=None):
         '''
             Start simulation in a separate thread and setup a timer
             to monitor it.  If node is set to a node name only a single
@@ -1915,28 +1939,37 @@ class mainWindow(QtGui.QMainWindow):
             self.dat.flowsheet.onlySingleNode = node
             self.setStatus(
                 "Running Single Node ({0}) Simulation...".format(node))
+        elif valList is not None:
+            self.dat.flowsheet.onlySingleNode = None
+            self.setStatus("Running Flowsheet Set...")
         else:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Single Flowsheet Simulation...")
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
             # run in FOQUS
-            self.singleRun = self.dat.flowsheet.runAsThread()
+            if valList is not None:
+                self.multiRun = self.dat.flowsheet.runListAsThread(
+                    valList)
+                self.singleRun = None
+            else:
+                self.singleRun = self.dat.flowsheet.runAsThread()
+                self.multiRun=None
         elif self.dat.foqusSettings.runFlowsheetMethod == 1:
             # Submit to Turbine <-> FOQUS consumer
             # first save a session file (need to upload to turbine)
-            fname = "tmp_to_turbine_single"
-            self.dat.save(
-                filename = fname,
-                updateCurrentFile = False,
-                changeLogMsg = "Save for turbine submission",
-                indent = 0,
-                keepData = False)
             self.dat.flowsheet.uploadFlowseetToTurbine(
                 self.dat.name,
-                fname,
+                dat=self.dat,
                 reset=False)
-            self.singleRun = self.dat.flowsheet.runAsThread(
-                useTurbine=True)
+            if valList is not None:
+                self.multiRun = self.dat.flowsheet.runListAsThread(
+                    valList,
+                    useTurbine=True)
+                self.singleRun = None
+            else:
+                self.singleRun = self.dat.flowsheet.runAsThread(
+                    useTurbine=True)
+                self.multiRun = None
         self.refreshFlowsheet()
         self.stopAction.setEnabled(True)
         self.runAction.setEnabled(False)
@@ -1944,6 +1977,12 @@ class mainWindow(QtGui.QMainWindow):
         self.nodeDock.stopButton.setEnabled(True)
         self.runningSingle = True
         self.startTime = time.time()
+        self.replaceRows = rows
+        self.multiRunDone = {}
+        if rows is not None:
+            for row in rows: self.multiRunDone[row] = False
+        self.multiSuccess = 0
+        self.multiError = 0
         delay = 500 # time in ms between checking simulation status
         self.timer = QtCore.QTimer(self)
         self.connect(
@@ -1958,12 +1997,37 @@ class mainWindow(QtGui.QMainWindow):
             stopSim to read results and finish up. Also update
             the status bar with the elapsed time.
         '''
-        if not self.singleRun.is_alive():
-            self.stopSim()
-        else:
+        if self.singleRun is not None:
+            if not self.singleRun.is_alive():
+                self.stopSim()
+            else:
+                self.setStatus(
+                    "Running Single Simulation... Elapsed Time: {0}".format(
+                        hhmmss(int(time.time() - self.startTime))))
+        elif self.multiRun is not None:
+            gt = self.multiRun
+            res = self.dat.flowsheet.results
+            # Monitor in here to show progress
+            goagain = gt.is_alive() #still running, keep waiting
+            #see what's done
+            with gt.resLock:
+                for i, row in enumerate(self.replaceRows):
+                    if self.multiRunDone[row]: continue
+                    if gt.res_fin[i] != -1:
+                        #A run new finished read results
+                        self.multiRunDone[row] = True
+                        r =  res.rlist[row]
+                        res.rlist[row] = res.addFromSavedValues(
+                            setName = r[res.headMap['SetName']],
+                            name = r[res.headMap['ResultName']],
+                            tags = r[res.headMap['Tags']],
+                            valDict=gt.res[i], append=False)
+                        if gt.res_fin[i] == 0: self.multiSuccess += 1
+                        else: self.multiError += 1
             self.setStatus(
-                "Running Single Simulation... Elapsed Time: {0}".format(
-                    hhmmss(int(time.time() - self.startTime))))
+                "Running Simulation Set... Success: {0}/{1} Error: {2}/{1} Elapsed Time: {3}".format(
+                    self.multiSuccess, len(gt.res), self.multiError, hhmmss(int(time.time() - self.startTime))))
+            if not goagain: self.stopSim()
 
     def stopSim(self):
         '''
@@ -1980,59 +2044,69 @@ class mainWindow(QtGui.QMainWindow):
         self.stopAction.setEnabled(False)
         # Next will wait for the single run thread to close down all the
         # way and save the results.  This may delay stopping a bit
-        self.singleRun.join()
-        self.runAction.setEnabled(True)
-        self.nodeDock.runButton.setEnabled(True)
-        self.nodeDock.stopButton.setEnabled(False)
-        if self.singleRun.res[0]:
-            self.dat.flowsheet.loadValues(self.singleRun.res[0])
-            self.dat.flowsheet.results.headersFromGraph()
-            self.dat.flowsheet.results.addFromSavedValues(
-                'Single_runs',
-                'single_{0}'.format(self.dat.flowsheet.singleCount),
-                None,
-                self.singleRun.res[0])
-        else:
-            self.dat.flowsheet.setErrorCode(20)
-            logging.getLogger("foqus." + __name__).error(
-                "to results graph thread was likely terminated")
-        self.refresh()
-        if not self.dataBrowserDialog.isHidden():
-            self.dataBrowserDialog.dataFrame.refreshContents()
-        err = self.dat.flowsheet.errorStat
-        errText = self.dat.flowsheet.errorLookup(err)
-        self.runningSingle = False
-        self.dat.flowsheet.onlySingleNode = None
-        if err == 0:
-            QtGui.QMessageBox.information(
-                self,
-                "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)),
-                "The simulation completed successfully.")
+        if self.multiRun is not None:
+            gt = self.multiRun
+            gt.join(10)
+            self.runAction.setEnabled(True)
+            self.nodeDock.runButton.setEnabled(True)
+            self.nodeDock.stopButton.setEnabled(False)
             self.setStatus(
-                "Finished Single Simulation... Success in " +
-                hhmmss(int(self.dat.flowsheet.solTime)))
-        elif err == 100:
-            QtGui.QMessageBox.information(
-                self,
-                "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                "The single node simulation completed successfully.")
-            self.setStatus(
-                "Finished Single Node Simulation... Success in " +
-                hhmmss(int(self.dat.flowsheet.solTime)))
-        else:
-            QtGui.QMessageBox.critical(
-                self,
-                "Error in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                "The simulation completed with an error " +
+                "Stopped Simulation Set... Success: {0}/{1} Error: {2}/{1} Elapsed Time: {3}".format(
+                    self.multiSuccess, len(gt.res), self.multiError, hhmmss(int(time.time() - self.startTime))))
+        elif self.singleRun is not None:
+            self.singleRun.join(10)
+            self.runAction.setEnabled(True)
+            self.nodeDock.runButton.setEnabled(True)
+            self.nodeDock.stopButton.setEnabled(False)
+            if self.singleRun.res[0]:
+                self.dat.flowsheet.loadValues(self.singleRun.res[0])
+                self.dat.flowsheet.results.headersFromGraph()
+                self.dat.flowsheet.results.addFromSavedValues(
+                    'Single_runs',
+                    'single_{0}'.format(self.dat.flowsheet.singleCount),
+                    None,
+                    self.singleRun.res[0])
+            else:
+                self.dat.flowsheet.setErrorCode(20)
+                logging.getLogger("foqus." + __name__).error(
+                    "to results graph thread was likely terminated")
+            self.refresh()
+            if not self.dataBrowserDialog.isHidden():
+                self.dataBrowserDialog.dataFrame.refreshContents()
+            err = self.dat.flowsheet.errorStat
+            errText = self.dat.flowsheet.errorLookup(err)
+            self.runningSingle = False
+            self.dat.flowsheet.onlySingleNode = None
+            if err == 0:
+                QtGui.QMessageBox.information(
+                    self,
+                    "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)),
+                    "The simulation completed successfully.")
+                self.setStatus(
+                    "Finished Single Simulation... Success in " +
+                    hhmmss(int(self.dat.flowsheet.solTime)))
+            elif err == 100:
+                QtGui.QMessageBox.information(
+                    self,
+                    "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
+                    "The single node simulation completed successfully.")
+                self.setStatus(
+                    "Finished Single Node Simulation... Success in " +
+                    hhmmss(int(self.dat.flowsheet.solTime)))
+            else:
+                QtGui.QMessageBox.critical(
+                    self,
+                    "Error in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
+                    "The simulation completed with an error " +
+                        str(err) +
+                        ", " +
+                        errText)
+                self.setStatus(
+                    "Error Single Simulation in " +
+                    hhmmss(int(self.dat.flowsheet.solTime)) + " ... " +
                     str(err) +
                     ", " +
                     errText)
-            self.setStatus(
-                "Error Single Simulation in " +
-                hhmmss(int(self.dat.flowsheet.solTime)) + " ... " +
-                str(err) +
-                ", " +
-                errText)
 
     def loadDefaultInput(self):
         '''

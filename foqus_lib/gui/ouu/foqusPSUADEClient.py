@@ -82,8 +82,9 @@ def getInputData(inFileName):
 def genOutputFile(outFileName, outData):
     nLeng = len(outData)
     outfile = open(outFileName, 'w')
-    for ind in xrange(nLeng):
-        outfile.write("%e\n" % outData[ind][0])
+    for row in outData:
+        outfile.write(' '.join([str(dat) for dat in row]))
+        outfile.write('\n')
     outfile.close()
     return None
 

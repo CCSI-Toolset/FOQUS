@@ -1,0 +1,91 @@
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'noise_dlg.ui'
+#
+# Created: Tue May 26 15:02:39 2015
+#      by: pyside-uic 0.2.15 running on PySide 1.2.2
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_noiseDlg(object):
+    def setupUi(self, noiseDlg):
+        noiseDlg.setObjectName("noiseDlg")
+        noiseDlg.resize(378, 449)
+        self.gridLayout_3 = QtGui.QGridLayout(noiseDlg)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.groupBox_ProcessNoise = QtGui.QGroupBox(noiseDlg)
+        self.groupBox_ProcessNoise.setObjectName("groupBox_ProcessNoise")
+        self.gridLayout = QtGui.QGridLayout(self.groupBox_ProcessNoise)
+        self.gridLayout.setObjectName("gridLayout")
+        self.formLayout = QtGui.QFormLayout()
+        self.formLayout.setObjectName("formLayout")
+        self.label_StdState = QtGui.QLabel(self.groupBox_ProcessNoise)
+        self.label_StdState.setObjectName("label_StdState")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_StdState)
+        self.lineEdit_StdState = QtGui.QLineEdit(self.groupBox_ProcessNoise)
+        self.lineEdit_StdState.setObjectName("lineEdit_StdState")
+        self.formLayout.setWidget(0, QtGui.QFormLayout.FieldRole, self.lineEdit_StdState)
+        self.gridLayout.addLayout(self.formLayout, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.groupBox_ProcessNoise, 0, 0, 1, 1)
+        self.groupBox_OutputNoise = QtGui.QGroupBox(noiseDlg)
+        self.groupBox_OutputNoise.setObjectName("groupBox_OutputNoise")
+        self.gridLayout_2 = QtGui.QGridLayout(self.groupBox_OutputNoise)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.verticalLayout = QtGui.QVBoxLayout()
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label_OutputVariableList = QtGui.QLabel(self.groupBox_OutputNoise)
+        self.label_OutputVariableList.setObjectName("label_OutputVariableList")
+        self.verticalLayout.addWidget(self.label_OutputVariableList)
+        self.listWidget_Output = QtGui.QListWidget(self.groupBox_OutputNoise)
+        self.listWidget_Output.setObjectName("listWidget_Output")
+        self.verticalLayout.addWidget(self.listWidget_Output)
+        self.formLayout_2 = QtGui.QFormLayout()
+        self.formLayout_2.setObjectName("formLayout_2")
+        self.label_StdOutput = QtGui.QLabel(self.groupBox_OutputNoise)
+        self.label_StdOutput.setObjectName("label_StdOutput")
+        self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_StdOutput)
+        self.lineEdit_StdOutput = QtGui.QLineEdit(self.groupBox_OutputNoise)
+        self.lineEdit_StdOutput.setObjectName("lineEdit_StdOutput")
+        self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.lineEdit_StdOutput)
+        self.label_NumberOfOutputs = QtGui.QLabel(self.groupBox_OutputNoise)
+        self.label_NumberOfOutputs.setObjectName("label_NumberOfOutputs")
+        self.formLayout_2.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_NumberOfOutputs)
+        self.lineEdit_NumberOfOutputs = QtGui.QLineEdit(self.groupBox_OutputNoise)
+        self.lineEdit_NumberOfOutputs.setEnabled(False)
+        self.lineEdit_NumberOfOutputs.setObjectName("lineEdit_NumberOfOutputs")
+        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.lineEdit_NumberOfOutputs)
+        self.verticalLayout.addLayout(self.formLayout_2)
+        self.gridLayout_2.addLayout(self.verticalLayout, 0, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.groupBox_OutputNoise, 1, 0, 1, 1)
+        self.horizontalLayout = QtGui.QHBoxLayout()
+        self.horizontalLayout.setObjectName("horizontalLayout")
+        self.pushButton_Cancel = QtGui.QPushButton(noiseDlg)
+        self.pushButton_Cancel.setAutoDefault(False)
+        self.pushButton_Cancel.setObjectName("pushButton_Cancel")
+        self.horizontalLayout.addWidget(self.pushButton_Cancel)
+        self.pushButton_OK = QtGui.QPushButton(noiseDlg)
+        self.pushButton_OK.setAutoDefault(False)
+        self.pushButton_OK.setObjectName("pushButton_OK")
+        self.horizontalLayout.addWidget(self.pushButton_OK)
+        self.gridLayout_3.addLayout(self.horizontalLayout, 2, 0, 1, 1)
+
+        self.retranslateUi(noiseDlg)
+        QtCore.QMetaObject.connectSlotsByName(noiseDlg)
+        noiseDlg.setTabOrder(self.lineEdit_StdState, self.listWidget_Output)
+        noiseDlg.setTabOrder(self.listWidget_Output, self.lineEdit_StdOutput)
+        noiseDlg.setTabOrder(self.lineEdit_StdOutput, self.lineEdit_NumberOfOutputs)
+        noiseDlg.setTabOrder(self.lineEdit_NumberOfOutputs, self.pushButton_OK)
+
+    def retranslateUi(self, noiseDlg):
+        noiseDlg.setWindowTitle(QtGui.QApplication.translate("noiseDlg", "Noise Specification Dialog", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_ProcessNoise.setTitle(QtGui.QApplication.translate("noiseDlg", "Process Noise for All State Variables", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_StdState.setText(QtGui.QApplication.translate("noiseDlg", "Fraction of Standard Deviation", None, QtGui.QApplication.UnicodeUTF8))
+        self.groupBox_OutputNoise.setTitle(QtGui.QApplication.translate("noiseDlg", "Measurement Noise for Individual Output Variables", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_OutputVariableList.setText(QtGui.QApplication.translate("noiseDlg", "Output Variable List", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_StdOutput.setText(QtGui.QApplication.translate("noiseDlg", "Fraction of Standard Deviation", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_NumberOfOutputs.setText(QtGui.QApplication.translate("noiseDlg", "Number of Output Variables", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_Cancel.setText(QtGui.QApplication.translate("noiseDlg", "Cancel", None, QtGui.QApplication.UnicodeUTF8))
+        self.pushButton_OK.setText(QtGui.QApplication.translate("noiseDlg", "OK", None, QtGui.QApplication.UnicodeUTF8))
+

@@ -1,0 +1,174 @@
+{
+  "title": "OUU Toy 2",
+  "description": "This is a test problem for OUU.  It's a simple problem for testing and development.  ACM implimentation of toy problem provided by Alex Dowling.",
+  "aspenfile": "ouu_toy2.acmf",
+  "author": "John Eslick",
+  "date": "2/5/2015",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "settings": {
+    "homotopy": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: homotopy"
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    },
+    "RunMode": {
+      "type": "string",
+      "default": "Steady Optimization",
+      "description": "Simulation specific setting: RunMode"
+    }
+  },
+  "inputs": {
+    "B2.alpha": {
+      "path": [
+        "B2.alpha"
+      ],
+      "type": "double",
+      "default": 5.0,
+      "description": "Problem Behavior Parameter",
+      "units": ""
+    },
+    "B2.beta": {
+      "path": [
+        "B2.beta"
+      ],
+      "type": "double",
+      "default": 5.0,
+      "description": "Problem Behavior Parameter",
+      "units": ""
+    },
+    "B2.delta": {
+      "path": [
+        "B2.delta"
+      ],
+      "type": "double",
+      "default": 5.0,
+      "description": "Problem Behavior Parameter",
+      "units": ""
+    },
+    "B2.omega1": {
+      "path": [
+        "B2.omega1"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Uncertain Parameter",
+      "units": ""
+    },
+    "B2.omega2": {
+      "path": [
+        "B2.omega2"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Uncertain Parameter",
+      "units": ""
+    },
+    "B2.omega3": {
+      "path": [
+        "B2.omega3"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Uncertain Parameter",
+      "units": ""
+    },
+    "B2.omega4": {
+      "path": [
+        "B2.omega4"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Uncertain Parameter",
+      "units": ""
+    },
+    "B2.d1": {
+      "path": [
+        "B2.d1"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Design Variable",
+      "units": ""
+    },
+    "B2.d2": {
+      "path": [
+        "B2.d2"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Design Variable",
+      "units": ""
+    },
+    "B2.d3": {
+      "path": [
+        "B2.d3"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Design Variable",
+      "units": ""
+    },
+    "B2.d4": {
+      "path": [
+        "B2.d4"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Design Variable",
+      "units": ""
+    }
+  },
+  "outputs": {
+    "B2.x1": {
+      "path": [
+        "B2.x1"
+      ],
+      "type": "double",
+      "default": -1.0000000000000171,
+      "description": "Operating Variable",
+      "units": ""
+    },
+    "B2.x2": {
+      "path": [
+        "B2.x2"
+      ],
+      "type": "double",
+      "default": -2.4999999999999991,
+      "description": "Operating Variable",
+      "units": ""
+    },
+    "B2.x3": {
+      "path": [
+        "B2.x3"
+      ],
+      "type": "double",
+      "default": -3.2499999999999978,
+      "description": "Operating Variable",
+      "units": ""
+    },
+    "B2.x4": {
+      "path": [
+        "B2.x4"
+      ],
+      "type": "double",
+      "default": 4.8749999999999973,
+      "description": "Operating Variable",
+      "units": ""
+    },
+    "B2.z": {
+      "path": [
+        "B2.z"
+      ],
+      "type": "double",
+      "default": 2.8570508075688772,
+      "description": "Objective",
+      "units": ""
+    }
+  }
+}

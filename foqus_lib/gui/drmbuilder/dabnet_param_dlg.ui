@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>dabnetParamDlg</class>
+ <widget class="QDialog" name="dabnetParamDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>854</width>
+    <height>508</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>DABNet DRM Parameter Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_5">
+   <item row="0" column="2">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QGroupBox" name="groupBox_MethodForLaguerre">
+       <property name="title">
+        <string>Training Method For Laguerre Model Neural Network</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="0">
+         <layout class="QFormLayout" name="formLayout_5">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_LaguerreMaxIterations">
+            <property name="text">
+             <string>Maximum Number of Training Iterations</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_LaguerreMaxIterations"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QRadioButton" name="radioButton_LaguerreBP">
+            <property name="text">
+             <string>Back Progagation</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_LaguerreIPOPT">
+            <property name="text">
+             <string>IPOPT</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>18</width>
+         <height>18</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_MethodForBalanced">
+       <property name="title">
+        <string>Training Method for Balanced Model Neural Network</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QRadioButton" name="radioButton_BalancedBP">
+            <property name="text">
+             <string>Back Progagation</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QRadioButton" name="radioButton_BalancedIPOPT">
+            <property name="text">
+             <string>IPOPT</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QFormLayout" name="formLayout_4">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_BalancedMaxIterations">
+            <property name="text">
+             <string>Maximum Number of Training Iterations</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_BalancedMaxIterations"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>17</width>
+         <height>17</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <layout class="QFormLayout" name="formLayout_6">
+       <item row="0" column="0">
+        <widget class="QLabel" name="label_InitialWeight">
+         <property name="text">
+          <string>Initial Weight of ANN Connections</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="lineEdit_InitialWeight"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_ResetToDefault">
+       <property name="text">
+        <string>Reset to Default Options and Parameters</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <item>
+        <widget class="QPushButton" name="pushButton_Cancel">
+         <property name="text">
+          <string>Cancel</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_OK">
+         <property name="text">
+          <string>OK</string>
+         </property>
+         <property name="autoDefault">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="0">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QLabel" name="label_OutputList">
+           <property name="text">
+            <string>Output Variable List</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidget_OutputList"/>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QLabel" name="label_InputList">
+           <property name="text">
+            <string>Input Variable List</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QListWidget" name="listWidget_InputList"/>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_ForEachOutput">
+       <property name="title">
+        <string>For Each Output Variable</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout">
+        <item row="2" column="0">
+         <layout class="QGridLayout" name="gridLayout_6">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="radioButton_UseSpecifiedPoleValue">
+            <property name="text">
+             <string>Use Specified Pole(s)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="radioButton_OptimizeBothPoles">
+            <property name="text">
+             <string>Optimize Both Poles</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QRadioButton" name="radioButton_OptimizeFastPole">
+            <property name="text">
+             <string>Optimize Fast Pole</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QRadioButton" name="radioButton_OptimizeSlowPole">
+            <property name="text">
+             <string>Optimize Slow Pole</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item row="1" column="0">
+         <layout class="QFormLayout" name="formLayout">
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_NumberOfNeurons">
+            <property name="text">
+             <string>Number of Neurons in Hidden Layer</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_NumberOfNeurons"/>
+          </item>
+         </layout>
+        </item>
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="checkBox_LinearModel">
+          <property name="text">
+           <string>Linear Model</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
+      <widget class="QGroupBox" name="groupBox_ForEachInput">
+       <property name="title">
+        <string>For Each Input/Output Variable Pair</string>
+       </property>
+       <layout class="QGridLayout" name="gridLayout_2">
+        <item row="0" column="0">
+         <widget class="QCheckBox" name="checkBox_Use2Poles">
+          <property name="text">
+           <string>Use Two Poles (Fast and Slow)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <layout class="QFormLayout" name="formLayout_3">
+          <property name="fieldGrowthPolicy">
+           <enum>QFormLayout::AllNonFixedFieldsGrow</enum>
+          </property>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_NumberOfLaguerreStates">
+            <property name="text">
+             <string>Number of Laguerre States (Fast)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QLineEdit" name="lineEdit_NumberOfLaguerreStates"/>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="label_EstimatedPoleValue">
+            <property name="text">
+             <string>Estimated Pole Value (Fast)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="1">
+           <widget class="QLineEdit" name="lineEdit_EstimatedPoleValue"/>
+          </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="label_NumberOfLaguerreStates2">
+            <property name="text">
+             <string>Number of Laguerre States (Slow)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="1">
+           <widget class="QLineEdit" name="lineEdit_NumberOfLaguerreStates2"/>
+          </item>
+          <item row="4" column="0">
+           <widget class="QLabel" name="label_EstimatedPoleValue2">
+            <property name="text">
+             <string>Estimated Pole Value (Slow)</string>
+            </property>
+           </widget>
+          </item>
+          <item row="4" column="1">
+           <widget class="QLineEdit" name="lineEdit_EstimatedPoleValue2"/>
+          </item>
+          <item row="0" column="0">
+           <widget class="QLabel" name="label_NumberOfDelays">
+            <property name="text">
+             <string>Delay as Number of Sampling Times</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QLineEdit" name="lineEdit_NumberOfDelays"/>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="0" column="1">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Minimum</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>listWidget_OutputList</tabstop>
+  <tabstop>listWidget_InputList</tabstop>
+  <tabstop>checkBox_LinearModel</tabstop>
+  <tabstop>lineEdit_NumberOfNeurons</tabstop>
+  <tabstop>radioButton_UseSpecifiedPoleValue</tabstop>
+  <tabstop>radioButton_OptimizeBothPoles</tabstop>
+  <tabstop>radioButton_OptimizeFastPole</tabstop>
+  <tabstop>radioButton_OptimizeSlowPole</tabstop>
+  <tabstop>checkBox_Use2Poles</tabstop>
+  <tabstop>lineEdit_NumberOfDelays</tabstop>
+  <tabstop>lineEdit_NumberOfLaguerreStates</tabstop>
+  <tabstop>lineEdit_EstimatedPoleValue</tabstop>
+  <tabstop>lineEdit_NumberOfLaguerreStates2</tabstop>
+  <tabstop>lineEdit_EstimatedPoleValue2</tabstop>
+  <tabstop>radioButton_LaguerreBP</tabstop>
+  <tabstop>radioButton_LaguerreIPOPT</tabstop>
+  <tabstop>lineEdit_LaguerreMaxIterations</tabstop>
+  <tabstop>radioButton_BalancedBP</tabstop>
+  <tabstop>radioButton_BalancedIPOPT</tabstop>
+  <tabstop>lineEdit_BalancedMaxIterations</tabstop>
+  <tabstop>lineEdit_InitialWeight</tabstop>
+  <tabstop>pushButton_ResetToDefault</tabstop>
+  <tabstop>pushButton_Cancel</tabstop>
+  <tabstop>pushButton_OK</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

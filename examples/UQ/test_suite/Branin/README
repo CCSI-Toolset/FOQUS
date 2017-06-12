@@ -1,0 +1,15 @@
+This directory contains the Branin function 
+
+N = 2
+
+3 global min at 
+(-pi,12.275), (pi,2.275), and (9.42478,2.475)
+
+=============================================
+load BraninSample.psuade,
+
+- do mars_sa
+- do visualization on ensemble data
+- response surface validation
+- response surface visualization
+

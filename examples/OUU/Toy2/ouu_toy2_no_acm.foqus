@@ -1,0 +1,5214 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "post_solve_nodes": [], 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": 0, 
+    "pre_solve_nodes": [], 
+    "no_solve_nodes": [], 
+    "tearTolType": "abs", 
+    "edges": [], 
+    "results": {
+      "_currentFilter": null, 
+      "results": [
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.007999897003173828, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T11:56:49"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.007999897003173828, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T11:57:08"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.007999897003173828, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T11:57:49"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.007999897003173828, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T11:59:36"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.006999969482421875, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T12:00:27"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.0, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:00:37"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.0, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:00:49"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.0, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T12:00:55"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.006999969482421875, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T12:01:40"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.0, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T12:08:49"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.007999897003173828, 
+          "nodeErrors": {
+            "Toy2": 21
+          }, 
+          "error": 1, 
+          "ctime": "2015-02-06T12:09:30"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.00800013542175293, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:10:31"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.006999969482421875, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:10:57"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.016000032424926758, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:11:07"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.0, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:11:33"
+        }, 
+        {
+          "inputs": {
+            "graph": {}, 
+            "Toy2": {
+              "d1": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d2": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d3": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "d4": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w1": {
+                "hist": [
+                  5.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w2": {
+                "hist": [
+                  5.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w3": {
+                "hist": [
+                  5.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "w4": {
+                "hist": [
+                  5.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "alpha": {
+                "hist": [
+                  5.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "beta": {
+                "hist": [
+                  1.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "delta": {
+                "hist": [
+                  0.0
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "graph": {}, 
+            "Toy2": {
+              "x1": {
+                "hist": [
+                  -4.999999224160549
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x2": {
+                "hist": [
+                  0.03692640725871216
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x3": {
+                "hist": [
+                  -5.000000176859522
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "x4": {
+                "hist": [
+                  0.960118178234858
+                ], 
+                "shape": [], 
+                "ts": 0
+              }, 
+              "z": {
+                "hist": [
+                  125.00000000000153
+                ], 
+                "shape": [], 
+                "ts": 0
+              }
+            }
+          }, 
+          "etime": 0.031000137329101562, 
+          "nodeErrors": {
+            "Toy2": 0
+          }, 
+          "error": 0, 
+          "ctime": "2015-02-06T12:19:43"
+        }
+      ], 
+      "filters": {
+        "all": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": null, 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }, 
+        "none": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": [], 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }
+      }
+    }, 
+    "tearTol": 0.001, 
+    "output": {
+      "graph": {}, 
+      "Toy2": {
+        "x1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            -4.999999224160549
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Operating Variable"
+        }, 
+        "x2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.03692640725871216
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Operating Variable"
+        }, 
+        "x3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            -5.000000176859522
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Operating Variable"
+        }, 
+        "x4": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.960118178234858
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Operating Variable"
+        }, 
+        "z": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            125.00000000000153
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Objective"
+        }
+      }
+    }, 
+    "input": {
+      "graph": {}, 
+      "Toy2": {
+        "d1": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -100.0, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100.0, 
+          "unit": "", 
+          "desc": "Design Variable"
+        }, 
+        "d2": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -100.0, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100.0, 
+          "unit": "", 
+          "desc": "Design Variable"
+        }, 
+        "d3": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -100.0, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100.0, 
+          "unit": "", 
+          "desc": "Design Variable"
+        }, 
+        "d4": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -100.0, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100.0, 
+          "unit": "", 
+          "desc": "Design Variable"
+        }, 
+        "w1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -10.0, 
+          "default": 5.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Uncertain Parameter"
+        }, 
+        "w2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -10.0, 
+          "default": 5.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Uncertain Parameter"
+        }, 
+        "w3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -10.0, 
+          "default": 5.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Uncertain Parameter"
+        }, 
+        "w4": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -10.0, 
+          "default": 5.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Uncertain Parameter"
+        }, 
+        "alpha": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 5.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Problem Behavior Parameter"
+        }, 
+        "beta": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Problem Behavior Parameter"
+        }, 
+        "delta": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 10.0, 
+          "unit": "", 
+          "desc": "Problem Behavior Parameter"
+        }
+      }
+    }, 
+    "nodes": {
+      "Toy2": {
+        "modelName": "", 
+        "pythonCode": "def z(x, alpha, beta, delta, w, d):\n    z = (x[0] + w[0])**2 \\\n        + alpha*(d[0] + w[0])**2 \\\n        + beta*(x[1] + w[1] + d[1])**2 \\\n        + (1 + w[2]**2)*(x[2] + d[2] + w[2])**2 \\\n        + (1.0/(1.0 + w[3]**2))*(d[3] + x[1] + w[2]*x[2] + (w[3]**2+1)*x[3])**2 \\\n        - 2*delta*x[3] \\\n        + (10 - alpha)*d[0]**2 \\\n        + (10 - beta)*d[1]**2 \\\n        + 3*d[2]**2 \\\n        + math.sqrt(1 + w[2]**2 + w[3]**2)*d[3]**2\n    return z\n\nx0 = [f['x1'], f['x2'], f['x3'], f['x4']]\nw = [x['w1'], x['w2'], x['w3'], x['w4']]\nd = [x['d1'], x['d2'], x['d3'], x['d4']]\nalpha = x['alpha']\nbeta = x['beta']\ndelta = x['delta']\n\nres = scipy.optimize.minimize(\n    z, \n    x0, \n    args=(alpha, delta, delta, w, d), \n    method='L-BFGS-B')\n\nf['z'] = res.fun\nf['x1'] = res.x[0]\nf['x2'] = res.x[1]\nf['x3'] = res.x[2]\nf['x4'] = res.x[3]", 
+        "calcError": 0, 
+        "turbSession": null, 
+        "modelType": 0, 
+        "turbApp": null, 
+        "y": -200.0, 
+        "x": -200.0, 
+        "z": 0.0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "tolstagnation": null, 
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "tolx": null, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Restart in": "", 
+        "Backup interval": 0, 
+        "itmax": 0, 
+        "popsize": 4, 
+        "Save results": 0, 
+        "tolfun": 1e-05, 
+        "seed": 0, 
+        "Restart out": "", 
+        "It timeout": 3600, 
+        "Max time": 0.0, 
+        "Log Objective": ""
+      }
+    }, 
+    "vs": [
+      "Toy2.w1", 
+      "Toy2.w2", 
+      "Toy2.w3", 
+      "Toy2.w4"
+    ], 
+    "obj": [], 
+    "custpy": "def objfunc(x, f, fail):\n    # Simple example where the objective is just a flowsheet output\n    if any(fail):\n        obj = 100000\n    else:\n        z = numpy.array([f[i]['Toy2']['z'][0] for i in range(len(f))])\n        weight = numpy.array([1.0/float(len(z))]*len(z))\n        obj = numpy.sum(z*weight)\n    return [obj], [0], 0", 
+    "g": [], 
+    "v": [
+      "Toy2.d1", 
+      "Toy2.d2", 
+      "Toy2.d3", 
+      "Toy2.d4"
+    ], 
+    "objtype": 3, 
+    "solver": "OptCMA", 
+    "samp": {
+      "Toy2.w2": [
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5
+      ], 
+      "Toy2.w3": [
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5
+      ], 
+      "Toy2.w1": [
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        -2.5, 
+        0, 
+        0, 
+        0, 
+        0, 
+        0, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        5, 
+        5, 
+        5, 
+        5, 
+        5
+      ], 
+      "Toy2.w4": [
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5, 
+        -5, 
+        -2.5, 
+        0, 
+        2.5, 
+        5
+      ]
+    }
+  }, 
+  "CCSIFileMetaData": {
+    "MIMEType": "application/ccsi+foqus", 
+    "Confidence": "experimental", 
+    "DisplayName": "ouu_toy2_no_acm", 
+    "CreationTime": "2015-02-06T11:55:26", 
+    "Application": "foqus", 
+    "UpdateMetadata": true, 
+    "Version": "00.00", 
+    "Parents": [], 
+    "ID": "235b798a7bdb4a3b8513ea19122d6f88", 
+    "OriginalFilename": "ouu_toy2_no_acm.json", 
+    "Description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">None</p></body></html>", 
+    "ChangeLog": {
+      "2015-02-06T11:55:26": [
+        "00.00", 
+        "0c9f1a4323404e19932f86800e6e1b04", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:19:58": [
+        "00.00", 
+        "f330cb0b6b354f039784558897c9ce43", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:36:00": [
+        "00.00", 
+        "1a34dc3ba4df4094a6081957c4bbe690", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:45:43": [
+        "00.00", 
+        "4555c20ae28f4b8a97df3e002f47e40c", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:48:16": [
+        "00.00", 
+        "1ccb6d1afa7b423a97206aa6838405ae", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:49:58": [
+        "00.00", 
+        "8abcbedacf374eacb672640257199e71", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:51:06": [
+        "00.00", 
+        "94c65cf4a0be4ae5a8dddc270b45c1ca", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:52:40": [
+        "00.00", 
+        "d1f9b6c8c7d04db9ab7c1adb74ddf171", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:52:44": [
+        "00.00", 
+        "ddfb4a4307aa4680939661839fad8990", 
+        "ouu_toy2_no_acm", 
+        ""
+      ], 
+      "2015-02-06T12:53:24": [
+        "00.00", 
+        "235b798a7bdb4a3b8513ea19122d6f88", 
+        "ouu_toy2_no_acm", 
+        ""
+      ]
+    }, 
+    "ModificationTime": "2015-02-06T12:53:24", 
+    "Role": "Input"
+  }, 
+  "surrogateProblem": null, 
+  "uqSimList": [], 
+  "Type": "FOQUS_Session", 
+  "ID": "ouu_toy2_no_acm_150206115526"
+}

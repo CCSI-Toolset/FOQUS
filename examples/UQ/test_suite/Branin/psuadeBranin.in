@@ -1,0 +1,28 @@
+PSUADE
+INPUT
+   dimension = 2
+   variable 1 X1 =  -4.0000000000000000e+00   1.0000000000000000e+01
+   variable 2 X2 =   0.0000000000000000e+00   1.4000000000000000e+01
+END
+OUTPUT
+   dimension = 1
+   variable 1 Y1
+END
+METHOD
+   sampling = LPTAU
+   num_samples = 1000
+END
+APPLICATION
+   driver = ./simBranin
+END
+ANALYSIS
+#  optimization method = bobyqa
+   optimization num_local_minima = 10
+   optimization max_feval = 10000
+   optimization fmin = 0.0
+   optimization tolerance = 1.000000e-06
+   optimization num_fmin = 3
+   optimization print_level = 1
+   printlevel 3
+END
+END

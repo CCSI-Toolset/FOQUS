@@ -1,0 +1,4744 @@
+Version "25.0-0";
+Libraries "Modeler.acml", "SystemLibrary.acml";
+T_max AS  RealParameter;
+  T_max.Description : "Temperature upper limit (C)";
+  T_max : 9726.85;
+
+T_min AS  RealParameter;
+  T_min.Description : "Temperature lower limit (C)";
+  T_min : -253.15;
+
+Procedure mixstreams
+// Library:        "<dll path>"; 
+// Call:           <subroutine name>; 
+   Compatibility:  "ACM2004"; 
+// Implementation: <Subroutine or Function> "<source file path>";
+// Language:       <FORTRAN or C or "C++">;
+// Options:        <options list>;
+// Workspace:      <workspace size>;
+// Inputs:         <variable type list>;
+// Outputs:        <variable type list>;
+End
+Model CompStagePrelimDesign
+  //This module does the preliminary design calculations from Aungier (2008)
+  // for a centrifugal compressor stage, with a closed impeller and vaned diffuser
+  // the inlet port and two of the following should be specified
+
+  //Parameters
+  dp as RealParameter (0.00001,description:"a pressure difference for finite difference derivative calculation");
+  diffuser_type as IntegerParameter (1, description:"1 for vaned diffuser, 2 for vaneless diffuser", lower:1, upper:2);
+  impeller_type as IntegerParameter (1, description:"1 for covered impeller, 2 for open impeller", lower:1, upper:2);
+  eff_mech as RealParameter (0.97, description:"Mechanical efficiency", lower:0.01, upper:1.0);
+  eff_drive as RealParameter (1.0, description:"Driver efficiency", lower:0.01, upper:1.0);
+  //-----------------------------------------------------------------
+  // Variables
+  // 0 - conditions at the inlet
+  // 2 - conditions at impeller tip
+  //
+  phi as coefficient (0.1, description:"Mass flow coefficient", upper:2, lower:0.001);
+  Pratio as coefficient (1.5, description:"Ratio of discharge pressure to inlet pressure", lower:1, upper:4);
+  Tisen as temperature (30.0, description:"Isentropic discharge temperature", lower:-10, upper:400); //C
+  r2 as length (1.0, description:"Impeller tip radius", lower:0.001, upper:10.0); //m
+  rspeed as rotation (500.0, description:"Rotation speed of the impeller", lower:0.5, upper:8000); // rad/s
+  U2 as velocity (200, description:"Impeller tip speed", lower:0, upper:4000); // m/s
+  U2max as velocity (description:"Maximum allowable impeller tip speed"); //m/s
+  c0 as velocity (300, description:"Speed of sound in the inlet gas stream", lower:0, upper:4000);  // m/s
+  MW as molweight (40, description:"Molecular weight of gas"); // kg/kmol
+  S0 as entr_mol (description:"Entropy in the inlet gas"); //kJ/(kmol-K)
+  S2 as entr_mol (description:"Entropy in discharge gas"); //kJ/(kmol-K)
+  deltaS as entr_mol (description:"Entropy change in compressor stage"); //kJ/(kmol-K)
+  H0 as enth_mol (description:"Enthalpy of inlet gas"); //GJ/kmol
+  Hisen as enth_mol (description:"Isentropic enthalpy change"); //GJ/kmol
+  deltaH_p as enth_mol (description:"Polytropic enthalpy change");//GJ/kmol
+  deltaH_t as enth_mol (description:"Actual enthalpy change");//GJ/kmol
+  deltaH_isen as enth_mol (description:"Isentropic enthalpy change");//GJ/kmol
+  rho_v0 as Dens_mol (description:"Mole density of the inlet gas");//(kmol/m^3)
+  rho_v0f as Dens_mol (description:"Mole density for finite difference calc for speed of sound"); // mole density (kmol/m^3)
+  rho_v2 as Dens_mol (description:"Mole density at discharge");// mole density (kmol/m^3)
+  I as coefficient (description:"Impeller work coefficient"); // work input coefficient
+  mu_p as coefficient (description:"polytropic head coefficient"); // polytropic head coefficient 
+  mu_p_v as coefficient (description:"polytropic head coefficient vaned diffuser"); // polytropic head coefficient 
+  eff_p as coefficient (description:"polytropic efficiency");// polytropic stage efficiency
+  eff_p_v as coefficient (description:"polytropic efficiency vaned diffuser");// polytropic stage efficiency
+  eff_isen as coefficient (description:"Isentropic efficiency"); //isentropic efficiency
+  Ma as coefficient (description:"Rotational Mach Number", lower:0, upper:5);
+  visc0 as viscosity (description:"Viscosity of gas at inlet");
+  Cp0 as cp_mol;
+  Cv0 as cv_mol;
+  kappaT as realvariable;
+  P0_f as pressure;
+  fluid_pow as power;
+  elec_pow as power;
+
+
+  //-----------------------------------------------------------
+  // Ports
+  i_port as input MainPort;
+  o_port as output MainPort;
+  //-----------------------------------------------------------
+
+  //---------------------------------------------------------------
+  // Some property calls
+  call (rho_v0) = pDens_Mol_vap(i_port.T, i_port.P, i_port.z);
+  call (MW) = pMolWeight(i_port.z);
+  call (H0) = pEnth_mol(i_port.T, i_port.P, i_port.z);
+  call (S0) = pEntr_mol(i_port.T, i_port.P, i_port.z);
+  call (S0) = pEntr_mol(Tisen, o_port.P, i_port.z); //calc isentropic outlet temperature
+  call (Cp0) = pCp_mol_vap(i_port.T, i_port.P, i_port.z);
+  call (Cv0) = pCv_mol_vap(i_port.T, i_port.P, i_port.z);
+  call (visc0) = pVisc_Vap (i_port.T, i_port.P, i_port.z);
+  call (rho_v2) = pDens_Mol_vap(o_port.T, o_port.P, o_port.z);
+  call (o_port.h) = pEnth_mol(o_port.T, o_port.P, i_port.z);
+  call (S2) = pEntr_mol(o_port.T, o_port.P, i_port.z);
+  call (Hisen) = pEnth_mol_vap(Tisen, o_port.P, i_port.z);
+  //----------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  //Speed of sound stuff
+  //finite difference derivative for kappa_T calculation
+  // Kappa_T = -(1/V)(dV/dP)_T -- isothermal compressability
+  P0_f = i_port.P + dp;
+  call (rho_v0f) = pDens_Mol_vap(i_port.T, P0_f, i_port.z); //for finite difference calculation
+  kappaT * 1e5 * dp = 1 - rho_v0/rho_v0f;
+  //Speed of sound calculation c^2 = (dP/drho)_S
+  // turned into more friendly c^2 = (CpV)/(Cv*MW*kappaT)
+  c0^2 * Cv0 * MW * kappaT *rho_v0 = Cp0;  //speed of sound
+  //----------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  // Tip speed, mass flow coefficient, Mach Number, and pressure ratio
+  Ma = U2/c0;
+  o_port.P = i_port.P * Pratio;
+  U2 = rspeed * r2;
+  phi * 3.14159 * r2^2 * U2 * rho_v0 * 3600 = i_port.F;
+  //----------------------------------------------------------------
+
+
+  //------------------------------------------------------------------------------
+  // I, mu, and eff are calculated from preliminary design correlations
+  // Aungier (2008) pp 112
+  if impeller_type < 1.5 then
+    100*I*phi = (0.62*phi - phi*(phi/0.4)^3 + 0.0014)*100;
+    100*mu_p_v*phi = (0.51*phi + phi^2 - 7.6*phi^3 - 0.00025)*100;
+    eff_p_v * I = mu_p_v;
+    if diffuser_type < 1.5 then
+      mu_p = mu_p_v;
+      eff_p = eff_p_v;
+    else
+      (eff_p - eff_p_v)*(0.04 + 5*phi + eff_p_v^3) = - 0.017;
+      mu_p = I * eff_p;
+    endif    
+  else
+    100*I*phi = (0.68*phi - phi*(phi/0.37)^3 + 0.002)*100;
+    100*mu_p_v*phi = (0.59*phi + 0.7*phi^2 - 7.5*phi^3 - 0.00025)*100;
+    eff_p_v * I = mu_p_v;
+    if diffuser_type < 1.5 then
+      mu_p = mu_p_v;
+      eff_p = eff_p_v;
+    else
+      (eff_p - eff_p_v)*(0.04 + 5*phi + eff_p_v^3) = - 0.017;
+      mu_p = I * eff_p;
+    endif 
+  endif
+  //-------------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------------
+  //Calculate total enthalpy and entropy change through the stage
+  deltaH_t = I*U2^2*MW*1e-9;
+  deltaH_p = mu_p*U2^2*MW*1e-9;
+  deltaH_isen = (Hisen - H0);
+  deltaH_t * eff_isen = deltaH_isen;
+  deltaH_t = (o_port.h - H0);
+  deltaS = S2 - S0;
+  //Equation for polytropic enthalpy //(Aungier, 2000) p. 18
+  deltaH_p = (deltaH_t - (deltaS/1000000)*(o_port.T - i_port.T)/loge( (o_port.T + 273.15)/(i_port.T + 273.15) ));
+  //--------------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------------
+  //Constriants (Ludtke 2004)
+  U2max = sqrt((1984.1*phi^2 - 616.88*phi + 215.97)*0.7*830);
+  //-------------------------------------------------------------------------------
+
+  //Power Calculations
+  fluid_pow = deltaH_t*i_port.f/3600*1000000;
+  eff_mech*eff_drive*elec_pow = fluid_pow;
+  // Outlet port conditions
+  o_port.F = i_port.F;
+  o_port.z = i_port.z;
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "comp1";
+TYPE CompStagePrelim_T0 ROLE "ICON" text
+Name = comp1
+lines = 50
+
+sub main
+call Path.Begin
+call Path.Shift(-0.100959,0.000405)
+call Path.Scale(3.023119,1.905995)
+'' <<Path:0
+call Path.Polygon(4,0,25600,1)
+call Path.lineto(-0.1,-0.3)
+call Path.lineto(-0.1,0.3)
+call Path.lineto(0.25,0.2)
+call Path.lineto(0.25,-0.2)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.504971,0.109502)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.550376,0.0605198)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_speed")
+call Port.at(-0.506998,0.283167)
+call Port.direction(0)
+call Port.name("i_radius")
+call Port.at(-0.506998,-0.104239)
+call Port.direction(0)
+call Port.name("o_radius")
+call Port.at(0.550376,-0.130957)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("o_speed")
+call Port.at(0.550376,0.234185)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-0.496065,0.568155)
+call Port.direction(270)
+call Port.name("o_port")
+call Port.at(0.537018,-0.384775)
+call Port.IOtype(1)
+call Port.direction(270)
+end sub
+
+
+
+endtext
+
+CompStagePrelim_T0_I0 as CompStagePrelim_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model CompStageSimple
+
+  //-----------------------------------------------------------------------------------
+  //Parameters
+  eff_mech as RealParameter (0.97, description:"Mechanical efficiency", lower:0.01, upper:1.0);
+  eff_drive as RealParameter (1.0, description:"Driver efficiency", lower:0.01, upper:1.0);
+  //-------------------------------------------------------------------------------------
+  
+  //-------------------------------------------------------------------------
+  //Variables
+  Pratio as coefficient (1.5, description:"Ratio of discharge pressure to inlet pressure", lower:1, upper:14);
+  Tisen as temperature (30.0, description:"Isentropic discharge temperature", lower:-10, upper:400);  //C
+  S0 as entr_mol (description:"Entropy in the inlet gas"); //kJ/(kmol-K)
+  S2 as entr_mol (description:"Entropy in discharge gas"); //kJ/(kmol-K)
+  deltaS as entr_mol (description:"Entropy change in compressor stage"); //kJ/(kmol-K)
+  H0 as enth_mol (description:"Enthalpy of inlet gas"); //GJ/kmol
+  Hisen as enth_mol (description:"Isentropic enthalpy of discharge gas"); //GJ/kmol
+  deltaH_p as enth_mol (description:"Polytropic enthalpy change"); //GJ/kmol
+  deltaH_t as enth_mol (description:"Total enthalpy change"); //total enthalpy change (GJ/kmol)
+  deltaH_isen as enth_mol (description:"Isentropic enthalpy change");
+  eff_p as coefficient (0.84, fixed, description:"Polytropic efficiency"); // polytropic stage efficiency
+  eff_isen as coefficient (0.83, description:"Isentropic efficiency"); //isentropic efficiency
+  fluid_pow as power;
+  elec_pow as power;
+  //----------------------------------------------------------------
+
+  //-----------------------------------------------------------
+  // Ports
+  i_port as input MainPort;
+  o_port as output MainPort;
+  //-----------------------------------------------------------
+
+  //---------------------------------------------------------------
+  // Some property calls
+  call (H0) = pEnth_mol_vap(i_port.T, i_port.P, i_port.z);
+  call (o_port.h) = pEnth_mol_vap(o_port.T, o_port.P, i_port.z);
+  //Two calls for S0 to figure out the isentropic discharge temperture
+  call (S0) = pEntr_mol_vap(i_port.T, i_port.P, i_port.z);
+  call (S0) = pEntr_mol_vap(Tisen, o_port.P, i_port.z);
+  //Use isentropic discharge temperture to figure out isentropic discharge enthalpy
+  call (Hisen) = pEnth_mol_vap(Tisen, o_port.P, i_port.z);
+  call (S2) = pEntr_mol_vap(o_port.T, o_port.P, i_port.z);
+  //----------------------------------------------------------------
+
+  //---------------------------------------------------------------
+  //Presure ratio
+  o_port.P = i_port.P * Pratio;
+  //---------------------------------------------------------------
+
+  //---------------------------------------------------------------
+  //Enthalpy/Entropy Change
+  deltaS = S2 - S0;
+  deltaH_isen = Hisen - H0;
+  deltaH_t*eff_isen = deltaH_isen;
+  o_port.h = H0 + deltaH_t;
+  deltaH_p = deltaH_t - (deltaS/1000000)*(o_port.T - i_port.T)/loge( (o_port.T + 273.15)/(i_port.T + 273.15) );
+  deltaH_p = deltaH_t*eff_p;
+  //----------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  //Power calculations
+  fluid_pow = deltaH_t*i_port.f/3600*1000000;
+  eff_mech*eff_drive*elec_pow = fluid_pow;
+  //----------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  //No change in molar flow or composition
+  o_port.F = i_port.F;
+  o_port.z = i_port.z;
+  //----------------------------------------------------------------
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+TYPE CompStageSimple_T0 ROLE "ICON" text
+Name = comp1
+lines = 29
+
+sub main
+call Path.Begin
+call Path.Shift(0.049041,0.050405)
+call Path.Scale(3.023119,1.905995)
+'' <<Path:0
+call Path.Polygon(4,0,25600,1)
+call Path.lineto(-0.1,-0.3)
+call Path.lineto(-0.1,0.3)
+call Path.lineto(0.25,0.2)
+call Path.lineto(0.25,-0.2)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.355425,-0.00351905)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.707331,-0.00351905)
+call Port.IOtype(1)
+call Port.direction(0)
+end sub
+
+
+
+endtext
+
+CompStageSimple_T0_I0 as CompStageSimple_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Pump
+  //-------------------------------------------------------------
+  // Ports
+  i_port as input MainPort;
+  o_port as output MainPort;
+  //--------------------------------------------------------------
+
+  //-------------------------------------------------------------
+  // Parameters
+  eff_drive as coefficient (1.0, description:"Driver efficiency", fixed);
+  eff_mech as coefficient (0.97, description:"Mechanical efficiency", fixed);
+  //-------------------------------------------------------------
+
+  //-------------------------------------------------------------
+  //Variables
+  pump_power as power; //kW
+  elec_power as power; //kW
+  MW as molweight (40, description:"Molecular weight of fluid"); // kg/kmol
+  rho_mass as Dens_mass; //kg/m3
+  eff as coefficient (0.8, description:"Pump efficiency",fixed);
+  hg as head;  //kJ/kg
+  H0 as enth_mol (description:"Enthalpy at inlet"); //GJ/kmol
+  //-----------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //Property Calls
+  call (H0) =       pEnth_mol_liq(i_port.T, i_port.P, i_port.z);
+  call (o_port.h) = pEnth_mol_liq(o_port.T, o_port.P, o_port.z);
+  call (MW) = pMolWeight(i_port.z);
+  call (rho_mass) = pDens_Mass_liq(i_port.T, i_port.P, i_port.z);
+  //--------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //Energy balance for calculating discharge temperture
+  (o_port.h - H0)*i_port.F/3600 = pump_power/1e6;
+  //--------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //Calculate power from head
+  pump_power*eff = hg*i_port.F*MW/3600;
+  pump_power = eff_drive*eff_mech*elec_power;
+  //--------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //Convert pressure change to head
+  hg = 1e5*(o_port.P - i_port.P)/rho_mass/1000;
+  //--------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //No change in flow rate or composition
+  o_port.F = i_port.F;
+  o_port.z = i_port.z;
+  //---------------------------------------------------------------------
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "pump1";
+TYPE Pump_T0 ROLE "ICON" text
+Name = pump1
+lines = 44
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Ellipse(0,0,0.5,0.5,0,0,0,1)
+call Path.Polyline(4,255,0,1)
+call Path.lineto(-0.45,-0.25)
+call Path.lineto(-0.75,-0.55)
+call Path.lineto(0.8,-0.55)
+call Path.lineto(0.45,-0.25)
+call Path.Line(-0.8,0,0,0,0,1)
+call Path.Line(0,0.5,0.75,0.5,0,1)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.800587,5.25252e-009)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.75132,0.499707)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-0.800587,5.25252e-009)
+call Port.direction(0)
+call Port.name("o_port")
+call Port.at(0.75132,0.499707)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("InputSignal")
+call Port.at(-0.754839,5.25252e-009)
+call Port.direction(270)
+call Port.name("OutputSignal")
+call Port.at(0.687976,0.499707)
+call Port.IOtype(1)
+call Port.direction(90)
+end sub
+
+
+
+endtext
+
+Pump_T0_I0 as Pump_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Flash_Stage
+  
+  //-----------------------------------------------------------
+  // Ports
+  i_port as input MULTIPORT of MainPort (MIN_CONNECTIONS:1, MAX_CONNECTIONS:4);
+  o_port_liq as output MainPort;
+  o_port_vap as output MainPort;
+  q_port as input HeatPort;
+  //-----------------------------------------------------------
+
+  //-----------------------------------------------------------
+  // variables
+  VapFrac as VapFraction;
+  Hin_mol(i_port.CONNECTIONSET) as enth_mol;
+  Hin(i_port.CONNECTIONSET) as enthflow;
+  z_total( ComponentList ) as molefraction;
+  //-----------------------------------------------------------
+
+  FOR i IN i_port.ConnectionSet DO
+    EnthInMolar: call (Hin_mol(i)) = pEnth_mol(i_port.CONNECTION(i).T, i_port.CONNECTION(i).P, i_port.CONNECTION(i).z);
+    EnthInFlows: 0 = Hin(i) - Hin_mol(i) * i_port.CONNECTION(i).F;
+  ENDFOR
+  
+  FOR j IN ComponentList DO
+    TotalMoleFraction: 0 = 2000* (SIGMA(i_port.CONNECTION.z(j) * i_port.CONNECTION.F) - z_total(j) * SIGMA(i_port.CONNECTION.F));
+  ENDFOR
+
+  FlashCalc: call (o_port_vap.z, o_port_liq.z, VapFrac, o_port_vap.h, o_port_liq.h) = pFlash (o_port_liq.T, o_port_liq.P, z_total);
+
+  EnthBal: 0 = SIGMA(Hin) + q_port.Q - o_port_liq.h * o_port_liq.F - o_port_vap.h * o_port_vap.F;
+  MassBalance: 0 = SIGMA(i_port.CONNECTION.F) - o_port_vap.F - o_port_liq.F;
+
+  VapFlow: 0 = o_port_vap.F - SIGMA(i_port.CONNECTION.F)*VapFrac;
+  Temp:  o_port_liq.T = o_port_vap.T;
+  Press: o_port_liq.P = o_port_vap.P;
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "Flash_Stage_01";
+TYPE Flash_Stage_T1 ROLE "ICON" text
+Name = Flash_Stage_01
+lines = 37
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Box(-0.5,0.5,0.5,-0.5,0,0,1)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.499652,-0.000274796)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.499762,-0.000274796)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-0.327218,0.499432)
+call Port.direction(270)
+call Port.name("q_port")
+call Port.at(-0.499652,-0.297635)
+call Port.direction(0)
+call Port.name("o_port_vap")
+call Port.at(0.362518,0.499432)
+call Port.IOtype(1)
+call Port.direction(90)
+call Port.name("o_port_liq")
+call Port.at(-0.327218,-0.499981)
+call Port.IOtype(1)
+call Port.direction(270)
+end sub
+
+
+
+endtext
+
+Flash_Stage_T1_I0 as Flash_Stage_T1;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Flow_Mult
+
+  fact as RealParameter (1.0, description:"Flow multiplier");
+  
+  i_port as input MainPort;
+  o_port as output MainPort;
+
+  o_port.F = i_port.F*fact;
+  o_port.T = i_port.T;
+  o_port.P = i_port.P;
+  o_port.z = i_port.z;
+  o_port.h = i_port.h;
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Flash_Series
+
+
+  no_stages as IntegerParameter (5, description:"Number of flash stages");
+  StageSet as IntegerSet([1:no_stages]);
+  stage(StageSet) as Flash_Stage;
+  iport(StageSet) as input MainPort;
+  oport_vap as output MainPort;
+  oport_liq as output MainPort;
+  qport(StageSet) as input HeatPort;
+  top_P as pressure (fixed);
+  bottom_P as pressure (fixed);
+  Q as enthFlow;
+  
+
+
+  for i in [1:no_stages-1] do
+    connect stage(i).o_port_liq and stage(i+1).i_port;
+    connect stage(i+1).o_port_vap and stage(i).i_port;
+  endfor
+
+  link oport_vap and stage(1).o_port_vap;
+  link oport_liq and stage(no_stages).o_port_liq;
+
+  for i in [1:no_stages] do
+    link qport(i) and stage(i).q_port;
+    if iport(i).isConnected then
+      link iport(i) and stage(i).i_port;
+    endif
+  endfor
+  
+  for i in [1:no_stages] do
+    stage(i).o_port_liq.P = (i-1)*(bottom_P - top_P)/(no_stages-1) + top_P;
+  endfor
+
+  Q = SIGMA(qport.Q);
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+TYPE Flash_Series_T0 ROLE "ICON" text
+Name = flash_series
+lines = 41
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Line(-0.1,-0.5,-0.1,0.5,0,1)
+call Path.Line(0.1,-0.5,0.1,0.5,0,1)
+call Path.Ellipse(0,0.5,0.1,0.05,1,0,25600,1)
+call Path.Ellipse(0,-0.5,0.1,0.05,2,0,25600,1)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.100293,0.123167)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.102053,0.123167)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("oport_liq")
+call Port.at(-0.067651,-0.528974)
+call Port.IOtype(1)
+call Port.direction(270)
+call Port.name("oport_vap")
+call Port.at(0.0527858,0.540176)
+call Port.IOtype(1)
+call Port.direction(90)
+call Port.name("InputSignal")
+call Port.at(-0.101916,0.0192743)
+call Port.direction(0)
+call Port.name("OutputSignal")
+call Port.at(0.103676,0.0192743)
+call Port.IOtype(1)
+call Port.direction(0)
+end sub
+
+
+
+endtext
+
+Flash_Series_T0_I0 as Flash_Series_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="TPQ" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 13290
+SizeY : 9630
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ top_P bottom_P stage(*).o_port_liq.P stage(*).q_port.Q stage(*).o_port_liq.T ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Split
+  i_port as input MainPort;
+  o_port as output MULTIPORT of MainPort (MIN_CONNECTIONS:1, MAX_CONNECTIONS:8);
+  frac(o_port.CONNECTIONSET) as molefraction (fixed, description:"Split fractions for outlet streams (mol fraction)");
+  
+  0 = 1 - SIGMA(frac);
+  
+  for i in o_port.ConnectionSet DO
+    o_port.CONNECTION(i).F = i_port.F*frac(i);
+    o_port.CONNECTION(i).T = i_port.T;
+    o_port.CONNECTION(i).P = i_port.P;
+    o_port.CONNECTION(i).z = i_port.z;
+    o_port.CONNECTION(i).h = i_port.h;
+  endfor
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model Mix
+  
+  //-----------------------------------------------------------
+  // Ports
+  i_port as input MULTIPORT of MainPort (MIN_CONNECTIONS:1, MAX_CONNECTIONS:4);
+  o_port as output MainPort;
+  q_port as input HeatPort;
+  //-----------------------------------------------------------
+
+  //-----------------------------------------------------------
+  // variables
+  VapFrac as VapFraction;
+  Hin_mol(i_port.CONNECTIONSET) as enth_mol;
+  Hin(i_port.CONNECTIONSET) as enthflow;
+  z_liq( ComponentList ) as molefraction;
+  z_vap( ComponentList ) as molefraction;
+  h_vap as enth_mol;
+  h_liq as enth_mol;
+  //-----------------------------------------------------------
+
+  FOR i IN i_port.ConnectionSet DO
+    EnthInMolar: call (Hin_mol(i)) = pEnth_mol(i_port.CONNECTION(i).T, i_port.CONNECTION(i).P, i_port.CONNECTION(i).z);
+    EnthInFlows: 0 = Hin(i) - Hin_mol(i) * i_port.CONNECTION(i).F;
+  ENDFOR
+  
+  FOR j IN ComponentList DO
+    TotalMoleFraction: 0 = 2000* (SIGMA(i_port.CONNECTION.z(j) * i_port.CONNECTION.F) - o_port.z(j) * SIGMA(i_port.CONNECTION.F));
+  ENDFOR
+
+  FlashCalc: call (z_vap, z_liq, VapFrac, h_vap, h_liq) = pFlash (o_port.T, o_port.P, o_port.z);
+
+  EnthBal: 0 = SIGMA(Hin) + q_port.Q - o_port.h * o_port.F;
+  MassBalance: 0 = SIGMA(i_port.CONNECTION.F) - o_port.F ;
+  o_port.h = h_vap * VapFrac - h_liq * (VapFrac - 1);
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "Mix_01";
+TYPE Flash_Stage_T1 ROLE "ICON" text
+Name = Mix_01
+lines = 36
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Polygon(3,0,0,1)
+call Path.lineto(-0.25,0.5)
+call Path.lineto(-0.25,-0.5)
+call Path.lineto(0.5,0)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(0.140177,-0.239469)
+call Port.direction(90)
+call Port.name("UniversalOUT")
+call Port.at(0.11292,0.255044)
+call Port.IOtype(1)
+call Port.direction(90)
+call Port.name("q_port")
+call Port.at(-0.00389385,0.33292)
+call Port.direction(270)
+call Port.name("i_port")
+call Port.at(-0.249204,0.00584071)
+call Port.direction(0)
+call Port.name("o_port")
+call Port.at(0.494513,0.00584071)
+call Port.IOtype(1)
+call Port.direction(0)
+end sub
+
+
+
+endtext
+
+Flash_Stage_T1_I0 as Flash_Stage_T1;
+TYPE Mix_T0 ROLE "ICON" text
+Name = heater1
+lines = 46
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Ellipse(0,0,0.5,0.5,0,0,0,1)
+call Path.Polyline(5,255,0,1)
+call Path.lineto(0.3,0.5)
+call Path.lineto(0.3,-0.25)
+call Path.lineto(0,0)
+call Path.lineto(-0.3,-0.25)
+call Path.lineto(-0.3,0.5)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.499707,-0.00175953)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.496188,-0.00175953)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-0.499707,-0.00175953)
+call Port.direction(0)
+call Port.name("o_port")
+call Port.at(0.496188,0.00175953)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("q_port")
+call Port.at(-1.50811e-007,0.501466)
+call Port.direction(270)
+call Port.name("InputSignal")
+call Port.at(-0.464516,0.177713)
+call Port.direction(0)
+call Port.name("OutputSignal")
+call Port.at(0.436363,0.237537)
+call Port.IOtype(1)
+call Port.direction(0)
+end sub
+
+
+
+endtext
+
+Mix_T0_I1 as Mix_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model HeatExchanger
+
+
+  i_port_hot as input MainPort;
+  i_port_cold as input MainPort;
+  o_port_hot as output MainPort;
+  o_port_cold as output MainPort;
+  Q as enthFlow;
+  lmtd as temp_diff;
+  area as area (fixed, 100);
+  U as heat_trans_coeff (fixed, 100);
+  hin_hot as enth_mol;
+  hin_cold as enth_mol;
+  
+
+  o_port_hot.z = i_port_hot.z;
+  o_port_cold.z = i_port_cold.z;
+  o_port_hot.F = i_port_hot.F;
+  o_port_cold.F = i_port_cold.F;
+
+  call (hin_hot) = pEnth_mol(i_port_hot.T, i_port_hot.P, i_port_hot.z);
+  call (hin_cold) = pEnth_mol(i_port_cold.T, i_port_cold.P, i_port_cold.z);
+  call (o_port_hot.h) = pEnth_mol(o_port_hot.T, o_port_hot.P, o_port_hot.z);
+  call (o_port_cold.h) = pEnth_mol(o_port_cold.T, o_port_cold.P, o_port_cold.z);
+
+  o_port_hot.h * o_port_hot.F = hin_hot * i_port_hot.F - Q;
+  o_port_cold.h * o_port_cold.F = hin_cold * i_port_cold.F + Q;
+
+  Q = U * area * lmtd * 3600 / 1e6;
+
+  lmtd = ((i_port_hot.T - o_port_cold.T) - (o_port_hot.T - i_port_cold.T))/loge((i_port_hot.T - o_port_cold.T)/(o_port_hot.T - i_port_cold.T));
+
+  //call(lmtd) = pLMTD(i_port_hot.T, i_port_cold.T, o_port_hot.T, o_port_cold.T, "Countercurrent");
+  
+  
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+TYPE HeatExchanger_T0 ROLE "ICON" text
+Name = heat_ex1
+lines = 52
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Line(-1,0.5,1,0.5,0,1)
+call Path.Line(-1,-0.5,1,-0.5,0,1)
+call Path.Ellipse(1,0,0.3,0.5,3,0,25600,1)
+call Path.Ellipse(-1,0,0.3,0.5,4,0,25600,1)
+call Path.Line(-1.3,0,-1,0,0,1)
+call Path.Line(-1,0,-1,0.4,0,1)
+call Path.Line(-1,0.4,1,-0.4,0,1)
+call Path.Line(1,-0.4,1,0,0,1)
+call Path.Line(1,0,1.3,0,0,1)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-1.26158,0.242815)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(1.24751,0.278006)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port_hot")
+call Port.at(0.986718,0.503145)
+call Port.direction(270)
+call Port.name("i_port_cold")
+call Port.at(-1.30381,0.00703813)
+call Port.direction(0)
+call Port.name("o_port_cold")
+call Port.at(1.30029,1.09304e-008)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("o_port_hot")
+call Port.at(-0.999144,0.503145)
+call Port.IOtype(1)
+call Port.direction(90)
+call Port.name("InputSignal")
+call Port.at(-1.2827,-0.175953)
+call Port.direction(0)
+call Port.name("OutputSignal")
+call Port.at(1.26158,-0.22522)
+call Port.IOtype(1)
+call Port.direction(0)
+end sub
+
+
+
+endtext
+
+HeatExchanger_T0_I0 as HeatExchanger_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model CompIntegralGear
+// <parameter name> as <parameter type> (<default>, description:"<description>");
+// <variable name>  as <variable type> (default, <spec>, description:"<description>");
+// <submodel name>  as <model type> (<submodel variable> = <variable name>,...);
+// <structure name> as external <structure type>("<default instance>");
+// <port name>      as <Input or Output> <port type>;
+// <equation_name> : <expression1> = <expression2>;
+// Call (<output argument list>) = <procedure name>(<input argument list>);
+
+
+  first_stage_no as IntegerParameter (1, description:"use this to set the stage numbers if this is a compressor divided into sections");
+  no_stages as IntegerParameter (4, description:"Number of compressor stages", lower:2, upper:25);
+  StageSet as IntegerSet([1:no_stages]);
+  EvenSet as integerSet([2,4,6,8,10,12,14,16,18,20,22,24,26]);
+
+  i_port as input MainPort;
+  o_port as output MainPort;
+  q_port(StageSet) as input HeatPort;
+  knockout(StageSet) as output MainPort;
+  intercooler(StageSet) as Flash_Stage;
+  compstage(StageSet) as CompStagePrelimDesign;
+  Ma_max(StageSet) as coefficient (description:"Rotational Mach Number upper limit", lower:0, upper:5);
+  ic_P_drop(StageSet) as press_drop (0, fixed, description:"Pressure drop in the intercooler");
+  P_discharge as pressure;
+  Elec as power;
+  Q as enthFlow;
+  
+
+  link i_port and compstage(1).i_port;
+  link o_port and intercooler(no_stages).o_port_vap;
+  
+  for i in [1:no_stages] do
+    connect compstage(i).o_port and intercooler(i).i_port;
+    link intercooler(i).o_port_liq and knockout(i);
+    ic_P_drop(i) = compstage(i).o_port.P - intercooler(i).o_port_vap.P;
+    if i in EvenSet then
+      compstage(i).rspeed = compstage(i-1).rspeed;
+    endif
+    if q_port(i).isConnected then
+      link q_port(i) and intercooler(i).q_port;
+    endif
+    Ma_max(i) = -0.202*loge(i + first_stage_no - 1) + 1.25;
+  endfor
+
+  intercooler(no_stages).o_port_vap.P = P_discharge;
+  
+  for i in [1:no_stages - 1] do
+    connect intercooler(i).o_port_vap and compstage(i+1).i_port;
+  endfor
+
+  Elec = SIGMA(compstage.elec_pow);
+  Q = SIGMA(intercooler.q_port.Q);
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "multStageComp";
+TYPE CompIntegralGea_T0 ROLE "ICON" text
+Name = multStageComp
+lines = 34
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Polygon(4,0,25600,1)
+call Path.lineto(-1.5,1)
+call Path.lineto(-1.5,-1)
+call Path.lineto(1.5,-0.5)
+call Path.lineto(1.5,0.5)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-1.50089,0.00811389)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(1.50129,0.00270455)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-1.45762,0.987203)
+call Port.direction(270)
+call Port.name("o_port")
+call Port.at(1.46883,-0.505773)
+call Port.IOtype(1)
+call Port.direction(270)
+end sub
+
+
+
+endtext
+
+CompIntegralGea_T0_I0 as CompIntegralGea_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="speed" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 10395
+SizeY : 5865
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).rspeed compstage(*).U2 compstage(*).U2max compstage(*).Ma Ma_max(*) ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="dimentionless" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 12630
+SizeY : 6990
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).mu compstage(*).phi ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="efficiency" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).eff_p compstage(*).eff_isen compstage(*).eff_drive compstage(*).eff_mech ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="TPQ" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 14010
+SizeY : 6870
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ P_discharge compstage(*).Pratio compstage(*).i_port.T compstage(*).o_port.T compstage(*).i_port.P compstage(*).o_port.P ic_P_drop(*) intercooler(*).o_port_vap.T intercooler(*).o_port_vap.P intercooler(*).q_port.Q precooler.o_port_vap.T precooler.o_port_vap.P precooler.q_port.Q ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="Impeller_Diffuser" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).diffuser_type compstage(*).impeller_type ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="Power" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).elec_pow compstage(*).fluid_pow ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+Model CompInline
+// <parameter name> as <parameter type> (<default>, description:"<description>");
+// <variable name>  as <variable type> (default, <spec>, description:"<description>");
+// <submodel name>  as <model type> (<submodel variable> = <variable name>,...);
+// <structure name> as external <structure type>("<default instance>");
+// <port name>      as <Input or Output> <port type>;
+// <equation_name> : <expression1> = <expression2>;
+// Call (<output argument list>) = <procedure name>(<input argument list>);
+
+
+  first_stage_no as IntegerParameter (1, description:"use this to set the stage numbers if this is a compressor divided into sections");
+  no_stages as IntegerParameter (4, description:"Number of compressor stages", lower:2, upper:25);
+  StageSet as IntegerSet([1:no_stages]);
+
+  i_port as input MainPort;
+  o_port as output MainPort;
+  q_port(StageSet) as input HeatPort;
+  compstage(StageSet) as CompStagePrelimDesign;
+  Ma_max(StageSet) as coefficient (description:"Rotational Mach Number upper limit", lower:0, upper:5);
+  ic_P_drop(StageSet) as press_drop (0, fixed, description:"Pressure drop in the intercooler");
+  P_discharge as pressure;
+
+  link i_port and compstage(1).i_port;
+  link o_port and compstage(no_stages).o_port;
+  
+  for i in [1:no_stages-1] do
+    connect compstage(i).o_port and compstage(i+1).i_port;
+  endfor
+
+  //compstage(1).U2 = compstage(1).U2max;
+  for i in [1:no_stages] do
+    Ma_max(i) = -0.202*loge(i + first_stage_no - 1) + 1.25;
+  endfor
+
+  for i in [2:no_stages] do
+    compstage(i).r2 = compstage(1).r2;
+    compstage(i).rspeed = compstage(1).rspeed;
+  endfor
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "multStageComp";
+TYPE CompIntegralGea_T0 ROLE "ICON" text
+Name = multStageComp
+lines = 34
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Polygon(4,0,25600,1)
+call Path.lineto(-1.5,1)
+call Path.lineto(-1.5,-1)
+call Path.lineto(1.5,-0.5)
+call Path.lineto(1.5,0.5)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-1.50089,0.00811389)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(1.50129,0.00270455)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-1.45762,0.987203)
+call Port.direction(270)
+call Port.name("o_port")
+call Port.at(1.46883,-0.505773)
+call Port.IOtype(1)
+call Port.direction(270)
+end sub
+
+
+
+endtext
+
+CompIntegralGea_T0_I0 as CompIntegralGea_T0;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="speed" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 10395
+SizeY : 5865
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).rspeed compstage(*).U2 compstage(*).U2max compstage(*).Ma Ma_max(*) ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="dimentionless" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 12630
+SizeY : 6990
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).mu compstage(*).phi ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="efficiency" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).eff_p compstage(*).eff_isen compstage(*).eff_drive compstage(*).eff_mech ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1245 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="TPQ" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 14010
+SizeY : 6870
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ P_discharge compstage(*).Pratio compstage(*).i_port.T compstage(*).o_port.T compstage(*).i_port.P compstage(*).o_port.P ic_P_drop(*) intercooler(*).o_port_vap.T intercooler(*).o_port_vap.P intercooler(*).q_port.Q precooler.o_port_vap.T precooler.o_port_vap.P precooler.q_port.Q ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+  <FORM NAME="Impeller_Diffuser" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).diffuser_type compstage(*).impeller_type ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+SystemData : Text
+globaldatasection
+EndText;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllGlobals">
+  <FORM NAME="AllGlobals" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+FLOWSHEET
+  Absorber as Flash_Series;
+  Mix_MU as Mix;
+  Regen as Flash_Series;
+  HeatEx_1 as HeatExchanger;
+  Solvent_Pump as Pump;
+  Trim_Cooler_1 as Mix;
+  Gas_Cooler_2 as Flash_Stage;
+  B6 as Mix;
+  Comp_before_dry as CompIntegralGear;
+  Comp_after_dry as CompIntegralGear;
+  Rich_Solvent_1 as Connection;
+  Dry_CO2 as Connection;
+  Wet_CO2_1 as Connection;
+  Lean_Solvent_1 as Connection;
+  Lean_Sovlent_5 as Connection;
+  Vap_Water_CO2 as Connection;
+  Rich_Solvent_3 as Connection;
+  Lean_Solvent_4 as Connection;
+  Lean_Solvent_3 as Connection;
+  TEG_Makeup as Connection;
+  Lean_Solvent_2 as Connection;
+  Water_KO_07 as Connection;
+  Wet_CO2_3 as Connection;
+  CO2_1 as Connection;
+  CO2_From_Cap as Connection;
+  Water_KO_01 as Connection;
+  Water_KO_02 as Connection;
+  Water_KO_03 as Connection;
+  Water_KO_04 as Connection;
+  Water_KO_05 as Connection;
+  Water_KO_06 as Connection;
+  CO2_2 as Connection;
+  Connect Absorber.oport_liq and HeatEx_1.i_port_cold with Rich_Solvent_1;
+  Connect Absorber.oport_vap and Comp_after_dry.i_port with Dry_CO2;
+  Connect Comp_before_dry.o_port and Absorber.iport(5) with Wet_CO2_1;
+  Connect Trim_Cooler_1.o_port and Absorber.iport(1) with Lean_Solvent_1;
+  Connect Regen.oport_liq and HeatEx_1.i_port_hot with Lean_Sovlent_5;
+  Connect Regen.oport_vap and Gas_Cooler_2.i_port with Vap_Water_CO2;
+  Connect HeatEx_1.o_port_cold and Regen.iport(2) with Rich_Solvent_3;
+  Connect HeatEx_1.o_port_hot and Mix_MU.i_port with Lean_Solvent_4;
+  Connect Mix_MU.o_port and Solvent_Pump.i_port with Lean_Solvent_3;
+  Connect Mix_MU.i_port with TEG_Makeup;
+  Connect Solvent_Pump.o_port and Trim_Cooler_1.i_port with Lean_Solvent_2;
+  Connect Gas_Cooler_2.o_port_liq with Water_KO_07;
+  Connect Gas_Cooler_2.o_port_vap and B6.i_port with Wet_CO2_3;
+  Connect B6.o_port and Comp_before_dry.i_port with CO2_1;
+  Connect B6.i_port with CO2_From_Cap;
+  Connect Comp_before_dry.knockout(1) with Water_KO_01;
+  Connect Comp_before_dry.knockout(2) with Water_KO_02;
+  Connect Comp_before_dry.knockout(3) with Water_KO_03;
+  Connect Comp_before_dry.knockout(4) with Water_KO_04;
+  Connect Comp_before_dry.knockout(5) with Water_KO_05;
+  Connect Comp_before_dry.knockout(6) with Water_KO_06;
+  Connect Comp_after_dry.o_port with CO2_2;
+
+CONSTRAINTS
+
+  teg_flow as flow_mol;           //flow rate of TEG solvent into the stripper
+  water_content as molefraction;  //water contnt for CO2
+  fact as coefficient;            //fraction of max U2 or Ma to get desired pressure
+  Ele_tot as power;               //total electricity consumption (MW)
+  Q_tot as enthFlow;              //total heat consumption (GJ/hr)
+
+  // use mixer to calculate makeup TEG by setting oulet flow inlet is calculated
+  teg_flow = Mix_MU.o_port.F*Mix_MU.o_port.z("TEG");
+  //teg_flow is calculated to get the required water content
+  Absorber.oport_vap.z("H2O") = water_content;
+
+  //fact is figured out by fixing the discharge pressure.
+  //fact should be less than on.  If its a lot less than one you probably don't need
+  //so many stages.  If its more than one by a little try reducing mass flow coefficinets
+  //and maybe you can squeek by.
+  Comp_before_dry.compstage(1).U2 = fact*Comp_before_dry.compstage(1).U2max;
+  for i in [2:Comp_before_dry.no_stages] do
+     Comp_before_dry.compstage(i).Ma = fact*Comp_before_dry.Ma_max(i);
+  endfor
+  for i in [1:Comp_after_dry.no_stages] do
+     Comp_after_dry.compstage(i).Ma = fact*Comp_after_dry.Ma_max(i);
+  endfor
+
+  Absorber.bottom_P = Comp_before_dry.o_port.P - 0.06895;
+  Absorber.top_P = Absorber.bottom_P - 4*0.06895;
+
+  Ele_tot = (Comp_before_dry.Elec + Comp_after_dry.Elec + Solvent_Pump.pump_power)/1000;
+  Q_tot = Regen.Q;
+
+// =============================================================================================================
+// Input Variables
+
+From_Cap_F              as Flow_Mol         (description:"Molar flow rate of CO2 stream from capture process (kmol/hr)");
+From_Cap_T              as Temperature      (description:"Temperature of CO2 stream from capture process (C)"); 
+From_Cap_P              as Pressure         (description:"Pressure of CO2 stream from capture process (bar)");
+From_Cap_z_CO2          as Molefraction     (description:"Mole fraction of CO2 in CO2 stream from capture process (kmol/kmol)");
+From_Cap_z_H2O          as Molefraction     (description:"Mole fraction of H2O in CO2 stream from capture process (kmol/kmol)");
+From_Cap_z_TEG          as Molefraction     (description:"Mole fraction of TEG in CO2 stream from capture process (kmol/kmol)");
+
+        From_Cap_F = B6.i_port.Connection("CO2_From_Cap").F;
+        From_Cap_T = B6.i_port.Connection("CO2_From_Cap").T;
+        From_Cap_P = B6.i_port.Connection("CO2_From_Cap").P;
+        From_Cap_z_CO2 = B6.i_port.Connection("CO2_From_Cap").z("CO2");
+        From_Cap_z_H2O = B6.i_port.Connection("CO2_From_Cap").z("H2O");
+        From_Cap_z_TEG = B6.i_port.Connection("CO2_From_Cap").z("TEG");
+
+// =============================================================================================================
+
+// =============================================================================================================
+// Output Variables
+
+CO2_F                   as Flow_Mol         (description:"Molar flow rate of final CO2 stream (kmol/hr)");
+CO2_T                   as Temperature      (description:"Temperature of final CO2 stream (C)"); 
+CO2_P                   as Pressure         (description:"Pressure of final CO2 stream (bar)");
+CO2_z_CO2               as Molefraction     (description:"Mole fraction of CO2 in final CO2 stream (kmol/kmol)");
+CO2_z_H2O               as Molefraction     (description:"Mole fraction of H2O in final CO2 stream (kmol/kmol)");
+CO2_z_TEG               as Molefraction     (description:"Mole fraction of TEG in final CO2 stream (kmol/kmol)");
+
+        CO2_F = Comp_after_dry.o_port.F;
+        CO2_T = Comp_after_dry.o_port.T;
+        CO2_P = Comp_after_dry.o_port.P;
+        CO2_z_CO2 = Comp_after_dry.o_port.z("CO2");
+        CO2_z_H2O = Comp_after_dry.o_port.z("H2O");
+        CO2_z_TEG = Comp_after_dry.o_port.z("TEG");
+
+// =============================================================================================================
+
+// =============================================================================================================
+// Heat Integration Variables
+
+Comp_before_1_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 1 (C)");
+Comp_before_1_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 1 (C)");
+Comp_before_1_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 1 (GJ/hr)");
+Comp_before_2_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 2 (C)");
+Comp_before_2_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 2 (C)");
+Comp_before_2_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 2 (GJ/hr)");
+Comp_before_3_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 3 (C)");
+Comp_before_3_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 3 (C)");
+Comp_before_3_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 3 (GJ/hr)");
+Comp_before_4_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 4 (C)");
+Comp_before_4_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 4 (C)");
+Comp_before_4_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 4 (GJ/hr)");
+Comp_before_5_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 5 (C)");
+Comp_before_5_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 5 (C)");
+Comp_before_5_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 5 (GJ/hr)");
+Comp_before_6_In_T           as Temperature      (description:"Inlet temperature of Comp_before_dry intercooler 6 (C)");
+Comp_before_6_Out_T          as Temperature      (description:"Outlet temperature of Comp_before_dry intercooler 6 (C)");
+Comp_before_6_Q              as EnthFlow         (description:"Heat duty of Comp_before_dry intercooler 6 (GJ/hr)");
+Comp_after_1_In_T            as Temperature      (description:"Inlet temperature of Comp_after_dry intercooler 1 (C)");
+Comp_after_1_Out_T           as Temperature      (description:"Outlet temperature of Comp_after_dry intercooler 1 (C)");
+Comp_after_1_Q               as EnthFlow         (description:"Heat duty of Comp_after_dry intercooler 1 (GJ/hr)");
+Comp_after_2_In_T            as Temperature      (description:"Inlet temperature of Comp_after_dry intercooler 2 (C)");
+Comp_after_2_Out_T           as Temperature      (description:"Outlet temperature of Comp_after_dry intercooler 2 (C)");
+Comp_after_2_Q               as EnthFlow         (description:"Heat duty of Comp_after_dry intercooler 2 (GJ/hr)");
+Trim_Cooler_1_In_T           as Temperature      (description:"Inlet temperature of Trim_Cooler_1 (C)");
+Trim_Cooler_1_Out_T          as Temperature      (description:"Outlet temperature of Trim_Cooler_1 (C)");
+Trim_Cooler_1_Q              as EnthFlow         (description:"Heat duty of Trim_Cooler_1 (GJ/hr)");
+Gas_Cooler_2_In_T            as Temperature      (description:"Inlet temperature of Gas_Cooler_2 (C)");
+Gas_Cooler_2_Out_T           as Temperature      (description:"Outlet temperature of Gas_Cooler_2 (C)");
+Gas_Cooler_2_Q               as EnthFlow         (description:"Heat duty of Gas_Cooler_2 (GJ/hr)");
+Mix_MU_In_T                  as Temperature      (description:"Inlet temperature of Mix_MU (C)");
+Mix_MU_out_T                 as Temperature      (description:"Outlet temperature of Mix_MU (C)");
+Mix_MU_Q                     as EnthFlow         (description:"Heat duty of Mix_MU (GJ/hr)");
+HeatEx_1_Hot_In_T            as Temperature      (description:"Inlet temperature of hot side of HeatEx_1 (C)");
+HeatEx_1_Hot_Out_T           as Temperature      (description:"Outlet temperature of hot side of HeatEx_1 (C)");
+HeatEx_1_Cold_In_T           as Temperature      (description:"Inlet temperature of cold side of HeatEx_1 (C)");
+HeatEx_1_Cold_Out_T          as Temperature      (description:"Outlet temperature of cold side of HeatEx_1 (C)");
+HeatEx_1_Q                   as EnthFlow         (description:"Heat duty of HeatEx_1 (GJ/hr)");
+Absorber_T                   as Temperature      (description:"Temperature of Absorber (C)");
+Absorber_Q                   as EnthFlow         (description:"Heat duty of Absorber (GJ/hr)");
+Regen_T                      as Temperature      (description:"Temperature of Regen (C)");
+Regen_Q                      as EnthFlow         (description:"Heat duty of Regen (GJ/hr)");
+
+        Comp_before_1_In_T = Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").T;
+        Comp_before_1_Out_T = Comp_before_dry.intercooler(1).o_port_vap.T;
+        Comp_before_1_Q = Comp_before_dry.intercooler(1).q_port.Q;
+        Comp_before_2_In_T = Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").T;
+        Comp_before_2_Out_T = Comp_before_dry.intercooler(2).o_port_vap.T;
+        Comp_before_2_Q = Comp_before_dry.intercooler(2).q_port.Q;
+        Comp_before_3_In_T = Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").T;
+        Comp_before_3_Out_T = Comp_before_dry.intercooler(3).o_port_vap.T;
+        Comp_before_3_Q = Comp_before_dry.intercooler(3).q_port.Q;
+        Comp_before_4_In_T = Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").T;
+        Comp_before_4_Out_T = Comp_before_dry.intercooler(4).o_port_vap.T;
+        Comp_before_4_Q = Comp_before_dry.intercooler(4).q_port.Q;
+        Comp_before_5_In_T = Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").T;
+        Comp_before_5_Out_T = Comp_before_dry.intercooler(5).o_port_vap.T;
+        Comp_before_5_Q = Comp_before_dry.intercooler(5).q_port.Q;
+        Comp_before_6_In_T = Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").T;
+        Comp_before_6_Out_T = Comp_before_dry.intercooler(6).o_port_vap.T;
+        Comp_before_6_Q = Comp_before_dry.intercooler(6).q_port.Q;
+        Comp_after_1_In_T = Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").T;
+        Comp_after_1_Out_T = Comp_after_dry.intercooler(1).o_port_vap.T;
+        Comp_after_1_Q = Comp_after_dry.intercooler(1).q_port.Q;
+        Comp_after_2_In_T = Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").T;
+        Comp_after_2_Out_T = Comp_after_dry.intercooler(2).o_port_vap.T;
+        Comp_after_2_Q = Comp_after_dry.intercooler(2).q_port.Q;
+        Trim_Cooler_1_In_T = Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").T;
+        Trim_Cooler_1_Out_T = Trim_Cooler_1.o_port.T;
+        Trim_Cooler_1_Q = Trim_Cooler_1.q_port.Q;
+        Gas_Cooler_2_In_T = Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").T;
+        Gas_Cooler_2_Out_T = Gas_Cooler_2.o_port_vap.T;
+        Gas_Cooler_2_Q = Gas_Cooler_2.q_port.Q;
+        Mix_MU_In_T = Mix_MU.i_port.Connection("Lean_Solvent_4").T;
+        Mix_MU_out_T = Mix_MU.o_port.T;
+        Mix_MU_Q = Mix_MU.q_port.Q;
+        HeatEx_1_Hot_In_T = HeatEx_1.i_port_hot.T;
+        HeatEx_1_Hot_Out_T = HeatEx_1.o_port_hot.T;
+        HeatEx_1_Cold_In_T = HeatEx_1.i_port_cold.T;
+        HeatEx_1_Cold_Out_T = HeatEx_1.o_port_cold.T;
+        HeatEx_1_Q = HeatEx_1.Q;
+        Absorber_T = Absorber.oport_liq.T;
+        Absorber_Q = Absorber.Q;
+        Regen_T = Regen.oport_liq.T;
+        Regen_Q = Regen.Q;
+
+// =============================================================================================================
+
+END
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="TPQ" MODEL="Absorber">
+    { Version : 1
+SizeX : 13290
+SizeY : 9630
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ top_P bottom_P stage(*).o_port_liq.P stage(*).q_port.Q stage(*).o_port_liq.T ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Absorber">
+    { Version : 1
+SizeX : 16440
+SizeY : 12525
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Mix_MU">
+    { Version : 1
+SizeX : 18420
+SizeY : 12120
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="TPQ" MODEL="Regen">
+    { Version : 1
+SizeX : 13290
+SizeY : 9630
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ top_P bottom_P stage(*).o_port_liq.P stage(*).q_port.Q stage(*).o_port_liq.T ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 1485 1200 1200 ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Regen">
+    { Version : 1
+SizeX : 21225
+SizeY : 12660
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="HeatEx_1">
+    { Version : 1
+SizeX : 11910
+SizeY : 11040
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Solvent_Pump">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Trim_Cooler_1">
+    { Version : 1
+SizeX : 13125
+SizeY : 9510
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Gas_Cooler_2">
+    { Version : 1
+SizeX : 11670
+SizeY : 7305
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="B6">
+    { Version : 1
+SizeX : 11865
+SizeY : 6000
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="speed" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 12915
+SizeY : 10650
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).rspeed compstage(*).U2 compstage(*).U2max compstage(*).Ma Ma_max(*) ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3780 1170 795 1170 795 795 1170 795 1170 ]
+}  </FORM>
+  <FORM NAME="dimentionless" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).mu compstage(*).phi ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3780 1170 795 1170 795 795 1170 795 1170 ]
+}  </FORM>
+  <FORM NAME="efficiency" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 11745
+SizeY : 6525
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).eff_p compstage(*).eff_isen compstage(*).eff_drive compstage(*).eff_mech ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="TPQ" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 14010
+SizeY : 14865
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ P_discharge compstage(*).Pratio compstage(*).i_port.T compstage(*).o_port.T compstage(*).i_port.P compstage(*).o_port.P ic_P_drop(*) intercooler(*).o_port_vap.T intercooler(*).o_port_vap.P intercooler(*).q_port.Q precooler.o_port_vap.T precooler.o_port_vap.P precooler.q_port.Q ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="Impeller_Diffuser" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 12195
+SizeY : 9030
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).diffuser_type compstage(*).impeller_type ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3780 1860 795 1275 795 795 2430 795 2430 ]
+}  </FORM>
+  <FORM NAME="Power" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).elec_pow compstage(*).fluid_pow ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Comp_before_dry">
+    { Version : 1
+SizeX : 18390
+SizeY : 13830
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="speed" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).rspeed compstage(*).U2 compstage(*).U2max compstage(*).Ma Ma_max(*) ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3780 1170 795 1170 795 795 1170 795 1170 ]
+}  </FORM>
+  <FORM NAME="dimentionless" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).mu compstage(*).phi ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3780 1170 795 1170 795 795 1170 795 1170 ]
+}  </FORM>
+  <FORM NAME="efficiency" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 6285
+SizeY : 4770
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).eff_p compstage(*).eff_isen compstage(*).eff_drive compstage(*).eff_mech ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="TPQ" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 16155
+SizeY : 9990
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ P_discharge compstage(*).Pratio compstage(*).i_port.T compstage(*).o_port.T compstage(*).i_port.P compstage(*).o_port.P ic_P_drop(*) intercooler(*).o_port_vap.T intercooler(*).o_port_vap.P intercooler(*).q_port.Q precooler.o_port_vap.T precooler.o_port_vap.P precooler.q_port.Q ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="Impeller_Diffuser" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 14625
+SizeY : 4185
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).diffuser_type compstage(*).impeller_type ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 3705 1215 1215 1200 1200 1200 3300 1200 1200 ]
+}  </FORM>
+  <FORM NAME="Power" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 6570
+SizeY : 3750
+ShowAllVariables : False
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ compstage(*).elec_pow compstage(*).fluid_pow ]
+AttributesPaths : [ Value Spec Units Upper Lower Description Scale Derivative ]
+ColumnWidths : [ 1680 870 795 870 795 795 870 795 870 ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Comp_after_dry">
+    { Version : 1
+SizeX : 16530
+SizeY : 13545
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Rich_Solvent_1">
+    { Version : 1
+SizeX : 8445
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Dry_CO2">
+    { Version : 1
+SizeX : 12195
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Wet_CO2_1">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Lean_Solvent_1">
+    { Version : 1
+SizeX : 24840
+SizeY : 16140
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Lean_Sovlent_5">
+    { Version : 1
+SizeX : 12315
+SizeY : 6810
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Vap_Water_CO2">
+    { Version : 1
+SizeX : 12915
+SizeY : 7905
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Rich_Solvent_3">
+    { Version : 1
+SizeX : 7800
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Lean_Solvent_4">
+    { Version : 1
+SizeX : 8625
+SizeY : 5565
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Lean_Solvent_3">
+    { Version : 1
+SizeX : 8310
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="TEG_Makeup">
+    { Version : 1
+SizeX : 10335
+SizeY : 5100
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Lean_Solvent_2">
+    { Version : 1
+SizeX : 10335
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Water_KO_07">
+    { Version : 1
+SizeX : 9015
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Wet_CO2_3">
+    { Version : 1
+SizeX : 8085
+SizeY : 4785
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="CO2_1">
+    { Version : 1
+SizeX : 10245
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="CO2_From_Cap">
+    { Version : 1
+SizeX : 13740
+SizeY : 9705
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="CO2_2">
+    { Version : 1
+SizeX : 21720
+SizeY : 15075
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+  ActiveTasks : [];
+  Absorber.bottom_P.spec : Free;
+  Absorber.bottom_P : 59.12515943573106;
+  Absorber.iport(1).F.spec : Free;
+  Absorber.iport(1).F : 400.2491813521166;
+  Absorber.iport(1).h.spec : Free;
+  Absorber.iport(1).h : -0.7776438107132011;
+  Absorber.iport(1).P.spec : Free;
+  Absorber.iport(1).P : 61.708077835;
+  Absorber.iport(1).T.spec : Free;
+  Absorber.iport(1).T : 39.99999824;
+  Absorber.iport(1).z("CO2").spec : Free;
+  Absorber.iport(1).z("CO2") : 2.483486055517381e-003;
+  Absorber.iport(1).z("H2O").spec : Free;
+  Absorber.iport(1).z("H2O") : 6.479387432669169e-002;
+  Absorber.iport(1).z("TEG").spec : Free;
+  Absorber.iport(1).z("TEG") : 0.9327226396177911;
+  Absorber.iport(5).F : 7799.477551668797;
+  Absorber.iport(5).h : -0.3956663858219516;
+  Absorber.iport(5).P : 59.19410943573109;
+  Absorber.iport(5).T : 40.;
+  Absorber.iport(5).z("CO2") : 0.9977060763538195;
+  Absorber.iport(5).z("H2O") : 2.29392364618051e-003;
+  Absorber.iport(5).z("TEG") : 0.;
+  Absorber.oport_liq.F : 592.1026932463475;
+  Absorber.oport_liq.h : -0.6548581477768172;
+  Absorber.oport_liq.P : 59.12515943573105;
+  Absorber.oport_liq.T : 33.49827947795164;
+  Absorber.oport_liq.z("CO2") : 0.2974373247843679;
+  Absorber.oport_liq.z("H2O") : 7.208877449456157e-002;
+  Absorber.oport_liq.z("TEG") : 0.6304739007210705;
+  Absorber.oport_vap.F : 7607.624039774569;
+  Absorber.oport_vap.h : -0.3955565479973662;
+  Absorber.oport_vap.P : 58.84935943573107;
+  Absorber.oport_vap.T : 44.19167216957396;
+  Absorber.oport_vap.z("CO2") : 0.9998478734254109;
+  Absorber.oport_vap.z("H2O") : 1.5e-004;
+  Absorber.oport_vap.z("TEG") : 2.126574589128244e-006;
+  Absorber.Q : -0.5949746775337692;
+  Absorber.qport(1).Q : 3.800058910747993;
+  Absorber.qport(2).Q : -2.013531366125676e-002;
+  Absorber.qport(3).Q : -6.977455250790854e-003;
+  Absorber.qport(4).Q : -1.859778686289815e-002;
+  Absorber.qport(5).Q : -4.349323032506817;
+  Absorber.stage(1).Hin("IS1(1)") : -3071.463669180317;
+  Absorber.stage(1).Hin("IS5(1)") : -311.2512986214991;
+  Absorber.stage(1).Hin_mol("IS1(1)") : -0.3961154738222734;
+  Absorber.stage(1).Hin_mol("IS5(1)") : -0.7776438107132011;
+  Absorber.stage(1).i_port.Connection("IS1(1)").F : 7753.960327635174;
+  Absorber.stage(1).i_port.Connection("IS1(1)").h : -0.3961154738222731;
+  Absorber.stage(1).i_port.Connection("IS1(1)").P : 58.91830943573107;
+  Absorber.stage(1).i_port.Connection("IS1(1)").T : 36.57323238014926;
+  Absorber.stage(1).i_port.Connection("IS1(1)").z("CO2") : 0.9998927045522641;
+  Absorber.stage(1).i_port.Connection("IS1(1)").z("H2O") : 1.059197358506509e-004;
+  Absorber.stage(1).i_port.Connection("IS1(1)").z("TEG") : 1.375711885334493e-006;
+  Absorber.stage(1).i_port.Connection("IS5(1)").F : 400.2491813521166;
+  Absorber.stage(1).i_port.Connection("IS5(1)").h : -0.7776438107132011;
+  Absorber.stage(1).i_port.Connection("IS5(1)").P : 61.708077835;
+  Absorber.stage(1).i_port.Connection("IS5(1)").T : 39.99999824;
+  Absorber.stage(1).i_port.Connection("IS5(1)").z("CO2") : 2.483486055517381e-003;
+  Absorber.stage(1).i_port.Connection("IS5(1)").z("H2O") : 6.479387432669169e-002;
+  Absorber.stage(1).i_port.Connection("IS5(1)").z("TEG") : 0.9327226396177911;
+  Absorber.stage(1).o_port_liq.F : 546.5854692127226;
+  Absorber.stage(1).o_port_liq.h : -0.6763249776627199;
+  Absorber.stage(1).o_port_liq.P.spec : Free;
+  Absorber.stage(1).o_port_liq.P : 58.84935943573107;
+  Absorber.stage(1).o_port_liq.T.spec : Fixed;
+  Absorber.stage(1).o_port_liq.T : 44.19167216957396;
+  Absorber.stage(1).o_port_liq.z("CO2") : 0.2701419388136694;
+  Absorber.stage(1).o_port_liq.z("H2O") : 4.686156221767287e-002;
+  Absorber.stage(1).o_port_liq.z("TEG") : 0.6829964989686577;
+  Absorber.stage(1).o_port_vap.F : 7607.624039774569;
+  Absorber.stage(1).o_port_vap.h : -0.3955565479973662;
+  Absorber.stage(1).o_port_vap.P : 58.84935943573107;
+  Absorber.stage(1).o_port_vap.T : 44.19167216957396;
+  Absorber.stage(1).o_port_vap.z("CO2") : 0.9998478734254109;
+  Absorber.stage(1).o_port_vap.z("H2O") : 1.5e-004;
+  Absorber.stage(1).o_port_vap.z("TEG") : 2.126574589128244e-006;
+  Absorber.stage(1).q_port.Q.spec : Free;
+  Absorber.stage(1).q_port.Q : 3.800058910747993;
+  Absorber.stage(1).VapFrac : 0.9329689200884163;
+  Absorber.stage(1).z_total("CO2") : 0.950934896595971;
+  Absorber.stage(1).z_total("H2O") : 3.281126460646061e-003;
+  Absorber.stage(1).z_total("TEG") : 4.578397694338297e-002;
+  Absorber.stage(2).Hin("IS0(1)") : -369.6694052555644;
+  Absorber.stage(2).Hin("IS1(2)") : -3082.840127187415;
+  Absorber.stage(2).Hin_mol("IS0(1)") : -0.6763249776618097;
+  Absorber.stage(2).Hin_mol("IS1(2)") : -0.3963032235182545;
+  Absorber.stage(2).i_port.Connection("IS0(1)").F : 546.5854692127226;
+  Absorber.stage(2).i_port.Connection("IS0(1)").h : -0.6763249776627199;
+  Absorber.stage(2).i_port.Connection("IS0(1)").P : 58.84935943573107;
+  Absorber.stage(2).i_port.Connection("IS0(1)").T : 44.19167216957396;
+  Absorber.stage(2).i_port.Connection("IS0(1)").z("CO2") : 0.2701419388136694;
+  Absorber.stage(2).i_port.Connection("IS0(1)").z("H2O") : 4.686156221767287e-002;
+  Absorber.stage(2).i_port.Connection("IS0(1)").z("TEG") : 0.6829964989686577;
+  Absorber.stage(2).i_port.Connection("IS1(2)").F : 7778.993316831835;
+  Absorber.stage(2).i_port.Connection("IS1(2)").h : -0.3963032235182542;
+  Absorber.stage(2).i_port.Connection("IS1(2)").P : 58.98725943573106;
+  Absorber.stage(2).i_port.Connection("IS1(2)").T : 34.27302750340408;
+  Absorber.stage(2).i_port.Connection("IS1(2)").z("CO2") : 0.9999034578498173;
+  Absorber.stage(2).i_port.Connection("IS1(2)").z("H2O") : 9.531575528658943e-005;
+  Absorber.stage(2).i_port.Connection("IS1(2)").z("TEG") : 1.226394896202934e-006;
+  Absorber.stage(2).o_port_liq.F : 571.6184584093838;
+  Absorber.stage(2).o_port_liq.h : -0.6666439702396949;
+  Absorber.stage(2).o_port_liq.P.spec : Free;
+  Absorber.stage(2).o_port_liq.P : 58.91830943573107;
+  Absorber.stage(2).o_port_liq.T.spec : Fixed;
+  Absorber.stage(2).o_port_liq.T : 36.57323238014926;
+  Absorber.stage(2).o_port_liq.z("CO2") : 0.3022463829499073;
+  Absorber.stage(2).o_port_liq.z("H2O") : 4.466967745993791e-002;
+  Absorber.stage(2).o_port_liq.z("TEG") : 0.653083939590155;
+  Absorber.stage(2).o_port_vap.F : 7753.960327635174;
+  Absorber.stage(2).o_port_vap.h : -0.3961154738222731;
+  Absorber.stage(2).o_port_vap.P : 58.91830943573107;
+  Absorber.stage(2).o_port_vap.T : 36.57323238014926;
+  Absorber.stage(2).o_port_vap.z("CO2") : 0.9998927045522641;
+  Absorber.stage(2).o_port_vap.z("H2O") : 1.059197358506509e-004;
+  Absorber.stage(2).o_port_vap.z("TEG") : 1.375711885334493e-006;
+  Absorber.stage(2).q_port.Q.spec : Free;
+  Absorber.stage(2).q_port.Q : -2.013531366125676e-002;
+  Absorber.stage(2).VapFrac : 0.931341895488691;
+  Absorber.stage(2).z_total("CO2") : 0.9519936304917049;
+  Absorber.stage(2).z_total("H2O") : 3.165582870986448e-003;
+  Absorber.stage(2).z_total("TEG") : 4.484078663730869e-002;
+  Absorber.stage(3).Hin("IS0(2)") : -381.0659985757402;
+  Absorber.stage(3).Hin("IS1(3)") : -3086.991849986019;
+  Absorber.stage(3).Hin_mol("IS0(2)") : -0.6666439702386708;
+  Absorber.stage(3).Hin_mol("IS1(3)") : -0.3963621822383877;
+  Absorber.stage(3).i_port.Connection("IS0(2)").F : 571.6184584093838;
+  Absorber.stage(3).i_port.Connection("IS0(2)").h : -0.6666439702396949;
+  Absorber.stage(3).i_port.Connection("IS0(2)").P : 58.91830943573107;
+  Absorber.stage(3).i_port.Connection("IS0(2)").T : 36.57323238014926;
+  Absorber.stage(3).i_port.Connection("IS0(2)").z("CO2") : 0.3022463829499073;
+  Absorber.stage(3).i_port.Connection("IS0(2)").z("H2O") : 4.466967745993791e-002;
+  Absorber.stage(3).i_port.Connection("IS0(2)").z("TEG") : 0.653083939590155;
+  Absorber.stage(3).i_port.Connection("IS1(3)").F : 7788.31076303183;
+  Absorber.stage(3).i_port.Connection("IS1(3)").h : -0.3963621822383875;
+  Absorber.stage(3).i_port.Connection("IS1(3)").P : 59.05620943573106;
+  Absorber.stage(3).i_port.Connection("IS1(3)").T : 33.6229446183044;
+  Absorber.stage(3).i_port.Connection("IS1(3)").z("CO2") : 0.9999049778696117;
+  Absorber.stage(3).i_port.Connection("IS1(3)").z("H2O") : 9.382830514295909e-005;
+  Absorber.stage(3).i_port.Connection("IS1(3)").z("TEG") : 1.193825245335455e-006;
+  Absorber.stage(3).o_port_liq.F : 580.9359046093798;
+  Absorber.stage(3).o_port_liq.h : -0.6631105011294181;
+  Absorber.stage(3).o_port_liq.P.spec : Free;
+  Absorber.stage(3).o_port_liq.P : 58.98725943573106;
+  Absorber.stage(3).o_port_liq.T.spec : Fixed;
+  Absorber.stage(3).o_port_liq.T : 34.27302750340408;
+  Absorber.stage(3).o_port_liq.z("CO2") : 0.3134562610047776;
+  Absorber.stage(3).o_port_liq.z("H2O") : 4.393482196767658e-002;
+  Absorber.stage(3).o_port_liq.z("TEG") : 0.6426089170275459;
+  Absorber.stage(3).o_port_vap.F : 7778.993316831835;
+  Absorber.stage(3).o_port_vap.h : -0.3963032235182542;
+  Absorber.stage(3).o_port_vap.P : 58.98725943573106;
+  Absorber.stage(3).o_port_vap.T : 34.27302750340408;
+  Absorber.stage(3).o_port_vap.z("CO2") : 0.9999034578498173;
+  Absorber.stage(3).o_port_vap.z("H2O") : 9.531575528658943e-005;
+  Absorber.stage(3).o_port_vap.z("TEG") : 1.226394896202934e-006;
+  Absorber.stage(3).q_port.Q.spec : Free;
+  Absorber.stage(3).q_port.Q : -6.977455250790854e-003;
+  Absorber.stage(3).VapFrac : 0.9305094709271677;
+  Absorber.stage(3).z_total("CO2") : 0.9522018789604438;
+  Absorber.stage(3).z_total("H2O") : 3.141746236170624e-003;
+  Absorber.stage(3).z_total("TEG") : 4.465637480338557e-002;
+  Absorber.stage(4).Hin("IS0(3)") : -385.2246988289801;
+  Absorber.stage(4).Hin("IS1(4)") : -3088.296888396955;
+  Absorber.stage(4).Hin_mol("IS0(3)") : -0.663110501128355;
+  Absorber.stage(4).Hin_mol("IS1(4)") : -0.3963709053575214;
+  Absorber.stage(4).i_port.Connection("IS0(3)").F : 580.9359046093798;
+  Absorber.stage(4).i_port.Connection("IS0(3)").h : -0.6631105011294181;
+  Absorber.stage(4).i_port.Connection("IS0(3)").P : 58.98725943573106;
+  Absorber.stage(4).i_port.Connection("IS0(3)").T : 34.27302750340408;
+  Absorber.stage(4).i_port.Connection("IS0(3)").z("CO2") : 0.3134562610047776;
+  Absorber.stage(4).i_port.Connection("IS0(3)").z("H2O") : 4.393482196767658e-002;
+  Absorber.stage(4).i_port.Connection("IS0(3)").z("TEG") : 0.6426089170275459;
+  Absorber.stage(4).i_port.Connection("IS1(4)").F : 7791.431829769017;
+  Absorber.stage(4).i_port.Connection("IS1(4)").h : -0.3963709053575217;
+  Absorber.stage(4).i_port.Connection("IS1(4)").P : 59.12515943573105;
+  Absorber.stage(4).i_port.Connection("IS1(4)").T : 33.49827947795164;
+  Absorber.stage(4).i_port.Connection("IS1(4)").z("CO2") : 0.9998543494567285;
+  Absorber.stage(4).i_port.Connection("IS1(4)").z("H2O") : 1.445015990650115e-004;
+  Absorber.stage(4).i_port.Connection("IS1(4)").z("TEG") : 1.148944206516736e-006;
+  Absorber.stage(4).o_port_liq.F : 584.0569713465661;
+  Absorber.stage(4).o_port_liq.h : -0.6618332696818573;
+  Absorber.stage(4).o_port_liq.P.spec : Free;
+  Absorber.stage(4).o_port_liq.P : 59.05620943573106;
+  Absorber.stage(4).o_port_liq.T.spec : Fixed;
+  Absorber.stage(4).o_port_liq.T : 33.6229446183044;
+  Absorber.stage(4).o_port_liq.z("CO2") : 0.3164490930665529;
+  Absorber.stage(4).o_port_liq.z("H2O") : 4.437653717993585e-002;
+  Absorber.stage(4).o_port_liq.z("TEG") : 0.6391743697535112;
+  Absorber.stage(4).o_port_vap.F : 7788.31076303183;
+  Absorber.stage(4).o_port_vap.h : -0.3963621822383875;
+  Absorber.stage(4).o_port_vap.P : 59.05620943573106;
+  Absorber.stage(4).o_port_vap.T : 33.6229446183044;
+  Absorber.stage(4).o_port_vap.z("CO2") : 0.9999049778696117;
+  Absorber.stage(4).o_port_vap.z("H2O") : 9.382830514295909e-005;
+  Absorber.stage(4).o_port_vap.z("TEG") : 1.193825245335455e-006;
+  Absorber.stage(4).q_port.Q.spec : Free;
+  Absorber.stage(4).q_port.Q : -1.859778686289815e-002;
+  Absorber.stage(4).VapFrac : 0.9302399285511162;
+  Absorber.stage(4).z_total("CO2") : 0.9522270465135444;
+  Absorber.stage(4).z_total("H2O") : 3.182993240087317e-003;
+  Absorber.stage(4).z_total("TEG") : 4.458996024636811e-002;
+  Absorber.stage(5).Hin("IS0(4)") : -386.5483350261543;
+  Absorber.stage(5).Hin("IS5(5)") : -3085.142503331264;
+  Absorber.stage(5).Hin_mol("IS0(4)") : -0.6618332696807848;
+  Absorber.stage(5).Hin_mol("IS5(5)") : -0.3955575848373534;
+  Absorber.stage(5).i_port.Connection("IS0(4)").F : 584.0569713465661;
+  Absorber.stage(5).i_port.Connection("IS0(4)").h : -0.6618332696818573;
+  Absorber.stage(5).i_port.Connection("IS0(4)").P : 59.05620943573106;
+  Absorber.stage(5).i_port.Connection("IS0(4)").T : 33.6229446183044;
+  Absorber.stage(5).i_port.Connection("IS0(4)").z("CO2") : 0.3164490930665529;
+  Absorber.stage(5).i_port.Connection("IS0(4)").z("H2O") : 4.437653717993585e-002;
+  Absorber.stage(5).i_port.Connection("IS0(4)").z("TEG") : 0.6391743697535112;
+  Absorber.stage(5).i_port.Connection("IS5(5)").F : 7799.477551668797;
+  Absorber.stage(5).i_port.Connection("IS5(5)").h : -0.3956663858219516;
+  Absorber.stage(5).i_port.Connection("IS5(5)").P : 59.19410943573109;
+  Absorber.stage(5).i_port.Connection("IS5(5)").T : 40.;
+  Absorber.stage(5).i_port.Connection("IS5(5)").z("CO2") : 0.9977060763538195;
+  Absorber.stage(5).i_port.Connection("IS5(5)").z("H2O") : 2.29392364618051e-003;
+  Absorber.stage(5).i_port.Connection("IS5(5)").z("TEG") : 0.;
+  Absorber.stage(5).o_port_liq.F : 592.1026932463475;
+  Absorber.stage(5).o_port_liq.h : -0.6548581477768172;
+  Absorber.stage(5).o_port_liq.P.spec : Free;
+  Absorber.stage(5).o_port_liq.P : 59.12515943573105;
+  Absorber.stage(5).o_port_liq.T.spec : Fixed;
+  Absorber.stage(5).o_port_liq.T : 33.49827947795164;
+  Absorber.stage(5).o_port_liq.z("CO2") : 0.2974373247843679;
+  Absorber.stage(5).o_port_liq.z("H2O") : 7.208877449456157e-002;
+  Absorber.stage(5).o_port_liq.z("TEG") : 0.6304739007210705;
+  Absorber.stage(5).o_port_vap.F : 7791.431829769017;
+  Absorber.stage(5).o_port_vap.h : -0.3963709053575217;
+  Absorber.stage(5).o_port_vap.P : 59.12515943573105;
+  Absorber.stage(5).o_port_vap.T : 33.49827947795164;
+  Absorber.stage(5).o_port_vap.z("CO2") : 0.9998543494567285;
+  Absorber.stage(5).o_port_vap.z("H2O") : 1.445015990650115e-004;
+  Absorber.stage(5).o_port_vap.z("TEG") : 1.148944206516736e-006;
+  Absorber.stage(5).q_port.Q.spec : Free;
+  Absorber.stage(5).q_port.Q : -4.349323032506817;
+  Absorber.stage(5).VapFrac : 0.9293731430793486;
+  Absorber.stage(5).z_total("CO2") : 0.950244842756568;
+  Absorber.stage(5).z_total("H2O") : 5.225699466915425e-003;
+  Absorber.stage(5).z_total("TEG") : 4.452945777651651e-002;
+  Absorber.top_P.spec : Free;
+  Absorber.top_P : 58.84935943573107;
+  Absorber_Q : -0.5949746775337692;
+  Absorber_T : 33.49827947795164;
+  B6.ComponentList : "Compress";
+  B6.h_liq : -0.2868728445289734;
+  B6.h_vap : -0.3772316551169665;
+  B6.Hin("CO2_From_Cap") : -3213.707949448369;
+  B6.Hin("Wet_CO2_3") : -71.88293302130593;
+  B6.Hin_mol("CO2_From_Cap") : -0.3764090164944287;
+  B6.Hin_mol("Wet_CO2_3") : -0.383372545924805;
+  B6.i_port.Connection("CO2_From_Cap").F.spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").F : 8537.808098696105;
+  B6.i_port.Connection("CO2_From_Cap").P.spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").P : 1.0122468982422;
+  B6.i_port.Connection("CO2_From_Cap").T.spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").T : 50.;
+  B6.i_port.Connection("CO2_From_Cap").z("CO2").spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").z("CO2") : 0.8909274123450593;
+  B6.i_port.Connection("CO2_From_Cap").z("H2O").spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").z("H2O") : 0.1090725876549406;
+  B6.i_port.Connection("CO2_From_Cap").z("TEG").spec : Fixed;
+  B6.i_port.Connection("CO2_From_Cap").z("TEG") : 0.;
+  B6.i_port.Connection("Wet_CO2_3").F : 187.5015146113387;
+  B6.i_port.Connection("Wet_CO2_3").h : -0.3829715073786047;
+  B6.i_port.Connection("Wet_CO2_3").P.spec : Free;
+  B6.i_port.Connection("Wet_CO2_3").P : 1.034213595;
+  B6.i_port.Connection("Wet_CO2_3").T.spec : Free;
+  B6.i_port.Connection("Wet_CO2_3").T : 39.99999824;
+  B6.i_port.Connection("Wet_CO2_3").z("CO2") : 0.9339512218001412;
+  B6.i_port.Connection("Wet_CO2_3").z("H2O") : 6.60487197359467e-002;
+  B6.i_port.Connection("Wet_CO2_3").z("TEG") : 5.846391223807767e-008;
+  B6.o_port.F : 8725.309613307443;
+  B6.o_port.h : -0.3765586584410303;
+  B6.o_port.P.spec : Fixed;
+  B6.o_port.P : 1.0135293231;
+  B6.o_port.T.spec : Free;
+  B6.o_port.T : 49.83884845517932;
+  B6.o_port.z("CO2") : 0.891851967437623;
+  B6.o_port.z("H2O") : 0.1081480313060236;
+  B6.o_port.z("TEG") : 1.25635336516027e-009;
+  B6.q_port.Q.spec : Fixed;
+  B6.q_port.Q : 0.;
+  B6.VapFrac : 0.9925519529135359;
+  B6.z_liq("CO2") : 2.955748372478097e-005;
+  B6.z_liq("H2O") : 0.9999702738340519;
+  B6.z_liq("TEG") : 1.686822233795839e-007;
+  B6.z_vap("CO2") : 0.8985441464037764;
+  B6.z_vap("H2O") : 0.1014558535962233;
+  B6.z_vap("TEG") : 2.244510285163493e-016;
+  CO2_F : 7607.624039774568;
+  CO2_P : 152.787821768;
+  CO2_T : 40.;
+  CO2_z_CO2 : 0.9998478734254109;
+  CO2_z_H2O : 1.5e-004;
+  CO2_z_TEG : 2.126574589153956e-006;
+  Comp_after_1_In_T : 86.18822271607131;
+  Comp_after_1_Out_T : 86.18822271607094;
+  Comp_after_1_Q : 0.;
+  Comp_after_2_In_T : 131.0924514635857;
+  Comp_after_2_Out_T : 40.;
+  Comp_after_2_Q : -78.40202643544018;
+  Comp_after_dry.ComponentList : "Compress";
+  Comp_after_dry.compstage(1).c0 : 235.43926737181;
+  Comp_after_dry.compstage(1).Cp0 : 74.13947837397444;
+  Comp_after_dry.compstage(1).Cv0 : 36.27861125196705;
+  Comp_after_dry.compstage(1).deltaH_isen : 9.5007311152151e-004;
+  Comp_after_dry.compstage(1).deltaH_p : 9.59605393275763e-004;
+  Comp_after_dry.compstage(1).deltaH_t : 1.118152464009726e-003;
+  Comp_after_dry.compstage(1).deltaS : 0.4692059158978041;
+  Comp_after_dry.compstage(1).eff_isen : 0.8496811857969004;
+  Comp_after_dry.compstage(1).eff_p : 0.8582062144142592;
+  Comp_after_dry.compstage(1).eff_p_v : 0.8582062144142592;
+  Comp_after_dry.compstage(1).elec_pow : 2435.991857197468;
+  Comp_after_dry.compstage(1).fluid_pow : 2362.912101481544;
+  Comp_after_dry.compstage(1).H0 : -0.3956297883543245;
+  Comp_after_dry.compstage(1).Hisen : -0.394679715242803;
+  Comp_after_dry.compstage(1).I : 0.6241649305555554;
+  Comp_after_dry.compstage(1).i_port.F : 7607.624039774569;
+  Comp_after_dry.compstage(1).i_port.h : -0.3955565479973662;
+  Comp_after_dry.compstage(1).i_port.P : 58.84935943573107;
+  Comp_after_dry.compstage(1).i_port.T : 44.19167216957396;
+  Comp_after_dry.compstage(1).i_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.compstage(1).i_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.compstage(1).i_port.z("TEG") : 2.126574589128244e-006;
+  Comp_after_dry.compstage(1).impeller_type : 1;
+  Comp_after_dry.compstage(1).kappaT : 2.643629997023502e-007;
+  Comp_after_dry.compstage(1).Ma : 0.8569694916682964;
+  Comp_after_dry.compstage(1).mu_p : 0.5356622222222222;
+  Comp_after_dry.compstage(1).mu_p_v : 0.5356622222222222;
+  Comp_after_dry.compstage(1).MW : 44.00612658970621;
+  Comp_after_dry.compstage(1).o_port.F : 7607.624039774569;
+  Comp_after_dry.compstage(1).o_port.h : -0.3945116358903147;
+  Comp_after_dry.compstage(1).o_port.P : 95.23602016260676;
+  Comp_after_dry.compstage(1).o_port.T : 86.18822271607131;
+  Comp_after_dry.compstage(1).o_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.compstage(1).o_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.compstage(1).o_port.z("TEG") : 2.126574589128244e-006;
+  Comp_after_dry.compstage(1).P0_f : 58.84936943573107;
+  Comp_after_dry.compstage(1).phi.spec : Fixed;
+  Comp_after_dry.compstage(1).phi : 9.e-002;
+  Comp_after_dry.compstage(1).Pratio : 1.618301729632474;
+  Comp_after_dry.compstage(1).r2 : 0.1081163816272903;
+  Comp_after_dry.compstage(1).rho_v0 : 3.169036651312105;
+  Comp_after_dry.compstage(1).rho_v0f : 3.169037489088362;
+  Comp_after_dry.compstage(1).rho_v2 : 4.444164599393074;
+  Comp_after_dry.compstage(1).rspeed : 1866.176672226404;
+  Comp_after_dry.compstage(1).S0 : -35.37120575848662;
+  Comp_after_dry.compstage(1).S2 : -34.90199984258882;
+  Comp_after_dry.compstage(1).Tisen : 83.96450181942959;
+  Comp_after_dry.compstage(1).U2 : 201.764269278373;
+  Comp_after_dry.compstage(1).U2max : 320.2487904895193;
+  Comp_after_dry.compstage(1).visc0 : 1.897159574174637e-002;
+  Comp_after_dry.compstage(2).c0 : 260.4313886592078;
+  Comp_after_dry.compstage(2).Cp0 : 74.71620287119167;
+  Comp_after_dry.compstage(2).Cv0 : 37.36353994145781;
+  Comp_after_dry.compstage(2).deltaH_isen : 1.091133825251334e-003;
+  Comp_after_dry.compstage(2).deltaH_p : 1.103524124619722e-003;
+  Comp_after_dry.compstage(2).deltaH_t : 1.325386245618925e-003;
+  Comp_after_dry.compstage(2).deltaS : 0.5817811186942458;
+  Comp_after_dry.compstage(2).eff_isen : 0.8232572420742145;
+  Comp_after_dry.compstage(2).eff_p : 0.8326056862800751;
+  Comp_after_dry.compstage(2).eff_p_v : 0.8326056862800751;
+  Comp_after_dry.compstage(2).elec_pow : 2887.468575073624;
+  Comp_after_dry.compstage(2).fluid_pow : 2800.844517821415;
+  Comp_after_dry.compstage(2).H0 : -0.3945116358903147;
+  Comp_after_dry.compstage(2).Hisen : -0.3934205020650634;
+  Comp_after_dry.compstage(2).I : 0.6446024232669476;
+  Comp_after_dry.compstage(2).i_port.F : 7607.624039774568;
+  Comp_after_dry.compstage(2).i_port.h : -0.3945116358903147;
+  Comp_after_dry.compstage(2).i_port.P : 95.23602016260676;
+  Comp_after_dry.compstage(2).i_port.T : 86.18822271607094;
+  Comp_after_dry.compstage(2).i_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.compstage(2).i_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.compstage(2).i_port.z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.compstage(2).impeller_type : 1;
+  Comp_after_dry.compstage(2).kappaT : 1.507567769346812e-007;
+  Comp_after_dry.compstage(2).Ma : 0.8299947860952401;
+  Comp_after_dry.compstage(2).mu_p : 0.5366996430019764;
+  Comp_after_dry.compstage(2).mu_p_v : 0.5366996430019764;
+  Comp_after_dry.compstage(2).MW : 44.00612658970621;
+  Comp_after_dry.compstage(2).o_port.F : 7607.624039774568;
+  Comp_after_dry.compstage(2).o_port.h : -0.3931862496446957;
+  Comp_after_dry.compstage(2).o_port.P : 152.887821768;
+  Comp_after_dry.compstage(2).o_port.T : 131.0924514635857;
+  Comp_after_dry.compstage(2).o_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.compstage(2).o_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.compstage(2).o_port.z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.compstage(2).P0_f : 95.23603016260677;
+  Comp_after_dry.compstage(2).phi : 5.219228848379003e-002;
+  Comp_after_dry.compstage(2).Pratio : 1.605357106554411;
+  Comp_after_dry.compstage(2).r2 : 0.1158286339871587;
+  Comp_after_dry.compstage(2).rho_v0 : 4.44416459939266;
+  Comp_after_dry.compstage(2).rho_v0f : 4.444165269380692;
+  Comp_after_dry.compstage(2).rho_v2 : 6.01339091042401;
+  Comp_after_dry.compstage(2).rspeed : 1866.176672226404;
+  Comp_after_dry.compstage(2).S0 : -34.90199984258893;
+  Comp_after_dry.compstage(2).S2 : -34.32021872389468;
+  Comp_after_dry.compstage(2).Tisen : 127.9163076097329;
+  Comp_after_dry.compstage(2).U2 : 216.1566947226827;
+  Comp_after_dry.compstage(2).U2max : 331.5307498985748;
+  Comp_after_dry.compstage(2).visc0 : 2.291525550314479e-002;
+  Comp_after_dry.Elec : 5323.460432271091;
+  Comp_after_dry.first_stage_no : 7;
+  Comp_after_dry.i_port.F : 7607.624039774569;
+  Comp_after_dry.i_port.h : -0.3955565479973662;
+  Comp_after_dry.i_port.P : 58.84935943573107;
+  Comp_after_dry.i_port.T : 44.19167216957396;
+  Comp_after_dry.i_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.i_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.i_port.z("TEG") : 2.126574589128244e-006;
+  Comp_after_dry.ic_P_drop(2) : 0.1;
+  Comp_after_dry.intercooler(1).Hin("IS2(1)") : -3001.29620516995;
+  Comp_after_dry.intercooler(1).Hin_mol("IS2(1)") : -0.3945116358903147;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").F : 7607.624039774569;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").h : -0.3945116358903147;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").P : 95.23602016260676;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").T : 86.18822271607131;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").z("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").z("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(1).i_port.Connection("IS2(1)").z("TEG") : 2.126574589128244e-006;
+  Comp_after_dry.intercooler(1).o_port_liq.F : 0.;
+  Comp_after_dry.intercooler(1).o_port_liq.h : -0.3932213931670776;
+  Comp_after_dry.intercooler(1).o_port_liq.P : 95.23602016260676;
+  Comp_after_dry.intercooler(1).o_port_liq.T : 86.18822271607094;
+  Comp_after_dry.intercooler(1).o_port_liq.z("CO2") : 0.9998478734228765;
+  Comp_after_dry.intercooler(1).o_port_liq.z("H2O") : 1.500000023933792e-004;
+  Comp_after_dry.intercooler(1).o_port_liq.z("TEG") : 2.126574730115349e-006;
+  Comp_after_dry.intercooler(1).o_port_vap.F : 7607.624039774568;
+  Comp_after_dry.intercooler(1).o_port_vap.h : -0.3945116358903147;
+  Comp_after_dry.intercooler(1).o_port_vap.P : 95.23602016260676;
+  Comp_after_dry.intercooler(1).o_port_vap.T.spec : Free;
+  Comp_after_dry.intercooler(1).o_port_vap.T : 86.18822271607094;
+  Comp_after_dry.intercooler(1).o_port_vap.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(1).o_port_vap.z("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(1).o_port_vap.z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.intercooler(1).q_port.Q.spec : Fixed;
+  Comp_after_dry.intercooler(1).q_port.Q : 0.;
+  Comp_after_dry.intercooler(1).VapFrac : 1.;
+  Comp_after_dry.intercooler(1).z_total("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(1).z_total("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(1).z_total("TEG") : 2.126574589128244e-006;
+  Comp_after_dry.intercooler(2).Hin("IS2(2)") : -2991.213164905717;
+  Comp_after_dry.intercooler(2).Hin_mol("IS2(2)") : -0.393186249644686;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").F : 7607.624039774568;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").h : -0.3931862496446957;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").P : 152.887821768;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").T : 131.0924514635857;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").z("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").z("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(2).i_port.Connection("IS2(2)").z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.intercooler(2).o_port_liq.F : 0.;
+  Comp_after_dry.intercooler(2).o_port_liq.P : 152.787821768;
+  Comp_after_dry.intercooler(2).o_port_liq.T : 40.;
+  Comp_after_dry.intercooler(2).o_port_liq.z("CO2") : 0.999847873423381;
+  Comp_after_dry.intercooler(2).o_port_liq.z("H2O") : 1.500000019382047e-004;
+  Comp_after_dry.intercooler(2).o_port_liq.z("TEG") : 2.126574680917069e-006;
+  Comp_after_dry.intercooler(2).o_port_vap.F : 7607.624039774568;
+  Comp_after_dry.intercooler(2).o_port_vap.h : -0.4034919674385116;
+  Comp_after_dry.intercooler(2).o_port_vap.P : 152.787821768;
+  Comp_after_dry.intercooler(2).o_port_vap.T.spec : Fixed;
+  Comp_after_dry.intercooler(2).o_port_vap.T : 40.;
+  Comp_after_dry.intercooler(2).o_port_vap.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(2).o_port_vap.z("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(2).o_port_vap.z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.intercooler(2).q_port.Q : -78.40202643544018;
+  Comp_after_dry.intercooler(2).VapFrac : 1.;
+  Comp_after_dry.intercooler(2).z_total("CO2") : 0.9998478734254109;
+  Comp_after_dry.intercooler(2).z_total("H2O") : 1.5e-004;
+  Comp_after_dry.intercooler(2).z_total("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.knockout(1).F : 0.;
+  Comp_after_dry.knockout(1).h : -0.3932213931670776;
+  Comp_after_dry.knockout(1).P : 95.23602016260676;
+  Comp_after_dry.knockout(1).T : 86.18822271607094;
+  Comp_after_dry.knockout(1).z("CO2") : 0.9998478734228765;
+  Comp_after_dry.knockout(1).z("H2O") : 1.500000023933792e-004;
+  Comp_after_dry.knockout(1).z("TEG") : 2.126574730115349e-006;
+  Comp_after_dry.knockout(2).F : 0.;
+  Comp_after_dry.knockout(2).P : 152.787821768;
+  Comp_after_dry.knockout(2).T : 40.;
+  Comp_after_dry.knockout(2).z("CO2") : 0.999847873423381;
+  Comp_after_dry.knockout(2).z("H2O") : 1.500000019382047e-004;
+  Comp_after_dry.knockout(2).z("TEG") : 2.126574680917069e-006;
+  Comp_after_dry.Ma_max(1) : 0.8569261498908267;
+  Comp_after_dry.Ma_max(2) : 0.8299528085806731;
+  Comp_after_dry.no_stages : 2;
+  Comp_after_dry.o_port.F : 7607.624039774568;
+  Comp_after_dry.o_port.h : -0.4034919674385116;
+  Comp_after_dry.o_port.P : 152.787821768;
+  Comp_after_dry.o_port.T : 40.;
+  Comp_after_dry.o_port.z("CO2") : 0.9998478734254109;
+  Comp_after_dry.o_port.z("H2O") : 1.5e-004;
+  Comp_after_dry.o_port.z("TEG") : 2.126574589153956e-006;
+  Comp_after_dry.P_discharge.spec : Fixed;
+  Comp_after_dry.P_discharge : 152.787821768;
+  Comp_after_dry.Q : -78.40202643544018;
+  Comp_before_1_In_T : 115.7839283992834;
+  Comp_before_1_Out_T : 40.;
+  Comp_before_1_Q : -60.01465745524023;
+  Comp_before_2_In_T : 115.9556076231117;
+  Comp_before_2_Out_T : 40.;
+  Comp_before_2_Q : -30.0551407663677;
+  Comp_before_3_In_T : 102.1934139079112;
+  Comp_before_3_Out_T : 40.;
+  Comp_before_3_Q : -22.4945698940762;
+  Comp_before_4_In_T : 97.93201957936746;
+  Comp_before_4_Out_T : 40.;
+  Comp_before_4_Q : -20.99723393667307;
+  Comp_before_5_In_T : 87.00149772444642;
+  Comp_before_5_Out_T : 40.;
+  Comp_before_5_Q : -18.57996306264406;
+  Comp_before_6_In_T : 84.77988217453172;
+  Comp_before_6_Out_T : 40.;
+  Comp_before_6_Q : -22.445476828338;
+  Comp_before_dry.ComponentList : "Compress";
+  Comp_before_dry.compstage(1).c0 : 288.2242917274581;
+  Comp_before_dry.compstage(1).Cp0 : 38.25269906026513;
+  Comp_before_dry.compstage(1).Cv0 : 29.74116894045053;
+  Comp_before_dry.compstage(1).deltaH_isen : 2.457622169395601e-003;
+  Comp_before_dry.compstage(1).deltaH_p : 2.490945003740954e-003;
+  Comp_before_dry.compstage(1).deltaH_t : 2.906578276875994e-003;
+  Comp_before_dry.compstage(1).deltaS : 1.170992662525816;
+  Comp_before_dry.compstage(1).eff_isen : 0.8455379264848381;
+  Comp_before_dry.compstage(1).eff_p : 0.8570025529875754;
+  Comp_before_dry.compstage(1).eff_p_v : 0.8570025529875754;
+  Comp_before_dry.compstage(1).elec_pow : 7262.541632605009;
+  Comp_before_dry.compstage(1).fluid_pow : 7044.665383626859;
+  Comp_before_dry.compstage(1).H0 : -0.3765586584410303;
+  Comp_before_dry.compstage(1).Hisen : -0.3741010362716347;
+  Comp_before_dry.compstage(1).I : 0.6878301822640757;
+  Comp_before_dry.compstage(1).i_port.F : 8725.309613307443;
+  Comp_before_dry.compstage(1).i_port.h : -0.3765586584410303;
+  Comp_before_dry.compstage(1).i_port.P : 1.0135293231;
+  Comp_before_dry.compstage(1).i_port.T : 49.83884845517932;
+  Comp_before_dry.compstage(1).i_port.z("CO2") : 0.891851967437623;
+  Comp_before_dry.compstage(1).i_port.z("H2O") : 0.1081480313060236;
+  Comp_before_dry.compstage(1).i_port.z("TEG") : 1.25635336516027e-009;
+  Comp_before_dry.compstage(1).impeller_type : 2;
+  Comp_before_dry.compstage(1).kappaT : 9.911799699557909e-006;
+  Comp_before_dry.compstage(1).Ma : 1.111165843016341;
+  Comp_before_dry.compstage(1).mu_p : 0.5894722222222222;
+  Comp_before_dry.compstage(1).mu_p_v : 0.5894722222222222;
+  Comp_before_dry.compstage(1).MW : 41.19854397063565;
+  Comp_before_dry.compstage(1).o_port.F : 8725.309613307443;
+  Comp_before_dry.compstage(1).o_port.h : -0.3736520801641543;
+  Comp_before_dry.compstage(1).o_port.P : 2.392207767554639;
+  Comp_before_dry.compstage(1).o_port.T : 115.7839283992834;
+  Comp_before_dry.compstage(1).o_port.z("CO2") : 0.891851967437623;
+  Comp_before_dry.compstage(1).o_port.z("H2O") : 0.1081480313060236;
+  Comp_before_dry.compstage(1).o_port.z("TEG") : 1.25635336516027e-009;
+  Comp_before_dry.compstage(1).P0_f : 1.0135393231;
+  Comp_before_dry.compstage(1).phi.spec : Fixed;
+  Comp_before_dry.compstage(1).phi : 9.e-002;
+  Comp_before_dry.compstage(1).Pratio : 2.360274846550849;
+  Comp_before_dry.compstage(1).r2 : 0.8402028294723765;
+  Comp_before_dry.compstage(1).rho_v0 : 3.79147841282558e-002;
+  Comp_before_dry.compstage(1).rho_v0f : 3.791515993572666e-002;
+  Comp_before_dry.compstage(1).rho_v2 : 7.438987402879388e-002;
+  Comp_before_dry.compstage(1).rspeed : 381.1758028668362;
+  Comp_before_dry.compstage(1).S0 : 2.467708817612787;
+  Comp_before_dry.compstage(1).S2 : 3.638701480138603;
+  Comp_before_dry.compstage(1).Tisen : 104.7492367816388;
+  Comp_before_dry.compstage(1).U2 : 320.2649880951287;
+  Comp_before_dry.compstage(1).U2max : 320.2487904895193;
+  Comp_before_dry.compstage(1).visc0 : 1.602808142947969e-002;
+  Comp_before_dry.compstage(2).c0 : 275.9947898878328;
+  Comp_before_dry.compstage(2).Cp0 : 38.54191029316453;
+  Comp_before_dry.compstage(2).Cv0 : 29.78962846656284;
+  Comp_before_dry.compstage(2).deltaH_isen : 2.390192300550431e-003;
+  Comp_before_dry.compstage(2).deltaH_p : 2.438758701916417e-003;
+  Comp_before_dry.compstage(2).deltaH_t : 2.962247795405422e-003;
+  Comp_before_dry.compstage(2).deltaS : 1.496733890983355;
+  Comp_before_dry.compstage(2).eff_isen : 0.8068846584197735;
+  Comp_before_dry.compstage(2).eff_p : 0.8232797761547892;
+  Comp_before_dry.compstage(2).eff_p_v : 0.8232797761547892;
+  Comp_before_dry.compstage(2).elec_pow : 6780.990332928421;
+  Comp_before_dry.compstage(2).fluid_pow : 6577.560622940568;
+  Comp_before_dry.compstage(2).H0 : -0.3890159042427077;
+  Comp_before_dry.compstage(2).Hisen : -0.3866257119421573;
+  Comp_before_dry.compstage(2).I : 0.7285351299765347;
+  Comp_before_dry.compstage(2).i_port.F : 7993.665580345291;
+  Comp_before_dry.compstage(2).i_port.h : -0.3890159042333967;
+  Comp_before_dry.compstage(2).i_port.P : 2.292207767554638;
+  Comp_before_dry.compstage(2).i_port.T : 40.;
+  Comp_before_dry.compstage(2).i_port.z("CO2") : 0.9734755045414621;
+  Comp_before_dry.compstage(2).i_port.z("H2O") : 2.652449545853793e-002;
+  Comp_before_dry.compstage(2).i_port.z("TEG") : 2.501850636360339e-018;
+  Comp_before_dry.compstage(2).impeller_type : 2;
+  Comp_before_dry.compstage(2).kappaT : 4.407956053390209e-006;
+  Comp_before_dry.compstage(2).Ma : 1.110040410527152;
+  Comp_before_dry.compstage(2).mu_p : 0.5997882387279817;
+  Comp_before_dry.compstage(2).mu_p_v : 0.5997882387279817;
+  Comp_before_dry.compstage(2).MW : 43.32030847231314;
+  Comp_before_dry.compstage(2).o_port.F : 7993.665580345291;
+  Comp_before_dry.compstage(2).o_port.h : -0.3860536564473023;
+  Comp_before_dry.compstage(2).o_port.P : 5.342402015167202;
+  Comp_before_dry.compstage(2).o_port.T : 115.9556076231117;
+  Comp_before_dry.compstage(2).o_port.z("CO2") : 0.9734755045414621;
+  Comp_before_dry.compstage(2).o_port.z("H2O") : 2.652449545853793e-002;
+  Comp_before_dry.compstage(2).o_port.z("TEG") : 2.501850636360339e-018;
+  Comp_before_dry.compstage(2).P0_f : 2.292217767554639;
+  Comp_before_dry.compstage(2).phi : 4.015022758283909e-002;
+  Comp_before_dry.compstage(2).Pratio : 2.330679657746103;
+  Comp_before_dry.compstage(2).r2 : 0.8037377177833762;
+  Comp_before_dry.compstage(2).rho_v0 : 8.894828635985048e-002;
+  Comp_before_dry.compstage(2).rho_v0f : 8.894867844171607e-002;
+  Comp_before_dry.compstage(2).rho_v2 : 0.1669472897342816;
+  Comp_before_dry.compstage(2).rspeed : 381.1758028668362;
+  Comp_before_dry.compstage(2).S0 : -2.506567516312015;
+  Comp_before_dry.compstage(2).S2 : -1.00983362532866;
+  Comp_before_dry.compstage(2).Tisen : 102.2090032871669;
+  Comp_before_dry.compstage(2).U2 : 306.3653698704451;
+  Comp_before_dry.compstage(2).U2max : 336.0754909981908;
+  Comp_before_dry.compstage(2).visc0 : 1.571360008943852e-002;
+  Comp_before_dry.compstage(3).c0 : 272.8248826373551;
+  Comp_before_dry.compstage(3).Cp0 : 39.46131685686575;
+  Comp_before_dry.compstage(3).Cv0 : 30.13564309222394;
+  Comp_before_dry.compstage(3).deltaH_isen : 1.999420522318052e-003;
+  Comp_before_dry.compstage(3).deltaH_p : 2.026706928036483e-003;
+  Comp_before_dry.compstage(3).deltaH_t : 2.36487851870596e-003;
+  Comp_before_dry.compstage(3).deltaS : 0.9850375861597698;
+  Comp_before_dry.compstage(3).eff_isen : 0.8454643680437827;
+  Comp_before_dry.compstage(3).eff_p : 0.8570025529875754;
+  Comp_before_dry.compstage(3).eff_p_v : 0.8570025529875754;
+  Comp_before_dry.compstage(3).elec_pow : 5333.905342334872;
+  Comp_before_dry.compstage(3).fluid_pow : 5173.888182064826;
+  Comp_before_dry.compstage(3).H0 : -0.3913360415229764;
+  Comp_before_dry.compstage(3).Hisen : -0.3893366210006584;
+  Comp_before_dry.compstage(3).I : 0.6878301822640757;
+  Comp_before_dry.compstage(3).i_port.F : 7876.090593281448;
+  Comp_before_dry.compstage(3).i_port.h : -0.3913360415336308;
+  Comp_before_dry.compstage(3).i_port.P : 5.242402015167201;
+  Comp_before_dry.compstage(3).i_port.T : 40.;
+  Comp_before_dry.compstage(3).i_port.z("CO2") : 0.9880054464341525;
+  Comp_before_dry.compstage(3).i_port.z("H2O") : 1.199455356584758e-002;
+  Comp_before_dry.compstage(3).i_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(3).impeller_type : 2;
+  Comp_before_dry.compstage(3).kappaT : 1.953289392611654e-006;
+  Comp_before_dry.compstage(3).Ma : 1.028132316135298;
+  Comp_before_dry.compstage(3).mu_p : 0.5894722222222222;
+  Comp_before_dry.compstage(3).mu_p_v : 0.5894722222222222;
+  Comp_before_dry.compstage(3).MW : 43.69800733744152;
+  Comp_before_dry.compstage(3).o_port.F : 7876.090593281448;
+  Comp_before_dry.compstage(3).o_port.h : -0.3889711630042704;
+  Comp_before_dry.compstage(3).o_port.P : 10.84246724399517;
+  Comp_before_dry.compstage(3).o_port.T : 102.1934139079112;
+  Comp_before_dry.compstage(3).o_port.z("CO2") : 0.9880054464341525;
+  Comp_before_dry.compstage(3).o_port.z("H2O") : 1.199455356584758e-002;
+  Comp_before_dry.compstage(3).o_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(3).P0_f : 5.242412015167201;
+  Comp_before_dry.compstage(3).phi.spec : Fixed;
+  Comp_before_dry.compstage(3).phi : 9.e-002;
+  Comp_before_dry.compstage(3).Pratio : 2.068225064126327;
+  Comp_before_dry.compstage(3).r2 : 0.3658424815451819;
+  Comp_before_dry.compstage(3).rho_v0 : 0.2061080389848568;
+  Comp_before_dry.compstage(3).rho_v0f : 0.2061084415742895;
+  Comp_before_dry.compstage(3).rho_v2 : 0.3562690496508987;
+  Comp_before_dry.compstage(3).rspeed : 766.7236382729931;
+  Comp_before_dry.compstage(3).S0 : -9.440733112902128;
+  Comp_before_dry.compstage(3).S2 : -8.455695526742359;
+  Comp_before_dry.compstage(3).Tisen : 93.55191041941212;
+  Comp_before_dry.compstage(3).U2 : 280.5000784852832;
+  Comp_before_dry.compstage(3).U2max : 320.2487904895193;
+  Comp_before_dry.compstage(3).visc0 : 1.580991395734731e-002;
+  Comp_before_dry.compstage(4).c0 : 268.7035598738871;
+  Comp_before_dry.compstage(4).Cp0 : 41.22600257069401;
+  Comp_before_dry.compstage(4).Cv0 : 30.70064728918149;
+  Comp_before_dry.compstage(4).deltaH_isen : 1.765838836244815e-003;
+  Comp_before_dry.compstage(4).deltaH_p : 1.791239359768596e-003;
+  Comp_before_dry.compstage(4).deltaH_t : 2.129146199733962e-003;
+  Comp_before_dry.compstage(4).deltaS : 0.9900669761667076;
+  Comp_before_dry.compstage(4).eff_isen : 0.8293647643667953;
+  Comp_before_dry.compstage(4).eff_p : 0.8412946748289957;
+  Comp_before_dry.compstage(4).eff_p_v : 0.8412946748289957;
+  Comp_before_dry.compstage(4).elec_pow : 4774.409525219387;
+  Comp_before_dry.compstage(4).fluid_pow : 4631.177239462805;
+  Comp_before_dry.compstage(4).H0 : -0.3924329717126846;
+  Comp_before_dry.compstage(4).Hisen : -0.3906671328764398;
+  Comp_before_dry.compstage(4).I : 0.7147497658622228;
+  Comp_before_dry.compstage(4).i_port.F : 7830.480623711657;
+  Comp_before_dry.compstage(4).i_port.h : -0.39243297171422;
+  Comp_before_dry.compstage(4).i_port.P : 10.74246724399517;
+  Comp_before_dry.compstage(4).i_port.T : 40.;
+  Comp_before_dry.compstage(4).i_port.z("CO2") : 0.9937585436765813;
+  Comp_before_dry.compstage(4).i_port.z("H2O") : 6.24145632341867e-003;
+  Comp_before_dry.compstage(4).i_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(4).impeller_type : 2;
+  Comp_before_dry.compstage(4).kappaT : 9.790168331476459e-007;
+  Comp_before_dry.compstage(4).Ma : 0.9700175983111961;
+  Comp_before_dry.compstage(4).mu_p : 0.6013151718551596;
+  Comp_before_dry.compstage(4).mu_p_v : 0.6013151718551596;
+  Comp_before_dry.compstage(4).MW : 43.84755633877177;
+  Comp_before_dry.compstage(4).o_port.F : 7830.480623711657;
+  Comp_before_dry.compstage(4).o_port.h : -0.3903038255129507;
+  Comp_before_dry.compstage(4).o_port.P : 20.84848202807015;
+  Comp_before_dry.compstage(4).o_port.T : 97.93201957936746;
+  Comp_before_dry.compstage(4).o_port.z("CO2") : 0.9937585436765813;
+  Comp_before_dry.compstage(4).o_port.z("H2O") : 6.24145632341867e-003;
+  Comp_before_dry.compstage(4).o_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(4).P0_f : 10.74247724399517;
+  Comp_before_dry.compstage(4).phi : 5.305346065455546e-002;
+  Comp_before_dry.compstage(4).Pratio : 1.940753604785162;
+  Comp_before_dry.compstage(4).r2 : 0.3399493230618212;
+  Comp_before_dry.compstage(4).rho_v0 : 0.4332527217000913;
+  Comp_before_dry.compstage(4).rho_v0f : 0.4332531458622141;
+  Comp_before_dry.compstage(4).rho_v2 : 0.7111903921980268;
+  Comp_before_dry.compstage(4).rspeed : 766.7236382729931;
+  Comp_before_dry.compstage(4).S0 : -15.87519092211801;
+  Comp_before_dry.compstage(4).S2 : -14.8851239459513;
+  Comp_before_dry.compstage(4).Tisen : 89.70289264199033;
+  Comp_before_dry.compstage(4).U2 : 260.6471818065344;
+  Comp_before_dry.compstage(4).U2max : 331.2226864390414;
+  Comp_before_dry.compstage(4).visc0 : 1.598055886902952e-002;
+  Comp_before_dry.compstage(5).c0 : 261.6083249719556;
+  Comp_before_dry.compstage(5).Cp0 : 45.0081435582995;
+  Comp_before_dry.compstage(5).Cv0 : 31.74223314928804;
+  Comp_before_dry.compstage(5).deltaH_isen : 1.362749130558505e-003;
+  Comp_before_dry.compstage(5).deltaH_p : 1.377314709248032e-003;
+  Comp_before_dry.compstage(5).deltaH_t : 1.60487617791031e-003;
+  Comp_before_dry.compstage(5).deltaS : 0.6770583351586736;
+  Comp_before_dry.compstage(5).eff_isen : 0.8491303873255345;
+  Comp_before_dry.compstage(5).eff_p : 0.8582062144142592;
+  Comp_before_dry.compstage(5).eff_p_v : 0.8582062144142592;
+  Comp_before_dry.compstage(5).elec_pow : 3589.424778750816;
+  Comp_before_dry.compstage(5).fluid_pow : 3481.742035388292;
+  Comp_before_dry.compstage(5).H0 : -0.3932594471812579;
+  Comp_before_dry.compstage(5).Hisen : -0.3918966980506994;
+  Comp_before_dry.compstage(5).I : 0.6241649305555554;
+  Comp_before_dry.compstage(5).i_port.F : 7810.117378475001;
+  Comp_before_dry.compstage(5).i_port.h : -0.393259447181436;
+  Comp_before_dry.compstage(5).i_port.P : 20.74848202807015;
+  Comp_before_dry.compstage(5).i_port.T : 40.;
+  Comp_before_dry.compstage(5).i_port.z("CO2") : 0.9963481579708976;
+  Comp_before_dry.compstage(5).i_port.z("H2O") : 3.651842029102414e-003;
+  Comp_before_dry.compstage(5).i_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(5).impeller_type : 1;
+  Comp_before_dry.compstage(5).kappaT : 5.359401194174909e-007;
+  Comp_before_dry.compstage(5).Ma : 0.9249403211337425;
+  Comp_before_dry.compstage(5).mu_p : 0.5356622222222222;
+  Comp_before_dry.compstage(5).mu_p_v : 0.5356622222222222;
+  Comp_before_dry.compstage(5).MW : 43.91487211933767;
+  Comp_before_dry.compstage(5).o_port.F : 7810.117378475001;
+  Comp_before_dry.compstage(5).o_port.h : -0.3916545710033476;
+  Comp_before_dry.compstage(5).o_port.P : 35.78903490412216;
+  Comp_before_dry.compstage(5).o_port.T : 87.00149772444642;
+  Comp_before_dry.compstage(5).o_port.z("CO2") : 0.9963481579708976;
+  Comp_before_dry.compstage(5).o_port.z("H2O") : 3.651842029102414e-003;
+  Comp_before_dry.compstage(5).o_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(5).P0_f : 20.74849202807015;
+  Comp_before_dry.compstage(5).phi.spec : Fixed;
+  Comp_before_dry.compstage(5).phi : 9.e-002;
+  Comp_before_dry.compstage(5).Pratio : 1.724898951918699;
+  Comp_before_dry.compstage(5).r2 : 0.1897962295458122;
+  Comp_before_dry.compstage(5).rho_v0 : 0.8802836012317287;
+  Comp_before_dry.compstage(5).rho_v0f : 0.8802840730112799;
+  Comp_before_dry.compstage(5).rho_v2 : 1.324540589290392;
+  Comp_before_dry.compstage(5).rspeed : 1274.904610538679;
+  Comp_before_dry.compstage(5).S0 : -22.35298040494928;
+  Comp_before_dry.compstage(5).S2 : -21.67592206979061;
+  Comp_before_dry.compstage(5).Tisen : 81.94760448415747;
+  Comp_before_dry.compstage(5).U2 : 241.9720881108188;
+  Comp_before_dry.compstage(5).U2max : 320.2487904895193;
+  Comp_before_dry.compstage(5).visc0 : 1.633862481224107e-002;
+  Comp_before_dry.compstage(6).c0 : 250.4496049519014;
+  Comp_before_dry.compstage(6).Cp0 : 52.9383770364547;
+  Comp_before_dry.compstage(6).Cv0 : 33.43445281713412;
+  Comp_before_dry.compstage(6).deltaH_isen : 1.157558868867648e-003;
+  Comp_before_dry.compstage(6).deltaH_p : 1.171120921644824e-003;
+  Comp_before_dry.compstage(6).deltaH_t : 1.389403672641242e-003;
+  Comp_before_dry.compstage(6).deltaS : 0.6515099116295126;
+  Comp_before_dry.compstage(6).eff_isen : 0.8331335893672572;
+  Comp_before_dry.compstage(6).eff_p : 0.8428946494855043;
+  Comp_before_dry.compstage(6).eff_p_v : 0.8428946494855043;
+  Comp_before_dry.compstage(6).elec_pow : 3104.199508008911;
+  Comp_before_dry.compstage(6).fluid_pow : 3011.073522768643;
+  Comp_before_dry.compstage(6).H0 : -0.3941465868758935;
+  Comp_before_dry.compstage(6).Hisen : -0.3929890280070258;
+  Comp_before_dry.compstage(6).I : 0.6391027690019431;
+  Comp_before_dry.compstage(6).i_port.F : 7801.810874272878;
+  Comp_before_dry.compstage(6).i_port.h : -0.3941465868758971;
+  Comp_before_dry.compstage(6).i_port.P : 35.68903490412216;
+  Comp_before_dry.compstage(6).i_port.T : 40.;
+  Comp_before_dry.compstage(6).i_port.z("CO2") : 0.9974080530443538;
+  Comp_before_dry.compstage(6).i_port.z("H2O") : 2.591946955646324e-003;
+  Comp_before_dry.compstage(6).i_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(6).impeller_type : 1;
+  Comp_before_dry.compstage(6).kappaT : 3.470054175746764e-007;
+  Comp_before_dry.compstage(6).Ma : 0.8881095039193416;
+  Comp_before_dry.compstage(6).mu_p : 0.538696304463108;
+  Comp_before_dry.compstage(6).mu_p_v : 0.538696304463108;
+  Comp_before_dry.compstage(6).MW : 43.94242358302252;
+  Comp_before_dry.compstage(6).o_port.F : 7801.810874272878;
+  Comp_before_dry.compstage(6).o_port.h : -0.3927571832032522;
+  Comp_before_dry.compstage(6).o_port.P : 59.29410943573107;
+  Comp_before_dry.compstage(6).o_port.T : 84.77988217453172;
+  Comp_before_dry.compstage(6).o_port.z("CO2") : 0.9974080530443538;
+  Comp_before_dry.compstage(6).o_port.z("H2O") : 2.591946955646324e-003;
+  Comp_before_dry.compstage(6).o_port.z("TEG") : 0.;
+  Comp_before_dry.compstage(6).P0_f : 35.68904490412216;
+  Comp_before_dry.compstage(6).phi : 6.154924781657753e-002;
+  Comp_before_dry.compstage(6).Pratio : 1.661409718559873;
+  Comp_before_dry.compstage(6).r2 : 0.1744653463262947;
+  Comp_before_dry.compstage(6).rho_v0 : 1.65544760325723;
+  Comp_before_dry.compstage(6).rho_v0f : 1.655448177706716;
+  Comp_before_dry.compstage(6).rho_v2 : 2.404768061402923;
+  Comp_before_dry.compstage(6).rspeed : 1274.904610538679;
+  Comp_before_dry.compstage(6).S0 : -28.60229803475885;
+  Comp_before_dry.compstage(6).S2 : -27.95078812312934;
+  Comp_before_dry.compstage(6).Tisen : 80.65414642007653;
+  Comp_before_dry.compstage(6).U2 : 222.4266744106256;
+  Comp_before_dry.compstage(6).U2max : 328.3076173158528;
+  Comp_before_dry.compstage(6).visc0 : 1.704923856103327e-002;
+  Comp_before_dry.Elec : 30845.47111984742;
+  Comp_before_dry.i_port.F : 8725.309613307443;
+  Comp_before_dry.i_port.h : -0.3765586584410303;
+  Comp_before_dry.i_port.P : 1.0135293231;
+  Comp_before_dry.i_port.T : 49.83884845517932;
+  Comp_before_dry.i_port.z("CO2") : 0.891851967437623;
+  Comp_before_dry.i_port.z("H2O") : 0.1081480313060236;
+  Comp_before_dry.i_port.z("TEG") : 1.25635336516027e-009;
+  Comp_before_dry.ic_P_drop(1) : 0.1;
+  Comp_before_dry.ic_P_drop(2) : 0.1;
+  Comp_before_dry.ic_P_drop(3) : 0.1;
+  Comp_before_dry.ic_P_drop(4) : 0.1;
+  Comp_before_dry.ic_P_drop(5) : 0.1;
+  Comp_before_dry.ic_P_drop(6) : 0.1;
+  Comp_before_dry.intercooler(1).Hin("IS2(1)") : -3260.230087088623;
+  Comp_before_dry.intercooler(1).Hin_mol("IS2(1)") : -0.3736520801641548;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").F : 8725.309613307443;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").h : -0.3736520801641543;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").P : 2.392207767554639;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").T : 115.7839283992834;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").z("CO2") : 0.891851967437623;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").z("H2O") : 0.1081480313060236;
+  Comp_before_dry.intercooler(1).i_port.Connection("IS2(1)").z("TEG") : 1.25635336516027e-009;
+  Comp_before_dry.intercooler(1).o_port_liq.F : 731.6440329621519;
+  Comp_before_dry.intercooler(1).o_port_liq.h : -0.2878198839589982;
+  Comp_before_dry.intercooler(1).o_port_liq.P : 2.292207767554638;
+  Comp_before_dry.intercooler(1).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(1).o_port_liq.z("CO2") : 6.411747552335517e-005;
+  Comp_before_dry.intercooler(1).o_port_liq.z("H2O") : 0.9999358675416823;
+  Comp_before_dry.intercooler(1).o_port_liq.z("TEG") : 1.49827943383229e-008;
+  Comp_before_dry.intercooler(1).o_port_vap.F : 7993.665580345291;
+  Comp_before_dry.intercooler(1).o_port_vap.h : -0.3890159042333967;
+  Comp_before_dry.intercooler(1).o_port_vap.P : 2.292207767554638;
+  Comp_before_dry.intercooler(1).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(1).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(1).o_port_vap.z("CO2") : 0.9734755045414621;
+  Comp_before_dry.intercooler(1).o_port_vap.z("H2O") : 2.652449545853793e-002;
+  Comp_before_dry.intercooler(1).o_port_vap.z("TEG") : 2.501850636360339e-018;
+  Comp_before_dry.intercooler(1).q_port.Q : -60.01465745524023;
+  Comp_before_dry.intercooler(1).VapFrac : 0.9161469259673856;
+  Comp_before_dry.intercooler(1).z_total("CO2") : 0.891851967437623;
+  Comp_before_dry.intercooler(1).z_total("H2O") : 0.1081480313060236;
+  Comp_before_dry.intercooler(1).z_total("TEG") : 1.25635336516027e-009;
+  Comp_before_dry.intercooler(2).Hin("IS2(2)") : -3085.983825709381;
+  Comp_before_dry.intercooler(2).Hin_mol("IS2(2)") : -0.3860536564473192;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").F : 7993.665580345291;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").h : -0.3860536564473023;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").P : 5.342402015167202;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").T : 115.9556076231117;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").z("CO2") : 0.9734755045414621;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").z("H2O") : 2.652449545853793e-002;
+  Comp_before_dry.intercooler(2).i_port.Connection("IS2(2)").z("TEG") : 2.501850636360339e-018;
+  Comp_before_dry.intercooler(2).o_port_liq.F : 117.5749870638438;
+  Comp_before_dry.intercooler(2).o_port_liq.h : -0.2878235565728452;
+  Comp_before_dry.intercooler(2).o_port_liq.P : 5.242402015167201;
+  Comp_before_dry.intercooler(2).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(2).o_port_liq.z("CO2") : 1.465549032694043e-004;
+  Comp_before_dry.intercooler(2).o_port_liq.z("H2O") : 0.9998534450967306;
+  Comp_before_dry.intercooler(2).o_port_liq.z("TEG") : 0.;
+  Comp_before_dry.intercooler(2).o_port_vap.F : 7876.090593281448;
+  Comp_before_dry.intercooler(2).o_port_vap.h : -0.3913360415336308;
+  Comp_before_dry.intercooler(2).o_port_vap.P : 5.242402015167201;
+  Comp_before_dry.intercooler(2).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(2).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(2).o_port_vap.z("CO2") : 0.9880054464341525;
+  Comp_before_dry.intercooler(2).o_port_vap.z("H2O") : 1.199455356584758e-002;
+  Comp_before_dry.intercooler(2).o_port_vap.z("TEG") : 0.;
+  Comp_before_dry.intercooler(2).q_port.Q : -30.0551407663677;
+  Comp_before_dry.intercooler(2).VapFrac : 0.9852914803750439;
+  Comp_before_dry.intercooler(2).z_total("CO2") : 0.9734755045414621;
+  Comp_before_dry.intercooler(2).z_total("H2O") : 2.652449545853793e-002;
+  Comp_before_dry.intercooler(2).z_total("TEG") : 2.501850636360339e-018;
+  Comp_before_dry.intercooler(3).Hin("IS2(3)") : -3063.572117995435;
+  Comp_before_dry.intercooler(3).Hin_mol("IS2(3)") : -0.3889711630042395;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").F : 7876.090593281448;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").h : -0.3889711630042704;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").P : 10.84246724399517;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").T : 102.1934139079112;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").z("CO2") : 0.9880054464341525;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").z("H2O") : 1.199455356584758e-002;
+  Comp_before_dry.intercooler(3).i_port.Connection("IS2(3)").z("TEG") : 0.;
+  Comp_before_dry.intercooler(3).o_port_liq.F : 45.60996956979034;
+  Comp_before_dry.intercooler(3).o_port_liq.h : -0.287829763965047;
+  Comp_before_dry.intercooler(3).o_port_liq.P : 10.74246724399517;
+  Comp_before_dry.intercooler(3).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(3).o_port_liq.z("CO2") : 2.933978076042483e-004;
+  Comp_before_dry.intercooler(3).o_port_liq.z("H2O") : 0.9997066021923958;
+  Comp_before_dry.intercooler(3).o_port_liq.z("TEG") : 0.;
+  Comp_before_dry.intercooler(3).o_port_vap.F : 7830.480623711657;
+  Comp_before_dry.intercooler(3).o_port_vap.h : -0.39243297171422;
+  Comp_before_dry.intercooler(3).o_port_vap.P : 10.74246724399517;
+  Comp_before_dry.intercooler(3).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(3).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(3).o_port_vap.z("CO2") : 0.9937585436765813;
+  Comp_before_dry.intercooler(3).o_port_vap.z("H2O") : 6.24145632341867e-003;
+  Comp_before_dry.intercooler(3).o_port_vap.z("TEG") : 0.;
+  Comp_before_dry.intercooler(3).q_port.Q : -22.4945698940762;
+  Comp_before_dry.intercooler(3).VapFrac : 0.9942090598083395;
+  Comp_before_dry.intercooler(3).z_total("CO2") : 0.9880054464341525;
+  Comp_before_dry.intercooler(3).z_total("H2O") : 1.199455356584758e-002;
+  Comp_before_dry.intercooler(3).z_total("TEG") : 0.;
+  Comp_before_dry.intercooler(4).Hin("IS2(4)") : -3056.266543039599;
+  Comp_before_dry.intercooler(4).Hin_mol("IS2(4)") : -0.3903038255129382;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").F : 7830.480623711657;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").h : -0.3903038255129507;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").P : 20.84848202807015;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").T : 97.93201957936746;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").z("CO2") : 0.9937585436765813;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").z("H2O") : 6.24145632341867e-003;
+  Comp_before_dry.intercooler(4).i_port.Connection("IS2(4)").z("TEG") : 0.;
+  Comp_before_dry.intercooler(4).o_port_liq.F : 20.36324523665644;
+  Comp_before_dry.intercooler(4).o_port_liq.h : -0.2878389091202087;
+  Comp_before_dry.intercooler(4).o_port_liq.P : 20.74848202807015;
+  Comp_before_dry.intercooler(4).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(4).o_port_liq.z("CO2") : 5.380934036519646e-004;
+  Comp_before_dry.intercooler(4).o_port_liq.z("H2O") : 0.999461906596348;
+  Comp_before_dry.intercooler(4).o_port_liq.z("TEG") : 0.;
+  Comp_before_dry.intercooler(4).o_port_vap.F : 7810.117378475001;
+  Comp_before_dry.intercooler(4).o_port_vap.h : -0.393259447181436;
+  Comp_before_dry.intercooler(4).o_port_vap.P : 20.74848202807015;
+  Comp_before_dry.intercooler(4).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(4).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(4).o_port_vap.z("CO2") : 0.9963481579708976;
+  Comp_before_dry.intercooler(4).o_port_vap.z("H2O") : 3.651842029102414e-003;
+  Comp_before_dry.intercooler(4).o_port_vap.z("TEG") : 0.;
+  Comp_before_dry.intercooler(4).q_port.Q : -20.99723393667307;
+  Comp_before_dry.intercooler(4).VapFrac : 0.9973994897356627;
+  Comp_before_dry.intercooler(4).z_total("CO2") : 0.9937585436765813;
+  Comp_before_dry.intercooler(4).z_total("H2O") : 6.24145632341867e-003;
+  Comp_before_dry.intercooler(4).z_total("TEG") : 0.;
+  Comp_before_dry.intercooler(5).Hin("IS2(5)") : -3058.868171352397;
+  Comp_before_dry.intercooler(5).Hin_mol("IS2(5)") : -0.3916545710033452;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").F : 7810.117378475001;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").h : -0.3916545710033476;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").P : 35.78903490412216;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").T : 87.00149772444642;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").z("CO2") : 0.9963481579708976;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").z("H2O") : 3.651842029102414e-003;
+  Comp_before_dry.intercooler(5).i_port.Connection("IS2(5)").z("TEG") : 0.;
+  Comp_before_dry.intercooler(5).o_port_liq.F : 8.306504202122596;
+  Comp_before_dry.intercooler(5).o_port_liq.h : -0.2878475482522044;
+  Comp_before_dry.intercooler(5).o_port_liq.P : 35.68903490412216;
+  Comp_before_dry.intercooler(5).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(5).o_port_liq.z("CO2") : 8.510501257394393e-004;
+  Comp_before_dry.intercooler(5).o_port_liq.z("H2O") : 0.9991489498742606;
+  Comp_before_dry.intercooler(5).o_port_liq.z("TEG") : 0.;
+  Comp_before_dry.intercooler(5).o_port_vap.F : 7801.810874272878;
+  Comp_before_dry.intercooler(5).o_port_vap.h : -0.3941465868758971;
+  Comp_before_dry.intercooler(5).o_port_vap.P : 35.68903490412216;
+  Comp_before_dry.intercooler(5).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(5).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(5).o_port_vap.z("CO2") : 0.9974080530443538;
+  Comp_before_dry.intercooler(5).o_port_vap.z("H2O") : 2.591946955646324e-003;
+  Comp_before_dry.intercooler(5).o_port_vap.z("TEG") : 0.;
+  Comp_before_dry.intercooler(5).q_port.Q : -18.57996306264406;
+  Comp_before_dry.intercooler(5).VapFrac : 0.9989364431032732;
+  Comp_before_dry.intercooler(5).z_total("CO2") : 0.9963481579708976;
+  Comp_before_dry.intercooler(5).z_total("H2O") : 3.651842029102414e-003;
+  Comp_before_dry.intercooler(5).z_total("TEG") : 0.;
+  Comp_before_dry.intercooler(6).Hin("IS2(6)") : -3064.21726286391;
+  Comp_before_dry.intercooler(6).Hin_mol("IS2(6)") : -0.3927571832032511;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").F : 7801.810874272878;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").h : -0.3927571832032522;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").P : 59.29410943573107;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").T : 84.77988217453172;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").z("CO2") : 0.9974080530443538;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").z("H2O") : 2.591946955646324e-003;
+  Comp_before_dry.intercooler(6).i_port.Connection("IS2(6)").z("TEG") : 0.;
+  Comp_before_dry.intercooler(6).o_port_liq.F : 2.333322604081332;
+  Comp_before_dry.intercooler(6).o_port_liq.h : -0.2878494053225655;
+  Comp_before_dry.intercooler(6).o_port_liq.P : 59.19410943573109;
+  Comp_before_dry.intercooler(6).o_port_liq.T : 40.;
+  Comp_before_dry.intercooler(6).o_port_liq.z("CO2") : 1.220852895073322e-003;
+  Comp_before_dry.intercooler(6).o_port_liq.z("H2O") : 0.9987791471049268;
+  Comp_before_dry.intercooler(6).o_port_liq.z("TEG") : 0.;
+  Comp_before_dry.intercooler(6).o_port_vap.F : 7799.477551668797;
+  Comp_before_dry.intercooler(6).o_port_vap.h : -0.3956663858219516;
+  Comp_before_dry.intercooler(6).o_port_vap.P : 59.19410943573109;
+  Comp_before_dry.intercooler(6).o_port_vap.T.spec : Fixed;
+  Comp_before_dry.intercooler(6).o_port_vap.T : 40.;
+  Comp_before_dry.intercooler(6).o_port_vap.z("CO2") : 0.9977060763538195;
+  Comp_before_dry.intercooler(6).o_port_vap.z("H2O") : 2.29392364618051e-003;
+  Comp_before_dry.intercooler(6).o_port_vap.z("TEG") : 0.;
+  Comp_before_dry.intercooler(6).q_port.Q : -22.445476828338;
+  Comp_before_dry.intercooler(6).VapFrac : 0.9997009255105407;
+  Comp_before_dry.intercooler(6).z_total("CO2") : 0.9974080530443538;
+  Comp_before_dry.intercooler(6).z_total("H2O") : 2.591946955646324e-003;
+  Comp_before_dry.intercooler(6).z_total("TEG") : 0.;
+  Comp_before_dry.knockout(1).F : 731.6440329621519;
+  Comp_before_dry.knockout(1).h : -0.2878198839589982;
+  Comp_before_dry.knockout(1).P : 2.292207767554638;
+  Comp_before_dry.knockout(1).T : 40.;
+  Comp_before_dry.knockout(1).z("CO2") : 6.411747552335517e-005;
+  Comp_before_dry.knockout(1).z("H2O") : 0.9999358675416823;
+  Comp_before_dry.knockout(1).z("TEG") : 1.49827943383229e-008;
+  Comp_before_dry.knockout(2).F : 117.5749870638438;
+  Comp_before_dry.knockout(2).h : -0.2878235565728452;
+  Comp_before_dry.knockout(2).P : 5.242402015167201;
+  Comp_before_dry.knockout(2).T : 40.;
+  Comp_before_dry.knockout(2).z("CO2") : 1.465549032694043e-004;
+  Comp_before_dry.knockout(2).z("H2O") : 0.9998534450967306;
+  Comp_before_dry.knockout(2).z("TEG") : 0.;
+  Comp_before_dry.knockout(3).F : 45.60996956979034;
+  Comp_before_dry.knockout(3).h : -0.287829763965047;
+  Comp_before_dry.knockout(3).P : 10.74246724399517;
+  Comp_before_dry.knockout(3).T : 40.;
+  Comp_before_dry.knockout(3).z("CO2") : 2.933978076042483e-004;
+  Comp_before_dry.knockout(3).z("H2O") : 0.9997066021923958;
+  Comp_before_dry.knockout(3).z("TEG") : 0.;
+  Comp_before_dry.knockout(4).F : 20.36324523665644;
+  Comp_before_dry.knockout(4).h : -0.2878389091202087;
+  Comp_before_dry.knockout(4).P : 20.74848202807015;
+  Comp_before_dry.knockout(4).T : 40.;
+  Comp_before_dry.knockout(4).z("CO2") : 5.380934036519646e-004;
+  Comp_before_dry.knockout(4).z("H2O") : 0.999461906596348;
+  Comp_before_dry.knockout(4).z("TEG") : 0.;
+  Comp_before_dry.knockout(5).F : 8.306504202122596;
+  Comp_before_dry.knockout(5).h : -0.2878475482522044;
+  Comp_before_dry.knockout(5).P : 35.68903490412216;
+  Comp_before_dry.knockout(5).T : 40.;
+  Comp_before_dry.knockout(5).z("CO2") : 8.510501257394393e-004;
+  Comp_before_dry.knockout(5).z("H2O") : 0.9991489498742606;
+  Comp_before_dry.knockout(5).z("TEG") : 0.;
+  Comp_before_dry.knockout(6).F : 2.333322604081332;
+  Comp_before_dry.knockout(6).h : -0.2878494053225655;
+  Comp_before_dry.knockout(6).P : 59.19410943573109;
+  Comp_before_dry.knockout(6).T : 40.;
+  Comp_before_dry.knockout(6).z("CO2") : 1.220852895073322e-003;
+  Comp_before_dry.knockout(6).z("H2O") : 0.9987791471049268;
+  Comp_before_dry.knockout(6).z("TEG") : 0.;
+  Comp_before_dry.Ma_max(1) : 1.25;
+  Comp_before_dry.Ma_max(2) : 1.109984269526891;
+  Comp_before_dry.Ma_max(3) : 1.028080317689042;
+  Comp_before_dry.Ma_max(4) : 0.9699685390537821;
+  Comp_before_dry.Ma_max(5) : 0.9248935416883117;
+  Comp_before_dry.Ma_max(6) : 0.888064587215933;
+  Comp_before_dry.no_stages : 6;
+  Comp_before_dry.o_port.F : 7799.477551668797;
+  Comp_before_dry.o_port.h : -0.3956663858219516;
+  Comp_before_dry.o_port.P : 59.19410943573109;
+  Comp_before_dry.o_port.T : 40.;
+  Comp_before_dry.o_port.z("CO2") : 0.9977060763538195;
+  Comp_before_dry.o_port.z("H2O") : 2.29392364618051e-003;
+  Comp_before_dry.o_port.z("TEG") : 0.;
+  Comp_before_dry.P_discharge : 59.19410943573109;
+  Comp_before_dry.Q : -174.5870419433393;
+  Ele_tot.Units : "kW";
+  Ele_tot : 36.27406809629736;
+  fact : 1.000050578194486;
+  From_Cap_F : 8537.808098696105;
+  From_Cap_P : 1.0122468982422;
+  From_Cap_T : 50.;
+  From_Cap_z_CO2 : 0.8909274123450593;
+  From_Cap_z_H2O : 0.1090725876549406;
+  From_Cap_z_TEG : 0.;
+  Gas_Cooler_2.Hin("Vap_Water_CO2") : -72.45883267150549;
+  Gas_Cooler_2.Hin_mol("Vap_Water_CO2") : -0.3770604117419157;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").F : 192.1677015541503;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").h : -0.3770604117419167;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").P : 1.103161168;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").T : 121.1111098043603;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").z("CO2") : 0.9112843959209195;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").z("H2O") : 8.716481614725989e-002;
+  Gas_Cooler_2.i_port.Connection("Vap_Water_CO2").z("TEG") : 1.550787931820728e-003;
+  Gas_Cooler_2.o_port_liq.F : 4.666186942811606;
+  Gas_Cooler_2.o_port_liq.h : -0.3176463186347271;
+  Gas_Cooler_2.o_port_liq.P.spec : Fixed;
+  Gas_Cooler_2.o_port_liq.P : 1.034213595;
+  Gas_Cooler_2.o_port_liq.T.spec : Fixed;
+  Gas_Cooler_2.o_port_liq.T : 39.99999824;
+  Gas_Cooler_2.o_port_liq.z("CO2") : 4.627259509096281e-004;
+  Gas_Cooler_2.o_port_liq.z("H2O") : 0.9356734824756826;
+  Gas_Cooler_2.o_port_liq.z("TEG") : 6.38637915734078e-002;
+  Gas_Cooler_2.o_port_vap.F : 187.5015146113387;
+  Gas_Cooler_2.o_port_vap.h : -0.3829715073786047;
+  Gas_Cooler_2.o_port_vap.P : 1.034213595;
+  Gas_Cooler_2.o_port_vap.T : 39.99999824;
+  Gas_Cooler_2.o_port_vap.z("CO2") : 0.9339512218001412;
+  Gas_Cooler_2.o_port_vap.z("H2O") : 6.60487197359467e-002;
+  Gas_Cooler_2.o_port_vap.z("TEG") : 5.846391223807767e-008;
+  Gas_Cooler_2.q_port.Q : -0.8311021194159056;
+  Gas_Cooler_2.VapFrac : 0.9757181518794571;
+  Gas_Cooler_2.z_total("CO2") : 0.9112843959209195;
+  Gas_Cooler_2.z_total("H2O") : 8.716481614725989e-002;
+  Gas_Cooler_2.z_total("TEG") : 1.550787931820728e-003;
+  Gas_Cooler_2_In_T : 121.1111098043603;
+  Gas_Cooler_2_Out_T : 39.99999824;
+  Gas_Cooler_2_Q : -0.8311021194159056;
+  HeatEx_1.area : 200.;
+  HeatEx_1.hin_cold : -0.654858147775515;
+  HeatEx_1.hin_hot : -0.7481415043279965;
+  HeatEx_1.i_port_cold.F : 592.1026932463475;
+  HeatEx_1.i_port_cold.h : -0.6548581477768172;
+  HeatEx_1.i_port_cold.P : 59.12515943573105;
+  HeatEx_1.i_port_cold.T : 33.49827947795164;
+  HeatEx_1.i_port_cold.z("CO2") : 0.2974373247843679;
+  HeatEx_1.i_port_cold.z("H2O") : 7.208877449456157e-002;
+  HeatEx_1.i_port_cold.z("TEG") : 0.6304739007210705;
+  HeatEx_1.i_port_hot.F : 399.9349916921971;
+  HeatEx_1.i_port_hot.h : -0.7481415035936613;
+  HeatEx_1.i_port_hot.P : 1.103161168;
+  HeatEx_1.i_port_hot.T : 121.11111;
+  HeatEx_1.i_port_hot.z("CO2") : 2.485437086698464e-003;
+  HeatEx_1.i_port_hot.z("H2O") : 6.484477651270305e-002;
+  HeatEx_1.i_port_hot.z("TEG") : 0.9326697864005984;
+  HeatEx_1.lmtd : 16.1857275444588;
+  HeatEx_1.o_port_cold.F : 592.1026932463475;
+  HeatEx_1.o_port_cold.h : -0.635176217656069;
+  HeatEx_1.o_port_cold.P.spec : Fixed;
+  HeatEx_1.o_port_cold.P : 2.06842719;
+  HeatEx_1.o_port_cold.T : 95.3287941645812;
+  HeatEx_1.o_port_cold.z("CO2") : 0.2974373247843679;
+  HeatEx_1.o_port_cold.z("H2O") : 7.208877449456157e-002;
+  HeatEx_1.o_port_cold.z("TEG") : 0.6304739007210705;
+  HeatEx_1.o_port_hot.F : 399.9349916921971;
+  HeatEx_1.o_port_hot.h : -0.7772805496080839;
+  HeatEx_1.o_port_hot.P.spec : Fixed;
+  HeatEx_1.o_port_hot.T : 42.82790080060541;
+  HeatEx_1.o_port_hot.z("CO2") : 2.485437086698464e-003;
+  HeatEx_1.o_port_hot.z("H2O") : 6.484477651270305e-002;
+  HeatEx_1.o_port_hot.z("TEG") : 0.9326697864005984;
+  HeatEx_1.Q : 11.65372383201034;
+  HeatEx_1.U : 1.;
+  HeatEx_1_Cold_In_T : 33.49827947795164;
+  HeatEx_1_Cold_Out_T : 95.3287941645812;
+  HeatEx_1_Hot_In_T : 121.11111;
+  HeatEx_1_Hot_Out_T : 42.82790080060541;
+  HeatEx_1_Q : 11.65372383201034;
+  Mix_MU.h_liq : -0.779274821951414;
+  Mix_MU.Hin("Lean_Solvent_4") : -310.8616898556459;
+  Mix_MU.Hin("TEG_Makeup") : -0.2574623618116136;
+  Mix_MU.Hin_mol("Lean_Solvent_4") : -0.7772805488720403;
+  Mix_MU.Hin_mol("TEG_Makeup") : -0.8194488700792485;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").F : 399.9349916921971;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").h : -0.7772805496080839;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").T : 42.82790080060541;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").z("CO2") : 2.485437086698464e-003;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").z("H2O") : 6.484477651270305e-002;
+  Mix_MU.i_port.Connection("Lean_Solvent_4").z("TEG") : 0.9326697864005984;
+  Mix_MU.i_port.Connection("TEG_Makeup").F.spec : Free;
+  Mix_MU.i_port.Connection("TEG_Makeup").F : 0.3141896599194951;
+  Mix_MU.i_port.Connection("TEG_Makeup").P.spec : Fixed;
+  Mix_MU.i_port.Connection("TEG_Makeup").P : 1.034213595;
+  Mix_MU.i_port.Connection("TEG_Makeup").T.spec : Fixed;
+  Mix_MU.i_port.Connection("TEG_Makeup").T : 26.6666648;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("CO2").spec : Fixed;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("CO2") : 0.;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("H2O").spec : Fixed;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("H2O") : 0.;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("TEG").spec : Fixed;
+  Mix_MU.i_port.Connection("TEG_Makeup").z("TEG") : 1.;
+  Mix_MU.o_port.F.spec : Free;
+  Mix_MU.o_port.F : 400.2491813521166;
+  Mix_MU.o_port.h.spec : Free;
+  Mix_MU.o_port.h : -0.779274821951414;
+  Mix_MU.o_port.P.spec : Fixed;
+  Mix_MU.o_port.P : 1.034213595;
+  Mix_MU.o_port.T.spec : Fixed;
+  Mix_MU.o_port.T : 37.777776;
+  Mix_MU.o_port.z("CO2").spec : Free;
+  Mix_MU.o_port.z("CO2") : 2.483486055517381e-003;
+  Mix_MU.o_port.z("H2O").spec : Free;
+  Mix_MU.o_port.z("H2O") : 6.479387432669169e-002;
+  Mix_MU.o_port.z("TEG").spec : Free;
+  Mix_MU.o_port.z("TEG") : 0.9327226396177911;
+  Mix_MU.q_port.Q.spec : Free;
+  Mix_MU.q_port.Q : -0.78495731691239;
+  Mix_MU.VapFrac : 0.;
+  Mix_MU.z_liq("CO2") : 2.483486055517381e-003;
+  Mix_MU.z_liq("H2O") : 6.479387432669168e-002;
+  Mix_MU.z_liq("TEG") : 0.9327226396177909;
+  Mix_MU.z_vap("CO2") : 0.9932357976149211;
+  Mix_MU.z_vap("H2O") : 6.759832121319555e-003;
+  Mix_MU.z_vap("TEG") : 4.370263759254135e-006;
+  Mix_MU_In_T : 42.82790080060541;
+  Mix_MU_out_T : 37.777776;
+  Mix_MU_Q : -0.78495731691239;
+  Q_tot : 4.422750645486438;
+  Regen.bottom_P : 1.103161168;
+  Regen.iport(1).F.spec : Fixed;
+  Regen.iport(1).F : 1752.049862009734;
+  Regen.iport(1).h.spec : Fixed;
+  Regen.iport(1).P.spec : Fixed;
+  Regen.iport(1).P : 51.7038;
+  Regen.iport(1).T.spec : Fixed;
+  Regen.iport(1).T : 52.0847;
+  Regen.iport(1).z("CO2").spec : Fixed;
+  Regen.iport(1).z("CO2") : 0.214166;
+  Regen.iport(1).z("H2O").spec : Fixed;
+  Regen.iport(1).z("H2O") : 6.13393e-002;
+  Regen.iport(1).z("TEG").spec : Fixed;
+  Regen.iport(1).z("TEG") : 0.724495;
+  Regen.iport(2).F.spec : Free;
+  Regen.iport(2).F : 592.1026932463475;
+  Regen.iport(2).h.spec : Free;
+  Regen.iport(2).h : -0.635176217656069;
+  Regen.iport(2).P.spec : Free;
+  Regen.iport(2).P : 2.06842719;
+  Regen.iport(2).T.spec : Free;
+  Regen.iport(2).T : 95.3287941645812;
+  Regen.iport(2).z("CO2").spec : Free;
+  Regen.iport(2).z("CO2") : 0.2974373247843679;
+  Regen.iport(2).z("H2O").spec : Free;
+  Regen.iport(2).z("H2O") : 7.208877449456157e-002;
+  Regen.iport(2).z("TEG").spec : Free;
+  Regen.iport(2).z("TEG") : 0.6304739007210705;
+  Regen.no_stages : 2;
+  Regen.oport_liq.F : 399.9349916921971;
+  Regen.oport_liq.h : -0.7481415035936613;
+  Regen.oport_liq.P : 1.103161168;
+  Regen.oport_liq.T : 121.11111;
+  Regen.oport_liq.z("CO2") : 2.485437086698464e-003;
+  Regen.oport_liq.z("H2O") : 6.484477651270305e-002;
+  Regen.oport_liq.z("TEG") : 0.9326697864005984;
+  Regen.oport_vap.F : 192.1677015541503;
+  Regen.oport_vap.h : -0.3770604117419167;
+  Regen.oport_vap.P : 1.103161168;
+  Regen.oport_vap.T : 121.1111098043603;
+  Regen.oport_vap.z("CO2") : 0.9112843959209195;
+  Regen.oport_vap.z("H2O") : 8.716481614725989e-002;
+  Regen.oport_vap.z("TEG") : 1.550787931820728e-003;
+  Regen.Q : 4.422750645486438;
+  Regen.qport(1).Q : 0.;
+  Regen.qport(2).Q : 4.422750645486438;
+  Regen.stage(1).Hin("IS1(1)") : -72.45883267161355;
+  Regen.stage(1).Hin_mol("IS1(1)") : -0.3770604117421951;
+  Regen.stage(1).i_port.Connection("IS1(1)").F : 192.1677015542945;
+  Regen.stage(1).i_port.Connection("IS1(1)").h : -0.3770604117505582;
+  Regen.stage(1).i_port.Connection("IS1(1)").P : 1.103161168;
+  Regen.stage(1).i_port.Connection("IS1(1)").T : 121.11111;
+  Regen.stage(1).i_port.Connection("IS1(1)").z("CO2") : 0.9112843958697;
+  Regen.stage(1).i_port.Connection("IS1(1)").z("H2O") : 8.716481614599593e-002;
+  Regen.stage(1).i_port.Connection("IS1(1)").z("TEG") : 1.550787984304026e-003;
+  Regen.stage(1).o_port_liq.F : 1.441584710762042e-010;
+  Regen.stage(1).o_port_liq.h : -0.7481382744277331;
+  Regen.stage(1).o_port_liq.P.spec : Free;
+  Regen.stage(1).o_port_liq.P : 1.103161168;
+  Regen.stage(1).o_port_liq.T.spec : Free;
+  Regen.stage(1).o_port_liq.T : 121.1111098043603;
+  Regen.stage(1).o_port_liq.z("CO2") : 2.485435573357348e-003;
+  Regen.stage(1).o_port_liq.z("H2O") : 6.484477068673701e-002;
+  Regen.stage(1).o_port_liq.z("TEG") : 0.9326697937399057;
+  Regen.stage(1).o_port_vap.F : 192.1677015541503;
+  Regen.stage(1).o_port_vap.h : -0.3770604117419167;
+  Regen.stage(1).o_port_vap.P : 1.103161168;
+  Regen.stage(1).o_port_vap.T : 121.1111098043603;
+  Regen.stage(1).o_port_vap.z("CO2") : 0.9112843959209195;
+  Regen.stage(1).o_port_vap.z("H2O") : 8.716481614725989e-002;
+  Regen.stage(1).o_port_vap.z("TEG") : 1.550787931820728e-003;
+  Regen.stage(1).q_port.Q.spec : Fixed;
+  Regen.stage(1).q_port.Q : 0.;
+  Regen.stage(1).VapFrac : 0.9999999999992498;
+  Regen.stage(1).z_total("CO2") : 0.9112843958697;
+  Regen.stage(1).z_total("H2O") : 8.716481614599593e-002;
+  Regen.stage(1).z_total("TEG") : 1.550787984304026e-003;
+  Regen.stage(2).Hin("IS0(1)") : -1.078509358441721e-010;
+  Regen.stage(2).Hin("IS5(2)") : -376.0895493429181;
+  Regen.stage(2).Hin_mol("IS0(1)") : -0.7481415073219012;
+  Regen.stage(2).Hin_mol("IS5(2)") : -0.6351762179646834;
+  Regen.stage(2).i_port.Connection("IS0(1)").F : 1.441584710762042e-010;
+  Regen.stage(2).i_port.Connection("IS0(1)").h : -0.7481382744277331;
+  Regen.stage(2).i_port.Connection("IS0(1)").P : 1.103161168;
+  Regen.stage(2).i_port.Connection("IS0(1)").T : 121.1111098043603;
+  Regen.stage(2).i_port.Connection("IS0(1)").z("CO2") : 2.485435573357348e-003;
+  Regen.stage(2).i_port.Connection("IS0(1)").z("H2O") : 6.484477068673701e-002;
+  Regen.stage(2).i_port.Connection("IS0(1)").z("TEG") : 0.9326697937399057;
+  Regen.stage(2).i_port.Connection("IS5(2)").F : 592.1026932463475;
+  Regen.stage(2).i_port.Connection("IS5(2)").h : -0.635176217656069;
+  Regen.stage(2).i_port.Connection("IS5(2)").P : 2.06842719;
+  Regen.stage(2).i_port.Connection("IS5(2)").T : 95.3287941645812;
+  Regen.stage(2).i_port.Connection("IS5(2)").z("CO2") : 0.2974373247843679;
+  Regen.stage(2).i_port.Connection("IS5(2)").z("H2O") : 7.208877449456157e-002;
+  Regen.stage(2).i_port.Connection("IS5(2)").z("TEG") : 0.6304739007210705;
+  Regen.stage(2).o_port_liq.F : 399.9349916921971;
+  Regen.stage(2).o_port_liq.h : -0.7481415035936613;
+  Regen.stage(2).o_port_liq.P.spec : Free;
+  Regen.stage(2).o_port_liq.P : 1.103161168;
+  Regen.stage(2).o_port_liq.T.spec : Fixed;
+  Regen.stage(2).o_port_liq.T : 121.11111;
+  Regen.stage(2).o_port_liq.z("CO2") : 2.485437086698464e-003;
+  Regen.stage(2).o_port_liq.z("H2O") : 6.484477651270305e-002;
+  Regen.stage(2).o_port_liq.z("TEG") : 0.9326697864005984;
+  Regen.stage(2).o_port_vap.F : 192.1677015542945;
+  Regen.stage(2).o_port_vap.h : -0.3770604117505582;
+  Regen.stage(2).o_port_vap.P : 1.103161168;
+  Regen.stage(2).o_port_vap.T : 121.11111;
+  Regen.stage(2).o_port_vap.z("CO2") : 0.9112843958697;
+  Regen.stage(2).o_port_vap.z("H2O") : 8.716481614599593e-002;
+  Regen.stage(2).o_port_vap.z("TEG") : 1.550787984304026e-003;
+  Regen.stage(2).q_port.Q.spec : Free;
+  Regen.stage(2).q_port.Q : 4.422750645486438;
+  Regen.stage(2).VapFrac : 0.3245513046066984;
+  Regen.stage(2).z_total("CO2") : 0.2974373247842961;
+  Regen.stage(2).z_total("H2O") : 7.208877449455982e-002;
+  Regen.stage(2).z_total("TEG") : 0.6304739007211441;
+  Regen.top_P : 1.103161168;
+  Regen_Q : 4.422750645486438;
+  Regen_T : 121.11111;
+  Solvent_Pump.elec_power : 108.3881898751012;
+  Solvent_Pump.H0 : -0.779274821951414;
+  Solvent_Pump.hg : 5.352123656393117;
+  Solvent_Pump.i_port.F : 400.2491813521166;
+  Solvent_Pump.i_port.h : -0.779274821951414;
+  Solvent_Pump.i_port.P : 1.034213595;
+  Solvent_Pump.i_port.T : 37.777776;
+  Solvent_Pump.i_port.z("CO2") : 2.483486055517381e-003;
+  Solvent_Pump.i_port.z("H2O") : 6.479387432669169e-002;
+  Solvent_Pump.i_port.z("TEG") : 0.9327226396177911;
+  Solvent_Pump.MW : 141.3479760640545;
+  Solvent_Pump.o_port.F : 400.2491813521166;
+  Solvent_Pump.o_port.h : -0.7783291821433194;
+  Solvent_Pump.o_port.P.spec : Fixed;
+  Solvent_Pump.o_port.P : 62.0528157;
+  Solvent_Pump.o_port.T : 38.23000015238429;
+  Solvent_Pump.o_port.z("CO2") : 2.483486055517381e-003;
+  Solvent_Pump.o_port.z("H2O") : 6.479387432669169e-002;
+  Solvent_Pump.o_port.z("TEG") : 0.9327226396177911;
+  Solvent_Pump.pump_power : 105.1365441788482;
+  Solvent_Pump.rho_mass : 1140.082068771211;
+  teg_flow.spec : Free;
+  teg_flow : 373.3214729356062;
+  Trim_Cooler_1.h_liq : -0.7776438107132011;
+  Trim_Cooler_1.Hin("Lean_Solvent_2") : -311.5256495413798;
+  Trim_Cooler_1.Hin_mol("Lean_Solvent_2") : -0.7783292610093241;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").F : 400.2491813521166;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").h : -0.7783291821433194;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").P : 62.0528157;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").T : 38.23000015238429;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").z("CO2") : 2.483486055517381e-003;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").z("H2O") : 6.479387432669169e-002;
+  Trim_Cooler_1.i_port.Connection("Lean_Solvent_2").z("TEG") : 0.9327226396177911;
+  Trim_Cooler_1.o_port.F : 400.2491813521166;
+  Trim_Cooler_1.o_port.h : -0.7776438107132011;
+  Trim_Cooler_1.o_port.P.spec : Fixed;
+  Trim_Cooler_1.o_port.P : 61.708077835;
+  Trim_Cooler_1.o_port.T.spec : Fixed;
+  Trim_Cooler_1.o_port.T : 39.99999824;
+  Trim_Cooler_1.o_port.z("CO2") : 2.483486055517381e-003;
+  Trim_Cooler_1.o_port.z("H2O") : 6.479387432669169e-002;
+  Trim_Cooler_1.o_port.z("TEG") : 0.9327226396177911;
+  Trim_Cooler_1.q_port.Q : 0.2743509198807529;
+  Trim_Cooler_1.VapFrac : 0.;
+  Trim_Cooler_1.z_liq("CO2") : 2.483486055517381e-003;
+  Trim_Cooler_1.z_liq("H2O") : 6.479387432669168e-002;
+  Trim_Cooler_1.z_liq("TEG") : 0.9327226396177909;
+  Trim_Cooler_1.z_vap("CO2") : 2.483484606402644e-003;
+  Trim_Cooler_1.z_vap("H2O") : 6.479385350488542e-002;
+  Trim_Cooler_1.z_vap("TEG") : 0.9327226618887119;
+  Trim_Cooler_1_In_T : 38.23000015238429;
+  Trim_Cooler_1_Out_T : 39.99999824;
+  Trim_Cooler_1_Q : 0.2743509198807529;
+  water_content.spec : Fixed;
+  water_content : 1.5e-004;
+  Graphics : TEXT CLSID {A0DFFFE6-908E-11CE-A964-0000C08C668E}
+# of PFS Objects = 33
+SIZE -23.8 7.32396 -13.5146 3.47344
+BLOCK
+ID: Absorber
+Version: 1
+ICON: "flash_series"
+Flag 0
+Section 
+At -10.410989 -7.171523
+Label At 0.000000 0.000000
+Scale 6.344825 Modifier 0
+BLOCK
+ID: Mix_MU
+Version: 1
+ICON: "Mix_01"
+Flag 0
+Section 
+At -4.696287 -7.364172
+Label At 0.939163 0.048162
+Scale 1.000000 Modifier 7
+BLOCK
+ID: Regen
+Version: 1
+ICON: "flash_series"
+Flag 0
+Section 
+At 2.264936 -7.711486
+Label At 0.002428 0.043701
+Scale 6.816680 Modifier 0
+BLOCK
+ID: HeatEx_1
+Version: 1
+ICON: "heat_ex1"
+Flag 0
+Section 
+At -3.411750 -11.986116
+Label At -0.380611 -0.299051
+Scale 1.000000 Modifier 0
+BLOCK
+ID: Solvent_Pump
+Version: 1
+ICON: "pump1"
+Flag 0
+Section 
+At -3.163689 -2.709573
+Label At 0.000000 -0.818757
+Scale 1.000000 Modifier 0
+BLOCK
+ID: Trim_Cooler_1
+Version: 1
+ICON: "heater1"
+Flag 0
+Section 
+At -5.960403 -0.115764
+Label At 0.000000 -0.794676
+Scale 1.000000 Modifier 1
+BLOCK
+ID: Gas_Cooler_2
+Version: 1
+ICON: "Flash_Stage_01"
+Flag 0
+Section 
+At 5.529943 -2.149905
+Label At 0.019097 0.210064
+Scale 1.448917 Modifier 0
+BLOCK
+ID: B6
+Version: 1
+ICON: "Mix_01"
+Flag 0
+Section 
+At 1.687790 2.274810
+Label At -0.111650 -0.027912
+Scale 1.944445 Modifier 1
+BLOCK
+ID: Comp_before_dry
+Version: 1
+ICON: "multStageComp"
+Flag 0
+Section 
+At -19.208221 -2.526953
+Label At 0.192179 -0.048045
+Scale 1.464679 Modifier 1
+BLOCK
+ID: Comp_after_dry
+Version: 1
+ICON: "multStageComp"
+Flag 0
+Section 
+At -16.358395 -6.497686
+Label At 0.000000 0.000000
+Scale 1.000000 Modifier 1
+STREAM
+ID: Rich_Solvent_1
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -7.481677 -11.985107
+Label At 0.029719 0.000000
+ROUTE 0 0
+r r -7.481677 -11.985107 0
+x y -9.988355 -11.985107 0
+y 0 -9.988355 -10.703491 0
+t d -9.988355 -10.503491 0
+$ D 0.851868 0.024279
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -7.481677 -11.985107 0
+x x -4.915560 -11.985107 0
+y x -4.915560 -11.979078 0
+t l -4.715560 -11.979078 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Dry_CO2
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -13.507858 -3.424999
+Label At 0.622564 0.000000
+ROUTE 0 0
+r r -13.507858 -3.424999 0
+x y -10.871531 -3.424999 0
+y 0 -10.871531 -3.583999 0
+t u -10.871531 -3.783999 0
+$ D -0.795459 -0.039798
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -13.507858 -3.424999 0
+x x -14.899056 -3.424999 0
+y y -14.899056 -5.310483 0
+x x -14.900773 -5.310483 0
+t u -14.900773 -5.510483 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Wet_CO2_1
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -16.573265 -12.466736
+Label At -0.026155 0.000000
+ROUTE 0 0
+r r -16.573265 -12.466736 0
+x y -21.359587 -12.466736 0
+y 0 -21.359587 -3.467748 0
+t d -21.359587 -3.267748 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -16.573265 -12.466736 0
+x x -11.851216 -12.466736 0
+y y -11.851216 -6.390050 0
+x x -11.247330 -6.390050 0
+t l -11.047330 -6.390050 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Lean_Solvent_1
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -11.325001 -3.252027
+Label At 0.000000 0.601454
+ROUTE 0 0
+r r -11.325001 -3.252027 0
+y x -11.325001 -0.114004 0
+x 0 -6.656591 -0.114004 0
+t l -6.456591 -0.114004 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -11.325001 -3.252027 0
+y y -11.325001 -6.390050 0
+x x -11.247330 -6.390050 0
+t l -11.047330 -6.390050 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Lean_Sovlent_5
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -0.136048 -13.514589
+Label At -0.002993 0.000000
+ROUTE 0 0
+r r -0.136048 -13.514589 0
+x y 2.290888 -13.514589 0
+y 0 2.290888 -11.585018 0
+t d 2.290888 -11.385017 0
+$ D 0.487107 -0.067685
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -0.136048 -13.514589 0
+x y -2.568969 -13.514589 0
+y y -2.568969 -12.675473 0
+t d -2.568969 -12.475473 0
+$ D -0.143937 -0.992502
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Vap_Water_CO2
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At 3.454727 -2.232913
+Label At -1.272585 -0.779335
+ROUTE 0 0
+r r 3.454727 -2.232913 0
+x y 2.182142 -2.232913 0
+y 0 2.182142 -3.735918 0
+t u 2.182142 -3.935918 0
+$ D -0.442618 0.093361
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r 3.454727 -2.232913 0
+x x 4.562330 -2.232913 0
+y x 4.562330 -2.219689 0
+t l 4.762330 -2.219689 0
+$ D -0.293501 -0.793419
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Rich_Solvent_3
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -0.275001 -10.667612
+Label At 0.000000 0.000000
+ROUTE 0 0
+r r -0.275001 -10.667612 0
+y x -0.275001 -11.986116 0
+x 0 -1.911460 -11.986116 0
+t r -2.111460 -11.986116 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -0.275001 -10.667612 0
+y y -0.275001 -8.634876 0
+x x 1.371587 -8.634876 0
+t l 1.571587 -8.634876 0
+$ D -0.009684 -1.762980
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Lean_Solvent_4
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -4.395133 -8.784956
+Label At 0.000000 -0.767949
+ROUTE 0 0
+r r -4.395133 -8.784956 0
+y y -4.395133 -11.282972 0
+x 0 -4.410894 -11.282972 0
+t u -4.410894 -11.482971 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -4.395133 -8.784956 0
+y y -4.395133 -7.822838 0
+x y -4.397572 -7.822838 0
+t d -4.397572 -7.622838 0
+$ D 0.292874 -0.009462
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Lean_Solvent_3
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -4.690446 -4.658260
+Label At 0.000000 -0.031356
+ROUTE 0 0
+r r -4.690446 -4.658260 0
+y 0 -4.690446 -6.669659 0
+t u -4.690446 -6.869659 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -4.690446 -4.658260 0
+y y -4.690446 -2.709573 0
+x x -4.164275 -2.709573 0
+t l -3.964276 -2.709573 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: TEG_Makeup
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 1
+At -7.925720 -8.660129
+Label At 1.455452 0.000000
+ROUTE 0 0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -7.925720 -8.660129 0
+x x -5.014816 -8.660129 0
+y y -5.014816 -7.812510 0
+t d -5.014816 -7.612510 0
+$ D -0.324369 0.000866
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Lean_Solvent_2
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -3.587501 -0.117523
+Label At 0.637912 -0.000000
+ROUTE 0 0
+r r -3.587501 -0.117523 0
+x y -0.638482 -0.117523 0
+y x -0.638482 -2.209866 0
+x 0 -2.212369 -2.209866 0
+t r -2.412369 -2.209866 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -3.587501 -0.117523 0
+x x -5.260696 -0.117524 0
+y y -5.260696 -0.117523 0
+t r -5.460696 -0.117523 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_07
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At 5.563783 -6.126827
+Label At 0.000000 1.539546
+ROUTE 0 0
+r u 5.563783 -6.126827 0
+y y 5.563783 -3.047735 0
+x 0 5.564835 -3.047735 0
+t d 5.564835 -2.847735 0
+$ D 0.509004 0.026601
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Wet_CO2_3
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At 3.993932 1.744474
+Label At -0.026875 0.000000
+ROUTE 0 0
+r r 3.993932 1.744474 0
+x y 5.599726 1.744474 0
+y 0 5.599726 -1.182292 0
+t u 5.599726 -1.382292 0
+$ D -0.455475 0.043977
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r 3.993932 1.744474 0
+x x 2.334388 1.744474 0
+t r 2.134388 1.744474 0
+$ D -0.037966 -0.541693
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: CO2_1
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 0
+At -8.275716 2.286167
+Label At 0.002196 0.000000
+ROUTE 0 0
+r r -8.275716 2.286167 0
+x 0 0.526237 2.286167 0
+t l 0.726236 2.286167 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -8.275716 2.286167 0
+x x -17.073277 2.286167 0
+y y -17.073277 -0.881016 0
+t u -17.073277 -1.081017 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: CO2_From_Cap
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 1
+At 7.233838 2.782609
+Label At -1.594070 0.000000
+ROUTE 0 0
+$ $ 0.0 0.0
+ROUTE 1 0
+r l 7.233838 2.782609 0
+x x 2.357860 2.782609 0
+t r 2.157860 2.782609 0
+$ D -0.014493 0.496442
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_01
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -23.095121 3.387349
+Label At 1.257620 -2.915345
+ROUTE 0 0
+r l -23.095121 3.387349 0
+x l -23.450001 3.387349 0
+y x -23.450001 0.472004 0
+x y -20.225000 0.472004 0
+y x -20.225000 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_02
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -22.986572 2.627503
+Label At 1.249073 -2.130499
+ROUTE 0 0
+r l -22.986572 2.627503 0
+x l -23.325001 2.627503 0
+y x -23.325001 0.497004 0
+x y -20.150000 0.497004 0
+y x -20.150000 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_03
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -23.008282 1.976207
+Label At 1.233282 -2.104203
+ROUTE 0 0
+r l -23.008282 1.976207 0
+x l -23.375000 1.976207 0
+y x -23.375000 -0.127996 0
+x y -20.174999 -0.127996 0
+y x -20.174999 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_04
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -22.964863 1.281491
+Label At 1.077362 -2.934487
+ROUTE 0 0
+r l -22.964863 1.281491 0
+x l -23.475000 1.281491 0
+y x -23.475000 -1.652996 0
+x y -20.299999 -1.652996 0
+y x -20.299999 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_05
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -23.095121 0.651904
+Label At 1.045122 -2.329900
+ROUTE 0 0
+r l -23.095121 0.651904 0
+x l -23.700001 0.651904 0
+y x -23.700001 -1.677996 0
+x y -20.400000 -1.677996 0
+y x -20.400000 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Water_KO_06
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -23.073412 -0.151361
+Label At 0.910910 -1.551635
+ROUTE 0 0
+r l -23.073412 -0.151361 0
+x l -23.800001 -0.151361 0
+y x -23.800001 -1.702996 0
+x y -20.525002 -1.702996 0
+y x -20.525002 -2.526953 0
+x 0 -20.140562 -2.526953 0
+t l -19.940561 -2.526953 0
+$ D 0.000000 0.000000
+$ C 0.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: CO2_2
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At -17.825506 -9.122633
+Label At 0.000000 0.959587
+ROUTE 0 0
+r u -17.825506 -9.122633 0
+y y -17.825506 -7.203462 0
+x 0 -17.827225 -7.203462 0
+t d -17.827225 -7.003458 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+LEGEND
+Version: 2
+Dim: -3.87391 -3.2 -3.21587 -3.3357
+Size: 0.0260887
+Font: 1 0 =Times New Roman
+# of PFS Objects = 0
+VIEWPORT -26.617403 14.315720 5.404003 -14.762539
+LAYOUT
+TableFormat 1
+Pages 1 1 1 1
+PAGESETUP
+PAPERSIZE 
+PAPERSOURCE 
+ORIENTATION -1
+PRINTPAGENO 1 1
+LEFTMARGIN 0.5"
+RIGHTMARGIN 0.5"
+TOPMARGIN 0.5"
+BOTTOMMARGIN 0.5"
+VISIBILITY 0.030000
+PFDFLAG 255 255
+PFDMODE 0
+SCALE 0.026089
+
+ENDTEXT;
+END
+
+Properties
+Package : "PropertiesPlus";
+DefinitionText : TEXT MM "25.0" FLAVOR "NO" VERSION "25.0" DATETIME "Thu Jun 28 16:00:36 2012" 
+MACHINE "WIN-NT/VC" 
+? SETUP MAIN ? \ "RUN-CLASS" RUN-CLASS = PROP \ \ SIMULATE INTERACTIVE = NO 
+VISITED = 1 \ ? SETUP GLOBAL ? \ "IN-UNITS" \ ? SETUP DIAGNOSTICS ? ? SETUP 
+"SIM-OPTIONS" ? ; "ENG_MOLE" ; ? SETUP "ACCOUNT-INFO" ? ? SETUP DESCRIPTION ? 
+? ODATABANKS ? \ ODATABANKS AUTO-PARAM = YES \ ? DATABANKS ? \ DATABANKS 
+FILE-SYM-NAM = ( "APV73 PURE25" "APV73 AQUEOUS" "APV73 SOLIDS" 
+"APV73 INORGANIC" "APV73 HYSYS" ) \ ? COMPONENTS MAIN ? \ COMPONENTS CID = 
+CO2 ANAME = CO2 OUTNAME = CO2 TYPE = CONV DBNAME1 = "CARBON-DIOXIDE" ANAME1
+ = "CO2" /  CID = H2O ANAME = H2O OUTNAME = H2O TYPE = CONV DBNAME1 = "WATER" 
+ANAME1 = "H2O" /  CID = TEG ANAME = C6H14O4 OUTNAME = TEG TYPE = CONV DBNAME1
+ = "TRIETHYLENE-GLYCOL" ANAME1 = "C6H14O4" \ ? COMPONENTS "COMP-LIST" GLOBAL 
+? ? PROPERTIES MAIN ? \ GPROPERTIES GPPROCTYPE = ALL GBASEOPSET = HYSGLYCO 
+GOPSETNAME = HYSGLYCO PARCON = -1 \ ? PROPERTIES "OPTION-SETS" HYSGLYCO ? \ 
+PARAM BASE = HYSGLYCO \ ? PROPERTIES "OPTION-SETS" "LK-PLOCK" ? \ PARAM BASE
+ = "LK-PLOCK" \ ? PROPERTIES "MOLEC-STRUCT" CO2 ? ? PROPERTIES "MOLEC-STRUCT" 
+H2O ? ? PROPERTIES "MOLEC-STRUCT" TEG ? ? PROPERTIES PARAMETERS BINARY SCALAR 
+"GLYKIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = GLYKIJ SETNO = 1 UNITROW
+ = 0 BDBANK = ( "APV73 HYSYS" ) \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = CO2 CID2
+ = H2O VALUE = "APV73 HYSYS" \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = CO2 CID2 = 
+TEG VALUE = "APV73 HYSYS" \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = H2O CID2 = TEG 
+VALUE = "APV73 HYSYS" \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = H2O CID2 = CO2 
+VALUE = "APV73 HYSYS" \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = TEG CID2 = H2O 
+VALUE = "APV73 HYSYS" \ \ BPVAL PARAMNAME2 = GLYKIJ CID1 = TEG CID2 = CO2 
+VALUE = "APV73 HYSYS" \ ? PROPERTIES PARAMETERS BINARY SCALAR "LKPKIJ-1" ? ; 
+"ENG_MOLE" ; \ PROP-LIST PARAMNAME = LKPKIJ SETNO = 1 UNITROW = 0 BDBANK = ( 
+"APV73 EOS-LIT" ) \ \ BPVAL PARAMNAME2 = LKPKIJ CID1 = CO2 CID2 = H2O VALUE = 
+"APV73 EOS-LIT" \ \ BPVAL PARAMNAME2 = LKPKIJ CID1 = H2O CID2 = CO2 VALUE = 
+"APV73 EOS-LIT" \ ? PROPERTIES PARAMETERS BINARY SCALAR "RKTKIJ-1" ? ; 
+"ENG_MOLE" ; \ PROP-LIST PARAMNAME = RKTKIJ SETNO = 1 UNITROW = 0 \ ? 
+PROPERTIES PARAMETERS BINARY "T-DEPENDENT" "ANDKIJ-1" ? ; "ENG_MOLE" ; \ 
+PROP-LIST PARAMNAME = ANDKIJ SETNO = 1 UNITROW = 0 TUNITROW = 22 TUNITLABEL
+ = F NEL = 2 \ ? PROPERTIES PARAMETERS BINARY "T-DEPENDENT" "ANDMIJ-1" ? ; 
+"ENG_MOLE" ; \ PROP-LIST PARAMNAME = ANDMIJ SETNO = 1 UNITROW = 0 TUNITROW = 
+22 TUNITLABEL = F NEL = 2 \ ? PROPERTIES PARAMETERS BINARY "T-DEPENDENT" 
+"GLYABV-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = GLYABV SETNO = 1 UNITROW
+ = 0 TUNITROW = 22 TUNITLABEL = F BDBANK = ( "APV73 HYSYS" ) NEL = 5 \ \ 
+BPVAL PARAMNAME2 = GLYABV CID1 = CO2 CID2 = H2O UNITROW2 = 0 TUNITROW2 = 22 
+TUNITLABEL2 = F VAL1 = "APV73 HYSYS" VAL2 = "APV73 HYSYS" VAL3 = "APV73 HYSYS" 
+VAL4 = "APV73 HYSYS" VAL5 = "APV73 HYSYS" /  PARAMNAME2 = GLYABV CID1 = CO2 
+CID2 = TEG UNITROW2 = 0 TUNITROW2 = 22 TUNITLABEL2 = F VAL1 = "APV73 HYSYS" 
+VAL2 = "APV73 HYSYS" VAL3 = "APV73 HYSYS" VAL4 = "APV73 HYSYS" VAL5 = 
+"APV73 HYSYS" /  PARAMNAME2 = GLYABV CID1 = H2O CID2 = TEG UNITROW2 = 0 
+TUNITROW2 = 22 TUNITLABEL2 = F VAL1 = "APV73 HYSYS" VAL2 = "APV73 HYSYS" VAL3 
+= "APV73 HYSYS" VAL4 = "APV73 HYSYS" VAL5 = "APV73 HYSYS" \ 
+
+ GRAPHICS_BACKUP
+PFS V NONE
+$CONFIG
+paramdata APV73 ENRTL-RK
+paramdata APV73 VLE-IG
+paramdata APV73 VLE-RK
+paramdata APV73 VLE-HOC
+paramdata APV73 LLE-LIT
+paramdata APV73 LLE-ASPEN
+paramdata APV73 VLE-LIT
+paramdata APV73 BINARY
+paramdata APV73 EOS-LIT
+paramdata APV73 HENRY-AP
+paramdata APV73 SRK-ASPEN
+paramdata APV73 PC-SAFT
+paramdata APV73 POLYPCSF
+paramdata APV73 HYSYS
+purebank APV73 PURE25
+purebank APV73 AQUEOUS
+purebank APV73 SOLIDS
+purebank APV73 INORGANIC
+regdbank 1
+ftn_check 1
+autoblockid 1
+autostreamid 1
+showblockid 1
+showstreamid 1
+autoplacement 1
+grid 2
+gridresolution 0.100000
+scale 0
+streamprefix 
+blockprefix B
+labelscale 1.000000
+qwformat %.0f
+tempformat %.0f
+presformat %.0f
+flowformat %.0f
+strmqwformat %.0f
+vflowformat %.0f
+mflowformat %.0f
+vfracformat %.0f
+pseudobatch 0
+partial 1
+animation 1
+runanyway 0
+browserheight 7530
+browserwidth 10725
+browsertreewidth 2970
+polyplusenabled 1
+dynaplusenabled 1
+bfracenabled 1
+rtfenabled 1
+rspenabled 0
+pinchenabled 0
+linklimit 5000
+material_color 0
+material_style 983041
+material_width 1
+heat_color 0
+heat_style 983042
+heat_width 1
+heat_termid Q
+work_color 0
+work_style 983043
+work_width 1
+work_termid W
+connections_color 9
+connections_style 983044
+connections_width 1
+measurements_color 4
+measurements_style 983044
+measurements_width 1
+displayeoconn 0
+displayeomeas 1
+displayeomeastype 2
+showeoviews 0
+eoautosave 1
+allow_system_userprops 0
+copy_estimation 1
+copy_retrieved 1
+purge_incomp_params 0
+set_default_biparams 0
+set_default_dataset1 0
+set_default_dataset0 1
+roottype 1
+exchangerfile 1
+streamformat 1
+runsettingfile 1
+usermodelfile 1
+fortranfile 0
+allow_system_autoparam 1
+timeout 1000
+#
+#
+E_LINK
+
+$_SUMMARY_FILE
+ MMSUMMARY25.0                                                                  
+ IDSET RUNID (PROPERTIES) (114 *5)                                              
+ IDSET IT (PROPERTIES) (117 *6 119 *6 115 *1)                                   
+ LSET RUNID (%RUNID)                                                            
+ LSET IT (%IT)                                                                  
+ IDSET VERS (PROPERTIES) (345 *6 346 *6 347 *6 348 *6 355 *6)                   
+ LSET VERS (%VERS)                                                              
+ DSET RUN-STATUS VERS @VERS ( "25.0" "WIN32" "" "jeslick" "PDS04V2" )           
+ IDSET STRNAM (PROPERTIES) (1233 *6)                                            
+ LSET STRNAM (%STRNAM)                                                          
+ IDSET ID_STRPR (PROPERTIES) ( 454 *2 <119> 1236 *2 <125> 1237 *2 <29> 1238 *2  
+ <55> 1239 *2 <55> 1083 *6 1084 *6 )                                            
+ LSET L_STRPR (%ID_STRPR)                                                       
+ IDSET STATUS (PROPERTIES) (125 *1 126 *1 127 *1 128 *1 129 *1 130 *1)          
+ LSET STATUS (%STATUS)                                                          
+ DSET RUN-STATUS STATUS @STATUS ( 8 * * * * * )                                 
+ DSET RUN-STATUS COMPSTAT @L_1 (0)                                              
+ DSET RUN-STATUS RUNID @RUNID ("_5954xuh")                                      
+ DSET RUN-STATUS IT @IT ( "JUNE 28, 2012       4:00:31 P.M." "_5954xuh.inm" 2)  
+
+ENDTEXT;
+TimeStamp : "30323453 385863162";
+
+Default as ComponentList; 
+Within Default
+  Components :["CO2","H2O","TEG"];
+EndWithin
+
+Compress as ComponentList; 
+Within Compress
+  Components :["CO2","H2O","TEG"];
+  Option("OPSET") : "LK-PLOCK";
+EndWithin
+End
+
+Options
+  AbsoluteSingularityTol: 1.e-004;
+  AbsPerturb: 1.e-005;
+  AbsTearTol: 1.e-005;
+  AbsTol: 1.e-005;
+  AssignmentWarningsEnabled: True;
+  ChangeTol: 1.e-005;
+  CheckProcDerivs: "Off";
+  Compression: True;
+  CurrentUOMSet: "Metric";
+  Decomposer.ProgID: "AspenTech.Decomposer";
+  Decomposition.MultipleGroup: True;
+  DerivAbsTol: 1.e-003;
+  DerivRelTol: 0.1;
+  EqnTol: 1.e-005;
+  EquationSensCheck: False;
+  EquationSensTol: 10000000000.;
+  EstimationPrintLevel: "Medium";
+  EstimationReturntoBestPoint: False;
+  EstimationSolver: 2;
+  Estimator: 1;
+  ExplicitEventTolerance: 1.e-005;
+  Feasopt.MaxAbsStep: 10.;
+  Feasopt.MaxEval: 100;
+  Feasopt.MaxRelStep: 10.;
+  Feasopt.OptTol: 1.e-004;
+  Homotopy.InitialStep: 0.1;
+  Homotopy.MaximumStep: 1.;
+  Homotopy.MinimumStep: 1.e-002;
+  Homotopy.StepDecrement: 0.5;
+  Homotopy.StepIncrement: 10;
+  Integration.AbsErrorTol: 1.e-005;
+  Integration.AbsTearTol: 1.e-005;
+  Integration.DiscontinuityEventTol: 1.e-005;
+  Integration.EnforceMinStep: False;
+  Integration.IncSensErrors: False;
+  Integration.InitStepSize: 5.e-003;
+  Integration.ItplToComTime: True;
+  Integration.LocateIEvents: False;
+  Integration.MaxOrder: 5;
+  Integration.MaxStepSize: 1.;
+  Integration.MinStepSize: 1.e-003;
+  Integration.ProgID: "AspenTech.UnifiedIntegrator";
+  Integration.RcvTornVars: False;
+  Integration.ReInitAfterEE: False;
+  Integration.ReInitAfterIE: False;
+  Integration.RelErrorTol: 1.e-005;
+  Integration.RelTearTol: 1.e-005;
+  Integration.RewindToLastConvStep: False;
+  Integration.ShowHIErrors: 0;
+  Integration.ShowHTIErrors: 0;
+  Integration.StepRedFact: 0.5;
+  Integration.StepSize: 1.e-002;
+  Integration.StepSizeType: "Variable";
+  Integration.TestSAndAVars: False;
+  Integration.UsePrevAfterEE: False;
+  Integrator: "ImplicitEuler";
+  KeepCompiledEvaluationFiles: False;
+  LinearSolver: "MA48";
+  ListEquivalenceVariables: True;
+  LogLikelihood.MaxIter: 100;
+  LogLikelihood.SolTol: 1.e-004;
+  MA48.DropTol: 0.;
+  MA48.EnableRefineIter: True;
+  MA48.MaxRefineIter: 10;
+  MA48.PivotSearch: 3;
+  MA48.PivotTol: 1.e-050;
+  MA48.Repivot: 0;
+  MA48.UseTranspose: 0;
+  MaxTearIter: 100;
+  Nl2sol.AbsFuncTol: 1.e-020;
+  Nl2sol.FalseConvTol: 0.;
+  Nl2sol.MaxIter: 50;
+  Nl2sol.RelFuncTol: 1.e-004;
+  Nl2sol.SolTol: 1.e-004;
+  NLASolver: "Standard";
+  Nonlinear.AbsPert: 1.e-005;
+  Nonlinear.BestOnFail: True;
+  Nonlinear.BoundClip: 1.e-006;
+  Nonlinear.BoundFrac: 1.;
+  Nonlinear.ConvCrit: "Residual";
+  Nonlinear.CreepIter: 0;
+  Nonlinear.CreepSize: 0.1;
+  Nonlinear.Dogleg: False;
+  Nonlinear.HiResidual: 0;
+  Nonlinear.HiVarSteps: 0;
+  Nonlinear.MathsPrint: 0;
+  Nonlinear.MaxDivSteps: 10;
+  Nonlinear.MaxFastNewtonSteps: 5;
+  Nonlinear.MaxIter: 100;
+  Nonlinear.MaxStepRed: 10;
+  Nonlinear.MaxVarStep: 50.;
+  Nonlinear.Method: "Mixed Newton";
+  Nonlinear.RangeFrac: 0.;
+  Nonlinear.SingPert: 1.e-002;
+  OptimizationObjFun: "Minimize";
+  OptimizationPrintLevel: "Medium";
+  Optimizer: 1;
+  PrintLevel: 2;
+  PropInfo: 1;
+  RelativeSingularityCheck: True;
+  RelativeSingularityTol: 1.e-002;
+  RelPerturb: 1.e-005;
+  RelTearTol: 1.e-005;
+  RelTol: 1.e-005;
+  RunMode: "SteadyState";
+  SaveFreeVariableValues: True;
+  Scaling: False;
+  SensErrorCheck: True;
+  SnapshotSettings.EnableDynInitialization: True;
+  SnapshotSettings.EnableFileSaved: False;
+  SnapshotSettings.EnableInitialization: True;
+  SnapshotSettings.EnableInitialSpec: True;
+  SnapshotSettings.EnableMaximum: True;
+  SnapshotSettings.EnableonReinitialization: False;
+  SnapshotSettings.EnableProblemEdit: True;
+  SnapshotSettings.EnableRegularSnapshot: False;
+  SnapshotSettings.EnableSteadyState: True;
+  SnapshotSettings.Interval: 2.;
+  SnapshotSettings.Maximum: 10;
+  SnapshotSettings.SaveConvergedOnly: True;
+  SnapshotSettings.TakeAutoSnapshots: True;
+  SyncSteps: "Full";
+  Tearing: "update";
+  TearUpdate: "Direct";
+  TimeSettings.CommunicationInterval: 1.e-002;
+  TimeSettings.CommunicationUnits: "Hours";
+  TimeSettings.DisplayUpdateInterval: 2000;
+  TimeSettings.EnablePauseAt: False;
+  TimeSettings.EnableStepFor: False;
+  TimeSettings.PauseAt: 0.;
+  TimeSettings.RealTimeSyncFactor: 0.;
+  TimeSettings.RecordHistory: False;
+  TimeSettings.StepFor: 0;
+  TimeSettings.TimeDisplayUnits: "Hours";
+  UseCompiledEvaluation: False;
+  UseSavedSnapshotOnLoad: False;
+  WatchGroup: 0;
+  WatchSubGroup: 0;
+  Wegstein.MaxAcceleration: 0.;
+  Wegstein.MinAcceleration: -5.;
+  OpenLASolver: "";
+  OpenNLASolver: "";
+  OpenOPTSolver: "";
+  OpenESTSolver: "";
+End
+Optimization
+  IsDynamic : FALSE;
+  ElementSizeBoundsAutomatic : TRUE;
+  EndTime : 1.000000000000000;
+  Control.FinalTime_Initial : 1.000000000000000;
+  Control.FinalTime_Upper : 2.000000000000000;
+  Control.FinalTime_Lower : 0.5000000000000000;
+  Control.FinalTime_IsFixed : TRUE;
+  Control.FinalTime_IsObjective : FALSE;
+  Control.Elements : 5;
+  Control.FixedInterval : TRUE;
+  Control.MovingElementsVarying : FALSE;
+  Control.PiecewiseLinear : FALSE;
+  Control(0) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(1) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(2) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(3) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(4) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+End
+Estimation
+  CalcHeteroParams : TRUE;
+  ExperimentTimeUnit: "";
+End
+Homotopy
+ Enabled: FALSE;
+End
+SimulationAccessExtension
+  ENABLED: false;
+End
+SpecAnalysis
+ EXCLUDES: {B1.compstage(1).phi},
+         {B1.compstage(4).o_port.P},
+         {B1.compstage(4).o_port.z("H2O")},
+         {B1.compstage(4).o_port.z("TEG")},
+         {B1.compstage(4).rho_v0},
+         {B1.compstage(4).Tisen},
+         {B1.compstage(4).U2},
+         {B1.i_port.F},
+         {B1.i_port.z("CO2")},
+         {B1.i_port.z("H2O")},
+         {B1.i_port.z("TEG")},
+         {B1.ic_P_drop(1)},
+         {B1.intercooler(1).o_port_vap.T},
+         {B1.intercooler(4).o_port_liq.F},
+         {B1.intercooler(4).o_port_vap.z("H2O")},
+         {B1.intercooler(4).o_port_vap.z("TEG")},
+         {B1.precooler.o_port_vap.P},
+         {B1.precooler.o_port_vap.T},
+         {Mix_MU.o_port.h};
+End
+OnLineLinks
+  Protocol: "OPC", 1;
+  //Server: "";
+  IO: Synchronous, Cached;
+  Bounds: Clip;
+  Quality: UseLast;
+  Update: 1000;
+  PrintLevel: 2;
+  Enabled: OFF;
+  Input Events : Before SS Run, After DYN Step, After INI Step, Before INI Run;
+  Output Events: After SS Run, After DYN Step, After INI Step, After INI Run;
+End
+snapshot snap1
+// Start of Snapshot Header Information. Please don't modify or move.
+description : "s1";
+solution_date : "15-06-2012 15:51:16";
+Solution_Time :0 ;
+Solution_Convergence :0 ;
+Run_Number :1 ;
+// End of Snapshot Header Information.
+UserNotes: "";
+ActiveTasks: [];
+WITHIN AS5
+UserNotes: "";
+WITHIN i_port
+WITHIN Connection("WET_CO2_2")
+F: 6766.802071533449, FIXED, 524416;
+z("CO2"): 0.9953571346709108, FIXED, 524416;
+z("H2O"): 0.004642865329089249, FIXED, 524416;
+z("TEG"): 0.0000000000000000, FIXED, 524416;
+T: 54.44444280000000, FIXED, 524416;
+P: 51.64862693430000, FIXED, 524416;
+ENDWITHIN;
+WITHIN Connection("S1")
+F: 1350.383040841450, FREE, 33554432;
+z("CO2"): 0.002997002997002997, FREE, 33554432;
+z("H2O"): 0.05694305694305694, FREE, 33554432;
+z("TEG"): 0.9400599400599401, FREE, 33554432;
+T: 60.02291024785762, FREE, 33554432;
+P: 51.70378499269999, FREE, 33554432;
+h: -0.7740021527287402, FREE, 33554432;
+ENDWITHIN;
+ENDWITHIN;
+WITHIN o_port_liq
+F: 1698.899048094982, FREE, 34078720;
+z("CO2"): 0.1905340865121851, FREE, 34078720;
+z("H2O"): 0.06226925166655464, FREE, 34078720;
+z("TEG"): 0.7471966618212602, FREE, 34078720;
+T: 61.58355825691587, FREE, 34078720;
+P: 51.70378499269999, FIXED, 524416;
+h: -0.6950901409141369, FREE, 34078720;
+ENDWITHIN;
+WITHIN o_port_vap
+F: 6418.286064279917, FREE, 34078720;
+z("CO2"): 0.9996022937952851, FREE, 34078720;
+z("H2O"): 0.0003931158418622668, FREE, 34078720;
+z("TEG"): 4.590362852662465e-006, FREE, 34078720;
+T: 61.58355825691587, FREE, 34078720;
+P: 51.70378499269999, FREE, 34078720;
+h: -0.3940892258279474, FREE, 34078720;
+ENDWITHIN;
+WITHIN q_port
+Q: 0.0000000000000000, FIXED, 524416;
+ENDWITHIN;
+VapFrac: 0.7907034243305654, FREE, 34078720;
+Hin_mol("WET_CO2_2"): -0.3938442348841194, FREE, 34078720;
+Hin_mol("S1"): -0.7740021529540320, FREE, 33554432;
+Hin("WET_CO2_2"): -2665.065984475365, FREE, 34078720;
+Hin("S1"): -1045.199380923895, FREE, 33554432;
+z_total("CO2"): 0.8302671097832610, FREE, 34078720;
+z_total("H2O"): 0.01334357756005584, FREE, 34078720;
+z_total("TEG"): 0.1563893126566833, FREE, 34078720;
+ENDWITHIN;
+WITHIN WET_CO2_2
+UserNotes: "";
+ENDWITHIN;
+WITHIN AS5_V
+UserNotes: "";
+ENDWITHIN;
+WITHIN RICH_SOL_1
+UserNotes: "";
+ENDWITHIN;
+WITHIN B1
+UserNotes: "";
+WITHIN i_port
+WITHIN Connection("AS5_V")
+F: 6418.286064279917, FREE, 33554432;
+z("CO2"): 0.9996022937952851, FREE, 33554432;
+z("H2O"): 0.0003931158418622668, FREE, 33554432;
+z("TEG"): 4.590362852662465e-006, FREE, 33554432;
+T: 61.58355825691587, FREE, 33554432;
+P: 51.70378499269999, FREE, 33554432;
+h: -0.3940892258279474, FREE, 33554432;
+ENDWITHIN;
+WITHIN Connection("S2")
+F: 1350.383040841450, FIXED, 524416;
+z("CO2"): 0.003000000000000000, FIXED, 524416;
+z("H2O"): 0.05700000000000000, FIXED, 524416;
+z("TEG"): 0.9410000000000000, FIXED, 524416;
+T: 59.99999839999999, FIXED, 524416;
+P: 52.40015548000000, FIXED, 524416;
+ENDWITHIN;
+ENDWITHIN;
+WITHIN o_port_liq
+F: 1350.383040841450, FREE, 33554432;
+z("CO2"): 0.002997002997002997, FREE, 34078720;
+z("H2O"): 0.05694305694305694, FREE, 34078720;
+z("TEG"): 0.9400599400599401, FREE, 34078720;
+T: 60.02291024785762, FREE, 34078720;
+P: 51.70378499269999, FIXED, 524416;
+h: -0.7740021527287402, FREE, 33554432;
+ENDWITHIN;
+WITHIN o_port_vap
+F: 6304.933943000000, FREE, 524288;
+z("CO2"): 0.002997001742676439, FREE, 524288;
+z("H2O"): 0.05694304351800835, FREE, 524288;
+z("TEG"): 0.9400599547393153, FREE, 524288;
+T: 60.02291024785762, FREE, 33554432;
+P: 51.70378499269999, FREE, 33554432;
+h: -0.8415444994423194, FREE, 33554432;
+ENDWITHIN;
+WITHIN q_port
+Q: 0.0000000000000000, FIXED, 524416;
+ENDWITHIN;
+VapFrac: 0.7000000000000000, FREE, 524288;
+Hin_mol("AS5_V"): 0.05000000000000000, FREE, 0;
+Hin_mol("S2"): -0.7740021527287402, FREE, 33554432;
+Hin("AS5_V"): 1.000000000000000, FREE, 0;
+Hin("S2"): -1045.199380619665, FREE, 33554432;
+z_total("CO2"): 0.003000000000000000, FREE, 33554432;
+z_total("H2O"): 0.05700000000000000, FREE, 33554432;
+z_total("TEG"): 0.9410000000000000, FREE, 33554432;
+ENDWITHIN;
+WITHIN S1
+UserNotes: "";
+ENDWITHIN;
+WITHIN S2
+UserNotes: "";
+ENDWITHIN;
+WITHIN S3
+UserNotes: "";
+ENDWITHIN;
+End

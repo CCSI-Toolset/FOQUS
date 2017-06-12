@@ -1,0 +1,1 @@
+Mostly Public Domain, HMAC.py has Python License and was derived from Python 2.2.

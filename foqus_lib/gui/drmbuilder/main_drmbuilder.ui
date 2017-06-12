@@ -1,0 +1,537 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>886</width>
+    <height>528</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>D-RM Builder</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="icons.qrc">
+    <normaloff>:/icons/ccsi_logo.png</normaloff>:/icons/ccsi_logo.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QWidget" name="widgetDisplay" native="true">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>200</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextBrowser" name="textMessage"/>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>886</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <widget class="QMenu" name="menuExport">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <addaction name="actionD_RM_As_Matlab_Script_File"/>
+     <addaction name="actionTraining_Data"/>
+     <addaction name="actionValidation_Data"/>
+     <addaction name="actionCovariance_Matrices"/>
+     <addaction name="actionMessages_To_Log_File"/>
+    </widget>
+    <addaction name="actionNew"/>
+    <addaction name="actionOpen"/>
+    <addaction name="actionClose"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionSave_As"/>
+    <addaction name="separator"/>
+    <addaction name="menuExport"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionToolbar"/>
+    <addaction name="actionStatus_Bar"/>
+   </widget>
+   <widget class="QMenu" name="menuSetup">
+    <property name="title">
+     <string>Setup</string>
+    </property>
+    <addaction name="actionChoose_High_Fidelity_Model"/>
+    <addaction name="actionConfigure_Input_Variables"/>
+    <addaction name="actionConfigure_Output_Variables"/>
+    <addaction name="actionPrepare_Training_Sequence"/>
+    <addaction name="actionPrepare_Validation_Sequence"/>
+   </widget>
+   <widget class="QMenu" name="menuBuild">
+    <property name="title">
+     <string>Build</string>
+    </property>
+    <widget class="QMenu" name="menuD_RM_Model_Type">
+     <property name="title">
+      <string>D-RM Model Type</string>
+     </property>
+     <addaction name="actionDABNet"/>
+     <addaction name="actionNARMA"/>
+    </widget>
+    <addaction name="actionPerform_Training_Simulation"/>
+    <addaction name="actionPerform_Validation_Simulation"/>
+    <addaction name="separator"/>
+    <addaction name="menuD_RM_Model_Type"/>
+    <addaction name="actionGenerate_Reduced_Model"/>
+   </widget>
+   <widget class="QMenu" name="menuPost_Process">
+    <property name="title">
+     <string>Post-Process</string>
+    </property>
+    <addaction name="actionUse_Balanced_Model_For_Prediction"/>
+    <addaction name="actionUse_High_Fidelity_Model_History_For_Prediction"/>
+    <addaction name="separator"/>
+    <addaction name="actionPredict_Traning_Response"/>
+    <addaction name="actionPredict_Validation_Response"/>
+    <addaction name="separator"/>
+    <addaction name="actionPlot_Training_Response"/>
+    <addaction name="actionPlot_Validation_Response"/>
+   </widget>
+   <widget class="QMenu" name="menuUQ">
+    <property name="title">
+     <string>UQ</string>
+    </property>
+    <addaction name="actionSpecify_Noise"/>
+    <addaction name="actionAnalyze"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout_D_RM_Builder"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuSetup"/>
+   <addaction name="menuBuild"/>
+   <addaction name="menuPost_Process"/>
+   <addaction name="menuUQ"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar">
+   <property name="inputMethodHints">
+    <set>Qt::ImhUppercaseOnly</set>
+   </property>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="actionNew"/>
+   <addaction name="actionOpen"/>
+   <addaction name="actionSave"/>
+   <addaction name="actionClose"/>
+   <addaction name="separator"/>
+   <addaction name="actionChoose_High_Fidelity_Model"/>
+   <addaction name="actionConfigure_Input_Variables"/>
+   <addaction name="actionConfigure_Output_Variables"/>
+   <addaction name="actionPrepare_Training_Sequence"/>
+   <addaction name="actionPrepare_Validation_Sequence"/>
+   <addaction name="separator"/>
+   <addaction name="actionPerform_Training_Simulation"/>
+   <addaction name="actionPerform_Validation_Simulation"/>
+   <addaction name="actionGenerate_Reduced_Model"/>
+   <addaction name="separator"/>
+   <addaction name="actionPredict_Traning_Response"/>
+   <addaction name="actionPredict_Validation_Response"/>
+   <addaction name="actionPlot_Training_Response"/>
+   <addaction name="actionPlot_Validation_Response"/>
+   <addaction name="separator"/>
+   <addaction name="actionSpecify_Noise"/>
+   <addaction name="actionAnalyze"/>
+   <addaction name="separator"/>
+   <addaction name="actionAbout_D_RM_Builder"/>
+  </widget>
+  <action name="actionAbout_D_RM_Builder">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/help.png</normaloff>:/icons/help.png</iconset>
+   </property>
+   <property name="text">
+    <string>About D-RM Builder...</string>
+   </property>
+   <property name="statusTip">
+    <string>About D-RM Builder</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/new.png</normaloff>:/icons/new.png</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+   <property name="statusTip">
+    <string>Create a new D-RM Builder case</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/open.png</normaloff>:/icons/open.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open...</string>
+   </property>
+   <property name="statusTip">
+    <string>Open an existing D-RM Builder case</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/close.png</normaloff>:/icons/close.png</iconset>
+   </property>
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="statusTip">
+    <string>Close current D-RM Builder case</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/save.png</normaloff>:/icons/save.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save</string>
+   </property>
+   <property name="statusTip">
+    <string>Save current D-RM Builder case</string>
+   </property>
+  </action>
+  <action name="actionSave_As">
+   <property name="text">
+    <string>Save As...</string>
+   </property>
+   <property name="statusTip">
+    <string>Save current D-RM Builder case to a different file</string>
+   </property>
+  </action>
+  <action name="actionD_RM_As_Matlab_Script_File">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/export_drm.png</normaloff>:/icons/export_drm.png</iconset>
+   </property>
+   <property name="text">
+    <string>D-RM As Matlab Script File...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export D-RM model to MATLAB script file</string>
+   </property>
+  </action>
+  <action name="actionToolbar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Toolbar</string>
+   </property>
+  </action>
+  <action name="actionStatus_Bar">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Status Bar</string>
+   </property>
+  </action>
+  <action name="actionChoose_High_Fidelity_Model">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/aspen_tech.png</normaloff>:/icons/aspen_tech.png</iconset>
+   </property>
+   <property name="text">
+    <string>Choose High-Fidelity Model...</string>
+   </property>
+   <property name="statusTip">
+    <string>Choose a configured high-fidelity ACM dynamic model</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Input_Variables">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/config_input.png</normaloff>:/icons/config_input.png</iconset>
+   </property>
+   <property name="text">
+    <string>Configure Input Variables...</string>
+   </property>
+   <property name="statusTip">
+    <string>Specify input parameters</string>
+   </property>
+  </action>
+  <action name="actionConfigure_Output_Variables">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/config_output.png</normaloff>:/icons/config_output.png</iconset>
+   </property>
+   <property name="text">
+    <string>Configure Output Variables...</string>
+   </property>
+   <property name="statusTip">
+    <string>Specify output parameters</string>
+   </property>
+  </action>
+  <action name="actionPrepare_Training_Sequence">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/steps_train.png</normaloff>:/icons/steps_train.png</iconset>
+   </property>
+   <property name="text">
+    <string>Prepare Training Sequence...</string>
+   </property>
+   <property name="statusTip">
+    <string>Prepare a sequence of step changes for training</string>
+   </property>
+  </action>
+  <action name="actionPrepare_Validation_Sequence">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/steps_valid.png</normaloff>:/icons/steps_valid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Prepare Validation Sequence...</string>
+   </property>
+   <property name="statusTip">
+    <string>Prepare a sequence of step changes for validation</string>
+   </property>
+  </action>
+  <action name="actionPerform_Training_Simulation">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/run_train.png</normaloff>:/icons/run_train.png</iconset>
+   </property>
+   <property name="text">
+    <string>Perform Training Simulation</string>
+   </property>
+   <property name="statusTip">
+    <string>Launch ACM simulation for training sequence</string>
+   </property>
+  </action>
+  <action name="actionPerform_Validation_Simulation">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/run_valid.png</normaloff>:/icons/run_valid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Perform Validation Simulation</string>
+   </property>
+   <property name="statusTip">
+    <string>Launch ACM simulation for validation sequence</string>
+   </property>
+  </action>
+  <action name="actionDABNet">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>DABNet</string>
+   </property>
+   <property name="statusTip">
+    <string>Set D-RM type as DABNet</string>
+   </property>
+  </action>
+  <action name="actionNARMA">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>NARMA</string>
+   </property>
+   <property name="statusTip">
+    <string>Set D-RM type as NARMA</string>
+   </property>
+  </action>
+  <action name="actionGenerate_Reduced_Model">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/build_drm.png</normaloff>:/icons/build_drm.png</iconset>
+   </property>
+   <property name="text">
+    <string>Generate Reduced Model...</string>
+   </property>
+   <property name="statusTip">
+    <string>Build D-RM using the training sequence</string>
+   </property>
+  </action>
+  <action name="actionUse_Balanced_Model_For_Prediction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use Balanced Model For Prediction</string>
+   </property>
+   <property name="statusTip">
+    <string>Toggle to use the balanced model for prediction</string>
+   </property>
+  </action>
+  <action name="actionUse_High_Fidelity_Model_History_For_Prediction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use High-Fidelity Model History For Prediction</string>
+   </property>
+   <property name="statusTip">
+    <string>Use the high-fidelity model history for prediction</string>
+   </property>
+  </action>
+  <action name="actionPredict_Traning_Response">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/predict_train.png</normaloff>:/icons/predict_train.png</iconset>
+   </property>
+   <property name="text">
+    <string>Predict Traning Response</string>
+   </property>
+   <property name="statusTip">
+    <string>Using the generated D-RM to predict response of training sequence</string>
+   </property>
+  </action>
+  <action name="actionPredict_Validation_Response">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/predict_valid.png</normaloff>:/icons/predict_valid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Predict Validation Response</string>
+   </property>
+   <property name="statusTip">
+    <string>Use the generated D-RM to predict response of validation sequence</string>
+   </property>
+  </action>
+  <action name="actionPlot_Training_Response">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/plot_train.png</normaloff>:/icons/plot_train.png</iconset>
+   </property>
+   <property name="text">
+    <string>Plot Training Response...</string>
+   </property>
+   <property name="statusTip">
+    <string>Plot the response of training sequence</string>
+   </property>
+  </action>
+  <action name="actionPlot_Validation_Response">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/plot_valid.png</normaloff>:/icons/plot_valid.png</iconset>
+   </property>
+   <property name="text">
+    <string>Plot Validation Response...</string>
+   </property>
+   <property name="statusTip">
+    <string>Plot the response of validation sequence</string>
+   </property>
+  </action>
+  <action name="actionSpecify_Noise">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/noise.png</normaloff>:/icons/noise.png</iconset>
+   </property>
+   <property name="text">
+    <string>Specify Noise...</string>
+   </property>
+   <property name="statusTip">
+    <string>Specify the process and measurement noise</string>
+   </property>
+  </action>
+  <action name="actionAnalyze">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/uq.png</normaloff>:/icons/uq.png</iconset>
+   </property>
+   <property name="text">
+    <string>Analyze...</string>
+   </property>
+   <property name="statusTip">
+    <string>Perform UQ analysis</string>
+   </property>
+  </action>
+  <action name="actionMessages_To_Log_File">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/export_log.png</normaloff>:/icons/export_log.png</iconset>
+   </property>
+   <property name="text">
+    <string>Messages To Log File...</string>
+   </property>
+   <property name="statusTip">
+    <string>Export message window text to a log file</string>
+   </property>
+  </action>
+  <action name="actionTraining_Data">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/training_data.png</normaloff>:/icons/training_data.png</iconset>
+   </property>
+   <property name="text">
+    <string>Training Data...</string>
+   </property>
+  </action>
+  <action name="actionValidation_Data">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/validation_data.png</normaloff>:/icons/validation_data.png</iconset>
+   </property>
+   <property name="text">
+    <string>Validation Data...</string>
+   </property>
+  </action>
+  <action name="actionCovariance_Matrices">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/covariance.png</normaloff>:/icons/covariance.png</iconset>
+   </property>
+   <property name="text">
+    <string>Covariance Matrices...</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

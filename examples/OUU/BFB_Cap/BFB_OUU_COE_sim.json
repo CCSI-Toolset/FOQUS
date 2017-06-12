@@ -1,0 +1,482 @@
+{
+  "title": "New BFB Model",
+  "description": "3x ads, 2x rgn; updated solid heat exchanger",
+  "aspenfile": "BFB_OUU_COE_v6.3X.acmf",
+  "author": "John Eslick (updated)",
+  "date": "3/20/2015",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "settings": {
+    "homotopy": {
+      "type": "int",
+      "default": 1,
+      "description": "Simulation specific setting: homotopy"
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    },
+    "RunMode": {
+      "type": "string",
+      "default": "Steady State",
+      "description": "Simulation specific setting: RunMode"
+    }
+  },
+  "inputs": {
+    "adsDt": {
+      "path": [
+        "adsDt"
+      ],
+      "type": "double",
+      "default": 12.820686840441327,
+      "description": "Adsorption units diameter",
+      "units": "m",
+      "min": 9.0,
+      "max": 15.0
+    },
+    "adsdx": {
+      "path": [
+        "adsdx"
+      ],
+      "type": "double",
+      "default": 0.017500647709031737,
+      "description": "Adsorption units HX tubes diameter",
+      "units": "m",
+      "min": 0.0175,
+      "max": 0.03
+    },    
+    "adslhx": {
+      "path": [
+        "adslhx"
+      ],
+      "type": "double",
+      "default": 0.16951193029886352,
+      "description": "Adsorption units HX tubes spacing",
+      "units": "m",
+      "min": 0.01,
+      "max": 0.55
+    },
+    "adsN": {
+      "path": [
+        "adsN"
+      ],
+      "type": "double",
+      "default": 9.90502575959941,
+      "description": "Number of parallel adsorption trains",
+      "units": "",
+      "min": 6.0,
+      "max": 15
+    },
+    "BFBadsB.Lb": {
+      "path": [
+        "BFBadsB.Lb"
+      ],
+      "type": "double",
+      "default": 4.045702742861714,
+      "description": "Bottom adsorber bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsM.Lb": {
+      "path": [
+        "BFBadsM.Lb"
+      ],
+      "type": "double",
+      "default": 4.1501668354101975,
+      "description": "Middle adsorber bed Depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsT.Lb": {
+      "path": [
+        "BFBadsT.Lb"
+      ],
+      "type": "double",
+      "default": 3.3662910631986764,
+      "description": "Top adsorber bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnB.Lb": {
+      "path": [
+        "BFBrgnB.Lb"
+      ],
+      "type": "double",
+      "default": 3.3942151904481257,
+      "description": "Bottom regenerator bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnT.Lb": {
+      "path": [
+        "BFBrgnT.Lb"
+      ],
+      "type": "double",
+      "default": 3.773087624628822,
+      "description": "Top regenerator bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "CW_SHXlean.A_exch": {
+      "path": [
+        "CW_SHXlean.A_exch"
+      ],
+      "type": "double",
+      "default":597.3573832214763,
+      "description": "Regeneration units diameter",
+      "units": "m2",
+      "min":200,
+      "max":600 
+    },
+    "GHXfg.A_exch": {
+      "path": [
+        "GHXfg.A_exch"
+      ],
+      "type": "double",
+      "default": 8168.701831149383,
+      "description": "Regeneration units diameter",
+      "units": "m2",
+      "min": 3000,
+      "max": 10000
+    },
+    "LR_SHXlean.A_exch": {
+      "path": [
+        "LR_SHXlean.A_exch"
+      ],
+      "type": "double",
+      "default":11992.198796814751,
+      "description": "Regeneration units diameter",
+      "units": "m2",
+      "min": 3000,
+      "max": 12000
+    },
+    "LR_SHXrich.A_exch": {
+      "path": [
+        "LR_SHXrich.A_exch"
+      ],
+      "type": "double",
+      "default":10490.656772969029,
+      "description": "Regeneration units diameter",
+      "units": "m2",
+      "min": 3000,
+      "max": 12000
+    },
+    "rgnDt": {
+      "path": [
+        "rgnDt"
+      ],
+      "type": "double",
+      "default": 9.007091982470763,
+      "description": "Regeneration units diameter",
+      "units": "m",
+      "min": 9.0,
+      "max": 12.0
+    },
+    "rgndx": {
+      "path": [
+        "rgndx"
+      ],
+      "type": "double",
+      "default": 0.02583769517158834,
+      "description": "Regeneration units HX tubes diameter",
+      "units": "m",
+      "min": 0.014,
+      "max": 0.026
+    },
+    "rgnlhx": {
+      "path": [
+        "rgnlhx"
+      ],
+      "type": "double",
+      "default": 0.05000000527528669,
+      "description": "Regeneration units HX tubes spacing",
+      "units": "m",
+      "min": 0.05,
+      "max": 0.1
+    },
+    "rgnN": {
+      "path": [
+        "rgnN"
+      ],
+      "type": "double",
+      "default": 10.319322167507359,
+      "description": "Number of parallel regeneration trains",
+      "units": "",
+      "min": 6.0,
+      "max": 15.0
+    },
+    "CW_SHXlean.HXIn.F": {
+      "path": [
+        "CW_SHXlean.HXIn.F"
+      ],
+      "type": "double",
+      "default":7105.550611207809,
+      "description": "Sorbent cooler cooling water flow rate",
+      "units": "kmol/hr",
+      "min": 100,
+      "max": 14000
+    },
+    "GHXfg.HXIn.F": {
+      "path": [
+        "GHXfg.HXIn.F"
+      ],
+      "type": "double",
+      "default":70080.17773270665,
+      "description": "Flue gas cooler cooling water flow rate",
+      "units": "kmol/hr",
+      "min": 100,
+      "max": 80000
+    },
+    "rgnSF": {
+      "path": [
+        "rgnSF"
+      ],
+      "type": "double",
+      "default": 0.08,
+      "description": "Regeneration section recirculation gas split fraction",
+      "units": "",
+      "min": 0.08,
+      "max": 0.3
+    },
+    "SolidIn.Fm": {
+      "path": [
+        "BFBadsT.SolidIn.Fm"
+      ],
+      "type": "double",
+      "default": 736482.5941848748,
+      "description": "Mass flow rate of solid into top adsorber",
+      "units": "kg/hr",
+      "min": 400000.0,
+      "max": 900000.0
+    },
+    "steam.F": {
+      "path": [
+        "SINJ.steam.F"
+      ],
+      "type": "double",
+      "default": 645.1011184759268,
+      "description": "Regenerator steam injection flow rate",
+      "units": "kmol/hr",
+      "min": 500.0,
+      "max": 1000.0
+    },
+    "UQ_fg_flow": {
+      "path": [
+        "UQ_fg_flow"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_pow": {
+      "path": [
+        "UQ_pow"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_A1": {
+      "path": [
+        "UQ_A1"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_A2": {
+      "path": [
+        "UQ_A2"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_A3": {
+      "path": [
+        "UQ_A3"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_E1": {
+      "path": [
+        "UQ_E1"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_E2": {
+      "path": [
+        "UQ_E2"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_E3": {
+      "path": [
+        "UQ_E3"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dH1": {
+      "path": [
+        "UQ_dH1"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dH2": {
+      "path": [
+        "UQ_dH2"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dH3": {
+      "path": [
+        "UQ_dH3"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dS1": {
+      "path": [
+        "UQ_dS1"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dS2": {
+      "path": [
+        "UQ_dS2"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_dS3": {
+      "path": [
+        "UQ_dS3"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    },
+    "UQ_nv": {
+      "path": [
+        "UQ_nv"
+      ],
+      "type": "double",
+      "default": 1,
+      "description": "UQ factor",
+      "units": "",
+      "min": 0.95,
+      "max": 1.05
+    }
+  },
+  "outputs": {
+    "removalH2O": {
+      "path": [
+        "removalH2O"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Fraction of water removed form the flue gas",
+      "units": ""
+    },
+    "removalCO2": {
+      "path": [
+        "removalCO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Fraction of CO2 removed from the flue gas",
+      "units": ""
+    },
+    "Cost_coe": {
+      "path": [
+        "Cost_coe"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Cost of electricity $/MWhr",
+      "units": ""
+    },
+    "Cost_coe_obj": {
+      "path": [
+        "Cost_coe_obj"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Cost of electricity $/MWhr + slack penalty",
+      "units": ""
+    },
+    "removalCO2_slack": {
+      "path": [
+        "removalCO2_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "slack variable to allow less than 90% capture",
+      "units": ""
+    }
+  }
+}

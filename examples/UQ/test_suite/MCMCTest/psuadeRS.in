@@ -1,0 +1,29 @@
+PSUADE
+INPUT
+   dimension = 2
+   variable   1 X1   = 0.0  1.0
+   variable   2 X2   = 0.0  1.0
+END
+OUTPUT
+   dimension = 4
+   variable 1 Y1
+   variable 2 Y2
+   variable 3 Y3
+   variable 4 Y4
+END
+METHOD
+   sampling = LPTAU
+   num_samples = 100
+   random_seed = 1211319841
+END
+APPLICATION
+#  driver = PSUADE_LOCAL
+   driver = ./simulator
+   launch_interval = 0
+END
+ANALYSIS
+#  analyzer method = Moment
+   analyzer output_id  = 1
+   printlevel 3
+END
+END

@@ -1,0 +1,313 @@
+{
+  "title": "MCB purification process with heat integration",
+  "description": "Separation process for HCl, C6H6 and MCB, including flash and distillation.",
+  "aspenfile": "MCB.apw",
+  "author": "Yang Chen",
+  "date": "10/20/2014",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "inputs": {
+    "Input_F_HCL": {
+      "path": [
+        "\\Data\\Streams\\S01\\Input\\FLOW\\MIXED\\HCL"
+      ],
+      "type": "double",
+      "default": 4.5359237,
+      "description": "Input Stream",
+      "units": "kmol/hr"
+    },
+    "Input_F_C6H6": {
+      "path": [
+        "\\Data\\Streams\\S01\\Input\\FLOW\\MIXED\\C6H6"
+      ],
+      "type": "double",
+      "default": 18.1436948,
+      "description": "Input Stream",
+      "units": "kmol/hr"
+    },
+    "Input_F_MCB": {
+      "path": [
+        "\\Data\\Streams\\S01\\Input\\FLOW\\MIXED\\MCB"
+      ],
+      "type": "double",
+      "default": 22.6796185,
+      "description": "Input Stream",
+      "units": "kmol/hr"
+    },
+    "Input_T": {
+      "path": [
+        "\\Data\\Streams\\S01\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 26.6666667,
+      "description": "Input Stream",
+      "units": "degC"
+    },
+    "Input_P": {
+      "path": [
+        "\\Data\\Streams\\S01\\Input\\PRES\\MIXED"
+      ],
+      "type": "double",
+      "default": 2.551060199,
+      "description": "Input Stream",
+      "units": "bar"
+    },
+    "H1_Spec_T": {
+      "path": [
+        "\\Data\\Blocks\\H1\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 132.2222222,
+      "description": "Decision Variable",
+      "units": "degC",
+      "min": 80.0,
+      "max": 145.0
+    },
+    "H2_Spec_T": {
+      "path": [
+        "\\Data\\Blocks\\H2\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 48.8888889,
+      "description": "Decision Variable",
+      "units": "degC",
+      "min": 30.0,
+      "max": 50.0
+    },
+    "P1_Out_P": {
+      "path": [
+        "\\Data\\Blocks\\P1\\Input\\PRES"
+      ],
+      "type": "double",
+      "default": 3.447378646,
+      "description": "Decision Variable",
+      "units": "bar",
+      "min": 2.2,
+      "max": 3.5
+    },
+    "B2_Split": {
+      "path": [
+        "\\Data\\Blocks\\B2\\Input\\FRAC\\S14"
+      ],
+      "type": "double",
+      "default": 0.333,
+      "description": "Decision Variable",
+      "units": null,
+      "min": 0.1,
+      "max": 0.5
+    },
+    "D1_Reflux": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Input\\RR"
+      ],
+      "type": "double",
+      "default": 3.0,
+      "description": "Decision Variable",
+      "units": null,
+      "min": 1.0,
+      "max": 5.0
+    },
+    "D1_Distillate": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Input\\D_F"
+      ],
+      "type": "double",
+      "default": 0.21,
+      "description": "Decision Variable",
+      "units": null,
+      "min": 0.1,
+      "max": 0.5
+    }
+  },
+  "outputs": {
+    "Output_1_F": {
+      "path": [
+        "\\Data\\Streams\\S11\\Output\\TOT_FLOW"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 1",
+      "units": "kmol/hr"
+    },
+    "Output_1_x_C6H6": {
+      "path": [
+        "\\Data\\Streams\\S11\\Output\\MOLEFRAC\\MIXED\\C6H6"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 1",
+      "units": null
+    },
+    "Output_1_x_MCB": {
+      "path": [
+        "\\Data\\Streams\\S11\\Output\\MOLEFRAC\\MIXED\\MCB"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 1",
+      "units": null
+    },
+    "Output_1_T": {
+      "path": [
+        "\\Data\\Streams\\S11\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 1",
+      "units": "degC"
+    },
+    "Output_1_P": {
+      "path": [
+        "\\Data\\Streams\\S11\\Output\\PRES_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 1",
+      "units": "bar"
+    },
+    "Output_2_F": {
+      "path": [
+        "\\Data\\Streams\\S14\\Output\\TOT_FLOW"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 2",
+      "units": "kmol/hr"
+    },
+    "Output_2_x_C6H6": {
+      "path": [
+        "\\Data\\Streams\\S14\\Output\\MOLEFRAC\\MIXED\\C6H6"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 2",
+      "units": null
+    },
+    "Output_2_x_MCB": {
+      "path": [
+        "\\Data\\Streams\\S14\\Output\\MOLEFRAC\\MIXED\\MCB"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 2",
+      "units": null
+    },
+    "Output_2_T": {
+      "path": [
+        "\\Data\\Streams\\S14\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 2",
+      "units": "degC"
+    },
+    "Output_2_P": {
+      "path": [
+        "\\Data\\Streams\\S14\\Output\\PRES_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream 2",
+      "units": "bar"
+    },
+    "D1_Con_Q": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Output\\COND_DUTY"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "D1_Reb_Q": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Output\\REB_DUTY"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "H1_In_T": {
+      "path": [
+        "\\Data\\Streams\\S01\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H1_Out_T": {
+      "path": [
+        "\\Data\\Streams\\S02\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H1_Q": {
+      "path": [
+        "\\Data\\Blocks\\H1\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "H2_In_T": {
+      "path": [
+        "\\Data\\Streams\\S12\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H2_Out_T": {
+      "path": [
+        "\\Data\\Streams\\S13\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H2_Q": {
+      "path": [
+        "\\Data\\Blocks\\H2\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "P1_W": {
+      "path": [
+        "\\Data\\Blocks\\P1\\Output\\WNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Pump Work",
+      "units": "kW"
+    },
+    "D1_Con_T": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Output\\TOP_TEMP"
+      ],
+      "type": "double",
+      "default": 96.0846411,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "D1_Reb_T": {
+      "path": [
+        "\\Data\\Blocks\\D1\\Output\\BOTTOM_TEMP"
+      ],
+      "type": "double",
+      "default": 153.590654,
+      "description": "Heat Integration",
+      "units": "degC"
+    }
+  }
+}

@@ -1,0 +1,310 @@
+{
+  "title": "Methanol",
+  "description": "Methanol production process",
+  "aspenfile": "Methanol.apw",
+  "author": "Yang Chen",
+  "date": "12/24/2014",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "inputs": {
+    "Feed_F": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Input Stream",
+      "units": "kmol/hr"
+    },
+    "Feed_x_H2": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\FLOW\\MIXED\\H2"
+      ],
+      "type": "double",
+      "default": 0.65,
+      "description": "Input Stream",
+      "units": null
+    },
+    "Feed_x_CO": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\FLOW\\MIXED\\CO"
+      ],
+      "type": "double",
+      "default": 0.3,
+      "description": "Input Stream",
+      "units": null
+    },
+    "Feed_x_CH4": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\FLOW\\MIXED\\CH4"
+      ],
+      "type": "double",
+      "default": 0.05,
+      "description": "Input Stream",
+      "units": null
+    },
+    "Feed_T": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 25.0,
+      "description": "Input Stream",
+      "units": "degC"
+    },
+    "Feed_P": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\PRES\\MIXED"
+      ],
+      "type": "double",
+      "default": 10.0,
+      "description": "Input Stream",
+      "units": "bar"
+    },
+    "Split_ByProd": {
+      "path": [
+        "\\Data\\Blocks\\SPLIT\\Input\\FRAC\\B2"
+      ],
+      "type": "double",
+      "default": 0.1,
+      "description": "Decision Variable",
+      "units": null
+    },
+    "Reactor_T": {
+      "path": [
+        "\\Data\\Blocks\\REACTOR\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 200.0,
+      "description": "Decision Variable",
+      "units": "degC"
+    },
+    "Reactor_P": {
+      "path": [
+        "\\Data\\Blocks\\COMP-2\\Input\\PRES"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Decision Variable",
+      "units": "bar"
+    },
+    "Flash_T": {
+      "path": [
+        "\\Data\\Blocks\\C2\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "Decision Variable",
+      "units": "degC"
+    },
+    "Flash_P": {
+      "path": [
+        "\\Data\\Blocks\\VALVE\\Input\\P_OUT"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "Decision Variable",
+      "units": "bar"
+    }
+  },
+  "outputs": {
+    "ByProd_F": {
+      "path": [
+        "\\Data\\Streams\\BY-PROD\\Output\\TOT_FLOW"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream",
+      "units": "kmol/hr"
+    },
+    "Prod_F": {
+      "path": [
+        "\\Data\\Streams\\PROD\\Output\\TOT_FLOW"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream",
+      "units": "kmol/hr"
+    },
+    "Prod_x_Met": {
+      "path": [
+        "\\Data\\Streams\\PROD\\Output\\MOLEFRAC\\MIXED\\CH3OH"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output Stream",
+      "units": null
+    },
+    "Reactor_Q": {
+      "path": [
+        "\\Data\\Blocks\\REACTOR\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Steam Production",
+      "units": "GJ/hr"
+    },
+    "Comp_1_W": {
+      "path": [
+        "\\Data\\Blocks\\COMP-1\\Output\\WNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Power Consumption",
+      "units": "MW"
+    },
+    "Comp_2_W": {
+      "path": [
+        "\\Data\\Blocks\\COMP-2\\Output\\WNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Power Consumption",
+      "units": "MW"
+    },
+    "Comp_3_W": {
+      "path": [
+        "\\Data\\Blocks\\COMP-3\\Output\\WNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Power Consumption",
+      "units": "MW"
+    },
+    "C1_Tin": {
+      "path": [
+        "\\Data\\Streams\\F2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "C1_Tout": {
+      "path": [
+        "\\Data\\Streams\\F3\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "C1_Q": {
+      "path": [
+        "\\Data\\Blocks\\C1\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "H1_Tin": {
+      "path": [
+        "\\Data\\Streams\\RF1\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H1_Tout": {
+      "path": [
+        "\\Data\\Streams\\RF2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H1_Q": {
+      "path": [
+        "\\Data\\Blocks\\H1\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "C2_Tin": {
+      "path": [
+        "\\Data\\Streams\\RP2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "C2_Tout": {
+      "path": [
+        "\\Data\\Streams\\RP3\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "C2_Q": {
+      "path": [
+        "\\Data\\Blocks\\C2\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "H2_Tin": {
+      "path": [
+        "\\Data\\Streams\\B2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H2_Tout": {
+      "path": [
+        "\\Data\\Streams\\BY-PROD\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H2_Q": {
+      "path": [
+        "\\Data\\Blocks\\H2\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    },
+    "H3_Tin": {
+      "path": [
+        "\\Data\\Streams\\P1\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H3_Tout": {
+      "path": [
+        "\\Data\\Streams\\PROD\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "degC"
+    },
+    "H3_Q": {
+      "path": [
+        "\\Data\\Blocks\\H3\\Output\\QNET"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Integration",
+      "units": "GJ/hr"
+    }
+  }
+}

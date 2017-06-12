@@ -1,0 +1,20 @@
+Ishigami function
+
+Y = sin(X_1) + A sin^2(X_2) + B X_3^4 sin(X_1)
+
+X_i = U[-pi, pi]
+
+A = 7
+B = 0.1
+
+mean = 3.5
+variance = 0.1 pi^4 / 5 + 0.1^2 pi^8/18 + 1/2 + 49/8 = 13.8445
+R^2 = 0.19
+modified R^2 = 0.19
+
+sensitivity coefficient VCE(X_i)/V
+X1 = 0.3139
+X2 = 0.4424
+X3 = 0
+
+

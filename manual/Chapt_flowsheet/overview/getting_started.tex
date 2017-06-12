@@ -1,0 +1,15 @@
+\section{Starting FOQUS}\label{sec.flowsheet.starting.foqus}
+
+The Windows FOQUS installer will add a FOQUS menu under ``CCSI Tools'' in the Windows start menu. Upon software installation (see the FOQUS bundle installation manual), the user can start the graphical interface using one of the following methods:
+\begin{enumerate}
+	\item	Select FOQUS from the Windows start menu. Note: FOQUS may be slow starting the first time, which oftentimes is related to installed anti-virus software.
+	\item  Double-click a file with the ``.foqus'' extension in the Windows file explorer. FOQUS will automatically load the selected file. 
+	\item	The easiest way to launch FOQUS from the command line, if it has been installed from the Windows installer, is to open ``Turbine Console'' from the FOQUS menu in the Windows start menu. The following command can be used in the command prompt:
+	\begin{itemize}
+		\item \texttt{foqus}
+		\item \texttt{foqus --load <path to session file>}
+	\end{itemize}
+	The load option can take a relative or absolute path. If a relative path is specified, it is relative to the directory where the command is executed.
+\end{enumerate}
+
+The first time FOQUS is started, the user is prompted to specify a working directory. The working directory preference is stored in ``\%APPDATA\%\textbackslash.foqus.cfg'' on Windows (APPDATA is an environment variable). On Linux or OSX, the working directory is specified in ``\$HOME/.foqus.cfg''. Additionally the user can override the working directory when starting FOQUS by using the ``\texttt{--}working\_dir $\langle$working dir$\rangle$'' or ``-w $\langle$working dir$\rangle$'' command line option. Log files, user plugins, and files related to other FOQUS tools are stored in the working directory. The working directory can be changed at a later time from within FOQUS. A full list of FOQUS command line arguments is available using the ``-h'' or ``\texttt{--}help'' arguments.

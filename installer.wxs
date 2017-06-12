@@ -1,0 +1,147 @@
+<?xml version='1.0' encoding='windows-1252'?>
+<Wix xmlns='http://schemas.microsoft.com/wix/2006/wi'>
+    <?include Version.wxi ?>
+
+    <Product Name='FOQUS' 
+        Id='b8717563-3e25-4d57-8e4a-5a7eb387f303' 
+        UpgradeCode='fca4cfdf-39c7-4c73-ae15-171a12d6827d'
+        Version="$(var.Version)"
+        Language='1033' 
+        Codepage='1252'
+        Manufacturer = 'CCSI Project'
+    >
+        <Package Id='*'
+            Keywords='Installer' 
+            Description="FOQUS Installer"
+            Compressed='yes'  
+        />
+        <Icon Id="foqus.ico" SourceFile="foqus_lib\gui\icons\icons_exe\foqus.ico" />
+        <Property Id="ARPPRODUCTICON" Value="foqus.ico" />
+        <Property Id="ALLUSERS" Value="1" /> 
+        <Media Id='1' Cabinet='foqus.cab' EmbedCab='yes' />
+        <Directory Id="TARGETDIR" Name="SourceDir">
+            <Directory Id="ProgramFilesFolder">
+                <Directory Id="INSTALLLOCATION" Name='foqus'>
+                    <Directory Id="FOQUSFolder" Name="foqus">
+                        <Directory Id="DistFolder" Name="dist" >
+                            <Directory Id="Win32ComFolder" Name="win32com">
+                                <Directory Id="GenPyFolder" Name="gen_py"/>
+                            </Directory>
+                        </Directory>
+                    </Directory>
+                </Directory>
+            </Directory>
+            
+            <Directory Id="ProgramMenuFolder">
+                <Directory Id="ApplicationProgramsFolder" Name="CCSI Tools">
+                    <Directory Id="ApplicationProgramsSubFolder" Name="FOQUS"/>
+                </Directory>
+            </Directory>
+        </Directory>
+    
+        <DirectoryRef Id="ApplicationProgramsSubFolder">
+            <Component Id="StartMenuFOQUS" Guid="75cce859-a4e2-41d5-a3af-e54145a4d1f0">
+                <Shortcut Id="StartMenuFOQUS" 
+                    Name="FOQUS"
+                    Description="Framework for Optimization and Quantification of Uncertainty and Sensitivity"
+                    Target="[#foqus.exe]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+            <Component Id="StartMenuFOQUSConsole" Guid="3b85788c-0b78-49aa-b83e-ef734a4ca7aa">
+                <Shortcut Id="StartMenuFOQUSConsole" 
+                    Name="FOQUS Console"
+                    Description="FOQUS console application, run FOQUS in a command window so you can see output for debugging"
+                    Target="[#foqus_console.bat]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                    Icon="foqus.ico"
+                />
+                <RemoveFolder Id="RemoveApplicationProgramsFolder" Directory="ApplicationProgramsFolder" On="uninstall"/>
+                <RemoveFolder Id="RemoveApplicationProgramsSubFolder" Directory="ApplicationProgramsSubFolder" On="uninstall"/>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+    
+            <Component Id="StartMenuTurbineConsole" Guid="4d16cd98-62f6-4742-bc50-a31de6587050">
+                <Shortcut Id="StartMenuTurbineConsole" 
+                    Name="Turbine Console"
+                    Description="Console for running turbine client commands"
+                    Target="[#turbine_console.bat]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+            
+            <Component Id="StartMenuDMFConsole" Guid="3c08420b-9d4a-462e-8c3b-e4ec3ed8b56e">
+                <Shortcut Id="StartMenuDMFConsole" 
+                    Name="DMF Browser"
+                    Description="Data Managment Framework File Browser"
+                    Target="[#dmf_browser_console.bat]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+            
+            <Component Id="StartMenuFOQUSManual" Guid="6993f89d-887d-4c28-a602-86be2d696efe">
+                <Shortcut Id="StartMenuFOQUSManual" 
+                    Name="FOQUS Manual"
+                    Description="FOQUS User's Manual"
+                    Target="[#FOQUS_User_Manual.pdf]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+        
+            <Component Id="StartMenuFOQUSOnlineManual" Guid="6f4a997e-6557-4d56-8a1b-db0000a66ac4">
+                <Shortcut Id="StartMenuFOQUSOnlineManual" 
+                    Name="FOQUS HTML Help"
+                    Description="FOQUS HTML Help"
+                    Target="[#content.html]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+            
+            <Component Id="StartMenuIrevealManual" Guid="f36ebd4d-d08f-48ab-b3d5-8f3f83e679a0">
+                <Shortcut Id="StartMenuIrevealManual" 
+                    Name="iREVEAL Manual"
+                    Description="iREVEAL User's Manual"
+                    Target="[#iREVEAL_User_Manual.pdf]"
+                    WorkingDirectory="APPLICATIONROOTDIRECTORY"
+                />
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+        
+            <Component Id="FOQUS.session" Guid="b00413b1-534b-49ba-afbe-57bb05a34d85">
+                <ProgId Id='FOQUS.session' Description='FOQUS session file'>
+                    <Extension Id='foqus' ContentType='test/json'>
+                        <Verb Id='open' Command='Open' TargetFile="foqus.exe" Argument='"%1"'/>
+                    </Extension>
+                </ProgId>
+                <RegistryValue Root="HKCU" Key="Software\Microsoft\FOQUS" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+            </Component>
+
+        </DirectoryRef>
+        
+        <Component Id="CreateGenPyFolder" Directory="GenPyFolder" Guid="7e16d686-bdad-46d7-a2d8-00a82208a84d">
+            <CreateFolder>
+                <Permission User="Everyone" GenericAll="yes" />
+            </CreateFolder>
+        </Component>
+    
+        <Feature Id='FOQUS' Level='1'>
+            <ComponentGroupRef Id = 'FOQUS_files'/>
+            <ComponentRef Id="StartMenuFOQUS" />
+            <ComponentRef Id="StartMenuFOQUSConsole" />
+            <ComponentRef Id="StartMenuTurbineConsole" />
+            <ComponentRef Id="StartMenuDMFConsole" />
+            <ComponentRef Id="StartMenuFOQUSManual" />
+            <ComponentRef Id="StartMenuFOQUSOnlineManual" />
+            <ComponentRef Id="StartMenuIrevealManual" />
+            <ComponentRef Id="FOQUS.session" />
+            <ComponentRef Id="CreateGenPyFolder" />
+        </Feature>
+    </Product>
+</Wix>
+
+

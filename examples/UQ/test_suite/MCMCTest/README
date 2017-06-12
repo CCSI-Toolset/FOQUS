@@ -1,0 +1,35 @@
+Problem:
+
+- Read the simulator.c file.
+- This program outputs the differences between the simulator
+  outputs and data (in mcmcFile, see below)
+
+mcmcFile contains the data:
+- (1 4 0) means 1 experimental data set, 4 outputs, no design parameter
+- line 2: experiment number, output 1 mean, output 1 std dev, output 2 mean,...
+- need to be enclosed by PSUADE_BEGIN and PSUADE_END
+
+PSUADE takes the 4 outputs (differences between observations and simulation)
+and creates a likelihood function using information in mcmcFile. 
+
+PSUADE runs MCMC given priors and the likelihood function.
+
+==============================================
+Steps to run:
+
+- create simulator: cc -c simulator simulator.c -lm
+- run psuade: psuade psuadeRS.in
+- rename psuade output file: mv psuadeData psData
+- launch psuade without any argument
+  psuade
+  > load psData
+  > rsmcmc
+  ...
+  enter: mcmcFile
+  > quit
+- Use matlab to view matlabmcmc2.m
+==============================================
+The steps have been captured by psScript.in
+
+just run: psuade < psScript.in 
+

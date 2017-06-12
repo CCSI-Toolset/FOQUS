@@ -1,0 +1,55 @@
+# Configuration File for 1st-gen Sorbent TGA Fitting Routine (Entries on the Same Line Delimeated by Spaces):
+# 1433449103 1433514048
+
+# Timestep (s) | Relative Convergence Tolerance | Absolute Convergence Tolerance
+1.0e-2 1.0e-10 1.0e-8
+
+# Atmospheric Pressure of Data (Pa) | Sorbent Density (kg/m^3)
+101325 442.0
+
+# Dry Case Bounds
+# Reaction Enthalpy Low | High (J/mol)
+-70877.0
+
+# Reaction Entropy Low | High (J/mol-K)
+-182.208
+
+# Activation Enthalpy Low | High (J/mol)
+79218.7
+
+# Base-10 Logarithm of Preexponential Factor Low | High (Unitless)
+0.480459
+
+# Wat (Water) Case Bounds
+# (Input values from empfit_wat in place of the ranges if the water parameters have already been estimated)
+
+# Number of Active Adsorption Sites for Unit Volume Low | High (nv, mol/m^3)
+2064.69
+
+# Reaction Enthalpy Low | High (J/mol)
+-74372.8
+
+# Reaction Entropy Low | High (J/mol-K)
+-150.001
+
+# Activation Enthalpy Low | High (J/mol)
+7.23414
+
+# Base-10 Logarithm of Preexponential Factor Low | High (Unitless)
+-0.301793
+
+# Humid Case Bounds
+# Reaction Enthalpy Low | High (J/mol)
+-150000 -40000
+
+# Reaction Entropy Low | High (J/mol-K)
+-300 -100
+
+# Activation Enthalpy Low | High (J/mol)
+30000 120000
+
+# Base-10 Logarithm of Preexponential Factor Low | High (Unitless)
+-5.0 5.0
+
+# Number of PSO Agents per CPU Node
+8

@@ -1,0 +1,1511 @@
+{
+  "data": {
+      "text\/css": {
+         "description": "Style Sheet",
+         "extensions": {
+            "default": "css",
+            "additional": [
+            ]
+         }
+      },
+      "application\/dita+xml": {
+         "description": "DITA",
+         "extensions": {
+            "default": "dita",
+            "additional": [
+                     "ditaval",
+                     "ditamap"
+            ]
+         }
+      },
+      "application\/vnd.ms-excel": {
+         "description": "Microsoft Excel",
+         "extensions": {
+            "default": "xls",
+            "additional": [
+                     "xlm",
+                     "xlt"
+            ]
+         }
+      },
+      "text\/calendar": {
+         "description": "iCalendar File",
+         "extensions": {
+            "default": "ics",
+            "additional": [
+            ]
+         }
+      },
+      "text\/csv": {
+         "description": "Comma Separated Values (CSV)",
+         "extensions": {
+            "default": "csv",
+            "additional": [
+            ]
+         }
+      },
+      "image\/tiff": {
+         "description": "TIFF Image",
+         "extensions": {
+            "default": "tiff",
+            "additional": [
+                     "tif"
+            ]
+         }
+      },
+      "audio\/x-aiff": {
+         "description": "AIFF Audio",
+         "extensions": {
+            "default": "aiff",
+            "additional": [
+                     "aif",
+                     "aifc"
+            ]
+         }
+      },
+      "application\/x-tex": {
+         "description": "Tex",
+         "extensions": {
+            "default": "tex",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.android.package-archive": {
+         "description": "Android Package",
+         "extensions": {
+            "default": "apk",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint": {
+         "description": "Microsoft PowerPoint",
+         "extensions": {
+            "default": "ppt",
+            "additional": [
+                     "pot",
+                     "pps",
+                     "ppa"
+            ]
+         }
+      },
+      "image\/x-raw-leica": {
+         "description": "Leica RAW Image",
+         "extensions": {
+            "default": "rwl",
+            "additional": [
+            ]
+         }
+      },
+      "application\/illustrator": {
+         "description": "Adobe Illustrator File",
+         "extensions": {
+            "default": "ai",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.formula": {
+         "description": "OpenDocument Formula",
+         "extensions": {
+            "default": "odf",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-cmu-raster": {
+         "description": "Raster Image",
+         "extensions": {
+            "default": "ras",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-gtar": {
+         "description": "GZIP Tarball",
+         "extensions": {
+            "default": "gtar",
+            "additional": [
+            ]
+         }
+      },
+      "text\/x-java-source": {
+         "description": "Java Source File",
+         "extensions": {
+            "default": "java",
+            "additional": [
+            ]
+         }
+      },
+      "image\/gif": {
+         "description": "GIF Image",
+         "extensions": {
+            "default": "gif",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.chart": {
+         "description": "StaChart 5.x",
+         "extensions": {
+            "default": "sds",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/mpeg": {
+         "description": "MPEG Audio",
+         "extensions": {
+            "default": "mp3",
+            "additional": [
+                     "mp2"
+            ]
+         }
+      },
+      "message\/rfc822": {
+         "description": "EMail",
+         "extensions": {
+            "default": "eml",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.writer.template": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Writer 6.0 Template",
+         "extensions": {
+            "default": "stw",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-dosexec": {
+         "description": "Binary File",
+         "extensions": {
+            "default": "exe",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-compress": {
+         "description": "Z Compress",
+         "extensions": {
+            "default": "z",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-portable-anymap": {
+         "description": "Anymap Image",
+         "extensions": {
+            "default": "pnm",
+            "additional": [
+                     "rpnm"
+            ]
+         }
+      },
+      "image\/x-raw-pentax": {
+         "description": "Pentax RAW Image",
+         "extensions": {
+            "default": "pef",
+            "additional": [
+                     "ptx"
+            ]
+         }
+      },
+      "x-world\/x-vrml": {
+         "description": "VRML",
+         "extensions": {
+            "default": "wrl",
+            "additional": [
+            ]
+         }
+      },
+      "application\/pagemaker": {
+         "description": "Adobe PageMaker",
+         "extensions": {
+            "default": "pmd",
+            "additional": [
+                     "p65",
+                     "pm",
+                     "pm6"
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.draw": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Draw 6.0",
+         "extensions": {
+            "default": "sxd",
+            "additional": [
+            ]
+         }
+      },
+      "application\/octet-stream": {
+         "description": "Binary File (Octet Stream)",
+         "extensions": {
+            "default": "bin",
+            "additional": [
+            ]
+         }
+      },
+      "text\/mediawiki": {
+         "description": "MediaWiki Markup",
+         "extensions": {
+            "default": "mw",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-red": {
+         "description": "RED RAW Image",
+         "extensions": {
+            "default": "r3d",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-excel.template.macroenabled.12": {
+         "description": "Microsoft Excel 2007 macro-enabled workbook template",
+         "extensions": {
+            "default": "xltm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/rss+xml": {
+         "description": "RSS",
+         "extensions": {
+            "default": "rss",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.graphics": {
+         "description": "OpenDocument Drawing",
+         "extensions": {
+            "default": "odg",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.graphics-template": {
+         "description": "OpenDocument Drawing Template",
+         "extensions": {
+            "default": "otg",
+            "additional": [
+            ]
+         }
+      },
+      "image\/jp2": {
+         "description": "JPEG 2000 Image",
+         "extensions": {
+            "default": "jp2",
+            "additional": [
+                     "j2k",
+                     "jpc",
+                     "jpx",
+                     "jpf",
+                     "jpm"
+            ]
+         }
+      },
+      "application\/x-indesign": {
+         "description": "Adobe InDesign Document",
+         "extensions": {
+            "default": "indd",
+            "additional": [
+                     "ind"
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.image": {
+         "description": "OpenDocument Image",
+         "extensions": {
+            "default": "odi",
+            "additional": [
+            ]
+         }
+      },
+      "application\/json": {
+         "description": "JSON",
+         "extensions": {
+            "default": "json",
+            "additional": [
+            ]
+         }
+      },
+      "application\/rtf": {
+         "description": "Rich Text Format",
+         "extensions": {
+            "default": "rtf",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.presentationml.slideshow": {
+         "description": "Microsoft PowerPoint 2007 slide show",
+         "extensions": {
+            "default": "ppsx",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/x-wav": {
+         "description": "WAV Audio",
+         "extensions": {
+            "default": "wav",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-fla": {
+         "description": "Flash Source",
+         "extensions": {
+            "default": "fla",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.writer": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Writer 6.0",
+         "extensions": {
+            "default": "sxw",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-canon": {
+         "description": "Canon RAW Image",
+         "extensions": {
+            "default": "cr2",
+            "additional": [
+                     "crw"
+            ]
+         }
+      },
+      "video\/x-ms-wmv": {
+         "description": "MS WMV Streaming Video",
+         "extensions": {
+            "default": "wmv",
+            "additional": [
+            ]
+         }
+      },
+      "image\/vnd.dwg": {
+         "description": "AutoCAD Drawing",
+         "extensions": {
+            "default": "dwg",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.adobe.xdp+xml": {
+         "description": "Adobe Acrobat XML Data Package",
+         "extensions": {
+            "default": "xdp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.presentationml.template": {
+         "description": "Microsoft PowerPoint 2007 template",
+         "extensions": {
+            "default": "potx",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-xwindowdump": {
+         "description": "XWindow Dump",
+         "extensions": {
+            "default": "xwd",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-adobe": {
+         "description": "Adobe Digital Negative Image",
+         "extensions": {
+            "default": "dng",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-word.document.macroenabled.12": {
+         "description": "Microsoft Word 2007 macro-enabled document",
+         "extensions": {
+            "default": "docm",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-rgb": {
+         "description": "RGB Image",
+         "extensions": {
+            "default": "rgb",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.wordprocessingml.template": {
+         "description": "Microsoft Word 2007 template",
+         "extensions": {
+            "default": "dotx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/framemaker": {
+         "description": "Adobe FrameMaker",
+         "extensions": {
+            "default": "fm",
+            "additional": [
+            ]
+         }
+      },
+      "video\/3gpp2": {
+         "description": "3G2 Video",
+         "extensions": {
+            "default": "3g2",
+            "additional": [
+                     "3gp2"
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.spreadsheet-template": {
+         "description": "OpenDocument Spreadsheet Template",
+         "extensions": {
+            "default": "ots",
+            "additional": [
+            ]
+         }
+      },
+      "application\/msword": {
+         "description": "Microsoft Word",
+         "extensions": {
+            "default": "doc",
+            "additional": [
+                     "dot"
+            ]
+         }
+      },
+      "application\/bkp": {
+         "description": "Aspen Plus Backup",
+         "extensions": {
+            "default": "bkp",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-msvideo": {
+         "description": "MS Video",
+         "extensions": {
+            "default": "avi",
+            "additional": [
+                     "qvi"
+            ]
+         }
+      },
+      "video\/mpeg2": {
+         "description": "MPEG2 Video",
+         "extensions": {
+            "default": "mpeg2",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-flv": {
+         "description": "Flash Video",
+         "extensions": {
+            "default": "flv",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-excel.sheet.macroenabled.12": {
+         "description": "Microsoft Excel 2007 macro-enabled workbook",
+         "extensions": {
+            "default": "xlsm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint.presentation.macroenabled.12": {
+         "description": "Microsoft PowerPoint 2007 macro-enabled presentation",
+         "extensions": {
+            "default": "pptm",
+            "additional": [
+            ]
+         }
+      },
+      "text\/x-markdown": {
+         "description": "Markdown",
+         "extensions": {
+            "default": "md",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.spreadsheetml.template": {
+         "description": "Microsoft Excel template 2007",
+         "extensions": {
+            "default": "xltx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.impress": {
+         "description": "StarImpress 5.x",
+         "extensions": {
+            "default": "sdd",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-texinfo": {
+         "description": "Tex Info",
+         "extensions": {
+            "default": "texinfo",
+            "additional": [
+                     "texi"
+            ]
+         }
+      },
+      "text\/richtext": {
+         "description": "Rich Text",
+         "extensions": {
+            "default": "rtx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-shockwave-flash": {
+         "description": "Shockwave Flash",
+         "extensions": {
+            "default": "swf",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/vnd.adobe.soundbooth": {
+         "description": "Adobe SoundBooth",
+         "extensions": {
+            "default": "asnd",
+            "additional": [
+            ]
+         }
+      },
+      "application\/apw": {
+         "description": "Aspen Plus Document File",
+         "extensions": {
+            "default": "apw",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/ogg": {
+         "description": "Ogg Audio",
+         "extensions": {
+            "default": "oga",
+            "additional": [
+                     "spx"
+            ]
+         }
+      },
+      "image\/svg+xml": {
+         "description": "Scalable Vector Graphics Image",
+         "extensions": {
+            "default": "svg",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.apple.pages": {
+         "description": "Apple iWork Pages",
+         "extensions": {
+            "default": "pages",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-javascript": {
+         "description": "JavaScript",
+         "extensions": {
+            "default": "js",
+            "additional": [
+            ]
+         }
+      },
+      "application\/sgml": {
+         "description": "SGML (Machine Readable)",
+         "extensions": {
+            "default": "gml",
+            "additional": [
+            ]
+         }
+      },
+      "video\/3gpp": {
+         "description": "3G Video",
+         "extensions": {
+            "default": "3gp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.text-master": {
+         "description": "OpenDocument Master Document",
+         "extensions": {
+            "default": "odm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-excel.sheet.binary.macroenabled.12": {
+         "description": "Microsoft Excel 2007 binary workbook",
+         "extensions": {
+            "default": "xlsb",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.draw": {
+         "description": "StarDraw 5.x",
+         "extensions": {
+            "default": "sda",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-troff-man": {
+         "description": "Man Page",
+         "extensions": {
+            "default": "man",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint.template.macroenabled.12": {
+         "description": "Microsoft PowerPoint 2007 macro-enabled presentation template",
+         "extensions": {
+            "default": "potm",
+            "additional": [
+            ]
+         }
+      },
+      "text\/plain": {
+         "description": "Plain Text",
+         "extensions": {
+            "default": "txt",
+            "additional": [
+                     "log",
+                     "ftl",
+                     "bat",
+                     "sql",
+                     "properties",
+                     "ini"
+            ]
+         }
+      },
+      "audio\/mp4": {
+         "description": "MPEG4 Audio",
+         "extensions": {
+            "default": "m4a",
+            "additional": [
+                     "m4b",
+                     "mp4a"
+            ]
+         }
+      },
+      "video\/quicktime": {
+         "description": "Quicktime Video",
+         "extensions": {
+            "default": "mov",
+            "additional": [
+                     "qt"
+            ]
+         }
+      },
+      "application\/vnd.ms-project": {
+         "description": "Microsoft Project",
+         "extensions": {
+            "default": "mpp",
+            "additional": [
+            ]
+         }
+      },
+      "video\/mp2t": {
+         "description": "MPEG Transport Stream",
+         "extensions": {
+            "default": "ts",
+            "additional": [
+                     "m2ts"
+            ]
+         }
+      },
+      "application\/vnd.ms-word.template.macroenabled.12": {
+         "description": "Microsoft Word 2007 macro-enabled document template",
+         "extensions": {
+            "default": "dotm",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/x-flac": {
+         "description": "FLAC Audio",
+         "extensions": {
+            "default": "flac",
+            "additional": [
+            ]
+         }
+      },
+      "image\/bmp": {
+         "description": "Bitmap Image",
+         "extensions": {
+            "default": "bmp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.adobe.air-application-installer-package+zip": {
+         "description": "Adobe AIR",
+         "extensions": {
+            "default": "air",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-m4v": {
+         "description": "MPEG4 Video (m4v)",
+         "extensions": {
+            "default": "m4v",
+            "additional": [
+            ]
+         }
+      },
+      "application\/pdf": {
+         "description": "Adobe PDF Document",
+         "extensions": {
+            "default": "pdf",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-portable-graymap": {
+         "description": "Greymap Image",
+         "extensions": {
+            "default": "pgm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-tar": {
+         "description": "Tarball",
+         "extensions": {
+            "default": "tar",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-nikon": {
+         "description": "Nikon RAW Image",
+         "extensions": {
+            "default": "nef",
+            "additional": [
+                     "nrw"
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint.slide.macroenabled.12": {
+         "description": "Microsoft PowerPoint 2007 macro-enabled slide",
+         "extensions": {
+            "default": "sldm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.adobe.aftereffects.template": {
+         "description": "Adobe AfterEffects Template",
+         "extensions": {
+            "default": "aet",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.writer": {
+         "description": "StarWriter 5.x",
+         "extensions": {
+            "default": "sdw",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.adobe.aftereffects.project": {
+         "description": "Adobe AfterEffects Project",
+         "extensions": {
+            "default": "aep",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.calc": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Calc 6.0",
+         "extensions": {
+            "default": "sxc",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.spreadsheetml.sheet": {
+         "description": "Microsoft Excel 2007",
+         "extensions": {
+            "default": "xlsx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/xhtml+xml": {
+         "description": "XHTML",
+         "extensions": {
+            "default": "xhtml",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.impress": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Impress 6.0",
+         "extensions": {
+            "default": "sxi",
+            "additional": [
+            ]
+         }
+      },
+      "text\/xml": {
+         "description": "XML",
+         "extensions": {
+            "default": "xml",
+            "additional": [
+                     "xsl",
+                     "xslt",
+                     "xsd",
+                     "dtd"
+            ]
+         }
+      },
+      "application\/vnd.ms-excel.addin.macroenabled.12": {
+         "description": "Microsoft Excel 2007 add-in",
+         "extensions": {
+            "default": "xlam",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-portable-bitmap": {
+         "description": "Portable Bitmap",
+         "extensions": {
+            "default": "pbm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-sh": {
+         "description": "Shell Script",
+         "extensions": {
+            "default": "sh",
+            "additional": [
+            ]
+         }
+      },
+      "application\/zip": {
+         "description": "ZIP",
+         "extensions": {
+            "default": "zip",
+            "additional": [
+                     "ear",
+                     "war"
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.database": {
+         "description": "OpenDocument Database",
+         "extensions": {
+            "default": "odb",
+            "additional": [
+            ]
+         }
+      },
+      "video\/webm": {
+         "description": "WebM Video",
+         "extensions": {
+            "default": "webm",
+            "additional": [
+            ]
+         }
+      },
+      "image\/png": {
+         "description": "PNG Image",
+         "extensions": {
+            "default": "png",
+            "additional": [
+            ]
+         }
+      },
+      "text\/x-jsp": {
+         "description": "Java Server Page",
+         "extensions": {
+            "default": "jsp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.presentationml.slide": {
+         "description": "Microsoft PowerPoint 2007 slide",
+         "extensions": {
+            "default": "sldx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint.addin.macroenabled.12": {
+         "description": "Microsoft PowerPoint 2007 add-in",
+         "extensions": {
+            "default": "ppam",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.impress.template": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Impress 6.0 Template",
+         "extensions": {
+            "default": "sti",
+            "additional": [
+            ]
+         }
+      },
+      "text\/html": {
+         "description": "HTML",
+         "extensions": {
+            "default": "html",
+            "additional": [
+                     "body",
+                     "htm",
+                     "shtml"
+            ]
+         }
+      },
+      "image\/ief": {
+         "description": "IEF Image",
+         "extensions": {
+            "default": "ief",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.visio": {
+         "description": "Microsoft Visio",
+         "extensions": {
+            "default": "vsd",
+            "additional": [
+            ]
+         }
+      },
+      "application\/java": {
+         "description": "Java Class",
+         "extensions": {
+            "default": "class",
+            "additional": [
+            ]
+         }
+      },
+      "application\/ogg": {
+         "description": "Ogg Multiplex",
+         "extensions": {
+            "default": "ogx",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-sigma": {
+         "description": "Sigma RAW Image",
+         "extensions": {
+            "default": "x3f",
+            "additional": [
+            ]
+         }
+      },
+      "image\/vnd.adobe.photoshop": {
+         "description": "Adobe Photoshop",
+         "extensions": {
+            "default": "psd",
+            "additional": [
+            ]
+         }
+      },
+      "video\/ogg": {
+         "description": "Ogg Video",
+         "extensions": {
+            "default": "ogv",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.impress-packed": {
+         "description": "StarImpress Packed 5.x",
+         "extensions": {
+            "default": "sdp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/wordperfect": {
+         "description": "WordPerfect",
+         "extensions": {
+            "default": "wpd",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-hasselblad": {
+         "description": "Hasselblad RAW Image",
+         "extensions": {
+            "default": "3fr",
+            "additional": [
+            ]
+         }
+      },
+      "image\/jpeg": {
+         "description": "JPEG Image",
+         "extensions": {
+            "default": "jpg",
+            "additional": [
+                     "jpeg",
+                     "jpe"
+            ]
+         }
+      },
+      "application\/vnd.sun.xml.calc.template": {
+         "description": "OpenOffice 1.0\/StarOffice6.0 Calc 6.0 Template",
+         "extensions": {
+            "default": "stc",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-zip": {
+         "description": "Adobe Flex Project File",
+         "extensions": {
+            "default": "fxp",
+            "additional": [
+            ]
+         }
+      },
+      "video\/mp4": {
+         "description": "MPEG4 Video",
+         "extensions": {
+            "default": "mp4",
+            "additional": [
+                     "mpg4",
+                     "mp4v"
+            ]
+         }
+      },
+      "application\/acmf": {
+         "description": "Aspen Custom Modeler Language",
+         "extensions": {
+            "default": "acmf",
+            "additional": [
+            ]
+         }
+      },
+      "application\/acp": {
+         "description": "Alfresco Content Package",
+         "extensions": {
+            "default": "acp",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.chart": {
+         "description": "OpenDocument Chart",
+         "extensions": {
+            "default": "odc",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-xbitmap": {
+         "description": "XBitmap Image",
+         "extensions": {
+            "default": "xbm",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-rad-screenplay": {
+         "description": "RAD Screen Display",
+         "extensions": {
+            "default": "avx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/remote-printing": {
+         "description": "Printer Text File",
+         "extensions": {
+            "default": "prn",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-sgi-movie": {
+         "description": "SGI Video",
+         "extensions": {
+            "default": "movie",
+            "additional": [
+                     "mv",
+                     "mpv2"
+            ]
+         }
+      },
+      "text\/sgml": {
+         "description": "SGML (Human Readable)",
+         "extensions": {
+            "default": "sgml",
+            "additional": [
+                     "sgm"
+            ]
+         }
+      },
+      "application\/java-archive": {
+         "description": "Java Archive",
+         "extensions": {
+            "default": "jar",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-latex": {
+         "description": "LaTeX",
+         "extensions": {
+            "default": "latex",
+            "additional": [
+            ]
+         }
+      },
+      "application\/postscript": {
+         "description": "PostScript",
+         "extensions": {
+            "default": "ps",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-sony": {
+         "description": "Sony RAW Image",
+         "extensions": {
+            "default": "arw",
+            "additional": [
+                     "sr2",
+                     "srf"
+            ]
+         }
+      },
+      "application\/vnd.stardivision.writer-global": {
+         "description": "StarWriter 5.x global",
+         "extensions": {
+            "default": "sgl",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.calc": {
+         "description": "StarCalc 5.x",
+         "extensions": {
+            "default": "sdc",
+            "additional": [
+            ]
+         }
+      },
+      "application\/apwz": {
+         "description": "Aspen Plus Compound File",
+         "extensions": {
+            "default": "apwz",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-xpixmap": {
+         "description": "XPixmap Image",
+         "extensions": {
+            "default": "xpm",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-portable-pixmap": {
+         "description": "Pixmap Image",
+         "extensions": {
+            "default": "ppm",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/x-ms-wma": {
+         "description": "MS WMA Streaming Audio",
+         "extensions": {
+            "default": "wma",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.wordprocessingml.document": {
+         "description": "Microsoft Word 2007",
+         "extensions": {
+            "default": "docx",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.openxmlformats-officedocument.presentationml.presentation": {
+         "description": "Microsoft PowerPoint 2007",
+         "extensions": {
+            "default": "pptx",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-minolta": {
+         "description": "Minolta RAW Image",
+         "extensions": {
+            "default": "mrw",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.presentation": {
+         "description": "OpenDocument Presentation",
+         "extensions": {
+            "default": "odp",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-fuji": {
+         "description": "Fuji RAW Image",
+         "extensions": {
+            "default": "raf",
+            "additional": [
+            ]
+         }
+      },
+      "video\/x-ms-asf": {
+         "description": "MS ASF Streaming Video",
+         "extensions": {
+            "default": "asf",
+            "additional": [
+                     "asx"
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.presentation-template": {
+         "description": "OpenDocument Presentation Template",
+         "extensions": {
+            "default": "otp",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-kodak": {
+         "description": "Kodak RAW Image",
+         "extensions": {
+            "default": "k25",
+            "additional": [
+                     "drf",
+                     "kdc",
+                     "dcs"
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.spreadsheet": {
+         "description": "OpenDocument Spreadsheet",
+         "extensions": {
+            "default": "ods",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.text-web": {
+         "description": "HTML Document Template",
+         "extensions": {
+            "default": "oth",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-raw-panasonic": {
+         "description": "Panasonic RAW Image",
+         "extensions": {
+            "default": "rw2",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.text-template": {
+         "description": "OpenDocument Text Template",
+         "extensions": {
+            "default": "ott",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-gzip": {
+         "description": "GZIP",
+         "extensions": {
+            "default": "gzip",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.oasis.opendocument.text": {
+         "description": "OpenDocument Text (OpenOffice 2.0)",
+         "extensions": {
+            "default": "odt",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.apple.keynote": {
+         "description": "Apple iWork Keynote",
+         "extensions": {
+            "default": "key",
+            "additional": [
+            ]
+         }
+      },
+      "image\/vnd.adobe.premiere": {
+         "description": "Adobe Premiere",
+         "extensions": {
+            "default": "ppj",
+            "additional": [
+                     "prproj"
+            ]
+         }
+      },
+      "image\/x-raw-olympus": {
+         "description": "Olympus RAW Image",
+         "extensions": {
+            "default": "orf",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.apple.numbers": {
+         "description": "Apple iWork Numbers",
+         "extensions": {
+            "default": "numbers",
+            "additional": [
+            ]
+         }
+      },
+      "image\/x-dwt": {
+         "description": "AutoCAD Template",
+         "extensions": {
+            "default": "dwt",
+            "additional": [
+            ]
+         }
+      },
+      "image\/cgm": {
+         "description": "CGM Image",
+         "extensions": {
+            "default": "cgm",
+            "additional": [
+            ]
+         }
+      },
+      "application\/eps": {
+         "description": "EPS Type PostScript",
+         "extensions": {
+            "default": "eps",
+            "additional": [
+            ]
+         }
+      },
+      "application\/ccsi+foqus": {
+         "description": "CCSI+FOQUS",
+         "extensions": {
+            "default": "json",
+            "additional": [
+            ]
+         }
+      },
+      "application\/x-rar-compressed": {
+         "description": "RAR Archive",
+         "extensions": {
+            "default": "rar",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.ms-powerpoint.slideshow.macroenabled.12": {
+         "description": "Microsoft PowerPoint 2007 macro-enabled slide show",
+         "extensions": {
+            "default": "ppsm",
+            "additional": [
+            ]
+         }
+      },
+      "text\/tab-separated-values": {
+         "description": "Tab Separated Values",
+         "extensions": {
+            "default": "tsv",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/basic": {
+         "description": "Basic Audio",
+         "extensions": {
+            "default": "au",
+            "additional": [
+                     "snd"
+            ]
+         }
+      },
+      "video\/mpeg": {
+         "description": "MPEG Video",
+         "extensions": {
+            "default": "mpg",
+            "additional": [
+                     "mpe",
+                     "mpeg",
+                     "m1v",
+                     "m2v"
+            ]
+         }
+      },
+      "application\/vnd.ms-outlook": {
+         "description": "Microsoft Outlook Message",
+         "extensions": {
+            "default": "msg",
+            "additional": [
+            ]
+         }
+      },
+      "audio\/vorbis": {
+         "description": "Ogg Vorbis Audio",
+         "extensions": {
+            "default": "ogg",
+            "additional": [
+            ]
+         }
+      },
+      "application\/vnd.stardivision.math": {
+         "description": "StarMath 5.x",
+         "extensions": {
+            "default": "smf",
+            "additional": [
+            ]
+         }
+      }
+  }
+}

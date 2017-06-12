@@ -1,0 +1,495 @@
+Version "25.0-0";
+Libraries "Modeler.acml", "SystemLibrary.acml";
+Port Material
+/*
+  2-Component Isothermal Van-de-Vusse Reactor Model
+
+  This toy problem will serve as a nonlinear test example for CCSI RM-Builder
+
+  Priyadarshi Mahapatra, PhD
+  URS Corporation / National Energy Technology Laboratory
+  2 April 2013
+*/
+F           as flow_vol       (description:"Volumetric Flowrate"); // [m^3/hr]
+Ca          as conc_mole      (description:"Concentration of A"); // [kmol/m^3]
+Cb          as conc_mole      (description:"Concentration of B"); // [kmol/m^3]
+End
+Model VdV_Reactor
+/*
+  2-Component Isothermal Van-de-Vusse Reactor Model
+
+  This toy problem will serve as a nonlinear test example for CCSI RM-Builder
+
+  Priyadarshi Mahapatra, PhD
+  URS Corporation / National Energy Technology Laboratory
+  2 April 2013
+*/
+
+k1          as constant         (fixed, 50); // [1/hr]
+k2          as constant         (fixed, 100); // [1/hr]
+k3          as constant         (fixed, 10); // [kmol/m^3-hr]
+V           as volume           (fixed, 100, description:"Reactor Volume"); // [m^3]
+Ca          as conc_mole        (description:"Concentration of A"); // [kmol/m^3]
+Cb          as conc_mole        (description:"Concentration of B"); // [kmol/m^3]
+
+// Model Ports
+Feed        as input Material   (description:"Feed Stream");
+Prod        as output Material  (description:"Product Stream");
+
+$Ca = Feed.F/V*(Feed.Ca-Ca) - k1*Ca - k3*Ca*Ca;
+$Cb = Feed.F/V*(Feed.Cb-Cb) + k1*Ca - k2*Cb;
+
+Prod.F = Feed.F; // Assumes no volume buildup
+Prod.Ca = Ca; // Assumes perfectly mixed
+Prod.Cb = Cb; // Assumes prefectly mixed
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "System";
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+SystemData : Text
+globaldatasection
+EndText;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllGlobals">
+  <FORM NAME="AllGlobals" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+FLOWSHEET
+  VdVR as VdV_Reactor;
+  FEED as Connection;
+  PROD as Connection;
+  Connect VdVR.Feed with FEED;
+  Connect VdVR.Prod with PROD;
+
+CONSTRAINTS
+  // Flowsheet variables and equations...
+END
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="Conc_Outlet" CLSID="{F6AD2450-A109-11D0-8B2F-00A024E1AC0C}">
+    { Version : 2
+SizeX : 12225
+SizeY : 6555
+Plot3d: 0
+YAxisIsTime: 1
+MaxIntervals: 3
+PhasePlot: 0
+PhaseXVariable: -
+XProfileName: -
+YProfileName: -
+VariablesPaths : [ 12 VdVR.Prod.Ca 12 VdVR.Prod.Cb ]
+HistoryVariablesPaths : [ 12 VdVR.Prod.Ca 12 VdVR.Prod.Cb ]
+ProfileNames : [ ]
+UnusedVariablesPaths : [ ]
+UnusedProfileDimensions : [ ]
+PlotInputFile : { 
+Type:0
+Title:Outlet Concentrations
+Xlab:Time $UOM
+Ylab:Y Label
+Nvars:2
+MultiY:1
+Subst:UOM
+NYaxes:2
+RunPlot:1
+PhasePlot:0
+SizeToData:0
+CommunicationIntervals:1
+UseVar:1
+IgnoreLegend:0
+TimeWin:0.27
+TimeScroll:0.054
+AlwaysShow:0
+PhaseX:
+Var:0
+AxisMap:0
+Label:Time $UOM
+SubstValue:Hours
+Var:1
+AxisMap:1
+Label:Y Label
+Legend:VdVR.Prod.Ca $UOM
+SubstValue:kmol/m3
+Var:2
+AxisMap:2
+Label:
+Legend:VdVR.Prod.Cb $UOM
+SubstValue:kmol/m3
+Axis:0
+ARange:0 0 0 0.264 0 0.27
+ARange3:0 0.27 0 0.27 0.01 0.01 0
+AxisResetRange:1
+AxisScale:0 0
+Multiplier:0
+MultiplierType:0
+AxisFlag:0
+Axis:1
+ARange:3.08173 3.08173 2.75 3.45 2.75 3.4
+ARange3:2.75 3.45 2.75 3.45 0.05 0.05 0
+AxisResetRange:1
+AxisScale:0 0
+Multiplier:0
+MultiplierType:0
+AxisFlag:0
+Axis:2
+ARange:1.13299 2.45652 1.1 2.5 1.13299 2.45652
+ARange3:1.1 2.5 1.1 2.5 0.1 0.1 0
+AxisResetRange:1
+AxisScale:0 0
+Multiplier:0
+MultiplierType:0
+AxisFlag:0
+Attrib:0 4 1 1
+Attrib2:0 0 0 0 0
+Attrib:1 4 2 2
+Attrib2:1 0 0 0 0
+Font:0 10 0:Arial
+Font:1 10 0:Arial
+Font:2 10 0:Arial
+Font:3 10 0:Arial
+Grid:3
+Line:0
+Square:0 0 0 0
+Marker:4 10
+LegendBox:0 1.000000 0.030000
+LegendBox2:90 1.250000 5 } 
+DisplayAs : Plot
+ColumnWidths : [ 585 1335 1335 ]
+ProfileDimensions : [ ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+  ActiveTasks : [];
+  VdVR.Ca.derivative : 0.;
+  VdVR.Ca.spec : RateInitial;
+  VdVR.Ca : 3.081734223375358;
+  VdVR.Cb.derivative : 0.;
+  VdVR.Cb.spec : RateInitial;
+  VdVR.Cb : 1.132990523299764;
+  VdVR.Feed.Ca.spec : Fixed;
+  VdVR.Feed.Ca : 10.;
+  VdVR.Feed.Cb.spec : Fixed;
+  VdVR.Feed.Cb : 0.;
+  VdVR.Feed.F.spec : Fixed;
+  VdVR.Feed.F : 3600.;
+  VdVR.Prod.Ca.Record : True;
+  VdVR.Prod.Ca : 3.081734223375358;
+  VdVR.Prod.Cb.Record : True;
+  VdVR.Prod.Cb : 1.132990523299764;
+  VdVR.Prod.F : 3600.;
+  VdVR.V : 100.;
+  Graphics : TEXT CLSID {A0DFFFE6-908E-11CE-A964-0000C08C668E}
+# of PFS Objects = 4
+SIZE -1.82759 1.53053 0.835323 2.13532
+BLOCK
+ID: VdVR
+Version: 1
+ICON: "System"
+Flag 0
+Section 
+At -0.090411 1.485323
+Label At 0.000000 0.000000
+Scale 1.000000 Modifier 0
+STREAM
+ID: FEED
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 1
+At -1.827593 1.485323
+Label At 0.515370 0.000000
+ROUTE 0 0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -1.827593 1.485323 0
+x x -0.790411 1.485323 0
+t l -0.590411 1.485323 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: PROD
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At 1.530528 1.485323
+Label At -0.573172 0.000000
+ROUTE 0 0
+r l 1.530528 1.485323 0
+x 0 0.609589 1.485323 0
+t r 0.409589 1.485323 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+LEGEND
+Version: 2
+Dim: -3.84247 -3.2 -3.08 -3.35328
+Size: 0.00317155
+Font: 1 0 =Times New Roman
+# of PFS Objects = 0
+VIEWPORT -2.065108 3.948143 2.520422 -0.720898
+LAYOUT
+TableFormat 1
+Pages 1 1 1 1
+PAGESETUP
+PAPERSIZE 
+PAPERSOURCE 
+ORIENTATION -1
+PRINTPAGENO 1 1
+LEFTMARGIN 0.5"
+RIGHTMARGIN 0.5"
+TOPMARGIN 0.5"
+BOTTOMMARGIN 0.5"
+VISIBILITY 0.030000
+PFDFLAG 255 255
+PFDMODE 0
+SCALE 0.003172
+
+ENDTEXT;
+END
+
+Properties
+Package : "None";
+End
+
+Options
+  AbsoluteSingularityTol: 1.e-004;
+  AbsPerturb: 1.e-005;
+  AbsTearTol: 1.e-005;
+  AbsTol: 1.e-005;
+  AssignmentWarningsEnabled: True;
+  ChangeTol: 1.e-005;
+  CheckProcDerivs: "Off";
+  Compression: True;
+  CurrentUOMSet: "Metric";
+  Decomposer.ProgID: "AspenTech.Decomposer";
+  Decomposition.MultipleGroup: True;
+  DerivAbsTol: 1.e-003;
+  DerivRelTol: 0.1;
+  EqnTol: 1.e-005;
+  EquationSensCheck: False;
+  EquationSensTol: 10000000000.;
+  EstimationPrintLevel: "Medium";
+  EstimationReturntoBestPoint: False;
+  EstimationSolver: 2;
+  Estimator: 1;
+  ExplicitEventTolerance: 1.e-005;
+  Feasopt.MaxAbsStep: 10.;
+  Feasopt.MaxEval: 100;
+  Feasopt.MaxRelStep: 10.;
+  Feasopt.OptTol: 1.e-004;
+  Homotopy.InitialStep: 0.1;
+  Homotopy.MaximumStep: 1.;
+  Homotopy.MinimumStep: 1.e-002;
+  Homotopy.StepDecrement: 0.5;
+  Homotopy.StepIncrement: 10;
+  Integration.AbsErrorTol: 1.e-005;
+  Integration.AbsTearTol: 1.e-005;
+  Integration.DiscontinuityEventTol: 1.e-005;
+  Integration.EnforceMinStep: False;
+  Integration.IncSensErrors: False;
+  Integration.InitStepSize: 5.e-003;
+  Integration.ItplToComTime: True;
+  Integration.LocateIEvents: False;
+  Integration.MaxOrder: 5;
+  Integration.MaxStepSize: 1.;
+  Integration.MinStepSize: 1.e-003;
+  Integration.ProgID: "AspenTech.UnifiedIntegrator";
+  Integration.RcvTornVars: False;
+  Integration.ReInitAfterEE: False;
+  Integration.ReInitAfterIE: False;
+  Integration.RelErrorTol: 1.e-005;
+  Integration.RelTearTol: 1.e-005;
+  Integration.RewindToLastConvStep: False;
+  Integration.ShowHIErrors: 0;
+  Integration.ShowHTIErrors: 0;
+  Integration.StepRedFact: 0.5;
+  Integration.StepSize: 1.e-002;
+  Integration.StepSizeType: "Variable";
+  Integration.TestSAndAVars: False;
+  Integration.UsePrevAfterEE: False;
+  Integrator: "ImplicitEuler";
+  KeepCompiledEvaluationFiles: False;
+  LinearSolver: "MA48";
+  ListEquivalenceVariables: True;
+  LogLikelihood.MaxIter: 100;
+  LogLikelihood.SolTol: 1.e-004;
+  MA48.DropTol: 0.;
+  MA48.EnableRefineIter: True;
+  MA48.MaxRefineIter: 10;
+  MA48.PivotSearch: 3;
+  MA48.PivotTol: 1.e-050;
+  MA48.Repivot: 0;
+  MA48.UseTranspose: 0;
+  MaxTearIter: 100;
+  Nl2sol.AbsFuncTol: 1.e-020;
+  Nl2sol.FalseConvTol: 0.;
+  Nl2sol.MaxIter: 50;
+  Nl2sol.RelFuncTol: 1.e-004;
+  Nl2sol.SolTol: 1.e-004;
+  NLASolver: "Standard";
+  Nonlinear.AbsPert: 1.e-005;
+  Nonlinear.BestOnFail: True;
+  Nonlinear.BoundClip: 1.e-006;
+  Nonlinear.BoundFrac: 1.;
+  Nonlinear.ConvCrit: "Residual";
+  Nonlinear.CreepIter: 0;
+  Nonlinear.CreepSize: 0.1;
+  Nonlinear.Dogleg: False;
+  Nonlinear.HiResidual: 0;
+  Nonlinear.HiVarSteps: 0;
+  Nonlinear.MathsPrint: 0;
+  Nonlinear.MaxDivSteps: 10;
+  Nonlinear.MaxFastNewtonSteps: 5;
+  Nonlinear.MaxIter: 100;
+  Nonlinear.MaxStepRed: 10;
+  Nonlinear.MaxVarStep: 50.;
+  Nonlinear.Method: "Mixed Newton";
+  Nonlinear.RangeFrac: 0.;
+  Nonlinear.SingPert: 1.e-002;
+  OptimizationObjFun: "Minimize";
+  OptimizationPrintLevel: "Medium";
+  Optimizer: 1;
+  PrintLevel: 2;
+  PropInfo: -1;
+  RelativeSingularityCheck: True;
+  RelativeSingularityTol: 1.e-002;
+  RelPerturb: 1.e-005;
+  RelTearTol: 1.e-005;
+  RelTol: 1.e-005;
+  RunMode: "Dynamic";
+  SaveFreeVariableValues: True;
+  Scaling: False;
+  SensErrorCheck: True;
+  SnapshotSettings.EnableDynInitialization: True;
+  SnapshotSettings.EnableFileSaved: False;
+  SnapshotSettings.EnableInitialization: True;
+  SnapshotSettings.EnableInitialSpec: True;
+  SnapshotSettings.EnableMaximum: True;
+  SnapshotSettings.EnableonReinitialization: False;
+  SnapshotSettings.EnableProblemEdit: True;
+  SnapshotSettings.EnableRegularSnapshot: False;
+  SnapshotSettings.EnableSteadyState: True;
+  SnapshotSettings.Interval: 2.;
+  SnapshotSettings.Maximum: 10;
+  SnapshotSettings.SaveConvergedOnly: True;
+  SnapshotSettings.TakeAutoSnapshots: True;
+  SyncSteps: "Full";
+  Tearing: "update";
+  TearUpdate: "Direct";
+  TimeSettings.CommunicationInterval: 1.e-003;
+  TimeSettings.CommunicationUnits: "Hours";
+  TimeSettings.DisplayUpdateInterval: 2000;
+  TimeSettings.EnablePauseAt: False;
+  TimeSettings.EnableStepFor: False;
+  TimeSettings.PauseAt: 1.;
+  TimeSettings.RealTimeSyncFactor: 0.;
+  TimeSettings.RecordHistory: False;
+  TimeSettings.StepFor: 0;
+  TimeSettings.TimeDisplayUnits: "Minutes";
+  UseCompiledEvaluation: False;
+  UseSavedSnapshotOnLoad: False;
+  WatchGroup: 0;
+  WatchSubGroup: 0;
+  Wegstein.MaxAcceleration: 0.;
+  Wegstein.MinAcceleration: -5.;
+  OpenLASolver: "";
+  OpenNLASolver: "";
+  OpenOPTSolver: "";
+  OpenESTSolver: "";
+End
+Optimization
+  IsDynamic : FALSE;
+  ElementSizeBoundsAutomatic : TRUE;
+  EndTime : 1.000000000000000;
+  Control.FinalTime_Initial : 1.000000000000000;
+  Control.FinalTime_Upper : 2.000000000000000;
+  Control.FinalTime_Lower : 0.5000000000000000;
+  Control.FinalTime_IsFixed : TRUE;
+  Control.FinalTime_IsObjective : FALSE;
+  Control.Elements : 5;
+  Control.FixedInterval : TRUE;
+  Control.MovingElementsVarying : FALSE;
+  Control.PiecewiseLinear : FALSE;
+  Control(0) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(1) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(2) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(3) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(4) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+End
+Estimation
+  CalcHeteroParams : TRUE;
+  ExperimentTimeUnit: "";
+End
+Homotopy
+ Enabled: FALSE;
+End
+SimulationAccessExtension
+  ENABLED: false;
+End
+SpecAnalysis
+ EXCLUDES: {VdV.Feed.Ca},
+         {VdV.Feed.F},
+         {VdV.Prod.Ca},
+         {VdV.Prod.Cb},
+         {VdV.Prod.F};
+End
+OnLineLinks
+  Protocol: "OPC", 1;
+  //Server: "";
+  IO: Synchronous, Cached;
+  Bounds: Clip;
+  Quality: UseLast;
+  Update: 1000;
+  PrintLevel: 2;
+  Enabled: OFF;
+  Input Events : Before SS Run, After DYN Step, After INI Step, Before INI Run;
+  Output Events: After SS Run, After DYN Step, After INI Step, After INI Run;
+End

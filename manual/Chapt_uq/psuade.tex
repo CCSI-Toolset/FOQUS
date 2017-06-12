@@ -1,0 +1,204 @@
+\section{File Formats}
+\label{ap:psuadefiles}
+
+Most UQ capabilities within FOQUS rely on PSUADE. As such, different UQ
+components require input files in PSUADE formats. CSV (comma-separated values) files are also compatible. 
+The specific requirements are explained in Sections \ref{sec:uq_tutorial} and \ref{sec:ouu_overview}.
+
+\subsection{PSUADE Full File Format}
+The following is an example of the full PSUADE file format. Comments in red do not appear in the file and are only for instructional purposes.
+ \small
+\begin{Verbatim}[commandchars=\\\{\}]
+PSUADE_IO (Note : inputs not true inputs if pdf ~=U) \scriptsize\color{red}Start data block
+5 2 6                    \scriptsize\color{red}5 inputs, 2 outputs, and 6 samples
+1 1                      \scriptsize\color{red}Sample index, run value (0 if sample point has not been calculated.)
+ -9.5979899497487442e-01  \scriptsize\color{red}Value to the first input of sample 1
+  1.0552763819095490e-01  \scriptsize\color{red}Value to the second input of sample 1
+  2.1608040201005019e-01  \scriptsize\color{red}Value to the third input of sample 1
+ -2.1608040201005019e-10  \scriptsize\color{red}Value to the fourth input of sample 1
+ -2.5628140703517588e-01  \scriptsize\color{red}Value to the fifth input of sample 1
+ -1.6979984061153328e+00  \scriptsize\color{red}Value to the first output of sample 1 (9.99e+34 if undefined)
+ -7.8296928608517824e-01  \scriptsize\color{red}Value to the second output of sample 1 (9.99e+34 if undefined)
+2 1                      \scriptsize\color{red}Sample point 2. Run value is true (outputs calculated).
+ -9.5477386934673336e-02
+  8.5427135678391997e-02
+ -9.7989949748743721e-01
+ -4.8743718592964824e-01
+  3.5175879396984966e-02
+  9.7708275149071300e-01
+  8.6655187317087226e-02
+3 1                      \scriptsize\color{red}Sample point 3. Run value is true (outputs calculated).
+ -6.9849246231155782e-01 
+ -5.9798994974874375e-01 
+ -9.6984924623115576e-01
+  2.5125628140703515e-02
+  8.1909547738693478e-01
+ -6.4229247835711212e-02
+  2.8546752874255432e-01 
+4 1                      \scriptsize\color{red}Sample point 4. Run value is true (outputs calculated).
+  2.1608040201005019e-01
+  7.2864321608040195e-01
+  4.9748743718592969e-01
+  5.6783919597989962e-01
+  6.7839195979899491e-01
+ -4.7115433927748318e-01
+ -3.5869634004753126e-01 
+5 1                      \scriptsize\color{red}Sample point 5. Run value is true (outputs calculated).
+  5.6783919597989962e-01
+  5.4773869346733672e-01
+ -2.2613065326633164e-01
+  3.8693467336683418e-01
+ -1.7587939698492461e-01
+  6.8926859881410230e-03
+ -2.7551395275787588e-01
+6 0                      \scriptsize\color{red}Sample point 6. Run value is false (outputs not calculated).
+-7.2864321608040195e-01
+ 2.1608040201005019e-01
+ 8.3919597989949746e-01
+ 3.5175879396984966e-02
+ 2.3618090452261309e-01
+ 9.9999999999999997e+34  \scriptsize\color{red}Output not calculated.
+ 9.9999999999999997e+34  \scriptsize\color{red}Output not calculated. 
+PSUADE_IO      \scriptsize\color{red}End data block
+PSUADE         \scriptsize\color{red}Start informational block
+INPUT          \scriptsize\color{red}Start input information block
+   dimension = 5     \scriptsize\color{red}Number of inputs
+   variable 1 A0  =  -1.00000e+00   1.00000e+00  \scriptsize\color{red}{Input name \& range}
+   variable 2 A1  =  -1.00000e+00   1.00000e+00
+   variable 3 A2  =  -1.00000e+00   1.00000e+00
+   variable 4 A3  =  -1.00000e+00   1.00000e+00
+   variable 5 A4  =  -1.00000e+00   1.00000e+00
+END            \scriptsize\color{red}End input information block
+OUTPUT         \scriptsize\color{red}Start output information block
+dimension = 2        \scriptsize\color{red}Number of outputs
+variable 1 Y1        \scriptsize\color{red}{Output name}
+variable 2 Y2
+END            \scriptsize\color{red}End output information block
+METHOD         \scriptsize\color{red}Start sampling method information block
+   sampling = LH     \scriptsize\color{red}Latin Hypercube sampling
+   num_samples = 6   \scriptsize\color{red}Number of samples
+END            \scriptsize\color{red}End sampling method block
+APPLICATION    \scriptsize\color{red}Start application block
+   driver = NONE     \scriptsize\color{red}Name of driver program for calculating outputs (NONE for no driver)
+END            \scriptsize\color{red}End application block
+ANALYSIS       \scriptsize\color{red}Start analysis method information block
+   analyzer output_id  = 1
+   analyzer rstype = MARS  \scriptsize\color{red}Default response surface type
+   diagnostics 1
+END            \scriptsize\color{red}End analysis method information block
+END            \scriptsize\color{red}End information block
+\end{Verbatim}
+\normalsize
+This file format is accepted when:
+\begin{itemize}
+\item{The user loads an existing ensemble by clicking the \bu{Load from
+    File} button from the main UQ screen (Figure \ref{fig:uq_screen}).}
+\item{The user creates a new ensemble by clicking the \bu{Add New} button
+  from the main UQ screen (Figure \ref{fig:uq_screen}) and selecting
+  the \bu{Load all samples from a single file} radio button in the user's selection
+  of sample generation (Figure \ref{fig:uq_sim_loadsample}).}
+\item{The user performs optimization under uncertainty from the main OUU screen
+  (Figure \ref{fig:ouu_screen}) and selects the \bu{Load Model From File}
+  radio button for the user's model; for this file, the user does not need to specify
+  the first block (i.e., the PSUADE\_IO block).}
+\end{itemize}
+
+This file format is written when:
+\begin{itemize}
+\item{The user saves an existing ensemble by clicking the \bu{Save
+    Selected} button from the main UQ screen (Figure \ref{fig:uq_screen}).}
+\end{itemize}
+
+\subsection{PSUADE Sample File Format}
+
+The following is an example of the sample file format. Comments in red do NOT appear in the file and are only for instructional purposes.
+
+\begin{Verbatim}[commandchars=\\\{\}]
+PSUADE_BEGIN  \scriptsize\color{red}Start data block
+5 2           \scriptsize\color{red}5 samples, 2 inputs
+1 4.0 -1.0    \scriptsize\color{red}Sample index, input values for sample point 1
+2 3.0 2.0     \scriptsize\color{red}Sample index, input values for sample point 2
+3 5.0 1.0     \scriptsize\color{red}Sample index, input values for sample point 3
+4 2.0 1.5     \scriptsize\color{red}Sample index, input values for sample point 4
+5 3.0 3.0     \scriptsize\color{red}Sample index, input values for sample point 5
+PSUADE_END    \scriptsize\color{red}End data block
+\end{Verbatim}
+
+This file format is accepted when:
+\begin{itemize}
+\item{The user creates a new ensemble by clicking the \bu{Add New} button
+  from the main UQ screen (Figure \ref{fig:uq_screen}) and selecting
+  the \bu{Load all samples from a single file} radio button in the user's selection
+  of sample generation (Figure \ref{fig:uq_sim_loadsample}).}
+\item{The user creates a new ensemble by clicking the \bu{Add New} button
+  from the main UQ screen (Figure \ref{fig:uq_screen}) and selecting
+  the \bu{Choose sampling scheme} radio button in the user's selection
+  of sample generation (Figure \ref{fig:uq_sim_dist}); in the
+  \bu{Distributions} tab, if the user designates an input variable's PDF to be of
+  type ``Sample'', the ``Param 1'' field will generate a \bu{Select
+  	File} button that prompts for the sample file representing the input's PDF.}
+\item{Similar to above, when the user enters Expert Mode within the Analysis
+  dialog;
+  within Expert Mode (Figure \ref{fig:uqt_rsaeua}), the user can change the input distribution before
+  performing response surface based analysis.} 
+\item{The user performs optimization under uncertainty from the main OUU screen
+  (Figure \ref{fig:ouu_screen});
+  if any of the variables are designated as random variables, the \bu{UQ
+    Setup} tab will be displayed and
+    any prompt for loading existing sample (e.g., ``Load existing sample
+    for Z3'' or ``Load existing sample for Z4'') will require this file
+    format. (Currently, the \bu{UQ Setup} tab is missing from the Figure
+    because no variables have been designated as random.)}
+\end{itemize}
+
+This file format is written when:
+\begin{itemize}
+\item{The user wants to save the results of inference by clicking  \bu{Save
+    Posterior Input Samples to File} within Bayesian Inference (Figure
+  \ref{fig:uq_inf}), which is accessible from the Analysis screen of UQ
+  (Figure \ref{fig:uq_analysisW}).}
+\end{itemize}
+
+\subsection{CSV (Comma Separated Values) File Format}
+The following is an example of the CSV file format. Comments in red do not appear in the file and are only for instructional purposes. CSV files can be easily generated using Excel and exporting in the .csv format
+
+\begin{Verbatim}[commandchars=\\\{\}]
+A0,A1,A2,A3,A4,Y1,Y2  \scriptsize\color{red}Input variable names, then output variable names (if any)
+-0.959,0.105,0.216,-2.16e-10,-0.256,-1.698,-0.783 \scriptsize\color{red}Values for the 
+\scriptsize\color{red}first sample (Output values are not required if not calculated)
+-0.095,0.085,-0.980,-0.487,0.035,0.978,0.087 \scriptsize\color{red}Values for the second sample
+-0.698,-0.598,-0.970,0.025,0.819,-0.064,0.285 
+0.216,0.729,0.497,0.568,0.678,-0.471,-0.359 
+0.568,0.548,-0.226,0.387,-0.176,6.89e-03,-0.276  
+\end{Verbatim}
+
+Variable names are specified in the first line, with input names and then output names. Output names can be specified, even if there is no data available for them yet. Data is only required for inputs. In addition, the variable names line is not required in those places where a PSUADE sample file is acceptable. 
+
+This file format is accepted when:
+\begin{itemize}
+	\item{The user loads an existing ensemble by clicking the \bu{Load from
+			File} button from the main UQ screen (Figure \ref{fig:uq_screen}). Variable names are required.}
+	\item{The user creates a new ensemble by clicking the \bu{Add New} button
+		from the main UQ screen (Figure \ref{fig:uq_screen}) and selecting
+		the \bu{Load all samples from a single file} radio button in the user's selection
+		of sample generation (Figure \ref{fig:uq_sim_loadsample}).}
+	\item{The user creates a new ensemble by clicking the \bu{Add New} button
+		from the main UQ screen (Figure \ref{fig:uq_screen}) and selecting
+		the \bu{Choose sampling scheme} radio button in the user's selection
+		of sample generation (Figure \ref{fig:uq_sim_dist}); in the
+		\bu{Distributions} tab, if the user designates an input variable's PDF to be of
+		type ``Sample'', the ``Param 1'' field will generate a \bu{Select
+			File} button that prompts for the sample file representing the input's PDF.}
+	\item{Similar to above, when the user enters Expert Mode within the Analysis
+		dialog;
+		within Expert Mode (Figure \ref{fig:uqt_rsaeua}), the user can change the input distribution before
+		performing response surface based analysis.} 
+	\item{The user performs optimization under uncertainty from the main OUU screen
+		(Figure \ref{fig:ouu_screen});
+		if any of the variables are designated as random variables, the \bu{UQ
+			Setup} tab will be displayed and
+		any prompt for loading existing sample (e.g., ``Load existing sample
+		for Z3'' or ``Load existing sample for Z4'') will require this file
+		format. (Currently, the \bu{UQ Setup} tab is missing from the Figure
+		because no variables have been designated as random.)}
+	\end{itemize}

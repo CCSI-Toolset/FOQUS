@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>narmaParamDlg</class>
+ <widget class="QDialog" name="narmaParamDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>377</width>
+    <height>176</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NARMA DRM Parameter Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_NumberOfHistoryData">
+       <property name="text">
+        <string>Number of Discrete History Data</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="lineEdit_NumberOfHistoryData"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_NumberOfNeurons">
+       <property name="text">
+        <string>Number of Neurons in Hidden Layer</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="lineEdit_NumberOfNeurons"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_MaxNumberOfIterations">
+       <property name="text">
+        <string>Maximum Number of BP Iterations</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEdit_MaxNumberOfIterations"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QPushButton" name="pushButton_ResetToDefault">
+     <property name="text">
+      <string>Reset To Default Parameters</string>
+     </property>
+     <property name="autoDefault">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_Cancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_OK">
+       <property name="text">
+        <string>OK</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lineEdit_NumberOfHistoryData</tabstop>
+  <tabstop>lineEdit_NumberOfNeurons</tabstop>
+  <tabstop>lineEdit_MaxNumberOfIterations</tabstop>
+  <tabstop>pushButton_ResetToDefault</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

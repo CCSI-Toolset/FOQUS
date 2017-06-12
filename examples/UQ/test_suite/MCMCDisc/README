@@ -1,0 +1,58 @@
+This example compares the 3 options:
+1. MCMC with discrepancy (only in terms of X1)
+2. MCMC without discrepancy
+which shows that option 3 gives the smallest posterior uncertainty.
+==================================================================
+Problem definition:
+
+Let X1 be a design parameter.
+X2 is an uncertain parameter.
+0.6 <= X1 <= 0.9
+0   <= X2 <= 1
+
+******************************************************************
+Problem:
+------------------------------------------------------------------
+
+The true model is
+
+Ye = X1 + X2 + X2 * X1 
+
+where the uncertain (calibration) parameter is X2 = 0.9
+
+Ye = X1 + 0.9 + 0.9 * X1 = 1.9 * X1 + 0.9
+------------------------------------------------------------------
+The simulation model is: 
+
+Ys = X1 + X2
+
+------------------------------------------------------------------
+Discrepancy function: (set X2 to mid point)
+
+d1 = Ye - Ys 
+   = 1.9 * X1 + 0.9 - X1 - X2
+   = 0.9 * X1 + 0.9 - X2
+
+Set X2 at midpoint = 0.5
+
+d1 = 0.9 * X1 + 0.4
+
+---------------
+add d1 to Ys gives
+
+hat(Ys) = X1 + X2 + 0.9 * X1 + 0.4 = 1.9 * X1 + X2 + 0.4
+
+If the posterior of X2 centers around 0.5, then 
+
+hat(Ys) = 1.9 * X1 + 0.9
+
+Sample mean  = 1.585929e+00
+Sample stdev = 1.342373e-02
+******************************************************************
+
+experiment.c can be compiled to generate expdata
+run psSim.in with simulator.c to generate Sample.psuade
+postsample.disc - posterior sample with discrepancy
+postsample.nodisc - posterior sample with no discrepancy
+
+

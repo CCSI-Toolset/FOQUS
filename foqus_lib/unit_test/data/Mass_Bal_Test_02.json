@@ -1,0 +1,4192 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": 0, 
+    "results": {
+      "_currentFilter": null, 
+      "results": [
+        {
+          "inputs": {
+            "React_01": {
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 1000.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1041.6666666666667
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in"
+              }, 
+              "Conv": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.9, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.9
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "none", 
+                "desc": "Conversion A --> B"
+              }, 
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  49.34210391849128
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in"
+              }
+            }, 
+            "React_02": {
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.878787878787875
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of A in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.77385945913208
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of C in"
+              }, 
+              "Conv": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.8, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.8
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Conversion B --> C"
+              }, 
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 1000.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  897.1291621543869
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of B in"
+              }
+            }, 
+            "Sep_01": {
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  986.8420783698256
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117464e-32
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in"
+              }, 
+              "Top_Frac_C": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.2, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.2
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Fraction of C in that goes out the top"
+              }, 
+              "Top_Frac_B": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.1, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.1
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Fraction of B in that goes out the top"
+              }, 
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  104.16666666666666
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in"
+              }, 
+              "Top_Frac_A": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.8, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.8
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Fraction of A in that goes out top"
+              }
+            }, 
+            "Split_02": {
+              "Split_Frac": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.5, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.5
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Fraction of inlet flow that goes out in stream 1"
+              }, 
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  34.090909090909086
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of A in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  75.54771891826417
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of C in"
+              }, 
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  17.942583243087736
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow of B in"
+              }
+            }, 
+            "Sep_02": {
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  179.42583243087734
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  755.4771891826416
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in"
+              }, 
+              "Top_Frac_C": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.1, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.1
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "none", 
+                "desc": "Fraction of C out top"
+              }, 
+              "Top_Frac_B": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.1, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.1
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "none", 
+                "desc": "Fraction of B out top"
+              }, 
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.878787878787875
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in"
+              }, 
+              "Top_Frac_A": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.9, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.9
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "none", 
+                "desc": "Fraction of A in out top"
+              }
+            }, 
+            "Mix_02": {
+              "FA_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  17.045454545454543
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in from stream 2"
+              }, 
+              "FA_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  20.83333333333333
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in from stream 1"
+              }, 
+              "FC_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.479114197289397e-32
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in from stream 3"
+              }, 
+              "FC_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.77385945913208
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in from stream 2"
+              }, 
+              "FB_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  888.157870532843
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in from stream 2"
+              }, 
+              "FB_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  8.971291621543868
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in from stream 2"
+              }
+            }, 
+            "Mix_01": {
+              "FA_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  41.666666666666664
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in from stream 2"
+              }, 
+              "FA_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 1000.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1000.0
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in from stream 1"
+              }, 
+              "FC_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.0
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow Rate of C in from stream 1"
+              }, 
+              "FC_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in from stream 3"
+              }, 
+              "FB_In1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.0
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in from stream 1"
+              }, 
+              "FB_In2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  49.34210391849128
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in from stream 2"
+              }
+            }, 
+            "Splt_01": {
+              "Split_Frac": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.5, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  0.5
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 1.0, 
+                "unit": "none", 
+                "desc": "Fraction of inlet flow that goes to stream 1"
+              }, 
+              "FA_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  83.33333333333333
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A in"
+              }, 
+              "FC_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  3.6977854932234934e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C in"
+              }, 
+              "FB_In": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 100.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  98.68420783698257
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 100000.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B in"
+              }
+            }
+          }, 
+          "name": "single_0", 
+          "setName": "Single_runs", 
+          "tags": [], 
+          "outputs": {
+            "React_01": {
+              "FB_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  986.8421039184914
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out"
+              }, 
+              "FA_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  104.16666666666666
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out"
+              }, 
+              "FC_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out"
+              }
+            }, 
+            "React_02": {
+              "FB_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  179.42583243087734
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out"
+              }, 
+              "FA_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.878787878787875
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out"
+              }, 
+              "FC_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  755.4771891826416
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out"
+              }
+            }, 
+            "Sep_01": {
+              "FA_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  83.33333333333333
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out top"
+              }, 
+              "FA_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  20.83333333333333
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out top"
+              }, 
+              "FC_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  3.6977854932234934e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out top"
+              }, 
+              "FC_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.479114197289397e-32
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out top"
+              }, 
+              "FB_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  98.68420783698257
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out top"
+              }, 
+              "FB_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  888.157870532843
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out top"
+              }
+            }, 
+            "Split_02": {
+              "FA_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  17.045454545454543
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out in stream 1"
+              }, 
+              "FA_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  17.045454545454543
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out in stream 2"
+              }, 
+              "FC_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.77385945913208
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out in stream 2"
+              }, 
+              "FC_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.77385945913208
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out in stream 1"
+              }, 
+              "FB_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  8.971291621543868
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out in stream 1"
+              }, 
+              "FB_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  8.971291621543868
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out in stream 2"
+              }
+            }, 
+            "Sep_02": {
+              "FA_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  34.090909090909086
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out of top"
+              }, 
+              "FA_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  3.787878787878789
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out bottom"
+              }, 
+              "FC_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  75.54771891826417
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out top"
+              }, 
+              "FC_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  679.9294702643774
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out bottom"
+              }, 
+              "FB_Top": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  17.942583243087736
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out top"
+              }, 
+              "FB_Bottom": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  161.4832491877896
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out Bottom"
+              }
+            }, 
+            "Mix_02": {
+              "FB_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  897.1291621543869
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out"
+              }, 
+              "FA_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.878787878787875
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out"
+              }, 
+              "FC_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  37.77385945913208
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out"
+              }
+            }, 
+            "Mix_01": {
+              "FB_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  49.34210391849128
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "", 
+                "desc": ""
+              }, 
+              "FA_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1041.6666666666667
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "", 
+                "desc": ""
+              }, 
+              "FC_Out": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "", 
+                "desc": ""
+              }
+            }, 
+            "Splt_01": {
+              "FA_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  41.666666666666664
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out in stream 1"
+              }, 
+              "FA_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  41.666666666666664
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of A out in stream 2"
+              }, 
+              "FC_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out in stream 2"
+              }, 
+              "FC_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  1.8488927466117467e-33
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of C out in stream 1"
+              }, 
+              "FB_Out1": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  49.34210391849128
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out in stream 1"
+              }, 
+              "FB_Out2": {
+                "optVar": false, 
+                "scaling": "None", 
+                "set": "user", 
+                "dist": {
+                  "firstParamValue": null, 
+                  "type": "N", 
+                  "secondParamValue": null
+                }, 
+                "scaleFact": 1.0, 
+                "min": 0.0, 
+                "default": 0.0, 
+                "dtype": "float", 
+                "tags": [], 
+                "ts": 0, 
+                "hist": [
+                  49.34210391849128
+                ], 
+                "uqVar": false, 
+                "shape": [], 
+                "max": 0.0, 
+                "unit": "kmol/hr", 
+                "desc": "Flow rate of B out in stream 2"
+              }
+            }
+          }, 
+          "etime": 0.06200003623962402, 
+          "nodeErrors": {
+            "React_01": 0, 
+            "React_02": 0, 
+            "Sep_01": 0, 
+            "Split_02": 0, 
+            "Sep_02": 0, 
+            "Mix_02": 0, 
+            "Mix_01": 0, 
+            "Splt_01": 0
+          }, 
+          "error": 0, 
+          "ctime": "Tue Jun 24 09:44:04 2014"
+        }
+      ], 
+      "filters": {}
+    }, 
+    "edges": [
+      {
+        "end": "React_01", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Mix_01", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Out", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Sep_01", 
+        "tear": true, 
+        "curve": 0.0, 
+        "start": "React_01", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Out", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Mix_02", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Sep_01", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In1", 
+            "fromName": "FA_Bottom", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In1", 
+            "fromName": "FB_Bottom", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In1", 
+            "fromName": "FC_Bottom", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "React_02", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Mix_02", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Out", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Sep_02", 
+        "tear": true, 
+        "curve": 0.0, 
+        "start": "React_02", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Out", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Out", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Splt_01", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Sep_01", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Top", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Top", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Top", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Split_02", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Sep_02", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In", 
+            "fromName": "FA_Top", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In", 
+            "fromName": "FB_Top", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In", 
+            "fromName": "FC_Top", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Mix_02", 
+        "tear": false, 
+        "curve": -20.0, 
+        "start": "Split_02", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In2", 
+            "fromName": "FA_Out1", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In2", 
+            "fromName": "FB_Out1", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In2", 
+            "fromName": "FC_Out1", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Mix_01", 
+        "tear": false, 
+        "curve": -20.0, 
+        "start": "Splt_01", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_In2", 
+            "fromName": "FA_Out1", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_In2", 
+            "fromName": "FB_Out1", 
+            "active": true
+          }, 
+          {
+            "toName": "FC_In2", 
+            "fromName": "FC_Out1", 
+            "active": true
+          }
+        ]
+      }
+    ], 
+    "input": {
+      "React_01": {
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1000.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1041.6666666666667
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in"
+        }, 
+        "Conv": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.9, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.9
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "none", 
+          "desc": "Conversion A --> B"
+        }, 
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            49.34210391849128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in"
+        }
+      }, 
+      "React_02": {
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.878787878787875
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of A in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.77385945913208
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of C in"
+        }, 
+        "Conv": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.8, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.8
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Conversion B --> C"
+        }, 
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1000.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            897.1291621543869
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of B in"
+        }
+      }, 
+      "Sep_01": {
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            986.8420783698256
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117464e-32
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in"
+        }, 
+        "Top_Frac_C": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Fraction of C in that goes out the top"
+        }, 
+        "Top_Frac_B": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.1, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.1
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Fraction of B in that goes out the top"
+        }, 
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            104.16666666666666
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in"
+        }, 
+        "Top_Frac_A": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.8, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.8
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Fraction of A in that goes out top"
+        }
+      }, 
+      "Split_02": {
+        "Split_Frac": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.5, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.5
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Fraction of inlet flow that goes out in stream 1"
+        }, 
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            34.090909090909086
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of A in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            75.54771891826417
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of C in"
+        }, 
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            17.942583243087736
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow of B in"
+        }
+      }, 
+      "Sep_02": {
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            179.42583243087734
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            755.4771891826416
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in"
+        }, 
+        "Top_Frac_C": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.1, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.1
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "none", 
+          "desc": "Fraction of C out top"
+        }, 
+        "Top_Frac_B": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.1, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.1
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "none", 
+          "desc": "Fraction of B out top"
+        }, 
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.878787878787875
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in"
+        }, 
+        "Top_Frac_A": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.9, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.9
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "none", 
+          "desc": "Fraction of A in out top"
+        }
+      }, 
+      "Mix_02": {
+        "FA_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            17.045454545454543
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in from stream 2"
+        }, 
+        "FA_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            20.83333333333333
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in from stream 1"
+        }, 
+        "FC_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.479114197289397e-32
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in from stream 3"
+        }, 
+        "FC_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.77385945913208
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in from stream 2"
+        }, 
+        "FB_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            888.157870532843
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in from stream 2"
+        }, 
+        "FB_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            8.971291621543868
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in from stream 2"
+        }
+      }, 
+      "Mix_01": {
+        "FA_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            41.666666666666664
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in from stream 2"
+        }, 
+        "FA_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1000.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1000.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in from stream 1"
+        }, 
+        "FC_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow Rate of C in from stream 1"
+        }, 
+        "FC_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in from stream 3"
+        }, 
+        "FB_In1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in from stream 1"
+        }, 
+        "FB_In2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            49.34210391849128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in from stream 2"
+        }
+      }, 
+      "Splt_01": {
+        "Split_Frac": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.5, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.5
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1.0, 
+          "unit": "none", 
+          "desc": "Fraction of inlet flow that goes to stream 1"
+        }, 
+        "FA_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            83.33333333333333
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A in"
+        }, 
+        "FC_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            3.6977854932234934e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C in"
+        }, 
+        "FB_In": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 100.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            98.68420783698257
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B in"
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0, 
+    "wegAccMin": -9.0, 
+    "turbineConfig": {}, 
+    "tearTolType": "abs", 
+    "tearTol": 0.0001, 
+    "output": {
+      "React_01": {
+        "FB_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            986.8421039184914
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out"
+        }, 
+        "FA_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            104.16666666666666
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out"
+        }, 
+        "FC_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out"
+        }
+      }, 
+      "React_02": {
+        "FB_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            179.42583243087734
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out"
+        }, 
+        "FA_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.878787878787875
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out"
+        }, 
+        "FC_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            755.4771891826416
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out"
+        }
+      }, 
+      "Sep_01": {
+        "FA_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            83.33333333333333
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out top"
+        }, 
+        "FA_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            20.83333333333333
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out top"
+        }, 
+        "FC_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            3.6977854932234934e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out top"
+        }, 
+        "FC_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.479114197289397e-32
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out top"
+        }, 
+        "FB_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            98.68420783698257
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out top"
+        }, 
+        "FB_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            888.157870532843
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out top"
+        }
+      }, 
+      "Split_02": {
+        "FA_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            17.045454545454543
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out in stream 1"
+        }, 
+        "FA_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            17.045454545454543
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out in stream 2"
+        }, 
+        "FC_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.77385945913208
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out in stream 2"
+        }, 
+        "FC_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.77385945913208
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out in stream 1"
+        }, 
+        "FB_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            8.971291621543868
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out in stream 1"
+        }, 
+        "FB_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            8.971291621543868
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out in stream 2"
+        }
+      }, 
+      "Sep_02": {
+        "FA_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            34.090909090909086
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out of top"
+        }, 
+        "FA_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            3.787878787878789
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out bottom"
+        }, 
+        "FC_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            75.54771891826417
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out top"
+        }, 
+        "FC_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            679.9294702643774
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out bottom"
+        }, 
+        "FB_Top": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            17.942583243087736
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out top"
+        }, 
+        "FB_Bottom": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            161.4832491877896
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out Bottom"
+        }
+      }, 
+      "Mix_02": {
+        "FB_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            897.1291621543869
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out"
+        }, 
+        "FA_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.878787878787875
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out"
+        }, 
+        "FC_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            37.77385945913208
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out"
+        }
+      }, 
+      "Mix_01": {
+        "FB_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            49.34210391849128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": ""
+        }, 
+        "FA_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1041.6666666666667
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": ""
+        }, 
+        "FC_Out": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": ""
+        }
+      }, 
+      "Splt_01": {
+        "FA_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            41.666666666666664
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out in stream 1"
+        }, 
+        "FA_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            41.666666666666664
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of A out in stream 2"
+        }, 
+        "FC_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out in stream 2"
+        }, 
+        "FC_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.8488927466117467e-33
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of C out in stream 1"
+        }, 
+        "FB_Out1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            49.34210391849128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out in stream 1"
+        }, 
+        "FB_Out2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            49.34210391849128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of B out in stream 2"
+        }
+      }
+    }, 
+    "nodes": {
+      "React_01": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Out\"] = x[\"FA_In\"]*(1.0 - x[\"Conv\"])\nf[\"FB_Out\"] = x[\"FB_In\"] + x[\"Conv\"]*x[\"FA_In\"]\nf[\"FC_Out\"] = x[\"FC_In\"]", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -500.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "React_02": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FB_Out\"] = x[\"FB_In\"]*(1.0 - x[\"Conv\"])\nf[\"FC_Out\"] = x[\"FC_In\"] + x[\"Conv\"]*x[\"FB_In\"]\nf[\"FA_Out\"] = x[\"FA_In\"]", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -100.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Sep_01": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Top\"] = x[\"Top_Frac_A\"]*x[\"FA_In\"]\nf[\"FB_Top\"] = x[\"Top_Frac_B\"]*x[\"FB_In\"]\nf[\"FC_Top\"] = x[\"Top_Frac_C\"]*x[\"FC_In\"]\nf[\"FA_Bottom\"] = x[\"FA_In\"] - f[\"FA_Top\"]\nf[\"FB_Bottom\"] = x[\"FB_In\"] - f[\"FB_Top\"]\nf[\"FC_Bottom\"] = x[\"FC_In\"] - f[\"FC_Top\"]\n", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Split_02": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Out1\"] = x[\"Split_Frac\"]*x[\"FA_In\"]\nf[\"FB_Out1\"] = x[\"Split_Frac\"]*x[\"FB_In\"]\nf[\"FC_Out1\"] = x[\"Split_Frac\"]*x[\"FC_In\"]\nf[\"FA_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FA_In\"]\nf[\"FB_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FB_In\"]\nf[\"FC_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FC_In\"]", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -400.0, 
+        "x": 0.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Sep_02": {
+        "turbMaxWait": 72000.0, 
+        "pythonCode": "f[\"FA_Top\"] = x[\"Top_Frac_A\"]*x[\"FA_In\"]\nf[\"FB_Top\"] = x[\"Top_Frac_B\"]*x[\"FB_In\"]\nf[\"FC_Top\"] = x[\"Top_Frac_C\"]*x[\"FC_In\"]\nf[\"FA_Bottom\"] = x[\"FA_In\"] - f[\"FA_Top\"]\nf[\"FB_Bottom\"] = x[\"FB_In\"] - f[\"FB_Top\"]\nf[\"FC_Bottom\"] = x[\"FC_In\"] - f[\"FC_Top\"]", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600.0, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -0.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Mix_02": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Out\"] = x[\"FA_In1\"] + x[\"FA_In2\"]\nf[\"FB_Out\"] = x[\"FB_In1\"] + x[\"FB_In2\"]\nf[\"FC_Out\"] = x[\"FC_In1\"] + x[\"FC_In2\"]\n", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -200.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Mix_01": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Out\"] = x[\"FA_In1\"] + x[\"FA_In2\"]\nf[\"FB_Out\"] = x[\"FB_In1\"] + x[\"FB_In2\"]\nf[\"FC_Out\"] = x[\"FC_In1\"] + x[\"FC_In2\"]\n\n\n", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -600.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }, 
+      "Splt_01": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_Out1\"] = x[\"Split_Frac\"]*x[\"FA_In\"]\nf[\"FB_Out1\"] = x[\"Split_Frac\"]*x[\"FB_In\"]\nf[\"FC_Out1\"] = x[\"Split_Frac\"]*x[\"FC_In\"]\nf[\"FA_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FA_In\"]\nf[\"FB_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FB_In\"]\nf[\"FC_Out2\"] = (1.0 - x[\"Split_Frac\"])*x[\"FC_In\"]", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -400.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "calcError": 0, 
+        "sim": ""
+      }
+    }
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup interval": 10, 
+        "popsize": 6, 
+        "Save results": true, 
+        "itmax": 0, 
+        "seed": 0, 
+        "Restart out": "", 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "Max time": 48
+      }
+    }, 
+    "solver": "OptCMA", 
+    "obj": [], 
+    "g": [], 
+    "v": []
+  }, 
+  "foqusLogToConsole": true, 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">Mass Balance 02</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">This example contains three types of nodes a, reactor, seperator and mixer.  Is is used to test recycle loops, finding tears and calculation order.  All of the node calculations are done using the Pyhton code feature.</span></p></body></html>", 
+  "foqusLogFile": "foqus.log", 
+  "foqusLogLevel": 10, 
+  "surrogateProblem": {
+    "input": [], 
+    "inputScaleFact": {}, 
+    "dataFilter": null, 
+    "options": {
+      "Include Exp": false, 
+      "Single Variable Term Powers": [
+        1
+      ], 
+      "Input File": "alamo.alm", 
+      "Two Variable Term Powers": [], 
+      "Ratio Term Powers": [], 
+      "Maximum Run Time": 2000, 
+      "Include Sin": false, 
+      "Include Cos": false, 
+      "Failure Value": -111111.0, 
+      "Include Log": false, 
+      "Include Tan": false, 
+      "Three Variable Term Powers": [], 
+      "Exec Path": "alamo.exe", 
+      "Keep Temporary Files": false
+    }, 
+    "output": []
+  }, 
+  "turbLogToFile": true, 
+  "turbineLogFile": "turbine.log", 
+  "foqusLogToFile": true, 
+  "turbLogLevel": 30, 
+  "uqSimList": [], 
+  "date": "Tue, 24 Jun 2014 10:44:16", 
+  "Type": "FOQUS_Session", 
+  "ID": "Mass_Bal_Test_02_140624094356", 
+  "turbLogToConsole": true
+}

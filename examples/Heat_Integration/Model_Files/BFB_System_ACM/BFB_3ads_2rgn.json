@@ -1,0 +1,799 @@
+{
+  "title": "Hybrid carbon capture process (3-stage adsorbers and 2-stage regenerators) with heat integration",
+  "description": "Entire Carbon Capture System including BFB adsorber, MB regenerator and auxiliary equipments.",
+  "aspenfile": "BFB_3ads_2rgn.acmf",
+  "author": "Yang Chen",
+  "date": "September 2013",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "settings": {
+    "homotopy": {
+      "type": "int",
+      "default": 1,
+      "description": ""
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    }
+  },
+  "inputs": {
+    "rgnSF": {
+      "path": [
+        "rgnSF"
+      ],
+      "type": "double",
+      "default": 0.3,
+      "description": "",
+      "units": "",
+      "min": 0.1,
+      "max": 0.3
+    },
+    "adsDt": {
+      "path": [
+        "adsDt"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "",
+      "units": "m",
+      "min": 9.0,
+      "max": 15.0
+    },
+    "adslhx": {
+      "path": [
+        "adslhx"
+      ],
+      "type": "double",
+      "default": 0.5,
+      "description": "",
+      "units": "m",
+      "min": 0.25,
+      "max": 0.55
+    },
+    "adsdx": {
+      "path": [
+        "adsdx"
+      ],
+      "type": "double",
+      "default": 0.025,
+      "description": "",
+      "units": "m",
+      "min": 0.0175,
+      "max": 0.03
+    },
+    "adsN": {
+      "path": [
+        "adsN"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "",
+      "units": "",
+      "min": 4.0,
+      "max": 15.0
+    },
+    "rgnDt": {
+      "path": [
+        "rgnDt"
+      ],
+      "type": "double",
+      "default": 12.0,
+      "description": "",
+      "units": "m",
+      "min": 9.0,
+      "max": 12.0
+    },
+    "rgnlhx": {
+      "path": [
+        "rgnlhx"
+      ],
+      "type": "double",
+      "default": 0.1,
+      "description": "",
+      "units": "m",
+      "min": 0.05,
+      "max": 0.1
+    },
+    "rgndx": {
+      "path": [
+        "rgndx"
+      ],
+      "type": "double",
+      "default": 0.02,
+      "description": "",
+      "units": "m",
+      "min": 0.014,
+      "max": 0.026
+    },
+    "rgnN": {
+      "path": [
+        "rgnN"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "",
+      "units": "",
+      "min": 4.0,
+      "max": 15.0
+    },
+    "BFBadsT.Lb": {
+      "path": [
+        "BFBadsT.Lb"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": "",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsM.Lb": {
+      "path": [
+        "BFBadsM.Lb"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": "",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsB.Lb": {
+      "path": [
+        "BFBadsB.Lb"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": "",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnT.Lb": {
+      "path": [
+        "BFBrgnT.Lb"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": "",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnB.Lb": {
+      "path": [
+        "BFBrgnB.Lb"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": "",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "steam.F": {
+      "path": [
+        "SINJ.steam.F"
+      ],
+      "type": "double",
+      "default": 700.0,
+      "description": "",
+      "units": "kmol/hr",
+      "min": 500.0,
+      "max": 1000.0
+    },
+    "SolidIn.Fm": {
+      "path": [
+        "BFBadsT.SolidIn.Fm"
+      ],
+      "type": "double",
+      "default": 600000.0,
+      "description": "",
+      "units": "kg/hr",
+      "min": 400000.0,
+      "max": 900000.0
+    },
+    "GHXfg.GasOut.T": {
+      "path": [
+        "GHXfg.GasOut.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 50.0
+    },
+    "Flue_Gas_F": {
+      "path": [
+        "FGIn"
+      ],
+      "type": "double",
+      "default": 100377.0,
+      "description": "Input stream",
+      "units": "kmol/hr"
+    },
+    "Flue_Gas_T": {
+      "path": [
+        "GHXfg.GasIn.T"
+      ],
+      "type": "double",
+      "default": 54.0,
+      "description": "Input stream",
+      "units": "C"
+    },
+    "Flue_Gas_P": {
+      "path": [
+        "GHXfg.GasIn.P"
+      ],
+      "type": "double",
+      "default": 1.01325,
+      "description": "Input stream",
+      "units": "bar"
+    },
+    "Flue_Gas_z_CO2": {
+      "path": [
+        "GHXfg.GasIn.z(\"CO2\")"
+      ],
+      "type": "double",
+      "default": 0.118,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "Flue_Gas_z_H2O": {
+      "path": [
+        "GHXfg.GasIn.z(\"H2O\")"
+      ],
+      "type": "double",
+      "default": 0.142,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "Flue_Gas_z_N2": {
+      "path": [
+        "GHXfg.GasIn.z(\"N2\")"
+      ],
+      "type": "double",
+      "default": 0.74,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "GHXcmp.GasOut.T": {
+      "path": [
+        "GHXcmp.GasOut.T"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    }
+  },
+  "outputs": {
+    "BFBadsT.Nx": {
+      "path": [
+        "BFBadsT.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "BFBadsM.Nx": {
+      "path": [
+        "BFBadsM.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "BFBadsB.Nx": {
+      "path": [
+        "BFBadsB.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "BFBrgnT.Nx": {
+      "path": [
+        "BFBrgnT.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "BFBrgnB.Nx": {
+      "path": [
+        "BFBrgnB.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "CMPads.J": {
+      "path": [
+        "CMPads.J"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kW"
+    },
+    "CMPrgn.J": {
+      "path": [
+        "CMPrgn.J"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kW"
+    },
+    "GHXfg.GasIn.P": {
+      "path": [
+        "GHXfg.GasIn.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "bar"
+    },
+    "GHXcmp.GasIn.P": {
+      "path": [
+        "GHXcmp.GasIn.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "bar"
+    },
+    "CMPads.GasOut.P": {
+      "path": [
+        "CMPads.GasOut.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "bar"
+    },
+    "CMPrgn.GasOut.P": {
+      "path": [
+        "CMPrgn.GasOut.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "bar"
+    },
+    "GasOut.T": {
+      "path": [
+        "BFBadsT.GasOut.T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "C"
+    },
+    "GasOut.F": {
+      "path": [
+        "BFBadsT.GasOut.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "rhos": {
+      "path": [
+        "BFBadsT.rhos"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kg/m3"
+    },
+    "GHXfg.a_exch": {
+      "path": [
+        "GHXfg.a_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "m2"
+    },
+    "GHXcmp.a_exch": {
+      "path": [
+        "GHXcmp.a_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "m2"
+    },
+    "GHXfg.HXIn.F": {
+      "path": [
+        "GHXfg.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "GHXcmp.HXIn.F": {
+      "path": [
+        "GHXcmp.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "CW_SHXlean.HXIn.F": {
+      "path": [
+        "CW_SHXlean.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "BFBadsT.HXIn.F": {
+      "path": [
+        "BFBadsT.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "BFBrgnT.HXIn.F": {
+      "path": [
+        "BFBrgnT.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "BFBrgnB.HXIn.F": {
+      "path": [
+        "BFBrgnB.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": "kmol/hr"
+    },
+    "removalH2O": {
+      "path": [
+        "removalH2O"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "removalCO2": {
+      "path": [
+        "removalCO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "",
+      "units": ""
+    },
+    "BFB_Comp_F": {
+      "path": [
+        "To_Comp_F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/hr"
+    },
+    "BFB_Comp_T": {
+      "path": [
+        "To_Comp_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "C"
+    },
+    "BFB_Comp_P": {
+      "path": [
+        "To_Comp_P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "bar"
+    },
+    "BFB_Comp_z_CO2": {
+      "path": [
+        "To_Comp_z_CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "BFB_Comp_z_H2O": {
+      "path": [
+        "To_Comp_z_H2O"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "BFB_Comp_z_N2": {
+      "path": [
+        "To_Comp_z_N2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "Electricity.Consumption.Cap": {
+      "path": [
+        "Ele_tot"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Total consumption",
+      "units": "MW"
+    },
+    "MP_Steam.Consumption.Cap": {
+      "path": [
+        "Q_tot"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Total consumption",
+      "units": "GJ/hr"
+    },
+    "MP_Steam.Injection.Cap": {
+      "path": [
+        "Inj_MP"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Total consumption",
+      "units": "kmol/hr"
+    },
+    "GHXfg_GasIn_T": {
+      "path": [
+        "GHXfg_GasIn_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "GHXfg_GasOut_T": {
+      "path": [
+        "GHXfg_GasOut_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "GHXfg_Q": {
+      "path": [
+        "GHXfg_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "GHXcmp_GasIn_T": {
+      "path": [
+        "GHXcmp_GasIn_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "GHXcmp_GasOut_T": {
+      "path": [
+        "GHXcmp_GasOut_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "GHXcmp_Q": {
+      "path": [
+        "GHXcmp_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "LR_SHXrich_SolidIn_T": {
+      "path": [
+        "LR_SHXrich_SolidIn_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "LR_SHXrich_SolidOut_T": {
+      "path": [
+        "LR_SHXrich_SolidOut_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "LR_SHXrich_Q": {
+      "path": [
+        "LR_SHXrich_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "LR_SHXlean_SolidIn_T": {
+      "path": [
+        "LR_SHXlean_SolidIn_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "LR_SHXlean_SolidOut_T": {
+      "path": [
+        "LR_SHXlean_SolidOut_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "LR_SHXlean_Q": {
+      "path": [
+        "LR_SHXlean_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "CW_SHXlean_SolidIn_T": {
+      "path": [
+        "CW_SHXlean_SolidIn_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "CW_SHXlean_SolidOut_T": {
+      "path": [
+        "CW_SHXlean_SolidOut_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "CW_SHXlean_Q": {
+      "path": [
+        "CW_SHXlean_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "BFBadsB_Tse": {
+      "path": [
+        "BFBadsB_Tse"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "BFBadsB_Q": {
+      "path": [
+        "BFBadsB_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "BFBadsM_Tse": {
+      "path": [
+        "BFBadsM_Tse"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "BFBadsM_Q": {
+      "path": [
+        "BFBadsM_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "BFBadsT_Tse": {
+      "path": [
+        "BFBadsT_Tse"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "BFBadsT_Q": {
+      "path": [
+        "BFBadsT_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "BFBrgnB_Tse": {
+      "path": [
+        "BFBrgnB_Tse"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "BFBrgnB_Q": {
+      "path": [
+        "BFBrgnB_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "BFBrgnT_Tse": {
+      "path": [
+        "BFBrgnT_Tse"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "BFBrgnT_Q": {
+      "path": [
+        "BFBrgnT_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    }
+  }
+}

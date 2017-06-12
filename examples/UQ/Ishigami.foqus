@@ -1,0 +1,138 @@
+{
+  "flowsheet": {
+    "opt": {
+      "obj": [], 
+      "g": [], 
+      "v": []
+    }, 
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "turbineConfig": {
+      "Default": {
+        "address": "localhost:8080"
+      }
+    }, 
+    "singleCount": 1, 
+    "onlySingleNode": null, 
+    "tearTolType": "abs", 
+    "edges": [], 
+    "tearTol": 0.001, 
+    "tearSolver": "Wegstein", 
+    "nodes": {
+      "Ishigami": {
+        "inVars": {
+          "x1": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -3.1416, 
+            "default": 0.0, 
+            "max": 3.1416, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "x2": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -3.1416, 
+            "default": 0.0, 
+            "max": 3.1416, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "x3": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -3.1416, 
+            "default": 0.0, 
+            "max": 3.1416, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "turbMaxWait": 72000.0, 
+        "pythonCode": "f[\"y\"] = math.sin(x[\"x1\"]) + 7.0*math.sin(x[\"x2\"])**2 + 0.1*(x[\"x3\"]**4)*math.sin(x[\"x1\"])", 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "outVars": {
+          "y": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600.0, 
+        "turbInitSim": false, 
+        "y": -360.0, 
+        "x": -380.0, 
+        "z": 0.0, 
+        "sim": ""
+      }
+    }, 
+    "staggerStart": 0.0, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "foqusLogToConsole": true, 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><a name=\"name\"></a><span style=\" font-weight:600; text-decoration: underline;\">I</span><span style=\" font-weight:600; text-decoration: underline;\">shigami Function </span></p>\n<p align=\"center\" style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">y = sin(x<span style=\" vertical-align:sub;\">1</span>) + a sin<span style=\" vertical-align:super;\">2</span>(x<span style=\" vertical-align:sub;\">2</span>) + b x<span style=\" vertical-align:sub;\">3</span><span style=\" vertical-align:super;\">4 </span>sin(x<span style=\" vertical-align:sub;\">1</span>)</p>\n<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Description:</span></p>\n<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The Ishigami function of Ishigami &amp; Homma (1990) is used as an example for uncertainty and sensitivity analysis methods, because it exhibits strong nonlinearity and nonmonotonicity. It also has a peculiar dependence on x<span style=\" vertical-align:sub;\">3</span>, as described by Sobol' &amp; Levitan (1999). <br /><br />The values of a and b used by Crestaux et al. (2007) and Marrel et al. (2009) are: a = 7 and b = 0.1. Sobol' &amp; Levitan (1999) use a = 7 and b = 0.05. </p>\n<p style=\" margin-top:14px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600;\">Input Distributions:</span></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">The independent distributions of the input random variables are usually: x<span style=\" vertical-align:sub;\">i</span> ~ Uniform[-\u03c0, \u03c0], for all i = 1, 2, 3. </p></body></html>", 
+  "foqusLogFile": "foqus.log", 
+  "foqusLogLevel": 10, 
+  "turbLogToFile": true, 
+  "turbineLogFile": "turbine.log", 
+  "optOptions": {
+    "current": null, 
+    "options": {
+      "CMA-ES Test": {
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup it. interval": 10, 
+        "Save results": true, 
+        "popsize": 6, 
+        "Max time": 48, 
+        "seed": 1, 
+        "Restart out": "", 
+        "NP": 1, 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "itmax": 0
+      }
+    }
+  }, 
+  "foqusLogToFile": true, 
+  "turbLogLevel": 30, 
+  "uqSimList": [], 
+  "date": "Thu, 24 Apr 2014 14:23:18", 
+  "Type": "FOQUS_Session", 
+  "turbLogToConsole": true
+}

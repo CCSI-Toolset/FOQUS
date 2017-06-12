@@ -1,0 +1,386 @@
+\section{gPROMS Configuration}
+\label{sec.tut.simsinter.gproms}
+
+gPROMS is significantly different from the other simulators SimSinter
+supports, and the workflow is also significantly different.  If you
+plan to use gPROMS simulations with FOQUS, the CCSI team strongly
+encourages you to read the ``SimSinter gPROMS Technical Manual,''
+which is included in the FOQUS distribution.  The default location is
+at C:\textbackslash Program Files (x86)\textbackslash foqus
+\textbackslash foqus \textbackslash doc.  It is also available on the CCSI website.  
+
+Unlike Aspen, changes must be made to the gPROMS simulation process in
+order to work with SimSinter.  Therefore, this section consists of a
+series of tutorials for every step of configuring gPROMS and SimSinter
+to work together.  All the tutorials are required in order to have a
+gPROMS simulation be runnable with SimSinter. They are divided up to
+make later reference easier.  
+
+\subsection{Configuring gPROMS to Work with SimSinter} \label{gPROMSConfigSubSection}
+
+Unlike Aspen, changes have to be made to the gPROMS simulation process in order to work with SimSinter.  In fact, SimSinter does not define the inputs to the simulation, gPROMS does.  On the other hand, gPROMS does not determine the outputs, SimSinter does. This odd and counter-intuitive situation is the result of how gPROMS gO:Run\_XML is designed.
+
+The modification to the gPROMS simulation must be done by a developer with an intimate understanding of the simulation, usually the simulation writer.  In some cases additional variables may need to be added to handle an extra step between taking the input and inserting it into the variable where gPROMS will use the data.
+
+\begin{enumerate}
+
+\item Open the gPROMS simulation file (ends in .gPJ) in ModelBuilder
+  4.0 or newer.  For this example, use the gPROMS install test
+  file ``BufferTank\_FO.gPJ'', found in: 
+
+C:\textbackslash
+  SimSinterFiles\textbackslash gPROMS\_Test\textbackslash
+  BufferTank\_FO.gPJ
+
+  Double-click on the .gPJ file to open  ModelBuilder, as shown in Figure \ref{fig.sinter.gproms.openbuffertank}.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/01_OpenBufferTank}
+		\caption{Opening BufferTank in gPROMS Model Builder}
+		\label{fig.sinter.gproms.openbuffertank}
+	\end{center}
+\end{figure}
+
+\item This simulation was originally a simple BufferTank simulation.  However, it was modified into an example of all the different kinds of variables the user can pass into gPROMS via SimSinter.  Therefore, it has a lot of extra variables that do not really do anything, with very generic names, like ``SingleInt.''  
+The simulation consists of a single model, ``BufferTank'', that contains all the simulation logic, and most of the parameter and variable declarations.
+The SimSinter simulation will change some of these PARAMETERS and VARIABLES to change the output of the simulation.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/02_EditBufferTank}
+		\caption{Viewing BufferTank in gPROMS Model Builder}
+		\label{fig.sinter.gproms.viewbuffertank}
+	\end{center}
+\end{figure}
+
+\item The example file contains two Processes.  SimSinter can only run gPROMS Processes, so any gPROMS simulation must be driven from a Process.  
+``SimulateTank'' is the original BufferTank example with hardcoded values, ``SimulateTank\_Sinter'' contains the example of setting values with Sinter.  The ``SimulateTank\_Sinter'' example will be recreated in this tutorial.   
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/03_EditBufferTank}
+		\caption{Viewing SimulateTank in gPROMS Model Builder}
+		\label{fig.sinter.gproms.viewsimulatetank}
+	\end{center}
+\end{figure}
+
+
+\item First copy the existing hard-coded Process ``SimulateTank''.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/04_EditBufferTank}
+		\caption{Copying SimulateTank}
+		\label{fig.sinter.gproms.copysimulatetank}
+	\end{center}
+\end{figure}
+
+\item Right-click on Processes and select \textbf{\underline{Paste}} to make a new process.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/05_EditBufferTank}
+		\caption{Paste SimulateTank}
+		\label{fig.sinter.gproms.pastesimulatetank}
+	\end{center}
+\end{figure}
+
+\item The new process will be named ``SimulateTank\_1''.  Rename the process by right-clicking on it and selecting \textbf{\underline{Rename}}.  
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/06_EditBufferTank}
+		\caption{Rename SimulateTank}
+		\label{fig.sinter.gproms.renamesimulatetank}
+	\end{center}
+\end{figure}
+
+\item Now open up the new ``SimulateTank\_tutorial'' Process.  It has the same hard-coded values as ``SimulateTank''.  
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/07_EditBufferTank}
+		\caption{Opening SimulateTank\_tutorial}
+		\label{fig.sinter.gproms.opensimulatetank_tutorial}
+	\end{center}
+\end{figure}
+
+
+\item First, the user needs to add a FOREIGN\_OBJECT named ``FO'' in the PARAMETER section.  
+Then the user needs to set that FOREIGN\_OBJECT to ``SimpleEventFOI::dummy'' in the SET section.
+This FOREIGN\_OBJECT is how inputs are received from SimSinter.  
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/08_EditBufferTank}
+		\caption{Adding the FOREIGN\_OBJECT}
+		\label{fig.sinter.gproms.foreignobject}
+	\end{center}
+\end{figure}
+
+\item This particular simulation has a large number of input variables
+  that simply demonstrate how to set different types.  These are named based on their type.  Any variable named similarly to ``SingleInt'' or ``ArraySelector'' can be safely ignored for this tutorial.  For a full list of the methods for setting different types see the later section specifically for covering that.
+  %Should a Section number be added in sentence above to replace, "later section..."?
+Any variable in the simulation can be an input, whether it is defined in the Process or one of the models referenced by the process, or in a model referenced by a model,… etc.
+All inputs take their values from the FOREIGN\_OBJECT defined, followed by the type name, two underscores, the input variable name, an open parenthesis, an optional index variable (for arrays), and closed with a close parenthesis and a semicolon.
+For a scalar: 
+\begin{lstlisting}
+FO.<Type>__<InputName>();
+\end{lstlisting}
+
+SimSinter can only handle arrays inputted in FOR loops such as:
+
+\begin{lstlisting}
+FOR ii := 1 TO <array size> DO
+  <ArrayName>(ii) := FO.<Type>1__<InputName>(ii);
+END
+\end{lstlisting}
+
+For this example the user only really needs to set ``T101.Alpha'' in PARAMETER, ``T101.FlowIn'' in ASSIGN, and ``T101.Height'' in INITIAL.
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/09_EditBufferTank}
+		\caption{Setting up Input Variables}
+		\label{fig.sinter.gproms.setupinputvariables}
+	\end{center}
+\end{figure}
+
+
+\item Now test ``SimulateTank\_tutorial'' by selecting it and clicking the green \textbf{\underline{Simulate}} triangle.  When the simulation runs it will ask for every input variable the user has defined.  
+For the example variables that do not effect the simulation, such as ``SingleInt'', any valid value will work.  
+For the values that do effect the simulation, these values work:
+
+\begin{lstlisting}
+REAL__AlphaFO = .08
+REAL__FlowInFO = 14
+REAL__HeightFO = 7.5
+\end{lstlisting}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/10_EditBufferTank}
+		\caption{Testing SimulateTank\_Tutorial}
+		\label{fig.sinter.gproms.testingtutorial}
+	\end{center}
+\end{figure}
+
+\end{enumerate}
+
+\subsection{Exporting an Encrypted Simulation to Run with SimSinter}
+
+SimSinter can only run encrypted gPROMS simulations.  These files have the .gENCRYPT extension.  If the additions to the simulation for reading input variables ran correctly in the previous section, the user is ready to export that process for use by SimSinter.
+
+\begin{enumerate}
+
+\item Right-click on the Process to export (``SimulateTank\_tutorial'') and select \textbf{\underline{Export}}.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/11_Export}
+		\caption{Select ``Export''}
+		\label{fig.sinter.gproms.selectexport}
+	\end{center}
+\end{figure}
+
+\item In the resulting Export window, select \textbf{\underline{Encrypted input file for simulation by gO:RUN}} and click \textbf{\underline{OK}}.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/12_Export}
+		\caption{Select ``Encrypted Input File''}
+		\label{fig.sinter.gproms.selectencrypted}
+	\end{center}
+\end{figure}
+
+\item On the second page, set the \textbf{\underline{Export directory}} to a directory the user can find.  Preferably one without any other files in it so the user will not be confused by the output.
+If the filename or the \textbf{\underline{Encryption password}} are not changed, SimSinter will be able to guess the password.  If either of those values are changed, the user will have to set the correct password in the SinterConfigGUI password setting.
+A Decryption password is probably unnecessary, as the user has the original file.  SimSinter does not use it.
+When the user has finished setting up these fields, click \textbf{\underline{Export Entity}}.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/13_Export}
+		\caption{Export Entity Page}
+		\label{fig.sinter.gproms.exportentity}
+	\end{center}
+\end{figure}
+
+\item The resulting .gENCRYPT file will be saved to a subdirectory named ``Input'' in the save directory specified in Step 3.  The first part of the name will be identical to the .gPJ filename.  The user should not rename it because the SinterConfig file will guess this name, and currently changing it requires editing the SinterConfig file.  
+
+\end{enumerate}
+
+\subsection{Configuring SimSinter to Work with gPROMS}
+
+Now that the gPROMS process has been prepared, the SimSinter configuration can be done.
+
+\begin{enumerate}
+
+\item The ``SinterConfigGUI'' can be launched from FOQUS, via the
+  \textbf{\underline{Create/Edit}} button found in
+  \textbf{\underline{File}}$\rightarrow$ \textbf{\underline{Add/Update Model to
+      Turbine}}    or ``SinterConfigGUI'' may be  run on its
+  own by selecting \textbf{\underline{CCSI Tools}} $\rightarrow$
+  \textbf{\underline{FOQUS}} $\rightarrow$
+  \textbf{\underline{SinterConfigGUI}} from the Start menu.
+
+\item	The splash window displays, as shown in Figure \ref{fig.sinter.gproms.splash}.  The user may click the splash screen to proceed, or wait 10 seconds for it to close automatically.
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/ap/01_Splash_Screen}
+		\caption{SinterConfigGUI Splash Screen}
+		\label{fig.sinter.gproms.splash}
+	\end{center}
+\end{figure}
+
+\item	The SinterConfigGUI Open Simulation window displays (Figure \ref{fig.sinter.gproms.openpage}). If ``SinterConfigGUI'' was
+  opened from FOQUS, the filename text box already contains the correct file.  To proceed immediately click \textbf{\underline{Open File and Configure Variables}} or click \textbf{\underline{Browse}} to search for the file. 
+
+This tutorial will use the .gPJ file edited in Section \ref{gPROMSConfigSubSection}.  Remember that SinterConfigGUI cannot read the .gENCRYPT file that is actually run by SimSinter.  Instead, the user must open the .gPJ file the ModelBuilder uses.  
+
+Once the file is selected, click \textbf{\underline{Open File and Configure Variables.}}  
+  
+	\begin{figure}[H]
+		\begin{center}
+			\includegraphics[scale=0.55]{Chapt_sinter/figs/ap/02_FileOpenScreen}
+			\caption{SinterConfigGUI Open Simulation Screen}
+			\label{fig.sinter.gproms.openpage}
+		\end{center}
+	\end{figure}
+
+
+\item The SinterConfigGUI Simulation Meta-Data window displays as shown in (Figure \ref{fig.sinter.gproms.savename}). Unlike the other simulations, gPROMS has not started up in any way.  SinterConfigGUI does not get information from gPROMS directly, it must parse the .gPJ file instead.
+
+\item The first and most important piece of meta-data is the \textbf{\underline{SimSinter Save Location}} at the top of the window.  This is where the Sinter configuration file is saved.  The system suggests a file location and name.  The user should confirm this is the intended location of the files to not accidently overwrite other files.
+Enter the remaining fields to provide the meta-data to describe the simulation that was just opened and then click \textbf{\underline{Next}}.
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/17_MetaDataPage}
+		\caption{SinterConfigGUI Simulation Meta-Data Save Text Box}
+		\label{fig.sinter.gproms.savename}
+	\end{center}
+\end{figure}
+
+\item 	The SinterConfigGUI Variable Configuration Page window displays as shown in 
+Figure \ref{fig.sinter.gproms.settings}.  gPROMS has two settings, \textbf{\underline{ProcessName}} and \textbf{\underline{password}}.  SimSinter has guessed at both the \textbf{\underline{ProcessName}} and the \textbf{\underline{password}}.  For this example the \textbf{\underline{password}} is correct, but the \textbf{\underline{ProcessName}} is incorrect.  SimulateTank is the process that isn't configured to work with SimSinter.
+On the left side we can see the \textbf{\underline{Variable Tree}}.  The root is connected to the three processes defined in this .gPJ file.
+First, change the \textbf{\underline{ProcessName}} to ``SimulateTank\_tutorial''.
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/18_Settings}
+		\caption{SinterConfigGUI gPROMS Settings Configuration}
+		\label{fig.sinter.gproms.settings}
+	\end{center}
+\end{figure}
+
+
+\item After changing the \textbf{\underline{ProcessName}}, click
+  Enter (or clicks away). The \textbf{\underline{Selected Input
+      Variables}} will automatically display all of the available input variables.  This is because the input variables have been configured in gPROMS, and SimSinter has parsed them out of the .gPJ file, as long as you have the \textbf{\underline{ProcessName}} set correctly. This also means that the user cannot add new input variables in SinterConfigGUI, only in gPROMS.
+SimSinter also does its best to identify the \textbf{\underline{Default}} values, \textbf{\underline{Min}}, and \textbf{\underline{Max}} of the variables.
+The default can only be calculated from the file if it was defined purely in terms of actual numbers.  SimSinter cannot evaluate other variables or functions.  Therefore,
+\begin{lstlisting}
+DEFAULT 2 * 3.1415 * 12
+\end{lstlisting} 
+%Odd spacing here. Can "will work. However" be moved up to the line above?
+will work.  However, 
+\begin{lstlisting}
+DEFAULT 2 * PI * radius
+\end{lstlisting} 
+ %Odd spacing here. Can "will not work" be moved up to the line above?
+ will not work, because SimSinter does not know the value of either PI
+ or radius, and SimSinter will just set the default to 0.
+
+\textbf{\underline{Min}} and \textbf{\underline{Max}} values are taken from the variable type, if there is one.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/19_InputVariables}
+		\caption{SinterConfigGUI Automatically Displays Input Variables}
+		\label{fig.sinter.gproms.inputs}
+	\end{center}
+\end{figure}
+
+\item Now the output values can be entered. Expand the ``SimulateTank\_tutorial'' Process on the Variable Tree, expand the ``T101'' model, and then double-click on ``FlowOut'' to make it the Preview Variable.
+Notice that the \textbf{\underline{Make Input}} button is disabled.  As stated above, the user cannot make new Input Variables in SinterConfigGUI.  Only \textbf{\underline{Make Output}} is allowed.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/20_OutputVariables}
+		\caption{Preview of the FlowOut Variable}
+		\label{fig.sinter.gproms.outputs1}
+	\end{center}
+\end{figure}
+
+\item If \textbf{\underline{Make Output}} is clicked, ``FlowOut'' will be made an Output Variable as shown in Figure \ref{fig.sinter.gproms.outputs2}.  
+The Description can be updated, but SimSinter made a good guess in this example; therefore, there is no need to change the description.
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/21_OutputVariables}
+		\caption{FlowOut as an Input Variable}
+		\label{fig.sinter.gproms.outputs2}
+	\end{center}
+\end{figure}
+
+\item By the same method, make Output Variables ``HoldUp'' and ``Height.''
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/22_OutputVariables}
+		\caption{HoldUp and Height Output Variables}
+		\label{fig.sinter.gproms.outputs3}
+	\end{center}
+\end{figure}
+
+\item	The variables names should be made shorter. Simply click on the \textbf{\underline{Name}} column and change the name to your preferred name.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/23_OutputVariables}
+		\caption{Editing Variable Names}
+		\label{fig.sinter.gproms.outputs4}
+	\end{center}
+\end{figure}
+
+\item	For future testing, make sure the defaults are good values.  The only three input variables that matter have the following defaults:
+
+\begin{lstlisting}
+AlphaFO  = 0.8
+FlowInFO = 14
+HeightFO = 7.5
+\end{lstlisting}
+
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/24_Defaults}
+		\caption{Editing Defaults}
+		\label{fig.sinter.gproms.defaults}
+	\end{center}
+\end{figure}
+
+\item	When finished making output variables, click \textbf{\underline{Next}} at the bottom of the variables page.  
+If there were any input vectors, the Vector Default Initialization page will display.  Here the default values of the vectors may be edited.
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[scale=0.55]{Chapt_sinter/figs/gPROMS/25_Vectorss}
+		\caption{Editing Vectors}
+		\label{fig.sinter.gproms.vectors}
+	\end{center}
+\end{figure}
+
+\item Finally, click \textbf{\underline{Finish}} and save your
+  configuration file.  Your gPROMS simulation should now be runnable
+  from FOQUS.
+
+\end{enumerate}
+

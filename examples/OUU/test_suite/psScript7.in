@@ -1,0 +1,30 @@
+# This uses RS for Z4 and uploads another 100 sample points for RS
+run ouu_optdriver.in
+y
+4
+4
+0
+1
+1
+1
+1
+2
+2
+2
+2
+4
+4
+4
+4
+1
+1
+x4sampleLarge.txt
+y
+100
+1
+x4sample.txt
+y
+n
+n
+q
+

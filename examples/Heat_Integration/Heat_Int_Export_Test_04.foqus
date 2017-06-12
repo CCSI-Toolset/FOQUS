@@ -1,0 +1,843 @@
+{
+  "flowsheet": {
+    "opt": {
+      "obj": [], 
+      "g": [], 
+      "v": []
+    }, 
+    "simList": {}, 
+    "turbSess": "", 
+    "turbConf": "", 
+    "edges": [
+      {
+        "end": "Heat Integrate", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "HI_Test", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "Steam Cycle", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Heat Integrate", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FH.Heat.Addition", 
+            "fromName": "FH.Heat.Addition", 
+            "active": true
+          }, 
+          {
+            "toName": "HP_Steam.Consumption", 
+            "fromName": "HP_Steam.Consumption", 
+            "active": true
+          }, 
+          {
+            "toName": "MP_Steam.Consumption", 
+            "fromName": "MP_Steam.Consumption", 
+            "active": true
+          }, 
+          {
+            "toName": "Net.Power", 
+            "fromName": "Net.Power", 
+            "active": true
+          }
+        ]
+      }
+    ], 
+    "np": 1, 
+    "nodes": {
+      "Steam Cycle": {
+        "inVars": {
+          "Net.Power": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Net power output without CCS"
+          }, 
+          "Net.Efficiency": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 42.06, 
+            "max": 100.0, 
+            "tags": [], 
+            "value": 42.06, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "%", 
+            "desc": "Net efficiency without CCS"
+          }, 
+          "HP_Steam.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "High-pressure steam consumption for heating"
+          }, 
+          "MP_Steam.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "Medium-pressure steam consumption for heating"
+          }, 
+          "HP_Steam.Injection": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 50000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "High-pressure steam injection"
+          }, 
+          "MP_Steam.Injection": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 50000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "Medium-pressure steam injection"
+          }, 
+          "FH.Heat.Addition": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": [
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0
+            ], 
+            "default": [
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0
+            ], 
+            "max": [
+              10000.0, 
+              10000.0, 
+              10000.0, 
+              10000.0, 
+              10000.0
+            ], 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "Heat addition into feed water heaters"
+          }, 
+          "Electricity.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Electricity consumption"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "Net.Power.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": null, 
+            "desc": "Net power output with CCS"
+          }, 
+          "Net.Efficiency.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": null, 
+            "desc": "Net efficiency with CCS"
+          }, 
+          "Delta.Power.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": null, 
+            "desc": "Change of net power output due to CCS"
+          }, 
+          "Delta.Efficiency.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": null, 
+            "desc": "Change of net efficiency due to CCS"
+          }, 
+          "Delta.Power.HI": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": null, 
+            "desc": "Change of net power output due to heat integration"
+          }, 
+          "Delta.Efficiency.HI": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": null, 
+            "desc": "Change of net efficiency due to heat integration"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -100.0, 
+        "z": 0.0, 
+        "sim": "Steam Cycle"
+      }, 
+      "Heat Integrate": {
+        "inVars": {
+          "Net.Power": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Net power output without CCS"
+          }, 
+          "Max.Time": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 60.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": 60.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "second", 
+            "desc": "Maximum allowable time for heat integration"
+          }, 
+          "Hrat": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 10.0, 
+            "max": 500.0, 
+            "tags": [], 
+            "value": 10.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "K", 
+            "desc": "Minimum approach temperature"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "Cooling_Water.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": null, 
+            "desc": "Cooling water (20 C) consumption"
+          }, 
+          "FH.Heat.Addition": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": null, 
+            "desc": "Heat addition to feed water heaters"
+          }, 
+          "Min.No.HX": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": null, 
+            "desc": "Minimum number of heat exchangers"
+          }, 
+          "Utility.Cost": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "$/hr", 
+            "value": null, 
+            "desc": "Total utility cost"
+          }, 
+          "MP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": null, 
+            "desc": "Medium-pressure steam (164 C) consumption"
+          }, 
+          "HP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": null, 
+            "desc": "High-pressure steam (230 C) consumption"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -300.0, 
+        "z": 0.0, 
+        "sim": "Heat Integration"
+      }, 
+      "HI_Test": {
+        "inVars": {
+          "H1.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 60, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block H1", 
+              "T", 
+              "heater"
+            ], 
+            "value": 60, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of heater 1"
+          }, 
+          "X1C.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 125, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block X1", 
+              "T", 
+              "HX_Cold"
+            ], 
+            "value": 125, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of cold side of heat exchanger 1"
+          }, 
+          "C2.Qout": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 195, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_Out", 
+              "Block C2", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 195, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat out of C2"
+          }, 
+          "H2.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 170, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block H2", 
+              "T", 
+              "heater"
+            ], 
+            "value": 170, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of heater 2"
+          }, 
+          "PC1.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 100, 
+            "max": 500, 
+            "tags": [
+              "Blk_Var", 
+              "Block PC1", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "value": 100, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature of point sink 1"
+          }, 
+          "PC1.Q": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": -50, 
+            "max": 1000, 
+            "tags": [
+              "Blk_Var", 
+              "Block PC1", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "value": -50, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat duty of point sink 1"
+          }, 
+          "X1H.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 75, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block X1", 
+              "T", 
+              "HX_Hot"
+            ], 
+            "value": 75, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of hot side of heat exchanger 1"
+          }, 
+          "C2.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 125, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block C2", 
+              "T", 
+              "heater"
+            ], 
+            "value": 125, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of cooler 2"
+          }, 
+          "C2.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 50, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block C2", 
+              "T", 
+              "heater"
+            ], 
+            "value": 50, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of cooler 2"
+          }, 
+          "X1H.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 150, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block X1", 
+              "T", 
+              "HX_Hot"
+            ], 
+            "value": 150, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of hot side of heat exchanger 1"
+          }, 
+          "H2.Qout": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 0, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_Out", 
+              "Block H2", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat out of H2"
+          }, 
+          "H1.Qin": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 280, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_In", 
+              "Block H1", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 280, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat into H1"
+          }, 
+          "H2.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 60, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block H2", 
+              "T", 
+              "heater"
+            ], 
+            "value": 60, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of heater 2"
+          }, 
+          "C1.Qin": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 0, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_In", 
+              "Block C1", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat into C1"
+          }, 
+          "C1.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 80, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block C1", 
+              "T", 
+              "heater"
+            ], 
+            "value": 80, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of cooler 1"
+          }, 
+          "C2.Qin": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 0, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_In", 
+              "Block C2", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat into C2"
+          }, 
+          "X1.Q": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 100, 
+            "max": 1000, 
+            "tags": [
+              "Blk_Var", 
+              "Block X1", 
+              "Q", 
+              "HX_Hot", 
+              "HX_Cold"
+            ], 
+            "value": 100, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat duty of heat exchanger 1"
+          }, 
+          "C1.Qout": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 360, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_Out", 
+              "Block C1", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 360, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat out of C1"
+          }, 
+          "H1.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 200, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block H1", 
+              "T", 
+              "heater"
+            ], 
+            "value": 200, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of heater 1"
+          }, 
+          "C1.out.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 200, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_Out", 
+              "Block C1", 
+              "T", 
+              "heater"
+            ], 
+            "value": 200, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at outlet of cooler 1"
+          }, 
+          "X1C.in.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 60, 
+            "max": 500, 
+            "tags": [
+              "Port_Material_In", 
+              "Block X1", 
+              "T", 
+              "HX_Cold"
+            ], 
+            "value": 60, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature at inlet of cold side of heat exchanger 1"
+          }, 
+          "H2.Qin": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 440, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_In", 
+              "Block H2", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 440, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat into H2"
+          }, 
+          "PH1.Q": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 80, 
+            "max": 1000, 
+            "tags": [
+              "Blk_Var", 
+              "Block PH1", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "value": 80, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat duty of point source 1"
+          }, 
+          "H1.Qout": {
+            "optVar": false, 
+            "set": "user", 
+            "min": -1000, 
+            "default": 0, 
+            "max": 1000, 
+            "tags": [
+              "Port_Heat_Out", 
+              "Block H1", 
+              "Q", 
+              "heater"
+            ], 
+            "value": 0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kW", 
+            "desc": "Heat out of H1"
+          }, 
+          "PH1.T": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 20, 
+            "default": 80, 
+            "max": 500, 
+            "tags": [
+              "Blk_Var", 
+              "Block PH1", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "value": 80, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Temperature of point source 1"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {}, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -500.0, 
+        "z": 0.0, 
+        "sim": ""
+      }
+    }, 
+    "sampleCSV": null
+  }, 
+  "optOptions": {
+    "current": null, 
+    "options": {
+      "CMA-ES": {
+        "Flush Modulus": 1, 
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Max Time": 48, 
+        "Output File": "cma-out.txt", 
+        "Pickle Modulus": 0, 
+        "popsize": 6, 
+        "Pickle In": "", 
+        "Pickle Out": "", 
+        "seed": 0, 
+        "NP": 1, 
+        "itmax": 0
+      }, 
+      "SNOBFIT-NIST": {
+        "Output File": "snobfit-out.txt", 
+        "upper": [
+          10, 
+          10
+        ], 
+        "lower": [
+          0, 
+          0
+        ], 
+        "Flush Modulus": 1, 
+        "itmax": 0
+      }
+    }
+  }, 
+  "FileType": "Session", 
+  "date": "Wed, 18 Sep 2013 10:09:13", 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">None</p></body></html>"
+}

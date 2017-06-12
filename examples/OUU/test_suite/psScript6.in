@@ -1,0 +1,30 @@
+# This uses RS for Z4 and selects 50 sample points for RS
+run ouu_optdriver.in
+y
+4
+4
+1
+1
+1
+1
+1
+2
+2
+2
+2
+3
+4
+4
+4
+1
+x3sample4.txt
+1
+x4sample4.txt
+y
+50
+2
+y
+n
+n
+q
+

@@ -1,0 +1,776 @@
+{
+  "flowsheet": {
+    "np": 1, 
+    "opt": {
+      "obj": [], 
+      "g": [], 
+      "v": []
+    }, 
+    "nodes": {
+      "BFB": {
+        "inVars": {
+          "GHXfg.GasIn.F": {
+            "set": "sinter", 
+            "min": 0, 
+            "default": 1.85883, 
+            "max": 0, 
+            "tags": [], 
+            "value": 1.85883, 
+            "scaling": "None", 
+            "unit": "kmol/s", 
+            "desc": ""
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": 0, 
+        "outVars": {
+          "GHXstack.Q": {
+            "tags": [
+              "Block GHXstack", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -5.373250191460107, 
+            "desc": ""
+          }, 
+          "GHXcmp.GasOut.T": {
+            "tags": [
+              "Block GHXcmp", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 50.0, 
+            "desc": ""
+          }, 
+          "BFBrgnB.Q": {
+            "tags": [
+              "Block BFBrgnB", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "kW", 
+            "value": -12.7721, 
+            "desc": ""
+          }, 
+          "LR_SHXlean.SolidIn.T": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 160.4494157501486, 
+            "desc": ""
+          }, 
+          "GHXfg.GasIn.T": {
+            "tags": [
+              "Block GHXfg", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 54.0, 
+            "desc": ""
+          }, 
+          "CW_SHXlean.SolidOut.T": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 65.0, 
+            "desc": ""
+          }, 
+          "BFBrgnT.Tse": {
+            "tags": [
+              "Block BFBrgnT", 
+              "Blk_Var", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 145.3061288019067, 
+            "desc": ""
+          }, 
+          "CW_SHXlean.SolidIn.T": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 93.3528, 
+            "desc": ""
+          }, 
+          "GHXfg.GasOut.T": {
+            "tags": [
+              "Block GHXfg", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 40.0, 
+            "desc": ""
+          }, 
+          "LR_SHXrich.SolidOut.T": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 148.2257370597397, 
+            "desc": ""
+          }, 
+          "GHXstack.GasIn.T": {
+            "tags": [
+              "Block GHXstack", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 82.37081881895068, 
+            "desc": ""
+          }, 
+          "BFBadsB.Q": {
+            "tags": [
+              "Block BFBadsB", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 10.975539058755118, 
+            "desc": ""
+          }, 
+          "LR_SHXrich.Q": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 47.43498329009741, 
+            "desc": ""
+          }, 
+          "LR_SHXrich.SolidIn.T": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 83.35278520727276, 
+            "desc": ""
+          }, 
+          "BFBrgnT.Q": {
+            "tags": [
+              "Block BFBrgnT", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "kW", 
+            "value": -33.6171, 
+            "desc": ""
+          }, 
+          "BFBadsB.Tse": {
+            "tags": [
+              "Block BFBadsB", 
+              "Blk_Var", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 83.35278520727276, 
+            "desc": ""
+          }, 
+          "GHXcmp.GasIn.T": {
+            "tags": [
+              "Block GHXcmp", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 146.50540745663463, 
+            "desc": ""
+          }, 
+          "BFBadsT.Tse": {
+            "tags": [
+              "Block BFBadsT", 
+              "Blk_Var", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 81.69584437748318, 
+            "desc": ""
+          }, 
+          "BFBrgnB.Tse": {
+            "tags": [
+              "Block BFBrgnB", 
+              "Blk_Var", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 156.1079990536693, 
+            "desc": ""
+          }, 
+          "GHXcmp.Q": {
+            "tags": [
+              "Block GHXcmp", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -39.099174860647814, 
+            "desc": ""
+          }, 
+          "GHXfg.Q": {
+            "tags": [
+              "Block GHXfg", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -28.003127179873335, 
+            "desc": ""
+          }, 
+          "CW_SHXlean.Q": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -20.01595332658306, 
+            "desc": ""
+          }, 
+          "LR_SHXlean.SolidOut.T": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 93.3528, 
+            "desc": ""
+          }, 
+          "GHXstack.GasOut.T": {
+            "tags": [
+              "Block GHXstack", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "degC", 
+            "value": 50.0, 
+            "desc": ""
+          }, 
+          "LR_SHXlean.Q": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -47.43498329009741, 
+            "desc": ""
+          }, 
+          "BFBadsT.Q": {
+            "tags": [
+              "Block BFBadsT", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 11.106711440177738, 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "turbSimName": "", 
+        "inValHist": {}, 
+        "turbConfig": "", 
+        "y": -100.0, 
+        "x": -300.0, 
+        "z": 0.0, 
+        "turbInitSim": false, 
+        "sim": "BFB"
+      }, 
+      "Heat": {
+        "inVars": {
+          "MaxTime": {
+            "set": "sinter", 
+            "min": 0, 
+            "default": 60, 
+            "max": 10000, 
+            "tags": [], 
+            "value": 60, 
+            "scaling": "None", 
+            "unit": "second", 
+            "desc": "Maximum allowable time for heat integration"
+          }, 
+          "Hrat": {
+            "set": "sinter", 
+            "min": 0, 
+            "default": 10, 
+            "max": 500, 
+            "tags": [], 
+            "value": 10, 
+            "scaling": "None", 
+            "unit": "K", 
+            "desc": "Minimum approach temperature"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": 0, 
+        "outVars": {
+          "Cooling_Water.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "Cooling water (20 C) consumption"
+          }, 
+          "Min.No.HX": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "Minimum number of heat exchangers"
+          }, 
+          "Utility.Cost": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "Total utility cost"
+          }, 
+          "MP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "Medium-pressure steam (164 C) consumption"
+          }, 
+          "HP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "High-pressure steam (230 C) consumption"
+          }, 
+          "LP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "Low-pressure steam (100 C) consumption"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "turbSimName": "", 
+        "inValHist": {}, 
+        "turbConfig": "", 
+        "y": -100.0, 
+        "x": -100.0, 
+        "z": 0.0, 
+        "turbInitSim": false, 
+        "sim": "Heat Integration"
+      }
+    }, 
+    "edges": [
+      {
+        "end": "Heat", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "BFB", 
+        "active": true, 
+        "con": []
+      }
+    ], 
+    "sampleCSV": null
+  }, 
+  "optOptions": {
+    "current": "CMA-ES", 
+    "options": {
+      "CMA-ES": {
+        "Flush Modulus": 1, 
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Max Time": 48, 
+        "Output File": "cma-out.txt", 
+        "Pickle Modulus": 0, 
+        "popsize": 6, 
+        "Pickle In": "", 
+        "Pickle Out": "", 
+        "seed": 1, 
+        "NP": 1, 
+        "itmax": 0
+      }, 
+      "SNOBFIT-NIST": {
+        "Output File": "snobfit-out.txt", 
+        "upper": [
+          10, 
+          10
+        ], 
+        "lower": [
+          0, 
+          0
+        ], 
+        "Flush Modulus": 1, 
+        "itmax": 0
+      }
+    }
+  }, 
+  "simList": {
+    "BFB": {
+      "conf": {
+        "inputs": {
+          "GHXfg.GasIn.F": {
+            "default": 1.85883, 
+            "path": [
+              "GHXfg.GasIn.F"
+            ], 
+            "units": "kmol/s", 
+            "type": "double", 
+            "description": ""
+          }
+        }, 
+        "description": "Carbon Capture System including BFB adsorber, BFB regenerator and heat exchangers.", 
+        "author": "Yang Chen", 
+        "outputs": {
+          "GHXstack.Q": {
+            "default": -5.373250191460107, 
+            "path": [
+              "GHXstack.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXcmp.GasOut.T": {
+            "default": 50.0, 
+            "path": [
+              "GHXcmp.GasOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBrgnB.Q": {
+            "default": -3547.7924347045428, 
+            "path": [
+              "BFBrgnB.Q"
+            ], 
+            "units": "kW", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXlean.SolidIn.T": {
+            "default": 160.4494157501486, 
+            "path": [
+              "LR_SHXlean.SolidIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXfg.GasIn.T": {
+            "default": 54.0, 
+            "path": [
+              "GHXfg.GasIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "CW_SHXlean.SolidOut.T": {
+            "default": 65.0, 
+            "path": [
+              "CW_SHXlean.SolidOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBrgnT.Tse": {
+            "default": 145.3061288019067, 
+            "path": [
+              "BFBrgnT.Tse.Value(99)"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "CW_SHXlean.SolidIn.T": {
+            "default": 93.3528, 
+            "path": [
+              "CW_SHXlean.SolidIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXfg.GasOut.T": {
+            "default": 40.0, 
+            "path": [
+              "GHXfg.GasOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXrich.SolidOut.T": {
+            "default": 148.2257370597397, 
+            "path": [
+              "LR_SHXrich.SolidOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXstack.GasIn.T": {
+            "default": 82.37081881895068, 
+            "path": [
+              "GHXstack.GasIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBadsB.Q": {
+            "default": 10.975539058755118, 
+            "path": [
+              "BFBadsB.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXrich.Q": {
+            "default": 47.43498329009741, 
+            "path": [
+              "LR_SHXrich.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXrich.SolidIn.T": {
+            "default": 83.35278520727276, 
+            "path": [
+              "LR_SHXrich.SolidIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBrgnT.Q": {
+            "default": -9338.086984812162, 
+            "path": [
+              "BFBrgnT.Q"
+            ], 
+            "units": "kW", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBadsB.Tse": {
+            "default": 83.35278520727276, 
+            "path": [
+              "BFBadsB.Tse.Value(99)"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXcmp.GasIn.T": {
+            "default": 146.50540745663463, 
+            "path": [
+              "GHXcmp.GasIn.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBadsT.Tse": {
+            "default": 81.69584437748318, 
+            "path": [
+              "BFBadsT.Tse.Value(99)"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBrgnB.Tse": {
+            "default": 156.1079990536693, 
+            "path": [
+              "BFBrgnB.Tse.Value(99)"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXcmp.Q": {
+            "default": -39.099174860647814, 
+            "path": [
+              "GHXcmp.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXfg.Q": {
+            "default": -28.003127179873335, 
+            "path": [
+              "GHXfg.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "CW_SHXlean.Q": {
+            "default": -20.01595332658306, 
+            "path": [
+              "CW_SHXlean.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXlean.SolidOut.T": {
+            "default": 93.3528, 
+            "path": [
+              "LR_SHXlean.SolidOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "GHXstack.GasOut.T": {
+            "default": 50.0, 
+            "path": [
+              "GHXstack.GasOut.T"
+            ], 
+            "units": "degC", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "LR_SHXlean.Q": {
+            "default": -47.43498329009741, 
+            "path": [
+              "LR_SHXlean.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }, 
+          "BFBadsT.Q": {
+            "default": 11.106711440177738, 
+            "path": [
+              "BFBadsT.Q"
+            ], 
+            "units": "GJ/hr", 
+            "type": "double", 
+            "description": ""
+          }
+        }, 
+        "filetype": "sinterconfig", 
+        "title": "BFB Carbon Capture Process with Heat Integration", 
+        "version": 0.2, 
+        "aspenfile": "BFB.acmf", 
+        "date": "June 2013"
+      }, 
+      "activeVars": [
+        "GHXstack.Q", 
+        "GHXcmp.GasOut.T", 
+        "BFBrgnB.Q", 
+        "LR_SHXlean.SolidIn.T", 
+        "GHXfg.GasIn.T", 
+        "CW_SHXlean.SolidOut.T", 
+        "BFBrgnT.Tse", 
+        "CW_SHXlean.SolidIn.T", 
+        "GHXfg.GasOut.T", 
+        "LR_SHXrich.SolidOut.T", 
+        "GHXstack.GasIn.T", 
+        "GHXfg.GasIn.F", 
+        "BFBadsB.Q", 
+        "LR_SHXrich.Q", 
+        "LR_SHXrich.SolidIn.T", 
+        "BFBrgnT.Q", 
+        "BFBadsB.Tse", 
+        "GHXcmp.GasIn.T", 
+        "BFBadsT.Tse", 
+        "BFBrgnB.Tse", 
+        "GHXcmp.Q", 
+        "GHXfg.Q", 
+        "CW_SHXlean.Q", 
+        "LR_SHXlean.SolidOut.T", 
+        "GHXstack.GasOut.T", 
+        "LR_SHXlean.Q", 
+        "BFBadsT.Q"
+      ]
+    }
+  }, 
+  "description": "None", 
+  "File Type": "Session"
+}

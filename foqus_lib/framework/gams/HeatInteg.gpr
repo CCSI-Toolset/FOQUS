@@ -1,0 +1,84 @@
+[PROJECT]
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_10]
+1=
+
+[RP:TRANSSHIPMENT_MILP_TIGHT_BOUND_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_15_X]
+1=
+
+[RP:TRANSSHIPMENT_MILP_TIGHT_BOUND_15_X]
+1=
+
+[RP:TRANSSHIPMENT_MILP_TIGHT_BOUND]
+1=
+
+[RP:TRANSSHIPMENTLP]
+1=
+
+[RP:TRANSSHIPMENT_MILP_TIGHT_BOUND_10]
+1=
+
+[RP:TRANSSHIPMENT_MILP_TIGHT_BOUND_10_TRY]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY5_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY5_10]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY6_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY6_LAG]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY6_V2]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_TRY6]
+1=
+
+[RP:HEATINTEGRATION]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_CUT_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_CUT_LR_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_CUT_LR_TIGHT1_5]
+1=
+
+[RP:TRANSSHIPMENT_MILP_SUB_MOD_CUT_LR_TIGHT2_5]
+1=
+
+[MRUFILES]
+1=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_Tight2_5.gms
+2=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_Tight1_5.gms
+3=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_5.gms
+4=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_5 (SG).lst
+5=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_5.lst
+6=C:\Research - NETL & CMU\Transshipment Model\Case Study\Transshipment_MILP_Sub_Mod_Cut_5.gms
+7=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_Tight2_5.lst
+8=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_Tight1_5.lst
+9=C:\Research - NETL & CMU\Transshipment Model\Lagrangean Relaxation\Transshipment_MILP_Sub_Mod_Cut_LR_5.lst
+
+[OPENWINDOW_1]
+FILE0=C:\Research - NETL & CMU\OptGUI\branches\with_turbine_0\HeatIntegration.gms
+FILE1=C:\Research - NETL & CMU\OptGUI\branches\with_turbine_0\HeatIntegration.gms
+MAXIM=1
+TOP=100
+LEFT=100
+HEIGHT=415
+WIDTH=829

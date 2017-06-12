@@ -1,0 +1,671 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": -1, 
+    "results": {
+      "_currentFilter": null, 
+      "results": [], 
+      "filters": {}
+    }, 
+    "edges": [
+      {
+        "end": "React", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Mix", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_1", 
+            "fromName": "FA_3", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_1", 
+            "fromName": "FB_3", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Sep", 
+        "tear": true, 
+        "curve": 0.0, 
+        "start": "React", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_1", 
+            "fromName": "FA_2", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_1", 
+            "fromName": "FB_2", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Mix", 
+        "tear": false, 
+        "curve": -50.0, 
+        "start": "Sep", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FA_2", 
+            "fromName": "FA_3", 
+            "active": true
+          }, 
+          {
+            "toName": "FB_2", 
+            "fromName": "FB_3", 
+            "active": true
+          }
+        ]
+      }
+    ], 
+    "input": {
+      "React": {
+        "FB_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "Conv": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 0.5, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.5
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }, 
+      "Mix": {
+        "FB_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FB_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }, 
+      "Sep": {
+        "FB_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FracB": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 0.9, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.9
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FracA": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 0.1, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.1
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": NaN, 
+          "default": 1.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": NaN, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0, 
+    "wegAccMin": -9.0, 
+    "turbineConfig": {}, 
+    "tearTolType": "abs", 
+    "tearTol": 0.0001, 
+    "output": {
+      "React": {
+        "FB_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }, 
+      "Mix": {
+        "FB_3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }, 
+      "Sep": {
+        "FB_3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FB_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "FA_3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }
+    }, 
+    "nodes": {
+      "React": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_2\"] = (1 - x[\"Conv\"])*x[\"FA_1\"]\nf[\"FB_2\"] = x[\"FB_1\"] + x[\"FA_1\"]*x[\"Conv\"]\n", 
+        "turbResetSim": false, 
+        "outValHist": [], 
+        "turbSession": 0, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": [], 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "calcError": -1, 
+        "sim": ""
+      }, 
+      "Mix": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "FA1 = x[\"FA_1\"]\nFA2 = x[\"FA_2\"]\nFB1 = x[\"FB_1\"]\nFB2 = x[\"FB_2\"]\n\nf[\"FA_3\"] = FA1 + FA2\nf[\"FB_3\"] = FB1 + FB2", 
+        "turbResetSim": false, 
+        "outValHist": [], 
+        "turbSession": 0, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": [], 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -500.0, 
+        "z": 0.0, 
+        "calcError": -1, 
+        "sim": ""
+      }, 
+      "Sep": {
+        "turbMaxWait": 72000, 
+        "pythonCode": "f[\"FA_2\"] = x[\"FracA\"]*x[\"FA_1\"]\nf[\"FB_2\"] = x[\"FracB\"]*x[\"FB_1\"]\nf[\"FA_3\"] = x[\"FA_1\"] - f[\"FA_2\"]\nf[\"FB_3\"] = x[\"FB_1\"] - f[\"FB_2\"]\n", 
+        "turbResetSim": false, 
+        "outValHist": {}, 
+        "turbSession": 0, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600, 
+        "turbInitSim": false, 
+        "y": -300.0, 
+        "x": -300.0, 
+        "z": 0.0, 
+        "calcError": -1, 
+        "sim": ""
+      }
+    }
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup interval": 10, 
+        "popsize": 6, 
+        "Save results": true, 
+        "itmax": 0, 
+        "seed": 0, 
+        "Restart out": "", 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "Max time": 48
+      }
+    }, 
+    "solver": "OptCMA", 
+    "obj": [], 
+    "g": [], 
+    "v": []
+  }, 
+  "foqusLogToConsole": true, 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">Mass Balance 01</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">This example contains three types of nodes a, reactor, seperator and mixer.  Is is used to test recycle loops, finding tears and calculation order.  All of the node calculations are done using the Pyhton code feature.</span></p></body></html>", 
+  "foqusLogFile": "foqus.log", 
+  "foqusLogLevel": 10, 
+  "surrogateProblem": {
+    "input": [], 
+    "inputScaleFact": {}, 
+    "dataFilter": null, 
+    "options": {
+      "Include Exp": false, 
+      "Single Variable Term Powers": [
+        1
+      ], 
+      "Input File": "alamo.alm", 
+      "Two Variable Term Powers": [], 
+      "Ratio Term Powers": [], 
+      "Maximum Run Time": 2000, 
+      "Include Sin": false, 
+      "Include Cos": false, 
+      "Failure Value": -111111.0, 
+      "Include Log": false, 
+      "Include Tan": false, 
+      "Three Variable Term Powers": [], 
+      "Exec Path": "alamo.exe", 
+      "Keep Temporary Files": false
+    }, 
+    "output": []
+  }, 
+  "turbLogToFile": true, 
+  "turbineLogFile": "turbine.log", 
+  "foqusLogToFile": true, 
+  "turbLogLevel": 30, 
+  "uqSimList": [], 
+  "date": "Tue, 24 Jun 2014 10:43:59", 
+  "Type": "FOQUS_Session", 
+  "ID": "Mass_Bal_Test_01_140624104341", 
+  "turbLogToConsole": true
+}

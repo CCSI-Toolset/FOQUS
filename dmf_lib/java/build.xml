@@ -1,0 +1,144 @@
+<?xml version="1.0"?>
+<project name="dmf_client"
+	 basedir="."
+	 default="main"
+	 xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <description>Compilation</description>
+
+  <property name="ivy.install.version" value="2.1.0-rc2" />
+  <property name="ivy.home" value="${user.dir}/.ant" />
+  <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+  <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
+  <property name="build.dir" location="build"/>
+  <property name="class.dir" location="bin"/>
+  <property name="lib.dir" location="lib"/>
+  <property name="opencmis.dir" location="opencmis"/>
+  <property name="src.dir" location="src"/>
+
+  <property name="main.class" value="ccsi.dm.entrypoint.EntryPoint"/>
+  <property name="temp_jar.name" value="incomplete_dmf_client.jar" />
+  <property name="jar.name" value="dmf_client.jar" />
+  <property name="lib_jar.name" value="dmf_lib.jar" />
+  <property name="lib_opencmis.name" value="opencmis.jar" />
+
+  <condition property="ivy.home" value="${env.IVY_HOME}">
+    <isset property="env.IVY_HOME" />
+  </condition>
+
+  <path id="master-classpath">
+    <fileset dir="${lib.dir}">
+      <include name="**/**.jar"/>
+    </fileset>
+  </path>
+
+  <target name="main" depends="init, resolve, compile, package-jars, jar" />
+
+  <target name="download-ivy" unless="offline">
+    <mkdir dir="${ivy.jar.dir}"/>
+    <!-- download Ivy from web site so that it can be used even without any special installation -->
+    <get src="http://repo2.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+         dest="${ivy.jar.file}" usetimestamp="true"/>
+  </target>
+
+  <target name="init-ivy" depends="download-ivy">
+    <!-- try to load ivy here from ivy home, in case the user has not already dropped
+         it into ant's lib dir (note that the latter copy will always take precedence).
+         We will not fail as long as local lib dir exists (it may be empty) and
+         ivy is in at least one of ant's lib dir or the local lib dir. -->
+    <path id="ivy.lib.path">
+      <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+    </path>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml"
+             uri="antlib:org.apache.ivy.ant"
+	     classpathref="ivy.lib.path"/>
+  </target>
+
+  <target name="init">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${class.dir}"/>
+  </target>
+
+  <target name="init-lib">
+    <mkdir dir="${lib.dir}"/>
+  </target>
+
+  <target name="compile" depends="init">
+    <javac
+       target="1.8"
+       source="1.8"
+       destdir="${class.dir}"
+       includeantruntime="false">
+      <src path="${src.dir}"/>
+      <classpath refid="master-classpath"/>
+    </javac>
+  </target>
+
+  <target name="resolve" depends="init-ivy">
+    <ivy:retrieve conf="opencmis"
+		  pattern="lib/[conf]/[artifact]-[revision](-[classifier]).[ext]"/>
+    <ivy:retrieve conf="py4j"
+		  pattern="lib/[conf]/[artifact]-[revision](-[classifier]).[ext]"/>
+    <ivy:retrieve conf="slf4j"
+		  pattern="lib/[conf]/[artifact]-[revision](-[classifier]).[ext]"/>
+    <ivy:retrieve conf="json"
+		  pattern="lib/[conf]/[artifact]-[revision](-[classifier]).[ext]"/>
+  </target>
+
+  <target name="resolve-opencmis" depends="init-ivy">
+    <ivy:retrieve conf="opencmis"
+		  pattern="lib/[conf]/[artifact]-[revision](-[classifier]).[ext]"/>
+  </target>
+
+  <target name="package-jars" depends="resolve">
+    <jar jarfile="${lib.dir}/${lib_jar.name}">
+      <zipgroupfileset dir="${lib.dir}">
+	<exclude name="**/*opencmis*" />
+        <include name="**/*.jar" />
+      </zipgroupfileset>
+    </jar>
+  </target>
+
+  <target name="package-opencmis-jars" depends="resolve-opencmis">
+    <unzip dest="${opencmis.dir}">
+      <fileset dir="${lib.dir}">
+	<include name="**/*.jar" />
+      </fileset>
+    </unzip>
+  </target>
+
+  <target name="jar" depends="package-jars, compile">
+    <jar jarfile="${build.dir}/${temp_jar.name}" basedir="bin">
+      <manifest>
+        <attribute name="Built-By" value="${user.name}" />
+        <attribute name="Main-Class" value="${main.class}" />
+      </manifest>
+      <zipfileset src="${lib.dir}/${lib_jar.name}" excludes="META-INF/*.SF" />
+    </jar>
+  </target>
+
+  <target name="opencmis" depends="resolve-opencmis, package-opencmis-jars">
+    <jar destfile="${build.dir}/${temp_jar.name}" update="true">
+      <zipfileset dir="${opencmis.dir}"/>
+    </jar>
+    <move file="${build.dir}/${temp_jar.name}" tofile="${build.dir}/${jar.name}" />
+  </target>
+
+  <target name="clean-opencmis" description="clean intermediate files generated with opencmis">
+    <delete dir="${opencmis.dir}"/>
+    <delete dir="${lib.dir}"/>
+    <delete dir="${ivy.home}"/>
+  </target>
+
+  <target name="clean-intermediate" description="clean intermediate files">
+    <delete dir="${class.dir}"/>
+    <delete dir="${lib.dir}"/>
+    <delete dir="${ivy.home}"/>
+  </target>
+
+  <target name="clean" description="clean all" depends="clean-intermediate, clean-opencmis">
+    <delete dir="${build.dir}"/>
+  </target>
+
+</project>

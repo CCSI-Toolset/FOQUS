@@ -1,0 +1,248 @@
+\newcommand{\ccsiproduct}{<Product Name>}
+\newcommand{\ccsishortproduct}{<Short Product Name>}
+\newcommand{\ccsidate}{<Release date>}
+\newcommand{\ccsiversion}{<Release version>}
+\newcommand{\ccsiabstract}{An abstract}
+\newcommand{\ccsimanualtype}{User Manual}
+\newcommand{\ccsinda}{Protected under CCSI MASTER NDA-1107306}
+\newlength{\ccsidatetologospace}
+\setlength{\ccsidatetologospace}{1.8in}
+\newcommand{\ccsirevisiontablecontent}{
+	% version & date & description \\
+	% \hline %draw line between rows
+	<version history> \\ \hline
+	% blank rows
+	& & \\ \hline
+	& & \\ \hline
+}
+
+\documentclass[letterpaper,12pt]{report}
+
+\newcommand{\maketitlepage}{
+	\cfoot{}
+	\rfoot{\includegraphics{Chapt_frontmatter/figs/doe}}
+	\begin{titlepage}
+		\thispagestyle{fancy}
+		\begin{center}
+			\vspace*{0.5in}
+			\includegraphics{Chapt_frontmatter/figs/big_ccsi}\\[0.75in]
+			\Huge \ccsiproduct \\
+			\ccsimanualtype\\[0.2in]
+			\large
+			Version \ccsiversion\\[0.2in]
+			\ccsidate\\[\the\ccsidatetologospace]
+			\includegraphics{Chapt_frontmatter/figs/labs}
+		\end{center}
+	\end{titlepage}
+	\clearpage
+}
+
+\newcommand{\makeheadfoot}{
+	\lhead{\footnotesize\textcolor{gray}{\nouppercase \leftmark}}
+	\rhead{\footnotesize\textcolor{gray}{\ccsishortproduct}}
+	\rfoot{\footnotesize\textcolor{gray}{\thepage}}
+	\cfoot{}
+	\lfoot{\footnotesize \textcolor{gray}{\ccsinda}}	
+}
+
+\newcommand{\makecopywrite}{
+	\chaptermark{Copyright Notice}
+	\normalsize
+	\vspace*{3.5in}
+	This Material was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and copyright is held by the software owners: ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et~al. The software owners and/or the U.S. Government retain ownership of all rights in the CCSI software and the copyright and patents subsisting therein. Any distribution or dissemination is governed under the terms and conditions of the CCSI Test and Evaluation License, CCSI Master Non-Disclosure Agreement, and the CCSI Intellectual Property Management Plan. No rights are granted except as expressly recited in one of the aforementioned agreements. \\
+	\clearpage
+	\chaptermark{}
+}
+
+\newcommand{\makerevlog}{
+	\chaptermark{Version Log}
+	\textcolor{StandardBlue}{\bf{\large Version Log}}\\[0.1in]
+	\setlength{\extrarowheight}{3pt}
+	\begin{tabularx}{0.95\textwidth}{| l | l | X |}
+		\hline
+		\cellcolor{StandardBlue}\textcolor{White}{Version Number} &
+		\cellcolor{StandardBlue}\textcolor{White}{Release Date} &
+		\cellcolor{StandardBlue}\textcolor{White}{Description} \\
+		\hline
+		\ccsirevisiontablecontent
+	\end{tabularx}
+	\clearpage	
+	\chaptermark{}
+}
+
+\newcommand{\makeabstract}{
+	\chaptermark{Abstract}
+	\textcolor{StandardBlue}{\bf{\large Abstract}}\\[0.1in]
+	\ccsiabstract
+	\clearpage
+	\chaptermark{}
+}
+
+\newcommand{\maketoc}{
+	\tableofcontents
+	\chaptermark{Table of Contents}
+	%\listoftables
+	%\clearpage
+	%\listoffigures
+	\vspace{0.5in}
+	\begin{center}
+		To obtain support for the products within this package, please send an email to 
+		\href{mailto:ccsi-support@acceleratecarboncapture.org}{\textcolor{blue}{\underline{ ccsi-support@acceleratecarboncapture.org}}}.
+	\end{center}
+	\clearpage
+}
+
+\newcommand{\makefrontmatter}{
+	% % Add the fromtmatter and setup formatting for body of manual
+	\maketitlepage
+	\makeheadfoot
+	\pagenumbering{roman}
+	\makecopywrite
+	\makeabstract
+	\makerevlog
+	\maketoc
+	%
+	% Start main document
+	% Set paragraph spacing to extra line between paragraph and page numbering to arabic
+	\setlength{\parskip}{12pt}
+	\pagenumbering{arabic}
+}
+
+\newcommand{\makereferences}[1]{
+	% Change Bibliography to References
+	\renewcommand{\bibname}{References}
+	\clearpage
+	\bibliographystyle{ieeetr}
+	\renewcommand*{\refname}{}
+	\bibliography{#1}
+	%\addcontentsline{toc}{chapter}{References}
+}
+\usepackage{ifpdf}
+\usepackage[usenames,dvipsnames]{color} %for setting font color
+\definecolor{StandardBlue}{RGB}{54,95,145}
+\usepackage[table]{xcolor} %to set cell background color in tables
+\usepackage{tabularx} %to make tables that expand to fill a specified width
+\usepackage{listings}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage[numbers]{natbib} %citation formating
+\usepackage{amsmath} %usefull equation stuff
+\usepackage{afterpage} % to apply a command after the current page
+\usepackage{titlesec}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[normalem]{ulem}
+\usepackage{soul}
+\usepackage{url}
+\titlelabel{\thetitle.\quad}
+\titleformat*{\section}{\bfseries\large}
+\titleformat*{\subsection}{\bfseries\large}
+\titlespacing*{\section}{0pt}{0pt}{-8pt}
+\titlespacing*{\subsection}{0pt}{0pt}{-8pt}
+%TOC and LOF formatting
+\ifpdf
+	\usepackage{tocloft} %use this to plase Figure in front of figs in list of figs
+	\renewcommand{\contentsname}{Table of Contents}
+	\setcounter{tocdepth}{1} %toc is 2 deep
+	\setlength{\cftbeforechapskip}{5pt}
+	\setlength{\cftbeforetoctitleskip}{0pt}
+	\setlength{\cftaftertoctitleskip}{0pt}
+	\setlength{\cftbeforeloftitleskip}{0pt}
+	\setlength{\cftafterloftitleskip}{0pt}
+	\renewcommand{\cfttoctitlefont}{\large \bfseries \color{StandardBlue}}
+	\renewcommand{\cftloftitlefont}{\large \bfseries \color{StandardBlue}}
+	\renewcommand{\cftlottitlefont}{\large \bfseries \color{StandardBlue}}
+	\renewcommand{\cftchapfont}{\normalsize \bfseries}
+	\renewcommand{\cftsecfont}{\small }
+	\renewcommand{\cftsubsecfont}{\small}
+	\renewcommand{\cftchappagefont}{\normalsize \bfseries}
+	\renewcommand{\cftsecpagefont}{\small \bfseries}
+	\renewcommand{\cftsubsecpagefont}{\small \bfseries}
+	\renewcommand{\cftfigfont}{\small Figure \space}
+	\renewcommand{\cftfigaftersnum}{:}
+	\renewcommand{\cfttabaftersnum}{:}
+	\renewcommand{\cftchapaftersnum}{.}
+	\renewcommand{\cftsecaftersnum}{.}
+	\renewcommand{\cftsubsecaftersnum}{.}
+	\renewcommand{\cftfigpagefont}{\small}
+	\setlength{\cftfigindent}{0pt}
+	\renewcommand{\cfttabfont}{\small Table \space}
+	\renewcommand{\cfttabpagefont}{\small}
+	%\setlength{\cftbeforetabskip}{5pt}
+\fi
+\usepackage{hyperref} %hyperlinks for cross references
+\hypersetup{ % No red box around hyperlinks
+	pdfborder = {0 0 0}
+}
+\usepackage{times} %use times font to look similar to word docs
+\usepackage{booktabs} %some table features
+% ------ Used by UQ team -------------------
+%%% Macros used by Brenda
+% comment out
+\newcommand{\commentout}[1]{}
+% to do
+\newcommand{\todo}[1]{\textcolor{red}{[\emph{#1}]}}
+% boldface underline
+\setuldepth{0.5pt}
+\renewcommand{\underline}[1]{\ul{#1}}
+\newcommand{\bu}[1]{\textbf{\ul{#1}}}
+% back slash (Windows path delimiter)
+\newcommand{\bs}{\textbackslash}
+\usepackage{mdwlist}   % to suspend/resume lists 
+\usepackage{fancyvrb}  % to enable color within verbatim env
+% ------ END Used by UQ team ---------------
+\usepackage[font={footnotesize,bf}]{caption}
+\usepackage{subfig}    % implicitly loads caption package
+% Set captions style
+%\captionsetup{labelfont=bf, textfont=bf}
+\usepackage{float}
+%\restylefloat{figure}
+%
+% Set margins
+%
+\usepackage[top=1in, bottom=1in, left=1in, right=1in]{geometry}
+%
+% Use fancy header package to setup header and footer
+%
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt} %no line under header
+\renewcommand{\chaptermark}[1]{\markboth{#1}{}}
+% Use header and footers on first page of chapter 
+\makeatletter
+\let\ps@plain\ps@fancy
+\makeatother
+% Redo the chapter headings
+\makeatletter
+\def\@makechapterhead#1{%
+	{\parindent \z@ \raggedright \normalfont
+		\ifnum \c@secnumdepth >\m@ne
+		\large\bfseries \thechapter. \space 
+		\fi
+		\interlinepenalty\@M
+		\large \bfseries \uppercase{#1\par\nobreak}
+		\vskip -8\p@
+	}}
+\def\@makeschapterhead#1{%
+	{\parindent \z@ \raggedleft \normalfont
+		\interlinepenalty\@M
+		\large \bfseries  \uppercase{#1\par\nobreak}
+		\vskip -8\p@
+	}}
+\makeatother
+% Don't use the paragraph spacing between items in itemized or enumerated lsts
+\usepackage{enumitem}
+\setlist{parsep=0pt}
+% no indent
+\setlength{\parindent}{0pt}
+% references section head
+\makeatletter
+\renewcommand\bibsection{%
+	\chapter{\bibname\@mkboth{\bibname}{\bibname}}}
+\makeatother
+
+%number figures and tables without chapter
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+

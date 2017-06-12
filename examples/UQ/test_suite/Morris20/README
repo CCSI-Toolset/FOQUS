@@ -1,0 +1,34 @@
+non-monotonic function of Morris 
+
+Y = beta_0 + sum beta_i X_i + sum beta_ij X_i X_j +
+    sum beta_ijk X_i X_j X_k + sum beta_ijl X_i X_j X_k X_l
+
+nInputs = 20
+
+beta_i    =  20 for i = 1 : 10
+beta_i    =  (-1)^i for i = 11 : 20
+beta_ij   = -15 for i,j = 1:6
+beta_ijk  = -10 for i,j,k = 1:5
+beta_ijkl =   5 for i,j,k,l = 1:4
+
+beta_i    remaining : 0
+beta_ij   remaining : 0
+beta_ijk  remaining : 0
+beta_ijkl remaining : 0
+
+or 
+beta_i  = (-1)^i
+beta_ij = (-1)^(i+j)  (note: based 1)
+
+============================================================
+foqus test
+
+load MorrisSample.psuade, do morris analysis
+
+load LHSample.psuade, do mars SA or delta test
+
+load LHSample.psuade, visualize sample
+     response surface validation (Mars, RBF)
+     response surface visualization
+
+

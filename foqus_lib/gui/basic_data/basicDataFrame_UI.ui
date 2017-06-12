@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>basicDataFrame</class>
+ <widget class="QFrame" name="basicDataFrame">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>995</width>
+    <height>835</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Frame</string>
+  </property>
+  <property name="frameShape">
+   <enum>QFrame::StyledPanel</enum>
+  </property>
+  <property name="frameShadow">
+   <enum>QFrame::Raised</enum>
+  </property>
+  <layout class="QVBoxLayout" name="vboxlayout_0">
+    <item>
+      <widget class="QGroupBox" name="groupBox">
+	<property name="title">
+	  <string>Ingest Basic Data Models</string>
+	</property>
+	<layout class="QGridLayout" name="gridlayout_1">
+	  <item row="0" column="0">
+	    <widget class="QLabel" name="selector_label">
+	      <property name="text">
+		<string> Basic Data Directory</string>
+              </property>
+	    </widget>
+	  </item>
+	  <item row="0" column="1">
+	    <widget class="QLineEdit" name="selected_folder">
+              <property name="readOnly">
+		<bool>true</bool>
+              </property>
+              <property name="font">
+		<font>
+		  <pointsize>12</pointsize>
+		  <bold>false</bold>
+		</font>
+	      </property>
+	    </widget>
+	  </item>
+          <item row="0" column="2">
+	    <widget class="QPushButton" name="folderBrowse_button">
+              <property name="text">
+		<string>Browse...</string>
+              </property>
+	      <property name="fixedWidth">
+		<number>100</number>
+              </property>
+	    </widget>
+	  </item>
+	</layout>
+      </widget>
+    </item>
+    <item>
+      <widget class="QPushButton" name="ingest_button">
+        <property name="text">
+	  <string>Ingest</string>
+        </property>
+	<property name="fixedWidth">
+	  <number>150</number>
+        </property>
+      </widget>
+    </item>
+    <item>
+      <spacer name="verticalSpacer_0">
+        <property name="orientation">
+	  <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+	  <size>
+	    <width>20</width>
+	    <height>40</height>
+	  </size>
+        </property>
+        </spacer>
+    </item>
+  </layout>
+ </widget>
+ <connections/>
+</ui>

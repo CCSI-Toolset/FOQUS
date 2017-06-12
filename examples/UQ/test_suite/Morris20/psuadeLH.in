@@ -1,0 +1,62 @@
+PSUADE
+INPUT
+   dimension = 20
+   variable 1 X1 =  0.0 1.0
+   variable 2 X2 =  0.0 1.0
+   variable 3 X3 =  0.0 1.0
+   variable 4 X4 =  0.0 1.0
+   variable 5 X5 =  0.0 1.0
+   variable 6 X6 =  0.0 1.0
+   variable 7 X7 =  0.0 1.0
+   variable 8 X8 =  0.0 1.0
+   variable 9 X9 =  0.0 1.0
+   variable 10 XA =  0.0 1.0
+   variable 11 XB =  0.0 1.0
+   variable 12 XC =  0.0 1.0
+   variable 13 XD =  0.0 1.0
+   variable 14 XE =  0.0 1.0
+   variable 15 XF =  0.0 1.0
+   variable 16 XG =  0.0 1.0
+   variable 17 XH =  0.0 1.0
+   variable 18 XI =  0.0 1.0
+   variable 19 XJ =  0.0 1.0
+   variable 20 XK =  0.0 1.0
+END
+OUTPUT
+   dimension = 1
+   variable 1 Y1
+END
+METHOD
+#  use_input_pdfs
+   sampling = LH
+   num_samples = 1000
+   num_replications = 1
+   num_refinements = 0
+   random_seed = 47587387
+END
+APPLICATION
+   driver = ./simulator
+END
+ANALYSIS
+#  analyzer method = OneParamStudy
+#  analyzer method = TwoParamStudy
+#  analyzer method = Correlation
+#  analyzer method = Regression
+#  analyzer method = Integration
+#  analyzer method = ANOVA
+#  analyzer method = MOAT
+   analyzer output_id  = 1
+   analyzer rstype  = MARS
+   analyzer threshold  = 0.00001
+#  graphics
+#  sampleGraphics
+#  optimization num_local_minima = 0
+#  optimization user_response_surface
+#  optimization output_level = 0
+#  optimization num_fmin = 0
+#  optimization fmin = not defined
+#  optimization cutoff = not defined
+   printlevel 3
+#  fileWrite matlab
+END
+END

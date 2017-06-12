@@ -1,0 +1,1084 @@
+{'rpp': '1000', 'page': 0, 'subresource': 'b27be727-3788-4de0-8c40-dc230fedba9f', 'verbose': 'false'}
+all results recieved.
+[
+  {
+    "Status": 0, 
+    "Reset": false, 
+    "Errors": [], 
+    "Create": "2015-03-26T20:25:13.3970000", 
+    "Messages": null, 
+    "Submit": "2015-03-26T20:25:21.9570000", 
+    "Simulation": "testFoqus01", 
+    "State": "success", 
+    "Session": "b27be727-3788-4de0-8c40-dc230fedba9f", 
+    "Output": {
+      "input": {
+        "test": {
+          "UQ_nv": [
+            1.0
+          ], 
+          "rgndx": [
+            0.0225
+          ], 
+          "BFBadsT.Lb": [
+            4.2
+          ], 
+          "UQ_A3": [
+            1.0
+          ], 
+          "UQ_A2": [
+            1.0
+          ], 
+          "UQ_A1": [
+            1.0
+          ], 
+          "GHXfg.A_exch": [
+            5749.66
+          ], 
+          "BFBrgnB.Lb": [
+            4.2
+          ], 
+          "UQ_E3": [
+            1.0
+          ], 
+          "UQ_E2": [
+            1.0
+          ], 
+          "UQ_E1": [
+            1.0
+          ], 
+          "UQ_fg_flow": [
+            1.0
+          ], 
+          "rgnDt": [
+            12.0
+          ], 
+          "CW_SHXlean.A_exch": [
+            400.0
+          ], 
+          "BFBadsM.Lb": [
+            4.2
+          ], 
+          "adsN": [
+            15.0
+          ], 
+          "rgnN": [
+            15.0
+          ], 
+          "adsdx": [
+            0.0275
+          ], 
+          "LR_SHXlean.A_exch": [
+            7000.0
+          ], 
+          "BFBrgnT.Lb": [
+            4.2
+          ], 
+          "adsDt": [
+            15.0
+          ], 
+          "rgnlhx": [
+            0.08
+          ], 
+          "adslhx": [
+            0.4
+          ], 
+          "UQ_dS1": [
+            1.0
+          ], 
+          "UQ_dS2": [
+            1.0
+          ], 
+          "UQ_dS3": [
+            1.0
+          ], 
+          "BFBadsB.Lb": [
+            4.2
+          ], 
+          "LR_SHXrich.A_exch": [
+            5000.0
+          ], 
+          "UQ_dH1": [
+            1.0
+          ], 
+          "UQ_dH3": [
+            1.0
+          ], 
+          "UQ_dH2": [
+            1.0
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "nodeError": {
+        "test": 0
+      }, 
+      "nodeSettings": {
+        "test": {
+          "Reset": false, 
+          "Allow Simulation Warnings": true, 
+          "Min Status Check Interval": 4.0, 
+          "RunMode": "Steady Optimization", 
+          "Maximum Run Time (s)": 600.0, 
+          "Initialize Model": false, 
+          "Max Status Check Interval": 5.0, 
+          "printlevel": 0, 
+          "Maximum Wait Time (s)": 72000.0, 
+          "Max consumer reuse": 90, 
+          "homotopy": 0
+        }
+      }, 
+      "output": {
+        "test": {
+          "status": [
+            0.0
+          ], 
+          "removalCO2": [
+            0.8997144607310072
+          ], 
+          "removalH2O": [
+            0.3645501303076928
+          ], 
+          "SolidIn.Fm": [
+            535085.7389989218
+          ], 
+          "CW_SHXlean.HXIn.F": [
+            7046.224885322239
+          ], 
+          "removalCO2_slack": [
+            0.0
+          ], 
+          "rgnSF": [
+            0.08
+          ], 
+          "Cost_coe_obj": [
+            131.38546790832507
+          ], 
+          "Cost_coe": [
+            131.38546790832507
+          ], 
+          "steam.F": [
+            649.1527734346969
+          ], 
+          "GHXfg.HXIn.F": [
+            39827.56659009522
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "graphError": 0, 
+      "solTime": 223.97000002861023
+    }, 
+    "Initialize": false, 
+    "Input": {
+      "test": {
+        "UQ_nv": [
+          1.0
+        ], 
+        "rgndx": [
+          0.0225
+        ], 
+        "BFBadsT.Lb": [
+          4.2
+        ], 
+        "UQ_A3": [
+          1.0
+        ], 
+        "UQ_A2": [
+          1.0
+        ], 
+        "UQ_A1": [
+          1.0
+        ], 
+        "GHXfg.A_exch": [
+          5749.66
+        ], 
+        "BFBrgnB.Lb": [
+          4.2
+        ], 
+        "UQ_E3": [
+          1.0
+        ], 
+        "UQ_E2": [
+          1.0
+        ], 
+        "UQ_E1": [
+          1.0
+        ], 
+        "UQ_fg_flow": [
+          1.0
+        ], 
+        "rgnDt": [
+          12.0
+        ], 
+        "CW_SHXlean.A_exch": [
+          400.0
+        ], 
+        "BFBadsM.Lb": [
+          4.2
+        ], 
+        "adsN": [
+          15.0
+        ], 
+        "rgnN": [
+          15.0
+        ], 
+        "adsdx": [
+          0.0275
+        ], 
+        "LR_SHXlean.A_exch": [
+          7000.0
+        ], 
+        "BFBrgnT.Lb": [
+          4.2
+        ], 
+        "adsDt": [
+          15.0
+        ], 
+        "rgnlhx": [
+          0.08
+        ], 
+        "adslhx": [
+          0.4
+        ], 
+        "UQ_dS1": [
+          1.0
+        ], 
+        "UQ_dS2": [
+          1.0
+        ], 
+        "UQ_dS3": [
+          1.0
+        ], 
+        "BFBadsB.Lb": [
+          4.2
+        ], 
+        "LR_SHXrich.A_exch": [
+          5000.0
+        ], 
+        "UQ_dH1": [
+          1.0
+        ], 
+        "UQ_dH3": [
+          1.0
+        ], 
+        "UQ_dH2": [
+          1.0
+        ]
+      }, 
+      "graph": {}
+    }, 
+    "Guid": "3bf99cd5-9c20-4ade-bbfb-9a204a0fdb23", 
+    "Id": 622
+  }, 
+  {
+    "Status": 0, 
+    "Reset": false, 
+    "Errors": [], 
+    "Create": "2015-03-26T20:25:13.5830000", 
+    "Messages": null, 
+    "Submit": "2015-03-26T20:25:21.9570000", 
+    "Simulation": "testFoqus01", 
+    "State": "success", 
+    "Session": "b27be727-3788-4de0-8c40-dc230fedba9f", 
+    "Output": {
+      "input": {
+        "test": {
+          "UQ_nv": [
+            1.0
+          ], 
+          "rgndx": [
+            0.0225
+          ], 
+          "BFBadsT.Lb": [
+            4.2
+          ], 
+          "UQ_A3": [
+            1.0
+          ], 
+          "UQ_A2": [
+            1.0
+          ], 
+          "UQ_A1": [
+            1.0
+          ], 
+          "GHXfg.A_exch": [
+            5749.66
+          ], 
+          "BFBrgnB.Lb": [
+            4.2
+          ], 
+          "UQ_E3": [
+            1.0
+          ], 
+          "UQ_E2": [
+            1.0
+          ], 
+          "UQ_E1": [
+            1.0
+          ], 
+          "UQ_fg_flow": [
+            1.0
+          ], 
+          "rgnDt": [
+            12.0
+          ], 
+          "CW_SHXlean.A_exch": [
+            400.0
+          ], 
+          "BFBadsM.Lb": [
+            4.2
+          ], 
+          "adsN": [
+            14.0
+          ], 
+          "rgnN": [
+            15.0
+          ], 
+          "adsdx": [
+            0.0275
+          ], 
+          "LR_SHXlean.A_exch": [
+            7000.0
+          ], 
+          "BFBrgnT.Lb": [
+            4.2
+          ], 
+          "adsDt": [
+            15.0
+          ], 
+          "rgnlhx": [
+            0.08
+          ], 
+          "adslhx": [
+            0.4
+          ], 
+          "UQ_dS1": [
+            1.0
+          ], 
+          "UQ_dS2": [
+            1.0
+          ], 
+          "UQ_dS3": [
+            1.0
+          ], 
+          "BFBadsB.Lb": [
+            4.2
+          ], 
+          "LR_SHXrich.A_exch": [
+            5000.0
+          ], 
+          "UQ_dH1": [
+            1.0
+          ], 
+          "UQ_dH3": [
+            1.0
+          ], 
+          "UQ_dH2": [
+            1.0
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "nodeError": {
+        "test": 0
+      }, 
+      "nodeSettings": {
+        "test": {
+          "Reset": false, 
+          "Allow Simulation Warnings": true, 
+          "Min Status Check Interval": 4.0, 
+          "RunMode": "Steady Optimization", 
+          "Maximum Run Time (s)": 600.0, 
+          "Initialize Model": false, 
+          "Max Status Check Interval": 5.0, 
+          "printlevel": 0, 
+          "Maximum Wait Time (s)": 72000.0, 
+          "Max consumer reuse": 90, 
+          "homotopy": 0
+        }
+      }, 
+      "output": {
+        "test": {
+          "status": [
+            0.0
+          ], 
+          "removalCO2": [
+            0.8996502980768348
+          ], 
+          "removalH2O": [
+            0.3181832488879167
+          ], 
+          "SolidIn.Fm": [
+            599563.7094269884
+          ], 
+          "CW_SHXlean.HXIn.F": [
+            7428.696643562055
+          ], 
+          "removalCO2_slack": [
+            0.0
+          ], 
+          "rgnSF": [
+            0.08
+          ], 
+          "Cost_coe_obj": [
+            130.93886397724106
+          ], 
+          "Cost_coe": [
+            130.93886397724106
+          ], 
+          "steam.F": [
+            650.7121224790371
+          ], 
+          "GHXfg.HXIn.F": [
+            51554.814230868455
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "graphError": 0, 
+      "solTime": 114.61299991607666
+    }, 
+    "Initialize": false, 
+    "Input": {
+      "test": {
+        "UQ_nv": [
+          1.0
+        ], 
+        "rgndx": [
+          0.0225
+        ], 
+        "BFBadsT.Lb": [
+          4.2
+        ], 
+        "UQ_A3": [
+          1.0
+        ], 
+        "UQ_A2": [
+          1.0
+        ], 
+        "UQ_A1": [
+          1.0
+        ], 
+        "GHXfg.A_exch": [
+          5749.66
+        ], 
+        "BFBrgnB.Lb": [
+          4.2
+        ], 
+        "UQ_E3": [
+          1.0
+        ], 
+        "UQ_E2": [
+          1.0
+        ], 
+        "UQ_E1": [
+          1.0
+        ], 
+        "UQ_fg_flow": [
+          1.0
+        ], 
+        "rgnDt": [
+          12.0
+        ], 
+        "CW_SHXlean.A_exch": [
+          400.0
+        ], 
+        "BFBadsM.Lb": [
+          4.2
+        ], 
+        "adsN": [
+          14.0
+        ], 
+        "rgnN": [
+          15.0
+        ], 
+        "adsdx": [
+          0.0275
+        ], 
+        "LR_SHXlean.A_exch": [
+          7000.0
+        ], 
+        "BFBrgnT.Lb": [
+          4.2
+        ], 
+        "adsDt": [
+          15.0
+        ], 
+        "rgnlhx": [
+          0.08
+        ], 
+        "adslhx": [
+          0.4
+        ], 
+        "UQ_dS1": [
+          1.0
+        ], 
+        "UQ_dS2": [
+          1.0
+        ], 
+        "UQ_dS3": [
+          1.0
+        ], 
+        "BFBadsB.Lb": [
+          4.2
+        ], 
+        "LR_SHXrich.A_exch": [
+          5000.0
+        ], 
+        "UQ_dH1": [
+          1.0
+        ], 
+        "UQ_dH3": [
+          1.0
+        ], 
+        "UQ_dH2": [
+          1.0
+        ]
+      }, 
+      "graph": {}
+    }, 
+    "Guid": "f3913df5-e306-495a-952b-8bc7b3aa2c41", 
+    "Id": 623
+  }, 
+  {
+    "Status": 0, 
+    "Reset": false, 
+    "Errors": [], 
+    "Create": "2015-03-26T20:25:13.7700000", 
+    "Messages": null, 
+    "Submit": "2015-03-26T20:25:21.9570000", 
+    "Simulation": "testFoqus01", 
+    "State": "success", 
+    "Session": "b27be727-3788-4de0-8c40-dc230fedba9f", 
+    "Output": {
+      "input": {
+        "test": {
+          "UQ_nv": [
+            1.0
+          ], 
+          "rgndx": [
+            0.0225
+          ], 
+          "BFBadsT.Lb": [
+            4.2
+          ], 
+          "UQ_A3": [
+            1.0
+          ], 
+          "UQ_A2": [
+            1.0
+          ], 
+          "UQ_A1": [
+            1.0
+          ], 
+          "GHXfg.A_exch": [
+            5749.66
+          ], 
+          "BFBrgnB.Lb": [
+            4.2
+          ], 
+          "UQ_E3": [
+            1.0
+          ], 
+          "UQ_E2": [
+            1.0
+          ], 
+          "UQ_E1": [
+            1.0
+          ], 
+          "UQ_fg_flow": [
+            1.0
+          ], 
+          "rgnDt": [
+            12.0
+          ], 
+          "CW_SHXlean.A_exch": [
+            400.0
+          ], 
+          "BFBadsM.Lb": [
+            4.2
+          ], 
+          "adsN": [
+            13.0
+          ], 
+          "rgnN": [
+            15.0
+          ], 
+          "adsdx": [
+            0.0275
+          ], 
+          "LR_SHXlean.A_exch": [
+            7000.0
+          ], 
+          "BFBrgnT.Lb": [
+            4.2
+          ], 
+          "adsDt": [
+            15.0
+          ], 
+          "rgnlhx": [
+            0.08
+          ], 
+          "adslhx": [
+            0.4
+          ], 
+          "UQ_dS1": [
+            1.0
+          ], 
+          "UQ_dS2": [
+            1.0
+          ], 
+          "UQ_dS3": [
+            1.0
+          ], 
+          "BFBadsB.Lb": [
+            4.2
+          ], 
+          "LR_SHXrich.A_exch": [
+            5000.0
+          ], 
+          "UQ_dH1": [
+            1.0
+          ], 
+          "UQ_dH3": [
+            1.0
+          ], 
+          "UQ_dH2": [
+            1.0
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "nodeError": {
+        "test": 0
+      }, 
+      "nodeSettings": {
+        "test": {
+          "Reset": false, 
+          "Allow Simulation Warnings": true, 
+          "Min Status Check Interval": 4.0, 
+          "RunMode": "Steady Optimization", 
+          "Maximum Run Time (s)": 600.0, 
+          "Initialize Model": false, 
+          "Max Status Check Interval": 5.0, 
+          "printlevel": 0, 
+          "Maximum Wait Time (s)": 72000.0, 
+          "Max consumer reuse": 90, 
+          "homotopy": 0
+        }
+      }, 
+      "output": {
+        "test": {
+          "status": [
+            0.0
+          ], 
+          "removalCO2": [
+            0.8996556922089455
+          ], 
+          "removalH2O": [
+            0.2779269524953212
+          ], 
+          "SolidIn.Fm": [
+            676656.3255660239
+          ], 
+          "CW_SHXlean.HXIn.F": [
+            7479.228812340892
+          ], 
+          "removalCO2_slack": [
+            0.0
+          ], 
+          "rgnSF": [
+            0.08
+          ], 
+          "Cost_coe_obj": [
+            131.02095792245464
+          ], 
+          "Cost_coe": [
+            131.02095792245464
+          ], 
+          "steam.F": [
+            679.4441307547221
+          ], 
+          "GHXfg.HXIn.F": [
+            53424.90922510521
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "graphError": 0, 
+      "solTime": 82.17200016975403
+    }, 
+    "Initialize": false, 
+    "Input": {
+      "test": {
+        "UQ_nv": [
+          1.0
+        ], 
+        "rgndx": [
+          0.0225
+        ], 
+        "BFBadsT.Lb": [
+          4.2
+        ], 
+        "UQ_A3": [
+          1.0
+        ], 
+        "UQ_A2": [
+          1.0
+        ], 
+        "UQ_A1": [
+          1.0
+        ], 
+        "GHXfg.A_exch": [
+          5749.66
+        ], 
+        "BFBrgnB.Lb": [
+          4.2
+        ], 
+        "UQ_E3": [
+          1.0
+        ], 
+        "UQ_E2": [
+          1.0
+        ], 
+        "UQ_E1": [
+          1.0
+        ], 
+        "UQ_fg_flow": [
+          1.0
+        ], 
+        "rgnDt": [
+          12.0
+        ], 
+        "CW_SHXlean.A_exch": [
+          400.0
+        ], 
+        "BFBadsM.Lb": [
+          4.2
+        ], 
+        "adsN": [
+          13.0
+        ], 
+        "rgnN": [
+          15.0
+        ], 
+        "adsdx": [
+          0.0275
+        ], 
+        "LR_SHXlean.A_exch": [
+          7000.0
+        ], 
+        "BFBrgnT.Lb": [
+          4.2
+        ], 
+        "adsDt": [
+          15.0
+        ], 
+        "rgnlhx": [
+          0.08
+        ], 
+        "adslhx": [
+          0.4
+        ], 
+        "UQ_dS1": [
+          1.0
+        ], 
+        "UQ_dS2": [
+          1.0
+        ], 
+        "UQ_dS3": [
+          1.0
+        ], 
+        "BFBadsB.Lb": [
+          4.2
+        ], 
+        "LR_SHXrich.A_exch": [
+          5000.0
+        ], 
+        "UQ_dH1": [
+          1.0
+        ], 
+        "UQ_dH3": [
+          1.0
+        ], 
+        "UQ_dH2": [
+          1.0
+        ]
+      }, 
+      "graph": {}
+    }, 
+    "Guid": "ea866426-9aaf-48cf-8eaa-547976626e60", 
+    "Id": 624
+  }, 
+  {
+    "Status": 0, 
+    "Reset": false, 
+    "Errors": [], 
+    "Create": "2015-03-26T20:25:13.9730000", 
+    "Messages": null, 
+    "Submit": "2015-03-26T20:25:21.9570000", 
+    "Simulation": "testFoqus01", 
+    "State": "success", 
+    "Session": "b27be727-3788-4de0-8c40-dc230fedba9f", 
+    "Output": {
+      "input": {
+        "test": {
+          "UQ_nv": [
+            1.0
+          ], 
+          "rgndx": [
+            0.0225
+          ], 
+          "BFBadsT.Lb": [
+            4.2
+          ], 
+          "UQ_A3": [
+            1.0
+          ], 
+          "UQ_A2": [
+            1.0
+          ], 
+          "UQ_A1": [
+            1.0
+          ], 
+          "GHXfg.A_exch": [
+            5749.66
+          ], 
+          "BFBrgnB.Lb": [
+            4.2
+          ], 
+          "UQ_E3": [
+            1.0
+          ], 
+          "UQ_E2": [
+            1.0
+          ], 
+          "UQ_E1": [
+            1.0
+          ], 
+          "UQ_fg_flow": [
+            1.0
+          ], 
+          "rgnDt": [
+            12.0
+          ], 
+          "CW_SHXlean.A_exch": [
+            400.0
+          ], 
+          "BFBadsM.Lb": [
+            4.2
+          ], 
+          "adsN": [
+            12.0
+          ], 
+          "rgnN": [
+            15.0
+          ], 
+          "adsdx": [
+            0.0275
+          ], 
+          "LR_SHXlean.A_exch": [
+            7000.0
+          ], 
+          "BFBrgnT.Lb": [
+            4.2
+          ], 
+          "adsDt": [
+            15.0
+          ], 
+          "rgnlhx": [
+            0.08
+          ], 
+          "adslhx": [
+            0.4
+          ], 
+          "UQ_dS1": [
+            1.0
+          ], 
+          "UQ_dS2": [
+            1.0
+          ], 
+          "UQ_dS3": [
+            1.0
+          ], 
+          "BFBadsB.Lb": [
+            4.2
+          ], 
+          "LR_SHXrich.A_exch": [
+            5000.0
+          ], 
+          "UQ_dH1": [
+            1.0
+          ], 
+          "UQ_dH3": [
+            1.0
+          ], 
+          "UQ_dH2": [
+            1.0
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "nodeError": {
+        "test": 0
+      }, 
+      "nodeSettings": {
+        "test": {
+          "Reset": false, 
+          "Allow Simulation Warnings": true, 
+          "Min Status Check Interval": 4.0, 
+          "RunMode": "Steady Optimization", 
+          "Maximum Run Time (s)": 600.0, 
+          "Initialize Model": false, 
+          "Max Status Check Interval": 5.0, 
+          "printlevel": 0, 
+          "Maximum Wait Time (s)": 72000.0, 
+          "Max consumer reuse": 90, 
+          "homotopy": 0
+        }
+      }, 
+      "output": {
+        "test": {
+          "status": [
+            0.0
+          ], 
+          "removalCO2": [
+            0.8998139481341427
+          ], 
+          "removalH2O": [
+            0.2631182973606734
+          ], 
+          "SolidIn.Fm": [
+            700000.0
+          ], 
+          "CW_SHXlean.HXIn.F": [
+            8989.521881474479
+          ], 
+          "removalCO2_slack": [
+            0.0
+          ], 
+          "rgnSF": [
+            0.08
+          ], 
+          "Cost_coe_obj": [
+            131.96121210856066
+          ], 
+          "Cost_coe": [
+            131.96121210856066
+          ], 
+          "steam.F": [
+            843.5338246152488
+          ], 
+          "GHXfg.HXIn.F": [
+            74832.24210052557
+          ]
+        }, 
+        "graph": {}
+      }, 
+      "graphError": 0, 
+      "solTime": 111.21600008010864
+    }, 
+    "Initialize": false, 
+    "Input": {
+      "test": {
+        "UQ_nv": [
+          1.0
+        ], 
+        "rgndx": [
+          0.0225
+        ], 
+        "BFBadsT.Lb": [
+          4.2
+        ], 
+        "UQ_A3": [
+          1.0
+        ], 
+        "UQ_A2": [
+          1.0
+        ], 
+        "UQ_A1": [
+          1.0
+        ], 
+        "GHXfg.A_exch": [
+          5749.66
+        ], 
+        "BFBrgnB.Lb": [
+          4.2
+        ], 
+        "UQ_E3": [
+          1.0
+        ], 
+        "UQ_E2": [
+          1.0
+        ], 
+        "UQ_E1": [
+          1.0
+        ], 
+        "UQ_fg_flow": [
+          1.0
+        ], 
+        "rgnDt": [
+          12.0
+        ], 
+        "CW_SHXlean.A_exch": [
+          400.0
+        ], 
+        "BFBadsM.Lb": [
+          4.2
+        ], 
+        "adsN": [
+          12.0
+        ], 
+        "rgnN": [
+          15.0
+        ], 
+        "adsdx": [
+          0.0275
+        ], 
+        "LR_SHXlean.A_exch": [
+          7000.0
+        ], 
+        "BFBrgnT.Lb": [
+          4.2
+        ], 
+        "adsDt": [
+          15.0
+        ], 
+        "rgnlhx": [
+          0.08
+        ], 
+        "adslhx": [
+          0.4
+        ], 
+        "UQ_dS1": [
+          1.0
+        ], 
+        "UQ_dS2": [
+          1.0
+        ], 
+        "UQ_dS3": [
+          1.0
+        ], 
+        "BFBadsB.Lb": [
+          4.2
+        ], 
+        "LR_SHXrich.A_exch": [
+          5000.0
+        ], 
+        "UQ_dH1": [
+          1.0
+        ], 
+        "UQ_dH3": [
+          1.0
+        ], 
+        "UQ_dH2": [
+          1.0
+        ]
+      }, 
+      "graph": {}
+    }, 
+    "Guid": "988fddad-5af1-4e6d-b6ef-b6c10629cf8b", 
+    "Id": 625
+  }
+]

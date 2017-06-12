@@ -1,0 +1,92 @@
+import Queue
+import logging
+import threading
+import copy
+from foqus_lib.framework.foqusOptions.optionList import optionList
+from problem import *
+import sys
+import os
+import importlib
+import traceback
+
+class optimization(threading.Thread):
+    '''
+        base class for optimization modules
+    '''
+    def __init__(self, dat=None):
+        '''
+            Initialize CMA-ES optimization module
+        '''
+        threading.Thread.__init__(self)
+        self.stop = threading.Event()
+        self.daemon = True
+        self.setData(dat)
+        self.options = optionList()
+        self.name = "Optimization Base"
+        self.description = "Optimization Base Class"
+        self.mp = True
+        self.mobj = False
+        self.requireScaling = True
+        self.minVars = 1
+        self.maxVars = 100
+        self.msgQueue = Queue.Queue() # queue for messages to print
+        self.resQueue = Queue.Queue() # a queue for plots and monitoring
+        self.ex = None
+        self.updateGraph = False
+    
+    def setData(self, dat = None):
+        '''
+            Set the session data so the optimization routine can get
+            the flowsheet and whatever else it may need.
+        '''
+        self.dat = dat
+        if dat:
+            self.graph = dat.flowsheet
+            self.prob = self.dat.optProblem
+        else:
+            self.graph = None
+            self.prob = None
+        
+    def terminate(self):
+        '''
+            This sets the stop flag to indicate that you want to stop
+            the optimization.  The optimize function needs to check the
+            stop flag periodically for this to work, so the optimization
+            may take some time to stop, or may not stop at all if the
+            flag is not checked in the derived class.
+        '''
+        self.stop.set()
+        
+    def uploadFlowsheetToTurbine(self):
+        '''
+            Upload the FOQUS flowsheet to Turbine, so the flowsheet
+            can be run through Turbine in parallel
+        '''
+        fname = "tmp_to_turbine_opt"
+        self.dat.save(
+            filename = fname, 
+            updateCurrentFile = False,
+            changeLogMsg = "Save for turbine submission",
+            indent = 0,
+            keepData = False)
+        self.dat.flowsheet.uploadFlowseetToTurbine(
+            self.dat.name, 
+            fname, 
+            reset=False)
+
+    def run(self):
+        '''
+            This function overloads the Thread class function, and is 
+            called when you run start() to start a new thread.
+        '''
+        try:
+            if self.dat.foqusSettings.runFlowsheetMethod == 1:
+                self.uploadFlowsheetToTurbine()
+            self.optimize()
+        except Exception as e:
+            logging.getLogger("foqus." + __name__).exception(
+                "Exception in optimization thread")
+            self.ex = sys.exc_info()
+            self.msgQueue.put(traceback.format_exception(
+                self.ex[0], self.ex[1], self.ex[2]))
+            

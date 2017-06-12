@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>stepChangeDlg</class>
+ <widget class="QDialog" name="stepChangeDlg">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>489</width>
+    <height>479</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Setp Change Sequence Dialog</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
+    <layout class="QFormLayout" name="formLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_SamplingTime">
+       <property name="text">
+        <string>Sampling Time</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <item>
+        <widget class="QLineEdit" name="lineEdit_SamplingTime">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_UnitSamplingTime">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="label_SolverMinTime">
+       <property name="text">
+        <string>Solver Minimum Time</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <item>
+        <widget class="QLineEdit" name="lineEdit_SolverMinTime">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="lineEdit_UnitSolverMinTime">
+         <property name="enabled">
+          <bool>false</bool>
+         </property>
+         <property name="readOnly">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="label_NumberOfLHSPoints">
+       <property name="text">
+        <string>Number of LHS Points</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="lineEdit_NumberOfLHSPoints"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_NumberOfLHSSets">
+       <property name="text">
+        <string>Number of LHS Sets</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QLineEdit" name="lineEdit_NumberOfLHSSets"/>
+     </item>
+     <item row="4" column="0" colspan="2">
+      <widget class="QCheckBox" name="checkBox_IncludeReverse">
+       <property name="text">
+        <string>Include Reverse Step Changes</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="groupBox_ForSelected">
+     <property name="title">
+      <string>For Each LHS Set</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="listWidget_SetList"/>
+      </item>
+      <item row="1" column="0">
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="1">
+         <widget class="QLineEdit" name="lineEdit_Duration"/>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_Duration">
+          <property name="text">
+           <string>Duraton of Step Change (Number of Time Intervals)</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+     <zorder>listWidget_SetList</zorder>
+     <zorder>label_Duration</zorder>
+     <zorder>lineEdit_Duration</zorder>
+     <zorder>label_Duration</zorder>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="pushButton_Cancel">
+       <property name="text">
+        <string>Cancel</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_OK">
+       <property name="text">
+        <string>OK</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>lineEdit_SamplingTime</tabstop>
+  <tabstop>lineEdit_NumberOfLHSPoints</tabstop>
+  <tabstop>lineEdit_NumberOfLHSSets</tabstop>
+  <tabstop>checkBox_IncludeReverse</tabstop>
+  <tabstop>listWidget_SetList</tabstop>
+  <tabstop>lineEdit_Duration</tabstop>
+  <tabstop>lineEdit_UnitSamplingTime</tabstop>
+  <tabstop>lineEdit_UnitSolverMinTime</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

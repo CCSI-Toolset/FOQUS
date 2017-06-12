@@ -1,0 +1,10 @@
+INPUT: MCB.inm
+MODNAME: apmain
+RUNID: MCB
+NEW_RUNID: MCB
+OLD_RUNID: MCB
+PDF: MCB.appdf
+USERNAME: ychen
+XMOD: C:\Program Files (x86)\AspenTech\Aspen Plus V8.4\Engine\xeq\apmain
+SPONLY:
+DBCONN: C:\FOQUS\examples\Heat_Integration\Model_Files\MCB_System_AP\MCB.ads

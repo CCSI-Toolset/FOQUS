@@ -1,0 +1,125 @@
+* Add the acm simulation
+
+turbine_simulation_create BFB_OUU_COE_opt ACM turbine.cfg
+turbine_simulation_update -r configuration BFB_OUU_COE_opt BFB_OUU_COE_opt.json turbine.cfg
+turbine_simulation_update -r aspenfile BFB_OUU_COE_opt BFB_OUU_COE.acmf turbine.cfg
+
+
+* Add the foqus application to the TurbineLite DB for some reson this prints error but it works fine.
+
+foqus --addTurbineApp foqus
+
+* Add the FOQUS simulation
+
+turbine_simulation_create testFoqus01 foqus turbine.cfg
+turbine_simulation_update -r configuration testFoqus01 BFB_cap_ouu.foqus turbine.cfg
+
+* Start the consumer
+
+foqus --consumer
+
+* Add the jobs
+
+turbine_session_create turbine.cfg
+turbine_session_append b27be727-3788-4de0-8c40-dc230fedba9f BFB_cap_ouu_test_input.json turbine.cfg
+turbine_session_start b27be727-3788-4de0-8c40-dc230fedba9f turbine.cfg
+
+* Get results
+
+turbine_session_get_results b27be727-3788-4de0-8c40-dc230fedba9f turbine.cfg > BFB_cap_ouu_test_output.json
+
+
+ACM Jobs json (to bypas FOQUS) for the two jobs in BFB_cap_ouu_test_input.json
+[
+  {
+    "Initialize": false,
+    "Input": {
+      "BFBadsB.Lb": 4.073,
+      "BFBadsM.Lb": 4.008,
+      "BFBadsT.Lb": 3.373,
+      "BFBrgnB.Lb": 3.421,
+      "BFBrgnT.Lb": 3.579,
+      "CW_SHXlean.A_exch": 598.0,
+      "GHXfg.A_exch": 7853.0,
+      "LR_SHXlean.A_exch": 7981.0,
+      "LR_SHXrich.A_exch": 8019.0,
+      "UQ_A1": 1.0,
+      "UQ_A2": 1.0,
+      "UQ_A3": 1.0,
+      "UQ_E1": 1.0,
+      "UQ_E2": 1.0,
+      "UQ_E3": 1.0,
+      "UQ_dH1": 1.0,
+      "UQ_dH2": 1.0,
+      "UQ_dH3": 1.0,
+      "UQ_dS1": 1.0,
+      "UQ_dS2": 1.0,
+      "UQ_dS3": 1.0,
+      "UQ_fg_flow": 0.95,
+      "UQ_nv": 1.0,
+      "adsDt": 12.2,
+      "adsN": 11.42,
+      "adsdx": 0.0175,
+      "adslhx": 0.1755,
+      "rgnDt": 9.012,
+      "rgnN": 10.868,
+      "rgndx": 0.0259,
+      "rgnlhx": 0.05
+    },
+    "Reset": false,
+    "Settings": {
+      "RunMode": "Steady Optimization",
+      "homotopy": 0,
+      "printlevel": 0
+    },
+    "Simulation": "BFB_OUU_COE_opt"
+  }
+]
+
+[
+  {
+    "Initialize": false,
+    "Input": {
+      "BFBadsB.Lb": 4.073,
+      "BFBadsM.Lb": 4.008,
+      "BFBadsT.Lb": 3.373,
+      "BFBrgnB.Lb": 3.421,
+      "BFBrgnT.Lb": 3.579,
+      "CW_SHXlean.A_exch": 598.0,
+      "GHXfg.A_exch": 7853.0,
+      "LR_SHXlean.A_exch": 7981.0,
+      "LR_SHXrich.A_exch": 8019.0,
+      "UQ_A1": 1.0,
+      "UQ_A2": 1.0,
+      "UQ_A3": 1.0,
+      "UQ_E1": 1.0,
+      "UQ_E2": 1.0,
+      "UQ_E3": 1.0,
+      "UQ_dH1": 1.0,
+      "UQ_dH2": 1.0,
+      "UQ_dH3": 1.0,
+      "UQ_dS1": 1.0,
+      "UQ_dS2": 1.0,
+      "UQ_dS3": 1.0,
+      "UQ_fg_flow": 1.0,
+      "UQ_nv": 1.0,
+      "adsDt": 12.2,
+      "adsN": 11.42,
+      "adsdx": 0.0175,
+      "adslhx": 0.1755,
+      "rgnDt": 9.012,
+      "rgnN": 10.868,
+      "rgndx": 0.0259,
+      "rgnlhx": 0.05
+    },
+    "Reset": false,
+    "Settings": {
+      "RunMode": "Steady Optimization",
+      "homotopy": 0,
+      "printlevel": 0
+    },
+    "Simulation": "BFB_OUU_COE_opt"
+  }
+]
+
+

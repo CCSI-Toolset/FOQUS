@@ -1,0 +1,37 @@
+<!DOCTYPE RCC><RCC version="1.0">
+<qresource>
+	<file>icons/aspen_tech.png</file>
+	<file>icons/build_drm.png</file>
+	<file>icons/ccsi_logo.png</file>
+	<file>icons/close.png</file>
+	<file>icons/config_input.png</file>
+	<file>icons/config_output.png</file>
+	<file>icons/covariance.png</file>
+	<file>icons/download.png</file>
+	<file>icons/export_drm.png</file>
+	<file>icons/export_log.png</file>
+	<file>icons/help.png</file>
+	<file>icons/new.png</file>
+	<file>icons/next.png</file>
+	<file>icons/noise.png</file>
+	<file>icons/open.png</file>
+	<file>icons/play.png</file>
+	<file>icons/plot_train.png</file>
+	<file>icons/plot_valid.png</file>
+	<file>icons/predict_train.png</file>
+	<file>icons/predict_valid.png</file>
+	<file>icons/properties.png</file>
+	<file>icons/run_train.png</file>
+	<file>icons/run_valid.png</file>
+	<file>icons/save.png</file>
+	<file>icons/snapshot.png</file>
+	<file>icons/steps_train.png</file>
+	<file>icons/steps_valid.png</file>
+	<file>icons/thumb_up.png</file>
+	<file>icons/training_data.png</file>
+	<file>icons/turbine.png</file>
+	<file>icons/upload.png</file>
+	<file>icons/uq.png</file>
+	<file>icons/validation_data.png</file>
+</qresource>
+</RCC>

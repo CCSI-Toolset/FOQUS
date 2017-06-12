@@ -1,0 +1,24 @@
+PSUADE
+INPUT
+   dimension = 2
+   variable   1 X1   = 0.6    0.9
+   variable   2 X2   = 0.0    1.0
+END
+OUTPUT
+   dimension = 1
+   variable 1 Y
+END
+METHOD
+   sampling = LH
+   num_samples = 121
+#  random_seed = 1211319841
+END
+APPLICATION
+   driver = simulator
+   launch_interval = 0
+END
+ANALYSIS
+   analyzer output_id  = 1
+   printlevel 1
+END
+END

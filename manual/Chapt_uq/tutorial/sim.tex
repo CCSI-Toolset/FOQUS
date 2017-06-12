@@ -1,0 +1,177 @@
+\subsection{Simulation Ensemble Creation and Execution}
+\label{subsec:uqt_sim}
+
+In this tutorial, a simulation ensemble is created and run.
+\begin{enumerate}
+\item{From the FOQUS main screen, click the \bu{Session} button and then select
+  \bu{Open Session} to open a session. Browse to the examples folder, go
+  into the UQ subfolder, and then select the ``Rosenbrock\_novectors.foqus"
+  problem (Figure \ref{fig:uqt_home}).
+%%% INSERT: Home Screen
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/1_home2}
+\caption{Home Screen}
+\label{fig:uqt_home}
+\end{figure}
+}
+\item{Opening this file loads a session that has a flowsheet with one node
+  (Figure \ref{fig:uqt_flowsheet}). See Section
+  \ref{subsec.opt.tutorial.flowsheet} for a detailed example of creating a
+  flowsheet.
+%%% INSERT: Flowsheet for Rosenbrock Example
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4.0in,keepaspectratio]{Chapt_uq/figs/tutorial/2_flowsheet2}
+\caption{Flowsheet for Rosenbrock Example}
+\label{fig:uqt_flowsheet}
+\end{figure}
+}
+\item{Click the \bu{Uncertainty} button (Figure \ref{fig:uqt_uqhome}).
+%%% INSERT: Uncertainty Quantification Screen
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4.0in,keepaspectratio]{Chapt_uq/figs/tutorial/3_UQScreen2}
+\caption{Uncertainty Quantification Screen}
+\label{fig:uqt_uqhome}
+\end{figure}
+}
+
+\item{Click \bu{Add New} to create a new simulation ensemble.}
+
+\item{The \bu{Add New Ensemble} dialog displays (Figure
+  \ref{fig:uqt_addnew}). The ``Use flowsheet'' option should be enabled.} 
+\item
+	\textit{This item describes additional features and is provided for information only. It is not intended to be followed as part of the step-by-step tutorial.} \\
+	
+	An alternative is to use an emulator by selecting ``Use emulator.'' This
+	alternative is preferred if the actual simulation model is too computationally
+	expensive to be practical for a large number of samples. This option enables
+	the user to trade off accuracy for speed by training a response surface
+   to approximate the actual simulation model. If this option is selected 
+   (Figure \ref{fig:uqt_addnew_emulator}),
+	the user needs to provide a training data file containing a small
+   simulation ensemble generated from the
+	actual simulation model. This training data file is be in
+   the PSUADE full file format (Section \ref{ap:psuadefiles}).
+\begin{itemize}
+\item{Click \bu{Browse} 
+and select the training data file with which to train the response
+surface. The inputs, outputs and response surface type is read from
+the training data and populated accordingly on this dialog box.}
+\item{\textbf{\underline{Select Output(s) of Interest}}. To select multiple outputs, the user can use
+Shift + Click to select a range, or use Ctrl + Click to select/deselect
+individual outputs.}
+\end{itemize}
+
+\item{Click \textbf{\underline{OK}}.}
+\suspend{enumerate}
+%%% INSERT: Add New Ensemble Dialog
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/4_AddNewEnsemble2}
+\caption{Add New Ensemble Dialog, Flowsheet Option}
+\label{fig:uqt_addnew}
+\end{figure}
+\begin{figure}[H]
+\centering
+\includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/4a_AddNewEnsemble2_Emulator}
+\caption{Add New Ensemble Dialog, Emulator Option}
+\label{fig:uqt_addnew_emulator}
+\end{figure}
+\resume{enumerate}
+\item{This displays the \bu{Simulation Ensemble Setup} dialog box (Figure
+  \ref{fig:uqt_sim}) that prompts the user for options specific to the
+  creation of input samples.}
+\item{Within the \bu{Distributions} tab, the \bu{Distributions Table}
+  has all the inputs from the flowsheet node, each displayed in its own
+  row.}
+\begin{enumerate}
+\item{Click the \textbf{\underline{All Variable}} button.}
+\item{Change the \textbf{\underline{Type}} of ``x2'' to ``fixed.''}
+\item{Enter 5 into the \textbf{\underline{Default}} column for ``x2.''}
+\end{enumerate}
+Subsequently, other cells in the row are enabled or disabled according to the type selection.
+%%% INSERT: Simulation Setup Dialog
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/5_SimSetup2}
+\caption{Simulation Ensemble Setup Dialog, Distributions Tab}
+\label{fig:uqt_sim}
+\end{figure}
+
+\suspend{enumerate}
+
+In this dialog, extra options that are available related to simulation ensemble setup are discussed.
+\begin{itemize}
+\item{
+Change the PDF of ``x6'' by exploring the drop-down list in the \textbf{\underline{PDF}} column of the \bu{Distributions Table}. The drop-down list is denoted by box (9c) in Figure \ref{fig:uqt_sim_pdfs}. If any of the parametric distributions are selected (e.g., ``Normal'', ``Lognormal'', ``Weibull''), the user is  prompted to enter the appropriate parameters for the selected distribution. If non-parametric distribution ``Sample'' is selected, the user needs to specify the name of the sample file (a CSV or PSUADE sample format is located in Section \ref{ap:psuadefiles}) that contains samples for the variable ``x6.'' The user also needs to specify the output index to indicate which output in the sample file  to use. The resulting simulation ensemble would contain ``x6'' samples that are randomly drawn (with replacement) from the samples in this file.
+%%% INSERT: Simulation Setup Dialog, PDF Selections
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/6_SimSetupPDFs2}
+\caption{Simulation Ensemble Setup Dialog, Distributions Tab, PDF Selection}
+\label{fig:uqt_sim_pdfs}
+\end{figure}
+}
+\item{Alternatively, select \textbf{\underline{Choose sampling scheme}} (box (8) of Figure \ref{fig:uqt_sim}), and try selecting ``Load all samples from a single file.'' With this selection, a new dialog box (Figure \ref{fig:uq_sim_loadsample}) prompts the user to browse to a PSUADE full file, a PSUADE sample file, or CSV file (all formats are described in Section \ref{ap:psuadefiles}) that contains all the samples for all the input variables in the model.}
+\end{itemize}
+Both of these options offer the user additional flexibility with respect to characterizing input uncertainty or generating the input samples directly.
+
+\resume{enumerate}
+\item{Once complete, switch to the \bu{Sampling Scheme} tab (Figure \ref{fig:uqt_sim_samplescheme}).}
+%%% INSERT: Simulation Setup Dialog, Sampling Scheme Tab
+\begin{figure}[H]
+	\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/7_SimSetupSampling2}
+	\caption{Simulation Ensemble Setup Dialog, Sampling Scheme Tab}
+	\label{fig:uqt_sim_samplescheme}
+\end{figure}
+\item{Select a sampling scheme with the assumption that the user is unsure which sampling scheme
+to use, but wants to perform some kind of response surface analysis. This example helps the user find a suitable one.
+\begin{enumerate}
+\item{Click \textbf{\underline{For response surface analysis}}. Note the list on the right changes accordingly.}
+\item{Select ``Latin Hypercube'' from the list on the right.}
+\end{enumerate}
+}
+\item{To generate 500 samples, change the value in ``\# of samples.'' Some sampling
+schemes may impose a constraint on the number of samples. If the user has entered an incompatible sample size, a pop-up window displays with guidance on the recommended samples size.}
+\item{Click \textbf{\underline{Generate Sample}s} to generate the sample values for all
+  the variable input parameters. On Windows, if the user did not install PSUADE
+  in its default location (C:\bs Program Files (x86)\bs psuade\_project
+  1.7.1\bs bin\bs psuade.exe) \emph{and} the user did not update the PSUADE path in
+  FOQUS settings (refer to Section \ref{session-menu}), then the user is prompted to locate the PSUADE executable in a file dialog.}
+\item{Once the samples are generated, the user can examine them by clicking \textbf{\underline{Preview Samples}}. This displays a table of the values, as well as the option to view scatter plots of the input values. The user can also select multiple inputs at once to view them as separate scatter plots on the same figure.}
+\item{When finished, click \textbf{\underline{Done}}.}
+\item{The simulation ensemble should be displayed in the \textbf{\underline{Simulation Ensemble Table}}. If the user would like to change any of the parameters and regenerate a new set of samples, simply click the \textbf{\underline{Revise}} button.}
+\item{Next, calculate the output value for each sample. Click \textbf{\underline{Launch}}. The user should see the progress bar quickly advance, displaying the status of completed runs (Figure \ref{fig:uqt_ensem_added}).}
+%%% INSERT: Simulation Ensemble Added
+\begin{figure}[H]
+\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/8_EnsembleAdded2}
+\caption{Simulation Ensemble Added}
+\label{fig:uqt_ensem_added}
+\end{figure}
+
+\item Next, look at the output.
+\begin{enumerate}
+\item{Click \bu{Analyze} for ``Ensemble 1'' (Figure \ref{fig:uqt_ensem_complete}).}
+\begin{figure}[H]
+	\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/9_EnsembleEvalComplete2}
+	\caption{Simulation Ensemble Evaluation Complete}
+	\label{fig:uqt_ensem_complete}
+\end{figure}
+\item{Step 1 of ``Analysis'' (bottom page), the user selects \textbf{\underline{Ensemble Data}} (Figure \ref{fig:uqt_analysis}).}
+\begin{figure}[H]
+	\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/10_AnalysisDialog2}
+	\caption{Simulation Ensemble Analysis}
+	\label{fig:uqt_analysis}
+\end{figure}
+\item{Step 2 of ``Analysis'' is to select ``Rosenbrock.f'' (Figure \ref{fig:uqt_analysis}).}
+\item{Step 3 of ``Analysis'' is to keep the analysis method as ``Uncertainty Analysis'' and then click \bu{Analyze}. The user should see two graphs displaying the probability and cumulative distributions plots (Figure \ref{fig:10a.rosenua}).}
+\end{enumerate}
+\begin{figure}[H]
+	\centering \includegraphics[width=6.5in,height=4in,keepaspectratio]{Chapt_uq/figs/tutorial/10a_RosenbrockUA}
+	\caption{Uncertainty Analysis Results}
+	\label{fig:10a.rosenua}
+\end{figure}
+
+
+\end{enumerate}
+
+Prior to this, the ``Rosenbrock'' example was selected to illustrate the process of creating and running a simulation ensemble because simulations complete quickly using this simple model. But from this point on, the adsorber subsystem of the A650.1 design is used as a motivating example to better illustrate how one would apply UQ within the context of CCSI.
+
+A quick recap on our motivating example: The A650.1 design consists of two coupled reactors: (1) the two-stage bubbling fluidized bed adsorber and (2) moving bed regenerator, in which the output (outlet of sorbent stream) from one reactor is the input (inlet) for the other. The performance of the entire carbon capture system is obtained by solving these two reactors simultaneously, accounting for the interactions between the reactors. However, it is also necessary to study the individual effects of the adsorber and the regenerator without the side effects of their coupling since the two reactors display distinct characteristics under different operating conditions. Thus, the Process Design/Synthesis Team has given us a version of the A650.1 model that can be run in two modes: (1) coupled and (2) decoupled.
+In this section, analysis results are presented from running the A650.1 model using the decoupled mode and examining the adsorber in isolation from the regenerator.

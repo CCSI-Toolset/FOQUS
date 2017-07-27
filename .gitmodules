@@ -1,0 +1,6 @@
+[submodule "turb_client"]
+	path = turb_client
+	url = git@github.com:CCSI-Toolset/turb_client.git
+[submodule "turb_hydro"]
+	path = turb_hydro
+	url = git@github.com:CCSI-Toolset/turb_hydro.git

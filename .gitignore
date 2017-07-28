@@ -1,11 +1,15 @@
 *.DS_Store
 *.class
 *.dll
+*.eps
 *.exe
 *.lib
+*.pyc
 *.pyd
 *.suo
 *.zip
+Debug/
+Release/
 docs/FOQUS_User_Manual.pdf
 foqus_lib/help/html/Chapt_drm/
 foqus_lib/help/html/Chapt_flowsheet/

@@ -15,7 +15,7 @@ def writeHelpFiles():
     with open("html/licenseTemplate.html", 'r') as f:
         template = f.read()
     #Both FOQUS and Turbine are CCSI Testing and Evaluation for now
-    with open("../../.ccsi_common/CCSI_TE_LICENSE.txt", 'r') as f:
+    with open("../../LICENSE.md", 'r') as f:
         lic = f.read()
     lic = lic.replace("\n", "<br>")
     template2 = template.replace("PKG_LICENSE", lic, 1)

@@ -105,8 +105,8 @@ pkg_packages         = ['foqus_lib',
                         'foqus_lib.framework.sampleResults',
                         'foqus_lib.framework.ouu',
                         'foqus_lib.framework.drmbuilder',
-                        'turbine_hydro.Hydro',
-                        'turbine_hydro.Hydro.hydro',
+                        'turb_hydro.Hydro',
+                        'turb_hydro.Hydro.hydro',
                         'dmf_lib',
                         'dmf_lib.alfresco',
                         'dmf_lib.alfresco.share',
@@ -145,9 +145,9 @@ pkg_dist_files = [
     ["dmf_browser_console.bat",os.path.join(dist_dir,'dist')],
     ["turbine_console.bat", os.path.join(dist_dir, 'dist')],
     ["hydro_master.bat", os.path.join(dist_dir, 'dist')],
-    ["turbine_hydro/nssm.exe", os.path.join(dist_dir, 'dist')],
-    ["turbine_hydro/SqlCeCmd40.exe", os.path.join(dist_dir, 'dist')],
-    ["turbine_hydro/logging.conf", os.path.join(dist_dir, 'dist')],
+    ["turb_hydro/nssm.exe", os.path.join(dist_dir, 'dist')],
+    ["turb_hydro/SqlCeCmd40.exe", os.path.join(dist_dir, 'dist')],
+    ["turb_hydro/logging.conf", os.path.join(dist_dir, 'dist')],
     ["docs/FOQUS_Install_Manual.pdf", os.path.join(dist_dir, "doc")],
     ["docs/FOQUS_User_Manual.pdf", os.path.join(dist_dir, "doc")],
     ["docs/SimSinter Technical Manual.pdf", os.path.join(dist_dir, "doc")],
@@ -204,9 +204,9 @@ pkg_dist_dirs = [
             "dist/foqus_lib/framework/solventfit")],
         ["dmf_lib/graph/template", os.path.join(dist_dir,
             "dist/dmf_lib/graph/template")],
-        ["turbine_hydro/foqus_test_files", os.path.join(dist_dir,
+        ["turb_hydro/foqus_test_files", os.path.join(dist_dir,
             "foqus_test_files")],
-        ["turbine_hydro/Hydro/hydro", os.path.join(dist_dir,
+        ["turb_hydro/Hydro/hydro", os.path.join(dist_dir,
             "dist/hydro")]
     ]
 
@@ -222,8 +222,8 @@ else:
 # Save the original working directory so can change back later
 odir = os.getcwd()
 # add the turbine client dir to the module search path
-sys.path.append('turbine_client')
-sys.path.append('turbine_hydro')
+sys.path.append('turb_client')
+sys.path.append('turb_hydro')
 #
 if len(sys.argv)>1 and sys.argv[1] == "py2exe":
     if os.name != 'nt':
@@ -250,7 +250,7 @@ if len(sys.argv)>1 and sys.argv[1] == "py2exe":
     # if using py2exe do something special to install turbine client
     # py2exe has trouble with zipped eggs so be sure it is not zipped
     # the -Z option says to setuptools that it is not zip safe.
-    os.chdir('turbine_client') # to turbine client directory
+    os.chdir('turb_client') # to turbine client directory
     process = subprocess.Popen([
         'python',
         'setup.py',
@@ -272,7 +272,7 @@ elif len(sys.argv)>1 and sys.argv[1] == "wix_only":
 else: # normal setup (no py2exe stuff)
     usePy2exe = False
     # install turbine, just pass argument form the command line
-    os.chdir('turbine_client') # to turbine client directory
+    os.chdir('turb_client') # to turbine client directory
     process = subprocess.Popen(['python', 'setup.py'] + sys.argv[1:])
     process.wait()
     if process.returncode:
@@ -375,27 +375,27 @@ if usePy2exe:
             "DMF_Sim_Ingester.py",
             "foqus_lib/framework/surrogate/foqusALAMOClient.py",
             "foqus_lib/gui/ouu/foqusPSUADEClient.py",
-            "turbine_client/scripts/turbine_job_script",
-            "turbine_client/scripts/turbine_application_list",
-            "turbine_client/scripts/turbine_simulation_list",
-            "turbine_client/scripts/turbine_simulation_update",
-            "turbine_client/scripts/turbine_simulation_create",
-            "turbine_client/scripts/turbine_simulation_get",
-            "turbine_client/scripts/turbine_session_list",
-            "turbine_client/scripts/turbine_session_create",
-            "turbine_client/scripts/turbine_session_append",
-            "turbine_client/scripts/turbine_session_kill",
-            "turbine_client/scripts/turbine_session_start",
-            "turbine_client/scripts/turbine_session_stop",
-            "turbine_client/scripts/turbine_session_status",
-            "turbine_client/scripts/turbine_session_stats",
-            "turbine_client/scripts/turbine_session_get_results",
-            "turbine_client/scripts/turbine_session_delete",
-            "turbine_client/scripts/turbine_session_graphs",
-            "turbine_client/scripts/turbine_consumer_log",
-            "turbine_client/scripts/turbine_consumer_list",
-            "turbine_hydro/Hydro/turbine_cluster_script.py",
-            "turbine_hydro/Hydro/turbine_lite_script.py"
+            "turb_client/scripts/turbine_job_script",
+            "turb_client/scripts/turbine_application_list",
+            "turb_client/scripts/turbine_simulation_list",
+            "turb_client/scripts/turbine_simulation_update",
+            "turb_client/scripts/turbine_simulation_create",
+            "turb_client/scripts/turbine_simulation_get",
+            "turb_client/scripts/turbine_session_list",
+            "turb_client/scripts/turbine_session_create",
+            "turb_client/scripts/turbine_session_append",
+            "turb_client/scripts/turbine_session_kill",
+            "turb_client/scripts/turbine_session_start",
+            "turb_client/scripts/turbine_session_stop",
+            "turb_client/scripts/turbine_session_status",
+            "turb_client/scripts/turbine_session_stats",
+            "turb_client/scripts/turbine_session_get_results",
+            "turb_client/scripts/turbine_session_delete",
+            "turb_client/scripts/turbine_session_graphs",
+            "turb_client/scripts/turbine_consumer_log",
+            "turb_client/scripts/turbine_consumer_list",
+            "turb_hydro/Hydro/turbine_cluster_script.py",
+            "turb_hydro/Hydro/turbine_lite_script.py"
         ],
         windows=[{
             'script':'foqus.py',
@@ -528,7 +528,7 @@ if usePy2exe:
         copy_tree(d[0], d[1])
     # Copy License Information
     shutil.copy(
-        ".ccsi_common/CCSI_TE_LICENSE.txt",
+        "LICENSE.md",
         os.path.join(
             dist_dir,
             pkg_name + "_" + str(pkg_version) + "_license.txt"))

@@ -4,3 +4,6 @@
 [submodule "turb_hydro"]
 	path = turb_hydro
 	url = git@github.com:CCSI-Toolset/turb_hydro.git
+[submodule "foqus_lib/framework/surrogate/iREVEAL"]
+	path = foqus_lib/framework/surrogate/iREVEAL
+	url = git@github.com:CCSI-Toolset/iREVEAL.git

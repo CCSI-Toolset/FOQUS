@@ -15,7 +15,24 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 
 ## Getting Started
 
-TBD
+This repository used git submodules. The following foqus tools are
+submodules to this project.
+
+* [iREVEAL](https://github.com/CCSI-Toolset/iREVEAL)
+* [turb_client](https://github.com/CCSI-Toolset/turb_client)
+* [turb_hydro](https://github.com/CCSI-Toolset/turb_hydro)
+
+Checkout out this repository and associated submodules
+
+    $ git clone git@github.com:CCSI-Toolset/foqus.git
+    $ git submodule update --init --recursive
+
+Check the status of the submodules
+
+    $ git submodule status
+    ab70eabe6a0839fa2472ce4f65e07ab4fa93d788 foqus_lib/framework/surrogate/iREVEAL (2016.04.00-4-gab70eab)
+    20091df823086c727057e0410abdc0cff90969c4 turb_client (2016.04.00-5-g20091df)
+    60b8a7880bb2da864ab1fb8c4c965d05fb3f80a1 turb_hydro (2016.04.00-3-g60b8a78)
 
 ## Authors
 

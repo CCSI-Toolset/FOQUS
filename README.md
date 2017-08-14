@@ -15,6 +15,22 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 
 ## Getting Started
 
+### Pre-requisties
+The build/dev environment must have the following tools installed. It has been
+tested with the following versions. Use other versions at your own risk
+
++ Apache Ant
++ Coin Library
++ Git for Windows
++ Java 1.8
++ Microsoft Visual Studio 11.0
++ Microsoft .NET v4.0.30319
++ Python 2.7
++ TexLive for Windows
++ Wix Toolset v3.10
+
+### Clone the repository
+
 This repository used git submodules. The following foqus tools are
 submodules to this project.
 
@@ -33,6 +49,12 @@ Check the status of the submodules
     ab70eabe6a0839fa2472ce4f65e07ab4fa93d788 foqus_lib/framework/surrogate/iREVEAL (2016.04.00-4-gab70eab)
     20091df823086c727057e0410abdc0cff90969c4 turb_client (2016.04.00-5-g20091df)
     60b8a7880bb2da864ab1fb8c4c965d05fb3f80a1 turb_hydro (2016.04.00-3-g60b8a78)
+
+Build the distribution from cmd.exe
+
+    $ make
+
+## Build the Release
 
 ## Authors
 

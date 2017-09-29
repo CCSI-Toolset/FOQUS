@@ -736,13 +736,15 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newLaunchButton = True
             launchButton = QPushButton()
         launchButton.setText('Launch')
-        if data.getFromFile() == True:
-            launchButton.setEnabled(False)
+        # if data.getFromFile() == True:
+        #     launchButton.setEnabled(False)
         if runCount == data.getNumSamples():
-            if data.getSampleMethod() == SamplingMethods.METIS:
+            if data.getSampleMethod() == SamplingMethods.METIS or data.getFromFile():
                 launchButton.setText('Sample Refinement')
             else:
                 launchButton.setEnabled(False)
+        elif data.getFromFile(): # Should not be able to launch or refine sample loaded from file that is not complete
+            launchButton.setEnabled(False)
         launchButton.setProperty('row', row)
         if newLaunchButton:
             launchButton.clicked.connect(self.launchSim)
@@ -788,6 +790,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             elif runType == Model.EMULATOR:
                 LocalExecutionModule.startEmulatorRun(sim)
             else:
+                # Start flowsheet calculations
                 inputNames = sim.getInputNames()
                 inputs = sim.getInputData().tolist()
                 runState = sim.getRunState()
@@ -905,7 +908,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newdata.setModelName(sim.getModelName())
             newdata.setOrigNumSamples(sim.getOrigNumSamples())
             newdata.setNumSamplesAdded(numToAdd)
-            newdata.setFromFile(False)
+            newdata.setFromFile(sim.getFromFile())
             newdata.setRunType(sim.getRunType())
             newdata.setDriverName(sim.getDriverName())
             newdata.setSampleRSType(sim.getSampleRSType())

@@ -1,0 +1,124 @@
+{
+  "flowsheet": {
+    "opt": {
+      "obj": [], 
+      "g": [], 
+      "v": []
+    }, 
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "turbineConfig": {
+      "Default": {
+        "address": "localhost:8080"
+      }
+    }, 
+    "singleCount": 1, 
+    "onlySingleNode": null, 
+    "tearTolType": "abs", 
+    "edges": [], 
+    "tearTol": 0.001, 
+    "tearSolver": "Wegstein", 
+    "nodes": {
+      "ARSM": {
+        "inVars": {
+          "x1": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "x2": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "turbMaxWait": 72000.0, 
+        "pythonCode": "f[\"y\"] = (x[\"x1\"] > 0.5)*(x[\"x1\"]-0.5)**2 + (x[\"x2\"] > 0.5)*(x[\"x2\"]-0.5)**2", 
+        "outValHist": {}, 
+        "turbSession": null, 
+        "outVars": {
+          "y": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": true, 
+            "alamoScaleFact": 1.0, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbMaxRun": 600.0, 
+        "turbInitSim": false, 
+        "y": -160.0, 
+        "x": -200.0, 
+        "z": 0.0, 
+        "sim": ""
+      }
+    }, 
+    "staggerStart": 0.0, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "foqusLogToConsole": true, 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-weight:600; text-decoration: underline;\">Adaptive Refinement Sample Method (ARSM)</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">A simple mapping with discontinuities, to illustrate PSUADE's adaptive sample refinement method.</p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">f(x) = (x<span style=\" vertical-align:sub;\">1</span> &gt; 0.5)*(x<span style=\" vertical-align:sub;\">1</span>-0.5)<span style=\" vertical-align:super;\">2 </span>+ (x<span style=\" vertical-align:sub;\">2 </span>&gt; 0.5)*(x<span style=\" vertical-align:sub;\">2</span>-0.5)<span style=\" vertical-align:super;\">2</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p></body></html>", 
+  "foqusLogFile": "foqus.log", 
+  "foqusLogLevel": 10, 
+  "turbLogToFile": true, 
+  "turbineLogFile": "turbine.log", 
+  "optOptions": {
+    "current": null, 
+    "options": {
+      "CMA-ES": {
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup it. interval": 10, 
+        "Save results": true, 
+        "popsize": 6, 
+        "Max time": 48, 
+        "seed": 1, 
+        "Restart out": "", 
+        "NP": 1, 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "itmax": 0
+      }
+    }
+  }, 
+  "foqusLogToFile": true, 
+  "turbLogLevel": 30, 
+  "uqSimList": [], 
+  "date": "Fri, 25 Apr 2014 07:13:05", 
+  "Type": "FOQUS_Session", 
+  "turbLogToConsole": true
+}

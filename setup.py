@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-'''
+"""
     setup.py
 
     John Eslick, Carnegie Mellon University, 2014
@@ -14,7 +14,8 @@
     Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
-'''
+"""
+from __future__ import print_function
 from setuptools import setup
 import os
 import sys
@@ -33,15 +34,32 @@ with open("foqus_lib/version/version.py", 'w') as f:
     f.write(verfile)
 #now import version.
 import foqus_lib.version.version as ver
-print "Setting version as {0}".format(ver.version)
+print("Setting version as {0}".format(ver.version))
+
+install_requires=[
+    'TurbineClient',
+    'pyparsing',
+    'py4j',
+    'requests',
+    'networkx',
+    'adodbapi > 2.6.0',
+    'redis',
+    #'pymssql',
+    'logstash_formatter',
+    'matplotlib',
+    'scipy',
+    'numpy',
+    'cma'],
+
+dependency_links=[]
+#dependency_links=['https://github.com/CCSI-Toolset/turb_client']
 
 # Set all the package parameters
 pkg_name             = "foqus"
 pkg_version          = ver.version
 pkg_license          = ver.license
-pkg_description      = (
-    "FOQUS tool for simulation based optimization"
-    "and uncertainty quantification")
+pkg_description      = "FOQUS tool for simulation based optimization"\
+                       "and uncertainty quantification"
 pkg_author           = ver.author
 pkg_author_email     = ver.support
 pkg_maintainer       = ver.maintainer
@@ -115,27 +133,24 @@ setup(
     maintainer_email = pkg_maintainer_email,
     url              = pkg_url,
     packages         = pkg_packages,
-    scripts          = [
-        'foqus.py',
-        'foqusClient.py',
-        'DMF_Browser.py',
-        'DMF_BasicDataIngest.py',
-        'DMF_Sim_Ingester.py'],
-    install_requires=[
-        'TurbineClient',
-        'pyparsing',
-        'py4j',
-        'requests',
-        'networkx',
-        'adodbapi > 2.6.0',
-        'redis',
-        #'pymssql',
-        'logstash_formatter',
-        'matplotlib',
-        'scipy',
-        'numpy',
-        'cma'],
-    dependency_links=[
-        'https://git@github.com/CCSI-Toolset/turb_client'
-    ]
+    scripts          = ['foqus.py',
+                        'foqusClient.py',
+                        'DMF_Browser.py',
+                        'DMF_BasicDataIngest.py',
+                        'DMF_Sim_Ingester.py'],
+    install_requires=install_requires,
+    dependency_links=dependency_links
 )
+
+print("\n\n\n")
+print("==============================================================")
+print("The following packages can be installed by the user")
+print("==============================================================")
+print("PSUADE (Required for UQ features): ")
+print("    https://github.com/LLNL/psuade")
+print("Turbine (Windows only, run Aspen, Excel, and gPROMS): ")
+print("    (url tbd)")
+print("NLOpt Python (Additional optimization solvers):")
+print("    https://nlopt.readthedocs.io/en/latest/NLopt_Installation/")
+print("==============================================================")
+print("\n")

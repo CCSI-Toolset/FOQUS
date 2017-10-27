@@ -18,6 +18,7 @@
 from setuptools import setup
 import os
 import sys
+import pip
 
 # Add build number file to help if BUILD_NUMBER env var is set
 # this is mostly for building on Jenkins, but you could set the
@@ -99,6 +100,10 @@ pkg_packages         = ['foqus_lib',
                         'dmf_lib.graph',
                         'dmf_lib.mimetype_dict']
 
+# install TurbineClient.  having some trouble figuring out how to add to
+# requirments when is on private github.
+pip.main(['install', 'git+https://github.com/CCSI-Toolset/turb_client'])
+
 setup(
     name             = pkg_name,
     version          = pkg_version,
@@ -110,7 +115,6 @@ setup(
     maintainer_email = pkg_maintainer_email,
     url              = pkg_url,
     packages         = pkg_packages,
-    #package_data     = pkg_package_data,
     scripts          = [
         'foqus.py',
         'foqusClient.py',
@@ -118,16 +122,20 @@ setup(
         'DMF_BasicDataIngest.py',
         'DMF_Sim_Ingester.py'],
     install_requires=[
+        'TurbineClient',
         'pyparsing',
         'py4j',
         'requests',
         'networkx',
         'adodbapi > 2.6.0',
         'redis',
-        'pymssql',
+        #'pymssql',
         'logstash_formatter',
         'matplotlib',
         'scipy',
         'numpy',
-        'cma']
+        'cma'],
+    dependency_links=[
+        'https://git@github.com/CCSI-Toolset/turb_client'
+    ]
 )

@@ -1,41 +1,41 @@
-#
 #FOQUS_OPT_PLUGIN
-#
-# Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the optimization class.
-#
-#
-# OptCMA.py
-#
-# * This is an example of an optimization plugin for FOQUS, CMA 
-#   optimization solver from:
-#   https://www.lri.fr/~hansen/cmaes_inmatlab.html#python
-#   The solver is BSD 3-clause see FOQUS help or the CMA website for
-#   License information.
-#   This optimiztion plugin is basically just a wrapper for the available
-#   CMA code to make it work with FOQUS.  The CMA solver is not provided
-#   due to licensing constraints.
-#
-# * CMA-ES Refrence:
-#   Hansen, N. (2006). The CMA Evolution Strategy: A Comparing Review. 
-#       In J.A. Lozano, P. Larranga, I. Inza and E. Bengoetxea (eds.). 
-#       Towards a new evolutionary computation. Advances in estimation 
-#       of distribution algorithms. pp. 75-102, Springer.
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
-#
+"""
+ Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
+ 150 characters of text.  They also need to hav a .py extention and
+ inherit the optimization class.
+
+
+ OptCMA.py
+
+ * This is an example of an optimization plugin for FOQUS, CMA
+   optimization solver from:
+   https://www.lri.fr/~hansen/cmaes_inmatlab.html#python
+   The solver is BSD 3-clause see FOQUS help or the CMA website for
+   License information.
+   This optimiztion plugin is basically just a wrapper for the available
+   CMA code to make it work with FOQUS.  The CMA solver is not provided
+   due to licensing constraints.
+
+ * CMA-ES Refrence:
+   Hansen, N. (2006). The CMA Evolution Strategy: A Comparing Review.
+       In J.A. Lozano, P. Larranga, I. Inza and E. Bengoetxea (eds.).
+       Towards a new evolutionary computation. Advances in estimation
+       of distribution algorithms. pp. 75-102, Springer.
+
+ John Eslick, Carnegie Mellon University, 2014
+
+ This Material was produced under the DOE Carbon Capture Simulation
+ Initiative (CCSI), and copyright is held by the software owners:
+ ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
+ and/or the U.S. Government retain ownership of all rights in the
+ CCSI software and the copyright and patents subsisting therein. Any
+ distribution or dissemination is governed under the terms and
+ conditions of the CCSI Test and Evaluation License, CCSI Master
+ Non-Disclosure Agreement, and the CCSI Intellectual Property
+ Management Plan. No rights are granted except as expressly recited
+ in one of the aforementioned agreements.
+"""
+
 import time
 import copy
 import csv
@@ -46,7 +46,6 @@ import logging
 import math
 import numpy
 import os
-import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the CMA-ES python script is available and import it if
@@ -55,8 +54,9 @@ try:
     import cma
     cma_available = True
 except ImportError, e:
+    logging.getLogger("foqus." + __name__).exception("CMA-ES not found")
     cma_available = False
-    
+
 def checkAvailable():
     '''
         Plugins should have this function to check availability of any
@@ -70,13 +70,13 @@ class opt(optimization):
         The optimization solver class.  Should be called opt and inherit
         optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:
-        - available True or False, False it some required thing is not 
+        - available True or False, False it some required thing is not
             present
         - name The name of the solver
         - mp True or False, can use multiprocessing?
         - mobj True or False, handles multiple objectives?
         - options An optionList object to add solver options to
-        
+
         Some functions must also be implemented.  Following this example
         __init()__ call base class init, set attributes, add options
         optimize() run optimization periodically send out results for
@@ -96,14 +96,14 @@ class opt(optimization):
              "}\n"
              "</head>\n"
              "<p class=\"hangingindent\">"
-             "<p><b>Covariacne Matrix Adaptation Evolutionary Strategy" 
+             "<p><b>Covariacne Matrix Adaptation Evolutionary Strategy"
              " (CMA-ES)</b></p>"
              " Hansen, N. (2006). The CMA Evolution Strategy: A "
              "Comparing Review. In J.A. Lozano, P. Larranga, I. Inza "
              "and E. Bengoetxea (eds.). Towards a new evolutionary "
              "computation. Advances in estimation of distribution "
              "algorithms. pp. 75-102, Springer.<\p>"
-             "<p>This plugin makes use of the CMA-ES Python module " 
+             "<p>This plugin makes use of the CMA-ES Python module "
              "https://www.lri.fr/~hansen/cmaes_inmatlab.html#python. "
              "This plugin provides a wrapper for the CMA-ES code "
              "allowing it to work with FOQUS.</p></html>")
@@ -114,12 +114,12 @@ class opt(optimization):
         self.minVars = 2
         self.maxVars = 10000
         self.options.add(
-            name='upper', 
+            name='upper',
             default=10.0,
             dtype=float, #don't need this if default is proper type
             desc="Upper bound on scaled variables (usually 10.0)")
         self.options.add(
-            name='lower', 
+            name='lower',
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)")
         self.options.add(
@@ -198,7 +198,7 @@ class opt(optimization):
             default=True,
             desc="Save all flowsheet results?")
         self.options.add(
-            name="Backup interval", 
+            name="Backup interval",
             default=10,
             desc="Iterations between saving FOQUS session backup"\
                 " (0 no backup)")
@@ -206,7 +206,7 @@ class opt(optimization):
             name="Log Objective",
             default="",
             desc="Append objective mix/max after every iteration")
-    
+
     def optimize(self):
         '''
             This is the optimization routine.
@@ -226,7 +226,7 @@ class opt(optimization):
         #
         itmax = self.options["itmax"].value
         # if itmax is 0 special no limit case
-        if itmax == 0: 
+        if itmax == 0:
             itmax = 2e10 #okay so it's a limit but very high
         upper = self.options["upper"].value
         lower = self.options["lower"].value
@@ -238,22 +238,22 @@ class opt(optimization):
         maxTime = self.options["Max time"].value
         itTimeout = self.options["It timeout"].value
         popsize = self.options["popsize"].value
-        storeRes = self.options["Save results"].value  
+        storeRes = self.options["Save results"].value
         backupInt = self.options["Backup interval"].value
         setName = self.options["Results name"].value
         tolfun = self.options["tolfun"].value
         tolx = self.options["tolx"].value
         tolstagnation = self.options["tolstagnation"].value
         objRecFile = self.options["Log Objective"].value
-        #Increment set name it already used 
+        #Increment set name it already used
         setName = self.dat.flowsheet.results.incrimentSetName(setName)
         #
-        # Some of these options get passed to the CMA-ES solver so set 
+        # Some of these options get passed to the CMA-ES solver so set
         # up options dict for that
         #
         opts = {
             "bounds":[
-                self.options["lower"].value, 
+                self.options["lower"].value,
                 self.options["upper"].value],
             "seed":self.options["seed"].value,
             "popsize":popsize
@@ -276,10 +276,10 @@ class opt(optimization):
         logging.getLogger("foqus." + __name__).debug(
             "popsize = " + str(opts['popsize']))
         #
-        # Create CMA-ES object either reload pickled CMA-ES object 
+        # Create CMA-ES object either reload pickled CMA-ES object
         # or startup a new optimization
         #
-        if pickIn != "" and pickIn != None:  
+        if pickIn != "" and pickIn != None:
             try:
                 with open(pickIn, 'rb') as pf:
                     es = pickle.load(pf)
@@ -305,7 +305,7 @@ class opt(optimization):
         # Put initial progress message out, jus says no samples have run
         # and on first iteration (or whatever iteration from restart)
         #
-        self.resQueue.put(["PROG", 0, popsize, 0, it, 0, 0])  
+        self.resQueue.put(["PROG", 0, popsize, 0, it, 0, 0])
         #
         # setup the problem object to share information with solver
         # when calculating objective and running flowsheet samples
@@ -341,7 +341,7 @@ class opt(optimization):
             maxTimeInterupt = self.prob.maxTimeInterupt
             if userInterupt or userInterupt:
                 break # break to optimization iteration loop if stopped
-            # see if the best value so far has changed, and update 
+            # see if the best value so far has changed, and update
             # display information if it has
             f = numpy.array([o[0] for o in objValues])
             i = numpy.argmin(f)
@@ -402,7 +402,7 @@ class opt(optimization):
             # Finish up iteration loop
             #
             eltime = time.time() - start
-            r = es.result()  # get the results from CMA-ES
+            r = es.result  # get the results from CMA-ES
             self.msgQueue.put("{0}, Total Elasped Time {1}s, Obj: {2}"\
                 .format(it, math.floor(eltime), r[1]))
             self.resQueue.put(["IT", it, r[1]])
@@ -415,14 +415,14 @@ class opt(optimization):
             filename = "".join([
                 "Opt_Final_",
                 self.dat.name,
-                ".json"]), 
+                ".json"]),
             updateCurrentFile = False,
             bkp = False)
         #
         # Print out final solver mesages about the results
         #
         if it > 0:
-            r = es.result() #get the results from CMA-ES
+            r = es.result #get the results from CMA-ES
             xvec = r[0] #first element in result list is minimizer vector
             # Summarize results in console
             self.msgQueue.put(
@@ -439,8 +439,8 @@ class opt(optimization):
         else:
             self.msgQueue.put(
                 "**Stopped before first iteration completed**")
-        if userInterupt: 
+        if userInterupt:
                 self.msgQueue.put("**Stopped by user**")
-        if maxTimeInterupt: 
+        if maxTimeInterupt:
             self.msgQueue.put("**Stopped due to maximum allowed time**")
         self.msgQueue.put("\n\nBest inputs are stored in graph")

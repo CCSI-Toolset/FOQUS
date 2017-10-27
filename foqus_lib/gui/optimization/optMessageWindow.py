@@ -21,8 +21,8 @@ class optMessageWindow(_optMessageWindow, _optMessageWindowUI):
         super(optMessageWindow, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
 
-        def closeEvent(self, e):
-            e.ignore()
+    def closeEvent(self, e):
+        e.ignore()
 
-        def clearMessages(self):
-            self.msgTextBrowser.clear()
+    def clearMessages(self):
+        self.msgTextBrowser.clear()

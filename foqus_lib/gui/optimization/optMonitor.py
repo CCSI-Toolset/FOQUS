@@ -2,7 +2,7 @@
 # John Eslick, 2013
 # Copyright Carnegie Mellon University
 #
-#from foqus_lib.framework.session.hhmmss import *
+from foqus_lib.framework.session.hhmmss import *
 #from PySide import QtCore, QtGui
 import numpy as np
 import time
@@ -129,8 +129,8 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.coordFigAx.clear()
         self.objFigAx.set_xlabel("Iteration")
         self.objFigAx.set_ylabel("Objective")
-        self.objCanvas.draw()
-        self.coordCanvas.draw()
+        #self.objCanvas.draw()
+        #self.coordCanvas.draw()
 
     def coordAxSetup(self):
         self.coordFigAx.clear()

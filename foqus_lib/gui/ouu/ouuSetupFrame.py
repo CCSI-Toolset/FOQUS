@@ -1,6 +1,6 @@
 import sys
 import math
-from PySide import QtGui, QtCore
+#from PySide import QtGui, QtCore
 from nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
@@ -15,10 +15,10 @@ if __name__ == '__main__':
     #f, filename, desc = imp.find_module('foqus_lib', ['c:\\Users\\ou3.THE-LAB\\Documents\\CCSI\\foqus\\'])
     #f, filename, desc = imp.find_module('foqus_lib', ['/g/g12/ou3/ccsi/foqus/'])
     #f, filename, desc = imp.find_module('foqus_lib', ['/g/g19/ng30/ts6/foqus/'])
-    f, filename, desc = imp.find_module('foqus_lib', ['c:\\CCSI\\foqus'])    
+    f, filename, desc = imp.find_module('foqus_lib', ['c:\\CCSI\\foqus'])
     foqus_lib = imp.load_module('foqus_lib', f, filename, desc)
 
-from ouuSetupFrame_UI import *
+#from ouuSetupFrame_UI import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 #from foqus_lib.gui.uq.Preview import *
@@ -26,7 +26,15 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
 from foqus_lib.framework.ouu.OUU import OUU
 
-class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
+from PyQt5 import QtCore, QtGui, QtWidgets
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_ouuSetupFrameUI, _ouuSetupFrame = \
+        uic.loadUiType(os.path.join(mypath, "ouuSetupFrame.ui"))
+#super(, self).__init__(parent=parent)
+
+class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     plotSignal = QtCore.Signal(dict)
     NotUsedText = "Not used"
     ObjFuncText = "Objective Function"
@@ -34,7 +42,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
     DerivativeText = "Derivative"
 
     def __init__(self, dat = None, parent=None):
-        QtGui.QFrame.__init__(self, parent)
+        super(ouuSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.filesDir = ''
@@ -77,7 +85,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
         self.scenarioSelect_combo.setEnabled(False)
         self.z4NewSample_radio.setChecked(True)
         self.x4SampleScheme_combo.setCurrentIndex(0)
-        self.x4SampleSize_label.setText('Sample Size')        
+        self.x4SampleSize_label.setText('Sample Size')
         self.x4SampleSize_spin.setValue(5)
         self.x4SampleSize_spin.setRange(5,1000)
         self.x4FileBrowse_button.setEnabled(False)
@@ -376,7 +384,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             self.x4SampleSize_spin.setValue(numM1 + 1)
             self.x4SampleSize_spin.setSingleStep(1)
         elif method == SamplingMethods.getFullName(SamplingMethods.FACT):
-            self.x4SampleSize_label.setText('Number of Levels') 
+            self.x4SampleSize_label.setText('Number of Levels')
             self.x4SampleSize_spin.setRange(3,100)
             self.x4SampleSize_spin.setValue(3)
             self.x4SampleSize_spin.setSingleStep(2)
@@ -517,7 +525,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                     self.bestValue_table.setItem(i + 2, 0, QtGui.QTableWidgetItem('%f' % value))
                 else:
                     item.setText('%f' % value)
-            
+
 
     def addPlotValues(self, valuesDict):
         self.addPointToObjPlot(valuesDict['objective'])
@@ -532,7 +540,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             numPoints = len(self.objXPoints)
             if numPoints % math.ceil(float(numPoints)/30) == 0: # limit refresh rate as number of points gets large
                 self.updateObjPlot()
-            
+
     def updateObjPlot(self):
         #if not self.objLine:
         if True:
@@ -547,7 +555,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
             self.objFigAx.draw_artist(self.objLine)
             self.objCanvas.update()
             self.objCanvas.flush_events()
-           
+
 
     def addToInputPlots(self, x):
         for i in xrange(len(self.inputPoints)):
@@ -556,12 +564,12 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 numPoints = len(self.inputPoints[i])
                 if numPoints % math.ceil(float(numPoints)/30) == 0: # limit refresh rate as number of points gets large
                   self.updateInputPlot(i)
-              
-                
+
+
     def updateInputPlot(self, index): # Index starts at 1 for first input plot
         self.inputPlots[index - 1]['ax'].plot(self.inputPoints[0], self.inputPoints[index], 'bo')
         self.inputPlots[index - 1]['canvas'].draw()
-        
+
 
     def managePlots(self):
         names, indices = self.input_table.getPrimaryVariables()
@@ -593,7 +601,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
 
         self.inputPoints = [[] for i in xrange(len(names) + 1)]
         self.clearPlots()
-            
+
     def clearPlots(self):
         self.objXPoints = []
         self.objYPoints = []
@@ -609,7 +617,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 if len(self.inputPlots[i - 1]['ax'].lines) > 0:
                     self.inputPlots[i - 1]['ax'].lines = []
                     self.inputPlots[i - 1]['canvas'].draw()
-                    
+
     def scrollProgressPlots(self, value):
         names, indices = self.input_table.getPrimaryVariables()
         numPlots = len(names) + 1
@@ -624,7 +632,7 @@ class ouuSetupFrame(QtGui.QFrame, Ui_ouuSetupFrame):
                 self.updateObjPlot()
             else:
                 self.updateInputPlot(index)
-        
+
 
     def setFixed(self):
         self.input_table.setCheckedToType(0)

@@ -1,10 +1,10 @@
 import copy
-from PySide import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
 from collections import OrderedDict
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
-class AnalysisInfoDialog(QtGui.QDialog):
+class AnalysisInfoDialog(QtWidgets.QDialog):
     def __init__(self, info, parent=None):
         super(AnalysisInfoDialog, self).__init__(parent)
         self.setWindowTitle('Analysis Additional Info')
@@ -190,4 +190,3 @@ class AnalysisInfoDialog(QtGui.QDialog):
         self.gridLayout.addWidget(self.okButton)
         self.show()
         self.resize(totalWidth, totalHeight)
-

@@ -1,7 +1,7 @@
 import sys, shutil
-import PySide
-from PySide.QtGui import *
-from PySide.QtCore import *
+#import PySide
+#from PySide.QtGui import *
+#from PySide.QtCore import *
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -14,9 +14,17 @@ from foqus_lib.framework.uq.Common import *
 import RSCombos
 from InputPriorTable import InputPriorTable
 
-from InferenceDialog_UI import Ui_Dialog
+#from InferenceDialog_UI import Ui_Dialog
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_InferenceDialogUI, _InferenceDialog = \
+        uic.loadUiType(os.path.join(mypath, "InferenceDialog_UI.ui"))
+#super(, self).__init__(parent=parent)
 
-class InferenceDialog(QDialog, Ui_Dialog):
+class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
 
     def __init__(self, data, wizardMode = False, userRegressionFile = None, parent=None):
@@ -29,7 +37,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
         self.wizardMode = wizardMode
         self.userRegressionFile = userRegressionFile
         self.fileDir = ''
-        
+
         self.obsTableValues = {}
         self.obsTableDefaultValues = []
 
@@ -60,10 +68,10 @@ class InferenceDialog(QDialog, Ui_Dialog):
         self.replot_button.clicked.connect(self.replot)
 
         Common.initFolder(RSInferencer.dname)
-        
+
         nSamples = data.getNumSamples()
         nInputs = data.getNumInputs()
-        
+
         # activate save components
         ### TO DO: change initFolder to not delete post sample files OR save somewhere else
         sampleFile = Common.getLocalFileName(os.getcwd(), data.getModelName().split()[0], '.inputPostSample')
@@ -102,11 +110,11 @@ class InferenceDialog(QDialog, Ui_Dialog):
         self.discrepancySave_edit.setEnabled(False)
         self.discrepancySave_button.setEnabled(False)
         self.discrepancySave_button.clicked.connect(self.setDiscrepancyFile)
-       
+
 
         # deactivate infer button
         self.inf_button.setEnabled(False)
-        
+
         # deactivate replot button
         self.replot_button.setEnabled(False)
 
@@ -157,12 +165,12 @@ class InferenceDialog(QDialog, Ui_Dialog):
             self.discrepancySave_chkbox.setEnabled(False)
             self.discrepancySave_edit.setEnabled(False)
             self.discrepancySave_button.setEnabled(False)
-            
+
     def activateDiscrepancySave(self):
         b = self.discrepancySave_chkbox.isChecked()
         self.discrepancySave_edit.setEnabled(b)
         self.discrepancySave_button.setEnabled(b)
-        
+
     def setDiscrepancyFile(self):
         fname = self.discrepancySave_edit.text()
         fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save posterior input samples', fname)
@@ -187,7 +195,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
         self.outputMeans = [0] * nOutputs
         self.outputStdDevs = [0] * nOutputs
         for i in xrange(nOutputs):
-            
+
             # compute mean and standard deviation
             yi = y[:,i]
             mu = np.mean(yi)
@@ -415,8 +423,8 @@ class InferenceDialog(QDialog, Ui_Dialog):
         LocalExecutionModule.saveMCMCFile(fname, self.getNumObservedOutputs(),
                                           self.inputPrior_table.getNumDesignVariables(),
                                           indices, data)
-                                          
- 
+
+
     def refreshObsTable(self):
         self.replot_button.setEnabled(False)
         numRows = self.obs_table.rowCount()
@@ -444,7 +452,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
         self.setObsTableRowCount(numRows)
         self.obs_table.setColumnCount(numCols)
         self.obsTableValues.clear()
-        
+
         ## Fill in column names
         labels = []
         designVariables, indices = self.inputPrior_table.getDesignVariables()
@@ -487,7 +495,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
                         self.obs_table.setItem(row, col, item)
                     item.setText('%g' % defvalue)
                     self.obsTableValues[(row,col)] = '%g' % defvalue
-        
+
         self.obs_table.resizeColumnsToContents()
 
     def getNumObservedOutputs(self):
@@ -497,7 +505,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
             if chkbox is not None and chkbox.isChecked():
                 count += 1
         return count
-        
+
     def getObservedOutputsIndices(self):
         count = 0
         indices = []
@@ -574,7 +582,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
         # TO DO: check valid file name in self.infSave_edit.text()
 
         self.replot_button.setEnabled(False)
-        
+
         showList = self.inputPrior_table.getShowInputList()
         if self.checkOutputTable() and self.checkObs() and \
            self.inputPrior_table.checkValidInputs()[0] and len(showList) > 0:
@@ -616,7 +624,7 @@ class InferenceDialog(QDialog, Ui_Dialog):
         if self.inf_button.text() == 'Infer':
             if os.path.exists('psuade_stop'):
                 os.remove('psuade_stop')
-            
+
             # check arguments
             if not self.activateInfButton():
                 return
@@ -749,11 +757,11 @@ class InferenceDialog(QDialog, Ui_Dialog):
             if self.parent is not None:
                 self.parent.updateAnalysisTableWithNewRow()
 
-        
+
 
     def replot(self):
         self.freeze()
-        
+
         showList = self.inputPrior_table.getShowInputList()
         if len(showList) == 0:
             QMessageBox.information(self, 'Bayesian Inference Plot', 'At least one input must be selected for display.')

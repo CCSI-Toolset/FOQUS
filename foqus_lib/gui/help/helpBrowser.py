@@ -1,33 +1,40 @@
-from helpBrowser_UI import *
+#from helpBrowser_UI import *
 import os
 import time
 import logging
-from PySide import QtGui, QtCore
+#from PySide import QtGui, QtCore
 from foqus_lib.help.helpPath import *
-from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *     
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 try:
-    import PySide.QtWebKit
+    import PyQt5.QtWebKitWidgets
     webkit = True
 except:
     webkit = False
 
-class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
+from PyQt5 import QtCore, QtWidgets
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_helpBrowserDockUI, _helpBrowserDock = \
+        uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))
+
+class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
     #showHelpTopic = QtCore.Signal([types.StringType])
     showAbout = QtCore.Signal()
     hideHelp = QtCore.Signal()
-    
+
     def __init__(self, parent=None, dat=None):
         '''
             Node view/edit dock widget constructor
         '''
-        QtGui.QDockWidget.__init__(self, parent)
+        super(helpBrowserDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
         self.aboutButton.clicked.connect(self.showAbout.emit)
         self.contentsButton.clicked.connect(self.showContents)
         if webkit:
-            self.textBrowser = PySide.QtWebKit.QWebView(self.tabWidget.widget(0))
+            self.textBrowser = PyQt5.QtWebKitWidgets.QWebView(self.tabWidget.widget(0))
             self.webviewLayout.addWidget(self.textBrowser)
             self.backButton.clicked.connect(self.textBrowser.back)
             self.forwardButton.clicked.connect(self.textBrowser.forward)
@@ -43,19 +50,19 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
         self.synhi = PythonHighlighter(self.pycodeEdit.document())
         self.stop = False
         self.timer = None
-        
+
     def getWidget(self):
         w = self.mw.app.focusWidget()
         return w
-        
+
     def getPopupWidget(self):
         w = self.mw.app.activePopupWidget()
         return w
-        
+
     def getWindow(self):
         w = self.mw.app.activeWindow()
         return w
-        
+
     def getButton(self, w, label):
         blist = w.buttons()
         #print [b.text() for b in blist]
@@ -63,53 +70,53 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
             if b.text().replace("&", "") == label:
                 return b
         return None
-        
+
     def closeMessageBox(self):
         w = self.getWindow()
-        if isinstance(w, QtGui.QMessageBox):
+        if isinstance(w, QtWidgets.QMessageBox):
             w.close()
-    
+
     def pressButton(self, w, label):
         b = self.getButton(w, label)
         if b is not None:
             b.click()
         else:
             print '{0} has no button {1}'.format(w, label)
-    
+
     def msgBoxOK(self):
         w = self.getWindow()
         #print w
-        if isinstance(w, QtGui.QMessageBox):
+        if isinstance(w, QtWidgets.QMessageBox):
             self.pressButton(w, 'OK')
-            
+
     def msgBoxYes(self):
         w = self.getWindow()
         print w
-        if isinstance(w, QtGui.QMessageBox):
+        if isinstance(w, QtWidgets.QMessageBox):
             self.pressButton(w, 'Yes')
-            
+
     def msgBoxNo(self):
         w = self.getWindow()
-        if isinstance(w, QtGui.QMessageBox):
+        if isinstance(w, QtWidgets.QMessageBox):
             self.pressButton(w, 'No')
-            
+
     def msgBoxCancel(self):
         w = self.getWindow()
-        if isinstance(w, QtGui.QMessageBox):
+        if isinstance(w, QtWidgets.QMessageBox):
             self.pressButton(w, 'Cancel')
-            
+
     def dailogNotModal(self):
         w = self.getWindow()
-        if isinstance(w, QtGui.QDialog):
+        if isinstance(w, QtWidgets.QDialog):
             w.setModal(False)
-            
+
     def setStopTrue(self):
         self.stop = True
         print "Stopping dbg"
-        
+
     def loadDbgCode(self, fileName=None):
         if fileName is None:
-            fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+            fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
                 self,
                 "Open File",
                 "",
@@ -119,9 +126,9 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
             with open(fileName, 'r') as f:
                 code = f.read()
             self.pycodeEdit.setPlainText(code)
-        
+
     def saveDbgCode(self):
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
             self,
             "Save File",
             "",
@@ -130,38 +137,38 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
             s = self.pycodeEdit.plainText()
             with open(fileName, 'r') as f:
                 f.write(s)
-        
+
     def showContents(self):
         self.setPage("{0}\content.html".format(self.helpPath))
 
     def setPage(self, page):
         #self.textBrowser.setSource(page)
         if webkit:
-            self.textBrowser.load(PySide.QtCore.QUrl.fromLocalFile(page))
+            self.textBrowser.load(QtCore.QUrl.fromLocalFile(page))
         #self.textBrowser.show()
-        
+
     def clearCode(self):
         self.pycodeEdit.clear()
-        
+
     def clearRes(self):
         self.resEdit.clear()
-    
+
     def runDebugCode(self):
         self.stop = False
         pycode = self.pycodeEdit.toPlainText()
         r = self.dat.runDebugCode(pycode, self.mw)
         self.resEdit.appendPlainText(str(r))
         self.stop = False
-    
+
     def showHelp(self):
         if webkit:
             self.updateLogView()
             self.startTimer()
-        
+
     def closeEvent(self, ev):
         self.stopTimer()
         self.hideHelp.emit()
-    
+
     def startTimer(self):
         '''
             Start the timer to update the log file viewer
@@ -169,7 +176,7 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.updateLogView)
         self.timer.start(1000)
-        
+
     def stopTimer(self):
         '''
             Stop the timer to update the log file viewer
@@ -180,24 +187,24 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
             self.timer = None
         except Exception as e:
             print "error stopping timer: {0}".format(e)
-    
+
     def clearLogView(self):
         '''
             Clear the log text
         '''
         self.logView.clear()
-        
+
     def timerCB(self):
         '''
             Function called by the timer to ubdate log display.
         '''
         if self.logView.isVisible():
             self.updateLogView()
-        
+
     def updateLogView(self, maxRead=1000, delay=1000):
         '''
             Update the log viewer text box
-            maxRead = the maximum number of lines to read from the log 
+            maxRead = the maximum number of lines to read from the log
                 at one time
         '''
         lr = 0
@@ -228,4 +235,3 @@ class helpBrowserDock(QtGui.QDockWidget, Ui_helpBrowser):
             logging.getLogger("foqus." + __name__).exception(
                 "Error opening log file for log viewer, "
                 "stopping the update timer")
-

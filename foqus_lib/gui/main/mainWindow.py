@@ -31,7 +31,10 @@ from foqus_lib.framework.session.hhmmss import *
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework import optimizer
 from foqus_lib.framework.uq.Model import *
-from PySide import QtGui, QtCore
+from PyQt5 import QtGui, QtCore
+from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QWidget, QActionGroup,\
+    QMenu, QAction, QToolBar
+from PyQt5.QtGui import QIcon, QKeySequence
 from foqus_lib.gui import icons_rc
 from foqus_lib.gui.dialogs.variableBrowser import *
 from foqus_lib.gui.main.Dash import *
@@ -131,7 +134,7 @@ def importdrm():
         DRMManager = None
 
 
-class mainWindow(QtGui.QMainWindow):
+class mainWindow(QMainWindow):
     '''
         This is the FOQUS main window class
     '''
@@ -158,7 +161,7 @@ class mainWindow(QtGui.QMainWindow):
             showOpt: if true the optimization interface is hidden
             showOuu: if true the optimization interface is hidden
         '''
-        QtGui.QMainWindow.__init__(self)  # call base constructor
+        QMainWindow.__init__(self)  # call base constructor
         self.resize(w,h)
         self.setWindowTitle(title)
         self.dat = dat # This is a session object
@@ -171,7 +174,7 @@ class mainWindow(QtGui.QMainWindow):
         self.statusBar() # add a status bar to the main window
         self.statusBar().showMessage("Working Directory: {0}".format(
             os.path.abspath(os.getcwd())))
-        self.mainWidget = QtGui.QStackedWidget(self)
+        self.mainWidget = QStackedWidget(self)
         self.setCentralWidget(self.mainWidget)
         ### Create the main window widgets for stacked widget
         #  Create the flowsheet editor/viewer
@@ -226,7 +229,7 @@ class mainWindow(QtGui.QMainWindow):
             self.drmFrame = mainDRM.MainDRMBuilder(self.dat, self)
             self.mainWidget.addWidget(self.drmFrame)
         else: # 8
-            self.drmFrame = QtGui.QWidget(self)
+            self.drmFrame = QWidget(self)
             self.mainWidget.addWidget(self.drmFrame)
         self.mainWidget.addWidget(self.fsettingsFrame)   # 9
         # make a dictionary to look up widget indexes in stacked widget
@@ -272,7 +275,7 @@ class mainWindow(QtGui.QMainWindow):
         self.refresh()
         self.app = None  # Qt application
         self.runningSingle = False
-        self.setWindowIcon(QtGui.QIcon(self.iconPaths['main']))
+        self.setWindowIcon(QIcon(self.iconPaths['main']))
         self.show()
         if ts is not None:
             self.tstimer = QtCore.QTimer(self)
@@ -384,11 +387,11 @@ class mainWindow(QtGui.QMainWindow):
         self.toolbarMain.setToolButtonStyle(
             QtCore.Qt.ToolButtonTextUnderIcon)
         self.toolbarMain.setMovable(False)
-        self.mainToolbarActionGroup = QtGui.QActionGroup(self)
+        self.mainToolbarActionGroup = QActionGroup(self)
         # Add the session button to main toolbar
         self.makeSessionMenu()
-        self.homeAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['home']),
+        self.homeAction = QAction(
+            QIcon(self.iconPaths['home']),
             'Session',
             self)
         self.homeAction.setMenu(self.mainMenu)
@@ -400,8 +403,8 @@ class mainWindow(QtGui.QMainWindow):
         #separator
         self.toolbarMain.addSeparator()
         #Basic data action
-        self.basicDataAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['basicData48']),
+        self.basicDataAction = QAction(
+            QIcon(self.iconPaths['basicData48']),
             'Basic Data',
             self)
         self.basicDataAction.triggered.connect(self.showBasicData)
@@ -409,8 +412,8 @@ class mainWindow(QtGui.QMainWindow):
         self.mainToolbarActionGroup.addAction(self.basicDataAction)
         self.toolbarMain.addAction(self.basicDataAction)
         # Flowsheet action
-        self.fsEditAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['flow']),
+        self.fsEditAction = QAction(
+            QIcon(self.iconPaths['flow']),
             'Flowsheet',
             self)
         self.fsEditAction.triggered.connect(self.showFlow)
@@ -419,8 +422,8 @@ class mainWindow(QtGui.QMainWindow):
         self.toolbarMain.addAction(self.fsEditAction)
         #
         # Add heat integration button
-        #self.heatIntAction = QtGui.QAction(
-        #    QtGui.QIcon(self.iconPaths['heatEx48']),
+        #self.heatIntAction = QAction(
+        #    QIcon(self.iconPaths['heatEx48']),
         #    'Heat Int.',
         #    self)
         #self.heatIntAction.triggered.connect(self.showHeatInt)
@@ -428,8 +431,8 @@ class mainWindow(QtGui.QMainWindow):
         #self.mainToolbarActionGroup.addAction(self.heatIntAction)
         #self.toolbarMain.addAction(self.heatIntAction)
         # UQ setup action
-        self.uqSetupAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['uq']),
+        self.uqSetupAction = QAction(
+            QIcon(self.iconPaths['uq']),
             "Uncertainty",
             self)
         self.uqSetupAction.triggered.connect(self.showUqSetup)
@@ -437,8 +440,8 @@ class mainWindow(QtGui.QMainWindow):
         self.mainToolbarActionGroup.addAction(self.uqSetupAction)
         self.toolbarMain.addAction(self.uqSetupAction)
         # Optimization set-up action
-        self.optSetupAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['optimize']),
+        self.optSetupAction = QAction(
+            QIcon(self.iconPaths['optimize']),
             'Optimization',
             self)
         self.optSetupAction.triggered.connect(self.showOptSetup)
@@ -447,8 +450,8 @@ class mainWindow(QtGui.QMainWindow):
         self.toolbarMain.addAction(self.optSetupAction)
         # OUU setup action
         if self.showOuu:
-            self.ouuSetupAction = QtGui.QAction(
-                QtGui.QIcon(self.iconPaths['ouu']),
+            self.ouuSetupAction = QAction(
+                QIcon(self.iconPaths['ouu']),
                 'OUU',
                 self)
             self.ouuSetupAction.setToolTip(
@@ -458,8 +461,8 @@ class mainWindow(QtGui.QMainWindow):
             self.mainToolbarActionGroup.addAction(self.ouuSetupAction)
             self.toolbarMain.addAction(self.ouuSetupAction)
         # Add surrogate model button
-        self.surrogateAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['surrogate48']),
+        self.surrogateAction = QAction(
+            QIcon(self.iconPaths['surrogate48']),
             'Surrogates',
             self)
         self.surrogateAction.triggered.connect(self.showSurrogate)
@@ -468,8 +471,8 @@ class mainWindow(QtGui.QMainWindow):
         self.toolbarMain.addAction(self.surrogateAction)
         # Add DRM-Builder button
         if self.showDRM and mainDRM is not None:
-            self.drmAction = QtGui.QAction(
-                QtGui.QIcon(self.iconPaths['drm48']),
+            self.drmAction = QAction(
+                QIcon(self.iconPaths['drm48']),
                 'DRM-Builder',
                 self)
             self.drmAction.triggered.connect(self.showDRMBuilder)
@@ -479,8 +482,8 @@ class mainWindow(QtGui.QMainWindow):
         #separator
         #self.toolbarMain.addSeparator()
         #Setings Action
-        self.mainSettingsAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['settings48']),
+        self.mainSettingsAction = QAction(
+            QIcon(self.iconPaths['settings48']),
             'Settings',
             self)
         self.mainSettingsAction.setCheckable(True)
@@ -488,8 +491,8 @@ class mainWindow(QtGui.QMainWindow):
         self.mainSettingsAction.triggered.connect(self.showSettings)
         self.toolbarMain.addAction(self.mainSettingsAction)
         # Add separator before help button
-        empty1 = QtGui.QWidget()
-        empty2 = QtGui.QWidget()
+        empty1 = QWidget()
+        empty2 = QWidget()
         empty1.setMinimumWidth(15)
         empty2.setMinimumWidth(15)
         empty1.setMaximumWidth(15)
@@ -498,8 +501,8 @@ class mainWindow(QtGui.QMainWindow):
         self.toolbarMain.addSeparator()
         self.toolbarMain.addWidget(empty2)
         # Help action
-        self.mainHelpAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['help']),
+        self.mainHelpAction = QAction(
+            QIcon(self.iconPaths['help']),
             'Help',
             self)
         self.mainHelpAction.triggered.connect(self.helpToggle)
@@ -510,15 +513,15 @@ class mainWindow(QtGui.QMainWindow):
         '''
             Make the toolbar for flowsheet editing
         '''
-        self.toolbarDrawing = QtGui.QToolBar('Drawing', self)
+        self.toolbarDrawing = QToolBar('Drawing', self)
         self.addToolBar(QtCore.Qt.LeftToolBarArea, self.toolbarDrawing)
         self.toolbarDrawing.hide()
-        self.drawingToolbarActionGroup = QtGui.QActionGroup(self)
-        self.flowsheetViewActionGroup = QtGui.QActionGroup(self)
+        self.drawingToolbarActionGroup = QActionGroup(self)
+        self.flowsheetViewActionGroup = QActionGroup(self)
         self.toolbarDrawing.setIconSize(QtCore.QSize(32, 32))
         #Select Action
-        self.selectAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['select']),
+        self.selectAction = QAction(
+            QIcon(self.iconPaths['select']),
             'Select',
             self)
         self.selectAction.triggered.connect(
@@ -528,8 +531,8 @@ class mainWindow(QtGui.QMainWindow):
         self.selectAction.setCheckable(True)
         self.selectAction.setChecked(True)
         #Add node Action
-        self.addNodeAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['addNode']),
+        self.addNodeAction = QAction(
+            QIcon(self.iconPaths['addNode']),
             'Add Node',
             self)
         self.addNodeAction.triggered.connect(
@@ -538,8 +541,8 @@ class mainWindow(QtGui.QMainWindow):
         self.drawingToolbarActionGroup.addAction(self.addNodeAction)
         self.addNodeAction.setCheckable(True)
         #Add Edge Action
-        self.addEdgeAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['addEdge']),
+        self.addEdgeAction = QAction(
+            QIcon(self.iconPaths['addEdge']),
             'Add Edge',
             self)
         self.addEdgeAction.triggered.connect(
@@ -548,62 +551,62 @@ class mainWindow(QtGui.QMainWindow):
         self.drawingToolbarActionGroup.addAction(self.addEdgeAction)
         self.addEdgeAction.setCheckable(True)
         #Center Action
-        self.centerAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['center']),
+        self.centerAction = QAction(
+            QIcon(self.iconPaths['center']),
             'Center Flowsheet View',
             self)
         self.centerAction.triggered.connect(
             self.flowsheetEditor.center)
         self.toolbarDrawing.addAction(self.centerAction)
         #Delete Action
-        self.deleteAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['delete']),
+        self.deleteAction = QAction(
+            QIcon(self.iconPaths['delete']),
             'Delete Selected',
             self)
         self.deleteAction.triggered.connect(
             self.flowsheetEditor.deleteSelected)
         self.toolbarDrawing.addAction(self.deleteAction)
         #Run flowsheet evaluation action
-        self.runAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['run']),
+        self.runAction = QAction(
+            QIcon(self.iconPaths['run']),
             'Start Single Flowsheet Evaluation',
             self)
         self.runAction.triggered.connect(self.runSim)
         self.toolbarDrawing.addAction(self.runAction)
         #Stop run action
-        self.stopAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['stop']),
+        self.stopAction = QAction(
+            QIcon(self.iconPaths['stop']),
             'Stop Single Flowsheet Evaluation',
             self)
         self.stopAction.triggered.connect(self.stopButton)
         self.toolbarDrawing.addAction(self.stopAction)
         self.stopAction.setEnabled(False)
         #Load default inputs action
-        self.loadDefaultsAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['defaults']),
+        self.loadDefaultsAction = QAction(
+            QIcon(self.iconPaths['defaults']),
             'Load deafult inputs',
             self)
         self.loadDefaultsAction.triggered.connect(
             self.loadDefaultInput)
         self.toolbarDrawing.addAction(self.loadDefaultsAction)
         #determine tear stream action
-        self.tearAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['tear']),
+        self.tearAction = QAction(
+            QIcon(self.iconPaths['tear']),
             'Determine tear streams',
             self)
         self.tearAction.triggered.connect(self.tearFlowsheet)
         self.toolbarDrawing.addAction(self.tearAction)
         # Flowsheet settings dialog
-        self.fsSettingsAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['setting']),
+        self.fsSettingsAction = QAction(
+            QIcon(self.iconPaths['setting']),
             'Flowsheet Settings',self)
         self.fsSettingsAction.triggered.connect(self.fsSettings)
         self.toolbarDrawing.addAction(self.fsSettingsAction)
         #Separator
         self.toolbarDrawing.addSeparator()
         #Add node editor toggle button
-        self.toggleNodeEditorAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['nodeEdit']),
+        self.toggleNodeEditorAction = QAction(
+            QIcon(self.iconPaths['nodeEdit']),
             'Toggle Node Editor',
             self)
         self.toggleNodeEditorAction.setCheckable(True)
@@ -611,8 +614,8 @@ class mainWindow(QtGui.QMainWindow):
             self.toggleNodePanel)
         self.toolbarDrawing.addAction(self.toggleNodeEditorAction)
         #Add edge editor toggle button
-        self.toggleEdgeEditorAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['edgeEdit']),
+        self.toggleEdgeEditorAction = QAction(
+            QIcon(self.iconPaths['edgeEdit']),
             'Toggle Edge Editor',
             self)
         self.toggleEdgeEditorAction.setCheckable(True)
@@ -622,8 +625,8 @@ class mainWindow(QtGui.QMainWindow):
         #Separator
         self.toolbarDrawing.addSeparator()
         # Data/Results browser View
-        self.dataBrowserAction =  QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['data']),
+        self.dataBrowserAction =  QAction(
+            QIcon(self.iconPaths['data']),
             'Results',
             self)
         self.dataBrowserAction.triggered.connect(self.showDataBrowser)
@@ -633,17 +636,17 @@ class mainWindow(QtGui.QMainWindow):
         '''
             Make the menu for the session
         '''
-        self.mainMenu = QtGui.QMenu(self)
+        self.mainMenu = QMenu(self)
         # Upload FOQUS session to turbine
-        self.addFoqusTurbineAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['add']),
+        self.addFoqusTurbineAction = QAction(
+            QIcon(self.iconPaths['add']),
             'Add Current FOQUS Session to Turbine...',
             self)
         self.addFoqusTurbineAction.triggered.connect(self.uploadSession)
         self.mainMenu.addAction(self.addFoqusTurbineAction)
         # Add/update model in Turbine Action
-        self.addTurbineModelAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['add']),
+        self.addTurbineModelAction = QAction(
+            QIcon(self.iconPaths['add']),
             'Add\Update Model to Turbine...',
             self)
         self.addTurbineModelAction.triggered.connect(self.addTurbModel)
@@ -651,47 +654,47 @@ class mainWindow(QtGui.QMainWindow):
         # Add/update model in DMF Action
         self.last_dmf_repo = None
         self.last_repo_props = None
-        self.addDMFModelAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['add']),
+        self.addDMFModelAction = QAction(
+            QIcon(self.iconPaths['add']),
             'Add\Update Model to DMF...',
             self)
         self.addDMFModelAction.triggered.connect(self.addDMFModel)
         self.mainMenu.addAction(self.addDMFModelAction)
         # New session Action
-        self.newSessionAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['new']),
+        self.newSessionAction = QAction(
+            QIcon(self.iconPaths['new']),
             'New Session...',
             self)
         self.newSessionAction.setShortcut(QKeySequence("Ctrl+N"))
         self.newSessionAction.triggered.connect(self.newSession)
         self.mainMenu.addAction(self.newSessionAction)
         # Load session Action
-        self.openSessionAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['load']),
+        self.openSessionAction = QAction(
+            QIcon(self.iconPaths['load']),
             'Open Session...',
             self)
 
         self.openSessionAction.setShortcut(QKeySequence("Ctrl+O"))
         self.openSessionAction.triggered.connect(self.loadData)
         # add and update list of recently opened files
-        self.openRecentMainMenu = QtGui.QMenu(
+        self.openRecentMainMenu = QMenu(
                 'Open Recent', self)
         self.openRecentMainMenu.setIcon(
-            QtGui.QIcon(self.iconPaths['load']))
+            QIcon(self.iconPaths['load']))
         self.mainMenu.addMenu(self.openRecentMainMenu)
         self.updateRecentlyOpened()
         #self.mainMenu.addAction(self.openSessionAction)
         # Save session action
-        self.saveSessionAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['save']),
+        self.saveSessionAction = QAction(
+            QIcon(self.iconPaths['save']),
             'Save Session...',
             self)
         self.saveSessionAction.setShortcut(QKeySequence("Ctrl+S"))
         self.saveSessionAction.triggered.connect(self.saveData)
         #self.mainMenu.addAction(self.saveSessionAction)
         # Save session as action
-        self.saveAsSessionAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['save']),
+        self.saveAsSessionAction = QAction(
+            QIcon(self.iconPaths['save']),
             'Save Session As...',
             self)
         self.saveAsSessionAction.triggered.connect(self.saveAsData)
@@ -728,11 +731,11 @@ class mainWindow(QtGui.QMainWindow):
             repoProperties = []
 
         # Create open session action for each repository
-        self.openSessionMainMenu = QtGui.QMenu(
+        self.openSessionMainMenu = QMenu(
             'Open Session...', self)
         self.openSessionMainMenu.setIcon(
-            QtGui.QIcon(self.iconPaths['load']))
-        self.openSessionAction.setIcon(QtGui.QIcon())
+            QIcon(self.iconPaths['load']))
+        self.openSessionAction.setIcon(QIcon())
         self.openSessionAction.setText(
             'Open Session from Local Filesystem...')
         self.openSessionMainMenu.addAction(self.openSessionAction)
@@ -740,7 +743,7 @@ class mainWindow(QtGui.QMainWindow):
 
         # For DMF lite
         openMenuName = "Open Session from " + DMF_LITE + "..."
-        self.openDMFLiteSessionAction = QtGui.QAction(openMenuName, self)
+        self.openDMFLiteSessionAction = QAction(openMenuName, self)
         self.openDMFLiteSessionAction.triggered.connect(
             self.openSessionMapper.map)
         self.openSessionMapper.setMapping(
@@ -750,11 +753,11 @@ class mainWindow(QtGui.QMainWindow):
             self.openDMFLiteSessionAction)
 
         # Create save session action for each repository
-        self.saveSessionMainMenu = QtGui.QMenu(
+        self.saveSessionMainMenu = QMenu(
             'Save Session...', self)
         self.saveSessionMainMenu.setIcon(
-            QtGui.QIcon(self.iconPaths['save']))
-        self.saveSessionAction.setIcon(QtGui.QIcon())
+            QIcon(self.iconPaths['save']))
+        self.saveSessionAction.setIcon(QIcon())
         self.saveSessionAction.setText(
             'Save Session in Local Filesystem...')
         self.saveSessionMainMenu.addAction(
@@ -763,7 +766,7 @@ class mainWindow(QtGui.QMainWindow):
 
         # Save For DMF Lite
         saveMenuName = "Save Session in " + DMF_LITE + "..."
-        self.saveDMFLiteSessionAction = QtGui.QAction(saveMenuName, self)
+        self.saveDMFLiteSessionAction = QAction(saveMenuName, self)
         self.saveDMFLiteSessionAction.triggered.connect(
             self.saveSessionMapper.map)
         self.saveSessionMapper.setMapping(
@@ -773,12 +776,12 @@ class mainWindow(QtGui.QMainWindow):
             self.saveDMFLiteSessionAction)
 
         # Create save session as action for each repository
-        self.saveAsSessionMainMenu = QtGui.QMenu(
+        self.saveAsSessionMainMenu = QMenu(
             'Save Session As...', self)
         self.saveAsSessionMainMenu.setIcon(
-            QtGui.QIcon(self.iconPaths['save']))
+            QIcon(self.iconPaths['save']))
         self.saveAsSessionAction.setIcon(
-            QtGui.QIcon())
+            QIcon())
         self.saveAsSessionAction.setText(
             'Save Session As in Local Filesystem...')
         self.saveAsSessionMainMenu.addAction(
@@ -796,7 +799,7 @@ class mainWindow(QtGui.QMainWindow):
                 self.propListPaths.append(
                     self.PROP_LOC + p)
                 openMenuName = 'Open Session from '+self.repo_name+'...'
-                openRepoSessionAction = QtGui.QAction(openMenuName, self)
+                openRepoSessionAction = QAction(openMenuName, self)
                 openRepoSessionAction.triggered.connect(
                     self.openSessionMapper.map)
                 self.openSessionMapper.setMapping(
@@ -805,7 +808,7 @@ class mainWindow(QtGui.QMainWindow):
                     openRepoSessionAction)
                 # save menu item DMF
                 saveMenuName = 'Save Session in '+self.repo_name+'...'
-                saveRepoSessionAction = QtGui.QAction(saveMenuName, self)
+                saveRepoSessionAction = QAction(saveMenuName, self)
                 saveRepoSessionAction.triggered.connect(
                     self.saveSessionMapper.map)
                 self.saveSessionMapper.setMapping(
@@ -820,15 +823,15 @@ class mainWindow(QtGui.QMainWindow):
             self.saveAsRepoData)
         # Logout DMF action
         if useDMF and self.dat.useDmf:
-            self.logoutAction = QtGui.QAction(
-                QtGui.QIcon(self.iconPaths['logout']),
+            self.logoutAction = QAction(
+                QIcon(self.iconPaths['logout']),
                 'Logout from DMF Repositories...',
                 self)
             self.logoutAction.triggered.connect(self.logoutDMF)
             self.mainMenu.addAction(self.logoutAction)
         # exit FOQUS action
-        self.exitAction = QtGui.QAction(
-            QtGui.QIcon(self.iconPaths['exit']),
+        self.exitAction = QAction(
+            QIcon(self.iconPaths['exit']),
             'Exit FOQUS...',
             self)
         self.exitAction.setShortcut(QKeySequence("Ctrl+Q"))
@@ -878,7 +881,7 @@ class mainWindow(QtGui.QMainWindow):
                 self,
                 self.dashFrame.sessionDescription())
         ok = d.exec_()
-        if ok == QtGui.QDialog.Accepted:
+        if ok == QDialog.Accepted:
             self.dashFrame.setSessionDescription(d.html())
             self.updateSession()
 
@@ -1163,19 +1166,19 @@ class mainWindow(QtGui.QMainWindow):
         accept = False
         if self.splash:
             self.splash.hide()
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText(
             "Do you want to save the session before exiting?")
         msgBox.setStandardButtons(
-            QtGui.QMessageBox.No |
-            QtGui.QMessageBox.Yes |
-            QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.No)
+            QMessageBox.No |
+            QMessageBox.Yes |
+            QMessageBox.Cancel)
+        msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QtGui.QMessageBox.No:
+        if ret == QMessageBox.No:
             event.accept()
             accept = True
-        elif ret == QtGui.QMessageBox.Yes:
+        elif ret == QMessageBox.Yes:
             if self.saveData():
                 event.accept()
                 accept = True
@@ -1302,18 +1305,18 @@ class mainWindow(QtGui.QMainWindow):
             The current session is not saved first so changes may be
             lost.
         '''
-        saveSessionQuestion = QtGui.QMessageBox()
+        saveSessionQuestion = QMessageBox()
         saveSessionQuestion.setText(
             "Do you want to save your current session before starting"
             " a new session?")
         saveSessionQuestion.setStandardButtons(
-            QtGui.QMessageBox.No|QtGui.QMessageBox.Yes|\
-            QtGui.QMessageBox.Cancel)
-        saveSessionQuestion.setDefaultButton(QtGui.QMessageBox.Cancel)
+            QMessageBox.No|QMessageBox.Yes|\
+            QMessageBox.Cancel)
+        saveSessionQuestion.setDefaultButton(QMessageBox.Cancel)
         response = saveSessionQuestion.exec_()
-        if response == QtGui.QMessageBox.Cancel:
+        if response == QMessageBox.Cancel:
             return
-        elif response == QtGui.QMessageBox.Yes:
+        elif response == QMessageBox.Yes:
             if not self.saveData():
                 return
         self.hideNodeEdgePanels()
@@ -1337,21 +1340,21 @@ class mainWindow(QtGui.QMainWindow):
         '''
             Load a saved session
         '''
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Do you want to save your current session"
             " before loading another session?")
-        msgBox.setIcon(QtGui.QMessageBox.Question)
+        msgBox.setIcon(QMessageBox.Question)
         msgBox.setStandardButtons(
-            QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|\
-            QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+            QMessageBox.Yes|QMessageBox.No|\
+            QMessageBox.Cancel)
+        msgBox.setDefaultButton(QMessageBox.Cancel)
         response = msgBox.exec_()
         if response == QMessageBox.Cancel:
             return
         elif response == QMessageBox.Yes:
             if not self.saveData():
                 return
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open File",
             "",
@@ -1374,15 +1377,15 @@ class mainWindow(QtGui.QMainWindow):
         '''
         if filename:
             if saveCurrent:
-                msgBox = QtGui.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setText(
                     "Do you want to save your current session"
                     " before loading another session?")
-                msgBox.setIcon(QtGui.QMessageBox.Question)
+                msgBox.setIcon(QMessageBox.Question)
                 msgBox.setStandardButtons(
-                    QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|\
-                    QtGui.QMessageBox.Cancel)
-                msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+                    QMessageBox.Yes|QMessageBox.No|\
+                    QMessageBox.Cancel)
+                msgBox.setDefaultButton(QMessageBox.Cancel)
                 response = msgBox.exec_()
                 if response == QMessageBox.Cancel:
                     return
@@ -1404,14 +1407,14 @@ class mainWindow(QtGui.QMainWindow):
         '''
             Load a FOQUS session from DMF
         '''
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Do you want to save your current session"
             " before loading another session?")
-        msgBox.setIcon(QtGui.QMessageBox.Question)
+        msgBox.setIcon(QMessageBox.Question)
         msgBox.setStandardButtons(
-            QtGui.QMessageBox.Yes|QtGui.QMessageBox.No|\
-            QtGui.QMessageBox.Cancel)
-        msgBox.setDefaultButton(QtGui.QMessageBox.Cancel)
+            QMessageBox.Yes|QMessageBox.No|\
+            QMessageBox.Cancel)
+        msgBox.setDefaultButton(QMessageBox.Cancel)
         response = msgBox.exec_()
         if response == QMessageBox.Cancel:
             return
@@ -1456,7 +1459,7 @@ class mainWindow(QtGui.QMainWindow):
             updateSim = False
             if not sim_name in sim_list:
                 #the simulation is not in turbine go ahead and upload
-                msgBox = QtGui.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setWindowTitle("Update Simulation")
                 msgBox.setText("The simulation " + sim_name +\
                     "is not available on Turbine attempting to add it "+\
@@ -1480,15 +1483,15 @@ class mainWindow(QtGui.QMainWindow):
                 else:
                     Latest = False
                 if Latest == False:
-                    msgBox = QtGui.QMessageBox()
+                    msgBox = QMessageBox()
                     msgBox.setText(
                         "A newer {0} simulation is available. Do"\
                         " you want to update Turbine?".format(sim_name))
                     msgBox.setStandardButtons(
-                        QtGui.QMessageBox.No|QtGui.QMessageBox.Yes)
-                    msgBox.setDefaultButton(QtGui.QMessageBox.No)
+                        QMessageBox.No|QMessageBox.Yes)
+                    msgBox.setDefaultButton(QMessageBox.No)
                     ret = msgBox.exec_()
-                    if ret == QtGui.QMessageBox.Yes:
+                    if ret == QMessageBox.Yes:
                         updateSim = True
             if updateSim:
                 scf = DMFBrowser.getSimFileByteArrayStreamByName(
@@ -1554,14 +1557,14 @@ class mainWindow(QtGui.QMainWindow):
         '''
         self.applyAllChanges()
         if self.dat.name == "":
-            msgBox = QtGui.QMessageBox()
+            msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText("You must specify the session name.")
             msgBox.exec_()
             return False
         ccheck = self.checkNameChars()
         if ccheck:
-            msgBox = QtGui.QMessageBox()
+            msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText(
                 "Invalid characters in the session name: {0}".\
@@ -1572,7 +1575,7 @@ class mainWindow(QtGui.QMainWindow):
         ok = metaDataDialog.exec_()
         if not ok: #Cancel the save
             return False
-        fileName, filtr = QtGui.QFileDialog.getSaveFileName(
+        fileName, filtr = QFileDialog.getSaveFileName(
             self,
             "Save File",
             ".".join([self.dat.name, "foqus"]),
@@ -1617,14 +1620,14 @@ class mainWindow(QtGui.QMainWindow):
         if self.dat.currentFile != "" and self.dat.currentFile != None:
             self.applyAllChanges()
             if self.dat.name == "":
-                msgBox = QtGui.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setWindowTitle("Error")
                 msgBox.setText("You must specify the session name.")
                 msgBox.exec_()
                 return False
             ccheck = self.checkNameChars()
             if ccheck:
-                msgBox = QtGui.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setWindowTitle("Error")
                 msgBox.setText(
                     "Invalid characters in the session name: {0}".\
@@ -1659,7 +1662,7 @@ class mainWindow(QtGui.QMainWindow):
         # Check that a session name has been specified if not show error
         # and cnacel save.  This forces a simulation name to be given.
         if self.dat.name == "":
-            msgBox = QtGui.QMessageBox()
+            msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText("You must specify the session name.")
             msgBox.exec_()
@@ -1921,7 +1924,7 @@ class mainWindow(QtGui.QMainWindow):
             self.dat.name,
             dat=self.dat,
             reset=False)
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setWindowTitle("Success")
         msgBox.setText("The current FOQUS session has been uploaded to Turbine")
         msgBox.exec_()
@@ -2078,7 +2081,7 @@ class mainWindow(QtGui.QMainWindow):
             self.runningSingle = False
             self.dat.flowsheet.onlySingleNode = None
             if err == 0:
-                QtGui.QMessageBox.information(
+                QMessageBox.information(
                     self,
                     "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)),
                     "The simulation completed successfully.")
@@ -2086,7 +2089,7 @@ class mainWindow(QtGui.QMainWindow):
                     "Finished Single Simulation... Success in " +
                     hhmmss(int(self.dat.flowsheet.solTime)))
             elif err == 100:
-                QtGui.QMessageBox.information(
+                QMessageBox.information(
                     self,
                     "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
                     "The single node simulation completed successfully.")
@@ -2094,7 +2097,7 @@ class mainWindow(QtGui.QMainWindow):
                     "Finished Single Node Simulation... Success in " +
                     hhmmss(int(self.dat.flowsheet.solTime)))
             else:
-                QtGui.QMessageBox.critical(
+                QMessageBox.critical(
                     self,
                     "Error in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
                     "The simulation completed with an error " +
@@ -2112,16 +2115,16 @@ class mainWindow(QtGui.QMainWindow):
         '''
             Return inputs to default values
         '''
-        msgBox = QtGui.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Load Defaults?")
         msgBox.setInformativeText(
             ("Do you want replace current "
             "input values with the defaults?"))
         msgBox.setStandardButtons(
-            QtGui.QMessageBox.No | QtGui.QMessageBox.Yes)
-        msgBox.setDefaultButton(QtGui.QMessageBox.No)
+            QMessageBox.No | QMessageBox.Yes)
+        msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QtGui.QMessageBox.Yes:
+        if ret == QMessageBox.Yes:
             self.applyNodeEdgeChanges()
             self.dat.flowsheet.loadDefaults()
             self.refresh()
@@ -2215,8 +2218,8 @@ class mainWindow(QtGui.QMainWindow):
         self.openRecentAction = []
         for i, f in enumerate(
             self.dat.foqusSettings.getRecentlyOpendFiles()):
-            self.openRecentAction.append(QtGui.QAction(f, self))
-            self.openRecentAction[i].setIcon(QtGui.QIcon())
+            self.openRecentAction.append(QAction(f, self))
+            self.openRecentAction[i].setIcon(QIcon())
             self.openRecentAction[i].triggered.connect(
                 functools.partial(self.loadSessionFile,f))
             self.openRecentMainMenu.addAction(

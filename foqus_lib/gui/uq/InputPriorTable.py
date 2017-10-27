@@ -1,6 +1,7 @@
 import os
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 import numpy as np
 
 from foqus_lib.framework.uq.SampleData import *
@@ -9,7 +10,7 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 
 class InputPriorTable(QTableWidget):
     typeChanged = Signal()
-    pdfChanged = Signal()    
+    pdfChanged = Signal()
 
     SIMSETUP, RSANALYSIS, INFERENCE, OUU = range(4)
 
@@ -47,7 +48,7 @@ class InputPriorTable(QTableWidget):
         # self.ouu = (mode == InputPriorTable.OUU)
         self.wizardMode = wizardMode
         self.viewOnly = viewOnly
-        
+
         # populate prior table
         inVarNames = data.getInputNames()
         inVarTypes = data.getInputTypes()
@@ -84,7 +85,7 @@ class InputPriorTable(QTableWidget):
             col_index = {'name':0, 'type':1, 'value': 2, 'pdf':3, 'p1':4, 'p2':5, 'min':6, 'max':7}
         else: # OUU
             col_index = {'check': 0, 'name':1, 'type':2, 'scale': 3, 'min':4, 'max':5, 'value':6, 'pdf':7, 'p1':8, 'p2':9}
-        self.col_index = col_index            
+        self.col_index = col_index
         flowsheetFixed = data.getInputFlowsheetFixed()
         #rowCount = 0
         if self.mode == InputPriorTable.SIMSETUP:
@@ -166,7 +167,7 @@ class InputPriorTable(QTableWidget):
 
                 if combobox.currentText() == 'Fixed':
                     comboFixed = True
-            # add display checkbox     
+            # add display checkbox
             if 'check' in col_index:
                 chkbox = QCheckBox('')
                 if self.mode == InputPriorTable.OUU:
@@ -240,7 +241,7 @@ class InputPriorTable(QTableWidget):
                 c = Qt.white
             else:
                 c = Qt.lightGray
-                
+
             if 'min' in col_index:
                 s = self.format % xmin
                 if inVarTypes[i] == Model.FIXED or comboFixed:
@@ -274,15 +275,15 @@ class InputPriorTable(QTableWidget):
                     else:
                         item.setBackground(c)
                     item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                    self.setItem(r, col_index['max'], item) 
+                    self.setItem(r, col_index['max'], item)
                     self.obsTableValues[(r, col_index['max'])] = s
-            
+
             r = r + 1   # increment row
 
         self.resizeColumns()
         self.cellChanged.connect(self.change)
         self.blockSignals(False)
-        
+
     def resizeColumns(self):
         col_index = self.col_index
         self.resizeColumnsToContents()
@@ -341,7 +342,7 @@ class InputPriorTable(QTableWidget):
                             if minMoreThanMax:
                                 showMessage = True
                                 message = 'Minimum value must be less than maximum value!'
-                        
+
                 if showMessage and not hideError:
                     msgbox = QMessageBox()
                     msgbox.setWindowTitle('UQ/Opt GUI Warning')
@@ -349,7 +350,7 @@ class InputPriorTable(QTableWidget):
                     msgbox.setIcon(QMessageBox.Warning)
                     response = msgbox.exec_()
                     self.setFocus()
-                    
+
                 if outOfBounds:
                     #item.setForeground(QColor(192,0,0))
                     item.setBackground(QColor(255,0,0))
@@ -377,7 +378,7 @@ class InputPriorTable(QTableWidget):
                                     #maxItem.setForeground(QColor(0,0,0))
                                     minItem.setBackground(QColor(255,255,255))
                                     maxItem.setBackground(QColor(255,255,255))
-         
+
         self.resizeColumns()
         self.pdfChanged.emit()
 
@@ -509,17 +510,17 @@ class InputPriorTable(QTableWidget):
                         self.clearMinMax(r)
                     self.cellChanged.connect(self.change)
                     return
-    
+
         if 'pdf' in col_index:
             # update the row in inputPrior_table
             d = pdfcombo.currentText() # distribution type
             d = Distribution.getEnumValue(d)
             dist = Distribution(d)
             d1name, d2name = Distribution.getParameterNames(d)   # distribution parameter names
-            
+
             # TO DO: handle the case 'd == Distribution.SAMPLE'
             if d == Distribution.UNIFORM:
-                # clear and deactivate param1/param2 
+                # clear and deactivate param1/param2
                 self.clearParamCell(r,1)
                 self.clearParamCell(r,2)
                 self.activateMinMax(r, inVarNames)
@@ -598,7 +599,7 @@ class InputPriorTable(QTableWidget):
             col = col_index['p1']
         else: #assume param 2
             col = col_index['p2']
-        
+
         self.removeCellWidget(row, col)
         self.clearCell(row, col, createItem = True)
 
@@ -618,7 +619,7 @@ class InputPriorTable(QTableWidget):
         pname.setForeground(Qt.black)
         flags = pname.flags()
         pname.setFlags(flags & nameMask)
-        
+
         # add 2-cell table
         cellTable = self.cellWidget(row, col)
         if isinstance(cellTable, QtGui.QComboBox): # combo from file selection
@@ -797,7 +798,7 @@ class InputPriorTable(QTableWidget):
                     combobox.setCurrentIndex(0)
                     combobox.blockSignals(False)
                     return
-                    
+
                 # File format good
                 self.sampleFiles.append(fname)
                 self.dispSampleFiles.append(os.path.basename(dispFName))
@@ -837,14 +838,14 @@ class InputPriorTable(QTableWidget):
 
         combobox.blockSignals(False)
         self.pdfChanged.emit()
-              
+
     def clearMinMax(self, row):
         col_index = self.col_index
         # deactivate min/max
         self.clearCell(row, col_index['min'])
         self.clearCell(row, col_index['max'])
- 
-    def activateMinMax(self, row, inVarNames):    
+
+    def activateMinMax(self, row, inVarNames):
         col_index = self.col_index
         # activate min/max
         inVarName = self.item(row, col_index['name'])
@@ -900,10 +901,10 @@ class InputPriorTable(QTableWidget):
             if combo.currentText() == 'Variable':
                 count += 1
         return count
-    
+
     def getMins(self):
         return self.lb
-        
+
     def getMaxs(self):
         return self.ub
 
@@ -949,7 +950,7 @@ class InputPriorTable(QTableWidget):
             chkbox = self.cellWidget(i, col_index['check'])
             if chkbox is not None and chkbox.isEnabled() and chkbox.isChecked():
                 showList.append(i)
-                
+
         return showList
 
     def getDistribution(self, row):
@@ -1053,14 +1054,14 @@ class InputPriorTable(QTableWidget):
                             b = True
                         else:
                             return (False,  'Distribution parameter value for %s is not a number!' % inputName)
-                        
+
                     elif dtype == Distribution.SAMPLE:
                         combo = self.cellWidget(i, col_index['p1'])
                         text = combo.currentText()
                         if text == 'Browse...' or text == 'Select File':
                             return (False,  'No file selected for %s!' % inputName)
                         b = True
-                        
+
                     else:
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)   # param1 value
@@ -1136,11 +1137,11 @@ class InputPriorTable(QTableWidget):
                     param1, param2 = self.distVariable[i].getParameterValues()
                     xmin = self.lbVariable[i]
                     xmax = self.ubVariable[i]
-                    
+
                 value.update({'pdf': dtype})
                 if dtype == Distribution.UNIFORM:
                     value.update({'param1':None, 'param2':None, 'min':xmin, 'max':xmax})
-                elif dtype == Distribution.EXPONENTIAL: 
+                elif dtype == Distribution.EXPONENTIAL:
                     value.update({'param1':param1, 'param2':None, 'min':None, 'max':None})
                 elif dtype != None:
                     value.update({'param1':param1, 'param2':param2, 'min':None, 'max':None})
@@ -1151,4 +1152,3 @@ class InputPriorTable(QTableWidget):
                 value['value'] = float(fixedVal.text())
             values[i] = value
         return values
-        

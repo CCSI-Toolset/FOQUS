@@ -1,6 +1,6 @@
 '''
     gatewayUploadDialog.py
-    
+
     * dialog to upload files to Turbine gatwaye
 
     John Eslick, Carnegie Mellon University, 2014
@@ -8,36 +8,45 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from gatewayUploadDialog_UI import *
+#from gatewayUploadDialog_UI import *
 import foqus_lib.gui.helpers.guiHelpers as gh
-from PySide import QtGui, QtCore
+#from PySide import QtGui, QtCore
 import json
 import os
 import sys
 import subprocess
 import logging
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_gatewayUploadDialogUI, _gatewayUploadDialog = \
+        uic.loadUiType(os.path.join(mypath, "gatewayUploadDialog_UI.ui"))
+#super(, self).__init__(parent=parent)
 
-class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
+
+class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
     '''
-        This class provides a dialog box that allows you to create, 
+        This class provides a dialog box that allows you to create,
         upload and update simulations on the Turbine Science Gateway.
     '''
-    waiting = QtCore.Signal() # signal for start waiting on long task
-    notwaiting = QtCore.Signal() # signal the task is done
-    
+    waiting = QtCore.pyqtSignal() # signal for start waiting on long task
+    notwaiting = QtCore.pyqtSignal() # signal the task is done
+
     def __init__(self, dat, turbConfig, parent=None ):
         '''
-            Initialize dialog
+        Initialize dialog
         '''
-        QtGui.QDialog.__init__(self, parent)
+        super(gatewayUploadDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         # Connect buttons
@@ -83,7 +92,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
             return
         self.notwaiting.emit()
         self.simNameEdit.removeItem(self.simNameEdit.currentIndex())
-            
+
     def updateFileTable(self):
         self.fileTable.setRowCount(0)
         self.fileTable.setRowCount(len(self.files))
@@ -101,7 +110,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                 text = f[1],
                 editable = False)
         self.fileTable.resizeColumnsToContents()
-            
+
     def enableSinterConfigGUI(self, b=True):
         '''
             Enable or disable the sinter config gui launch button
@@ -122,16 +131,16 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
             else:
                 b = False
         self.sinterConfigGUIButton.setEnabled(b)
-    
+
     def showSinterConfigGUI(self):
         '''
-            Run sinter config gui so you can create or edit a 
+            Run sinter config gui so you can create or edit a
             sinter config file
         '''
-        #need to find a way to prevent clicking this button several 
-        #times after this function returns any button clicks that were 
-        #stored up sent signals.  But they happen after fnction returns 
-        #so can't figure out how to block them.  launch process in a 
+        #need to find a way to prevent clicking this button several
+        #times after this function returns any button clicks that were
+        #stored up sent signals.  But they happen after fnction returns
+        #so can't figure out how to block them.  launch process in a
         #seperate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
         exepath = os.path.join(exepath, 'SinterConfigGUI.exe')
@@ -143,7 +152,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
         self.sinterConfigGUIButton.blockSignals(True)#this isn't working
         self.waiting.emit()
         process = subprocess.Popen([exepath, sinterConfigPath, tmp_file])
-        process.wait() 
+        process.wait()
         self.notwaiting.emit()
         try:
             with open(tmp_file, 'r') as f:
@@ -166,12 +175,12 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                     if f is not None:
                         self.files.append([f, os.path.join(di,f)])
                 self.updateFileTable()
-                self.appEdit.setText(a) 
+                self.appEdit.setText(a)
             except:
                 logging.getLogger("foqus." + __name__).exception(
                     "Error setting sinter config file")
         self.sinterConfigGUIButton.blockSignals(False)
-    
+
     def addTurbineConf(self):
         # Browse for a file
         fileNames, filtr = QtGui.QFileDialog.getOpenFileNames(
@@ -189,17 +198,17 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                     tbl, i, 0, tc.readConfigPeek(fn), editable = False)
                 gh.setTableItem(
                     tbl, i, 1, fn, editable = False)
-                
+
     def delTurbineConf(self):
         rows = self.selectedTCRows()
         for i in rows:
             self.tableWidget.removeRow(i)
-        
+
     def selectedTCRows(self):
         indx = reversed(sorted(set([
             item.row() for item in self.tableWidget.selectedItems()])))
         return indx
-            
+
     def updateTurbineTable(self):
         tc = self.dat.flowsheet.turbConfig
         localFile = self.dat.foqusSettings.turbConfig
@@ -251,13 +260,13 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
         elif self.multiRadio.isChecked():
             self.tableWidget.clearContents()
             self.tableWidget.setRowCount(0)
-            
+
     def accept(self):
         '''
-            If the okay button is press, use the simulation name and 
+            If the okay button is press, use the simulation name and
             sinter configuration file path from the dialog to attempt
-            to upload simulation files.  The Turbine configuration file 
-            is a global setting stored in self.dat.turbineConfFile. I'm 
+            to upload simulation files.  The Turbine configuration file
+            is a global setting stored in self.dat.turbineConfFile. I'm
             assuming you will want to use the same gateway for a session
         '''
         simName = self.simNameEdit.currentText()
@@ -266,7 +275,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
             # First update from table in case user edited resource name
             for i in range(2, len(self.files)):
                 self.files[i][0] = gh.getCellText(self.fileTable, i, 0)
-                self.files[i][1] = gh.getCellText(self.fileTable, i, 1) 
+                self.files[i][1] = gh.getCellText(self.fileTable, i, 1)
             other = self.files[2:]
         else:
             other = []
@@ -279,9 +288,9 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                 # try to upload config, simulation, and any extra files
                 self.turb.updateSettings(altConfig=tcfg)
                 self.turb.uploadSimulation(
-                    simName, 
+                    simName,
                     sinterConfigPath,
-                    update = True, 
+                    update = True,
                     otherResources = other)
             except Exception as e:
                 QtGui.QMessageBox.information(self, "Error", str(e))
@@ -294,13 +303,13 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
         # make sure the turbine version is set back to proper value.
         self.turb.updateSettings()
         self.done(QtGui.QDialog.Accepted)
-    
+
     def reject(self):
         '''
             If cancel just do nothing and close dialog
         '''
         self.done(QtGui.QDialog.Rejected)
-                
+
     def browseSinter(self):
         '''
             Browse for a Sinter configuration file.
@@ -335,7 +344,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                 i = self.simNameEdit.findText(simNameGuess)
                 self.simNameEdit.setCurrentIndex(i)
             self.simNameEdit.setFocus()
-                
+
     def addFile(self):
         '''
             Add additional files required for a simulation
@@ -351,7 +360,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
                 fileName = os.path.normpath(fileName)
                 self.files.append([os.path.basename(fileName),fileName])
         self.updateFileTable()
-    
+
     def removeFile(self):
         indx = reversed(sorted(set([
             item.row() \
@@ -360,7 +369,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
         for i in indx:
             self.files.pop(i)
         self.updateFileTable()
-        
+
     def setResRelPath(self):
         rows = set()
         for item in self.fileTable.selectedItems():
@@ -379,7 +388,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
             return
         relpath, ok = QtGui.QInputDialog.getText(
             self,
-            "Relative path", 
+            "Relative path",
             "Enter a relative path for selected resources:",
             QtGui.QLineEdit.Normal)
         if ok:
@@ -387,11 +396,7 @@ class gatewayUploadDialog(QtGui.QDialog, Ui_gatewayUploadDialog):
             relpath = relpath.strip('\\/')
         for row in rows:
             gh.setCellText(
-                self.fileTable, 
-                row, 
-                0, 
+                self.fileTable,
+                row,
+                0,
                 '\\'.join([relpath, self.files[row][0]]))
-            
-        
-        
-            

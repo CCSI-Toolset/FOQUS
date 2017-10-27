@@ -1,15 +1,25 @@
-from tagSelectDialog_UI import *
-from PySide import QtGui, QtCore
+#from tagSelectDialog_UI import *
+#from PySide import QtGui, QtCore
 import json
 
-class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
-    sendTag = QtCore.Signal( )     
-    
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_tagSelectDialogUI, _tagSelectDialog = \
+        uic.loadUiType(os.path.join(mypath, "tagSelectDialog_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+
+class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
+    sendTag = QtCore.pyqtSignal( )
+
     def __init__(self, dat, parent = None, lock = None):
         '''
             Constructor for model setup dialog
         '''
-        QtGui.QDialog.__init__(self, parent)
+        super(tagSelectDialog, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat     # all of the session data
         self.availTags = dict()
@@ -26,7 +36,7 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
         if text != '':
             self.addTag(text)
             self.updateAvailableTags()
-            
+
     def sendTagFunc(self):
         tlst = self.mainTagList.selectedItems()
         if tlst == []:
@@ -40,7 +50,7 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
     def updateAvailableTags(self):
         self.mainTagList.clear()
         self.updateAvailableTagsRec(self.availTags, self.mainTagList)
-    
+
     def updateAvailableTagsRec(self, tdict, item):
         for key in sorted( tdict.keys(), key = lambda s: s.lower() ):
             val = tdict[key]
@@ -53,21 +63,21 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
     def saveTags(self):
         with open('tags.tgs', 'w') as outfile:
             json.dump(self.availTags, outfile, indent=2)
-        
+
     def loadTags(self):
         try:
             with open('tags.tgs', 'r') as infile:
                 self.availTags = json.load(infile)
         except:
             self.defaultTags()
-            
+
     def accept(self):
         '''
             close the dialog and save the tags if there was a change
         '''
         if self.tagsChanged: self.saveTags()
         self.done(0)
-        
+
     def addTag(self, text):
         '''
             Add a tag to the main tag list

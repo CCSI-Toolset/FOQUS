@@ -1,17 +1,26 @@
-from foqus_lib.gui.flowsheet.edgePanel_UI import *
-from PySide import QtGui, QtCore
+#from foqus_lib.gui.flowsheet.edgePanel_UI import *
+#from PySide import QtGui, QtCore
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_edgeDockUI, _edgeDock = \
+        uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
+#super(, self).__init__(parent=parent)
+
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 import types
 
-class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
-    redrawFlowsheet = QtCore.Signal()
+class edgeDock(_edgeDock, _edgeDockUI):
+    redrawFlowsheet = QtCore.pyqtSignal()
 
     def __init__(self, dat, parent=None):
         '''
             Initialize the edge edit dock widget
         '''
-        QtGui.QDockWidget.__init__(self, parent)
+        super(edgeDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
@@ -48,16 +57,16 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
             a = gh.isCellChecked(self.connectTable, row, 2)[0]
             self.edge.addConnection(f, t, a)
         self.redrawFlowsheet.emit()
-        
+
     def changeIndex(self, index):
         if self.index != None:
             self.applyChanges()
         self.setEdgeIndex(index)
-        
+
     def setEdgeIndex(self, index):
         '''
             Set the index of the edge to display/edit
-            
+
             index:  the index of the edge in the graph
         '''
         if index == None:
@@ -100,7 +109,7 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
             self.curveBox.setText(str(self.edge.curve))
             self.updateNodeSelection()
             self.updateConnections()
-        
+
     def updateIndexBox(self):
         '''
             Add all edge indexes to the index combo and set the current
@@ -117,10 +126,10 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
         if len(self.dat.flowsheet.edges) > 0:
             self.edge = self.dat.flowsheet.edges[self.index]
         self.indexBox.blockSignals(False)
-        
+
     def updateNodeSelection(self):
         '''
-            Fill in the to and from node selection boxes and set the 
+            Fill in the to and from node selection boxes and set the
             current selection to match the selected edge
         '''
         self.fromBox.blockSignals( True )
@@ -139,7 +148,7 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
             self.toBox.setCurrentIndex(index)
         self.fromBox.blockSignals( False )
         self.toBox.blockSignals( False )
-        
+
     def updateConnections(self):
         '''
             Update the connection table from the currently selected edge.
@@ -158,7 +167,7 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
         else:
             self.connectTable.setRowCount( 0 )
         self.connectTable.resizeColumnsToContents()
-        
+
     def autoConnect(self):
         N1In  = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
         N1Out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
@@ -167,7 +176,7 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
             if var in N2In:  self.addConnection(var, var)
         for var in N1In:
             if var in N2In:  self.addConnection(var, var)
-                
+
     def addConnection(self, fv ="", tv=""):
         self.connectTable.setRowCount( self.connectTable.rowCount() + 1 )
         vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
@@ -179,7 +188,7 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
         gh.setTableItem( self.connectTable, i, 1, tv, pullDown = vars2 )
         gh.setTableItem( self.connectTable, i, 2, "", check = True, editable = False )
         self.connectTable.resizeColumnsToContents()
-    
+
     def delConnection(self):
         indexes = self.connectTable.selectedIndexes()
         delRowSet = sorted(list(set([index.row() for index in indexes])), reverse = True)
@@ -193,4 +202,4 @@ class edgeDock(QtGui.QDockWidget, Ui_edgeDock):
         self.applyChanges()
         self.lockConnection.setChecked(True)
         event.accept()
-        self.mw.toggleEdgeEditorAction.setChecked(False)  
+        self.mw.toggleEdgeEditorAction.setChecked(False)

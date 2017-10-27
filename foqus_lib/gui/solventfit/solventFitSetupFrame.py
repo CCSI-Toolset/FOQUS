@@ -1,7 +1,8 @@
 import sys, shutil
-import PySide
-from PySide.QtGui import *
-from PySide.QtCore import *
+import PyQt5
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -14,16 +15,22 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.gui.uq import RSCombos
 from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
 
-from solventFitSetupFrame_UI import Ui_Frame
+#from solventFitSetupFrame_UI import Ui_Frame
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_solventFitSetupFrameUI, _solventFitSetupFrame = \
+        uic.loadUiType(os.path.join(mypath, "solventFitSetupFrame.ui"))
+#super(, self).__init__(parent=parent)
 
-class solventFitSetupFrame(QFrame, Ui_Frame):
+
+class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
 
     #def __init__(self, wizardMode = False, userRegressionFile = None, parent=None):
 
     def init(self, wizardMode = False, userRegressionFile = None, parent=None):
-        #super(solventFitSetupFrame, self).__init__(parent)
-        self.parent = parent
+        super(solventFitSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
         #self.originalData = data
         #data = data.getValidSamples() # filter out samples that have no output results
@@ -211,7 +218,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
         self.data = data
 
         Common.initFolder(RSInferencer.dname)
-        
+
         nSamples = data.getNumSamples()
         nInputs = data.getNumInputs()
 
@@ -318,12 +325,12 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
             self.discrepancySave_chkbox.setEnabled(False)
             self.discrepancySave_edit.setEnabled(False)
             self.discrepancySave_button.setEnabled(False)
-            
+
     def activateDiscrepancySave(self):
         b = self.discrepancySave_chkbox.isChecked()
         self.discrepancySave_edit.setEnabled(b)
         self.discrepancySave_button.setEnabled(b)
-        
+
     def setDiscrepancyFile(self):
         fname = self.discrepancySave_edit.text()
         fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save posterior input samples', fname)
@@ -347,7 +354,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
         self.outputMeans = [0] * nOutputs
         self.outputStdDevs = [0] * nOutputs
         for i in xrange(nOutputs):
-            
+
             # compute mean and standard deviation
             yi = y[:,i]
             mu = np.mean(yi)
@@ -470,7 +477,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
             msgbox.exec_()
             #combobox.setCurrentIndex(0)
             return
-        
+
         showMessage = False
         mcmcNumDesign = self.inputPrior_table.getNumDesignVariables()
         if fname.endswith('.csv'):
@@ -558,7 +565,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
         self.setObsTableRowCount(numRows)
         self.obs_table.setColumnCount(numCols)
         self.obsTableValues.clear()
-        
+
         ## Fill in column names
         labels = []
         designVariables, indices = self.inputPrior_table.getDesignVariables()
@@ -611,7 +618,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
             if chkbox is not None and chkbox.isChecked():
                 count += 1
         return count
-        
+
     def getObservedOutputsIndices(self):
         count = 0
         indices = []
@@ -689,7 +696,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
 
         self.replot_button.setEnabled(False)
         self.trainingAllowReplot = False
-        
+
         showList = self.inputPrior_table.getShowInputList()
         if self.checkOutputTable() and self.checkObs() and \
            self.inputPrior_table.checkValidInputs()[0] and len(showList) > 0:
@@ -744,7 +751,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
         if self.inf_button.text() == 'Infer':
             if os.path.exists('psuade_stop'):
                 os.remove('psuade_stop')
-            
+
             # check arguments
             if not self.activateInfButton():
                 return
@@ -874,7 +881,7 @@ class solventFitSetupFrame(QFrame, Ui_Frame):
 
     def replot(self):
         self.freeze()
-        
+
         showList = self.inputPrior_table.getShowInputList()
         if len(showList) == 0:
             QMessageBox.information(self, 'Bayesian Inference Plot', 'At least one input must be selected for display.')

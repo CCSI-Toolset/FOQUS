@@ -17,9 +17,9 @@
     in one of the aforementioned agreements.
 '''
 
-from dmfUploadDialog_UI import Ui_dmfUploadDialog
+#from dmfUploadDialog_UI import Ui_dmfUploadDialog
 import foqus_lib.gui.helpers.guiHelpers as gh
-from PySide import QtGui, QtCore
+#from PySide import QtGui, QtCore
 import os
 import json
 import logging
@@ -51,18 +51,28 @@ except:
 from urllib2 import urlopen
 from StringIO import StringIO
 
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_dmfUploadDialogUI, _dmfUploadDialog = \
+        uic.loadUiType(os.path.join(mypath, "dmfUploadDialog_UI.ui"))
+#super(, self).__init__(parent=parent)
 
-class dmfUploadDialog(QtGui.QDialog, Ui_dmfUploadDialog):
+
+
+class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
     '''
         This class provides a dialog box that allows you to create,
         upload and update simulations to the DMF.
     '''
-    waiting = QtCore.Signal()  # signal for start waiting on long task
-    notwaiting = QtCore.Signal()  # signal the task is done
+    waiting = QtCore.pyqtSignal()  # signal for start waiting on long task
+    notwaiting = QtCore.pyqtSignal()  # signal the task is done
 
     def __init__(self, dat, turbConfig, parent=None):
         ''' Initialize dialog '''
-        QtGui.QDialog.__init__(self, parent)
+        super(dmfUploadDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.root = parent
         self.dat = dat

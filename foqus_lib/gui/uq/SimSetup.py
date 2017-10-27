@@ -2,11 +2,11 @@ import sys
 import copy
 import tempfile
 import subprocess
-import PySide
+#import PySide
 import numpy
 import platform
-from PySide.QtGui import *
-from PySide.QtCore import *
+#from PySide.QtGui import *
+#from PySide.QtCore import *
 
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.framework.uq.Model import Model
@@ -19,27 +19,36 @@ from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
 from Preview import Preview
 from InputPriorTable import InputPriorTable
 
+#from SimSetup_UI import Ui_Dialog
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
+    QAbstractItemView, QDialogButtonBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_SimSetupUI, _SimSetup = \
+        uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
+#super(, self).__init__(parent=parent)
 
-from SimSetup_UI import Ui_Dialog
 
-class SimSetup(QDialog, Ui_Dialog):
-    
+class SimSetup(_SimSetup, _SimSetupUI):
+
     SCHEME_PAGE_INDEX = 0
     LOAD_PAGE_INDEX = 1
     FLOWSHEET_PAGE_INDEX = 2
-    
+
     def __init__(self, model, session, viewOnly = False, parent=None):
         super(SimSetup, self).__init__(parent)
-        
+
         self.setupUi(self)
         self.viewOnly = viewOnly
         self.sampleFileSet = set() # Contains which inputs are of the distribution "Sample from File"
-        
+
         self.fsDataBrowser = dataBrowserFrame(session, self)
-        self.dataViewWidget.setLayout(QStackedLayout(self.dataViewWidget)) 
+        self.dataViewWidget.setLayout(QStackedLayout(self.dataViewWidget))
         self.dataViewWidget.layout().addWidget(self.fsDataBrowser)
         self.fsDataBrowser.refreshContents()
-        
+
         self.fileLoaded = False
         self.samplesGenerated = False
 
@@ -47,7 +56,7 @@ class SimSetup(QDialog, Ui_Dialog):
 
         self.model = model
         self.session = session
-        
+
         if isinstance(model, Model):
             data = SampleData(model)
             dists = []
@@ -96,7 +105,7 @@ class SimSetup(QDialog, Ui_Dialog):
         # Make sure distribution tab is showing
         self.samplingTabs.setCurrentIndex(0)
         self.samplingTabs.currentChanged[int].connect(self.checkDists)
-        
+
         # Set up distributions table
         self.distTable.init(model, InputPriorTable.SIMSETUP, viewOnly = viewOnly)
 
@@ -277,7 +286,7 @@ class SimSetup(QDialog, Ui_Dialog):
 
         self.loadData.setInputData(resultData)
         self.loadData.setRunState([False] * numSamples)
-        
+
     def makeAllFixed(self):
 #        self.setAllTypeButtons(Model.FIXED)
         self.distTable.makeAllFixed()
@@ -416,7 +425,7 @@ class SimSetup(QDialog, Ui_Dialog):
             msgbox.exec_()
             return
 
-                
+
     ### Sampling schemes methods
     def showAllSchemes(self):
         if self.chooseSchemeRadio.isChecked():
@@ -431,7 +440,7 @@ class SimSetup(QDialog, Ui_Dialog):
                 item.setText(text + ' (Not installed)')
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
-        
+
     def showParamScreenSchemes(self):
         if self.paramScreenRadio.isChecked():
             self.schemesList.clear()
@@ -459,12 +468,12 @@ class SimSetup(QDialog, Ui_Dialog):
             self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.LPTAU))
             self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.LH))
             self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.OA))
-            
+
     def handleGenerateSamplesButton(self):
         self.generateSamplesButton.setEnabled(self.schemesList.currentRow() != -1)
-        
+
     def generateSamples(self):
-        self.setModal(False)    
+        self.setModal(False)
 
         # Gather all info into SampleData object
         if isinstance(self.model, Model):
@@ -501,12 +510,12 @@ class SimSetup(QDialog, Ui_Dialog):
                     text = self.distTable.item(row,1).text()
                 else:
                     text = combobox.currentText()
-                    
+
                 if text == 'Fixed':
                     value = Model.FIXED
                 else:
                     value = Model.VARIABLE
-                    
+
                 types.append(value)
                 if value == Model.VARIABLE:
                     selectedInputs.append(inputNum)
@@ -521,7 +530,7 @@ class SimSetup(QDialog, Ui_Dialog):
                 #Mins
                 item = self.distTable.item(row, 3)
                 mins.append(float(item.text()))
-                    
+
                 #Maxs
                 item = self.distTable.item(row, 4)
                 maxs.append(float(item.text()))
@@ -532,7 +541,7 @@ class SimSetup(QDialog, Ui_Dialog):
                 defaults.append(modelDefaults[inputNum])
                 mins.append(modelMins[inputNum])
                 maxs.append(modelMaxs[inputNum])
-                
+
 
         # Update model
         model.setInputTypes(types)
@@ -568,7 +577,7 @@ class SimSetup(QDialog, Ui_Dialog):
 
                 if dist == Distribution.SAMPLE:
                     numSampleFromFile += 1
-                    
+
                 dists += [self.distTable.getDistribution(row)]
 
                 row += 1
@@ -577,7 +586,7 @@ class SimSetup(QDialog, Ui_Dialog):
                 dists = dists + [dist]
 
         runData.setInputDistributions(dists)
-            
+
         numSamples = int(self.numSamplesBox.value())
         runData.setNumSamples(numSamples)
         runData.setSampleMethod(scheme)
@@ -610,7 +619,7 @@ class SimSetup(QDialog, Ui_Dialog):
                 firstValButton = msgbox.addButton('Change to %d samples' % newNumSamples[0], QMessageBox.AcceptRole)
                 secondValButton = msgbox.addButton('Change to %d samples' % newNumSamples[1], QMessageBox.AcceptRole)
                 cancelButton = msgbox.addButton(QMessageBox.Cancel)
-                
+
                 msgbox.exec_()
                 if msgbox.clickedButton() == firstValButton:
                     runData.setNumSamples(int(newNumSamples[0]))
@@ -618,14 +627,14 @@ class SimSetup(QDialog, Ui_Dialog):
                     runData.setNumSamples(int(newNumSamples[1]))
                 else:
                     return
-            
+
 
         # Visual indications of processing
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.generateStatusText.setText('Generating...')
         self.generateStatusText.repaint()
 
-        # Generate samples for the variable inputs                       
+        # Generate samples for the variable inputs
         selectedRunData = ExperimentalDesign.generateSamples(runData, selectedInputs, self.model.getSelectedOutputs())
         if selectedRunData is None:
             QApplication.restoreOverrideCursor()
@@ -660,7 +669,7 @@ class SimSetup(QDialog, Ui_Dialog):
             self.runData.archiveFile('psuadeMetisInfo')
             self.currentArchiveData = self.runData
 
-        # Restore cursor                            
+        # Restore cursor
         QApplication.restoreOverrideCursor()
         self.generateStatusText.setText('Done!')
 
@@ -675,7 +684,7 @@ class SimSetup(QDialog, Ui_Dialog):
         else:
             previewData = self.runData
 
-        self.setModal(False)    
+        self.setModal(False)
         dialog = Preview(previewData, self)
         dialog.exec_()
 
@@ -688,9 +697,9 @@ class SimSetup(QDialog, Ui_Dialog):
             returnData = LocalExecutionModule.readSampleFromPsuadeFile("temp/psuadeData2.tmp")
         else:
             returnData = self.runData
-        return returnData   
+        return returnData
 
-                
+
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     fileName = 'C:\\Users\\ou3.THE-LAB\\Documents\CCSI\\pt6_optimize\\sim-based_optimize\\trunk\\examples\\UQ\\lptau5k_10inputs_4outputs.filtered'

@@ -16,10 +16,10 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from foqus_lib.gui.flowsheet.nodePanel_UI import *
+#from foqus_lib.gui.flowsheet.nodePanel_UI import *
 from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
-from PySide import QtGui, QtCore
+#from PySide import QtGui, QtCore
 import foqus_lib.gui.helpers.guiHelpers as gh
 import types
 import platform
@@ -34,15 +34,24 @@ except:
         .exception('Failed to import or launch DMFBrowser')
 from foqus_lib.framework.uq.Distribution import Distribution
 
-class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
-    redrawFlowsheet = QtCore.Signal() # request flowsheet redraw
-    waiting = QtCore.Signal() # indicates a task is going take a while
-    notwaiting = QtCore.Signal() # indicates a wait is over
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_nodeDockUI, _nodeDock = \
+        uic.loadUiType(os.path.join(mypath, "nodePanel_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+class nodeDock(_nodeDock, _nodeDockUI):
+    redrawFlowsheet = QtCore.pyqtSignal() # request flowsheet redraw
+    waiting = QtCore.pyqtSignal() # indicates a task is going take a while
+    notwaiting = QtCore.pyqtSignal() # indicates a wait is over
     def __init__(self, dat, parent=None):
         '''
             Node view/edit dock widget constructor
         '''
-        QtGui.QDockWidget.__init__(self, parent)
+        super(nodeDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
@@ -124,7 +133,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             m = self.node.modelName
             if m not in sl:
                 #show a warning message
-                QtGui.QMessageBox.warning(
+                QtWidgets.QMessageBox.warning(
                     self,
                     "Turbine Model Not Available",
                     ("The Turbine model specified for this node is not "
@@ -228,7 +237,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
         #        str(self.nodeNameBox.currentText()))
         #    self.nodeName = str(self.nodeNameBox.text())
         #except:
-        #    QtGui.QMessageBox.warning(
+        #    QtWidgets.QMessageBox.warning(
         #        self,
         #        "Invalid Name",
         #        ("The new node name is probably already being used. "
@@ -622,9 +631,9 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             row += 1
         table.resizeColumnsToContents()
         self.inputVarTable.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.inputVarTable.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
+            QtWidgets.QAbstractItemView.SelectRows)
 
     def updateOutputVariables(self):
         '''
@@ -661,9 +670,9 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             row += 1
         table.resizeColumnsToContents()
         self.outputVarTable.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+            QtWidgets.QAbstractItemView.ExtendedSelection)
         self.outputVarTable.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
+            QtWidgets.QAbstractItemView.SelectRows)
 
     def updateSettingsTable(self):
         '''

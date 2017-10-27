@@ -1,7 +1,7 @@
 import sys
-import PySide
-from PySide.QtGui import *
-from PySide.QtCore import *
+#import PySide
+#from PySide.QtGui import *
+#from PySide.QtCore import *
 
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
@@ -9,9 +9,19 @@ from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.RSInference import RSInferencer
 
-from Preview_UI import Ui_Dialog
+#from Preview_UI import Ui_Dialog
 
-class Preview(QDialog, Ui_Dialog):
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
+    QAbstractItemView, QDialogButtonBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_PreviewUI, _Preview = \
+        uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+class Preview(_Preview, _PreviewUI):
     def __init__(self, data, parent=None):
         super(Preview, self).__init__(parent)
         self.setupUi(self)
@@ -64,7 +74,7 @@ class Preview(QDialog, Ui_Dialog):
         inputTypes = self.data.getInputTypes()
         inputNames = self.data.getInputNames()
         numSamplesAdded = self.data.getNumSamplesAdded()
-        
+
         # Set up table
         self.table.setColumnCount(self.data.getNumInputs())
         headers = []
@@ -84,7 +94,7 @@ class Preview(QDialog, Ui_Dialog):
                     if item is None:
                         item = QTableWidgetItem('%g' % inputData[r][i])
                         if r >= inputData.shape[0] - numSamplesAdded:
-                            item.setBackground(refinedColor)                                       
+                            item.setBackground(refinedColor)
                         self.table.setItem(r, c, item)
                     else:
                         item.setText('%g' % inputData[r][i])
@@ -142,7 +152,7 @@ class Preview(QDialog, Ui_Dialog):
         indices = [0] * len(selected)
         for i,item in enumerate(selected):
             indices[i] = item.getInputIndex() + 1
-        
+
         self.data.writeToPsuade('previewData')
         Common.initFolder(Visualizer.dname)
         self.setModal(False)
@@ -160,7 +170,3 @@ class Preview(QDialog, Ui_Dialog):
         # plot
         cmd = 'iplot2'
         Visualizer.xScatter('previewData', indices, cmd, newSamples)
-
-            
-        
-

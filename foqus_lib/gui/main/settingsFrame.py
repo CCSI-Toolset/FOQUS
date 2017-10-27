@@ -16,8 +16,8 @@
 '''
 from foqus_lib.gui.main.turbineConfig import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
-from settingsFrame_UI import *
-from PySide import QtGui, QtCore
+#from settingsFrame_UI import *
+#from PySide import QtGui, QtCore
 import logging
 import time
 import re
@@ -30,19 +30,28 @@ import xml.etree.ElementTree as ET
 if os.name == 'nt':
     import win32process
 
-class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_settingsFrameUI, _settingsFrame = \
+        uic.loadUiType(os.path.join(mypath, "settingsFrame_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+class settingsFrame(_settingsFrame, _settingsFrameUI):
     '''
         This class is a dialog box that allows you to view and change
         general FOQUS settings.  It's called log settings because it
         started out with only log settings.
     '''
-    waiting = QtCore.Signal() # indicates a task is going take a while
-    notwaiting = QtCore.Signal() # indicates a wait is over
+    waiting = QtCore.pyqtSignal() # indicates a task is going take a while
+    notwaiting = QtCore.pyqtSignal() # indicates a wait is over
     def __init__(self, dat, parent=None):
         '''
             Initialize FOQUS settings dialog
         '''
-        QtGui.QFrame.__init__(self, parent)
+        super(settingsFrame, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat
         # translate the slider value into a logging level

@@ -1,7 +1,7 @@
 import platform
-from foqus_lib.gui.uq.updateUQModelDialog_UI import *
-from PySide import QtGui, QtCore
-from PySide.QtGui import QFileDialog, QListWidgetItem, QAbstractItemView, QDialogButtonBox
+#from foqus_lib.gui.uq.updateUQModelDialog_UI import *
+#from PySide import QtGui, QtCore
+#from PySide.QtGui import QFileDialog, QListWidgetItem, QAbstractItemView, QDialogButtonBox
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.uq.flowsheetToUQModel import *
 from foqus_lib.framework.uq.Model import *
@@ -9,9 +9,19 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.ResponseSurfaces import *
 from foqus_lib.framework.uq.Common import Common
 
-class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
+    QAbstractItemView, QDialogButtonBox
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_updateUQModelDialogUI, _updateUQModelDialog = \
+        uic.loadUiType(os.path.join(mypath, "updateUQModelDialog_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
     def __init__(self, dat, parent=None):
-        QtGui.QDialog.__init__(self, parent)
+        super(updateUQModelDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
 
@@ -27,7 +37,7 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
         self.browseButton.clicked.connect(self.getDataFileName)
         self.outputList.setSelectionMode(QAbstractItemView.ExtendedSelection)
         self.outputList.itemClicked.connect(self.checkItemSelected)
-        
+
         self.show()
 
     class listItem(QListWidgetItem):
@@ -49,13 +59,13 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
 
             button = self.buttonBox.button(QDialogButtonBox.Ok)
             button.setEnabled(True)
-        
+
     def showEmulatorOption(self):
         if self.emulatorRadioButton.isChecked():
             self.dataFileLabel.setEnabled(True)
             self.dataFileEdit.setEnabled(True)
             self.browseButton.setEnabled(True)
-            
+
             enableSelection = len(self.dataFileEdit.text()) > 0
             self.outputLabel.setEnabled(enableSelection)
             self.outputList.setEnabled(enableSelection)
@@ -87,7 +97,7 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
         data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
         self.outputList.clear()
         for i, name in enumerate(data.getOutputNames()):
-            item = updateUQModelDialog.listItem(name, i) 
+            item = updateUQModelDialog.listItem(name, i)
             self.outputList.addItem(item)
         RSType = data.getSampleRSType()
         legendreOrder = None
@@ -98,16 +108,16 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
         if legendreOrder:
             statsText = statsText + '\nLegendre Order: ' + str(legendreOrder)
         self.fileStatsLabel.setText(statsText)
-        
+
     def checkItemSelected(self, item):
         items = self.outputList.selectedItems()
         enable = (len(items) != 0)
         button = self.buttonBox.button(QDialogButtonBox.Ok)
         #print enableSelection, outputsChosen
         button.setEnabled(enable)
-            
-                        
-                                                    
+
+
+
     def accept(self):
         if self.nodeRadioButton.isChecked():
             self.dat.uqModel = flowsheetToUQModel(self.dat.flowsheet)
@@ -125,7 +135,7 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
                 indices.append(index)
                 outputNames.append(origOutputNames[index])
             outputData = origOutputData[:, indices]
-            
+
             data.model.setRunType(Model.EMULATOR)
             data.model.setOutputNames(outputNames)
             data.model.setSelectedOutputs(range(len(outputNames)))
@@ -136,7 +146,7 @@ class updateUQModelDialog(QtGui.QDialog, Ui_updateUQModelDialog):
             newFileName = fnameRoot + '.emulatorTrainData'
             data.writeToPsuade(newFileName)
             data.setEmulatorTrainingFile(newFileName)
-            self.dat.uqModel = data.model      
+            self.dat.uqModel = data.model
         self.done(QtGui.QDialog.Accepted)
 
     def reject(self):

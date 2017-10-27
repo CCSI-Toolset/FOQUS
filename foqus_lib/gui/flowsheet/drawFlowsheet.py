@@ -16,12 +16,13 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from PySide import QtGui, QtCore
+from PyQt5 import QtGui, QtCore, QtWidgets
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView
 from foqus_lib.framework.graph import *
 import math
 import types
 
-class fsScene(QtGui.QGraphicsScene):
+class fsScene(QGraphicsScene):
     '''
         Class for viewing and editing a flowsheet.
     '''
@@ -38,7 +39,7 @@ class fsScene(QtGui.QGraphicsScene):
         '''
             Initialize the flowsheet display
         '''
-        QtGui.QGraphicsScene.__init__(self, parent)
+        super(fsScene, self).__init__(parent)
         # Location of mouse events and whether the mouse button is down
         self.mouseDown = False
         self.pressX = 0.0
@@ -332,7 +333,7 @@ class fsScene(QtGui.QGraphicsScene):
 
     def deleteSelected(self):
         '''
-            Delete the selected nodes and edges then redraw 
+            Delete the selected nodes and edges then redraw
             the flowsheet
         '''
         self.p.dat.flowsheet.deleteEdges(self.selectedEdges)
@@ -341,7 +342,7 @@ class fsScene(QtGui.QGraphicsScene):
         self.selectedNodes = []
         self.p.noneSelectedEmit()
         self.p.createScene()
-        
+
     def mouseMoveEvent(self, evnt):
         '''
             If the mouse button is held down move selected nodes
@@ -361,8 +362,8 @@ class fsScene(QtGui.QGraphicsScene):
             self.p.dat.flowsheet.nodes[node].y = y
         self.p.createScene()
         self.p.updateFSPos.emit() # update the flowsheet and node editor
-    
-    def mousePressEvent(self, evnt, 
+
+    def mousePressEvent(self, evnt,
         dbg_x=None, dbg_y=None, dbg_mod=None, dbg_name=None):
         '''
             The mouse was clicked on the flowsheet editor window.  Check
@@ -399,9 +400,9 @@ class fsScene(QtGui.QGraphicsScene):
                 self.selectedNodes.append(itemIndex)
                 self.p.nodeSelectedEmit( self.selectedNodes[-1] )
             elif mod != QtCore.Qt.SHIFT:
-                # don't clear the selection if shift is down this 
-                # prevents you form selecting a bunch of stuff an 
-                # mistakenly clearing it all because you missed what 
+                # don't clear the selection if shift is down this
+                # prevents you form selecting a bunch of stuff an
+                # mistakenly clearing it all because you missed what
                 # you were aiming for.
                 self.selectedEdges = []
                 self.selectedNodes = []
@@ -411,19 +412,19 @@ class fsScene(QtGui.QGraphicsScene):
         elif self.mode == self.MODE_ADDNODE:
             xg, yg = self.nearestGrid(x,y)
             if dbg_name is None:
-                name, ok = QtGui.QInputDialog.getText(
-                    self.p, 
-                    "Node Name", 
-                    "New node name:", 
-                    QtGui.QLineEdit.Normal)
+                name, ok = QtWidgets.QInputDialog.getText(
+                    self.p,
+                    "Node Name",
+                    "New node name:",
+                    QtWidgets.QLineEdit.Normal)
             else:
                 ok=True
                 name=dbg_name
             if ok and name != '':
                 if name in self.p.dat.flowsheet.nodes:
-                    QtGui.QMessageBox.warning(
-                        self.p, 
-                        "Invalid Name", 
+                    QtWidgets.QMessageBox.warning(
+                        self.p,
+                        "Invalid Name",
                         "That node name is already being used.")
                     return
                 self.p.dat.flowsheet.addNode(name, xg, yg, 0)
@@ -440,7 +441,7 @@ class fsScene(QtGui.QGraphicsScene):
                     self.selectedNodes.append(itemIndex)
                     if self.selectedNodes[0] != self.selectedNodes[1]:
                         ind = self.p.dat.flowsheet.addEdge(
-                            self.selectedNodes[0], 
+                            self.selectedNodes[0],
                             self.selectedNodes[1])
                         self.p.updateEdgeEditEmit()
                     self.selectedNodes = []
@@ -453,25 +454,25 @@ class fsScene(QtGui.QGraphicsScene):
                 self.p.dat.flowsheet.nodes[node].x,
                 self.p.dat.flowsheet.nodes[node].y)
 
-class drawFlowsheet(QtGui.QGraphicsView):
+class drawFlowsheet(QGraphicsView):
     '''
         This is the widget for viewing a flowsheet the actual drawing
         and event handing is done by the fsSecne object contained in
         drawFlowsheet object
     '''
-    nodeSelected = QtCore.Signal([types.StringType])
-    edgeSelected = QtCore.Signal([types.IntType])
-    noneSelected = QtCore.Signal()
-    updateFS = QtCore.Signal()
-    updateFSPos = QtCore.Signal()
-    updateEdgeEdit = QtCore.Signal()
-    
+    nodeSelected = QtCore.pyqtSignal([types.StringType])
+    edgeSelected = QtCore.pyqtSignal([types.IntType])
+    noneSelected = QtCore.pyqtSignal()
+    updateFS = QtCore.pyqtSignal()
+    updateFSPos = QtCore.pyqtSignal()
+    updateEdgeEdit = QtCore.pyqtSignal()
+
     def __init__(self, dat, parent=None):
         '''
             Initialize drawFlowsheet widget
         '''
         # call __init__ form base class
-        QtGui.QGraphicsView.__init__(self, parent)
+        super(drawFlowsheet, self).__init__(parent)
         # create and set scene object
         self.sc = fsScene(self)
         self.setScene(self.sc)
@@ -502,18 +503,18 @@ class drawFlowsheet(QtGui.QGraphicsView):
             self.scene().drawNode(node.x,node.y,name,node.modelName)
         # redraw the scene
         self.scene().update()
-        
+
     def highlightSingleNode(self, name):
         print name
         self.scene().selectedNodes = [name]
         self.scene().selectedEdges = []
         self.createScene()
-        
+
     def clearSelection(self):
         self.scene().selectedNodes = []
         self.scene().selectedEdges = []
         self.noneSelectedEmit()
-        
+
     def updateEdgeEditEmit(self):
         '''
             Send a signal to update the edge editor.
@@ -530,8 +531,8 @@ class drawFlowsheet(QtGui.QGraphicsView):
 
     def edgeSelectedEmit(self, edge):
         '''
-            Send a signal that an edge was seslected.  You can select 
-            multiple edges, but only the last on selected is used to 
+            Send a signal that an edge was seslected.  You can select
+            multiple edges, but only the last on selected is used to
             open the edge editor
         '''
         self.edgeSelected.emit(edge)

@@ -1,3 +1,0 @@
-The py4j module is released under the BSD license.
-
-

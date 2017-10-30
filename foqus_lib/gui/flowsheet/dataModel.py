@@ -1,7 +1,7 @@
 '''
     dataModel.py
-     
-    * This is a data model for displaying flowsheet results in a 
+
+    * This is a data model for displaying flowsheet results in a
       table view.
 
     John Eslick, Carnegie Mellon University, 2014
@@ -9,15 +9,15 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from PySide import QtGui, QtCore
+from PyQt5 import QtCore
 import json
 
 class dataModel(QtCore.QAbstractTableModel):
@@ -27,19 +27,19 @@ class dataModel(QtCore.QAbstractTableModel):
     def __init__(self, results, parent = None):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.results = results
-    
+
     def rowCount(self, parent=QtCore.QModelIndex()):
         '''
             Return the number of rows in a column
         '''
         return self.results.rowCount(filtered=True)
-    
+
     def columnCount(self, parent=QtCore.QModelIndex()):
         '''
             Returns the number of columns in a table
         '''
         return self.results.colCount()
-    
+
     def flags(self, index):
         '''
             If the result header column has a set function add the
@@ -48,9 +48,9 @@ class dataModel(QtCore.QAbstractTableModel):
         flags = QtCore.QAbstractTableModel.flags(self, index) \
             |  QtCore.Qt.ItemIsEditable
         return flags
-        
+
     def data(
-        self, index=QtCore.QModelIndex(), 
+        self, index=QtCore.QModelIndex(),
         role=QtCore.Qt.DisplayRole):
         '''
             Return the data to display in a cell.  Should return a json
@@ -67,7 +67,7 @@ class dataModel(QtCore.QAbstractTableModel):
                index.row(), index.column(), filtered = True))
         else:
             return None
-            
+
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         '''
             Called to set the value of a cell.  This will edit the result
@@ -75,15 +75,15 @@ class dataModel(QtCore.QAbstractTableModel):
         '''
         if role == QtCore.Qt.EditRole:
             self.results.setTableData(
-                index.row(), 
-                index.column(), 
+                index.row(),
+                index.column(),
                 value,
                 filtered = True)
             return True
-        
+
     def headerData(self, i, orientation, role=QtCore.Qt.DisplayRole):
         '''
-            Return the column headings for the horizontal header and 
+            Return the column headings for the horizontal header and
             index numbers for the vertical header.
         '''
         if orientation == QtCore.Qt.Horizontal and \

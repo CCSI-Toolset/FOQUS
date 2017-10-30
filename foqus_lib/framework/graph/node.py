@@ -33,8 +33,7 @@ from nodeVars import *
 from nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
-from foqus_lib.framework.sim.turbineConfiguration\
-    import TurbineInterfaceEx
+from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 try:
     from dmf_lib.dmf_browser import DMFBrowser
     from dmf_lib.common.common import CCSI_EMBEDDED_METADATA

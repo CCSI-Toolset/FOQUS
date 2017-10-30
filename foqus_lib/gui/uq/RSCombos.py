@@ -1,8 +1,7 @@
 import time
-import PySide
 import numpy
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
+from PyQt5.QtCore import pyqtSignal
 
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.ResponseSurfaces import *
@@ -20,7 +19,7 @@ class RSCombo1(QComboBox):
              marsBasisSpin = None, marsBasisCaption = None,
              marsDegreeSpin = None, marsDegreeCaption = None):
             # Call this after combo2 init()
-            
+
         self.setEnabled(True)
         self.combo2SetFile = combo2SetFile
         self.marsBasisSpin = marsBasisSpin
@@ -31,7 +30,7 @@ class RSCombo1(QComboBox):
         nSamples = data.getNumSamples()
         nInputs = data.getNumInputs()
         self.combo2 = combo2
-        
+
         rs = ['Polynomial ->', 'MARS ->']
         #rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.SVM))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.GP))
@@ -45,7 +44,7 @@ class RSCombo1(QComboBox):
         # ... disable polynomial RS if not sufficient samples for linear regression
         disable = []
         items = [None]*len(rs)
-        
+
         # Reset all items to default text and enable before disabling
         self.clear()
         self.addItems(rs)
@@ -55,7 +54,7 @@ class RSCombo1(QComboBox):
             index = model.index(i, 0)
             item = model.itemFromIndex(index)
             item.setEnabled(True)
-        
+
         i = poly
         if not RSAnalyzer.checkSampleSize(nSamples, nInputs, ResponseSurfaces.LINEAR):
             disable.append(i)
@@ -92,7 +91,7 @@ class RSCombo1(QComboBox):
             disable.reverse()
             for i in disable:
                 self.removeItem(i)
-        else:            
+        else:
             for i in disable:
                 self.setItemText(i, items[i])
                 model = self.model()
@@ -102,7 +101,7 @@ class RSCombo1(QComboBox):
         if len(disable) == len(rs):
             self.setEnabled(False)
             combo2.showNothing()
-        else:            
+        else:
             # enableSet = set([poly, mars, svm, krig, sot, knn, rbf, user]) - set(disable)
             enableSet = set([poly, mars, gp, krig, sot, knn, rbf, user]) - set(disable)
             enableFirstItem = min(enableSet)
@@ -116,7 +115,7 @@ class RSCombo1(QComboBox):
             else:
                 combo2.showNothing()
 
-            if not removeDisabled:            
+            if not removeDisabled:
                 self.setCurrentIndex(enableFirstItem)
             self.setEnabled(True)
             for widget in [marsBasisSpin, marsBasisCaption,
@@ -146,11 +145,11 @@ class RSCombo1(QComboBox):
             if widget is not None:
                 widget.setEnabled(showMarsWidgets)
 
-            
+
 class RSCombo2(QComboBox):
     userFiles = []
-    fileAdded = Signal()
-    
+    fileAdded = pyqtSignal()
+
     def __init__(self, parent = None):
         super(RSCombo2, self).__init__(parent)
         self.data = None
@@ -190,7 +189,7 @@ class RSCombo2(QComboBox):
         nSamples = data.getNumSamples()
         nInputs = data.getNumInputs()
 
-        polyRS = [ResponseSurfaces.LINEAR, ResponseSurfaces.QUADRATIC, 
+        polyRS = [ResponseSurfaces.LINEAR, ResponseSurfaces.QUADRATIC,
                   ResponseSurfaces.CUBIC, ResponseSurfaces.QUARTIC]
         enable = []
         for rs in polyRS:
@@ -270,12 +269,12 @@ class RSCombo2(QComboBox):
         #self.legendreSpin.setValue(1)
         rs = self.currentText()
         self.enableLegendre(rs.startswith('Legendre'))
-            
+
     def enableLegendre(self, enable):
         if self.legendreCaption is not None:
             self.legendreCaption.setEnabled(enable)
         self.legendreSpin.setEnabled(enable)
-        
+
 class MarsBasisSpinBox(QSpinBox):
     def __init__(self, parent = None):
         super(MarsBasisSpinBox, self).__init__(parent)

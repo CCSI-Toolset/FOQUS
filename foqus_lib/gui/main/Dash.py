@@ -1,26 +1,31 @@
 '''
     Dash.py
-     
-    * This FOQUS home screen, it doesn't do much but show the screen 
-    and emit signals that are handeled by the main window 
+
+    * This FOQUS home screen, it doesn't do much but show the screen
+    and emit signals that are handeled by the main window
 
     John Eslick, Carnegie Mellon University, 2014
 
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from foqus_lib.gui.main.Dash_UI import *
-from PySide import QtGui, QtCore
+import os
 
-class dashFrame(QtGui.QFrame, Ui_Dash):
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtWidgets import QColorDialog, QFontDialog, QMessageBox
+mypath = os.path.dirname(__file__)
+_dashFrameUI, _dashFrame = \
+        uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))
+
+class dashFrame(_dashFrame, _dashFrameUI):
     '''
         This is the main FOQUS screen, it contains some FOQUS settings
         and a session description.  Very little happens here all the
@@ -30,7 +35,7 @@ class dashFrame(QtGui.QFrame, Ui_Dash):
         '''
             Initialize dash frame
         '''
-        QtGui.QFrame.__init__(self, parent)
+        super(dashFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.underlineButton.clicked.connect( self.underline )
         self.overlineButton.clicked.connect( self.overline )
@@ -47,13 +52,13 @@ class dashFrame(QtGui.QFrame, Ui_Dash):
             Set the session description
         '''
         self.textEdit.setHtml(text)
-    
+
     def sessionDescription(self):
         '''
             Get the session description
         '''
         return self.textEdit.toHtml()
-        
+
     def getFormat(self):
         self.format = self.textEdit.currentCharFormat()
         self.underlineButton.setChecked( self.format.fontUnderline() )
@@ -71,19 +76,19 @@ class dashFrame(QtGui.QFrame, Ui_Dash):
         else:
             self.superscriptButton.setChecked( False )
             self.subscriptButton.setChecked( False )
-    
+
     def color(self):
-        color = QtGui.QColorDialog.getColor(self.textEdit.textColor(), self)
+        color = QColorDialog.getColor(self.textEdit.textColor(), self)
         self.textEdit.setTextColor(color)
         self.textEdit.setFocus()
-    
+
     def font(self):
-        font, ok = QtGui.QFontDialog.getFont(self.format.font(), self)
+        font, ok = QFontDialog.getFont(self.format.font(), self)
         if ok:
             self.format.setFont(font)
             self.textEdit.setCurrentCharFormat( self.format )
             self.textEdit.setFocus()
-        
+
     def superscript(self):
         if self.superscriptButton.isChecked():
             self.subscriptButton.setChecked(False)
@@ -92,8 +97,8 @@ class dashFrame(QtGui.QFrame, Ui_Dash):
             self.format.setVerticalAlignment(QtGui.QTextCharFormat.AlignNormal)
         self.textEdit.setCurrentCharFormat( self.format )
         self.textEdit.setFocus()
-        
-                
+
+
     def subscript(self):
         if self.subscriptButton.isChecked():
             self.superscriptButton.setChecked(False)
@@ -102,30 +107,30 @@ class dashFrame(QtGui.QFrame, Ui_Dash):
             self.format.setVerticalAlignment(QtGui.QTextCharFormat.AlignNormal)
         self.textEdit.setCurrentCharFormat( self.format )
         self.textEdit.setFocus()
-        
+
     def bold(self):
         if self.boldButton.isChecked():
             self.format.setFontWeight( QtGui.QFont.Bold )
         else:
-            self.format.setFontWeight( QtGui.QFont.Normal )         
+            self.format.setFontWeight( QtGui.QFont.Normal )
         self.textEdit.setCurrentCharFormat( self.format )
         self.textEdit.setFocus()
-        
+
     def underline(self):
         self.format.setFontUnderline( self.underlineButton.isChecked() )
         self.textEdit.setCurrentCharFormat( self.format )
         self.textEdit.setFocus()
-        
+
     def overline(self):
         self.format.setFontOverline( self.overlineButton.isChecked() )
         self.textEdit.setCurrentCharFormat( self.format )
         self.textEdit.setFocus()
-    
+
     def reject(self):
-        self.done( QtGui.QDialog.Rejected )
-        
+        self.done( QtWidgets.QDialog.Rejected )
+
     def accept(self):
-        self.done( QtGui.QDialog.Accepted )
-    
+        self.done( QtWidgets.QDialog.Accepted )
+
     def html(self):
         return self.textEdit.toHtml()

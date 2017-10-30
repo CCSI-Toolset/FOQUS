@@ -1,15 +1,15 @@
 import os
 
-from PySide.QtGui import QCheckBox
-from PySide.QtGui import QDialog
-from PySide.QtGui import QDialogButtonBox
-from PySide.QtGui import QLabel
-from PySide.QtGui import QLineEdit
-from PySide.QtGui import QPixmap
-from PySide.QtGui import QLayout
-from PySide.QtGui import QGridLayout
-from PySide.QtGui import QVBoxLayout
-from PySide.QtCore import Qt
+from PyQt5.QtWidgets import QCheckBox
+from PyQt5.QtWidgets import QDialog
+from PyQt5.QtWidgets import QDialogButtonBox
+from PyQt5.QtWidgets import QLabel
+from PyQt5.QtWidgets import QLineEdit
+from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLayout
+from PyQt5.QtWidgets import QGridLayout
+from PyQt5.QtWidgets import QVBoxLayout
+from PyQt5.QtCore import Qt
 
 from dmf_lib.common.common import DMF_HOME
 from dmf_lib.gui.path import HEADER_PATH

@@ -16,15 +16,15 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from foqus_lib.gui.flowsheet.nodePanel_UI import *
-from foqus_lib.gui.dialogs.tagSelectDialog import *
-from foqus_lib.framework.graph.node import *
-from PySide import QtGui, QtCore
-import foqus_lib.gui.helpers.guiHelpers as gh
+import os
 import types
 import platform
 from ConfigParser import RawConfigParser
 from StringIO import StringIO
+
+from foqus_lib.gui.dialogs.tagSelectDialog import *
+from foqus_lib.framework.graph.node import *
+import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 try:
     from dmf_lib.dmf_browser import DMFBrowser
@@ -34,15 +34,24 @@ except:
         .exception('Failed to import or launch DMFBrowser')
 from foqus_lib.framework.uq.Distribution import Distribution
 
-class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
-    redrawFlowsheet = QtCore.Signal() # request flowsheet redraw
-    waiting = QtCore.Signal() # indicates a task is going take a while
-    notwaiting = QtCore.Signal() # indicates a wait is over
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QInputDialog, QLineEdit,\
+    QAbstractItemView
+from PyQt5.QtGui import QColor
+mypath = os.path.dirname(__file__)
+_nodeDockUI, _nodeDock = \
+        uic.loadUiType(os.path.join(mypath, "nodePanel_UI.ui"))
+
+
+class nodeDock(_nodeDock, _nodeDockUI):
+    redrawFlowsheet = QtCore.pyqtSignal() # request flowsheet redraw
+    waiting = QtCore.pyqtSignal() # indicates a task is going take a while
+    notwaiting = QtCore.pyqtSignal() # indicates a wait is over
     def __init__(self, dat, parent=None):
         '''
             Node view/edit dock widget constructor
         '''
-        QtGui.QDockWidget.__init__(self, parent)
+        super(nodeDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
@@ -124,7 +133,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             m = self.node.modelName
             if m not in sl:
                 #show a warning message
-                QtGui.QMessageBox.warning(
+                QMessageBox.warning(
                     self,
                     "Turbine Model Not Available",
                     ("The Turbine model specified for this node is not "
@@ -228,7 +237,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
         #        str(self.nodeNameBox.currentText()))
         #    self.nodeName = str(self.nodeNameBox.text())
         #except:
-        #    QtGui.QMessageBox.warning(
+        #    QMessageBox.warning(
         #        self,
         #        "Invalid Name",
         #        ("The new node name is probably already being used. "
@@ -557,11 +566,11 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
         for name in sorted(vars.keys(), key = lambda s: s.lower()):
             var = vars[name]
             if var.con == 1:
-                bgColor = QtGui.QColor(255, 255, 200)
+                bgColor = QColor(255, 255, 200)
             elif var.con ==2:
-                bgColor = QtGui.QColor(255, 220, 230)
+                bgColor = QColor(255, 220, 230)
             else:
-                bgColor = QtGui.QColor(255, 255, 255)
+                bgColor = QColor(255, 255, 255)
             gh.setTableItem(table, row,
                 self.ivCols["Name"],
                 name,
@@ -622,9 +631,9 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             row += 1
         table.resizeColumnsToContents()
         self.inputVarTable.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+            QAbstractItemView.ExtendedSelection)
         self.inputVarTable.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectRows)
 
     def updateOutputVariables(self):
         '''
@@ -661,9 +670,9 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             row += 1
         table.resizeColumnsToContents()
         self.outputVarTable.setSelectionMode(
-            QtGui.QAbstractItemView.ExtendedSelection)
+            QAbstractItemView.ExtendedSelection)
         self.outputVarTable.setSelectionBehavior(
-            QtGui.QAbstractItemView.SelectRows)
+            QAbstractItemView.SelectRows)
 
     def updateSettingsTable(self):
         '''
@@ -690,7 +699,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
                     '',
                     check = opts[opt].value,
                     jsonEnc = False,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             elif len(opts[opt].validValues) > 0:
                 # if is a list type use a combo box
                 gh.setTableItem(
@@ -700,7 +709,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
                     opts[opt].value,
                     jsonEnc = True,
                     pullDown = opts[opt].validValues,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             else:
                 # Otherwise you just have to type
                 gh.setTableItem(
@@ -709,7 +718,7 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
                     1,
                     opts[opt].value,
                     jsonEnc = True,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             table.resizeColumnsToContents()
 
     def addInput(self, name=None):
@@ -717,17 +726,17 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             Add a new input variable
         '''
         if name is None:
-            newName, ok = QtGui.QInputDialog.getText(
+            newName, ok = QInputDialog.getText(
                 self,
                 "Input Name",
                 "New input variable name:",
-                QtGui.QLineEdit.Normal)
+                QLineEdit.Normal)
         else:
             newName = name
             ok = True
         if ok and newName != '':
             if newName in self.node.inVars:
-                QtGui.QMessageBox.warning(
+                QMessageBox.warning(
                     self,
                     "Invalid Name",
                     "That input already exists")
@@ -755,17 +764,17 @@ class nodeDock(QtGui.QDockWidget, Ui_nodeDock):
             Add an output variable
         '''
         if name==None:
-            newName, ok = QtGui.QInputDialog.getText(
+            newName, ok = QInputDialog.getText(
                 self,
                 "Output Name",
                 "New output variable name:",
-                QtGui.QLineEdit.Normal)
+                QLineEdit.Normal)
         else:
             newName = name
             ok = True
         if ok and newName != '':
             if newName in self.node.outVars:
-                QtGui.QMessageBox.warning(
+                QMessageBox.warning(
                     self,
                     "Invalid Name",
                     "That output already exists")

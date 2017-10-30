@@ -33,16 +33,9 @@ import subprocess
 import logging
 import traceback
 
-from PySide.QtGui import (
-    QDialog,
-    QIcon,
-    QVBoxLayout,
-    QPixmap,
-    QPainter,
-    QDesktopWidget
-)
-
-from PySide.QtCore import Qt
+from PyQt5.QtGui import QPixmap, QPainter, QIcon
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QDesktopWidget
+from PyQt5.QtCore import Qt
 from dmf_lib.filesystem.alfresco import AlfrescoFileSystem
 from dmf_lib.filesystem.local import LocalFileSystem
 
@@ -81,11 +74,7 @@ from dmf_lib.common.common import (
 
 from dmf_lib.common.methods import Common
 from dmf_lib.gateway.gateway import Py4JGateway
-from dmf_lib.gui.path import (
-    SPLASH_PATH,
-    CCSI
-)
-
+from dmf_lib.gui.path import SPLASH_PATH, CCSI
 from dmf_lib.dialogs.login import LoginDialog
 from dmf_lib.gui.splash.splash_screen import SplashScreen
 from dmf_lib.dialogs.status_dialog import StatusDialog

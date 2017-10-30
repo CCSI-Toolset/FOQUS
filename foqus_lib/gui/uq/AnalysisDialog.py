@@ -38,6 +38,7 @@ mypath = os.path.dirname(__file__)
 _AnalysisDialogUI, _AnalysisDialog = \
         uic.loadUiType(os.path.join(mypath, "AnalysisDialog_UI.ui"))
 
+
 class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     # Info table
     idRow = 0

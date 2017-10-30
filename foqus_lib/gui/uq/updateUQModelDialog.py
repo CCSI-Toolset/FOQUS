@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
 mypath = os.path.dirname(__file__)
 _updateUQModelDialogUI, _updateUQModelDialog = \
         uic.loadUiType(os.path.join(mypath, "updateUQModelDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
+        
 
 class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
     def __init__(self, dat, parent=None):

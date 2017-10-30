@@ -27,7 +27,6 @@ from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _uqSetupFrameUI, _uqSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "uqSetupFrame_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class checkingThread(QtCore.QThread):

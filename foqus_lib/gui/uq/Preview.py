@@ -17,7 +17,7 @@ from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _PreviewUI, _Preview = \
         uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))
-#super(, self).__init__(parent=parent)
+
 
 class Preview(_Preview, _PreviewUI):
     def __init__(self, data, parent=None):

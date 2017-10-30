@@ -19,7 +19,7 @@ from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 mypath = os.path.dirname(__file__)
 _InferenceDialogUI, _InferenceDialog = \
         uic.loadUiType(os.path.join(mypath, "InferenceDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
+
 
 class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
     format = '%.5f'             # numeric format for table entries in UQ Toolbox

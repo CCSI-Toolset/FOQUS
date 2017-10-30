@@ -3,7 +3,7 @@ from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _stopEnsembleDialogUI, _stopEnsembleDialog = \
         uic.loadUiType(os.path.join(mypath, "stopEnsembleDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
+        
 
 class stopEnsembleDialog(_stopEnsembleDialog, _stopEnsembleDialogUI):
     def __init__(self, dat, parent=None):

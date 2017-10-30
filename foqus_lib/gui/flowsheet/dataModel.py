@@ -17,8 +17,7 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from PySide import QtGui, QtCore
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtCore
 import json
 
 class dataModel(QtCore.QAbstractTableModel):

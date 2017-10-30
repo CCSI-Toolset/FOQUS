@@ -16,22 +16,19 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
+import json
+import os
 
-#from PySide import QtGui, QtCore
-#from foqus_lib.gui.flowsheet.dataBrowserFrame_UI import *
 from foqus_lib.gui.flowsheet.columns import *
 import dataFilterDialog
 from foqus_lib.gui.flowsheet.dataModel import *
-import json
 from foqus_lib.gui.flowsheet.runRowsDialog import *
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
 from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QMenu, QMessageBox, QAction,\
+    QLineEdit, QInputDialog, QFileDialog
 mypath = os.path.dirname(__file__)
 _dataBrowserFrameUI, _dataBrowserFrame = \
         uic.loadUiType(os.path.join(mypath, "dataBrowserFrame_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
@@ -39,7 +36,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         super(dataBrowserFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat  # session data
-        self.menu = QtWidgets.QMenu()
+        self.menu = QMenu()
         self.impMenu = self.menu.addMenu("Import")
         self.expMenu = self.menu.addMenu("Export")
         self.editMenu = self.menu.addMenu("Edit")
@@ -59,102 +56,102 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
     def addMenuActions(self):
         # export csv
-        self.exportCsvAct = QtWidgets.QAction(
+        self.exportCsvAct = QAction(
             'Export to CSV File...',
             self)
         self.exportCsvAct.triggered.connect(self.saveResultsToCSV)
         self.expMenu.addAction(self.exportCsvAct)
         # copy to clipboard
-        self.toClipAct = QtWidgets.QAction(
+        self.toClipAct = QAction(
             'Copy Data to Clipboard',
             self)
         self.toClipAct.triggered.connect(self.toClipboard)
         self.expMenu.addAction(self.toClipAct)
         # Export PSUADE sample file
-        self.toPsuadeAct = QtWidgets.QAction(
+        self.toPsuadeAct = QAction(
             'Export to PSUADE File...',
             self)
         self.toPsuadeAct.triggered.connect(self.toPsuade)
         self.expMenu.addAction(self.toPsuadeAct)
         # import from csv
-        self.importCsvAct = QtWidgets.QAction(
+        self.importCsvAct = QAction(
             'Import from CSV file...',
             self)
         self.importCsvAct.triggered.connect(self.importCSV)
         self.impMenu.addAction(self.importCsvAct)
         # paste from clipboard
-        self.fromClipAct = QtWidgets.QAction(
+        self.fromClipAct = QAction(
             'Paste Data from Clipboard',
             self)
         self.fromClipAct.triggered.connect(self.importClip)
         self.impMenu.addAction(self.fromClipAct)
         # copy selected row to flowsheet.
-        self.getRowAct = QtWidgets.QAction(
+        self.getRowAct = QAction(
             'Row to Flowsheet',
             self)
         self.getRowAct.triggered.connect(self.rowToFlow)
         self.editMenu.addAction(self.getRowAct)
         # clear data
-        self.clearDataAct = QtWidgets.QAction(
+        self.clearDataAct = QAction(
             'Clear All Data',
             self)
         self.clearDataAct.triggered.connect(self.clearResults)
         self.editMenu.addAction(self.clearDataAct)
         #
-        self.deleteDataAct = QtWidgets.QAction(
+        self.deleteDataAct = QAction(
             'Delete Rows',
             self)
         self.deleteDataAct.triggered.connect(self.deleteResults)
         self.editMenu.addAction(self.deleteDataAct)
         # Add blank result
-        self.addResultAct = QtWidgets.QAction(
+        self.addResultAct = QAction(
             'Add Empty Result',
             self)
         self.addResultAct.triggered.connect(self.addEmptyResult)
         self.editMenu.addAction(self.addResultAct)
         # edit Set
-        self.editSetAct = QtWidgets.QAction(
+        self.editSetAct = QAction(
             'Edit Set for Selected Rows',
             self)
         self.editSetAct.triggered.connect(self.editDataSet)
         self.editMenu.addAction(self.editSetAct)
         # add tags
-        self.addTagsAct = QtWidgets.QAction(
+        self.addTagsAct = QAction(
             'Add Tags to Selected Rows', self)
         self.addTagsAct.triggered.connect(self.addDataTags)
         self.editMenu.addAction(self.addTagsAct)
         # edit tags
-        self.editTagsAct = QtWidgets.QAction(
+        self.editTagsAct = QAction(
             'Edit Tags for Selected Rows',
             self)
         self.editTagsAct.triggered.connect(self.editDataTags)
         self.editMenu.addAction(self.editTagsAct)
         # hide columns
-        self.hideDataColsAct = QtWidgets.QAction(
+        self.hideDataColsAct = QAction(
             'Hide Selected Columns',
             self)
         self.hideDataColsAct.triggered.connect(self.hideCols)
         self.viewMenu.addAction(self.hideDataColsAct)
         # un-hide columns
-        self.unhideDataColsAct = QtWidgets.QAction(
+        self.unhideDataColsAct = QAction(
             'Show All Columns',
             self)
         self.unhideDataColsAct.triggered.connect(self.unhideCols)
         self.viewMenu.addAction(self.unhideDataColsAct)
         # resize columns
-        self.resizeColumnsAct = QtWidgets.QAction(
+        self.resizeColumnsAct = QAction(
             'Resize Columns',
             self)
         self.resizeColumnsAct.triggered.connect(self.autoResizeCols)
         self.viewMenu.addAction(self.resizeColumnsAct)
-        self.flattenAct = QtWidgets.QAction(
+        self.flattenAct = QAction(
             'Flatten Table',
             self)
         self.flattenAct.setCheckable(True)
         self.flattenAct.triggered.connect(self.flattenTable)
         self.viewMenu.addAction(self.flattenAct)
         #Run menu
-        self.runRowsAct = QtWidgets.QAction('Run Selected Rows', self)
+        self.runRowsAct = QAction('Run Selected Rows', self)
         self.runRowsAct.triggered.connect(self.runSelectedRows)
         self.runMenu.addAction(self.runRowsAct)
 
@@ -175,14 +172,14 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             s = ""
         else:
             s = "s"
-        msgBox = QtWidgets.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Do you want to run {} sample{}?".format(n, s))
         msgBox.setStandardButtons(
-            QtWidgets.QMessageBox.No |
-            QtWidgets.QMessageBox.Yes)
-        msgBox.setDefaultButton(QtWidgets.QMessageBox.No)
+            QMessageBox.No |
+            QMessageBox.Yes)
+        msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QtWidgets.QMessageBox.No: return
+        if ret == QMessageBox.No: return
         if self.dat.foqusSettings.runFlowsheetMethod == 1:
             useTurbine=True
         else:
@@ -218,15 +215,15 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         '''
             Delete selected rows from the results table.
         '''
-        msgBox = QtWidgets.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Delete selected data?")
         msgBox.setInformativeText(
             "If you select yes, the selected rows will be deleted. ")
         msgBox.setStandardButtons(
-            QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
-        msgBox.setDefaultButton(QtWidgets.QMessageBox.No)
+            QMessageBox.No | QMessageBox.Yes)
+        msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QtWidgets.QMessageBox.Yes:
+        if ret == QMessageBox.Yes:
             rows = self.selectedRows()
             rl = self.dat.flowsheet.results
             rl.deleteRows(rows, fltr=True)
@@ -238,11 +235,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         '''
         rl = self.dat.flowsheet.results
         rows = self.selectedRows()
-        name, ok = QtWidgets.QInputDialog.getText(
+        name, ok = QInputDialog.getText(
             self,
             "Change Row Tags",
             'Enter new tags (e.g. ["Tag1", "Tag2"]):',
-            QtWidgets.QLineEdit.Normal)
+            QLineEdit.Normal)
         if ok and name != '':
             tags = json.loads(name)
             if isinstance(tags, basestring):
@@ -256,11 +253,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         '''
         rl = self.dat.flowsheet.results
         rows = self.selectedRows()
-        name, ok = QtWidgets.QInputDialog.getText(
+        name, ok = QInputDialog.getText(
             self,
             "Add Row Tags",
             'Enter tags to add (e.g. ["Tag1", "Tag2"]):',
-            QtWidgets.QLineEdit.Normal)
+            QLineEdit.Normal)
         if ok and name != '':
             tags = json.loads(name)
             if isinstance(tags, basestring):
@@ -271,17 +268,17 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
     def editDataSet(self):
         rl = self.dat.flowsheet.results
         rows = self.selectedRows()
-        name, ok = QtWidgets.QInputDialog.getText(
+        name, ok = QInputDialog.getText(
             self,
             "Set Name",
             'Enter new set name:',
-            QtWidgets.QLineEdit.Normal)
+            QLineEdit.Normal)
         if ok and name != '':
             for row in rows:
                 rl.setSetName(name, row, fltr=True)
 
     def importCSV(self):
-        fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Import CSV Result File",
             "",
@@ -312,16 +309,16 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.tableView.setColumnHidden(col, False)
 
     def clearResults(self):
-        msgBox = QtWidgets.QMessageBox()
+        msgBox = QMessageBox()
         msgBox.setText("Delete all data?")
         msgBox.setInformativeText(
             ("If you select yes, all flowsheet result data in this "
              "session will be deleted. "))
         msgBox.setStandardButtons(
-            QtWidgets.QMessageBox.No | QtWidgets.QMessageBox.Yes)
-        msgBox.setDefaultButton(QtWidgets.QMessageBox.No)
+            QMessageBox.No | QMessageBox.Yes)
+        msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QtWidgets.QMessageBox.Yes:
+        if ret == QMessageBox.Yes:
             self.dat.flowsheet.results.clearData()
             self.refreshContents()
 
@@ -360,7 +357,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.dat.flowsheet.results.rowCount(filtered=True)))
 
     def saveResultsToCSV(self):
-        fileName, filtr = QtWidgets.QFileDialog.getSaveFileName(
+        fileName, filtr = QFileDialog.getSaveFileName(
             self,
             "Save CSV Result File",
             "",
@@ -369,7 +366,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.dat.flowsheet.results.dumpCSV(fileName)
 
     def toPsuade(self):
-        fileName, filtr = QtWidgets.QFileDialog.getSaveFileName(
+        fileName, filtr = QFileDialog.getSaveFileName(
             self,
             "Save CSV Result File",
             "",
@@ -378,11 +375,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.dat.flowsheet.results.exportPSUADE(fileName)
 
     def toClipboard(self):
-        clipboard = QtWidgets.QApplication.clipboard()
+        clipboard = QApplication.clipboard()
         clipboard.setText(self.dat.flowsheet.results.dumpString())
 
     def importClip(self):
-        clipboard = QtWidgets.QApplication.clipboard()
+        clipboard = QApplication.clipboard()
         s = str(clipboard.text())
         self.dat.flowsheet.results.importCSVString(s)
         self.refreshContents()

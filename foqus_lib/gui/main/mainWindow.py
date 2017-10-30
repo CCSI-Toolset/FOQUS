@@ -279,8 +279,7 @@ class mainWindow(QMainWindow):
         self.show()
         if ts is not None:
             self.tstimer = QtCore.QTimer(self)
-            self.connect(self.tstimer, QtCore.SIGNAL("timeout()"),
-                lambda: self.runTestScript(ts))
+            self.tstimer.timeout.connect(lambda: self.runTestScript(ts))
             self.tstimer.start(2000)
         else:
             self.tstimer = None
@@ -1988,10 +1987,7 @@ class mainWindow(QMainWindow):
         self.multiError = 0
         delay = 500 # time in ms between checking simulation status
         self.timer = QtCore.QTimer(self)
-        self.connect(
-            self.timer,
-            QtCore.SIGNAL("timeout()"),
-            self.checkSim)
+        self.timer.timeout.connect(self.checkSim)
         self.timer.start(delay)
 
     def checkSim(self):

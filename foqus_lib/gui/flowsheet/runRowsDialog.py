@@ -1,13 +1,9 @@
-#from foqus_lib.gui.flowsheet.runRowsDialog_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _runRowsDialogUI, _runRowsDialog = \
         uic.loadUiType(os.path.join(mypath, "runRowsDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
+
 
 class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
     def __init__(self, parent, dat):

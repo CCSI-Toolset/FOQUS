@@ -16,21 +16,16 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from flowsheetSettingsDialog_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _flowsheetSettingsDialogUI, _flowsheetSettingsDialog = \
         uic.loadUiType(os.path.join(mypath, "flowsheetSettingsDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class flowsheetSettingsDialog(_flowsheetSettingsDialog, _flowsheetSettingsDialogUI):
     def __init__(self, dat, parent=None, lock = None):
-        QtGui.QDialog.__init__(self, parent)
+        super(flowsheetSettingsDialog, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.gr = dat.flowsheet
         self.okayButton.clicked.connect( self.accept )

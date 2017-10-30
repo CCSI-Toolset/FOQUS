@@ -16,16 +16,12 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#import foqus_lib.gui.flowsheet.columns_UI
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QDialogButtonBox, QListWidgetItem
 mypath = os.path.dirname(__file__)
 _columnsDialogUI, _columnsDialog = \
         uic.loadUiType(os.path.join(mypath, "columns_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class columnsDialog(_columnsDialog, _columnsDialogUI):
@@ -34,10 +30,10 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
         self.setupUi(self)
         self.dat = dat
         self.buttonBox.button(
-            QtGui.QDialogButtonBox.Ok).clicked.connect(self.accept)
+            QDialogButtonBox.Ok).clicked.connect(self.accept)
         hm = self.dat.flowsheet.results.headMap
         for h in hm:
-            item = QtGui.QListWidgetItem(h)
+            item = QListWidgetItem(h)
             item.setCheckState(QtCore.Qt.Checked)
             if h in self.dat.flowsheet.results.hiddenCols:
                 item.setCheckState(QtCore.Qt.Unchecked)
@@ -52,7 +48,5 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
             else:
                 self.metadataColumnsList.addItem(item)
 
-
     def accept(self):
-        print "hi"
         self.close()

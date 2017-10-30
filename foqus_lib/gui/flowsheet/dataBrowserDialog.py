@@ -16,17 +16,14 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from foqus_lib.gui.flowsheet.dataBrowserDialog_UI import *
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
+
+from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 from PyQt5 import uic
+from PyQt5.QtWidgets import QDialog
 mypath = os.path.dirname(__file__)
 _dataBrowserDialogUI, _dataBrowserDialog = \
         uic.loadUiType(os.path.join(mypath, "dataBrowserDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
@@ -40,7 +37,7 @@ class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
 
     def show(self):
         self.dataFrame.refreshContents()
-        QtGui.QDialog.show(self)
+        QDialog.show(self)
         # if you resize the columns before showing Qt seems to
         # calculate the width of all the cells in the table
         # if you do it after showing Qt only uses the visible cells

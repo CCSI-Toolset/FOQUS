@@ -1,13 +1,8 @@
-#from foqus_lib.gui.flowsheet.edgePanel_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
 mypath = os.path.dirname(__file__)
 _edgeDockUI, _edgeDock = \
         uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 import foqus_lib.gui.helpers.guiHelpers as gh

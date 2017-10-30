@@ -13,19 +13,20 @@
     Non-Disclosure Agreement, and the CCSI Intellectual Property Management Plan. No rights are
     granted except as expressly recited in one of the aforementioned agreements.
 '''
-#from foqus_lib.gui.flowsheet.dataFilterDialog_UI import *
-from foqus_lib.framework.sampleResults.results import *
-import foqus_lib.gui.helpers.guiHelpers as gh
 import json
 import logging
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
+
+from foqus_lib.framework.sampleResults.results import *
+import foqus_lib.gui.helpers.guiHelpers as gh
+
 from PyQt5 import uic
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox, QSplitter, QInputDialog,\
+    QLineEdit
 mypath = os.path.dirname(__file__)
 _dataFilterDialogUI, _dataFilterDialog = \
         uic.loadUiType(os.path.join(mypath, "dataFilterDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
@@ -74,7 +75,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.updateFilterBox()
         self.updateForm()
         self.prevFilter = None
-        self.split = QtGui.QSplitter(self.splitFrame)
+        self.split = QSplitter(self.splitFrame)
         self.split.addWidget(self.ruleTable)
         self.split.addWidget(self.TreeFrame)
         self.splitFrame.layout().addWidget(self.split)
@@ -86,7 +87,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.copyCol2(self.colList.currentItem())
 
     def copyCol2(self, ci=None):
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QApplication.clipboard()
         if ci is not None:
             clipboard.setText(ci.text())
 
@@ -169,7 +170,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         table = self.ruleTable
         row = table.rowCount()
         table.setRowCount(row + 1)
-        bg = QtGui.QColor(200, 200, 200)
+        bg = QColor(200, 200, 200)
         gh.setTableItem(table, row, 0, "", bgColor=bg, editable=False)
         gh.setTableItem(table, row, 2, "", bgColor=bg, editable=False)
         gh.setTableItem(table, row, 1, op, pullDown=self.copList)
@@ -214,18 +215,18 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             Add a new filter to the results
         '''
         # Get the name
-        newName, ok = QtGui.QInputDialog.getText(
+        newName, ok = QInputDialog.getText(
             self,
             "Filter Name",
             "New filter name:",
-            QtGui.QLineEdit.Normal)
+            QLineEdit.Normal)
         # if name supplied and not canceled
         if ok and newName != '':
             # check if the name is in use
             if newName in self.dat.flowsheet.results.filters:
                 # filter already exists
                 # just do nothing for now
-                QtGui.QMessageBox.information(
+                QMessageBox.information(
                     self, "Error", "The filter name already exists.")
             else:
                 self.applyChanges(True)

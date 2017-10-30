@@ -1,12 +1,11 @@
-#from variableBrowser_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
-from PyQt5 import uic
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QTreeWidgetItem
 mypath = os.path.dirname(__file__)
 _variableBrowserUI, _variableBrowser = \
         uic.loadUiType(os.path.join(mypath, "variableBrowser_UI.ui"))
+
 
 class variableBrowser(_variableBrowser, _variableBrowserUI):
     def __init__(self, dat, parent=None, lock = None):
@@ -43,28 +42,28 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
         '''
         vars = dict()
         if self.nodeMask:
-            nodes = sorted( self.nodeMask )
+            nodes = sorted(self.nodeMask)
         else:
-            nodes = sorted( self.dat.flowsheet.nodes.keys() )
+            nodes = sorted(self.dat.flowsheet.nodes.keys())
         items = []
         self.treeWidget.clear()
         for nkey in nodes:
             node = self.dat.flowsheet.nodes[nkey]
-            items.append( QtGui.QTreeWidgetItem(self.treeWidget) )
+            items.append(QTreeWidgetItem(self.treeWidget))
             items[-1].setText(0, nkey)
-            inputItems = QtGui.QTreeWidgetItem( items[-1] )
+            inputItems = QTreeWidgetItem( items[-1] )
             inputItems.setText(0, nkey)
             inputItems.setText(1, "input")
-            outputItems = QtGui.QTreeWidgetItem( items[-1] )
+            outputItems = QTreeWidgetItem( items[-1])
             outputItems.setText(0, nkey)
             outputItems.setText(1, "output")
             for vkey, var in node.inVars.iteritems():
-                vItem = QtGui.QTreeWidgetItem( inputItems )
+                vItem = QTreeWidgetItem( inputItems )
                 vItem.setText(0, nkey)
                 vItem.setText(1, "input")
                 vItem.setText(2, vkey)
             for vkey, var in node.outVars.iteritems():
-                vItem = QtGui.QTreeWidgetItem( outputItems )
+                vItem = QTreeWidgetItem( outputItems )
                 vItem.setText(0, nkey)
                 vItem.setText(1, "output")
                 vItem.setText(2, vkey)

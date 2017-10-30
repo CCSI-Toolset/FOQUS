@@ -1,10 +1,8 @@
 import sys
-#import PySide
+import os
 import numpy
 import shutil
 import textwrap
-#from PySide.QtGui import *
-#from PySide.QtCore import *
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -30,10 +28,12 @@ import RSCombos
 from InputPriorTable import InputPriorTable
 
 #from AnalysisDialog_UI import Ui_Dialog
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
 from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QCheckBox,\
+    QTableWidgetItem, QAbstractItemView, QGridLayout, QDialog, QLabel,\
+    QPushButton
+from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _AnalysisDialogUI, _AnalysisDialog = \
         uic.loadUiType(os.path.join(mypath, "AnalysisDialog_UI.ui"))
@@ -310,13 +310,13 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # Inference requires additional selection of which plots to display
         if isinstance(analysis, RSInference):
-            class Dialog(QtGui.QDialog):
+            class Dialog(QDialog):
                 def __init__(self, xtable, parent = None):
                     super(Dialog, self).__init__(parent)
                     self.setWindowTitle('Plot input selection')
                     self.resize(100, 100)
-                    self.gridLayout = QtGui.QGridLayout(self)
-                    text = QtGui.QLabel('Select inputs to plot:')
+                    self.gridLayout = QGridLayout(self)
+                    text = QLabel('Select inputs to plot:')
                     self.gridLayout.addWidget(text, 0, 0, 1, 2)
                     self.checkboxes = [None] * len(xtable)
                     if len(xtable) > 12:
@@ -327,7 +327,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                     numRows = (numVariables + 1)/2
                     for i, x in enumerate(xtable):
                         if x['type'] != 'Design':
-                            chkbox = QtGui.QCheckBox(x['name'])
+                            chkbox = QCheckBox(x['name'])
                             self.checkboxes[i] = chkbox
                             if i >= numRows:
                                 self.gridLayout.addWidget(chkbox, i - numRows + 1, 1)
@@ -335,10 +335,10 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                                 self.gridLayout.addWidget(chkbox, i + 1, 0)
                             if i in analysis.showList:
                                 chkbox.setChecked(True)
-                    self.okButton = QtGui.QPushButton('OK')
+                    self.okButton = QPushButton('OK')
                     self.okButton.clicked.connect(self.accept)
                     self.gridLayout.addWidget(self.okButton, numRows + 1, 0, 1, 1)
-                    self.cancelButton = QtGui.QPushButton('Cancel')
+                    self.cancelButton = QPushButton('Cancel')
                     self.cancelButton.clicked.connect(self.reject)
                     self.gridLayout.addWidget(self.cancelButton, numRows + 1, 1, 1, 1)
                     self.adjustSize()
@@ -346,9 +346,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                 def getShowList(self):
                     return [i for i, chkbox in enumerate(self.checkboxes) if chkbox is not None and chkbox.isChecked()]
 
-            d = Dialog(analysis.xtable, QtGui.QApplication.activeWindow())
+            d = Dialog(analysis.xtable, QApplication.activeWindow())
             result = d.exec_()
-            if result == QtGui.QDialog.Rejected:
+            if result == QDialog.Rejected:
                 return
             showList = d.getShowList()
             d.deleteLater()
@@ -361,13 +361,13 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                 analysis.showResults()
         except IOError:
             self.unfreeze()
-            msgBox = QtGui.QMessageBox()
+            msgBox = QMessageBox()
             msgBox.setText("Analysis results file is missing. Do you want to run the analysis again?")
             #msgBox.setInformativeText("Do you want to save your changes?")
-            msgBox.setStandardButtons(QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
-            msgBox.setDefaultButton(QtGui.QMessageBox.Yes)
+            msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+            msgBox.setDefaultButton(QMessageBox.Yes)
             ret = msgBox.exec_()
-            if ret == QtGui.QMessageBox.Yes:
+            if ret == QMessageBox.Yes:
                 self.freeze()
                 if isinstance(analysis, RSInference):
                     analysis.endFunction = self.unfreeze

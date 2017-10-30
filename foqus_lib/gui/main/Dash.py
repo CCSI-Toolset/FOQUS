@@ -17,16 +17,13 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from foqus_lib.gui.main.Dash_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QColorDialog, QFontDialog, QMessageBox
 import os
-from PyQt5 import uic
+
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5.QtWidgets import QColorDialog, QFontDialog, QMessageBox
 mypath = os.path.dirname(__file__)
 _dashFrameUI, _dashFrame = \
         uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))
-
 
 class dashFrame(_dashFrame, _dashFrameUI):
     '''
@@ -130,10 +127,10 @@ class dashFrame(_dashFrame, _dashFrameUI):
         self.textEdit.setFocus()
 
     def reject(self):
-        self.done( QtGui.QDialog.Rejected )
+        self.done( QtWidgets.QDialog.Rejected )
 
     def accept(self):
-        self.done( QtGui.QDialog.Accepted )
+        self.done( QtWidgets.QDialog.Accepted )
 
     def html(self):
         return self.textEdit.toHtml()

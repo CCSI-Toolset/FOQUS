@@ -17,16 +17,12 @@
     in one of the aforementioned agreements.
 '''
 import os
-#from turbineConfig_UI import *
-#from PySide import QtGui, QtCore
 from foqus_lib.framework.sim.turbineConfiguration\
     import TurbineInterfaceEx
 from foqus_lib.framework.sim.turbineConfiguration\
     import turbineConfiguration
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QDialog
 mypath = os.path.dirname(__file__)
 _turbineConfigUI, _turbineConfigFrame = \
         uic.loadUiType(os.path.join(mypath, "turbineConfig_UI.ui"))
@@ -101,7 +97,7 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
 
     def saveAsConf(self):
         self.apply()
-        fileName, filtr = QtGui.QFileDialog.getSaveFileName(
+        fileName, filtr = QFileDialog.getSaveFileName(
             self,
             "Save File",
             "",
@@ -118,25 +114,25 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
         '''
         if self.tconf.getFile() != None:
             self.tconf.writeConfig()
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QDialog.Accepted)
 
     def reject(self):
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QDialog.Rejected)
 
     def testConfig(self):
-        QtGui.QMessageBox.information(
+        QMessageBox.information(
             self,
             "Test",
             ("The Turbine configuration format and Turbine connection"
              " will be tested.  This may take some time." ))
         errList = self.dat.flowsheet.turbConfig.testConfig()
         if len(errList) == 0:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Success",
                 "The Turbine configuration is okay.")
         else:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Error",
                 str(errList))

@@ -1,8 +1,3 @@
-#from stopEnsembleDialog_UI import *
-#from PySide import QtGui, QtCore
-
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)

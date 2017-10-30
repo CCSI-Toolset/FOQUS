@@ -1,13 +1,8 @@
 import sys
-#from PySide.QtGui import (
-#    QFrame,
-#    QMainWindow,
-#    QApplication)
-#from basicDataParentFrame_UI import Ui_Frame
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QMainWindow
 import os
+
 from PyQt5 import uic
+from PyQt5.QtWidgets import QApplication, QMainWindow
 mypath = os.path.dirname(__file__)
 _basicDataParentFrameUI, _basicDataParentFrame = \
         uic.loadUiType(os.path.join(mypath, "basicDataParentFrame_UI.ui"))

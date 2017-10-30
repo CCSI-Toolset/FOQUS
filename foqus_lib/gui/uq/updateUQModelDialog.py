@@ -1,7 +1,6 @@
 import platform
-#from foqus_lib.gui.uq.updateUQModelDialog_UI import *
-#from PySide import QtGui, QtCore
-#from PySide.QtGui import QFileDialog, QListWidgetItem, QAbstractItemView, QDialogButtonBox
+import os
+
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.uq.flowsheetToUQModel import *
 from foqus_lib.framework.uq.Model import *
@@ -9,11 +8,9 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.ResponseSurfaces import *
 from foqus_lib.framework.uq.Common import Common
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox
-import os
 from PyQt5 import uic
+from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
+    QAbstractItemView, QDialogButtonBox, QDialog
 mypath = os.path.dirname(__file__)
 _updateUQModelDialogUI, _updateUQModelDialog = \
         uic.loadUiType(os.path.join(mypath, "updateUQModelDialog_UI.ui"))
@@ -147,7 +144,7 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
             data.writeToPsuade(newFileName)
             data.setEmulatorTrainingFile(newFileName)
             self.dat.uqModel = data.model
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QDialog.Accepted)
 
     def reject(self):
-            self.done(QtGui.QDialog.Rejected)
+            self.done(QDialog.Rejected)

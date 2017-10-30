@@ -1,13 +1,9 @@
-#from foqus_lib.gui.main.sessionDescriptionEdit_UI import *
-#from PySide import QtGui, QtCore
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
+from PyQt5 import QtCore, uic
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _sessionDescriptionDialogUI, _sessionDescriptionDialog = \
         uic.loadUiType(os.path.join(mypath, "sessionDescriptionEdit_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class sessionDescriptionDialog(_sessionDescriptionDialog, _sessionDescriptionDialogUI):

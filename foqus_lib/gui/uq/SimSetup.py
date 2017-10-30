@@ -1,12 +1,10 @@
 import sys
+import os
 import copy
 import tempfile
 import subprocess
-#import PySide
 import numpy
 import platform
-#from PySide.QtGui import *
-#from PySide.QtCore import *
 
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.framework.uq.Model import Model
@@ -20,15 +18,13 @@ from Preview import Preview
 from InputPriorTable import InputPriorTable
 
 #from SimSetup_UI import Ui_Dialog
-from PyQt5 import QtCore, QtGui
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
     QAbstractItemView, QDialogButtonBox
-import os
-from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _SimSetup = \
         uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class SimSetup(_SimSetup, _SimSetupUI):

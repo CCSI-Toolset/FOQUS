@@ -1,7 +1,8 @@
 import os
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QComboBox,\
+    QCheckBox, QMessageBox, QAbstractItemView, QSpinBox, QFileDialog
+from PyQt5.QtGui import QColor
 import numpy as np
 
 from foqus_lib.framework.uq.SampleData import *
@@ -9,8 +10,8 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 
 
 class InputPriorTable(QTableWidget):
-    typeChanged = Signal()
-    pdfChanged = Signal()
+    typeChanged = pyqtSignal()
+    pdfChanged = pyqtSignal()
 
     SIMSETUP, RSANALYSIS, INFERENCE, OUU = range(4)
 
@@ -622,7 +623,7 @@ class InputPriorTable(QTableWidget):
 
         # add 2-cell table
         cellTable = self.cellWidget(row, col)
-        if isinstance(cellTable, QtGui.QComboBox): # combo from file selection
+        if isinstance(cellTable, QComboBox): # combo from file selection
             self.removeCellWidget(row, col)
             cellTable = None
         if cellTable == None:
@@ -706,7 +707,7 @@ class InputPriorTable(QTableWidget):
         self.activateCell(row, col_index['p2'])
         # File combo
         combobox = self.cellWidget(row, col_index['p1'])
-        if isinstance(combobox, QtGui.QTableWidget): # cell table from other PDFs
+        if isinstance(combobox, QTableWidget): # cell table from other PDFs
             self.removeCellWidget(row, col_index['p1'])
             combobox = None
         if combobox == None:

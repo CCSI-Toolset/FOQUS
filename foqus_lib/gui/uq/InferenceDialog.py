@@ -1,7 +1,6 @@
-import sys, shutil
-#import PySide
-#from PySide.QtGui import *
-#from PySide.QtCore import *
+import sys
+import shutil
+import os
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -15,10 +14,8 @@ import RSCombos
 from InputPriorTable import InputPriorTable
 
 #from InferenceDialog_UI import Ui_Dialog
-from PyQt5 import QtCore, QtGui
+from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
-from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _InferenceDialogUI, _InferenceDialog = \
         uic.loadUiType(os.path.join(mypath, "InferenceDialog_UI.ui"))

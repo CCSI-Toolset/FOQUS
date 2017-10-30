@@ -31,7 +31,7 @@ from foqus_lib.framework.session.hhmmss import *
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework import optimizer
 from foqus_lib.framework.uq.Model import *
-from PyQt5 import QtGui, QtCore
+from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QWidget, QActionGroup,\
     QMenu, QAction, QToolBar
 from PyQt5.QtGui import QIcon, QKeySequence

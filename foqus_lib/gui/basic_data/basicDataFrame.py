@@ -2,9 +2,8 @@ import os
 import logging
 import platform
 import subprocess
-#from foqus_lib.gui.basic_data.basicDataFrame_UI import Ui_basicDataFrame
 from urllib2 import urlopen
-#from PySide.QtGui import (QFrame, QFileDialog, QApplication)
+
 from StringIO import StringIO
 
 from dmf_lib.common.common import (
@@ -29,10 +28,8 @@ if platform.system().startswith(WINDOWS):
     except:
         pass
 
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QFileDialog
-import os
 from PyQt5 import uic
+from PyQt5.QtWidgets import QFileDialog
 mypath = os.path.dirname(__file__)
 _basicDataFrameUI, _basicDataFrame = \
         uic.loadUiType(os.path.join(mypath, "basicDataFrame_UI.ui"))

@@ -17,7 +17,9 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
 import numpy
 import json
 import copy
@@ -25,7 +27,7 @@ import copy
 def setColHeaderIntem(table, col, text=None):
     if text is None:
         text = col
-    item = QtWidgets.QTableWidgetItem(str(text))
+    item = QTableWidgetItem(str(text))
     table.setHorizontalHeaderItem(col, item)
 
 def setTableItem(
@@ -39,7 +41,7 @@ def setTableItem(
     editable = True,
     alignH = QtCore.Qt.AlignLeft,
     alignV = QtCore.Qt.AlignVCenter,
-    bgColor = QtGui.QColor(255, 255, 255),
+    bgColor = QColor(255, 255, 255),
     grayOdd = True ):
     '''
         Sets the contents of a cell in a table, and allows adding check
@@ -59,13 +61,13 @@ def setTableItem(
         red = max(bgColor.red() - 25, 0)
         green = max(bgColor.green() - 25, 0)
         blue = max(bgColor.blue() - 25, 0)
-        bgColor = QtGui.QColor(red, green, blue)
+        bgColor = QColor(red, green, blue)
     item = None
     if type(text).__module__ == numpy.__name__: text = text.tolist()
     if pullDown == None:
         # just add text to a cell
         if jsonEnc: text = json.dumps(text)
-        item = QtWidgets.QTableWidgetItem(str(text))
+        item = QTableWidgetItem(str(text))
         item.setBackground( bgColor )
         item.setTextAlignment(alignH | alignV)
         if check != None:
@@ -102,7 +104,7 @@ def setTableItem(
             for i, o in enumerate(pullDown):
                 pullDown[i] = json.dumps(o)
             text = json.dumps(text)
-        item = QtWidgets.QComboBox()
+        item = QComboBox()
         item.addItems(pullDown)
         i = item.findText(text)
         if i<0:
@@ -205,7 +207,7 @@ def setCellText(table, row, col, value):
     try:
         table.item(row,col).setText(text)
     except:
-        table.setItem(row, col, QtWidgets.QTableWidgetItem(text))
+        table.setItem(row, col, QTableWidgetItem(text))
 
 def setCellJSON(table, row, col, value):
     '''
@@ -215,7 +217,7 @@ def setCellJSON(table, row, col, value):
     try:
         table.item(row,col).setText(text)
     except:
-        table.setItem(row, col, QtWidgets.QTableWidgetItem(text))
+        table.setItem(row, col, QTableWidgetItem(text))
 
 def getCellText(table, row, col):
     '''
@@ -223,7 +225,7 @@ def getCellText(table, row, col):
     '''
     item = table.item(row,col)
     widget = table.cellWidget(row,col)
-    if isinstance(widget, QtWidgets.QComboBox):
+    if isinstance(widget, QComboBox):
         text = widget.currentText()
     else:
         try:
@@ -255,6 +257,6 @@ def addColumns(table, colNames, s=True):
         colNames = sorted(colNames)
     for n in colNames:
         table.insertColumn(table.columnCount())
-        item = QtWidgets.QTableWidgetItem(n)
+        item = QTableWidgetItem(n)
         table.setHorizontalHeaderItem(table.columnCount()-1, item)
     return colNames

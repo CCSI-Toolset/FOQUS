@@ -1,7 +1,5 @@
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
-from PyQt5 import uic
+from PyQt5 import uic, QtCore
 mypath = os.path.dirname(__file__)
 _saveMetadataDialogUI, _saveMetadataDialog = \
         uic.loadUiType(os.path.join(mypath, "saveMetadataDialog_UI.ui"))

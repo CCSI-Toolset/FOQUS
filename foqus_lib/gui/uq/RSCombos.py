@@ -1,8 +1,7 @@
 import time
 import numpy
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
+from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
+from PyQt5.QtCore import pyqtSignal
 
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.uq.ResponseSurfaces import *
@@ -149,7 +148,7 @@ class RSCombo1(QComboBox):
 
 class RSCombo2(QComboBox):
     userFiles = []
-    fileAdded = Signal()
+    fileAdded = pyqtSignal()
 
     def __init__(self, parent = None):
         super(RSCombo2, self).__init__(parent)

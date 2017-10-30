@@ -1,8 +1,8 @@
 import platform
-import numpy, copy
-#from foqus_lib.gui.uq.uqSetupFrame_UI import *
-#from PySide import QtGui, QtCore
-#from PySide.QtGui import QApplication, QCursor
+import os
+import logging
+import numpy
+import copy
 from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.uq.SimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
@@ -18,11 +18,11 @@ from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from AnalysisDialog import AnalysisDialog
-import logging
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QStyledItemDelegate
-import os
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup
+from PyQt5.QtGui import QCursor
+
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _uqSetupFrameUI, _uqSetupFrame = \
@@ -31,7 +31,7 @@ _uqSetupFrameUI, _uqSetupFrame = \
 
 
 class checkingThread(QtCore.QThread):
-    runsFinishedSignal = QtCore.Signal()
+    runsFinishedSignal = QtCore.pyqtSignal()
     def __init__(self, row, parent=None):
         super(checkingThread, self).__init__()
         self.row = row
@@ -40,15 +40,15 @@ class checkingThread(QtCore.QThread):
         self.rtDisconnect = False
 
     class Communicate(QtCore.QObject):
-        resizeColumnSignal = QtCore.Signal()
-        progressBarSignal = QtCore.Signal(int)
-        #progressBarSignal = QtCore.Signal(QProgressBar, int, int, int)
-        editButtonSignal = QtCore.Signal(bool)
-        launchButtonSignal = QtCore.Signal(bool)
-        analyzeButtonSignal = QtCore.Signal(bool)
-        resultsSignal = QtCore.Signal(int, int)
-        simSelectedSignal = QtCore.Signal()
-        updateSessionSignal = QtCore.Signal(int, str)
+        resizeColumnSignal = QtCore.pyqtSignal()
+        progressBarSignal = QtCore.pyqtSignal(int)
+        #progressBarSignal = QtCore.pyqtSignal(QProgressBar, int, int, int)
+        editButtonSignal = QtCore.pyqtSignal(bool)
+        launchButtonSignal = QtCore.pyqtSignal(bool)
+        analyzeButtonSignal = QtCore.pyqtSignal(bool)
+        resultsSignal = QtCore.pyqtSignal(int, int)
+        simSelectedSignal = QtCore.pyqtSignal()
+        updateSessionSignal = QtCore.pyqtSignal(int, str)
 
     def run(self):
         c = self.Communicate()
@@ -266,7 +266,7 @@ class checkingThread(QtCore.QThread):
         self.runsFinishedSignal.emit()
 
 class uqSetupFrame(_uqSetupFrame, _uqSetupFrameUI):
-    runsFinishedSignal = QtCore.Signal()
+    runsFinishedSignal = QtCore.pyqtSignal()
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
@@ -1010,7 +1010,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # allow both radio buttons to be toggled off
         if not hasattr(self, 'group'):
-            self.group = QtWidgets.QButtonGroup()
+            self.group = QButtonGroup()
             self.group.addButton(self.filterInput_radio)
             self.group.addButton(self.filterOutput_radio)
             self.group.setExclusive(False)

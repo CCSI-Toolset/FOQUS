@@ -1,7 +1,5 @@
 import sys
-#import PySide
-#from PySide.QtGui import *
-#from PySide.QtCore import *
+import os
 
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
@@ -11,11 +9,11 @@ from foqus_lib.framework.uq.RSInference import RSInferencer
 
 #from Preview_UI import Ui_Dialog
 
-from PyQt5 import QtCore, QtGui
+from PyQt5 import uic
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
     QAbstractItemView, QDialogButtonBox
-import os
-from PyQt5 import uic
+from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _PreviewUI, _Preview = \
         uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))

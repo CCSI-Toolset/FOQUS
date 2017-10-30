@@ -1,9 +1,6 @@
-import sys, shutil
-import PyQt5
-from PyQt5.QtGui import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-
+import sys
+import shutil
+import os
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SamplingMethods import *
@@ -15,13 +12,14 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.gui.uq import RSCombos
 from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
 
-#from solventFitSetupFrame_UI import Ui_Frame
-import os
 from PyQt5 import uic
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication,\
+    QTableWidgetItem, QCheckBox, QMainWindow, QVBoxLayout, QLabel
 mypath = os.path.dirname(__file__)
 _solventFitSetupFrameUI, _solventFitSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "solventFitSetupFrame.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
@@ -187,7 +185,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 except:
                     import traceback
                     traceback.print_exc()
-                    QtGui.QMessageBox.critical(self, 'Incorrect format',
+                    QMessageBox.critical(self, 'Incorrect format',
                                                'File does not have the correct format! Please consult the users manual about the format.')
                     self.unfreeze()
                     return
@@ -274,10 +272,10 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
 
     def freeze(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 
     def semifreeze(self):
-        QApplication.setOverrideCursor(QCursor(QtCore.Qt.BusyCursor))
+        QApplication.setOverrideCursor(QCursor(Qt.BusyCursor))
 
     def unfreeze(self):
         QApplication.restoreOverrideCursor()
@@ -901,9 +899,9 @@ if __name__ == "__main__":
 
     MainFrame = solventFitSetupFrame()
     MainWindow.setCentralWidget(MainFrame)
-    #MainFrameLayout = QtGui.QVBoxLayout(MainFrame)
+    #MainFrameLayout = QVBoxLayout(MainFrame)
 
-    #label = QtGui.QLabel('A Label')
+    #label = QLabel('A Label')
     #MainFrameLayout.addWidget(label)
 
     MainWindow.show()

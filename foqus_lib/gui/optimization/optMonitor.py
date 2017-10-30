@@ -1,30 +1,26 @@
-#
-# John Eslick, 2013
-# Copyright Carnegie Mellon University
-#
+"""
+John Eslick, 2013
+Copyright Carnegie Mellon University
+"""
+
 from foqus_lib.framework.session.hhmmss import *
-#from PySide import QtCore, QtGui
+
 import numpy as np
 import time
-#from optMonitor_UI import *
-from optMessageWindow import *
-
+import math
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-#import matplotlib.pyplot as plt
-import math
-
-from PyQt5 import QtCore, QtGui, QtWidgets
+from optMessageWindow import *
 import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QWidget, QMessageBox, QVBoxLayout
 mypath = os.path.dirname(__file__)
 _optMonitorUI, _optMonitor = \
         uic.loadUiType(os.path.join(mypath, "optMonitor_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
-class noCloseWidget(QtWidgets.QWidget):
+class noCloseWidget(QWidget):
     def __init__(self, parent=None):
         super(noCloseWidget, self).__init__(parent=parent)
 
@@ -45,9 +41,9 @@ class optMonitor(_optMonitor, _optMonitorUI):
 
         self.msgSubwindow = optMessageWindow(self)
         self.plotSubwindow = noCloseWidget(self)
-        self.plotSubwindow.setLayout(QtWidgets.QVBoxLayout())
+        self.plotSubwindow.setLayout(QVBoxLayout())
         self.coordPlotSubwindow = noCloseWidget(self)
-        self.coordPlotSubwindow.setLayout(QtWidgets.QVBoxLayout())
+        self.coordPlotSubwindow.setLayout(QVBoxLayout())
 
         self.plotSubwindow.setMaximumSize(5000,3000)
         self.coordPlotSubwindow.setMaximumSize(5000,3000)
@@ -180,7 +176,7 @@ class optMonitor(_optMonitor, _optMonitorUI):
             pg.minVars,
             pg.maxVars)
         if not e[0] == 0:
-            QtGui.QMessageBox.information(self, "Error",
+            QMessageBox.information(self, "Error",
                 "The optimization will not be started there is an error in the set up:\n" + e[1])
             return
         self.dat.save("backupBeforeOpt.json", False)

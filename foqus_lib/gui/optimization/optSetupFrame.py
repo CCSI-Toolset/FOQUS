@@ -18,30 +18,30 @@
     in one of the aforementioned agreements.
 '''
 
-#from foqus_lib.gui.optimization.optSetupFrame_UI import *
-#from PySide import QtGui, QtCore
+import json
+import numpy
+import copy
+import os
+
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import *
 from foqus_lib.framework.graph.nodeVars import *
-import json, numpy, copy
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.optimization.optMonitor import *
 from foqus_lib.gui.optimization.optSampleGenDialog import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QDialog
+from PyQt5.QtGui import QColor
 mypath = os.path.dirname(__file__)
 _optSetupFrameUI, _optSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "optSetupFrame_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
-    setStatusBar = QtCore.Signal(str)
-    updateGraph = QtCore.Signal()
+    setStatusBar = QtCore.pyqtSignal(str)
+    updateGraph = QtCore.pyqtSignal()
     def __init__(self, dat, parent=None):
         super(optSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
@@ -91,7 +91,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         prob = self.dat.optProblem
         genDialog = optSampleGenDialog(sorted(prob.vs))
         r = genDialog.exec_()
-        if r == QtGui.QDialog.Accepted:
+        if r == QDialog.Accepted:
             #call the appropriate method to generate samples
             if genDialog.sampleType == genDialog.SAMPLE_FULL_FACT:
                 prob.fullfactorial(genDialog.sampleSettings)
@@ -476,7 +476,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                     '',
                     check = opts[opt].value,
                     jsonEnc = False,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             elif len(opts[opt].validValues) > 0:
                 # if is a list type use a combo box
                 gh.setTableItem(
@@ -486,7 +486,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                     opts[opt].value,
                     jsonEnc = True,
                     pullDown = opts[opt].validValues,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             else:
                 # Otherwise you just have to type
                 gh.setTableItem(
@@ -495,7 +495,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                     1,
                     opts[opt].value,
                     jsonEnc = True,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
         table.resizeColumnsToContents()
 
     def selectSolver(self, indx):
@@ -557,7 +557,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         #pg = self.dat.optSolvers.plugins[self.dat.optProblem.solver].opt(self.dat)
         #e = self.dat.optProblem.check(self.dat.flowsheet, pg.minVars, pg.maxVars)
         #if not e[0] == 0:
-        #    QtGui.QMessageBox.information(self, "Error", "There is an error in the problem definition:\n" + e[1])
+        #    QMessageBox.information(self, "Error", "There is an error in the problem definition:\n" + e[1])
         #    return 1
-        #QtGui.QMessageBox.information(self, "Okay", "No Errors detected in problem definition.")
+        #QMessageBox.information(self, "Okay", "No Errors detected in problem definition.")
         return 0 # if it gets here no error.

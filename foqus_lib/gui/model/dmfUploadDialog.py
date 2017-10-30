@@ -16,10 +16,7 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-
-#from dmfUploadDialog_UI import Ui_dmfUploadDialog
 import foqus_lib.gui.helpers.guiHelpers as gh
-#from PySide import QtGui, QtCore
 import os
 import json
 import logging
@@ -51,15 +48,12 @@ except:
 from urllib2 import urlopen
 from StringIO import StringIO
 
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog,\
+    QLineEdit
 mypath = os.path.dirname(__file__)
 _dmfUploadDialogUI, _dmfUploadDialog = \
         uic.loadUiType(os.path.join(mypath, "dmfUploadDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
-
 
 
 class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
@@ -105,7 +99,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             repo_name = DMF_LITE_REPO_NAME
         self.dmfRepo.setText(repo_name)
         if not useDMF:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self, "Error", "Unable to setup DMF.")
 
     def getDMFRepoProperties(self):
@@ -317,22 +311,22 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                     resource_name_list=resource_name_list)
         except Exception as e:
             print e
-            QtGui.QMessageBox.information(self, "Error", str(e))
+            QMessageBox.information(self, "Error", str(e))
             return
         finally:
-            self.done(QtGui.QDialog.Accepted)
+            self.done(QDialog.Accepted)
 
     def reject(self):
         '''
             If cancel just do nothing and close dialog
         '''
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QDialog.Rejected)
 
     def browseSinter(self):
         '''
             Browse for a Sinter configuration file.
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sinter Configuration File",
             "",
@@ -363,7 +357,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                     self.updateFileTable()
                     self.appEdit.setText(a)
                 except:
-                    QtGui.QMessageBox.information(self, "Error", str(e))
+                    QMessageBox.information(self, "Error", str(e))
                     logging.getLogger("foqus." + __name__).exception(
                         "Error reading sinter config")
 
@@ -386,7 +380,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             Add additional files required for a simulation
         '''
         # Browse for a file
-        fileNames, filtr = QtGui.QFileDialog.getOpenFileNames(
+        fileNames, filtr = QFileDialog.getOpenFileNames(
             self,
             "Additional Files",
             "",
@@ -420,20 +414,20 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # Can't set relative path of the config or sim files so warn
         # if selected and drop the indexes for those rows
         if 0 in rows:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self, "Warning", "Won't set releative path for configuration")
         if 1 in rows:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self, "Warning", "Won't set releative path for model")
         rows.discard(0)
         rows.discard(1)
         if len(rows) == 0:
             return
-        relpath, ok = QtGui.QInputDialog.getText(
+        relpath, ok = QInputDialog.getText(
             self,
             "Relative path",
             "Enter a relative path for selected resources:",
-            QtGui.QLineEdit.Normal)
+            QLineEdit.Normal)
         if ok:
             relpath = relpath.strip()
             relpath = relpath.strip('\\/')

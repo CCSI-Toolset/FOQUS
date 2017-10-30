@@ -17,18 +17,13 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from optSampleGenDialog_UI import *
-#from PySide import QtGui, QtCore
-import foqus_lib.gui.helpers.guiHelpers as gh
-
-from PyQt5 import QtCore, QtGui
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
 import os
+import foqus_lib.gui.helpers.guiHelpers as gh
 from PyQt5 import uic
+from PyQt5.QtWidgets import QDialog, QFileDialog
 mypath = os.path.dirname(__file__)
 _optSampleGenDialogUI, _optSampleGenDialog = \
         uic.loadUiType(os.path.join(mypath, "optSampleGenDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
@@ -49,7 +44,7 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
             gh.setTableItem(self.ffactTable,row,0,var)
 
     def fileBrowse(self):
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sample File",
             "",
@@ -58,7 +53,7 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
             self.FileEdit.setText(fileName)
 
     def reject(self):
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QDialog.Rejected)
 
     def accept(self):
         self.sampleType = self.typeCombo.currentIndex()
@@ -68,4 +63,4 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
                     self.ffactTable, row, 1)
         if self.sampleType == self.SAMPLE_FILE:
             self.sampleSettings = self.FileEdit.text()
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QDialog.Accepted)

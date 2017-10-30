@@ -16,22 +16,18 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-#from gatewayUploadDialog_UI import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-#from PySide import QtGui, QtCore
 import json
 import os
 import sys
 import subprocess
 import logging
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
-import os
-from PyQt5 import uic
+import foqus_lib.gui.helpers.guiHelpers as gh
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog,\
+    QLineEdit
 mypath = os.path.dirname(__file__)
 _gatewayUploadDialogUI, _gatewayUploadDialog = \
         uic.loadUiType(os.path.join(mypath, "gatewayUploadDialog_UI.ui"))
-#super(, self).__init__(parent=parent)
 
 
 class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
@@ -87,7 +83,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             self.waiting.emit()
             self.turb.deleteSimulation(simName)
         except Exception as e:
-            QtGui.QMessageBox.information(self, "Error", str(e))
+            QMessageBox.information(self, "Error", str(e))
             self.notwaiting.emit()
             return
         self.notwaiting.emit()
@@ -183,7 +179,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
 
     def addTurbineConf(self):
         # Browse for a file
-        fileNames, filtr = QtGui.QFileDialog.getOpenFileNames(
+        fileNames, filtr = QFileDialog.getOpenFileNames(
             self,
             "Additional Files",
             "",
@@ -293,7 +289,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                     update = True,
                     otherResources = other)
             except Exception as e:
-                QtGui.QMessageBox.information(self, "Error", str(e))
+                QMessageBox.information(self, "Error", str(e))
                 self.notwaiting.emit()
                 self.turb.updateSettings()
                 return
@@ -302,19 +298,19 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         # If uploaded to a Turbine gatway other that the current,
         # make sure the turbine version is set back to proper value.
         self.turb.updateSettings()
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QDialog.Accepted)
 
     def reject(self):
         '''
             If cancel just do nothing and close dialog
         '''
-        self.done(QtGui.QDialog.Rejected)
+        self.done(QDialog.Rejected)
 
     def browseSinter(self):
         '''
             Browse for a Sinter configuration file.
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sinter Configuration File",
             "",
@@ -334,7 +330,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 self.updateFileTable()
                 self.appEdit.setText(a)
             except Exception as e:
-                QtGui.QMessageBox.information(self, "Error", str(e))
+                QMessageBox.information(self, "Error", str(e))
                 logging.getLogger("foqus." + __name__).exception(
                     "Error reading sinter config")
             if self.simNameEdit.currentText() == "":
@@ -350,7 +346,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             Add additional files required for a simulation
         '''
         # Browse for a file
-        fileNames, filtr = QtGui.QFileDialog.getOpenFileNames(
+        fileNames, filtr = QFileDialog.getOpenFileNames(
             self,
             "Additional Files",
             "",
@@ -377,20 +373,20 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         # Can't set relative path of the config or sim files so warn
         # if selected and drop the indexes for those rows
         if 0 in rows:
-            QtGui.QMessageBox.information(self, "Warning",
+            QMessageBox.information(self, "Warning",
                 "Won't set releative path for configuration")
         if 1 in rows:
-            QtGui.QMessageBox.information(self, "Warning",
+            QMessageBox.information(self, "Warning",
                 "Won't set releative path for model")
         rows.discard(0)
         rows.discard(1)
         if len(rows) == 0:
             return
-        relpath, ok = QtGui.QInputDialog.getText(
+        relpath, ok = QInputDialog.getText(
             self,
             "Relative path",
             "Enter a relative path for selected resources:",
-            QtGui.QLineEdit.Normal)
+            QLineEdit.Normal)
         if ok:
             relpath = relpath.strip()
             relpath = relpath.strip('\\/')

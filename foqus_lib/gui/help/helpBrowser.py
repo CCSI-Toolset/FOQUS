@@ -5,28 +5,28 @@ import logging
 #from PySide import QtGui, QtCore
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
+
 try:
     import PyQt5.QtWebKitWidgets
     webkit = True
 except:
     webkit = False
-
-from PyQt5 import QtCore, QtWidgets
-import os
-from PyQt5 import uic
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
         uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))
 
+
 class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
-    #showHelpTopic = QtCore.Signal([types.StringType])
-    showAbout = QtCore.Signal()
-    hideHelp = QtCore.Signal()
+    #showHelpTopic = QtCore.pyqtSignal([types.StringType])
+    showAbout = QtCore.pyqtSignal()
+    hideHelp = QtCore.pyqtSignal()
 
     def __init__(self, parent=None, dat=None):
-        '''
-            Node view/edit dock widget constructor
-        '''
+        """
+        Node view/edit dock widget constructor
+        """
         super(helpBrowserDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
@@ -73,7 +73,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
 
     def closeMessageBox(self):
         w = self.getWindow()
-        if isinstance(w, QtWidgets.QMessageBox):
+        if isinstance(w, QMessageBox):
             w.close()
 
     def pressButton(self, w, label):
@@ -86,28 +86,28 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
     def msgBoxOK(self):
         w = self.getWindow()
         #print w
-        if isinstance(w, QtWidgets.QMessageBox):
+        if isinstance(w, QMessageBox):
             self.pressButton(w, 'OK')
 
     def msgBoxYes(self):
         w = self.getWindow()
         print w
-        if isinstance(w, QtWidgets.QMessageBox):
+        if isinstance(w, QMessageBox):
             self.pressButton(w, 'Yes')
 
     def msgBoxNo(self):
         w = self.getWindow()
-        if isinstance(w, QtWidgets.QMessageBox):
+        if isinstance(w, QMessageBox):
             self.pressButton(w, 'No')
 
     def msgBoxCancel(self):
         w = self.getWindow()
-        if isinstance(w, QtWidgets.QMessageBox):
+        if isinstance(w, QMessageBox):
             self.pressButton(w, 'Cancel')
 
     def dailogNotModal(self):
         w = self.getWindow()
-        if isinstance(w, QtWidgets.QDialog):
+        if isinstance(w, QDialog):
             w.setModal(False)
 
     def setStopTrue(self):
@@ -116,7 +116,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
 
     def loadDbgCode(self, fileName=None):
         if fileName is None:
-            fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
+            fileName, filtr = QFileDialog.getOpenFileName(
                 self,
                 "Open File",
                 "",
@@ -128,7 +128,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             self.pycodeEdit.setPlainText(code)
 
     def saveDbgCode(self):
-        fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Save File",
             "",

@@ -20,21 +20,18 @@
     in one of the aforementioned agreements.
 '''
 
-#from foqus_lib.gui.surrogate.surrogateFrame_UI import *
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-import foqus_lib.framework.surrogate.ireveal_json2flowsheet as irfs
-from foqus_lib.framework.session.hhmmss import *
-#from PySide import QtGui, QtCore
 import time
 import math
 import traceback
 import os
 import shutil
-
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QStyledItemDelegate
-import os
+from foqus_lib.gui.flowsheet.dataBrowserFrame import *
+import foqus_lib.gui.helpers.guiHelpers as gh
+import foqus_lib.framework.surrogate.ireveal_json2flowsheet as irfs
+from foqus_lib.framework.session.hhmmss import *
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidget
+from PyQt5.QtGui import QColor
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _surrogateFrameUI, _surrogateFrame = \
@@ -45,7 +42,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
     '''
         This is the frame for setting up surrogate model methods
     '''
-    setStatusBar = QtCore.Signal(str)
+    setStatusBar = QtCore.pyqtSignal(str)
     def __init__(self, dat, parent=None):
         '''
 
@@ -72,10 +69,6 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.outputCols = gh.colIndexes(self.outputTable)
         self.refreshContents()
         self.timer = QtCore.QTimer(self)
-        #self.connect(
-        #    self.timer,
-        #    QtCore.SIGNAL("timeout()"),
-        #    self.updateStatus)
         self.timer.timeout.connect(self.updateStatus)
         self.updateDelay = 500
         self.runButton.setEnabled(True)
@@ -129,7 +122,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             Read an iREVEAL json config file and add an iREVEAL node
             to the flowhseet.
         '''
-        fileName, filtr = QtWidgets.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open iREVEAL File",
             ".".join([self.dat.name, "json"]),
@@ -222,7 +215,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         for tool in self.tools:
             pg = self.dat.surrogateMethods.plugins[tool].\
                 surrogateMethod(self.dat)
-            self.optTable[tool] = QtWidgets.QTableWidget(self)
+            self.optTable[tool] = QTableWidget(self)
             self.settingsStack.addWidget(self.optTable[tool])
             self.optTable[tool].setColumnCount(3)
             self.optTable[tool]. setHorizontalHeaderLabels(
@@ -251,7 +244,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                         '',
                         check = pg.options[opt].value,
                         jsonEnc = False,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
                 elif len(pg.options[opt].validValues) > 0:
                     # if is a list type use a combo box
                     gh.setTableItem(
@@ -261,7 +254,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                         pg.options[opt].default,
                         jsonEnc = True,
                         pullDown = pg.options[opt].validValues,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
                 else:
                     # Otherwise you just have to type
                     gh.setTableItem(
@@ -270,7 +263,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                         1,
                         pg.options[opt].value,
                         jsonEnc = True,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
             self.optTable[tool].resizeColumnsToContents()
         self.settingsStack.setCurrentIndex(0)
 
@@ -535,7 +528,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                     df = os.path.abspath(self.pg.driverFile)
                 except:
                     pass
-                msgBox = QtWidgets.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setWindowTitle("Driver File Location")
                 msgBox.setText(
                     "The surrogate model driver file path is: {0}"\

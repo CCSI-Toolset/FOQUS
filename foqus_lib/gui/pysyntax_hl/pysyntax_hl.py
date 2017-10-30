@@ -1,18 +1,14 @@
-'''
-    Python syntax highlighter
+"""
+Python syntax highlighter
 
-    This is based on the example code at:
-    https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
-    from May 8, 2015
-'''
+This is based on the example code at:
+https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
+from May 8, 2015
+"""
 
 import sys
-
-#from PySide.QtCore import QRegExp
-#from PySide.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 from PyQt5.QtCore import QRegExp
 from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
-
 
 def format(color, style=''):
     """Return a QTextCharFormat with the given attributes.
@@ -26,7 +22,6 @@ def format(color, style=''):
         _format.setFontWeight(QFont.Bold)
     if 'italic' in style:
         _format.setFontItalic(True)
-
     return _format
 
 # Syntax styles that can be shared by all languages

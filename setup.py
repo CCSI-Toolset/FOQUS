@@ -120,24 +120,27 @@ pkg_packages         = ['foqus_lib',
 
 # install TurbineClient.  having some trouble figuring out how to add to
 # requirments when is on private github.
-pip.main(['install', 'git+https://github.com/CCSI-Toolset/turb_client'])
+#pip.main(['install', 'git+https://github.com/CCSI-Toolset/turb_client'])
 
 setup(
-    name             = pkg_name,
-    version          = pkg_version,
-    license          = pkg_license,
-    description      = pkg_description,
-    author           = pkg_author,
-    author_email     = pkg_author_email,
-    maintainer       = pkg_maintainer,
+    name = pkg_name,
+    version = pkg_version,
+    license = pkg_license,
+    description = pkg_description,
+    author = pkg_author,
+    author_email = pkg_author_email,
+    maintainer = pkg_maintainer,
     maintainer_email = pkg_maintainer_email,
-    url              = pkg_url,
-    packages         = pkg_packages,
-    scripts          = ['foqus.py',
-                        'foqusClient.py',
-                        'DMF_Browser.py',
-                        'DMF_BasicDataIngest.py',
-                        'DMF_Sim_Ingester.py'],
+    url = pkg_url,
+    packages = pkg_packages,
+    include_package_data=True,
+    scripts = [
+        'foqus.py',
+        'icons_rc.py', 
+        'foqusClient.py',
+        'DMF_Browser.py',
+        'DMF_BasicDataIngest.py',
+        'DMF_Sim_Ingester.py'],
     install_requires=install_requires,
     dependency_links=dependency_links
 )

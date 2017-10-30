@@ -29,7 +29,6 @@ import json
 import logging
 # FOQUS imports
 import foqus_lib.version.version as ver # foqus version and other info
-import foqus_lib.help.package_info # third party dependency info
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.graph.graph import * # flowsheet
 from foqus_lib.framework.listen.listen import foqusListener2
@@ -105,12 +104,17 @@ def makeSplash():
     # Make a painter to add text to
     painter = QPainter(pixmap)
     font = painter.font()  # current font for drawing text
+    font.setPointSize(14)
+    font.setBold(True)
+    painter.setFont(font)
+    painter.drawText(20, 120, "Version: {}".format(ver.version))
+    font.setBold(False)
     font.setPointSize(12)
     painter.setFont(font)
     painter.drawText(
         20,
-        120,
-        700,
+        160,
+        740,
         150,
         QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
         ver.copyright)

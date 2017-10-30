@@ -1,16 +1,10 @@
-#from helpBrowser_UI import *
 import os
 import time
 import logging
-#from PySide import QtGui, QtCore
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-try:
-    import PyQt5.QtWebKitWidgets
-    webkit = True
-except:
-    webkit = False
+from PyQt5.QtWebKitWidgets import QWebView
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 mypath = os.path.dirname(__file__)
@@ -33,11 +27,10 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.mw = parent
         self.aboutButton.clicked.connect(self.showAbout.emit)
         self.contentsButton.clicked.connect(self.showContents)
-        if webkit:
-            self.textBrowser = PyQt5.QtWebKitWidgets.QWebView(self.tabWidget.widget(0))
-            self.webviewLayout.addWidget(self.textBrowser)
-            self.backButton.clicked.connect(self.textBrowser.back)
-            self.forwardButton.clicked.connect(self.textBrowser.forward)
+        self.textBrowser = QWebView(self.tabWidget.widget(0))
+        self.webviewLayout.addWidget(self.textBrowser)
+        self.backButton.clicked.connect(self.textBrowser.back)
+        self.forwardButton.clicked.connect(self.textBrowser.forward)
         self.helpPath = os.path.join(helpPath(), 'html')
         self.showContents()
         self.execButton.clicked.connect(self.runDebugCode)
@@ -139,13 +132,12 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
                 f.write(s)
 
     def showContents(self):
-        self.setPage("{0}\content.html".format(self.helpPath))
+        self.setPage(os.path.join(self.helpPath, "content.html"))
 
     def setPage(self, page):
-        #self.textBrowser.setSource(page)
-        if webkit:
-            self.textBrowser.load(QtCore.QUrl.fromLocalFile(page))
-        #self.textBrowser.show()
+        print page
+        self.textBrowser.load(QtCore.QUrl.fromLocalFile(page))
+        self.textBrowser.show()
 
     def clearCode(self):
         self.pycodeEdit.clear()
@@ -161,9 +153,8 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.stop = False
 
     def showHelp(self):
-        if webkit:
-            self.updateLogView()
-            self.startTimer()
+        self.updateLogView()
+        self.startTimer()
 
     def closeEvent(self, ev):
         self.stopTimer()

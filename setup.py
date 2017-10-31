@@ -18,8 +18,6 @@
 from __future__ import print_function
 from setuptools import setup, find_packages
 import os
-import sys
-import pip
 
 # Add build number file to help if BUILD_NUMBER env var is set
 # this is mostly for building on Jenkins, but you could set the
@@ -64,10 +62,6 @@ pkg_author_email     = ver.support
 pkg_maintainer       = ver.maintainer
 pkg_maintainer_email = ver.maintainer_email
 pkg_url              = ver.webpage
-
-# install TurbineClient.  having some trouble figuring out how to add to
-# requirments when is on private github.
-#pip.main(['install', 'git+https://github.com/CCSI-Toolset/turb_client'])
 
 setup(
     name = pkg_name,

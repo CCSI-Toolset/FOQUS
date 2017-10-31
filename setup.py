@@ -57,8 +57,8 @@ dependency_links=[]
 pkg_name             = "foqus"
 pkg_version          = ver.version
 pkg_license          = ver.license
-pkg_description      = "FOQUS tool for simulation based optimization"\
-                       "and uncertainty quantification"
+pkg_description      = "FOQUS tool for simulation based optimization,"\
+                       " uncertainty quantification, and surrogate models"
 pkg_author           = ver.author
 pkg_author_email     = ver.support
 pkg_maintainer       = ver.maintainer

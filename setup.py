@@ -16,7 +16,7 @@
     in one of the aforementioned agreements.
 """
 from __future__ import print_function
-from setuptools import setup
+from setuptools import setup, find_packages
 import os
 import sys
 import pip
@@ -44,7 +44,6 @@ install_requires=[
     'networkx',
     'adodbapi > 2.6.0',
     'redis',
-    #'pymssql',
     'logstash_formatter',
     'matplotlib',
     'scipy',
@@ -52,7 +51,7 @@ install_requires=[
     'cma'],
 
 dependency_links=[]
-#dependency_links=['https://github.com/CCSI-Toolset/turb_client']
+#dependency_links=['https://github.com/CCSI-Toolset/turb_client@master']
 
 # Set all the package parameters
 pkg_name             = "foqus"
@@ -65,58 +64,6 @@ pkg_author_email     = ver.support
 pkg_maintainer       = ver.maintainer
 pkg_maintainer_email = ver.maintainer_email
 pkg_url              = ver.webpage
-pkg_packages         = ['foqus_lib',
-                        'foqus_lib.gui',
-                        'foqus_lib.gui.main',
-                        'foqus_lib.gui.basic_data',
-                        'foqus_lib.gui.solventfit',
-                        'foqus_lib.gui.optimization',
-                        'foqus_lib.gui.flowsheet',
-                        'foqus_lib.gui.dialogs',
-                        'foqus_lib.gui.help',
-                        'foqus_lib.gui.helpers',
-                        'foqus_lib.gui.model',
-                        'foqus_lib.gui.uq',
-                        'foqus_lib.gui.heatIntegration',
-                        'foqus_lib.gui.surrogate',
-                        'foqus_lib.gui.ouu',
-                        'foqus_lib.gui.pysyntax_hl',
-                        'foqus_lib.gui.drmbuilder',
-                        'foqus_lib.help',
-                        'foqus_lib.version',
-                        'foqus_lib.unit_test',
-                        'foqus_lib.framework',
-                        'foqus_lib.framework.graph',
-                        'foqus_lib.framework.sim',
-                        'foqus_lib.framework.session',
-                        'foqus_lib.framework.optimizer',
-                        'foqus_lib.framework.listen',
-                        'foqus_lib.framework.uq',
-                        'foqus_lib.framework.solventfit',
-                        'foqus_lib.framework.surrogate',
-                        'foqus_lib.framework.plugins',
-                        'foqus_lib.framework.foqusException',
-                        'foqus_lib.framework.foqusOptions',
-                        'foqus_lib.framework.pymodel',
-                        'foqus_lib.framework.sampleResults',
-                        'foqus_lib.framework.ouu',
-                        'foqus_lib.framework.drmbuilder',
-                        #'turb_hydro.Hydro',
-                        #'turb_hydro.Hydro.hydro',
-                        'dmf_lib',
-                        'dmf_lib.alfresco',
-                        'dmf_lib.alfresco.share',
-                        'dmf_lib.alfresco.service',
-                        'dmf_lib.basic_data',
-                        'dmf_lib.common',
-                        'dmf_lib.dialogs',
-                        'dmf_lib.filesystem',
-                        'dmf_lib.gateway',
-                        'dmf_lib.git',
-                        'dmf_lib.gui',
-                        'dmf_lib.gui.splash',
-                        'dmf_lib.graph',
-                        'dmf_lib.mimetype_dict']
 
 # install TurbineClient.  having some trouble figuring out how to add to
 # requirments when is on private github.
@@ -132,11 +79,11 @@ setup(
     maintainer = pkg_maintainer,
     maintainer_email = pkg_maintainer_email,
     url = pkg_url,
-    packages = pkg_packages,
+    packages = find_packages(),
     include_package_data=True,
     scripts = [
         'foqus.py',
-        'icons_rc.py', 
+        'icons_rc.py',
         'foqusClient.py',
         'DMF_Browser.py',
         'DMF_BasicDataIngest.py',

@@ -2,4 +2,4 @@ recursive-include foqus_lib *.ui
 recursive-include dmf_lib *.ui
 graft examples
 graft docs
-recursive-include foqus_lib\help *.png *.svg *.txt *.html
+recursive-include foqus_lib/help *.png *.svg *.txt *.html

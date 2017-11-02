@@ -1,7 +1,7 @@
 '''
     optSampleGenDialog.py
-    
-    * dialog generate samples to be used in calculation of objective 
+
+    * dialog generate samples to be used in calculation of objective
       function
 
     John Eslick, Carnegie Mellon University, 2014
@@ -9,24 +9,29 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from optSampleGenDialog_UI import *
-from PySide import QtGui, QtCore
+import os
 import foqus_lib.gui.helpers.guiHelpers as gh
+from PyQt5 import uic
+from PyQt5.QtWidgets import QDialog, QFileDialog
+mypath = os.path.dirname(__file__)
+_optSampleGenDialogUI, _optSampleGenDialog = \
+        uic.loadUiType(os.path.join(mypath, "optSampleGenDialog_UI.ui"))
 
-class optSampleGenDialog(QtGui.QDialog, Ui_optSampleGenDialog):
+
+class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
     SAMPLE_FULL_FACT = 0
     SAMPLE_FILE = 1
-    
+
     def __init__(self, varNames):
-        QtGui.QDialog.__init__(self)
+        super(optSampleGenDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.varNames = varNames
         self.okayButton.clicked.connect(self.accept)
@@ -37,19 +42,19 @@ class optSampleGenDialog(QtGui.QDialog, Ui_optSampleGenDialog):
         self.sampleSettings = {}
         for row, var in enumerate(varNames):
             gh.setTableItem(self.ffactTable,row,0,var)
-    
+
     def fileBrowse(self):
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sample File",
             "",
             "Text Files (*.txt);;CSV Files (*.csv);;All Files (*)")
         if fileName:
             self.FileEdit.setText(fileName)
-    
+
     def reject(self):
-        self.done(QtGui.QDialog.Rejected)
-        
+        self.done(QDialog.Rejected)
+
     def accept(self):
         self.sampleType = self.typeCombo.currentIndex()
         if self.sampleType == self.SAMPLE_FULL_FACT:
@@ -58,4 +63,4 @@ class optSampleGenDialog(QtGui.QDialog, Ui_optSampleGenDialog):
                     self.ffactTable, row, 1)
         if self.sampleType == self.SAMPLE_FILE:
             self.sampleSettings = self.FileEdit.text()
-        self.done(QtGui.QDialog.Accepted)
+        self.done(QDialog.Accepted)

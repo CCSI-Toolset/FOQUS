@@ -16,12 +16,16 @@
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
-from PySide import QtGui, QtCore
+from PyQt5 import QtCore
+from PyQt5.QtGui import QColor, QFont, QPen, QBrush, QPainter, QPainterPath,\
+    QPainterPathStroker
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QInputDialog,\
+    QLineEdit, QMessageBox
 from foqus_lib.framework.graph import *
 import math
 import types
 
-class fsScene(QtGui.QGraphicsScene):
+class fsScene(QGraphicsScene):
     '''
         Class for viewing and editing a flowsheet.
     '''
@@ -38,7 +42,7 @@ class fsScene(QtGui.QGraphicsScene):
         '''
             Initialize the flowsheet display
         '''
-        QtGui.QGraphicsScene.__init__(self, parent)
+        super(fsScene, self).__init__(parent)
         # Location of mouse events and whether the mouse button is down
         self.mouseDown = False
         self.pressX = 0.0
@@ -71,24 +75,24 @@ class fsScene(QtGui.QGraphicsScene):
         self.eSelectionPen = None # Pen for edge selection markers
         #
         # Line styles
-        self.lcMajorGrid = QtGui.QColor(255,190,240) # minor grid color
-        self.lcMinorGrid = QtGui.QColor(190,240,255) # major grid color
+        self.lcMajorGrid = QColor(255,190,240) # minor grid color
+        self.lcMinorGrid = QColor(190,240,255) # major grid color
         self.ltGrid = QtCore.Qt.DashLine # grid line type
         self.lwMinorGrid = 1 # grid line width
         self.lwMajorGrid = 1 #
         #
-        self.lcEdge = QtGui.QColor(0,50,200)
+        self.lcEdge = QColor(0,50,200)
         self.ltEdge = QtCore.Qt.SolidLine
         self.lwEdge = 2
-        self.lcTear = QtGui.QColor(100,200,255)
+        self.lcTear = QColor(100,200,255)
         self.ltTear = QtCore.Qt.SolidLine
         #
-        self.lcNode = QtGui.QColor(0,0,0)
+        self.lcNode = QColor(0,0,0)
         self.ltNode = QtCore.Qt.SolidLine
         self.lwNode = 2
-        self.lcActNode = QtGui.QColor(0,0,0)
+        self.lcActNode = QColor(0,0,0)
         #
-        self.lcSelect = QtGui.QColor(0,255,0)
+        self.lcSelect = QColor(0,255,0)
         self.ltSelect = QtCore.Qt.SolidLine
         self.lwSelect = 4
         self.lwEdgeSelect = 10
@@ -101,30 +105,30 @@ class fsScene(QtGui.QGraphicsScene):
         self.nodeBrush = None
         self.actNodeBrush = None
         #
-        self.fcNode = QtGui.QColor(128,128,128)
-        self.fcActNode = QtGui.QColor(128,250,128)
+        self.fcNode = QColor(128,128,128)
+        self.fcActNode = QColor(128,250,128)
         self.fpNode = QtCore.Qt.SolidPattern
         self.fpActNode = QtCore.Qt.SolidPattern
         #
         self.edgeArrowBrush = None
-        self.fcEdgeArrow = QtGui.QColor(0,50,200)
+        self.fcEdgeArrow = QColor(0,50,200)
         self.fpEdgeArrow = QtCore.Qt.SolidPattern
         #
         self.whiteBrush = None
-        self.fcWB = QtGui.QColor(240,240,240)
+        self.fcWB = QColor(240,240,240)
         self.fpWB = QtCore.Qt.SolidPattern
         #
         self.loadPens() #setup pens, brushes, and font
 
     def loadPens(self):
         # Create pens
-        self.majorGridPen = QtGui.QPen()
-        self.minorGridPen = QtGui.QPen()
-        self.edgePen = QtGui.QPen()
-        self.tearEdgePen = QtGui.QPen()
-        self.nodePen = QtGui.QPen()
-        self.activeNodePen = QtGui.QPen()
-        self.selectionPen = QtGui.QPen()
+        self.majorGridPen = QPen()
+        self.minorGridPen = QPen()
+        self.edgePen = QPen()
+        self.tearEdgePen = QPen()
+        self.nodePen = QPen()
+        self.activeNodePen = QPen()
+        self.selectionPen = QPen()
         #Set color
         self.majorGridPen.setColor(self.lcMajorGrid)
         self.minorGridPen.setColor(self.lcMinorGrid)
@@ -150,16 +154,16 @@ class fsScene(QtGui.QGraphicsScene):
         self.activeNodePen.setWidth(self.lwNode)
         self.selectionPen.setWidth(self.lwSelect)
         # Set edge selection pen
-        self.eSelectionPen = QtGui.QPen(self.selectionPen)
+        self.eSelectionPen = QPen(self.selectionPen)
         self.eSelectionPen.setWidth(self.lwEdgeSelect)
         #Set font
-        self.font = QtGui.QFont()
+        self.font = QFont()
         self.font.setPixelSize(self.fontSize)
         #set up brushes
-        self.nodeBrush = QtGui.QBrush()
-        self.actNodeBrush = QtGui.QBrush()
-        self.edgeArrowBrush = QtGui.QBrush()
-        self.whiteBrush = QtGui.QBrush()
+        self.nodeBrush = QBrush()
+        self.actNodeBrush = QBrush()
+        self.edgeArrowBrush = QBrush()
+        self.whiteBrush = QBrush()
         #
         self.nodeBrush.setColor(self.fcNode)
         self.actNodeBrush.setColor(self.fcActNode)
@@ -176,7 +180,7 @@ class fsScene(QtGui.QGraphicsScene):
             Draw the grid for the drawing area
         '''
         # Add vertical minor grids
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         minLoc = self.xMinGrid+self.minorGrid
         maxLoc = self.xMaxGrid
         gStep = self.minorGrid
@@ -185,13 +189,13 @@ class fsScene(QtGui.QGraphicsScene):
             path.lineTo(i,self.yMaxGrid)
         self.addPath(path, self.minorGridPen)
         # Add horizontal minor grids
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         for i in range(minLoc, maxLoc, gStep):
             path.moveTo(self.xMinGrid, i)
             path.lineTo(self.xMaxGrid, i)
         self.addPath(path, self.minorGridPen)
         # Add vertical minor grids
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         minLoc = self.xMinGrid
         maxLoc = self.xMaxGrid
         gStep = self.majorGrid
@@ -200,7 +204,7 @@ class fsScene(QtGui.QGraphicsScene):
             path.lineTo(i,self.yMaxGrid)
         self.addPath(path, self.majorGridPen)
         # Add vertical minor grids
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         for i in range(minLoc, maxLoc, gStep):
             path.moveTo(self.xMinGrid, i)
             path.lineTo(self.xMaxGrid, i)
@@ -226,7 +230,7 @@ class fsScene(QtGui.QGraphicsScene):
             nodeType: text for the second line under the node
         '''
         #draw a square centered on x,y
-        path = QtGui.QPainterPath()
+        path = QPainterPath()
         path.addRect(
             x-self.nodeSize/2.0,
             y-self.nodeSize/2.0,
@@ -263,7 +267,7 @@ class fsScene(QtGui.QGraphicsScene):
         '''
         # determine if edge conntects a node to itself.
         if abs(x1 - x2) < 0.01 and abs(y1 - y2) < 0.01:
-            path = QtGui.QPainterPath()
+            path = QPainterPath()
             curve = curve*2
             path.addEllipse(x1,y1-curve/2.0, curve,curve)
             if tear:
@@ -284,10 +288,10 @@ class fsScene(QtGui.QGraphicsScene):
             xcontrol = 2*xcurve - xmid
             ycontrol = 2*ycurve - ymid
             #draw Edge
-            path = QtGui.QPainterPath()
+            path = QPainterPath()
             path.moveTo(x1,y1)
             path.quadTo(xcontrol, ycontrol, x2, y2)
-            p2 = QtGui.QPainterPathStroker()
+            p2 = QPainterPathStroker()
             path = p2.createStroke(path)
             # if edge is selected draw it highlighted
             if index in self.selectedEdges:
@@ -302,7 +306,7 @@ class fsScene(QtGui.QGraphicsScene):
             gi.setData(1, index)
             gi.setData(2, "edge")
             # Draw the arrow
-            path = QtGui.QPainterPath()
+            path = QPainterPath()
             xs = xcurve + self.edgeArrowSize*math.cos(ang)
             ys = ycurve + self.edgeArrowSize*math.sin(ang)
             path.moveTo(xs,ys)
@@ -332,7 +336,7 @@ class fsScene(QtGui.QGraphicsScene):
 
     def deleteSelected(self):
         '''
-            Delete the selected nodes and edges then redraw 
+            Delete the selected nodes and edges then redraw
             the flowsheet
         '''
         self.p.dat.flowsheet.deleteEdges(self.selectedEdges)
@@ -341,7 +345,7 @@ class fsScene(QtGui.QGraphicsScene):
         self.selectedNodes = []
         self.p.noneSelectedEmit()
         self.p.createScene()
-        
+
     def mouseMoveEvent(self, evnt):
         '''
             If the mouse button is held down move selected nodes
@@ -361,8 +365,8 @@ class fsScene(QtGui.QGraphicsScene):
             self.p.dat.flowsheet.nodes[node].y = y
         self.p.createScene()
         self.p.updateFSPos.emit() # update the flowsheet and node editor
-    
-    def mousePressEvent(self, evnt, 
+
+    def mousePressEvent(self, evnt,
         dbg_x=None, dbg_y=None, dbg_mod=None, dbg_name=None):
         '''
             The mouse was clicked on the flowsheet editor window.  Check
@@ -380,12 +384,13 @@ class fsScene(QtGui.QGraphicsScene):
         self.pressX = x
         self.pressY = y
         # Check if there is an object that was clicked on
-        try:
-            itemIndex = self.itemAt(evnt.scenePos()).data(1)
-            itemType = self.itemAt(evnt.scenePos()).data(2)
-        except:
-            itemIndex = None
+        s_item = self.itemAt(x, y, self.parent().transform())
+        if s_item is not None:
+            itemIndex = s_item.data(1)
+            itemType = s_item.data(2)
+        else:
             itemType = None
+            itemIndex = None
         # Selection Mode select nodes or edges holding shift allows
         # you to select multiple nodels and edges.
         if self.mode == self.MODE_SELECT:
@@ -394,14 +399,14 @@ class fsScene(QtGui.QGraphicsScene):
                 self.selectedNodes = []
             if itemType == "edge":
                 self.selectedEdges.append(itemIndex)
-                self.p.edgeSelectedEmit( self.selectedEdges[-1] )
+                self.p.edgeSelectedEmit(self.selectedEdges[-1])
             elif itemType == "node":
                 self.selectedNodes.append(itemIndex)
                 self.p.nodeSelectedEmit( self.selectedNodes[-1] )
             elif mod != QtCore.Qt.SHIFT:
-                # don't clear the selection if shift is down this 
-                # prevents you form selecting a bunch of stuff an 
-                # mistakenly clearing it all because you missed what 
+                # don't clear the selection if shift is down this
+                # prevents you form selecting a bunch of stuff and
+                # mistakenly clearing it all because you missed what
                 # you were aiming for.
                 self.selectedEdges = []
                 self.selectedNodes = []
@@ -411,19 +416,19 @@ class fsScene(QtGui.QGraphicsScene):
         elif self.mode == self.MODE_ADDNODE:
             xg, yg = self.nearestGrid(x,y)
             if dbg_name is None:
-                name, ok = QtGui.QInputDialog.getText(
-                    self.p, 
-                    "Node Name", 
-                    "New node name:", 
-                    QtGui.QLineEdit.Normal)
+                name, ok = QInputDialog.getText(
+                    self.p,
+                    "Node Name",
+                    "New node name:",
+                    QLineEdit.Normal)
             else:
                 ok=True
                 name=dbg_name
             if ok and name != '':
                 if name in self.p.dat.flowsheet.nodes:
-                    QtGui.QMessageBox.warning(
-                        self.p, 
-                        "Invalid Name", 
+                    QMessageBox.warning(
+                        self.p,
+                        "Invalid Name",
                         "That node name is already being used.")
                     return
                 self.p.dat.flowsheet.addNode(name, xg, yg, 0)
@@ -440,7 +445,7 @@ class fsScene(QtGui.QGraphicsScene):
                     self.selectedNodes.append(itemIndex)
                     if self.selectedNodes[0] != self.selectedNodes[1]:
                         ind = self.p.dat.flowsheet.addEdge(
-                            self.selectedNodes[0], 
+                            self.selectedNodes[0],
                             self.selectedNodes[1])
                         self.p.updateEdgeEditEmit()
                     self.selectedNodes = []
@@ -453,29 +458,29 @@ class fsScene(QtGui.QGraphicsScene):
                 self.p.dat.flowsheet.nodes[node].x,
                 self.p.dat.flowsheet.nodes[node].y)
 
-class drawFlowsheet(QtGui.QGraphicsView):
+class drawFlowsheet(QGraphicsView):
     '''
         This is the widget for viewing a flowsheet the actual drawing
         and event handing is done by the fsSecne object contained in
         drawFlowsheet object
     '''
-    nodeSelected = QtCore.Signal([types.StringType])
-    edgeSelected = QtCore.Signal([types.IntType])
-    noneSelected = QtCore.Signal()
-    updateFS = QtCore.Signal()
-    updateFSPos = QtCore.Signal()
-    updateEdgeEdit = QtCore.Signal()
-    
+    nodeSelected = QtCore.pyqtSignal([types.StringType])
+    edgeSelected = QtCore.pyqtSignal([types.IntType])
+    noneSelected = QtCore.pyqtSignal()
+    updateFS = QtCore.pyqtSignal()
+    updateFSPos = QtCore.pyqtSignal()
+    updateEdgeEdit = QtCore.pyqtSignal()
+
     def __init__(self, dat, parent=None):
         '''
             Initialize drawFlowsheet widget
         '''
         # call __init__ form base class
-        QtGui.QGraphicsView.__init__(self, parent)
+        super(drawFlowsheet, self).__init__(parent)
         # create and set scene object
         self.sc = fsScene(self)
         self.setScene(self.sc)
-        self.setRenderHint(QtGui.QPainter.Antialiasing)
+        self.setRenderHint(QPainter.Antialiasing)
         # set session data
         self.dat = dat
         # draw the flowsheet scene
@@ -502,18 +507,18 @@ class drawFlowsheet(QtGui.QGraphicsView):
             self.scene().drawNode(node.x,node.y,name,node.modelName)
         # redraw the scene
         self.scene().update()
-        
+
     def highlightSingleNode(self, name):
         print name
         self.scene().selectedNodes = [name]
         self.scene().selectedEdges = []
         self.createScene()
-        
+
     def clearSelection(self):
         self.scene().selectedNodes = []
         self.scene().selectedEdges = []
         self.noneSelectedEmit()
-        
+
     def updateEdgeEditEmit(self):
         '''
             Send a signal to update the edge editor.
@@ -530,8 +535,8 @@ class drawFlowsheet(QtGui.QGraphicsView):
 
     def edgeSelectedEmit(self, edge):
         '''
-            Send a signal that an edge was seslected.  You can select 
-            multiple edges, but only the last on selected is used to 
+            Send a signal that an edge was seslected.  You can select
+            multiple edges, but only the last on selected is used to
             open the edge editor
         '''
         self.edgeSelected.emit(edge)

@@ -1,6 +1,6 @@
 '''
     dataFilterDialog.py
-     
+
     * This contains the workings of the dialog to create filters for result data
 
     John Eslick, Carnegie Mellon University, 2014
@@ -13,18 +13,28 @@
     Non-Disclosure Agreement, and the CCSI Intellectual Property Management Plan. No rights are
     granted except as expressly recited in one of the aforementioned agreements.
 '''
-from foqus_lib.gui.flowsheet.dataFilterDialog_UI import *
-from foqus_lib.framework.sampleResults.results import *
-import foqus_lib.gui.helpers.guiHelpers as gh
 import json
 import logging
+import os
 
-class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
+from foqus_lib.framework.sampleResults.results import *
+import foqus_lib.gui.helpers.guiHelpers as gh
+
+from PyQt5 import uic
+from PyQt5.QtGui import QColor
+from PyQt5.QtWidgets import QApplication, QMessageBox, QSplitter, QInputDialog,\
+    QLineEdit
+mypath = os.path.dirname(__file__)
+_dataFilterDialogUI, _dataFilterDialog = \
+        uic.loadUiType(os.path.join(mypath, "dataFilterDialog_UI.ui"))
+
+
+class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
     def __init__(self, dat, parent=None):
         '''
             Constructor for data filter dialog
         '''
-        QtGui.QDialog.__init__(self, parent)
+        super(dataFilterDialog, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat     # all of the session data
 
@@ -46,10 +56,10 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         self.ropDict = {
             "=":dataFilterRule.OP_EQ,
             "!=":dataFilterRule.OP_NEQ,
-            "<":dataFilterRule.OP_L, 
-            ">":dataFilterRule.OP_G, 
-            "<=":dataFilterRule.OP_LE, 
-            ">=":dataFilterRule.OP_GE, 
+            "<":dataFilterRule.OP_L,
+            ">":dataFilterRule.OP_G,
+            "<=":dataFilterRule.OP_LE,
+            ">=":dataFilterRule.OP_GE,
             "IN":dataFilterRule.OP_IN}
         self.copDict = {
             "NOT":dataFilter.DF_NOT,
@@ -65,44 +75,44 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         self.updateFilterBox()
         self.updateForm()
         self.prevFilter = None
-        self.split = QtGui.QSplitter(self.splitFrame)
+        self.split = QSplitter(self.splitFrame)
         self.split.addWidget(self.ruleTable)
         self.split.addWidget(self.TreeFrame)
         self.splitFrame.layout().addWidget(self.split)
         self.splitFrame.layout().activate()
         headings = self.dat.flowsheet.results.headMap.keys()
         self.colList.addItems(headings)
-    
+
     def copyCol(self):
         self.copyCol2(self.colList.currentItem())
-            
+
     def copyCol2(self, ci=None):
-        clipboard = QtGui.QApplication.clipboard()
+        clipboard = QApplication.clipboard()
         if ci is not None:
             clipboard.setText(ci.text())
-    
+
     def enableSortTerm(self):
         if self.sortCheck.isChecked():
             self.sortTermEdit.setEnabled(True)
         else:
             self.sortTermEdit.setEnabled(False)
-    
+
     def selectedRows(self):
         items = self.ruleTable.selectedItems()
         rows = set()
         for item in items:
             rows.add(item.row())
         return rows
-        
+
     def rowSwap(self, row1, row2):
         table = self.ruleTable
         row1Items = [
-            table.takeItem(row1, 0), 
-            table.cellWidget(row1, 1), 
+            table.takeItem(row1, 0),
+            table.cellWidget(row1, 1),
             table.takeItem(row1, 2)]
         row2Items = [
             table.takeItem(row2, 0),
-            table.cellWidget(row2, 1), 
+            table.cellWidget(row2, 1),
             table.takeItem(row2, 2)]
         table.setItem(row1, 0, row2Items[0])
         table.setItem(row2, 0, row1Items[0])
@@ -117,7 +127,7 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         #assigning new widgets will delete old
         gh.setTableItem(table, row1, 1, r2ct, pullDown=r2it)
         gh.setTableItem(table, row2, 1, r1ct, pullDown=r1it)
-        
+
     def moveUp(self):
         rows = self.selectedRows()
         if len(rows) == 0:
@@ -130,7 +140,7 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         self.rowSwap(row, row2)
         self.ruleTable.clearSelection()
         self.ruleTable.selectRow(row2)
-    
+
     def moveDown(self):
         rows = self.selectedRows()
         if len(rows) == 0:
@@ -143,14 +153,14 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         self.rowSwap(row, row2)
         self.ruleTable.clearSelection()
         self.ruleTable.selectRow(row2)
-                
+
     def deleteRows(self):
         rows = list(self.selectedRows())
         rows = reversed(sorted(rows))
         self.ruleTable.clearSelection()
         for row in rows:
             self.ruleTable.removeRow(row)
-        
+
     def addOp(self, op=None):
         r = self.dat.flowsheet.results
         if op is not None:
@@ -160,11 +170,11 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
         table = self.ruleTable
         row = table.rowCount()
         table.setRowCount(row + 1)
-        bg = QtGui.QColor(200, 200, 200)
+        bg = QColor(200, 200, 200)
         gh.setTableItem(table, row, 0, "", bgColor=bg, editable=False)
         gh.setTableItem(table, row, 2, "", bgColor=bg, editable=False)
         gh.setTableItem(table, row, 1, op, pullDown=self.copList)
-                 
+
     def addRule(self, rule = None):
         r = self.dat.flowsheet.results
         if rule:
@@ -185,7 +195,7 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
     def doneClicked(self):
         self.applyChanges()
         self.done(0)
-        
+
     def delFilter(self):
         fname = self.selectFilterBox.currentText()
         if fname in self.dat.flowsheet.results.filters:
@@ -194,29 +204,29 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
             self.dat.flowsheet.results.setCurrentFilter(None)
         self.updateFilterBox( )
         self.upadteForm()
-        
+
     def selectFilter(self, i=None):
         self.applyChanges(True)
         self.prevFilter = self.selectFilterBox.currentText()
         self.updateForm()
-    
+
     def addFilter(self):
         '''
             Add a new filter to the results
         '''
         # Get the name
-        newName, ok = QtGui.QInputDialog.getText(
-            self, 
-            "Filter Name", 
-            "New filter name:", 
-            QtGui.QLineEdit.Normal)
+        newName, ok = QInputDialog.getText(
+            self,
+            "Filter Name",
+            "New filter name:",
+            QLineEdit.Normal)
         # if name supplied and not canceled
         if ok and newName != '':
             # check if the name is in use
             if newName in self.dat.flowsheet.results.filters:
                 # filter already exists
                 # just do nothing for now
-                QtGui.QMessageBox.information(
+                QMessageBox.information(
                     self, "Error", "The filter name already exists.")
             else:
                 self.applyChanges(True)
@@ -240,7 +250,7 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
             self.selectFilterBox.setCurrentIndex(i)
         self.selectFilterBox.blockSignals(False)
         self.prevFilter = self.selectFilterBox.currentText()
-    
+
     def updateForm(self):
         self.ruleTable.setRowCount(0)
         fltrName = self.selectFilterBox.currentText()
@@ -259,7 +269,7 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
                 self.addRule(item[1])
             else:
                 raise Exception("unknown filter item")
-                
+
     def applyChanges(self, usePrev = False):
         if usePrev:
             fltrName = self.prevFilter
@@ -295,4 +305,3 @@ class dataFilterDialog(QtGui.QDialog, Ui_dataFilterDialog):
                 print "message box here"
                 return 1
         return 0
-        

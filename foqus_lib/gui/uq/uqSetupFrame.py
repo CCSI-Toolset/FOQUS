@@ -1,8 +1,8 @@
 import platform
-import numpy, copy
-from foqus_lib.gui.uq.uqSetupFrame_UI import *
-from PySide import QtGui, QtCore
-from PySide.QtGui import QApplication, QCursor 
+import os
+import logging
+import numpy
+import copy
 from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.uq.SimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
@@ -18,28 +18,37 @@ from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from AnalysisDialog import AnalysisDialog
-import logging
 
-class checkingThread(QThread):
-    runsFinishedSignal = QtCore.Signal()
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup
+from PyQt5.QtGui import QCursor
+
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_uqSetupFrameUI, _uqSetupFrame = \
+        uic.loadUiType(os.path.join(mypath, "uqSetupFrame_UI.ui"))
+
+
+class checkingThread(QtCore.QThread):
+    runsFinishedSignal = QtCore.pyqtSignal()
     def __init__(self, row, parent=None):
-        QThread.__init__(self)
+        super(checkingThread, self).__init__()
         self.row = row
         self.parent = parent
         self.stop = False
         self.rtDisconnect = False
 
     class Communicate(QtCore.QObject):
-        resizeColumnSignal = QtCore.Signal()
-        progressBarSignal = QtCore.Signal(int)
-        #progressBarSignal = QtCore.Signal(QProgressBar, int, int, int)
-        editButtonSignal = QtCore.Signal(bool)
-        launchButtonSignal = QtCore.Signal(bool)
-        analyzeButtonSignal = QtCore.Signal(bool)
-        resultsSignal = QtCore.Signal(int, int)
-        simSelectedSignal = QtCore.Signal()
-        updateSessionSignal = QtCore.Signal(int, str)
-            
+        resizeColumnSignal = QtCore.pyqtSignal()
+        progressBarSignal = QtCore.pyqtSignal(int)
+        #progressBarSignal = QtCore.pyqtSignal(QProgressBar, int, int, int)
+        editButtonSignal = QtCore.pyqtSignal(bool)
+        launchButtonSignal = QtCore.pyqtSignal(bool)
+        analyzeButtonSignal = QtCore.pyqtSignal(bool)
+        resultsSignal = QtCore.pyqtSignal(int, int)
+        simSelectedSignal = QtCore.pyqtSignal()
+        updateSessionSignal = QtCore.pyqtSignal(int, str)
+
     def run(self):
         c = self.Communicate()
         row = self.row
@@ -55,7 +64,7 @@ class checkingThread(QThread):
         #c.launchButtonSignal.connect(launchButton.setEnabled)
         analyzeButton = self.parent.simulationTable.cellWidget(row, self.parent.analyzeCol)
         c.analyzeButtonSignal.connect(analyzeButton.setEnabled)
-        c.resizeColumnSignal.connect(self.parent.resizeColumns)    
+        c.resizeColumnSignal.connect(self.parent.resizeColumns)
         progressBar = self.parent.simulationTable.cellWidget(row, self.parent.statusCol)
         c.progressBarSignal.connect(progressBar.setValue)
         #c.progressBarSignal.connect(uqSetupFrame.setProgressBarErrorStyle)
@@ -70,7 +79,7 @@ class checkingThread(QThread):
         inputNames = sim.getInputNames()
         for name in inputNames:
             xnames.append(sim.getModelName() + '.' + name)
-        ynames = []            
+        ynames = []
         outputNames = sim.getOutputNames()
         for name in outputNames:
             ynames.append(sim.getModelName() + '.' + name)
@@ -123,7 +132,7 @@ class checkingThread(QThread):
                     #print numUnfinished
                 except:
                     pass
-            else: #Model is gateway 
+            else: #Model is gateway
                 setName=sim.getModelName()
                 if sim.turbineSession is None and gt.allSubmitted:
                     sim.turbineSession = gt.turbSession
@@ -186,15 +195,15 @@ class checkingThread(QThread):
                                             r['output'][nkey][vkey][0])
                                         errcode = r['graphError']
                                     except:
-                                        # no output available.  
+                                        # no output available.
                                         # Run failed and got no output
                                         outputValues[j] = numpy.nan
                                         errcode = -2
-                                    # Error or not set the run flag to 
-                                    # true once it has been run.  
-                                    # Originally if run resulted in 
-                                    # error this was set to false.  
-                                    # Usually as many times as you run 
+                                    # Error or not set the run flag to
+                                    # true once it has been run.
+                                    # Originally if run resulted in
+                                    # error this was set to false.
+                                    # Usually as many times as you run
                                     # an error sample it won't succeed
                                     runState[sampleNum] = True
                                     #if errcode == 0:
@@ -254,9 +263,9 @@ class checkingThread(QThread):
             if selectedRow == row:
                 c.simSelectedSignal.emit()
         self.runsFinishedSignal.emit()
-        
-class uqSetupFrame(QtGui.QFrame, Ui_uqSetupFrame):
-    runsFinishedSignal = QtCore.Signal()
+
+class uqSetupFrame(_uqSetupFrame, _uqSetupFrameUI):
+    runsFinishedSignal = QtCore.pyqtSignal()
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
@@ -289,7 +298,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     ## This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
-            
+
         def paint(self, painter, option, index):
             if index.row() == 0 or index.column() == 0:
                 textMargin = QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
@@ -325,16 +334,16 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                     return False
             else:
                 return False;
-            
+
             if int(value) == Qt.Checked:
                 state = Qt.Unchecked
             else:
                 state = Qt.Checked
-                
+
             return model.setData(index, state, Qt.CheckStateRole)
-    
+
     def __init__(self, dat, parent=None):
-        QtGui.QFrame.__init__(self, parent)
+        super(uqSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         LocalExecutionModule.session = dat
@@ -359,7 +368,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         ##### Set up UQ toolbox
         self.dataTabs.setEnabled(False)
         self.initFilter()
-        
+
 ##        ### Set up tooltips for ...
 ##        # Parameter Screening
 ##        self.analysisTabs.setTabToolTip(0, 'For large input dimensions (>20, for example), ' +
@@ -437,15 +446,15 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
         mask = ~(Qt.ItemIsEditable)
-        item.setFlags(flags & mask)            
+        item.setFlags(flags & mask)
         self.infoTable.setItem(self.numInputsRow, 0, item)
-    
+
         #Num outputs
         item = QTableWidgetItem(str(sim.getNumOutputs()))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
         mask = ~(Qt.ItemIsEditable)
-        item.setFlags(flags & mask)            
+        item.setFlags(flags & mask)
         self.infoTable.setItem(self.numOutputsRow, 0, item)
 
         #Sample size
@@ -453,14 +462,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
         mask = ~(Qt.ItemIsEditable)
-        item.setFlags(flags & mask)            
+        item.setFlags(flags & mask)
         self.infoTable.setItem(self.sampleSizeRow, 0, item)
 
         #Sampling scheme
         item = QTableWidgetItem(SamplingMethods.getFullName(sim.getSampleMethod()))
         flags = item.flags()
         mask = ~(Qt.ItemIsEditable)
-        item.setFlags(flags & mask)            
+        item.setFlags(flags & mask)
         self.infoTable.setItem(self.schemeRow, 0, item)
 
 
@@ -488,7 +497,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             sim = self.dat.uqSimList[row]
             item = self.simulationTable.item(row, column)
             newName = item.text()
-            sim.setModelName(newName) 
+            sim.setModelName(newName)
 
     def setProgressBarErrorStyle(self, progressBar, numGood, numError, numTotal):
         styleLeft = '''
@@ -496,7 +505,7 @@ QProgressBar:horizontal {
 border: 1px solid gray;
 border-radius: 3px;
 background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, '''
-    
+
         styleRight = ''');
 padding: 1px;
 text-align: center;
@@ -525,7 +534,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         style = styleLeft + styleMiddle + styleRight
 
         progressBar.setStyleSheet(style)
-                       
+
     def addSimulation(self):
         nodes = self.dat.flowsheet.nodes.keys()
 
@@ -559,7 +568,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
     def loadSimulation(self):
 
         self.freeze()
-        
+
         # Get file name
         if platform.system() == 'Windows':
             allFiles = '*.*'
@@ -587,7 +596,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 return
         data.setSession(self.dat)
         self.dat.uqSimList.append(data)
-        
+
         # Update table
         self.updateSimTable()
 
@@ -615,12 +624,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 self.simulationTable.selectRow(numSims - 1)
                 row = numSims - 1
             sim = self.dat.uqSimList[row]
-            
+
 
     def saveSimulation(self):
         psuadeFilter = 'Psuade Files (*.dat)'
         csvFilter = 'Comma-Separated Values (Excel) (*.csv)'
-        
+
         # Get selected row
         row = self.simulationTable.selectedIndexes()[0].row()
 
@@ -670,9 +679,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
         mask = ~(Qt.ItemIsEditable)
-        item.setFlags(flags & mask)         
+        item.setFlags(flags & mask)
         self.simulationTable.setItem(row, self.numberCol, item)
-        
+
         item = self.simulationTable.item(row, self.sessCol)
         if item is None:
             item = QTableWidgetItem()
@@ -722,7 +731,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             editButton.setText('View')
         else:
             editButton.setText('Revise')
-        
+
         editButton.setProperty('row', row)
         if newEditButton:
             editButton.clicked.connect(self.editSim)
@@ -807,8 +816,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                         # sample not run already
                         # get values
                         vals = self.dat.flowsheet.input.unflatten(
-                            inputNames, 
-                            inputs[i], 
+                            inputNames,
+                            inputs[i],
                             unScale=False)
                         # append a sample to the run list
                         rList.append(copy.deepcopy(inpDict))
@@ -833,14 +842,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                             resubs=sim.turbineResub)
                     else:
                         self.dat.save(
-                            filename = fname, 
+                            filename = fname,
                             updateCurrentFile = False,
                             changeLogMsg = "Save for turbine submission",
                             indent = 0,
                             keepData = False)
                         self.dat.flowsheet.uploadFlowseetToTurbine(
-                            self.dat.name, 
-                            fname, 
+                            self.dat.name,
+                            fname,
                             reset=False)
                         self.gThread = self.dat.flowsheet.runListAsThread(
                             rList,useTurbine=True)
@@ -877,20 +886,20 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 self.checkThread.stop = True
         else: # Adaptive Sampling
             # Get number of samples to add
-            numToAdd, ok = QInputDialog.getInt(self, 'Samples to Add', 'Number of samples to add:', 
+            numToAdd, ok = QInputDialog.getInt(self, 'Samples to Add', 'Number of samples to add:',
                                                min([100, sim.getNumSamples()]), 1, sim.getNumSamples())
             if not ok:
                 return
-            
+
             # Get output for refinement
             y = 1
             if sim.getNumOutputs() > 1:
-                output, ok = QInputDialog.getItem(self, 'Output Selection', 'Select Output to refine:', 
+                output, ok = QInputDialog.getItem(self, 'Output Selection', 'Select Output to refine:',
                                                   sim.getOutputNames())
                 if not ok:
                     return
                 y = sim.getOutputNames().index(output) + 1
-                
+
             self.freeze()
             Common.initFolder(SampleRefiner.dname)
             fname = Common.getLocalFileName(SampleRefiner.dname, sim.getModelName().split()[0], '.dat')
@@ -920,10 +929,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             #Common.archiveFile('psuadeMetisInfo', newdata.getID())
             newdata.setSession(sim.getSession())
             if os.path.exists('psuadeMetisInfo'):
-                newdata.archiveFile('psuadeMetisInfo')              
+                newdata.archiveFile('psuadeMetisInfo')
                 os.remove('psuadeMetisInfo')
             if os.path.exists('psuadeGMetisInfo'):
-                newdata.archiveFile('psuadeGMetisInfo')              
+                newdata.archiveFile('psuadeGMetisInfo')
                 os.remove('psuadeGMetisInfo')
 
             # add to simulation table, select new data
@@ -933,12 +942,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             #print 'here2'
             # reset components
             self.unfreeze()
-        
+
     def analyzeSim(self):
         sender = self.sender()
         row  = sender.property('row')
         sim = self.dat.uqSimList[row]
-        
+
         dialog = AnalysisDialog(row + 1, sim, self)
         dialog.exec_()
         dialog.deleteLater()
@@ -957,7 +966,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 # =========================== START Brenda's stuff =========================
 
     def initUQToolBox(self):
-        
+
         # call this only after a row in simulationTable is selected
         self.initData()
         QCoreApplication.processEvents()
@@ -991,24 +1000,24 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
     def getDataTab(self):
         tabIndex = self.dataTabs.currentIndex()
         deleteIndex = 0
-        
+
         if tabIndex == deleteIndex:
             if self.drawDataDeleteTable:
                 self.initDelete()
                 self.drawDataDeleteTable = False
-        
+
     # ........ DATA PAGE: FILTER TAB ...................
     def initFilter(self):
         Common.initFolder(DataProcessor.dname)
 
         # allow both radio buttons to be toggled off
         if not hasattr(self, 'group'):
-            self.group = QtGui.QButtonGroup()
+            self.group = QButtonGroup()
             self.group.addButton(self.filterInput_radio)
             self.group.addButton(self.filterOutput_radio)
             self.group.setExclusive(False)
 
-        # set up filter input 
+        # set up filter input
         self.filterInput_radio.setEnabled(True)
         self.filterInput_radio.setChecked(False)
         b = False
@@ -1161,7 +1170,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         newdata.setRunType(data.getRunType())
 
         # add to simulation table, select new data
-        self.dat.uqSimList.append(newdata)  
+        self.dat.uqSimList.append(newdata)
         self.updateSimTable()
 
         # reset components
@@ -1176,7 +1185,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         Common.initFolder(DataProcessor.dname)
 
         self.freeze()
-        
+
         # get selected row
         row = self.simulationTable.selectedIndexes()[0].row()
         data = self.dat.uqSimList[row]
@@ -1209,7 +1218,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         mask = ~(Qt.ItemIsEditable)
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         end = self.nSamples
-        
+
         # Blank corner cell
         item = QTableWidgetItem()
         flags = item.flags()
@@ -1225,7 +1234,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             item.setFlags(flags & checkboxMask)
             item.setCheckState(Qt.Unchecked)
             self.delete_table.setItem(r+1, 0, item)
-            
+
         for c in xrange(self.nInputs):         # populate input values
             item = QTableWidgetItem()
             flags = item.flags()
@@ -1342,11 +1351,11 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                         self.delete_table.setItem(r, self.nInputs+c+1, item)
 
         self.isDrawingDeleteTable = False
-                
-        
+
+
     def redrawDeleteTable(self):
         # Does not rewrite input values for speed purposes.  These never change
-        
+
         self.isDrawingDeleteTable = True
         self.freeze()
 
@@ -1454,7 +1463,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
     def enableDelete(self, b):
         self.delete_table.setEnabled(b)
         self.delete_button.setEnabled(b)
-        
+
     def delete(self):
 
         # check arguments
@@ -1501,11 +1510,11 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
     def deleteTableCellChanged(self, item):
         if self.isDrawingDeleteTable:
             return
-        
+
         index = self.delete_table.indexFromItem(item)
         row = index.row()
         col = index.column()
-       
+
         #print 'modified row %s col %s' % (row, col)
 
         modifiedColor = QtGui.QColor(0, 250, 0, 100)      # translucent green
@@ -1515,7 +1524,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         #origData = self.dat.uqSimList[simRow]
         #data = origData.getValidSamples() # filter out samples that have no output results
         data = self.dat.uqSimList[simRow]
-        
+
         nInputs = data.getNumInputs()
         outputData = data.getOutputData()
         nOutputs = data.getNumOutputs()
@@ -1534,7 +1543,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 item.setBackground(modifiedColor)
 
         self.changeOutputs_button.setEnabled(True)
-        
+
 
     def updateOutputValues(self):
         # Warn user
@@ -1543,8 +1552,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                                    QMessageBox.Yes, QMessageBox.No)
         if button != QMessageBox.Yes:
             return
-        
-        
+
+
         # get selected row
         row = self.simulationTable.selectedIndexes()[0].row()
         origData = self.dat.uqSimList[row]
@@ -1579,5 +1588,3 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.outputData = outputData
         self.redrawDeleteTable()
         self.updateSimTableRow(row)
-        
-

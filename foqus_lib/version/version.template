@@ -1,6 +1,6 @@
 '''
     version.py
-     
+
     * This just contains some version and legal info for FOQUS
 
     John Eslick, Carnegie Mellon University, 2014
@@ -8,18 +8,18 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
 
 import argparse, sys
 
-version = "2016.06.00.{BUILDNUMBER}" #Build in Jenkins inserts build number
+version = "2017.12.0.{BUILDNUMBER}" #Build in Jenkins inserts build number
 copyright = \
 'This Material was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and \
 copyright is held by the software owners: ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et \
@@ -27,13 +27,13 @@ al. The software owners and/or the U.S. Government retain ownership of all right
 software and the copyright and patents subsisting therein. Any distribution or dissemination is \
 governed under the terms and conditions of the CCSI Test and Evaluation License, CCSI Master \
 Non-Disclosure Agreement, and the CCSI Intellectual Property Management Plan. No rights are \
-granted except as expressly recited in one of the aforementioned agreements.' 
+granted except as expressly recited in one of the aforementioned agreements.'
 license = "Released under the CCSI Testing and Evaluation License"
 author = "CCSI FOQUS Team"
 support = "Support ccsi-support@acceleratecarboncapture.org"
 webpage = "http://www.acceleratecarboncapture.org/"
 maintainer = "John Eslick"
-maintainer_email = "eslickj@cmu.edu"
+maintainer_email = "john.eslick@netl.doe.gov"
 
 if __name__ == '__main__':
     '''
@@ -41,28 +41,28 @@ if __name__ == '__main__':
     '''
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        "--version", 
-        help = "Print version", 
+        "--version",
+        help = "Print version",
         action="store_true")
     parser.add_argument(
-        "--author", 
-        help = "Print author", 
+        "--author",
+        help = "Print author",
         action="store_true")
     parser.add_argument(
-        "--copyright", 
-        help = "Print copyright", 
+        "--copyright",
+        help = "Print copyright",
         action="store_true")
     parser.add_argument(
-        "--license", 
-        help = "Print license short statement (not full license)", 
+        "--license",
+        help = "Print license short statement (not full license)",
         action="store_true")
     parser.add_argument(
-        "--support", 
-        help = "Print support information", 
+        "--support",
+        help = "Print support information",
         action="store_true")
     parser.add_argument(
-        "--webpage", 
-        help = "Print web page ", 
+        "--webpage",
+        help = "Print web page ",
         action="store_true")
     args = parser.parse_args()
     if args.version:

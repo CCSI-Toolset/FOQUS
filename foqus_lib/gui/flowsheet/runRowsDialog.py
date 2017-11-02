@@ -1,9 +1,13 @@
-from foqus_lib.gui.flowsheet.runRowsDialog_UI import *
-from PySide import QtGui, QtCore
- 
-class runRowsDialog(QtGui.QDialog, Ui_runRowsDialog):
+import os
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_runRowsDialogUI, _runRowsDialog = \
+        uic.loadUiType(os.path.join(mypath, "runRowsDialog_UI.ui"))
+
+
+class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
     def __init__(self, parent, dat):
-        QtGui.QDialog.__init__(self, parent)
+        super(runRowsDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.stop_now = False
@@ -15,15 +19,15 @@ class runRowsDialog(QtGui.QDialog, Ui_runRowsDialog):
         self.allDone = False
         self.stopButton.clicked.connect(self.stopPress)
         self.disButton.clicked.connect(self.disPress)
-        
+
     def stopPress(self):
         if self.allDone:
             self.close()
         self.stop_now = True
-    
+
     def disPress(self):
         self.disconnect_now = True
-        
+
     def update(self):
         self.samplesLine.setText(str(self.samples))
         self.successLine.setText(str(self.success))
@@ -32,7 +36,7 @@ class runRowsDialog(QtGui.QDialog, Ui_runRowsDialog):
         if self.allDone:
             self.stopButton.setText("Done")
         self.dat.mainWin.app.processEvents()
-        
+
     def closeEvent(self, event):
         '''
             Intercept close main window close event

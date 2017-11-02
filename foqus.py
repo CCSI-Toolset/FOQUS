@@ -29,13 +29,13 @@ import json
 import logging
 # FOQUS imports
 import foqus_lib.version.version as ver # foqus version and other info
-import foqus_lib.help.package_info # third party dependency info
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.graph.graph import * # flowsheet
 from foqus_lib.framework.listen.listen import foqusListener2
 useDMF = False
 loadGUI = False
 guiAvail = False
+
 
 #
 # Splash screen global variables
@@ -49,6 +49,13 @@ def guiImport():
     global guiAvail
     global dmf_lib
     global Py4JGateway
+    global QtCore
+    global QApplication
+    global QSplashScreen
+    global QMessageBox
+    global QFileDialog
+    global QPixmap
+    global QPainter
     # DMF imoprts
     try:
         import dmf_lib
@@ -62,15 +69,19 @@ def guiImport():
         useDMF = False
     # GUI Imports
     try: # Check if the PySide libraries are available
-        from PySide import QtCore, QtGui
-        from PySide import QtSvg, QtXml  # for svg icons
-        import foqus_lib.gui.icons_rc
+        from PyQt5 import QtCore
+        from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox, \
+            QFileDialog
+        from PyQt5.QtGui import QPixmap, QPainter
+        from PyQt5 import QtSvg, QtXml
+        #import foqus_lib.gui.icons_rc
         import matplotlib
-        matplotlib.use('Qt4Agg')
-        matplotlib.rcParams['backend.qt4']='PySide'
+        matplotlib.use('Qt5Agg')
+        matplotlib.rcParams['backend.qt5']='PyQt5'
         loadGUI = True
         guiAvail = True
-    except:
+    except ImportError:
+        logging.getLogger("foqus." + __name__).exception("Error importing PyQt")
         loadGUI = False
         guiAvail = False
 
@@ -88,89 +99,27 @@ def makeSplash():
         information as well as all of the third party dependency
         information
     '''
-    x = 20
-    x_indent = 30
-    x_foqus_info = 200
-    y_foqus_info = 50
-    off = 13  # how many pixels to offset the next line vertically
-    y_copyright = 100
-    # tpm is a dictionary with all third party libraries information
-    tpm = foqus_lib.help.package_info.getThirdPartyInfo()
     # Load the splash screen background svg, gonna draw text over
-    pixmap=QtGui.QPixmap(':/icons/icons/ccsiSplash2.svg')
+    pixmap = QPixmap(':/icons/icons/ccsiSplash2.svg')
     # Make a painter to add text to
-    painter = QtGui.QPainter(pixmap)
+    painter = QPainter(pixmap)
     font = painter.font()  # current font for drawing text
-    font.setPointSize(10)
+    font.setPointSize(14)
+    font.setBold(True)
     painter.setFont(font)
-    # Add foqus information next to big FOQUS graphic
-    painter.drawText(x_foqus_info, y_foqus_info, "ver: " + ver.version)
-    painter.drawText(
-        x_foqus_info,
-        y_foqus_info+off, "ccsi-support@acceleratecarboncapture.org")
-    # Add copyright statement (large block of text)
-    font.setPointSize(8)
+    painter.drawText(20, 120, "Version: {}".format(ver.version))
+    font.setBold(False)
+    font.setPointSize(12)
     painter.setFont(font)
     painter.drawText(
-        x,
-        y_copyright,
-        680,
+        20,
+        160,
+        740,
         150,
         QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
         ver.copyright)
-    # Heading for additional dependencies that are a part of CCSI
-    y = 190
-    font.setBold(True)
-    painter.setFont(font)
-    painter.drawText(x,y, "UQ Features Provided by PSUADE")
-    font.setBold(False)
-    painter.setFont(font)
-    y += 1.5*off
-    painter.drawText(
-        x_indent,
-        y,
-        "URL: http://computation.llnl.gov/casc/uncertainty_quantification/")
-    y += off
-    painter.drawText(
-        x_indent,
-        y,
-        "License: Lesser General Public License (LGPL)")
-
-    # Add heading for third party stuff
-    y += 2.0*off
-    font.setBold(True)
-    painter.setFont(font)
-    painter.drawText(
-        x,
-        y,
-        ("Third Party Software Dependencies (see"
-         " help for full licenses and additional information)"))
-    #add lines for third party stuff
-    y += 1.75*off
-    font.setBold(False)
-    painter.setFont(font)
-    for key in sorted(tpm.keys(), key=lambda s: s.lower()):
-        auth = tpm[key].get('author', None)
-        if auth:
-            painter.drawText(
-                x_indent,
-                y,
-                '{0}, v {1}, {2}, author: {3}'.format(
-                    key,
-                    tpm[key]["version"],
-                    tpm[key]["copyright"],
-                    auth))
-        else:
-            painter.drawText(
-                x_indent,
-                y,
-                '{0}, v {1}, {2}'.format(
-                    key,
-                    tpm[key]["version"],
-                    tpm[key]["copyright"]))
-        y += 1.2*off
     painter.end()
-    splashScr[1] = QtGui.QSplashScreen(pixmap=pixmap)
+    splashScr[1] = QSplashScreen(pixmap=pixmap)
 
 def startGUI(
     showSplash = False,
@@ -189,7 +138,7 @@ def startGUI(
     '''
     import foqus_lib.gui.main.mainWindow as MW
     if app == None:
-        app = QtGui.QApplication(sys.argv)
+        app = QApplication(sys.argv)
     # Start java gateway for DMF integration
     startedDMF = False
     #create main window and start application loop
@@ -246,7 +195,7 @@ def logException(etype, evalue, etrace):
             # cursor was set to waiting type set to normal
             foqus_application.restoreOverrideCursor()
             # Now show error in a message box
-            msgBox = QtGui.QMessageBox()
+            msgBox = QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText("Unhandled Exception:")
             msgBox.setInformativeText(
@@ -349,7 +298,7 @@ if __name__ == '__main__':
     parser.add_argument("--consumer_cleanup_error", action="store_true",
         help = "Turn all running state FOQUS jobs to error on start up")
     parser.add_argument("--consumer_cleanup_rerun", action="store_true",
-        help = "Pick up and run FOQUS jobs in the running state") 
+        help = "Pick up and run FOQUS jobs in the running state")
     parser.add_argument("--consumer_delay", default=5, type=float,
         help = "Time between checking for new jobs")
     parser.add_argument("--consumer_simulation",
@@ -424,7 +373,7 @@ if __name__ == '__main__':
     if guiAvail and not args.nogui and not nogui:
         # start up a Qt app so I can display GUI messages
         # instead of printing to console
-        app = QtGui.QApplication(sys.argv)
+        app = QApplication(sys.argv)
         foqus_application = app
     else: # if no gui, I'll fall back to print
         app = None
@@ -468,15 +417,15 @@ if __name__ == '__main__':
                     # gui is available ask about working dir
                     # and write config file
                     settings = {'working_dir': None}
-                    msg = QtGui.QMessageBox()
+                    msg = QMessageBox()
                     msg.setText(("The user working directory has not "
                         "been specified yet. \nPlease create a FOQUS "
                         "working directory and specify a the location "
                         "after pressing okay."))
                     msg.exec_()
-                    msg = QtGui.QFileDialog()
-                    msg.setFileMode(QtGui.QFileDialog.Directory)
-                    msg.setOption(QtGui.QFileDialog.ShowDirsOnly)
+                    msg = QFileDialog()
+                    msg.setFileMode(QFileDialog.Directory)
+                    msg.setOption(QFileDialog.ShowDirsOnly)
                     if msg.exec_():
                         dirs = msg.selectedFiles()
                         settings["working_dir"] = dirs[0]
@@ -485,7 +434,7 @@ if __name__ == '__main__':
                         logging.getLogger("foqus." + __name__)\
                             .error(('No working directory'
                             ' specified FOQUS will exit'))
-                        msg = QtGui.QMessageBox()
+                        msg = QMessageBox()
                         msg.setText(("No working directory"
                             " specified FOQUS will exit."))
                         msg.exec_()
@@ -655,7 +604,7 @@ if __name__ == '__main__':
             onlyConsumer = consumer_uuid
         else:
             onlyConsumer = None
-            
+
         if args.consumer_cleanup_rerun:
             cleanup = 'submit'
         elif args.consumer_cleanup_error:
@@ -674,7 +623,7 @@ if __name__ == '__main__':
                     state='running')
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
-            
+
             logging.getLogger("foqus." + __name__).info(
                 "FOQUS consumer moving setup jobs to {0}".format(cleanup))
             guid = 0
@@ -686,8 +635,8 @@ if __name__ == '__main__':
                     state='setup')
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
-            
-            
+
+
         try:
             logging.getLogger("foqus." + __name__).info(
                 "FOQUS consumer {0} started, waiting for jobs..."\

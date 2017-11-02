@@ -1,15 +1,20 @@
-from tagSelectDialog_UI import *
-from PySide import QtGui, QtCore
 import json
+import os
 
-class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
-    sendTag = QtCore.Signal( )     
-    
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QTreeWidgetItem
+mypath = os.path.dirname(__file__)
+_tagSelectDialogUI, _tagSelectDialog = \
+        uic.loadUiType(os.path.join(mypath, "tagSelectDialog_UI.ui"))
+
+class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
+    sendTag = QtCore.pyqtSignal( )
+
     def __init__(self, dat, parent = None, lock = None):
-        '''
-            Constructor for model setup dialog
-        '''
-        QtGui.QDialog.__init__(self, parent)
+        """
+        Constructor for model setup dialog
+        """
+        super(tagSelectDialog, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat     # all of the session data
         self.availTags = dict()
@@ -26,7 +31,7 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
         if text != '':
             self.addTag(text)
             self.updateAvailableTags()
-            
+
     def sendTagFunc(self):
         tlst = self.mainTagList.selectedItems()
         if tlst == []:
@@ -40,38 +45,39 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
     def updateAvailableTags(self):
         self.mainTagList.clear()
         self.updateAvailableTagsRec(self.availTags, self.mainTagList)
-    
+
     def updateAvailableTagsRec(self, tdict, item):
-        for key in sorted( tdict.keys(), key = lambda s: s.lower() ):
+        for key in sorted(tdict.keys(), key = lambda s: s.lower()):
             val = tdict[key]
-            i = QtGui.QTreeWidgetItem( item )
+            i = QTreeWidgetItem(item)
             i.setText(0, key)
             if len(val):
-                i.setFlags( i.flags() & ~QtCore.Qt.ItemIsSelectable )#set flags to make not selectable
+                #set flags to make not selectable
+                i.setFlags(i.flags() & ~QtCore.Qt.ItemIsSelectable)
                 self.updateAvailableTagsRec(val, i)
 
     def saveTags(self):
         with open('tags.tgs', 'w') as outfile:
             json.dump(self.availTags, outfile, indent=2)
-        
+
     def loadTags(self):
         try:
             with open('tags.tgs', 'r') as infile:
                 self.availTags = json.load(infile)
         except:
             self.defaultTags()
-            
+
     def accept(self):
-        '''
-            close the dialog and save the tags if there was a change
-        '''
+        """
+        Close the dialog and save the tags if there was a change
+        """
         if self.tagsChanged: self.saveTags()
         self.done(0)
-        
+
     def addTag(self, text):
-        '''
-            Add a tag to the main tag list
-        '''
+        """
+        Add a tag to the main tag list
+        """
         self.tagsChanged = True
         hi = text.split('.')
         d = self.availTags
@@ -84,9 +90,9 @@ class tagSelectDialog(QtGui.QDialog, Ui_tagSelectDialog):
                 d = r
 
     def defaultTags(self):
-        '''
-            if there is no tags json file, then set up this default list of tags
-        '''
+        """
+        If there is no tags json file, then set up this default list of tags
+        """
         self.availTags = dict()
         self.addTag('Heat Integration.Block Name.Block *')
         self.addTag('Heat Integration.Port Type.Port_Material_In')

@@ -1,6 +1,6 @@
 '''
     surrogateFrame.py
-     
+
     * This frame is a container for surrogate model forms
     * It also contains things common to all surrogate methods
         - Data selection
@@ -11,43 +11,48 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
 
-from foqus_lib.gui.surrogate.surrogateFrame_UI import *
-from foqus_lib.gui.flowsheet.dataBrowserFrame import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-import foqus_lib.framework.surrogate.ireveal_json2flowsheet as irfs
-from foqus_lib.framework.session.hhmmss import *
-from PySide import QtGui, QtCore
 import time
 import math
 import traceback
 import os
 import shutil
+from foqus_lib.gui.flowsheet.dataBrowserFrame import *
+import foqus_lib.gui.helpers.guiHelpers as gh
+import foqus_lib.framework.surrogate.ireveal_json2flowsheet as irfs
+from foqus_lib.framework.session.hhmmss import *
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidget
+from PyQt5.QtGui import QColor
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_surrogateFrameUI, _surrogateFrame = \
+        uic.loadUiType(os.path.join(mypath, "surrogateFrame_UI.ui"))
 
 
-class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
+class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
     '''
         This is the frame for setting up surrogate model methods
     '''
-    setStatusBar = QtCore.Signal(str)
+    setStatusBar = QtCore.pyqtSignal(str)
     def __init__(self, dat, parent=None):
         '''
-            
+
         '''
-        QtGui.QFrame.__init__(self, parent)
+        super(surrogateFrame, self).__init__(parent=parent)
         self.mainWin = parent
         self.setupUi(self)
         self.dat = dat
         self.blockapply = False
-        self.tools = sorted(dat.surrogateMethods.plugins.keys(), 
+        self.tools = sorted(dat.surrogateMethods.plugins.keys(),
             key=lambda s: s.lower())
         self.toolSelectBox.clear()
         self.toolSelectBox.addItems(self.tools)
@@ -64,10 +69,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         self.outputCols = gh.colIndexes(self.outputTable)
         self.refreshContents()
         self.timer = QtCore.QTimer(self)
-        self.connect(
-            self.timer,
-            QtCore.SIGNAL("timeout()"),
-            self.updateStatus)
+        self.timer.timeout.connect(self.updateStatus)
         self.updateDelay = 500
         self.runButton.setEnabled(True)
         self.stopButton.setEnabled(False)
@@ -87,40 +89,40 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
             self.selectTool(0)
         except:
             pass
-    
+
     def selectAllInputs(self):
         table = self.inputTable
         for row in range(table.rowCount()):
             gh.setCellChecked(table, row, 0, check=True)
-    
+
     def selectAllOutputs(self):
         table = self.outputTable
         for row in range(table.rowCount()):
             if  gh.getCellText(table, row, 0) != 'graph.error':
                 gh.setCellChecked(table, row, 0, check=True)
-            
+
     def selectNoInputs(self):
         table = self.inputTable
         for row in range(table.rowCount()):
             gh.setCellChecked(table, row, 0, check=False)
-    
+
     def selectNoOutputs(self):
         table = self.outputTable
         for row in range(table.rowCount()):
             gh.setCellChecked(table, row, 0, check=False)
-    
+
     def clearOld(self):
         '''
             Clear old run messages.
         '''
         self.monitorTextBox.setPlainText("")
-    
+
     def make_irevealFS(self):
         '''
             Read an iREVEAL json config file and add an iREVEAL node
             to the flowhseet.
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open iREVEAL File",
             ".".join([self.dat.name, "json"]),
@@ -131,10 +133,10 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                 fileName)
             self.dat.foqusSettings.ireveal_input_file = fileName
         self.mainWin.refreshFlowsheet()
-        
+
     def stop(self):
         self.pg.terminate()
-        
+
     def run(self):
         '''
             Start making the surrogate models
@@ -155,7 +157,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         self.runButton.setEnabled(False)
         self.stopButton.setEnabled(True)
         self.setStatusBar.emit("Surrogate Generation Running")
-    
+
     def addSamples(self):
         n0 = len(self.dat.uqSimList)
         self.mainWin.uqSetupFrame.runsFinishedSignal.connect(
@@ -180,10 +182,10 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         dest_psuade_in_file = os.path.join(iREVEAL_work_dir, 'psuade.in')
         shutil.copyfile(src_psuade_in_file, dest_psuade_in_file)
         self.refreshData()
-            
+
     def refreshData(self):
         self.dataBrowser.refreshContents()
-            
+
     def selectTool(self, i):
         '''
             This is called to when the tool pull down is used to select
@@ -198,11 +200,11 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         self.settingsStack.setCurrentIndex(i)
         self.methodDescriptionBox.setHtml(pg.methodDescription)
         self.refreshContents()
-    
+
     def updateFilters(self):
         self.applyChanges()
         self.refreshContents()
-        
+
     def createOptionsTables(self):
         '''
             Get the options for all the surrogate method plugins and
@@ -213,7 +215,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         for tool in self.tools:
             pg = self.dat.surrogateMethods.plugins[tool].\
                 surrogateMethod(self.dat)
-            self.optTable[tool] = QtGui.QTableWidget(self)
+            self.optTable[tool] = QTableWidget(self)
             self.settingsStack.addWidget(self.optTable[tool])
             self.optTable[tool].setColumnCount(3)
             self.optTable[tool]. setHorizontalHeaderLabels(
@@ -242,7 +244,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                         '',
                         check = pg.options[opt].value,
                         jsonEnc = False,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
                 elif len(pg.options[opt].validValues) > 0:
                     # if is a list type use a combo box
                     gh.setTableItem(
@@ -252,7 +254,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                         pg.options[opt].default,
                         jsonEnc = True,
                         pullDown = pg.options[opt].validValues,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
                 else:
                     # Otherwise you just have to type
                     gh.setTableItem(
@@ -261,10 +263,10 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                         1,
                         pg.options[opt].value,
                         jsonEnc = True,
-                        bgColor = QtGui.QColor(235, 255, 235))
+                        bgColor = QColor(235, 255, 235))
             self.optTable[tool].resizeColumnsToContents()
         self.settingsStack.setCurrentIndex(0)
-    
+
     def ivGeneralButton1Click(self):
         self.applyChanges()
         tool = self.toolSelectBox.currentText()
@@ -274,7 +276,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         pg.updateOptions()
         pg.inputVarButtons[0][1]()
         self.refreshContents()
-    
+
     def ivGeneralButton2Click(self):
         self.applyChanges()
         tool = self.toolSelectBox.currentText()
@@ -284,7 +286,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         pg.updateOptions()
         pg.inputVarButtons[1][1]()
         self.refreshContents()
-    
+
     def ovGeneralButton1Click(self):
         self.applyChanges()
         tool = self.toolSelectBox.currentText()
@@ -294,7 +296,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         pg.updateOptions()
         pg.outputVarButtons[0][1]()
         self.refreshContents()
-        
+
     def ovGeneralButton2Click(self):
         self.applyChanges()
         tool = self.toolSelectBox.currentText()
@@ -304,10 +306,10 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         pg.updateOptions()
         pg.outputVarButtons[1][1]()
         self.refreshContents()
-    
+
     def refreshContents(self):
         '''
-            Update the contents of the surrogate for to reflect the 
+            Update the contents of the surrogate for to reflect the
             current state of the foqus session.
         '''
         self.irevealFSButton.hide()
@@ -340,7 +342,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
             surrogateMethod(self.dat)
         pg.loadFromSession()
         pg.updateOptions()
-        
+
         for i, btn in enumerate(pg.inputVarButtons):
             # this is because I am beeing lazy there are two
             # preexisting buttons
@@ -350,7 +352,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
             elif i==1:
                 self.ivGeneralButton2.setText(btn[0])
                 self.ivGeneralButton2.show()
-            
+
         for i, btn in enumerate(pg.outputVarButtons):
             if i==0:
                 self.ovGeneralButton1.setText(btn[0])
@@ -358,31 +360,31 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
             elif i==1:
                 self.ovGeneralButton2.setText(btn[0])
                 self.ovGeneralButton2.show()
-        
+
         for i in range(self.optTable[tool].rowCount()):
             oname = gh.getCellText(self.optTable[tool], i, 0)
             if oname in pg.options:
                 if pg.options[oname].dtype == bool:
                     gh.setCellChecked(
-                        self.optTable[tool], 
-                        i, 
+                        self.optTable[tool],
+                        i,
                         1,
                         pg.options[oname].value)
                 elif len(pg.options[oname].validValues) > 0:
                     gh.cellPulldownSetItemsJSON(
-                        self.optTable[tool], 
-                        i, 
+                        self.optTable[tool],
+                        i,
                         1,
                         pg.options[oname].validValues)
                     gh.cellPulldownSetJSON(
-                        self.optTable[tool], 
-                        i, 
+                        self.optTable[tool],
+                        i,
                         1,
                         pg.options[oname].value)
                 else:
                     gh.setCellJSON(
-                        self.optTable[tool], 
-                        i, 
+                        self.optTable[tool],
+                        i,
                         1,
                         pg.options[oname].value)
         self.inputTable.setRowCount(0)
@@ -399,47 +401,47 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
         self.outputCols = gh.colIndexes(self.outputTable)
         for i in range(len(inputNames)):
             var = self.dat.flowsheet.input.get(inputNames[i])
-            gh.setTableItem(self.inputTable, 
-                row = i, 
-                col = self.inputCols['Name'], 
-                text = inputNames[i], 
+            gh.setTableItem(self.inputTable,
+                row = i,
+                col = self.inputCols['Name'],
+                text = inputNames[i],
                 check = inputNames[i] in pg.input,
                 editable=False)
-            gh.setTableItem(self.inputTable, 
-                row = i, 
-                col = self.inputCols['Max'], 
+            gh.setTableItem(self.inputTable,
+                row = i,
+                col = self.inputCols['Max'],
                 text = var.max,
                 jsonEnc = True)
-            gh.setTableItem(self.inputTable, 
-                row = i, 
-                col = self.inputCols['Min'], 
+            gh.setTableItem(self.inputTable,
+                row = i,
+                col = self.inputCols['Min'],
                 text = var.min,
                 jsonEnc = True)
             for item in pg.inputCols:
                 val=pg.getInputVarOption(item[0], inputNames[i])
-                gh.setTableItem(self.inputTable, 
-                    row = i, 
-                    col = self.inputCols[item[0]], 
+                gh.setTableItem(self.inputTable,
+                    row = i,
+                    col = self.inputCols[item[0]],
                     text = val,
                     jsonEnc = True)
         for i in range(len(outputNames)):
             var = self.dat.flowsheet.output.get(outputNames[i])
-            gh.setTableItem(self.outputTable, 
-                row = i, 
-                col = self.outputCols['Name'], 
-                text = outputNames[i], 
+            gh.setTableItem(self.outputTable,
+                row = i,
+                col = self.outputCols['Name'],
+                text = outputNames[i],
                 check = outputNames[i] in pg.output,
                 editable=False)
             for item in pg.outputCols:
                 val=pg.getOutputVarOption(item[0], outputNames[i])
-                gh.setTableItem(self.outputTable, 
-                    row = i, 
-                    col = self.outputCols[item[0]], 
+                gh.setTableItem(self.outputTable,
+                    row = i,
+                    col = self.outputCols[item[0]],
                     text = val,
                     jsonEnc = True)
-        self.inputTable.resizeColumnsToContents()    
+        self.inputTable.resizeColumnsToContents()
         self.outputTable.resizeColumnsToContents()
-        
+
     def applyChanges(self, tool=None):
         '''
             Save surrogate model setup in foqus session
@@ -477,7 +479,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                 for item in pg.outputCols:
                     col = self.outputCols[item[0]]
                     val = gh.getCellJSON(self.outputTable, i, col)
-                    pg.setOutputVarOption(item[0], c[1], val)                
+                    pg.setOutputVarOption(item[0], c[1], val)
         pg.input = inputs
         pg.output = outputs
         pg.dataFilter = dataFilter
@@ -492,7 +494,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
             pg.options[optName].value = optValue
         pg.saveInSession()
         self.dat.surrogateCurrent = pg.name
-            
+
     def updateStatus(self):
         '''
             This function is called by the timer periodically and
@@ -526,7 +528,7 @@ class surrogateFrame(QtGui.QFrame, Ui_surrogateFrame):
                     df = os.path.abspath(self.pg.driverFile)
                 except:
                     pass
-                msgBox = QtGui.QMessageBox()
+                msgBox = QMessageBox()
                 msgBox.setWindowTitle("Driver File Location")
                 msgBox.setText(
                     "The surrogate model driver file path is: {0}"\

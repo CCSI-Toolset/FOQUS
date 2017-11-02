@@ -16,8 +16,8 @@
 '''
 from foqus_lib.gui.main.turbineConfig import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
-from settingsFrame_UI import *
-from PySide import QtGui, QtCore
+
+import os
 import logging
 import time
 import re
@@ -30,19 +30,26 @@ import xml.etree.ElementTree as ET
 if os.name == 'nt':
     import win32process
 
-class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QInputDialog, QFileDialog
+mypath = os.path.dirname(__file__)
+_settingsFrameUI, _settingsFrame = \
+        uic.loadUiType(os.path.join(mypath, "settingsFrame_UI.ui"))
+#super(, self).__init__(parent=parent)
+
+class settingsFrame(_settingsFrame, _settingsFrameUI):
     '''
         This class is a dialog box that allows you to view and change
         general FOQUS settings.  It's called log settings because it
         started out with only log settings.
     '''
-    waiting = QtCore.Signal() # indicates a task is going take a while
-    notwaiting = QtCore.Signal() # indicates a wait is over
+    waiting = QtCore.pyqtSignal() # indicates a task is going take a while
+    notwaiting = QtCore.pyqtSignal() # indicates a wait is over
     def __init__(self, dat, parent=None):
         '''
             Initialize FOQUS settings dialog
         '''
-        QtGui.QFrame.__init__(self, parent)
+        super(settingsFrame, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat
         # translate the slider value into a logging level
@@ -92,7 +99,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Failed to open TubbineLite config file")
-            QtGui.QMessageBox.warning(self, "Error",
+            QMessageBox.warning(self, "Error",
                 "Could not read TurbineLite configuration file "
                 "(see log).")
             return
@@ -108,7 +115,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Could not parse XML")
-            QtGui.QMessageBox.warning(self, "Error",
+            QMessageBox.warning(self, "Error",
                 "Could not parse XML (see log).")
         tree = ET.ElementTree()
         tree._setroot(root)
@@ -120,7 +127,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         netPort = netLoc.text.split(":")[1]
         #
         #Ask for new port
-        text, result = QtGui.QInputDialog.getText(
+        text, result = QInputDialog.getText(
             self,
             "TurbineLite Port",
             "Enter the new TurbineLite Port (Current {0}).".format(netPort))
@@ -140,7 +147,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
             "<unity>", '<unity xmlns="{0}">'.format(xmlns))
         with open(tcfg, 'wb') as f:
             f.write(tcfgs)
-        QtGui.QMessageBox.information(
+        QMessageBox.information(
             self,
             "TurbineLite Config Change!",
             " The TurbineLite web interface configuration"
@@ -149,11 +156,11 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
             " You must now restart the TurbineLite service,"
             " and edit the local TrubineLite configuration.".format(
                 newcfg, port),
-            QtGui.QMessageBox.Ok)
+            QMessageBox.Ok)
 
 
     def turbineTest(self):
-        QtGui.QMessageBox.information(
+        QMessageBox.information(
             self,
             "Test",
             ("The Turbine configuration format and Turbine connection"
@@ -162,18 +169,18 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         self.dat.flowsheet.turbConfig.readConfig()
         errList = self.dat.flowsheet.turbConfig.testConfig(writeConfig=False)
         if len(errList) == 0:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Success",
                 "The Turbine configuration is okay.")
         else:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Error",
                 str(errList))
 
     def turbineLiteTest(self):
-        QtGui.QMessageBox.information(
+        QMessageBox.information(
             self,
             "Test",
             ("The Turbine configuration format and Turbine connection"
@@ -182,12 +189,12 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         self.dat.flowsheet.turbConfig.readConfig()
         errList = self.dat.flowsheet.turbConfig.testConfig(writeConfig=False)
         if len(errList) == 0:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Success",
                 "The Turbine configuration is okay.")
         else:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Error",
                 str(errList))
@@ -208,10 +215,10 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
                    "reason given below is not clear the likely cause is that "\
                    "FOQUS does not have permision to start/stop the services."
             details = "Details:\n{0}\n{1}".format(out, err)
-            QtGui.QMessageBox.information(self, "Information",
+            QMessageBox.information(self, "Information",
                     "\n\n".join([mess, details]))
         else:
-            QtGui.QMessageBox.information(self, "Information",
+            QMessageBox.information(self, "Information",
                     "Result:\n{0}\n{1}".format(out, err))
 
     def stopTurbineService(self):
@@ -230,10 +237,10 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
             "reason given below is not clear the likely cause is that"\
             "FOQUS does not have permision to start/stop the services."
             details = "Details:\n{0}\n{1}".format(out, err)
-            QtGui.QMessageBox.information(self, "Information",
+            QMessageBox.information(self, "Information",
                     "\n\n".join([mess, details]))
         else:
-            QtGui.QMessageBox.information(self, "Information",
+            QMessageBox.information(self, "Information",
                 "Result:\n{0}\n{1}".format(out, err))
 
     def updateForm(self):
@@ -313,9 +320,9 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the working directory
         '''
-        msg = QtGui.QFileDialog()
-        msg.setFileMode(QtGui.QFileDialog.Directory)
-        msg.setOption(QtGui.QFileDialog.ShowDirsOnly)
+        msg = QFileDialog()
+        msg.setFileMode(QFileDialog.Directory)
+        msg.setOption(QFileDialog.ShowDirsOnly)
         if msg.exec_():
             dirs = msg.selectedFiles()
             dirs = os.path.normpath(dirs[0])
@@ -325,7 +332,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the R exe file
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find RScript exe",
             "",
@@ -335,18 +342,18 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
             self.rScriptPath.setText(fileName)
 
     def browseTurbLite(self):
-        msg = QtGui.QFileDialog()
-        msg.setFileMode(QtGui.QFileDialog.Directory)
-        msg.setOption(QtGui.QFileDialog.ShowDirsOnly)
+        msg = QFileDialog()
+        msg.setFileMode(QFileDialog.Directory)
+        msg.setOption(QFileDialog.ShowDirsOnly)
         if msg.exec_():
             dirs = msg.selectedFiles()
             dirs = os.path.normpath(dirs[0])
             self.turbLiteHomeEdit.setText(dirs)
 
     def browseJavaDir(self):
-        msg = QtGui.QFileDialog()
-        msg.setFileMode(QtGui.QFileDialog.Directory)
-        msg.setOption(QtGui.QFileDialog.ShowDirsOnly)
+        msg = QFileDialog()
+        msg.setFileMode(QFileDialog.Directory)
+        msg.setOption(QFileDialog.ShowDirsOnly)
         if msg.exec_():
             dirs = msg.selectedFiles()
 #            dirs = '"' + os.path.normpath(dirs[0]) + '"'
@@ -357,7 +364,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the ALAMO exe file
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find ALMO exe",
             "",
@@ -370,7 +377,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the turbine config file
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find Turbine Confguration",
             "",
@@ -383,7 +390,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the turbine config file
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find Turbine Cluster Confguration",
             "",
@@ -396,7 +403,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the psuade exe file
         '''
-##        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+##        fileName, filtr = QFileDialog.getOpenFileName(
 ##            self,
 ##            "Open File",
 ##            "",
@@ -410,7 +417,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         '''
             Open file browser to select the psuade exe file
         '''
-        fileName, filtr = QtGui.QFileDialog.getOpenFileName(
+        fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open File",
             "",
@@ -484,7 +491,7 @@ class settingsFrame(QtGui.QFrame, Ui_settingsFrame):
         #without a FOQUS restart
         self.dat.loadSettings()
         if self.dat.foqusSettings.new_working_dir != self.dat.foqusSettings.working_dir:
-            QtGui.QMessageBox.information(
+            QMessageBox.information(
                 self,
                 "Restart FOQUS",
                 "Close and reopen FOQUS to change the working dir.")

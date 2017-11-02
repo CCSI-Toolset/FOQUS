@@ -1,6 +1,6 @@
 '''
     optSetupFrame.py
-     
+
     * This contains workings of the optimization screen in FOQUS
 
     John Eslick, Carnegie Mellon University, 2014
@@ -9,31 +9,41 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
 
-from foqus_lib.gui.optimization.optSetupFrame_UI import *
-from PySide import QtGui, QtCore
+import json
+import numpy
+import copy
+import os
+
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import *
 from foqus_lib.framework.graph.nodeVars import *
-import json, numpy, copy
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.optimization.optMonitor import *
 from foqus_lib.gui.optimization.optSampleGenDialog import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
-    setStatusBar = QtCore.Signal(str)
-    updateGraph = QtCore.Signal()
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QMessageBox, QDialog
+from PyQt5.QtGui import QColor
+mypath = os.path.dirname(__file__)
+_optSetupFrameUI, _optSetupFrame = \
+        uic.loadUiType(os.path.join(mypath, "optSetupFrame_UI.ui"))
+
+
+class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
+    setStatusBar = QtCore.pyqtSignal(str)
+    updateGraph = QtCore.pyqtSignal()
     def __init__(self, dat, parent=None):
-        QtGui.QFrame.__init__(self, parent)
+        super(optSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.lastSolver = None
         self.dat = dat
@@ -56,7 +66,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         #
         self.osolvers = sorted(
             self.dat.optSolvers.plugins.keys(),
-            key=lambda s: s.lower()) 
+            key=lambda s: s.lower())
         self.methods = self.dat.optSolvers.plugins #dict of solvers
         self.optMonitorFrame = optMonitor(self.dat, self)
         self.tabWidget.addTab(self.optMonitorFrame, 'Run')
@@ -65,7 +75,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         self.tabWidget.currentChanged.connect(self.switchTab)
         self.running = False
         self.synhi = PythonHighlighter(self.customCodeEdit.document())
-        
+
     def clearOld(self):
         '''
            Clear messages from old optimzation runs
@@ -75,31 +85,31 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
             self.optMonitorFrame.clearPlots()
         except:
             pass
-        
+
     def genSamples(self):
         self.applyChanges()
         prob = self.dat.optProblem
         genDialog = optSampleGenDialog(sorted(prob.vs))
         r = genDialog.exec_()
-        if r == QtGui.QDialog.Accepted:
+        if r == QDialog.Accepted:
             #call the appropriate method to generate samples
             if genDialog.sampleType == genDialog.SAMPLE_FULL_FACT:
                 prob.fullfactorial(genDialog.sampleSettings)
             elif genDialog.sampleType == genDialog.SAMPLE_FILE:
                 prob.loadSamples(genDialog.sampleSettings)
             self.updateSampleVarsTable()
-    
+
     def deleteSamples(self):
         rows = set()
         for item in self.sampleTable.selectedItems():
             rows.add(item.row())
         self.dat.optProblem.deleteSamples(rows)
         self.updateSampleVarsTable()
-        
+
     def clearSamples(self):
         self.dat.optProblem.clearSamples()
         self.updateSampleVarsTable()
-    
+
     def addSample(self):
         self.sampleTable.setRowCount(self.sampleTable.rowCount() + 1)
 
@@ -113,29 +123,29 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         for name in ci:
             for row in range(prob.numSamples()):
                 if name in prob.samp:
-                    gh.setCellJSON(table, row, ci[name], 
+                    gh.setCellJSON(table, row, ci[name],
                         prob.samp[name][row])
                 else:
-                    gh.setCellJSON(table, row, ci[name], 
+                    gh.setCellJSON(table, row, ci[name],
                         numpy.nan)
         table.resizeColumnsToContents()
-    
+
     def switchTab(self, i):
         self.applyChanges()
-    
+
     def showVex(self):
         self.parent().parent().varBrowse.format = "optimization"
         self.parent().parent().varBrowse.nodeMask = None
         self.parent().parent().varBrowse.refreshVars()
         self.parent().parent().varBrowse.show()
-        
+
     def insertVar(self, v):
         if v == None: return
         if len(v) != 3: return
         nkey = v[0]
         isInput = v[1] == "input"
         vkey = v[2]
-            
+
     def updateColIndexes(self):
         '''
             Setup dictionaries to look up column indexes.  Makes it easy
@@ -156,16 +166,16 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         for col in range(self.gTable.columnCount()):
             self.icCols[self.gTable.horizontalHeaderItem(col).text()] \
                 = col
-            
+
     def revert(self):
         '''
             return form contents to current optimization options
         '''
-        self.refreshContents()        
-            
+        self.refreshContents()
+
     def applyChanges(self):
         '''
-            Use information stored in this form to update the 
+            Use information stored in this form to update the
             optimization options
         '''
         #
@@ -209,7 +219,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                 row,
                 self.icCols["Penalty Factor"])
             pf = gh.getCellText(table, row, self.icCols["Form"] )
-            prob.g.append( optimInEq(pc, ps, pf) )    
+            prob.g.append( optimInEq(pc, ps, pf) )
         # Get decision variables
         prob.v = []
         prob.vs = []
@@ -217,8 +227,8 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         for row in range(self.varForm.rowCount()):
             name = gh.getCellText(table, row, self.vtCols["Variable"])
             gr.x[name].scaling = gh.getCellText(
-                table, 
-                row,  
+                table,
+                row,
                 self.vtCols["Scale"])
             gr.x[name].min = gh.getCellJSON(
                 table,
@@ -271,7 +281,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
 
     def scaleHelper(self, ind=0):
         '''
-            If a descision variable has a none scale type set the scale 
+            If a descision variable has a none scale type set the scale
             to lineae.  For other variables set the scale type to none
             and disable the scale selection.
         '''
@@ -288,7 +298,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
             else:
                 gh.cellPulldownSetText(table, row, scaleCol, "None")
                 table.cellWidget(row, scaleCol).setEnabled(False)
-            
+
     def refreshContents(self):
         '''
         '''
@@ -312,14 +322,14 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
         else: #if no solvers are available
             pass
         # put data into variable table
-        row = 0 
+        row = 0
         self.varForm.clearContents()
         self.varForm.setRowCount(0)
         table = self.varForm
         for vkey in x:
             #only list inputs that are not set by other variables
-            if not x[vkey].con: 
-                self.varForm.setRowCount(self.varForm.rowCount() + 1)   
+            if not x[vkey].con:
+                self.varForm.setRowCount(self.varForm.rowCount() + 1)
                 scale = x[vkey].scaling
                 gh.setTableItem(
                     table,
@@ -333,10 +343,10 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                     "Fixed",
                     pullDown = ["Fixed", "Decision", "Sample"])
                 if vkey in prob.v:
-                    gh.cellPulldownSetText(table, row, 
+                    gh.cellPulldownSetText(table, row,
                         self.vtCols["Type"], "Decision")
                 elif vkey in prob.vs:
-                    gh.cellPulldownSetText(table, row, 
+                    gh.cellPulldownSetText(table, row,
                         self.vtCols["Type"], "Sample")
                 table.cellWidget(row, self.vtCols["Type"])\
                     .currentIndexChanged.connect(self.scaleHelper)
@@ -367,12 +377,12 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                 row += 1
         self.scaleHelper()
         table.resizeColumnsToContents()
-        if not o: 
+        if not o:
             self.fTable.setRowCount(0)
             self.gTable.setRowCount(0)
             return
         # put data in objective function table
-        self.fTable.setRowCount(  len(o.obj) )   
+        self.fTable.setRowCount(  len(o.obj) )
         row = 0
         table = self.fTable
         for f in o.obj:
@@ -394,7 +404,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                 f.fail,
                 jsonEnc=True)
             row += 1
-        table.resizeColumnsToContents()    
+        table.resizeColumnsToContents()
         # put data in inequality constraint table
         self.gTable.setRowCount(len(o.g))
         row = 0
@@ -418,20 +428,20 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                 f.penForm,
                 pullDown=self.penForms)
             row += 1
-        table.resizeColumnsToContents() 
+        table.resizeColumnsToContents()
         # Get objective type
         if prob.objtype == prob.OBJ_TYPE_EVAL:
             self.objTypeCombo.setCurrentIndex(0)
         elif prob.objtype == prob.OBJ_TYPE_CUST:
-            self.objTypeCombo.setCurrentIndex(1)            
+            self.objTypeCombo.setCurrentIndex(1)
         # Get custom code
         self.customCodeEdit.setPlainText(prob.custpy)
         self.updateSampleVarsTable()
-    
+
     def setSolver(self, name):
         '''
             Set the current solver
-            
+
             name: the name of the solver to make active
         '''
         slvr = self.methods[name].opt()
@@ -466,7 +476,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                     '',
                     check = opts[opt].value,
                     jsonEnc = False,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             elif len(opts[opt].validValues) > 0:
                 # if is a list type use a combo box
                 gh.setTableItem(
@@ -476,7 +486,7 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                     opts[opt].value,
                     jsonEnc = True,
                     pullDown = opts[opt].validValues,
-                    bgColor = QtGui.QColor(235, 255, 235))
+                    bgColor = QColor(235, 255, 235))
             else:
                 # Otherwise you just have to type
                 gh.setTableItem(
@@ -485,44 +495,44 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
                     1,
                     opts[opt].value,
                     jsonEnc = True,
-                    bgColor = QtGui.QColor(235, 255, 235))
-        table.resizeColumnsToContents() 
-    
+                    bgColor = QColor(235, 255, 235))
+        table.resizeColumnsToContents()
+
     def selectSolver(self, indx):
         '''
             Called when a solver is selected in the solver combobox
-            index:  the combo box index of current selection 
+            index:  the combo box index of current selection
                 (ignored. is just needed by combo box change signal)
         '''
         self.applyChanges()
         self.setSolver(self.solverBox.currentText())
         self.lastSolver = self.solverBox.currentText()
-    
+
     def addF(self):
         '''
             Add an objective function
         '''
-        self.fTable.setRowCount( self.fTable.rowCount() + 1 )   
-    
+        self.fTable.setRowCount( self.fTable.rowCount() + 1 )
+
     def delF(self):
         '''
             Delete an objective function
         '''
         row = self.fTable.currentRow()
         self.fTable.removeRow(row)
-        
+
     def addG(self):
         '''
             Add a new inequality constraint
         '''
         self.gTable.setRowCount( self.gTable.rowCount() + 1 )
-        gh.setTableItem( 
-            self.gTable, 
-            self.gTable.rowCount() - 1, 
-            self.icCols["Form"], 
-            "Linear", 
+        gh.setTableItem(
+            self.gTable,
+            self.gTable.rowCount() - 1,
+            self.icCols["Form"],
+            "Linear",
             pullDown = self.penForms )
-        
+
     def delG(self):
         '''
             Remove an inequality constraint
@@ -535,19 +545,19 @@ class optSetupFrame(QtGui.QFrame, Ui_optSetupFrame):
             This function checks several things
             1.  At least on optimization variable
             2.  Max > Min for all variables
-            3.  Variable scaling other than none for all optimization 
+            3.  Variable scaling other than none for all optimization
                 variables
             4.  Python code evaluates without errors
         '''
         # New objective types mean this needs fixed.  Commented out checks
         # for now.
-        
+
         self.applyChanges()
         #self.dat.flowsheet.generateGlobalVariables()
         #pg = self.dat.optSolvers.plugins[self.dat.optProblem.solver].opt(self.dat)
         #e = self.dat.optProblem.check(self.dat.flowsheet, pg.minVars, pg.maxVars)
         #if not e[0] == 0:
-        #    QtGui.QMessageBox.information(self, "Error", "There is an error in the problem definition:\n" + e[1])
+        #    QMessageBox.information(self, "Error", "There is an error in the problem definition:\n" + e[1])
         #    return 1
-        #QtGui.QMessageBox.information(self, "Okay", "No Errors detected in problem definition.")
+        #QMessageBox.information(self, "Okay", "No Errors detected in problem definition.")
         return 0 # if it gets here no error.

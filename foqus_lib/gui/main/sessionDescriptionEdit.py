@@ -1,9 +1,14 @@
-from foqus_lib.gui.main.sessionDescriptionEdit_UI import *
-from PySide import QtGui, QtCore
+import os
+from PyQt5 import QtCore, uic
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_sessionDescriptionDialogUI, _sessionDescriptionDialog = \
+        uic.loadUiType(os.path.join(mypath, "sessionDescriptionEdit_UI.ui"))
 
-class sessionDescriptionDialog(QtGui.QDialog, Ui_sessionDescriptionDialog):
+
+class sessionDescriptionDialog(_sessionDescriptionDialog, _sessionDescriptionDialogUI):
 	def __init__(self, parent=None, text = ""):
-		QtGui.QDialog.__init__(self, parent)
+		super(sessionDescriptionDialog, self).__init__(parent=parent)
 		self.setupUi(self)
 		self.textEdit.setHtml(text)
 		self.underlineButton.clicked.connect( self.underline )
@@ -15,7 +20,7 @@ class sessionDescriptionDialog(QtGui.QDialog, Ui_sessionDescriptionDialog):
 		self.colorButton.clicked.connect( self.color )
 		self.textEdit.currentCharFormatChanged.connect( self.getFormat )
 		self.getFormat()
-		
+
 	def getFormat(self):
 		self.format = self.textEdit.currentCharFormat()
 		self.underlineButton.setChecked( self.format.fontUnderline() )
@@ -33,19 +38,19 @@ class sessionDescriptionDialog(QtGui.QDialog, Ui_sessionDescriptionDialog):
 		else:
 			self.superscriptButton.setChecked( False )
 			self.subscriptButton.setChecked( False )
-	
+
 	def color(self):
 		color = QtGui.QColorDialog.getColor(self.textEdit.textColor(), self)
 		self.textEdit.setTextColor(color)
 		self.textEdit.setFocus()
-	
+
 	def font(self):
 		font, ok = QtGui.QFontDialog.getFont(self.format.font(), self)
 		if ok:
 			self.format.setFont(font)
 			self.textEdit.setCurrentCharFormat( self.format )
 			self.textEdit.setFocus()
-		
+
 	def superscript(self):
 		if self.superscriptButton.isChecked():
 			self.subscriptButton.setChecked(False)
@@ -54,8 +59,8 @@ class sessionDescriptionDialog(QtGui.QDialog, Ui_sessionDescriptionDialog):
 			self.format.setVerticalAlignment(QtGui.QTextCharFormat.AlignNormal)
 		self.textEdit.setCurrentCharFormat( self.format )
 		self.textEdit.setFocus()
-		
-				
+
+
 	def subscript(self):
 		if self.subscriptButton.isChecked():
 			self.superscriptButton.setChecked(False)
@@ -64,30 +69,30 @@ class sessionDescriptionDialog(QtGui.QDialog, Ui_sessionDescriptionDialog):
 			self.format.setVerticalAlignment(QtGui.QTextCharFormat.AlignNormal)
 		self.textEdit.setCurrentCharFormat( self.format )
 		self.textEdit.setFocus()
-		
+
 	def bold(self):
 		if self.boldButton.isChecked():
 			self.format.setFontWeight( QtGui.QFont.Bold )
 		else:
-			self.format.setFontWeight( QtGui.QFont.Normal )			
+			self.format.setFontWeight( QtGui.QFont.Normal )
 		self.textEdit.setCurrentCharFormat( self.format )
 		self.textEdit.setFocus()
-		
+
 	def underline(self):
 		self.format.setFontUnderline( self.underlineButton.isChecked() )
 		self.textEdit.setCurrentCharFormat( self.format )
 		self.textEdit.setFocus()
-		
+
 	def overline(self):
 		self.format.setFontOverline( self.overlineButton.isChecked() )
 		self.textEdit.setCurrentCharFormat( self.format )
 		self.textEdit.setFocus()
-	
+
 	def reject(self):
 		self.done( QtGui.QDialog.Rejected )
-		
+
 	def accept(self):
 		self.done( QtGui.QDialog.Accepted )
-	
+
 	def html(self):
-		return self.textEdit.toHtml() 
+		return self.textEdit.toHtml()

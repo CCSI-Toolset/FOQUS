@@ -1,15 +1,14 @@
-'''
-    Python syntax highlighter
-    
-    This is based on the example code at:
-    https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
-    from May 8, 2015
-'''
+"""
+Python syntax highlighter
+
+This is based on the example code at:
+https://wiki.python.org/moin/PyQt/Python%20syntax%20highlighting
+from May 8, 2015
+"""
 
 import sys
-
-from PySide.QtCore import QRegExp
-from PySide.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
+from PyQt5.QtCore import QRegExp
+from PyQt5.QtGui import QColor, QTextCharFormat, QFont, QSyntaxHighlighter
 
 def format(color, style=''):
     """Return a QTextCharFormat with the given attributes.
@@ -23,7 +22,6 @@ def format(color, style=''):
         _format.setFontWeight(QFont.Bold)
     if 'italic' in style:
         _format.setFontItalic(True)
-
     return _format
 
 # Syntax styles that can be shared by all languages
@@ -45,10 +43,10 @@ STYLES = {
         # { = 1
         # [ = 2
         # ( = 3
-        
+
 #        openBrace = [[], [], []]
 #        closeBrace = [[], [], []]
-        
+
 class PythonHighlighter (QSyntaxHighlighter):
     """Syntax highlighter for the Python language.
     """
@@ -62,22 +60,22 @@ class PythonHighlighter (QSyntaxHighlighter):
         'None', 'True', 'False']
     # Python builtin functions
     functions = [
-        'abs', 'divmod', 'input', 'open', 'staticmethod', 'all', 
-        'enumerate', 'int', 'ord', 'str', 'any', 'eval', 'isinstance', 
+        'abs', 'divmod', 'input', 'open', 'staticmethod', 'all',
+        'enumerate', 'int', 'ord', 'str', 'any', 'eval', 'isinstance',
         'pow', 'sum', 'basestring', 'execfile', 'issubclass', 'print',
-        'super', 'bin', 'file', 'iter', 'property', 'tuple', 'bool', 
+        'super', 'bin', 'file', 'iter', 'property', 'tuple', 'bool',
         'filter', 'len', 'range', 'type', 'bytearray', 'float', 'list',
         'raw_input', 'unichr', 'callable', 'format', 'locals', 'reduce',
-        'unicode', 'chr', 'frozenset', 'long', 'reload', 'vars', 
-        'classmethod', 'getattr', 'map', 'repr', 'xrange', 'cmp', 
-        'globals', 'max', 'reversed', 'zip', 'compile', 'hasattr', 
-        'memoryview', 'round', '__import__', 'complex', 'hash', 'min', 
-        'set', 'delattr', 'help', 'next', 'setattr', 'dict', 'hex', 
+        'unicode', 'chr', 'frozenset', 'long', 'reload', 'vars',
+        'classmethod', 'getattr', 'map', 'repr', 'xrange', 'cmp',
+        'globals', 'max', 'reversed', 'zip', 'compile', 'hasattr',
+        'memoryview', 'round', '__import__', 'complex', 'hash', 'min',
+        'set', 'delattr', 'help', 'next', 'setattr', 'dict', 'hex',
         'object', 'slice', 'dir', 'id', 'oct', 'sorted']
     # Python braces
     obraces = ['\{', '\(', '\[']
     cbraces = ['\}', '\)', '\]']
-    
+
     def __init__(self, document):
         QSyntaxHighlighter.__init__(self, document)
         # Multi-line strings (expression, flag, style)

@@ -4,7 +4,7 @@ import tempfile
 import platform
 import re
 import numpy as np
-from PySide import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.SampleData import SampleData
@@ -26,7 +26,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         self.ignoreResults = False
 
     @staticmethod
-    def writeOUUdata(outfile, yOuts, constraints, derivatives, data, 
+    def writeOUUdata(outfile, yOuts, constraints, derivatives, data,
                      opttypes, **kwargs):
 
         # Charles TODO: Handle y is now a list of inputs
@@ -161,10 +161,10 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             return None
 
         f.write('OUTPUT\n')
-        f.write('   dimension = %d\n' % (outActive))  
+        f.write('   dimension = %d\n' % (outActive))
         outputNames = SampleData.getOutputNames(data)
         for ii in range(len(yOuts)):
-          ind = yOuts[ii]  
+          ind = yOuts[ii]
           f.write('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
           print('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
         outActive = len(yOuts) + 1
@@ -183,11 +183,11 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         # ... method ...
         f.write('METHOD\n')
         f.write('   sampling = MC\n')    # OUU uses this to create
-        f.write('   num_samples = 1\n')  # initial guess 
+        f.write('   num_samples = 1\n')  # initial guess
         if rseed is not None:
             f.write('random_seed = %d\n' % rseed)  # random seed
         f.write('END\n')
-        
+
         # ... application ...
         f.write('APPLICATION\n')
         if platform.system() == 'Windows':
@@ -209,7 +209,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # ... analysis ...
         f.write('ANALYSIS\n')
-        if (nDerivs > 0): 
+        if (nDerivs > 0):
           f.write('   optimization method = ouu_lbfgs\n')
         else:
           f.write('   optimization method = ouu\n')
@@ -234,7 +234,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
     def compress(fname):
 
         N = 0                   # number of samples in x3sample['file']
-        with open(fname) as f:  ### TO DO for Jeremy: check sample size in GUI  
+        with open(fname) as f:  ### TO DO for Jeremy: check sample size in GUI
             header = f.readline()
             header = header.split()
             N = int(header[0])
@@ -277,9 +277,9 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 with open(sfile) as f:
                     header = f.readline()
                     header = header.split()
-                    Ns = int(header[0])                
-                sfile_ = Common.getLocalFileName(OUU.dname, fname, 
-                                  '.compressed' + str(Ns)) 
+                    Ns = int(header[0])
+                sfile_ = Common.getLocalFileName(OUU.dname, fname,
+                                  '.compressed' + str(Ns))
                 if os.path.exists(sfile_):
                     os.remove(sfile_)
                 os.rename(sfile, sfile_)
@@ -288,7 +288,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 error = 'OUU: %s does not exist.' % sfile
                 Common.showError(error, out)
                 return None
-            
+
             # append scenario file to data structure
             if len(outfiles) > 1 and Ns > min(N,nscenarios_max):
                 return outfiles
@@ -301,7 +301,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             phi,x3sample=None,x4sample=None,useRS=False,useBobyqa=True,
             driver=None, optDriver=None, auxDriver=None, ensOptDriver=None,
             plotSignal=None, endFunction = None):
-            
+
         # Function to execute after inference has finished.
         # Function would enable button again and such things.
         self.endFunction = endFunction
@@ -381,7 +381,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         if M1 < 1:
           error = 'OUU: In function ouu(), number of Z1 (design opt) '
           error = error + 'must be at least 1.'
-        if M3 > 0: 
+        if M3 > 0:
           if x3sample == None:
             error = 'OUU: In function ouu(), "x3sample" is undefined.'
             Common.showError(error)
@@ -396,8 +396,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
           if loadcs:
             N = 0          # number of samples in x4sample['file']
 
-            ### TO DO for Jeremy: check sample size in GUI  
-            with open(x4sample['file']) as f:    
+            ### TO DO for Jeremy: check sample size in GUI
+            with open(x4sample['file']) as f:
               header = f.readline()
               header = header.split()
               N = int(header[0])
@@ -420,9 +420,9 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # TO DO: remove randSeed
         ouuFile = OUU.writeOUUdata(fnameOUU,y,outputsAsConstraint,
-                         outputsAsDerivative, data, opttypes, 
-                         randSeed=41491431, inputLowerBounds=inputLB, 
-                         inputUpperBounds=inputUB, inputPDF=dist, 
+                         outputsAsDerivative, data, opttypes,
+                         randSeed=41491431, inputLowerBounds=inputLB,
+                         inputUpperBounds=inputUB, inputPDF=dist,
                          useEnsOptDriver = (ensOptDriver != None))
         if (ouuFile == None):
           return None
@@ -430,13 +430,13 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         # write script
         f = OUU.writescript(vartypes,fnameOUU,phi,x3sample,x4sample,useRS,
                     useBobyqa, useEnsOptDriver = (ensOptDriver != None))
-        
+
         # delete previous history file
         if os.path.exists(OUU.hfile):
             os.remove(OUU.hfile)
 
         self.textDialog = Common.textDialog()
-        self.thread = psuadeThread(self, f, self.finishOUU, self.textDialog, 
+        self.thread = psuadeThread(self, f, self.finishOUU, self.textDialog,
                                    plotSignal)
         self.thread.start()
 
@@ -502,7 +502,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         f.write('run %s\n' % fnameOUU)
         f.write('y\n')        # ready to proceed
         # ... partition variables
-        f.write('%d\n' % M1)  # number of design opt variables 
+        f.write('%d\n' % M1)  # number of design opt variables
         if M1 == nInputs:
             f.write('quit\n')
             f.seek(0)
@@ -539,7 +539,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # ... get sample for discrete UQ variables
         # The file format should be:
-        # line 1: <nSamples> <nInputs> 
+        # line 1: <nSamples> <nInputs>
         # line 2: <sample 1 input 1> <input 2> ... <probability>
         # line 3: <sample 2 input 1> <input 2> ... <probability>
         if M3 > 0:
@@ -548,14 +548,14 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 x3sample['file'] = win32api.GetShortPathName(x3sample['file'])
 
             f.write('%s\n' % x3sample['file'])  # sample file for discrete UQ variables
-            
+
         # ... get sample for continuous UQ variables
         # The file format should be:
-        # line 1: <nSamples> <nInputs> 
+        # line 1: <nSamples> <nInputs>
         # line 2: <sample 1 input 1> <input 2> ...
         # line 3: <sample 2 input 1> <input 2> ...
         #                .....
-        # line N: <sample N input 1> <input 2> ...    
+        # line N: <sample N input 1> <input 2> ...
         if M4 > 0:
             loadcs = 'file' in x4sample
             if loadcs:
@@ -594,7 +594,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 Nmin = M4+1
                 if x4sample['method'] == SamplingMethods.LH:
                     f.write('1\n')    # sampling scheme: Latin Hypercube
-                    nSamples = x4sample['nsamples'] 
+                    nSamples = x4sample['nsamples']
                     nSamples = min(max(nSamples,Nmin),1000)
                     f.write('%d\n' % nSamples)   # number of samples (range: [M4+1,1000])
                 elif x4sample['method'] == SamplingMethods.FACT:
@@ -604,7 +604,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                     f.write('%d\n' % nlevels)  # number of levels per variable (range: [3,100])
                 elif x4sample['method'] == SamplingMethods.LPTAU:
                     f.write('3\n')    # sampling scheme: Quasi Monte Carlo
-                    nSamples = x4sample['nsamples'] 
+                    nSamples = x4sample['nsamples']
                     nSamples = min(max(nSamples,Nmin),1000)
                     f.write('%d\n' % nSamples)   # number of samples (range: [M4+1,1000])
 
@@ -628,11 +628,11 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         f.write('quit\n')
         f.seek(0)
-        
+
         #for line in f:
         #    print line.strip()
         #f.seek(0)
-        
+
         return f
 
 
@@ -640,9 +640,9 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
     def inhull(p, hull):
         """
         Test if points in `p` are in `hull`
-        
+
         `p` should be a `NxK` coordinates of `N` points in `K` dimensions
-        `hull` is either a scipy.spatial.Delaunay object or the `MxK` array of the 
+        `hull` is either a scipy.spatial.Delaunay object or the `MxK` array of the
         coordinates of `M` points in `K`dimensions for which Delaunay triangulation
         will be computed
 
@@ -676,8 +676,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         if N > nv:
             i = np.setdiff1d(range(len(p)),v)  # indices to interior points
-            r = np.random.permutation(i)       
-            N = N-nv                           # number of interior points 
+            r = np.random.permutation(i)
+            N = N-nv                           # number of interior points
             r = r[0:N]                         # randomized interior indices
             return np.concatenate((pv,p[r]))   # return vertices with some interior points
 
@@ -690,10 +690,10 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 r = r[0:N]
                 indices.append(r)               # randomized vertex indices
                 b = OUU.inhull(p,p[r]).tolist() # compute goodness of hull formed by random vertices
-                h.append(b.count(True))                   
+                h.append(b.count(True))
             s = indices[np.argmax(h)]
-            return p[s]                         # return subset of vertices that form the "best" hull 
- 
+            return p[s]                         # return subset of vertices that form the "best" hull
+
     @staticmethod
     def getPsuadeResults(lines):
 

@@ -1,20 +1,23 @@
 import copy
-from PySide import QtGui, QtCore
+from PyQt5 import QtCore
+from PyQt5.QtWidgets import QGridLayout, QTableWidget, QTableWidgetItem,\
+    QLabel, QPushButton, QDialog
+from PyQt5.QtGui import QFont
 from collections import OrderedDict
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
-class AnalysisInfoDialog(QtGui.QDialog):
+class AnalysisInfoDialog(QDialog):
     def __init__(self, info, parent=None):
         super(AnalysisInfoDialog, self).__init__(parent)
         self.setWindowTitle('Analysis Additional Info')
         self.resize(400, 400)
-        self.gridLayout = QtGui.QGridLayout(self)
-        self.table = QtGui.QTableWidget()
+        self.gridLayout = QGridLayout(self)
+        self.table = QTableWidget()
         self.table.setRowCount(len(info.keys()))
         self.table.setColumnCount(1)
 
-        boldFont = QtGui.QFont()
+        boldFont = QFont()
         boldFont.setWeight(75)
         boldFont.setBold(True)
 
@@ -24,7 +27,7 @@ class AnalysisInfoDialog(QtGui.QDialog):
         for key in info.keys():
             if key in ('xprior', 'xtable', 'ytable', 'obsTable'):
                 continue
-            #item = QtGui.QTableWidgetItem(key)
+            #item = QTableWidgetItem(key)
             #self.table.setItem(row, 0, item)
             if isinstance(info[key], (list, tuple)):
                 strings = []
@@ -36,13 +39,13 @@ class AnalysisInfoDialog(QtGui.QDialog):
                                 del strItem[k]
                     strings.append(str(strItem))
 
-                item = QtGui.QTableWidgetItem('\n'.join(strings))
+                item = QTableWidgetItem('\n'.join(strings))
             else:
-                item = QtGui.QTableWidgetItem(str(info[key]))
+                item = QTableWidgetItem(str(info[key]))
             self.table.setItem(row, 0, item)
             row += 1
         if row > 0:
-            label = QtGui.QLabel('Additional Info')
+            label = QLabel('Additional Info')
             label.setFont(boldFont)
             self.gridLayout.addWidget(label)
 
@@ -88,10 +91,10 @@ class AnalysisInfoDialog(QtGui.QDialog):
                     labelString = 'Experiments'
                 else:
                     labelString = 'Inputs'
-                label = QtGui.QLabel(labelString)
+                label = QLabel(labelString)
                 label.setFont(boldFont)
                 self.gridLayout.addWidget(label)
-                table = QtGui.QTableWidget()
+                table = QTableWidget()
                 self.gridLayout.addWidget(table)
                 table.setRowCount(len([1 for i in xrange(len(values)) if values[i] is not None]))
 
@@ -145,7 +148,7 @@ class AnalysisInfoDialog(QtGui.QDialog):
                 for i in xrange(len(values)):
                     if key == 'obsTable':
                         for c, string in enumerate(values[r][1:]):
-                            item = QtGui.QTableWidgetItem(string)
+                            item = QTableWidgetItem(string)
                             table.setItem(r, c, item)
                         r += 1
                     elif values[r] is not None:
@@ -157,7 +160,7 @@ class AnalysisInfoDialog(QtGui.QDialog):
                                     string = ResponseSurfaces.getFullName(values[r][colName])
                                 else:
                                     string = str(values[r][colName])
-                                item = QtGui.QTableWidgetItem(string)
+                                item = QTableWidgetItem(string)
                                 table.setItem(r, c, item)
                         r += 1
                 table.resizeColumnsToContents()
@@ -184,10 +187,9 @@ class AnalysisInfoDialog(QtGui.QDialog):
                     totalWidth = width + 20
 
 
-        self.okButton = QtGui.QPushButton(self)
+        self.okButton = QPushButton(self)
         self.okButton.setText('OK')
         self.okButton.clicked.connect(self.close)
         self.gridLayout.addWidget(self.okButton)
         self.show()
         self.resize(totalWidth, totalHeight)
-

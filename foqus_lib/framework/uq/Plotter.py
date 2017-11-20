@@ -533,7 +533,7 @@ class Plotter:
         fig.canvas.set_window_title(figtitle)
         plt.xlabel(xlabel)            
         if xticklabels:
-            plt.xticks(index, xticklabels, rotation=45)
+            plt.xticks(index, xticklabels, rotation=90)
             
         plt.tight_layout()
         plt.show()
@@ -646,7 +646,7 @@ class Plotter:
         fig.colorbar(cs2f, ax=ax2)
         labels = ax2.get_xticklabels()
         for label in labels:             # rotate the xtick labels to avoid bunching 
-            label.set_rotation(45)
+            label.set_rotation(90)
         ax2.set_xlabel(xlabel)
         ax2.set_ylabel(ylabel)
         ax2.xaxis.grid(True)
@@ -723,7 +723,7 @@ class Plotter:
                                                               spacing='proportional', # discrete levels
                                                               orientation='horizontal')
                 for label in self.fig.colorbar.ax.get_xticklabels():
-                    label.set_rotation(45)
+                    label.set_rotation(90)
 
                 # plot 3D scatter plot of points satisfying f(X,Y,Z) \in [val-dv, val]
                 # ... mask points that do NOT satisfy f(X,Y,Z) \in [val-dv, val]
@@ -936,7 +936,7 @@ class Plotter:
                 ax.yaxis.grid(True)
                 labels = ax.get_xticklabels()
                 for label in labels:            # rotate the xtick labels to avoid bunching 
-                    label.set_rotation(45)
+                    label.set_rotation(90)
                 p = p+1
 
                 for j in xrange(1,i):
@@ -971,7 +971,7 @@ class Plotter:
                     ax.set_ylabel(ylabel[p])
                     labels = ax.get_xticklabels()
                     for label in labels:        # rotate the xtick labels to avoid bunching 
-                        label.set_rotation(45)
+                        label.set_rotation(90)
                     p = p+1
 
             # ... set up colorbar
@@ -1006,7 +1006,7 @@ class Plotter:
             ax.yaxis.grid(True)
             labels = ax.get_xticklabels()
             for label in labels:            # rotate the xtick labels to avoid bunching 
-                label.set_rotation(45)
+                label.set_rotation(90)
 
         fig.suptitle(title)
         fig.canvas.set_window_title(figtitle)

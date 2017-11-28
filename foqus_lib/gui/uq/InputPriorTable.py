@@ -18,7 +18,7 @@ class InputPriorTable(QTableWidget):
     typeItems = {}
     typeItems[SIMSETUP] = ['Variable', 'Fixed']
     typeItems[RSANALYSIS] = ['Aleatory', 'Epistemic', 'Fixed']
-    typeItems[INFERENCE] = ['Variable', 'Fixed', 'Design']
+    typeItems[INFERENCE] = ['Variable', 'Fixed', 'Design', 'Uncertain']
     typeItems[OUU] = ['Fixed', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)', 'UQ: Discrete (Z3)', 'UQ: Continuous (Z4)']
 
 
@@ -314,33 +314,19 @@ class InputPriorTable(QTableWidget):
                     outOfBounds = True
                 else:
                     value = float(item.text())
-                    if value < self.lbVariable[row]:
+
+                    if value < self.lbVariable[row] or value > self.ubVariable[row]:
                         showMessage = True
-                        if 'min' not in self.col_index or col != self.col_index['min'] :
-                            message = 'Value must be between %g and %g!  Please fix it.' % (self.lbVariable[row], self.ubVariable[row])
-                            outOfBounds = True
-                        else: # Force min to be the same
-                            message = 'Value must not be less than %g! It will be changed accordingly.' % self.lbVariable[row]
-                            item.setText('%g' % self.lbVariable[row])
-                    elif value > self.ubVariable[row]:
-                        showMessage = True
-                        if 'max' not in self.col_index or col != self.col_index['max'] :
-                            message = 'Value must be between %g and %g!  Please fix it.' % (self.lbVariable[row], self.ubVariable[row])
-                            outOfBounds = True
-                        else: # Force max to be the same
-                            message = 'Value must not be greater than %g! It will be changed accordingly.' % self.ubVariable[row]
-                            item.setText('%g' % self.ubVariable[row])
-                    elif 'min' in self.col_index and col in (self.col_index['min'], self.col_index['max']):
+                        message = 'Value outside bounds. Your response surface will be extrapolating, which could lead to lower accuracy. Your new bounds will not be saved to the flowsheet.'
+                        outOfBounds = True
+
+                    if 'min' in self.col_index and 'max' in self.col_index and col in (self.col_index['min'], self.col_index['max']):
                         if minItem is not None and maxItem is not None:
                             minVal = float(minItem.text())
                             maxVal = float(maxItem.text())
-                            if self.mode == InputPriorTable.SIMSETUP:
-                                if minVal >= maxVal:
-                                    minMoreThanMax = True
-                            else:
-                                if minVal >= maxVal and minVal < self.ub[row] and maxVal > self.lbVariable[row]:
-                                    minMoreThanMax = True
-                            if minMoreThanMax:
+
+                            if minVal >= maxVal:
+                                minMoreThanMax = True
                                 showMessage = True
                                 message = 'Minimum value must be less than maximum value!'
 

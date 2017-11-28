@@ -19,9 +19,11 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from AnalysisDialog import AnalysisDialog
 
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup
-from PyQt5.QtGui import QCursor
+from PyQt5 import QtCore, uic, QtGui
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
+from PyQt5.QtGui import QCursor, QColor
 
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
@@ -540,12 +542,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         updateDialog = updateUQModelDialog(self.dat, self)
         result = updateDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
 
         simDialog = SimSetup(self.dat.uqModel, self.dat, parent = self)
         result = simDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
         data = simDialog.getData()
         data.setSession(self.dat)
@@ -599,7 +601,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # Update table
         self.updateSimTable()
-
         self.dataTabs.setEnabled(True)
         self.unfreeze()
 
@@ -654,7 +655,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             viewOnly = False
         simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, parent=self)
         result = simDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
         data = simDialog.getData()
         self.dat.uqSimList[row] = data

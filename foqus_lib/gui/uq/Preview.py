@@ -12,8 +12,8 @@ from foqus_lib.framework.uq.RSInference import RSInferencer
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox
-from PyQt5.QtGui import QCursor
+    QAbstractItemView, QDialogButtonBox, QApplication, QTableWidgetItem
+from PyQt5.QtGui import QCursor, QColor
 mypath = os.path.dirname(__file__)
 _PreviewUI, _Preview = \
         uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))

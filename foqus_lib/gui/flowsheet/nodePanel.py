@@ -70,11 +70,11 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.modelTypeBox.currentIndexChanged.connect(
             self.updateSimulationList)
         self.simNameBox.currentIndexChanged.connect(self.simSet)
-        self.addInputButton.clicked.connect(self.addInput)
+        self.addInputButton.clicked.connect(self.addInputClicked)
         self.removeInputButton.clicked.connect(self.delInput)
         self.valuesToDeafultsButton.clicked.connect(self.valuesToDefaults)
         self.valuesToDeafultsButton.hide()
-        self.addOutputButton.clicked.connect(self.addOutput)
+        self.addOutputButton.clicked.connect(self.addOutputClicked)
         self.removeOutputButton.clicked.connect(self.delOutput)
         self.vexButton.clicked.connect(self.showVex)
         self.inputTagBrowser.clicked.connect(self.openTagBrowserInputs)
@@ -561,9 +561,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         table = self.inputVarTable
         vars = self.node.inVars
         table.clearContents()
-        table.setRowCount( len(vars)  )
+        table.setRowCount(len(vars))
         row = 0
-        for name in sorted(vars.keys(), key = lambda s: s.lower()):
+        for name in sorted(vars.keys(), key=lambda s: s.lower()):
             var = vars[name]
             if var.con == 1:
                 bgColor = QColor(255, 255, 200)
@@ -721,9 +721,17 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     bgColor = QColor(235, 255, 235))
             table.resizeColumnsToContents()
 
+    def addInputClicked(self):
+        """
+        The clicked signal contains will send a checked argumnet to the callback
+        which will go into name if I directly use addInput as the callback
+        """
+        self.addInput()
+
     def addInput(self, name=None):
         '''
-            Add a new input variable
+        Add a new input variable, is a name is given, don't ask user for name,
+        just go ahead and add it.
         '''
         if name is None:
             newName, ok = QInputDialog.getText(
@@ -741,8 +749,8 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That input already exists")
                 return
-            self.applyChanges()
             self.node.inVars[newName] = nodeInVars()
+            self.applyChanges()
             self.updateInputVariables()
 
     def delInput(self):
@@ -759,9 +767,16 @@ class nodeDock(_nodeDock, _nodeDockUI):
         del self.node.gr.input[self.node.name][name]
         self.updateInputVariables()
 
+    def addOutputClicked(self):
+        """
+        The clicked signal contains will send a checked argumnet to the callback
+        which will go into name if I directly use addInput as the callback
+        """
+        self.addOutput()
+
     def addOutput(self, name=None):
         '''
-            Add an output variable
+        Add an output variable
         '''
         if name==None:
             newName, ok = QInputDialog.getText(

@@ -7,7 +7,7 @@ from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
 
 import matplotlib
-from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
 if __name__ == '__main__':

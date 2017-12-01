@@ -567,7 +567,7 @@ class InputPriorTable(QTableWidget):
         else:
             item = self.item(row, col)
         item.setBackground(Qt.white)
-        if text != None and not item.getText():
+        if text != None and not item.text():
             item.setText(text)
             try:
                 float(text)
@@ -1114,10 +1114,12 @@ class InputPriorTable(QTableWidget):
                             param2 = float(cellTable.item(0, 1).text())
                 else: # No pdf setting.  Use default PDFs from data
                     if self.distVariable == None:
-                        dtype = None
+                        dtype = Distribution.UNIFORM
+                        param1 = None
+                        param2 = None
                     else:
                         dtype = self.distVariable[i].getDistributionType()
-                    param1, param2 = self.distVariable[i].getParameterValues()
+                        param1, param2 = self.distVariable[i].getParameterValues()
                     xmin = self.lbVariable[i]
                     xmax = self.ubVariable[i]
 

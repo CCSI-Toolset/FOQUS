@@ -8,7 +8,7 @@ import time
 import platform
 
 try:
-    from PySide import QtGui, QtCore
+    from PyQt5 import QtGui, QtCore, QtWidgets
     usePyside = True
 except:
     usePyside = False
@@ -22,13 +22,13 @@ class Common(obj):
     dialog = None
 
     if usePyside:
-        class textDialog(QtGui.QDialog):
+        class textDialog(QtWidgets.QDialog):
             def __init__(self, parent=None):
                 super(Common.textDialog, self).__init__(parent)
                 self.setWindowTitle('Calculating...')
                 self.resize(600, 400)
-                self.gridLayout = QtGui.QGridLayout(self)
-                self.textedit = QtGui.QTextEdit()
+                self.gridLayout = QtWidgets.QGridLayout(self)
+                self.textedit = QtWidgets.QTextEdit()
                 self.textedit.setReadOnly(True)
                 self.textedit.setWordWrapMode(QtGui.QTextOption.NoWrap)
                 self.gridLayout.addWidget(self.textedit)
@@ -39,8 +39,8 @@ class Common(obj):
                 #self.gridLayout.addWidget(self.doneButton)
                 
             def showError(self, error, out = None):
-                msgBox = QtGui.QMessageBox()
-                msgBox.setIcon(QtGui.QMessageBox.Critical)
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setIcon(QtWidgets.QMessageBox.Critical)
                 msgBox.setText(error + '\nPlease consult the FOQUS UQ developers for assistance.')
                 if out is not None:
                     msgBox.setDetailedText(out)
@@ -94,11 +94,11 @@ class Common(obj):
         if out is not None and 'Regression ERROR: true rank of sample ' in out:
             error = 'The selected regression response surface does not work with the data. \nPlease select a different response surface.\n\n'
             showDeveloperHelpMessage = False
-        if not usePyside or QtGui.QApplication.instance() is None:
+        if not usePyside or QtWidgets.QApplication.instance() is None:
             print error
         else:
-            msgBox = QtGui.QMessageBox()
-            msgBox.setIcon(QtGui.QMessageBox.Critical)
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setIcon(QtWidgets.QMessageBox.Critical)
             if showDeveloperHelpMessage:
                 msgBox.setText(error + '\nPlease consult the FOQUS UQ developers for assistance.')
             else:
@@ -190,7 +190,7 @@ class Common(obj):
         logFile = open(logFile, 'w')
         
        
-        if usePyside and QtGui.QApplication.instance() is not None:
+        if usePyside and QtWidgets.QApplication.instance() is not None:
             if textDialog is None:
                 Common.dialog = Common.textDialog()  
                 Common.dialog.show()      
@@ -234,7 +234,7 @@ class Common(obj):
             if printOutputToScreen:
                 #print nextline.strip()
                 sys.stdout.write(nextline)
-            if usePyside and QtGui.QApplication.instance() is not None:
+            if usePyside and QtWidgets.QApplication.instance() is not None:
                 textedit = Common.dialog.textedit
                 if textInsertSignal is None:
                     textedit.insertPlainText(nextline)
@@ -298,13 +298,14 @@ class Common(obj):
         
         # process error
         out2, error = p.communicate()
+        p.terminate()
         if error:
             if showErrorSignal is None:
                 Common.showError(error, out)
             else:
                 showErrorSignal.emit(error, out)
 
-        if usePyside and QtGui.QApplication.instance() is not None:
+        if usePyside and QtWidgets.QApplication.instance() is not None:
             if dialogCloseSignal is None:
                 Common.dialog.close()
             else:

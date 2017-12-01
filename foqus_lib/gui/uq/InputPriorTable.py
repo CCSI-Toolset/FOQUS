@@ -452,49 +452,47 @@ class InputPriorTable(QTableWidget):
         if 'pdf' in col_index:
             pdfcombo = self.cellWidget(r, col_index['pdf'])
 
+        # Type was changed
         if 'type' in col_index and c == col_index['type']:
             if self.useTypeChangedSignal:
                 self.typeChanged.emit()
 
             combobox = self.cellWidget(r, col_index['type'])
+            cbtext = combobox.currentText()
             if self.mode != InputPriorTable.OUU and 'check' in col_index:
                 # Disable view checkbox if not variable parameter
                 checkbox = self.cellWidget(r, col_index['check'])
-                checkbox.setEnabled(combobox.currentText() == 'Variable')
+                checkbox.setEnabled(cbtext == 'Variable')
             # Value column
-            if combobox.currentText() == 'Fixed' or self.rsEvalMode:
+            if cbtext == 'Fixed' or self.rsEvalMode:
                 self.activateCell(r, col_index['value'])
-                if 'min' in col_index:
-                    self.clearCell(r, col_index['min'])
-                if 'max' in col_index:
-                    self.clearCell(r, col_index['max'])
+                self.clearMinMax(r)
+            elif cbtext in ['Epistemic', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)']:
+                self.activateCell(r, col_index['value'])
+                self.activateMinMax(r, inVarNames)
+            elif cbtext == 'UQ: Discrete (Z3)':
+                self.clearCell(r, col_index['value'])
+                self.clearMinMax(r)
             else:
-                if self.mode != InputPriorTable.OUU:
-                    self.clearCell(r, col_index['value'])
-                if 'min' in col_index:
-                    self.activateCell(r, col_index['min'])
-                if 'max' in col_index:
-                    self.activateCell(r, col_index['max'])
+                self.clearCell(r, col_index['value'])
+                self.activateMinMax(r, inVarNames)
+
             # Scale column
             if 'scale' in col_index:
-                if 'Primary' in combobox.currentText():
+                if 'Primary' in cbtext:
                     self.activateCell(r, col_index['scale'])
                 else:
                     self.clearCell(r, col_index['scale'])
+
             # PDF columns
             if 'pdf' in col_index:
-                text = combobox.currentText()
-                if ('type' in col_index and self.isColumnHidden(col_index['type'])) or \
-                   text in ['Variable', 'Aleatory', 'UQ: Continuous (Z4)']:
+                if self.isColumnHidden(col_index['type']) or \
+                   cbtext in ['Variable', 'Aleatory', 'UQ: Continuous (Z4)']:
                     pdfcombo.setEnabled(True)
                 else:
                     pdfcombo.setEnabled(False)
                     self.clearParamCell(r, 1)
                     self.clearParamCell(r, 2)
-                    if text in ['Epistemic', 'Opt: Primary (Z1)', 'Opt: Recourse (Z2)']:
-                        self.activateMinMax(r, inVarNames)
-                    elif not self.mode == InputPriorTable.SIMSETUP:
-                        self.clearMinMax(r)
                     self.cellChanged.connect(self.change)
                     return
 
@@ -569,7 +567,7 @@ class InputPriorTable(QTableWidget):
         else:
             item = self.item(row, col)
         item.setBackground(Qt.white)
-        if text != None:
+        if text != None and not item.getText():
             item.setText(text)
             try:
                 float(text)
@@ -984,7 +982,7 @@ class InputPriorTable(QTableWidget):
             if 'type' in col_index:
                 combobox = self.cellWidget(i, col_index['type'])
                 type = combobox.currentText()
-            if type == 'Variable' or 'Continuous' in type:
+            if type == 'Variable' or 'Z4' in type:
                 if 'pdf' in col_index:
                     combobox = self.cellWidget(i, col_index['pdf'])
                     distName = combobox.currentText()
@@ -1064,8 +1062,6 @@ class InputPriorTable(QTableWidget):
                 value = self.item(i, col_index['value'])
                 if value is not None and self.isnumeric(value.text()):
                     value = float(value.text())
-                    if value < self.lbVariable[i] or value > self.ubVariable[i]:
-                        return (False,  'Fixed value is not between min and max for %s!' % inputName)
                     b = True
                 else:
                     return (False,  'Fixed value for %s is not a number!' % inputName)
@@ -1090,7 +1086,7 @@ class InputPriorTable(QTableWidget):
                 inType = combobox.currentText()
                 value['type']= inType
             if (self.mode == InputPriorTable.RSANALYSIS and not self.epistemicMode) or inType != 'Fixed':
-                if 'pdf' in col_index:
+                if 'pdf' in col_index and self.cellWidget(i, col_index['pdf']).isEnabled():
                     combobox = self.cellWidget(i, col_index['pdf'])
                     distName = combobox.currentText()
                     dtype = Distribution.getEnumValue(distName)

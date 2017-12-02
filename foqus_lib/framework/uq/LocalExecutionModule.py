@@ -56,7 +56,7 @@ import re
 import csv
 
 try:
-    from PySide import QtGui, QtCore
+    from PyQt5 import QtGui, QtCore, QtWidgets
     usePyside = True
 except:
     usePyside = False
@@ -538,7 +538,7 @@ class LocalExecutionModule(object):
             # on Windows, if psuade is not at its default location, prompt user
             if not os.path.exists(psuadeLoc) or forceDialog:
                 if not forceDialog:
-                    msgBox = QtGui.QMessageBox()
+                    msgBox = QtWidgets.QMessageBox()
                     msgBox.setText('Location of PSUADE has not been set! Browse to its location on the next screen.')
                     msgBox.exec_()
                 location = ''
@@ -549,7 +549,7 @@ class LocalExecutionModule(object):
             while len(psuadeLoc) > 0:
                 compatible = LocalExecutionModule.getPsuadeExeCompatibility(psuadeLoc)
                 if not compatible:
-                    msgBox = QtGui.QMessageBox()
+                    msgBox = QtWidgets.QMessageBox()
                     msgBox.setText('PSUADE version must be %s or later! Browse to its location on the next screen.' % \
                                     LocalExecutionModule.psuadeVersion)
                     msgBox.exec_()
@@ -565,7 +565,7 @@ class LocalExecutionModule(object):
         else:
             # on all other platforms, check existence of user-defined PSUADEPATH
             if not forceDialog:
-                msgBox = QtGui.QMessageBox()
+                msgBox = QtWidgets.QMessageBox()
                 msgBox.setText('Location of PSUADE has not been set! Browse to its location on the next screen.')
                 msgBox.exec_()
             # psuadeLoc, filterName = QtGui.QFileDialog.getOpenFileName(
@@ -589,7 +589,7 @@ class LocalExecutionModule(object):
         return psuadeLoc
 
     if usePyside:
-        class executableFilter(QtGui.QSortFilterProxyModel):
+        class executableFilter(QtCore.QSortFilterProxyModel):
             def filterAcceptsRow(self, sourceRow, sourceParent):
                 index = self.sourceModel().index(sourceRow, 0, sourceParent)
                 if self.sourceModel().isDir(index):
@@ -656,7 +656,7 @@ class LocalExecutionModule(object):
 
         if psuadeLoc is None:
             if usePyside and showErrorIfNotFound:
-                msgBox = QtGui.QMessageBox()
+                msgBox = QtWidgets.QMessageBox()
                 msgBox.setText('Location of PSUADE has not been set! You will need to set it to continue.')
                 msgBox.exec_()
             else:
@@ -978,10 +978,10 @@ if usePyside:
             self.textDialog = textDialog
 
         class Communicate(QtCore.QObject):
-            textDialogShowSignal = QtCore.Signal()
-            textDialogCloseSignal = QtCore.Signal()
-            textDialogInsertSignal = QtCore.Signal(str)
-            textDialogEnsureVisibleSignal = QtCore.Signal()
+            textDialogShowSignal = QtCore.pyqtSignal()
+            textDialogCloseSignal = QtCore.pyqtSignal()
+            textDialogInsertSignal = QtCore.pyqtSignal(str)
+            textDialogEnsureVisibleSignal = QtCore.pyqtSignal()
 
         def run(self):
             LocalExecutionModule.runComplete = False

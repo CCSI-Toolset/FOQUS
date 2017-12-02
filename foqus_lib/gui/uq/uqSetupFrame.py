@@ -590,7 +590,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QtWidgets.QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
@@ -958,7 +958,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.simulationTable.setColumnWidth(self.statusCol, 200)
 
     def resultsBox(self, numSuccessful, numSamples):
-        msgBox = QtGui.QMessageBox()
+        msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle('FOQUS Run Finished')
         msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
         result = msgBox.exec_()

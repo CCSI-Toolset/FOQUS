@@ -470,7 +470,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
         self.generateSamplesButton.setEnabled(self.schemesList.currentRow() != -1)
 
     def generateSamples(self):
-        self.setModal(False)
+        #self.setModal(False)
 
         # Gather all info into SampleData object
         if isinstance(self.model, Model):

@@ -1260,17 +1260,7 @@ class mainWindow(QMainWindow):
         if not self.drmFrame.isHidden():
             self.drmFrame.update_view()
 
-    def refresh(self):
-        '''
-            Update all the forms and flowsheet after reloading a file
-            or some other change
-        '''
-        self.refreshFlowsheet()
-        self.uqSetupFrame.refresh()
-        self.surFrame.refreshContents()
-        self.optSetupFrame.refreshContents()
-        self.ouuSetupFrame.refresh()
-        self.refreshDRMFrame()
+    def refreshDash(self):
         if self.dat.currentFile and self.dat.currentFile != '':
             self.setWindowTitle(
                 'FOQUS - {0} - Last saved: {1}'.format(
@@ -1298,6 +1288,19 @@ class mainWindow(QMainWindow):
                         self.dat.changeLog[m][3])
         self.dashFrame.changeLogEdit.setPlainText(cltext)
 
+    def refresh(self):
+        '''
+            Update all the forms and flowsheet after reloading a file
+            or some other change
+        '''
+        self.refreshFlowsheet()
+        self.uqSetupFrame.refresh()
+        self.surFrame.refreshContents()
+        self.optSetupFrame.refreshContents()
+        self.ouuSetupFrame.refresh()
+        self.refreshDRMFrame()
+        self.refreshDash()
+
     def newSession(self):
         '''
             Creates a new FOQUS session after asking if you are sure.
@@ -1323,7 +1326,7 @@ class mainWindow(QMainWindow):
         self.dat.new()
         self.dat.currentFile = ""
         self.flowsheetEditor.clearSelection()
-        self.refresh()
+        self.refreshDash()
         self.clearOldMessages()
 
     def tearFlowsheet(self):
@@ -1332,7 +1335,7 @@ class mainWindow(QMainWindow):
         '''
         self.setCursorWaiting()
         self.dat.flowsheet.calculationOrder()
-        self.refresh()
+        self.refreshFlowsheet()
         self.setCursorNormal()
 
     def loadData(self):
@@ -1598,7 +1601,7 @@ class mainWindow(QMainWindow):
                 indent = "Settings")
             self.setCursorNormal()
             self.updateRecentlyOpened()
-            self.refresh()
+            self.refreshDash()
             return True
         else:
             return False
@@ -1644,7 +1647,7 @@ class mainWindow(QMainWindow):
                 bkp = "Settings",
                 indent = "Settings")
             self.setCursorNormal()
-            self.refresh()
+            self.refreshDash()
             return True
         else:
             return self.saveAsData()
@@ -1897,7 +1900,7 @@ class mainWindow(QMainWindow):
             currentPropList,
             metaDataDialog.entry,
             repo=repo_name)
-        self.refresh()
+        self.refreshDash()
         return True
 
     def saveAsRepoData(self, identifier):
@@ -2069,7 +2072,7 @@ class mainWindow(QMainWindow):
                 self.dat.flowsheet.setErrorCode(20)
                 logging.getLogger("foqus." + __name__).error(
                     "to results graph thread was likely terminated")
-            self.refresh()
+            self.refreshFlowsheet()
             if not self.dataBrowserDialog.isHidden():
                 self.dataBrowserDialog.dataFrame.refreshContents()
             err = self.dat.flowsheet.errorStat
@@ -2123,7 +2126,7 @@ class mainWindow(QMainWindow):
         if ret == QMessageBox.Yes:
             self.applyNodeEdgeChanges()
             self.dat.flowsheet.loadDefaults()
-            self.refresh()
+            self.refreshFlowsheet()
 
     def testSCC(self):
         [

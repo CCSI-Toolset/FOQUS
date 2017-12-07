@@ -70,8 +70,16 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             elif k == 'inputpdf':
                 distributions = kwargs[key]
 
-        # TO DO: merge with RSAnalyzer.writeRSdata()
+        # TODO: Add psuade IO section to write initial point
         f = open(outfile, 'w')
+        # f.write("PSUADE_IO\n")
+        # f.write("num_inputs num_outputs 1\n")
+        # f.write("1 1\n")
+        # f.write("****inputs*****\n")
+        # f.write("*****outputs*****\n")
+        # f.write("PSUADE_IO\n")
+
+        # TO DO: merge with RSAnalyzer.writeRSdata()
         f.write('PSUADE\n')
 
         # ... input ...
@@ -610,13 +618,14 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # ... choose optimizer
         if M2 > 0:
-            if useBobyqa:
-                f.write('n\n')    # use BOBYQA
-            else:
-                f.write('y\n')    # use own driver as optimizer
+            #if useBobyqa:
+            #    f.write('n\n')    # use BOBYQA
+            #else:
+            #    f.write('y\n')    # use own driver as optimizer
+            f.write('y\n')    # use own driver as optimizer
 
         # ... choose ensemble optimization driver
-        if M3+M4 > 0 and not useBobyqa:
+        if M3+M4 > 0: #and not useBobyqa:
             if useEnsOptDriver:
                 f.write('y\n')   # use ensemble driver
             else:

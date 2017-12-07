@@ -38,7 +38,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     plotSignal = QtCore.pyqtSignal(dict)
     NotUsedText = "Not used"
     ObjFuncText = "Objective Function"
-    ConstraintText = "Inequality constraint"
+    ConstraintText = "Inequality Constraint"
     DerivativeText = "Derivative"
 
     def __init__(self, dat = None, parent=None):
@@ -890,7 +890,9 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     Nrs = self.z4SubsetSize_spin.value()     # add spinbox to get number of samples to generate RS
                     x4sample['nsamplesRS'] = Nrs               # TO DO: make sure spinbox has M4+1 as min and x4sample's sample size as max
 
-            # Charles TODO: Change this behavior to accomodate NEWUOA
+            #  TODO: Get rid of usebobyqa option. Behavior should be as if usebobyqa is always false
+            # TODO: Change GUI to display optimizer and optimizing with bobyqa
+            # TODO: Get rid of primarySolver_combo completely
             useBobyqa = False
             method = self.primarySolver_combo.currentText()
             if method == "BOBYQA":

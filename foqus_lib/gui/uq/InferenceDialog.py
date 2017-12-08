@@ -15,7 +15,9 @@ from InputPriorTable import InputPriorTable
 
 #from InferenceDialog_UI import Ui_Dialog
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import *
 mypath = os.path.dirname(__file__)
 _InferenceDialogUI, _InferenceDialog = \
         uic.loadUiType(os.path.join(mypath, "InferenceDialog_UI.ui"))
@@ -203,7 +205,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             # add output name
             item = QTableWidgetItem(outVarNames[i])
             flags = item.flags()
-            mask = ~Qt.ItemIsEnabled
+            mask = ~QtCore.Qt.ItemIsEnabled
             item.setFlags(flags & mask)
             item.setForeground(Qt.black)
             self.output_table.setItem(i, self.outputCol_index['name'], item)
@@ -266,7 +268,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                 # add inactive field for RS1
                 item = QTableWidgetItem('')
                 flags = item.flags()
-                mask = ~Qt.ItemIsEnabled
+                mask = ~QtCore.Qt.ItemIsEnabled
                 item.setFlags(flags & mask)
                 item.setForeground(Qt.black)
                 item.setBackground(Qt.lightGray)
@@ -275,7 +277,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                 # add inactive field for RS2
                 item = QTableWidgetItem('')
                 flags = item.flags()
-                mask = ~Qt.ItemIsEnabled
+                mask = ~QtCore.Qt.ItemIsEnabled
                 item.setFlags(flags & mask)
                 item.setForeground(Qt.black)
                 item.setBackground(Qt.lightGray)
@@ -285,7 +287,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             # add inactive field for Legendre
             item = QTableWidgetItem('')
             flags = item.flags()
-            mask = ~Qt.ItemIsEnabled
+            mask = ~QtCore.Qt.ItemIsEnabled
             item.setFlags(flags & mask)
             item.setForeground(Qt.black)
             item.setBackground(Qt.lightGray)

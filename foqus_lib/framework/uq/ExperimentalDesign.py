@@ -151,8 +151,8 @@ class ExperimentalDesign:
 
         out, error = Common.invokePsuade(psuadeInFile)
 
-        showerr = True
         if os.path.exists(psuadeDataFile):
+            showerr = True
             data = LocalExecutionModule.readSampleFromPsuadeFile(psuadeDataFile)
             if pdfconvert:
                 os.remove(psuadeDataFile)
@@ -181,9 +181,9 @@ class ExperimentalDesign:
             else:
                 showerr = False
 
-        if showerr:
-            error = 'ExperimentalDesign: %s does not exist.' % psuadeDataFile
-            Common.showError(error, out)
-            return None
-        else:
-            return data
+            if showerr:
+                error = 'ExperimentalDesign: %s does not exist.' % psuadeDataFile
+                Common.showError(error, out)
+                return None
+            else:
+                return data

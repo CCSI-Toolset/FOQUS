@@ -165,10 +165,11 @@ class RSCombo2(QComboBox):
         self.useShortNames = useShortNames
 
         self.currentIndexChanged[int].connect(self.change)
+        self.isSetFileSignal = False
 
     def showPolynomial(self):
         self.fileMode = False
-        if self.receivers(SIGNAL('currentIndexChanged[int]')) > 0:
+        if self.receivers(self.currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         if self.data == None:
             raise RuntimeError('Not initialized properly')
@@ -202,7 +203,7 @@ class RSCombo2(QComboBox):
         return enable
 
     def showMars(self):
-        if self.receivers(SIGNAL('currentIndexChanged[int]')) > 0:
+        if self.receivers(currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         self.clear()
         self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARS))
@@ -219,6 +220,7 @@ class RSCombo2(QComboBox):
         self.fileMode = True
         self.refresh()
         self.currentIndexChanged[int].connect(self.setFile)
+        self.isSetFileSignal = True
         self.setEnabled(True)
 
     def setFile(self):
@@ -258,7 +260,7 @@ class RSCombo2(QComboBox):
         return self.userFiles[index - 1]
 
     def showNothing(self):
-        if self.receivers(SIGNAL('currentIndexChanged[int]')) > 0:
+        if self.receivers(currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         self.clear()
         self.setEnabled(False)

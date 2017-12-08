@@ -21,7 +21,8 @@ from InputPriorTable import InputPriorTable
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox
+    QAbstractItemView, QDialogButtonBox, QStackedLayout, QComboBox, QApplication
+from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _SimSetup = \
         uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
@@ -469,7 +470,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
         self.generateSamplesButton.setEnabled(self.schemesList.currentRow() != -1)
 
     def generateSamples(self):
-        self.setModal(False)
+        #self.setModal(False)
 
         # Gather all info into SampleData object
         if isinstance(self.model, Model):

@@ -19,9 +19,11 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from AnalysisDialog import AnalysisDialog
 
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup
-from PyQt5.QtGui import QCursor
+from PyQt5 import QtCore, uic, QtGui
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
+from PyQt5.QtGui import QCursor, QColor
 
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
@@ -540,12 +542,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         updateDialog = updateUQModelDialog(self.dat, self)
         result = updateDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
 
         simDialog = SimSetup(self.dat.uqModel, self.dat, parent = self)
         result = simDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
         data = simDialog.getData()
         data.setSession(self.dat)
@@ -588,7 +590,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QtWidgets.QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
@@ -599,7 +601,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # Update table
         self.updateSimTable()
-
         self.dataTabs.setEnabled(True)
         self.unfreeze()
 
@@ -654,7 +655,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             viewOnly = False
         simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, parent=self)
         result = simDialog.exec_()
-        if result == QtGui.QDialog.Rejected:
+        if result == QDialog.Rejected:
             return
         data = simDialog.getData()
         self.dat.uqSimList[row] = data
@@ -745,13 +746,15 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newLaunchButton = True
             launchButton = QPushButton()
         launchButton.setText('Launch')
-        if data.getFromFile() == True:
-            launchButton.setEnabled(False)
+        # if data.getFromFile() == True:
+        #     launchButton.setEnabled(False)
         if runCount == data.getNumSamples():
-            if data.getSampleMethod() == SamplingMethods.METIS:
+            if data.getSampleMethod() == SamplingMethods.METIS or data.getFromFile():
                 launchButton.setText('Sample Refinement')
             else:
                 launchButton.setEnabled(False)
+        elif data.getFromFile(): # Should not be able to launch or refine sample loaded from file that is not complete
+            launchButton.setEnabled(False)
         launchButton.setProperty('row', row)
         if newLaunchButton:
             launchButton.clicked.connect(self.launchSim)
@@ -797,6 +800,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             elif runType == Model.EMULATOR:
                 LocalExecutionModule.startEmulatorRun(sim)
             else:
+                # Start flowsheet calculations
                 inputNames = sim.getInputNames()
                 inputs = sim.getInputData().tolist()
                 runState = sim.getRunState()
@@ -914,7 +918,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newdata.setModelName(sim.getModelName())
             newdata.setOrigNumSamples(sim.getOrigNumSamples())
             newdata.setNumSamplesAdded(numToAdd)
-            newdata.setFromFile(False)
+            newdata.setFromFile(sim.getFromFile())
             newdata.setRunType(sim.getRunType())
             newdata.setDriverName(sim.getDriverName())
             newdata.setSampleRSType(sim.getSampleRSType())
@@ -954,7 +958,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.simulationTable.setColumnWidth(self.statusCol, 200)
 
     def resultsBox(self, numSuccessful, numSamples):
-        msgBox = QtGui.QMessageBox()
+        msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle('FOQUS Run Finished')
         msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
         result = msgBox.exec_()

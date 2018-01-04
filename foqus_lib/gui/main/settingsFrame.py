@@ -72,7 +72,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.turbLiteBrowseButton.clicked.connect(self.browseTurbLite)
         self.psuadeBrowseButton.clicked.connect(self.browsePsuadeFile)
         self.simSinterBrowsButton.clicked.connect(self.browseSinterFile)
-        self.javaHomeButton.clicked.connect(self.browseJavaDir)
         self.alamoPathButton.clicked.connect(self.browseALAMOPath)
         self.rScriptPathButton.clicked.connect(self.browseRScriptPath)
         #Connect okay/cancel singnals
@@ -245,7 +244,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
 
     def updateForm(self):
         # Set FOQUS options
-        self.dmfCheck.setChecked(self.dat.foqusSettings.use_dmf)
         self.saveSmallCheck.setChecked(
             self.dat.foqusSettings.compactSession)
         self.saveBackCheck.setChecked(
@@ -262,8 +260,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.psuadeEdit.setText(self.dat.foqusSettings.psuade_path)
         self.sinterConfigEdit.setText(
             self.dat.foqusSettings.simsinter_path)
-        self.javaHomeEdit.setText(
-            self.dat.foqusSettings.java_home)
         self.alamoPathEdit.setText(self.dat.foqusSettings.alamo_path)
         # Aspen version setting
         self.aspenVersionCombo.setCurrentIndex(
@@ -350,16 +346,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             dirs = os.path.normpath(dirs[0])
             self.turbLiteHomeEdit.setText(dirs)
 
-    def browseJavaDir(self):
-        msg = QFileDialog()
-        msg.setFileMode(QFileDialog.Directory)
-        msg.setOption(QFileDialog.ShowDirsOnly)
-        if msg.exec_():
-            dirs = msg.selectedFiles()
-#            dirs = '"' + os.path.normpath(dirs[0]) + '"'
-            dirs = os.path.normpath(dirs[0])
-            self.javaHomeEdit.setText(dirs)
-
     def browseALAMOPath(self):
         '''
             Open file browser to select the ALAMO exe file
@@ -431,7 +417,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             Apply FOQUS settings from form
         '''
         # Check box options
-        self.dat.foqusSettings.use_dmf = self.dmfCheck.isChecked()
         self.dat.foqusSettings.compactSession = \
             self.saveSmallCheck.isChecked()
         self.dat.foqusSettings.backupSession = \
@@ -448,7 +433,6 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.dat.foqusSettings.psuade_path = self.psuadeEdit.text()
         self.dat.foqusSettings.simsinter_path =\
             self.sinterConfigEdit.text()
-        self.dat.foqusSettings.java_home = self.javaHomeEdit.text()
         self.dat.foqusSettings.alamo_path = self.alamoPathEdit.text()
         # Aspen version
         self.dat.foqusSettings.aspenVersion =\

@@ -32,7 +32,6 @@ import foqus_lib.version.version as ver # foqus version and other info
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.graph.graph import * # flowsheet
 from foqus_lib.framework.listen.listen import foqusListener2
-useDMF = False
 loadGUI = False
 guiAvail = False
 
@@ -44,11 +43,9 @@ splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
 
 def guiImport():
-    global useDMF
     global loadGUI
     global guiAvail
     global dmf_lib
-    global Py4JGateway
     global QtCore
     global QApplication
     global QSplashScreen
@@ -56,17 +53,6 @@ def guiImport():
     global QFileDialog
     global QPixmap
     global QPainter
-    # DMF imoprts
-    try:
-        import dmf_lib
-        from dmf_lib.gateway.gateway import Py4JGateway
-        useDMF = True
-        # there are other settings and options related to whether the DMF
-        # should be loaded
-    except:
-        logging.getLogger("foqus." + __name__)\
-            .exception('Failed to import DMF module')
-        useDMF = False
     # GUI Imports
     try: # Check if the PySide libraries are available
         from PyQt5 import QtCore
@@ -126,7 +112,6 @@ def startGUI(
     app = None,
     showUQ = True,
     showOpt = True,
-    showDRM = True,
     showBasicData = True,
     ts = None):
     '''
@@ -139,8 +124,6 @@ def startGUI(
     import foqus_lib.gui.main.mainWindow as MW
     if app == None:
         app = QApplication(sys.argv)
-    # Start java gateway for DMF integration
-    startedDMF = False
     #create main window and start application loop
     if showSplash:
         #add timer to show splash
@@ -155,11 +138,6 @@ def startGUI(
             QtCore.Qt.WindowStaysOnTopHint)
         splashScr[1].show()
 
-    if showDRM:
-        MW.importdrm()
-    if useDMF and dat.useDmf:
-        MW.importDMF()
-
     mainWin = MW.mainWindow(
         "FOQUS", # window title
         1024, # width
@@ -168,7 +146,6 @@ def startGUI(
         splashScr[1], #splash screen to use for about
         showUQ = showUQ,
         showOpt = showOpt,
-        showDRM = showDRM,
         showBasicData = showBasicData,
         ts = ts)
     mainWin.app = app
@@ -270,12 +247,6 @@ if __name__ == '__main__':
         action="store_true")
     parser.add_argument("--basic_data",
         help = "Show the basic data tab",
-        action="store_true")
-    parser.add_argument("--nodmf",
-        help = "Disable DMF features",
-        action="store_true")
-    parser.add_argument("--dmf",
-        help = "Enable DMF features",
         action="store_true")
     parser.add_argument("--run",
         help = "Specify a run type and start",
@@ -455,10 +426,6 @@ if __name__ == '__main__':
     # Copy files to working directory if needed. (just heat integration
     # gams files)
     makeWorkingDirFiles()
-    # Set DMF_HOME env var
-    if useDMF:
-        DMF_HOME = os.path.dirname(os.path.dirname(dmf_lib.__file__))
-        os.environ["DMF_HOME"] = DMF_HOME
     ##
     ## create an emptpy FOQUS session
     ##
@@ -466,20 +433,6 @@ if __name__ == '__main__':
     ##
     ## Set some options
     ##
-    # set option to load DMF features or not
-    # get from foqus settings file
-    if useDMF:
-        dat.useDmf = dat.foqusSettings.use_dmf
-        # override from command line options
-        if args.nodmf:
-            dat.useDmf = False
-        elif args.dmf:
-            dat.useDmf = True
-    # log dmf home dir for debugging.
-    if useDMF:
-        logging.getLogger("foqus." + __name__).debug(
-            "DMF_HOME environment variable: {0}".format(
-                os.environ["DMF_HOME"]))
     # set option to show splash screen or not
     load_gui = True #some options can automaticall disable GUI by
         #setting this to False
@@ -697,13 +650,13 @@ if __name__ == '__main__':
                             logging.getLogger("foqus." + __name__)\
                                 .info("Reset = True, stopping consumers "\
                                 "and reloading foqus file {0}".format(sfile))
-                            dat.load(sfile, stopConsumers=True, DMFtoTurb=True)
+                            dat.load(sfile, stopConsumers=True)
                         elif simId != lastSim:
                             logging.getLogger("foqus." + __name__).info(
                                 "Reset = False, but simulation id does not"\
                                 " match previous, reloading simulation"\
                                 " stopping consumers, {0}".format(sfile))
-                            dat.load(sfile, stopConsumers=True, DMFtoTurb=True)
+                            dat.load(sfile, stopConsumers=True)
                         else:
                             logging.getLogger("foqus." + __name__).info(
                                 "Same simulation as prev., not reloading")
@@ -826,9 +779,6 @@ if __name__ == '__main__':
     if guiAvail and not args.nogui and load_gui:
         # Start graphical interface unless it is not
         # available or nogui flag given
-        if 'DMF_HOME' in os.environ.keys():
-            logging.getLogger("foqus." + __name__)\
-                .info("DMF_HOME = {0}".format(os.environ['DMF_HOME']))
         if args.runUITestScript:
             ts = args.runUITestScript
         else:
@@ -841,7 +791,7 @@ if __name__ == '__main__':
                  ts = ts)
     elif not guiAvail and not args.nogui and load_gui:
         logging.getLogger("foqus." + __name__)\
-            .error("PySide or Qt not available")
+            .error("PyQt5 or Qt not available")
         exit_code = 2
     ##
     ## Do clean up stuff and exit

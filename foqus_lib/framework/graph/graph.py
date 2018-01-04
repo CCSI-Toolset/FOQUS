@@ -38,7 +38,7 @@ from OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.graph.nodeVars import *
 
-class graphEx(foqusException):
+class GraphEx(foqusException):
     def setCodeStrings(self):
         self.codeString[0] = "Finished Normally"
         self.codeString[1] = ("Failure in node calculation, "
@@ -62,20 +62,21 @@ class graphEx(foqusException):
         self.codeString[201] = \
             "Found cycle in tree while finding calculation order"
 
-class graph(threading.Thread):
-    '''
-        This class represents the information flow between simulations.
-        Graph nodes represent simulations, and directed edges represent
-        the flow of information.  This graph class contains a lot of
-        non-graph stuff for running simulations and calculations, and
-        solving when the nodes are interdependent (recycle loops).
-    '''
+class Graph(threading.Thread):
+    """
+    This class represents the information flow between simulations. Graph nodes
+    represent simulations, and directed edges represent the flow of information.
+    This graph class contains a lot of non-graph stuff for running simulations
+    and calculations, and solving when the nodes are interdependent
+    (recycle loops).
+    """
     def __init__(self, statusVar=True):  #graph constructor function
-        '''
-            Graph constructor
+        """
+        Graph constructor
 
+        Args:
             statusVar: if true include graph.error variable
-        '''
+        """
         # Thread stuff
         threading.Thread.__init__(self)
         self.ex = None
@@ -89,8 +90,8 @@ class graph(threading.Thread):
         self.edges = [] # connections between simulations
         self.x = OrderedDict() # dictionary of inputs
         self.f = OrderedDict() # dictionary of outputs
-        self.input = nodeVarList()
-        self.output = nodeVarList()
+        self.input = NodeVarList()
+        self.output = NodeVarList()
         self.input.addNode('graph') #global variables
         self.output.addNode('graph') #global variables
         if statusVar:
@@ -132,7 +133,7 @@ class graph(threading.Thread):
         self.staggerStart = 0.0
         self.threadName = ""
         self.runIndex = 0
-        self.results = resultList.results(self)
+        self.results = resultList.Results()
         self.singleCount = 0
         self.pre_solve_nodes = []
         self.post_solve_nodes = []
@@ -175,7 +176,7 @@ class graph(threading.Thread):
             Give a descriptive error message to go with an
             integer error code.
         '''
-        e = graphEx()
+        e = GraphEx()
         if i == -1: return "Graph calculations did not finish"
         try:
             return e.codeString[i]
@@ -190,7 +191,7 @@ class graph(threading.Thread):
             global variables may need redone
         '''
         sd = self.saveDict(results=False)
-        gr = graph(self.includeStatusOutput)
+        gr = Graph(self.includeStatusOutput)
         gr.pymodels = self.pymodels
         gr.turbineSim = self.turbineSim
         gr.sessionFile = self.sessionFile
@@ -330,7 +331,7 @@ class graph(threading.Thread):
                 sd['nodeSettings'][nkey][okey] = opt.value
         return sd
 
-    def loadValues(self, sd, hist=True):
+    def loadValues(self, sd):
         '''
             This loads values for the graph variables from a dictionary
             it also loads status codes if they are present.  If no
@@ -338,10 +339,10 @@ class graph(threading.Thread):
             to -1 (meaning not run yet).
         '''
         self.solTime = sd.get('solTime', 0)
-        self.input.loadValues(sd['input'], hist=hist)
+        self.input.loadValues(sd['input'])
         o = sd.get('output', None)
         if o:
-            self.output.loadValues(sd['output'], hist=hist)
+            self.output.loadValues(sd['output'])
         self.setErrorCode(sd.get('graphError', -1))
         ne = sd.get('nodeError', {})
         tm = sd.get('turbineMessages', {})
@@ -609,8 +610,7 @@ class graph(threading.Thread):
         #return new job number
         return jid
 
-    def solveListValTurbine(self, valueList=None, maxSend=50,
-        sid=None, jobIds=[]):
+    def solveListValTurbine(self, valueList=None, maxSend=50, sid=None, jobIds=[]):
         '''
             Send a list of flowsheet runs to Turbine, this allows the
             flowsheets to be solved in parallel.
@@ -1288,7 +1288,7 @@ class graph(threading.Thread):
             self.input.addNode(name)
         if not name in self.output:
             self.output.addNode(name)
-        self.nodes[name] = node(x, y, z, parent=self, name=name)
+        self.nodes[name] = Node(x, y, z, parent=self, name=name)
         return self.nodes[name]
 
     def addEdge(self, name1, name2, curve=0.0):
@@ -1987,7 +1987,7 @@ class graph(threading.Thread):
                 if ndepth[i] != None:
                     # This means there is a cycle in the graph
                     # this will lead to nonsense so throw exception
-                    raise graphEx(code=201)
+                    raise GraphEx(code=201)
                 remSet = set()  # to remove from a nodes rev adj list
                 for j in adjR[i]:
                     if j in order[depth-1]:

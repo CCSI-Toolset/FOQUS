@@ -1,5 +1,5 @@
 #
-#FOQUS_SURROGATE_PLUGIN
+#No use _OQUS_SURROGATE_PLUGIN
 #
 # Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
 # 150 characters of text.  They also need to hav a .py extention and
@@ -8,11 +8,11 @@
 #
 # iREVEAL.py
 #
-# * This is an example of a surrogate model builder plugin for FOQUS, 
+# * This is an example of a surrogate model builder plugin for FOQUS,
 #   it uses the iREVEAL surrogate model builder program ref:
 #
 #
-# * A setting of this plugin is the location of the iREVEAL executable 
+# * A setting of this plugin is the location of the iREVEAL executable
 #
 #
 # Poorva Sharma, Pacific Northwest National Lab, 2014
@@ -20,11 +20,11 @@
 # This Material was produced under the DOE Carbon Capture Simulation
 # Initiative (CCSI), and copyright is held by the software owners:
 # ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
+# and/or the U.S. Government retain ownership of all rights in the
 # CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
+# distribution or dissemination is governed under the terms and
 # conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
+# Non-Disclosure Agreement, and the CCSI Intellectual Property
 # Management Plan. No rights are granted except as expressly recited
 # in one of the aforementioned agreements.
 
@@ -53,7 +53,7 @@ def checkAvailable():
         plug-in will not be available.
     '''
     # I don't really check anything for now the ALAMO exec location is
-    # just a setting of the plug-in, you may or may not need GAMS or 
+    # just a setting of the plug-in, you may or may not need GAMS or
     # MATLAB
     return True
 
@@ -74,13 +74,13 @@ class surrogateMethod(surrogate):
         "UpdateMetadata":True,
         "Version":""}
     '''
-    
+
     def __init__(self, dat=None):
         '''
             iREVEAL interface constructor
         '''
         surrogate.__init__(self, dat)
-        
+
         self.name = "iREVEAL"
         self.iREVEAL_dir = "iREVEAL"
         self.iREVEAL_home = os.path.join(os.path.dirname(__file__), 'iREVEAL')
@@ -100,65 +100,65 @@ class surrogateMethod(surrogate):
              "Mar.-Apr. 2014"
              "</p></html>")
         #self.options.add(
-        #    name="Exe Path", 
+        #    name="Exe Path",
         #    default= self.iREVEAL_home + os.sep + "iREVEAL.jar",
         #    dtype=str,
         #    desc="Path to the iREVEAL executable jar file")
         self.options.add(
-            name="FOQUS Model (for UQ)", 
+            name="FOQUS Model (for UQ)",
             default="ireveal_surrogate_uq.py",
             dtype=str,
             desc=".py file for UQ analysis")
         self.options.add(
-            name="FOQUS Model (for Flowsheet)", 
+            name="FOQUS Model (for Flowsheet)",
             default="ireveal_surrogate_fs.py",
             dtype=str,
             desc=".py file flowsheet plugin, saved to user_plugins"\
                 " in the working directory")
         self.options.add(
-            name="Results File", 
+            name="Results File",
             default="results",
             desc="Results File After Running Simulations")
         self.options.add(
-            name="Regression Method", 
+            name="Regression Method",
             default="Kriging",
             desc="Regression Method To Create Surrogate ROM",
             validValues=["Kriging"])
         self.createDir(self.iREVEAL_dir)
-        
+
     def run(self):
         '''
             This function overloads the Thread class function,
             and is called when you run start() to start a new thread.
-            
+
             a.    To create samples:
                     java -jar iREVEAL.jar -s LHS -i userInputFile.json
-            
+
             b.    To run regressing analysis:
                     java -jar iREVEAL.jar -r resultsFile -d workingDir
-            
+
             c.    To export model
                     java -jar iREVEAL.jar -e exportDir
-            
+
         '''
         error = False
         #iREVEAL_exe = self.options["Exe Path"].value
         iREVEAL_exe = os.path.join(self.iREVEAL_home,'iREVEAL.jar')
         iREVEAL_work_dir = os.path.join(self.dat.foqusSettings.working_dir,self.iREVEAL_dir)
         results_file = os.path.join(iREVEAL_work_dir,self.options["Results File"].value)
-        
+
         if os.path.exists(iREVEAL_exe) == False:
             self.msgQueue.put("Error: iREVEAL plugin location is not setup or is not correct. Please setup iREVEAL location in Foqus Settings.")
             self.result = {'outputEqns': 'Process terminated with error'}
             error = True
-                
+
         # check if flowsheet is created
         if error == False:
             if hasattr(self.dat.foqusSettings, 'ireveal_input_file') == False:
                 self.msgQueue.put("Error: No flowsheet created !! Please create a flowsheet by selecting iREVEAL input file.")
                 self.result = {'outputEqns': 'Process terminated with error'}
                 error = True
-                
+
         # check if samples are created
         if error == False:
             #src_psuade_data_file = self.dat.foqusSettings.working_dir + os.sep + 'psuadeData'
@@ -170,7 +170,7 @@ class surrogateMethod(surrogate):
                 self.msgQueue.put("Error: Cannot find samples !! Please add samples first.")
                 self.result = {'outputEqns': 'Process terminated with error'}
                 error = True
-                
+
         # check if results file is available
         if error == False:
             results_file = os.path.join(iREVEAL_work_dir ,'results')
@@ -178,20 +178,20 @@ class surrogateMethod(surrogate):
                 self.msgQueue.put("Error: No results file in working directory.\n Please copy results file in "+iREVEAL_work_dir )
                 self.result = {'outputEqns': 'Process terminated with error'}
                 error = True
-        
-        if error == False : 
-            
+
+        if error == False :
+
             #Copy required files
             src_input_file = self.dat.foqusSettings.ireveal_input_file
             dest_input_file = os.path.join(iREVEAL_work_dir,os.path.basename(src_input_file))
             shutil.copyfile(src_input_file, dest_input_file)
-            
+
             #dest_psuade_data_file = iREVEAL_work_dir + os.sep + 'psuadeData'
             #shutil.copyfile(src_psuade_data_file, dest_psuade_data_file)
-            
+
             #dest_psuade_in_file = iREVEAL_work_dir + os.sep + 'psuade.in'
             #shutil.copyfile(src_psuade_in_file, dest_psuade_in_file)
-            
+
             self.msgQueue.put("------------------------------------")
             self.msgQueue.put("Starting iREVEAL Regression\n")
             self.msgQueue.put("Exe File Path:    " + iREVEAL_exe)
@@ -225,7 +225,7 @@ class surrogateMethod(surrogate):
                 logging.getLogger("foqus." + __name__).\
                 error("Problem running iREVEAL:\n" + traceback.format_exc())
                 #should raise an exception here
-            '''   
+            '''
             try:
                 process = subprocess.Popen([
                     "java",
@@ -255,7 +255,7 @@ class surrogateMethod(surrogate):
                 logging.getLogger("foqus." + __name__).\
                 error("Problem running iREVEAL:\n" + traceback.format_exc())
                 #should raise an exception here
-            
+
             '''
             predicted_results_file = iREVEAL_work_dir+os.sep+'Kriging'+os.sep+'predicted_results'
             with open(predicted_results_file, 'r') as f:
@@ -263,10 +263,10 @@ class surrogateMethod(surrogate):
                 output = ''
                 for row in reader:
                     output = output + ' '.join(row) + '\n'
-                
+
             self.result = {'outputEqns': output}
             '''
-            
+
             try:
                 print("java -jar" + iREVEAL_exe +" -e " + iREVEAL_work_dir)
                 process = subprocess.Popen([
@@ -293,18 +293,18 @@ class surrogateMethod(surrogate):
                 logging.getLogger("foqus." + __name__).\
                 error("Problem running iREVEAL:\n" + traceback.format_exc())
                 #should raise an exception here
-            
+
             rom_file = os.path.join(iREVEAL_work_dir,'model.rom')
             with open(rom_file, 'r') as f:
                 reader = csv.reader(f, dialect='excel', delimiter='\t')
                 output = ''
                 for row in reader:
                     output = output + ' '.join(row) + '\n'
-            
+
             self.result = {'outputEqns': output}
-            
+
             irData = SurrogateParser.parseIReveal(rom_file)
-            
+
             output_var_ordered_dict = self.dat.flowsheet.output['iREVEAL']
             output_var_list = []
             for key in output_var_ordered_dict:
@@ -321,12 +321,12 @@ class surrogateMethod(surrogate):
                 "Wrote Python driver file: {0}".format(driverFile2))
             self.driverFile = driverFile2
             self.writePlugin()  # added by BN, 2/4/2016
-        
+
     def writePlugin(self):  # added by BN, 2/4/2016
         file_name = self.options['FOQUS Model (for Flowsheet)'].value
 
         # Write the standard code top, then invoke UQ driver
-        s = self.writePluginTop(method='iREVEAL', comments=['iREVEAL Flowsheet Model']) 
+        s = self.writePluginTop(method='iREVEAL', comments=['iREVEAL Flowsheet Model'])
         with open(os.path.join('user_plugins', file_name), 'w') as f:
             f.write(s)
             lines = []
@@ -352,7 +352,7 @@ class surrogateMethod(surrogate):
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
             lines.append('                print stdout')
-            lines.append('            if stderr:') 
+            lines.append('            if stderr:')
             lines.append('                print stderr')
             lines.append('')
             lines.append('            # read results and instantiate output value')
@@ -362,5 +362,3 @@ class surrogateMethod(surrogate):
             f.write('\n'.join(lines))
 
         self.dat.reloadPlugins()
-
-            

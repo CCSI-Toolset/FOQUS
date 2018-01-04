@@ -275,7 +275,7 @@ class session:
     def setRemoteTurbineFreq(self, t):
         self.turbineChkFreq = t
         self.flowsheet.turbchkfreq = t
-        
+
     def setRemoteReSub(self, t):
         self.resubMax = t
         self.flowsheet.resubMax = t
@@ -305,7 +305,7 @@ class session:
             self.flowsheet.turbConfig.closeTurbineLiteDB()
         except:
             pass
-        self.flowsheet = graph() # meta-flowsheet linking sims
+        self.flowsheet = Graph() # meta-flowsheet linking sims
         if tc is not None:
             #keeping the consumers around and reusing them
             #for the simulation I'm opening.
@@ -762,7 +762,7 @@ class generalSettings():
         self.turbineLogFile = "turbine.log" # turbine client log file
         self.turbineRemoteCheckFreq = 10 #seconds between checking for
                                         #results on remote run
-        self.turbineRemoteReSub = 0 #number of times to resubmit failed 
+        self.turbineRemoteReSub = 0 #number of times to resubmit failed
                                     #jobs to Turbine when running remote
         self.aspenVersion = 2 # 0 = none, 1 = 7.3, 2 = 7.3.2 or higher
         self.turbLiteHome = "C:\\Program Files (x86)\\Turbine\\Lite"

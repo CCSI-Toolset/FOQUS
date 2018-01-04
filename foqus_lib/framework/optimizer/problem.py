@@ -1,6 +1,4 @@
 from __future__ import division
-import numpy
-import scipy
 import copy
 import time
 import math
@@ -15,43 +13,43 @@ class objectiveFunction():
         self.pycode    = pycode
         self.fail      = failval
         self.penScale  = ps
-    
+
     def saveDict(self):
         sd = dict()
         sd["pycode"]   = self.pycode
         sd["fail"]     = self.fail
         sd["penScale"] = self.penScale
         return sd
-    
+
     def loadDict(self, sd):
         self.pycode    = sd["pycode"]
         self.fail      = sd["fail"]
         self.penScale  = sd["penScale"]
-        
+
 class inequalityConstraint():
     def __init__(self, pc="", ps=100, pf="Linear"):
         self.pycode    = pc
         self.penalty   = ps
         self.penForm   = pf
-    
+
     def saveDict(self):
         sd = dict()
         sd["pycode"]   = self.pycode
         sd["penalty"]  = self.penalty
         sd["penForm"]  = self.penForm
         return sd
-    
+
     def loadDict(self, sd):
         self.pycode = sd["pycode"]
         self.penalty = sd["penalty"]
         self.penForm = sd["penForm"]
-             
+
 class problem():
     OBJ_TYPE_EVAL = 0 # use eval to cal objective
     OBJ_TYPE_PARAM = 1 # parameter estimation type objective
     OBJ_TYPE_OUU = 2 # opt under uncertainty type onjective
     OBJ_TYPE_CUST = 3 # custom objective totally open python code
-    
+
     def __init__(self):
         self.obj = [] # Objective functions for eval type
         self.g = [] # Inequality constraints for eval type
@@ -64,7 +62,7 @@ class problem():
         self.solverOptions = {} #option list object for solver options
         self.initSolverParameters()
         self.runMethod = 0 # 0 -- run locally, 1 -- use turbine/foqus
-        
+
     def initSolverParameters(self):
         #
         # Attributes used to interact with solver, don't need to save
@@ -76,19 +74,19 @@ class problem():
         self.totalSampleErrors = 0
         self.iterationNumber = 0
         self.storeResults = True
-        
+
     def run(self, dat):
         self.dat = dat
         slv = dat.optSolvers.plugins[self.solver].opt(dat)
         slv.options.loadValues(self.solverOptions[self.solver])
         slv.start()
         return slv
-        
+
     def saveDict(self):
-        '''
-            Save an optimization problem to a dictionary.  Usually used
-            to write a problem to a json file.
-        '''
+        """
+        Save an optimization problem to a dictionary.  Usually used to write a
+        problem to a json file.
+        """
         sd = {
             'obj':[o.saveDict() for o in self.obj],
             'g':[g.saveDict() for g in self.g],
@@ -104,7 +102,7 @@ class problem():
             for okey, ov in self.solverOptions[skey].iteritems():
                 sd['solverOptions'][skey][okey] = ov
         return sd
-    
+
     def loadDict(self, sd):
         '''
             Load the optimization problem from a dictionary.  Usualy
@@ -120,7 +118,7 @@ class problem():
         self.vs      = sd.get('vs', [])
         self.solver  = sd.get('solver', None)
         #
-        for d in sd.get("obj", []): 
+        for d in sd.get("obj", []):
             self.obj.append(objectiveFunction())
             self.obj[-1].loadDict(d)
         #
@@ -134,7 +132,7 @@ class problem():
             self.solverOptions[dkey] = {}
             for okey, ov in d.iteritems():
                 self.solverOptions[dkey][okey] = ov
-        
+
     def loadSamples(self, fname):
         with open(fname, 'rb') as f:
             cr = csv.reader(f)
@@ -145,11 +143,11 @@ class problem():
             for row in cr:
                 for i, el in enumerate(row):
                     self.samp[head[i]].append(json.loads(el))
-    
+
     def fullfactorial(self, sdict):
-        '''
-            Generate full factorial samples
-        '''
+        """
+        Generate full factorial samples
+        """
         w = []
         mapDict = {}
         j = 0
@@ -187,97 +185,85 @@ class problem():
             for key, j in mapDict.iteritems():
                 sa[key] = w2[j][i]
             self.addSample(sa)
-            
+
     def deleteSamples(self, rows):
         rows = sorted(rows, reverse=True)
         for key, item in self.samp.iteritems():
             for r in rows:
                 del(item[r])
-            
+
     def clearSamples(self):
         self.samp = {}
-    
+
     def numSamples(self):
         if len(self.samp) == 0:
             n = 0
         else:
             n = len(self.samp.values()[0])
         return n
-        
+
     def addSampleVar(self, vname):
         '''
             Adds a variable to the sample dict, not to the sample var
             list (self.vs).  I keep track of samples for varaibles that
             are not sample variables just in case the user changes their
-            mind about the set of sample variables.  All the defined 
+            mind about the set of sample variables.  All the defined
             samples won't be lost.
         '''
         n = self.numSamples()
         if vname not in self.samp:
             if n > 0:
-                self.samp[vname] = [numpy.nan]*n
+                self.samp[vname] = [float('nan')]*n
             else:
                 self.samp[vname] = []
-    
+
     def addSample(self, samples):
         for key in samples:
             if key not in self.samp:
                 self.addSampleVar(key)
         for key in self.samp:
-            self.samp[key].append(samples.get(key, numpy.nan))
-            
+            self.samp[key].append(samples.get(key, float('nan')))
+
     def runSamples(self, X, slv):
         '''
             Runs the flowsheet samples for the objective calculation
-            
-            X:  a list of flat vector of descision variable values.  
+
+            X:  a list of flat vector of descision variable values.
                 The variableordering is given by the list self.v
-                
+
             gr: is the graph (flowsheet) object that will be used to
                 run the samples
-                
+
             If a set of samples is defined by self.samp, each flowsheet
             will be run number of smapls times for each X
         '''
         self.userInterupt = False
         self.maxTimeInterupt = False
         snum = 1
-        # Setup new sample vectors that have the decision and sample 
-        # variables and the 
+        # Setup new sample vectors that have the decision and sample
+        # variables and the
         samp = [] # the sample set for FOQUS graph
         if self.vs > 0 and self.numSamples() > 0:
             snum = self.numSamples()
             for xvec in X:
-                vals = slv.graph.input.unflatten(
-                        self.v, 
-                        xvec, 
-                        unScale=True)
+                vals = slv.graph.input.unflatten(self.v, xvec, unScale=True)
                 for s in range(self.numSamples()):
                     samp.append(copy.deepcopy(self.inpDict))
                     for nkey in vals:
                         for vkey in vals[nkey]:
-                            ts = slv.graph.input[nkey][vkey].ts
-                            samp[-1][nkey][vkey][ts] = \
-                                vals[nkey][vkey].tolist()
+                            samp[-1][nkey][vkey] = vals[nkey][vkey]
                     # Now add on sample variable info
                     for vname in self.vs:
                         vname2 = vname.split('.',1)
-                        ts = slv.graph.input[vname2[0]][vname2[1]].ts
-                        samp[-1][vname2[0]][vname2[1]][ts] = \
-                            self.samp[vname][s]
+                        samp[-1][vname2[0]][vname2[1]] = self.samp[vname][s]
         else:
             for xvec in X: # create sample set in correct format
                 #need to unscale the inputs the solver sees to run sims
-                vals = slv.graph.input.unflatten(
-                    self.v, 
-                    xvec, 
-                    unScale=True)
+                vals = slv.graph.input.unflatten(self.v, xvec, unScale=True)
                 samp.append(copy.deepcopy(self.inpDict))
                 for nkey in vals:
                     for vkey in vals[nkey]:
-                        ts = slv.graph.input[nkey][vkey].ts
-                        samp[-1][nkey][vkey][ts] = \
-                            vals[nkey][vkey].tolist()
+                        samp[-1][nkey][vkey] = vals[nkey][vkey]
         nsam = len(samp) # number of samples this iteration
         # sumbmit samples to a new graph thread that will run them
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
@@ -310,8 +296,8 @@ class problem():
                 status = copy.copy(gt.status)
             if status['finished'] != finished or not goagain:
                 # if it is the last time through because the thread is
-                # no longer alive make sure to read the last of the 
-                # results, the finished counter goes up before the 
+                # no longer alive make sure to read the last of the
+                # results, the finished counter goes up before the
                 # job results are retrived from turbine
                 finished = status['finished']
                 # Put out progress monitor message to queue
@@ -329,12 +315,12 @@ class problem():
                         for i in range(len(gt.res)):
                             if not readres[i] and gt.res_fin[i] != -1:
                                 readres[i] = True
-                                slv.graph.results.addFromSavedValues(
-                                    self.storeResults, 
-                                    'res_{0:05d}_{1:05d}'\
-                                        .format(self.iterationNumber,i),
-                                    None, 
-                                    gt.res[i])
+                                #slv.graph.results.addFromSavedValues(
+                                #    self.storeResults,
+                                #    'res_{0:05d}_{1:05d}'\
+                                #        .format(self.iterationNumber,i),
+                                #    None,
+                                #    gt.res[i])
         self.totalSamplesRead = self.totalSamplesRead + nsam
         self.totalSampleErrors = self.totalSampleErrors + \
             status['error']
@@ -357,7 +343,7 @@ class problem():
         '''
             Do some commnon preliminary setup then call the right type
             of objective calculation.
-            
+
             svlist is a list of flowsheet evaluation results
             nsamples is the number of flowsheet calculations that go
                 into each objective evaluation.  svlist is arranged
@@ -365,7 +351,7 @@ class problem():
                 objective functions
         '''
         numObj = len(svlist)//nsamples # number of obj. func. evals.
-        res = [[numpy.nan]]*numObj
+        res = [[float('nan')]]*numObj
         const = [[0.0]]*numObj
         pen = [[0.0]]*numObj
         for obj_index in range(numObj):
@@ -392,7 +378,7 @@ class problem():
                         f = sv['output']
                     else:
                         x[i] = sv['input']
-                        f[i] = sv['output']                        
+                        f[i] = sv['output']
                     if sv['graphError'] != 0:
                         #This is just some error that was caught usually
                         #means failed to converge.
@@ -403,8 +389,8 @@ class problem():
             elif self.objtype == self.OBJ_TYPE_CUST:
                 res[obj_index], const[obj_index], pen[obj_index] = \
                     self.custObjFunc(x, f, fail)
-        return res, const, pen 
-        
+        return res, const, pen
+
     def calculateObjSimpExp(self, x, f, failVec):
         '''
 
@@ -415,9 +401,9 @@ class problem():
         penTotal = 0.0
         for o in self.g:
             if fail:
-                vi = numpy.array(0)
+                vi = 0
             else:
-                vi = numpy.array(eval(o.pycode))
+                vi = eval(o.pycode)
             if vi <= 0:
                 #if vi is negitive no constraint violation so set
                 #vi to 0 for zero penalty
@@ -435,18 +421,18 @@ class problem():
         # this is to accomidate multi-objective optimization
         for o in self.obj:
             if fail:
-                objfunc = numpy.array(o.fail)
+                objfunc = o.fail
             else:
                 try:
-                    objfunc = numpy.array(eval(o.pycode))
-                    objfunc += numpy.array(penTotal*o.penScale)
+                    objfunc = eval(o.pycode)
+                    objfunc += penTotal*o.penScale
                 except Exception as e:
                     logging.getLogger("foqus." + __name__).error(
                         "Error executing objective calc " + str(e))
-                    objfunc = numpy.array(o.fail)
+                    objfunc = o.fail
             res_e.append(objfunc)
         return res_e, const_e, penTotal
-        
+
     def check(self, graph, minVars=2, maxVars=1000, mustScale=True):
         '''
             Check that an optimization problem is properly specified as
@@ -457,33 +443,33 @@ class problem():
         graph.generateGlobalVariables()
         sv = graph.saveValues()
         for vname in self.v:
-            n += graph.input.get(vname).value.size
-            if mustScale and graph.input.get(vname).scaling=='None': 
+            n += 1
+            if mustScale and graph.input.get(vname).scaling=='None':
                 return [
-                    1, 
+                    1,
                     ("All optimization variables must be scaled "
                      "check decision variable scaling")]
-            min = graph.input.get(vname).min
-            max = graph.input.get(vname).max
-            if numpy.min(numpy.array(max) - numpy.array(min)) <= 1e-10:
+            vmin = graph.input.get(vname).min
+            vmax = graph.input.get(vname).max
+            if vmax - vmin <= 1e-10:
                 return [
-                    1, 
+                    1,
                     ("The maximum must be greater than the "
                      "minimum for all decision variables")]
-        if n < minVars: 
+        if n < minVars:
             return [
-                1, 
+                1,
                 "Optimization method requires at least " +\
                     str(minVars) + " variables"]
         if n > maxVars:
              return [
-                1, 
+                1,
                 "Optimization method can have at most " + str(minVars)+\
                     "variables"]
         # Check Objective expressions
         if len(self.obj) < 1 and self.objtype == self.OBJ_TYPE_EVAL:
             return[
-                1, 
+                1,
                 ("Must have at least one objective function.  If "
                  "a single objective method is used the first objective"
                  " will be be evaluated, and the rest will be ignored")]
@@ -495,11 +481,11 @@ class problem():
         #f = graph.output.valueDict(f)
         #for o in self.obj:
             #try:
-                #exec(o.pycode) 
+                #exec(o.pycode)
                 #objfunc + 1.0
             #except Exception, e:
                 #return [
-                    #1, 
+                    #1,
                     #"Error evaluating an objective function:"
                     #" {0} error: {1} ".format(o.pycode ,str(e))]
         ## check Constraint expressions
@@ -509,11 +495,7 @@ class problem():
                 #violoation + 1.0
             #except Exception, e:
                 #return [
-                    #1, 
+                    #1,
                     #"Error evaluating a constraint function:"
                     #" {0} error: {1} ".format(o.pycode ,str(e))]
         return [0, ""]
-    
-
-        
-            

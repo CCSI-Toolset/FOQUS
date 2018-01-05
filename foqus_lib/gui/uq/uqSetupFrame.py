@@ -44,6 +44,7 @@ class checkingThread(QtCore.QThread):
         resizeColumnSignal = QtCore.pyqtSignal()
         progressBarSignal = QtCore.pyqtSignal(int)
         #progressBarSignal = QtCore.pyqtSignal(QProgressBar, int, int, int)
+        progressBarErrorSignal = QtCore.pyqtSignal(QProgressBar, int)
         editButtonSignal = QtCore.pyqtSignal(bool)
         launchButtonSignal = QtCore.pyqtSignal(bool)
         analyzeButtonSignal = QtCore.pyqtSignal(bool)
@@ -69,6 +70,7 @@ class checkingThread(QtCore.QThread):
         c.resizeColumnSignal.connect(self.parent.resizeColumns)
         progressBar = self.parent.simulationTable.cellWidget(row, self.parent.statusCol)
         c.progressBarSignal.connect(progressBar.setValue)
+        c.progressBarErrorSignal.connect(self.parent.setProgressBarNumErrors)
         #c.progressBarSignal.connect(uqSetupFrame.setProgressBarErrorStyle)
         c.resultsSignal.connect(self.parent.resultsBox)
         c.simSelectedSignal.connect(self.parent.simSelected)
@@ -216,6 +218,8 @@ class checkingThread(QtCore.QThread):
                     #updatae sim so intermediate results can be saved
                     sim.setRunState(runState)
                     sim.setOutputData(outData)
+                    numErrors = sum([row[0] > 0 for row in outData])
+                    c.progressBarErrorSignal.emit(progressBar, numErrors)
             numTries += 1
             if runType == Model.EMULATOR:
                 runID = LocalExecutionModule.getEmulatorOutputsFinished()
@@ -501,6 +505,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newName = item.text()
             sim.setModelName(newName)
 
+    def setProgressBarNumErrors(self, progressBar, value):
+        formatString = '%v / %m  # errors: ' + str(value)
+        progressBar.setFormat(formatString)
+
     def setProgressBarErrorStyle(self, progressBar, numGood, numError, numTotal):
         styleLeft = '''
 QProgressBar:horizontal {
@@ -590,7 +598,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             except:
                 import traceback
                 traceback.print_exc()
-                QtWidgets.QMessageBox.critical(self, 'Incorrect format',
+                QtGui.QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
@@ -711,8 +719,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             progressBar.setMaximum(data.getNumOutputs())
             formatString = '%v / %m output(s) computed'
         else:
+            outDataErrors = sum(row[0] > 0 for row in data.getOutputData())
+            errorCount = np.count_nonzero(outDataErrors)
             progressBar.setMaximum(data.getNumSamples())
-            formatString = '%v / %m'
+            formatString = '%v / %m  # errors: ' + str(errorCount)
         progressBar.setFormat(formatString)
         runState = data.getRunState().tolist()
         runCount = runState.count(True)

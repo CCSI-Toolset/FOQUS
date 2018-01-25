@@ -49,6 +49,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.selectFilter)
         self.tableView.setAlternatingRowColors(True)
         self.columnsButton.clicked.connect(self.columnSelect)
+        self.tableView.verticalHeader().show()
 
     def columnSelect(self):
         cd = columnsDialog(self.dat, self)
@@ -270,9 +271,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         items = [''] + sorted(self.dat.flowsheet.results.filters.keys())
         self.filterSelectBox.addItems(items)
         i=-1
-        if self.dat.flowsheet.results.currentFilter() != None:
+        if self.dat.flowsheet.results.current_filter() != None:
             i = self.filterSelectBox.findText(
-                self.dat.flowsheet.results.currentFilter())
+                self.dat.flowsheet.results.current_filter())
         if i != -1:
             self.filterSelectBox.setCurrentIndex(i)
         else:
@@ -282,15 +283,15 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
     def selectFilter(self, i = 0):
         filterName = self.filterSelectBox.currentText()
         if filterName == '':
-            self.dat.flowsheet.results.setFilter(None)
+            self.dat.flowsheet.results.set_filter(None)
         elif not filterName in self.dat.flowsheet.results.filters:
             print "error"
         else:
-            self.dat.flowsheet.results.setFilter(filterName)
+            self.dat.flowsheet.results.set_filter(filterName)
         self.tableView.setModel(
             dataModel(self.dat.flowsheet.results, self))
         self.numRowsBox.setText(str(
-            self.dat.flowsheet.results.rowCount(filtered=True)))
+            self.dat.flowsheet.results.count_rows(filtered=True)))
 
     def saveResultsToCSV(self):
         fileName, filtr = QFileDialog.getSaveFileName(

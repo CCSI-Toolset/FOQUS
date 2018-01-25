@@ -1,36 +1,30 @@
-'''
-    results.py
+"""
+results.py
 
     * This contains the class for sample results data heading
 
-    John Eslick, Carnegie Mellon University, 2014
+John Eslick, Carnegie Mellon University, 2014
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
-from collections import OrderedDict
-import pandas as pd
-import StringIO
+This Material was produced under the DOE Carbon Capture Simulation
+Initiative (CCSI), and copyright is held by the software owners:
+ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
+and/or the U.S. Government retain ownership of all rights in the
+CCSI software and the copyright and patents subsisting therein. Any
+distribution or dissemination is governed under the terms and
+conditions of the CCSI Test and Evaluation License, CCSI Master
+Non-Disclosure Agreement, and the CCSI Intellectual Property
+Management Plan. No rights are granted except as expressly recited
+in one of the aforementioned agreements.
+"""
+
 import numpy as np
-import copy
-import csv
-import string
-import numpy
+import pandas as pd
+import re
+import StringIO
 import json
 import datetime
 import logging
-import re
-import math
 import time
-from foqus_lib.framework.session.hhmmss import *
 
 class dataFilter(object):
     DF_NOT = 0
@@ -42,7 +36,6 @@ class dataFilter(object):
 
     def __init__(self):
         self.fstack = []
-        self.sortTerm = None
 
     def saveDict(self):
         sd = {
@@ -75,35 +68,26 @@ class dataFilterRule(object):
     OP_GE = 4
     OP_IN = 5
     OP_NEQ = 6
+    OP_AEQ = 7
     OP_TRUE = 11
     OP_FALSE = 12
 
-    TERM_CONST = 0
-    TERM_INPUT = 3
-    TERM_OUTPUT = 4
-    TERM_OTHERCOL = 7
-    TERM_INDEX = 8
-
     def __init__(self, op=0):
-        self.anyEl = False
         self.op = op
-        self.term1 = [self.TERM_OTHERCOL, 'Error']
-        self.term2 = [self.TERM_CONST, 0]
+        self.term1 = 'err'
+        self.term2 = 0
 
     def saveDict(self):
         sd = {
-            'anyEl':self.anyEl,
             'op':self.op,
             'term1':self.term1,
             'term2':self.term2}
         return sd
 
     def loadDict(self, sd):
-        self.anyEl = sd.get('anyEl', False)
         self.op = sd['op']
         self.term1 = sd['term1']
         self.term2 = sd['term2']
-
 
 def iso_time_str():
     return str(datetime.datetime.utcnow().isoformat())
@@ -153,21 +137,70 @@ class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
         self.filters = {}
-        self._currentFilter = None
+        self._current_filter = None
+        self._filter_indexes = []
         self.flatTable = True
         self["set"] = []
         self["result"] = []
 
-    def currentFilter(self):
-        return self._currentFilter
+    def set_filter(self, fltr=None):
+        """
+        Set the current filter name, can be None for no filter
+        """
+        self._current_filter = fltr
+        self.update_filter_indexes()
+
+    def update_filter_indexes(self):
+        """
+        Apply the filter to the data to get a list of indexes of data rows that
+        match filter.
+        """
+        self._filter_indexes, self._filter_mask = self.filter_indexes()
+
+    def current_filter(self):
+        """
+        Get the name of the currently set data filter.
+        """
+        return self._current_filter
+
+    def get_indexes(self, filtered=False):
+        """
+        Get a list of row indexes, if filtered use filtered indexes else return
+        all row indexes.
+        """
+        if filtered:
+            return self._filter_indexes
+        else:
+            return list(self.index)
+
+    def copy_dataframe(self, filtered=False):
+        if filtered:
+            self.update_filter_indexes()
+            return pd.DataFrame(self[self._filter_mask])
+        else:
+            return pd.DataFrame(self)
 
     def saveDict(self):
-        sd = {"__columns":list(self.columns), "__indexes":list(self.index)}
+        """
+        Save the data to a dict that can be dumped to json
+        """
+        sd = {
+            "__columns":list(self.columns),
+            "__indexes":list(self.index),
+            "__filters":{},
+            "__curent_filter":self.__curent_filter}
+        for f in self.filters:
+            sd["filters"][f] = self.filters[i].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
         return sd
 
     def loadDict(self, sd):
+        """
+        Load the data from a dict, the dict can be read from json
+        """
+        self.filters = {}
+        self.__curent_filter = sd.get("__curent_filter", None)
         self.drop(self.index, inplace=True)
         self.drop(self.columns, axis=1, inplace=True)
         try:
@@ -179,11 +212,23 @@ class Results(pd.DataFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Error loading stored results")
+        try:
+            for i in sd["filters"]:
+                self.filters[i] = dataFilter().loadDict(sd["filters"][i])
+        except:
+            pass
+        self.update_filter_indexes()
 
     def data_sets(self):
-        return list(self.loc[:,"set"])
+        """
+        Return a set of data set labels
+        """
+        return set(self.loc[:,"set"])
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
+        """
+        Add a set of flowseheet results to the data frame
+        """
         #set_name = incrimentName(set_name, )
         #result_name = incrimentName(result_name, )
         names = list(self.loc[self["set"] == set_name].loc[:,"result"])
@@ -192,13 +237,17 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.rowCount()
-        row = self.rowCount()
+        row = self.count_rows()
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
             self.loc[row, col] = dat[i]
+        self.update_filter_indexes()
 
     def read_csv(self, *args, **kwargs):
+        """
+        Read results into a data frame from a CSV file.
+        """
         s = kwargs.pop("s", None)
         if s is not None:
             path = StringIO.StringIO(s)
@@ -206,20 +255,102 @@ class Results(pd.DataFrame):
         df = pd.read_csv(*args, **kwargs)
         col_del = []
         for r in df.index:
-            row = self.rowCount()
+            row = self.count_rows()
             for c in df.columns:
                 self.loc[row, c] = df.loc[r, c]
+        self.update_filter_indexes()
 
-    def rowCount(self, filtered=None):
-        return len(self.index)
+    def count_rows(self, filtered=True):
+        """
+        Return the number of rows in a table. If filtered the number of rows in
+        the data frame that match the filter.
+        """
+        return len(self.get_indexes(filtered=True))
 
-    def columnCount(self):
+    def count_cols(self):
+        """
+        Return the number of columns in the data frame
+        """
         return len(self.columns)
 
-    def colCount(self):
-        return self.columnCount()
+    def filter_term(self, t):
+        """
+        Return the value of a filter term. Array for all rows.
+        """
+        if t in self.columns:
+            return np.array(list(self.loc[:, t]))
+        else:
+            return np.array([t]*len(self.index))
 
+    def filter_eval_rule(self, rule):
+        """
+        Evaluate whether a rule is true or false element-wise vector for all rows
+        """
+        t1 = self.filter_term(rule.term1)
+        t2 = self.filter_term(rule.term2)
+        if rule.op == dataFilterRule.OP_EQ: # Equal
+            return np.equal(t1, t2)
+        elif rule.op == dataFilterRule.OP_AEQ: # Approximatly equal
+            return np.isclose(t1, t2, rtol=1e-5, atol=1e-6)
+        elif rule.op == dataFilterRule.OP_L: # <
+            return np.less(t1, t2)
+        elif rule.op == dataFilterRule.OP_G: # >
+            return np.greater(t1, t2)
+        elif rule.op == dataFilterRule.OP_LE: # <=
+            return np.less_equal(t1, t2)
+        elif rule.op == dataFilterRule.OP_GE: # >=
+            return np.greater_equal(t1, t2)
+        elif rule.op == dataFilterRule.OP_NEQ: # not equal
+            return np.not_equal(t1, t2)
+        elif rule.op == dataFilterRule.OP_TRUE: # all true
+            return np.array([True]*self.row_count())
+        elif rule.op == dataFilterRule.OP_FALSE: # all false
+            return np.array([False]*self.row_count())
 
+    def filter_indexes(self, fltr=None):
+        """
+        Return a list of indexes matching a filter.
+        """
+        if fltr is None:
+            fltr = self.current_filter()
+        if fltr is None:
+            return (list(self.index), [True]*len(self.index))
+
+        # Evaluate all the rules
+        fstack = []
+        for r in self.filters[fltr].fstack:
+            if r[0] == dataFilter.DF_RULE:
+                fstack.append([r[0], self.filter_eval_rule(r[1])])
+            else:
+                fstack.append(r)
+
+        mask = [True]*len(self.index)
+        tstack = []
+        #combine the masks
+        for item in fstack:
+            if item[0] == dataFilter.DF_RULE:
+                tstack.append(item[1])
+            elif item[0] == dataFilter.DF_AND:
+                t2 = tstack.pop()
+                t1 = tstack.pop()
+                tstack.append(np.logical_and(t1, t2))
+            elif item[0] == dataFilter.DF_NOT:
+                t1 = tstack.pop()
+                tstack.append(np.logical_not(t1))
+            elif item[0] == dataFilter.DF_OR:
+                t2 = tstack.pop()
+                t1 = tstack.pop()
+                tstack.append(np.logical_or(t1))
+            elif item[0] == dataFilter.DF_XOR:
+                t2 = tstack.pop()
+                t1 = tstack.pop()
+                tstack.append(np.logical_xor(t1))
+        if len(tstack) > 0:
+            mask = tstack.pop()
+        indexes = list(self[mask].index)
+        return (indexes, mask)
+
+# This is old export to psuade function.  Hopefully can update:
 """
     def exportPSUADE(self, fileName='test.dat'):
         self.constructFlatHead(sort=False)

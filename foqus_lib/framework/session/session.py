@@ -243,7 +243,6 @@ class session:
         self.foqusSettings.load(useCurrentWorkingDir)
         self.foqusSettings.new_working_dir = self.foqusSettings.working_dir
         self.settingUseCWD = useCurrentWorkingDir
-        self.useDmf = True
         # Get the log file and location for log file viewer
         self.currentLog = os.path.join(
             'logs',self.foqusSettings.foqusLogFile)
@@ -271,6 +270,14 @@ class session:
         res = ""
         exec(pythonCode)
         return res
+
+    def produceTurbineFOQUSTestInput(self, filename="test_input.json"):
+        out = [{
+            'Simulation':"FoqusTest",
+            'Input':[self.flowsheet.saveValues()['input']],
+            'Reset':False}]
+        with open(filename, 'w') as f:
+            json.dump(out, f)
 
     def setRemoteTurbineFreq(self, t):
         self.turbineChkFreq = t
@@ -744,7 +751,6 @@ class generalSettings():
         self.working_dir_override = False
         self.working_dir = ""
         self.new_working_dir = ""
-        self.java_home = ""
         self.simsinter_path =\
             "C:/Program Files (x86)/CCSI/SimSinter"
         self.psuade_path = \
@@ -793,7 +799,6 @@ class generalSettings():
             "foqusLogFile",
             "turbineLogFile",
             "logFormat",
-            "java_home",
             "alamo_path",
             "aspenVersion",
             "turbLiteHome",
@@ -911,16 +916,6 @@ class generalSettings():
         if logging:
             self.applyLogSettings()
             self.chdir()
-        if self.java_home == "":
-            try:
-                self.java_home = os.environ["JAVA_HOME"]
-            except:
-                print "Error setting self.java_home"
-        else:
-            try:
-                os.environ["JAVA_HOME"] = str(self.java_home)
-            except:
-                print "Error setting self.java_home"
         self.settingsNormpath()
         self.checkRecentlyOpenedFiles()
 

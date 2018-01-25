@@ -11,9 +11,9 @@ class surrogate(threading.Thread):
         This is a base class for surrogate model building methods.
         It should be inherited by surrogate model classes.  The
         saveDict and loadDict functions can be overloaded.
-        
+
         The run and runAdaptive functions should also be overloaded.
-        Not all surrogate model methods will need a run adaptive 
+        Not all surrogate model methods will need a run adaptive
         function.
     '''
     name = "surrogate"
@@ -28,7 +28,7 @@ class surrogate(threading.Thread):
         self.driverFile = ""
         # self.directCopy is a list of attributes that can be
         # copied with copy.deepcopy and can be understood by
-        # the json module.  This saves some work saving the 
+        # the json module.  This saves some work saving the
         # object to a dictionary that can be turned into a json
         # string.  Some things may not fit this and you may need
         # to overload the saveDict and loadDict functions.
@@ -48,16 +48,16 @@ class surrogate(threading.Thread):
         self.maxInputs = 1000
         self.minOutputs = 1
         self.maxOutputs = 1000
-        
+
         self.inputVarButtons = ()
         self.outputVarButtons = ()
-        
+
     def clear(self):
         self.input = []
         self.output = []
         self.inputScaleFact = {}
         self.ex = None
-        
+
     def updateVarCols(self):
         for i, item in enumerate(self.inputCols):
             if self.inputOptions.get(item[0], None) is None:
@@ -65,7 +65,7 @@ class surrogate(threading.Thread):
         for i, item in enumerate(self.outputCols):
             if self.outputOptions.get(item[0], None) is None:
                 self.outputOptions[item[0]] = {}
-                
+
     def getInputVarOption(self, opt, var):
         '''
             Get input variable specific option.  If option doesn't exist
@@ -80,7 +80,7 @@ class surrogate(threading.Thread):
         if v == None: #look up default
             v = next(x for x in self.inputCols if x[0] == opt)[2]
         return v
-    
+
     def getOutputVarOption(self, opt, var):
         '''
             Get output variable specific option.  If option doesn't exist
@@ -95,7 +95,7 @@ class surrogate(threading.Thread):
         if v == None: #look up default
             v = next(x for x in self.outputCols if x[0] == opt)[2]
         return v
-        
+
     def setInputVarOption(self, opt, var, val=None):
         '''
             Set input variable specific option.  If option doesn't exist
@@ -112,7 +112,7 @@ class surrogate(threading.Thread):
             val = self.getInputVarOption(opt, var)
         d[var] = val
         return val
-    
+
     def setOutputVarOption(self, opt, var, val=None):
         '''
             Set output variable specific option.  If option doesn't exist
@@ -129,18 +129,18 @@ class surrogate(threading.Thread):
             val = self.getOutputVarOption(opt, var)
         d[var] = val
         return val
-            
+
     def updateOptions(self):
         '''
         '''
         pass
-    
+
     def location(self):
         return os.path(os.path.dirname(__file__))
 
     def saveInSession(self):
         self.dat.surrogateProblem[self.name] = self.saveDict()
-        
+
     def loadFromSession(self):
         if self.dat.surrogateProblem is not None:
             sd = self.dat.surrogateProblem.get(self.name, None)
@@ -152,8 +152,8 @@ class surrogate(threading.Thread):
         for att in self.directCopy:
             sd[att] = copy.deepcopy(self.__dict__[att])
         sd['options'] = self.options.saveValues()
-        return sd    
-    
+        return sd
+
     def loadDict(self, sd):
         for att in self.directCopy:
             if sd.get(att, None) != None:
@@ -162,22 +162,16 @@ class surrogate(threading.Thread):
         opts = sd.get('options', None)
         if opts is not None:
             self.options.loadValues(opts)
-              
+
     def run(self):
-        pass           
-    
+        pass
+
     def nInput(self):
-        n = 0
-        for v in self.input:
-            n += self.graph.input.get(v).nElements()
-        return n
-            
+        return len(self.input)
+
     def nOutput(self):
-        n = 0
-        for v in self.output:
-            n += self.graph.output.get(v).nElements()
-        return n
-    
+        return len(self.output)
+
     def checkNumVars(self):
         err = 0
         if self.nInput() < self.minInputs:
@@ -201,7 +195,7 @@ class surrogate(threading.Thread):
                 .format(self.maxOutputs))
             err = 1
         return err
-    
+
     def createDir(self, wdir=None):
         '''
             Check for a working directory and create it if it
@@ -209,12 +203,12 @@ class surrogate(threading.Thread):
         '''
         if wdir == None: return
         #Check if wdir exists and create it if not.
-        try: 
+        try:
             os.makedirs(wdir)
         except OSError as e:
             if not os.path.isdir(wdir):
                 raise e
-            
+
     def setData(self, dat=None):
         '''
             Set the session data so the optimization routine can get
@@ -225,7 +219,7 @@ class surrogate(threading.Thread):
             self.graph = dat.flowsheet
         else:
             self.graph = None
-        
+
     def terminate(self):
         '''
             This sets the stop flag to indicate that you want to stop
@@ -235,14 +229,14 @@ class surrogate(threading.Thread):
             flag is not checked in the derived class.
         '''
         self.stop.set()
-        
+
     def writePluginTop(
-        self, 
-        method="Generic", 
-        comments=[], 
+        self,
+        method="Generic",
+        comments=[],
         importLines = []):
         '''
-            Write the code for the top protion of a flowsheet plugin 
+            Write the code for the top protion of a flowsheet plugin
             that does the standard imports and variable definitions in
             the class init.  Returns string.
         '''
@@ -267,8 +261,8 @@ class surrogate(threading.Thread):
         # Any other imports
         lines.extend(importLines)
         lines.append("")
-        # Add check available function.  This function can be used to 
-        # check that the need components are available, but I'm not 
+        # Add check available function.  This function can be used to
+        # check that the need components are available, but I'm not
         # really using it for anything yet
         lines.append("def checkAvailable():")
         lines.append("    return True")
@@ -327,4 +321,3 @@ class surrogate(threading.Thread):
         # add a blank line on the end
         lines.append("")
         return "\n".join(lines)
-

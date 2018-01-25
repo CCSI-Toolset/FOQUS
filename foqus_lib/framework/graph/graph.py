@@ -623,20 +623,6 @@ class Graph(threading.Thread):
                 run was disconnected this will hook back up and contiune
                 to receive results until the session is done.
         '''
-        ## Sync up simulations with the DMF
-        for key, node in self.nodes.iteritems():
-            if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Syncing DMF node: {0}".format(key))
-                node.synced = False
-                node.runDMFLiteCalc(sync_only=True)
-            elif node.modelType == nodeModelTypes.MODEL_DMF_SERV:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Syncing DMF node: {0}".format(key))
-                node.synced = False
-                node.runDMFServCalc(sync_only=True)
-            else:
-                pass # Doesn't matter synced is a DMF thing
         ######
         # Create a session and submit jobs
         ######

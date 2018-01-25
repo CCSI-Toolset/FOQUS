@@ -223,11 +223,8 @@ if __name__ == '__main__':
     ##
     ## Setup the command line arguments
     ##
-    if len(sys.argv) > 1 and not sys.argv[1].startswith('-'):
-        sys.argv.append('-l')
-        sys.argv.append(sys.argv[1])
-        del(sys.argv[1])
     parser = argparse.ArgumentParser()
+    parser.add_argument("file", nargs=1, help="Project file to load")
     parser.add_argument("-l", "--load", help = "Project file to load")
     parser.add_argument(
         "-w",
@@ -292,6 +289,8 @@ if __name__ == '__main__':
     # this way it will be relative to where you execute foqus instead
     # or relative to the working dir (reletive to the working dir is
     # confusing
+    if args.file:
+        args.load = os.path.abspath(args.file[0])
     if args.load:
         args.load = os.path.abspath(args.load)
     if args.runUITestScript:

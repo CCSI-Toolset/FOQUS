@@ -1,48 +1,48 @@
-#!/usr/bin/python
-'''
-    foqus.py
+"""
+foqus.py
 
     * The main script to start FOQUS
 
-    John Eslick, Carnegie Mellon University, 2014
+John Eslick, Carnegie Mellon University, 2014
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+This Material was produced under the DOE Carbon Capture Simulation
+Initiative (CCSI), and copyright is held by the software owners:
+ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
+and/or the U.S. Government retain ownership of all rights in the
+CCSI software and the copyright and patents subsisting therein. Any
+distribution or dissemination is governed under the terms and
+conditions of the CCSI Test and Evaluation License, CCSI Master
+Non-Disclosure Agreement, and the CCSI Intellectual Property
+Management Plan. No rights are granted except as expressly recited
+in one of the aforementioned agreements.
+"""
+from __future__ import division  # No integer division
+from __future__ import print_function  # Python 3 style print
+from __future__ import absolute_import  # disable implicit relative imports
+
 # Imports
 import signal
 import uuid
 import sys
 import argparse
 import time
-import datetime
-import os
 import json
 import logging
 # FOQUS imports
 import foqus_lib.version.version as ver # foqus version and other info
 from foqus_lib.framework.session.session import *
-from foqus_lib.framework.graph.graph import * # flowsheet
 from foqus_lib.framework.listen.listen import foqusListener2
 loadGUI = False
 guiAvail = False
-
-
-#
 # Splash screen global variables
 splash_timeout_ms = 10000 # initial Splash screen hide in ms
 splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
 
 def guiImport():
+    """
+    Only import the GUI classes if you want the GUI
+    """
     global loadGUI
     global guiAvail
     global dmf_lib
@@ -72,19 +72,19 @@ def guiImport():
         guiAvail = False
 
 def hideSplash():
-    '''
-        Hide splash screen is called by timer, also stops the timer
-        don't need timer after it hides the splash
-    '''
+    """
+    Hide splash screen is called by timer, also stops the timer
+    don't need timer after it hides the splash
+    """
     splashScr[0].stop() # stop the timer
     splashScr[1].hide() # and hide the splash screen
 
 def makeSplash():
-    '''
-        This makes a splash screen that has the current FOQUS version
-        information as well as all of the third party dependency
-        information
-    '''
+    """
+    This makes a splash screen that has the current FOQUS version
+    information as well as all of the third party dependency
+    information
+    """
     # Load the splash screen background svg, gonna draw text over
     pixmap = QPixmap(':/icons/icons/ccsiSplash2.svg')
     # Make a painter to add text to
@@ -107,20 +107,19 @@ def makeSplash():
     painter.end()
     splashScr[1] = QSplashScreen(pixmap=pixmap)
 
-def startGUI(
-    showSplash = False,
-    app = None,
-    showUQ = True,
-    showOpt = True,
-    showBasicData = True,
-    ts = None):
-    '''
-        This function starts the main window of the FOQUS GUI.
+def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
+             showBasicData=True, ts = None):
+    """
+    This function starts the main window of the FOQUS GUI.
+
+    Args:
         showSplash: if false don't show splash screen
         app: if already created pyside app to show message use it
-        show...: can hide parts of FOQUS to simplify interface or
-                 make a work in progress hidden from end user
-    '''
+        showUQ: Show the UQ tab
+        showOpt: Show the optimzation tab
+        showBasicDataTab: Show the Basic Data tab
+        ts: A testing script to automatiacally run when GUI starts.
+    """
     import foqus_lib.gui.main.mainWindow as MW
     if app == None:
         app = QApplication(sys.argv)
@@ -144,21 +143,20 @@ def startGUI(
         768, # height
         dat, # FOQUS session data
         splashScr[1], #splash screen to use for about
-        showUQ = showUQ,
-        showOpt = showOpt,
-        showBasicData = showBasicData,
-        ts = ts)
+        showUQ=showUQ,
+        showOpt=showOpt,
+        showBasicData=showBasicData,
+        ts=ts)
     mainWin.app = app
     app.exec_()
     return mainWin
 
 def logException(etype, evalue, etrace):
-    '''
-        A function to assign to sys.excepthook to cause unhandled
-        exceptions to go to the log file instead of stderr.  If GUI is
-        started this will also attempt to show unhandled exceptions
-        in a dialod box, so used is aware without looking a log.
-    '''
+    """
+    A function to assign to sys.excepthook to cause unhandled exceptions to go
+    to the log file instead of stderr.  If GUI is started this will also attempt
+    to show unhandled exceptions in a dialod box, so user is aware.
+    """
     try:
         hideSplash()
     except:
@@ -185,27 +183,21 @@ def logException(etype, evalue, etrace):
             " problem with unhandled exception logging. ")
 
 def signal_handler(signal, frame):
-    '''
-        A signal handler to cause a siginal to raise a keyboardinterupt
-        exception.  Used to override a default signal like SIGINT so the
-        FOQUS consumer process can shutdown cleanly.  The FOQUS consumer
-        catches the keyboardinterupt exception as one (slighlty
-        unreliable) way to shut down.  Seems ctrl-c causes keyboard
-        interupt exception and SIGINT signal, hense need to change
-        SIGINT handler.
-    '''
+    """
+    A signal handler to cause a siginal to raise a keyboardinterupt exception.
+    Used to override a default signal like SIGINT so the FOQUS consumer process
+    can shutdown cleanly. The FOQUS consumer catches the keyboardinterupt
+    exception as one (slighlty unreliable) way to shut down.  Seems ctrl-c
+    causes keyboard interupt exception and SIGINT signal, hense need to change
+    SIGINT handler.
+    """
     raise KeyboardInterrupt()
 
 if __name__ == '__main__':
-    #  FOQUS Execution starts here
-    #
+    exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working
     # directory is set a file handler can be added once a new foqus
     # session is created and the FOQUS settings are read.
-    #
-    # Proc exit code
-    exit_code = 0
-    # default log settings
     logFormat = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
     consHand = logging.StreamHandler(stream=sys.stdout)
     consHand.setFormatter(logging.Formatter(logFormat))
@@ -213,91 +205,77 @@ if __name__ == '__main__':
     logging.getLogger("turbine").addHandler(consHand)
     logging.getLogger("foqus").setLevel(logging.DEBUG)
     logging.getLogger("turbine").setLevel(logging.DEBUG)
-    sys.excepthook = logException
+    sys.excepthook = logException # for unhandled exception logging
     try:
         turbine.commands._setup_logging.done = True
     except:
-        print "Cannot find turbine module."
-    #
-    app = None   # GUI application if I need to display message boxes.
-    ##
+        logging.getLogger("foqus." + __name__)\
+            .exception('Cannot finde turbine module')
+    app = None   # Qt application if I need to display message boxes.
     ## Setup the command line arguments
-    ##
     parser = argparse.ArgumentParser()
     parser.add_argument("file", nargs=1, help="Project file to load")
     parser.add_argument("-l", "--load", help = "Project file to load")
-    parser.add_argument(
-        "-w",
-        "--working_dir",
-        help = "Set the working directory")
-    parser.add_argument("--nosplash",
-         help = "Do not display the splash screen for quicker loading",
-         action = "store_true")
-    parser.add_argument("--nogui",
-        help = "Do not start the graphical interface",
-        action="store_true")
-    parser.add_argument("--noopt",
-        help = "Hide the optimization interface",
-        action="store_true")
-    parser.add_argument("--nouq",
-        help = "Hide the UQ interface",
-        action="store_true")
-    parser.add_argument("--basic_data",
-        help = "Show the basic data tab",
-        action="store_true")
-    parser.add_argument("--run",
-        help = "Specify a run type and start",
-        choices=["opt", "uq", "sim"])
+    parser.add_argument("-w", "--working_dir", help="Set the working directory")
+    parser.add_argument("--splash", help="Display splash", action="store_true")
+    parser.add_argument("--nosplash", help = "No splash", action = "store_true")
+    parser.add_argument("--nogui", help="Do not start the graphical interface",
+                        action="store_true")
+    parser.add_argument("--noopt", help="Hide the optimization interface",
+                        action="store_true")
+    parser.add_argument("--nouq", help="Hide the UQ interface",
+                        action="store_true")
+    parser.add_argument("--basic_data", help="Show the basic data tab",
+                        action="store_true")
+    parser.add_argument("--run", help = "Specify a run type and start",
+                        choices=["opt", "uq", "sim"])
     parser.add_argument("-o", "--out", help="Output file for run")
     parser.add_argument("--loadValues",
-        help = ("Load flowsheet variable values from json file,"
-                " Must also load the flowsheet with -l or --load"))
+                        help = "Load flowsheet variable values from json file,"
+                               " Must also load the flowsheet with -l or --load")
     parser.add_argument("--saveValues",
-        help = ("Save flowsheet variable values to a json file,"
-                " Must also load the flowsheet with -l or --load"))
+                        help="Save flowsheet variable values to a json file,"
+                        " Must also load the flowsheet with -l or --load")
     parser.add_argument("--listen", action="store_true",
-        help = "Listen for runs requested by client")
+                        help="Listen for runs requested by client")
     parser.add_argument("--host", default="localhost",
-        help = "Host name, use with --listen option")
+                        help="Host name, use with --listen option")
     parser.add_argument("--port", default=56002, type=int,
-        help = "Port, use with --listen option")
+                        help="Port, use with --listen option")
     parser.add_argument("--consumer", action="store_true",
-        help = "Start FOQUS as Turbine Consumer")
+                        help="Start FOQUS as Turbine Consumer")
     parser.add_argument("--consumer_cleanup_error", action="store_true",
-        help = "Turn all running state FOQUS jobs to error on start up")
+                  help="Turn all running state FOQUS jobs to error on start up")
     parser.add_argument("--consumer_cleanup_rerun", action="store_true",
-        help = "Pick up and run FOQUS jobs in the running state")
+                        help="Pick up and run FOQUS jobs in the running state")
     parser.add_argument("--consumer_delay", default=5, type=float,
-        help = "Time between checking for new jobs")
+                        help="Time between checking for new jobs")
     parser.add_argument("--consumer_simulation",
-        help = "Only take jobs for a particular simulation name")
+                        help="Only take jobs for a particular simulation name")
     parser.add_argument("--consumer_session",
-        help = "Only take jos for a particular session GUID")
+                        help="Only take jos for a particular session GUID")
     parser.add_argument("--consumer_only_my_id", action="store_true",
-        help = "Only take jos with own consumer Id specified")
+                        help="Only take jos with own consumer Id specified")
     parser.add_argument("--consumer_cancel_jobs", action="store_true",
-        help = "Consumer cancels jobs instead of running them, a way"
-            "to clear the TurbineLite job queue")
+                        help="Consumer cancels jobs instead of running them, a "
+                             "way to clear the TurbineLite job queue")
     parser.add_argument("--addTurbineApp",
-        help = "Add an application type to TurbineLite DB")
+                        help="Add an application type to TurbineLite DB")
     parser.add_argument("--terminateConsumer",
-        help = "Terminate the consumer with the given UUID")
+                        help = "Terminate the consumer with the given UUID")
     parser.add_argument("--runUITestScript",
-        help = "Load and run a user interface test script")
+                        help="Load and run a user interface test script")
     args = parser.parse_args()
-    # before changing the directory get absolute path or file to load
+    # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
-    # or relative to the working dir (reletive to the working dir is
-    # confusing
+    # or relative to the working dir
     if args.file:
         args.load = os.path.abspath(args.file[0])
     if args.load:
         args.load = os.path.abspath(args.load)
     if args.runUITestScript:
         args.runUITestScript = os.path.abspath(args.runUITestScript)
-    ##
     ## Run any quick commands and exit before setting up a FOQUS session
-    ##
     if args.terminateConsumer:
         try:
             from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
@@ -307,12 +285,13 @@ if __name__ == '__main__':
             db = turbineLiteDB()
             db.dbFile = os.path.join(
                 fs.turbLiteHome, "Data/TurbineCompactDatabase.sdf")
-            print "terminating consumer {0}".format(
-                args.terminateConsumer)
+            print("terminating consumer {0}".format(
+                args.terminateConsumer))
             db.consumer_status(args.terminateConsumer, 'terminate')
             sys.exit(0)
         except Exception as e:
-            print str(e)
+            logging.getLogger("foqus." + __name__)\
+                .exception('Error terminating turbine consumer')
             sys.exit(1)
     elif args.addTurbineApp:
         try:
@@ -323,12 +302,13 @@ if __name__ == '__main__':
             db = turbineLiteDB()
             db.dbFile = os.path.join(
                 fs.turbLiteHome, "Data/TurbineCompactDatabase.sdf")
-            print "Adding application '{0}' to TurbineLite database"\
-                .format(args.addTurbineApp)
+            print("Adding application '{0}' to TurbineLite database"\
+                .format(args.addTurbineApp))
             db.add_new_application(args.addTurbineApp)
             sys.exit(0)
         except Exception as e:
-            print str(e)
+            logging.getLogger("foqus." + __name__)\
+                .exception('Error adding turbine app')
             sys.exit(1)
     if args.consumer:
         nogui = True
@@ -347,9 +327,7 @@ if __name__ == '__main__':
         foqus_application = app
     else: # if no gui, I'll fall back to print
         app = None
-    ##
     ## Setup the working directory
-    ##
     if args.working_dir:
         # Set working directory from command line argument
         try:
@@ -358,9 +336,8 @@ if __name__ == '__main__':
             makeWorkingDirFiles()
         except Exception as e:
             logging.getLogger("foqus." + __name__)\
-                .error('Could not set the working directory to '\
-                + args.working_dir + " " + str(e))
-            print traceback.print_exc()
+                .exception('Could not set the working directory to "{}"'\
+                           .format(args.working_dir))
             sys.exit(111)
     else:
         # working directory not set on command line
@@ -421,7 +398,7 @@ if __name__ == '__main__':
     if not makeWorkingDirStruct():
         logging.getLogger("foqus." + __name__)\
             .critical('Could not setup working directory, exiting')
-        sys.exit()
+        sys.exit(9)
     # Copy files to working directory if needed. (just heat integration
     # gams files)
     makeWorkingDirFiles()
@@ -433,12 +410,10 @@ if __name__ == '__main__':
     ## Set some options
     ##
     # set option to show splash screen or not
-    load_gui = True #some options can automaticall disable GUI by
-        #setting this to False
-    if args.nosplash or args.runUITestScript:
-        splash = False
-    else:
-        splash = True
+    load_gui = True #some options can disable GUI by setting this to False
+    splash = False # default is now don't show splash screen
+    if args.splash: splash = True
+    if args.nosplash or args.runUITestScript: splash = False
     ##
     ## Load session file if one was specified on command line
     ##
@@ -464,8 +439,8 @@ if __name__ == '__main__':
                 dat.saveFlowsheetValues(args.saveValues)
             except Exception as e:
                 logging.getLogger("foqus." + __name__)\
-                    .error("Could not save flowsheet values in: "\
-                    + args.saveValues + " \n" + str(e))
+                    .exception('Could not save flowsheet values in: "{}"'\
+                               .format(args.saveValues))
                 sys.exit(13)
     ##
     ## Load a set of saved values (only with load session option)
@@ -480,19 +455,16 @@ if __name__ == '__main__':
                 dat.loadFlowsheetValues(args.loadValues)
             except Exception as e:
                 logging.getLogger("foqus." + __name__)\
-                    .error("Could not load flowsheet values in: "\
-                    + args.loadValues + " \n" + str(e))
+                    .exception('Could not load flowsheet values in: "{}"'\
+                               .format(args.loadValues))
                 sys.exit(14)
-    #
-    ##
     ## Run a single flowsheet, optimization, or eventually uq ensemble
-    ##
     if args.run == "opt":
         # run an optimization problem from the command line
         # the optimization should previously have been setup
         load_gui = False  # not going to start gui for this
-        print "Starting optimization, this may take some time..."
-        print "(The GUI will not be started)"
+        print("Starting optimization, this may take some time...")
+        print("(The GUI will not be started)")
         opt = dat.optSolvers.optimizers[ dat.optSolvers.current ]
         opt.setData(dat)
         opt = opt.clone()
@@ -501,8 +473,8 @@ if __name__ == '__main__':
         dat.save(args.out)
     elif args.run == "sim":
         load_gui = False
-        print "Starting simulation, this may take some time..."
-        print "(The GUI will not be started)"
+        print("Starting simulation, this may take some time...")
+        print("(The GUI will not be started)")
         gt = dat.flowsheet.runAsThread()
         gt.join()
         if gt.res:
@@ -515,7 +487,7 @@ if __name__ == '__main__':
         tliteHome = dat.foqusSettings.turbLiteHome
         DatabasePath = os.path.join(
             tliteHome, "Data/TurbineCompactDatabase.sdf")
-        print "Terminating consumer"
+        print("Terminating consumer")
     elif args.listen:
         # Open FOQUS to listen for commands on network port.
         load_gui = False
@@ -540,7 +512,7 @@ if __name__ == '__main__':
         db.add_new_application('foqus')
         #register the consumer in the database
         consumer_uuid = db.consumer_register()
-        print "consumer_uuid: {0}".format(consumer_uuid)
+        print("consumer_uuid: {0}".format(consumer_uuid))
         #write the time to the turbineLite db about every minute
         kat = keepAliveTimer(db, consumer_uuid, freq = 60)
         kat.start()
@@ -782,12 +754,8 @@ if __name__ == '__main__':
             ts = args.runUITestScript
         else:
             ts = None
-        mw = startGUI(splash,
-                 app,
-                 showOpt = not args.noopt,
-                 showUQ = not args.nouq,
-                 showBasicData = args.basic_data,
-                 ts = ts)
+        mw = startGUI(showSplash=splash, app=app, showOpt=not args.noopt,
+                      showUQ=not args.nouq, showBasicData=args.basic_data, ts=ts)
     elif not guiAvail and not args.nogui and load_gui:
         logging.getLogger("foqus." + __name__)\
             .error("PyQt5 or Qt not available")

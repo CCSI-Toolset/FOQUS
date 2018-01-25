@@ -203,6 +203,8 @@ class Results(pd.DataFrame):
         self.__curent_filter = sd.get("__curent_filter", None)
         self.drop(self.index, inplace=True)
         self.drop(self.columns, axis=1, inplace=True)
+        self["set"] = []
+        self["result"] = []
         try:
             columns = sd["__columns"]
             for c in columns:
@@ -229,14 +231,15 @@ class Results(pd.DataFrame):
         """
         Add a set of flowseheet results to the data frame
         """
-        #set_name = incrimentName(set_name, )
-        #result_name = incrimentName(result_name, )
-        names = list(self.loc[self["set"] == set_name].loc[:,"result"])
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:,"result"])
+        else:
+            names = []
         result_name = incriment_name(result_name, names)
         columns, dat = sd_col_list(sd, time=time)
         for c in columns:
             if c not in self.columns:
-                self[c] = [np.nan]*self.rowCount()
+                self[c] = [np.nan]*self.count_rows(filtered=False)
         row = self.count_rows()
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name

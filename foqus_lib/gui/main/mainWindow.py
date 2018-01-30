@@ -115,7 +115,7 @@ class mainWindow(QMainWindow):
         self.dashFrame.buttonBox.button(
             QDialogButtonBox.Help).clicked.connect(self.showHelp)
         # Basic Data tab
-        self.basicDataFrame = basicDataParentFrame(useDMF, parent=self)
+        self.basicDataFrame = basicDataParentFrame(parent=self)
         # Set up UQ setup widget
         self.uqSetupFrame = uqSetupFrame(self.dat, self)
         # set-up opt setup widget

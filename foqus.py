@@ -214,7 +214,7 @@ if __name__ == '__main__':
     app = None   # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument("file", nargs=1, help="Project file to load")
+    parser.add_argument("file", nargs="?", help="Project file to load")
     parser.add_argument("-l", "--load", help = "Project file to load")
     parser.add_argument("-w", "--working_dir", help="Set the working directory")
     parser.add_argument("--splash", help="Display splash", action="store_true")

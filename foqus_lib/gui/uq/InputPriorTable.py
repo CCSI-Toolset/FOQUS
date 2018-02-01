@@ -47,8 +47,8 @@ class InputPriorTable(QTableWidget):
         # self.inferenceTable = (mode == InputPriorTable.INFERENCE)
         # self.rsAnalysis = (mode == InputPriorTable.RSANALYSIS)
         # self.ouu = (mode == InputPriorTable.OUU)
-        self.wizardMode = wizardMode
-        self.viewOnly = viewOnly
+        self.wizardMode = wizardMode  # RSANALYSIS mode
+        self.viewOnly = viewOnly     # SIMSETUP mode : Generate ensemble
 
         # populate prior table
         inVarNames = data.getInputNames()
@@ -1113,11 +1113,12 @@ class InputPriorTable(QTableWidget):
                         else:
                             param2 = float(cellTable.item(0, 1).text())
                 else: # No pdf setting.  Use default PDFs from data
-                    if self.distVariable == None:
+                    if self.distVariable == None or len(self.distVariable) == 0:
                         dtype = Distribution.UNIFORM
                         param1 = None
                         param2 = None
                     else:
+                        print i
                         dtype = self.distVariable[i].getDistributionType()
                         param1, param2 = self.distVariable[i].getParameterValues()
                     xmin = self.lbVariable[i]

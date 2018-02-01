@@ -113,7 +113,7 @@ class Preview(_Preview, _PreviewUI):
             indices[i] = item.getInputIndex() + 1
         self.data.writeToPsuade('previewData')
         Common.initFolder(Visualizer.dname)
-        self.setModal(False)
+        #self.setModal(False)
 
         # number of samples added from adaptive sampling
         numSamplesAdded = self.data.getNumSamplesAdded()
@@ -127,6 +127,7 @@ class Preview(_Preview, _PreviewUI):
         # plot
         cmd = 'iplot1'
         Visualizer.xScatter('previewData', indices, cmd, newSamples)
+        #self.setModal(False)
 
     def graph2DDist(self):
         self.freeze()
@@ -140,6 +141,7 @@ class Preview(_Preview, _PreviewUI):
 
         mfile = RSInferencer.genheatmap('previewData')
         RSInferencer.infplot_prior(mfile, 'previewData', indices)
+        self.setModal(True)
         self.unfreeze()
 
     def graph2DScatter(self):
@@ -168,3 +170,4 @@ class Preview(_Preview, _PreviewUI):
         # plot
         cmd = 'iplot2'
         Visualizer.xScatter('previewData', indices, cmd, newSamples)
+        self.setModal(True)

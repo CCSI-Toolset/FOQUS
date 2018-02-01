@@ -6,6 +6,14 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
 from mpl_toolkits.mplot3d import Axes3D
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+
+try:
+    from PyQt5 import QtGui, QtCore, QtWidgets
+    usePyQt = True
+except:
+    usePyQt = False
 
 plt.rcParams['figure.figsize'] = 10,10
 useFrameAlpha = False
@@ -13,7 +21,37 @@ mplVersion = mpl.__version__.split('.')
 if int(mplVersion[0]) > 1 or (int(mplVersion[0]) == 1 and int(mplVersion[1]) >= 3):
     useFrameAlpha = True
 
+if usePyQt:
+    class PlotDialog(QtWidgets.QDialog): #QtWidgets.QMainWindow):
+        def __init__(self, parent=None):
+            super(PlotDialog, self).__init__(parent)
+            self.figure = Figure(figsize=(600,400),
+                dpi=72,
+                facecolor=(1,1,1),
+                edgecolor=(0,0,0),
+                tight_layout = True)
+            # self.canvas = FigureCanvas(self.figure)
+            self.gridLayout = QtWidgets.QGridLayout(self)
+            #self.gridLayout.addWidget(self.canvas)
+
+            #self.setCentralWidget(self.canvas)
+            #self.canvas.setParent(self)
+            #self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+            self.setAttribute( QtCore.Qt.WA_DeleteOnClose )
+            Plotter.currentDialogs.append(self) # Set a pointer to this dialog so it is not garbage collected
+
+        def closeEvent(self, event):
+            Plotter.currentDialogs.remove(self)
+            if can_exit:
+                event.accept() # let the window close
+            else:
+                event.ignore()
+
 class Plotter:
+
+    currentDialogs = []
+
+
 
     @staticmethod
     def getdata(fname, datvar, grabline=False):
@@ -128,7 +166,13 @@ class Plotter:
         else:   
 
             # generate single plot
-            fig = plt.figure()
+            #if not usePyQt or QtWidgets.QApplication.instance() is None:
+            if True:
+                fig = plt.figure()
+            else:
+                dialog = PlotDialog()
+                fig = dialog.figure
+
             ax = fig.add_subplot(111)
             c = 'm'
             if star is not None:
@@ -145,9 +189,16 @@ class Plotter:
             ax.autoscale(enable=True, axis='both', tight=True)
             ax.set_title(title[0])
 
-        fig.canvas.set_window_title(figtitle)
-        plt.tight_layout()
-        plt.show()
+        #if not usePyQt or QtWidgets.QApplication.instance() is None:
+        if True:
+            fig.canvas.set_window_title(figtitle)
+            plt.tight_layout()
+            plt.show()
+        else:
+            dialog.setWindowTitle(figtitle)
+            #dialog.resize(600, 400)
+            dialog.show()
+            dialog.raise_()
 
     @staticmethod
     def plotscatter3d(xdat,ydat, zdat,figtitle,title,xlabel,ylabel,zlabel):

@@ -752,8 +752,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def infer(self, wizardMode):
         dialog = InferenceDialog(self.data, wizardMode, parent = self)
         self.unfreeze()
-        dialog.exec_()
-        dialog.deleteLater()
+        #dialog.exec_()
+        #dialog.deleteLater()
+        dialog.show()
 
     def initRSVizCombos(self, combo1, combo2, combo3):
         data = self.data

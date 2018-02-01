@@ -272,6 +272,8 @@ class checkingThread(QtCore.QThread):
 
 class uqSetupFrame(_uqSetupFrame, _uqSetupFrameUI):
     runsFinishedSignal = QtCore.pyqtSignal()
+    addDataSignal = QtCore.pyqtSignal(SampleData)
+    changeDataSignal = QtCore.pyqtSignal(SampleData)
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
@@ -356,6 +358,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         ###### Set up simulation ensembles section
         self.addSimulationButton.clicked.connect(self.addSimulation)
+        self.addDataSignal.connect(self.addDataToSimTable)
+
         self.cloneSimulationButton.clicked.connect(self.cloneSimulation)
         self.cloneSimulationButton.setEnabled(False)
         self.loadSimulationButton.clicked.connect(self.loadSimulation)
@@ -368,6 +372,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.simulationTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.simulationTable.itemSelectionChanged.connect(self.simSelected)
         self.simulationTable.cellChanged.connect(self.simDescriptionChanged)
+
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
 
         self.infoGroupBox.hide()
 
@@ -553,13 +560,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         if result == QDialog.Rejected:
             return
 
-        simDialog = SimSetup(self.dat.uqModel, self.dat, parent = self)
-        result = simDialog.exec_()
-        if result == QDialog.Rejected:
-            return
-        data = simDialog.getData()
-        data.setSession(self.dat)
-        self.dat.uqSimList.append(data)
+        simDialog = SimSetup(self.dat.uqModel, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        #result = simDialog.exec_()
+        simDialog.show()
+        #if result == QDialog.Rejected:
+        #    return
+        #data = simDialog.getData()
+        #data.setSession(self.dat)
+        #self.dat.uqSimList.append(data)
 
         # Update table
         self.updateSimTable()
@@ -661,11 +669,25 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         viewOnly = True
         if sender.text() == 'Revise':
             viewOnly = False
-        simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, parent=self)
-        result = simDialog.exec_()
-        if result == QDialog.Rejected:
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+        simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
+        #result = simDialog.exec_()
+        result = simDialog.show()
+        # if result == QDialog.Rejected:
+        #     return
+
+    def addDataToSimTable(self, data):
+        if data is None:
             return
-        data = simDialog.getData()
+        #data = simDialog.getData()
+        self.dat.uqSimList.append(data)
+        self.updateSimTable()
+
+    def changeDataInSimTable(self, data, row):
+        if data is None:
+            return
+        #data = simDialog.getData()
         self.dat.uqSimList[row] = data
         self.updateSimTableRow(row)
 

@@ -34,11 +34,12 @@ class SimSetup(_SimSetup, _SimSetupUI):
     LOAD_PAGE_INDEX = 1
     FLOWSHEET_PAGE_INDEX = 2
 
-    def __init__(self, model, session, viewOnly = False, parent=None):
+    def __init__(self, model, session, viewOnly = False, returnDataSignal = None, parent=None):
         super(SimSetup, self).__init__(parent)
 
         self.setupUi(self)
         self.viewOnly = viewOnly
+        self.returnDataSignal = returnDataSignal
         self.sampleFileSet = set() # Contains which inputs are of the distribution "Sample from File"
 
         self.fsDataBrowser = dataBrowserFrame(session, self)
@@ -79,10 +80,12 @@ class SimSetup(_SimSetup, _SimSetupUI):
 
         self.browseButton.clicked.connect(self.loadSampleFile)
 
-        self.cancelButton.clicked.connect(self.reject)
+        # self.cancelButton.clicked.connect(self.reject)
+        self.cancelButton.clicked.connect(self.cancel)
         self.previewButton.clicked.connect(self.preview)
         self.previewButton.setEnabled(False)
-        self.doneButton.clicked.connect(self.accept)
+        # self.doneButton.clicked.connect(self.accept)
+        self.doneButton.clicked.connect(self.doneClicked)
         self.doneButton.setEnabled(False)
         if viewOnly:
             self.cancelButton.setText('OK')
@@ -141,6 +144,14 @@ class SimSetup(_SimSetup, _SimSetupUI):
 
         self.schemesList.currentItemChanged.connect(self.handleGenerateSamplesButton)
         self.generateSamplesButton.clicked.connect(self.generateSamples)
+
+    def cancel(self):
+        self.reject()
+
+    def doneClicked(self):
+        if self.returnDataSignal:
+            self.returnDataSignal.emit(self.getData())
+        self.accept()
 
     def setPage(self):
         '''
@@ -681,9 +692,11 @@ class SimSetup(_SimSetup, _SimSetupUI):
         else:
             previewData = self.runData
 
-        self.setModal(False)
+        #self.setModal(False)
         dialog = Preview(previewData, self)
-        dialog.exec_()
+        #dialog.exec_()
+        dialog.show()
+        #self.setModal(True)
 
     ### Return data
     def getData(self):

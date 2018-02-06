@@ -1,21 +1,21 @@
-'''
-    mainWindows.py
+"""
+mainWindows.py
 
     * This is the main FOQUS window
 
-    John Eslick, Carnegie Mellon University, 2014
+John Eslick, Carnegie Mellon University, 2014
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+This Material was produced under the DOE Carbon Capture Simulation
+Initiative (CCSI), and copyright is held by the software owners:
+ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
+and/or the U.S. Government retain ownership of all rights in the
+CCSI software and the copyright and patents subsisting therein. Any
+distribution or dissemination is governed under the terms and
+conditions of the CCSI Test and Evaluation License, CCSI Master
+Non-Disclosure Agreement, and the CCSI Intellectual Property
+Management Plan. No rights are granted except as expressly recited
+in one of the aforementioned agreements.
+"""
 import time
 import math
 import logging
@@ -42,7 +42,6 @@ from foqus_lib.gui.main.settingsFrame import *
 from foqus_lib.gui.main.sessionDescriptionEdit import *
 from foqus_lib.gui.main.saveMetadataDialog import *
 from foqus_lib.gui.model.gatewayUploadDialog import *
-from foqus_lib.gui.model.dmfUploadDialog import *
 from foqus_lib.gui.flowsheet.drawFlowsheet import *
 from foqus_lib.gui.flowsheet.nodePanel import *
 from foqus_lib.gui.flowsheet.edgePanel import *
@@ -57,87 +56,11 @@ from foqus_lib.gui.help.helpBrowser import*
 from foqus_lib.gui.surrogate.surrogateFrame import*
 from foqus_lib.gui.heatIntegration.heatIntegrationFrame import*
 from ConfigParser import *
-from StringIO import StringIO
-#
-####
-# Both the DMF and DRM builder can be conditionally imported.  Need to
-# call the import functions before initializing the main window if those
-# components are to be used.
-#####
-
-# Import DMF in function call to avoid importing anything if it is not
-# wanted
-dmf_lib = None
-useDMF = False
-Py4JGateway = None
-Common = None
-DMFBrowser = None
-from dmf_lib.common.common import *
-# Move this out from importDMF so that DMF lite will work without
-# needing to enable the checkbox under settings
-try:
-    from dmf_lib.dmf_browser import DMFBrowser
-except:
-    logging.getLogger("foqus." + __name__)\
-        .exception('Failed to import or launch DMFBrowser')
-    useDMF = False
-
-
-def importDMF():
-    '''
-        Import the dmf in a function call to allow it to be
-        conditionally
-    '''
-    global Py4JGateway
-    global Common
-    global dmf_lib
-    global DMFBrowser
-    global useDMF
-    try:
-        from dmf_lib.gateway.gateway import Py4JGateway
-        from dmf_lib.common.methods import Common
-        useDMF = True
-        err = Py4JGateway(True).startupGateway()
-        if err == 0:
-            startedDMF = True
-            logging.getLogger("foqus." + __name__).debug(
-                "Started DMF gateway.")
-        else:
-            logging.getLogger("foqus." + __name__).warn(
-                "Not critical error: Error starting DMF gateway. "
-                "Error code: {0}".format(err))
-            useDMF = False
-    except:
-        logging.getLogger("foqus." + __name__)\
-            .exception('Failed to import or launch DMF')
-        useDMF = False
-
-# Import DRM-builder, doesn't work if not in windows so can be imported
-# conditionally
-mainDRM = None
-DRMManager = None
-
-def importdrm():
-    '''
-        Import the drm builder in a function to allow it to be imported
-        conditionally
-    '''
-    global mainDRM
-    global DRMManager
-    try:
-        import foqus_lib.gui.drmbuilder.main_drmbuilder as mainDRM
-        import foqus_lib.framework.drmbuilder.drm_manager as DRMManager
-    except Exception:
-        logging.getLogger("foqus." + __name__).exception(
-            "Error importing D-RM builder")
-        mainDRM = None
-        DRMManager = None
-
 
 class mainWindow(QMainWindow):
-    '''
-        This is the FOQUS main window class
-    '''
+    """
+    This is the FOQUS main window class
+    """
     def __init__(self,
                  title,
                  w,
@@ -147,11 +70,12 @@ class mainWindow(QMainWindow):
                  showUQ = True,
                  showOpt = True,
                  showOuu = True,
-                 showDRM = True,
                  showBasicData = False,
                  ts = None):
-        '''
-            Main window initialization
+        """
+        Main window initialization
+
+        Args:
             title: Title bar text
             w: Width (pixels)
             h: Height (pixels)
@@ -160,7 +84,7 @@ class mainWindow(QMainWindow):
             showUQ: if false the uq interface is hidden
             showOpt: if true the optimization interface is hidden
             showOuu: if true the optimization interface is hidden
-        '''
+        """
         QMainWindow.__init__(self)  # call base constructor
         self.resize(w,h)
         self.setWindowTitle(title)
@@ -168,7 +92,6 @@ class mainWindow(QMainWindow):
         self.dat.mainWin = self
         self.splash = splash
         self.showOuu = showOuu
-        self.showDRM = showDRM
         self.showBasicDataTab = showBasicData
         self.setIconPaths() # stores icon paths in a dict
         self.statusBar() # add a status bar to the main window
@@ -191,12 +114,8 @@ class mainWindow(QMainWindow):
         self.dashFrame.buttonBox.rejected.connect(self.cancelSession)
         self.dashFrame.buttonBox.button(
             QDialogButtonBox.Help).clicked.connect(self.showHelp)
-        #self.dashFrame.buttonBox.button(
-        #    QDialogButtonBox.Cancel).setEnabled(False)
-        #self.dashFrame.descriptionEditButton.clicked.connect(
-        #    self.sessionDescEdit)
         # Basic Data tab
-        self.basicDataFrame = basicDataParentFrame(useDMF, parent=self)
+        self.basicDataFrame = basicDataParentFrame(parent=self)
         # Set up UQ setup widget
         self.uqSetupFrame = uqSetupFrame(self.dat, self)
         # set-up opt setup widget
@@ -225,13 +144,7 @@ class mainWindow(QMainWindow):
         self.mainWidget.addWidget(self.ouuSetupFrame)    # 5
         self.mainWidget.addWidget(self.surFrame)         # 6
         self.mainWidget.addWidget(self.heatIntFrame)     # 7
-        if showDRM and mainDRM is not None: # 8
-            self.drmFrame = mainDRM.MainDRMBuilder(self.dat, self)
-            self.mainWidget.addWidget(self.drmFrame)
-        else: # 8
-            self.drmFrame = QWidget(self)
-            self.mainWidget.addWidget(self.drmFrame)
-        self.mainWidget.addWidget(self.fsettingsFrame)   # 9
+        self.mainWidget.addWidget(self.fsettingsFrame)   # 8
         # make a dictionary to look up widget indexes in stacked widget
         self.screenIndex = {
             'home': 0,
@@ -242,8 +155,7 @@ class mainWindow(QMainWindow):
             'ouu':5,
             'surrogate':6,
             'heatInt':7,
-            'drmbuilder':8,
-            'settings':9}
+            'settings':8}
         ## Create toolboxes for editing nodes and edges in flowsheet
         #node editor
         self.nodeDock = nodeDock(self.dat, self)
@@ -468,18 +380,6 @@ class mainWindow(QMainWindow):
         self.surrogateAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
-        # Add DRM-Builder button
-        if self.showDRM and mainDRM is not None:
-            self.drmAction = QAction(
-                QIcon(self.iconPaths['drm48']),
-                'DRM-Builder',
-                self)
-            self.drmAction.triggered.connect(self.showDRMBuilder)
-            self.drmAction.setCheckable(True)
-            self.mainToolbarActionGroup.addAction(self.drmAction)
-            self.toolbarMain.addAction(self.drmAction)
-        #separator
-        #self.toolbarMain.addSeparator()
         #Setings Action
         self.mainSettingsAction = QAction(
             QIcon(self.iconPaths['settings48']),
@@ -650,15 +550,6 @@ class mainWindow(QMainWindow):
             self)
         self.addTurbineModelAction.triggered.connect(self.addTurbModel)
         self.mainMenu.addAction(self.addTurbineModelAction)
-        # Add/update model in DMF Action
-        self.last_dmf_repo = None
-        self.last_repo_props = None
-        self.addDMFModelAction = QAction(
-            QIcon(self.iconPaths['add']),
-            'Add\Update Model to DMF...',
-            self)
-        self.addDMFModelAction.triggered.connect(self.addDMFModel)
-        self.mainMenu.addAction(self.addDMFModelAction)
         # New session Action
         self.newSessionAction = QAction(
             QIcon(self.iconPaths['new']),
@@ -682,7 +573,7 @@ class mainWindow(QMainWindow):
             QIcon(self.iconPaths['load']))
         self.mainMenu.addMenu(self.openRecentMainMenu)
         self.updateRecentlyOpened()
-        #self.mainMenu.addAction(self.openSessionAction)
+        self.mainMenu.addAction(self.openSessionAction)
         # Save session action
         self.saveSessionAction = QAction(
             QIcon(self.iconPaths['save']),
@@ -690,144 +581,15 @@ class mainWindow(QMainWindow):
             self)
         self.saveSessionAction.setShortcut(QKeySequence("Ctrl+S"))
         self.saveSessionAction.triggered.connect(self.saveData)
-        #self.mainMenu.addAction(self.saveSessionAction)
+        self.mainMenu.addAction(self.saveSessionAction)
         # Save session as action
         self.saveAsSessionAction = QAction(
             QIcon(self.iconPaths['save']),
             'Save Session As...',
             self)
         self.saveAsSessionAction.triggered.connect(self.saveAsData)
-        # Don't add the load, save and save as actions now, wait and
-        # see if data managmanet framework (DMF) is avaialabe.
-        repoProperties = []
-        try:
-            # We are on Windows
-            if platform.system().startswith(WINDOWS):
-                self.PROP_LOC = (os.environ[REPO_PROPERTIES_WIN_PATH]
-                                 + WIN_PATH_SEPARATOR)
-            else:
-                self.PROP_LOC = (os.environ[REPO_PROPERTIES_UNIX_PATH]
-                                 + UNIX_PATH_SEPARATOR)
-            config = StringIO()
-            # Fake properties header to allow working with configParser
-            config.write('[' + PROP_HEADER + ']\n')
-            # Get a list of property files for repositories
-            repoProperties = [f for f in os.listdir(self.PROP_LOC)
-                              if os.path.isfile(os.path.join(self.PROP_LOC, f))
-                              and f.endswith(PROPERTIES_EXT)]
-            if len(repoProperties) == 0:
-                logging.getLogger("foqus." + __name__).debug(
-                    "No properties file specified.")
-            self.repoList = []
-            self.propListPaths = []
-            self.openSessionMapper = QtCore.QSignalMapper()
-            self.saveSessionMapper = QtCore.QSignalMapper()
-            self.saveAsSessionMapper = QtCore.QSignalMapper()
-        except:
-            logging.getLogger("foqus." + __name__)\
-                .exception('Error setting up DMF: ')
-        if not useDMF or not self.dat.useDmf:
-            repoProperties = []
-
-        # Create open session action for each repository
-        self.openSessionMainMenu = QMenu(
-            'Open Session...', self)
-        self.openSessionMainMenu.setIcon(
-            QIcon(self.iconPaths['load']))
-        self.openSessionAction.setIcon(QIcon())
-        self.openSessionAction.setText(
-            'Open Session from Local Filesystem...')
-        self.openSessionMainMenu.addAction(self.openSessionAction)
-        self.mainMenu.addMenu(self.openSessionMainMenu)
-
-        # For DMF lite
-        openMenuName = "Open Session from " + DMF_LITE + "..."
-        self.openDMFLiteSessionAction = QAction(openMenuName, self)
-        self.openDMFLiteSessionAction.triggered.connect(
-            self.openSessionMapper.map)
-        self.openSessionMapper.setMapping(
-            self.openDMFLiteSessionAction,
-            self.openDMFLiteSessionAction.text())
-        self.openSessionMainMenu.addAction(
-            self.openDMFLiteSessionAction)
-
-        # Create save session action for each repository
-        self.saveSessionMainMenu = QMenu(
-            'Save Session...', self)
-        self.saveSessionMainMenu.setIcon(
-            QIcon(self.iconPaths['save']))
-        self.saveSessionAction.setIcon(QIcon())
-        self.saveSessionAction.setText(
-            'Save Session in Local Filesystem...')
-        self.saveSessionMainMenu.addAction(
-            self.saveSessionAction)
-        self.mainMenu.addMenu(self.saveSessionMainMenu)
-
-        # Save For DMF Lite
-        saveMenuName = "Save Session in " + DMF_LITE + "..."
-        self.saveDMFLiteSessionAction = QAction(saveMenuName, self)
-        self.saveDMFLiteSessionAction.triggered.connect(
-            self.saveSessionMapper.map)
-        self.saveSessionMapper.setMapping(
-            self.saveDMFLiteSessionAction,
-            self.saveDMFLiteSessionAction.text())
-        self.saveSessionMainMenu.addAction(
-            self.saveDMFLiteSessionAction)
-
-        # Create save session as action for each repository
-        self.saveAsSessionMainMenu = QMenu(
-            'Save Session As...', self)
-        self.saveAsSessionMainMenu.setIcon(
-            QIcon(self.iconPaths['save']))
-        self.saveAsSessionAction.setIcon(
-            QIcon())
-        self.saveAsSessionAction.setText(
-            'Save Session As in Local Filesystem...')
-        self.saveAsSessionMainMenu.addAction(
+        self.mainMenu.addAction(
             self.saveAsSessionAction)
-        self.mainMenu.addMenu(self.saveAsSessionMainMenu)
-        if len(repoProperties) > 0:
-            for p in repoProperties:
-                config.write(
-                    open(self.PROP_LOC + p).read())
-                config.seek(0, os.SEEK_SET)
-                rcp = RawConfigParser()
-                rcp.readfp(config)
-                self.repo_name = rcp.get(PROP_HEADER, "repo_name")
-                self.repoList.append(self.repo_name)
-                self.propListPaths.append(
-                    self.PROP_LOC + p)
-                openMenuName = 'Open Session from '+self.repo_name+'...'
-                openRepoSessionAction = QAction(openMenuName, self)
-                openRepoSessionAction.triggered.connect(
-                    self.openSessionMapper.map)
-                self.openSessionMapper.setMapping(
-                    openRepoSessionAction, openRepoSessionAction.text())
-                self.openSessionMainMenu.addAction(
-                    openRepoSessionAction)
-                # save menu item DMF
-                saveMenuName = 'Save Session in '+self.repo_name+'...'
-                saveRepoSessionAction = QAction(saveMenuName, self)
-                saveRepoSessionAction.triggered.connect(
-                    self.saveSessionMapper.map)
-                self.saveSessionMapper.setMapping(
-                    saveRepoSessionAction, saveRepoSessionAction.text())
-                self.saveSessionMainMenu.addAction(
-                    saveRepoSessionAction)
-        self.openSessionMapper.mapped['QString'].connect(
-            self.loadRepoData)
-        self.saveSessionMapper.mapped['QString'].connect(
-            self.saveRepoData)
-        self.saveAsSessionMapper.mapped['QString'].connect(
-            self.saveAsRepoData)
-        # Logout DMF action
-        if useDMF and self.dat.useDmf:
-            self.logoutAction = QAction(
-                QIcon(self.iconPaths['logout']),
-                'Logout from DMF Repositories...',
-                self)
-            self.logoutAction.triggered.connect(self.logoutDMF)
-            self.mainMenu.addAction(self.logoutAction)
         # exit FOQUS action
         self.exitAction = QAction(
             QIcon(self.iconPaths['exit']),
@@ -854,22 +616,6 @@ class mainWindow(QMainWindow):
                 .exception('Error uploading to Turbine file: ')
         self.setCursorNormal()
         g.destroy()
-
-    def addDMFModel(self):
-        ''' Upload a new model to DMF '''
-        dmf_upload_dialog = dmfUploadDialog(
-            self.dat,
-            self.dat.flowsheet.turbConfig,
-            self)
-        dmf_upload_dialog.waiting.connect(self.setCursorWaiting)
-        dmf_upload_dialog.notwaiting.connect(self.setCursorNormal)
-        try:
-            dmf_upload_dialog.exec_()
-        except Exception as e:
-            logging.getLogger("foqus." + __name__)\
-                .exception('Error uploading to DMF.')
-        self.setCursorNormal()
-        dmf_upload_dialog.destroy()
 
     def sessionDescEdit(self):
         '''
@@ -1070,10 +816,6 @@ class mainWindow(QMainWindow):
         self.mainWidget.setCurrentIndex(self.screenIndex['surrogate'])
         self.surFrame.refreshContents()
 
-    def showDRMBuilder(self):
-        self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['drmbuilder'])
-
     def showHeatInt(self):
         self.changeScreen()
         self.mainWidget.setCurrentIndex(self.screenIndex['heatInt'])
@@ -1094,47 +836,6 @@ class mainWindow(QMainWindow):
         '''
         fss = flowsheetSettingsDialog(self.dat, self)
         fss.exec_()
-
-    def logoutDMF(self):
-        '''
-            Logout from all DMF repositories
-        '''
-        if platform.system().startswith(WINDOWS):  # We are on Windows
-            PROP_LOC = (
-                os.environ[REPO_PROPERTIES_WIN_PATH] + WIN_PATH_SEPARATOR)
-        else:
-            PROP_LOC = (
-                os.environ[REPO_PROPERTIES_UNIX_PATH] + UNIX_PATH_SEPARATOR)
-        keys = [f for f in os.listdir(PROP_LOC)
-                if os.path.isfile(os.path.join(PROP_LOC, f))
-                and (f.endswith(KEYS_EXT) or f.endswith(TMP_KEYS_EXT))]
-
-        status = QDialog(self)
-        status_layout = QVBoxLayout()
-        status_layout.setSizeConstraint(QLayout.SetFixedSize)
-        status.setLayout(status_layout)
-        if len(keys) > 0:
-            label = QLabel(self)
-            label.setText(
-                "Successfully logged out from the following repositories:")
-            status_layout.addWidget(label)
-
-            for i in range(len(keys)):
-                try:
-                    os.remove(PROP_LOC + keys[i])
-                    label = QLabel(self)
-                    label.setText('\t' + str(i + 1) + '. ' + self.repoList[i])
-                    status_layout.addWidget(label)
-                except OSError, e:
-                    print self.__class__.__name__, PRINT_COLON, e
-        else:
-            label = QLabel(self)
-            label.setText("There are no repositories to logout.")
-            status_layout.addWidget(label)
-        buttons = QDialogButtonBox(QDialogButtonBox.Ok, Qt.Horizontal, self)
-        buttons.accepted.connect(status.accept)
-        status_layout.addWidget(buttons)
-        status.exec_()
 
     def helpToggle(self):
         if self.mainHelpAction.isChecked():
@@ -1199,19 +900,6 @@ class mainWindow(QMainWindow):
         import matplotlib.pyplot as plt
         plt.close("all")
 
-        # Shutdown Java Gateway. This does some checking to
-        # see if there is a running gateway left opened in case
-        # FOQUS needs to use it.
-        if useDMF:
-            try:
-                logging.getLogger("foqus." + __name__)\
-                    .debug('Initiated DMF gateway shutdown')
-                Py4JGateway(True).shutdownGateway()
-                Common().deleteCachedCredentials()
-            except:
-                logging.getLogger("foqus." + __name__)\
-                    .exception('Failed to shutdown DMF gateway')
-
     def showAbout(self):
         '''
             Show the about screen.  I just reused the splash
@@ -1256,10 +944,6 @@ class mainWindow(QMainWindow):
         if not self.nodeDock.isHidden():
             self.nodeDock.updateLocation()
 
-    def refreshDRMFrame(self):
-        if not self.drmFrame.isHidden():
-            self.drmFrame.update_view()
-
     def refreshDash(self):
         if self.dat.currentFile and self.dat.currentFile != '':
             self.setWindowTitle(
@@ -1298,7 +982,6 @@ class mainWindow(QMainWindow):
         self.surFrame.refreshContents()
         self.optSetupFrame.refreshContents()
         self.ouuSetupFrame.refresh()
-        self.refreshDRMFrame()
         self.refreshDash()
 
     def newSession(self):
@@ -1405,154 +1088,6 @@ class mainWindow(QMainWindow):
             self.flowsheetEditor.center()
             self.clearOldMessages()
 
-    def loadRepoData(self, identifier):
-        '''
-            Load a FOQUS session from DMF
-        '''
-        msgBox = QMessageBox()
-        msgBox.setText("Do you want to save your current session"
-            " before loading another session?")
-        msgBox.setIcon(QMessageBox.Question)
-        msgBox.setStandardButtons(
-            QMessageBox.Yes|QMessageBox.No|\
-            QMessageBox.Cancel)
-        msgBox.setDefaultButton(QMessageBox.Cancel)
-        response = msgBox.exec_()
-        if response == QMessageBox.Cancel:
-            return
-        elif response == QMessageBox.Yes:
-            if not self.saveData():
-                return
-        repo_name = identifier.replace(
-            'Open Session from ', '').replace('...', '')
-        if repo_name == DMF_LITE:
-            currentPropList = None
-        else:
-            index = self.repoList.index(repo_name)
-            currentPropList = self.propListPaths[index]
-        # Use b for desired opening of session file,
-        # sim_b_ls should contain the bytestreams of associated
-        # simulations (This was removed, unnecessary)
-        session_b, session_path = DMFBrowser.getSession(
-            self, currentPropList, repo_name)
-        if session_b:
-            sd = json.loads(
-                session_b.decode("utf-8"),
-                object_pairs_hook=collections.OrderedDict)
-            dmf_prop = [currentPropList, repo_name]
-            self.dat.loadDict(sd, session_path, dmf_prop=dmf_prop)
-            self.refresh()
-            self.flowsheetEditor.center()
-            self.clearOldMessages() #clear message windows for opt and
-                                    #surragate models...
-        else:
-            return
-        #Session loaded now check on simulations
-        turb_config = self.dat.flowsheet.turbConfig
-        #get list of simlations session file expects in turbine
-        turbine_sim_list = self.dat.flowsheet.turbineSimList()
-        #get list of simulations actually in turbine
-        sim_list = turb_config.getSimulationList()
-        DMFBrowser.turbineSync(self, currentPropList, repo_name, turb_config,
-                               turbine_sim_list, sim_list)
-        '''
-        #Check if a newer simulation is available
-        for sim_name in turbine_sim_list:
-            updateSim = False
-            if not sim_name in sim_list:
-                #the simulation is not in turbine go ahead and upload
-                msgBox = QMessageBox()
-                msgBox.setWindowTitle("Update Simulation")
-                msgBox.setText("The simulation " + sim_name +\
-                    "is not available on Turbine attempting to add it "+\
-                    "from the DMF")
-                msgBox.exec_()
-                updateSim = True
-            else:
-                #need to check if newer one is available
-                sinter_config_id = ""
-                sinterConfig = turb_config.getSinterConfig(sim_name)
-                scMetaData = sinterConfig.get("CCSIFileMetaData", None)
-                sim_id = None
-                if scMetaData:
-                    sim_id = scMetaData["Simulation ID"]
-                if sim_id:
-                    Latest = DMFBrowser.isLatestVersion(
-                        self,
-                        currentPropList,
-                        repo_name,
-                        sim_id)
-                else:
-                    Latest = False
-                if Latest == False:
-                    msgBox = QMessageBox()
-                    msgBox.setText(
-                        "A newer {0} simulation is available. Do"\
-                        " you want to update Turbine?".format(sim_name))
-                    msgBox.setStandardButtons(
-                        QMessageBox.No|QMessageBox.Yes)
-                    msgBox.setDefaultButton(QMessageBox.No)
-                    ret = msgBox.exec_()
-                    if ret == QMessageBox.Yes:
-                        updateSim = True
-            if updateSim:
-                scf = DMFBrowser.getSimFileByteArrayStreamByName(
-                    self,
-                    currentPropList,
-                    repo_name,
-                    str(sim_name + "_sinter_config.json"))
-                if scf:
-                    sc_file = "temp/sinter_config.json"
-                    with open(sc_file, 'wb') as f:
-                        f.write(scf)
-                    #Have the sinter config file now need to get rest
-                    #of files.  The IDs should be in the sinter metadata
-                    #also need to get the simulation file out of the
-                    #sinter config
-                    scf = json.loads(scf.decode('utf-8'))
-                    sim_id = scf["CCSIFileMetaData"]["Simulation ID"]
-                    input_files = scf["CCSIFileMetaData"].get(
-                        "InputFiles", [])
-                    sim_file, sim_resource, a = \
-                        turb_config.sinterConfigGetResource(
-                            sc_file, checkExists=False)
-                    sim_file = os.path.join("temp", sim_file)
-                    sim_bytestream = DMFBrowser.getByteArrayStreamById(
-                        self,
-                        currentPropList,
-                        repo_name,
-                        str(sim_id))
-                    with open(sim_file, 'wb') as f:
-                        f.write(sim_bytestream)
-                    resources = []
-                    resource_files = []
-                    resource_bytestreams = []
-                    for resource_data in input_files:
-                        resource_data = resource_data["CCSIFileMetaData"]
-                        rid = resource_data.get("Resource ID", None)
-                        rdn = resource_data.get(
-                            "Resource Display Name",
-                            None)
-                        if rid == None or rdn == None:
-                            continue
-                        resource_bytestreams.append(
-                            DMFBrowser.getByteArrayStreamById(
-                                self,
-                                currentPropList,
-                                repo_name,
-                                str(rid)))
-                        resource_files.append(os.path.join("temp", rdn))
-                        resources.append([rdn,os.path.join("temp",rdn)])
-                    for i, fname in enumerate(resource_files):
-                        with open(fname, 'wb') as f:
-                            f.write(resource_bytestreams[i])
-                    # update files in turbine
-                    turb_config.uploadSimulation(
-                        sim_name,
-                        sc_file,
-                        update = True,
-                        otherResources = resources)
-        '''
     def saveAsData(self):
         '''
             Save a session
@@ -1651,260 +1186,6 @@ class mainWindow(QMainWindow):
             return True
         else:
             return self.saveAsData()
-
-    def saveRepoData(self, identifier):
-        '''
-            Save the FOQUS session and turbine simulation files to the
-            DMF.
-        '''
-        # if an unhandeled exception occurs it will show up in a message
-        # box and in the log file so we don't really need much specuial
-        # error handeling here.
-        self.applyAllChanges()
-        # Check that a session name has been specified if not show error
-        # and cnacel save.  This forces a simulation name to be given.
-        if self.dat.name == "":
-            msgBox = QMessageBox()
-            msgBox.setWindowTitle("Error")
-            msgBox.setText("You must specify the session name.")
-            msgBox.exec_()
-            return False
-        # Right now the FOQUS metadata entry box only contains a change
-        # log entry.  The entry is optional but cancel button cancels
-        # save.
-        metaDataDialog = saveMetadataDialog(self.dat, self)
-        ok = metaDataDialog.exec_()
-        if not ok:  # Cancel the save
-            return False
-        logging.getLogger("foqus." + __name__).debug(
-            "Saving session to DMF...")
-        # repo name and index?
-        repo_name = identifier.replace(
-            'Save Session in ', '').replace('...', '')
-        if repo_name == DMF_LITE:
-            currentPropList = None
-        else:
-            index = self.repoList.index(repo_name)
-            currentPropList = self.propListPaths[index]
-        logging.getLogger("foqus." + __name__).debug(
-            "Name of repo to save to: {n}".format(n=repo_name))
-        # Get a list of simulations used in this FOQUS session
-        turb_config = self.dat.flowsheet.turbConfig
-        turbine_sim_list = self.dat.flowsheet.turbineSimList()
-        # this is a list of file ids that the FOQUS session depends on
-        # these would be the ids from the sinter config.  Sinter config
-        # would depend on simulation files.  So the ids for simulation
-        # and other resource files don't need to be in parents?
-        parents = []
-        logging.getLogger("foqus." + __name__).debug(
-            "Length of turbine sim list: {s}".format(s=len(turbine_sim_list)))
-        # Go through all the simulations used in this FOQUS session
-        # and upload them to the DMF if they are not already there.
-        for sim_name in turbine_sim_list:
-            # Get sinter config and pull out metadata
-            sinter_config_id = ""
-            sinterConfig = turb_config.getSinterConfig(sim_name)
-#            print json.dumps(sinterConfig, indent=2)
-            scMetaData = sinterConfig.get("CCSIFileMetaData", None)
-            sim_id = None
-            if scMetaData:
-                sim_id = scMetaData.get("Simulation ID", None)
-            # get metadata from other files.
-            scMetaData = sinterConfig.get("CCSIFileMetaData", None)
-            # Get complete list of resources this is all files
-            # assocciated with the simulation sinter config, simulation,
-            # and any other required files.
-            resourceList = turb_config.simResourceList(sim_name)
-            # if no id in sinter config assume it has not been uploaded
-            # to the DMF
-            logging.getLogger("foqus." + __name__).debug(
-                "sim ID: {s}".format(s=sim_id))
-            if sim_id is None:
-                # Get all simulation files from turbine
-                d = {}  # dictionary of resources.  Resource name is key
-                for r in resourceList:
-                    d[r] = turb_config.getSimResource(sim_name, r)
-                # Remove sinter config from rest of simulation files and
-                # make it a bytearray
-                sinter_config_bytestream = bytearray(
-                    d.pop('configuration'))
-                # Determine the application type for the simualtion so
-                # can get the resource name for the simuatoin file then
-                # remove the simualtion file from the resource dict and
-                # make a bytearray
-                app = turb_config.getSimApplication(sim_name)
-                sim_resource = turb_config.resourceNames[app]
-                sim_bytestream = bytearray(d.pop(sim_resource))
-                # The files remaning in the resource dictionary are
-                # extra files required by the simualtion. Make a list of
-                # byte arrays and corresponding list of names.  For any
-                # extra required files.
-                resource_bytestream_list = []
-                resource_name = []
-                for r in d:
-                    resource_bytestream_list.append(bytearray(d[r]))
-                    resource_name.append(r)
-                # Upload simulation.  Maybe this should return the
-                # sinter config with new metadata.  Then I can upload
-                # to turbine.  Other files should be unchanged.
-                update_comment = ''
-                confidence = 'experimental'
-                sinter_config_name = sim_name + "_sinter_config.json"
-#                print "len"
-#                print len(resource_bytestream_list)
-#                print len( resource_name)
-                self.setEnabled(False)
-                try:
-                    logging.getLogger("foqus." + __name__).debug(
-                        "Attributes: \n{c}\n{r}\n{sid}\n{s}\n{sc}\n{rn}\n".format(
-                            c=currentPropList,
-                            r=repo_name,
-                            sid=sim_id,
-                            s=sim_name,
-                            sc=sinter_config_name,
-                            rn=resource_name))
-                    new_sim_id, new_sinter_config_id, \
-                        sinter_config_bytestream = \
-                        DMFBrowser.uploadSimulation(
-                            self,
-                            currentPropList,
-                            repo_name,
-                            sim_bytestream,
-                            sim_id,
-                            sim_name,
-                            update_comment,
-                            confidence,
-                            sinter_config_bytestream,
-                            sinter_config_name,
-                            resource_bytestream_list,
-                            resource_name)
-                    parents.append(new_sinter_config_id)
-                    # Upload sinter config with new metadata to turbine
-                    if sinter_config_bytestream:
-                        with open("temp/sinter_config.json", 'wb') as f:
-                            f.write(sinter_config_bytestream)
-                        turb_config.updateResource(
-                            sim_name,
-                            "configuration",
-                            "temp/sinter_config.json")
-                except Exception, e:
-                    logging.getLogger("foqus." + __name__).error(
-                        "Exception: {e}".format(e=str(e)))
-                finally:
-                    self.setEnabled(True)
-            else:
-                # check sinterConfigID upload if needed
-                # For now only check the sinter config ID
-                dmf_id_list = []
-                dmf_id_list.append(sim_id)
-                # You-Wei: Need to add check here to see if DM is alive
-                # For each ID in dmf_id_list, a value of True (exists),
-                # False (does not exist), or None (error case)
-                logging.getLogger("foqus." + __name__).debug(
-                    "dmf_id_list: {l}".format(l=dmf_id_list))
-                does_exist_result = DMFBrowser.doFilesExist(
-                    self,
-                    currentPropList,
-                    repo_name,
-                    dmf_id_list)
-                logging.getLogger("foqus." + __name__).debug(
-                    "does_exist_result: {r}".format(r=does_exist_result))
-                if not does_exist_result[0]:
-                    # upload the simulation this is like case above,
-                    # where there was no id
-                    # try to get meta data for other simulation files
-                    inFilesMetaData = sinterConfig.get(
-                        "InputFiles", None)
-                    ids = {}  # dict of ids with display name key
-                    if inFilesMetaData:
-                        for r in inFilesMetaData:
-                            key = r["Simulation Display Name"]
-                            ids[key] = r["Simulation ID"]
-                    d = {}  # dictionary of resources
-                    for r in resourceList:
-                        d[r] = turb_config.getSimResource(sim_name, r)
-                    sinter_config_bytestream = bytearray(
-                        d.pop('configuration'))
-                    app = turb_config.getSimApplication(sim_name)
-                    sim_resource = turb_config.resourceNames[app]
-                    sim_bytestream = bytearray(d.pop(sim_resource))
-                    # I have the simulation ID, but I'm not quite sure
-                    # what the display name would be so not sure what
-                    # this should be.
-                    sim_id = None
-                    resource_bytestream_list = []
-                    resource_name = []
-                    for r in d:
-                        resource_bytestream_list.append(bytearray(d[r]))
-                        resource_name.append(r)
-                    update_comment = ''
-                    confidence = 'experimental'
-                    # Use this to check is file is latest version
-                    # DMFBrowser.isLatestVersion(id)
-                    sinter_config_name = sim_name + "_sinter_config.json"
-                    self.setEnabled(False)
-                    try:
-                        logging.getLogger("foqus." + __name__).debug(
-                            "Attributes: \n{c}\n{r}\n{sid}\n{s}\n{sc}\n{rn}\n".format(
-                                c=currentPropList,
-                                r=repo_name,
-                                sid=sim_id,
-                                s=sim_name,
-                                sc=sinter_config_name,
-                                rn=resource_name))
-                        new_sim_id, new_sinter_config_id, sinter_config_bytestream = \
-                            DMFBrowser.uploadSimulation(
-                                self,
-                                currentPropList,
-                                repo_name,
-                                sim_bytestream,
-                                sim_id,
-                                sim_name,
-                                update_comment,
-                                confidence,
-                                sinter_config_bytestream,
-                                sinter_config_name,
-                                resource_bytestream_list,
-                                resource_name)
-                        parents.append(new_sinter_config_id)
-                        # Upload sinter config with new metadata to turbine
-                        if sinter_config_bytestream:
-                            with open("temp/sinter_config.json", 'wb') as f:
-                                f.write(sinter_config_bytestream)
-                            turb_config.updateResource(
-                                sim_name,
-                                "configuration",
-                                "temp/sinter_config.json")
-                    except Exception, e:
-                        logging.getLogger("foqus." + __name__).error(
-                            "Exception: {e}".format(e=str(e)))
-                    finally:
-                        self.setEnabled(True)
-                else:
-                    # Y-W: If simulation in DMF, pass simulation id with
-                    # find sinter indicator. Assumes that sinter
-                    # config lives in the same place as simulation.
-                    parents.append(FIND_SINTER_INDICATOR + sim_id)
-
-        # Get FOQUS session bytearray
-        s = bytearray(json.dumps(
-            self.dat.save(changeLogMsg=metaDataDialog.entry,
-                          bkp="Settings",
-                          indent="Settings")),
-                      'utf-8')
-        # Save the FOQUS session file to the DMF.
-        DMFBrowser.saveByteArrayStream(
-            self,
-            s,
-            parents,  # Add parents in here if needed
-            currentPropList,
-            metaDataDialog.entry,
-            repo=repo_name)
-        self.refreshDash()
-        return True
-
-    def saveAsRepoData(self, identifier):
-        raise Exception("This is currently not functional.  Use Save.")
 
     def stopButton(self):
         '''
@@ -2062,12 +1343,12 @@ class mainWindow(QMainWindow):
             self.nodeDock.stopButton.setEnabled(False)
             if self.singleRun.res[0]:
                 self.dat.flowsheet.loadValues(self.singleRun.res[0])
-                self.dat.flowsheet.results.headersFromGraph()
-                self.dat.flowsheet.results.addFromSavedValues(
-                    'Single_runs',
-                    'single_{0}'.format(self.dat.flowsheet.singleCount),
-                    None,
-                    self.singleRun.res[0])
+                #self.dat.flowsheet.results.headersFromGraph()
+                self.dat.flowsheet.results.add_result(
+                    set_name='Single_runs',
+                    result_name='single_{}'.format(self.dat.flowsheet.singleCount),
+                    time=None,
+                    sd=self.singleRun.res[0])
             else:
                 self.dat.flowsheet.setErrorCode(20)
                 logging.getLogger("foqus." + __name__).error(
@@ -2127,43 +1408,6 @@ class mainWindow(QMainWindow):
             self.applyNodeEdgeChanges()
             self.dat.flowsheet.loadDefaults()
             self.refreshFlowsheet()
-
-    def testSCC(self):
-        [
-            sccNodes,
-            sccEdges,
-            outEdges,
-            inEdges,
-            sccOrder
-        ] = self.dat.flowsheet.stronglyConnectedSubGraphs(True)
-        print "Strongly connected component test\n"
-        print "nodes"
-        print sccNodes
-        print "\nedges\n"
-        print sccEdges
-        print "\nOrder\n"
-        print sccOrder
-
-    def testTear(self):
-        [tearSets, ub1, ub2] = self.dat.flowsheet.selectTear()
-        self.dat.flowsheet.setTearSet(tearSets[0])
-        self.flowsheetEditor.createScene()
-        self.setupTimer(None, tearSets, len(tearSets), 2000)
-
-    def testCalcOrder(self):
-        [tearSets, ub1, ub2] = self.dat.flowsheet.selectTear()
-        self.dat.flowsheet.setTearSet(tearSets[0])
-        self.flowsheetEditor.createScene()
-        order = self.dat.flowsheet.calculationOrder()
-        self.setupTimer(order, None, len(order), 1000)
-
-    def testCycles(self):
-        [cycles, edges] = self.dat.flowsheet.allCycles()
-        print "Found " + str(len(cycles)) + " cycles"
-        self.setupTimer(cycles, edges, len(cycles), 1000)
-
-    def testObjCalc(self):
-        print self.dat.flowsheet.calcObjective()
 
     def setupTimer(self, nodeLists, edgeLists, nFrames, delay=1000):
         self.nodes = nodeLists

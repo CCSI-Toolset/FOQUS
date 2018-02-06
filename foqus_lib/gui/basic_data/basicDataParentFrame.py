@@ -10,12 +10,11 @@ _basicDataParentFrameUI, _basicDataParentFrame = \
 class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
     format = '%.5f'  # numeric format for table entries in UQ Toolbox
 
-    def __init__(self, showDMF, parent=None):
+    def __init__(self, parent=None):
         super(basicDataParentFrame, self).__init__(parent)
         self.parent = parent
         self.setupUi(self)
-        if not showDMF:
-            self.dmfGroup.hide()
+        self.dmfGroup.hide()
         self.solventFitFrame.init(parent=self)
 
 

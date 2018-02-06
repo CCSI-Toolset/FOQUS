@@ -26,12 +26,6 @@ from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-try:
-    from dmf_lib.dmf_browser import DMFBrowser
-    from dmf_lib.common.common import *
-except:
-    logging.getLogger("foqus." + __name__)\
-        .exception('Failed to import or launch DMFBrowser')
 from foqus_lib.framework.uq.Distribution import Distribution
 
 from PyQt5 import QtCore, uic
@@ -231,17 +225,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
         '''
         if self.nodeName not in self.dat.flowsheet.nodes:
             return  #don't apply if node was deleted already
-        #try:
-        #    self.dat.flowsheet.renameNode(
-        #        self.nodeName,
-        #        str(self.nodeNameBox.currentText()))
-        #    self.nodeName = str(self.nodeNameBox.text())
-        #except:
-        #    QMessageBox.warning(
-        #        self,
-        #        "Invalid Name",
-        #        ("The new node name is probably already being used. "
-        #         " The node has not been renamed"))
         gr = self.dat.flowsheet # shorter name for graph
         gr.nodes[self.nodeName] = self.node
         self.node.x = float(self.xBox.text())
@@ -282,7 +265,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
             var.dist.firstParamValue = val
             var.dist.secondParamValue = gh.getCellJSON(table, row,
                 self.ivCols["Param 2"])
-            var.toNumpy()
         table = self.outputVarTable
         for row in range( self.outputVarTable.rowCount() ):
             name = gh.getCellText(table, row, self.ovCols["Name"])
@@ -297,7 +279,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 self.ovCols["Type"]))
             var.tags = gh.getCellJSON(table, row,
                 self.ovCols["Tags"])
-            var.toNumpy()
         table = self.simSettingsTable
         for row in range(table.rowCount()):
             name = gh.getCellText(table, row, 0)
@@ -389,12 +370,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
         elif self.modelTypeBox.currentIndex()==2:
             # model type is plugin
             return nodeModelTypes.MODEL_PLUGIN
-        elif self.modelTypeBox.currentIndex()==3:
-            # model type is DMF
-            return nodeModelTypes.MODEL_DMF_LITE
-        elif self.modelTypeBox.currentIndex()==4:
-            # model type is DMF
-            return nodeModelTypes.MODEL_DMF_SERV
         else:
             # this shouldn't be
             return nodeModelTypes.MODEL_NONE
@@ -414,10 +389,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.modelTypeBox.setCurrentIndex(1)
         elif self.node.modelType == nodeModelTypes.MODEL_PLUGIN:
             self.modelTypeBox.setCurrentIndex(2)
-        elif self.node.modelType == nodeModelTypes.MODEL_DMF_LITE:
-            self.modelTypeBox.setCurrentIndex(3)
-        elif self.node.modelType == nodeModelTypes.MODEL_DMF_SERV:
-            self.modelTypeBox.setCurrentIndex(4)
         self.updateSimulationList()
 
     def updateSimulationList(self):
@@ -447,98 +418,6 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 self.dat.pymodels.plugins.keys(),
                 key=lambda s: s.lower())
             self.simNameBox.addItems(sl)
-        elif self.modelTypeBox.currentIndex() == 3:
-            # model type is from DMF lite
-            try:
-                browser_conf = {}
-                browser_conf["conf"] = None
-                browser_conf["repo"] = "DMF Lite"
-                sim_names, sim_ids, sc_ids = DMFBrowser.getSimulationList(
-                    self, browser_conf["conf"], browser_conf["repo"])
-                self.sim_mapping = dict()
-                if sim_names and sim_ids and sc_ids:
-                    for sim_name, sim_id, sc_id in zip(
-                            sim_names, sim_ids, sc_ids):
-                        if not self.sim_mapping.get(sim_name, None):
-                            self.sim_mapping[sim_name] = (
-                                sim_id, sc_id, browser_conf)
-                        else:
-                            logging.getLogger("foqus." + __name__).debug(
-                                "Same name sims but different IDs")
-            except:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Could not connect to DMF Lite.")
-                sim_names = []
-            self.simNameBox.addItems(
-                sorted(sim_names, key=lambda s: s.lower()))
-
-        elif self.modelTypeBox.currentIndex() == 4:
-            # model type is from DMF server
-            browser_conf = {}
-            repo_props = []
-            repo_name_list = []
-            prop_list_paths = []
-            try:
-                # We are on Windows
-                if platform.system().startswith(WINDOWS):
-                    self.PROP_LOC = (os.environ[REPO_PROPERTIES_WIN_PATH]
-                                     + WIN_PATH_SEPARATOR)
-                else:
-                    self.PROP_LOC = (os.environ[REPO_PROPERTIES_UNIX_PATH]
-                                     + UNIX_PATH_SEPARATOR)
-                config = StringIO()
-                # Fake properties header to allow working with configParser
-                config.write('[' + PROP_HEADER + ']\n')
-
-                # Get a list of property files for repositories
-                repo_props = [f for f in os.listdir(self.PROP_LOC)
-                              if os.path.isfile(os.path.join(self.PROP_LOC, f))
-                              and f.endswith(PROPERTIES_EXT)]
-                if len(repo_props) == 0:
-                    logging.getLogger("foqus." + __name__).debug(
-                        "No properties file specified.")
-                for p in repo_props:
-                    config.write(
-                        open(self.PROP_LOC + p).read())
-                    config.seek(0, os.SEEK_SET)
-                    rcp = RawConfigParser()
-                    rcp.readfp(config)
-                    repo_name = rcp.get(PROP_HEADER, "repo_name")
-                    repo_name_list.append(repo_name)
-                    prop_list_paths.append(
-                        self.PROP_LOC + p)
-                    browser_conf["conf"] = prop_list_paths
-                    browser_conf["repo"] = repo_name_list
-
-                for conf, repo in zip(browser_conf.get("conf"),
-                                      browser_conf.get("repo")):
-                    sim_names, sim_ids, sc_ids = DMFBrowser.getSimulationList(
-                        self, conf, repo)
-                    self.sim_mapping = dict()
-                    if not (sim_names and sim_ids and sc_ids):
-                        continue
-                    for sim_name, sim_id, sc_id in zip(
-                            sim_names, sim_ids, sc_ids):
-                        if not self.sim_mapping.get(sim_name, None):
-                            browser_conf = {}
-                            browser_conf["conf"] = conf
-                            browser_conf["repo"] = repo
-                            self.sim_mapping[sim_name] = (
-                                sim_id, sc_id, browser_conf)
-                        else:
-                            logging.getLogger("foqus." + __name__).debug(
-                                "Same name sims but different IDs")
-            except:
-                logging.getLogger("foqus." + __name__)\
-                       .exception("Cannot get properties information "
-                                  "for DMF Server.")
-
-            self.simNameBox.addItems(
-                sorted(sim_names, key=lambda s: s.lower()))
-        else:
-            # this shouldn't be
-            raise Exception("Bad model type selected")
-        # Try to set the model name to match the node
         try:
             i = self.simNameBox.findText(self.node.modelName)
         except:

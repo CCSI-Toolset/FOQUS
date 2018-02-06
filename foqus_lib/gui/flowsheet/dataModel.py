@@ -32,13 +32,13 @@ class dataModel(QtCore.QAbstractTableModel):
         '''
             Return the number of rows in a column
         '''
-        return self.results.rowCount(filtered=True)
+        return self.results.count_rows(filtered=True)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
         '''
             Returns the number of columns in a table
         '''
-        return self.results.colCount()
+        return self.results.count_cols()
 
     def flags(self, index):
         '''
@@ -49,22 +49,20 @@ class dataModel(QtCore.QAbstractTableModel):
             |  QtCore.Qt.ItemIsEditable
         return flags
 
-    def data(
-        self, index=QtCore.QModelIndex(),
-        role=QtCore.Qt.DisplayRole):
-        '''
-            Return the data to display in a cell.  Should return a json
-            string dump of the value.
-        '''
+    def data(self, index=QtCore.QModelIndex(), role=QtCore.Qt.DisplayRole):
+        """
+        Return the data to display in a cell.  Should return a json
+        string dump of the value.
+        """
+        row = self.results.get_indexes(filtered=True)[index.row()]
+        col = self.results.columns[index.column()]
         if  role == QtCore.Qt.DisplayRole:
             try:
-                return json.dumps(self.results.tableData(
-                    index.row(), index.column(), filtered = True))
+                return json.dumps(self.results.loc[row, col])
             except:
                 return "error"
         elif role == QtCore.Qt.EditRole:
-           return json.dumps(self.results.tableData(
-               index.row(), index.column(), filtered = True))
+           return json.dumps(self.results.loc[row, col])
         else:
             return None
 
@@ -73,12 +71,10 @@ class dataModel(QtCore.QAbstractTableModel):
             Called to set the value of a cell.  This will edit the result
             data
         '''
+        row = index.row()
+        col = self.results.columns[index.column()]
         if role == QtCore.Qt.EditRole:
-            self.results.setTableData(
-                index.row(),
-                index.column(),
-                value,
-                filtered = True)
+            self.results.loc[row, col] = json.loads(value)
             return True
 
     def headerData(self, i, orientation, role=QtCore.Qt.DisplayRole):
@@ -88,8 +84,9 @@ class dataModel(QtCore.QAbstractTableModel):
         '''
         if orientation == QtCore.Qt.Horizontal and \
             role == QtCore.Qt.DisplayRole:
-            return self.results.tableHeaderDataH(i)
+            return self.results.columns[i]
         elif orientation == QtCore.Qt.Vertical and \
             role == QtCore.Qt.DisplayRole:
-            return self.results.tableHeaderDataV(i, filtered=True)
-        return None
+            return list(self.results.index)[i]
+        else:
+            return None

@@ -42,21 +42,6 @@ from foqus_lib.framework.optimizer.optimization\
     import optimization as junk
 from foqus_lib.framework.surrogate.surrogate\
     import surrogate as junk2
-# DRMManager
-try:
-    import foqus_lib.framework.drmbuilder.drm_manager as DRMManager
-    use_drm_manager = True
-except Exception as e:
-    print "Failed to import drm_manager"
-    print "    exception: {0}".format(str(e))
-    use_drm_manager = False
-# For DMF path processing
-try:
-    from dmf_lib.common.common import DMFSERV_PATH_PREFIX
-    from dmf_lib.dmf_browser import DMFBrowser
-    useDMF = True
-except:
-    useDMF = False
 
 # Before the session class there are a few functions to help set up the
 # FOQUS environment.
@@ -243,7 +228,6 @@ class session:
         self.foqusSettings.load(useCurrentWorkingDir)
         self.foqusSettings.new_working_dir = self.foqusSettings.working_dir
         self.settingUseCWD = useCurrentWorkingDir
-        self.useDmf = True
         # Get the log file and location for log file viewer
         self.currentLog = os.path.join(
             'logs',self.foqusSettings.foqusLogFile)
@@ -272,10 +256,18 @@ class session:
         exec(pythonCode)
         return res
 
+    def produceTurbineFOQUSTestInput(self, filename="test_input.json"):
+        out = [{
+            'Simulation':"FoqusTest",
+            'Input':[self.flowsheet.saveValues()['input']],
+            'Reset':False}]
+        with open(filename, 'w') as f:
+            json.dump(out, f)
+
     def setRemoteTurbineFreq(self, t):
         self.turbineChkFreq = t
         self.flowsheet.turbchkfreq = t
-        
+
     def setRemoteReSub(self, t):
         self.resubMax = t
         self.flowsheet.resubMax = t
@@ -305,7 +297,7 @@ class session:
             self.flowsheet.turbConfig.closeTurbineLiteDB()
         except:
             pass
-        self.flowsheet = graph() # meta-flowsheet linking sims
+        self.flowsheet = Graph() # meta-flowsheet linking sims
         if tc is not None:
             #keeping the consumers around and reusing them
             #for the simulation I'm opening.
@@ -330,11 +322,6 @@ class session:
         # make instances of pymodels to run.  the nodes don't have
         # access to the session object
         self.flowsheet.pymodels = self.pymodels
-        if use_drm_manager:
-            # D-RM Builder session object
-            self.drm_manager = DRMManager.DRMManager()
-        else:
-            self.drm_manager = None
 
     def loadSettings(self):
         self.foqusSettings.load(self.settingUseCWD)
@@ -479,9 +466,6 @@ class session:
         sd["uqSimList"] = []
         for sim in self.uqSimList:
             sd['uqSimList'].append(sim.saveDict())
-        # save DRMManager
-        if self.drm_manager is not None:
-            sd['drm_manager'] = self.drm_manager.to_dictionary()
         if filename:
             #write two copies of the file one is backup you can keep
             #forever, one is the specified file name with most recent
@@ -507,10 +491,9 @@ class session:
         #Clear new archive folders since last save
         # so they won't be deleted later
         self.newArchiveItemsSinceLastSave = []
-        # return sd for DMF functions
         return sd
 
-    def load(self, filename, stopConsumers=True, DMFtoTurb=False):
+    def load(self, filename, stopConsumers=True):
         '''
             Load a session file
             filename: path to a session file to load
@@ -530,13 +513,8 @@ class session:
         else:
             self.archiveFolder = os.path.join(os.getcwd(), '%s_files' % self.ID)
         self.newArchiveItemsSinceLastSave = []
-        if DMFtoTurb:
-            for key, n in self.flowsheet.nodes.iteritems():
-                if n.modelType == nodeModelTypes.MODEL_DMF_LITE or\
-                   n.modelType == nodeModelTypes.MODEL_DMF_SERV:
-                    n.modelType = nodeModelTypes.MODEL_TURBINE
 
-    def loadDict(self, sd, filename, stopConsumers=True, dmf_prop=None):
+    def loadDict(self, sd, filename, stopConsumers=True):
         '''
             Load a session from a string
         '''
@@ -566,25 +544,9 @@ class session:
         pathName, baseName = os.path.split(fullFile)
         base, ext = os.path.splitext(baseName)
         self.ID = sd.get("ID", self.ID)
-        # For use with DMF Server
-        if useDMF and filename.startswith(DMFSERV_PATH_PREFIX):
-            filename_no_prefix = filename.replace(DMFSERV_PATH_PREFIX, '')
-            self.archiveFolder = os.path.join(
-                os.path.dirname(os.path.abspath(filename_no_prefix)))
-            if dmf_prop:
-                DMFBrowser.downloadZipFolderByPath(
-                    self,
-                    config=dmf_prop[0],
-                    repo=dmf_prop[1],
-                    folder_path=self.archiveFolder,
-                    # This should be renamed to whatever UQ wants to use.
-                    target_path="/tmp/tmp.zip")
-            else:
-                print "Error getting DMF properties."
-        else:
-            self.archiveFolder = os.path.join(
-                os.path.dirname(os.path.abspath(filename)),
-                '%s_files' % self.ID)
+        self.archiveFolder = os.path.join(
+            os.path.dirname(os.path.abspath(filename)),
+            '%s_files' % self.ID)
 
         # Load the surrogate model settings
         self.surrogateProblem = sd.get('surrogateProblem', {})
@@ -604,9 +566,6 @@ class session:
                 sim.setSession(self)
                 sim.loadDict(simDict)
                 self.uqSimList.append(sim)
-        # load DRMManager
-        if 'drm_manager' in sd and self.drm_manager is not None:
-            self.drm_manager.from_dictionary(sd['drm_manager']);
         self.currentFile = None
 
     def removeArchive(self):
@@ -739,12 +698,10 @@ class generalSettings():
         specifying the working directory as a command line option.
     '''
     def __init__(self):
-        self.use_dmf = False
         self.numRecentFiles = 5
         self.working_dir_override = False
         self.working_dir = ""
         self.new_working_dir = ""
-        self.java_home = ""
         self.simsinter_path =\
             "C:/Program Files (x86)/CCSI/SimSinter"
         self.psuade_path = \
@@ -762,7 +719,7 @@ class generalSettings():
         self.turbineLogFile = "turbine.log" # turbine client log file
         self.turbineRemoteCheckFreq = 10 #seconds between checking for
                                         #results on remote run
-        self.turbineRemoteReSub = 0 #number of times to resubmit failed 
+        self.turbineRemoteReSub = 0 #number of times to resubmit failed
                                     #jobs to Turbine when running remote
         self.aspenVersion = 2 # 0 = none, 1 = 7.3, 2 = 7.3.2 or higher
         self.turbLiteHome = "C:\\Program Files (x86)\\Turbine\\Lite"
@@ -780,7 +737,6 @@ class generalSettings():
         self.settingsInWDir = False
         # A list of attributes to save in the settings file
         self.directCopy = [
-            "use_dmf",
             "working_dir",
             "simsinter_path",
             "psuade_path",
@@ -793,7 +749,6 @@ class generalSettings():
             "foqusLogFile",
             "turbineLogFile",
             "logFormat",
-            "java_home",
             "alamo_path",
             "aspenVersion",
             "turbLiteHome",
@@ -911,16 +866,6 @@ class generalSettings():
         if logging:
             self.applyLogSettings()
             self.chdir()
-        if self.java_home == "":
-            try:
-                self.java_home = os.environ["JAVA_HOME"]
-            except:
-                print "Error setting self.java_home"
-        else:
-            try:
-                os.environ["JAVA_HOME"] = str(self.java_home)
-            except:
-                print "Error setting self.java_home"
         self.settingsNormpath()
         self.checkRecentlyOpenedFiles()
 

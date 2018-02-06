@@ -133,12 +133,7 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.xnames = []
         gr = self.dat.flowsheet
         for name in self.opt.prob.v:
-            size = gr.x[name].value.size
-            if size > 1:
-                for i in range(size):
-                    self.xnames.append(name + "[" + str(i) + "]")
-            else:
-                self.xnames.append(name)
+            self.xnames.append(name)
         self.coordFigAx.set_xlabel("Variable")
         self.coordFigAx.set_ylabel("Scaled Value")
         self.coordFigAx.set_ylim(

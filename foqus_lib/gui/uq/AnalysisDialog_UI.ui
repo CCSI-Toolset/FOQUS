@@ -2038,7 +2038,7 @@ than those achieved through ensemble data analysis.</string>
               </widget>
              </item>
              <item row="13" column="1" colspan="2">
-              <widget class="InputPriorTable" name="inputPrior_table">
+              <widget class="AnalysisInputsTable" name="inputPrior_table">
                <property name="font">
                 <font>
                  <weight>50</weight>
@@ -2194,11 +2194,6 @@ of longer runtime.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>InputPriorTable</class>
-   <extends>QTableWidget</extends>
-   <header>foqus_lib/gui/uq/InputPriorTable</header>
-  </customwidget>
-  <customwidget>
    <class>RSCombo1</class>
    <extends>QComboBox</extends>
    <header>foqus_lib/gui/uq/RSCombos</header>
@@ -2222,6 +2217,11 @@ of longer runtime.</string>
    <class>MarsDegreeSpinBox</class>
    <extends>QSpinBox</extends>
    <header>foqus_lib/gui/uq/RSCombos</header>
+  </customwidget>
+  <customwidget>
+   <class>AnalysisInputsTable</class>
+   <extends>QTableWidget</extends>
+   <header>foqus_lib/gui/uq/AnalysisInputsTable</header>
   </customwidget>
  </customwidgets>
  <tabstops>

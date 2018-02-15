@@ -39,7 +39,7 @@
           <string>Identify the input parameters with uncertainty and characterize their probability distributions.</string>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="distTab">
           <attribute name="title">
@@ -47,7 +47,7 @@
           </attribute>
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
-            <widget class="InputPriorTable" name="distTable">
+            <widget class="SimSetupInputsTable" name="distTable">
              <property name="maximumSize">
               <size>
                <width>100000</width>
@@ -545,9 +545,9 @@ ensemble saved as a PSUADE file.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>InputPriorTable</class>
+   <class>SimSetupInputsTable</class>
    <extends>QTableWidget</extends>
-   <header>foqus_lib/gui/uq/InputPriorTable</header>
+   <header>foqus_lib/gui/uq/SimSetupInputsTable</header>
   </customwidget>
  </customwidgets>
  <tabstops>

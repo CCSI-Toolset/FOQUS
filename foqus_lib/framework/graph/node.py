@@ -23,27 +23,14 @@ import json
 import math
 import subprocess
 import logging
-import random
-import numpy as np
-import scipy
-import scipy.interpolate
-import random
 import traceback
 from nodeVars import *
 from nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
-try:
-    from dmf_lib.dmf_browser import DMFBrowser
-    from dmf_lib.common.common import CCSI_EMBEDDED_METADATA
-    from dmf_lib.common.common import SC_TITLE
-    from dmf_lib.common.common import UTF8
-except Exception as e:
-    traceback.print_exc()
 
-
-class nodeOptionSets:
+class NodeOptionSets:
     OTHER_OPTIONS = 0
     NODE_OPTIONS = 1
     TURBINE_OPTIONS = 2
@@ -51,11 +38,11 @@ class nodeOptionSets:
     PLUGIN_OPTONS = 4
 
 
-class pyCodeInterupt(Exception):
+class PyCodeInterupt(Exception):
     pass
 
 
-class npCodeEx(Exception):
+class NpCodeEx(Exception):
     def __init__(self, msg="", code=100):
         self.code = code
         self.msg = msg
@@ -64,7 +51,7 @@ class npCodeEx(Exception):
         return str(self.msg)
 
 
-class nodeEx(foqusException):
+class NodeEx(foqusException):
     def setCodeStrings(self):
         #100's reserved for python code script errors
         self.codeString[-1] = "Did not finish"
@@ -87,7 +74,7 @@ class nodeEx(foqusException):
         self.codeString[61] = "Unknow type string"
 
 
-class node():
+class Node():
     '''
         This class stores information for graph nodes.  It also contains
         function for running a calculations and simulations associated
@@ -125,8 +112,6 @@ class node():
         ##
         self.running = False
         self.synced = True
-        self.browser_conf = None  # DMF config
-        self.dmf_sim_ids = None  # DMF simulation IDs
 
     def setGraph(self, gr, name = None):
         '''
@@ -157,7 +142,7 @@ class node():
             default=False,
             dtype=bool,
             desc=("This options show the simulator window"),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Initialize Model",
             default=False,
@@ -165,7 +150,7 @@ class node():
             desc=("If this is true, the simulation is run with default"
                   " values to initialize it before running the "
                   " model inputs. This is often useful with Aspen Plus"),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Reset",
             default=resetSim,
@@ -173,7 +158,7 @@ class node():
             desc=("This options will cause a simulation to be reset to"
                   " after each run."),
             disable = resetDisable,
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Reset on Fail",
             default=True,
@@ -181,66 +166,66 @@ class node():
             desc=("This option causes the consumer to shut down if a si"
                   "mulation fails.  A new one will start on next run."),
             disable = resetDisable,
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Retry",
             default=False,
             dtype=bool,
             desc=("If a simulation fails retry one time."),
             disable = resetDisable,
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Allow Simulation Warnings",
             default=True,
             desc=("Consider a simulation successful if it completes "
                   "with warnings. (AspenPlus only for now)"),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Max consumer reuse",
             default=90,
             desc=("Number maximum of times to reuse a Turbine consumer"
                   " before forcing it to restart"),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Maximum Wait Time (s)",
             default=1440.0,
             dtype=float,
             desc=("This is the ammount of time in seconds that FOQUS "
                   "should wait for results to come back from Turbine."),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Maximum Run Time (s)",
             default=840.0,
             desc=("This is the ammount of time in seconds that FOQUS "
                   "should wait for results to come back from Turbine "
                   "once the simulation starts running."),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Min Status Check Interval",
             default=4.0,
             desc=("This is the minimum amount of time between job "
                   "status checks."),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Max Status Check Interval",
             default=5.0,
             desc=("This is the maximum ammount of time between job "
                   "status"),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
         self.options.addIfNew(
             name="Override Turbine Configuration",
             default="",
             desc=("Optional, provide a path to a Trubine config to "
                   "submit models for this node to a alternative Turbine "
                   "gateway.  This can be used for special simualtions."),
-            optSet=nodeOptionSets.TURBINE_OPTIONS)
+            optSet=NodeOptionSets.TURBINE_OPTIONS)
 
     def errorLookup(self, i):
         '''
             Give a descriptive error message to go with an integer
             error code.
         '''
-        ex = nodeEx()
+        ex = NodeEx()
         return ex.codeString.get(i, "unknown error")
 
     def saveDict(self):
@@ -264,7 +249,6 @@ class node():
         sd["turbSession"] = self.turbSession
         sd["synced"] = self.synced
         sd["browser_conf"] = self.browser_conf
-        sd["dmf_sim_ids"] = self.dmf_sim_ids
         return sd
 
     def loadDict(self, sd):
@@ -285,7 +269,6 @@ class node():
         self.turbApp = sd.get("turbApp", None)
         self.turbSession = sd.get("turbSession", 0)
         self.browser_conf = sd.get("browser_conf", None)
-        self.dmf_sim_ids = sd.get("dmf_sim_ids", None)
         self.options = optionList()
         o = sd.get("options", None)
         if o:
@@ -317,7 +300,7 @@ class node():
             #covers string and str
             return str
         else:
-            raise nodeEx(code=61, msg=str(s))
+            raise NodeEx(code=61, msg=str(s))
 
     def setSim(self, newType=None, newModel=None,
                force=False, ids=None, browser_conf=None):
@@ -373,22 +356,8 @@ class node():
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.iteritems():
                 self.gr.output[self.name][vkey] = v
-        elif self.modelType in [
-                nodeModelTypes.MODEL_TURBINE,
-                nodeModelTypes.MODEL_DMF_LITE,
-                nodeModelTypes.MODEL_DMF_SERV]:
-            # need to download sinter file to get input and output
-            if self.modelType == nodeModelTypes.MODEL_TURBINE:
-                sc = self.gr.turbConfig.getSinterConfig(self.modelName)
-            else:
-                sc = DMFBrowser.getByteArrayStreamById(
-                    self, browser_conf["conf"],
-                    browser_conf["repo"], str(ids["sc"]))
-                self.dmf_sim_ids = ids
-                self.browser_conf = browser_conf
-                sc = json.loads(sc.decode(UTF8))
-            # Get the model information for now don't use it I'll add
-            # something later to display it somehow
+        elif self.modelType == nodeModelTypes.MODEL_TURBINE:
+            sc = self.gr.turbConfig.getSinterConfig(self.modelName)
             modelTitle = str(sc.get("title", ""))
             modelAuthor = str(sc.get("author", ""))
             modelDate = str(sc.get("date", ""))
@@ -401,7 +370,7 @@ class node():
             #Add inputs
             for name, item in sc["inputs"].iteritems():
                 dtype = self.stringToType(item.get('type', 'float'))
-                self.gr.input[self.name][name] = nodeVars(
+                self.gr.input[self.name][name] = NodeVars(
                     value = item.get("default", 0.0),
                     vmin = item.get("min", None),
                     vmax = item.get("max", None),
@@ -413,7 +382,7 @@ class node():
             #Add outputs
             for name, item in sc["outputs"].iteritems():
                 dtype = self.stringToType(item.get('type', 'float'))
-                self.gr.output[self.name][name] = nodeVars(
+                self.gr.output[self.name][name] = NodeVars(
                     value = item.get("default", 0.0),
                     unit = str(item.get("units", "")),
                     vdesc = str(item.get("description", "")),
@@ -423,7 +392,7 @@ class node():
             #Add an extra output varialbe for simulation status
             #I think this comes out of all simulation run through
             #SimSinter, but its not in the sinter config file.
-            self.gr.output[self.name]['status'] = nodeVars(
+            self.gr.output[self.name]['status'] = NodeVars(
                 value = 0,
                 vdesc = "Simulation Status Code",
                 vst = "sinter")
@@ -435,7 +404,7 @@ class node():
                         name=name,
                         default=item['default'],
                         desc=item['description'],
-                        optSet=nodeOptionSets.SINTER_OPTIONS)
+                        optSet=NodeOptionSets.SINTER_OPTIONS)
 
     def upadteSCDefaults(self, outfile=None):
         if outfile is None:
@@ -477,7 +446,7 @@ class node():
             # optional and disabled for now.  Should check node status
             # instead of depending on nan
             for vname, var in self.outVars.iteritems():
-                var.value = np.ones(var.shape)*np.nan
+                var.makeNaN()
         # Run Python script before model
         if self.pythonCode != "" and self.pythonCode is not None\
             and self.scriptMode == "pre":
@@ -508,109 +477,12 @@ class node():
             self.runPymodelPlugin()
         elif self.modelType == nodeModelTypes.MODEL_TURBINE:
             self.runTurbineCalc(retry=self.options["Retry"].value)
-        elif self.modelType == nodeModelTypes.MODEL_DMF_LITE:
-            self.runDMFLiteCalc()
-        elif self.modelType == nodeModelTypes.MODEL_DMF_SERV:
-            self.runDMFServCalc()
         else:
             # This shouldn't happen from the GUI there should
             # be no way to select an unknown model type.
             logging.getLogger("foqus." + __name__).error(
                 "unknown run type: " + str(self.modelType))
             self.calcError = 9
-
-    def runDMFCalc(self, sync_only=False):
-        """
-        Sync simulation in Turbine with DMF
-        """
-        if not self.synced:
-            update_turb_sim = False
-            conf = self.browser_conf["conf"]
-            repo = self.browser_conf["repo"]
-            turb_sim_list = self.gr.turbConfig.getSimulationList()
-            sc_id = self.dmf_sim_ids["sc"]
-            sim_id = self.dmf_sim_ids["sim"]
-            sc = DMFBrowser.getByteArrayStreamById(
-                self, conf, repo, str(sc_id))
-            sc_json = json.loads(sc.decode(UTF8))
-            sim_title = sc_json.get(SC_TITLE, None)
-            if sim_title:
-                sim_name = sim_title
-            if sim_name not in turb_sim_list:
-                update_turb_sim = True
-            else:
-                # Simulation exist in turbine
-                turb_sc = self.gr.turbConfig.getSinterConfig(sim_name)
-                turb_sc_meta = turb_sc.get(CCSI_EMBEDDED_METADATA, None)
-                if turb_sc_meta:
-                    turb_sim_id = turb_sc_meta["Simulation ID"]
-                    if turb_sim_id:
-                        is_latest = DMFBrowser.isLatestVersion(
-                            self, conf, repo, str(turb_sim_id))
-                    else:
-                        is_latest = False
-                else:
-                    is_latest = False
-
-                if not is_latest:
-                    update_turb_sim = True
-
-            if update_turb_sim:
-                sc_file = "temp/sinter_config.json"
-                with open(sc_file, "w") as fp:
-                    fp.write(sc)
-                sim_file, sim_resource, a, other = \
-                    self.gr.turbConfig.sinterConfigGetResource(
-                        sc_file, checkExists=False)
-                sim_file = os.path.join("temp", sim_file)
-                sim_bytestream = DMFBrowser.getByteArrayStreamById(
-                    self, conf, repo, str(sim_id))
-                with open(sim_file, 'wb') as f:
-                    f.write(sim_bytestream)
-
-                resources = []
-                resource_files = []
-                resource_bytestreams = []
-                input_files = sc_json.get(CCSI_EMBEDDED_METADATA).get(
-                    "InputFiles", [])
-                for resource_data in input_files:
-                    resource_data = resource_data.get(CCSI_EMBEDDED_METADATA)
-                    rid = resource_data.get("Resource ID", None)
-                    rdn = resource_data.get("Resource Display Name", None)
-                    if not rid or not rdn:
-                        continue
-                    resource_bytestreams.append(
-                        DMFBrowser.getByteArrayStreamById(
-                            self, conf, repo, str(rid)))
-                    resource_files.append(os.path.join("temp", rdn))
-                    resources.append([rdn, os.path.join("temp", rdn)])
-                    for i, fname in enumerate(resource_files):
-                        with open(fname, 'wb') as f:
-                            f.write(resource_bytestreams[i])
-                self.gr.turbConfig.uploadSimulation(
-                    sim_name,
-                    sc_file,
-                    update=True,
-                    otherResources=resources)
-            self.synced = True
-        if not sync_only:
-            self.runTurbineCalc(retry=self.options["Retry"].value)
-
-    def runDMFLiteCalc(self, sync_only=False):
-        """
-        Sync this simulation in Turbine with DMFLite
-        """
-        logging.getLogger("foqus." + __name__).debug(
-            "In runDMFLiteCalc self.synced = {0}".format(self.synced))
-        self.runDMFCalc(sync_only)
-
-    def runDMFServCalc(self, sync_only=False):
-        """
-        Sync this simulation in Turbine with DMF Server
-        """
-        logging.getLogger("foqus." + __name__).debug(
-            "In runDMFServCalc self.synced = {0}".format(self.synced))
-        self.runDMFCalc(sync_only)
 
     def getValues(self):
         x = dict()
@@ -673,14 +545,14 @@ class node():
             for vkey, var in f.iteritems():
                 if vkey in self.outVars:
                     self.outVars[vkey].value = var
-        except pyCodeInterupt as e:
+        except PyCodeInterupt as e:
             logging.getLogger("foqus." + __name__).error(
                 "Node script interupt: " + str(e))
             if self.calcError == -1:
                 # if no error code set go with 50
                 # otherwise the sim would appear to be successful
                 self.calcError = 50
-        except npCodeEx as e:
+        except NpCodeEx as e:
             logging.getLogger("foqus." + __name__).exception(
                 "Error in node python code: {0}, {1}".format(
                 e.code, e.msg))
@@ -718,12 +590,12 @@ class node():
                         inputSetL2[vkey] = var.value.tolist()
                 except:
                     self.calcError = 23
-                    raise nodeEx(
+                    raise NodeEx(
                         code=23,
                         msg="Node: {0}, Var: {1}, Value: {2}".format(
                             self.name, vkey, var.value))
         for vkey, var in self.options.iteritems():
-            if var.optSet == nodeOptionSets.SINTER_OPTIONS:
+            if var.optSet == NodeOptionSets.SINTER_OPTIONS:
                 inputSetL1['Input'][vkey] = var.value
         s = json.dumps(runList, sort_keys=True, indent=2)
         logging.getLogger("foqus." + __name__).debug(
@@ -888,10 +760,9 @@ class node():
             for vname in res['Output']:
                 try:
                     self.gr.output[self.name][vname].value =\
-                        np.array(res['Output'][vname]['value'])
+                        res['Output'][vname]['value']
                     outputlog.append(
-                        "{0} = {1}".format(
-                            vname, res['Output'][vname]['value']))
+                        "{0} = {1}".format(vname, res['Output'][vname]['value']))
                 except:
                     # if there is an output of the simulation that
                     # doesn't match the outputs in the node that's
@@ -912,10 +783,7 @@ class node():
         # Check that a simulation is assigned to this node and that the
         # run type is turbine otherwise return None, this will mean that
         # the node is not using turbine to run
-        if self.modelType not in [
-            nodeModelTypes.MODEL_TURBINE,
-            nodeModelTypes.MODEL_DMF_LITE,
-            nodeModelTypes.MODEL_DMF_SERV]:
+        if self.modelType != nodeModelTypes.MODEL_TURBINE:
             self.turbSession = None
             return None
         #If force new loose the old session so need a new one

@@ -19,7 +19,6 @@
 '''
 
 import json
-import numpy
 import copy
 import os
 
@@ -126,8 +125,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                     gh.setCellJSON(table, row, ci[name],
                         prob.samp[name][row])
                 else:
-                    gh.setCellJSON(table, row, ci[name],
-                        numpy.nan)
+                    gh.setCellJSON(table, row, ci[name], float('nan'))
         table.resizeColumnsToContents()
 
     def switchTab(self, i):
@@ -242,7 +240,6 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                 table,
                 row,
                 self.vtCols["Value"])
-            gr.x[name].toNumpy()
             vt = gh.cellPulldownValue(table, row, self.vtCols["Type"])
             if  vt == "Decision":
                 prob.v.append(name)

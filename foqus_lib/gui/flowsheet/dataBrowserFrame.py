@@ -49,6 +49,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.selectFilter)
         self.tableView.setAlternatingRowColors(True)
         self.columnsButton.clicked.connect(self.columnSelect)
+        self.tableView.verticalHeader().show()
 
     def columnSelect(self):
         cd = columnsDialog(self.dat, self)
@@ -115,17 +116,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self)
         self.editSetAct.triggered.connect(self.editDataSet)
         self.editMenu.addAction(self.editSetAct)
-        # add tags
-        self.addTagsAct = QAction(
-            'Add Tags to Selected Rows', self)
-        self.addTagsAct.triggered.connect(self.addDataTags)
-        self.editMenu.addAction(self.addTagsAct)
-        # edit tags
-        self.editTagsAct = QAction(
-            'Edit Tags for Selected Rows',
-            self)
-        self.editTagsAct.triggered.connect(self.editDataTags)
-        self.editMenu.addAction(self.editTagsAct)
         # hide columns
         self.hideDataColsAct = QAction(
             'Hide Selected Columns',
@@ -144,12 +134,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self)
         self.resizeColumnsAct.triggered.connect(self.autoResizeCols)
         self.viewMenu.addAction(self.resizeColumnsAct)
-        self.flattenAct = QAction(
-            'Flatten Table',
-            self)
-        self.flattenAct.setCheckable(True)
-        self.flattenAct.triggered.connect(self.flattenTable)
-        self.viewMenu.addAction(self.flattenAct)
+
         #Run menu
         self.runRowsAct = QAction('Run Selected Rows', self)
         self.runRowsAct.triggered.connect(self.runSelectedRows)
@@ -188,19 +173,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.dat.mainWin.runSim(rows=rows, valList=valList)
 
     def refreshContents(self):
-        self.tableView.setModel(
-            dataModel(self.dat.flowsheet.results, self))
-        self.updateFilterBox()
-        self.flattenAct.setChecked(self.dat.flowsheet.results.flatTable)
-        self.numRowsBox.setText(str(
-            self.dat.flowsheet.results.rowCount(filtered=True)))
-
-    def flattenTable(self):
-        if self.flattenAct.isChecked():
-            self.dat.flowsheet.results.setFlatTable(True)
-        else:
-            self.dat.flowsheet.results.setFlatTable(False)
-        self.refreshContents()
+        self.tableView.setModel(dataModel(self.dat.flowsheet.results, self))
 
     def autoResizeCols(self):
         # if you resize the columns before showing Qt seems to
@@ -229,42 +202,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             rl.deleteRows(rows, fltr=True)
             self.refreshContents()
 
-    def editDataTags(self):
-        '''
-
-        '''
-        rl = self.dat.flowsheet.results
-        rows = self.selectedRows()
-        name, ok = QInputDialog.getText(
-            self,
-            "Change Row Tags",
-            'Enter new tags (e.g. ["Tag1", "Tag2"]):',
-            QLineEdit.Normal)
-        if ok and name != '':
-            tags = json.loads(name)
-            if isinstance(tags, basestring):
-                tags = [tags]
-            for row in rows:
-                rl.setTags(tags, row, add=False, fltr=True)
-
-    def addDataTags(self):
-        '''
-
-        '''
-        rl = self.dat.flowsheet.results
-        rows = self.selectedRows()
-        name, ok = QInputDialog.getText(
-            self,
-            "Add Row Tags",
-            'Enter tags to add (e.g. ["Tag1", "Tag2"]):',
-            QLineEdit.Normal)
-        if ok and name != '':
-            tags = json.loads(name)
-            if isinstance(tags, basestring):
-                tags = [tags]
-            for row in rows:
-                rl.setTags(tags, row, add=True, fltr=True)
-
     def editDataSet(self):
         rl = self.dat.flowsheet.results
         rows = self.selectedRows()
@@ -284,7 +221,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             "",
             "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)")
         if fileName:
-            self.dat.flowsheet.results.importCSV(fileName)
+            self.dat.flowsheet.results.read_csv(fileName)
             self.refreshContents()
 
     def addEmptyResult(self):
@@ -334,9 +271,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         items = [''] + sorted(self.dat.flowsheet.results.filters.keys())
         self.filterSelectBox.addItems(items)
         i=-1
-        if self.dat.flowsheet.results.currentFilter() != None:
+        if self.dat.flowsheet.results.current_filter() != None:
             i = self.filterSelectBox.findText(
-                self.dat.flowsheet.results.currentFilter())
+                self.dat.flowsheet.results.current_filter())
         if i != -1:
             self.filterSelectBox.setCurrentIndex(i)
         else:
@@ -346,15 +283,15 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
     def selectFilter(self, i = 0):
         filterName = self.filterSelectBox.currentText()
         if filterName == '':
-            self.dat.flowsheet.results.setFilter(None)
+            self.dat.flowsheet.results.set_filter(None)
         elif not filterName in self.dat.flowsheet.results.filters:
             print "error"
         else:
-            self.dat.flowsheet.results.setFilter(filterName)
+            self.dat.flowsheet.results.set_filter(filterName)
         self.tableView.setModel(
             dataModel(self.dat.flowsheet.results, self))
         self.numRowsBox.setText(str(
-            self.dat.flowsheet.results.rowCount(filtered=True)))
+            self.dat.flowsheet.results.count_rows(filtered=True)))
 
     def saveResultsToCSV(self):
         fileName, filtr = QFileDialog.getSaveFileName(
@@ -363,7 +300,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             "",
             "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)")
         if fileName:
-            self.dat.flowsheet.results.dumpCSV(fileName)
+            self.dat.flowsheet.results.to_csv(fileName)
 
     def toPsuade(self):
         fileName, filtr = QFileDialog.getSaveFileName(
@@ -372,14 +309,14 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             "",
             "PSUADE Files (*.dat);;Text Files (*.txt);;All Files (*)")
         if fileName:
-            self.dat.flowsheet.results.exportPSUADE(fileName)
+            self.dat.flowsheet.results.to_psuade(fileName)
 
     def toClipboard(self):
         clipboard = QApplication.clipboard()
-        clipboard.setText(self.dat.flowsheet.results.dumpString())
+        clipboard.setText(self.dat.flowsheet.results.to_csv(sep="\t"))
 
     def importClip(self):
         clipboard = QApplication.clipboard()
         s = str(clipboard.text())
-        self.dat.flowsheet.results.importCSVString(s)
+        self.dat.flowsheet.results.read_csv(s=s, sep="\t")
         self.refreshContents()

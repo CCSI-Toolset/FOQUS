@@ -52,7 +52,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.selectFilterBox.currentIndexChanged.connect(
             self.selectFilter)
         self.copList = ["NOT", "AND", "OR", "XOR"]
-        self.ropList = ["=", "!=", "<", ">", "<=", ">=", "IN"]
+        self.ropList = ["=", "!=", "<", ">", "<=", ">=", "IN", "APPROX"]
         self.ropDict = {
             "=":dataFilterRule.OP_EQ,
             "!=":dataFilterRule.OP_NEQ,
@@ -60,7 +60,8 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             ">":dataFilterRule.OP_G,
             "<=":dataFilterRule.OP_LE,
             ">=":dataFilterRule.OP_GE,
-            "IN":dataFilterRule.OP_IN}
+            "IN":dataFilterRule.OP_IN,
+            "APPROX":dataFilterRule.OP_AEQ}
         self.copDict = {
             "NOT":dataFilter.DF_NOT,
             "AND":dataFilter.DF_AND,
@@ -80,7 +81,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.split.addWidget(self.TreeFrame)
         self.splitFrame.layout().addWidget(self.split)
         self.splitFrame.layout().activate()
-        headings = self.dat.flowsheet.results.headMap.keys()
+        headings = self.dat.flowsheet.results.columns
         self.colList.addItems(headings)
 
     def copyCol(self):
@@ -175,16 +176,16 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         gh.setTableItem(table, row, 2, "", bgColor=bg, editable=False)
         gh.setTableItem(table, row, 1, op, pullDown=self.copList)
 
-    def addRule(self, rule = None):
+    def addRule(self, rule=None):
         r = self.dat.flowsheet.results
         if rule:
-            term1 = r.filterTermString(rule.term1)
-            term2 = r.filterTermString(rule.term2)
+            term1 = json.dumps(rule.term1)
+            term2 = json.dumps(rule.term2)
             op = self.ropDictRev[rule.op]
         else:
-            term1 = "Index"
+            term1 = "err"
             term2 = "0"
-            op = ">="
+            op = "="
         table = self.ruleTable
         row = table.rowCount()
         table.setRowCount(row + 1)
@@ -200,8 +201,8 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         fname = self.selectFilterBox.currentText()
         if fname in self.dat.flowsheet.results.filters:
             del self.dat.flowsheet.results.filters[fname]
-        if self.dat.flowsheet.results.currentFilter() == fname:
-            self.dat.flowsheet.results.setCurrentFilter(None)
+        if self.dat.flowsheet.results.current_filter() == fname:
+            self.dat.flowsheet.results.set_filter(None)
         self.updateFilterBox( )
         self.upadteForm()
 
@@ -240,7 +241,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             Update the list of filters in the combo box
         '''
         if fltr == None:
-            fltr = self.dat.flowsheet.results.currentFilter()
+            fltr = self.dat.flowsheet.results.current_filter()
         self.selectFilterBox.blockSignals(True)
         self.selectFilterBox.clear()
         items = sorted(self.dat.flowsheet.results.filters.keys())
@@ -296,8 +297,14 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             elif term1 != "" and term2 != "" and op in self.ropList:
                 # rule
                 rule = dataFilterRule()
-                rule.term1 = r.filterTerm(term1)
-                rule.term2 = r.filterTerm(term2)
+                try:
+                    rule.term1 = json.loads(term1)
+                except ValueError:
+                    rule.term1 = term1
+                try:
+                    rule.term2 = json.loads(term2)
+                except ValueError:
+                    rule.term2 = term2
                 rule.op = self.ropDict[op]
                 fltr.fstack.append([dataFilter.DF_RULE, rule])
             else:

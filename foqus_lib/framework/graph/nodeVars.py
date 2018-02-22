@@ -1,56 +1,49 @@
-'''
-    nodeVars.py
-     
-    * This contains the classes for node variables
-    * Class for lists on node variables
+"""
+NodeVars.py
 
-    John Eslick, Carnegie Mellon University, 2014
+* This contains the classes for node variables
+* Class for lists of node variables
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+
+This Material was produced under the DOE Carbon Capture Simulation
+Initiative (CCSI), and copyright is held by the software owners:
+RISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
+and/or the U.S. Government retain ownership of all rights in the
+CCSI software and the copyright and patents subsisting therein. Any
+distribution or dissemination is governed under the terms and
+conditions of the CCSI Test and Evaluation License, CCSI Master
+Non-Disclosure Agreement, and the CCSI Intellectual Property
+Management Plan. No rights are granted except as expressly recited
+in one of the aforementioned agreements.
+"""
+
 from collections import OrderedDict
 import json
 import math
 import logging
-import numpy as np
-import traceback
 import copy
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.uq.Distribution import Distribution
 
 ivarScales = [ # list of scaling options for input variables
-    'None', 
-    'Linear', 
-    'Log', 
-    'Power', 
-    'Log 2', 
+    'None',
+    'Linear',
+    'Log',
+    'Power',
+    'Log 2',
     'Power 2']
-    
-class nodeVarEx(foqusException):
+
+class NodeVarEx(foqusException):
     def setCodeStrings(self):
         self.codeString[0] = 'Other exception'
-        self.codeString[1] = 'Variable dimension is too high'
-        self.codeString[2] = (
-            'Dimension error, the variable' 
-            'dimenstions should be a tuple')
         self.codeString[3] = 'Not a valid variable attribute'
-        self.codeString[4] = 'New value does not match current shape'
         self.codeString[8] = 'Error unscaling'
         self.codeString[9] = 'Error scaling'
-        self.codeString[10] = 'Error hist type should be list'
         self.codeString[11] = 'Invalid data type'
         self.codeString[22] = 'Time step index out of range'
-    
-class nodeVarListEx(foqusException):
+
+class NodeVarListEx(foqusException):
     def setCodeStrings(self):
         self.codeString[0] = 'Other exception'
         self.codeString[2] = 'Node does not exist'
@@ -59,47 +52,64 @@ class nodeVarListEx(foqusException):
         self.codeString[6] = ('graph is reserved and cannot be used'
                               ' as a node name')
         self.codeString[7] = 'Var name already in use, cannont add'
-        
-class nodeVarList(OrderedDict):
-    '''
-        This class contains a dictionary of dictionaries
-        the first key is the node name, the second key is
-        the variable name.  This also provides methods for
-        flattening variable lists if they include arrays.
-    '''
+
+class NodeVarList(OrderedDict):
+    """
+    This class contains a dictionary of dictionaries the first key is the node
+    name, the second key is the variable name.
+    """
     def __init__(self):
+        """
+        Initialize the variable list dictionary
+        """
         OrderedDict.__init__(self)
-    
+
     def clone(self):
-        newOne = nodeVarList()
+        """
+        Make a new copy of a variable list
+        """
+        newOne = NodeVarList()
         sd = self.saveDict()
         newOne.loadDict(sd)
         return newOne
-        
+
     def addNode(self, nodeName):
+        """
+        Add a node to the variable list
+
+        Args:
+            nodeName = a string name for the node to add, must not exist already
+        """
         if nodeName in self:
-            raise nodeVarListEx(code=5, msg = str(nodeName))
+            raise NodeVarListEx(code=5, msg=str(nodeName))
         self[nodeName] = OrderedDict()
-    
+
     def addVariable(self, nodeName, varName, var=None):
+        """
+        Add a variable name to a node:
+
+        Args:
+            nodeName: to node to add a variable to
+            varName: the variable name to add
+            var: a NodeVar object or None to create a new variable
+        """
         if nodeName not in self:
-            raise nodeVarListEx(2, msg=nodeName)
+            raise NodeVarListEx(2, msg=nodeName)
         if varName in self[nodeName]:
-            raise nodeVarListEx(7, msg=varName)
+            raise NodeVarListEx(7, msg=varName)
         if not var:
-            var = nodeVars()
+            var = NodeVars()
         self[nodeName][varName] = var
         return var
-        
+
     def get(self, name, varName=None):
         '''
-            This returns a variable looked up by a name string where 
-            the node name is separated from the variable name by a 
-            period or if two arguments are given they are the node 
-            name and variable name.  For one argument, the first period
-            in the name is assumed to be the separator.  This means 
-            the node names should not contain periods, but it okay for
-            the variable name to contain a period.
+        This returns a variable looked up by a name string where the node name
+        is separated from the variable name by a period or if two arguments are
+        given they are the node name and variable name.  For one argument, the
+        first period in the name is assumed to be the separator.  This means
+        the node names should not contain periods, but it okay for the variable
+        name to contain a period.
         '''
         if varName == None:
             n = name.split('.', 1) #n[0] = node name, n[1] = var name
@@ -109,24 +119,31 @@ class nodeVarList(OrderedDict):
             return self[name][varName]
         except KeyError as e:
             if n[0] in self:
-                raise nodeVarListEx(3, msg=n[1])
+                raise NodeVarListEx(3, msg=n[1])
             else:
-                raise nodeVarListEx(2, msg=n[0])
-                
+                raise NodeVarListEx(2, msg=n[0])
+
+
     def createOldStyleDict(self):
-        '''
-            This can be used to create the f and x dictionaries for a
-            graph.  I'm trying to phase this out, but I'm using in for
-            now so I can make smaller changes working to new variable
-            list objects
-        '''
+        """
+        This can be used to create the f and x dictionaries for a graph. I'm
+        trying to phase this out, but I'm using in for now so I can make
+        smaller changes working to new variable list objects
+        """
         self.odict = OrderedDict()
         for node in sorted(self.keys(), key=lambda s: s.lower()):
             for var in sorted(self[node].keys(), key=lambda s: s.lower()):
                 self.odict['.'.join([node, var])] = self[node][var]
         return self.odict
     
+
     def compoundNames(self, sort=True):
+        """
+        Create a list of compound names for variables
+
+        Args:
+            sort: if true sort the names alphabetically
+        """
         l = []
         for node in self.keys():
             for var in self[node].keys():
@@ -135,163 +152,172 @@ class nodeVarList(OrderedDict):
             return sorted(l, key = lambda s: s.lower())
         else:
             return l
-        
+
     def splitName(self, name):
+        """
+        Split the name at the first '.'' to get a node and variable name
+        """
         return name.split('.',1)
-        
+
     def saveValues(self):
+        """
+        Make a dictionary of variable values with the node and variable name
+        keys
+        """
         sd = dict()
         for node in self:
             sd[node] = OrderedDict()
             for var in self[node]:
-                sd[node][var] = [None]*len(self[node][var].hist)
-                for i in range(len(self[node][var].hist)):
-                    if type(self[node][var].hist[i]).__module__\
-                        == np.__name__:
-                        sd[node][var][i] = self[node][var].hist[i].tolist()
-                    else:
-                        sd[node][var][i] = self[node][var].hist[i]
+                sd[node][var] = self[node][var].value
         return sd
-        
-    def loadValues(self, sd, hist=True):
+
+    def loadValues(self, sd):
+        """
+        Load the variables values out of a dictionary
+        """
         self.odict = None
         for node in sd:
             if node not in self:
                 logging.getLogger("foqus." + __name__).debug(
                     "Cannot load variable node not in flowsheet, node:"
                     " {0} not in {1}".format(node, self.keys()))
-                raise nodeVarListEx(2, msg=node)
+                raise NodeVarListEx(2, msg=node)
             for var in sd[node]:
-                try:
-                    typ = self[node][var].dtype
-                except:
-                    typ = float
-                if hist:
-                    for i in range(len(sd[node][var])):
-                        self[node][var].hist[i] = np.array(
-                            sd[node][var][i],typ)
-                else:
-                    self[node][var].value = np.array(sd[node][var],typ)
-
-    def valueDict(self, sd):
-        '''
-            Makes a dictionary that stores only variable values at
-            the current time step.  This is use for optimization
-            in the evaluation of the python code for objective functions
-            and constriants.
-        '''
-        rd = {}
-        for node in sd:
-            if node not in self:
-                raise nodeVarListEx(2, msg=node)
-            rd[node] = {}
-            for var in sd[node]:
-                ts = self[node][var].ts
-                rd[node][var] = np.array(sd[node][var][ts])
-        return rd
+                self[node][var].value = sd[node][var]
 
     def saveDict(self):
+        """
+        Save the full variables list information to a dictionary
+        """
         sd = dict()
         for node in self:
             sd[node] = OrderedDict()
             for var in self[node]:
                 sd[node][var] = self[node][var].saveDict()
         return sd
-        
+
     def loadDict(self, sd):
+        """
+        Load the full variable list innformation from a dict
+
+        Args:
+            sd: the dictionary with the stored information
+        """
         self.clear()
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
-                self.addVariable(node, var)\
-                    .loadDict(sd[node][var])
-                
+                self.addVariable(node, var).loadDict(sd[node][var])
+
     def scale(self):
-        for key, nodeVars in self.iteritems():
-            for vkey, var in nodeVars.iteritems():
+        """
+        Scale all the variables in the list
+        """
+        for key, NodeVars in self.iteritems():
+            for vkey, var in NodeVars.iteritems():
                 var.scale()
-                
+
     def makeNaN(self):
-        for key, nodeVars in self.iteritems():
-            for vkey, var in nodeVars.iteritems():
+        """
+        Make all the variable values NaN
+        """
+        for key, NodeVars in self.iteritems():
+            for vkey, var in NodeVars.iteritems():
                 var.makeNaN()
-                
+
+    def count(self):
+        """
+        Return the number of variables
+        """
+        cn = self.compoundNames()
+        return len(cn)
+
     def getFlat(self, names, scaled=False):
+        """
+        Return a flat list of variable values coresponding to a given list of
+        names
+
+        Args:
+            names: A list of variable names to return node.var form
+            scale: If true return scaled values
+        """
         res = []
         if scaled:
             for name in names:
                 self.get(name).scale()
-                res.extend(self.get(name).scaled.flatten())
+                res.append(self.get(name).scaled)
         else:
             for name in names:
-                res.extend(self.get(name).value.flatten())
+                res.append(self.get(name).value)
         return res
-        
-    def count(self, flat=False):
-        cn = self.compoundNames()
-        if not flat:
-            return len(cn)
-        else:
-            return len(self.getFlat(cn))
-    
+
     def unflatten(self, nameList, valueList, unScale=False):
-        '''
-            This takes a list of variable names, and a flat list
-            of values.  This function then un-flattens the values
-            and creates a dictionary of variable values
-        '''
+        """
+        This takes a list of variable names, and a flat list of values. This
+        function then un-flattens the values and creates a dictionary of
+        variable values. The dictionary can be loaded.
+
+        Args:
+            nameList: a list of variable names. names are either node.var or a
+                two-element list or tupple (node, var)
+            valueList: a list of values for the variables
+            unScale: the values are scaled so unscale them before putting in dict
+        """
         sd = {}
         pos = 0
         for i, name in enumerate(nameList):
             if not isinstance(name, (list,tuple)):
                 name = self.splitName(name)
-            shape = self[name[0]][name[1]].shape
-            size = self[name[0]][name[1]].value.size
             if not name[0] in sd:
                 sd[name[0]] = {}
-            sd[name[0]][name[1]] = \
-                np.array(valueList[pos:pos+size]).reshape(shape)
-            pos+=size
+            sd[name[0]][name[1]] = valueList[pos]
+            pos+=1
             if unScale:
                 sd[name[0]][name[1]] = \
-                    self[name[0]][name[1]].unscale2(
-                        sd[name[0]][name[1]])
+                    self[name[0]][name[1]].unscale2(sd[name[0]][name[1]])
         return sd
-        
-    
-class nodeVars(object):
-    '''
-        Class for input variable attributes, variable scaling, 
-        and saving/loading.  I usually expect variables values
-        (the elements of the hist list to be numpy arrays.  If
-        the are not for some reason there could be problems.
-    '''
+
+
+class NodeVars(object):
+    """
+    Class for variable attributes, variable scaling, and saving/loading.
+    """
     def __init__(
-        self, 
-        value=0.0, 
+        self,
+        value=0.0,
         vmin=None,
-        vmax=None, 
-        vdflt=None, 
-        unit="", 
-        vst="user", 
-        vdesc="", 
+        vmax=None,
+        vdflt=None,
+        unit="",
+        vst="user",
+        vdesc="",
         tags=[],
-        nTime=1,
-        ts=0,
         dtype=float,
         dist=Distribution(Distribution.UNIFORM)
     ):
-        self.dtype = dtype
-        value = np.array(value, dtype)
-        self.shape = (value.shape)
+        """
+        Initialize the variable list
+
+        Args:
+            value: variable value
+            vmin: min value
+            vmax: max value
+            vdflt: default value
+            unit: string description of units of measure
+            vst: A sring description of a group for the variable {"user", "sinter"}
+            vdesc: A sentence or so describing the variable
+            tags: List of string tags for the variable
+            dtype: type of data {float, int, str}
+            dist: distribution type for UQ
+        """
+        self.dtype = dtype # type of data
+        value = value
         if vmin is None:
             vmin = value
         if vmax is None:
             vmax = value
         if vdflt is None:
             vdflt = value
-        self.hist = [np.zeros(self.shape, dtype)]*nTime #value history
-        self.ts = ts # Current time step
         self.min = vmin # maximum value
         self.max = vmax # minimum value
         self.default = vdflt # default value
@@ -303,18 +329,17 @@ class nodeVars(object):
         self.scaling = 'None' # type of variable scaling
         self.minScaled = 0.0 # scaled minimum
         self.maxScaled = 0.0 # scaled maximum
-        self.tags = tags # set of tags for use in heat integration or 
-                         # other searching and sorting 
+        self.tags = tags # set of tags for use in heat integration or
+                         # other searching and sorting
         self.con = False # true if the input is set through connection
-        self.toNumpy() # I generally expect variable values to be numpy
-                       # objects, but need to convert to lists before 
-                       # saving and sometimes the value may be set as
-                       # a python float or list.
         self.setValue(value) # value of the variable
         self.setType(dtype)
         self.dist = copy.copy(dist)
-        
+
     def typeStr(self):
+        """
+        Convert the data type to a string for saving the variable to json
+        """
         if self.dtype == float:
             return 'float'
         elif self.dtype == int:
@@ -322,219 +347,62 @@ class nodeVars(object):
         elif self.dtype == str:
             return 'str'
         else:
-            raise nodeVarEx(11, msg=str(dtype)) 
-    
-    def setShape(self, shape = ()):
-        '''
-            This sets the shape of the array for the variable
-            if the shapes of the values in hist, max, min, or default
-            does not match up with shape they will be reshaped. When
-            reshaping all elements will be set to 0.0.  If shape has
-            no elements values will be scalars
-        '''
-        nodeVarMaxDim = 2
-        try:
-            assert isinstance(shape, (tuple))
-        except:
-            raise nodeVarEx(
-                code = 2, 
-                msg = "dimension given: " + str(shape), 
-                tb = traceback.format_exc())
-        if isinstance(shape, int):
-            if 1 > nodeVarMaxDim: 
-                # in this case you don't even want to allow vectors
-                raise nodeVarEx(
-                    code = 3, 
-                    msg = "dim = " + 1, 
-                    tb = None)
-        elif len(shape) > nodeVarMaxDim:
-            raise nodeVarEx(
-                code = 3, 
-                msg = "dim = " + len(shape), 
-                tb = None)
-        self.shape = shape
-        self.min = np.resize(self.min, shape)
-        self.max = np.resize(self.max, shape)
-        self.default = np.resize(self.default, shape)
-        for i in range(len(self.hist)):
-            self.hist[i] = np.resize(self.hist[i], shape)
-    
-    def listIndexes(self):
-        if len(self.shape) == 0:
-            #no indexes (its a scalar)
-            return None
-        l1 = [0]*len(self.shape)
-        l2 = []
-        pos = len(self.shape) - 1
-        while(l1[0] < self.shape[0]):
-            if l1[pos] == self.shape[pos] and pos != 0:
-                l1[pos] = 0
-                pos -= 1
-            elif pos != len(self.shape) - 1:
-                pos = len(self.shape) - 1
-                l2.append(copy.copy(l1))
-            else:
-                l2.append(tuple(l1))
-            l1[pos] += 1     
-        return l2
-        
-    def indexToString(self, index):
-        sl = ['']*len(index)
-        for p in range(len(index)):
-            sl[p] = '[{0}]'.format(index[p])
-        return ''.join(sl)
-       
-    def stringToIndex(self, istr):
-        l = istr.strip('[]').split('][')
-        for i in range(len(l)):
-            l[i] = int(float(l[i]))
-        return l
-    
-    def roundHistInt(self):
-        '''
-            This rounds the whole history to 
-            to nearest int, still float type
-        '''
-        for i in range(len(self.hist)):
-            self.hist[i] = np.rint(self.hist[i])
-        
-    def roundValueInt(self):
-        '''
-            This rounds the value at the current
-            time step to nearest int, still float type
-        '''
-        self.value = np.rint(self.value)
-    
+            raise NodeVarEx(11, msg=str(dtype))
+
     def makeNaN(self):
-        for i in range(len(self.hist)):
-            self.hist[i] = self.hist[i]*np.nan
-    
-    def toIntRound(self):
-        '''
-            This rounds everything in a variable to an int
-            this includes the max, mix, and default. And 
-            changes the type to int
-        '''
-        self.min = np.rint(self.min)
-        self.max = np.rint(self.max)
-        self.default = np.rint(self.default)
-        for i in range(len(self.hist)):
-            self.hist[i] = np.rint(self.hist[i])
-        self.setType(int)
-    
+        """
+        Set the value to NaN
+        """
+        self.value = float('nan')
+
     def setType(self, dtype=float):
-        # for now only float and int are accepted but
-        # may add more types later
+        """
+        Convert from the current dtype to a new one.
+        """
         if dtype == "float":
             dtype = float
-        elif dtype == 'int':
+        elif dtype == "int":
             dtype = int
         elif dtype == "str":
             dtype = str
         if not dtype in [float, int, str]:
-            raise nodeVarEx(11, msg=str(dtype))
-        self.dtype = dtype 
-        for i in range(len(self.hist)):
-            self.hist[i] = self.hist[i].astype(dtype)
-        self.min = self.min.astype(dtype)
-        self.max = self.max.astype(dtype)
-        self.default = self.default.astype(dtype)
+            raise NodeVarEx(11, msg=str(dtype))
+        self.dtype = dtype
+        self.value = dtype(self.value)
+        self.min = dtype(self.min)
+        self.max = dtype(self.max)
+        self.default = dtype(self.default)
 
-    def setTimeStep(self, step):
-        try:
-            self.value = self.hist[step]
-        except IndexError:
-            raise nodeVarEx(
-                code = 22, 
-                msg = "index = " + str(step), 
-                tb = traceback.format_exc())
-        except Exception as e:
-            raise nodeVarEx(
-                code = 0, 
-                msg = "Error setting value from history", 
-                e = e, 
-                tb = traceback.format_exc())
-        self.ts = step
-    
     def setMin(self, val):
-        val = np.array(val, dtype=self.dtype)
-        if val.shape != self.shape:
-            raise nodeVarEx(
-                code = 4, 
-                msg = "current shape: {0}, new value shape {1}".\
-                    format(self.shape, val.shape),
-                tb = None)
-        self.__min = val
-        
+        """
+        Set the minimum value
+        """
+        self.__min = self.dtype(val)
+
     def setMax(self, val):
-        val = np.array(val, dtype=self.dtype)
-        if val.shape != self.shape:
-            raise nodeVarEx(
-                code = 4, 
-                msg = "current shape: {0}, new value shape {1}".\
-                    format(self.shape, val.shape),
-                tb = None)
-        self.__max = val
-        
+        """
+        Set the maximum value
+        """
+        self.__max = self.dtype(val)
+
     def setDefault(self, val):
-        val = np.array(val, dtype=self.dtype)
-        if val.shape != self.shape:
-            raise nodeVarEx(
-                code = 4, 
-                msg = "current shape: {0}, new value shape {1}".\
-                    format(self.shape, val.shape),
-                tb = None)
-        self.__default = val
-    
-    def getValue(self):
-        try:
-            return self.hist[self.ts]
-        except IndexError:
-            raise nodeVarEx(
-                code = 22, 
-                msg = "index = " + str(step), 
-                tb = traceback.format_exc())
-        except Exception as e:
-            raise nodeVarEx(
-                code = 0, 
-                msg = "Error getting value from history", 
-                e = e, 
-                tb = traceback.format_exc())
-    
+        """
+        Set the default value
+        """
+        self.__default = self.dtype(val)
+
     def setValue(self, val):
-        '''
-            Set the value of a variable = is overloaded to use this
-        '''
-        val = np.array(val)
-        if val.shape != self.shape:
-            # try to reshape, this lets you change the size of vector
-            # and matrix varaibles by entering a value with a new shape
-            # this may be a little dangerous.
-            self.setShape(val.shape)
-        try:
-            self.hist[self.ts] = np.array(val)
-            self.hist[self.ts] = self.hist[self.ts].astype(self.dtype)
-        except IndexError:
-            raise nodeVarEx(
-                code = 22, 
-                msg = "index = " + str(step), 
-                tb = traceback.format_exc())
-        except Exception as e:
-            raise nodeVarEx(
-                code = 0, 
-                msg = "Error setting value from history", 
-                e = e, 
-                tb = traceback.format_exc())
+        """
+        Set the variable value
+        """
+        self.__value = self.dtype(val)
 
     def __getattr__(self, name):
-        '''
-            This should only be called if a variable doesn't have the
-            attribute name.  If the attribute is value we should return
-            the value at the curent time step.  Otherwise just raise an
-            attribute error, because the variable has no attribute name.
-        '''
+        """
+        This should only be called if a variable doesn't have the attribute name.
+        """
         if name == 'value':
-            return self.getValue()
+            return self.__value
         elif name == 'min':
             return self.__min
         elif name == 'max':
@@ -543,13 +411,12 @@ class nodeVars(object):
             return self.__default
         else:
             raise AttributeError
-        
+
     def __setattr__(self, name, val):
-        '''
-            This is called when setting an attribute, if the attribute
-            is value, want to set the value at the current time step
-            otherwise just do the noramal thing
-        '''
+        """
+        This is called when setting an attribute, if the attribute is value,
+        min, max, default, convert data type, otherwise do normal stuff
+        """
         if name == 'value':
             self.setValue(val)
         elif name == 'min':
@@ -559,152 +426,101 @@ class nodeVars(object):
         elif name == 'default':
             self.setDefault(val)
         else:
-            object.__setattr__(self, name, val)
-    
-    def isScalar(self):
-        if len(self.value.shape) == 0:
-            return True
-        return False
-    
-    def nElements(self):
-        if len(self.value.shape) == 0:
-            return 1
-        n = 1
-        for x in self.value.shape:
-            n *= x
-        return n
-    
-    def toNumpy(self):
-        '''
-            Converts python numbers or lists of numbers to numpy form.
-            When reading json back from saved files or GUI forms the 
-            results are Python numbers or lists, so this makes sure
-            all numerical values are in numpy form.
-        '''
-        for i in range(len(self.hist)):
-            self.hist[i] = np.array(self.hist[i])
-        self.min       = np.array( self.min )
-        self.max       = np.array( self.max )
-        self.default   = np.array( self.default )
-        self.scaled    = np.array( self.scaled )
-        self.minScaled = np.array( self.minScaled )
-        self.maxScaled = np.array( self.maxScaled )
-    
+            super(NodeVars, self).__setattr__(name, val)
+
     def scale(self):
-        '''
-            Scale the value stored in the value field and
-            put the result in the scaled field.
-        '''
+        """
+        Scale the value stored in the value field and put the result in the
+        scaled field.
+        """
         self.scaled = self.scale2(self.value)
-    
+
     def unscale(self):
-        '''
-            Unscale the value stored in the scaled field and
-            put the result in the value field.
-        '''
+        """
+        Unscale the value stored in the scaled field and put the result in the
+        value field.
+        """
         self.value = self.unscale2(self.scaled)
-    
+
     def scaleBounds(self):
-        '''
-            Calculate the scaled bounds and store the results in 
-            the minScaled and maxScaled fields.
-        '''
+        """
+        Calculate the scaled bounds and store the results in the minScaled and
+        maxScaled fields.
+        """
         self.minScaled = self.scale2(self.min)
         self.maxScaled = self.scale2(self.max)
-    
+
     def scale2(self, val):
-        '''
-            Use the variable's bounds and scale type to scale a 
-            numpy vector.  The scales all run from 0 at the minimum 
-            to 10 at the maximum, except None which does nothing.
-        '''
+        """
+        Use the variable's bounds and scale type to scale.  The scales all run
+        from 0 at the minimum to 10 at the maximum, except None which does
+        nothing.
+        """
         try:
             if self.scaling == 'None':
                 out = val
             elif self.scaling == 'Linear':
                 out = 10*(val - self.min)/(self.max - self.min)
             elif self.scaling == 'Log':
-                out = 10*(np.log10(val) - np.log10(self.min))/ \
-                    (np.log10(self.max) - np.log10(self.min))
+                out = 10*(log10(val) - log10(self.min))/ \
+                    (log10(self.max) - log10(self.min))
             elif self.scaling == 'Power':
-                out = 10*(np.power(10, val) - np.power(10,self.min))/ \
-                    (np.power(10, self.max) - np.power(10, self.min))
+                out = 10*(power(10, val) - power(10,self.min))/ \
+                    (power(10, self.max) - power(10, self.min))
             elif self.scaling == 'Log 2':
-                out = 10*np.log10(9*(val - self.min)/ \
+                out = 10*log10(9*(val - self.min)/ \
                     (self.max - self.min)+1)
             elif self.scaling == 'Power 2':
-                out = 10.0/9.0*(np.power(10,(val - self.min)/ \
+                out = 10.0/9.0*(power(10,(val - self.min)/ \
                     (self.max - self.min))-1)
             else:
                 raise
         except:
-            raise nodeVarEx(
-                code = 9, 
-                msg = "value = {0}, scaling method = {1}" \
-                    .format(val, self.scaling),
-                tb = traceback.format_exc())
-        return np.array(out)
-    
+            raise NodeVarEx(
+                code = 9,
+                msg = "value = {0}, scaling method = {1}".format(val, self.scaling))
+        return out
+
     def unscale2(self, val):
-        '''
-            Convert value to an unscaled value using the 
-            variables settings.
-        '''
+        """
+        Convert value to an unscaled value using the variables settings.
+        """
         try:
             if self.scaling == 'None':
                 out = val
             elif self.scaling == 'Linear':
                 out = val*(self.max - self.min)/10.0 + self.min
             elif self.scaling == 'Log':
-                out = np.power(self.min*(self.max/self.min),(val/10.0))
+                out = power(self.min*(self.max/self.min),(val/10.0))
             elif self.scaling == 'Power':
-                out = np.log10((val/10.0)*(np.power(10,self.max) - \
-                    np.power(10,self.min))+np.power(10, self.min))
+                out = log10((val/10.0)*(power(10,self.max) - \
+                    power(10,self.min))+power(10, self.min))
             elif self.scaling == 'Log 2':
-                out = (np.power(10, val/10.0)-1)*(self.max-self.min)/ \
+                out = (power(10, val/10.0)-1)*(self.max-self.min)/ \
                     9.0 + self.min
             elif self.scaling == 'Power 2':
-                out = np.log10(9.0*val/10.0 + 1)*(self.max-self.min) + \
+                out = log10(9.0*val/10.0 + 1)*(self.max-self.min) + \
                     self.min
             else:
                 raise
         except:
-            raise nodeVarEx(
-                code = 9, 
-                msg = "value = {0}, scaling method = {1}". \
-                    format(val, self.scaling),
-                tb = traceback.format_exc())
-        return np.array(out)
-            
+            raise NodeVarEx(
+                code = 9,
+                msg = "value = {0}, scaling method = {1}".\
+                    format(val, self.scaling))
+        return out
+
     def saveDict(self):
-        '''
-            Save an input variable's content to a dictionary.  This is
-            mostly used to save to a file but can also be used as an 
-            ugly way to make a copy of a variable.
-        '''
+        """
+        Save a variable's content to a dictionary. This is mostly used to save
+        to a file but can also be used as an ugly way to make a copy of a
+        variable.
+        """
         sd = dict()
-        # if values are in numpy format (they almost always are)
-        # convert to list or python number
         vmin = self.min
         vmax = self.max
         vdefault = self.default
-        hist = [0]*len(self.hist)
-        for i in range(len(self.hist)):
-            if type(self.hist[i]).__module__ == np.__name__:
-                hist[i] = self.hist[i].tolist()
-            else:
-                logging.getLogger("foqus." + __name__).debug(
-                   "Variable not in numpy format Val: {0}, Desc: {1}"\
-                    .format(value, self.desc)) 
-        if type(self.min).__module__ == np.__name__:
-            vmin = self.min.tolist()
-        if type(self.max).__module__ == np.__name__:
-            vmax = self.max.tolist()
-        if type(self.default).__module__ == np.__name__: 
-            vdefault = self.default.tolist()
-        sd["shape"]      = self.shape
-        sd["hist"]       = hist
-        sd["ts"]         = self.ts
+        value = self.value
         if self.dtype == float:
             sd["dtype"] = 'float'
         elif self.dtype == int:
@@ -712,24 +528,28 @@ class nodeVars(object):
         elif self.dtype == str:
             sd["dtype"] = 'str'
         else:
-            raise nodeVarEx(11, msg = str(dtype))
-        sd["min"]        = vmin
-        sd["max"]        = vmax
-        sd["default"]    = vdefault
-        sd["unit"]       = self.unit
-        sd["set"]        = self.set
-        sd["desc"]       = self.desc
-        sd["scaling"]    = self.scaling
-        sd["tags"]       = self.tags
-        sd["dist"]       = self.dist.saveDict()
+            raise NodeVarEx(11, msg = str(dtype))
+        sd["value"] = value
+        sd["min"] = vmin
+        sd["max"] = vmax
+        sd["default"] = vdefault
+        sd["unit"] = self.unit
+        sd["set"] = self.set
+        sd["desc"] = self.desc
+        sd["scaling"] = self.scaling
+        sd["tags"] = self.tags
+        sd["dist"] = self.dist.saveDict()
         return sd
-    
+
     def loadDict(self, sd):
-        '''
-            Load the contents of a dictionary created by saveDict(), 
-            and possibly read back in as part of a json file.
-        '''
-        assert isinstance(sd, dict) 
+        """
+        Load the contents of a dictionary created by saveDict(), and possibly
+        read back in as part of a json file.
+
+        Args:
+            sd: dict of data
+        """
+        assert isinstance(sd, dict)
         dtype = sd.get('dtype', 'float')
         if dtype == 'float':
             self.dtype = float
@@ -738,45 +558,24 @@ class nodeVars(object):
         elif dtype == 'str':
             self.dtype = str
         else:
-            raise nodeVarEx(11, msg=str(dtype))
-        self.ts = sd.get("ts", 0)
-        self.shape = sd.get("shape", None)
-        if self.shape != None: self.shape = tuple(self.shape)
-        # Depending on how old the session file is
-        # that we are trying to read it should either
-        # have history or value
+            raise NodeVarEx(11, msg=str(dtype))
+        # Depending on how old the session file is, have history or value
         hist = sd.get("hist", None)
         value = sd.get("value", None)
-        if hist:
-            try:
-                assert isinstance(hist, list)
-            except:
-                raise nodeVarEx(10)
-            self.hist = hist
-            for i in range(len(hist)):
-                hist[i] = np.array(hist[i], dtype=self.dtype)
-        elif not value == None:
-            value = np.array(value, dtype = dtype)
-            if not self.shape:
-                self.setShape(value.shape)
+        if hist is not None:
+            self.value = hist[0]
+        else:
             self.value = value
-        self.min = np.array(sd.get("min", 0), dtype=self.dtype)
-        self.max = np.array(sd.get("max", 0), dtype=self.dtype)
-        self.default = \
-            np.array(sd.get("default", 0), dtype=self.dtype)
+        self.min = sd.get("min", 0)
+        self.max = sd.get("max", 0)
+        self.default = sd.get("default", 0)
         self.unit = sd.get("unit", "")
         self.set = sd.get("set", "user")
         self.desc = sd.get("desc", "")
         self.scaling = sd.get("scaling", 'None')
         self.tags = sd.get("tags", [])
         dist = sd.get("dist", None)
-        if dist:
-            self.dist.loadDict(dist)            
+        if dist is not None:
+            self.dist.loadDict(dist)
         self.scale()
         self.scaleBounds()
-            
-class nodeOutVars(nodeVars):
-    pass
-
-class nodeInVars(nodeVars):
-    pass

@@ -124,7 +124,7 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="1" column="0">
-       <widget class="InputPriorTable" name="inputPrior_table">
+       <widget class="InferenceInputsTable" name="inputPrior_table">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -583,9 +583,9 @@ to display in ‘Input Settings”.</string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>InputPriorTable</class>
+   <class>InferenceInputsTable</class>
    <extends>QTableWidget</extends>
-   <header>foqus_lib/gui/uq/InputPriorTable</header>
+   <header>foqus_lib/gui/common/InferenceInputsTable</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -492,7 +492,7 @@ class Visualizer:
                 Common.showError(error)
                 return None
             L = len(zdat)
-            M = math.sqrt(L)
+            M = int(math.sqrt(L))
             zdatm = np.reshape(zdatm, [M,M], order='F')
             #xlabel = inVarNames[x[0]-1]
             #ylabel = inVarNames[x[1]-1]

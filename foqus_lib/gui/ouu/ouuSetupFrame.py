@@ -22,7 +22,7 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 #from foqus_lib.gui.uq.Preview import *
 #from InputPriorTable import InputPriorTable
-from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.framework.ouu.OUU import OUU
 
 from PyQt5 import QtCore, uic

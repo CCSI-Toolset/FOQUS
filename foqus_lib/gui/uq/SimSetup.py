@@ -15,7 +15,7 @@ from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
 from Preview import Preview
-from InputPriorTable import InputPriorTable
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 #from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic

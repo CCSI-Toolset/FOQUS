@@ -109,7 +109,7 @@ and the model is specified as a “driver” within.</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_9">
       <item row="0" column="0">
-       <widget class="InputPriorTable" name="input_table">
+       <widget class="OUUInputsTable" name="input_table">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -938,9 +938,6 @@ Progress will be shown below. </string>
             <attribute name="horizontalHeaderVisible">
              <bool>false</bool>
             </attribute>
-            <attribute name="horizontalHeaderVisible">
-             <bool>false</bool>
-            </attribute>
             <row>
              <property name="text">
               <string>Iteration</string>
@@ -991,9 +988,9 @@ Progress will be shown below. </string>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>InputPriorTable</class>
+   <class>OUUInputsTable</class>
    <extends>QTableWidget</extends>
-   <header>foqus_lib/gui/uq/InputPriorTable</header>
+   <header>foqus_lib/gui/ouu/OUUInputsTable</header>
   </customwidget>
  </customwidgets>
  <resources/>

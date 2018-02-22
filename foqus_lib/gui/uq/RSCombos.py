@@ -203,7 +203,7 @@ class RSCombo2(QComboBox):
         return enable
 
     def showMars(self):
-        if self.receivers(currentIndexChanged[int]) > 0 and self.isSetFileSignal:
+        if self.receivers(self.currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         self.clear()
         self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARS))
@@ -260,7 +260,7 @@ class RSCombo2(QComboBox):
         return self.userFiles[index - 1]
 
     def showNothing(self):
-        if self.receivers(currentIndexChanged[int]) > 0 and self.isSetFileSignal:
+        if self.receivers(self.currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         self.clear()
         self.setEnabled(False)

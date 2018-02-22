@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>979</width>
-    <height>778</height>
+    <height>858</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -145,13 +145,6 @@
           <widget class="QPushButton" name="addSamplesButton">
            <property name="text">
             <string>Add Samples...</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="irevealFSButton">
-           <property name="text">
-            <string>Create Flowsheet from iREVEAL File...</string>
            </property>
           </widget>
          </item>

@@ -1,1 +1,0 @@
-@START /MIN "" %JAVA_HOME%\bin\javaw.exe -Dfile.encoding=UTF-8 -jar "%DMF_HOME%\dmf_lib\java\build\dmf_client.jar"

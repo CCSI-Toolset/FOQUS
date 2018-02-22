@@ -37,19 +37,19 @@ print("Setting version as {0}".format(ver.version))
 install_requires=[
     'TurbineClient',
     'pyparsing',
-    'py4j',
+    #'py4j',
     'requests',
-    'networkx',
+    #'networkx',
     'adodbapi > 2.6.0',
-    'redis',
-    'logstash_formatter',
+    #'redis',
+    #'logstash_formatter',
     'matplotlib',
     'scipy',
     'numpy',
     'cma'],
 
-dependency_links=[]
-#dependency_links=['https://github.com/CCSI-Toolset/turb_client@master']
+#dependency_links=[]
+dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
 
 # Set all the package parameters
 pkg_name             = "foqus"
@@ -78,10 +78,7 @@ setup(
     scripts = [
         'foqus.py',
         'icons_rc.py',
-        'foqusClient.py',
-        'DMF_Browser.py',
-        'DMF_BasicDataIngest.py',
-        'DMF_Sim_Ingester.py'],
+        'foqusClient.py'],
     install_requires=install_requires,
     dependency_links=dependency_links
 )

@@ -585,7 +585,7 @@ to display in ‘Input Settings”.</string>
   <customwidget>
    <class>InferenceInputsTable</class>
    <extends>QTableWidget</extends>
-   <header>foqus_lib/gui/uq/InferenceInputsTable</header>
+   <header>foqus_lib/gui/common/InferenceInputsTable</header>
   </customwidget>
  </customwidgets>
  <resources/>

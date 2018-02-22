@@ -23,9 +23,8 @@ from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
 from AnalysisInfoDialog import *
 from InferenceDialog import *
-from InputPriorTable import *
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 import RSCombos
-from InputPriorTable import InputPriorTable
 
 #from AnalysisDialog_UI import Ui_Dialog
 from PyQt5 import uic

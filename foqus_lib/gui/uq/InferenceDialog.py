@@ -11,7 +11,7 @@ from foqus_lib.framework.solventfit.SolventFit import SolventFit
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
 import RSCombos
-from InputPriorTable import InputPriorTable
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 #from InferenceDialog_UI import Ui_Dialog
 from PyQt5 import QtCore, uic

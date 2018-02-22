@@ -10,7 +10,7 @@ from foqus_lib.framework.solventfit.SolventFit import SolventFit
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.gui.uq import RSCombos
-from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt

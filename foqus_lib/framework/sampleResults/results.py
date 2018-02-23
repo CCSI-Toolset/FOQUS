@@ -188,9 +188,9 @@ class Results(pd.DataFrame):
             "__columns":list(self.columns),
             "__indexes":list(self.index),
             "__filters":{},
-            "__curent_filter":self.__curent_filter}
+            "__current_filter":self._current_filter}
         for f in self.filters:
-            sd["filters"][f] = self.filters[i].saveDict()
+            sd["__filters"][f] = self.filters[i].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
         return sd
@@ -200,7 +200,7 @@ class Results(pd.DataFrame):
         Load the data from a dict, the dict can be read from json
         """
         self.filters = {}
-        self.__curent_filter = sd.get("__curent_filter", None)
+        self._current_filter = sd.get("__current_filter", None)
         self.drop(self.index, inplace=True)
         self.drop(self.columns, axis=1, inplace=True)
         self["set"] = []
@@ -215,8 +215,8 @@ class Results(pd.DataFrame):
             logging.getLogger("foqus." + __name__).exception(
                 "Error loading stored results")
         try:
-            for i in sd["filters"]:
-                self.filters[i] = dataFilter().loadDict(sd["filters"][i])
+            for i in sd["__filters"]:
+                self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
         except:
             pass
         self.update_filter_indexes()

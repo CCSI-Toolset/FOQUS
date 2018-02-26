@@ -58,7 +58,6 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
 
     def getButton(self, w, label):
         blist = w.buttons()
-        #print [b.text() for b in blist]
         for b in blist:
             if b.text().replace("&", "") == label:
                 return b
@@ -78,13 +77,11 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
 
     def msgBoxOK(self):
         w = self.getWindow()
-        #print w
         if isinstance(w, QMessageBox):
             self.pressButton(w, 'OK')
 
     def msgBoxYes(self):
         w = self.getWindow()
-        print w
         if isinstance(w, QMessageBox):
             self.pressButton(w, 'Yes')
 
@@ -135,7 +132,6 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.setPage(os.path.join(self.helpPath, "content.html"))
 
     def setPage(self, page):
-        print page
         self.textBrowser.load(QtCore.QUrl.fromLocalFile(page))
         self.textBrowser.show()
 

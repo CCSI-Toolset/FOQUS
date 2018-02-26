@@ -29,6 +29,7 @@ from nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
+from foqus_lib.framework.at_dict.at_dict import AtDict
 
 class NodeOptionSets:
     OTHER_OPTIONS = 0
@@ -248,7 +249,6 @@ class Node():
         sd["turbApp"] = self.turbApp
         sd["turbSession"] = self.turbSession
         sd["synced"] = self.synced
-        sd["browser_conf"] = self.browser_conf
         return sd
 
     def loadDict(self, sd):
@@ -268,7 +268,6 @@ class Node():
         self.calcError = sd.get("calcError", -1)
         self.turbApp = sd.get("turbApp", None)
         self.turbSession = sd.get("turbSession", 0)
-        self.browser_conf = sd.get("browser_conf", None)
         self.options = optionList()
         o = sd.get("options", None)
         if o:
@@ -303,11 +302,10 @@ class Node():
             raise NodeEx(code=61, msg=str(s))
 
     def setSim(self, newType=None, newModel=None,
-               force=False, ids=None, browser_conf=None):
-        '''
-            Set-up the node to run a simulation with Turbine
-        '''
-        self.browser_conf = browser_conf
+               force=False, ids=None):
+        """
+        Set-up the node to run a simulation with Turbine
+        """
         if newModel==self.modelName\
             and newType == self.modelType\
             and force == False:
@@ -528,8 +526,8 @@ class Node():
         #
         # Input variable values are stored in the x dictionary and
         # outputs are stored in the f dictionary
-        x = dict()
-        f = dict()
+        x = AtDict()
+        f = AtDict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
         for vkey, var in self.inVars.iteritems():
             x[vkey] = var.value

@@ -6,23 +6,7 @@ from urllib2 import urlopen
 
 from StringIO import StringIO
 
-from dmf_lib.common.common import (
-    DMF_HOME,
-    PROP_HEADER,
-    PROPERTIES_EXT,
-    REPO_PROPERTIES_UNIX_PATH,
-    REPO_PROPERTIES_WIN_PATH,
-    REQUESTS_TIMEOUT,
-    SHARE_LOGIN_EXT,
-    UNIX_PATH_SEPARATOR,
-    WIN_PATH_SEPARATOR,
-    WINDOWS)
-from dmf_lib.common.methods import Common
-from dmf_lib.dialogs.login import LoginDialog
-from dmf_lib.dialogs.select_repo_dialog import SelectRepoDialog
-from dmf_lib.dialogs.status_dialog import StatusDialog
-
-if platform.system().startswith(WINDOWS):
+if os.name == 'nt':
     try:
         import win32process
     except:
@@ -40,8 +24,8 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
         self.setupUi(self)
         self.dat = dat
         self.folderBrowse_button.clicked.connect(self.chooseInputFolder)
-        self.ingest_button.clicked.connect(self.ingest)
-
+        #self.ingest_button.clicked.connect(self.ingest)
+        """
         config = StringIO()
         # Fake properties header to allow working with configParser
         config.write('[' + PROP_HEADER + ']\n')
@@ -55,7 +39,7 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
         self.repo_properties = [f for f in os.listdir(self.PROP_LOC)
                                 if os.path.isfile(os.path.join(
                                     self.PROP_LOC, f))
-                                and f.endswith(PROPERTIES_EXT)]
+                                and f.endswith(PROPERTIES_EXT)]"""
 
     def chooseInputFolder(self):
         self.fname = QFileDialog.getExistingDirectory(self, "Input Directory")
@@ -64,6 +48,7 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
         else:
             self.selected_folder.setText(self.fname)
 
+    """
     def ingest(self):
         try:
             self.fname
@@ -139,4 +124,4 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
         except AttributeError, e:
             logging.getLogger("foqus." + __name__).exception(e)
             StatusDialog.displayStatus("Please select a directory to ingest.")
-            self.ingest_button.setText("Ingest")
+            self.ingest_button.setText("Ingest")"""

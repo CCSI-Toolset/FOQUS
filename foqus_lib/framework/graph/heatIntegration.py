@@ -7,52 +7,52 @@ def makeHeatIntegrationNode(node):
 	#should only need to be called once after that everything gets saved
 	#
 	# Input variables
-	node.inVars["Hrat"] = gn.nodeInVars(
+	node.inVars["Hrat"] = gn.nodeVars(
 		value = 10.0,
 		vmax  = 500.0,
 		vdflt = 10.0,
 		unit  = "K",
 		vdesc = "Minimum approach temperature",
 		vst   = "sinter")
-	node.inVars["Max.Time"] = gn.nodeInVars(
+	node.inVars["Max.Time"] = gn.nodeVars(
 		value = 60.0,
 		vmax  = 10000.0,
 		vdflt = 60.0,
 		unit  = "second",
 		vdesc = "Maximum allowable time for heat integration",
 		vst   = "sinter")
-	node.inVars["Net.Power"] = gn.nodeInVars(
+	node.inVars["Net.Power"] = gn.nodeVars(
                 value = None,
 		vmax  = 1000.0,
 		unit  = "MW",
 		vdesc = "Net power output without CCS",
 		vst   = "sinter")
 	# Output variables
-	node.outVars["Utility.Cost"] = gn.nodeOutVars(
+	node.outVars["Utility.Cost"] = gn.nodeVars(
 		unit  = "$/hr",
 		vdesc = "Total utility cost",
 		vst   = "sinter")
-	node.outVars["HP_Steam.Consumption"] = gn.nodeOutVars(
+	node.outVars["HP_Steam.Consumption"] = gn.nodeVars(
 		unit  = "GJ/hr",
 		vdesc = "High-pressure steam (230 C) consumption (Cost: $8.04/GJ)",
 		vst   = "sinter")
-	node.outVars["MP_Steam.Consumption"] = gn.nodeOutVars(
+	node.outVars["MP_Steam.Consumption"] = gn.nodeVars(
 		unit  = "GJ/hr",
 		vdesc = "Medium-pressure steam (164 C) consumption (Cost: $6.25/GJ)",
 		vst   = "sinter")
-	node.outVars["Cooling_Water.Consumption"] = gn.nodeOutVars(
+	node.outVars["Cooling_Water.Consumption"] = gn.nodeVars(
 		unit = "GJ/hr",
 		vdesc = "Cooling water (20 C) consumption (Cost: $0.21/GJ)",
 		vst   = "sinter")
-	node.outVars["FH.Heat.Addition"] = gn.nodeOutVars(
+	node.outVars["FH.Heat.Addition"] = gn.nodeVars(
 		unit = "GJ/hr",
 		vdesc = "Heat addition to feed water heaters",
 		vst   = "sinter")
-	node.outVars["Min.No.HX"] = gn.nodeOutVars(
+	node.outVars["Min.No.HX"] = gn.nodeVars(
 		unit = "None",
 		vdesc = "Minimum number of heat exchangers",
 		vst   = "sinter")
-		
+
 def heatIntegrationCalc(node):
 	#Search for the block tag and create a set of blocks
 	blockSet = set()    # set of all blocks
@@ -62,16 +62,16 @@ def heatIntegrationCalc(node):
 	pointHSet = set()   # set of point sources for heat
 	pointCSet = set()   # set of point sinks for heat
 	blockLookup = dict()# look up the block given a variable name
-	
+
 	nameSets = [node.gr.xnames, node.gr.fnames] # input and output variable names
-	varSets = [node.gr.x, node.gr.f]            # input and output variables 
+	varSets = [node.gr.x, node.gr.f]            # input and output variables
 	for ii in range(2):
 		vnames = nameSets[ii]
 		vars = varSets[ii]
 		for name in vnames: # All the inputs
 			blktgs = [tag.split() for tag in vars[name].tags if "Block" in tag]
 			# I think there should only be one block tag per variable but
-			# maybe there is a reason for more 
+			# maybe there is a reason for more
 			for tag in blktgs:
 				blockName = tag[1].strip()
 				blockSet.add( blockName )
@@ -85,7 +85,7 @@ def heatIntegrationCalc(node):
 				if "Point_Hot" in vars[name].tags:
 					pointHSet.add( blockName )
 				if "Point_Cold" in vars[name].tags:
-					pointCSet.add( blockName )		
+					pointCSet.add( blockName )
 
 
 	heaterVars = dict() # format [Tin, Tout, Qin, Qout]
@@ -216,7 +216,7 @@ def heatIntegrationCalc(node):
 				hxHIsH[hxH] = True
 			else:
 				hxHFCp[hxH] = (abs(hxHVars[hxH][2]) + 0.0)/(hxHTout[hxH] - hxHTin[hxH])
-				hxHIsC[hxH] = True                                                                              
+				hxHIsC[hxH] = True
 	for hxC in hxCSet:      # parameters for cold (or hot) streams involved in the cold side of heat exchangers
 		hxCIsC[hxC] = False
 		hxCIsH[hxC] = False
@@ -257,7 +257,7 @@ def heatIntegrationCalc(node):
 	hotUCost   = dict( [("HP_Steam", 8.04), ("MP_Steam", 6.25)] )             # cost of hot utility ($/GJ)
 	coldUCost  = dict( [("Cooling_Water", 0.21)] )                          # cost of cold utility ($/GJ)
 
-	
+
 	#grab values from input variables
 	HRAT = node.inVars["Hrat"].value                # heat recovery approach temperature (K or C)
 	MaxTime = node.inVars["Max.Time"].value          # maximum allowable time for heat integration (second)
@@ -269,9 +269,9 @@ def heatIntegrationCalc(node):
 	feedTin  = dict( [("FH1", 34.0), ("FH2", 64.7), ("FH3", 95.9), ("FH4", 127.8), ("FH5", 159.6)] )        # inlet temperature of feed water heater (C)
 	feedTout = dict( [("FH1", 64.7), ("FH2", 95.9), ("FH3", 127.8), ("FH4", 159.6), ("FH5", 194.6)] )       # outlet temperature of feed water heater (C)
 	feedFCp  = dict()                                                                                       # flow rate * heat capacity for feed water heater (GJ/hr)
-	feedRank = dict( [("FH1", 1), ("FH2", 2), ("FH3", 3), ("FH4", 4), ("FH5", 5)] )                         # order of feed water heaters                
+	feedRank = dict( [("FH1", 1), ("FH2", 2), ("FH3", 3), ("FH4", 4), ("FH5", 5)] )                         # order of feed water heaters
 	feedIs   = False                                                                                        # whether feed water heaters exist
-	
+
 	if NetPower > 0:
 			feedIs = True
 			feedFCp["FH1"] = 4.5091*NetPower/650.33
@@ -279,8 +279,8 @@ def heatIntegrationCalc(node):
 			feedFCp["FH3"] = 5.7213*NetPower/650.33
 			feedFCp["FH4"] = 5.8258*NetPower/650.33
 			feedFCp["FH5"] = 5.9617*NetPower/650.33
-					
-   
+
+
 	#write GAMS input
 	#
 	try:
@@ -518,13 +518,13 @@ def heatIntegrationCalc(node):
 	if feedIs:
 		for feedC in feedSet:
 				f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ';\n')
-	
+
 	#write whatever
-	
+
 	# done writing GAMS input
 	f.close()
 
-			
+
 	#execute gams code with system call
 	try:
 		process = subprocess.Popen(['gams', 'HeatIntegration.gms', 'lo=0'], cwd = 'gams')
@@ -534,7 +534,7 @@ def heatIntegrationCalc(node):
 		print "Is GAMS installed?  Are the heat integration GAMS files available?"
 		return
 
-	
+
 	#read GAMS output file
 	try:
 		f = open('gams\GamsOutput.txt','r')
@@ -560,13 +560,9 @@ def heatIntegrationCalc(node):
                 node.outVars["FH.Heat.Addition"].value = None
 	node.outVars["Min.No.HX"].value  = int(float((f.readline()).strip()))   # minimum number of heat exchangers
 	print "done with hi calc"
-	
+
 	for var in node.outVars:
                 if node.outVars[var]:
                         node.outVars[var].toNumpy()
 	# done reading GAMS output
 	f.close()
-
-
-	
-	

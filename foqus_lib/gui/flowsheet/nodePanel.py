@@ -24,6 +24,7 @@ from StringIO import StringIO
 
 from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
+from foqus_lib.framework.graph.node import *
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 from foqus_lib.framework.uq.Distribution import Distribution
@@ -628,7 +629,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That input already exists")
                 return
-            self.node.inVars[newName] = nodeInVars()
+            self.node.gr.input.addVariable(self.node.name, newName)
             self.applyChanges()
             self.updateInputVariables()
 
@@ -674,7 +675,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "That output already exists")
                 return
             self.applyChanges()
-            self.node.outVars[newName] = nodeOutVars()
+            self.node.gr.output.addVariable(self.node.name, newName)
             self.updateOutputVariables()
 
     def delOutput(self):

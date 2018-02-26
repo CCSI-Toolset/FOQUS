@@ -27,7 +27,6 @@ import os
 import shutil
 from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 import foqus_lib.gui.helpers.guiHelpers as gh
-import foqus_lib.framework.surrogate.ireveal_json2flowsheet as irfs
 from foqus_lib.framework.session.hhmmss import *
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidget
@@ -82,8 +81,6 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.ovGeneralButton1.clicked.connect(self.ovGeneralButton1Click)
         self.ovGeneralButton2.clicked.connect(self.ovGeneralButton2Click)
         self.addSamplesButton.clicked.connect(self.addSamples)
-        self.irevealFSButton.clicked.connect(self.make_irevealFS)
-        self.irevealFSButton.hide()
         self.prevTool = None
         try:
             self.selectTool(0)
@@ -116,23 +113,6 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             Clear old run messages.
         '''
         self.monitorTextBox.setPlainText("")
-
-    def make_irevealFS(self):
-        '''
-            Read an iREVEAL json config file and add an iREVEAL node
-            to the flowhseet.
-        '''
-        fileName, filtr = QFileDialog.getOpenFileName(
-            self,
-            "Open iREVEAL File",
-            ".".join([self.dat.name, "json"]),
-            "JSON Files (*.json);;All Files (*)")
-        if fileName:
-            irfs.json2flowsheet(self,
-                self.dat.flowsheet,
-                fileName)
-            self.dat.foqusSettings.ireveal_input_file = fileName
-        self.mainWin.refreshFlowsheet()
 
     def stop(self):
         self.pg.terminate()
@@ -173,7 +153,6 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                 cellWidget(row,col)
             lb.clicked.emit()
         wd = self.dat.foqusSettings.working_dir
-        iREVEAL_work_dir = os.path.join(wd, 'iREVEAL')
         src_psuade_data_file = os.path.join(wd, 'psuadeData')
         dest_psuade_data_file = os.path.join(
             iREVEAL_work_dir, 'psuadeData')
@@ -312,7 +291,6 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             Update the contents of the surrogate for to reflect the
             current state of the foqus session.
         '''
-        self.irevealFSButton.hide()
         self.ivGeneralButton1.hide()
         self.ivGeneralButton2.hide()
         self.ovGeneralButton1.hide()
@@ -334,9 +312,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                 self.toolSelectBox.setCurrentIndex(i)
                 self.blockapply = False
         tool = self.toolSelectBox.currentText()
-        if tool == "iREVEAL":
-            self.irevealFSButton.show()
-        elif tool == '':
+        if tool == '':
             return
         pg = self.dat.surrogateMethods.plugins[tool].\
             surrogateMethod(self.dat)

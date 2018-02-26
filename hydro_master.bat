@@ -1,1 +1,0 @@
-turbine_cluster_script.exe -s "127.0.0.1" -u uturbineX -p X3n0F0b3

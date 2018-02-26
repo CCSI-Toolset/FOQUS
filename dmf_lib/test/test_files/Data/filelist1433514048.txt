@@ -1,3 +1,0 @@
-1
-4
-data/NETL_NETL32D_0pctCO2HumidTGA_5-4-2011.txt

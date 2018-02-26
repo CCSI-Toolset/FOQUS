@@ -865,7 +865,7 @@ class Plotter:
         p.show()
 
     @staticmethod
-    def plotRSvalidate(dat,figtitle,title,xlabel,ylabel):
+    def plotRSvalidate(dat,figtitle,title,xlabel,ylabel,error_tol_percent=10):
 
         # show +/- 10% around true values on the predicted vs. actual plot
         show_envelope = True
@@ -906,12 +906,6 @@ class Plotter:
         diag_plot, = ax2.plot([minval, maxval], [minval, maxval], color='k', label=diag_label)
 
         if show_envelope:
-            error = [e/t for e, t in zip(err, truth)]
-            error_tol = max([abs(e) for e in error])
-            if error_tol < 0.01:
-                error_tol_percent = math.ceil(error_tol * 1000)/10
-            else:
-                error_tol_percent = min([math.ceil(error_tol * 100), 10]) # max at 10% tolerance
             error_tol = error_tol_percent * .01
             env_label = 'Actual +/- ' +  str(error_tol_percent) + '%'
             minTruth = min(truth)

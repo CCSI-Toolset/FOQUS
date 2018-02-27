@@ -21,6 +21,9 @@ tested with the following versions. Use other versions at your own risk
 ### Install
 See the [installation](INSTALLmd.) instructions for details.
 
+### FAQ
+See our [FAQ][FAQ.md] for frequently asked questions and answers
+
 ## Authors
 See also the list of [contributors](../contributors) who participated in this project.
 

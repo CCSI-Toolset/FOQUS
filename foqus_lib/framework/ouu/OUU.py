@@ -26,11 +26,12 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         self.ignoreResults = False
 
     @staticmethod
-    def writeOUUdata(outfile, yOuts, constraints, derivatives, data,
+    def writeOUUdata(outfile, outputs, constraints, derivatives, data,
                      opttypes, **kwargs):
 
         # Charles TODO: Handle y is now a list of inputs
         # Charles TODO: Handle derivatives
+
         # defaults
         rseed = None
         driver = data.getDriverName()
@@ -49,7 +50,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         inputUB = None
         inputDefaults = None
         distributions = None
-
+        init_input = None
+        
         # process keyworded arguments
         for key in kwargs:
             k = key.lower()
@@ -69,26 +71,31 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 inputUB = kwargs[key]
             elif k == 'inputpdf':
                 distributions = kwargs[key]
-
-        # TODO: Add psuade IO section to write initial point
+            elif k == 'init_input':
+                init_input = kwargs[key]
+                
+        inputTypes = data.getInputTypes()
+        nInputs = data.getNumInputs()
+        nVariableInputs = inputTypes.count(Model.VARIABLE)
+        nOutputs = len(outputs)
+        nSamples = num_fmin = 1  # number of random restarts
+        
         f = open(outfile, 'w')
-        # f.write("PSUADE_IO\n")
-        # f.write("num_inputs num_outputs 1\n")
-        # f.write("1 1\n")
-        # f.write("****inputs*****\n")
-        # f.write("*****outputs*****\n")
-        # f.write("PSUADE_IO\n")
+        if init_input:
+            f.write('PSUADE_IO\n')
+            f.write('%d %d %d\n' % (nVariableInputs, nOutputs, nSamples))
+            f.write("1 0\n")         # assume initial point has not been run
+            for x in init_input:           
+                f.write(' % .16e\n' % x)
+            f.write(' 9.9999999999999997e+34\n')
+            f.write("PSUADE_IO\n")
 
         # TO DO: merge with RSAnalyzer.writeRSdata()
         f.write('PSUADE\n')
 
         # ... input ...
+        numFixed = nInputs - nVariableInputs        
         f.write('INPUT\n')
-        inputNames = data.getInputNames()
-        inputTypes = data.getInputTypes()
-        nInputs = data.getNumInputs()
-        nVariableInputs = inputTypes.count(Model.VARIABLE)
-        numFixed = nInputs - nVariableInputs
         if numFixed > 0:
           f.write('   num_fixed %d\n' % numFixed)
         f.write('   dimension = %d\n' % nVariableInputs)
@@ -101,6 +108,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         indices = range(nInputs)
         variableIndex = 1
         fixedIndex = 1
+        inputNames = data.getInputNames()
         for i, name, inType, lb, ub, default in zip(indices, inputNames, \
                              inputTypes, inputLB, inputUB, inputDefaults):
           if inType == Model.VARIABLE:
@@ -139,8 +147,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         f.write('END\n')
 
         # ... output ...
-        outActive = len(yOuts)
-        nOuts    = len(yOuts)
+        outActive = nOutputs
         nConstrs = 0
         nDerivs  = 0
         for ii in range(len(constraints)):
@@ -151,7 +158,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
           if derivatives[ii]:
             outActive = outActive + 1
             nDerivs = nDerivs + 1
-        if (nOuts != 1):
+        if (nOutputs != 1):
           error = 'OUU: In function writeOUUdata(), '
           error = error + 'multi-objective optimization not supported.'
           Common.showError(error)
@@ -171,11 +178,11 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         f.write('OUTPUT\n')
         f.write('   dimension = %d\n' % (outActive))
         outputNames = SampleData.getOutputNames(data)
-        for ii in range(len(yOuts)):
-          ind = yOuts[ii]
+        for ii in range(nOutputs):
+          ind = outputs[ii]
           f.write('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
           print('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
-        outActive = len(yOuts) + 1
+        outActive = nOutputs + 1
         for ii in range(len(constraints)):
           if constraints[ii]:
             f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
@@ -225,7 +232,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         f.write('   optimization max_feval = 1000000\n')
         f.write('   optimization fmin = 0.0\n')
         f.write('   optimization tolerance = 1.000000e-06\n')
-        f.write('   optimization num_fmin = 1\n')
+        f.write('   optimization num_fmin = %d\n' % num_fmin)
         f.write('   optimization print_level = 3\n')
         #f.write('   analyzer output_id = %d\n' % y)
         f.write('   analyzer output_id = 1\n')

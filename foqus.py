@@ -367,7 +367,7 @@ if __name__ == '__main__':
                     msg = QMessageBox()
                     msg.setText(("The user working directory has not "
                         "been specified yet. \nPlease create a FOQUS "
-                        "working directory and specify a the location "
+                        "working directory and specify its location "
                         "after pressing okay."))
                     msg.exec_()
                     msg = QFileDialog()

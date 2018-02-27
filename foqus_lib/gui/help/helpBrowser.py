@@ -4,13 +4,15 @@ import logging
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-try:
-    # This is the new import after PyQt 5.6. Old import won't work
-    from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
-except:
+from PyQt5.Qt import PYQT_VERSION_STR
+if float(PYQT_VERSION_STR) < 5.6:
     from PyQt5.QtWebKitWidgets import QWebView
+else:
+    from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
+
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
         uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))

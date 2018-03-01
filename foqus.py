@@ -39,6 +39,7 @@ splash_timeout_ms = 10000 # initial Splash screen hide in ms
 splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
 
+
 def guiImport():
     """
     Only import the GUI classes if you want the GUI
@@ -61,6 +62,13 @@ def guiImport():
         from PyQt5.QtGui import QPixmap, QPainter
         from PyQt5 import QtSvg, QtXml
         #import foqus_lib.gui.icons_rc
+        # This import has to be done before QApplicationCore instance is created, but also only works for later versions
+        # of PyQt5. This is also only necesary because QWebView was depecrated in later versions of PyQt5
+        try:
+            from PyQt5.QtWebEngineWidgets import QWebEngineView
+        except:
+            pass
+
         import matplotlib
         matplotlib.use('Qt5Agg')
         matplotlib.rcParams['backend.qt5']='PyQt5'

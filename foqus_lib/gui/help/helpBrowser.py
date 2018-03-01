@@ -4,11 +4,10 @@ import logging
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-from PyQt5.Qt import PYQT_VERSION_STR
-if float(PYQT_VERSION_STR) < 5.6:
-    from PyQt5.QtWebKitWidgets import QWebView
-else:
+try:
     from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
+except:
+    from PyQt5.QtWebKitWidgets import QWebView
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox

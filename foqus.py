@@ -388,10 +388,10 @@ if __name__ == '__main__':
                     else:
                         logging.getLogger("foqus." + __name__)\
                             .error(('No working directory'
-                            ' specified FOQUS will exit'))
+                            ' specified. FOQUS will exit'))
                         msg = QMessageBox()
                         msg.setText(("No working directory"
-                            " specified FOQUS will exit."))
+                            " specified. FOQUS will exit."))
                         msg.exec_()
                         sys.exit()
                 else:

@@ -4,9 +4,14 @@ import logging
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-from PyQt5.QtWebKitWidgets import QWebView
+try:
+    from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
+except:
+    from PyQt5.QtWebKitWidgets import QWebView
+
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
         uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))

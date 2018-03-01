@@ -38,26 +38,21 @@ or want to modify FOQUS. The second way is probably easiest for other users.
 2. Other Users
   * ``pip install git+https://github.com/CCSI-toolset/foqus@master``
   
- 
-## Install FOQUS Bundle
-
-(This will be renamed and the content modified before release)
-
-Install the FOQUS Bundle installer for Windows from the CCSI website.  This will install 
-TurbineLite, SimSinter, PSUADE, and an obsolete Windows application version of FOQUS. 
-TurbineLite and SimSinter are Windows only programs which allow running simulations in Aspen,
-gPROMS, and Excel. PSUADE supplies the UQ functionality of FOQUS.
-
-On platforms other than Windows. PSUADE can be installed separately.
-
-Additional components not currently include with FOQUS or the FOQUS bundle are
-* DRM-Builder for building dynamic reduced models.
-* iREVEAL building surrogate models for CFD with Kriging.
+Additional components not currently include with FOQUS or the FOQUS bundle are:
+* PSUADE for uncertainty quantification and optimization under uncertainty analyses
+* DRM-Builder for building dynamic reduced models
+* iREVEAL building surrogate models for CFD with kriging
 * Data management framework
 * Turbine Hydro, used by the Turbine Gateway to move simulation files from
-  the main Turbine database to TurbineLite instances on worker nodes.
+  the main Turbine database to TurbineLite instances on worker nodes
 
-## Optional, Install NLopt
+## [Optional] Install PSUADE
+
+PSUADE is short for *Problem Solving environment for Uncertainty Analysis and Design Exploration*. It is a software toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity analysis, design optimization, model calibration, and more.
+
+PSUADE install instructions are on the (psuade github)[https://github.com/LLNL/psuade].
+
+## [Optional] Install NLopt
 
 NLopt is an optional optimization library, which can be used by FOQUS.  Unfortunately
 the Python module is not available to be installed with pip. For installation 

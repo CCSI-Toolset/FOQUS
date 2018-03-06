@@ -517,7 +517,7 @@ class RSAnalyzer:
         return (mfile, trainErrors, cvErrors, testErrors)
    
     @staticmethod
-    def plotValidate(data, y, rsMethodName, userMethod, mfile):
+    def plotValidate(data, y, rsMethodName, userMethod, mfile, error_tol_percent=10):
         outVarNames = data.getOutputNames()
         outVarName = outVarNames[y-1]
         if userMethod: # ... user regression ...
@@ -532,7 +532,7 @@ class RSAnalyzer:
         ptitle = ['Model Error Histogram', 'Actual vs. Predicted Data']
         xlabel = ['Model Errors', 'Actual Data for %s' % outVarName]
         ylabel = ['Probabilities', 'Predicted Data for %s' % outVarName]
-        Plotter.plotRSvalidate(dat, ftitle, ptitle, xlabel, ylabel)
+        Plotter.plotRSvalidate(dat, ftitle, ptitle, xlabel, ylabel, error_tol_percent=error_tol_percent)
 
         return None
 

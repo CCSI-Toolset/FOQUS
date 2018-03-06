@@ -46,15 +46,15 @@ Additional components not currently include with FOQUS or the FOQUS bundle are:
 * Turbine Hydro, used by the Turbine Gateway to move simulation files from
   the main Turbine database to TurbineLite instances on worker nodes
 
-## [Optional] Install PSUADE
+## [Optional] Install PSUADE 1.7.10
 
 PSUADE is short for *Problem Solving environment for Uncertainty Analysis and Design Exploration*. It is a software toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity analysis, design optimization, model calibration, and more.
 
-PSUADE install instructions are on the (psuade github)[https://github.com/LLNL/psuade].
+PSUADE install instructions are on the (psuade github)[https://github.com/LLNL/psuade]. For Windows users, there is an (executable)[https://github.com/LLNL/psuade/releases] for your convenience.
 
 ## [Optional] Install NLopt
 
-NLopt is an optional optimization library, which can be used by FOQUS.  Unfortunately
+NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
 the Python module is not available to be installed with pip. For installation 
 instructions see https://nlopt.readthedocs.io/en/latest/. The Python module is required. 
 

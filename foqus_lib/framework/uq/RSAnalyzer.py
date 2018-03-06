@@ -528,7 +528,7 @@ class RSAnalyzer:
         else: # ... standard ...
             datvar = 'A'
             dat = Plotter.getdata(mfile, datvar)
-        ftitle = 'Model Validation of %s Response Surface' % rsMethodName.upper()
+        ftitle = 'Model Validation of %s Response Surface for %s' % (rsMethodName.upper(), outVarName.upper())
         ptitle = ['Model Error Histogram', 'Actual vs. Predicted Data']
         xlabel = ['Model Errors', 'Actual Data for %s' % outVarName]
         ylabel = ['Probabilities', 'Predicted Data for %s' % outVarName]

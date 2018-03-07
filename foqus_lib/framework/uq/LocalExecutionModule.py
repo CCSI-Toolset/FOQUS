@@ -544,7 +544,7 @@ class LocalExecutionModule(object):
                 location = ''
                 if os.path.exists(psuadeLoc):
                     location = psuadeLoc
-                psuadeLoc, filterName = QtGui.QFileDialog.getOpenFileName(
+                psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
                     None, "Location of Psuade", location, "Executable File (psuade.exe)")
             while len(psuadeLoc) > 0:
                 compatible = LocalExecutionModule.getPsuadeExeCompatibility(psuadeLoc)
@@ -553,7 +553,7 @@ class LocalExecutionModule(object):
                     msgBox.setText('PSUADE version must be %s or later! Browse to its location on the next screen.' % \
                                     LocalExecutionModule.psuadeVersion)
                     msgBox.exec_()
-                    psuadeLoc, filterName = QtGui.QFileDialog.getOpenFileName(
+                    psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
                         None, "Location of Psuade", psuadeLoc, "Executable File (psuade.exe)")
                 else:                    
                     psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
@@ -568,10 +568,10 @@ class LocalExecutionModule(object):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setText('Location of PSUADE has not been set! Browse to its location on the next screen.')
                 msgBox.exec_()
-            # psuadeLoc, filterName = QtGui.QFileDialog.getOpenFileName(
+            # psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
             #     None, "Location of Psuade", "", "All Files (*.*)")
-            fileDlg = QtGui.QFileDialog(caption = "Location of Psuade")
-            fileDlg.setFileMode(QtGui.QFileDialog.ExistingFile)
+            fileDlg = QtWidgets.QFileDialog(caption = "Location of Psuade")
+            fileDlg.setFileMode(QtWidgets.QFileDialog.ExistingFile)
             proxyModel = LocalExecutionModule.executableFilter()
             fileDlg.setProxyModel(proxyModel)
             if fileDlg.exec_():

@@ -225,13 +225,14 @@ class Results(pd.DataFrame):
         self.update_filter_indexes()
 
     def data_sets(self):
-        """
-        Return a set of data set labels
-        """
+        """Return a set of data set labels"""
         return set(self.loc[:,"set"])
 
-    def addFromSavedValues(self, set_name, result_name, time, sd):
-        self.add_result(sd, set_name=set_name, result_name=result_name, time=time)
+    def addFromSavedValues(self, setName, name, time=None, valDict=None):
+        """Temoprary function for compatablility
+        should move to add_result()
+        """
+        self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
         """

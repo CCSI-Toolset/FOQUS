@@ -240,7 +240,6 @@ class opt(optimization):
         popsize = self.options["popsize"].value
         storeRes = self.options["Save results"].value
         backupInt = self.options["Backup interval"].value
-        setName = self.options["Results name"].value
         tolfun = self.options["tolfun"].value
         tolx = self.options["tolx"].value
         tolstagnation = self.options["tolstagnation"].value

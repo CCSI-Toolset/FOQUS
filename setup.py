@@ -40,7 +40,7 @@ install_requires=[
     #'py4j',
     'requests',
     #'networkx',
-    'adodbapi,
+    'adodbapi',
     #'redis',
     #'logstash_formatter',
     'matplotlib',

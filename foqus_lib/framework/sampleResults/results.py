@@ -107,7 +107,7 @@ def sd_col_list(sd, time=None):
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
                 el = sd[s[0]][n][v]
-                if isinstance(el, (list, tuple, dict)):
+                if s[1] = "setting"
                     el = repr(el)
                 dat.append(sd[s[0]][n][v])
     #node error and turbine messages columns

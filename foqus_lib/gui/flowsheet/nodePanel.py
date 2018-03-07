@@ -704,21 +704,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
 
     def simSet(self):
         text = self.simNameBox.currentText()
-        ids = {}
-        browser_conf = None
-        if self.sim_mapping:
-            mapping = self.sim_mapping.get(text, None)
-        else:
-            mapping = None
-        if mapping:
-            ids["sim"] = mapping[0]
-            ids["sc"] = mapping[1]
-            browser_conf = mapping[2]
         self.node.setSim(
             newType=self.getModelType(),
-            newModel=text,
-            ids=ids,
-            browser_conf=browser_conf)
+            newModel=text)
         self.updateForm()
 
     def closeEvent(self, event):

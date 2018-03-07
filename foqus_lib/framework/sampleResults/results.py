@@ -143,6 +143,9 @@ class Results(pd.DataFrame):
         self["set"] = []
         self["result"] = []
 
+    def incrimentSetName(self, name):
+        return incriment_name(name, list(self["set"]))
+
     def set_filter(self, fltr=None):
         """
         Set the current filter name, can be None for no filter
@@ -226,6 +229,9 @@ class Results(pd.DataFrame):
         Return a set of data set labels
         """
         return set(self.loc[:,"set"])
+
+    def addFromSavedValues(self, set_name, result_name, time, sd):
+        self.add_result(sd, set_name=set_name, result_name=result_name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
         """

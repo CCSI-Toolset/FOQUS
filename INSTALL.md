@@ -50,7 +50,7 @@ Additional components not currently include with FOQUS or the FOQUS bundle are:
 
 PSUADE is short for *Problem Solving environment for Uncertainty Analysis and Design Exploration*. It is a software toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity analysis, design optimization, model calibration, and more.
 
-PSUADE install instructions are on the (psuade github)[https://github.com/LLNL/psuade]. For Windows users, there is an (executable)[https://github.com/LLNL/psuade/releases] for your convenience.
+PSUADE install instructions are on the [psuade github](https://github.com/LLNL/psuade). For Windows users, there is an [executable](https://github.com/LLNL/psuade/releases) for your convenience.
 
 ## [Optional] Install NLopt
 

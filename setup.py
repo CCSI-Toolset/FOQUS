@@ -40,13 +40,14 @@ install_requires=[
     #'py4j',
     'requests',
     #'networkx',
-    'adodbapi > 2.6.0',
+    'adodbapi,
     #'redis',
     #'logstash_formatter',
     'matplotlib',
     'scipy',
     'numpy',
-    'cma'],
+    'cma',
+    'pandas'],
 
 #dependency_links=[]
 dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']

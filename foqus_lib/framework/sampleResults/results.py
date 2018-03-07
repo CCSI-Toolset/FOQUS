@@ -107,7 +107,7 @@ def sd_col_list(sd, time=None):
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
                 el = sd[s[0]][n][v]
-                if s[1] = "setting"
+                if s[1] == "setting":
                     el = repr(el)
                 dat.append(sd[s[0]][n][v])
     #node error and turbine messages columns
@@ -220,11 +220,8 @@ class Results(pd.DataFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Error loading stored results")
-        try:
-            for i in sd["__filters"]:
-                self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
-        except:
-            pass
+        for i in sd.get("__filters", []):
+            self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
         self.update_filter_indexes()
 
     def data_sets(self):

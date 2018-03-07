@@ -172,7 +172,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         for var in N1In:
             if var in N2In:  self.addConnection(var, var)
 
-    def addConnection(self, fv ="", tv=""):
+    def addConnection(self, checked=False, fv="", tv=""):
         self.connectTable.setRowCount( self.connectTable.rowCount() + 1 )
         vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
         vars1out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())

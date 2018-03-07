@@ -109,7 +109,7 @@ def sd_col_list(sd, time=None):
                 el = sd[s[0]][n][v]
                 if s[1] == "setting":
                     el = repr(el)
-                dat.append(sd[s[0]][n][v])
+                dat.append(el)
     #node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:

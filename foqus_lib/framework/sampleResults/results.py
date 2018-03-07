@@ -106,13 +106,16 @@ def sd_col_list(sd, time=None):
         for n, d in sd[s[0]].iteritems():
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
+                el = sd[s[0]][n][v]
+                if isinstance(el, (list, tuple, dict)):
+                    el = repr(el)
                 dat.append(sd[s[0]][n][v])
     #node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:
             columns.append("{}.{}".format(s[1], n))
             dat.append(sd[s[0]][n])
-    # return the list of of columns and list of accosiated data.
+    # return the list of of columns and list of associated data.
     return (columns, dat)
 
 def incriment_name(name, exnames):

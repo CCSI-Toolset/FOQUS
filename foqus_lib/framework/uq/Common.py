@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import time
 import platform
+import logging
 
 try:
     from PyQt5 import QtGui, QtCore, QtWidgets
@@ -301,7 +302,7 @@ class Common(obj):
         try:
             p.terminate()
         except:
-            logging.logging.getLogger("foqus." + __name__)\
+            logging.getLogger("foqus." + __name__)\
                 .exception('Error terminating PSUADE process, this may be okay'
                 'but not sure so logged it (JCE)')
         if error:

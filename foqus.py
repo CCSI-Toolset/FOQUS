@@ -271,7 +271,7 @@ if __name__ == '__main__':
                         help="Add an application type to TurbineLite DB")
     parser.add_argument("--terminateConsumer",
                         help = "Terminate the consumer with the given UUID")
-    parser.add_argument("--runUITestScript",
+    parser.add_argument("-s", "--runUITestScript",
                         help="Load and run a user interface test script")
     args = parser.parse_args()
     # before changing the directory get absolute path for file to load

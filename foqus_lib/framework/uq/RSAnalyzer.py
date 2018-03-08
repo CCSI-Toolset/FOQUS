@@ -335,7 +335,7 @@ class RSAnalyzer:
 
     @staticmethod
     def validateRS(fname, y, rsMethodName, rsOptions=None, 
-                   genCodeFile=False, nCV=None, userRegressionFile=None, testfile=None):
+                   genCodeFile=False, nCV=None, userRegressionFile=None, testfile=None, error_tol_percent=10):
 
         # read data
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)  # does not assume rstype/order written to data
@@ -512,7 +512,7 @@ class RSAnalyzer:
             Common.showError(error, out)
             return None
 
-        RSAnalyzer.plotValidate(data, y, rsMethodName, userMethod, mfile)
+        RSAnalyzer.plotValidate(data, y, rsMethodName, userMethod, mfile, error_tol_percent)
         
         return (mfile, trainErrors, cvErrors, testErrors)
    

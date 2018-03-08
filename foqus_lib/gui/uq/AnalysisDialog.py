@@ -803,7 +803,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         return cond
 
     def RSViz(self, y, combo1, combo2, combo3, rs, rsOptions = None,
-              minVal = -numpy.inf, maxVal = numpy.inf, userRegressionFile = None, error_tol_percent = 10):
+              minVal = -numpy.inf, maxVal = numpy.inf, userRegressionFile = None):
 
         self.freeze()
 
@@ -827,7 +827,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # visualize data
         self.setModal(False)
-        rsviz = RSVisualization(data, y, x, rs, minVal, maxVal, rsOptions, userRegressionFile, error_tol_percent)
+        rsviz = RSVisualization(data, y, x, rs, minVal, maxVal, rsOptions, userRegressionFile)
         results = rsviz.analyze()
         if results is not None:
             self.data.addAnalysis(rsviz)
@@ -1157,7 +1157,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
                 rsOptions = self.RSLegendre_spin.value()
             self.RSViz(y, self.wizardViz_combo1, self.wizardViz_combo2, self.wizardViz_combo3, rs, rsOptions,
-                       userRegressionFile = self.wizardUserRegressionFile_edit.text(), error_tol_percent = self.wizardErrorEnvelope_edit.value())
+                       userRegressionFile = self.wizardUserRegressionFile_edit.text())
 
     def wizardInfer(self):
         self.infer(True)

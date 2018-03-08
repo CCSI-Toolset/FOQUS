@@ -21,7 +21,7 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QStackedLayout, QComboBox, QApplication
+    QAbstractItemView, QDialogButtonBox, QStackedLayout, QComboBox, QApplication, QMessageBox
 from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _SimSetup = \

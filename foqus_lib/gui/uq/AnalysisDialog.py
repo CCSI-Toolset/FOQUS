@@ -467,7 +467,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     ## RS Validate
     def rsValidate(self, y, rs, rsOptions, genRSCode, nCV = None, userRegressionFile = None,
-                   testFile = None):
+                   testFile = None, error_tol_percent = 10):
         self.freeze()
 
         data = self.data
@@ -476,7 +476,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         # validate RS
         self.setModal(False)
         rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile = genRSCode,
-                           nCV = nCV, userRegressionFile = userRegressionFile, testFile = testFile)
+                           nCV = nCV, userRegressionFile = userRegressionFile, testFile = testFile, error_tol_percent=error_tol_percent)
         mfile = rsv.analyze()
         if mfile is not None:
             self.data.addAnalysis(rsv)
@@ -690,7 +690,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             combo2.setEnabled(False)
         combo2.show()
 
-    def RSAnalyze(self, output_combo, RSAnalyze_combo1, RSAnalyze_combo2, legendre_spin,
+    def RSAnalyze(self, output_combo, RSAnalyze_combo1, RSAnalyze_combo2, legendre_spin, wizardErrorEnvelope_edit,
                   userRegressionFile_edit, rs, xprior = None, evars = None,
                   marsBasis_spin = None, marsDegree_spin = None):
 
@@ -705,6 +705,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         method = RSAnalyze_combo1.currentText()
         self.setModal(False)
 
+	error_tol_percent = wizardErrorEnvelope_edit.value()
         rsOptions = None
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = legendre_spin.value()
@@ -1057,8 +1058,8 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         rsOptions = None
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.wizardRSLegendre_spin.value()
-
-        result = self.rsValidate(y, rs, rsOptions, False, userRegressionFile = self.wizardUserRegressionFile_edit.text())
+	
+        result = self.rsValidate(y, rs, rsOptions, False, userRegressionFile = self.wizardUserRegressionFile_edit.text(), error_tol_percent = self.wizardErrorEnvelope_edit.value())
         self.unfreeze()
         self.activateWizardRSAnalysis()
 
@@ -1067,6 +1068,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RS_combo1.setCurrentIndex(self.wizardRS_combo1.currentIndex())
         self.RS_combo2.setCurrentIndex(self.wizardRS_combo2.currentIndex())
         self.RSLegendre_spin.setValue(self.wizardRSLegendre_spin.value())
+        self.doubleSpinBox.setValue(self.wizardErrorEnvelope_edit.value())
         self.expertUserRegressionFile_edit.setText(self.wizardUserRegressionFile_edit.text())
         self.activateExpertRSAnalysis()
 
@@ -1111,7 +1113,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
             self.RSAnalyze(self.wizardAnalysisOutput_combo, self.wizardAnalyze_combo1,
                            self.wizardAnalyze_combo2, self.wizardRSLegendre_spin,
-                           self.wizardUserRegressionFile_edit, rs)
+                           self.wizardUserRegressionFile_edit, rs, self.wizardErrorEnvelope_edit)
 
             # Show plot help text
             analysisType = self.wizardAnalyze_combo1.currentText()
@@ -1560,6 +1562,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         # get RS
         rs =  self.getExpertRS()
         rsOptions = None
+        error_tol_percent = self.doubleSpinBox.value()
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.RSLegendre_spin.value()
         elif rs.startswith('MARS'):
@@ -1573,7 +1576,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             testFile = self.testSet_edit.text()
 
         genRSCode = True
-        self.rsValidate(y, rs, rsOptions, genRSCode, nCV, self.expertUserRegressionFile_edit.text(), testFile)
+        self.rsValidate(y, rs, rsOptions, genRSCode, nCV, self.expertUserRegressionFile_edit.text(), testFile, error_tol_percent)
 
         rs = self.RS_combo2.currentText()
         if rs != ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG):
@@ -1592,6 +1595,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.wizardRS_combo2.setCurrentIndex(self.RS_combo2.currentIndex())
         self.wizardRSLegendre_spin.setValue(self.RSLegendre_spin.value())
         self.wizardUserRegressionFile_edit.setText(self.expertUserRegressionFile_edit.text())
+        self.wizardErrorEnvelope_edit.setValue(self.doubleSpinBox.value())
         self.activateWizardRSAnalysis()
 
         self.unfreeze()

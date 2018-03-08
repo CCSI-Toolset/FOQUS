@@ -9,7 +9,7 @@ class foqusListener2(threading.Thread):
     '''
         This class uses a multiprocessing listener to allow
         FOQUS to be controlled over a socket connection.
-        The main purpose for this is ALAMO adaptive 
+        The main purpose for this is ALAMO adaptive
         sampling.
     '''
     def __init__(self, dat, host = 'localhost', port=56002):
@@ -20,7 +20,7 @@ class foqusListener2(threading.Thread):
         # Create a listener
         self.address = (host, port)
         self.listener = Listener(self.address)
-    
+
     def run(self):
         quitListening = False
         while True:
@@ -28,14 +28,14 @@ class foqusListener2(threading.Thread):
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
-                if not (msg and isinstance(msg, list) and msg[0]): 
+                if not (msg and isinstance(msg, list) and msg[0]):
                     # ignore improperly formatted messages
                     continue
                 if msg[0] == "close":
                     # close the connection
                     conn.close()
                     break
-                elif msg[0] == "quit": 
+                elif msg[0] == "quit":
                     # close the connection and don't wait for another
                     quitListening = True
                     if self.gt:
@@ -57,11 +57,11 @@ class foqusListener2(threading.Thread):
                         logging.exception("Error running flowsheet")
                         conn.send([1])
                 elif msg[0] == "saveValues":
-                    self.gt.join(10) 
+                    self.gt.join(10)
                     if self.gt.isAlive():
                         # still waiting but continue so you have a
                         # chance to shutdown the listener if you want
-                        conn.send([1, "Still Running"]) 
+                        conn.send([1, "Still Running"])
                     else:
                         if self.gt.res:
                             self.dat.flowsheet.loadValues(self.gt.res)
@@ -76,7 +76,7 @@ class foqusListener(threading.Thread):
     '''
         This class uses a multiprocessing listener to allow
         FOQUS to be controlled over a socket connection.
-        The main purpose for this is ALAMO adaptive 
+        The main purpose for this is ALAMO adaptive
         sampling.
     '''
     def __init__(self, dat, host = 'localhost', port=56001):
@@ -94,34 +94,34 @@ class foqusListener(threading.Thread):
         # Create a listener
         self.address = (host, port)
         self.listener = Listener(self.address)
-        
+
     def setInputs(self, l):
         self.inputNames = l
-        
+
     def setOutputs(self, l):
         self.outputNames = l
-    
+
     def run(self):
         '''
             Called by Thread when you run start() method
         '''
         quitListening = False
         # create an input dictionary structure to load values from
-        inpDict = self.dat.flowsheet.saveValues()['input'] 
+        inpDict = self.dat.flowsheet.saveValues()['input']
         # Enter loop waiting for requests from client
         while True:
             #Wait for a connection to be made
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
-                if not (msg and isinstance(msg, list) and msg[0]): 
+                if not (msg and isinstance(msg, list) and msg[0]):
                     # ignore improperly formatted messages
                     continue
                 if msg[0] == "close":
                     # close the connection
                     conn.close()
                     break
-                elif msg[0] == "quit": 
+                elif msg[0] == "quit":
                     # close the connection and don't wait for another
                     quitListening = True
                     conn.close()
@@ -145,14 +145,12 @@ class foqusListener(threading.Thread):
                     varVals = msg[1]  #List of variable values
                     sampInput = copy.deepcopy(inpDict)
                     vals = self.dat.flowsheet.input.unflatten(
-                        self.inputNames, 
-                        varVals, 
+                        self.inputNames,
+                        varVals,
                         unScale=self.scaled)
                     for nkey in vals:
                         for vkey in vals[nkey]:
-                            ts = self.dat.flowsheet.input[nkey][vkey].ts
-                            sampInput[nkey][vkey][ts]=\
-                                vals[nkey][vkey].tolist()   
+                            sampInput[nkey][vkey] = vals[nkey][vkey]
                     self.samples.append(sampInput)
                     runIndex = len(self.samples) - 1
                     conn.send(['submitted', runIndex])
@@ -166,9 +164,9 @@ class foqusListener(threading.Thread):
                     stat = []
                     for res in self.gt.res:
                         self.dat.flowsheet.results.addFromSavedValues(
-                            self.resStoreSet, 
+                            self.resStoreSet,
                             'res_{0}'.format(self.runid),
-                            None, 
+                            None,
                             res)
                         self.runid += 1
                         stat.append(res['graphError'])
@@ -177,9 +175,7 @@ class foqusListener(threading.Thread):
                             vn = vn.split('.', 1)
                             nodeName = vn[0]
                             varName = vn[1]
-                            r += np.array(
-                                res['output'][nodeName][varName]\
-                                    ).flatten().tolist()
+                            r += res['output'][nodeName][varName]
                         if res['graphError'] != 0:
                             for i in range(len(r)):
                                 r[i] = self.failValue

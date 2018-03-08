@@ -297,7 +297,7 @@ class surrogate(threading.Thread):
             lines.append(s12+'vdesc = "{0}",'.format(desc))
             lines.append(s12+'tags = [],')
             lines.append(s12+'dtype = float)')
-            inputvals.append(defVal.tolist())
+            inputvals.append(defVal)
         # input vector of default values (needed for ACOSSO, BSS-ANOVA & iREVEAL)
         lines.append(s8+"self.inputvals = {0}".format(json.dumps(inputvals)))
         # output variables

@@ -411,7 +411,7 @@ class Node():
         for name, item in sc["inputs"].iteritems():
             if name in self.gr.input[self.name]:
                 item['default'] = self.gr.input[self.name][name].value
-                item['default'] = item['default'].tolist()
+                item['default'] = item['default']
         with open(outfile, "wb") as f:
             json.dump(sc, f, indent=2)
 
@@ -583,9 +583,9 @@ class Node():
             if var.set == "sinter":
                 try:
                     if self.altInput is not None:
-                        inputSetL2[vkey] = self.altInput[vkey].tolist()
+                        inputSetL2[vkey] = self.altInput[vkey]
                     else:
-                        inputSetL2[vkey] = var.value.tolist()
+                        inputSetL2[vkey] = var.value
                 except:
                     self.calcError = 23
                     raise NodeEx(

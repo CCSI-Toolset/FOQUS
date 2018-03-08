@@ -6,6 +6,7 @@ import subprocess
 import tempfile
 import time
 import platform
+import logging
 
 try:
     from PyQt5 import QtGui, QtCore, QtWidgets
@@ -37,7 +38,7 @@ class Common(obj):
                 #self.doneButton.setEnabled(False)
                 #self.doneButton.clicked.connect(self.close)
                 #self.gridLayout.addWidget(self.doneButton)
-                
+
             def showError(self, error, out = None):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setIcon(QtWidgets.QMessageBox.Critical)
@@ -45,8 +46,8 @@ class Common(obj):
                 if out is not None:
                     msgBox.setDetailedText(out)
                 msgBox.exec_()
-            
-            
+
+
     @staticmethod
     def getPsuadePath():  ### OBSOLETE in this release
         # Brenda's version of getPsuadePath(), superceded by LocalExecutionModule.getPsuadePath()
@@ -111,7 +112,7 @@ class Common(obj):
     # Pass a filename as a string to use as input file (e.g. "psuade ps.in")
     #   Requires a psuade formatted file
     # Pass a file handle to use it as a script (e.g.  "psuade < script")
-    def invokePsuade(arg1, arg2 = None, printOutputToScreen = False, textDialog = None, 
+    def invokePsuade(arg1, arg2 = None, printOutputToScreen = False, textDialog = None,
                                                                     dialogShowSignal = None,
                                                                     dialogCloseSignal = None,
                                                                     textInsertSignal = None,
@@ -120,7 +121,7 @@ class Common(obj):
                                                                     plotOuuValuesSignal = None,
                                                                     ):
         from LocalExecutionModule import LocalExecutionModule
-        
+
         psuadePath = LocalExecutionModule.getPsuadePath()
         if psuadePath is None:
             return (None, None)
@@ -185,18 +186,18 @@ class Common(obj):
                              stderr=subprocess.PIPE,
                              executable=executable,
                              shell=True)
-            
+
 
         logFile = open(logFile, 'w')
-        
-       
+
+
         if usePyside and QtWidgets.QApplication.instance() is not None:
             if textDialog is None:
-                Common.dialog = Common.textDialog()  
-                Common.dialog.show()      
+                Common.dialog = Common.textDialog()
+                Common.dialog.show()
             else:
-                Common.dialog = textDialog  
-                dialogShowSignal.emit()  
+                Common.dialog = textDialog
+                dialogShowSignal.emit()
 
         out = ''
         count = 0
@@ -295,10 +296,15 @@ class Common(obj):
             print '\n\n'
 
         logFile.close()
-        
+
         # process error
         out2, error = p.communicate()
-        p.terminate()
+        try:
+            p.terminate()
+        except:
+            logging.getLogger("foqus." + __name__)\
+                .exception('Error terminating PSUADE process, this may be okay'
+                'but not sure so logged it (JCE)')
         if error:
             if showErrorSignal is None:
                 Common.showError(error, out)
@@ -337,5 +343,3 @@ class Common(obj):
              index = outName.index('.')
              outName = outName[index + 1:]
         return outName
-
-

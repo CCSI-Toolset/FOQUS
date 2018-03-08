@@ -467,7 +467,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     ## RS Validate
     def rsValidate(self, y, rs, rsOptions, genRSCode, nCV = None, userRegressionFile = None,
-                   testFile = None, error_tol_percent = 5):
+                   testFile = None, error_tol_percent = 10):
         self.freeze()
 
         data = self.data

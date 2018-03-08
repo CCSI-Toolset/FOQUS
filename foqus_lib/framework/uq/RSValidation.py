@@ -47,7 +47,7 @@ class RSValidation(UQRSAnalysis):
 
         mfile = RSAnalyzer.validateRS(fname, self.outputs[0], self.responseSurface,
                                       self.rsOptions, self.genCodeFile, self.nCV,
-                                      self.userRegressionFile, self.testFile)
+                                      self.userRegressionFile, self.testFile, self.error_tol_percent)
 
         if mfile is None:
             return None

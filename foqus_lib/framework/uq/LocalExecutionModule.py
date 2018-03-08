@@ -16,8 +16,8 @@ Methods:
         Brings up a Qt file dialog to allow user to browse to Psuade location.
         Saves Psuade location to a file.  This method only needs to be called
         once if Psuade location will never be changed.
-        Note: Depending on platform, may require a QtGui.QApplication object
-            to be instantiated. 
+        Note: Depending on platform, may require a QtWidgets.QApplication object
+            to be instantiated.
 
     getPsuadePath():
         Returns location of Psuade in a string.
@@ -42,7 +42,7 @@ Methods:
 
     getRunData():
         Returns the results of the run as a SampleData object
-    
+
 '''
 
 import sys
@@ -56,7 +56,7 @@ import re
 import csv
 
 try:
-    from PyQt5 import QtGui, QtCore, QtWidgets
+    from PyQt5 import QtCore, QtWidgets
     usePyside = True
 except:
     usePyside = False
@@ -88,7 +88,7 @@ class LocalExecutionModule(object):
 
     session = None
     psuadeVersion = "1.7.6" # Change this to change the version of psuade that is required
-    
+
     @staticmethod
     def readSampleFromPsuadeFile(fileName, returnModelOnly = False):
         f = open(fileName, 'r')
@@ -124,7 +124,7 @@ class LocalExecutionModule(object):
         inputDists = []
         inputDistParam1s = []
         inputDistParam2s = []
-    
+
         for line in lines:
             if line[0] == '#' and 'NAMESHAVENODES' in line:
                 namesIncludeNodes = True
@@ -212,7 +212,7 @@ class LocalExecutionModule(object):
                                 inputDistParam1s[index] = float(values[3])
                             if len(values) > 4:
                                 inputDistParam2s[index] = float(values[4])
-                            
+
                 elif readOutputs: # Read outputs
                     stripped = line.strip() # Variable name
                     if stripped.startswith('variable'):
@@ -261,8 +261,8 @@ class LocalExecutionModule(object):
                             sampleType = ResponseSurfaces.getEnumValue(sampleType)
                         elif values[1] == 'rs_legendre_order':
                             legendreOrder = int(values[3])
-                            
-                        
+
+
         model.setInputNames(inputNames)
         model.setOutputNames(outputNames)
         model.setNamesIncludeNodes(namesIncludeNodes)
@@ -274,7 +274,7 @@ class LocalExecutionModule(object):
         model.setDriverName(driverName)
         model.setOptDriverName(optDriverName)
         model.setAuxDriverName(auxDriverName)
-        model.setRunType(Model.LOCAL) 
+        model.setRunType(Model.LOCAL)
 ##        print model.getInputNames()
 ##        print model.getOutputNames()
 ##        print model.getInputDistributions()
@@ -326,10 +326,10 @@ class LocalExecutionModule(object):
 
             numInputs = None
             if askForNumInputs:
-                if not usePyside or QtGui.QApplication.instance() is None:
+                if not usePyside or QtWidgets.QApplication.instance() is None:
                     numInputs = int(raw_input('How many of the columns are inputs (Inputs must be on the left)?'))
                 else:
-                    numInputs, ok = QtGui.QInputDialog.getInt(None, 'Number of inputs',
+                    numInputs, ok = QtWidgets.QInputDialog.getInt(None, 'Number of inputs',
                                                           'How many of the columns are inputs (Inputs must be on the left)?',
                                                           value = len(headers), minValue = 1, maxValue = len(headers))
                     if not ok:
@@ -404,7 +404,7 @@ class LocalExecutionModule(object):
 
         # remove empty lines
         lines = [line for line in lines if len(line.strip()) > 0]
-        
+
         # ignore text preceded by '#'
         c = '#'
         lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
@@ -479,7 +479,7 @@ class LocalExecutionModule(object):
 
         # remove empty lines
         lines = [line for line in lines if len(line.strip()) > 0]
-        
+
         # ignore text preceded by '#'
         c = '#'
         lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
@@ -555,7 +555,7 @@ class LocalExecutionModule(object):
                     msgBox.exec_()
                     psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
                         None, "Location of Psuade", psuadeLoc, "Executable File (psuade.exe)")
-                else:                    
+                else:
                     psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
                     if LocalExecutionModule.session is not None:
                         LocalExecutionModule.session.foqusSettings.psuade_path = psuadeLoc
@@ -606,13 +606,13 @@ class LocalExecutionModule(object):
         f.write('%s' % psuadeLoc)
         f.close()
         return psuadeFile
-        
+
     @staticmethod
     def getPsuadePath(showErrorIfNotFound = True):
         fileName = os.getcwd() + os.path.sep + 'PSUADEPATH'
         psuadeLoc = None
         if (LocalExecutionModule.session is None or len(LocalExecutionModule.session.foqusSettings.psuade_path) == 0) and not os.path.exists(fileName):
-            if not usePyside or QtGui.QApplication.instance() is None:
+            if not usePyside or QtWidgets.QApplication.instance() is None:
                 if showErrorIfNotFound:
                     raise IOError('Location of PSUADE has not been set! ' +
                                    'Please put the path into the file %s' % fileName)
@@ -629,7 +629,7 @@ class LocalExecutionModule(object):
                 location = f.readline().rstrip()
                 f.close()
             if not os.path.exists(location):
-                if not usePyside or QtGui.QApplication.instance() is None:
+                if not usePyside or QtWidgets.QApplication.instance() is None:
                     if showErrorIfNotFound:
                         raise IOError('Location of PSUADE incorrect! ' +
                                        'Please put the correct path into the file %s' % fileName)
@@ -641,7 +641,7 @@ class LocalExecutionModule(object):
             else:
                 compatible = LocalExecutionModule.getPsuadeExeCompatibility(location)
                 if not compatible:
-                    if not usePyside or QtGui.QApplication.instance() is None:
+                    if not usePyside or QtWidgets.QApplication.instance() is None:
                         if showErrorIfNotFound:
                             raise IOError('Version of PSUADE must be %s or higher! ' +
                                            'Please put the correct path into the file %s' % \
@@ -664,7 +664,7 @@ class LocalExecutionModule(object):
                               'Please put the correct path into the file %s' % \
                                            (LocalExecutionModule.psuadeVersion, fileName))
             return None
-        
+
         if platform.system() == 'Windows':
             import win32api
             psuadeLoc = win32api.GetShortPathName(psuadeLoc)
@@ -721,19 +721,19 @@ class LocalExecutionModule(object):
         foundLibs = dict()
         for lib in libs:
             foundLibs[lib] = False
-            
+
         #psuadePath = LocalExecutionModule.getPsuadePath(False)
         psuadePath = LocalExecutionModule.getPsuadePath()
         if psuadePath is None:
 #            return foundLibs
             raise Exception('PSUADE path not set!')
-        
+
         p = subprocess.Popen(psuadePath + ' --info',
                              stdin=None,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE,
                              shell=True)
-        # process error        
+        # process error
         out, error = p.communicate()
         if error:
             Common.showError(error, out)
@@ -741,7 +741,7 @@ class LocalExecutionModule(object):
 
         # parse results
         lines = out.splitlines()
-        installedString = 'installed... true'; 
+        installedString = 'installed... true';
         if len(lines) >= 2:
             for line in lines:   # skip first line with version info
                 for lib in libs:
@@ -775,7 +775,7 @@ class LocalExecutionModule(object):
         inputNames = data.getInputNames()
         for i in xrange(data.getNumInputs()):
             f.write('%s=%d\n' % (inputNames[i], i))
-            
+
 
         f.write('[Outputs]\n')
 ##        richmass = '';
@@ -798,7 +798,7 @@ class LocalExecutionModule(object):
     def writeSelectedVars(data, filename):
         outf = open(filename, 'w')
         outf.write('PSUADE\n')
-        
+
         #Write inputs
         outf.write('INPUT\n')
         outf.write('   dimension = %d\n' % data.getNumInputs())
@@ -831,14 +831,14 @@ class LocalExecutionModule(object):
         outf.write('END\n')
 
         outf.write('END\n')
-        
+
     @staticmethod
     def startRun(data):
         LocalExecutionModule.runType = Model.LOCAL
         LocalExecutionModule.runComplete = False
         LocalExecutionModule.runStarted = False
         LocalExecutionModule.numSamples = data.getNumSamples()
- 
+
         #Remove old files
         psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
         if os.path.exists(psuadeDataFile):
@@ -849,7 +849,7 @@ class LocalExecutionModule(object):
         psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
         for f in glob.glob(psuadeAppsFiles):
             os.remove(f)
-        
+
         #Config file
         LocalExecutionModule.configFile = os.getcwd() + os.path.sep + 'config.txt'
         if os.path.exists(LocalExecutionModule.configFile):
@@ -874,7 +874,7 @@ class LocalExecutionModule(object):
         #print turbine_psuade_session_script.__file__
         turbine_psuade_session_script.local_launch(config,
                                                    LocalExecutionModule.psuadeFile)
-        
+
     @staticmethod
     def getNumUnfinishedRunSamples():
         if not LocalExecutionModule.runStarted:
@@ -896,12 +896,12 @@ class LocalExecutionModule(object):
             LocalExecutionModule.runComplete = True
             LocalExecutionModule.stdoutF.close()
             LocalExecutionModule.stderrF.close()
-            
+
             #Clean up files
             psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
             for f in glob.glob(psuadeAppsFiles):
                 os.remove(f)
-                
+
 ##        # Check if process is stopped with errors
 ##        elif LocalExecutionModule.process.state() != QtCore.QProcess.Running:
 ##        ##elif LocalExecutionModule.process.poll() is not None: #Process done
@@ -936,7 +936,7 @@ class LocalExecutionModule(object):
         # Need to check.
         LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
         return LocalExecutionModule.runComplete
-        
+
     @staticmethod
     def getRunData():
         if not LocalExecutionModule.runStarted:
@@ -965,9 +965,9 @@ class LocalExecutionModule(object):
         @staticmethod
         def getEmulatorOutputsFinished():
             return LocalExecutionModule.runThread.numOutputsFinished
-    
 
-if usePyside:                
+
+if usePyside:
     class emulatorRunThread(QtCore.QThread):
         def __init__(self, data, textDialog, parent=None):
             QtCore.QThread.__init__(self)
@@ -987,7 +987,7 @@ if usePyside:
             LocalExecutionModule.runComplete = False
             LocalExecutionModule.runStarted = False
             LocalExecutionModule.numSamples = self.data.getNumSamples()
-     
+
             #Remove old files
             psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
             if os.path.exists(psuadeDataFile):
@@ -1017,8 +1017,8 @@ if usePyside:
                     import time
                     start = time.clock()
                     psfile, rs, legOrder = RSAnalyzer.emulate(self.data.getEmulatorTrainingFile(),
-                                                              emulatorFileName, i + 1, 
-                                                              textDialog = self.textDialog, 
+                                                              emulatorFileName, i + 1,
+                                                              textDialog = self.textDialog,
                                                               dialogShowSignal = c.textDialogShowSignal,
                                                               dialogCloseSignal = c.textDialogCloseSignal,
                                                               textInsertSignal = c.textDialogInsertSignal,
@@ -1044,10 +1044,9 @@ if usePyside:
                         os.remove('psuadeData')
                     except:
                         pass
-            self.returnData.setRunState([True] * self.returnData.getNumSamples())   
+            self.returnData.setRunState([True] * self.returnData.getNumSamples())
             LocalExecutionModule.runFinished = True
-            
+
 
 if __name__ == "__main__":
-    app = QtGui.QApplication(sys.argv)
-    
+    app = QtWidgets.QApplication(sys.argv)

@@ -84,6 +84,7 @@ class mainWindow(QMainWindow):
             showUQ: if false the uq interface is hidden
             showOpt: if true the optimization interface is hidden
             showOuu: if true the optimization interface is hidden
+            ts: test script to run
         """
         QMainWindow.__init__(self)  # call base constructor
         self.resize(w,h)

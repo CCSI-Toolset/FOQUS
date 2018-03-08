@@ -106,13 +106,16 @@ def sd_col_list(sd, time=None):
         for n, d in sd[s[0]].iteritems():
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
-                dat.append(sd[s[0]][n][v])
+                el = sd[s[0]][n][v]
+                if s[1] == "setting":
+                    el = repr(el)
+                dat.append(el)
     #node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:
             columns.append("{}.{}".format(s[1], n))
             dat.append(sd[s[0]][n])
-    # return the list of of columns and list of accosiated data.
+    # return the list of of columns and list of associated data.
     return (columns, dat)
 
 def incriment_name(name, exnames):
@@ -217,21 +220,19 @@ class Results(pd.DataFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Error loading stored results")
-        try:
-            for i in sd["__filters"]:
-                self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
-        except:
-            pass
+        for i in sd.get("__filters", []):
+            self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
         self.update_filter_indexes()
 
     def data_sets(self):
-        """
-        Return a set of data set labels
-        """
+        """Return a set of data set labels"""
         return set(self.loc[:,"set"])
 
-    def addFromSavedValues(self, set_name, result_name, time, sd):
-        self.add_result(sd, set_name=set_name, result_name=result_name, time=time)
+    def addFromSavedValues(self, setName, name, time=None, valDict=None):
+        """Temoprary function for compatablility
+        should move to add_result()
+        """
+        self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
         """

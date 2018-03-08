@@ -195,8 +195,7 @@ class checkingThread(QtCore.QThread):
                                     nkey = key[0]
                                     vkey = key[1]
                                     try:
-                                        outputValues[j] = numpy.array(
-                                            r['output'][nkey][vkey][0])
+                                        outputValues[j] = r['output'][nkey][vkey]
                                         errcode = r['graphError']
                                     except:
                                         # no output available.
@@ -857,10 +856,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                         # replace input values in added sample
                         for nkey in vals:
                             for vkey in vals[nkey]:
-                                ts = self.dat.flowsheet\
-                                    .input[nkey][vkey].ts
-                                rList[-1][nkey][vkey][ts] =\
-                                    vals[nkey][vkey].tolist()
+                                rList[-1][nkey][vkey] = vals[nkey][vkey]
                         self.runMap.append(i)
                 if self.dat.foqusSettings.runFlowsheetMethod == 1:
                     #run with turbine/foqus to allow parallel jobs

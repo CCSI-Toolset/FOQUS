@@ -84,6 +84,8 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         w = self.getWindow()
         if isinstance(w, QMessageBox):
             self.pressButton(w, 'OK')
+            return True
+        return False
 
     def msgBoxYes(self):
         w = self.getWindow()

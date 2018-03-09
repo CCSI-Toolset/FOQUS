@@ -15,17 +15,7 @@ executed by the interpreter that Windows associates with Python files.
 
 ## Install a Git Client
 
-If you do not have a git client install one. If you have Anaconda the easiest
-way is 
-
-``conda install git``
-
-## Install Turbine Client
-
-This step can be done automatically once the CCSI repositories are open by 
-including Turbine Client as a requirment.
-
-``pip install git+https://github.com/CCSI-toolset/turb_client@master``
+If you do not have a git client install one.
 
 ## Install FOQUS
 

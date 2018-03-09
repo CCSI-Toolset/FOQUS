@@ -690,7 +690,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             combo2.setEnabled(False)
         combo2.show()
 
-    def RSAnalyze(self, output_combo, RSAnalyze_combo1, RSAnalyze_combo2, legendre_spin, wizardErrorEnvelope_edit,
+    def RSAnalyze(self, output_combo, RSAnalyze_combo1, RSAnalyze_combo2, legendre_spin,
                   userRegressionFile_edit, rs, xprior = None, evars = None,
                   marsBasis_spin = None, marsDegree_spin = None):
 
@@ -705,7 +705,6 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         method = RSAnalyze_combo1.currentText()
         self.setModal(False)
 
-	error_tol_percent = wizardErrorEnvelope_edit.value()
         rsOptions = None
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = legendre_spin.value()
@@ -1113,7 +1112,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
             self.RSAnalyze(self.wizardAnalysisOutput_combo, self.wizardAnalyze_combo1,
                            self.wizardAnalyze_combo2, self.wizardRSLegendre_spin,
-                           self.wizardUserRegressionFile_edit, rs, self.wizardErrorEnvelope_edit)
+                           self.wizardUserRegressionFile_edit, rs)
 
             # Show plot help text
             analysisType = self.wizardAnalyze_combo1.currentText()

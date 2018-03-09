@@ -46,7 +46,10 @@ PSUADE install instructions are on the [psuade github](https://github.com/LLNL/p
 
 NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
 the Python module is not available to be installed with pip. For installation 
-instructions see https://nlopt.readthedocs.io/en/latest/. The Python module is required. 
+instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
+
+```conda install -c conda-forge nlopt```
+
 
 
 

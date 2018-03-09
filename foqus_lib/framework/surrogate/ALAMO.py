@@ -8,13 +8,13 @@
 #
 # ALAMO.py
 #
-# * This is an example of a surrogate model builder plugin for FOQUS, 
+# * This is an example of a surrogate model builder plugin for FOQUS,
 #   it uses the ALAMO surrogate model builder program ref:
 #
-# Cozad, A., N. V. Sahinidis and D. C. Miller, Automatic Learning of 
+# Cozad, A., N. V. Sahinidis and D. C. Miller, Automatic Learning of
 #    Algebraic Models for Optimization, AIChE Journal, accepted, 2014.
 #
-# * A setting of this plugin is the location of the ALAMO executable 
+# * A setting of this plugin is the location of the ALAMO executable
 #
 #
 # John Eslick, Carnegie Mellon University, 2014
@@ -22,11 +22,11 @@
 # This Material was produced under the DOE Carbon Capture Simulation
 # Initiative (CCSI), and copyright is held by the software owners:
 # ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
+# and/or the U.S. Government retain ownership of all rights in the
 # CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
+# distribution or dissemination is governed under the terms and
 # conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
+# Non-Disclosure Agreement, and the CCSI Intellectual Property
 # Management Plan. No rights are granted except as expressly recited
 # in one of the aforementioned agreements.
 
@@ -61,7 +61,7 @@ def checkAvailable():
         plug-in will not be available.
     '''
     # I don't really check anything for now the ALAMO exec location is
-    # just a setting of the plug-in, you may or may not need GAMS or 
+    # just a setting of the plug-in, you may or may not need GAMS or
     # MATLAB
     return True
 
@@ -98,7 +98,7 @@ class surrogateMethod(surrogate):
              "    text-indent: -22px ;\n"
              "}\n"
              "</head>\n"
-             "<b>Automatic Learning of Algebraic Models for Optimization" 
+             "<b>Automatic Learning of Algebraic Models for Optimization"
              " (ALAMO)</b>"
              "<p class=\"hangingindent\">Cozad, A., N. V. Sahinidis "
              "and D. C. Miller, Automatic "
@@ -110,8 +110,8 @@ class surrogateMethod(surrogate):
             ('EXTRAPXMIN', float, 0.0),
             ('EXTRAPXMAX', float, 1.0)]
         self.outputCols = [
-            ('MAXTERMS', int, -1), 
-            ('IGNORE', int, 0), 
+            ('MAXTERMS', int, -1),
+            ('IGNORE', int, 0),
             ('TOLMEANERROR', float, 0.001),
             ('TOLRELMETRIC', float, 0.0001),
             ('ZMIN', float, 0.0),
@@ -119,7 +119,7 @@ class surrogateMethod(surrogate):
             ('CUSTOMCON', list, [])]
         self.updateVarCols()
         #include a Section called DATA Settings
-        #Check the ALAMOSettings_v2.xlsx with hints and new labels        
+        #Check the ALAMOSettings_v2.xlsx with hints and new labels
         self.options.add(
             name="Initial Data Filter",
             section="DATA Settings",
@@ -141,10 +141,10 @@ class surrogateMethod(surrogate):
             validValues = ['All', 'None'])
         #Maxtime
         self.options.add(
-            name="MAXTIME", 
+            name="MAXTIME",
             section="DATA Settings",
             default=2000,
-            desc="Maximum total execution time in seconds.", 
+            desc="Maximum total execution time in seconds.",
             hint="This time includes all steps of the algorithm, including "
                 "time to read problem, preprocess data, solve "
                 "optimization subproblems, and print results."
@@ -185,23 +185,23 @@ class surrogateMethod(surrogate):
             hint="Adaptive sampling method to be used by ALAMO when more data points are needed by the model"
             "If random is used a simulator must be provided by the user. If SNOBFIT is used a simulator must be"
             " by the user and MATLAB must be istalled.",
-            validValues = sorted(self.samplers.keys(), 
+            validValues = sorted(self.samplers.keys(),
                 key=lambda k: self.samplers[k]))
         self.options.add(
-            name="MAXITER", 
+            name="MAXITER",
             section="DATA Settings",
             default=1,
             desc="Maximum number of ALAMO iterations, 1 = no adaptive sampling, 0 = no limit",
             hint="The maximum number of ALMAO iterations for adaptive sampling, 1 = no adaptive sampling, 0 = no limit")
         self.options.add(
-            name="PRESET", 
+            name="PRESET",
             section="DATA Settings",
             default=-111111,
             desc="Value to be used if the simulation fails.",
             hint="This value must be carefully chosen to be an otherwise not realizable value for the output variables")
         #Add the Section: Model Settings
         self.options.add(
-            name="MONOMIALPOWER", 
+            name="MONOMIALPOWER",
             section="Model Settings",
             default=[1,2,3],
             dtype=list,
@@ -209,7 +209,7 @@ class surrogateMethod(surrogate):
                 "functions. Use an empty vector for none.",
             hint="Exponential terms allowed in the algebraic model as basis functions.")
         self.options.add(
-            name="MULTI2POWER", 
+            name="MULTI2POWER",
             section="Model Settings",
             default=[1],
             desc="Vector of powers to be considered for pairwise "
@@ -223,30 +223,30 @@ class surrogateMethod(surrogate):
             desc="Vector of three variables combinations of powers to be consiedered as basis functions.",
             hint= "Empty vector for none [].")
         self.options.add(
-            name="RATIOPOWER", 
+            name="RATIOPOWER",
             section="Model Settings",
             default=[],
             desc="Vector of ratio combinations of powers to be considered in the basis functions.",
             hint="Ratio combinations of powers are empty as default.")
         self.options.add(
             name="EXPFCNS",
-            section="Model Settings",            
+            section="Model Settings",
             default=True,
             desc="Use or not of exponential functions as basis functions in the model.")
         self.options.add(
-            name="LOGFCNS", 
+            name="LOGFCNS",
             section="Model Settings",
             default=True,
             desc="Logarithimic functions are considered as basis "
                 "functions if true; otherwise, they are not considered.")
         self.options.add(
-            name="SINFCNS", 
+            name="SINFCNS",
             section="Model Settings",
             default=False,
             desc="Sine functions are considered as basis functions if "
                 "true; otherwise, they are not considered.")
         self.options.add(
-            name="COSFCNS", 
+            name="COSFCNS",
             section="Model Settings",
             default=False,
             desc="Cosine functions are considered as basis functions if "
@@ -272,7 +272,7 @@ class surrogateMethod(surrogate):
             "RIC": 7}
         self.options.add(
             name="MODELER",
-            section="Model Settings",            
+            section="Model Settings",
             default="BIC",
             dtype=str,
             desc="Fitness metric to be used for model building.",
@@ -282,7 +282,7 @@ class surrogateMethod(surrogate):
                 "mean square error, and a convex penalty consisting of "
                 "the sum of square errors and a term penalizing model "
                 "size.",
-            validValues = sorted(self.modelers.keys(), 
+            validValues = sorted(self.modelers.keys(),
                 key=lambda k: self.modelers[k]))
         self.options.add(
             name="CONVPEN",
@@ -312,7 +312,7 @@ class surrogateMethod(surrogate):
         #Add the Section: SOLVER Settings
         self.options.add(
             name="GAMS",
-            section="Solver Settings",            
+            section="Solver Settings",
             default="gams",
             desc="GAMS path is needed. GAMS is the software used to solve the optimization problems.",
             hint="The executable path is expected here or the user must declare GAMS.exe in the environment path.")
@@ -327,11 +327,11 @@ class surrogateMethod(surrogate):
                 "However, any mixed-integer quadratic programming solver "
                 "available under GAMS can be used. ")
         self.options.add(
-            name="SOLVEMIP", 
+            name="SOLVEMIP",
             section="Solver Settings",
             default=False,
             dtype = bool,
-            desc="GAMS will be used to solve ALAMO's MIPs/MIQPs if checked", 
+            desc="GAMS will be used to solve ALAMO's MIPs/MIQPs if checked",
             hint="")
         self.funform = {
             "Fortran":1,
@@ -339,7 +339,7 @@ class surrogateMethod(surrogate):
             "BARON":3,
             "C":4}
         self.options.add(
-            name="FUNFORM", 
+            name="FUNFORM",
             section="Solver Settings",
             default="Fortran",
             desc="Format for printing basis functions and models found by ALAMO. Fortran must be selected to generate FOQUS UQ and flowsheet models.",
@@ -421,7 +421,7 @@ class surrogateMethod(surrogate):
             dtype=int,
             desc="Tolerance within which custom constraints must be satisfied. Real greater than 1e-5 is expected",
             hint="Bound and custom constraints will be satisfied within an absolute tolerance equal to CRTOL")
-        #Add the Section: Advanced Settings        
+        #Add the Section: Advanced Settings
         self.options.add(
             name="Input File",
             section="Advanced Settings",
@@ -441,31 +441,31 @@ class surrogateMethod(surrogate):
             dtype=str,
             desc=".py file flowsheet plugin, saved to user_plugins"\
                 " in the working directory.")
-                
+
         self.inputVarButtons = (
             ('Set XFACTOR from range', self.autoXFact),)
         self.outputVarButtons = (
             ('Set ZMIN and ZMAX from current data filter', self.autoZMin),)
-            
+
     def autoXFact(self):
         for var in self.input:
-            xf = 10**int(math.log10(self.graph.input.get(var).max - 
+            xf = 10**int(math.log10(self.graph.input.get(var).max -
                 self.graph.input.get(var).min))
             self.setInputVarOption('XFACTOR', var, xf)
-        
+
     def autoZMin(self):
         for var in self.output:
             vals = self.dat.flowsheet.results.getVarColumn(var)
             self.setOutputVarOption('ZMAX', var, max(vals))
             self.setOutputVarOption('ZMIN', var, min(vals))
-            
+
     def updateOptions(self):
         filters = sorted(
-            self.dat.flowsheet.results.filters.keys(), 
+            self.dat.flowsheet.results.filters.keys(),
             key = lambda s: s.lower())
         self.options["Validation Data Filter"].validValues = filters
         self.options["Initial Data Filter"].validValues = filters
-    
+
     def setupWorkingDir(self):
         alamoDir = self.alamoDir
         adaptive = self.options['SAMPLER'].value
@@ -479,15 +479,15 @@ class surrogateMethod(surrogate):
                 mydir = os.path.dirname(__file__)
                 src = os.path.join(mydir, 'foqusALAMOClient.py')
                 shutil.copyfile(src, dest)
-        
+
     def run(self):
         '''
             This function overloads the Thread class function,
             and is called when you run start() to start a new thread.
         '''
         try:
-            #Setup dictionaries to convert between foqus and ALAMO 
-            #variable names.  Also setup a list of input and output 
+            #Setup dictionaries to convert between foqus and ALAMO
+            #variable names.  Also setup a list of input and output
             #variable names for ALAMO.  I'm going to keep the dicts
             #for now in case using the FOQUS variables names in ALAMO
             #doesn't work out for some reason.
@@ -500,7 +500,7 @@ class surrogateMethod(surrogate):
             cn = self.graph.input.compoundNames(sort=False)
             for v in self.xList:
                 self.xi[v] = cn.index(v)
-            cn = self.graph.output.compoundNames(sort=False)   
+            cn = self.graph.output.compoundNames(sort=False)
             for v in self.zList:
                 self.zi[v] = cn.index(v)
             #Get options and show some information about settings
@@ -569,7 +569,7 @@ class surrogateMethod(surrogate):
             #self.msgQueue.put(str(res))
             self.writePlugin()
             SurrogateParser.writeAlamoDriver(
-                self.result, 
+                self.result,
                 uq_file,
                 ii=self.ii,
                 oi=self.oi,
@@ -579,9 +579,9 @@ class surrogateMethod(surrogate):
         except Exception:
             self.ex = sys.exc_info()
             logging.getLogger("foqus." + __name__).error(
-                    "Exception in ALAMO Thread", 
+                    "Exception in ALAMO Thread",
                     exc_info=sys.exc_info())
-        
+
     def writeAlamoInputFile(self, adaptiveExe="foqusALAMOClient.py"):
         '''
             Write the input file for the ALAMO executable
@@ -590,15 +590,15 @@ class surrogateMethod(surrogate):
         nin = self.nInput()
         nout = self.nOutput()
         #Filter for initial data
-        dataFilter = self.options['Initial Data Filter'].value 
+        dataFilter = self.options['Initial Data Filter'].value
         #filter for validation data
-        validFilter = self.options['Validation Data Filter'].value 
+        validFilter = self.options['Validation Data Filter'].value
         #set the number of initial data
-        self.graph.results.setFilter(dataFilter)
-        ndata = self.graph.results.rowCount(filtered = True)
+        self.graph.results.set_filter(dataFilter)
+        ndata = self.graph.results.count_rows(filtered=True)
         #set the number of validation data
-        self.graph.results.setFilter(validFilter)
-        nvaldata = self.graph.results.rowCount(filtered = True)
+        self.graph.results.set_filter(validFilter)
+        nvaldata = self.graph.results.count_rows(filtered=True)
         #Get some option values
         nsample = self.options['NSAMPLE'].value
         maxsim = self.options['MAXSIM'].value
@@ -607,7 +607,7 @@ class surrogateMethod(surrogate):
             maxiter = 1
             adaptive = 1
         else:
-            maxiter = self.options["MAXITER"].value                 
+            maxiter = self.options["MAXITER"].value
         modeler = self.modelers.get(self.options['MODELER'].value, 1)
         preset = self.options['PRESET'].value
         maxtime = self.options['MAXTIME'].value
@@ -661,7 +661,7 @@ class surrogateMethod(surrogate):
             custombas[i] = v.replace(".", "_")
         for i,v in enumerate(customcon):
             customcon[i] = v.replace(".", "_")
-            
+
         nkey, vkey = self.xList2[0].split('.', 1)
         for i, v in enumerate(self.xList2):
             nkey2, vkey = v.split('.', 1)
@@ -669,7 +669,7 @@ class surrogateMethod(surrogate):
             if nkey != nkey2:
                 self.xList2 = copy.copy(self.xList)
                 break
-        
+
         nkey, vkey = self.zList2[0].split('.', 1)
         for i, v in enumerate(self.zList2):
             nkey2, vkey = v.split('.', 1)
@@ -677,7 +677,7 @@ class surrogateMethod(surrogate):
             if nkey != nkey2:
                 self.zList2 = copy.copy(self.zList)
                 break
-        
+
         #Set the path to the alamo input file
         almFile = os.path.join(
             self.alamoDir,
@@ -707,25 +707,25 @@ class surrogateMethod(surrogate):
             # write the min vector
             self.minVals = []
             for x in self.input:
-                self.minVals.extend(self.graph.input.get(x).min.flatten())
+                self.minVals.append(self.graph.input.get(x).min)
             af.write("xmin {0}\n".format(" ".join(map(str, self.minVals))))
             # write the max vector
             self.maxVals = []
             for x in self.input:
-                self.maxVals.extend(self.graph.input.get(x).max.flatten())
-            af.write("xmax {0}\n".format(" ".join(map(str, self.maxVals)))) 
+                self.maxVals.append(self.graph.input.get(x).max)
+            af.write("xmax {0}\n".format(" ".join(map(str, self.maxVals))))
             # Per Variable Options, Inputs
             # XFACTOR
             xfact = []
             for x in self.input:
                 val = self.getInputVarOption('XFACTOR', x)
-                xfact.extend(np.array(val).flatten())
+                xfact.append(val)
             af.write("xfactor {0}\n".format(" ".join(map(str, xfact))))
             # MAXTERMS
             maxterms = []
             for x in self.output:
                 val = self.getOutputVarOption('MAXTERMS', x)
-                maxterms.extend(np.array(val).flatten())
+                maxterms.append(val)
             af.write("maxterms {0}\n".format(" ".join(map(str, maxterms))))
             # IGNORE
             ignore = []
@@ -768,7 +768,7 @@ class surrogateMethod(surrogate):
             af.write("expfcns {0}\n".format(expfcns))
             af.write("logfcns {0}\n".format(logfcns))
             af.write("sinfcns {0}\n".format(sinfcns))
-            af.write("cosfcns {0}\n".format(cosfcns)) 
+            af.write("cosfcns {0}\n".format(cosfcns))
             #Custom basis functions
             if len(custombas) > 0:
                 af.write("ncustombas {0}\n".format(len(custombas)))
@@ -779,8 +779,8 @@ class surrogateMethod(surrogate):
             #Constrained regression
             af.write("conreg {0}\n".format(int(conreg)))
             af.write("crninitial {0}\n".format(crninitial))
-            af.write("crmaxiter {0}\n".format(crnmaxiter)) 
-            af.write("crnviol {0}\n".format(crnviol)) 
+            af.write("crmaxiter {0}\n".format(crnmaxiter))
+            af.write("crnviol {0}\n".format(crnviol))
             af.write("crntrials {0}\n".format(crntrials))
             af.write("crtol {0}\n".format(crtol))
             if conreg:
@@ -788,7 +788,7 @@ class surrogateMethod(surrogate):
                 for x in self.output:
                     val = self.getOutputVarOption('ZMIN', x)
                     z.extend(np.array(val).flatten())
-                af.write("zmin {0}\n".format(" ".join(map(str, z)))) 
+                af.write("zmin {0}\n".format(" ".join(map(str, z))))
                 z = []
                 for x in self.output:
                     val = self.getOutputVarOption('ZMAX', x)
@@ -798,7 +798,7 @@ class surrogateMethod(surrogate):
                 for x in self.input:
                     val = self.getInputVarOption('EXTRAPXMIN', x)
                     z.extend(np.array(val).flatten())
-                af.write("extrapxmin {0}\n".format(" ".join(map(str, z))))  
+                af.write("extrapxmin {0}\n".format(" ".join(map(str, z))))
                 z = []
                 for x in self.input:
                     val = self.getInputVarOption('EXTRAPXMAX', x)
@@ -813,35 +813,19 @@ class surrogateMethod(surrogate):
                 af.write("END_CUSTOMCON\n")
             #Write initial data section
             res = self.graph.results
-            res.setFilter(dataFilter)
-            if len(res.rowSortOrder) > 0:
+            res.set_filter(dataFilter)
+            if res.count_rows(filtered=True) > 0:
                 af.write("\nBEGIN_DATA\n")
                 #reset filter to intial data set
-                for i in res.rowSortOrder:
+                for i in res.get_indexes(filtered=True):
                     line = [0]*(nin+nout)
                     p = 0
                     for j, vname in enumerate(self.input):
-                        nkey, vkey = vname.split('.', 1)
-                        col = res.inputMap[nkey][vkey]
-                        val = np.array(res.resultElement(i, col))
-                        if val.size > 1:
-                            for k in range(len(val)):
-                                line[p+k] = val[k]
-                            p += val.size
-                        else:
-                            line[p] = val
-                            p += 1
+                        line[p] = res["input.{}".format(vname)][i]
+                        p += 1
                     for j, vname in enumerate(self.output):
-                        nkey, vkey = vname.split('.', 1)
-                        col = res.outputMap[nkey][vkey]
-                        val = np.array(res.resultElement(i, col))
-                        if val.size > 1:
-                            for k in range(len(val)):
-                                line[p+k] = val[k]
-                            p += val.size
-                        else:
-                            line[p] = val
-                            p += 1
+                        line[p] = res["output.{}".format(vname)][i]
+                        p += 1
                     line = [str(x) for x in line]
                     af.write(' '.join(line))
                     af.write("\n")
@@ -851,37 +835,21 @@ class surrogateMethod(surrogate):
             #a cut and paste job for now
             af.write("\nBEGIN_VALDATA\n")
             # Reset data filter to validation set
-            self.graph.results.setFilter(validFilter)
+            self.graph.results.set_filter(validFilter)
             for i in range(nvaldata):
                 line = [0]*(nin+nout)
                 p = 0
                 for j, vname in enumerate(self.input):
-                    nkey, vkey = vname.split('.', 1)
-                    col = res.inputMap[nkey][vkey]
-                    val = np.array(res.resultElement(i, col))
-                    if val.size > 1:
-                        for k in range(len(val)):
-                            line[p+k] = val[k]
-                        p += val.size
-                    else:
-                        line[p] = val
-                        p += 1
+                    line[p] = res["input.{}".format(vname)][i]
+                    p += 1
                 for j, vname in enumerate(self.output):
-                    nkey, vkey = vname.split('.', 1)
-                    col = res.outputMap[nkey][vkey]
-                    val = np.array(res.resultElement(i, col))
-                    if val.size > 1:
-                        for k in range(len(val)):
-                            line[p+k] = val[k]
-                        p += val.size
-                    else:
-                        line[p] = val
-                        p += 1
+                    line[p] = res["output.{}".format(vname)][i]
+                    p += 1
                 line = [str(x) for x in line]
                 af.write(' '.join(line))
                 af.write("\n")
             af.write("END_VALDATA\n")
-        
+
     def writePlugin(self):
         excludeBefore = '[a-zA-Z0-9_\'\".]'
         excludeAfter = '[0-9a-zA-Z_.(\'\"]'
@@ -914,4 +882,3 @@ class surrogateMethod(surrogate):
             for eq in eq_list:
                 f.write("        {0}\n".format(eq))
         self.dat.reloadPlugins()
-            

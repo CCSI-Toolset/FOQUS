@@ -59,6 +59,7 @@ class dataFilter(object):
                 dfr = dataFilterRule()
                 dfr.loadDict(i[1])
                 self.fstack.append([i[0], dfr])
+        return self
 
 class dataFilterRule(object):
     OP_EQ = 0
@@ -196,7 +197,7 @@ class Results(pd.DataFrame):
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:
-            sd["__filters"][f] = self.filters[i].saveDict()
+            sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
         return sd

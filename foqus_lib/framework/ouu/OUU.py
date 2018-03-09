@@ -27,7 +27,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
     @staticmethod
     def writeOUUdata(outfile, outputs, constraints, derivatives, data,
-                     opttypes, **kwargs):
+                     xtable, **kwargs):
 
         # Charles TODO: Handle y is now a list of inputs
         # Charles TODO: Handle derivatives
@@ -73,10 +73,15 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 distributions = kwargs[key]
             elif k == 'init_input':
                 init_input = kwargs[key]
-                
+
         inputTypes = data.getInputTypes()
         nInputs = data.getNumInputs()
-        nVariableInputs = inputTypes.count(Model.VARIABLE)
+        inputNames = data.getInputNames()
+        variableInputIndices = []
+        for e in xtable:
+            if e['type'] != u'Fixed':
+                variableInputIndices.append(inputNames.index(e['name']))
+        nVariableInputs = len(variableInputIndices)
         nOutputs = len(outputs)
         nSamples = num_fmin = 1  # number of random restarts
         
@@ -108,17 +113,25 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         indices = range(nInputs)
         variableIndex = 1
         fixedIndex = 1
-        inputNames = data.getInputNames()
         for i, name, inType, lb, ub, default in zip(indices, inputNames, \
                              inputTypes, inputLB, inputUB, inputDefaults):
-          if inType == Model.VARIABLE:
+          if i in variableInputIndices: #inType == Model.VARIABLE:
             f.write('   variable %d %s  =  % .16e  % .16e\n' % \
                     (variableIndex, name, lb, ub))
             variableIndex = variableIndex + 1
           else:
             f.write('   fixed %d %s = % .16e\n' % (fixedIndex, name, default))
             fixedIndex = fixedIndex + 1
+
         # inject discrete variables in psuade
+        opttypes = []
+        cnt = 0;
+        for e in xtable:
+            cnt = cnt + 1
+            t = e['type']
+            if t == u'Opt: Primary Discrete (Z1d)':
+                opttypes.append(cnt)
+
         nn = len(opttypes)
         for ii in range(nn):
           jj = opttypes[ii];
@@ -127,7 +140,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         if distributions is None:
           distributions = SampleData.getInputDistributions(data)
         for i, inType, dist in zip(indices, inputTypes, distributions):
-          if inType == Model.VARIABLE:
+          if i in variableInputIndices: #inType == Model.VARIABLE:
             distType = dist.getDistributionType()
             distParams = dist.getParameterValues()
             if distType != Distribution.UNIFORM:
@@ -363,15 +376,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             inputUB = p['inputUB']
             dist = p['dist']
 
-        # Tong: added here to record discrete optimization variables
-        opttypes = []
-        cnt = 0;
-        for e in xtable:
-            cnt = cnt + 1
-            t = e['type']
-            if t == u'Opt: Primary Discrete (Z1d)':
-                opttypes.append(cnt)
-
+        init_input = []
         vartypes = []
         for e in xtable:
           t = e['type']
@@ -387,6 +392,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             vartypes.append(3)
           elif t == u'UQ: Continuous (Z4)':
             vartypes.append(4)
+          if t != u'Fixed':
+            init_input.append(e['value'])
         M1 = vartypes.count(1)
         M2 = vartypes.count(2)
         M3 = vartypes.count(3)
@@ -435,10 +442,10 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # TO DO: remove randSeed
         ouuFile = OUU.writeOUUdata(fnameOUU,y,outputsAsConstraint,
-                         outputsAsDerivative, data, opttypes,
+                         outputsAsDerivative, data, xtable,
                          randSeed=41491431, inputLowerBounds=inputLB,
                          inputUpperBounds=inputUB, inputPDF=dist,
-                         useEnsOptDriver = (ensOptDriver != None))
+                         useEnsOptDriver = (ensOptDriver != None), init_input = init_input)
         if (ouuFile == None):
           return None
 

@@ -89,30 +89,54 @@ def genOutputFile(outFileName, outData):
     return None
 
 if __name__ == '__main__':
+    f = open('foquspsuadeclient.log', 'w')
+    f.write(' '.join(sys.argv))
+    f.write('\n')
     inputFile = sys.argv[1]
     outputFile = sys.argv[2]
     # Set the socket address, maybe someday this will change or
     # have some setting option, but for now is hard coded
     address = ('localhost', 56001)
+    f.write('Create client\n')
+    f.close()
     # Open the connection
     conn = Client(address)
     # Read the sample from the input file made by PSUADE
     (nSamples, samples) = getInputData(inputFile)
 
     # Submit the samples to FOQUS to be run
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Send clear\n')
+    f.close()
     conn.send(['clear'])
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Write samples:\n')
+    f.close()
     for sample in samples:
+        f = open('foquspsuadeclient.log', 'a')
+        f.write(' '.join(map(str, sample)))
+        f.write('\n')
+        f.close()
         conn.send(['submit', sample])
         conn.recv()
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Samples sent. Running...')
+    f.close()
     conn.send(['run'])
     n = conn.recv()[1]
     #print 'Submitted {0} samples to FOQUS'.format(n)
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Get results')
+    f.close()
     conn.send(['result'])
     msg = conn.recv()
     status = msg[1]
     results = msg[2]
     conn.send(['close'])
     conn.close()
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Done')
+    f.close()
 
     # Write the output file that ALAMO can read
     genOutputFile(outputFile, results)

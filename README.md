@@ -19,10 +19,10 @@ tested with the following versions. Use other versions at your own risk
 + Wix Toolset v3.10
 
 ### Install
-See the [installation](INSTALLmd.) instructions for details.
+See the [installation](INSTALL.md) instructions for details.
 
 ### FAQ
-See our [FAQ][FAQ.md] for frequently asked questions and answers
+See our [FAQ](FAQs.md) for frequently asked questions and answers
 
 ## Authors
 See also the list of [contributors](../contributors) who participated in this project.
@@ -38,7 +38,7 @@ See also the list of [contributors](../contributors) who participated in this pr
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, 
-[releases](../../releases) or [tags](../..//tags) on this repository.
+[releases](../../releases) or [tags](../../tags) on this repository.
 
 ## License & Copyright
 See [LICENSE.md](LICENSE.md) file for details

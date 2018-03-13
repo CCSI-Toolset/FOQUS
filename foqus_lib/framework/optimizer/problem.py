@@ -315,12 +315,12 @@ class problem():
                         for i in range(len(gt.res)):
                             if not readres[i] and gt.res_fin[i] != -1:
                                 readres[i] = True
-                                #slv.graph.results.addFromSavedValues(
-                                #    self.storeResults,
-                                #    'res_{0:05d}_{1:05d}'\
-                                #        .format(self.iterationNumber,i),
-                                #    None,
-                                #    gt.res[i])
+                                slv.graph.results.addFromSavedValues(
+                                    self.storeResults,
+                                    'res_{0:05d}_{1:05d}'\
+                                        .format(self.iterationNumber,i),
+                                    None,
+                                    gt.res[i])
         self.totalSamplesRead = self.totalSamplesRead + nsam
         self.totalSampleErrors = self.totalSampleErrors + \
             status['error']

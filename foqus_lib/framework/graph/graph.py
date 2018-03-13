@@ -843,7 +843,7 @@ class Graph(threading.Thread):
                     for vkey in job[nkey]:
                         if type(job[nkey][vkey]).\
                             __module__ == numpy.__name__:
-                            job[nkey][vkey] = job[nkey][vkey].tolist()
+                            job[nkey][vkey] = job[nkey][vkey]
             if self.turbineSession is None:
                 self.solveListValTurbine(self.runList)
             else:

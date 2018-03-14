@@ -250,7 +250,7 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.count_rows(filtered=False)
-        row = self.count_rows()
+        row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
@@ -278,7 +278,7 @@ class Results(pd.DataFrame):
         Return the number of rows in a table. If filtered the number of rows in
         the data frame that match the filter.
         """
-        return len(self.get_indexes(filtered=True))
+        return len(self.get_indexes(filtered=filtered))
 
     def count_cols(self):
         """

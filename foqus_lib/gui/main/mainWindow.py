@@ -105,8 +105,7 @@ class mainWindow(QMainWindow):
         self.flowsheetEditor = drawFlowsheet(self.dat, self)
         self.flowsheetEditor.nodeSelected.connect(self.setNodePanel)
         self.flowsheetEditor.edgeSelected.connect(self.setEdgePanel)
-        self.flowsheetEditor.updateEdgeEdit.connect(
-            self.applyAndUpdateEdgeEdit)
+        self.flowsheetEditor.updateEdgeEdit.connect(self.applyAndUpdateEdgeEdit)
         #self.flowsheetEditor.noneSelected.connect(self.fsSelectNone)
         self.flowsheetEditor.updateFS.connect(self.refreshFlowsheet)
         self.flowsheetEditor.updateFSPos.connect(self.refreshNodeCoord)

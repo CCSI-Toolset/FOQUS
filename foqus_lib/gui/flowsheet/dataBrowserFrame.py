@@ -45,8 +45,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.addMenuActions()
         self.menuButton.setMenu(self.menu)
         self.editFiltersButton.clicked.connect(self.editFilters)
-        self.filterSelectBox.currentIndexChanged.connect(
-            self.selectFilter)
+        self.filterSelectBox.currentIndexChanged.connect(self.selectFilter)
+        self.updateFilterBox()
         self.tableView.setAlternatingRowColors(True)
         self.columnsButton.clicked.connect(self.columnSelect)
         self.tableView.verticalHeader().show()

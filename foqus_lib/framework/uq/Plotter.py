@@ -623,7 +623,7 @@ class Plotter:
         # plot 3d bars
         for i in range(n):
             ax.bar3d(xpos[i], ypos[i], zpos[i], dx[i], dy[i], dz[i],
-                     color=colorVals[cc[i]], alpha=opacity, zsort='average')
+                     color=colorVals[cc[i]], alpha=opacity, zsort='average', edgecolor='k')
             ax.text(xpos[i], ypos[i], zpos[i],
                         '%.3f' % dz[i], ha='center', va='bottom')
 

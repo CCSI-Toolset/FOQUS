@@ -46,7 +46,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.menuButton.setMenu(self.menu)
         self.editFiltersButton.clicked.connect(self.editFilters)
         self.filterSelectBox.currentIndexChanged.connect(self.selectFilter)
-        self.updateFilterBox()
         self.tableView.setAlternatingRowColors(True)
         self.columnsButton.clicked.connect(self.columnSelect)
         self.tableView.verticalHeader().show()
@@ -173,6 +172,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.dat.mainWin.runSim(rows=rows, valList=valList)
 
     def refreshContents(self):
+        self.updateFilterBox()
         self.tableView.setModel(dataModel(self.dat.flowsheet.results, self))
 
     def autoResizeCols(self):

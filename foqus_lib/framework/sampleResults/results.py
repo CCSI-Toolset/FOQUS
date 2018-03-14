@@ -140,9 +140,11 @@ def incriment_name(name, exnames):
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = {}
+        self.filters = None # do this to avoid set column from attribute warn
+        self.filters = {} # now that atribute exists set to empty dict
         self._current_filter = None
-        self._filter_indexes = []
+        self._filter_indexes = None # avoid set column from attribute warn
+        self._filter_indexes = [] # now that atribute exists set to empty list
         self.flatTable = True
         self["set"] = []
         self["result"] = []

@@ -148,6 +148,7 @@ class foqusListener(threading.Thread):
                         self.inputNames,
                         varVals,
                         unScale=self.scaled)
+                    print vals
                     for nkey in vals:
                         for vkey in vals[nkey]:
                             sampInput[nkey][vkey] = vals[nkey][vkey]
@@ -175,11 +176,13 @@ class foqusListener(threading.Thread):
                             vn = vn.split('.', 1)
                             nodeName = vn[0]
                             varName = vn[1]
-                            r += res['output'][nodeName][varName]
+                            print res['output']
+                            r.append(res['output'][nodeName][varName])
                         if res['graphError'] != 0:
                             for i in range(len(r)):
                                 r[i] = self.failValue
                         ret.append(r)
+                        print ret
                     conn.send(['result', stat, ret])
                 elif msg[0] == 'save':
                     # Save the flow sheet

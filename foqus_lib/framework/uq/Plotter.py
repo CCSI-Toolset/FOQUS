@@ -884,7 +884,7 @@ class Plotter:
         nbins = 10
         bheights, bedges = np.histogram(err, nbins)
         w = np.diff(bedges)
-        ax1.bar(bedges[:-1], bheights, width=w, color='c', edgecolor='k')
+        ax1.bar(bedges[:-1], bheights, width=w, color='c', alpha=1, edgecolor='k')
         ax1.set_xlabel(xlabel[0])
         ax1.xaxis.grid(True)
         ax1.set_ylabel(ylabel[0])

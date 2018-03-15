@@ -135,7 +135,7 @@ class NodeVarList(OrderedDict):
             for var in sorted(self[node].keys(), key=lambda s: s.lower()):
                 self.odict['.'.join([node, var])] = self[node][var]
         return self.odict
-    
+
 
     def compoundNames(self, sort=True):
         """
@@ -276,7 +276,7 @@ class NodeVarList(OrderedDict):
                 sd[name[0]][name[1]] = \
                     self[name[0]][name[1]].unscale2(sd[name[0]][name[1]])
         return sd
-
+        
 
 class NodeVars(object):
     """

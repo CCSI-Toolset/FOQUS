@@ -36,6 +36,7 @@ class dataFilter(object):
 
     def __init__(self):
         self.fstack = []
+        self.sortTerm = None
 
     def saveDict(self):
         sd = {
@@ -140,12 +141,18 @@ def incriment_name(name, exnames):
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = {}
+        self.filters = None # do this to avoid set column from attribute warn
+        self.filters = {} # now that atribute exists set to empty dict
+        self.filters["none"] = \
+            dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        self.filters["all"] = dataFilter()
         self._current_filter = None
-        self._filter_indexes = []
+        self._filter_indexes = None # avoid set column from attribute warn
+        self._filter_indexes = [] # now that atribute exists set to empty list
         self.flatTable = True
         self["set"] = []
         self["result"] = []
+        self._filter_mask = None
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
@@ -223,6 +230,12 @@ class Results(pd.DataFrame):
                 "Error loading stored results")
         for i in sd.get("__filters", []):
             self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
+
+        if "none" not in self.filters:
+            self.filters["none"] = \
+                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        if "all" not in self.filters:
+            self.filters["all"] = dataFilter()
         self.update_filter_indexes()
 
     def data_sets(self):
@@ -248,7 +261,7 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.count_rows(filtered=False)
-        row = self.count_rows()
+        row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
@@ -276,7 +289,7 @@ class Results(pd.DataFrame):
         Return the number of rows in a table. If filtered the number of rows in
         the data frame that match the filter.
         """
-        return len(self.get_indexes(filtered=True))
+        return len(self.get_indexes(filtered=filtered))
 
     def count_cols(self):
         """

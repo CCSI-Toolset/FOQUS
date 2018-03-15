@@ -1,11 +1,11 @@
 #!/usr/bin/python
 '''
     foqusALAMOClient.py
-     
+
     * The purpose of this scrip is to be the simulator executable for
     * ALAMO.  It reads the input data from ALAMO sends it to FOQUS using
     * a network socket connection, waits for the results and writes them
-    * in the format expected by ALAMO, then it closes the listener in 
+    * in the format expected by ALAMO, then it closes the listener in
     * FOQUS and exits.
 
     John Eslick, Carnegie Mellon University, 2014
@@ -13,11 +13,11 @@
     This Material was produced under the DOE Carbon Capture Simulation
     Initiative (CCSI), and copyright is held by the software owners:
     ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
+    and/or the U.S. Government retain ownership of all rights in the
     CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
+    distribution or dissemination is governed under the terms and
     conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
+    Non-Disclosure Agreement, and the CCSI Intellectual Property
     Management Plan. No rights are granted except as expressly recited
     in one of the aforementioned agreements.
 '''
@@ -29,7 +29,7 @@ from multiprocessing.connection import Client
 if __name__ == '__main__':
     inputFile = 'input.txt'
     outputFile = 'output.txt'
-    # Set the socket address, maybe someday this will change or 
+    # Set the socket address, maybe someday this will change or
     # have some setting option, but for now is hard coded
     address = ('localhost', 56001)
     # Open the connection
@@ -37,14 +37,13 @@ if __name__ == '__main__':
     # Read the samples from the input file made by ALAMO
     samples = []
     with open(inputFile, 'r') as f:
-        try:
-            k = int(float(f.readline()))
-        except:
-            k = 0
-        for row in range(k):
-            line = f.readline()
+        print "Reading Input File {}".format(inputFile)
+        line = f.readline() # read and ignore first line
+        line = f.readline()
+        while(line):
             line = line.strip()
             line = line.split()
+            if line[0] == 'T': break
             for i in range(len(line)):
                 try:
                     line[i] = float(line[i])
@@ -53,6 +52,7 @@ if __name__ == '__main__':
                     line[i] = float('NaN')
             if len(line) != 0:
                 samples.append(line)
+            line = f.readline()
     # Submit the samples to FOQUS to be run
     conn.send(['clear'])
     for sample in samples:

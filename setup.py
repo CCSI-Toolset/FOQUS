@@ -35,12 +35,12 @@ import foqus_lib.version.version as ver
 print("Setting version as {0}".format(ver.version))
 
 install_requires=[
+    'adodbapi',
     'TurbineClient',
     'pyparsing',
     #'py4j',
     'requests',
     #'networkx',
-    'adodbapi',
     #'redis',
     #'logstash_formatter',
     'matplotlib',

@@ -37,6 +37,7 @@ class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
 
     def show(self):
         self.dataFrame.refreshContents()
+        self.dataFrame.updateFilterBox()
         QDialog.show(self)
         # if you resize the columns before showing Qt seems to
         # calculate the width of all the cells in the table

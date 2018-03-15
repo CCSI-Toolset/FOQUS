@@ -55,11 +55,10 @@ from foqus_lib.framework.session.session import exePath
 from multiprocessing.connection import Client
 
 def checkAvailable():
-    '''
-        Plug-ins should have this function to check availability of any
-        additional required software.  If requirements are not available
-        plug-in will not be available.
-    '''
+    """Plug-ins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plug-in will not be available.
+    """
     # I don't really check anything for now the ALAMO exec location is
     # just a setting of the plug-in, you may or may not need GAMS or
     # MATLAB
@@ -506,13 +505,14 @@ class surrogateMethod(surrogate):
             #Get options and show some information about settings
             adaptive = self.options['SAMPLER'].value
             alamoDir = self.alamoDir
+            alamoDirFull = os.path.abspath(alamoDir)
             self.setupWorkingDir()
-            adpexe = os.path.join(exePath(), 'foqusALAMOClient.exe')
+            adpexe = os.path.join(alamoDirFull, 'foqusALAMOClient.py')
             if os.path.isfile(adpexe):
                 adpexe = win32api.GetShortPathName(adpexe)
                 self.writeAlamoInputFile(adaptiveExe=adpexe)
             else:
-                self.writeAlamoInputFile()
+                self.writeAlamoInputFile(adaptiveExe=adpexe)
             if self.checkNumVars():
                 return
             alamoExe = self.dat.foqusSettings.alamo_path

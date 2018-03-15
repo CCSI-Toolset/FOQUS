@@ -15,17 +15,7 @@ executed by the interpreter that Windows associates with Python files.
 
 ## Install a Git Client
 
-If you do not have a git client install one. If you have Anaconda the easiest
-way is 
-
-``conda install git``
-
-## Install Turbine Client
-
-This step can be done automatically once the CCSI repositories are open by 
-including Turbine Client as a requirment.
-
-``pip install git+https://github.com/CCSI-toolset/turb_client@master``
+If you do not have a git client install one.
 
 ## Install FOQUS
 
@@ -56,7 +46,10 @@ PSUADE install instructions are on the [psuade github](https://github.com/LLNL/p
 
 NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
 the Python module is not available to be installed with pip. For installation 
-instructions see https://nlopt.readthedocs.io/en/latest/. The Python module is required. 
+instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
+
+```conda install -c conda-forge nlopt```
+
 
 
 

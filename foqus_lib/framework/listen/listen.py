@@ -80,6 +80,7 @@ class foqusListener(threading.Thread):
         sampling.
     '''
     def __init__(self, dat, host = 'localhost', port=56001):
+
         threading.Thread.__init__(self)
         self.daemon = True
         self.inputNames = []

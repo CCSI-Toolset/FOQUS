@@ -80,6 +80,7 @@ class foqusListener(threading.Thread):
         sampling.
     '''
     def __init__(self, dat, host = 'localhost', port=56001):
+
         threading.Thread.__init__(self)
         self.daemon = True
         self.inputNames = []
@@ -175,7 +176,7 @@ class foqusListener(threading.Thread):
                             vn = vn.split('.', 1)
                             nodeName = vn[0]
                             varName = vn[1]
-                            r += res['output'][nodeName][varName]
+                            r.append(res['output'][nodeName][varName])
                         if res['graphError'] != 0:
                             for i in range(len(r)):
                                 r[i] = self.failValue

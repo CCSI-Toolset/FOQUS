@@ -240,7 +240,7 @@ class Plotter:
             bheights_normed = bheights/float(sum(bheights))
         xdat = bedges[:-1]
         ydat = bheights_normed
-        ax1.bar(xdat, ydat, color='g', width=w, align='center', alpha=opacity)
+        ax1.bar(xdat, ydat, color='g', width=w, align='center', alpha=opacity, edgecolor='k')
         ax1.set_xlabel(xlabel)
         ax1.set_ylabel(ylabel)
         ax1.set_title(title)
@@ -304,13 +304,13 @@ class Plotter:
         w = xdat[1] - xdat[0]   # assume uniform distance between xdat elements
         pdf1 = ax1.bar(xdat, ydat[0], color='y', width=w,
                        yerr=None, error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                       align='center', alpha=opacity[0])
+                       align='center', alpha=opacity[0], edgecolor='k')
         legend_handles = [pdf1]
         legend_labels = ['PDF']
         if pdfs is not None:
             pdf2 = ax1.bar(xdat, ydat[1], color='g', width=w,
                            yerr=None, error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                           align='center', alpha=opacity[1])
+                           align='center', alpha=opacity[1], edgecolor='k')
             legend_handles = [pdf1, pdf2]
             legend_labels = ['Ensemble PDF', 'Mean PDF']
         if useFrameAlpha:
@@ -549,7 +549,7 @@ class Plotter:
                 index = np.arange(len(dat_i))
                 rects = ax[i].bar(index, dat_i, color=colorVals[i], width=w, 
                                   yerr=std_i, error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                                  align='center', alpha=opacity)
+                                  align='center', alpha=opacity, edgecolor='k')
                 ax[i].set_ylabel(ylabel[i])
                 ax[i].xaxis.grid(True)
                 ax[i].yaxis.grid(True)
@@ -569,7 +569,7 @@ class Plotter:
             index = np.arange(len(dat))
             rects = ax.bar(index, dat, color='y', width=w,
                            yerr=std, error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                           align='center', alpha=opacity)
+                           align='center', alpha=opacity, edgecolor='k')
             ax.set_ylabel(ylabel)
             ax.xaxis.grid(True)
             ax.yaxis.grid(True)
@@ -623,7 +623,7 @@ class Plotter:
         # plot 3d bars
         for i in range(n):
             ax.bar3d(xpos[i], ypos[i], zpos[i], dx[i], dy[i], dz[i],
-                     color=colorVals[cc[i]], alpha=opacity, zsort='average')
+                     color=colorVals[cc[i]], alpha=opacity, zsort='average', edgecolor='k')
             ax.text(xpos[i], ypos[i], zpos[i],
                         '%.3f' % dz[i], ha='center', va='bottom')
 
@@ -884,7 +884,7 @@ class Plotter:
         nbins = 10
         bheights, bedges = np.histogram(err, nbins)
         w = np.diff(bedges)
-        ax1.bar(bedges[:-1], bheights, width=w, color='c')
+        ax1.bar(bedges[:-1], bheights, width=w, color='c', alpha=1, edgecolor='k')
         ax1.set_xlabel(xlabel[0])
         ax1.xaxis.grid(True)
         ax1.set_ylabel(ylabel[0])
@@ -969,7 +969,7 @@ class Plotter:
                 x = xdat[p]
                 z = zdat[p]
                 w = x[1]-x[0]
-                ax.bar(x, z, color='g', width=w, align='center', alpha=opacity)
+                ax.bar(x, z, color='g', width=w, align='center', alpha=opacity, edgecolor='k')
                 xmin = x[0]
                 xmax = x[-1]
                 ax.set_xlim(xlim[p])
@@ -1041,7 +1041,7 @@ class Plotter:
             x = xdat[p]
             z = zdat[p]
             w = x[1]-x[0]
-            ax.bar(x, z, color='g', width=w, align='center', alpha=opacity)
+            ax.bar(x, z, color='g', width=w, align='center', alpha=opacity, edgecolor='k')
             xmin = x[0]
             xmax = x[-1]
             ax.set_xlim(xlim[p])

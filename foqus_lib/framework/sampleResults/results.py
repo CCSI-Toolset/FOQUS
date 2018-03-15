@@ -36,6 +36,7 @@ class dataFilter(object):
 
     def __init__(self):
         self.fstack = []
+        self.sortTerm = None
 
     def saveDict(self):
         sd = {

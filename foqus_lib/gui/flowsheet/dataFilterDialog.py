@@ -204,7 +204,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         if self.dat.flowsheet.results.current_filter() == fname:
             self.dat.flowsheet.results.set_filter(None)
         self.updateFilterBox( )
-        self.upadteForm()
+        self.updateForm()
 
     def selectFilter(self, i=None):
         self.applyChanges(True)

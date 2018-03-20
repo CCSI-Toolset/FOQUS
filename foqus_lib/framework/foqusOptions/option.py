@@ -1,29 +1,18 @@
-'''
-    option.py
+"""option.py
      
-    * This is an options class for FOQUS, mainly used for optimization
-        and surrogate model plugins.
+This is an options class for FOQUS, mainly used for optimization and surrogate
+model plugins.
 
-    John Eslick, Carnegie Mellon University, 2014
-
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 
 class option():
     def __init__(
-        self, 
-        default=0.0, 
-        value=None, 
-        desc="An option", 
+        self,
+        default=0.0,
+        value=None,
+        desc="An option",
         vmin=None,
         vmax=None,
         dtype=None,
@@ -36,10 +25,10 @@ class option():
             creates a new option, options are used in settings for
             optimization solvers, and surrogate model methods they
             may be used in more plases in the future.
-            
+
             Args/attributes
-            
-            default -  a default value for the option (if dtype is 
+
+            default -  a default value for the option (if dtype is
                 not specified the type of the default will be used
                 to set the option type
             value - the current option value
@@ -63,7 +52,7 @@ class option():
         self.validValues = validValues
         self.optSet = optSet
         self.disable = disable
-    
+
     def saveDict(self):
         sd = {
             'desc':self.desc,
@@ -77,7 +66,7 @@ class option():
             'disable':self.disable
         }
         return sd
-    
+
     def loadDict(self, sd):
         self.desc = sd.get('desc', self.desc)
         self.value = sd.get('value', self.value)
@@ -92,7 +81,7 @@ class option():
             self.dtype = type(self.default)
         self.validValues = sd.get('validValues', self.validValues)
         self.optSet = sd.get('optSet', self.optSet)
-    
+
     def validTypes(self):
         return [
             float,
@@ -101,7 +90,7 @@ class option():
             bool,
             list,
             dict]
-    
+
     def typeToString(self, t):
         if t == float:
             return 'float'
@@ -117,7 +106,7 @@ class option():
             return 'dict'
         else:
             return None
-        
+
     def stringToType(self, s):
         if s == 'float':
             return float
@@ -133,22 +122,22 @@ class option():
             return dict
         else:
             return None
-    
+
     def set(self, value):
         if type(value) == int and self.dtype == float:
             self.value = float(value)
-        else:    
+        else:
             self.value = value
-    
+
     def get(self):
         return self.value
-        
+
     def valid(self):
         return \
             self.validateType() and \
             self.validateRange() and \
             validateList()
-        
+
     def validateType(self):
         '''
             Check that the value type matches the specified data type.
@@ -160,7 +149,7 @@ class option():
             return True
         else:
             return False
-    
+
     def validateRange(self):
         '''
             Check that if the value is an int or float that it is between
@@ -174,7 +163,7 @@ class option():
             return False
         else:
             return True
-    
+
     def validateList(self):
         '''
             Check that the value is in the list of valid values
@@ -185,6 +174,3 @@ class option():
             return True
         else:
             return False
-            
-            
-        

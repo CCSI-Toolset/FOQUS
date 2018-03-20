@@ -1,3 +1,13 @@
+"""listen.py
+
+* This contains listeners to run simulations taking input from a socket
+  interface this is used for sampling methods like ALAMO that can run a simultor
+  (executable) to do additional sampling. The executable will tell FOQUS to run
+  a simulation and return results by connecting to the socket of the listener.
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 from multiprocessing.connection import Listener
 import threading
 import time
@@ -6,12 +16,10 @@ import copy
 
 
 class foqusListener2(threading.Thread):
-    '''
-        This class uses a multiprocessing listener to allow
-        FOQUS to be controlled over a socket connection.
-        The main purpose for this is ALAMO adaptive
-        sampling.
-    '''
+    """
+    A multiprocessing listener to allow FOQUS to be controlled over a socket
+    connection. The main purpose for this adaptive sampling.
+    """
     def __init__(self, dat, host = 'localhost', port=56002):
         threading.Thread.__init__(self)
         self.daemon = True
@@ -73,12 +81,10 @@ class foqusListener2(threading.Thread):
         self.listener.close()
 
 class foqusListener(threading.Thread):
-    '''
-        This class uses a multiprocessing listener to allow
-        FOQUS to be controlled over a socket connection.
-        The main purpose for this is ALAMO adaptive
-        sampling.
-    '''
+    """
+    A multiprocessing listener to allow FOQUS to be controlled over a socket
+    connection. The main purpose for this adaptive sampling.
+    """
     def __init__(self, dat, host = 'localhost', port=56001):
 
         threading.Thread.__init__(self)
@@ -103,9 +109,7 @@ class foqusListener(threading.Thread):
         self.outputNames = l
 
     def run(self):
-        '''
-            Called by Thread when you run start() method
-        '''
+        """Called by Thread when you run start() method"""
         quitListening = False
         # create an input dictionary structure to load values from
         inpDict = self.dat.flowsheet.saveValues()['input']

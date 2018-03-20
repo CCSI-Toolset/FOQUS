@@ -1,20 +1,9 @@
-"""
-results.py
+"""results.py
 
-    * This contains the class for sample results data heading
+* This contains the class for sample results data heading
 
 John Eslick, Carnegie Mellon University, 2014
-
-This Material was produced under the DOE Carbon Capture Simulation
-Initiative (CCSI), and copyright is held by the software owners:
-ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-and/or the U.S. Government retain ownership of all rights in the
-CCSI software and the copyright and patents subsisting therein. Any
-distribution or dissemination is governed under the terms and
-conditions of the CCSI Test and Evaluation License, CCSI Master
-Non-Disclosure Agreement, and the CCSI Intellectual Property
-Management Plan. No rights are granted except as expressly recited
-in one of the aforementioned agreements.
+See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
@@ -373,6 +362,15 @@ class Results(pd.DataFrame):
             mask = tstack.pop()
         indexes = list(self[mask].index)
         return (indexes, mask)
+
+    def clearData(self, *args, **kwargs):
+        self.clear_data(*args, **kwargs)
+
+    def clear_data(self, filtered=False):
+        indexes = self.get_indexes(filtered=filtered)
+        for i in indexes:
+            self.drop(i, inplace=True)
+        self.update_filter_indexes()
 
 # This is old export to psuade function.  Hopefully can update:
 """

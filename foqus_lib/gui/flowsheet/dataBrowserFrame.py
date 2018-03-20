@@ -1,21 +1,10 @@
-'''
-    dataBrowserFrame.py
+"""dataBrowserFrame.py
 
-    * Displays tabulated flowsheet data
+* Displays tabulated flowsheet data
 
-    John Eslick, Carnegie Mellon University, 2014
-
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import json
 import os
 

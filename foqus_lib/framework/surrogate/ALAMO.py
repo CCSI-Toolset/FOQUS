@@ -1,34 +1,21 @@
-#
-#FOQUS_SURROGATE_PLUGIN
-#
-# Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the surrogate class.
-#
-#
-# ALAMO.py
-#
-# * This is an example of a surrogate model builder plugin for FOQUS,
-#   it uses the ALAMO surrogate model builder program ref:
-#
-# Cozad, A., N. V. Sahinidis and D. C. Miller, Automatic Learning of
-#    Algebraic Models for Optimization, AIChE Journal, accepted, 2014.
-#
-# * A setting of this plugin is the location of the ALAMO executable
-#
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
+""" #FOQUS_SURROGATE_PLUGIN ALAMO.py
+
+Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
+150 characters of text.  They also need to hav a .py extention and
+inherit the surrogate class.
+
+* This is an example of a surrogate model builder plugin for FOQUS,
+  it uses the ALAMO surrogate model builder program ref:
+
+  Cozad, A., N. V. Sahinidis and D. C. Miller, Automatic Learning of
+      Algebraic Models for Optimization, AIChE Journal, accepted, 2014.
+
+* A setting of this plugin is the location of the ALAMO executable
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
+
 
 import numpy as np
 import threading
@@ -55,11 +42,10 @@ from foqus_lib.framework.session.session import exePath
 from multiprocessing.connection import Client
 
 def checkAvailable():
-    '''
-        Plug-ins should have this function to check availability of any
-        additional required software.  If requirements are not available
-        plug-in will not be available.
-    '''
+    """Plug-ins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plug-in will not be available.
+    """
     # I don't really check anything for now the ALAMO exec location is
     # just a setting of the plug-in, you may or may not need GAMS or
     # MATLAB
@@ -506,13 +492,14 @@ class surrogateMethod(surrogate):
             #Get options and show some information about settings
             adaptive = self.options['SAMPLER'].value
             alamoDir = self.alamoDir
+            alamoDirFull = os.path.abspath(alamoDir)
             self.setupWorkingDir()
-            adpexe = os.path.join(exePath(), 'foqusALAMOClient.exe')
+            adpexe = os.path.join(alamoDirFull, 'foqusALAMOClient.py')
             if os.path.isfile(adpexe):
                 adpexe = win32api.GetShortPathName(adpexe)
                 self.writeAlamoInputFile(adaptiveExe=adpexe)
             else:
-                self.writeAlamoInputFile()
+                self.writeAlamoInputFile(adaptiveExe=adpexe)
             if self.checkNumVars():
                 return
             alamoExe = self.dat.foqusSettings.alamo_path

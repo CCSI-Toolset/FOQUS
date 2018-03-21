@@ -1,20 +1,9 @@
-"""
-results.py
+"""results.py
 
-    * This contains the class for sample results data heading
+* This contains the class for sample results data heading
 
 John Eslick, Carnegie Mellon University, 2014
-
-This Material was produced under the DOE Carbon Capture Simulation
-Initiative (CCSI), and copyright is held by the software owners:
-ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-and/or the U.S. Government retain ownership of all rights in the
-CCSI software and the copyright and patents subsisting therein. Any
-distribution or dissemination is governed under the terms and
-conditions of the CCSI Test and Evaluation License, CCSI Master
-Non-Disclosure Agreement, and the CCSI Intellectual Property
-Management Plan. No rights are granted except as expressly recited
-in one of the aforementioned agreements.
+See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
@@ -36,6 +25,7 @@ class dataFilter(object):
 
     def __init__(self):
         self.fstack = []
+        self.sortTerm = None
 
     def saveDict(self):
         sd = {
@@ -140,12 +130,18 @@ def incriment_name(name, exnames):
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = {}
+        self.filters = None # do this to avoid set column from attribute warn
+        self.filters = {} # now that atribute exists set to empty dict
+        self.filters["none"] = \
+            dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        self.filters["all"] = dataFilter()
         self._current_filter = None
-        self._filter_indexes = []
+        self._filter_indexes = None # avoid set column from attribute warn
+        self._filter_indexes = [] # now that atribute exists set to empty list
         self.flatTable = True
         self["set"] = []
         self["result"] = []
+        self._filter_mask = None
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
@@ -223,6 +219,12 @@ class Results(pd.DataFrame):
                 "Error loading stored results")
         for i in sd.get("__filters", []):
             self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
+
+        if "none" not in self.filters:
+            self.filters["none"] = \
+                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        if "all" not in self.filters:
+            self.filters["all"] = dataFilter()
         self.update_filter_indexes()
 
     def data_sets(self):
@@ -248,7 +250,7 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.count_rows(filtered=False)
-        row = self.count_rows()
+        row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
@@ -276,7 +278,7 @@ class Results(pd.DataFrame):
         Return the number of rows in a table. If filtered the number of rows in
         the data frame that match the filter.
         """
-        return len(self.get_indexes(filtered=True))
+        return len(self.get_indexes(filtered=filtered))
 
     def count_cols(self):
         """
@@ -360,6 +362,15 @@ class Results(pd.DataFrame):
             mask = tstack.pop()
         indexes = list(self[mask].index)
         return (indexes, mask)
+
+    def clearData(self, *args, **kwargs):
+        self.clear_data(*args, **kwargs)
+
+    def clear_data(self, filtered=False):
+        indexes = self.get_indexes(filtered=filtered)
+        for i in indexes:
+            self.drop(i, inplace=True)
+        self.update_filter_indexes()
 
 # This is old export to psuade function.  Hopefully can update:
 """

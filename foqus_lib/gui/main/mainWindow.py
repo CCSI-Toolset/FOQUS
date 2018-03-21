@@ -1,20 +1,9 @@
-"""
-mainWindows.py
+"""mainWindows.py
 
-    * This is the main FOQUS window
+* This is the main FOQUS window
 
 John Eslick, Carnegie Mellon University, 2014
-
-This Material was produced under the DOE Carbon Capture Simulation
-Initiative (CCSI), and copyright is held by the software owners:
-ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-and/or the U.S. Government retain ownership of all rights in the
-CCSI software and the copyright and patents subsisting therein. Any
-distribution or dissemination is governed under the terms and
-conditions of the CCSI Test and Evaluation License, CCSI Master
-Non-Disclosure Agreement, and the CCSI Intellectual Property
-Management Plan. No rights are granted except as expressly recited
-in one of the aforementioned agreements.
+See LICENSE.md for license and copyright details.
 """
 import time
 import math
@@ -105,8 +94,7 @@ class mainWindow(QMainWindow):
         self.flowsheetEditor = drawFlowsheet(self.dat, self)
         self.flowsheetEditor.nodeSelected.connect(self.setNodePanel)
         self.flowsheetEditor.edgeSelected.connect(self.setEdgePanel)
-        self.flowsheetEditor.updateEdgeEdit.connect(
-            self.applyAndUpdateEdgeEdit)
+        self.flowsheetEditor.updateEdgeEdit.connect(self.applyAndUpdateEdgeEdit)
         #self.flowsheetEditor.noneSelected.connect(self.fsSelectNone)
         self.flowsheetEditor.updateFS.connect(self.refreshFlowsheet)
         self.flowsheetEditor.updateFSPos.connect(self.refreshNodeCoord)

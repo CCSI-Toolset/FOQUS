@@ -1,22 +1,11 @@
-'''
-    optionList.py
-     
-    * This is an option list class for FOQUS, mainly used for 
-        optimization and surrogate model plugins.
+"""optionList.py
 
-    John Eslick, Carnegie Mellon University, 2014
+This is an option list class for FOQUS, mainly used for optimization and
+surrogate model plugins.
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 
 from option import *
 
@@ -27,7 +16,7 @@ class optionList(dict):
         '''
         dict.__init__(self)
         self.order = [] # display order for options
-        
+
     def clear(self):
         dict.clear(self)
         self.order=[]
@@ -42,7 +31,7 @@ class optionList(dict):
         for k, v in sd.iteritems():
             if k in self:
                 self[k].value = v
-                
+
     def saveValues(self):
         '''
             Load the option values from a dictionary.
@@ -51,7 +40,7 @@ class optionList(dict):
         for k, v in self.iteritems():
             sd[k] = v.value
         return sd
-        
+
     def saveDict(self):
         '''
             Save all of the option attributes to a dictionary.  This is
@@ -61,7 +50,7 @@ class optionList(dict):
         for key in self:
             sd['options'][key] = self[key].saveDict()
         return sd
-        
+
     def loadDict(self, sd):
         '''
             Load an entire option list from a dictionary.  For things
@@ -71,15 +60,15 @@ class optionList(dict):
             self[opt] = option()
             self[opt].loadDict(sd['options'][opt])
         self.order = sd.get(
-            'order', 
+            'order',
             sorted(self.keys(), key=lambda s: s.lower()))
-    
+
     def addIfNew(
         self,
         name,
-        default=0.0, 
-        value=None, 
-        desc="An option", 
+        default=0.0,
+        value=None,
+        desc="An option",
         vmin=None,
         vmax=None,
         dtype=None,
@@ -94,23 +83,23 @@ class optionList(dict):
         '''
         if name not in self:
             self.add(
-                name, 
-                default=default, 
-                value=value, 
-                desc=desc, 
+                name,
+                default=default,
+                value=value,
+                desc=desc,
                 vmin=vmin,
                 vmax=vmax,
                 dtype=dtype,
                 validValues=validValues,
                 optSet=optSet,
                 disable=disable)
-        
+
     def add(
         self,
         name,
-        default=0.0, 
-        value=None, 
-        desc="An option", 
+        default=0.0,
+        value=None,
+        desc="An option",
         vmin=None,
         vmax=None,
         dtype=None,
@@ -134,17 +123,10 @@ class optionList(dict):
             disable=disable)
         if name not in self.order:
             self.order.append(name)
-    
+
     def delete(self, key):
         '''
             delete an option from the list
         '''
         del self[key]
         self.order.remove(key)
-        
-        
-        
-        
-            
-            
-        

@@ -1,21 +1,10 @@
-'''
-    foqusException.py
-     
-    * This class can be inherited to create new FOQUS exception classes
+"""foqusException.py
 
-    John Eslick, Carnegie Mellon University, 2014
+This class can be inherited to create new FOQUS exception classes
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import traceback
 
 class foqusException(Exception):
@@ -33,25 +22,25 @@ class foqusException(Exception):
             l2 = []
             for i in range(len(l)-1):
                 l2.append(' '.join([
-                    'line:', 
-                    str(l[i][1]), 
-                    'file:', 
-                    str(l[i][0]), 
-                    '\n  ', 
+                    'line:',
+                    str(l[i][1]),
+                    'file:',
+                    str(l[i][0]),
+                    '\n  ',
                     str(l[i][3])]))
             self.tb = str("\n".join(l2))
         else:
             self.tb = tb
         self.codeString = dict()
         self.setCodeStrings()
-            
+
     def getCodeString(self):
         '''
             Return the string error message accosiated with error code
         '''
-        return self.codeString.get(self.code, 
+        return self.codeString.get(self.code,
                                 "Error code: {0}".format(self.code))
-    
+
     def setCodeStrings():
         '''
             This is a function that should be overloaded to add to the
@@ -59,7 +48,7 @@ class foqusException(Exception):
             keys.
         '''
         pass
-        
+
     def __str__(self):
         '''
             This is function gets called when use use the str() function
@@ -80,5 +69,5 @@ class foqusException(Exception):
             return "{0} - {1}, {2}\n{3}\n".format(
                 self.code,
                 self.getCodeString(),
-                self.msg, 
+                self.msg,
                 tb)

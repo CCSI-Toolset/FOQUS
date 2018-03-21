@@ -1,31 +1,17 @@
-#
-#FOQUS_OPT_PLUGIN
-#
-# Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the optimization class.
-#
-#
-# NLopt.py
-#
-# * FOQUS optimization plugin for NLopt
-# * NLopt is licenced under the LGPL and available from 
-#   http://ab-initio.mit.edu/wiki/index.php/NLopt
-# * NLopt developer Steven G. Johnson at MIT 
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
-#
+""" #FOQUS_OPT_PLUGIN NLopt.py
+
+Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
+150 characters of text.  They also need to hav a .py extention and
+inherit the optimization class.
+
+* FOQUS optimization plugin for NLopt
+* NLopt is licenced under the LGPL and available from
+  http://ab-initio.mit.edu/wiki/index.php/NLopt
+* NLopt developer Steven G. Johnson at MIT
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import time   # Some of these things are left over from CMA-ES
 import copy   # too lazy to sort out which I really need in here
 import csv
@@ -39,14 +25,14 @@ import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
-# Check that the NLopt module is available and import it if possible.  
+# Check that the NLopt module is available and import it if possible.
 # If not the NLopt plug-in will not be available.
 try:
     import nlopt
     nlopt_available = True
 except ImportError, e:
     nlopt_available = False
-    
+
 def checkAvailable():
     '''
         Plugins should have this function to check availability of any
@@ -60,13 +46,13 @@ class opt(optimization):
         The optimization solver class.  Should be called opt and inherit
         optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:
-        - available True or False, False it some required thing is not 
+        - available True or False, False it some required thing is not
             present
         - name The name of the solver
         - mp True or False, can use multiprocessing?
         - mobj True or False, handles multiple objectives?
         - options An optionList object to add solver options to
-        
+
         Some functions must also be implemented.  Following this example
         __init()__ call base class init, set attributes, add options
         optimize() run optimization periodically send out results for
@@ -82,7 +68,7 @@ class opt(optimization):
         self.name = "NLopt" # Plugin name is actually comming from file
                             # name at this point so give file same name
                             # (with a *.py).
-        # Next is the description of the optimization 
+        # Next is the description of the optimization
         # Unfortunatly not all the HTML below works
         self.methodDescription = \
             ("<html>\n<head>"
@@ -95,7 +81,7 @@ class opt(optimization):
              "<p><b>NLopt</b></p>"
              "<p>Steven G. Johnson, The NLopt nonlinear-optimization"
              " package, http://ab-initio.mit.edu/nlopt <\p>"
-             "<p>This plugin makes use of the NLopt Python module " 
+             "<p>This plugin makes use of the NLopt Python module "
              "This plugin provides a wrapper for the NLopt code "
              "allowing it to work with FOQUS.</p>"
              "<p>NLopt contains several solvers by various authors"
@@ -110,7 +96,7 @@ class opt(optimization):
         #
         # Next up is the solver options appearing on the solver options
         # page.  If the dtype is not specified the option will guess it
-        # from the default value.  Providing a list of valid values 
+        # from the default value.  Providing a list of valid values
         # creates a dropdown box.
         #
         self.options.add( #NLopt contains a bunch of slovers this is the
@@ -132,23 +118,23 @@ class opt(optimization):
                 "ISRES"],
             desc="Solver")
         self.options.add(
-            name='pop', 
+            name='pop',
             default=0,
             dtype=int,
             desc=("Initial Population size for CRS2 or ISRES other "
                 "methods do not use this paramter (<= 0 for default)"))
         self.options.add(
-            name='init step', 
+            name='init step',
             default=0,
             dtype=float,
             desc="Initial step size for some local DFOs (<=0 default)")
         self.options.add(
-            name='upper', 
+            name='upper',
             default=10.0,
             dtype=float,
             desc="Upper bound on scaled variables (usually 10.0)")
         self.options.add(
-            name='lower', 
+            name='lower',
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)")
         self.options.add(
@@ -186,7 +172,7 @@ class opt(optimization):
             default=True,
             desc="Save all flowsheet results?")
         self.options.add(
-            name='Set Name', 
+            name='Set Name',
             default="NLopt",
             dtype=str,
             desc="Name of flowsheet result set to store data")
@@ -196,7 +182,7 @@ class opt(optimization):
             dtype=float,
             desc="How often (in hours) to save a backup session while "
                  " optimization is running. Less than 0.03 disables")
-    
+
     def optMethod(self, s):
         '''
         This function just takes the solver string and converts it to the
@@ -228,18 +214,18 @@ class opt(optimization):
             return nlopt.GN_ISRES
         #default to bobyqa (should not get here maybe raise exception?)
         return nlopt.LN_BOBYQA
-    
+
     def f(self, x, grad):
         '''
-        This is the function for the solver to call to get function 
+        This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
         stick in other dignostic output.  Whatever you like.  Since
-        only the DFO solvers are made avalable the grad arg can be 
-        ignored.  If there is an exception in here optimization 
+        only the DFO solvers are made avalable the grad arg can be
+        ignored.  If there is an exception in here optimization
         terminates (NLopt behavior).
         '''
         #run the flowsheet at point x.  X is turned into a list there
-        #because this function can return there results of multiple 
+        #because this function can return there results of multiple
         #evaluations here we just want one.  If FOQUS is setup right
         #this could do function evaluations in parallel (not with NLopt
         #because NLopt doesn't suport it))
@@ -250,12 +236,12 @@ class opt(optimization):
         #             one objective [[obj]].
         # cv = constraint violations
         # pv = constraint violation penalty
-        
-        if self.stop.isSet(): # if user pushed stop button 
+
+        if self.stop.isSet(): # if user pushed stop button
             self.userInterupt = True
             raise Exception("User interupt")#raise exeception to stop
         obj = float(objValues[0][0]) #get objective
-        # See is objective is better and update best solution found if 
+        # See is objective is better and update best solution found if
         # so this is used to update the flowsheet, plots, and messages
         if obj < self.bestSoFar and self.prob.gt.res[0] is not None:
             self.bestSoFar = obj
@@ -290,7 +276,7 @@ class opt(optimization):
                     "Failed to save session backup {0}".format(str(e)))
         # Return the single objective value.
         return obj
-    
+
     def optimize(self):
         '''
         This is the main optimization routine.  This gets called to start
@@ -312,9 +298,9 @@ class opt(optimization):
         # Read solver options and handle any special cases of options
         #
         upper = self.options["upper"].value #These are for scaled vars
-        lower = self.options["lower"].value # usually 0 to 10 not usually 
+        lower = self.options["lower"].value # usually 0 to 10 not usually
                                             # changed but could be
-        # If upper and/or lower are scalar conver to array with the 
+        # If upper and/or lower are scalar conver to array with the
         # number of variables.
         if type(upper) == float or type(upper) == int:
             upper = upper*numpy.ones(n)
@@ -324,10 +310,10 @@ class opt(optimization):
             lower = lower*numpy.ones(n)
         else:
             lower = numpy.array(lower)
-        
+
         #Get solver string and convert to NLopt enum
         method = self.optMethod(self.options["Solver"].value)
-        
+
         #Get rest of options
         absFunTol = self.options["tolfunabs"].value
         relFunTol = self.options["tolfunrel"].value
@@ -340,7 +326,7 @@ class opt(optimization):
         pop = self.options["pop"].value
         setName = self.options["Set Name"].value
         self.bkp_int = self.options["Backup Interval"].value
-        
+
         # The set name to use when saving evaluations in flowsheet results
         if saveRes:
             setName = self.dat.flowsheet.results.incrimentSetName(setName)
@@ -365,9 +351,9 @@ class opt(optimization):
             opt.set_local_optimizer(opt2)
         # The solver is all setup and ready to go
         start = time.time()        # get start time
-        self.userInterupt = False  # 
+        self.userInterupt = False  #
         self.bestSoFar = float('inf') #set inital best values
-        
+
         # self.prob is the optimzation problem. get it ready
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters() #
@@ -377,18 +363,18 @@ class opt(optimization):
             self.prob.storeResults = setName
         else:
             self.prob.storeResults = None
-        # 
+        #
         opt.set_min_objective(self.f) #set the solver objective function
         self.prob.prep(self) #get problem ready for solving
         self.bkp_timer = time.time() #timer for flowseet backup
         # Run the optimzation
-        x = opt.optimize(xinit) 
+        x = opt.optimize(xinit)
         # Print some final words now that optimzation is done.
         eltime = time.time() - start
         self.msgQueue.put("{0}, Total Elasped Time {1}s, Obj: {2}"\
             .format(
             self.prob.iterationNumber,
-            math.floor(eltime), 
+            math.floor(eltime),
             self.bestSoFar))
         self.resQueue.put(
             ["IT", self.prob.iterationNumber, self.bestSoFar])

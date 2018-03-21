@@ -1216,7 +1216,7 @@ class RSAnalyzer:
         ptitle = '%s for %s' % (title[cmd_], outVarName)
         if cmd_ == 'rssobol2': 
             L = len(dat)
-            M = math.sqrt(L)
+            M = int(math.sqrt(L))
             dat = np.reshape(dat,[M,M],order='F')
             if std is not None:
                 std = np.reshape(std,[M,M],order='F')

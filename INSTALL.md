@@ -58,8 +58,8 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 
 ## Optional FOQUS Settings
 * Go to the FOQUS settings tab
-       * Set ALAMO and PSUADE locations
-       * Test TurbineLite config
+  - Set ALAMO and PSUADE locations
+  - Test TurbineLite config
 
 ## Automated tests (from top level of foqus repo)
 	- ```python fouqs.py -s python foqus.py -s test/system_test/ui_test_01.py```

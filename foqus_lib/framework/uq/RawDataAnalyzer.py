@@ -350,7 +350,7 @@ class RawDataAnalyzer:
             import numpy as np   # numpy used here only
             import math          # math used here only
             L = len(dat)
-            M = math.sqrt(L)
+            M = int(math.sqrt(L))
             dat = np.reshape(dat, [M,M], order='F')
             yticklabels = xticklabels
             Plotter.plotbar3d(dat, std, ftitle, ptitle,

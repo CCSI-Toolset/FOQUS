@@ -2,30 +2,24 @@
 
 ## Install Python
 
-Install Python and PyQt5.  For Windows, the Anaconda Python distribution is 
-convenient. It comes with most required packages and the latest versions 
-have PyQt5 by default. PyQt5 is easily installed with Anaconda, but the 
-packaging seems to vary of other versions of Python and operating conditions, 
-so including it as a requirement in the installer is not very easy. 
-
-If possible, it is convenient to set the Anaconda Python application to open
-*.py files on Windows. The foqus.py script is installed later in Anaconda's 
-scripts directory and can be executed by just typing ``foqus.py``, but it will be 
-executed by the interpreter that Windows associates with Python files.
+Install Python 2.7 with PyQt5.  The Anaconda Python distribution is the recommended way to install Python (https://www.anaconda.com/download/#windows). Anaconda comes with most required packages and the latest versions 
+have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
 
-If you do not have a git client install one.
+If you do not have a git client install one.  For Windows a client can be found here: https://git-scm.com/downloads.
+
+It is possible to install git through Anaconda (```conda install git```).
 
 ## Install FOQUS
 
 There are 2 ways to install FOQUS the first is preferred if you are a developer 
 or want to modify FOQUS. The second way is probably easiest for other users.
 
-1. Developers
+1. Developers and users interested in the FOQUS code:
   * Clone the FOQUS repository
   * ``python setup.py develop``
-2. Other Users
+2. Other Users:
   * ``pip install git+https://github.com/CCSI-toolset/foqus@master``
   
 Additional components not currently include with FOQUS or the FOQUS bundle are:

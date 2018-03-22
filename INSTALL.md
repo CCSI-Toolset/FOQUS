@@ -2,7 +2,7 @@
 
 ## Install Python
 
-Install Python 2.7 with PyQt5.  The Anaconda Python distribution is the recommended way to install Python (https://www.anaconda.com/download/#windows). Anaconda comes with most required packages and the latest versions 
+Install Python 2.7 with PyQt5.  The Anaconda Python distribution is the recommended way to install Python (https://www.anaconda.com/download/#windows). Anaconda comes with most required packages and the latest versions
 have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
@@ -13,15 +13,9 @@ It is possible to install git through Anaconda (```conda install git```).
 
 ## Install FOQUS
 
-There are 2 ways to install FOQUS the first is preferred if you are a developer 
-or want to modify FOQUS. The second way is probably easiest for other users.
+* Clone the FOQUS repository
+* ``python setup.py develop``
 
-1. Developers and users interested in the FOQUS code:
-  * Clone the FOQUS repository
-  * ``python setup.py develop``
-2. Other Users:
-  * ``pip install git+https://github.com/CCSI-toolset/foqus@master``
-  
 ## Install Optional Software
 
 ### Install Turbine and SimSinter (Windows Only)
@@ -48,13 +42,16 @@ PSUADE install instructions are on the [psuade github](https://github.com/LLNL/p
 ### Install NLopt
 
 NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
-the Python module is not available to be installed with pip. For installation 
+the Python module is not available to be installed with pip. For installation
 instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
 
 ```conda install -c conda-forge nlopt```
 
 ### Install online documentation
 
+* Download the HTML documentation from:
+ https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip
+* extract html documentation and copy the files to foqus_lib/help/html
 
 ## Optional FOQUS Settings
 * Go to the FOQUS settings tab
@@ -64,7 +61,3 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 ## Automated tests (from top level of foqus repo)
 	- ```python fouqs.py -s python foqus.py -s test/system_test/ui_test_01.py```
 	- ...
-
-
-
-

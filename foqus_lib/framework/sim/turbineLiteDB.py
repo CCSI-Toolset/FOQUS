@@ -1,28 +1,16 @@
-'''
-    turbineLiteDB.py
-     
-    * Some functions to work directly with a local TurbineLite DB
+"""turbineLiteDB.py
+* Some functions to work directly with a local TurbineLite DB
 
-    John Eslick, Carnegie Mellon University, 2014
-
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import time
 import uuid
 import os
 import threading
 import adodbapi
 import adodbapi.apibase
-adodbapi.adodbapi.defaultCursorLocation = adodbapi.adUseServer 
+adodbapi.adodbapi.defaultCursorLocation = adodbapi.adUseServer
 
 class DBException(Exception):
     pass
@@ -34,10 +22,10 @@ class keepAliveTimer(threading.Thread):
         self.freq = freq
         self.uid = uid
         self.db = turbineDB
-    
+
     def terminate(self):
         self.stop.set()
-    
+
     def run(self):
         i = 0
         while not self.stop.isSet():
@@ -53,16 +41,16 @@ class turbineLiteDB():
         self.close_after=close_after
         self.dbFile = "C:\\Program Files (x86)"\
             "\\Turbine\\Lite\\Data\\TurbineCompactDatabase.sdf"
-    
+
     def __del__(self):
         print "Deleting turbineLiteDB instance"
         self.closeConnection()
-        
+
     def connectionString(self):
         prov = 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;'
         data = 'Data Source={0};'.format(self.dbFile)
         return " ".join([prov, data])
-    
+
     def getConnection(self, rc=0):
         if self.conn is not None:
             return self.conn, self.conn.cursor()
@@ -76,7 +64,7 @@ class turbineLiteDB():
             else:
                 raise(e)
         return conn, conn.cursor()
-    
+
     def closeConnection(self):
         if self.conn is None: return
         try:
@@ -84,17 +72,17 @@ class turbineLiteDB():
             self.conn = None
         except:
             self.conn = None
-        
-    
+
+
     def add_new_application(self, applicationName, rc=0):
         '''
-            Turbine Consumer Function 
+            Turbine Consumer Function
             ---
             Add an application type to the TurbineLite database
-            
+
             args
-            
-            return value    
+
+            return value
         '''
         conn, curs = self.getConnection()
         try:
@@ -113,7 +101,7 @@ class turbineLiteDB():
             else:
                 self.add_new_application(applicationName, rc=rc+1)
 
-        
+
     def add_message(self, msg, jobid, rc=0):
         conn, curs = self.getConnection()
         try:
@@ -129,7 +117,7 @@ class turbineLiteDB():
                 raise e
             else:
                 self.add_message(msg, jobid, rc=rc+1)
-   
+
     def consumer_keepalive(self, uid, rc=0):
         conn, curs = self.getConnection()
         try:
@@ -144,7 +132,7 @@ class turbineLiteDB():
                 raise e
             else:
                 self.consumer_keepalive(uid, rc=rc+1)
-                        
+
     def consumer_status(self, uid, status=None, rc=0):
         conn, curs = self.getConnection()
         try:
@@ -168,8 +156,8 @@ class turbineLiteDB():
                 raise e
             else:
                 self.consumer_status(uid, status, rc=rc+1)
-            
-            
+
+
     def consumer_id(self, pid, rc=0):
         conn, curs = self.getConnection()
         try:
@@ -187,7 +175,7 @@ class turbineLiteDB():
                 raise e
             else:
                 self.consumer_id(pid, rc=rc+1)
-        
+
     def consumer_register(self, rc=0):
         conn, curs = self.getConnection()
         try:
@@ -210,14 +198,14 @@ class turbineLiteDB():
 
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         '''
-            Turbine Consumer Function, get first job with submit status 
+            Turbine Consumer Function, get first job with submit status
             and is the foqus application type
             ---
             Desc
-            
+
             args
-            
-            return value    
+
+            return value
         '''
         conn, curs = self.getConnection()
         try:
@@ -254,7 +242,7 @@ class turbineLiteDB():
                 raise e
             else:
                 self.get_job_id(simName, sessionID, consumerID, state, rc=rc+1)
-    
+
     def jobConsumerID(self, jid, cid=None, rc=0):
         '''
             Get or set job consumer ID
@@ -288,13 +276,13 @@ class turbineLiteDB():
 
     def get_configuration_file(self, simulationId, rc=0):
         '''
-            Turbine Consumer Function 
+            Turbine Consumer Function
             ---
             Desc
-            
+
             args
-            
-            return value    
+
+            return value
         '''
         conn, curs = self.getConnection()
         try:
@@ -315,12 +303,12 @@ class turbineLiteDB():
 
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         '''
-            Turbine Consumer Function 
+            Turbine Consumer Function
             ---
             Write input values file to run FOQUS job
-            
+
             args
-            
+
             return value
         '''
         conn, curs = self.getConnection()
@@ -351,15 +339,15 @@ class turbineLiteDB():
                 raise e
             else:
                 self.job_prepare(jobGuid, jobId, configFile, rc=rc+1)
-        
+
     def job_change_status(self, jobGuid, status, rc=0):
         '''
-            Turbine Consumer Function 
+            Turbine Consumer Function
             ---
             Change the status of a Turbine FOQUS job
-            
+
             args
-            
+
             return value
         '''
         conn, curs = self.getConnection()
@@ -387,15 +375,15 @@ class turbineLiteDB():
                 raise e
             else:
                 self.job_change_status(jobGuid, status, rc=rc+1)
-        
+
     def job_save_output(self, jobGuid, workingDir, rc=0):
         '''
-            Turbine Consumer Function 
+            Turbine Consumer Function
             ---
             Put job output in the databae
-            
+
             args
-            
+
             return value
         '''
         conn, curs = self.getConnection()
@@ -412,4 +400,3 @@ class turbineLiteDB():
                 raise e
             else:
                 self.job_save_output(jobGuid, workingDir, rc=rc+1)
-

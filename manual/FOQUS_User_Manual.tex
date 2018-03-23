@@ -9,7 +9,6 @@
 \renewcommand{\ccsidate}{June 2016} %release date
 \renewcommand{\ccsiversion}{2016.06.00} %release version
 \renewcommand{\ccsimanualtype}{User Manual} %{User Manual, Install Manual...}
-\renewcommand{\ccsinda}{Protected under CCSI MASTER NDA-1107306} %this is default for nda statment in footer
 \setlength{\ccsidatetologospace}{1.5in} % vertical space on title page between date and lab logos.  may need changed if you have a very long product name that goes on multiple lines
 
 \renewcommand{\ccsiabstract}{
@@ -24,8 +23,6 @@
 		\item The Derivative-Free Optimization (DFO) module enables derivative-free (or simulation-based) optimization directly on the process models linked together on a FOQUS Flowsheet. It utilizes Excel to calculate complex objective functions, such as the cost of electricity.
 		\item The UQ module enables the effects of uncertainty to be propagated through the complete system model, sensitivity of the model to be assessed, and the most significant sources of uncertainty identified to enable prioritizing of experimental resources to obtain additional data.
 		\item The Optimization Under Uncertainty (OUU) module combines the capabilities of the DFO and the UQ modules to enable scenario-based optimization, such as optimization over a range of operating scenarios.
-		\item The Dynamic Reduced-Order Model (D-RM) module can be used to create dynamic reduced models from more detailed process models to support advanced model predictive control or enable more rapid evaluation of dynamic operating scenarios.
-		\item The iREVEAL module is an automated tool to create reduce order models from Computational Fluid Dynamics (CFD) simulations and export them in a form that can be used in process simulators.
 		\item The SolventFit module is an uncertainty quantification tool for the calibration of an Aspen Plus® solvent process model. The current state of the art is a regression that yields single best fit point estimates of some parameters. This shows neither the level of uncertainty in each parameter, nor the level of uncertainty in model output, such as equivalent work. SolventFit allows for predictions with uncertainty bounds by accounting for uncertainty in model parameters and deficiencies in the model form. This yields an improved understanding of the model parameters and results in more complete predictions with uncertainty bounds. This distribution of parameters allows for predictions with uncertainty.
 	\end{enumerate}
 }
@@ -53,7 +50,7 @@
 	\input{Chapt_ouu/main.tex}
 	\input{Chapt_heat/main.tex}
 	\input{Chapt_surrogates/main.tex}
-	\input{Chapt_drm/main.tex}
+	% \input{Chapt_drm/main.tex}
 	\input{Chapt_sinter/main.tex}
 	\input{Chapt_debug/main.tex}
 	\makereferences{bib}

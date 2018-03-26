@@ -126,6 +126,23 @@ def incriment_name(name, exnames):
             "".join([name, "_", str(index).zfill(4)])
     return "".join([name, "_", str(index).zfill(4)])
 
+def search_term_list(st):
+    if st.startswith('['):
+        try:
+            st = json.loads(st)
+        except:
+            logging.getLogger("foqus." + __name__).exception(
+                "Error reading filer sort terms")
+            raise Exception('Error reading sort terms. When using multiple sort'
+                'terms, enclose the column names in "". See log for deatils') 
+    else:
+        st = [st]
+    ascend = [True]*len(st)
+    for i, t in enumerate(st):
+        if t.startswith('-'):
+            st[i] = t[1:]
+            ascend[i] = False
+    return st, ascend
 
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
@@ -327,7 +344,14 @@ class Results(pd.DataFrame):
         if fltr is None:
             fltr = self.current_filter()
         if fltr is None:
+            self.sort_index(inplace=True)
             return (list(self.index), [True]*len(self.index))
+        st = self.filters[fltr].sortTerm
+        if st is None or st == "" or st == False:
+            self.sort_index(inplace=True)
+        else:
+            st, ascend = search_term_list(st)
+            self.sort_values(by=st, ascending=ascend, inplace=True)
 
         # Evaluate all the rules
         fstack = []

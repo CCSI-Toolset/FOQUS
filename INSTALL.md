@@ -21,9 +21,10 @@ It is possible to install git through Anaconda (```conda install git```).
 ### Install Turbine and SimSinter (Windows Only)
 * This requires Microsoft SQL Server Compact 4.0
     * https://www.microsoft.com/en-us/download/details.aspx?id=17876
-* At https://www.acceleratecarboncapture.org/, Log in and go to products page
-* Download and install FOQUS Bundle
-* **Unintall outdated FOQUS and PSUADE that are installed (windows control pannel)**
+* Download and install the SimSinter and TurbineLite installers
+    * https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi
+    * https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi
+* Install SimSinter then TurbineLite
 * Do one of these two things (only after install)
     * restart computer
     * or start the "Turbine Web API service"
@@ -61,3 +62,9 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 ## Automated tests (from top level of foqus repo)
 	- ```python fouqs.py -s python foqus.py -s test/system_test/ui_test_01.py```
 	- ...
+
+## Troubleshooting
+
+* Error "Cannot import adodbapi.base." The source of this error is unclear, but
+```pip unsinstall adodbapi``` then ```pip install adodbapi``` has been found to
+resolve it.

@@ -36,12 +36,23 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.editFiltersButton.clicked.connect(self.editFilters)
         self.filterSelectBox.currentIndexChanged.connect(self.selectFilter)
         self.tableView.setAlternatingRowColors(True)
-        self.columnsButton.clicked.connect(self.columnSelect)
+        #self.columnsButton.clicked.connect(self.columnSelect)
+        self.columnsButton.hide()
         self.tableView.verticalHeader().show()
+        #for col in range(self.dat.flowsheet.results.count_cols()):
+        #    self.tableView.setColumnHidden(col, False)
+        #for col in self.dat.flowsheet.results.hidden_cols:
+        #    i = list(self.dat.flowsheet.results.columns).index(col)
+        #    self.tableView.hideColumn(i)
 
     def columnSelect(self):
         cd = columnsDialog(self.dat, self)
         cd.show()
+        for col in range(self.dat.flowsheet.results.count_cols()):
+            self.tableView.setColumnHidden(col, False)
+        for col in self.dat.flowsheet.results.hidden_cols:
+            i = list(self.dat.flowsheet.results.columns).index(col)
+            self.tableView.hideColumn(i)
 
     def addMenuActions(self):
         # export csv
@@ -57,11 +68,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.toClipAct.triggered.connect(self.toClipboard)
         self.expMenu.addAction(self.toClipAct)
         # Export PSUADE sample file
-        self.toPsuadeAct = QAction(
-            'Export to PSUADE File...',
-            self)
-        self.toPsuadeAct.triggered.connect(self.toPsuade)
-        self.expMenu.addAction(self.toPsuadeAct)
+        #self.toPsuadeAct = QAction(
+        #    'Export to PSUADE File...',
+        #    self)
+        #self.toPsuadeAct.triggered.connect(self.toPsuade)
+        #self.expMenu.addAction(self.toPsuadeAct)
         # import from csv
         self.importCsvAct = QAction(
             'Import from CSV file...',

@@ -159,6 +159,8 @@ class Results(pd.DataFrame):
         self["set"] = []
         self["result"] = []
         self._filter_mask = None
+        self.hidden_cols = None
+        self.hidden_cols = []
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))

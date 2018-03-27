@@ -7,7 +7,7 @@ have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
 
-If you do not have a git client install one.  For Windows, a client can be found here: https://git-scm.com/downloads.
+If you do not have a git client, you will need to install one.  For Windows, a client can be found here: https://git-scm.com/downloads
 
 It is possible to install git through Anaconda (```conda install git```).
 
@@ -24,10 +24,10 @@ It is possible to install git through Anaconda (```conda install git```).
 * Download and install the SimSinter and TurbineLite installers
     * https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi
     * https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi
-* Install SimSinter then TurbineLite
+* Install SimSinter first, then TurbineLite
 * Do one of these two things (only after install)
     * restart computer
-    * or start the "Turbine Web API service"
+    * or start the "Turbine Web API service": (1) open Task Manager, (2) go to the "Services" tab, (3) click the "Services" button (in the lower right corner), (4) right-click "Turbine Web API Service" from the list, and (5) click "Start" 
 
 ### Install PSUADE (current version: 1.7.10)
 
@@ -60,11 +60,11 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
   - Test TurbineLite config
 
 ## Automated tests (from top level of foqus repo)
-	- ```python fouqs.py -s python foqus.py -s test/system_test/ui_test_01.py```
+	- ```python foqus.py -s test/system_test/ui_test_01.py```
 	- ...
 
 ## Troubleshooting
 
 * Error "Cannot import adodbapi.base." The source of this error is unclear, but
-```pip unsinstall adodbapi``` then ```pip install adodbapi``` has been found to
+```pip uninstall adodbapi``` then ```pip install adodbapi``` has been found to
 resolve it.

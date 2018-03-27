@@ -4,25 +4,11 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 
 ## Getting Started
 
-### Pre-requisties
-The build/dev environment must have the following tools installed. It has been
-tested with the following versions. Use other versions at your own risk
-
-+ Apache Ant
-+ Coin Library
-+ Git for Windows
-+ Java 1.8
-+ Microsoft Visual Studio 11.0
-+ Microsoft .NET v4.0.30319
-+ Python 2.7
-+ TexLive for Windows
-+ Wix Toolset v3.10
-
 ### Install
-See the [installation](INSTALLmd.) instructions for details.
+See the [installation](INSTALL.md) instructions for details.
 
 ### FAQ
-See our [FAQ][FAQ.md] for frequently asked questions and answers
+See our [FAQ](FAQs.md) for frequently asked questions and answers
 
 ## Authors
 See also the list of [contributors](../contributors) who participated in this project.
@@ -38,7 +24,7 @@ See also the list of [contributors](../contributors) who participated in this pr
 
 ## Versioning
 We use [SemVer](http://semver.org/) for versioning. For the versions available, 
-[releases](../../releases) or [tags](../..//tags) on this repository.
+[releases](../../releases) or [tags](../../tags) on this repository.
 
 ## License & Copyright
 See [LICENSE.md](LICENSE.md) file for details

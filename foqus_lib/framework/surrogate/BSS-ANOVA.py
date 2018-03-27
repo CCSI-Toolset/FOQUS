@@ -1,31 +1,17 @@
-#
-#FOQUS_SURROGATE_PLUGIN
-#
-# Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-# 150 characters of text.  They also need to have a .py extention and
-# inherit the surrogate class.
-#
-#
-# BSS-ANOVA.py
-#
-# * Plugin wrapper for the BSS-ANOVA surrogate model builer.
-# * BSS-ANOVA is excuted in R and a working R install with the quadprog 
-#   package is required.  The user must install R
-# * BSS-ANOVA Ref:
-#   
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
+""" #FOQUS_SURROGATE_PLUGIN BSS-ANOVA.py
+
+Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
+150 characters of text.  They also need to have a .py extention and
+inherit the surrogate class.
+
+* Plugin wrapper for the BSS-ANOVA surrogate model builer.
+* BSS-ANOVA is excuted in R and a working R install with the quadprog
+  package is required.  The user must install R
+* BSS-ANOVA Ref:
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 
 import numpy as np
 import threading
@@ -97,7 +83,7 @@ class surrogateMethod(surrogate):
              " works well in similar settings as ACOSSO.</p>"
              "</html>")
         # bssanova working directory
-        self.bssanovaDir = 'bssanova' 
+        self.bssanovaDir = 'bssanova'
         # add options
         self.options.add(
             name="Data Filter",
@@ -133,23 +119,23 @@ class surrogateMethod(surrogate):
             dtype=str,
             desc="BSS-ANOVA output R data file")
         self.options.add(
-            name="FOQUS Model (for UQ)", 
+            name="FOQUS Model (for UQ)",
             default="bssanova_surrogate_uq.py",
             dtype=str,
             desc=".py file for UQ analysis")
         self.options.add(
-            name="FOQUS Model (for Flowsheet)", 
+            name="FOQUS Model (for Flowsheet)",
             default="bssanova_surrogate_fs.py",
             dtype=str,
             desc=".py file flowsheet plugin, saved to user_plugins"\
                 " in the working directory")
         self.options.add(
-            name="Burn In", 
+            name="Burn In",
             default=0,
             dtype=int,
             desc="Number of data point to ignore from begining")
         self.options.add(
-            name="MCMC Iterations", 
+            name="MCMC Iterations",
             default=1000,
             dtype=int,
             desc="Total number of MCMC iterations")
@@ -176,13 +162,13 @@ class surrogateMethod(surrogate):
             dtype=float,
             desc="prior probability that a given component is"\
                 " uninformative")
-    
+
     def updateOptions(self):
         filters = sorted(
-            self.dat.flowsheet.results.filters.keys(), 
+            self.dat.flowsheet.results.filters.keys(),
             key = lambda s: s.lower())
         self.options["Data Filter"].validValues = filters
-    
+
     def setupWorkingDir(self):
         adir = self.bssanovaDir
         self.createDir(adir)
@@ -192,7 +178,7 @@ class surrogateMethod(surrogate):
             mydir = os.path.dirname(__file__)
             src = os.path.join(mydir, 'bssanova/bssanova_fit.R')
             shutil.copyfile(src, dest)
-        
+
     def run(self):
         '''
             This function overloads the Thread class function,
@@ -269,7 +255,7 @@ class surrogateMethod(surrogate):
                     'auto',
                     str(nterms),
                     str(order),
-                    str(prior)], 
+                    str(prior)],
                 executable=rscriptExe,
                 cwd=adir,
                 stdout=subprocess.PIPE,
@@ -313,7 +299,7 @@ class surrogateMethod(surrogate):
         file_name = self.options['FOQUS Model (for Flowsheet)'].value
 
         # Write the standard code top, then append "main()" from the UQ driver
-        s = self.writePluginTop(method='BSS-ANOVA', comments=['BSS-ANOVA Flowsheet Model']) 
+        s = self.writePluginTop(method='BSS-ANOVA', comments=['BSS-ANOVA Flowsheet Model'])
         with open(os.path.join('user_plugins', file_name), 'w') as f:
             f.write(s)
             lines = []
@@ -334,12 +320,12 @@ class surrogateMethod(surrogate):
             lines.append('        # for each output, invoke UQ driver based on that output''s trained model')
             lines.append('        for i, vname in enumerate(self.outputs):')
             lines.append("            outfileName = 'bssanova_fs.out%d' % i")
-            lines.append("            p = subprocess.Popen(['python', r'%s', infileName, outfileName, '{0}'.format(i)]," % self.driverFile) 
+            lines.append("            p = subprocess.Popen(['python', r'%s', infileName, outfileName, '{0}'.format(i)]," % self.driverFile)
             lines.append('                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)')
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
             lines.append('                print stdout')
-            lines.append('            if stderr:') 
+            lines.append('            if stderr:')
             lines.append('                print stderr')
             lines.append('')
             lines.append('            # read results and instantiate output value')
@@ -347,5 +333,5 @@ class surrogateMethod(surrogate):
             lines.append('            self.outputs[vname].value = ypred[1]')
             lines.append('')
             f.write('\n'.join(lines))
-            
+
         self.dat.reloadPlugins()

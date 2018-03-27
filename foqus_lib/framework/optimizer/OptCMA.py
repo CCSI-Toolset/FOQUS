@@ -1,39 +1,21 @@
-#FOQUS_OPT_PLUGIN
-"""
- Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
+""" #FOQUS_OPT_PLUGIN  OptCMA.py
+ Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
  150 characters of text.  They also need to hav a .py extention and
  inherit the optimization class.
 
+* This is an example of an optimization plugin for FOQUS, CMA
+  optimization solver from https://www.lri.fr/~hansen/cmaes_inmatlab.html#python
+* This optimiztion plugin is basically just a wrapper for the available
+  CMA code to make it work with FOQUS.
+* CMA-ES Refrence:
 
- OptCMA.py
-
- * This is an example of an optimization plugin for FOQUS, CMA
-   optimization solver from:
-   https://www.lri.fr/~hansen/cmaes_inmatlab.html#python
-   The solver is BSD 3-clause see FOQUS help or the CMA website for
-   License information.
-   This optimiztion plugin is basically just a wrapper for the available
-   CMA code to make it work with FOQUS.  The CMA solver is not provided
-   due to licensing constraints.
-
- * CMA-ES Refrence:
-   Hansen, N. (2006). The CMA Evolution Strategy: A Comparing Review.
+  Hansen, N. (2006). The CMA Evolution Strategy: A Comparing Review.
        In J.A. Lozano, P. Larranga, I. Inza and E. Bengoetxea (eds.).
        Towards a new evolutionary computation. Advances in estimation
        of distribution algorithms. pp. 75-102, Springer.
 
- John Eslick, Carnegie Mellon University, 2014
-
- This Material was produced under the DOE Carbon Capture Simulation
- Initiative (CCSI), and copyright is held by the software owners:
- ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
- and/or the U.S. Government retain ownership of all rights in the
- CCSI software and the copyright and patents subsisting therein. Any
- distribution or dissemination is governed under the terms and
- conditions of the CCSI Test and Evaluation License, CCSI Master
- Non-Disclosure Agreement, and the CCSI Intellectual Property
- Management Plan. No rights are granted except as expressly recited
- in one of the aforementioned agreements.
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
 """
 
 import time
@@ -240,7 +222,6 @@ class opt(optimization):
         popsize = self.options["popsize"].value
         storeRes = self.options["Save results"].value
         backupInt = self.options["Backup interval"].value
-        setName = self.options["Results name"].value
         tolfun = self.options["tolfun"].value
         tolx = self.options["tolx"].value
         tolstagnation = self.options["tolstagnation"].value

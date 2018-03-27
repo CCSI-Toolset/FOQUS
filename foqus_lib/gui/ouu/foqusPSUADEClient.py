@@ -1,26 +1,15 @@
 #!/usr/local/bin/python
-'''
-    foqusPSUADEClient.py
-     
-    * The purpose of this script is to be the simulator executable for
-    * PSUADE.  It reads the input data from PSUADE sends it to FOQUS using
-    * a network socket connection, waits for the results and writes them
-    * in the format expected by PSUADE, then it closes the listener in
-    * FOQUS and exits.
+"""foqusPSUADEClient.py
 
-    Jeremy Ou, Lawrence Livermore National Laboratory, 2015
+* The purpose of this script is to be the simulator executable for
+* PSUADE.  It reads the input data from PSUADE sends it to FOQUS using
+* a network socket connection, waits for the results and writes them
+* in the format expected by PSUADE, then it closes the listener in
+* FOQUS and exits.
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+Jeremy Ou, Lawrence Livermore National Laboratory, 2015
+See LICENSE.md for license and copyright details.
+"""
 import sys
 from multiprocessing.connection import Client
 
@@ -66,7 +55,7 @@ def getInputData(inFileName):
             fixedVals.append(float(toks[4]))
         for row in inData:
             row.extend(fixedVals)
-        
+
     outFile = open('tempdata', 'a')
     outFile.write('%d\n' % nSamp)
     for row in inData:
@@ -89,31 +78,54 @@ def genOutputFile(outFileName, outData):
     return None
 
 if __name__ == '__main__':
+    f = open('foquspsuadeclient.log', 'w')
+    f.write(' '.join(sys.argv))
+    f.write('\n')
     inputFile = sys.argv[1]
     outputFile = sys.argv[2]
     # Set the socket address, maybe someday this will change or
     # have some setting option, but for now is hard coded
     address = ('localhost', 56001)
+    f.write('Create client\n')
+    f.close()
     # Open the connection
     conn = Client(address)
     # Read the sample from the input file made by PSUADE
     (nSamples, samples) = getInputData(inputFile)
 
     # Submit the samples to FOQUS to be run
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Send clear\n')
+    f.close()
     conn.send(['clear'])
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Write samples:\n')
+    f.close()
     for sample in samples:
+        f = open('foquspsuadeclient.log', 'a')
+        f.write(' '.join(map(str, sample)))
+        f.write('\n')
+        f.close()
         conn.send(['submit', sample])
         conn.recv()
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Samples sent. Running...')
+    f.close()
     conn.send(['run'])
     n = conn.recv()[1]
     #print 'Submitted {0} samples to FOQUS'.format(n)
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Get results')
+    f.close()
     conn.send(['result'])
     msg = conn.recv()
     status = msg[1]
     results = msg[2]
     conn.send(['close'])
     conn.close()
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Done')
+    f.close()
 
     # Write the output file that ALAMO can read
     genOutputFile(outputFile, results)
-

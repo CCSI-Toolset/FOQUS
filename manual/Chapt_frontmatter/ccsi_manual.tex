@@ -4,7 +4,6 @@
 \newcommand{\ccsiversion}{<Release version>}
 \newcommand{\ccsiabstract}{An abstract}
 \newcommand{\ccsimanualtype}{User Manual}
-\newcommand{\ccsinda}{Protected under CCSI MASTER NDA-1107306}
 \newlength{\ccsidatetologospace}
 \setlength{\ccsidatetologospace}{1.8in}
 \newcommand{\ccsirevisiontablecontent}{
@@ -42,14 +41,14 @@
 	\rhead{\footnotesize\textcolor{gray}{\ccsishortproduct}}
 	\rfoot{\footnotesize\textcolor{gray}{\thepage}}
 	\cfoot{}
-	\lfoot{\footnotesize \textcolor{gray}{\ccsinda}}	
+	%\lfoot{\footnotesize \textcolor{gray}{\ccsinda}}
 }
 
 \newcommand{\makecopywrite}{
 	\chaptermark{Copyright Notice}
 	\normalsize
 	\vspace*{3.5in}
-	This Material was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and copyright is held by the software owners: ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et~al. The software owners and/or the U.S. Government retain ownership of all rights in the CCSI software and the copyright and patents subsisting therein. Any distribution or dissemination is governed under the terms and conditions of the CCSI Test and Evaluation License, CCSI Master Non-Disclosure Agreement, and the CCSI Intellectual Property Management Plan. No rights are granted except as expressly recited in one of the aforementioned agreements. \\
+	See LICENSE.md for license and copyright details.
 	\clearpage
 	\chaptermark{}
 }
@@ -66,7 +65,7 @@
 		\hline
 		\ccsirevisiontablecontent
 	\end{tabularx}
-	\clearpage	
+	\clearpage
 	\chaptermark{}
 }
 
@@ -86,7 +85,7 @@
 	%\listoffigures
 	\vspace{0.5in}
 	\begin{center}
-		To obtain support for the products within this package, please send an email to 
+		To obtain support for the products within this package, please send an email to
 		\href{mailto:ccsi-support@acceleratecarboncapture.org}{\textcolor{blue}{\underline{ ccsi-support@acceleratecarboncapture.org}}}.
 	\end{center}
 	\clearpage
@@ -188,7 +187,7 @@
 \newcommand{\bu}[1]{\textbf{\ul{#1}}}
 % back slash (Windows path delimiter)
 \newcommand{\bs}{\textbackslash}
-\usepackage{mdwlist}   % to suspend/resume lists 
+\usepackage{mdwlist}   % to suspend/resume lists
 \usepackage{fancyvrb}  % to enable color within verbatim env
 % ------ END Used by UQ team ---------------
 \usepackage[font={footnotesize,bf}]{caption}
@@ -208,7 +207,7 @@
 \pagestyle{fancy}
 \renewcommand{\headrulewidth}{0pt} %no line under header
 \renewcommand{\chaptermark}[1]{\markboth{#1}{}}
-% Use header and footers on first page of chapter 
+% Use header and footers on first page of chapter
 \makeatletter
 \let\ps@plain\ps@fancy
 \makeatother
@@ -217,7 +216,7 @@
 \def\@makechapterhead#1{%
 	{\parindent \z@ \raggedright \normalfont
 		\ifnum \c@secnumdepth >\m@ne
-		\large\bfseries \thechapter. \space 
+		\large\bfseries \thechapter. \space
 		\fi
 		\interlinepenalty\@M
 		\large \bfseries \uppercase{#1\par\nobreak}
@@ -245,4 +244,3 @@
 \usepackage{chngcntr}
 \counterwithout{figure}{chapter}
 \counterwithout{table}{chapter}
-

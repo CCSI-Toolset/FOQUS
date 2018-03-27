@@ -1,20 +1,9 @@
-"""
-results.py
+"""results.py
 
-    * This contains the class for sample results data heading
+* This contains the class for sample results data heading
 
 John Eslick, Carnegie Mellon University, 2014
-
-This Material was produced under the DOE Carbon Capture Simulation
-Initiative (CCSI), and copyright is held by the software owners:
-ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-and/or the U.S. Government retain ownership of all rights in the
-CCSI software and the copyright and patents subsisting therein. Any
-distribution or dissemination is governed under the terms and
-conditions of the CCSI Test and Evaluation License, CCSI Master
-Non-Disclosure Agreement, and the CCSI Intellectual Property
-Management Plan. No rights are granted except as expressly recited
-in one of the aforementioned agreements.
+See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
@@ -36,6 +25,7 @@ class dataFilter(object):
 
     def __init__(self):
         self.fstack = []
+        self.sortTerm = None
 
     def saveDict(self):
         sd = {
@@ -59,6 +49,7 @@ class dataFilter(object):
                 dfr = dataFilterRule()
                 dfr.loadDict(i[1])
                 self.fstack.append([i[0], dfr])
+        return self
 
 class dataFilterRule(object):
     OP_EQ = 0
@@ -106,13 +97,16 @@ def sd_col_list(sd, time=None):
         for n, d in sd[s[0]].iteritems():
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
-                dat.append(sd[s[0]][n][v])
+                el = sd[s[0]][n][v]
+                if s[1] == "setting":
+                    el = repr(el)
+                dat.append(el)
     #node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:
             columns.append("{}.{}".format(s[1], n))
             dat.append(sd[s[0]][n])
-    # return the list of of columns and list of accosiated data.
+    # return the list of of columns and list of associated data.
     return (columns, dat)
 
 def incriment_name(name, exnames):
@@ -132,16 +126,44 @@ def incriment_name(name, exnames):
             "".join([name, "_", str(index).zfill(4)])
     return "".join([name, "_", str(index).zfill(4)])
 
+def search_term_list(st):
+    if st.startswith('['):
+        try:
+            st = json.loads(st)
+        except:
+            logging.getLogger("foqus." + __name__).exception(
+                "Error reading filer sort terms")
+            raise Exception('Error reading sort terms. When using multiple sort'
+                'terms, enclose the column names in "". See log for deatils')
+    else:
+        st = [st]
+    ascend = [True]*len(st)
+    for i, t in enumerate(st):
+        if t.startswith('-'):
+            st[i] = t[1:]
+            ascend[i] = False
+    return st, ascend
 
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = {}
+        self.filters = None # do this to avoid set column from attribute warn
+        self.filters = {} # now that atribute exists set to empty dict
+        self.filters["none"] = \
+            dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        self.filters["all"] = dataFilter()
         self._current_filter = None
-        self._filter_indexes = []
+        self._filter_indexes = None # avoid set column from attribute warn
+        self._filter_indexes = [] # now that atribute exists set to empty list
         self.flatTable = True
         self["set"] = []
         self["result"] = []
+        self._filter_mask = None
+        self.hidden_cols = None
+        self.hidden_cols = []
+
+    def incrimentSetName(self, name):
+        return incriment_name(name, list(self["set"]))
 
     def set_filter(self, fltr=None):
         """
@@ -190,7 +212,7 @@ class Results(pd.DataFrame):
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:
-            sd["__filters"][f] = self.filters[i].saveDict()
+            sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
         return sd
@@ -214,18 +236,25 @@ class Results(pd.DataFrame):
         except:
             logging.getLogger("foqus." + __name__).exception(
                 "Error loading stored results")
-        try:
-            for i in sd["__filters"]:
-                self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
-        except:
-            pass
+        for i in sd.get("__filters", []):
+            self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
+
+        if "none" not in self.filters:
+            self.filters["none"] = \
+                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+        if "all" not in self.filters:
+            self.filters["all"] = dataFilter()
         self.update_filter_indexes()
 
     def data_sets(self):
-        """
-        Return a set of data set labels
-        """
+        """Return a set of data set labels"""
         return set(self.loc[:,"set"])
+
+    def addFromSavedValues(self, setName, name, time=None, valDict=None):
+        """Temoprary function for compatablility
+        should move to add_result()
+        """
+        self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
         """
@@ -240,7 +269,7 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.count_rows(filtered=False)
-        row = self.count_rows()
+        row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
@@ -257,8 +286,9 @@ class Results(pd.DataFrame):
             kwargs["filepath_or_buffer"] = path
         df = pd.read_csv(*args, **kwargs)
         col_del = []
+        row = self.count_rows(filtered=False)
         for r in df.index:
-            row = self.count_rows()
+            row += 1
             for c in df.columns:
                 self.loc[row, c] = df.loc[r, c]
         self.update_filter_indexes()
@@ -268,7 +298,7 @@ class Results(pd.DataFrame):
         Return the number of rows in a table. If filtered the number of rows in
         the data frame that match the filter.
         """
-        return len(self.get_indexes(filtered=True))
+        return len(self.get_indexes(filtered=filtered))
 
     def count_cols(self):
         """
@@ -317,7 +347,14 @@ class Results(pd.DataFrame):
         if fltr is None:
             fltr = self.current_filter()
         if fltr is None:
+            self.sort_index(inplace=True)
             return (list(self.index), [True]*len(self.index))
+        st = self.filters[fltr].sortTerm
+        if st is None or st == "" or st == False:
+            self.sort_index(inplace=True)
+        else:
+            st, ascend = search_term_list(st)
+            self.sort_values(by=st, ascending=ascend, inplace=True)
 
         # Evaluate all the rules
         fstack = []
@@ -352,6 +389,15 @@ class Results(pd.DataFrame):
             mask = tstack.pop()
         indexes = list(self[mask].index)
         return (indexes, mask)
+
+    def clearData(self, *args, **kwargs):
+        self.clear_data(*args, **kwargs)
+
+    def clear_data(self, filtered=False):
+        indexes = self.get_indexes(filtered=filtered)
+        for i in indexes:
+            self.drop(i, inplace=True)
+        self.update_filter_indexes()
 
 # This is old export to psuade function.  Hopefully can update:
 """

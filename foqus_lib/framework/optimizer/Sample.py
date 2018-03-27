@@ -1,30 +1,17 @@
-#
-#FOQUS_OPT_PLUGIN
-#
-# Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the optimization class.
-#
-#
-# Sample.py
-#
-# * Just evaluates the objective function for flowsheet results and 
-#   picks the best result.  If the status for any result is -1 the
-#   result is rerun.
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
-#
+""" #FOQUS_OPT_PLUGIN Sample.py
+
+Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
+150 characters of text.  They also need to hav a .py extention and
+inherit the optimization class.
+
+* Just evaluates the objective function for flowsheet results and
+   picks the best result.  If the status for any result is -1 the
+   result is rerun.
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
+
 import time
 import copy
 import csv
@@ -67,11 +54,11 @@ class opt(optimization):
         self.minVars = 0
         self.maxVars = 500
         self.options.add(
-            name="Backup interval", 
+            name="Backup interval",
             default=0,
             desc=("Time between saving FOQUS session backups (sec)"
                   " ( < 15 no backup)"))
-    
+
     def optimize(self):
         '''
             This is the optimization routine.
@@ -87,7 +74,7 @@ class opt(optimization):
         for i in range(self.graph.results.subsetLen()):
             r = self.graph.results.subsetResult(i)
             if r.error == -1:
-                # If r not run add it to the 
+                # If r not run add it to the
                 rerunList.append(i)
                 rerunSamp.append(r.toSavedInputValues())
                 #otherwise calculate the objective
@@ -139,7 +126,7 @@ class opt(optimization):
                         gt.status['error']])
                 # back up if its time.  Don't back up for intervals
                 # of less than 15 seconds, because that setting dosen't
-                # make sense even 15 seconds is crazy.  
+                # make sense even 15 seconds is crazy.
                 timeSinceBackup = time.clock() - timeOfBackup
                 if backupInt > 15.0 and timeSinceBackup > backupInt:
                     self.dat.save(
@@ -179,8 +166,3 @@ class opt(optimization):
             self.msgQueue.put("Best objective: {0}".format(bestObj))
             r = self.graph.results.subsetResult(bestRes)
             self.graph.loadValues(r.toSavedValuesFormat())
-        
-                
-            
-            
-            

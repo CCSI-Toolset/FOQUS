@@ -1,21 +1,11 @@
-'''
-    node.py
+"""node.py
 
-    * This contains the classes for nodes
+* This contains the classes for nodes
 
-    John Eslick, Carnegie Mellon University, 2014
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
 from __future__ import division
 import os
 import time
@@ -411,7 +401,7 @@ class Node():
         for name, item in sc["inputs"].iteritems():
             if name in self.gr.input[self.name]:
                 item['default'] = self.gr.input[self.name][name].value
-                item['default'] = item['default'].tolist()
+                item['default'] = item['default']
         with open(outfile, "wb") as f:
             json.dump(sc, f, indent=2)
 
@@ -583,9 +573,9 @@ class Node():
             if var.set == "sinter":
                 try:
                     if self.altInput is not None:
-                        inputSetL2[vkey] = self.altInput[vkey].tolist()
+                        inputSetL2[vkey] = self.altInput[vkey]
                     else:
-                        inputSetL2[vkey] = var.value.tolist()
+                        inputSetL2[vkey] = var.value
                 except:
                     self.calcError = 23
                     raise NodeEx(

@@ -1,20 +1,8 @@
-"""
-foqus.py
-
-    * The main script to start FOQUS
+"""foqus.py
+* The main script to start FOQUS
 
 John Eslick, Carnegie Mellon University, 2014
-
-This Material was produced under the DOE Carbon Capture Simulation
-Initiative (CCSI), and copyright is held by the software owners:
-ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-and/or the U.S. Government retain ownership of all rights in the
-CCSI software and the copyright and patents subsisting therein. Any
-distribution or dissemination is governed under the terms and
-conditions of the CCSI Test and Evaluation License, CCSI Master
-Non-Disclosure Agreement, and the CCSI Intellectual Property
-Management Plan. No rights are granted except as expressly recited
-in one of the aforementioned agreements.
+See LICENSE.md for license and copyright details.
 """
 from __future__ import division  # No integer division
 from __future__ import print_function  # Python 3 style print
@@ -271,7 +259,7 @@ if __name__ == '__main__':
                         help="Add an application type to TurbineLite DB")
     parser.add_argument("--terminateConsumer",
                         help = "Terminate the consumer with the given UUID")
-    parser.add_argument("--runUITestScript",
+    parser.add_argument("-s", "--runUITestScript",
                         help="Load and run a user interface test script")
     args = parser.parse_args()
     # before changing the directory get absolute path for file to load

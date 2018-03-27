@@ -138,15 +138,3 @@ The Adaptive Component Selection and Shrinkage Operator (ACOSSO) surface approxi
 
 \subsection{BSS-ANOVA}
 The Bayesian Smoothing Spline ANOVA (BSS-ANOVA) is essentially a Bayesian version of ACOSSO \citep{Reich_2009}. It is Gaussian Process (GP) model with a non-conventional covariance function that borrows its form from SS-ANOVA. It tackles the high dimensionality (of inputs) on two fronts: (1) variable selection to eliminate uninformative variables from the model and (2) restricting the level of interactions involved among the variables in the model. This is done through a fully Bayesian approach which can also allow for categorical input variables with relative ease. Since it is closely related to ACOSSO, it generally works well in similar settings as ACOSSO. The BSS-ANOVA procedure also allows for categorical inputs \citep{Storlie_2013}.
-
-\subsection{iREVEAL}
-
-The iREVEAL surrogate model builds Kriging-based surrogate models. The purpose of iREVEAL is to provide surrogate models for CFD and other high-fidelity model simulations. CFD models are generally very computationally expensive and, therefore, difficult to combine with simpler process models. The iREVEAL surrogate models can be seamlessly embedded to an ACM and Aspen Plus flowsheet and, therefore, used by FOQUS.
-
-\section{Dynamic Reduced-Order Model Builder (D-RM Builder)}
-
-While a meta-flowsheet can be developed in FOQUS to model and optimize a system in steady-state operating conditions, the dynamics of individual components and the entire system also need to be modeled. The best design of a coal-fired power generation and CO$_2$ capture system should not only achieve the lowest cost per kilowatt-hour of electricity generated in the optimal steady-state operating conditions, but also ensure easy startup and shutdown, quick and smooth transition for load change, and process noise rejection.  Advanced process control (APC) methods require the development of dynamic models of the system and its individual components. Typically the dynamics of a process can by modeled by a set of differential and algebraic equations (DAEs) based on the first principles. A DAE-based high-fidelity dynamic model is simulated by a DAE solver such as ACM. Due to the complexity of the process involved in CO$_2$ capture, such as the one inside a BFB adsorber, the Central Processing Unit (CPU) time required to solve the dynamics of the process is too long to implement the APC method. Therefore, a dynamic reduced-order model (D-RM) is desired with its execution time reduced by several orders of magnitude.  The D-RM Builder, as a part of FOQUS software package, can be used to generate data-driven D-RMs. With dynamic variables configured by SinterConfigGUI, the D-RM Builder enables a user to import a dynamic ACM model, sample the input space to form a sequence of step changes, launch the high-fidelity ACM simulations, generate a D-RM, and finally visualize and validate the D-RM.
-
-
-
-

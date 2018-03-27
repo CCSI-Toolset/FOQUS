@@ -2,64 +2,69 @@
 
 ## Install Python
 
-Install Python and PyQt5.  For Windows, the Anaconda Python distribution is 
-convenient. It comes with most required packages and the latest versions 
-have PyQt5 by default. PyQt5 is easily installed with Anaconda, but the 
-packaging seems to vary of other versions of Python and operating conditions, 
-so including it as a requirement in the installer is not very easy. 
-
-If possible, it is convenient to set the Anaconda Python application to open
-*.py files on Windows. The foqus.py script is installed later in Anaconda's 
-scripts directory and can be executed by just typing ``foqus.py``, but it will be 
-executed by the interpreter that Windows associates with Python files.
+Install Python 2.7 with PyQt5.  The Anaconda Python distribution is the recommended way to install Python (https://www.anaconda.com/download/#windows). Anaconda comes with most required packages and the latest versions
+have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
 
-If you do not have a git client install one. If you have Anaconda the easiest
-way is 
+If you do not have a git client install one.  For Windows, a client can be found here: https://git-scm.com/downloads.
 
-``conda install git``
-
-## Install Turbine Client
-
-This step can be done automatically once the CCSI repositories are open by 
-including Turbine Client as a requirment.
-
-``pip install git+https://github.com/CCSI-toolset/turb_client@master``
+It is possible to install git through Anaconda (```conda install git```).
 
 ## Install FOQUS
 
-There are 2 ways to install FOQUS the first is preferred if you are a developer 
-or want to modify FOQUS. The second way is probably easiest for other users.
+* Clone the FOQUS repository
+* ``python setup.py develop``
 
-1. Developers
-  * Clone the FOQUS repository
-  * ``python setup.py develop``
-2. Other Users
-  * ``pip install git+https://github.com/CCSI-toolset/foqus@master``
-  
-Additional components not currently include with FOQUS or the FOQUS bundle are:
-* PSUADE for uncertainty quantification and optimization under uncertainty analyses
-* DRM-Builder for building dynamic reduced models
-* iREVEAL building surrogate models for CFD with kriging
-* Data management framework
-* Turbine Hydro, used by the Turbine Gateway to move simulation files from
-  the main Turbine database to TurbineLite instances on worker nodes
+## Install Optional Software
 
-## [Optional] Install PSUADE
+### Install Turbine and SimSinter (Windows Only)
+* This requires Microsoft SQL Server Compact 4.0
+    * https://www.microsoft.com/en-us/download/details.aspx?id=17876
+* Download and install the SimSinter and TurbineLite installers
+    * https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi
+    * https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi
+* Install SimSinter then TurbineLite
+* Do one of these two things (only after install)
+    * restart computer
+    * or start the "Turbine Web API service"
+
+### Install PSUADE (current version: 1.7.10)
 
 PSUADE is short for *Problem Solving environment for Uncertainty Analysis and Design Exploration*. It is a software toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity analysis, design optimization, model calibration, and more.
 
-PSUADE install instructions are on the (psuade github)[https://github.com/LLNL/psuade].
+PSUADE install instructions are on the [psuade github](https://github.com/LLNL/psuade). For Windows users, there is an [executable](https://github.com/LLNL/psuade/releases) for your convenience.
 
-## [Optional] Install NLopt
+### Install ALAMO
+- http://www.minlp.com/home
+- Request a license
+- Download Windows installer
 
-NLopt is an optional optimization library, which can be used by FOQUS.  Unfortunately
-the Python module is not available to be installed with pip. For installation 
-instructions see https://nlopt.readthedocs.io/en/latest/. The Python module is required. 
+### Install NLopt
 
+NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
+the Python module is not available to be installed with pip. For installation
+instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
 
+```conda install -c conda-forge nlopt```
 
+### Install online documentation
 
+* Download the HTML documentation from:
+ https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip
+* extract html documentation and copy the files to foqus_lib/help/html
 
+## Optional FOQUS Settings
+* Go to the FOQUS settings tab
+  - Set ALAMO and PSUADE locations
+  - Test TurbineLite config
 
+## Automated tests (from top level of foqus repo)
+	- ```python fouqs.py -s python foqus.py -s test/system_test/ui_test_01.py```
+	- ...
+
+## Troubleshooting
+
+* Error "Cannot import adodbapi.base." The source of this error is unclear, but
+```pip unsinstall adodbapi``` then ```pip install adodbapi``` has been found to
+resolve it.

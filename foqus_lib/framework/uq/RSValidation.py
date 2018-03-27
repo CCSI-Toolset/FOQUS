@@ -9,7 +9,8 @@ from Common import Common
 class RSValidation(UQRSAnalysis):
 
     def __init__(self, ensemble, output, responseSurface, rsOptions = None,
-                 genCodeFile = False, nCV = 10, userRegressionFile = None, testFile = None):
+                 genCodeFile = False, nCV = 10, userRegressionFile = None, testFile = None,
+                 error_tol_percent=10):
         super(RSValidation, self).__init__(ensemble, output, UQAnalysis.RS_VALIDATION,
                                            responseSurface, None, rsOptions,
                                            userRegressionFile, None)
@@ -18,7 +19,8 @@ class RSValidation(UQRSAnalysis):
             nCV = 10
         self.nCV = nCV
         self.testFile = testFile
-
+        self.error_tol_percent = error_tol_percent
+        
     def saveDict(self):
         sd = super(RSValidation, self).saveDict()
         sd['genCodeFile'] = self.genCodeFile
@@ -45,7 +47,7 @@ class RSValidation(UQRSAnalysis):
 
         mfile = RSAnalyzer.validateRS(fname, self.outputs[0], self.responseSurface,
                                       self.rsOptions, self.genCodeFile, self.nCV,
-                                      self.userRegressionFile, self.testFile)
+                                      self.userRegressionFile, self.testFile, self.error_tol_percent)
 
         if mfile is None:
             return None
@@ -63,7 +65,7 @@ class RSValidation(UQRSAnalysis):
             mfile = 'RSFA_CV_err.m'
         self.restoreFromArchive(mfile)
         
-        RSAnalyzer.plotValidate(self.ensemble, self.outputs[0], self.responseSurface, userMethod, mfile)
+        RSAnalyzer.plotValidate(self.ensemble, self.outputs[0], self.responseSurface, userMethod, mfile, error_tol_percent=self.error_tol_percent)
 
     def getAdditionalInfo(self):
         info = super(RSValidation, self).getAdditionalInfo()

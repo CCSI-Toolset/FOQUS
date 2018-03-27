@@ -1,12 +1,20 @@
+"""problem.py
+
+* This performs optimization problem evaluation
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 from __future__ import division
 import copy
 import time
 import math
 import csv
 import json
-from foqus_lib.framework.foqusOptions.optionList import optionList
 import logging
 import operator
+from foqus_lib.framework.foqusOptions.optionList import optionList
+from foqus_lib.framework.at_dict.at_dict import AtDict
 
 class objectiveFunction():
     def __init__(self, pycode = "", ps = 1, failval = 1000):
@@ -64,7 +72,6 @@ class problem():
         self.runMethod = 0 # 0 -- run locally, 1 -- use turbine/foqus
 
     def initSolverParameters(self):
-        #
         # Attributes used to interact with solver, don't need to save
         self.solverStart = time.time()
         self.userInterupt = False
@@ -315,12 +322,12 @@ class problem():
                         for i in range(len(gt.res)):
                             if not readres[i] and gt.res_fin[i] != -1:
                                 readres[i] = True
-                                #slv.graph.results.addFromSavedValues(
-                                #    self.storeResults,
-                                #    'res_{0:05d}_{1:05d}'\
-                                #        .format(self.iterationNumber,i),
-                                #    None,
-                                #    gt.res[i])
+                                slv.graph.results.addFromSavedValues(
+                                    self.storeResults,
+                                    'res_{0:05d}_{1:05d}'\
+                                        .format(self.iterationNumber,i),
+                                    None,
+                                    gt.res[i])
         self.totalSamplesRead = self.totalSamplesRead + nsam
         self.totalSampleErrors = self.totalSampleErrors + \
             status['error']
@@ -383,6 +390,7 @@ class problem():
                         #This is just some error that was caught usually
                         #means failed to converge.
                         fail[i] = True
+            (x, f) = self.get_at_dicts(x,f)
             if self.objtype == self.OBJ_TYPE_EVAL:
                 res[obj_index], const[obj_index], pen[obj_index] = \
                     self.calculateObjSimpExp(x, f, fail)
@@ -390,6 +398,28 @@ class problem():
                 res[obj_index], const[obj_index], pen[obj_index] = \
                     self.custObjFunc(x, f, fail)
         return res, const, pen
+
+    def get_at_dicts(self, x, f):
+        if isinstance(x, list): # samples
+            for i, xe in enumerate(x):
+                x[i] = AtDict(x[i])
+                for key in x[i]:
+                    x[i][key] = AtDict(x[i][key])
+        else: # no samples
+            x = AtDict(x)
+            for key in x:
+                x[key] = AtDict(x[key])
+        if isinstance(f, list): # samples
+            for i, fe in enumerate(f):
+                f[i] = AtDict(f[i])
+                for key in f[i]:
+                    f[i][key] = AtDict(f[i][key])
+        else: # no samples
+            f = AtDict(f)
+            for key in f:
+                f[key] = AtDict(f[key])
+        return x, f
+
 
     def calculateObjSimpExp(self, x, f, failVec):
         '''

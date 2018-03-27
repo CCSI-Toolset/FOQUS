@@ -335,7 +335,7 @@ class RSAnalyzer:
 
     @staticmethod
     def validateRS(fname, y, rsMethodName, rsOptions=None, 
-                   genCodeFile=False, nCV=None, userRegressionFile=None, testfile=None):
+                   genCodeFile=False, nCV=None, userRegressionFile=None, testfile=None, error_tol_percent=10):
 
         # read data
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)  # does not assume rstype/order written to data
@@ -512,12 +512,12 @@ class RSAnalyzer:
             Common.showError(error, out)
             return None
 
-        RSAnalyzer.plotValidate(data, y, rsMethodName, userMethod, mfile)
+        RSAnalyzer.plotValidate(data, y, rsMethodName, userMethod, mfile, error_tol_percent)
         
         return (mfile, trainErrors, cvErrors, testErrors)
    
     @staticmethod
-    def plotValidate(data, y, rsMethodName, userMethod, mfile):
+    def plotValidate(data, y, rsMethodName, userMethod, mfile, error_tol_percent=10):
         outVarNames = data.getOutputNames()
         outVarName = outVarNames[y-1]
         if userMethod: # ... user regression ...
@@ -528,11 +528,11 @@ class RSAnalyzer:
         else: # ... standard ...
             datvar = 'A'
             dat = Plotter.getdata(mfile, datvar)
-        ftitle = 'Model Validation of %s Response Surface' % rsMethodName.upper()
+        ftitle = 'Model Validation of %s Response Surface for %s' % (rsMethodName.upper(), outVarName.upper())
         ptitle = ['Model Error Histogram', 'Actual vs. Predicted Data']
         xlabel = ['Model Errors', 'Actual Data for %s' % outVarName]
         ylabel = ['Probabilities', 'Predicted Data for %s' % outVarName]
-        Plotter.plotRSvalidate(dat, ftitle, ptitle, xlabel, ylabel)
+        Plotter.plotRSvalidate(dat, ftitle, ptitle, xlabel, ylabel, error_tol_percent=error_tol_percent)
 
         return None
 
@@ -1216,7 +1216,7 @@ class RSAnalyzer:
         ptitle = '%s for %s' % (title[cmd_], outVarName)
         if cmd_ == 'rssobol2': 
             L = len(dat)
-            M = math.sqrt(L)
+            M = int(math.sqrt(L))
             dat = np.reshape(dat,[M,M],order='F')
             if std is not None:
                 std = np.reshape(std,[M,M],order='F')

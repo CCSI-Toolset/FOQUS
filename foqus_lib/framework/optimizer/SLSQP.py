@@ -1,29 +1,16 @@
-#
-#FOQUS_OPT_PLUGIN
-#
-# Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the optimization class.
-#
-#
-# SLSQP.py
-#
-# * FOQUS optimization plugin for scipy SLSQP using finite dif
-# * Uses scipy optimization module
-#
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
-#
+""" #FOQUS_OPT_PLUGIN SLSQP.py
+
+Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
+150 characters of text.  They also need to hav a .py extention and
+inherit the optimization class.
+
+* FOQUS optimization plugin for scipy SLSQP using finite dif
+* Uses scipy optimization module
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
+
 import time
 import copy
 import csv
@@ -38,9 +25,6 @@ import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
-# Check that the CMA-ES python script is available and import it if
-# possible.  If not the CMA-ES plug-in will not be available.
-    
 def checkAvailable():
     '''
         Plugins should have this function to check availability of any
@@ -54,13 +38,13 @@ class opt(optimization):
         The optimization solver class.  Should be called opt and inherit
         optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:
-        - available True or False, False it some required thing is not 
+        - available True or False, False it some required thing is not
             present
         - name The name of the solver
         - mp True or False, can use multiprocessing?
         - mobj True or False, handles multiple objectives?
         - options An optionList object to add solver options to
-        
+
         Some functions must also be implemented.  Following this example
         __init()__ call base class init, set attributes, add options
         optimize() run optimization periodically send out results for
@@ -83,12 +67,12 @@ class opt(optimization):
              "<p><b>SciPy BFGS</b></p>"
              "</html>")
         self.options.add(
-            name='upper', 
+            name='upper',
             default=10.0,
             dtype=float,
             desc="Upper bound on scaled variables (usually 10.0)")
         self.options.add(
-            name='lower', 
+            name='lower',
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)")
         self.options.add(
@@ -116,11 +100,11 @@ class opt(optimization):
             default=True,
             desc="Save all flowsheet results?")
         self.options.add(
-            name='Set Name', 
+            name='Set Name',
             default="SciPy-SLSQP",
             dtype=str,
             desc="Name of flowsheet result set to store data")
-    
+
     def f(self, x):
         #Only using DFO so grad can be ignored, if implimnet later,
         #grad must be modified in place
@@ -142,7 +126,7 @@ class opt(optimization):
                 self.prob.iterationNumber, self.bestSoFar))
         self.prob.iterationNumber += 1
         return obj
-    
+
     def optimize(self):
         '''
             This is the optimization routine.
@@ -194,10 +178,10 @@ class opt(optimization):
             self.prob.storeResults = setName
         else:
             self.prob.storeResults = None
-        self.prob.prep(self)  
+        self.prob.prep(self)
         ores = scipy.optimize.minimize(
-            self.f, 
-            xinit, 
+            self.f,
+            xinit,
             method='SLSQP',
             bounds=bounds,
             options={'ftol':ftol, 'eps':eps, 'maxiter':maxiter})
@@ -206,7 +190,7 @@ class opt(optimization):
         self.msgQueue.put("{0}, Total Elasped Time {1}s, Obj: {2}"\
             .format(
             self.prob.iterationNumber,
-            math.floor(eltime), 
+            math.floor(eltime),
             self.bestSoFar))
         self.resQueue.put(
             ["IT", self.prob.iterationNumber, self.bestSoFar])

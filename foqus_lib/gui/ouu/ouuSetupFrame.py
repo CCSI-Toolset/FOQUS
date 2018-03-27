@@ -311,7 +311,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             QMessageBox.warning(self, "Missing data",
                                       'The %s table is missing required data!' % names[table])
             return False # Failed
-        LocalExecutionModule.writeSimpleFile(fileName, values)
+        LocalExecutionModule.writeSimpleFile(fileName, values, rowLabels = False)
         return True
 
     def activateCompressSample(self, on):

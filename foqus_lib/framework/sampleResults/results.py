@@ -134,7 +134,7 @@ def search_term_list(st):
             logging.getLogger("foqus." + __name__).exception(
                 "Error reading filer sort terms")
             raise Exception('Error reading sort terms. When using multiple sort'
-                'terms, enclose the column names in "". See log for deatils') 
+                'terms, enclose the column names in "". See log for deatils')
     else:
         st = [st]
     ascend = [True]*len(st)
@@ -284,8 +284,9 @@ class Results(pd.DataFrame):
             kwargs["filepath_or_buffer"] = path
         df = pd.read_csv(*args, **kwargs)
         col_del = []
+        row = self.count_rows(filtered=False)
         for r in df.index:
-            row = self.count_rows()
+            row += 1
             for c in df.columns:
                 self.loc[row, c] = df.loc[r, c]
         self.update_filter_indexes()

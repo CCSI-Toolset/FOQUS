@@ -448,7 +448,7 @@ class LocalExecutionModule(object):
         return (inputArray, outputArray, numInputs, numOutputs)
 
     @staticmethod
-    def writeSimpleFile(fileName, inputData, outputData = None):
+    def writeSimpleFile(fileName, inputData, outputData = None, rowLabels = True):
         if isinstance(inputData, numpy.ndarray):
             inputData = inputData.tolist()
         numSamples = len(inputData)

@@ -423,7 +423,7 @@ class Plotter:
                 self.fig.canvas.set_window_title(figtitle)
                 self.ax = self.fig.add_subplot(111)
                 plt.subplots_adjust(left=left, bottom=2*bottom)
-                self.sliderax = self.fig.add_axes([left, bottom, width, height], axisbg='lightgoldenrodyellow')
+                self.sliderax = self.fig.add_axes([left, bottom, width, height], facecolor='lightgoldenrodyellow')
                 value = self.steps[1]
                 self.slider = DiscreteSlider(self.sliderax, xlabel, self.xmin, self.xmax, 
                                              steps=self.steps, facecolor='k', valinit=value, valfmt='%f')
@@ -759,7 +759,7 @@ class Plotter:
                 self.fig.canvas.set_window_title(figtitle)
                 self.ax = self.fig.add_subplot(111, projection='3d')
                 plt.subplots_adjust(left=left, bottom=2*bottom)
-                self.sliderax = self.fig.add_axes([left, bottom, width, height], axisbg='lightgoldenrodyellow')
+                self.sliderax = self.fig.add_axes([left, bottom, width, height], facecolor='lightgoldenrodyellow')
                 self.slider = DiscreteSlider(self.sliderax, vlabel, self.vmin, self.vmax, 
                                              steps=self.steps, facecolor='k', valinit=self.steps[1], valfmt='')
                 self.slider.valtext.set_text('Min: %.4f\nMax: %.4f' % (self.steps[0], self.steps[1]))  # display slider range

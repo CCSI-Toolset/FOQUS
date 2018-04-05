@@ -459,6 +459,9 @@ class Plotter:
                 self.ax.set_ylim([0, 1])
                 self.ax.set_title(title)
 
+                self.update(value)
+                self.slider.set_val(self.xmin)
+
             def update(self, value):
                 # remove last line
                 self.ax.lines.remove(self.yrange)
@@ -492,12 +495,12 @@ class Plotter:
                 # Find the closest step to continuous slider value
                 x = [np.abs(s-val) for s in self.steps] 
                 k, = np.where(x == np.min(x))
-                discrete_val = self.steps[k]
+                discrete_val = self.steps[k + 3]
                 if k > 0:
-                    discrete_val_ = self.steps[k-1]
+                    discrete_val_ = self.steps[k-3]
                 else:
                     discrete_val_ = self.steps[0]
-                    discrete_val = self.steps[1]
+                    discrete_val = self.steps[6]
                 # We can't just call Slider.set_val(self, discrete_val), because this 
                 # will prevent the slider from updating properly (it will get stuck at
                 # the first step and not "slide"). Instead, we'll keep track of the

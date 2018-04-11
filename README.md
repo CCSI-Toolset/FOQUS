@@ -1,4 +1,4 @@
-# FOQUS: Framework for Optimization and Quantification of Uncertainty and Sensitivity
+# FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
 
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
 

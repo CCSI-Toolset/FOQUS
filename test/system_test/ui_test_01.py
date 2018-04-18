@@ -138,8 +138,6 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("10")
         MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")
         MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")
-        MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")
         MainWin.nodeDock.toolBox.setCurrentIndex(1)
         MainWin.nodeDock.addOutput("z")
         MainWin.nodeDock.tabWidget.setCurrentIndex(2)

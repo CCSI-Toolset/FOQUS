@@ -14,6 +14,7 @@ import json
 import datetime
 import logging
 import time
+from collections import OrderedDict
 
 class dataFilter(object):
     DF_NOT = 0
@@ -60,8 +61,6 @@ class dataFilterRule(object):
     OP_IN = 5
     OP_NEQ = 6
     OP_AEQ = 7
-    OP_TRUE = 11
-    OP_FALSE = 12
 
     def __init__(self, op=0):
         self.op = op
@@ -161,6 +160,19 @@ class Results(pd.DataFrame):
         self._filter_mask = None
         self.hidden_cols = None
         self.hidden_cols = []
+        self.calculated_columns = OrderedDict()
+
+    def set_calculated_column(self, name, expr):
+        self.calculated_columns[name] = expr
+        c = "calc.{}".format(name)
+        if c not in self.columns:
+            self[c] = [np.nan]*self.count_rows(filtered=False)
+
+    def calculate_columns(self):
+        def c(key):
+            return self.filter_term(key)
+        for key in self.calculated_columns:
+            self["calc."+key] = eval(self.calculated_columns[key])
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
@@ -215,7 +227,18 @@ class Results(pd.DataFrame):
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
+        sd["calculated_columns"] = self.calculated_columns
         return sd
+
+    def delete_calculation(self, name):
+        try:
+            del self.calculated_columns[name]
+        except:
+            pass
+        try:
+            self.drop("calc."+name, axis=1, inplace=True)
+        except:
+            pass
 
     def loadDict(self, sd):
         """
@@ -244,6 +267,8 @@ class Results(pd.DataFrame):
                 dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
         if "all" not in self.filters:
             self.filters["all"] = dataFilter()
+        self.calculated_columns = sd.get("calculated_columns", OrderedDict())
+
         self.update_filter_indexes()
 
     def data_sets(self):
@@ -312,6 +337,10 @@ class Results(pd.DataFrame):
         """
         if t in self.columns:
             return np.array(list(self.loc[:, t]))
+        elif t == "True" or t == "true":
+            return True
+        elif t == "False" or t == "flase":
+            return False
         else:
             return np.array([t]*len(self.index))
 
@@ -398,99 +427,3 @@ class Results(pd.DataFrame):
         for i in indexes:
             self.drop(i, inplace=True)
         self.update_filter_indexes()
-
-# This is old export to psuade function.  Hopefully can update:
-"""
-    def exportPSUADE(self, fileName='test.dat'):
-        self.constructFlatHead(sort=False)
-        samplen = self.rowCount(filtered=True)
-        inputn = 0
-        outputn=0
-        for col, name in self.inputMapI.iteritems():
-            inputn += self.inputSize[name[0]][name[1]]
-        for col, name in self.outputMapI.iteritems():
-            outputn += self.outputSize[name[0]][name[1]]
-        input_index = 0
-        output_index = 0
-        inputNames = ['']*inputn
-        outputNames = ['']*outputn
-        inputValues = [0]*samplen
-        outputValues = [0]*samplen
-        for si in range(samplen):
-            inputValues[si] = [numpy.nan]*inputn
-            outputValues[si] = [numpy.nan]*outputn
-            inputMin = [numpy.nan]*inputn
-            inputMax = [numpy.nan]*inputn
-        error = ['1']*samplen
-        for i, el in enumerate(self.headMapFlat):
-            col = el[0]
-            elIndex = el[1]
-            if col in self.inputMapI:
-                #Strip the 'Input.' off from of name
-                inputNames[input_index] = self.headStringsFlat[i][6:]
-                for si, rindex in enumerate(self.rowSortOrder):
-                    row = self.rlist[rindex]
-                    inputValues[si][input_index] = \
-                        self.resultElement(row, col, elIndex)
-                    if si == 0:
-                        inputMin[input_index]=inputValues[si][input_index]
-                        inputMax[input_index]=inputValues[si][input_index]
-                    elif inputValues[si][input_index]<inputMin[input_index]:
-                        inputMin[input_index]=inputValues[si][input_index]
-                    elif inputValues[si][input_index]>inputMax[input_index]:
-                        inputMax[input_index]=inputValues[si][input_index]
-                input_index += 1
-            elif col in self.outputMapI:
-                #Strip the 'Output.' off name
-                outputNames[output_index] = self.headStringsFlat[i][7:]
-                for si, rindex in enumerate(self.rowSortOrder):
-                    row = self.rlist[rindex]
-                    outputValues[si][output_index] = \
-                        self.resultElement(row, col, elIndex)
-                output_index +=1
-            elif col == self.headMap['Error']:
-                for si, rindex in enumerate(self.rowSortOrder):
-                    row = self.rlist[rindex]
-                    error[si] = self.resultElement(row, col, elIndex)
-        #get the number of inputs that are fixed or variable.
-        v = [False]*inputn
-        nvar = 0
-        for i, name in enumerate(inputNames):
-            if not self.approxEqual(inputMin[i], inputMax[i], sig=6):
-                nvar += 1
-                v[i] = True
-        with open(fileName, 'w') as f:
-            f.write("#NAMESHAVENODES\n")
-            f.write("PSUADE_IO\n")
-            f.write("{0} {1} {2}\n".format(nvar, outputn, samplen))
-            for si in range(samplen):
-                if not error[si]:
-                    hasRun = 1
-                else:
-                    hasRun = 0
-                f.write("{0} {1}\n".format(si+1, hasRun))
-                for i in range(inputn):
-                    if v[i]:
-                        f.write('{0}\n'.format(inputValues[si][i]))
-                for i in range(outputn):
-                    f.write('{0}\n'.format(outputValues[si][i]))
-            f.write("PSUADE_IO\n")
-            f.write("PSUADE\n")
-            f.write("INPUT\n")
-            f.write("\tnum_fixed = {0}\n".format(inputn-nvar))
-            f.write("\tdimension = {0}\n".format(nvar))
-            for i, name in enumerate(inputNames):
-                if not v[i]:
-                    f.write('\tfixed {0} {1} = {2}\n'.format(
-                        i+1, name, inputMin[i]))
-                else:
-                    f.write('\tvariable {0} {1} = {2} {3}\n'.format(
-                        i+1, name, inputMin[i], inputMax[i]))
-            f.write("END\n")
-            f.write("OUTPUT\n")
-            f.write("\tdimension = {0}\n".format(outputn))
-            for i, name in enumerate(outputNames):
-                f.write('\tvariable {0} {1}\n'.format(i+1, name))
-            f.write("END\n")
-            f.write("END\n")
-"""

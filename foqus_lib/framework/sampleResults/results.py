@@ -61,8 +61,6 @@ class dataFilterRule(object):
     OP_IN = 5
     OP_NEQ = 6
     OP_AEQ = 7
-    OP_TRUE = 11
-    OP_FALSE = 12
 
     def __init__(self, op=0):
         self.op = op

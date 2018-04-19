@@ -339,6 +339,10 @@ class Results(pd.DataFrame):
         """
         if t in self.columns:
             return np.array(list(self.loc[:, t]))
+        elif t == "True" or t == "true":
+            return True
+        elif t == "False" or t == "flase":
+            return False
         else:
             return np.array([t]*len(self.index))
 

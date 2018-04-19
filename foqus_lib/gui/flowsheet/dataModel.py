@@ -7,6 +7,8 @@ See LICENSE.md for license and copyright details.
 """
 from PyQt5 import QtCore
 import json
+import logging
+import numpy as np
 
 class dataModel(QtCore.QAbstractTableModel):
     '''
@@ -47,8 +49,17 @@ class dataModel(QtCore.QAbstractTableModel):
         if  role == QtCore.Qt.DisplayRole:
             try:
                 return json.dumps(self.results.loc[row, col])
-            except:
-                return "error"
+            except TypeError as e:
+                try:
+                    x = self.results.loc[row, col]
+                    if isinstance(x, np.bool_):
+                        return json.dumps(bool(x))
+                    else:
+                        return "error {}".format(str(e))
+                except:
+                    return "error {}".format(str(e))
+            except Exception as e:
+                return "error {}".format(str(e))
         elif role == QtCore.Qt.EditRole:
            return json.dumps(self.results.loc[row, col])
         else:

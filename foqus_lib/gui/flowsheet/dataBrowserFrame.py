@@ -12,6 +12,8 @@ from foqus_lib.gui.flowsheet.columns import *
 import dataFilterDialog
 from foqus_lib.gui.flowsheet.dataModel import *
 from foqus_lib.gui.flowsheet.runRowsDialog import *
+from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
+
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMenu, QMessageBox, QAction,\
     QLineEdit, QInputDialog, QFileDialog
@@ -29,6 +31,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.impMenu = self.menu.addMenu("Import")
         self.expMenu = self.menu.addMenu("Export")
         self.editMenu = self.menu.addMenu("Edit")
+        self.calcMenu = self.menu.addMenu("Calculate")
         self.viewMenu = self.menu.addMenu("View")
         self.runMenu = self.menu.addMenu("Run")
         self.addMenuActions()
@@ -134,10 +137,26 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.resizeColumnsAct.triggered.connect(self.autoResizeCols)
         self.viewMenu.addAction(self.resizeColumnsAct)
 
+        # Calculated columns menu
+        self.calcCols = QAction('&Recalculate', self)
+        self.editCalcCol = QAction('&Calculated columns', self)
+        self.calcMenu.addAction(self.editCalcCol)
+        self.calcMenu.addAction(self.calcCols)
+        self.editCalcCol.triggered.connect(self.showCalcEdit)
+        self.calcCols.triggered.connect(self.calculate_columns)
+
         #Run menu
         self.runRowsAct = QAction('Run Selected Rows', self)
         self.runRowsAct.triggered.connect(self.runSelectedRows)
         self.runMenu.addAction(self.runRowsAct)
+
+    def calculate_columns(self):
+        self.dat.flowsheet.results.calculate_columns()
+        self.refreshContents()
+
+    def showCalcEdit(self):
+        calculatedColumnsDialog(self.dat, parent=self).exec_()
+        self.calculate_columns()
 
     def rowToFlow(self):
         rows = self.selectedRows()
@@ -185,9 +204,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.tableView.resizeColumnsToContents()
 
     def deleteResults(self):
-        '''
-            Delete selected rows from the results table.
-        '''
+        """Delete selected rows from the results table."""
         msgBox = QMessageBox()
         msgBox.setText("Delete selected data?")
         msgBox.setInformativeText(

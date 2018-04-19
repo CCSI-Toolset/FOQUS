@@ -138,8 +138,6 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("10")
         MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")
         MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")
-        #MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")
-        #MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")
         MainWin.nodeDock.toolBox.setCurrentIndex(1)
         MainWin.nodeDock.addOutput("z")
         MainWin.nodeDock.tabWidget.setCurrentIndex(2)
@@ -154,6 +152,7 @@ try: # Catch any exception and stop all timers before finishing up
                 MainWin.singleRun.terminate()
                 break
         if not timerWait('msg_okay'): break
+        assert abs(self.flowsheet.output["Test"]["z"] - 9) < 1e-8
         assert self.flowsheet.errorStat==0
         with open(testOutFile, 'a') as f:
             f.write('SUCCESS: Test02: Flowsheet run\n')

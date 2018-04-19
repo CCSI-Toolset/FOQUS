@@ -14,7 +14,7 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QColor
+from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication,\
     QTableWidgetItem, QCheckBox, QMainWindow, QVBoxLayout, QLabel
 mypath = os.path.dirname(__file__)

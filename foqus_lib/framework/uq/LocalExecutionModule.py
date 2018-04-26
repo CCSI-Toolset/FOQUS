@@ -448,7 +448,7 @@ class LocalExecutionModule(object):
         return (inputArray, outputArray, numInputs, numOutputs)
 
     @staticmethod
-    def writeSimpleFile(fileName, inputData, outputData = None):
+    def writeSimpleFile(fileName, inputData, outputData = None, rowLabels = True):
         if isinstance(inputData, numpy.ndarray):
             inputData = inputData.tolist()
         numSamples = len(inputData)
@@ -465,8 +465,13 @@ class LocalExecutionModule(object):
         f.write(' '.join(map(str, [numSamples, numInputs, numOutputs])))
         f.write('\n')
         for i, (inRow, outRow) in enumerate(zip(inputData, outputData), 1):
-            f.write(' '.join(map(str, [i] + inRow + outRow)))
-            f.write('\n')
+            if rowLabels:
+                f.write(' '.join(map(str, [i] + inRow + outRow)))
+                f.write('\n')
+            else:
+                f.write(' '.join(map(str, inRow + outRow)))
+                f.write('\n')
+                
         f.close()
 
 

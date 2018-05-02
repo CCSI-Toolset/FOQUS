@@ -143,12 +143,12 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             lb.clicked.emit()
         wd = self.dat.foqusSettings.working_dir
         src_psuade_data_file = os.path.join(wd, 'psuadeData')
-        dest_psuade_data_file = os.path.join(
-            iREVEAL_work_dir, 'psuadeData')
-        shutil.copyfile(src_psuade_data_file, dest_psuade_data_file)
+        # dest_psuade_data_file = os.path.join(
+        #    iREVEAL_work_dir, 'psuadeData')
+        # shutil.copyfile(src_psuade_data_file, dest_psuade_data_file)
         src_psuade_in_file = os.path.join(wd, 'psuade.in')
-        dest_psuade_in_file = os.path.join(iREVEAL_work_dir, 'psuade.in')
-        shutil.copyfile(src_psuade_in_file, dest_psuade_in_file)
+        # dest_psuade_in_file = os.path.join(iREVEAL_work_dir, 'psuade.in')
+        # shutil.copyfile(src_psuade_in_file, dest_psuade_in_file)
         self.refreshData()
 
     def refreshData(self):

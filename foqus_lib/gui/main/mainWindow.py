@@ -472,7 +472,7 @@ class mainWindow(QMainWindow):
         #Load default inputs action
         self.loadDefaultsAction = QAction(
             QIcon(self.iconPaths['defaults']),
-            'Load deafult inputs',
+            'Load default inputs',
             self)
         self.loadDefaultsAction.triggered.connect(
             self.loadDefaultInput)
@@ -515,7 +515,7 @@ class mainWindow(QMainWindow):
         # Data/Results browser View
         self.dataBrowserAction =  QAction(
             QIcon(self.iconPaths['data']),
-            'Results',
+            'Results and Filtering',
             self)
         self.dataBrowserAction.triggered.connect(self.showDataBrowser)
         self.toolbarDrawing.addAction(self.dataBrowserAction)
@@ -1207,6 +1207,30 @@ class mainWindow(QMainWindow):
             to monitor it.  If node is set to a node name only a single
             node given by the name is evaluated
         '''
+        
+        # Check to see if Turbine model is available,
+        # and terminate run if it is not:
+        try:
+            sl = self.dat.flowsheet.turbConfig.getSimulationList()
+        except:
+            logging.getLogger("foqus." + __name__).debug(
+                "Could not connect to Turbine in checkSim()"\
+                " Is the Turbine web service running?")
+            sl = []
+        m = self.dat.flowsheet.turbineSimList() # self.nodeDock.modelName
+        if m not in sl:
+            #show a warning message
+            QMessageBox.warning(
+                self,
+                "Turbine Model Not Available",
+                ("The Turbine model specified for this node is not "
+                 "available from Turbine.  Model: {0}").format(m))
+            self.timer = QtCore.QTimer(self)
+            self.multiRun = None
+            self.singleRun = None
+            self.stopSim()
+        
+        # If Turbine model is available:
         turb_config = self.dat.flowsheet.turbConfig
         turb_sim_list = self.dat.flowsheet.turbineSimList()
         self.applyNodeEdgeChanges()

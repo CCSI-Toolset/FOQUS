@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>728</width>
+    <width>899</width>
     <height>551</height>
    </rect>
   </property>
@@ -69,7 +69,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>Edit Filters</string>
+           <string>Add/Edit Filters</string>
           </property>
          </widget>
         </item>

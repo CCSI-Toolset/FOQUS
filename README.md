@@ -1,22 +1,8 @@
-# FOQUS: Framework for Optimization and Quantification of Uncertainty and Sensitivity
+# FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
 
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
 
 ## Getting Started
-
-### Pre-requisties
-The build/dev environment must have the following tools installed. It has been
-tested with the following versions. Use other versions at your own risk
-
-+ Apache Ant
-+ Coin Library
-+ Git for Windows
-+ Java 1.8
-+ Microsoft Visual Studio 11.0
-+ Microsoft .NET v4.0.30319
-+ Python 2.7
-+ TexLive for Windows
-+ Wix Toolset v3.10
 
 ### Install
 See the [installation](INSTALL.md) instructions for details.

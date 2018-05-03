@@ -1,21 +1,9 @@
-'''
-    columns.py
+"""columns.py
+* Window to show the flowsheet data browser.
 
-    * Window to show the flowsheet data browser.
-
-    John Eslick, Carnegie Mellon University, 2014
-
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import os
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialogButtonBox, QListWidgetItem
@@ -31,22 +19,28 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
         self.dat = dat
         self.buttonBox.button(
             QDialogButtonBox.Ok).clicked.connect(self.accept)
-        hm = self.dat.flowsheet.results.headMap
+        hm = self.dat.flowsheet.results.columns
+        self.items = {}
         for h in hm:
             item = QListWidgetItem(h)
+            self.items[h] = item
             item.setCheckState(QtCore.Qt.Checked)
-            if h in self.dat.flowsheet.results.hiddenCols:
+            if h in self.dat.flowsheet.results.hidden_cols:
                 item.setCheckState(QtCore.Qt.Unchecked)
             else:
                 item.setCheckState(QtCore.Qt.Checked)
-            if h.startswith('Input.'):
+            if h.startswith('input.'):
                 self.inputColumnsList.addItem(item)
-            elif h.startswith('Output.'):
+            elif h.startswith('output.'):
                 self.outputColumnsList.addItem(item)
-            elif h.startswith('NodeSetting.'):
+            elif h.startswith('setting.'):
                 self.settingsColumnsList.addItem(item)
             else:
                 self.metadataColumnsList.addItem(item)
 
     def accept(self):
+        self.dat.flowsheet.results.hidden_cols = []
+        for col in self.items:
+            if not self.items[col].checkState():
+                self.dat.flowsheet.results.hidden_cols.append(col)
         self.close()

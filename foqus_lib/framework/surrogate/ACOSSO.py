@@ -1,32 +1,17 @@
-#
-#FOQUS_SURROGATE_PLUGIN
-#
-# Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-# 150 characters of text.  They also need to hav a .py extention and
-# inherit the surrogate class.
-#
-#
-# ACOSSO.py
-#
-# * Plugin wprapper for the ACOSSO surrogate model builer.
-# * ACOSSO is excuted in R and a working R install with the quadprog 
-#   package is required.  The user must install R
-# * ACOSSO Ref:
-#   
-#3
-# John Eslick, Carnegie Mellon University, 2014
-#
-# This Material was produced under the DOE Carbon Capture Simulation
-# Initiative (CCSI), and copyright is held by the software owners:
-# ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-# and/or the U.S. Government retain ownership of all rights in the 
-# CCSI software and the copyright and patents subsisting therein. Any
-# distribution or dissemination is governed under the terms and 
-# conditions of the CCSI Test and Evaluation License, CCSI Master
-# Non-Disclosure Agreement, and the CCSI Intellectual Property 
-# Management Plan. No rights are granted except as expressly recited
-# in one of the aforementioned agreements.
+""" #FOQUS_SURROGATE_PLUGIN ACOSSO.py
 
+Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
+150 characters of text.  They also need to hav a .py extention and
+inherit the surrogate class.
+
+* Plugin wprapper for the ACOSSO surrogate model builer.
+* ACOSSO is excuted in R and a working R install with the quadprog
+  package is required.  The user must install R
+* ACOSSO Ref:
+
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 import numpy as np
 import threading
 import Queue
@@ -101,7 +86,7 @@ class surrogateMethod(surrogate):
             " categorical inputs.</p>"\
              "</html>"
         # acosso working directory
-        self.acossoDir = 'acosso' 
+        self.acossoDir = 'acosso'
         # add options
         self.options.add(
             name="Data Filter",
@@ -137,12 +122,12 @@ class surrogateMethod(surrogate):
             dtype=str,
             desc="ACOSSO output R data file")
         self.options.add(
-            name="FOQUS Model (for UQ)", 
+            name="FOQUS Model (for UQ)",
             default="acosso_surrogate_uq.py",
             dtype=str,
             desc=".py file for UQ analysis")
         self.options.add(
-            name="FOQUS Model (for Flowsheet)", 
+            name="FOQUS Model (for Flowsheet)",
             default="acosso_surrogate_fs.py",
             dtype=str,
             desc=".py file flowsheet plugin, saved to user_plugins"\
@@ -159,13 +144,13 @@ class surrogateMethod(surrogate):
             dtype=int,
             validValues = [1, 2],
             desc="order of interactions to consider")
-    
+
     def updateOptions(self):
         filters = sorted(
-            self.dat.flowsheet.results.filters.keys(), 
+            self.dat.flowsheet.results.filters.keys(),
             key = lambda s: s.lower())
         self.options["Data Filter"].validValues = filters
-    
+
     def setupWorkingDir(self):
         adir = self.acossoDir
         self.createDir(adir)
@@ -175,7 +160,7 @@ class surrogateMethod(surrogate):
             mydir = os.path.dirname(__file__)
             src = os.path.join(mydir, 'acosso/acosso_fit.R')
             shutil.copyfile(src, dest)
-        
+
     def run(self):
         '''
             This function overloads the Thread class function,
@@ -283,7 +268,7 @@ class surrogateMethod(surrogate):
         file_name = self.options['FOQUS Model (for Flowsheet)'].value
 
         # Write the standard code top, then append "main()" from the UQ driver
-        s = self.writePluginTop(method='ACOSSO', comments=['ACOSSO Flowsheet Model']) 
+        s = self.writePluginTop(method='ACOSSO', comments=['ACOSSO Flowsheet Model'])
         with open(os.path.join('user_plugins', file_name), 'w') as f:
             f.write(s)
             lines = []
@@ -309,7 +294,7 @@ class surrogateMethod(surrogate):
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
             lines.append('                print stdout')
-            lines.append('            if stderr:') 
+            lines.append('            if stderr:')
             lines.append('                print stderr')
             lines.append('')
             lines.append('            # read results and instantiate output value')
@@ -317,5 +302,5 @@ class surrogateMethod(surrogate):
             lines.append('            self.outputs[vname].value = ypred[1]')
             lines.append('')
             f.write('\n'.join(lines))
-            
+
         self.dat.reloadPlugins()

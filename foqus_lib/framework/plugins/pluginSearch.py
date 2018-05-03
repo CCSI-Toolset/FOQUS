@@ -1,25 +1,15 @@
-'''
-    pluginSearch.py
+""" pluginSearch.py
 
-    * This class looks for plugins and creates a dictionary containing.
-    the plugin models.  Plugin objects can be instanciated elsewhere. 
-    The plugins are identified by a certain string contained in the 
-    first x charcters of the python file.  Plugins should have a .py 
-    extension.
+* This class looks for plugins and creates a dictionary containing.
+  the plugin models.  Plugin objects can be instanciated elsewhere.
+  The plugins are identified by a certain string contained in the
+  first x charcters of the python file.  Plugins should have a .py
+  extension.
 
-    John Eslick, Carnegie Mellon University, 2014
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
 import sys
 import os
 import importlib
@@ -78,5 +68,3 @@ class plugins():
                 del self.plugins[pkey]
                 logging.getLogger("foqus." + __name__).info(
                     "Removing plugin, due to missing dependency: "+pkey)
-
-        

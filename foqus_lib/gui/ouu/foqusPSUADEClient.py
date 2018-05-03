@@ -1,26 +1,15 @@
 #!/usr/local/bin/python
-'''
-    foqusPSUADEClient.py
-     
-    * The purpose of this script is to be the simulator executable for
-    * PSUADE.  It reads the input data from PSUADE sends it to FOQUS using
-    * a network socket connection, waits for the results and writes them
-    * in the format expected by PSUADE, then it closes the listener in
-    * FOQUS and exits.
+"""foqusPSUADEClient.py
 
-    Jeremy Ou, Lawrence Livermore National Laboratory, 2015
+* The purpose of this script is to be the simulator executable for
+* PSUADE.  It reads the input data from PSUADE sends it to FOQUS using
+* a network socket connection, waits for the results and writes them
+* in the format expected by PSUADE, then it closes the listener in
+* FOQUS and exits.
 
-    This Material was produced under the DOE Carbon Capture Simulation
-    Initiative (CCSI), and copyright is held by the software owners:
-    ORISE, LANS, LLNS, LBL, PNNL, CMU, WVU, et al. The software owners
-    and/or the U.S. Government retain ownership of all rights in the 
-    CCSI software and the copyright and patents subsisting therein. Any
-    distribution or dissemination is governed under the terms and 
-    conditions of the CCSI Test and Evaluation License, CCSI Master
-    Non-Disclosure Agreement, and the CCSI Intellectual Property 
-    Management Plan. No rights are granted except as expressly recited
-    in one of the aforementioned agreements.
-'''
+Jeremy Ou, Lawrence Livermore National Laboratory, 2015
+See LICENSE.md for license and copyright details.
+"""
 import sys
 from multiprocessing.connection import Client
 
@@ -66,7 +55,7 @@ def getInputData(inFileName):
             fixedVals.append(float(toks[4]))
         for row in inData:
             row.extend(fixedVals)
-        
+
     outFile = open('tempdata', 'a')
     outFile.write('%d\n' % nSamp)
     for row in inData:
@@ -152,4 +141,3 @@ if __name__ == '__main__':
 
     # Write the output file that ALAMO can read
     genOutputFile(outputFile, results)
-

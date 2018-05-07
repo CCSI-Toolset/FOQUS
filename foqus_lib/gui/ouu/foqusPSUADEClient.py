@@ -91,7 +91,19 @@ if __name__ == '__main__':
     # Open the connection
     conn = Client(address)
     # Read the sample from the input file made by PSUADE
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Get samples from file %s\n' % inputFile)
+    f.close()
     (nSamples, samples) = getInputData(inputFile)
+    f = open('foquspsuadeclient.log', 'a')
+    f.write('Number of samples is %d\n' % nSamples)
+    f.close()
+    f = open('foquspsuadeclient.log', 'a')
+    for row in samples:
+        f.write(' '.join(map(str, row)))
+        f.write('\n')
+    f.close()
+
 
     # Submit the samples to FOQUS to be run
     f = open('foquspsuadeclient.log', 'a')
@@ -109,13 +121,13 @@ if __name__ == '__main__':
         conn.send(['submit', sample])
         conn.recv()
     f = open('foquspsuadeclient.log', 'a')
-    f.write('Samples sent. Running...')
+    f.write('Samples sent. Running...\n')
     f.close()
     conn.send(['run'])
     n = conn.recv()[1]
     #print 'Submitted {0} samples to FOQUS'.format(n)
     f = open('foquspsuadeclient.log', 'a')
-    f.write('Get results')
+    f.write('Get results\n')
     f.close()
     conn.send(['result'])
     msg = conn.recv()
@@ -124,7 +136,7 @@ if __name__ == '__main__':
     conn.send(['close'])
     conn.close()
     f = open('foquspsuadeclient.log', 'a')
-    f.write('Done')
+    f.write('Done\n')
     f.close()
 
     # Write the output file that ALAMO can read

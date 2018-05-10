@@ -18,7 +18,7 @@ with open("foqus_lib/version/version.template", 'r') as f:
 verfile = verfile.replace("{BUILDNUMBER}", build_name)
 with open("foqus_lib/version/version.py", 'w') as f:
     f.write(verfile)
-    
+
 #now import version.
 import foqus_lib.version.version as ver
 print("Setting version as {0}".format(ver.version))
@@ -67,6 +67,7 @@ setup(
     include_package_data=True,
     scripts = [
         'foqus.py',
+        'cloud/aws/foqus_worker.py'
         'icons_rc.py'],
     install_requires=install_requires,
     dependency_links=dependency_links

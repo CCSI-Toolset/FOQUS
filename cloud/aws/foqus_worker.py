@@ -1,16 +1,18 @@
 import boto3,optparse
-import sys,json,signal,os,errno,uuid
+import sys,json,signal,os,errno,uuid,threading,time
 from os.path import expanduser
 #import adodbapi
 #import adodbapi.apibase
+import urllib2
 import logging
 import logging.config
 #from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
-from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer as KeepAliveTimer
+#from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer as KeepAliveTimer
 from foqus_lib.framework.session.session import session as Session
 #adodbapi.adodbapi.defaultCursorLocation = adodbapi.adUseServer
 logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 _log = logging.getLogger()
+_instanceid = None
 HOME = expanduser("~")
 workingDirectory = None
 DEBUG = False
@@ -133,11 +135,9 @@ def pull_job(VisibilityTimeout):
         .info("TurbineLite Database:\n   {0}".format(db.dbFile))
     #add 'foqus' app to TurbineLite DB if not already there
     db.add_new_application('foqus')
-    #register the consumer in the database
-    consumer_uuid = db.consumer_register()
-    print("consumer_uuid: {0}".format(consumer_uuid))
     """
-
+    #register the consumer in the database
+    db.consumer_register()
     if not DEBUG:
         # DELETE received message from queue
         sqs.delete_message(
@@ -182,11 +182,11 @@ def run_foqus(job_desc):
     #add 'foqus' app to TurbineLite DB if not already there
     #db.add_new_application('foqus')
     #register the consumer in the database
-    consumer_uuid = db.consumer_register()
-    print("consumer_uuid: {0}".format(consumer_uuid))
+    db.consumer_register()
+    #print("consumer_uuid: {0}".format(consumer_uuid))
     #write the time to the turbineLite db about every minute
-    #kat = KeepAliveTimer(db, consumer_uuid, freq = 60)
-    #kat.start()
+    kat = _KeepAliveTimer(db, freq=60)
+    kat.start()
 
     guid = job_desc['Id']
     jid = None
@@ -194,7 +194,8 @@ def run_foqus(job_desc):
 
     # Run the job
     db.add_message("consumer={0}, starting job {1}"\
-        .format(consumer_uuid, jid), guid)
+        .format(db.consumer_id, jid), guid)
+
     db.job_change_status(guid, "setup")
 
     configContent = db.get_configuration_file(simId)
@@ -202,7 +203,7 @@ def run_foqus(job_desc):
     logging.getLogger("foqus." + __name__)\
         .info("Job {0} is submitted".format(jid))
 
-    db.jobConsumerID(guid, consumer_uuid)
+    #db.jobConsumerID(guid, consumer_uuid)
     db.job_prepare(guid, jid, configContent)
 
     # Load the session file
@@ -213,7 +214,7 @@ def run_foqus(job_desc):
     terminate = False
     while gt.isAlive():
         gt.join(10)
-        status = db.consumer_status(consumer_uuid)
+        status = db.consumer_status()
         if status == 'terminate':
             terminate = True
             db.job_change_status(guid, "error")
@@ -237,12 +238,12 @@ def run_foqus(job_desc):
         db.job_change_status(guid, "success")
         db.add_message(
             "consumer={0}, job {1} finished, success"\
-                .format(consumer_uuid, jid), guid)
+                .format(db.consumer_id, jid), guid)
     else:
         db.job_change_status(guid, "error")
         db.add_message(
             "consumer={0}, job {1} finished, error"\
-                .format(consumer_uuid, jid), guid)
+                .format(db.consumer_id, jid), guid)
     logging.getLogger("foqus." + __name__)\
         .info("Job {0} finished"\
         .format(jid))
@@ -260,7 +261,7 @@ class TurbineLiteDB:
         self._sns = boto3.client('sns')
         topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
         self._topic_arn = topic['TopicArn']
-        self._consumer_id = str(uuid.uuid4())
+        self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
         self._sns.publish(Message=json.dumps([obj]), TopicArn=self._topic_arn)
@@ -277,18 +278,19 @@ class TurbineLiteDB:
         _log.info("%s.add_new_application", self.__class__)
     def add_message(self, msg, jobid, rc=0):
         _log.info("%s.add_message", self.__class__)
-    def consumer_keepalive(self, uid, rc=0):
+    def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='keepalive', rc=rc, consumer=uid))
-    def consumer_status(self, uid, status=None, rc=0):
+        self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
+    def consumer_status(self):
         _log.info("%s.consumer_status", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='status', rc=rc, status=status, consumer=uid))
+        #assert status in ['up','down','terminate'], ''
+        #self._sns_notification(dict(resource='consumer', event=status, rc=rc, consumer=self.consumer_id))
+        return 'up'
     def consumer_id(self, pid, rc=0):
         _log.info("%s.consumer_id", self.__class__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='status',
-            rc=rc, status="up", consumer=self._consumer_id))
+        self._sns_notification(dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id))
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         _log.info("%s.get_job_id", self.__class__)
         return guid, jid, simId, reset
@@ -302,19 +304,40 @@ class TurbineLiteDB:
     def job_change_status(self, jobGuid, status, rc=0):
         _log.info("%s.job_change_status", self.__class__)
         self._sns_notification(dict(resource='job', event='status',
-            rc=rc, status=status, jobid=jobGuid, consumer=self._consumer_id))
+            rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
     def job_save_output(self, jobGuid, workingDir, rc=0):
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
         self._sns_notification(dict(resource='job',
-            event='result', value=output, rc=rc))
+            event='output', jobid=jobGuid, value=output, rc=rc))
+
+
+class _KeepAliveTimer(threading.Thread):
+    def __init__(self, turbineDB, freq=60):
+        threading.Thread.__init__(self)
+        self.stop = threading.Event() # flag to stop thread
+        self.freq = freq
+        self.db = turbineDB
+        self.daemon = True
+
+    def terminate(self):
+        self.stop.set()
+
+    def run(self):
+        i = 0
+        while not self.stop.isSet():
+            time.sleep(1)
+            i += 1
+            if i >= self.freq:
+                self.db.consumer_keepalive()
+                i = 0
 
 
 def main():
     """
     """
-    global DEBUG
+    global DEBUG,_instanceid
     op = optparse.OptionParser(usage="USAGE: %prog [options]",
             description=main.__doc__)
     op.add_option("-d", "--debug",
@@ -338,6 +361,9 @@ def main():
     VisibilityTimeout = 300
     if DEBUG:
         VisibilityTimeout = 0
+        _instanceid = 'testing'
+    else:
+        _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
 
     pull_job(VisibilityTimeout=VisibilityTimeout)
 

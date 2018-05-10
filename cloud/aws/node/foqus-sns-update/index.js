@@ -8,27 +8,48 @@ const tablename = 'TurbineResources';
 
 var process_job_event = function(ts, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
+    console.log('process_job_event: ' + message);
     var e = message['event'];
     var status = message['status'];
     var job = message['jobid'];
     var msecs = Date.parse(ts);
     var consumer = message['consumer'];
+    var instance_id = message['instanceid'];
     var params = {
         TableName:tablename,
         Key:{
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set " + status + " = :s, ConsumerId=:c",
+        UpdateExpression: "set " + status + " = :s, ConsumerId=:c, instance=:i",
         ExpressionAttributeValues:{
             ":s":ts,
-            ":c":consumer
+            ":c":consumer,
+            ":i":instance_id
         },
-        //ExpressionAttributeNames:{
-        //    "#t":"Type"
-        //},
         ReturnValues:"UPDATED_NEW"
     };
+    if (e == 'output') {
+        var output = JSON.stringify(message['value']);
+        //params.UpdateExpression = "set output=:o";
+        //params.ExpressionAttributeValues = {":o":message['value']};
+        params = {
+            TableName:tablename,
+            Key:{
+                "Id": job,
+                "Type":"Job"
+            },
+            UpdateExpression: "set #w = :o",
+            ExpressionAttributeValues:{
+                ":o":output
+            },
+            ExpressionAttributeNames:{
+                "#w":"output"
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+    }
+
     console.log("job(msecs=" + msecs + ") event=" + e);
     console.log(JSON.stringify(params));
     dynamodb.update(params, function(err, data) {
@@ -45,8 +66,40 @@ var process_job_event = function(ts, message, callback) {
 var process_consumer_event = function(ts, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
     var e = message['event'];
+    //var status = message['status'];
+    var consumer = message['consumer'];
     var msecs = Date.parse(ts);
+    var instance_id = message['instanceid'];
+    var update_expr = "set " + e + " = :s";
+    var expr_attr_vals = {":s":ts};
+    if (instance_id != NaN) {
+      update_expr = "set " + e + " =:s, instance=:i";
+      expr_attr_vals = {":s":ts, ":i":instance_id};
+    }
+    var params = {
+        TableName:tablename,
+        Key:{
+            "Id": consumer,
+            "Type":"Consumer"
+        },
+        UpdateExpression: update_expr,
+        ExpressionAttributeValues: expr_attr_vals,
+        //ExpressionAttributeNames:{
+        //    "#t":"Type"
+        //},
+        ReturnValues:"UPDATED_NEW"
+    };
     console.log("consumer(msecs=" + msecs + ") event=" + e);
+    console.log(JSON.stringify(params));
+    dynamodb.update(params, function(err, data) {
+      console.log("Update: " + data);
+      if (err) {
+        console.log(err, err.stack);
+        callback(null, "Error");
+      } else {
+        callback(null, "Success");
+      }
+    });
 }
 
 console.log('Loading function');

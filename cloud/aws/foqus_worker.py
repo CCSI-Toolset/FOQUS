@@ -209,6 +209,56 @@ def run_foqus(job_desc):
     # Load the session file
     dat.load(sfile, stopConsumers=True)
     dat.loadFlowsheetValues(vfile)
+    '''
+    "flowsheet"
+        "nodes": {
+          "BFB": {
+            "browser_conf": null,
+            "modelName": "BFB_v11_FBS_01_26_2018",
+            "pythonCode": "#run steady state init\nself.options[\"Script\"].value = \"Run_Steady\"\nself.runModel()\nif self.calcError != -1:\n    raise(Exception(\"Steady state homotopy failed\"))\n#Run optimization\nself.options[\"Script\"].value = \"Init_Opt\"\nself.runModel()\nif self.calcError != -1:\n    raise(Exception(\"Optimization failed\"))\n# Update the x and f dicts from the node output\n# f gets copied to the node outputs so need this \n# for now x doesn't get copied back\nx, f = self.getValues()",
+            "calcError": 0,
+            "turbSession": "9c9dff4f-48b9-482a-99be-1bfe879350f5",
+            "dmf_sim_ids": null,
+            "scriptMode": "total",
+            "turbApp": [
+              "ACM",
+              "aspenfile"
+            ],
+            "synced": true,
+            "modelType": 2,
+            "y": 0,
+            "x": -200,
+            "z": 0,
+            "options": {...}
+    '''
+    # dat.flowsheet.nodes.
+    s3 = boto3.client('s3', region_name='us-east-1')
+    bucket_name = 'foqus-simulations'
+    l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
+    if not l.has_key('Contents'):
+        _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
+        return
+
+    _log.debug("FLOWSHEET NODES")
+    for nkey in dat.flowsheet.nodes:
+        if dat.flowsheet.nodes[nkey].turbApp is None:
+            continue
+        assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
+            'DAT Flowsheet nodes turbApp is %s' %dat.flowsheet.nodes[nkey].turbApp
+        model_name = dat.flowsheet.nodes[nkey].modelName
+        sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
+        assert sinter_filename in l['Contents'], 'missing sinter configuration "%s"' %sinter_filename
+        if dat.flowsheet.nodes[nkey].turbApp[0] == 'ACM':
+            model_filename = 'anonymous/%s/%s/%s.acmf' %(job_desc['Simulation'],nkey, model_name)
+            assert model_filename in l['Contents'], 'missing sinter configuration "%s"' %sinter_filename
+        else:
+            raise NotImplementedError, 'Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp))
+        prefix = 'anonymous/%s/%s/' %(job_desc['Simulation'],nkey)
+        f_list = filter(lambda i: i != prefix and i.startswith(prefix), map(lambda j: j['Key'], l['Contents']))
+        for key in f_list:
+            _log.debug('s3 download(%s): %s' %(workingDirectory, key))
+            s3.download_file(bucket_name, key, workingDirectory)
+
     db.job_change_status(guid, "running")
     gt = dat.flowsheet.runAsThread()
     terminate = False

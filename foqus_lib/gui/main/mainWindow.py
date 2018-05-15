@@ -472,7 +472,7 @@ class mainWindow(QMainWindow):
         #Load default inputs action
         self.loadDefaultsAction = QAction(
             QIcon(self.iconPaths['defaults']),
-            'Load deafult inputs',
+            'Load default inputs',
             self)
         self.loadDefaultsAction.triggered.connect(
             self.loadDefaultInput)
@@ -515,7 +515,7 @@ class mainWindow(QMainWindow):
         # Data/Results browser View
         self.dataBrowserAction =  QAction(
             QIcon(self.iconPaths['data']),
-            'Results',
+            'Results and Filtering',
             self)
         self.dataBrowserAction.triggered.connect(self.showDataBrowser)
         self.toolbarDrawing.addAction(self.dataBrowserAction)
@@ -1379,7 +1379,13 @@ class mainWindow(QMainWindow):
                     str(err) +
                     ", " +
                     errText)
-
+                if err == 20:
+                    msgBox = QMessageBox()
+                    msgBox.setText(
+                        ("Please check if model is "
+                        "available in Turbine."))
+                    msgBox.exec_()
+                    
     def loadDefaultInput(self):
         '''
             Return inputs to default values

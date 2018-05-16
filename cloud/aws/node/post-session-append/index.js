@@ -71,11 +71,13 @@ exports.handler = function(event, context, callback) {
         for(var i=0; i<body.length; i++) {
           item = {Id: body[i].Id,
                   Type: "Job",
-                  Composite: "SessionId="+session_id,
-                  Status: "create",
                   Create: milliseconds+i,
                   SessionId: session_id,
                   User: default_user_name,
+                  Initialize: body[i].Initialize,
+                  Input: body[i].Input,
+                  Reset:body[i].Reset,
+                  Simulation: body[i].Simulation,
                   Application: "foqus"};
 
           items.push({PutRequest: { Item: item } });

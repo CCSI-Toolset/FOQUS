@@ -36,24 +36,30 @@ exports.handler = function(event, context, callback) {
       dynamodb.query({ TableName: tableName,
           KeyConditionExpression: '#T = :job',
           ExpressionAttributeNames: {"#T":"Type"},
-          ExpressionAttributeValues: { ":job":"Job"}
+          ExpressionAttributeValues: { ":job":"Job", ":sessionid":session_id},
+          FilterExpression: 'contains (SessionId, :sessionid)'
         },
-      function(err,data) {
-        var body = []
-        if(err) {
-          console.log("Error: ", err);
-          callback(null, {statusCode:'400', body: JSON.stringify(data), headers: {'Content-Type': 'application/json',}});
-        } else {
-          //var a = data.Items
-          console.log('Data: ', data.Items.length);
-          for (var i=0; i<data.Items.length; i++) {
-              var item = data.Items[i];
-              console.log('item: ', item);
-              body.push({Id: item.Id});
-            }
-            callback(null, {statusCode:'200', body: JSON.stringify(body), headers: {'Content-Type': 'application/json',}});
-         }
-    });
+        function(err,data) {
+          var body = []
+          if(err) {
+            console.log("Error: ", err);
+            callback(null, {statusCode:'400', body: JSON.stringify(data), headers: {'Content-Type': 'application/json',}});
+          } else {
+            // [{"Initialize":false,"Input":{},"Reset":false,
+            //   "Simulation":"OUU","Visible":false,
+            //   "Id":"448f3787-fead-47af-b32f-ba180c8e97ee"}]
+            console.log('Data: ', data.Items.length);
+            for (var i=0; i<data.Items.length; i++) {
+                var item = data.Items[i];
+                if (item.SessionId == session_id) {
+                  console.log('item: ', item);
+                  body.push({Id: item.Id, SessionId: item.SessionId, Initialize: item.Initialize,
+                    Input:item.Input, Reset:item.Reset, Simulation: item.Simulation, output:item.Output});
+                }
+              }
+              callback(null, {statusCode:'200', body: JSON.stringify(body), headers: {'Content-Type': 'application/json',}});
+           }
+      });
   }
 
   console.log('==================================');

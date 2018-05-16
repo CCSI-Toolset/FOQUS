@@ -3,28 +3,26 @@
 'use uuid'
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-const tablename = 'TurbineResources';
+const tablename = 'FOQUS_Resources';
 
 var process_job_event = function(ts, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    console.log('process_job_event: ' + message);
+    console.log('process_job_event: ' + JSON.stringify(message));
     var e = message['event'];
     var status = message['status'];
     var job = message['jobid'];
     var msecs = Date.parse(ts);
     var consumer = message['consumer'];
-    var instance_id = message['instanceid'];
     var params = {
         TableName:tablename,
         Key:{
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set " + status + " = :s, ConsumerId=:c, instance=:i",
+        UpdateExpression: "set " + status + " = :s, ConsumerId=:c",
         ExpressionAttributeValues:{
             ":s":ts,
-            ":c":consumer,
-            ":i":instance_id
+            ":c":consumer
         },
         ReturnValues:"UPDATED_NEW"
     };
@@ -52,7 +50,7 @@ var process_job_event = function(ts, message, callback) {
     console.log("job(msecs=" + msecs + ") event=" + e);
     console.log(JSON.stringify(params));
     dynamodb.update(params, function(err, data) {
-      console.log("Update: " + data);
+      console.log("Update: " + JSON.stringify(data));
       if (err) {
         console.log(err, err.stack);
         callback(null, "Error");

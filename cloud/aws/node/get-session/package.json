@@ -1,10 +1,10 @@
 {
-  "name": "post-session-create",
+  "name": "get-session",
   "version": "1.0.0",
-  "description": "Creates a new Turbine Session in S3 bucket under user",
+  "description": "Return all FOQUS jobs in a session",
   "main": "index.js",
   "dependencies": {
-    "uuid": "^3.2.1"
+    "aws-sdk": "^2.224.1"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

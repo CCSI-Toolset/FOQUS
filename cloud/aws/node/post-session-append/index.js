@@ -64,13 +64,14 @@ exports.handler = function(event, context, callback) {
         var items = [];
         var params = {
           RequestItems: {
-            "TurbineResources": items
+            "FOQUS_Resources": items
         }};
         var item = null;
         var i = 0;
         for(var i=0; i<body.length; i++) {
           item = {Id: body[i].Id,
                   Type: "Job",
+                  Composite: "SessionId="+session_id,
                   Status: "create",
                   Create: milliseconds+i,
                   SessionId: session_id,

@@ -1,6 +1,5 @@
 'use strict';
 'use AWS.S3'
-'use AWS.DynamoDB'
 'use uuid'
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});

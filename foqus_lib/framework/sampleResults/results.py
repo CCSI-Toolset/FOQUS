@@ -338,9 +338,9 @@ class Results(pd.DataFrame):
         if t in self.columns:
             return np.array(list(self.loc[:, t]))
         elif t == "True" or t == "true":
-            return True
-        elif t == "False" or t == "flase":
-            return False
+            return np.array([True]*len(self.index))
+        elif t == "False" or t == "false":
+            return np.array([False]*len(self.index))
         else:
             return np.array([t]*len(self.index))
 
@@ -351,7 +351,7 @@ class Results(pd.DataFrame):
         t1 = self.filter_term(rule.term1)
         t2 = self.filter_term(rule.term2)
         if rule.op == dataFilterRule.OP_EQ: # Equal
-            return np.equal(t1, t2)
+            return t1 == t2
         elif rule.op == dataFilterRule.OP_AEQ: # Approximatly equal
             return np.isclose(t1, t2, rtol=1e-5, atol=1e-6)
         elif rule.op == dataFilterRule.OP_L: # <

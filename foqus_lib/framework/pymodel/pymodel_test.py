@@ -16,30 +16,30 @@ def checkAvailable():
 class pymodel_pg(pymodel):
     def __init__(self):
         pymodel.__init__(self)
-        self.inputs['x1'] = nodeVars(
-            value = 1.0, 
-            vmin = 0.0, 
-            vmax = 10.0, 
-            vdflt = 1.0, 
-            unit = "", 
-            vst = "pymodel", 
-            vdesc = "Test 1", 
+        self.inputs['x1'] = NodeVars(
+            value = 1.0,
+            vmin = 0.0,
+            vmax = 10.0,
+            vdflt = 1.0,
+            unit = "",
+            vst = "pymodel",
+            vdesc = "Test 1",
             tags = [],
             dtype = float)
-        self.inputs['x2'] = nodeVars(
-            value = 1.0, 
-            vmin = 0.0, 
-            vmax = 10.0, 
-            vdflt = 1.0, 
-            unit = "", 
-            vst = "pymodel", 
-            vdesc = "Test 2", 
+        self.inputs['x2'] = NodeVars(
+            value = 1.0,
+            vmin = 0.0,
+            vmax = 10.0,
+            vdflt = 1.0,
+            unit = "",
+            vst = "pymodel",
+            vdesc = "Test 2",
             tags = [],
             dtype = float)
-        self.outputs['y'] = nodeVars(
+        self.outputs['y'] = NodeVars(
             vdesc = 'test out',
             dtype = float)
-    
+
     def run(self):
         y = self.inputs['x1'].value + self.inputs['x2'].value
         self.outputs['y'].value = y

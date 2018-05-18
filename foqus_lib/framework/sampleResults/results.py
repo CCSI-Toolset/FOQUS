@@ -227,6 +227,9 @@ class Results(pd.DataFrame):
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
+            for j, e in enumerate(sd[i]):
+                if isinstance(e, np.bool_):
+                    sd[i][j] = bool(e)
         sd["calculated_columns"] = self.calculated_columns
         return sd
 

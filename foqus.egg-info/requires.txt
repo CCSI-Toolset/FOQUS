@@ -1,9 +1,0 @@
-adodbapi
-TurbineClient
-pyparsing
-requests
-matplotlib
-scipy
-numpy
-cma
-pandas

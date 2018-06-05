@@ -1,5 +1,7 @@
 from PyQt5 import QtCore, QtWidgets
-
+"""
+This test focuses on the UQ analysis portion of the UQ
+"""
 MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to

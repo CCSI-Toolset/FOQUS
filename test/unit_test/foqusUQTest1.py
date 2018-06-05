@@ -1,4 +1,4 @@
-from PySide import QtCore
+from PyQt5 import QtCore
 import matplotlib.pyplot as plt
 from foqus_lib.framework.uq.Common import Common
 

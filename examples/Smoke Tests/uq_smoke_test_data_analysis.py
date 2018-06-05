@@ -1,4 +1,8 @@
 from PyQt5 import QtCore, QtWidgets
+"""
+This test focuses on the data analysis portion of the UQ
+"""
+
 
 MAX_RUN_TIME = 500000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
@@ -230,7 +234,7 @@ try: # Catch any exception and stop all timers before finishing up
                 break
 #        print("Out")
         ## Give enough time for the results to show up in the sheet and for the dialog to pop up
-        for ii in range(30):
+        for ii in range(45):
             time.sleep(1)
 #            print(ii+1)
         timers['msg_okay'].start(500) # press okay on ensemble done msgbox

@@ -585,8 +585,13 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         sim.turbineSession = None
         sim.turbineJobIds = []
         self.dat.uqSimList.append(sim)  # Add to simulation list
+        res = Results()
+        res.uq_add_result(sim)
+        self.dat.uqFilterResultsList.append(sim)
+
         # Update table
         self.updateSimTable()
+
 
     def loadSimulation(self):
 
@@ -620,6 +625,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         data.setSession(self.dat)
         self.dat.uqSimList.append(data)
 
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList.append(res)
+
         # Update table
         self.updateSimTable()
         self.dataTabs.setEnabled(True)
@@ -638,6 +647,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # Delete simulation
         self.dat.uqSimList.pop(row)
+        self.dat.uqFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
         numSims = len(self.dat.uqSimList)
@@ -687,6 +697,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             return
         #data = simDialog.getData()
         self.dat.uqSimList.append(data)
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList.append(res)
+
         self.updateSimTable()
 
     def changeDataInSimTable(self, data, row):
@@ -694,7 +708,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             return
         #data = simDialog.getData()
         self.dat.uqSimList[row] = data
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList[row] = res
+
         self.updateSimTableRow(row)
+
 
     def updateSession(self, row, s):
         item = self.simulationTable.item(row, self.sessCol)
@@ -972,6 +991,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
             # add to simulation table, select new data
             self.dat.uqSimList.append(newdata)
+            res = Results()
+            res.uq_add_result(newdata)
+            self.dat.uqFilterResultsList(res)
+
             #print 'here1'
             self.updateSimTable()
             #print 'here2'
@@ -996,7 +1019,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         msgBox.setWindowTitle('FOQUS Run Finished')
         msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
         result = msgBox.exec_()
-        self.refreshFilterData()
+        self.refreshFilterData(updateResult = True)
         return result
 
 # =========================== START Brenda's stuff =========================
@@ -1060,20 +1083,28 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # add to simulation table, select new data
         self.dat.uqSimList.append(newdata)
+        res = Results()
+        res.uq_add_result(newdata)
+        self.dat.uqFilterResultsList.append(res)
+
         self.updateSimTable()
 
         # reset components
         self.unfreeze()
 
-    def refreshFilterData(self):
+    def refreshFilterData(self, updateResult = False):
         indexes = self.simulationTable.selectedIndexes()
         if len(indexes) == 0:
             return
         row = indexes[0].row()
         data = self.dat.uqSimList[row]
 
-        res = Results()
-        res.uq_add_result(data)
+        if updateResult:
+            res = Results()
+            res.uq_add_result(data)
+            self.dat.uqFilterResultsList[row] = res
+        else:
+            res = self.dat.uqFilterResultsList[row]
 
         #newDat = copy.deepcopy(self.dat)
         #newDat.flowsheet.results = res
@@ -1406,6 +1437,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # add to simulation table, select new data
         self.dat.uqSimList.append(newdata)
+        res = Results()
+        res.uq_add_result(newdata)
+        self.dat.uqFilterResultsList.append(res)
         self.updateSimTable()
 
         self.delete_table.resizeColumnsToContents()

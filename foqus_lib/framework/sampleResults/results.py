@@ -108,6 +108,19 @@ def sd_col_list(sd, time=None):
     # return the list of of columns and list of associated data.
     return (columns, dat)
 
+def uq_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return (xnames , xvals)
+
+    else:
+        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+
 def incriment_name(name, exnames):
     """
     Check if a name is already in a list of names. If it is generate a new
@@ -299,6 +312,25 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
             self.loc[row, col] = dat[i]
+        self.update_filter_indexes()
+
+    def uq_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = uq_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in xrange(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
     def read_csv(self, *args, **kwargs):

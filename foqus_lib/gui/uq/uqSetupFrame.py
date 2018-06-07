@@ -6,6 +6,7 @@ import copy
 from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.uq.SimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
+from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SamplingMethods import *
@@ -17,6 +18,7 @@ from foqus_lib.framework.uq.Visualizer import *
 from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.sampleResults.results import Results
 from AnalysisDialog import AnalysisDialog
 
 from PyQt5 import QtCore, uic, QtGui
@@ -354,6 +356,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.setupUi(self)
         self.dat = dat
         LocalExecutionModule.session = dat
+        self.filterWidget = uqDataBrowserFrame(self)
+        self.filterWidget.indicesSelectedSignal.connect(self.createFilteredEnsemble)
+        self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
+        self.filterFrame.layout().addWidget(self.filterWidget)
 
         ###### Set up simulation ensembles section
         self.addSimulationButton.clicked.connect(self.addSimulation)
@@ -379,7 +385,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         ##### Set up UQ toolbox
         self.dataTabs.setEnabled(False)
-        self.initFilter()
+        #self.initFilter()
 
 ##        ### Set up tooltips for ...
 ##        # Parameter Screening
@@ -401,15 +407,15 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.dataTabs.setCurrentIndex(0)
         self.dataTabs.currentChanged[int].connect(self.getDataTab)
         # ........ DATA PAGE: FILTER TAB ...................
-        self.filterInput_radio.toggled.connect(self.activateInputFilter)
-        self.filterOutput_radio.toggled.connect(self.activateOutputFilter)
-        self.filterInput_combo.currentIndexChanged[int].connect(self.activateFilterButton)
-        self.filterInputMin_edit.editingFinished.connect(self.activateFilterButton)
-        self.filterInputMax_edit.editingFinished.connect(self.activateFilterButton)
-        self.filterOutput_combo.currentIndexChanged[int].connect(self.activateFilterButton)
-        self.filterOutputMin_edit.editingFinished.connect(self.activateFilterButton)
-        self.filterOutputMax_edit.editingFinished.connect(self.activateFilterButton)
-        self.filter_button.clicked.connect(self.filter)
+        # self.filterInput_radio.toggled.connect(self.activateInputFilter)
+        # self.filterOutput_radio.toggled.connect(self.activateOutputFilter)
+        # self.filterInput_combo.currentIndexChanged[int].connect(self.activateFilterButton)
+        # self.filterInputMin_edit.editingFinished.connect(self.activateFilterButton)
+        # self.filterInputMax_edit.editingFinished.connect(self.activateFilterButton)
+        # self.filterOutput_combo.currentIndexChanged[int].connect(self.activateFilterButton)
+        # self.filterOutputMin_edit.editingFinished.connect(self.activateFilterButton)
+        # self.filterOutputMax_edit.editingFinished.connect(self.activateFilterButton)
+        # self.filter_button.clicked.connect(self.filter)
         # ........ DATA PAGE: DELETE TAB ...................
         self.delete_button.clicked.connect(self.delete)
         self.changeOutputs_button.clicked.connect(self.updateOutputValues)
@@ -427,7 +433,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.updateSimTableRow(i)
 
         if numSims == 0:
-            self.initFilter()
+            #self.initFilter()
             self.dataTabs.setEnabled(False)
 
     def simSelected(self):
@@ -990,6 +996,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         msgBox.setWindowTitle('FOQUS Run Finished')
         msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
         result = msgBox.exec_()
+        self.refreshFilterData()
         return result
 
 # =========================== START Brenda's stuff =========================
@@ -1037,166 +1044,19 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     # ........ DATA PAGE: FILTER TAB ...................
     def initFilter(self):
-        Common.initFolder(DataProcessor.dname)
+        self.refreshFilterData()
 
-        # allow both radio buttons to be toggled off
-        if not hasattr(self, 'group'):
-            self.group = QButtonGroup()
-            self.group.addButton(self.filterInput_radio)
-            self.group.addButton(self.filterOutput_radio)
-            self.group.setExclusive(False)
-
-        # set up filter input
-        self.filterInput_radio.setEnabled(True)
-        self.filterInput_radio.setChecked(False)
-        b = False
-        self.filterInput_combo.setEnabled(b)
-        self.filterInputMin_edit.setEnabled(b)
-        self.filterInputMax_edit.setEnabled(b)
-        self.filterInput_combo.clear()
-        self.filterInputMin_edit.clear()
-        self.filterInputMax_edit.clear()
-
-        # set up filter output
-        self.filterOutput_radio.setEnabled(True)
-        self.filterOutput_radio.setChecked(False)
-        b = False
-        self.filterOutput_combo.setEnabled(b)
-        self.filterOutputMin_edit.setEnabled(b)
-        self.filterOutputMax_edit.setEnabled(b)
-        self.filterOutput_combo.clear()
-        self.filterOutputMin_edit.clear()
-        self.filterOutputMax_edit.clear()
-
-        # allow only one radio button to be toggled on/off
-        self.group.setExclusive(True)
-        self.filterInput_radio.setChecked(True)
-        self.activateInputFilter()
-
-        # disable filter button
-        self.filter_button.setEnabled(False)
-
-    def activateInputFilter(self):
-
-        # get selected row
-        indexes = self.simulationTable.selectedIndexes()
-        if len(indexes) == 0:
-            return
-        row = indexes[0].row()
-        data = self.dat.uqSimList[row]
-
-        # populate input combo
-        self.filterInput_combo.clear()
-        self.filterInput_combo.addItem('None selected')
-        for x, inType in zip(data.getInputNames(), data.getInputTypes()):
-            if inType == Model.VARIABLE:
-                self.filterInput_combo.addItem(x)
-        self.filterInput_combo.setCurrentIndex(0)
-
-        # activate components
-        b = True
-        self.filterInput_combo.setEnabled(b)
-        self.filterInputMin_edit.setEnabled(b)
-        self.filterInputMax_edit.setEnabled(b)
-
-        # deactivate components
-        b = False
-        self.filterOutput_combo.setEnabled(b)
-        self.filterOutputMin_edit.setEnabled(b)
-        self.filterOutputMax_edit.setEnabled(b)
-        self.filter_button.setEnabled(b)
-
-    def activateOutputFilter(self):
-
-        # get selected row
-        row = self.simulationTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
-
-        # populate output combo
-        self.filterOutput_combo.clear()
-        self.filterOutput_combo.addItem('None selected')
-        for y in data.getOutputNames():
-            self.filterOutput_combo.addItem(y)
-        self.filterOutput_combo.setCurrentIndex(0)
-
-        # activate components
-        b = True
-        self.filterOutput_combo.setEnabled(b)
-        self.filterOutputMin_edit.setEnabled(b)
-        self.filterOutputMax_edit.setEnabled(b)
-
-        # deactivate components
-        b = False
-        self.filterInput_combo.setEnabled(b)
-        self.filterInputMin_edit.setEnabled(b)
-        self.filterInputMax_edit.setEnabled(b)
-        self.filter_button.setEnabled(b)
-
-    def activateFilterButton(self):
-
-        cond1 = (self.filterInput_radio.isChecked()) and (self.filterInput_combo.currentText() != 'None selected')
-        cond2 = (self.filterOutput_radio.isChecked()) and (self.filterOutput_combo.currentText() != 'None selected')
-
-        if cond1:
-            vmin = self.isnumeric(self.filterInputMin_edit.text())
-            vmax = self.isnumeric(self.filterInputMax_edit.text())
-        elif cond2:
-            vmin = self.isnumeric(self.filterOutputMin_edit.text())
-            vmax = self.isnumeric(self.filterOutputMax_edit.text())
-        else:
-            self.filter_button.setEnabled(False)
-            return False
-
-        if vmin and vmax:
-            self.filter_button.setEnabled(True)
-            return True
-
-        # TO DO: we should activate filter_button only if the min/max are within bounds
-
-    def enableFilter(self, b):
-        self.filterInput_radio.setEnabled(b)
-        self.filterInput_combo.setEnabled(b)
-        self.filterInputMin_edit.setEnabled(b)
-        self.filterInputMax_edit.setEnabled(b)
-        self.filterOutput_radio.setEnabled(b)
-        self.filterOutput_combo.setEnabled(b)
-        self.filterOutputMin_edit.setEnabled(b)
-        self.filterOutputMax_edit.setEnabled(b)
-        self.filter_button.setEnabled(b)
-
-    def filter(self):
-
-        # check arguments
-        if not self.activateFilterButton():
-            return
-
-        self.enableFilter(False)
+    def createFilteredEnsemble(self, indices):
         self.freeze()
 
         # get selected row
         row = self.simulationTable.selectedIndexes()[0].row()
         data = self.dat.uqSimList[row]
-        data = data.getValidSamples() # filter out samples that have no output results
-        fname = Common.getLocalFileName(DataProcessor.dname, data.getModelName().split()[0], '.dat')
-        data.writeToPsuade(fname)
 
-        # perform filtering
-        if self.filterInput_radio.isChecked():
-            inVarName = self.filterInput_combo.currentText()
-            vmin = self.filterInputMin_edit.text()
-            vmax = self.filterInputMax_edit.text()
-            outfile = DataProcessor.filterdata(fname, input=inVarName, vmin=float(vmin), vmax=float(vmax))
-        elif self.filterOutput_radio.isChecked():
-            outVarName = self.filterOutput_combo.currentText()
-            vmin = self.filterOutputMin_edit.text()
-            vmax = self.filterOutputMax_edit.text()
-            outfile = DataProcessor.filterdata(fname, output=outVarName, vmin=float(vmin), vmax=float(vmax))
+        newdata = data.getSubSample(indices)
 
-        newdata = LocalExecutionModule.readSampleFromPsuadeFile(outfile)
         newdata.setModelName(data.getModelName().split('.')[0] + '.filtered')
         newdata.setSession(self.dat)
-        newdata.setFromFile(False)
-        newdata.setRunType(data.getRunType())
 
         # add to simulation table, select new data
         self.dat.uqSimList.append(newdata)
@@ -1204,7 +1064,24 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         # reset components
         self.unfreeze()
-        self.initFilter()
+
+    def refreshFilterData(self):
+        indexes = self.simulationTable.selectedIndexes()
+        if len(indexes) == 0:
+            return
+        row = indexes[0].row()
+        data = self.dat.uqSimList[row]
+
+        res = Results()
+        res.uq_add_result(data)
+
+        #newDat = copy.deepcopy(self.dat)
+        #newDat.flowsheet.results = res
+        #self.filterWidget.init(newDat)
+        self.filterWidget.init(self.dat)
+        self.filterWidget.setResults(res)
+        self.filterWidget.refreshContents()
+
 
     # ........ DATA PAGE: DELETE TAB ...................
     def initDelete(self):

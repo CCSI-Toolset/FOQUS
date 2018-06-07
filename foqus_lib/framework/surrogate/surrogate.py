@@ -287,7 +287,7 @@ class surrogate(threading.Thread):
             defVal = gin.get(v).default
             desc = gin.get(v).desc
             #create variable object
-            lines.append(s8+"self.inputs['{0}'] = nodeVars(".format(v))
+            lines.append(s8+"self.inputs['{0}'] = NodeVars(".format(v))
             lines.append(s12+"value = {0},".format(defVal))
             lines.append(s12+"vmin = {0},".format(minVal))
             lines.append(s12+"vmax = {0},".format(maxVal))
@@ -308,7 +308,7 @@ class surrogate(threading.Thread):
             defVal = gout.get(v).default
             desc = gout.get(v).desc
             # create object
-            lines.append(s8+"self.outputs['{0}'] = nodeVars(".format(v))
+            lines.append(s8+"self.outputs['{0}'] = NodeVars(".format(v))
             lines.append(s12+"value = {0},".format(defVal))
             lines.append(s12+"vmin = {0},".format(minVal))
             lines.append(s12+"vmax = {0},".format(maxVal))

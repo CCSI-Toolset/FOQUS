@@ -1,0 +1,18 @@
+{
+  "name": "delete-simulation",
+  "version": "1.0.0",
+  "description": "Returns array of simulations",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "",
+    "uuid-validate": ""
+  },
+  "scripts": {
+    "setup": "./node_modules/.bin/node-lambda setup",
+    "test": "./node_modules/.bin/node-lambda run",
+    "package": "./node_modules/.bin/node-lambda package",
+    "deploy": "./node_modules/.bin/node-lambda deploy"
+  },
+  "author": "Joshua Boverhof",
+  "license": "MIT"
+}

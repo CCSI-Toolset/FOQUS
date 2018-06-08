@@ -64,6 +64,7 @@ exports.handler = function(event, context, callback) {
               if (item.Name == user.name) {
                 //var content = JSON.stringify(obj);
                 if (item.Password == user.pass) {
+                  console.log("Allow: user=" + user.name);
                   callback(null, generateAllow(user.name, event.methodArn));
                   return;
                 }
@@ -104,6 +105,7 @@ var generatePolicy = function(principalId, effect, resource) {
 }
 
 var generateAllow = function(principalId, resource) {
+
     return generatePolicy(principalId, 'Allow', resource);
 }
 

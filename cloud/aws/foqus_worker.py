@@ -254,7 +254,7 @@ def run_foqus(job_desc):
         simulation_name = job_desc.get('Simulation')
         #sim_list = node.gr.turbConfig.getSimulationList()
         sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
-        
+
         print "==="*20
         print sim_list
         print "==="*20
@@ -264,13 +264,13 @@ def run_foqus(job_desc):
             sim_d = None
         else:
             sim_d = sim_d[0]
-            
+
         if dat.flowsheet.nodes[nkey].turbApp[0] == 'ACM':
             model_filename = 'anonymous/%s/%s/%s.acmf' %(simulation_name,nkey, model_name)
             assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
         else:
             raise NotImplementedError, 'Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp))
-        
+
         prefix = 'anonymous/%s/%s/' %(job_desc['Simulation'],nkey)
         entry_list = filter(lambda i: i['Key'] != prefix and i['Key'].startswith(prefix), l['Contents'])
         sinter_local_filename = None
@@ -295,7 +295,7 @@ def run_foqus(job_desc):
                     si_metadata = filter(lambda i: i['Name'] == 'aspenfile', sim_d["StagedInputs"])
             else:
                 raise NotImplementedError, 'Not allowing File "%s" to be staged in' %key
-                       
+
             assert len(si_metadata) < 2, 'Turbine Error:  Too many entries for "%s", "%s"' %(simulation_name, file_name)
 
             # NOTE: Multipart uploads have different ETags ( end with -2  or something )
@@ -311,17 +311,19 @@ def run_foqus(job_desc):
                     update_required = True
                 else:
                     _log.debug("MATCH")
+                    s3.download_file(bucket_name, key, file_path)
             else:
                 _log.debug("Add to Turbine Simulation(%s) File: %s" %(simulation_name, file_name))
-                #s3.download_file(bucket_name, key, file_path)
-                update_required = True                       
-                       
+                s3.download_file(bucket_name, key, file_path)
+                update_required = True
+
         assert sinter_local_filename is not None, 'missing sinter configuration file'
-        
+
         if model_name not in map(lambda i: i['Name'], sim_list):
             _log.debug('Adding Simulation "%s"' %model_name)
             node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
         elif update_required:
+            # NOTE: Requires the configuration file on update, so must download_file it above...
             _log.debug('Updating Simulation "%s"' %model_name)
             node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
         else:

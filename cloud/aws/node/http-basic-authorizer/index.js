@@ -65,7 +65,12 @@ exports.handler = function(event, context, callback) {
                 //var content = JSON.stringify(obj);
                 if (item.Password == user.pass) {
                   console.log("Allow: user=" + user.name);
-                  callback(null, generateAllow(user.name, event.methodArn));
+                  //methodArn="arn:aws:execute-api:us-east-1:754323349409:407osudx4l/dev/GET/session"
+                  //policy ARN -> "arn:aws:execute-api:us-east-1:754323349409:407osudx4l/dev/*"
+                  var arn_array = event.methodArn.split('/').slice(0,1);
+                  arn_array.push('*');
+                  var methodArn = arn_array.join( '/' );
+                  callback(null, generateAllow(user.name, methodArn));
                   return;
                 }
                 console.log("Unauthorized: user=" + user.name + ", wrong password");
@@ -105,7 +110,7 @@ var generatePolicy = function(principalId, effect, resource) {
 }
 
 var generateAllow = function(principalId, resource) {
-
+    console.log("Generate Allow Policy(user=" + principalId + "): " + resource);
     return generatePolicy(principalId, 'Allow', resource);
 }
 

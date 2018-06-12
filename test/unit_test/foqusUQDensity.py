@@ -1,6 +1,6 @@
-from PySide import QtCore
-from PySide.QtGui import *
-from PySide.QtCore import *
+from PyQt5 import QtCore
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 import matplotlib.pyplot as plt
 from foqus_lib.framework.uq.Common import Common
@@ -60,7 +60,7 @@ def rsInference(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
        ### load the experimental data file
        #fname = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-       fname = '../examples/UQ/test_suite/'
+       fname = '../GitHub/FOQUS/foqus/examples/UQ/test_suite/'
        fname = fname + 'Phoenix/DensityModel/expdataDen'
        XN, XD, YD = LocalExecutionModule.readMCMCFile(fname)
        nExps = 209
@@ -90,7 +90,7 @@ def rsInference(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
        MainWin.app.processEvents()
        time.sleep(TIME_STEP)
        #fname = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-       fname = '../examples/UQ/test_suite/'
+       fname = '../GitHub/FOQUS/foqus/examples/UQ/test_suite/'
        fname = fname + 'Phoenix/DensityModel/DenPostSample'
        w.infSave_edit.setText(fname)
        MainWin.app.processEvents()
@@ -203,7 +203,7 @@ try:
 
         ###MainWin.uqSetupFrame.loadSimulationButton.click()
         #fname = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-        fname = '../examples/UQ/test_suite/'
+        fname = '../GitHub/FOQUS/foqus/examples/UQ/test_suite/'
         fname = fname + 'Phoenix/DensityModel/SmallSample.psuade'
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
         data.setSession(MainWin.uqSetupFrame.dat)

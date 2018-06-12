@@ -1,4 +1,4 @@
-from PySide import QtCore
+from PyQt5 import QtCore
 import matplotlib.pyplot as plt
 from foqus_lib.framework.uq.Common import Common
 
@@ -25,7 +25,7 @@ def go(MainWin=MainWin):
         returns True keep going or False to stop.
     '''
     MainWin.app.processEvents()
-    time.sleep(0.25) 
+    time.sleep(0.05) 
     return not MainWin.helpDock.stop
 
 def getButton(w, label):
@@ -195,7 +195,7 @@ try:
            if not go(): break
            time.sleep(TIME_STEP)
         ###MainWin.uqSetupFrame.loadSimulationButton.click()
-        fname = '../examples/UQ/test_suite/'
+        fname = '../GitHub/FOQUS/foqus/examples/UQ/test_suite/'
         fname = fname + 'Branin/BraninSample.psuade'
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
         data.setSession(MainWin.uqSetupFrame.dat)

@@ -1,6 +1,10 @@
 from PyQt5 import QtCore, QtWidgets
+"""
+This test focuses on the data analysis portion of the UQ
+"""
 
-MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
+
+MAX_RUN_TIME = 500000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
@@ -57,13 +61,43 @@ def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=g
     w = MainWin.app.activeWindow()
     if 'SimSetup' in str(type(w)):
         timers['uq_sampling_scheme'].stop()
+        w.distTable.cellWidget(2,1).setCurrentIndex(1)
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Monte Carlo', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems('Latin Hypercube', QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
-        w.numSamplesBox.setValue(10)
+        w.numSamplesBox.setValue(10000)
         w.generateSamplesButton.click()
-        if not go(sleep=4): return #wait long enough for samples to generate
+        if not go(sleep=2): return #wait long enough for samples to generate
         w.doneButton.click()
+        
+def uq_analyze_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
+    """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
+    w = MainWin.app.activeWindow()
+    if 'AnalysisDialog' in str(type(w)):
+        timers['uq_analyze_scheme'].stop()
+        ## Change to Expert Mode
+        if w.modeButton.text() == w.wizardModeButtonText:
+            w.modeButton.click()
+        ## Select the Output to Analyze
+        output_index = w.output_combo.findText('Rosenbrock.f')
+        w.output_combo.setCurrentIndex(output_index)
+        ## Begin Data Analysis
+        w.dataAnalyze_button.click()
+        w.dataAnalyze_combo1.setCurrentIndex(1)
+        w.dataAnalyze_button.click()
+        ### This Part is Only for the Sensitivity Analysis Which Requires  \
+        ### at Least 1,000 Points to Work and 10,000 Points for Total Order
+        #### Just Sensitivity
+        w.dataAnalyze_combo1.setCurrentIndex(2)
+        w.dataAnalyze_button.click()
+        #### Second Order Sensitivity
+        w.dataAnalyze_combo2.setCurrentIndex(1)
+        w.dataAnalyze_button.click()
+        #### Total Order Sensitivity (10,000 runs needed)
+        w.dataAnalyze_combo2.setCurrentIndex(2)
+        w.dataAnalyze_button.click()
+        ## Close Window
+        w.close()
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
     """Add a timer to do something.  Timers are needed because some things like
@@ -101,24 +135,21 @@ addTimer('msg_no', msg_no) # click No on msgbox
 addTimer('add_UQ_cancel', add_UQ_cancel) # click cancel on uq ensemble dialog
 addTimer('add_UQ_okay', add_UQ_okay) # click okay on uq ensemble dialog
 addTimer('uq_sampling_scheme', uq_sampling_scheme) # do sampling scheme dialog
+addTimer('uq_analyze_scheme', uq_analyze_scheme) # do analysis scheme dialog
 
 timers['time_out'].start(MAX_RUN_TIME) # start max script time timer
 
 try: # Catch any exception and stop all timers before finishing up
     while(1): # Loop and break and break as convenient way to jump to end
-        # Test flippling tabs, exception will end test before writing success
-        MainWin.uqSetupAction.trigger()
-        if not go(): break
-        MainWin.fsEditAction.trigger()
-        if not go(): break
-        MainWin.ouuSetupAction.trigger()
-        if not go(): break
+        # Rosenbrock Test for UQ
         MainWin.homeAction.trigger()
         if not go(): break
-        with open(testOutFile, 'a') as f:
-            f.write('SUCCESS: Test01: Flipping tabs test\n')
         # Enter some information
-        MainWin.dashFrame.sessionNameEdit.setText("Example GUI test")
+        MainWin.dashFrame.sessionNameEdit.setText("Rosenbrock Test")
+        if not go(): break
+        MainWin.dashFrame.tabWidget.setCurrentIndex(1)
+        if not go(): break
+        MainWin.dashFrame.setSessionDescription("Rosenbrock Description Text")
         if not go(): break
         # Make a flowsheet
         MainWin.fsEditAction.trigger()
@@ -126,22 +157,49 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.addNodeAction.trigger()
         if not go(): break
         MainWin.flowsheetEditor.sc.mousePressEvent(
-            None, dbg_x=10, dbg_y=10, dbg_name="Test")
+            None, dbg_x=10, dbg_y=10, dbg_name="Rosenbrock")
         if not go(): break
         MainWin.toggleNodeEditorAction.trigger()
         if not go(): break
         MainWin.nodeDock.addInput("x1")
         MainWin.nodeDock.addInput("x2")
+        MainWin.nodeDock.addInput("x3")
+        MainWin.nodeDock.addInput("x4")
+        MainWin.nodeDock.addInput("x5")
+        MainWin.nodeDock.addInput("x6")
         MainWin.nodeDock.inputVarTable.item(0, 5).setText("-10")
         MainWin.nodeDock.inputVarTable.item(0, 6).setText("10")
         MainWin.nodeDock.inputVarTable.item(1, 5).setText("-10")
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("10")
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("5")
-        MainWin.nodeDock.inputVarTable.item(1, 4).setText("2")
+        MainWin.nodeDock.inputVarTable.item(2, 5).setText("-10")
+        MainWin.nodeDock.inputVarTable.item(2, 6).setText("10")
+        MainWin.nodeDock.inputVarTable.item(3, 5).setText("-10")
+        MainWin.nodeDock.inputVarTable.item(3, 6).setText("10")
+        MainWin.nodeDock.inputVarTable.item(4, 5).setText("-10")
+        MainWin.nodeDock.inputVarTable.item(4, 6).setText("10")
+        MainWin.nodeDock.inputVarTable.item(5, 5).setText("-10")
+        MainWin.nodeDock.inputVarTable.item(5, 6).setText("10")
+        MainWin.nodeDock.inputVarTable.item(0, 4).setText("4")
+        MainWin.nodeDock.inputVarTable.item(1, 4).setText("5")
+        MainWin.nodeDock.inputVarTable.item(2, 4).setText("4")
+        MainWin.nodeDock.inputVarTable.item(3, 4).setText("5")
+        MainWin.nodeDock.inputVarTable.item(4, 4).setText("4")
+        MainWin.nodeDock.inputVarTable.item(5, 4).setText("4")
+        MainWin.nodeDock.inputVarTable.item(0, 1).setText("4")
+        MainWin.nodeDock.inputVarTable.item(1, 1).setText("5")
+        MainWin.nodeDock.inputVarTable.item(2, 1).setText("4")
+        MainWin.nodeDock.inputVarTable.item(3, 1).setText("5")
+        MainWin.nodeDock.inputVarTable.item(4, 1).setText("4")
+        MainWin.nodeDock.inputVarTable.item(5, 1).setText("4")
         MainWin.nodeDock.toolBox.setCurrentIndex(1)
-        MainWin.nodeDock.addOutput("z")
+        MainWin.nodeDock.addOutput("f")
         MainWin.nodeDock.tabWidget.setCurrentIndex(2)
-        MainWin.nodeDock.pyCode.setPlainText("f.z = x.x1 + x.x2**2")
+        MainWin.nodeDock.pyCode.setPlainText("f['f'] = 0 \
+                                             \nf['f'] += (1-x['x1'])**2 + 100.0*(x['x2']-x['x1']**2)**2 \
+                                             \nf['f'] += (1-x['x2'])**2 + 100.0*(x['x3']-x['x2']**2)**2 \
+                                             \nf['f'] += (1-x['x3'])**2 + 100.0*(x['x4']-x['x3']**2)**2 \
+                                             \nf['f'] += (1-x['x4'])**2 + 100.0*(x['x5']-x['x4']**2)**2 \
+                                             \nf['f'] += (1-x['x5'])**2 + 100.0*(x['x6']-x['x5']**2)**2")
         MainWin.nodeDock.tabWidget.setCurrentIndex(0)
         if not go(): break
         # Before running start up a timer to close completed run msgbox
@@ -152,37 +210,39 @@ try: # Catch any exception and stop all timers before finishing up
                 MainWin.singleRun.terminate()
                 break
         if not timerWait('msg_okay'): break
-        assert abs(self.flowsheet.output["Test"]["z"] - 9) < 1e-8
-        assert self.flowsheet.errorStat==0
-        with open(testOutFile, 'a') as f:
-            f.write('SUCCESS: Test02: Flowsheet run\n')
-        # Try out controling UQ ensemble add
+        #assert abs(self.flowsheet.output["Rosenbrock"]["f"] - 126859) < 1e-8
+        #assert self.flowsheet.errorStat==0
+        ## Try out controling UQ ensemble add
         MainWin.uqSetupAction.trigger()
         if not go(): break
-        # Start add then cancel
+        ## Start add then cancel
         timers['add_UQ_cancel'].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
         if not timerWait('add_UQ_cancel'): break
-        with open(testOutFile, 'a') as f:
-            f.write('SUCCESS: Test03: UQ Esemble add cancel\n')
         # This time add for real
         timers['add_UQ_okay'].start(1000)
         timers['uq_sampling_scheme'].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
         if not timerWait('add_UQ_okay'): break
         if not timerWait('uq_sampling_scheme'): break
-        with open(testOutFile, 'a') as f:
-            f.write('SUCCESS: Test04: UQ Esemble add\n')
         # Run UQ ensemble
         MainWin.uqSetupFrame.simulationTable.cellWidget(0,3).click()
-        timers['msg_okay'].start(500) # press okay on ensemble done msgbox
         while MainWin.uqSetupFrame.gThread.isAlive(): # while is running
             if not go():
+                print("Break")
                 MainWin.uqSetupFrame.gThread.terminate()
                 break
+#        print("Out")
+        ## Give enough time for the results to show up in the sheet and for the dialog to pop up
+        for ii in range(45):
+            time.sleep(1)
+#            print(ii+1)
+        timers['msg_okay'].start(500) # press okay on ensemble done msgbox
         if not timerWait('msg_okay'): break
-        with open(testOutFile, 'a') as f:
-            f.write('SUCCESS: Test05: UQ Esemble run\n')
+        timers['uq_analyze_scheme'].start(500)
+        MainWin.uqSetupFrame.simulationTable.cellWidget(0,4).click()
+        if not timerWait('uq_analyze_scheme'): break
+
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped
@@ -197,3 +257,4 @@ timersStop() #make sure all timers are stopped
 timers['msg_no'].start(1000)
 MainWin.close()
 timerWait('msg_no')
+print("Exited Code")

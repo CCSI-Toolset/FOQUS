@@ -12,8 +12,8 @@ _log = logging.getLogger()
 _log.debug('Loading')
 
 class AppServerSvc (win32serviceutil.ServiceFramework):
-    _svc_name_ = "TestService"
-    _svc_display_name_ = "Test Service"
+    _svc_name_ = "FOQUS-Cloud-Service"
+    _svc_display_name_ = "FOQUS Cloud Service"
 
     def __init__(self,args):
         win32serviceutil.ServiceFramework.__init__(self,args)

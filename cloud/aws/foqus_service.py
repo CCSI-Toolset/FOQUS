@@ -7,7 +7,7 @@ import time
 import logging
 import logging.config
 #logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-logging.basicConfig(filename='TestService.log',level=logging.DEBUG)
+logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.DEBUG)
 _log = logging.getLogger()
 _log.debug('Loading')
 

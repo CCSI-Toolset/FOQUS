@@ -30,7 +30,7 @@ def getButton(w, label):
 global errorCount
 global errorTitle
 global errorFile
-errorFile = "AutoErrLog_ouu.txt"
+errorFile = "AutoErrLog_ouu_ex_1.txt"
 errorCount = 0
         
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
@@ -188,6 +188,7 @@ try: # Catch any exception and stop all timers before finishing up
         errorTitle = "Set All Selection Buttons to Enabled and Initialize Tabs/Etc"
         MainWin.ouuSetupFrame.setFixed_button.setEnabled(True)
         MainWin.ouuSetupFrame.setX1_button.setEnabled(True)
+        MainWin.ouuSetupFrame.setX1d_button.setEnabled(True)
         MainWin.ouuSetupFrame.setX2_button.setEnabled(True)
         MainWin.ouuSetupFrame.setX3_button.setEnabled(True)
         MainWin.ouuSetupFrame.setX4_button.setEnabled(True)
@@ -218,40 +219,36 @@ try: # Catch any exception and stop all timers before finishing up
            c = MainWin.ouuSetupFrame.input_table.cellWidget(ii+8,0)
            c.setChecked(True)
            
-        MainWin.ouuSetupFrame.setX4()
+        MainWin.ouuSetupFrame.setX3()
         
         errorTitle = "Set Inner Solver"
         
-        MainWin.ouuSetupFrame.secondarySolver_combo.setCurrentIndex(1)
+        MainWin.ouuSetupFrame.secondarySolver_combo.setCurrentIndex(0)
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(2)
+#        #MainWin.ouuSetupFrame.x4SampleScheme_label.setEnabled(False)
+#        #MainWin.ouuSetupFrame.x4SampleScheme_combo.setEnabled(False)
+#        #MainWin.ouuSetupFrame.x4SampleSize_label.setEnabled(False)
+#        #MainWin.ouuSetupFrame.x4SampleSize_spin.setEnabled(False)
+#        MainWin.ouuSetupFrame.z4NewSample_radio.setChecked(False)
+#        #MainWin.ouuSetupFrame.x4File_edit.setEnabled(True)
+#        MainWin.ouuSetupFrame.z4LoadSample_radio.setChecked(True)
+#        MainWin.ouuSetupFrame.x4FileBrowse_button.setEnabled(True)
+#        #MainWin.ouuSetupFrame.x4FileBrowse_button.setChecked(True)
         
-        errorTitle = "Load x4 samples"
+        errorTitle = "Load x3 samples"
         
-        #MainWin.ouuSetupFrame.x4SampleScheme_label.setEnabled(False)
-        #MainWin.ouuSetupFrame.x4SampleScheme_combo.setEnabled(False)
-        #MainWin.ouuSetupFrame.x4SampleSize_label.setEnabled(False)
-        #MainWin.ouuSetupFrame.x4SampleSize_spin.setEnabled(False)
-        MainWin.ouuSetupFrame.z4NewSample_radio.setChecked(False)
-        #MainWin.ouuSetupFrame.x4File_edit.setEnabled(True)
-        MainWin.ouuSetupFrame.z4LoadSample_radio.setChecked(True)
-        MainWin.ouuSetupFrame.x4FileBrowse_button.setEnabled(True)
-        #MainWin.ouuSetupFrame.x4FileBrowse_button.setChecked(True)
-        
-        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x4sample.smp'
-#        MainWin.ouuSetupFrame.x4File_edit.setText(fname)
+        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample.smp'
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]
-        print(inData)
         numInputs = inData.shape[1]
-        numSamples = inData.shape[0]
-        MainWin.ouuSetupFrame.z4SubsetSize_spin.setMaximum(numSamples)
-        MainWin.ouuSetupFrame.z4SubsetSize_spin.setValue(min(numSamples,100))
-        M4 = len(MainWin.ouuSetupFrame.input_table.getContinuousVariables()[0])
-        if numInputs != M4:
+        M3 = len(MainWin.ouuSetupFrame.input_table.getUQDiscreteVariables()[0])
+        print(M3)
+        if numInputs != M3:
             QMessageBox.warning(MainWin.ouuSetupFrame, "Number of variables don't match",
-                                      'The number of input variables from the file (%d) does not match the number of Z4 continuous variables (%d).  You will not be able to perform analysis until this is corrected.' % (numInputs, M4))
+                                      'The number of variables from the file (%d) does not match the number of Z3 discrete variables (%d).  You will not be able to perform analysis until this is corrected.' % (numInputs, M3))
         else:
-            MainWin.ouuSetupFrame.loadTable(MainWin.ouuSetupFrame.z4_table, inData)
+            MainWin.ouuSetupFrame.compressSamples_chk.setEnabled(True)
+            MainWin.ouuSetupFrame.loadTable(MainWin.ouuSetupFrame.z3_table, inData)
         errorTitle = "Switch Tab to Run Tab and Run the OUU"
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
         timers['msg_okay'].start(1000) 
@@ -276,8 +273,8 @@ except Exception as e:
 timersStop() #make sure all timers are stopped
 #print("after exception")
 
-#Try to close FOQUS
-timers['msg_no'].start(1000)
-MainWin.close()
-timerWait('msg_no')
-print("Exited Code")
+##Try to close FOQUS
+#timers['msg_no'].start(1000)
+#MainWin.close()
+#timerWait('msg_no')
+#print("Exited Code")

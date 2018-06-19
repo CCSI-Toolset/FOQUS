@@ -23,13 +23,17 @@ _dataFilterDialogUI, _dataFilterDialog = \
 
 
 class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
-    def __init__(self, dat, parent=None):
+    def __init__(self, dat, parent=None, results = None):
         '''
             Constructor for data filter dialog
         '''
         super(dataFilterDialog, self).__init__(parent=parent)
         self.setupUi(self) # Create the widgets
         self.dat = dat     # all of the session data
+        if results is None:
+            self.results = self.dat.flowsheet.results
+        else:
+            self.results = results
 
         self.newFilterButton.clicked.connect(self.addFilter)
         self.deleteFilterButton.clicked.connect(self.delFilter)
@@ -74,7 +78,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.split.addWidget(self.TreeFrame)
         self.splitFrame.layout().addWidget(self.split)
         self.splitFrame.layout().activate()
-        headings = self.dat.flowsheet.results.columns
+        headings = self.results.columns
         self.colList.addItems(headings)
 
     def copyCol(self):
@@ -156,7 +160,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             self.ruleTable.removeRow(row)
 
     def addOp(self, op=None):
-        r = self.dat.flowsheet.results
+        r = self.results
         if op is not None:
             op = self.copDictRev[op]
         else:
@@ -170,7 +174,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         gh.setTableItem(table, row, 1, op, pullDown=self.copList)
 
     def addRule(self, rule=None):
-        r = self.dat.flowsheet.results
+        r = self.results
         if rule:
             term1 = json.dumps(rule.term1)
             term2 = json.dumps(rule.term2)
@@ -192,10 +196,10 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
 
     def delFilter(self):
         fname = self.selectFilterBox.currentText()
-        if fname in self.dat.flowsheet.results.filters:
-            del self.dat.flowsheet.results.filters[fname]
-        if self.dat.flowsheet.results.current_filter() == fname:
-            self.dat.flowsheet.results.set_filter(None)
+        if fname in self.results.filters:
+            del self.results.filters[fname]
+        if self.results.current_filter() == fname:
+            self.results.set_filter(None)
         self.updateFilterBox( )
         self.updateForm()
 
@@ -217,14 +221,14 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         # if name supplied and not canceled
         if ok and newName != '':
             # check if the name is in use
-            if newName in self.dat.flowsheet.results.filters:
+            if newName in self.results.filters:
                 # filter already exists
                 # just do nothing for now
                 QMessageBox.information(
                     self, "Error", "The filter name already exists.")
             else:
                 self.applyChanges(True)
-                self.dat.flowsheet.results.filters[newName] = \
+                self.results.filters[newName] = \
                     dataFilter()
         self.updateFilterBox(newName)
         self.ruleTable.setRowCount(0)
@@ -234,10 +238,10 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             Update the list of filters in the combo box
         '''
         if fltr == None:
-            fltr = self.dat.flowsheet.results.current_filter()
+            fltr = self.results.current_filter()
         self.selectFilterBox.blockSignals(True)
         self.selectFilterBox.clear()
-        items = sorted(self.dat.flowsheet.results.filters.keys())
+        items = sorted(self.results.filters.keys())
         self.selectFilterBox.addItems(items)
         i = self.selectFilterBox.findText(fltr)
         if i > 0:
@@ -250,7 +254,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         fltrName = self.selectFilterBox.currentText()
         if fltrName == None or fltrName == "":
             return
-        r = self.dat.flowsheet.results
+        r = self.results
         f = r.filters[fltrName]
         self.sortCheck.setChecked(f.sortTerm != None)
         if f.sortTerm:
@@ -271,7 +275,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             fltrName = self.selectFilterBox.currentText()
         if fltrName == None or fltrName == "":
             return
-        r = self.dat.flowsheet.results
+        r = self.results
         r.filters[fltrName] = dataFilter()
         fltr = r.filters[fltrName]
         if self.sortCheck.isChecked():

@@ -200,7 +200,7 @@ def setCellText(table, row, col, value):
 
 def setCellJSON(table, row, col, value):
     '''
-        Use json encoder on value then set the cell text to the json
+    Use json encoder on value then set the cell text to the json
     '''
     text = json.dumps(value)
     try:
@@ -228,7 +228,10 @@ def getCellJSON(table, row, col):
         Return the json decoded text from a cell.
     '''
     try:
-        return json.loads(getCellText(table, row, col))
+        text = getCellText(table, row, col)
+        if text.strip().startswith("."):
+            text = "0" + text
+        return json.loads(text)
     except:
         return 0
 

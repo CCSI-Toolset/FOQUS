@@ -68,3 +68,7 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 * Error "Cannot import adodbapi.base." The source of this error is unclear, but
 ```pip uninstall adodbapi``` then ```pip install adodbapi``` has been found to
 resolve it.
+
+* If you are using an outdated version of Pandas, there might be issues with
+saving the FOQUS file. For instructions on how to install/update Pandas, go to: 
+https://pandas.pydata.org/pandas-docs/stable/install.html

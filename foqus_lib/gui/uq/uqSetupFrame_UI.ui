@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1450</width>
-    <height>813</height>
+    <width>1280</width>
+    <height>617</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -257,134 +257,15 @@ Changes Permanent</string>
               <string>Filtering</string>
              </attribute>
              <layout class="QGridLayout" name="gridLayout_12">
-              <item row="0" column="1">
-               <widget class="QRadioButton" name="filterOutput_radio">
-                <property name="toolTip">
-                 <string>Choose this to filter your data based on output values.</string>
+              <item row="1" column="0">
+               <widget class="QFrame" name="filterFrame">
+                <property name="frameShape">
+                 <enum>QFrame::StyledPanel</enum>
                 </property>
-                <property name="text">
-                 <string>Filter output</string>
+                <property name="frameShadow">
+                 <enum>QFrame::Raised</enum>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="2" rowspan="2">
-               <widget class="QPushButton" name="filter_button">
-                <property name="toolTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>Perform Filtering then
-Save as New Ensemble</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0" rowspan="2">
-               <widget class="QGroupBox" name="filterInputBox">
-                <property name="title">
-                 <string/>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_5">
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="filterInputMax_static">
-                   <property name="text">
-                    <string>Upper Threshold:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="filterInputMin_static">
-                   <property name="text">
-                    <string>Lower Threshold:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="0" column="0" colspan="2">
-                  <layout class="QHBoxLayout" name="horizontalLayout_filterInput">
-                   <item>
-                    <widget class="QLabel" name="filterInput_static">
-                     <property name="text">
-                      <string>Choose Input:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="filterInput_combo"/>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="filterInputMin_edit"/>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="filterInputMax_edit"/>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="1" column="1" rowspan="2">
-               <widget class="QGroupBox" name="filterOutputBox">
-                <property name="title">
-                 <string/>
-                </property>
-                <layout class="QGridLayout" name="gridLayout_13">
-                 <item row="0" column="0" colspan="2">
-                  <layout class="QHBoxLayout" name="horizontalLayout_filterOutput">
-                   <item>
-                    <widget class="QLabel" name="filterOutput_static">
-                     <property name="text">
-                      <string>Choose Output:</string>
-                     </property>
-                    </widget>
-                   </item>
-                   <item>
-                    <widget class="QComboBox" name="filterOutput_combo"/>
-                   </item>
-                  </layout>
-                 </item>
-                 <item row="1" column="0">
-                  <widget class="QLabel" name="filterOutputMin_static">
-                   <property name="text">
-                    <string>Lower Threshold:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="1" column="1">
-                  <widget class="QLineEdit" name="filterOutputMin_edit"/>
-                 </item>
-                 <item row="2" column="0">
-                  <widget class="QLabel" name="filterOutputMax_static">
-                   <property name="text">
-                    <string>Upper Threshold:</string>
-                   </property>
-                  </widget>
-                 </item>
-                 <item row="2" column="1">
-                  <widget class="QLineEdit" name="filterOutputMax_edit"/>
-                 </item>
-                </layout>
-               </widget>
-              </item>
-              <item row="2" column="2">
-               <spacer name="verticalSpacer3_filterTab">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>86</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="0">
-               <widget class="QRadioButton" name="filterInput_radio">
-                <property name="toolTip">
-                 <string>Choose this to filter your data based on input values.</string>
-                </property>
-                <property name="text">
-                 <string>Filter Input</string>
-                </property>
+                <layout class="QVBoxLayout" name="verticalLayout"/>
                </widget>
               </item>
              </layout>

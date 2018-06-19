@@ -108,6 +108,19 @@ def sd_col_list(sd, time=None):
     # return the list of of columns and list of associated data.
     return (columns, dat)
 
+def uq_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return (xnames , xvals)
+
+    else:
+        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+
 def incriment_name(name, exnames):
     """
     Check if a name is already in a list of names. If it is generate a new
@@ -227,6 +240,9 @@ class Results(pd.DataFrame):
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
             sd[i] = list(self.loc[i])
+            for j, e in enumerate(sd[i]):
+                if isinstance(e, np.bool_):
+                    sd[i][j] = bool(e)
         sd["calculated_columns"] = self.calculated_columns
         return sd
 
@@ -301,6 +317,25 @@ class Results(pd.DataFrame):
             self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
+    def uq_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = uq_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in xrange(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
+        self.update_filter_indexes()
+
     def read_csv(self, *args, **kwargs):
         """
         Read results into a data frame from a CSV file.
@@ -338,9 +373,9 @@ class Results(pd.DataFrame):
         if t in self.columns:
             return np.array(list(self.loc[:, t]))
         elif t == "True" or t == "true":
-            return True
-        elif t == "False" or t == "flase":
-            return False
+            return np.array([True]*len(self.index))
+        elif t == "False" or t == "false":
+            return np.array([False]*len(self.index))
         else:
             return np.array([t]*len(self.index))
 
@@ -351,7 +386,7 @@ class Results(pd.DataFrame):
         t1 = self.filter_term(rule.term1)
         t2 = self.filter_term(rule.term2)
         if rule.op == dataFilterRule.OP_EQ: # Equal
-            return np.equal(t1, t2)
+            return t1 == t2
         elif rule.op == dataFilterRule.OP_AEQ: # Approximatly equal
             return np.isclose(t1, t2, rtol=1e-5, atol=1e-6)
         elif rule.op == dataFilterRule.OP_L: # <

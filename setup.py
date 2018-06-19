@@ -36,7 +36,7 @@ install_requires=[
     'scipy',
     'numpy',
     'cma',
-    'pandas'==0.23],
+    'pandas==.23'],
 
 #dependency_links=[]
 dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']

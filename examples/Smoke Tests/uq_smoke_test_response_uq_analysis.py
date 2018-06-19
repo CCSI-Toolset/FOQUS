@@ -1,13 +1,15 @@
 from PyQt5 import QtCore, QtWidgets
+#from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QComboBox,\
+#    QCheckBox, QMessageBox, QAbstractItemView, QSpinBox, QFileDialog
 """
 This test focuses on the UQ analysis portion of the UQ
 """
-MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
+MAX_RUN_TIME = 80000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
 timers = {} # mainly put all timers in a dic so I can easily stop them all
-
+        
 def go(sleep=0.25, MainWin=MainWin):
     """Process gui events
     Since this script is running holds up the GUI main loop, this function
@@ -25,6 +27,80 @@ def getButton(w, label):
         if b.text().replace("&", "") == label:
             return b
     return None
+
+global errorCount
+global errorTitle
+global errorFile
+errorFile = "AutoErrLog_uq_response_uq_analysis.txt"
+errorCount = 0
+        
+def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'Error' in str(w.windowTitle()):
+            w.close()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: " + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: " + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except:
+        None
+        
+def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if a, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'FOQUS UQ developers' in str(w.text()):
+            getButton(w, 'OK').click()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay_text'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: \n" + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: \n" + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except AttributeError:
+        None
 
 def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
@@ -57,6 +133,8 @@ def add_UQ_okay(MainWin=MainWin, getButton=getButton, timers=timers):
 def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup up an enseble sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
+    global errorTitle
+    errorTitle = "Latin Hypercube"
     if 'SimSetup' in str(type(w)):
         timers['uq_sampling_scheme'].stop()
         w.distTable.cellWidget(2,1).setCurrentIndex(1)
@@ -79,24 +157,82 @@ def uq_analyze_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go
         ## Select the Output to Analyze
         output_index = w.output_combo.findText('Rosenbrock.f')
         w.output_combo.setCurrentIndex(output_index)
+#        ## Start Validation for Analysis
+#        w.RSValidate_button.click()
         ## Begin Response Surface UQ Analysis
         w.RSAnalyze_button.click()
+        global errorTitle
+        errorTitle = "Aleatory Only/Uniform Dist"
+#        w.RSValidate_button.click()
         w.RSAnalyze_combo2.setCurrentIndex(1) # Change analysis to Epistemic-Aleatory
         w.inputPrior_table.cellWidget(1,1).setCurrentIndex(1) # Change one cell to Epistemic
+        ####------------------------------- Different Distributions --------------------------------------------
+        # Normal distribution
+        errorTitle = "Epistemic-Aleatory/Normal Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(1) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("4")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("3")) # This sets PDF Param2
         w.RSAnalyze_button.click()
+        
+        # Lognormal distribution
+        errorTitle = "Epistemic-Aleatory/Lognormal Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(2) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("4")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("3")) # This sets PDF Param2
+        w.RSAnalyze_button.click()
+        
+        # Triangle distribution
+        errorTitle = "Epistemic-Aleatory/Triangle Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(3) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("4")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("3")) # This sets PDF Param2
+        w.RSAnalyze_button.click()
+        
+        # Gamma distribution
+        errorTitle = "Epistemic-Aleatory/Gamma Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(4) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("4")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("3")) # This sets PDF Param2
+        w.RSAnalyze_button.click()
+        
+        # Beta distribution
+        errorTitle = "Epistemic-Aleatory/Beta Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(5) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("4")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("3")) # This sets PDF Param2
+        w.RSAnalyze_button.click()
+        
+        # Exponential distribution
+        errorTitle = "Epistemic-Aleatory/Exponential Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(6) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("0.25")) # This sets PDF Param1
+        w.RSAnalyze_button.click()
+        
+        # Weibull distribution
+        errorTitle = "Epistemic-Aleatory/Weibull Dist"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(7) # Need to specify the fourth column here since the table just hides the columns not needed
+        w.inputPrior_table.cellWidget(2,4).setItem(0,1, QtWidgets.QTableWidgetItem("2")) # This sets PDF Param1
+        w.inputPrior_table.cellWidget(2,5).setItem(0,1, QtWidgets.QTableWidgetItem("2")) # This sets PDF Param2
+        w.RSAnalyze_button.click()
+        
+        
+        
+        ####----------------------------------------------------------------------------------------------------
+        
         ### Change to Sensitivity Analysis
+        errorTitle = "Sensitivity First-Order/Uniform"
+        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(0)
         w.RSAnalyze_combo1.setCurrentIndex(1)
-#        ####------------------------------- Trying to Get a Different Distribution to Work for this --------------------------------------------
-#        w.inputPrior_table.cellWidget(2,3).setCurrentIndex(1) # Need to specify the fourth column here since the table just hides the columns not needed
-#        w.inputPrior_table.setItem(2,4,QtWidgets.QTableWidgetItem(str(4)))
-#        w.inputPrior_table.cellWidget(2,5).setItem("3")
-#        ####-------------------------------------------------------------------------------------------------------------------------------------
+#        w.RSValidate_button.click()
         w.RSAnalyze_button.click()
+        errorTitle = "Sensitivity Second-Order/Uniform"
         w.RSAnalyze_combo2.setCurrentIndex(1)
         w.RSAnalyze_button.click()
+        errorTitle = "Sensitivity Total-Order/Uniform"
         w.RSAnalyze_combo2.setCurrentIndex(2)
         w.RSAnalyze_button.click()
         ### Change to Point Evaluation
+        errorTitle = "Point Evaluation"
         w.RSAnalyze_combo1.setCurrentIndex(2)
         w.RSAnalyze_button.click()
         ## Close Window
@@ -139,11 +275,17 @@ addTimer('add_UQ_cancel', add_UQ_cancel) # click cancel on uq ensemble dialog
 addTimer('add_UQ_okay', add_UQ_okay) # click okay on uq ensemble dialog
 addTimer('uq_sampling_scheme', uq_sampling_scheme) # do sampling scheme dialog
 addTimer('uq_analyze_scheme', uq_analyze_scheme) # do analysis scheme dialog
+addTimer('Error_okay', Error_okay) # click okay on uq ensemble dialog
+addTimer('Error_okay_text', Error_okay_text) # click okay on uq ensemble dialog
 
 timers['time_out'].start(MAX_RUN_TIME) # start max script time timer
 
 try: # Catch any exception and stop all timers before finishing up
     while(1): # Loop and break and break as convenient way to jump to end
+        ## -----------------Start Error Monitoring----------------------------
+        timers['Error_okay'].start(1000)
+        timers['Error_okay_text'].start(1000)
+        ## -------------------------------------------------------------------
         # Rosenbrock Test for UQ
         MainWin.homeAction.trigger()
         if not go(): break
@@ -235,7 +377,10 @@ try: # Catch any exception and stop all timers before finishing up
         timers['uq_analyze_scheme'].start(500)
         MainWin.uqSetupFrame.simulationTable.cellWidget(0,4).click()
         if not timerWait('uq_analyze_scheme'): break
-
+        ## -----------------Stop Error Monitoring----------------------------
+        if not timerWait('Error_okay'): break
+        if not timerWait('Error_okay_text'): break
+        ## -------------------------------------------------------------------
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped

@@ -833,7 +833,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 self.solventFitPlotArgs = SolventFit.fit(inputsFileName, outputFileName, ytable, xtable, obsTable,
                                   genPostSample=True,
                                   addDisc = useDiscrepancy,
-                                  show=showList, rpath = self.parent.parent.dat.foqusSettings.rScriptPath,
+                                  show=showList, rpath = self.parent().parent.dat.foqusSettings.rScriptPath,
                                   saveRdsFile = saveRdsFile,
                                   numEmulIter=self.numIterEmulSpin.value(),
                                   numEmulBurnIn=self.numBurnInEmulSpin.value(),

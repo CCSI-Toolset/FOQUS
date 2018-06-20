@@ -171,18 +171,18 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
         if self.stop: return
 
+        db = TurbineLiteDB()
+        db.consumer_register()
         job_desc = None
         while not job_desc:
             if self.stop:
                 return
             job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
-        
-        db = TurbineLiteDB()
-        db.consumer_register()
+
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
         dat = None
-        
+
         try:
             dat = self.setup_foqus(db, job_desc)
         except NotImplementedError, ex:
@@ -281,11 +281,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         guid = job_desc['Id']
         jid = None
         simId = job_desc['Simulation']
-    
+
         # Run the job
         db.add_message("consumer={0}, starting job {1}"\
             .format(db.consumer_id, jid), guid)
-        
+
         _log.debug("setup foqus")
         db.job_change_status(guid, "setup")
 

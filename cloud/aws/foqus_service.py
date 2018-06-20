@@ -12,21 +12,122 @@ import servicemanager
 import socket
 import time
 import boto3,optparse
-import sys,json,signal,os,errno,uuid,threading,time
+import sys,json,signal,os,errno,uuid,threading,time,traceback
 from os.path import expanduser
 import urllib2
 from foqus_lib.framework.session.session import session as Session
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
-import foqus_worker
 
 _instanceid = None
 HOME = expanduser("~")
 DEBUG = False
-logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.DEBUG)
+WORKING_DIRECTORY = None
+logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.INFO)
 _log = logging.getLogger()
-_log.debug('Loading')
+_log.debug('XLoading')
+
+
+def getfilenames(jid):
+    global WORKING_DIRECTORY
+    WORKING_DIRECTORY = os.path.join(HOME, "foqus_jobs", str(jid))
+    _log.info('Working Directory: %s', WORKING_DIRECTORY)
+    try: os.makedirs(WORKING_DIRECTORY)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+    sfile = os.path.join(WORKING_DIRECTORY, "session.foqus")
+    # result session file to keep on record
+    rfile = os.path.join(WORKING_DIRECTORY, "results_session.foqus")
+    # Input values files
+    vfile = os.path.join(WORKING_DIRECTORY, "input_values.json")
+    # Output values file
+    ofile = os.path.join(WORKING_DIRECTORY, "output.json")
+    return sfile,rfile,vfile,ofile
+
+
+class TurbineLiteDB:
+    """
+    """
+    def __init__(self, close_after=True):
+        self._sns = boto3.client('sns', region_name='us-east-1')
+        topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
+        self._topic_arn = topic['TopicArn']
+        self.consumer_id = str(uuid.uuid4())
+
+    def _sns_notification(self, obj):
+        self._sns.publish(Message=json.dumps([obj]), TopicArn=self._topic_arn)
+
+    def __del__(self):
+        _log.info("%s.delete", self.__class__)
+    def connectionString(self):
+        _log.info("%s.connectionString", self.__class__)
+    def getConnection(self, rc=0):
+        _log.info("%s.getConnection", self.__class__)
+    def closeConnection(self):
+        _log.info("%s.closeConnection", self.__class__)
+    def add_new_application(self, applicationName, rc=0):
+        _log.info("%s.add_new_application", self.__class__)
+    def add_message(self, msg, jobid, rc=0):
+        _log.info("%s.add_message", self.__class__)
+    def consumer_keepalive(self, rc=0):
+        _log.info("%s.consumer_keepalive", self.__class__)
+        self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
+    def consumer_status(self):
+        _log.info("%s.consumer_status", self.__class__)
+        #assert status in ['up','down','terminate'], ''
+        #self._sns_notification(dict(resource='consumer', event=status, rc=rc, consumer=self.consumer_id))
+        return 'up'
+    def consumer_id(self, pid, rc=0):
+        _log.info("%s.consumer_id", self.__class__)
+    def consumer_register(self, rc=0):
+        _log.info("%s.consumer_register", self.__class__)
+        self._sns_notification(dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id))
+    def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
+        _log.info("%s.get_job_id", self.__class__)
+        return guid, jid, simId, reset
+
+    def jobConsumerID(self, jid, cid=None, rc=0):
+        _log.info("%s.jobConsumerID", self.__class__)
+    def get_configuration_file(self, simulationId, rc=0):
+        _log.info("%s.get_configuration_file", self.__class__)
+    def job_prepare(self, jobGuid, jobId, configFile, rc=0):
+        _log.info("%s.job_prepare", self.__class__)
+    def job_change_status(self, jobGuid, status, rc=0):
+        _log.info("%s.job_change_status", self.__class__)
+        self._sns_notification(dict(resource='job', event='status',
+            rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
+    def job_save_output(self, jobGuid, workingDir, rc=0):
+        _log.info("%s.job_save_output", self.__class__)
+        with open(os.path.join(workingDir, "output.json")) as outfile:
+            output = json.load(outfile)
+        self._sns_notification(dict(resource='job',
+            event='output', jobid=jobGuid, value=output, rc=rc))
+
+
+class _KeepAliveTimer(threading.Thread):
+    def __init__(self, turbineDB, freq=60):
+        threading.Thread.__init__(self)
+        self.stop = threading.Event() # flag to stop thread
+        self.freq = freq
+        self.db = turbineDB
+        self.daemon = True
+
+    def terminate(self):
+        self.stop.set()
+
+    def run(self):
+        i = 0
+        while not self.stop.isSet():
+            time.sleep(1)
+            i += 1
+            if i >= self.freq:
+                self.db.consumer_keepalive()
+                i = 0
+
+
+
 
 
 class AppServerSvc (win32serviceutil.ServiceFramework):
@@ -70,20 +171,26 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
         if self.stop: return
 
-        job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
-
-        db = foqus_worker.TurbineLiteDB()
+        job_desc = None
+        while not job_desc:
+            if self.stop:
+                return
+            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+        
+        db = TurbineLiteDB()
         db.consumer_register()
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
         dat = None
-
+        
         try:
             dat = self.setup_foqus(db, job_desc)
         except NotImplementedError, ex:
             _log.debug("FOQUS NotImplementedError: %s", ex)
             db.job_change_status(job_desc['Id'], "error")
             db.add_message("job %s: failed in setup", job_desc['Id'])
+        except Exception, ex:
+            _log.info("setup foqus exception: %s", str(ex))
 
         if dat is not None:
             self.run_foqus(db, dat, job_desc)
@@ -121,7 +228,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 'All'
             ],
             VisibilityTimeout=VisibilityTimeout,
-            WaitTimeSeconds=0
+            WaitTimeSeconds=10
         )
         if not response.get("Messages", None):
             _log.info("Job Queue is Empty")
@@ -157,7 +264,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         s3.download_file(bucket_name, foqus_keys[0]['Key'], sfile)
 
         # WRITE CURRENT JOB TO FILE
-        with open(os.path.join(foqus_worker.workingDirectory, 'current_foqus.json'), 'w') as fd:
+        with open(os.path.join(WORKING_DIRECTORY, 'current_foqus.json'), 'w') as fd:
             json.dump(job_desc, fd)
 
         return job_desc
@@ -174,11 +281,12 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         guid = job_desc['Id']
         jid = None
         simId = job_desc['Simulation']
-
+    
         # Run the job
         db.add_message("consumer={0}, starting job {1}"\
             .format(db.consumer_id, jid), guid)
-
+        
+        _log.debug("setup foqus")
         db.job_change_status(guid, "setup")
 
         configContent = db.get_configuration_file(simId)
@@ -244,7 +352,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 key = entry['Key']
                 etag = entry.get('ETag', "").strip('"')
                 file_name = key.split('/')[-1]
-                file_path = os.path.join(foqus_worker.workingDirectory, file_name)
+                file_path = os.path.join(WORKING_DIRECTORY, file_name)
                 # Upload to TurbineLite
                 # if ends with json or acmf
                 si_metadata = []
@@ -270,7 +378,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                     file_hash = si_metadata[0]['MD5Sum']
                     if file_hash.lower() != etag.lower():
                         _log.debug("Compare %s:  %s != %s" %(file_name, etag, file_hash))
-                        _log.debug('s3 download(%s): %s' %(foqus_worker.workingDirectory, key))
+                        _log.debug('s3 download(%s): %s' %(WORKING_DIRECTORY, key))
                         s3.download_file(bucket_name, key, file_path)
                         update_required = True
                     else:
@@ -329,7 +437,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             dat.flowsheet.errorStat = 19
 
         dat.saveFlowsheetValues(ofile)
-        db.job_save_output(guid, foqus_worker.workingDirectory)
+        db.job_save_output(guid, WORKING_DIRECTORY)
         dat.save(
             filename = rfile,
             updateCurrentFile = False,

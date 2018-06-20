@@ -29,7 +29,7 @@ It is possible to install git through Anaconda (```conda install git```).
     * restart computer
     * or start the "Turbine Web API service": (1) open Task Manager, (2) go to the "Services" tab, (3) click the "Services" button (in the lower right corner), (4) right-click "Turbine Web API Service" from the list, and (5) click "Start" 
 
-### Install PSUADE (current version: 1.7.10)
+### Install PSUADE (current version: 1.7.12)
 
 PSUADE is short for *Problem Solving environment for Uncertainty Analysis and Design Exploration*. It is a software toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity analysis, design optimization, model calibration, and more.
 
@@ -47,6 +47,25 @@ the Python module is not available to be installed with pip. For installation
 instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
 
 ```conda install -c conda-forge nlopt```
+
+### Install R software
+
+- R version 3.1 or later needs to be installed to use the ACOSSO and BSS-ANOVA surrogate models, and SolventFit (part of the “Basic Data” tab)
+- R is available at: http://cran.r-project.org/
+- After R is installed, some packages needs to be installed
+- To install these packages, open R
+- Type: install.packages(‘quadprog’)
+- Type: library(quadprog)
+- Type: install.packages(‘abind’)
+- Type: library(abind)
+- Type: install.packages(‘MCMCpack’)
+- Type: library(MCMCpack)
+- Type: install.packages(‘MASS’)
+- Type: library(MASS)
+- Type: q()
+- The last command is used to exit R
+- If asked to save workspace image, select “Yes”
+- Open FOQUS, go to the “Settings” tab, and make sure the box next to “RScript Path” has the correct location of R
 
 ### Install online documentation
 

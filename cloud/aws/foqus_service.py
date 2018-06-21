@@ -432,7 +432,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         exit_code = 0
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         guid = job_desc['Id']
-
+        jid = guid # NOTE: like to use actual increment job id but hard to find.
         db.job_change_status(guid, "running")
         gt = dat.flowsheet.runAsThread()
         terminate = False
@@ -478,7 +478,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 "consumer={0}, job {1} finished, error"\
                     .format(db.consumer_id, jid), guid)
 
-        _logging.info("Job {0} finished".format(jid))
+        _log.info("Job {0} finished".format(jid))
 
         #stop all Turbine consumers
         dat.flowsheet.turbConfig.stopAllConsumers()

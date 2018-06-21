@@ -21,29 +21,51 @@ import logging
 import logging.config
 
 _instanceid = None
-HOME = expanduser("~")
+WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
+#WORKING_DIRECTORY = os.path.join("\\Users\\Administrator\\Desktop\\FOQUS_SERVER")
+
 DEBUG = False
-WORKING_DIRECTORY = None
-logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.INFO)
-_log = logging.getLogger()
-_log.debug('XLoading')
+CURRENT_JOB_DIR = None
+#try: os.makedirs(WORKING_DIRECTORY)
+#except OSError as e:
+#    if e.errno != errno.EEXIST: raise
+#logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.INFO)
+_log = None
 
 
-def getfilenames(jid):
-    global WORKING_DIRECTORY
-    WORKING_DIRECTORY = os.path.join(HOME, "foqus_jobs", str(jid))
-    _log.info('Working Directory: %s', WORKING_DIRECTORY)
-    try: os.makedirs(WORKING_DIRECTORY)
+def _set_working_dir():
+    global _log
+    log_dir = os.path.join(WORKING_DIRECTORY, "logs")
+    try: os.makedirs(log_dir)
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-    sfile = os.path.join(WORKING_DIRECTORY, "session.foqus")
+    os.chdir(WORKING_DIRECTORY)
+    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.INFO)
+    _log = logging.getLogger()
+    _log.info('Working Directory: %s', WORKING_DIRECTORY)
+    
+_set_working_dir()
+_log.debug('Loading')
+
+
+def getfilenames(jid):
+    global CURRENT_JOB_DIR
+    CURRENT_JOB_DIR = os.path.join(WORKING_DIRECTORY, str(jid))
+
+    _log.info('Job Directory: %s', CURRENT_JOB_DIR)
+    try: os.makedirs(CURRENT_JOB_DIR)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+  
+    sfile = os.path.join(CURRENT_JOB_DIR, "session.foqus")
     # result session file to keep on record
-    rfile = os.path.join(WORKING_DIRECTORY, "results_session.foqus")
+    rfile = os.path.join(CURRENT_JOB_DIR, "results_session.foqus")
     # Input values files
-    vfile = os.path.join(WORKING_DIRECTORY, "input_values.json")
+    vfile = os.path.join(CURRENT_JOB_DIR, "input_values.json")
     # Output values file
-    ofile = os.path.join(WORKING_DIRECTORY, "output.json")
+    ofile = os.path.join(CURRENT_JOB_DIR, "output.json")
     return sfile,rfile,vfile,ofile
 
 
@@ -264,7 +286,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         s3.download_file(bucket_name, foqus_keys[0]['Key'], sfile)
 
         # WRITE CURRENT JOB TO FILE
-        with open(os.path.join(WORKING_DIRECTORY, 'current_foqus.json'), 'w') as fd:
+        with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
             json.dump(job_desc, fd)
 
         return job_desc
@@ -327,13 +349,13 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             #sim_list = node.gr.turbConfig.getSimulationList()
             sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
 
-            log.info("Node Turbine Simulation Requested: (%s, %s)", turb_app, simulation_name)
+            _log.info("Node Turbine Simulation Requested: (%s, %s)", turb_app, simulation_name)
 
             if turb_app == 'ACM':
                 model_filename = 'anonymous/%s/%s/%s.acmf' %(simulation_name,nkey, model_name)
                 assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
             else:
-                log.info("Turbine Application Not Implemented: '%s'", turb_app)
+                _log.info("Turbine Application Not Implemented: '%s'", turb_app)
                 raise NotImplementedError, 'Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp))
 
             sim_d = filter(lambda i: i['Name'] == model_name, sim_list)
@@ -352,7 +374,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 key = entry['Key']
                 etag = entry.get('ETag', "").strip('"')
                 file_name = key.split('/')[-1]
-                file_path = os.path.join(WORKING_DIRECTORY, file_name)
+                file_path = os.path.join(CURRENT_JOB_DIR, file_name)
                 # Upload to TurbineLite
                 # if ends with json or acmf
                 si_metadata = []
@@ -378,7 +400,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                     file_hash = si_metadata[0]['MD5Sum']
                     if file_hash.lower() != etag.lower():
                         _log.debug("Compare %s:  %s != %s" %(file_name, etag, file_hash))
-                        _log.debug('s3 download(%s): %s' %(WORKING_DIRECTORY, key))
+                        _log.debug('s3 download(%s): %s' %(CURRENT_JOB_DIR, key))
                         s3.download_file(bucket_name, key, file_path)
                         update_required = True
                     else:
@@ -437,7 +459,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             dat.flowsheet.errorStat = 19
 
         dat.saveFlowsheetValues(ofile)
-        db.job_save_output(guid, WORKING_DIRECTORY)
+        db.job_save_output(guid, CURRENT_JOB_DIR)
         dat.save(
             filename = rfile,
             updateCurrentFile = False,

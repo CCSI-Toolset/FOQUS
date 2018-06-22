@@ -47,6 +47,11 @@ Open an Anaconda-5.0.* terminal and install base packages.
 1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876) 
 2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi) 
 3. Install [TurbineLite.msi](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2.0.0/TurbineLite.msi)
+4. Install AspenTech v8.4
+```
+After installing Aspen you will need to configure the license server
+Next run AspenTech/ACM and decline to register the product (otherwise it will hang indefinitely). 
+```
 
 #### Install FOQUS Windows Service
 ```

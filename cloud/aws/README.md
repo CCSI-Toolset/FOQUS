@@ -92,3 +92,45 @@ Append the path above in method1 by navigating to the control panel:
 control panel/system and security/system/advanced system settings/environment variables/PATH
 ```
 ## Testing
+
+## Reference: AWS Resources 
+### SQS
+```
+FOQUS-Job-Queue
+FOQUS-Update-Queue
+```
+### SNS Topics
+```
+FOQUS-Job-Topic
+FOQUS-Update-Topic
+```
+### EC2
+```
+AMI
+```
+### API Gateway
+```
+Turbine Gateway API2
+```
+### Lambda
+```
+http-basic-authorizer-[stage]
+post-session-start-[stage]
+post-session-create-[stage]
+post-session-append-[stage]
+get-session-list[stage]
+get-session-[stage]
+get-simulation-root-[stage]
+get-simulation-[stage]
+```
+### S3 Buckets
+```
+foqus-sessions
+foqus-simulations
+```
+### DynamoDB Tables
+```
+TurbineUsers
+FOQUS_Resources
+```
+

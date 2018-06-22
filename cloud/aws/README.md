@@ -66,7 +66,7 @@ Options for 'start' and 'stop' commands only:
                  and all dependent services will be stopped, each waiting
                  the specified period.
 
-(base) C:\Users\Administrator>python \ProgramData\Anaconda2\Scripts\foqus_service.py install
+(base) C:\Users\Administrator>python \ProgramData\Anaconda2\Scripts\foqus_service.py  --startup delayed --interactive install
 Installing service FOQUS-Cloud-Service
 Service installed
 

@@ -25,6 +25,7 @@ print("Setting version as {0}".format(ver.version))
 
 install_requires=[
     'adodbapi',
+    'boto3',
     'TurbineClient',
     'pyparsing',
     #'py4j',

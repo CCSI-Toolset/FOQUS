@@ -81,5 +81,9 @@ WARNING: The data being saved is truncated to 1024 characters.
 
 SUCCESS: Specified value was saved.
 ```
-
+2.  Control Panel Method
+```
+Append the path above in method1 by navigating to the control panel:
+control panel/system and security/system/advanced system settings/environment variables/PATH
+```
 ## Testing

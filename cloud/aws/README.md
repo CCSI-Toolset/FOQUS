@@ -78,7 +78,7 @@ Service installed
 (base) C:\Users\Administrator>
 ```
 #### Update Windows PATH with Anaconda dependencies
-1.  Powershell Method1: Unfortunately this doesn't work because it's truncated
+1.  Powershell Method1: Unfortunately this doesn't work because 'setx' will truncate the value to 1024 characters!
 ```
 PS C:\Users\Administrator> setx /M PATH "$($env:path);C:\ProgramData\Anaconda2\python27.zip;C:\ProgramData\Anaconda2\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda2\lib\plat-win;C:\ProgramData\Anaconda2\lib\lib-tk;C:\ProgramData\Anaconda2;C:\ProgramData\Anaconda2\lib\site-packages;C:\ProgramData\Anaconda2\lib\site-packages\Babel-2.5.0-py2.7.egg;C:\ProgramData\Anaconda2\lib\site-packages\win32;C:\ProgramData\Anaconda2\lib\site-packages\win32\lib;C:\ProgramData\Anaconda2\lib\site-packages\Pythonwin"
 

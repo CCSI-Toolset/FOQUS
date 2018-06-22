@@ -43,10 +43,10 @@ Open an Anaconda-5.0.* terminal and install base packages.
 % pip install git+https://github.com/CCSI-Toolset/turb_client@master
 % pip install git+https://github.com/CCSI-Toolset/foqus@master
 ```
-#### Install TurbineLite
-1. Install SQL Compact 4.0 x64 ( MUST INSTALL 64 bit on x64 platform )
-2. Install SimSinterInstaller.msi
-3. Install TurbineLite.msi
+#### Install TurbineLite and dependencies
+1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876) 
+2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi) 
+3. Install [TurbineLite.msi](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2.0.0/TurbineLite.msi)
 
 #### Install FOQUS Windows Service
 ```

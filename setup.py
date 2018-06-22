@@ -68,6 +68,7 @@ setup(
     scripts = [
         'foqus.py',
         'cloud/aws/foqus_worker.py',
+        'cloud/aws/foqus_service.py',
         'icons_rc.py'],
     install_requires=install_requires,
     dependency_links=dependency_links

@@ -256,9 +256,19 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
         timers['msg_okay'].start(1000) 
         MainWin.ouuSetupFrame.run_button.click()
-        time.sleep(13)
+#        timers['msg_okay'].stop()
+        errNum = errorCount
+        while MainWin.ouuSetupFrame.OUUobj.thread.isRunning(): # while is running
+            if not go():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if MainWin.ouuSetupFrame.OUUobj.thread.isFinished():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
         timers['msg_okay'].stop()
-        
+        time.sleep(1)
         ## -----------------Stop Error Monitoring----------------------------
         if not timerWait('Error_okay'): break
         if not timerWait('Error_okay_text'): break

@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtWidgets
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.framework.ouu.OUU import OUU
 
-MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
+MAX_RUN_TIME = 600000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
@@ -243,9 +243,19 @@ try: # Catch any exception and stop all timers before finishing up
         errorTitle = "Switch Tab to Run Tab and Run the OUU"
         
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
-        timers['msg_okay'].start(1000) 
         MainWin.ouuSetupFrame.run_button.click()
-        time.sleep(13)
+        errNum = errorCount
+        timers['msg_okay'].start(1000) 
+        while MainWin.ouuSetupFrame.OUUobj.thread.isRunning(): # while is running
+            if not go():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if MainWin.ouuSetupFrame.OUUobj.thread.isFinished():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        time.sleep(1)
         timers['msg_okay'].stop()
         
         ## -----------------Stop Error Monitoring----------------------------
@@ -265,8 +275,8 @@ except Exception as e:
 timersStop() #make sure all timers are stopped
 #print("after exception")
 
-##Try to close FOQUS
-#timers['msg_no'].start(1000)
-#MainWin.close()
-#timerWait('msg_no')
-#print("Exited Code")
+#Try to close FOQUS
+timers['msg_no'].start(1000)
+MainWin.close()
+timerWait('msg_no')
+print("Exited Code")

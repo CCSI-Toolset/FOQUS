@@ -167,6 +167,8 @@ def uq_sampling_scheme_QMC(MainWin=MainWin, getButton=getButton, timers=timers, 
         ### ---------------------------------------------------------------------- # Isn't working
         # Lognormal Distribution
         w.distTable.cellWidget(0,5).setCurrentIndex(2)
+        w.distTable.setItem(0,3, QtWidgets.QTableWidgetItem("0"))
+        w.distTable.setItem(0,4, QtWidgets.QTableWidgetItem("30"))
         w.distTable.cellWidget(0,6).setItem(0,1, QtWidgets.QTableWidgetItem("1"))
         w.distTable.cellWidget(0,7).setItem(0,1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
@@ -233,6 +235,8 @@ def uq_sampling_scheme_MD(MainWin=MainWin, getButton=getButton, timers=timers, g
         ### ---------------------------------------------------------------------- # Doesn't work
         # Beta Distribution
         w.distTable.cellWidget(0,5).setCurrentIndex(5)
+        w.distTable.setItem(0,3, QtWidgets.QTableWidgetItem("0"))
+        w.distTable.setItem(0,4, QtWidgets.QTableWidgetItem("1"))
         w.distTable.cellWidget(0,6).setItem(0,1, QtWidgets.QTableWidgetItem("1"))
         w.distTable.cellWidget(0,7).setItem(0,1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
@@ -255,6 +259,7 @@ def uq_sampling_scheme_GMD(MainWin=MainWin, getButton=getButton, timers=timers, 
         ### ---------------------------------------------------------------------- # Doesn't work
         # Exponential Distribution
         w.distTable.cellWidget(0,5).setCurrentIndex(6)
+        w.distTable.setItem(0,3, QtWidgets.QTableWidgetItem("0"))
         w.distTable.cellWidget(0,6).setItem(0,1, QtWidgets.QTableWidgetItem("1"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
@@ -588,6 +593,25 @@ def fs_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
         w.dataFrame.filterSelectBox.setCurrentIndex(9)
         w.dataFrame.filterSelectBox.setCurrentIndex(10)
         w.close()
+        
+def apply_filter_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
+    """Cycles through all of the , stops timer once window comes up"""
+    w = MainWin.app.activeWindow()
+    global errorTitle
+    errorTitle = 'apply_filter_scheme'
+    if 'dataBrowserDialog' in str(type(w)):
+        timers['apply_filter_scheme'].stop()
+        w.dataFrame.filterSelectBox.setCurrentIndex(1) #This one currently doesn't work
+        w.dataFrame.filterSelectBox.setCurrentIndex(2)
+        w.dataFrame.filterSelectBox.setCurrentIndex(3)
+        w.dataFrame.filterSelectBox.setCurrentIndex(4)
+        w.dataFrame.filterSelectBox.setCurrentIndex(5)
+        w.dataFrame.filterSelectBox.setCurrentIndex(6)
+        w.dataFrame.filterSelectBox.setCurrentIndex(7)
+        w.dataFrame.filterSelectBox.setCurrentIndex(8)
+        w.dataFrame.filterSelectBox.setCurrentIndex(9)
+        w.dataFrame.filterSelectBox.setCurrentIndex(10)
+        w.close()
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
     """Add a timer to do something.  Timers are needed because some things like
@@ -655,6 +679,7 @@ addTimer('filter_text_scheme_7', filter_text_scheme_7) # do analysis scheme dial
 addTimer('filter_scheme_7', filter_scheme_7) # do analysis scheme dialog
 addTimer('filter_text_scheme_8', filter_text_scheme_8) # do analysis scheme dialog
 addTimer('filter_scheme_8', filter_scheme_8) # do analysis scheme dialog
+addTimer('apply_filter_scheme', apply_filter_scheme) # do analysis scheme dialog
 addTimer('fs_scheme', fs_scheme) # do analysis scheme dialog
 
 timers['time_out'].start(MAX_RUN_TIME) # start max script time timer
@@ -685,7 +710,7 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.addInput("x2")
         MainWin.nodeDock.addInput("x3")
         MainWin.nodeDock.inputVarTable.item(0, 5).setText("-2")
-        MainWin.nodeDock.inputVarTable.item(0, 6).setText("2")
+        MainWin.nodeDock.inputVarTable.item(0, 6).setText("30")
         MainWin.nodeDock.inputVarTable.item(1, 5).setText("-1")
         MainWin.nodeDock.inputVarTable.item(1, 6).setText("4")
         MainWin.nodeDock.inputVarTable.item(2, 5).setText("-3")
@@ -852,7 +877,7 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.dataBrowserAction.trigger()
         if not go(): break
     
-        timers['fs_scheme'].start(500)
+        timers['apply_filter_scheme'].start(500)
         timers['filter_scheme_8'].start(500)
         timers['filter_text_scheme_8'].start(500)
         timers['filter_scheme_7'].start(500)
@@ -889,7 +914,7 @@ try: # Catch any exception and stop all timers before finishing up
         if not timerWait('filter_scheme_7'): break
         if not timerWait('filter_text_scheme_8'): break
         if not timerWait('filter_scheme_8'): break
-        if not timerWait('fs_scheme'): break
+        if not timerWait('apply_filter_scheme'): break
     
 
         ## -----------------Stop Error Monitoring----------------------------

@@ -7,7 +7,7 @@ before calling the inference function in charge of plotting this.
 I need to figure out what is booting out this script if I want to completely 
 """
 
-MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
+MAX_RUN_TIME = 150000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
@@ -163,8 +163,9 @@ def uq_analyze_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go
         ## Begin Inference
         errorTitle = "Launch Inference Window"
         w.expertInfer_button.click()
-#        ## Close Window
-#        w.close()
+        ## Close Window
+        w.close()
+
 
 def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
@@ -176,43 +177,131 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
         w.output_table.cellWidget(1,0).toggle()
         ## Test Different Response Surfaces
         #w.inf_button.click()
+        errorTitle = "Quadratic"
         response_sub_select = w.output_table.cellWidget(1,3).findText('Quadratic')
         w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
+        errNum = errorCount
         w.inf_button.click()
 #        w.close_button.click()
-#        response_sub_select = w.output_table.cellWidget(1,3).findText('Cubic')
-#        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
-#        w.inf_button.click()
-#        response_sub_select = w.output_table.cellWidget(1,3).findText('Legendre')
-#        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('MARS ->')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        response_sub_select = w.output_table.cellWidget(1,3).findText('With Bagging')
-#        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('Gaussian Process')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('Kriging')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('Sum of Trees')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('K Nearest Neighbors')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        response_select = w.output_table.cellWidget(1,2).findText('Radial Basis Function')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        ## Enable Discrepancy
-#        w.discrepancy_chkbox.toggle()
-#        response_select = w.output_table.cellWidget(1,2).findText('Polynomial ->')
-#        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
-#        w.inf_button.click()
-#        w.close()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Cubic"
+        response_sub_select = w.output_table.cellWidget(1,3).findText('Cubic')
+        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Legendre"
+        response_sub_select = w.output_table.cellWidget(1,3).findText('Legendre')
+        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "MARS"
+        response_select = w.output_table.cellWidget(1,2).findText('MARS ->')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "MARS With Bagging"
+        response_sub_select = w.output_table.cellWidget(1,3).findText('With Bagging')
+        w.output_table.cellWidget(1,3).setCurrentIndex(response_sub_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Gaussian Process"
+        response_select = w.output_table.cellWidget(1,2).findText('Gaussian Process')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Kriging"
+        response_select = w.output_table.cellWidget(1,2).findText('Kriging')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Sum of Trees"
+        response_select = w.output_table.cellWidget(1,2).findText('Sum of Trees')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "K Nearest Neighbors"
+        response_select = w.output_table.cellWidget(1,2).findText('K Nearest Neighbors')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        errorTitle = "Radial Basis Function"
+        response_select = w.output_table.cellWidget(1,2).findText('Radial Basis Function')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        ## Enable Discrepancy
+        errorTitle = "Polynomial ->"
+        w.discrepancy_chkbox.toggle()
+        response_select = w.output_table.cellWidget(1,2).findText('Polynomial ->')
+        w.output_table.cellWidget(1,2).setCurrentIndex(response_select)
+        errNum = errorCount
+        w.inf_button.click()
+        while w.inference.inferencer.thread.isRunning(): # while is running
+            if not go():
+                w.inference.inferencer.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        w.close()
 
 def uq_analyze_close(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
@@ -379,9 +468,7 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.uqSetupFrame.simulationTable.cellWidget(0,4).click()
         if not timerWait('uq_analyze_scheme'): break
         if not timerWait('uq_infer_scheme'): break
-        timers['uq_infer_close'].start(500)
         timers['uq_analyze_close'].start(500)
-        if not timerWait('uq_infer_close'): break
         if not timerWait('uq_analyze_close'): break
     
         ## -----------------Stop Error Monitoring----------------------------

@@ -251,9 +251,19 @@ try: # Catch any exception and stop all timers before finishing up
             MainWin.ouuSetupFrame.loadTable(MainWin.ouuSetupFrame.z3_table, inData)
         errorTitle = "Switch Tab to Run Tab and Run the OUU"
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
-        timers['msg_okay'].start(1000) 
         MainWin.ouuSetupFrame.run_button.click()
-        time.sleep(13)
+        errNum = errorCount
+        timers['msg_okay'].start(1000) 
+        while MainWin.ouuSetupFrame.OUUobj.thread.isRunning(): # while is running
+            if not go():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if MainWin.ouuSetupFrame.OUUobj.thread.isFinished():
+                MainWin.ouuSetupFrame.OUUobj.thread.terminate()
+                break
+            if (errorCount > errNum):
+                break
+        time.sleep(1)
         timers['msg_okay'].stop()
         
         ## -----------------Stop Error Monitoring----------------------------
@@ -273,8 +283,8 @@ except Exception as e:
 timersStop() #make sure all timers are stopped
 #print("after exception")
 
-##Try to close FOQUS
-#timers['msg_no'].start(1000)
-#MainWin.close()
-#timerWait('msg_no')
-#print("Exited Code")
+#Try to close FOQUS
+timers['msg_no'].start(1000)
+MainWin.close()
+timerWait('msg_no')
+print("Exited Code")

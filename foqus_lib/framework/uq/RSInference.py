@@ -403,7 +403,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 else:
                     formatString = '%s\n'
                 f.write(formatString % arg)    # output name
-            elif i in setMARS:
+            elif indices[i] in setMARS:
                 if rsIndex == ResponseSurfaces.MARSBAG:
                     f.write('0\n')    # mean (0) or median (1) mode
                     f.write('100\n')   # number of MARS instantiations [range:10-5000, default=100]

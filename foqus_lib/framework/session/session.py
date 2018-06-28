@@ -303,6 +303,7 @@ class session:
         self.surrogateProblem = {} # saved dict of surrogate setup
         self.surrogateCurrent = None
         self.uqSimList = [] # list of UQ simulation ensembles
+        self.uqFilterResultsList = [] # list of UQ filter results
         self.ID = time.strftime('Session_%y%m%d%H%M%S') #session id
         self.archiveFolder = \
             os.path.join(os.getcwd(), '%s_files' % self.ID)

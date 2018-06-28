@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>899</width>
-    <height>551</height>
+    <width>1066</width>
+    <height>953</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -77,6 +77,16 @@
          <widget class="QPushButton" name="columnsButton">
           <property name="text">
            <string>Columns</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="saveEnsembleButton">
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="text">
+           <string>Save as New Ensemble</string>
           </property>
          </widget>
         </item>

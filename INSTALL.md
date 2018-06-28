@@ -48,7 +48,7 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 
 ```conda install -c conda-forge nlopt```
 
-### Install R software
+### Install R
 
 - R version 3.1 or later needs to be installed to use the ACOSSO and BSS-ANOVA surrogate models, and SolventFit (part of the “Basic Data” tab)
 - R is available at: http://cran.r-project.org/

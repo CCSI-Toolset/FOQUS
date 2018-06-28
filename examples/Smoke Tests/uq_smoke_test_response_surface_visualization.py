@@ -26,6 +26,80 @@ def getButton(w, label):
             return b
     return None
 
+global errorCount
+global errorTitle
+global errorFile
+errorFile = "AutoErrLog_uq_response_surface_visualization.txt"
+errorCount = 0
+        
+def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'Error' in str(w.windowTitle()):
+            w.close()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: " + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: " + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except:
+        None
+        
+def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if a, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'FOQUS UQ developers' in str(w.text()):
+            getButton(w, 'OK').click()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay_text'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: \n" + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: \n" + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except AttributeError:
+        None
+
 def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
@@ -57,6 +131,8 @@ def add_UQ_okay(MainWin=MainWin, getButton=getButton, timers=timers):
 def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup up an enseble sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
+    global errorTitle
+    errorTitle = "Setting up Sampling Scheme"
     if 'SimSetup' in str(type(w)):
         timers['uq_sampling_scheme'].stop()
         w.distTable.cellWidget(2,1).setCurrentIndex(1)
@@ -71,35 +147,45 @@ def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=g
 def uq_analyze_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
+    global errorTitle
+    errorTitle = "Change to Expert Mode"
     if 'AnalysisDialog' in str(type(w)):
         timers['uq_analyze_scheme'].stop()
         ## Change to Expert Mode
         if w.modeButton.text() == w.wizardModeButtonText:
             w.modeButton.click()
         ## Select the Output to Analyze
+        errorTitle = "Select the Output to Analyze"
         output_index = w.output_combo.findText('Rosenbrock.f')
         w.output_combo.setCurrentIndex(output_index)
         ## Begin Response Surface Visualization
+        errorTitle = "Test Just the First Input"
         w.RSViz_combo1.setCurrentIndex(1) #Should this be changed to use the 
         w.RSViz_button.click()
+        errorTitle = "Test Just the Second Input"
         w.RSViz_combo1.setCurrentIndex(0)
         w.RSViz_combo2.setCurrentIndex(2)
         w.RSViz_button.click()
+        errorTitle = "Test Just the Third Input"
         w.RSViz_combo2.setCurrentIndex(0)
         w.RSViz_combo3.setCurrentIndex(3)
         w.RSViz_button.click()
+        errorTitle = "Test Just the First and Second Input"
         w.RSViz_combo1.setCurrentIndex(4)
         w.RSViz_combo2.setCurrentIndex(5)
         w.RSViz_combo3.setCurrentIndex(0)
         w.RSViz_button.click()
+        errorTitle = "Test Just the First and Third Input"
         w.RSViz_combo1.setCurrentIndex(2)
         w.RSViz_combo2.setCurrentIndex(0)
         w.RSViz_combo3.setCurrentIndex(1)
         w.RSViz_button.click()
+        errorTitle = "Test Just the Second and Third Input"
         w.RSViz_combo1.setCurrentIndex(0)
         w.RSViz_combo2.setCurrentIndex(3)
         w.RSViz_combo3.setCurrentIndex(5)
         w.RSViz_button.click()
+        errorTitle = "Test All Inputs"
         w.RSViz_combo1.setCurrentIndex(3)
         w.RSViz_combo2.setCurrentIndex(4)
         w.RSViz_combo3.setCurrentIndex(2)
@@ -140,6 +226,8 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
 addTimer('time_out', MainWin.helpDock.setStopTrue) #stop script if too long
 addTimer('msg_okay', msg_okay) # click OK on mgsbox
 addTimer('msg_no', msg_no) # click No on msgbox
+addTimer('Error_okay', Error_okay) # click okay on uq ensemble dialog
+addTimer('Error_okay_text', Error_okay_text) # click okay on uq ensemble dialog
 addTimer('add_UQ_cancel', add_UQ_cancel) # click cancel on uq ensemble dialog
 addTimer('add_UQ_okay', add_UQ_okay) # click okay on uq ensemble dialog
 addTimer('uq_sampling_scheme', uq_sampling_scheme) # do sampling scheme dialog
@@ -210,6 +298,12 @@ try: # Catch any exception and stop all timers before finishing up
                                              \nf['f'] += (1-x['x5'])**2 + 100.0*(x['x6']-x['x5']**2)**2")
         MainWin.nodeDock.tabWidget.setCurrentIndex(0)
         if not go(): break
+    
+        ## -----------------Start Error Monitoring----------------------------
+        timers['Error_okay'].start(1000)
+        timers['Error_okay_text'].start(1000)
+        ## -------------------------------------------------------------------
+    
         # Before running start up a timer to close completed run msgbox
         timers['msg_okay'].start(500) # timer to push ok on a msgbox if up
         MainWin.runAction.trigger() #run flowsheet
@@ -244,6 +338,11 @@ try: # Catch any exception and stop all timers before finishing up
         timers['uq_analyze_scheme'].start(500)
         MainWin.uqSetupFrame.simulationTable.cellWidget(0,4).click()
         if not timerWait('uq_analyze_scheme'): break
+
+        ## -----------------Stop Error Monitoring----------------------------
+        if not timerWait('Error_okay'): break
+        if not timerWait('Error_okay_text'): break
+        ## -------------------------------------------------------------------
 
         break
 except Exception as e:

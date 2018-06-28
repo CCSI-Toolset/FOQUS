@@ -25,6 +25,7 @@ print("Setting version as {0}".format(ver.version))
 
 install_requires=[
     'adodbapi',
+    'boto3',
     'TurbineClient',
     'pyparsing',
     #'py4j',
@@ -36,7 +37,7 @@ install_requires=[
     'scipy',
     'numpy',
     'cma',
-    'pandas'],
+    'pandas>0.20'],
 
 #dependency_links=[]
 dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
@@ -68,6 +69,7 @@ setup(
     scripts = [
         'foqus.py',
         'cloud/aws/foqus_worker.py',
+        'cloud/aws/foqus_service.py',
         'icons_rc.py'],
     install_requires=install_requires,
     dependency_links=dependency_links

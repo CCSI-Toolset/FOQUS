@@ -2,28 +2,25 @@
 
 ## Install Python
 
-Install Python 2.7 with PyQt5.  The Anaconda Python distribution is the recommended way to install Python (https://www.anaconda.com/download/#windows). Anaconda comes with most required packages and the latest versions
+Install Python 2.7 with PyQt5. The [Anaconda Python distribution](https://www.anaconda.com/download/#windows) is the recommended way to install Python. Anaconda comes with most required packages and the latest versions
 have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
 
 If you do not have a git client, you will need to install one.  For Windows, a client can be found [here](https://git-scm.com/downloads).
 
-It is possible to install git through Anaconda (```conda install git```).
+It is possible to install git through Anaconda: ``conda install git``
 
 ## Install FOQUS
 
-* Clone the FOQUS repository
-   * ``python setup.py develop``
+* Clone the FOQUS repository.
+* Install FOQUS: ``python setup.py develop``
 
 ## Install Optional Software
 
 ### Install Turbine and SimSinter (Windows Only)
-* This requires Microsoft SQL Server Compact 4.0.
-    * https://www.microsoft.com/en-us/download/details.aspx?id=17876
-* Download and install the SimSinter and TurbineLite installers.
-    * https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi
-    * https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi
+* This requires [Microsoft SQL Server Compact 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17876).
+* Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi) installers.
 * Install SimSinter first, then TurbineLite.
 * Do one of these two things (only after install).
     * Restart computer, or
@@ -45,15 +42,15 @@ Download and request a license from the [ALAMO download page](https://minlp.com/
 
 NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately,
 the Python module is not available to be installed with pip. For installation
-instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
+instructions, click [here](https://nlopt.readthedocs.io/en/latest/), or NLopt can be installed with conda as follows:
 
-```conda install -c conda-forge nlopt```
+``conda install -c conda-forge nlopt``
 
 ### Install R
 
 R is a software toolbox for statistical computing and graphics. R version 3.1+ are required for the ACOSSO and BSS-ANOVA surrogate models and the Basic Data's SolventFit model.
 
-* Follow instructions from http://cran.r-project.org/ to download and install R.
+* Follow instructions from the [R website](http://cran.r-project.org/) to download and install R.
 * Open R and type the following to install and load the prerequisite packages: 
    * install.packages(‘quadprog’)
    * library(quadprog)
@@ -69,9 +66,8 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
 
 ### Install online documentation
 
-* Download the HTML documentation from:
- https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip
-* Extract html documentation and copy the files to foqus_lib/help/html
+* Download the [HTML documentation](https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip).
+* Extract html documentation and copy the files to foqus_lib/help/html.
 
 ## Optional FOQUS Settings
 * Go to the FOQUS settings tab.
@@ -79,7 +75,7 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
   - Test TurbineLite config.
 
 ## Automated tests (from top level of foqus repo)
-```python foqus.py -s test/system_test/ui_test_01.py```
+``python foqus.py -s test/system_test/ui_test_01.py``
 
 ## Troubleshooting
 

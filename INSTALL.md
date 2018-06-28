@@ -61,7 +61,7 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
    * install.packages(‘MASS’)
    * library(MASS)
    * q()
-* The last command exits R. When asked to save workspace image, select "Yes".
+* The last command exits R. When asked to save workspace image, type "y".
 * Open FOQUS, go to the “Settings” tab, and set the “RScript Path” to the proper location of the R executable.
 
 ### Install online documentation

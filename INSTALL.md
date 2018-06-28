@@ -7,27 +7,27 @@ have PyQt5 by default. These instructions will assume you are using Anaconda.
 
 ## Install a Git Client
 
-If you do not have a git client, you will need to install one.  For Windows, a client can be found here: https://git-scm.com/downloads
+If you do not have a git client, you will need to install one.  For Windows, a client can be found [here](https://git-scm.com/downloads).
 
 It is possible to install git through Anaconda (```conda install git```).
 
 ## Install FOQUS
 
 * Clone the FOQUS repository
-* ``python setup.py develop``
+   * ``python setup.py develop``
 
 ## Install Optional Software
 
 ### Install Turbine and SimSinter (Windows Only)
-* This requires Microsoft SQL Server Compact 4.0
+* This requires Microsoft SQL Server Compact 4.0.
     * https://www.microsoft.com/en-us/download/details.aspx?id=17876
-* Download and install the SimSinter and TurbineLite installers
+* Download and install the SimSinter and TurbineLite installers.
     * https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi
     * https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi
-* Install SimSinter first, then TurbineLite
-* Do one of these two things (only after install)
-    * restart computer
-    * or start the "Turbine Web API service": (1) open Task Manager, (2) go to the "Services" tab, (3) click the "Services" button (in the lower right corner), (4) right-click "Turbine Web API Service" from the list, and (5) click "Start" 
+* Install SimSinter first, then TurbineLite.
+* Do one of these two things (only after install).
+    * Restart computer, or
+    * Start the "Turbine Web API service": (1) open Task Manager, (2) go to the "Services" tab, (3) click the "Services" button (in the lower right corner), (4) right-click "Turbine Web API Service" from the list, and (5) click "Start" 
 
 ### Install PSUADE (current version: 1.7.12)
 
@@ -36,13 +36,14 @@ PSUADE is short for *Problem Solving environment for Uncertainty Analysis and De
 PSUADE install instructions are on the [psuade github](https://github.com/LLNL/psuade). For Windows users, there is an [executable](https://github.com/LLNL/psuade/releases) for your convenience.
 
 ### Install ALAMO
-- http://www.minlp.com/home
-- Request a license
-- Download Windows installer
+
+ALAMO is short for *Automated Learning of Algebraic Models for Optimization*. It is a software toolkit that generates algebraic models of simulations, experiments, or other black-box systems. For more information, click [here](http://archimedes.cheme.cmu.edu/?q=alamo).
+
+Download and request a license from the [ALAMO download page](https://minlp.com/alamo-downloads). 
 
 ### Install NLopt
 
-NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately
+NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately,
 the Python module is not available to be installed with pip. For installation
 instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda.
 
@@ -50,37 +51,35 @@ instructions see https://nlopt.readthedocs.io/en/latest/, or NLopt can be instal
 
 ### Install R
 
-- R version 3.1 or later needs to be installed to use the ACOSSO and BSS-ANOVA surrogate models, and SolventFit (part of the “Basic Data” tab)
-- R is available at: http://cran.r-project.org/
-- After R is installed, some packages needs to be installed
-- To install these packages, open R
-- Type: install.packages(‘quadprog’)
-- Type: library(quadprog)
-- Type: install.packages(‘abind’)
-- Type: library(abind)
-- Type: install.packages(‘MCMCpack’)
-- Type: library(MCMCpack)
-- Type: install.packages(‘MASS’)
-- Type: library(MASS)
-- Type: q()
-- The last command is used to exit R
-- If asked to save workspace image, select “Yes”
-- Open FOQUS, go to the “Settings” tab, and make sure the box next to “RScript Path” has the correct location of R
+R is a software toolbox for statistical computing and graphics. R version 3.1+ are required for the ACOSSO and BSS-ANOVA surrogate models and the Basic Data's SolventFit model.
+
+* Follow instructions from http://cran.r-project.org/ to download and install R.
+* Open R and type the following to install and load the prerequisite packages: 
+   * install.packages(‘quadprog’)
+   * library(quadprog)
+   * install.packages(‘abind’)
+   * library(abind)
+   * install.packages(‘MCMCpack’)
+   * library(MCMCpack)
+   * install.packages(‘MASS’)
+   * library(MASS)
+   * q()
+* The last command exits R. When asked to save workspace image, select "Yes".
+* Open FOQUS, go to the “Settings” tab, and set the “RScript Path” to the proper location of the R executable.
 
 ### Install online documentation
 
 * Download the HTML documentation from:
  https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip
-* extract html documentation and copy the files to foqus_lib/help/html
+* Extract html documentation and copy the files to foqus_lib/help/html
 
 ## Optional FOQUS Settings
-* Go to the FOQUS settings tab
-  - Set ALAMO and PSUADE locations
-  - Test TurbineLite config
+* Go to the FOQUS settings tab.
+  - Set ALAMO and PSUADE locations.
+  - Test TurbineLite config.
 
 ## Automated tests (from top level of foqus repo)
-	- ```python foqus.py -s test/system_test/ui_test_01.py```
-	- ...
+```python foqus.py -s test/system_test/ui_test_01.py```
 
 ## Troubleshooting
 

@@ -84,5 +84,5 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
 resolve it.
 
 * If you are using an outdated version of Pandas, there might be issues with
-saving the FOQUS file. For instructions on how to install/update Pandas, go to: 
-https://pandas.pydata.org/pandas-docs/stable/install.html
+saving the FOQUS file. See [instructions](https://pandas.pydata.org/pandas-docs/stable/install.html) on how to install/update Pandas.
+

@@ -1,3 +1,12 @@
+/**
+ * Lambda Function, deletes a simulation.
+ * @module delete-simulation
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
+
 'use strict';
 'use AWS.DynamoDB'
 console.log('Loading function');

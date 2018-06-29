@@ -1,7 +1,13 @@
 # BACKEND: AWS Lambda Node.JS
+## Deployment
+### https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
+```
+CORS For Integrated Lambda Proxy Must be done in Lambda functions
+because "Integration Response" is disabled, CORS settings will not work!
+```
 ## List of Functions
 ### http-basic-authorizer
-HTTP BASIC Authorization using DynamoDB table for user accounts 
+HTTP BASIC Authorization using DynamoDB table for user accounts
 ### foqus-sns-update
 ### get-session
 ### get-session-list
@@ -17,7 +23,7 @@ HTTP BASIC Authorization using DynamoDB table for user accounts
 ```
 % npm run test
 ```
-## Deployment 
+## Deployment
 ```
 % npm run deploy
 ```

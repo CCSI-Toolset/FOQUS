@@ -1,12 +1,13 @@
+/**
+ * Lambda Function, returns an Array of jobs in the Session specified.
+ * @module get-session
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use AWS.DynamoDB'
-
-// https://github.com/motdotla/node-lambda-template
-// NOTE:  CORS For Integrated Lambda Proxy Must be done in Lambda functions
-//  because "Integration Response" is disabled, CORS settings will not work!
-//  Follow the link:
-//     https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
-//
 console.log('Loading function');
 const AWS = require('aws-sdk');
 const tableName = "FOQUS_Resources"

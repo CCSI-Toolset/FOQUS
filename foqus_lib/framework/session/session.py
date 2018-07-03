@@ -25,6 +25,8 @@ from foqus_lib.framework.pymodel import pymodel
 from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.sampleResults.results import Results
+
 # these are just imported so py2exe will pick them up since they
 # are used only in plugins
 from foqus_lib.framework.optimizer.optimization\
@@ -456,6 +458,9 @@ class session:
         sd["uqSimList"] = []
         for sim in self.uqSimList:
             sd['uqSimList'].append(sim.saveDict())
+        sd["uqFilterResultsList"] = []
+        for filter in self.uqFilterResultsList:
+            sd['uqFilterResultsList'].append(filter.saveDict())
         if filename:
             #write two copies of the file one is backup you can keep
             #forever, one is the specified file name with most recent
@@ -556,6 +561,12 @@ class session:
                 sim.setSession(self)
                 sim.loadDict(simDict)
                 self.uqSimList.append(sim)
+        self.uqFilterResultsList = []
+        if 'uqFilterResultsList' in sd:
+            for filterDict in sd['uqFilterResultsList']:
+                filterResults = Results()
+                filterResults.loadDict(filterDict)
+                self.uqFilterResultsList.append(filterResults)
         self.currentFile = None
 
     def removeArchive(self):

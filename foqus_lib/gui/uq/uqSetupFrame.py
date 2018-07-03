@@ -1099,7 +1099,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         row = indexes[0].row()
         data = self.dat.uqSimList[row]
 
-        if updateResult:
+        if updateResult or not self.dat.uqFilterResultsList:
+            if not self.dat.uqFilterResultsList:
+                self.dat.uqFilterResultsList = [None] * len(self.dat.uqSimList)
             res = Results()
             res.uq_add_result(data)
             self.dat.uqFilterResultsList[row] = res

@@ -46,7 +46,11 @@ exports.handler = function(event, context, callback) {
     };
     var client = new AWS.S3();
     var request = client.listObjects(params, function(err, data) {
-        if (err) console.log(err, err.stack); // an error occurred
+        if (err) {
+          console.log(err, err.stack); // an error occurred
+          done(new Error(`"${err.stack}"`));
+          return;
+        }
         else     console.log("DATA: " + data);
     });
     request.on('success', function(response) {
@@ -57,7 +61,11 @@ exports.handler = function(event, context, callback) {
         var request = sns.createTopic({
             Name: 'FOQUS-Job-Topic'
           }, function(err, data) {
-                if (err) console.log(err.stack);
+                if (err) {
+                  console.log(err.stack);
+                  done(new Error(`"${err.stack}"`));
+                  return;
+                }
                 else     console.log("TOPIC: " + JSON.stringify(data));
         });
         request.on('success', function(response_topic) {
@@ -71,7 +79,11 @@ exports.handler = function(event, context, callback) {
                   Key: response.data.Contents[index].Key,
                 };
                 var request = client.getObject(params, function(err, data) {
-                  if (err) console.log(err, err.stack); // an error occurred
+                  if (err) {
+                    console.log(err, err.stack); // an error occurred
+                    done(new Error(`"${err.stack}"`));
+                    return;
+                  }
                   else {
                     var obj = JSON.parse(data.Body.toString('ascii'));
                     console.log("SESSION: " + JSON.stringify(obj));
@@ -84,17 +96,23 @@ exports.handler = function(event, context, callback) {
                         TopicArn: topicArn
                       };
                       sns.publish(params, function(err, data) {
-                        if (err) console.log(err, err.stack); // an error occurred
-                        else     console.log("PUBLISH: " + JSON.stringify(data));           // successful response
+                        if (err) {
+                          console.log(err, err.stack); // an error occurred
+                          //done(new Error(`"${err.stack}"`));
+                          done(new Error(`SNS Publish ERROR:   "${err.stack}"`));
+                          //return;
+                        }
+                        else  {
+                          console.log("PUBLISH: " + JSON.stringify(data));           // successful response
+                          callback(null, {statusCode:'200', body: "",
+                            headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
+                          });
+                        }
                       });
                     }
                   }
                 });
             }
-        });
-
-        callback(null, {statusCode:'200', body: "",
-          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
         });
     });
   }

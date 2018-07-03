@@ -69,9 +69,10 @@ exports.handler = function(event, context, callback) {
         var item = null;
         var i = 0;
         for(var i=0; i<body.length; i++) {
+          var d = new Date(milliseconds+i);
           item = {Id: body[i].Id,
                   Type: "Job",
-                  Create: milliseconds+i,
+                  Create: d.toISOString(),
                   SessionId: session_id,
                   User: default_user_name,
                   Initialize: body[i].Initialize,

@@ -231,9 +231,15 @@ class Results(pd.DataFrame):
         """
         Save the data to a dict that can be dumped to json
         """
+        def convertIndex(n):
+            try:
+                return int(n.item())
+            except:
+                return int(n)
+
         sd = {
             "__columns":list(self.columns),
-            "__indexes":[int(n.item()) for n in list(self.index)],
+            "__indexes":map(convertIndex, list(self.index)),
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:

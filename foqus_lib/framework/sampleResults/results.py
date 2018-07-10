@@ -235,7 +235,7 @@ class Results(pd.DataFrame):
             try:
                 return int(n.item())
             except:
-                return int(n)
+                return n
 
         sd = {
             "__columns":list(self.columns),

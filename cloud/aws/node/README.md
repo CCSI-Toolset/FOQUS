@@ -21,6 +21,7 @@ HTTP BASIC Authorization using DynamoDB table for user accounts
 ### delete-simulation
 ## Testing
 ```
+% npm install
 % npm run test
 ```
 ## Deployment

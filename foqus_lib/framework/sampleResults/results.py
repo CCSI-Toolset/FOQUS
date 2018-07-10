@@ -460,7 +460,7 @@ class Results(pd.DataFrame):
                 tstack.append(np.logical_xor(t1))
         if len(tstack) > 0:
             mask = tstack.pop()
-        indexes = list(self[mask].index)
+        indexes = map(int, list(self[mask].index))
         return (indexes, mask)
 
     def clearData(self, *args, **kwargs):

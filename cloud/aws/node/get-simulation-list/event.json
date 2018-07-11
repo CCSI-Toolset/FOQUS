@@ -4,5 +4,8 @@
     "Accept": "application/json"
   },
   "httpMethod": "GET",
-  "path": "/Session"
+  "path": "/simulation",
+  "queryStringParameters": {
+    "verbose": true
+  }
 }

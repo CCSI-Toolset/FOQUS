@@ -21,7 +21,8 @@ const s3_bucket_name = "foqus-simulations";
 // For development/testing purposes
 exports.handler = function(event, context, callback) {
   console.log(`Running index.handler: "${event.httpMethod}"`);
-  console.log("request: " + JSON.stringify(event));
+  console.log("event: " + JSON.stringify(event));
+  console.log("query: " + event.queryStringParameters);
   console.log('==================================');
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
@@ -40,15 +41,42 @@ exports.handler = function(event, context, callback) {
     client.listObjects(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
+        var sim_d = new Object();
         var simulation_set = new Set([]);
         var value = "";
+
+        // FIND ALL FLOWSHEETS
         for (var index = 0; index < data.Contents.length; ++index) {
             value = data.Contents[index].Key;
-            console.log(value);
-            if (value.endsWith('.foqus') == false) continue;
-            value = value.split('/')[1];
-            simulation_set.add(value);
+            console.log("XXX: " + value);
+            if (value.endsWith('.foqus')) {
+              sim_d[value.split('/')[1]] = new Set([]);
+            }
         }
+        if (event.queryStringParameters != null) {
+          // CHANGE TO BOOLEAN??
+          //var verbose = (event.queryStringParameters.verbose  == 'true');
+          var verbose = event.queryStringParameters.verbose;
+          console.log("QUERY VERBOSE: " + typeof(verbose));
+          console.log("QUERY VERBOSE: " + verbose);
+          if (verbose) {
+            for (var index = 0; index < data.Contents.length; ++index) {
+                value = data.Contents[index].Key;
+                var key = value.split('/')[1];
+                if (key in sim_d) {
+                  if (value.lastIndexOf('/') != value.length-1) {
+                    sim_d[key].add({Name:value});
+                  }
+                }
+            }
+          }
+        }
+        for (var key in sim_d) {
+          console.log(sim_d[key]);
+          simulation_set.add({Name:key, Application:"foqus",
+            StagedInputs:Array.from(sim_d[key])});
+        }
+        console.log("SET: " + JSON.stringify(Array.from(simulation_set)));
         var content = JSON.stringify(Array.from(simulation_set));
         console.log("DATA: " + content);           // successful response
         callback(null, {statusCode:'200', body: content,

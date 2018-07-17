@@ -231,18 +231,27 @@ class Results(pd.DataFrame):
         """
         Save the data to a dict that can be dumped to json
         """
+        def convertIndex(n):
+            try:
+                return int(n.item())
+            except:
+                return n
+
         sd = {
             "__columns":list(self.columns),
-            "__indexes":list(self.index),
+            "__indexes":map(convertIndex, list(self.index)),
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
-            sd[i] = list(self.loc[i])
-            for j, e in enumerate(sd[i]):
-                if isinstance(e, np.bool_):
-                    sd[i][j] = bool(e)
+            key = str(i)
+            sd[key] = list(self.loc[i])
+            for j, e in enumerate(sd[key]):
+                if isinstance(e, np.float64):
+                    sd[key][j] = e.item()
+                elif isinstance(e, np.bool_):
+                    sd[key][j] = bool(e)
         sd["calculated_columns"] = self.calculated_columns
         return sd
 
@@ -451,7 +460,7 @@ class Results(pd.DataFrame):
                 tstack.append(np.logical_xor(t1))
         if len(tstack) > 0:
             mask = tstack.pop()
-        indexes = list(self[mask].index)
+        indexes = map(int, list(self[mask].index))
         return (indexes, mask)
 
     def clearData(self, *args, **kwargs):

@@ -1,0 +1,23 @@
+name: foqus_env
+channels:
+  - javascript
+  - conda-forge
+dependencies:
+  - python=2.7
+  - pip
+  - numpy
+  - pandas>0.20
+  - boto3
+  - pyparsing
+  - requests
+  - matplotlib=1.5.3
+  - scipy
+  - numpy
+  - pyqt
+  - pywin32
+  - nlopt
+  - pip:
+    - Flask-Testing
+    - cma
+    - adodbapi
+    - python-ntlm

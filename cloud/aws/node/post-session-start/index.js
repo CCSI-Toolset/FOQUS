@@ -75,6 +75,7 @@ exports.handler = function(event, context, callback) {
 
             var topicArn = response_topic.data.TopicArn;
             console.log("SUCCESS: " + JSON.stringify(response_topic.data));
+            var id_list = [];
             // TAKE S3 LIST OBJECTS
             for (var index = 0; index < response.data.Contents.length; index++) {
                 var params = {
@@ -92,6 +93,7 @@ exports.handler = function(event, context, callback) {
                     console.log("SESSION: " + JSON.stringify(obj));
                     for (var index=0; index < obj.length; index++) {
                       console.log("INDEX: " + index);
+                      id_list.push(obj[index]['Id']);
                       var payload = JSON.stringify(obj[index]);
                       console.log("Payload: " + payload);
                       var params = {
@@ -107,7 +109,7 @@ exports.handler = function(event, context, callback) {
                         }
                         else  {
                           console.log("PUBLISH: " + JSON.stringify(data));           // successful response
-                          callback(null, {statusCode:'200', body: "",
+                          callback(null, {statusCode:'200', body: JSON.stringify(id_list),
                             headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
                           });
                         }

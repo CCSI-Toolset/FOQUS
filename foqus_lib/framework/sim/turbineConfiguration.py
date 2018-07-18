@@ -815,9 +815,10 @@ class turbineConfiguration():
 
     def startSession(self, sid):
         try:
-            return json.loads(
-                turbine.commands.turbine_session_script.start_jobs(
-                    self.turbineConfigParse(), sid))
+            output = turbine.commands.turbine_session_script.start_jobs(
+                self.turbineConfigParse(), sid)
+            print "startSession:OUTPUT: ", output
+            return json.loads(output)
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
                 "Error starting session")
@@ -865,7 +866,7 @@ class turbineConfiguration():
         '''
         postAddress = "".join([
             self.address,
-            "/Session/",
+            "/session/",
             str(sid),
             "/result"])
         try:
@@ -882,6 +883,7 @@ class turbineConfiguration():
                     postAddress]),
                 e = e,
                 tb=traceback.format_exc())
+        print "getCompletedJobGen.RESULT: ", gid
         return json.loads(gid)
 
     def getCompletedJobPage(self, sid, gen):
@@ -890,7 +892,7 @@ class turbineConfiguration():
         '''
         postAddress = "".join([
             self.address,
-            "/Session/",
+            "/session/",
             str(sid),
             "/result/",
             str(gen)])
@@ -945,7 +947,7 @@ class turbineConfiguration():
         '''
         readAddress = "/".join([
             self.address,
-            "Session",
+            "session",
             str(sid),
             "result",
             str(gen),
@@ -1272,6 +1274,7 @@ class turbineConfiguration():
                     raise TurbineInterfaceEx(code = 355)
 
     def getAppByExtension(self, modelFile):
+        print "MODEL FILE: ", modelFile
         junk, modelExt = os.path.splitext(modelFile) #get model ext
         app = self.appExtensions.get(modelExt, None)
         if not app: # unknown extension type

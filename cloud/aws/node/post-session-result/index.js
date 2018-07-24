@@ -86,9 +86,10 @@ exports.handler = function(event, context, callback) {
                     Simulation: item.Simulation,
                     Create: item.Create,
                     Submit: item.Submit,
-                    Running: item.Running,
+                    setup: item.setup,
+                    Running: item.running,
                     success: item.success,
-                    Output:item.Output});
+                    Output:item.output});
                 }
               }
               if (body.length == 0) {

@@ -1,7 +1,8 @@
 /**
- * Lambda Function, listens on a SNS Topic for job notifications.  These
- * notifications are changes of job status, results, etc.
- * @module foqus-sns-update
+ * Pops job off SQS Job queue and sends canned notifications to SNS Publish Topic
+ * which will cause foqus-sns-update to create job updates.
+ *
+ * @module foqus-fake-job-runner
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
  * @license See LICENSE.md
@@ -15,6 +16,7 @@ const AWS = require('aws-sdk');
 //const tablename = 'FOQUS_Resources';
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
+const queueURL = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue';
 
 var publish_job_updates = function(message) {
   /* { MessageId: '1f811f27-fd27-4d13-b1a4-85f7adead4c6',
@@ -38,6 +40,7 @@ var publish_job_updates = function(message) {
      "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
    ]
 
+   var seconds = 2;
    for (var i=0; i<updates.length; i++) {
      var obj = JSON.parse(updates[i]);
      obj[0].jobid = job_request.Id;
@@ -52,6 +55,9 @@ var publish_job_updates = function(message) {
        if (err) console.log(err, err.stack); // an error occurred
        else     console.log(data);           // successful response
      });
+     // SLEEP HACK
+     var waitTill = new Date(new Date().getTime() + seconds * 1000);
+     while(waitTill > new Date()){};
    }
 }
 
@@ -66,10 +72,11 @@ exports.handler = function(event, context, callback) {
     \"event\": \"status\",
     \"job\": \"71d054c2-ca79-4c30-a96b-9078eacd901d\"}]",
   */
-    console.log('Received event:', JSON.stringify(event, null, 4));
+    //console.log('Received event:', JSON.stringify(event, null, 4));
+    console.log('Pop job off Queue: ', queueURL);
     console.log('==================================');
     var params = {
-      QueueUrl: 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue', /* required */
+      QueueUrl: queueURL, /* required */
       AttributeNames: [
         'All'
       ],
@@ -79,15 +86,27 @@ exports.handler = function(event, context, callback) {
     };
     sqs.receiveMessage(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
-      else  {
-        console.log(data);
-        if (data.Messages == undefined) return;
-        if (data.Messages.length == 1) {
-          console.log("FOUND ONE SEND JOB CHANGE UPDATES");
-          publish_job_updates(data.Messages[0]);
+      else if (data.Messages) {
+        if (data.Messages.length != 1) {
+            console.log("ERROR: expecting one message found=", data.Messages.length);
+            return;
         }
-
+        console.log("FOUND ONE SEND JOB CHANGE UPDATES");
+        publish_job_updates(data.Messages[0]);
+        var deleteParams = {
+          QueueUrl: queueURL,
+          ReceiptHandle: data.Messages[0].ReceiptHandle
+        };
+        sqs.deleteMessage(deleteParams, function(err, data) {
+          if (err) {
+            console.log("Delete Error", err);
+          } else {
+            console.log("Message Deleted", data);
+          }
+        });
+      }
+      else  {
+        console.log("NO MESSAGES");
       }
     });
-
 };

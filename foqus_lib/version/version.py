@@ -1,4 +1,5 @@
-"""version.py
+""" version.py
+
 * This just contains some version and legal info for FOQUS
 
 John Eslick, Carnegie Mellon University, 2014

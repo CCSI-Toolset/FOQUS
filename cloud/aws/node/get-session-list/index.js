@@ -1,11 +1,13 @@
+/**
+ * Lambda Function, returns an Array of sessions (UUID).
+ * @module get-session-list
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use AWS.S3'
-// https://github.com/motdotla/node-lambda-template
-// NOTE:  CORS For Integrated Lambda Proxy Must be done in Lambda functions
-//  because "Integration Response" is disabled, CORS settings will not work!
-//  Follow the link:
-//     https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
-//
 console.log('Loading function');
 const AWS = require('aws-sdk');
 //const s3 = require('s3');

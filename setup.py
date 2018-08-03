@@ -41,6 +41,7 @@ install_requires=[
 
 #dependency_links=[]
 dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+#dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
 
 # Set all the package parameters
 pkg_name             = "foqus"

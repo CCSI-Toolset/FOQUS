@@ -765,10 +765,13 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             progressBar.setMaximum(data.getNumOutputs())
             formatString = '%v / %m output(s) computed'
         else:
-            outDataErrors = sum(row[0] > 0 for row in data.getOutputData())
-            errorCount = np.count_nonzero(outDataErrors)
             progressBar.setMaximum(data.getNumSamples())
-            formatString = '%v / %m  # errors: ' + str(errorCount)
+            if data.getOutputNames()[0] == 'graph.error':
+                errorCount = sum(row[0] > 0 for row in data.getOutputData())
+                #errorCount = np.count_nonzero(outDataErrors)
+                formatString = '%v / %m  # errors: ' + str(errorCount)
+            else:
+                formatString = '%v / %m'
         progressBar.setFormat(formatString)
         runState = data.getRunState().tolist()
         runCount = runState.count(True)

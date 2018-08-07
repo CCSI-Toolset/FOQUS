@@ -1,8 +1,18 @@
 #!/bin/bash
 # Automated Testing Script for Foqus
-conda env create -f foqus_env.yml
-source activate foqus_env
-python setup.py develop
 python foqus.py -s "examples\Smoke Tests\fs_smoke_test.py"
-source deactivate
-conda remove --name foqus_env --all
+python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_1.py"
+python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_2.py"
+#python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_3.py"
+python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_4.py"
+#python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_5.py"
+python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_6.py"
+#python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_7.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_data_analysis.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_data_visualization.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_inference.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_input_importance.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_polynomial.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_response_surface_validation.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_response_surface_visualization.py"
+python foqus.py -s "examples\Smoke Tests\uq_smoke_test_response_uq_analysis.py"

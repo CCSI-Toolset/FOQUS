@@ -1,0 +1,10 @@
+adodbapi
+boto3
+TurbineClient
+pyparsing
+requests
+matplotlib
+scipy
+numpy
+cma
+pandas>0.20

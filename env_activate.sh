@@ -1,1 +1,1 @@
-source activate foqus_env
+. activate foqus_env

@@ -1,1 +1,1 @@
-source deactivate
+. deactivate

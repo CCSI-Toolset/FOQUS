@@ -219,7 +219,8 @@ class checkingThread(QtCore.QThread):
                     #updatae sim so intermediate results can be saved
                     sim.setRunState(runState)
                     sim.setOutputData(outData)
-                    numErrors = sum([row[0] > 0 for row in outData])
+                    errorIndex = sim.getOutputNames().index('graph.error')
+                    numErrors = sum([row[errorIndex] > 0 for row in outData])
                     c.progressBarErrorSignal.emit(progressBar, numErrors)
             numTries += 1
             if runType == Model.EMULATOR:
@@ -765,10 +766,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             progressBar.setMaximum(data.getNumOutputs())
             formatString = '%v / %m output(s) computed'
         else:
-            outDataErrors = sum(row[0] > 0 for row in data.getOutputData())
-            errorCount = np.count_nonzero(outDataErrors)
             progressBar.setMaximum(data.getNumSamples())
-            formatString = '%v / %m  # errors: ' + str(errorCount)
+            try:
+                index = data.getOutputNames().index('graph.error')
+                errorCount = sum(row[index] > 0 for row in data.getOutputData())
+                #errorCount = np.count_nonzero(outDataErrors)
+                formatString = '%v / %m  # errors: ' + str(errorCount)
+            except:
+                formatString = '%v / %m'
         progressBar.setFormat(formatString)
         runState = data.getRunState().tolist()
         runCount = runState.count(True)

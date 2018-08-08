@@ -159,21 +159,22 @@ def search_term_list(st):
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = None # do this to avoid set column from attribute warn
-        self.filters = {} # now that atribute exists set to empty dict
-        self.filters["none"] = \
-            dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
-        self.filters["all"] = dataFilter()
-        self._current_filter = None
-        self._filter_indexes = None # avoid set column from attribute warn
-        self._filter_indexes = [] # now that atribute exists set to empty list
-        self.flatTable = True
-        self["set"] = []
-        self["result"] = []
-        self._filter_mask = None
-        self.hidden_cols = None
-        self.hidden_cols = []
-        self.calculated_columns = OrderedDict()
+        if "set" not in self.columns:
+            self.filters = None # do this to avoid set column from attribute warn
+            self.filters = {} # now that atribute exists set to empty dict
+            self.filters["none"] = \
+                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+            self.filters["all"] = dataFilter()
+            self._current_filter = None
+            self._filter_indexes = None # avoid set column from attribute warn
+            self._filter_indexes = [] # now that atribute exists set to empty list
+            self.flatTable = True
+            self["set"] = []
+            self["result"] = []
+            self._filter_mask = None
+            self.hidden_cols = None
+            self.hidden_cols = []
+            self.calculated_columns = OrderedDict()
 
     def set_calculated_column(self, name, expr):
         self.calculated_columns[name] = expr

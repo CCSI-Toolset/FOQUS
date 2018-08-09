@@ -900,12 +900,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                             useTurbine=True,
                             resubs=sim.turbineResub)
                     else:
-                        #self.dat.save(
-                        #    filename = fname,
-                        #    updateCurrentFile = False,
-                        #    changeLogMsg = "Save for turbine submission",
-                        #    indent = 0,
-                        #    keepData = False)
                         self.dat.flowsheet.uploadFlowseetToTurbine(
                             simname=self.dat.name,
                             dat=self.dat,

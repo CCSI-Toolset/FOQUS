@@ -209,6 +209,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
         self.updateFilterBox()
         self.tableView.setModel(dataModel(self.results, self))
+        self.numRowsBox.setText(str(self.results.count_rows(filtered=True)))
 
     def autoResizeCols(self):
         # if you resize the columns before showing Qt seems to
@@ -345,10 +346,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             print "error"
         else:
             self.results.set_filter(filterName)
-        self.tableView.setModel(
-            dataModel(self.results, self))
-        self.numRowsBox.setText(str(
-            self.results.count_rows(filtered=True)))
+        self.tableView.setModel(dataModel(self.results, self))
+        self.numRowsBox.setText(str(self.results.count_rows(filtered=True)))
 
     def saveResultsToCSV(self):
         if self.results is None or self.results.empty:

@@ -1,6 +1,6 @@
 #!/bin/bash
 # Automated Testing Script for Foqus
-python foqus.py -s "examples\Smoke Tests\fs_smoke_test.py"
+xvfb-run python foqus.py -s "examples\Smoke Tests\fs_smoke_test.py"
 python foqus.py -s "examples\Smoke Tests\optimization_smoke_test.py"
 python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_1.py"
 python foqus.py -s "examples\Smoke Tests\ouu_smoke_test_ex_2.py"

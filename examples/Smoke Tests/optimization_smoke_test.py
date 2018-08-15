@@ -183,8 +183,10 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
         
         MainWin.optSetupFrame.optMonitorFrame.startButton.click()
+        while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
+            None
         print("Got here")
-        
+        time.sleep(5)
         if not go(): break
 
         break
@@ -197,8 +199,8 @@ except Exception as e:
         f.write('ERROR: Exception: {0}\n'.format(e))
 timersStop() #make sure all timers are stopped
 
-##Try to close FOQUS
-#timers['msg_no'].start(1000)
-#MainWin.close()
-#timerWait('msg_no')
-#print("Exited Code")
+#Try to close FOQUS
+timers['msg_no'].start(1000)
+MainWin.close()
+timerWait('msg_no')
+print("Exited Code")

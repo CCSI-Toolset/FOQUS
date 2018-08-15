@@ -60,7 +60,7 @@ def guiImport():
 
         import matplotlib
         matplotlib.use('Qt5Agg')
-        matplotlib.rcParams['backend.qt5']='PyQt5'
+        matplotlib.rcParams['backend']='Qt5Agg'
         loadGUI = True
         guiAvail = True
     except ImportError:

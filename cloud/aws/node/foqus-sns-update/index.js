@@ -36,7 +36,8 @@ var process_job_event = function(ts, message, callback) {
         ReturnValues:"UPDATED_NEW"
     };
     if (e == 'output') {
-        var output = JSON.stringify(message['value']);
+        //var output = JSON.stringify(message['value']['output']);
+        var output = message['value']['output'];
         //params.UpdateExpression = "set output=:o";
         //params.ExpressionAttributeValues = {":o":message['value']};
         params = {

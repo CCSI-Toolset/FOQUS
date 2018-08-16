@@ -44,7 +44,7 @@ def _set_working_dir():
     logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.INFO)
     _log = logging.getLogger()
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
-    
+
 _set_working_dir()
 _log.debug('Loading')
 
@@ -58,7 +58,7 @@ def getfilenames(jid):
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-  
+
     sfile = os.path.join(CURRENT_JOB_DIR, "session.foqus")
     # result session file to keep on record
     rfile = os.path.join(CURRENT_JOB_DIR, "results_session.foqus")
@@ -426,9 +426,13 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         return dat
 
     def run_foqus(self, db, dat, job_desc):
+        """ Run FOQUS Flowsheet in thread
+        db -- TurbineLiteDB instance
+        dat -- foqus.framework.session.session
+        dat.flowsheet -- foqus.framework.graph.graph
         """
-        Run FOQUS Flowsheet in thread
-        """
+        assert isinstance(db, TurbineLiteDB)
+        assert isinstance(dat, Session)
         exit_code = 0
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         guid = job_desc['Id']

@@ -37,7 +37,7 @@ var process_job_event = function(ts, message, callback) {
     };
     if (e == 'output') {
         //var output = JSON.stringify(message['value']['output']);
-        var output = message['value']['output'];
+        var output = message['value'];
         //params.UpdateExpression = "set output=:o";
         //params.ExpressionAttributeValues = {":o":message['value']};
         params = {

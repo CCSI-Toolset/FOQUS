@@ -76,20 +76,45 @@ exports.handler = function(event, context, callback) {
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
                 if (item.success != undefined) {
-                  console.log('item: ', item);
+                  console.log('success item: ', item);
                   body.push({Id: item.Id,
-                    Application: item.Application,
-                    SessionId: item.SessionId,
-                    Initialize: item.Initialize,
-                    Input:item.Input,
-                    Reset:item.Reset,
+                    Guid: item.Id,
                     Simulation: item.Simulation,
+                    State: "success",
+                    Messages: null,
+                    Input: item.Input,
+                    Output:item.output
+                    Session: item.SessionId,
+                    Initialize: item.Initialize,
+                    Reset:item.Reset,
+                    Visible: false,
+                    Input:item.Input,
+                    Consumer: "",
                     Create: item.Create,
                     Submit: item.Submit,
-                    setup: item.setup,
+                    Setup: item.setup,
                     Running: item.running,
-                    success: item.success,
-                    Output:item.output});
+                    Finished: item.success});
+                } else if (item.error != undefined) {
+                  console.log('item: ', item);
+                  body.push({Id: item.Id,
+                    Guid: item.Id,
+                    Simulation: item.Simulation,
+                    State: "error",
+                    Messages: null,
+                    Input: item.Input,
+                    Output:item.output
+                    Session: item.SessionId,
+                    Initialize: item.Initialize,
+                    Reset:item.Reset,
+                    Visible: false,
+                    Input:item.Input,
+                    Consumer: "",
+                    Create: item.Create,
+                    Submit: item.Submit,
+                    Setup: item.setup,
+                    Running: item.running,
+                    Finished: item.error});
                 }
               }
               if (body.length == 0) {

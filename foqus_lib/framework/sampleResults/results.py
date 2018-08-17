@@ -87,6 +87,14 @@ def sd_col_list(sd, time=None):
     Take a value dict saved from results and turn it into a list of columns
     labels and data
     """
+    assert sd.has_key("nodeError")
+    assert sd.has_key("turbineMessages")
+    assert sd.has_key("input")
+    assert sd.has_key("output")
+    assert sd.has_key("graphError")
+    assert sd.has_key("solTime")
+    assert sd.has_key("nodeSettings")
+
     if time is None: time = iso_time_str()
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]

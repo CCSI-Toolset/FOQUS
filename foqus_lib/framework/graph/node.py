@@ -734,6 +734,8 @@ class Node():
                 logging.getLogger("foqus." + __name__).info(
                     "Job " + str(jobID) + " Failed will not retry")
         # Even if there was an error try to read output
+        logging.getLogger("foqus." + __name__).debug(
+            "Job " + str(jobID) + " Results:\n" + json.dumps(res))
         if res is not None:
             m = res.get('Messages', "")
             if m is None or m == "":

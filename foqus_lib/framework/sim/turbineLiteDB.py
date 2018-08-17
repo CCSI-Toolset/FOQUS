@@ -101,7 +101,6 @@ class turbineLiteDB():
             else:
                 self.add_new_application(applicationName, rc=rc+1)
 
-
     def add_message(self, msg, jobid, rc=0):
         conn, curs = self.getConnection()
         try:

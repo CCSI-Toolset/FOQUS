@@ -26,7 +26,8 @@ guiAvail = False
 splash_timeout_ms = 10000 # initial Splash screen hide in ms
 splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
-
+# global variables
+dat = None
 
 def guiImport():
     """
@@ -59,7 +60,7 @@ def guiImport():
 
         import matplotlib
         matplotlib.use('Qt5Agg')
-        matplotlib.rcParams['backend.qt5']='PyQt5'
+        matplotlib.rcParams['backend']='Qt5Agg'
         loadGUI = True
         guiAvail = True
     except ImportError:

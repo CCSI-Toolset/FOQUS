@@ -483,7 +483,7 @@ class surrogateMethod(surrogate):
             self.zList = self.output
             self.xi = {}
             self.zi = {}
-            cn = self.graph.input.compoundNames(sort=False)
+            cn = self.graph.input.compoundNames(sort=True)
             for v in self.xList:
                 self.xi[v] = cn.index(v)
             cn = self.graph.output.compoundNames(sort=False)

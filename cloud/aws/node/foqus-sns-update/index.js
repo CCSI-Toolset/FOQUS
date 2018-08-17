@@ -1,3 +1,12 @@
+/**
+ * Lambda Function, listens on a SNS Topic for job notifications.  These
+ * notifications are changes of job status, results, etc.
+ * @module foqus-sns-update
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use AWS.S3'
 'use uuid'
@@ -27,7 +36,8 @@ var process_job_event = function(ts, message, callback) {
         ReturnValues:"UPDATED_NEW"
     };
     if (e == 'output') {
-        var output = JSON.stringify(message['value']);
+        //var output = JSON.stringify(message['value']['output']);
+        var output = message['value'];
         //params.UpdateExpression = "set output=:o";
         //params.ExpressionAttributeValues = {":o":message['value']};
         params = {

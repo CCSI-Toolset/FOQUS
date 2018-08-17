@@ -1,12 +1,15 @@
+/**
+ * Lambda Function, moves all jobs in session from state 'create|pause' to
+ * 'submit'.
+ * @module post-session-start
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use AWS.S3'
 'use uuid'
-// https://github.com/motdotla/node-lambda-template
-// NOTE:  CORS For Integrated Lambda Proxy Must be done in Lambda functions
-//  because "Integration Response" is disabled, CORS settings will not work!
-//  Follow the link:
-//     https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
-//
 console.log('Loading function');
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
@@ -72,6 +75,7 @@ exports.handler = function(event, context, callback) {
 
             var topicArn = response_topic.data.TopicArn;
             console.log("SUCCESS: " + JSON.stringify(response_topic.data));
+            var id_list = [];
             // TAKE S3 LIST OBJECTS
             for (var index = 0; index < response.data.Contents.length; index++) {
                 var params = {
@@ -89,6 +93,7 @@ exports.handler = function(event, context, callback) {
                     console.log("SESSION: " + JSON.stringify(obj));
                     for (var index=0; index < obj.length; index++) {
                       console.log("INDEX: " + index);
+                      id_list.push(obj[index]['Id']);
                       var payload = JSON.stringify(obj[index]);
                       console.log("Payload: " + payload);
                       var params = {
@@ -104,7 +109,7 @@ exports.handler = function(event, context, callback) {
                         }
                         else  {
                           console.log("PUBLISH: " + JSON.stringify(data));           // successful response
-                          callback(null, {statusCode:'200', body: "",
+                          callback(null, {statusCode:'200', body: JSON.stringify(id_list),
                             headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
                           });
                         }

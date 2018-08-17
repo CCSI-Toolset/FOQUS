@@ -1,13 +1,15 @@
+/**
+ * Lambda Function, Add an Array of jobs to a Session
+ * @module post-session-append
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use AWS.S3'
 'use AWS.DynamoDB'
 'use uuid'
-// https://github.com/motdotla/node-lambda-template
-// NOTE:  CORS For Integrated Lambda Proxy Must be done in Lambda functions
-//  because "Integration Response" is disabled, CORS settings will not work!
-//  Follow the link:
-//     https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
-//
 console.log('Loading function');
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
@@ -68,8 +70,10 @@ exports.handler = function(event, context, callback) {
         }};
         var item = null;
         var i = 0;
+        var id_list = [];
         for(var i=0; i<body.length; i++) {
           var d = new Date(milliseconds+i);
+          id_list.push(body[i].Id);
           item = {Id: body[i].Id,
                   Type: "Job",
                   Create: d.toISOString(),
@@ -90,8 +94,8 @@ exports.handler = function(event, context, callback) {
           if (err) console.log(err, err.stack); // an error occurred
           else {
             console.log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
-            callback(null, {statusCode:'200', body: body.length,
-              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
+            callback(null, {statusCode:'200', body: JSON.stringify(id_list),
+              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
             });
           }
         });

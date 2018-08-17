@@ -108,6 +108,19 @@ def sd_col_list(sd, time=None):
     # return the list of of columns and list of associated data.
     return (columns, dat)
 
+def uq_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return (xnames , xvals)
+
+    else:
+        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+
 def incriment_name(name, exnames):
     """
     Check if a name is already in a list of names. If it is generate a new
@@ -146,21 +159,22 @@ def search_term_list(st):
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
-        self.filters = None # do this to avoid set column from attribute warn
-        self.filters = {} # now that atribute exists set to empty dict
-        self.filters["none"] = \
-            dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
-        self.filters["all"] = dataFilter()
-        self._current_filter = None
-        self._filter_indexes = None # avoid set column from attribute warn
-        self._filter_indexes = [] # now that atribute exists set to empty list
-        self.flatTable = True
-        self["set"] = []
-        self["result"] = []
-        self._filter_mask = None
-        self.hidden_cols = None
-        self.hidden_cols = []
-        self.calculated_columns = OrderedDict()
+        if "set" not in self.columns:
+            self.filters = None # do this to avoid set column from attribute warn
+            self.filters = {} # now that atribute exists set to empty dict
+            self.filters["none"] = \
+                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+            self.filters["all"] = dataFilter()
+            self._current_filter = None
+            self._filter_indexes = None # avoid set column from attribute warn
+            self._filter_indexes = [] # now that atribute exists set to empty list
+            self.flatTable = True
+            self["set"] = []
+            self["result"] = []
+            self._filter_mask = None
+            self.hidden_cols = None
+            self.hidden_cols = []
+            self.calculated_columns = OrderedDict()
 
     def set_calculated_column(self, name, expr):
         self.calculated_columns[name] = expr
@@ -218,18 +232,27 @@ class Results(pd.DataFrame):
         """
         Save the data to a dict that can be dumped to json
         """
+        def convertIndex(n):
+            try:
+                return int(n.item())
+            except:
+                return n
+
         sd = {
             "__columns":list(self.columns),
-            "__indexes":list(self.index),
+            "__indexes":map(convertIndex, list(self.index)),
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
-            sd[i] = list(self.loc[i])
-            for j, e in enumerate(sd[i]):
-                if isinstance(e, np.bool_):
-                    sd[i][j] = bool(e)
+            key = str(i)
+            sd[key] = list(self.loc[i])
+            for j, e in enumerate(sd[key]):
+                if isinstance(e, np.float64):
+                    sd[key][j] = e.item()
+                elif isinstance(e, np.bool_):
+                    sd[key][j] = bool(e)
         sd["calculated_columns"] = self.calculated_columns
         return sd
 
@@ -302,6 +325,25 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         for i, col in enumerate(columns):
             self.loc[row, col] = dat[i]
+        self.update_filter_indexes()
+
+    def uq_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = uq_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in xrange(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
     def read_csv(self, *args, **kwargs):
@@ -419,7 +461,7 @@ class Results(pd.DataFrame):
                 tstack.append(np.logical_xor(t1))
         if len(tstack) > 0:
             mask = tstack.pop()
-        indexes = list(self[mask].index)
+        indexes = map(int, list(self[mask].index))
         return (indexes, mask)
 
     def clearData(self, *args, **kwargs):

@@ -1,11 +1,13 @@
+/**
+ * Lambda Function, returns a UUID for a new session resource
+ * @module post-session-create
+ * @author Joshua Boverhof <jrboverhof@lbl.gov>
+ * @version 1.0
+ * @license See LICENSE.md
+ * @see https://github.com/motdotla/node-lambda-template
+ */
 'use strict';
 'use uuid'
-// https://github.com/motdotla/node-lambda-template
-// NOTE:  CORS For Integrated Lambda Proxy Must be done in Lambda functions
-//  because "Integration Response" is disabled, CORS settings will not work!
-//  Follow the link:
-//     https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post
-//
 const uuidv4 = require('uuid/v4');
 exports.handler = function(event, context, callback) {
   const done = (err, res) => callback(null, {
@@ -18,7 +20,7 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod == "POST") {
       //var body = JSON.parse(event.body);
       var session_id = uuidv4();
-      callback(null, {statusCode:'200', body: session_id,
+      callback(null, {statusCode:'200', body: JSON.stringify(session_id),
         headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/text'}
       });
   }

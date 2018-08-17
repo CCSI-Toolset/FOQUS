@@ -1,3 +1,10 @@
+"""foqus_worker.py
+* The AWS Cloud FOQUS worker to start FOQUS
+
+Joshua Boverhof, Lawrence Berkeley National Lab
+
+See LICENSE.md for license and copyright details.
+"""
 import boto3,optparse
 import sys,json,signal,os,errno,uuid,threading,time
 from os.path import expanduser

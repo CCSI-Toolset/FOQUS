@@ -121,9 +121,10 @@ class TurbineLiteDB:
         self._sns_notification(dict(resource='job', event='status',
             rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
     def job_save_output(self, jobGuid, workingDir, rc=0):
-        _log.info("%s.job_save_output", self.__class__)
+        _log.info("%s.xxxjob_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
+        _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
         self._sns_notification(dict(resource='job',
             event='output', jobid=jobGuid, value=output, rc=rc))
 

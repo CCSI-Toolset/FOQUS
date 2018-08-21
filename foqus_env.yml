@@ -6,11 +6,11 @@ dependencies:
   - python=2.7
   - pip
   - numpy
-  - pandas>0.20
+  - pandas=0.21
   - boto3
   - pyparsing
   - requests
-  - matplotlib=1.5.3
+  - matplotlib=2.0.0
   - scipy
   - numpy
   - pyqt

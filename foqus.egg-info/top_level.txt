@@ -1,2 +1,0 @@
-foqus_lib
-test

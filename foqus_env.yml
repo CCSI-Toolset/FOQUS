@@ -14,7 +14,7 @@ dependencies:
   - scipy
   - numpy
   - pyqt
-#  - pywin32
+  - pywin32
   - nlopt
   - pip:
     - Flask-Testing

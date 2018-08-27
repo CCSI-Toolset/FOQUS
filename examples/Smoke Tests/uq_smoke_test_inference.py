@@ -7,7 +7,7 @@ before calling the inference function in charge of plotting this.
 I need to figure out what is booting out this script if I want to completely 
 """
 
-MAX_RUN_TIME = 150000 # Maximum time to let script run in ms.
+MAX_RUN_TIME = 500000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
@@ -490,4 +490,4 @@ timersStop() #make sure all timers are stopped
 timers['msg_no'].start(1000)
 MainWin.close()
 timerWait('msg_no')
-print("Exited Code")
+print("Exited Code: UQ Inference")

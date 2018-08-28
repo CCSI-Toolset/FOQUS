@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtWidgets
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.framework.ouu.OUU import OUU
 
-MAX_RUN_TIME = 600000 # Maximum time to let script run in ms.
+MAX_RUN_TIME = 6000000 # Maximum time to let script run in ms.
 testOutFile = 'ui_test_out.txt'
 with open(testOutFile, 'w') as f: # file to write test results to
     f.write('Test Results\n')
@@ -279,4 +279,4 @@ timersStop() #make sure all timers are stopped
 timers['msg_no'].start(1000)
 MainWin.close()
 timerWait('msg_no')
-print("Exited Code")
+print("Exited Code: OUU Test 3")

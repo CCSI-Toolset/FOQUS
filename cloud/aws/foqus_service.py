@@ -41,7 +41,7 @@ def _set_working_dir():
         if e.errno != errno.EEXIST:
             raise
     os.chdir(WORKING_DIRECTORY)
-    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.INFO)
+    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
     _log = logging.getLogger()
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
 
@@ -75,7 +75,9 @@ class TurbineLiteDB:
     def __init__(self, close_after=True):
         self._sns = boto3.client('sns', region_name='us-east-1')
         topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
+        topic_messages = self._sns.create_topic(Name='FOQUS-Message-Topic')
         self._topic_arn = topic['TopicArn']
+        self._topic_msg_arn = topic_messages['TopicArn']
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
@@ -92,7 +94,10 @@ class TurbineLiteDB:
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
     def add_message(self, msg, jobid, rc=0):
-        _log.info("%s.add_message", self.__class__)
+        obj = json.dumps(dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid))
+        _log.debug("%s.add_message: %s", self.__class__, obj)
+        self._sns.publish(Message=obj, TopicArn=self._topic_msg_arn)
+        
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
         self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
@@ -105,7 +110,8 @@ class TurbineLiteDB:
         _log.info("%s.consumer_id", self.__class__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
-        self._sns_notification(dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id))
+        self._sns_notification(dict(resource='consumer', instanceid=_instanceid,
+                                    event='running', rc=rc, consumer=self.consumer_id))
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         _log.info("%s.get_job_id", self.__class__)
         return guid, jid, simId, reset
@@ -172,8 +178,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self.hWaitStop = win32event.CreateEvent(None,0,0,None)
         socket.setdefaulttimeout(60)
         self.stop = False
-        self._instanceid = "UNKNOWN"
-
+        self._receipt_handle= None
+        self._sqs = boto3.client('sqs', region_name='us-east-1')
+        self._queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
+        
     @property
     def stop(self):
         return self._stop
@@ -193,47 +201,44 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_,''))
 
+        global _instanceid
         _log.debug("starting")
+        self._receipt_handle= None
         VisibilityTimeout = 300
         if DEBUG:
             VisibilityTimeout = 0
         try:
-            self._instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
         except:
             pass
 
-        if self.stop: return
-
         db = TurbineLiteDB()
         db.consumer_register()
-        job_desc = None
-        while not job_desc:
-            if self.stop:
-                return
-            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
-
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
-        dat = None
+        while not self.stop:
+            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+            if not job_desc: continue
+            try:
+                dat = self.setup_foqus(db, job_desc)
+            except NotImplementedError, ex:
+                _log.error("FOQUS NotImplementedError: %s", ex)
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job %s: failed in setup not implemented error", job_desc['Id'])
+            except Exception, ex:
+                _log.error("setup foqus exception: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job %s: failed in setup", job_desc['Id'])
+            else:
+                _log.debug("BEFORE run_foqus")
+                self.run_foqus(db, dat, job_desc)
 
-        try:
-            dat = self.setup_foqus(db, job_desc)
-        except NotImplementedError, ex:
-            _log.debug("FOQUS NotImplementedError: %s", ex)
-            db.job_change_status(job_desc['Id'], "error")
-            db.add_message("job %s: failed in setup", job_desc['Id'])
-        except Exception, ex:
-            _log.info("setup foqus exception: %s", str(ex))
-
-        if dat is not None:
-            self.run_foqus(db, dat, job_desc)
-
-        if not DEBUG:
-            # DELETE received message from queue
-            sqs.delete_message(
-                QueueUrl=queue_url,
-                ReceiptHandle=receipt_handle
+            _log.debug("DELETE received message from queue: %s", self._receipt_handle)
+            self._sqs.delete_message(
+                QueueUrl=self._queue_url,
+                ReceiptHandle=self._receipt_handle
             )
+        _log.debug("STOP CALLED")
 
     def pop_job(self, VisibilityTimeout):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
@@ -246,13 +251,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         "Visible":false,
         "Id":"8a3033b4-6de2-409c-8552-904889929704"}]
         """
-        _instanceid = self._instanceid
-
-        sqs = boto3.client('sqs', region_name='us-east-1')
-        queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
         # Receive message from SQS queue
-        response = sqs.receive_message(
-            QueueUrl=queue_url,
+        response = self._sqs.receive_message(
+            QueueUrl=self._queue_url,
             AttributeNames=[
                 'SentTimestamp'
             ],
@@ -268,7 +269,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             return
 
         message = response['Messages'][0]
-        receipt_handle = message['ReceiptHandle']
+        self._receipt_handle = message['ReceiptHandle']
         body = json.loads(message['Body'])
         job_desc = json.loads(body['Message'])
         _log.info('Job Desription: ' + body['Message'])
@@ -338,11 +339,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         # dat.flowsheet.nodes.
         s3 = boto3.client('s3', region_name='us-east-1')
         bucket_name = 'foqus-simulations'
-        l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
-        if not l.has_key('Contents'):
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
-            return
-
+        prefix = 'anonymous/%s' %job_desc['Simulation']
+        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
+        assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
         for nkey in dat.flowsheet.nodes:
             if dat.flowsheet.nodes[nkey].turbApp is None:
@@ -461,11 +460,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 break
 
         if terminate:
-            db.add_message("job %s: terminate" %guid)
+            db.add_message("job %s: terminate" %guid, guid)
             return
 
         if self.stop:
-            db.add_message("job %s: windows service stopped" %guid)
+            db.add_message("job %s: windows service stopped" %guid, guid)
             return
 
         if gt.res[0]:
@@ -498,9 +497,6 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         #stop all Turbine consumers
         dat.flowsheet.turbConfig.stopAllConsumers()
         dat.flowsheet.turbConfig.closeTurbineLiteDB()
-
-        #sys.exit(exit_code)
-        return exit_code
 
 
 if __name__ == '__main__':

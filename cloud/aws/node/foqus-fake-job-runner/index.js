@@ -36,14 +36,78 @@ var publish_job_updates = function(message) {
    var updates = [
      "[{\"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
      "[{\"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-     "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": {\"input\": {\"graph\": {}, \"BFB\": {\"BFBadsT.dx\": 0.062397, \"BFBadsT.Lb\": 2.203, \"BFBadsB.Cr\": 1.0, \"BFBRGN.Dt\": 9.041, \"GHXfg.GasIn.T\": 54.0, \"GHXfg.A_exch\": 16358.0, \"BFBadsM.Dt\": 15.0, \"BFBadsB.dx\": 0.0127, \"BFBadsT.Dt\": 15.0, \"BFBadsM.Lb\": 1.972, \"BFBRGN.Lb\": 8.886, \"BFBRGNTop.Dt\": 9.195, \"GHXfg.GasIn.P\": 1.01325, \"Kd\": 100.0, \"BFBadsB.Dt\": 11.897, \"BFBadsM.dx\": 0.06695, \"BFBRGN.Cr\": 1.0, \"BFBRGNTop.Lb\": 7.1926, \"fg_flow\": 100377.0, \"dp\": 0.00015, \"BFBadsT.Cr\": 1.0, \"BFBRGNTop.Cr\": 1.0, \"BFBadsM.Cr\": 1.0, \"BFBadsB.Lb\": 2.085}}, \"nodeError\": {\"BFB\": 0}, \"nodeSettings\": {\"BFB\": {\"Reset\": false, \"Maximum Run Time (s)\": 840.0, \"Retry\": false, \"TimeSeries\": [0.0], \"Script\": \"\", \"TimeUnits\": \"Hours\", \"Allow Simulation Warnings\": true, \"homotopy\": 0, \"Min Status Check Interval\": 4.0, \"RunMode\": \"Steady State\", \"Snapshot\": \"\", \"Initialize Model\": false, \"Max Status Check Interval\": 5.0, \"printlevel\": 0, \"Reset on Fail\": true, \"Maximum Wait Time (s)\": 1440.0, \"Visible\": false, \"Max consumer reuse\": 90, \"Override Turbine Configuration\": \"\", \"MinStepSize\": 0.001}}, \"output\": {\"graph\": {\"error\": 0.0}, \"BFB\": {\"removalCO2\": 0.8999964373466817, \"removalCO2_slack\": 0.0, \"SHX.SteamFR\": 37683.43278161038, \"slugam_slack\": 0.0, \"GHXfg.HXIn.F\": 135788.8395015208, \"slugrb_slack\": 0.0, \"Cost_op_fixed\": 54526718.57072218, \"BFBRGN.GasIn.F\": 1357.0814214980398, \"Cost_ads\": 34830765.96283022, \"Cost_steam_power\": 179203.44430650023, \"SHX.RichIn.T\": 83.99312572585319, \"SHX.CWFR\": 26890.328479471482, \"slugab_slack\": 0.0, \"Cost_op_cooling_water\": 12577963.846287617, \"Cost_toc_sorb\": 83874472.31479213, \"Cost_rgn\": 16321781.413333291, \"status\": 0.0, \"SHX.RichOut.T\": 170.0, \"slugrt_slack\": 0.0, \"Cost_toc\": 2111440309.1504824, \"F_solids\": 12681737.021801885, \"Cost_shx\": 39020395.75661277, \"Cost_coe_obj\": 138.85964658190665, \"Cost_aux_power\": 23378.969592384507, \"Cost_op_var\": 172437413.51951027, \"Cost_op_cooling_water_flow\": 2927442.0442882474, \"SHX.LeanIn.T\": 146.3820219819483, \"SHX.LeanOut.T\": 70.57864346590641, \"Cost_steam_tot\": 696035.1169336186, \"slugat_slack\": 0.0, \"Cost_coe\": 138.85964658190665}}, \"turbineMessages\": {\"BFB\": \"\"}, \"graphError\": 0, \"solTime\": 98.46600008010864}, \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+     "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": \"DUMMY\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
      "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
    ]
+
+   /*
+   {
+     "Type" : "Notification",
+     "MessageId" : "45dc5a91-9e4b-587f-b1ac-096f12ba3b30",
+     "TopicArn" : "arn:aws:sns:us-east-1:754323349409:FOQUS-Update-Topic",
+     "Message" : "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": {\"input\": {\"test\": {\"x2\": 2.0, \"x1\": 1.0}, \"graph\": {}}, \"nodeError\": {\"test\": 0}, \"nodeSettings\": {\"test\": {}}, \"output\": {\"test\": {\"y\": 3.0}, \"graph\": {\"error\": 0.0}}, \"turbineMessages\": {\"test\": \"NULL\"}, \"graphError\": 0, \"solTime\": 0.0}, \"jobid\": \"221619c0-f87d-4704-8937-ef0b592e4f9e\"}]",
+     "Timestamp" : "2018-08-27T23:35:13.609Z",
+     "SignatureVersion" : "1",
+     "Signature" : "qFmtj/Mrf0G++FuPyCxyqQmp3NwN6aTr4tUUZ2gOdtk3QRvOcyWnUS9C1WBSz7RcikG9HgGaRVGonm+rh6Ap8VH6DiUr8USCeY2YVSJtX+eXvVmLXaFtaoNGb6wiuuSP6+ZmGOyYxKp2+INho8Zatp0ra+b6b0wMRC/c1KzWng7eQXXQ2R4JNIS9tHZKy7ZRHWyDIQpZ5EKU4s+usqHC6hiKGFjm6PeJIoXvW7sx3s5K88fUwFxRC/JSZnMO8LIaPeiUmMygUvF5LASTe+2jZIlN3oFaxUN7ZR6LBJKbLXxcfih97h3j8p6PaNLHxuhwUZ7smXWDENMFIifque0HhA==",
+     "SigningCertURL" : "https://sns.us-east-1.amazonaws.com/SimpleNotificationService-eaea6120e66ea12e88dcd8bcbddca752.pem",
+     "UnsubscribeURL" : "https://sns.us-east-1.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-east-1:754323349409:FOQUS-Update-Topic:f21d2775-6f35-4775-b931-923d8cc970f2"
+   }
+   */
 
    var seconds = 2;
    for (var i=0; i<updates.length; i++) {
      var obj = JSON.parse(updates[i]);
      obj[0].jobid = job_request.Id;
+     if (i == 2 && job_request.Simulation == "zzfoqus_BFB") {
+       obj[0].value = {
+        "input": {
+           "graph": {},
+           "BFB": {
+             "BFBadsT.dx": 0.062397, "BFBadsT.Lb": 2.203, "BFBadsB.Cr": 1.0, "BFBRGN.Dt": 9.041, "GHXfg.GasIn.T": 54.0, "GHXfg.A_exch": 16358.0, "BFBadsM.Dt": 15.0,
+             "BFBadsB.dx": 0.0127, "BFBadsT.Dt": 15.0, "BFBadsM.Lb": 1.972, "BFBRGN.Lb": 8.886, "BFBRGNTop.Dt": 9.195, "GHXfg.GasIn.P": 1.01325, "Kd": 100.0, "BFBadsB.Dt": 11.897, "BFBadsM.dx": 0.06695, "BFBRGN.Cr": 1.0,
+             "BFBRGNTop.Lb": 7.1926, "fg_flow": 100377.0, "dp": 0.00015, "BFBadsT.Cr": 1.0, "BFBRGNTop.Cr": 1.0, "BFBadsM.Cr": 1.0, "BFBadsB.Lb": 2.085}
+           },
+           "nodeError": {"BFB": 0},
+           "nodeSettings": {
+             "BFB": {
+               "Reset": false, "Maximum Run Time (s)": 840.0, "Retry": false, "TimeSeries": [0.0], "Script": "", "TimeUnits": "Hours", "Allow Simulation Warnings": true,
+               "homotopy": 0, "Min Status Check Interval": 4.0, "RunMode": "Steady State", "Snapshot": "", "Initialize Model": false, "Max Status Check Interval": 5.0,
+               "printlevel": 0, "Reset on Fail": true,
+               "Maximum Wait Time (s)": 1440.0, "Visible": false, "Max consumer reuse": 90, "Override Turbine Configuration": "", "MinStepSize": 0.001
+             }
+        },
+        "output": {
+          "graph": {"error": 0.0},
+          "BFB": {
+            "removalCO2": 0.8999964373466817, "removalCO2_slack": 0.0, "SHX.SteamFR": 37683.43278161038, "slugam_slack": 0.0,
+            "GHXfg.HXIn.F": 135788.8395015208, "slugrb_slack": 0.0, "Cost_op_fixed": 54526718.57072218, "BFBRGN.GasIn.F": 1357.0814214980398, "Cost_ads": 34830765.96283022,
+            "Cost_steam_power": 179203.44430650023, "SHX.RichIn.T": 83.99312572585319, "SHX.CWFR": 26890.328479471482, "slugab_slack": 0.0, "Cost_op_cooling_water": 12577963.846287617,
+            "Cost_toc_sorb": 83874472.31479213, "Cost_rgn": 16321781.413333291, "status": 0.0, "SHX.RichOut.T": 170.0, "slugrt_slack": 0.0, "Cost_toc": 2111440309.1504824,
+            "F_solids": 12681737.021801885, "Cost_shx": 39020395.75661277, "Cost_coe_obj": 138.85964658190665, "Cost_aux_power": 23378.969592384507, "Cost_op_var": 172437413.51951027,
+            "Cost_op_cooling_water_flow": 2927442.0442882474, "SHX.LeanIn.T": 146.3820219819483, "SHX.LeanOut.T": 70.57864346590641, "Cost_steam_tot": 696035.1169336186, "slugat_slack": 0.0,
+            "Cost_coe": 138.85964658190665
+          }
+        },
+        "turbineMessages": {"BFB": ""},
+        "graphError": 0,
+        "solTime": 98.46600008010864
+      };
+     } else if (i == 2 && job_request.Simulation == "zzfoqus_test_session") {
+       obj[0].value =  {
+         "input": {
+           "test": {"x2": 2.0, "x1": 1.0},
+           "graph": {}
+         },
+         "nodeError": {"test": 0},
+         "nodeSettings": {"test": {}},
+         "output": {
+           "test": {"y": 3.0},
+           "graph": {"error": 0.0}
+         },
+         "turbineMessages": {"test": "NULL"},
+         "graphError": 0,
+         "solTime": 0.0};
+     }
      var message = JSON.stringify(obj);
      console.log("publish: " + message);
      var params = {
@@ -65,7 +129,7 @@ var publish_job_updates = function(message) {
 console.log('Loading function');
 exports.handler = function(event, context, callback) {
   /*
-    "Message": "[{\"status\": \"setup\",
+    "Message": "[{"status\": \"setup\",
     \"resource\": \"job\",
     \"rc\": 0,
     \"consumer\": \"79cc3b73-97d0-4f5e-b7da-29e011501146\",

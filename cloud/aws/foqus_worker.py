@@ -434,15 +434,11 @@ class TurbineLiteDB:
             rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
     def job_save_output(self, jobGuid, workingDir, rc=0):
         _log.info("%s.job_save_output", self.__class__)
-        print "HI"*100
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
-
         scrub_empty_string_values_for_dynamo(output)
-      
-        print "OUTPUT: ", output
+        _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
         time.sleep(5)
-
         self._sns_notification(dict(resource='job',
             event='output', jobid=jobGuid, value=output, rc=rc))
 

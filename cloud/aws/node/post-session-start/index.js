@@ -35,6 +35,7 @@ exports.handler = function(event, context, callback) {
       body: err ? err.message : JSON.stringify(res),
       headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*'
       },
   });
   if (event.httpMethod == "POST") {
@@ -61,7 +62,7 @@ exports.handler = function(event, context, callback) {
         console.log("LEN: " + response.data.Contents.length)
 
         var sns = new AWS.SNS();
-        var request = sns.createTopic({
+        var request_topic = sns.createTopic({
             Name: 'FOQUS-Job-Topic'
           }, function(err, data) {
                 if (err) {
@@ -71,12 +72,14 @@ exports.handler = function(event, context, callback) {
                 }
                 else     console.log("TOPIC: " + JSON.stringify(data));
         });
-        request.on('success', function(response_topic) {
+        request_topic.on('success', function(response_topic) {
 
             var topicArn = response_topic.data.TopicArn;
             console.log("SUCCESS: " + JSON.stringify(response_topic.data));
             var id_list = [];
+
             // TAKE S3 LIST OBJECTS
+            // Could have multiple S3 objects ( each representing single start )
             for (var index = 0; index < response.data.Contents.length; index++) {
                 var params = {
                   Bucket: s3_bucket_name,
@@ -102,19 +105,18 @@ exports.handler = function(event, context, callback) {
                       };
                       sns.publish(params, function(err, data) {
                         if (err) {
+                          console.log("ERROR")
                           console.log(err, err.stack); // an error occurred
                           //done(new Error(`"${err.stack}"`));
-                          done(new Error(`SNS Publish ERROR:   "${err.stack}"`));
+                          //done(new Error(`SNS Publish ERROR:   "${err.stack}"`));
                           //return;
                         }
                         else  {
                           console.log("PUBLISH: " + JSON.stringify(data));           // successful response
-                          callback(null, {statusCode:'200', body: JSON.stringify(id_list),
-                            headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
-                          });
                         }
                       });
                     }
+                    done(null, id_list);
                   }
                 });
             }

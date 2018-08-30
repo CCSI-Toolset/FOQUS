@@ -29,10 +29,13 @@ var process_job_event = function(ts, message, callback) {
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set " + status + " = :s, ConsumerId=:c",
+        UpdateExpression: "set #w = :s, ConsumerId=:c",
         ExpressionAttributeValues:{
             ":s":ts,
             ":c":consumer
+        },
+        ExpressionAttributeNames:{
+            "#w":status
         },
         ReturnValues:"UPDATED_NEW"
     };
@@ -98,6 +101,8 @@ var process_consumer_event = function(ts, message, callback) {
     if (instance_id != NaN) {
       update_expr = "set " + e + " =:s, instance=:i";
       expr_attr_vals = {":s":ts, ":i":instance_id};
+    } else {
+      instance_id = "None";
     }
     var params = {
         TableName:tablename,

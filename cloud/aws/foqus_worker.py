@@ -1,6 +1,6 @@
 """foqus_worker.py
 * The AWS Cloud FOQUS worker to start FOQUS
-
+This is mostly for testing.
 Joshua Boverhof, Lawrence Berkeley National Lab
 
 See LICENSE.md for license and copyright details.

@@ -44,6 +44,8 @@ def _set_working_dir():
     logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
     _log = logging.getLogger()
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
+    
+    logging.getLogger('boto3').setLevel(logging.ERROR)
 
 _set_working_dir()
 _log.debug('Loading')
@@ -93,9 +95,11 @@ class TurbineLiteDB:
         _log.info("%s.closeConnection", self.__class__)
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
-    def add_message(self, msg, jobid, rc=0):
-        obj = json.dumps(dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid))
-        _log.debug("%s.add_message: %s", self.__class__, obj)
+    def add_message(self, msg, jobid, **kw):
+        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid)
+        d.update(kw)
+        obj = json.dumps(d)
+        _log.debug("%s.add_message: %s", self.__class__, obj)  
         self._sns.publish(Message=obj, TopicArn=self._topic_msg_arn)
         
     def consumer_keepalive(self, rc=0):
@@ -123,7 +127,7 @@ class TurbineLiteDB:
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         _log.info("%s.job_prepare", self.__class__)
     def job_change_status(self, jobGuid, status, rc=0):
-        _log.info("%s.job_change_status", self.__class__)
+        _log.info("%s.job_change_status %s", self.__class__, status)
         self._sns_notification(dict(resource='job', event='status',
             rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
     def job_save_output(self, jobGuid, workingDir, rc=0):
@@ -197,6 +201,8 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self.stop = True
 
     def SvcDoRun(self):
+        """ Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
+        """
         servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_,''))
@@ -204,13 +210,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         global _instanceid
         _log.debug("starting")
         self._receipt_handle= None
-        VisibilityTimeout = 300
-        if DEBUG:
-            VisibilityTimeout = 0
+        VisibilityTimeout = 60*10
         try:
             _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
         except:
-            pass
+            _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
         db.consumer_register()
@@ -222,25 +226,40 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             try:
                 dat = self.setup_foqus(db, job_desc)
             except NotImplementedError, ex:
-                _log.error("FOQUS NotImplementedError: %s", ex)
+                _log.exception("setup foqus NotImplementedError: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job %s: failed in setup not implemented error", job_desc['Id'])
+                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
+            except urllib2.URLError, ex:
+                _log.exception("setup foqus URLError: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
             except Exception, ex:
-                _log.error("setup foqus exception: %s", str(ex))
+                _log.exception("setup foqus exception: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job %s: failed in setup", job_desc['Id'])
+                db.add_message("job failed in setup %s: %s" %(ex.name, str(ex)), job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
             else:
                 _log.debug("BEFORE run_foqus")
+                self._delete_sqs_job()
                 self.run_foqus(db, dat, job_desc)
-
-            _log.debug("DELETE received message from queue: %s", self._receipt_handle)
-            self._sqs.delete_message(
-                QueueUrl=self._queue_url,
-                ReceiptHandle=self._receipt_handle
-            )
+                
         _log.debug("STOP CALLED")
 
-    def pop_job(self, VisibilityTimeout):
+    def _delete_sqs_job(self):
+        """ Delete the job after setup completes or there is an error.
+        """
+        _log.debug("DELETE received message from queue: %s", self._receipt_handle)
+        self._sqs.delete_message(
+            QueueUrl=self._queue_url,
+            ReceiptHandle=self._receipt_handle
+        ) 
+
+    def pop_job(self, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
 
         SQS Job Body Contain Job description, for example:

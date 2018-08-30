@@ -83,38 +83,40 @@ exports.handler = function(event, context, callback) {
                     State: "success",
                     Messages: null,
                     Input: item.Input,
-                    Output:item.output
+                    Output:item.output,
                     Session: item.SessionId,
                     Initialize: item.Initialize,
                     Reset:item.Reset,
                     Visible: false,
                     Input:item.Input,
-                    Consumer: "",
+                    Consumer: item.ConsumerId,
                     Create: item.Create,
                     Submit: item.Submit,
                     Setup: item.setup,
                     Running: item.running,
                     Finished: item.success});
                 } else if (item.error != undefined) {
-                  console.log('item: ', item);
+                  console.log('error item: ', item);
                   body.push({Id: item.Id,
                     Guid: item.Id,
                     Simulation: item.Simulation,
                     State: "error",
                     Messages: null,
                     Input: item.Input,
-                    Output:item.output
+                    Output:item.output,
                     Session: item.SessionId,
                     Initialize: item.Initialize,
                     Reset:item.Reset,
                     Visible: false,
                     Input:item.Input,
-                    Consumer: "",
+                    Consumer: item.ConsumerId,
                     Create: item.Create,
                     Submit: item.Submit,
                     Setup: item.setup,
                     Running: item.running,
                     Finished: item.error});
+                } else {
+                  console.log('skip item: ', item);
                 }
               }
               if (body.length == 0) {

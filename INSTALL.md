@@ -20,7 +20,7 @@ It is possible to install git through Anaconda: ``conda install git``
 
 ### Install Turbine and SimSinter (Windows Only)
 * This requires [Microsoft SQL Server Compact 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17876).
-* Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi) installers.
+* Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/tag/2.0.1) installers.
 * Install SimSinter first, then TurbineLite.
 * Do one of these two things (only after install).
     * Restart computer, or

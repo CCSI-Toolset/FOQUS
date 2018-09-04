@@ -408,6 +408,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.outputs_table.setColumnCount(2)
         self.outputs_table.setRowCount(len(outputNames))
         self.useAsConstraint = [False] * len(outputNames)
+        self.useAsDerivative = [False] * len(outputNames)
         for r in xrange(len(outputNames)):
             # radio = QRadioButton()
             # if r == 0:

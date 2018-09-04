@@ -84,15 +84,17 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         nVariableInputs = len(variableInputIndices)
         nOutputs = len(outputs)
         nSamples = num_fmin = 1  # number of random restarts
+        totalOutputs = nOutputs + constraints.count(True) + derivatives.count(True)
         
         f = open(outfile, 'w')
         if init_input:
             f.write('PSUADE_IO\n')
-            f.write('%d %d %d\n' % (nVariableInputs, nOutputs, nSamples))
+            f.write('%d %d %d\n' % (nVariableInputs, totalOutputs, nSamples))
             f.write("1 0\n")         # assume initial point has not been run
             for x in init_input:           
                 f.write(' % .16e\n' % x)
-            f.write(' 9.9999999999999997e+34\n')
+            for i in range(totalOutputs):
+                f.write(' 9.9999999999999997e+34\n')
             f.write("PSUADE_IO\n")
 
         # TO DO: merge with RSAnalyzer.writeRSdata()
@@ -559,6 +561,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             alpha = min(max(alpha,0.5),1.0)   # 0.05 <= alpha <= 1.0
             f.write('%f\n' % alpha)
 
+        f.write('1\n')
+        
         # ... get sample for discrete UQ variables
         # The file format should be:
         # line 1: <nSamples> <nInputs>

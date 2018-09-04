@@ -1129,8 +1129,8 @@ class turbineConfiguration():
         comProb = False
         res = None
         state = 'submit' #initial state of the job
-        failedStates = ['error', 'expired', 'cancel', 'terminate']
-        succesStates = ['success', 'warning']
+        failedStates = ['expired', 'cancel', 'terminate']
+        succesStates = ['error', 'success', 'warning']
         while True: # start status checking loop
             # wait checkInt seconds wait before checking first time,
             #probably started the job, and it won't finish instantly

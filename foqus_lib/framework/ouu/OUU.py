@@ -561,6 +561,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             alpha = min(max(alpha,0.5),1.0)   # 0.05 <= alpha <= 1.0
             f.write('%f\n' % alpha)
 
+        f.write('1\n')
+        
         # ... get sample for discrete UQ variables
         # The file format should be:
         # line 1: <nSamples> <nInputs>

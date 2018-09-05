@@ -1,5 +1,5 @@
 {
-  "name": "get-simulation-input-configuration",
+  "name": "get-simulation-input",
   "version": "1.0.0",
   "description": "Returns Simulation Flowsheet",
   "main": "index.js",

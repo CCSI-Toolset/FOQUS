@@ -32,8 +32,25 @@ exports.handler = function(event, context, callback) {
   });
   if (event.httpMethod == "PUT") {
     var array = event.path.split('/');
-    var resource = array.pop();
-    if (array.pop() != "input") {
+    var item = array.pop();
+    var key = null;
+
+    if (item == "input") {
+      done(new Error(`Unsupported path "${event.path}"`));
+    }
+
+    while (item != "input") {
+      if (key == null) {
+        key = item;
+      }
+      else {
+        key = item + "/" + key;
+      }
+      item = array.pop();
+    }
+    //var resource = array.pop();
+    // simulation/{name}/input/{file_path}
+    if (item != "input") {
       done(new Error(`Unsupported path "${event.path}"`));
     }
     var name = array.pop();
@@ -46,12 +63,13 @@ exports.handler = function(event, context, callback) {
       Body: event.body
     };
 
-    if (resource == "configuration") {
+    if (key == "configuration") {
       params.Key = default_user_name + "/" + name + "/session.foqus";
     }
     else {
-      done(new Error(`Unsupported resource "${event.path}"`));
+      params.Key = default_user_name + "/" + name + "/" + key;
     }
+
     var client = new AWS.S3();
     //var client = s3.createClient(options);
     client.putObject(params, function(err, data) {

@@ -44,7 +44,7 @@ def _set_working_dir():
     logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
     _log = logging.getLogger()
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
-    
+
     logging.getLogger('boto3').setLevel(logging.ERROR)
 
 _set_working_dir()
@@ -99,9 +99,9 @@ class TurbineLiteDB:
         d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid)
         d.update(kw)
         obj = json.dumps(d)
-        _log.debug("%s.add_message: %s", self.__class__, obj)  
+        _log.debug("%s.add_message: %s", self.__class__, obj)
         self._sns.publish(Message=obj, TopicArn=self._topic_msg_arn)
-        
+
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
         self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
@@ -185,7 +185,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._receipt_handle= None
         self._sqs = boto3.client('sqs', region_name='us-east-1')
         self._queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
-        
+
     @property
     def stop(self):
         return self._stop
@@ -240,14 +240,14 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             except Exception, ex:
                 _log.exception("setup foqus exception: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job failed in setup %s: %s" %(ex.name, str(ex)), job_desc['Id'], exception=traceback.format_exc())
+                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
             else:
                 _log.debug("BEFORE run_foqus")
                 self._delete_sqs_job()
                 self.run_foqus(db, dat, job_desc)
-                
+
         _log.debug("STOP CALLED")
 
     def _delete_sqs_job(self):
@@ -257,7 +257,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._sqs.delete_message(
             QueueUrl=self._queue_url,
             ReceiptHandle=self._receipt_handle
-        ) 
+        )
 
     def pop_job(self, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
@@ -358,7 +358,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         # dat.flowsheet.nodes.
         s3 = boto3.client('s3', region_name='us-east-1')
         bucket_name = 'foqus-simulations'
-        prefix = 'anonymous/%s' %job_desc['Simulation']
+        flowsheet_name = job_desc['Simulation']
+        username = 'anonymous'
+        prefix = '%s/%s' %flowsheet_name
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
         assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
@@ -371,7 +373,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             node = dat.flowsheet.nodes[nkey]
             turb_app = node.turbApp[0]
             model_name = node.modelName
-            sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
+            #sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
+            sinter_filename = '/'.join((username, flowsheet_name, nkey, '%s.json' %model_name))
+
             s3_key_list = map(lambda i: i['Key'] , l['Contents'])
             assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
             simulation_name = job_desc.get('Simulation')

@@ -1,6 +1,6 @@
 /**
- * Lambda Function, returns an Array of simulations (UUID).
- * @module get-simulation-list
+ * Lambda Function, returns a simulation input file
+ * @module get-simulation-input-file
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
  * @license See LICENSE.md
@@ -32,61 +32,94 @@ exports.handler = function(event, context, callback) {
       },
   });
   if (event.httpMethod == "GET") {
-    var params = {
-      Bucket: s3_bucket_name,
-      Prefix: default_user_name
-    };
+    // PATH: /simulation/test2/input/configuration
     var client = new AWS.S3();
-    //var client = s3.createClient(options);
+    var array = event.path.split('/');
+    var item = array.pop();
+    var key = null;
+
+    if (item == "input") {
+      done(new Error(`Unsupported path "${event.path}"`));
+    }
+
+    while (item != "input") {
+      if (key == null) {
+        key = item;
+      }
+      else {
+        key = item + "/" + key;
+      }
+      item = array.pop();
+    }
+    //var resource = array.pop();
+    // simulation/{name}/input/{file_path}
+    if (item != "input") {
+      done(new Error(`Unsupported path "${event.path}"`));
+    }
+    var sim_name = array.pop();
+    if (array.pop() != "simulation") {
+      done(new Error(`Unsupported path "${event.path}"`));
+    }
+
+    var params = {
+      Bucket: s3_bucket_name
+    };
+    if (key == "configuration") {
+      params.Prefix = default_user_name + "/" + sim_name + "/";
+    }
+    else {
+      params.Key = default_user_name + "/" + sim_name + "/" + key;
+      console.log("FILE RETRIEVE: " + params.Key);
+      client.getObject(params, function(err, data) {
+         if (err)
+           console.log(err, err.stack); // an error occurred
+         else
+           callback(null, {statusCode:'200', body: data.Body.toString('utf-8'),
+             headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/octet-stream'}
+           });
+      });
+      return;
+    }
+    // configuration
+    // Search for *.foqus or sinter.json
+    console.log("PREFIX: " + params.Prefix);
     client.listObjects(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
         console.log("PATH: " + event.path);
-        var name = event.path.split('/').pop();
+        //var name = event.path.split('/').pop();
         // FIND ALL FLOWSHEETS
+        var params =  {
+          Bucket: s3_bucket_name,
+          Key: null
+        };
         for (var index = 0; index < data.Contents.length; ++index) {
-            var key = data.Contents[index].Key;
-            // key anonymous/{simulation}/input/staged_input
-            var short_key = key.split('/').pop();
-            console.log("KEY: " + key + ", SHORT KEY: " + short_key + ", NAME: " + name);
-            if (name == "configuration") {
-                if (key.endsWith('.foqus')) {
-                params =  {
-                  Bucket: s3_bucket_name,
-                  Key: key
-                };
-                console.log("RETRIEVE: " + key);
-                client.getObject(params, function(err, data) {
-                   if (err)
-                     console.log(err, err.stack); // an error occurred
-                   else
-                     callback(null, {statusCode:'200', body: data.Body.toString('utf-8'),
-                       headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/octet-stream'}
-                     });
-                });
-                return;
-              }
-            }
-            else if (name == short_key) {
-              params =  {
-                Bucket: s3_bucket_name,
-                Key: key
-              };
-              client.getObject(params, function(err, data) {
-                 if (err)
-                   console.log(err, err.stack); // an error occurred
-                 else
-                   callback(null, {statusCode:'200', body: data,
-                     headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/octet-stream'}
-                   });
-              });
-              return;
+            var k = data.Contents[index].Key;
+            if (k.endsWith(".foqus") || k.endsWith("sinter.json")) {
+              var a = k.split('/');
+              a.pop();
+              console.log("FILE: " + k);
+              if (a.pop() != sim_name) continue;
+              params.Key = data.Contents[index].Key;
+              break;
             }
         }
-        callback(null, {statusCode:'400', body: "configuration not found",
-          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
-      });
+        if (params.Key != null) {
+          console.log("CONFIG RETRIEVE: " + params.Key);
+          client.getObject(params, function(err, data) {
+             if (err)
+               console.log(err, err.stack); // an error occurred
+             else
+               callback(null, {statusCode:'200', body: data.Body.toString('utf-8'),
+                 headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/octet-stream'}
+               });
+          });
+          return;
+        }
       }
+      callback(null, {statusCode:'400', body: "configuration not found",
+        headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+      });
     });
   }
   else {

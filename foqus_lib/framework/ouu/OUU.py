@@ -563,7 +563,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             alpha = min(max(alpha,0.5),1.0)   # 0.05 <= alpha <= 1.0
             f.write('%f\n' % alpha)
 
-        if outputsAsConstraint.count(True) > 1:
+        if outputsAsConstraint.count(True) > 0:
             f.write('1\n')
 
         # ... get sample for discrete UQ variables

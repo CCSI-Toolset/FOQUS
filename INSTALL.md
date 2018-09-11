@@ -13,8 +13,10 @@ It is possible to install git through Anaconda: ``conda install git``
 
 ## Install FOQUS
 
-* Clone the FOQUS repository.
-* Install FOQUS: ``python setup.py develop``
+* Clone the FOQUS repository:
+    * The FOQUS repository with the latest developments/improvements can be downloaded by going to the following website: https://github.com/CCSI-Toolset/FOQUS, clicking the green "Clone or download" button, selecting "Download ZIP".
+    * Alternately, the FOQUS repository that is released on a bimonthly (every 2 months) basis can be downloaded by clicking "Source code (zip)" in the following website: https://github.com/CCSI-Toolset/FOQUS/releases
+* Install FOQUS by typing the following command in Anaconda: ``python setup.py develop``
 
 ## Install Optional Software
 

@@ -1,7 +1,6 @@
-# A simple Makefile to generate a pdf from LaTeX sources
+# A simple Makefile to generate a pdf and HTML zip archive manual from LaTeX sources
 
 NAME=FOQUS_User_Manual
-CCSI_DOC=../docs/$(NAME).pdf
 
 .PHONY: all clean
 
@@ -12,7 +11,6 @@ $(NAME).pdf: $(NAME).tex
 	bibtex $(NAME)
 	pdflatex $(NAME)
 	pdflatex $(NAME)
-	cp -pf $(NAME).pdf $(CCSI_DOC)
 
 $(NAME).html: $(NAME).tex
 	python makehtml.py
@@ -35,6 +33,5 @@ TEMP_FILES = $(NAME).log \
              $(NAME).xref
 
 clean:
-	@rm -rf $(CCSI_DOC) $(NAME).html $(NAME).pdf $(NAME)_HTML.zip $(TEMP_FILES)
-
-
+	@rm -rf $(NAME).html $(NAME).pdf $(NAME)_HTML.zip $(TEMP_FILES)
+	

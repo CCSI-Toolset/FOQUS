@@ -1,3 +1,8 @@
+
+| CI Build | Status |
+|:---|:---:|
+| Jenkins Manual | [![Build Status](https://keeling.lbl.gov/buildStatus/icon?job=foqus-docs)](https://keeling.lbl.gov/job/foqus-docs) |
+
 # FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
 
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
@@ -28,3 +33,14 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available,
 
 ## License & Copyright
 See [LICENSE.md](LICENSE.md) file for details
+
+## Reference
+If you are using FOQUS for your work, please reference the following paper:
+
+Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J., Leek, J., Ma, J., Mahapatra, P., Ng, B., Sahinidis, N.V., Tong, C., Zitney, S.E., 2017. Innovative computational tools and models for the design, optimization and control of carbon capture processes, in: Papadopoulos, A.I., Seferlis, P. (Eds.), Process Systems and Materials for CO2 Capture: Modelling, Design, Control and Integration. John Wiley & Sons Ltd, Chichester, UK, pp. 311–342.
+
+## User's Manual
+The PDF version of the user's manual can be accessed by clicking "FOQUS_User_Manual.pdf" in the following website: https://github.com/CCSI-Toolset/FOQUS/releases
+
+## Technical Support
+If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org

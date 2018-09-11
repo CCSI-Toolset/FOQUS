@@ -15,15 +15,9 @@ class InputPriorTable(QTableWidget):
 
     SIMSETUP, RSANALYSIS, INFERENCE, OUU = range(4)
 
-    typeItems = {}
-    typeItems[SIMSETUP] = ['Variable', 'Fixed']
-    typeItems[RSANALYSIS] = ['Aleatory', 'Epistemic', 'Fixed']
-    typeItems[INFERENCE] = ['Variable', 'Fixed', 'Design', 'Uncertain']
-    typeItems[OUU] = ['Fixed', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)', 'UQ: Discrete (Z3)', 'UQ: Continuous (Z4)']
-
-
     def __init__(self, parent = None):
         super(InputPriorTable, self).__init__(parent)
+        self.typeItems = []
         self.format = '%g'             # numeric format for table entries in UQ Toolbox
         self.paramColWidth = 126
         self.labelWidth = 62
@@ -57,23 +51,10 @@ class InputPriorTable(QTableWidget):
         nVariableInputs = inVarTypes.count(Model.VARIABLE)
         self.dist = data.getInputDistributions()
         dist = self.dist
-        self.lb = data.getInputMins()
-        self.ub = data.getInputMaxs()
+        self.setupLB()
+        self.setupUB()
         self.defaults = data.getInputDefaults()
-        if self.mode == InputPriorTable.SIMSETUP:
-            self.lbVariable = [self.lb[i] for i in xrange(len(self.lb)) if not data.getInputFlowsheetFixed(i)]
-            self.ubVariable = [self.ub[i] for i in xrange(len(self.ub)) if not data.getInputFlowsheetFixed(i)]
-            if self.dist == None:
-                self.distVariable = None
-            else:
-                self.distVariable = [self.dist[i] for i in xrange(len(self.dist)) if not data.getInputFlowsheetFixed(i)]
-        else:
-            self.lbVariable = [self.lb[i] for i in xrange(len(self.lb)) if inVarTypes[i] == Model.VARIABLE]
-            self.ubVariable = [self.ub[i] for i in xrange(len(self.ub)) if inVarTypes[i] == Model.VARIABLE]
-            if self.dist == None:
-                self.distVariable = None
-            else:
-                self.distVariable = [self.dist[i] for i in xrange(len(self.dist)) if inVarTypes[i] == Model.VARIABLE]
+        self.setupDists()
 
         if self.mode == InputPriorTable.INFERENCE:
             col_index = {'name':0, 'type':1, 'check': 2, 'value': 3}
@@ -148,17 +129,10 @@ class InputPriorTable(QTableWidget):
             comboFixed = False
             if 'type' in col_index:
                 combobox = QComboBox()
-                combobox.addItems(InputPriorTable.typeItems[self.mode])
+                combobox.addItems(self.typeItems)
                 if self.mode == InputPriorTable.SIMSETUP:
-                    # combobox.addItems(InputPriorTable.typeItems[InputPriorTable.SIMSETUP])
                     if inVarTypes[i] == Model.FIXED:
                         combobox.setCurrentIndex(1)
-                # elif self.mode == InputPriorTable.RSANALYSIS:
-                #     combobox.addItems(['Aleatory', 'Epistemic', 'Fixed'])
-                # elif self.mode == InputPriorTable.INFERENCE:
-                #     combobox.addItems(['Variable', 'Fixed', 'Design'])
-                # else: #ouu
-                #     combobox.addItems(['Fixed', 'Opt: Primary (Z1)', 'Opt: Recourse (Z2)', 'UQ: Discrete (Z3)', 'UQ: Continuous (Z4)'])
                 combobox.setProperty('row', r)
                 combobox.setProperty('col', col_index['type'])
                 combobox.currentIndexChanged[int].connect(self.updatePriorTableRow)
@@ -284,6 +258,23 @@ class InputPriorTable(QTableWidget):
         self.resizeColumns()
         self.cellChanged.connect(self.change)
         self.blockSignals(False)
+
+    def setupLB(self):
+        inVarTypes = self.data.getInputTypes()
+        self.lb = self.data.getInputMins()
+        self.lbVariable = [self.lb[i] for i in xrange(len(self.lb)) if inVarTypes[i] == Model.VARIABLE]
+
+    def setupUB(self):
+        inVarTypes = self.data.getInputTypes()
+        self.ub = self.data.getInputMaxs()
+        self.ubVariable = [self.ub[i] for i in xrange(len(self.ub)) if inVarTypes[i] == Model.VARIABLE]
+
+    def setupDists(self):
+        if self.dist == None:
+            self.distVariable = None
+        else:
+            inVarTypes = self.data.getInputTypes()
+            self.distVariable = [self.dist[i] for i in xrange(len(self.dist)) if inVarTypes[i] == Model.VARIABLE]
 
     def resizeColumns(self):
         col_index = self.col_index
@@ -466,7 +457,8 @@ class InputPriorTable(QTableWidget):
             # Value column
             if cbtext == 'Fixed' or self.rsEvalMode:
                 self.activateCell(r, col_index['value'])
-                self.clearMinMax(r)
+                if 'min' in col_index:
+                    self.clearMinMax(r)
             elif cbtext in ['Epistemic', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)']:
                 self.activateCell(r, col_index['value'])
                 self.activateMinMax(r, inVarNames)
@@ -475,7 +467,8 @@ class InputPriorTable(QTableWidget):
                 self.clearMinMax(r)
             else:
                 self.clearCell(r, col_index['value'])
-                self.activateMinMax(r, inVarNames)
+                if 'min' in col_index:
+                    self.activateMinMax(r, inVarNames)
 
             # Scale column
             if 'scale' in col_index:
@@ -853,14 +846,14 @@ class InputPriorTable(QTableWidget):
     def setCheckedToType(self, type):
         col_index = self.col_index
         if isinstance(type, str): #String
-            if type not in InputPriorTable.typeItems[self.mode]:
+            if type not in self.typeItems:
                 raise Exception('setCheckedToType value is not among accepted values')
         for r in xrange(self.rowCount()):
             checkbox = self.cellWidget(r, col_index['check'])
             combo = self.cellWidget(r, col_index['type'])
             if checkbox.isChecked():
                 if isinstance(type, str): #String
-                    combo.setCurrentIndex(InputPriorTable.typeItems[self.mode].index(type))
+                    combo.setCurrentIndex(self.typeItems.index(type))
                 else: # Integer index
                     combo.setCurrentIndex(type)
                 checkbox.setChecked(False)

@@ -439,10 +439,8 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 bgColor = QColor(255, 220, 230)
             else:
                 bgColor = QColor(255, 255, 255)
-            gh.setTableItem(table, row,
-                self.ivCols["Name"],
-                name,
-                bgColor = bgColor)
+            gh.setTableItem(table, row, self.ivCols["Name"], name,
+                bgColor=bgColor, editable=False)
             gh.setTableItem(table, row,
                 self.ivCols["Value"],
                 var.value,
@@ -516,7 +514,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
             var = vars[name]
             gh.setTableItem(table, row,
                 self.ovCols["Name"],
-                name)
+                name, editable=False)
             gh.setTableItem(table, row,
                 self.ovCols["Value"],
                 var.value,
@@ -554,7 +552,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         for row, opt in enumerate(opts.order):
             if opts[opt].disable:
                 table.hideRow(row)
-            gh.setTableItem(table,row,0,opt)
+            gh.setTableItem(table,row,0,opt,editable=False)
             gh.setTableItem(table,row,2,opts[opt].desc)
             #set the value column use a checkbox for bool options
             #and if there is a list of valid values use a combo box.

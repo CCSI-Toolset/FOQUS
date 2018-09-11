@@ -111,7 +111,7 @@ try: # Catch any exception and stop all timers before finishing up
         if not go(): break
         MainWin.fsEditAction.trigger()
         if not go(): break
-        MainWin.fsEditAction.trigger()
+        MainWin.ouuSetupAction.trigger()
         if not go(): break
         MainWin.homeAction.trigger()
         if not go(): break
@@ -192,6 +192,7 @@ except Exception as e:
     with open(testOutFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))
 timersStop() #make sure all timers are stopped
+
 #Try to close FOQUS
 timers['msg_no'].start(1000)
 MainWin.close()

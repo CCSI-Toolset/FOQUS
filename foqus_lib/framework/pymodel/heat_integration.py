@@ -27,7 +27,7 @@ class pymodel_pg(pymodel):
         pymodel.__init__(self)
         self.description = "Heat integration..."
         # Input variables
-        self.inputs["HRAT"] = nodeVars(
+        self.inputs["HRAT"] = NodeVars(
             value = 10.0,
             vmax  = 500.0,
             vdflt = 10.0,
@@ -36,7 +36,7 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [],
             dtype = float)
-        self.inputs["EMAT"] = nodeVars(
+        self.inputs["EMAT"] = NodeVars(
             value = 5.0,
             vmax  = 500.0,
             vdflt = 5.0,
@@ -45,14 +45,14 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [],
             dtype = float)
-        self.inputs["Net.Power"] = nodeVars(
+        self.inputs["Net.Power"] = NodeVars(
             value = None,
             vmax  = 1000.0,
             unit  = "MW",
             vdesc = "Net power output without CCS",
             vst   = "pymodel",
             tags = [])
-        self.inputs["ROR"] = nodeVars(
+        self.inputs["ROR"] = NodeVars(
             value = 10.0,
             vmax  = 100.0,
             vdflt = 10.0,
@@ -61,7 +61,7 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [],
             dtype = float)
-        self.inputs["Life.Plant"] = nodeVars(
+        self.inputs["Life.Plant"] = NodeVars(
             value = 20.0,
             vmax  = 100.0,
             vdflt = 20.0,
@@ -70,7 +70,7 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [],
             dtype = float)
-        self.inputs["Operation.Hours"] = nodeVars(
+        self.inputs["Operation.Hours"] = NodeVars(
             value = 8000.0,
             vmax  = 8766.0,
             vdflt = 8000.0,
@@ -79,7 +79,7 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [],
             dtype = float)
-        self.inputs["No.Stream"] = nodeVars(
+        self.inputs["No.Stream"] = NodeVars(
             value = None,
             vmax  = 500.0,
             unit  = "",
@@ -87,50 +87,50 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             tags  = [])
         # Output variables
-        self.outputs["Utility.Cost"] = nodeVars(
+        self.outputs["Utility.Cost"] = NodeVars(
             unit  = "$MM/yr",
             vdesc = "Utility cost",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["IP_Steam.Consumption"] = nodeVars(
+        self.outputs["IP_Steam.Consumption"] = NodeVars(
             unit  = "GJ/hr",
             vdesc = "Intermediate-pressure steam (230 C) consumption (Cost: $8.04/GJ)",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["LP_Steam.Consumption"] = nodeVars(
+        self.outputs["LP_Steam.Consumption"] = NodeVars(
             unit  = "GJ/hr",
             vdesc = "Low-pressure steam (164 C) consumption (Cost: $6.25/GJ)",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["Cooling_Water.Consumption"] = nodeVars(
+        self.outputs["Cooling_Water.Consumption"] = NodeVars(
             unit = "GJ/hr",
             vdesc = "Cooling water (20 C) consumption (Cost: $0.21/GJ)",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["FH.Heat.Addition"] = nodeVars(
+        self.outputs["FH.Heat.Addition"] = NodeVars(
             unit = "GJ/hr",
             vdesc = "Heat addition to feed water heaters",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
         self.outputs["FH.Heat.Addition"].setShape((5,))
-        self.outputs["Heat.Exchanger.Area"] = nodeVars(
+        self.outputs["Heat.Exchanger.Area"] = NodeVars(
             unit  = "m^2",
             vdesc = "Heat exchanger area",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["Capital.Cost"] = nodeVars(
+        self.outputs["Capital.Cost"] = NodeVars(
             unit  = "$MM",
             vdesc = "Approximated capital cost for heat exchanger network",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["Total.Cost"] = nodeVars(
+        self.outputs["Total.Cost"] = NodeVars(
             unit  = "$MM/yr",
             vdesc = "Approximated total annualized cost for heat exchanger network",
             vst   = "pymodel",
@@ -148,14 +148,14 @@ class pymodel_pg(pymodel):
         blockLookup = dict()# look up the block given a variable name
         node = self.node
         nameSets = [node.gr.xnames, node.gr.fnames] # input and output variable names
-        varSets = [node.gr.x, node.gr.f]            # input and output variables 
+        varSets = [node.gr.x, node.gr.f]            # input and output variables
         for ii in range(2):
             vnames = nameSets[ii]
             vars = varSets[ii]
             for name in vnames: # All the inputs
                 blktgs = [tag.split() for tag in vars[name].tags if "Block" in tag]
                 # I think there should only be one block tag per variable but
-                # maybe there is a reason for more 
+                # maybe there is a reason for more
                 for tag in blktgs:
                     blockName = tag[1].strip()
                     blockSet.add( blockName )
@@ -169,7 +169,7 @@ class pymodel_pg(pymodel):
                     if "Point_Hot" in vars[name].tags:
                         pointHSet.add( blockName )
                     if "Point_Cold" in vars[name].tags:
-                        pointCSet.add( blockName )      
+                        pointCSet.add( blockName )
 
         heaterVars = dict() # format [Tin, Tout, Qin, Qout]
         hxHVars    = dict() # [Tin, Tout, Q] (heat exchanger hot side)
@@ -298,7 +298,7 @@ class pymodel_pg(pymodel):
                     hxHIsH[hxH] = True
                 else:
                     hxHFCp[hxH] = (abs(hxHVars[hxH][2]) + 0.0)/(hxHTout[hxH] - hxHTin[hxH])
-                    hxHIsC[hxH] = True                                                                              
+                    hxHIsC[hxH] = True
         for hxC in hxCSet:      # parameters for cold (or hot) streams involved in the cold side of heat exchangers
             hxCIsC[hxC] = False
             hxCIsH[hxC] = False
@@ -337,7 +337,7 @@ class pymodel_pg(pymodel):
         coldUToutA = dict( [("Cooling_Water", 30)] )                            # actual outlet temperature of cold utility (C)
         hotUCost   = dict( [("IP_Steam", 8.04), ("LP_Steam", 6.25)] )           # cost of hot utility ($/GJ)
         coldUCost  = dict( [("Cooling_Water", 0.21)] )                          # cost of cold utility ($/GJ)
-        
+
         #grab values from input variables
         HRAT = self.inputs["HRAT"].value                 # heat recovery approach temperature (K or C)
         EMAT = self.inputs["EMAT"].value                 # exchanger minimum approach temperature (K or C)
@@ -352,9 +352,9 @@ class pymodel_pg(pymodel):
         #correction factor for a noncountercurrent flow pattern
         # CorrFac = 1               # counter current
         CorrFac = 0.81              # 1-2 shell & tube
-        
+
         #stream film heat-transfer coefficient
-        hCoefHotP = 7.20E-4         # stream film heat-transfer coefficient for hot process streams (GJ/hr/m^2/C)       
+        hCoefHotP = 7.20E-4         # stream film heat-transfer coefficient for hot process streams (GJ/hr/m^2/C)
         hCoefColdP = 7.20E-4        # stream film heat-transfer coefficient for cold process streams (GJ/hr/m^2/C)
         hCoefHotU = 2.16E-2         # stream film heat-transfer coefficient for hot utilities (GJ/hr/m^2/C)
         hCoefColdU = 1.35E-2        # stream film heat-transfer coefficient for cold utilities (GJ/hr/m^2/C)
@@ -375,9 +375,9 @@ class pymodel_pg(pymodel):
         feedTin  = dict( [("FH1", 34.0), ("FH2", 64.7), ("FH3", 95.9), ("FH4", 127.8), ("FH5", 159.6)] )        # inlet temperature of feed water heater (C)
         feedTout = dict( [("FH1", 64.7), ("FH2", 95.9), ("FH3", 127.8), ("FH4", 159.6), ("FH5", 194.6)] )       # outlet temperature of feed water heater (C)
         feedFCp  = dict()                                                                                       # flow rate * heat capacity for feed water heater (GJ/hr)
-        feedRank = dict( [("FH1", 1), ("FH2", 2), ("FH3", 3), ("FH4", 4), ("FH5", 5)] )                         # order of feed water heaters                
+        feedRank = dict( [("FH1", 1), ("FH2", 2), ("FH3", 3), ("FH4", 4), ("FH5", 5)] )                         # order of feed water heaters
         feedIs   = False                                                                                        # whether feed water heaters exist
-        
+
         if NetPower > 0:
                 feedIs = True
                 feedFCp["FH1"] = 4.5091*NetPower/650.33
@@ -398,10 +398,10 @@ class pymodel_pg(pymodel):
             if feedIs:
                 numShell_1 = len(heaterSet) + len(hxHSet) + len(hxCSet) + len(pointHSet) + len(pointCSet) + 5 - 1
             else:
-                numShell_1 = len(heaterSet) + len(hxHSet) + len(hxCSet) + len(pointHSet) + len(pointCSet) - 1     
+                numShell_1 = len(heaterSet) + len(hxHSet) + len(hxCSet) + len(pointHSet) + len(pointCSet) - 1
 
         maxAreaShell = 500.0;                           # maximum area per shell (m^2)
-      
+
         #write GAMS input
         #
         try:
@@ -610,12 +610,12 @@ class pymodel_pg(pymodel):
         f.write("/\n")
         for coldU in coldUSet:
                 f.write("\t" + coldU + "\t" + str(coldUCost[coldU]) + "\n")
-        f.write("/;\n\n")   
+        f.write("/;\n\n")
         #temperature interval set
         f.write("Set K  possible temperature intervals\n")
         f.write("/\n")
         f.write("\t" + "1*" + str(NumK) + "\n")
-        f.write("/;\n\n")     
+        f.write("/;\n\n")
         #heat recovery approach temperature
         f.write("Scalar dT  heat recovery approach temperature (HRAT)\n")
         f.write("/\n")
@@ -632,16 +632,16 @@ class pymodel_pg(pymodel):
         f.write("\t" + str(CorrFac) + "\n")
         f.write("/;\n\n")
         #stream film heat-transfer coefficient
-        f.write("Parameter hH(H)  stream film heat-transfer coefficient for hot process streams;\n")        
+        f.write("Parameter hH(H)  stream film heat-transfer coefficient for hot process streams;\n")
         f.write("Parameter hC(C)  stream film heat-transfer coefficient for cold process streams;\n")
-        f.write("Parameter hS(S)  stream film heat-transfer coefficient for hot utilities;\n") 
-        f.write("Parameter hW(W)  stream film heat-transfer coefficient for cold utilities;\n") 
+        f.write("Parameter hS(S)  stream film heat-transfer coefficient for hot utilities;\n")
+        f.write("Parameter hW(W)  stream film heat-transfer coefficient for cold utilities;\n")
         f.write("\n")
         f.write("hH(H) = " + str(hCoefHotP) + ";\n")
         f.write("hC(C) = " + str(hCoefColdP) + ";\n")
         f.write("hS(S) = " + str(hCoefHotU) + ";\n")
         f.write("hW(W) = " + str(hCoefColdU) + ";\n")
-        f.write("\n")        
+        f.write("\n")
         #define set for feed water heaters
         f.write("Set CR(C)  set of cold streams except feed water streams;\n\n")
         f.write("    CR(C) = yes;\n")
@@ -660,12 +660,12 @@ class pymodel_pg(pymodel):
         if feedIs:
             for feedC in feedSet:
                     f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ';\n')
-        
+
         #write whatever
-        
+
         # done writing GAMS input
         f.close()
-                
+
         #execute gams code with system call
         try:
             process = subprocess.Popen(['gams', 'HeatIntegration.gms', 'lo=0'], cwd = 'gams')
@@ -674,7 +674,7 @@ class pymodel_pg(pymodel):
             node.calcError = -2
             print "Is GAMS installed?  Are the heat integration GAMS files available?"
             return
-       
+
         #read GAMS output file
         try:
             f = open('gams\GamsOutput.txt','r')
@@ -692,7 +692,7 @@ class pymodel_pg(pymodel):
         costCap = (coeff_a + coeff_b*numpy.power(areaHx/numShell,coeff_c)*numShell)/1E6     # approximated capital cost ($MM)
         self.outputs["Capital.Cost"].value = costCap        # approximated capital cost ($MM)
         costTot = costUtiYr + AnnuFac*costCap               # approximated total cost ($MM/yr)
-        self.outputs["Total.Cost"].value = costTot          # approximated total cost ($MM/yr)       
+        self.outputs["Total.Cost"].value = costTot          # approximated total cost ($MM/yr)
         Uhot = dict()       # hot utility consumption (GJ/hr)
         Ucold = dict()      # cold utility consumption (GJ/hr)
         for hotU in hotUSet:
@@ -708,13 +708,13 @@ class pymodel_pg(pymodel):
                 self.outputs["FH.Heat.Addition"].value[i] = float((f.readline()).strip())      # heat addition to feed water heater (GJ/hr)
         else:
             self.outputs["FH.Heat.Addition"].value = [
-                numpy.nan, 
-                numpy.nan, 
-                numpy.nan, 
-                numpy.nan, 
+                numpy.nan,
+                numpy.nan,
+                numpy.nan,
+                numpy.nan,
                 numpy.nan]
         print "done with hi calc"
-        
+
         for var in node.outVars:
             if self.outputs[var]:
                 self.outputs[var].toNumpy()

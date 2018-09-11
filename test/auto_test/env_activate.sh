@@ -1,0 +1,1 @@
+. activate foqus_env

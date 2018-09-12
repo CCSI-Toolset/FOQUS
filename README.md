@@ -41,3 +41,6 @@ Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J.
 
 ## User's Manual
 The PDF version of the user's manual can be accessed by clicking "FOQUS_User_Manual.pdf" in the following website: https://github.com/CCSI-Toolset/FOQUS/releases
+
+## Technical Support
+If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org

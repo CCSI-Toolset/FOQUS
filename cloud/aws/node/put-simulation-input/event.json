@@ -1,10 +1,10 @@
 {
-"body":"{\"Name\":\"test_simulation\", \"Description\":\"Test Sinter Configuration\"}",
+"body":"{\"Name\":\"test_simulation\", \"Description\":\"Test Sinter Configuration\", \"filetype\":\"sinterconfig\"}",
   "headers": {
     "Accept": "application/json"
   },
   "httpMethod": "PUT",
-  "path": "/simulation/test_simulation/input/a/b/c/sinter.json",
+  "path": "/simulation/test_simulation/input/configuration",
   "queryStringParameters": {
     "verbose": true
   }

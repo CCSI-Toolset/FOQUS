@@ -55,10 +55,12 @@ exports.handler = function(event, context, callback) {
     // simulation/{name}/input/{file_path}
     if (item != "input") {
       done(new Error(`Unsupported path "${event.path}"`));
+      return;
     }
     var sim_name = array.pop();
     if (array.pop() != "simulation") {
       done(new Error(`Unsupported path "${event.path}"`));
+      return;
     }
 
     var params = {
@@ -71,6 +73,11 @@ exports.handler = function(event, context, callback) {
       params.Key = default_user_name + "/" + sim_name + "/" + key;
       console.log("FILE RETRIEVE: " + params.Key);
       client.getObject(params, function(err, data) {
+        /* FILE RETRIEVE: anonymous/OUU/BFB/BFB_v11_FBS_01_26_2018.acmf
+        *  body size is too long
+        *  Getting this error when file is > 6MB
+        *
+        **/
          if (err)
            console.log(err, err.stack); // an error occurred
          else
@@ -95,7 +102,15 @@ exports.handler = function(event, context, callback) {
         };
         for (var index = 0; index < data.Contents.length; ++index) {
             var k = data.Contents[index].Key;
-            if (k.endsWith(".foqus") || k.endsWith("sinter.json")) {
+            if (k.endsWith(".foqus")) {
+              var a = k.split('/');
+              a.pop();
+              console.log("FILE: " + k);
+              if (a.pop() != sim_name) continue;
+              params.Key = data.Contents[index].Key;
+              break;
+            }
+            if (k.endsWith("-sinter.json")) {
               var a = k.split('/');
               a.pop();
               console.log("FILE: " + k);
@@ -117,7 +132,7 @@ exports.handler = function(event, context, callback) {
           return;
         }
       }
-      callback(null, {statusCode:'400', body: "configuration not found",
+      callback(null, {statusCode:'404', body: "input file not found",
         headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
       });
     });

@@ -64,7 +64,17 @@ exports.handler = function(event, context, callback) {
     };
 
     if (key == "configuration") {
-      params.Key = default_user_name + "/" + name + "/session.foqus";
+      var obj = JSON.parse(event.body);
+      if (obj.filetype == "sinterconfig" && obj.title != undefined) {
+        params.Key = default_user_name + "/" + name + "/" + obj.title + "-sinter.json";
+      }
+      else if (obj.Type == "FOQUS_Session") {
+        params.Key = default_user_name + "/" + name + "/session.foqus";
+      }
+      else {
+        done(new Error(`Inspection failed to identify configuration file type`));
+        return;
+      }
     }
     else {
       params.Key = default_user_name + "/" + name + "/" + key;
@@ -76,7 +86,7 @@ exports.handler = function(event, context, callback) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
         console.log("Finished: " + data);
-        callback(null, {statusCode:'200', body: event.body,
+        callback(null, {statusCode:'200', body: "",
           headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
         });
       }

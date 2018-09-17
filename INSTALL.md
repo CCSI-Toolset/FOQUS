@@ -15,6 +15,7 @@ It is possible to install git through Anaconda: ``conda install git``
 
 * Clone the FOQUS repository.
 * Install FOQUS: ``python setup.py develop``
+	* If SSH is needed/desired install FOQUS with the SSH option: ``python setup.py develop ssh``
 
 ## Install Optional Software
 

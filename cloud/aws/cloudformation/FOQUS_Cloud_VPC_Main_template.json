@@ -2,16 +2,7 @@
   "AWSTemplateFormatVersion" : "2010-09-09",
 
   "Description" : "FOQUS Cloud VPC with Internet Gateway and SLM EIP",
-
   "Parameters" : {
-    "Name" : {
-      "Type" : "String",
-      "Description" : "Stack Name",
-      "Default" : "FOQUS-Main-VPC",
-      "MinLength": "5",
-      "MaxLength": "20",
-      "ConstraintDescription" : ""
-    },
     "AvailabilityZone" : {
       "Type" : "String",
       "Description" : "AvailabilityZone",
@@ -96,10 +87,22 @@
         "RouteTableId" : { "Ref" : "PublicRouteTable" }
       }
     },
+    "SLMSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupName": "SLMSecurityGroup",
+        "GroupDescription" : "Security Group for SLM Server",
+        "SecurityGroupEgress" : [ ],
+        "SecurityGroupIngress" : [ ],
+        "Tags" :  [ {"Key" : "Name", "Value" : "SLMSecurityGroup" } ],
+        "VpcId" : { "Ref" : "VPC" }
+      }
+    },
     "SLMServerNetworkInterface":  {
        "Type" : "AWS::EC2::NetworkInterface",
        "Properties" : {
           "Description" : "Network Interface for the SLM License Server",
+          "GroupSet" : [{ "Ref" : "SLMSecurityGroup" }],
           "PrivateIpAddress" : "10.0.0.100",
           "SourceDestCheck" : false,
           "SubnetId" : { "Ref" : "PublicSubnetA" },
@@ -128,7 +131,14 @@
       "Value" : {"Ref" : "VPC"},
       "Description" : "VPC ID of newly created VPC"
     },
-
+    "SLMNetworkInterfaceId" : {
+      "Value" : { "Ref" : "SLMServerNetworkInterface"},
+      "Description" : "SLM Server Network Interface Id"
+    },
+    "InternetGatewayId" : {
+      "Value" : { "Ref" : "InternetGateway" },
+      "Description" : "Internet Gateway Id"
+    },
     "PublicSubnetA" : {
       "Value" : {"Ref" : "PublicSubnetA"},
       "Description" : "Public Subnet in AZ A"

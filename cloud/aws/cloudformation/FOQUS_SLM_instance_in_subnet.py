@@ -301,8 +301,8 @@ def _create_template(vpc_id, subnet_public_id, internetgateway_id,
                         '<powershell>\n',
                         '$ErrorActionPreference = \"Stop\"\n',
                         'net user Administrator %(password)s\n' %dict(password=ADMIN_PASSWORD),
-                        r'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip' %dict(bucket_name=BUCKET_NAME),
-                        'Rename-Computer -NewName "SLMServer" -Restart'
+                        r'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip\n' %dict(bucket_name=BUCKET_NAME),
+                        'Rename-Computer -NewName "SLMServer" -Restart\n'
                         '</powershell>\n'
                     ])),
             Tags=Tags(

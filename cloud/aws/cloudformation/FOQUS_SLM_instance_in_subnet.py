@@ -32,6 +32,7 @@ from awacs.sts import AssumeRole
 #   used by instance cloud-init scripts to grab installers, etc
 BUCKET_NAME = None
 CONFIG_FILE = "foqus_templates.cfg"
+ADMIN_PASSWORD = None
 
 
 def _create_template(vpc_id, subnet_public_id, internetgateway_id,
@@ -299,7 +300,7 @@ def _create_template(vpc_id, subnet_public_id, internetgateway_id,
                     [
                         '<powershell>\n',
                         '$ErrorActionPreference = \"Stop\"\n',
-                        'net user Administrator XR80yz125\n',
+                        'net user Administrator %(password)s\n' %dict(password=ADMIN_PASSWORD),
                         r'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip' %dict(bucket_name=BUCKET_NAME),
                         'Rename-Computer -NewName "SLMServer" -Restart'
                         '</powershell>\n'
@@ -330,8 +331,9 @@ def _create_template(vpc_id, subnet_public_id, internetgateway_id,
 def main():
     cp = ConfigParser()
     cp.read(CONFIG_FILE)
-    global BUCKET_NAME
+    global BUCKET_NAME,ADMIN_PASSWORD
     BUCKET_NAME = cp.get('S3', 'bucket')
+    ADMIN_PASSWORD = cp.get('CloudInit', 'admin_password')
     op = optparse.OptionParser(usage="USAGE: %prog [vpc_id] [subnet_id] [internet_gateway_id] [network_interface_id] [allocation_id]",
              description=main.__doc__)
     (options, args) = op.parse_args()

@@ -1,8 +1,11 @@
 
-
+## python dependencies
 pip install troposphere
 pip install awacs
 
-== Configuration File:  foqus_templates.cfg
+## configuration file: foqus_templates.cfg
+Change bucket name to one in your account that you have access to.
+```
 [S3]
 bucket = foqus-files
+```

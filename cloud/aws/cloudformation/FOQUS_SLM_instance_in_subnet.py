@@ -331,7 +331,7 @@ def main():
     cp = ConfigParser()
     cp.read(CONFIG_FILE)
     global BUCKET_NAME
-    BUCKET_NAME = cp.get('bucket')
+    BUCKET_NAME = cp.get('S3', 'bucket')
     op = optparse.OptionParser(usage="USAGE: %prog [vpc_id] [subnet_id] [internet_gateway_id] [network_interface_id] [allocation_id]",
              description=main.__doc__)
     (options, args) = op.parse_args()

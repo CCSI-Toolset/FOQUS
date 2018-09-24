@@ -3,7 +3,11 @@
 # Converted from VPC_With_VPN_Connection.template located at:
 # http://aws.amazon.com/cloudformation/aws-cloudformation-templates
 import optparse
-from ConfigParser import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
+
 from troposphere import Base64, FindInMap, GetAtt, Join, Output
 from troposphere import Parameter, Ref, Tags, Template
 from troposphere.autoscaling import Metadata
@@ -296,7 +300,7 @@ def _create_template(vpc_id, subnet_public_id, internetgateway_id,
                         '<powershell>\n',
                         '$ErrorActionPreference = \"Stop\"\n',
                         'net user Administrator XR80yz125\n',
-                        'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrator\Desktop\SLMLockInfo.zip' %dict(bucket_name=BUCKET_NAME),
+                        r'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip' %dict(bucket_name=BUCKET_NAME),
                         'Rename-Computer -NewName "SLMServer" -Restart'
                         '</powershell>\n'
                     ])),

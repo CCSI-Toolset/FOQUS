@@ -13,15 +13,17 @@ It is possible to install git through Anaconda: ``conda install git``
 
 ## Install FOQUS
 
-* Clone the FOQUS repository.
-* Install FOQUS: ``python setup.py develop``
-	* If SSH is needed/desired install FOQUS with the SSH option: ``python setup.py develop ssh``
+* Clone the FOQUS repository:
+    * The FOQUS repository with the latest developments/improvements can be downloaded by going to the following website: https://github.com/CCSI-Toolset/FOQUS, clicking the green "Clone or download" button, selecting "Download ZIP".
+    * Alternately, the FOQUS repository that is released on a bimonthly (every 2 months) basis can be downloaded by clicking "Source code (zip)" in the following website: https://github.com/CCSI-Toolset/FOQUS/releases
+* Install FOQUS by typing the following command in Anaconda: ``python setup.py develop``
+    * If SSH is needed/desired install FOQUS with the SSH option: ``python setup.py develop ssh``
 
 ## Install Optional Software
 
 ### Install Turbine and SimSinter (Windows Only)
 * This requires [Microsoft SQL Server Compact 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17876).
-* Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/download/2016.06.00/SimSinterInstaller.msi) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2016.06.00/TurbineLite.msi) installers.
+* Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/) installers.
 * Install SimSinter first, then TurbineLite.
 * Do one of these two things (only after install).
     * Restart computer, or

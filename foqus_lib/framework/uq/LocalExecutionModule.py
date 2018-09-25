@@ -331,7 +331,7 @@ class LocalExecutionModule(object):
                 else:
                     numInputs, ok = QtWidgets.QInputDialog.getInt(None, 'Number of inputs',
                                                           'How many of the columns are inputs (Inputs must be on the left)?',
-                                                          value = len(headers), minValue = 1, maxValue = len(headers))
+                                                          value = len(headers), min = 1, max = len(headers))
                     if not ok:
                         return None
 

@@ -41,10 +41,12 @@ def _set_working_dir():
         if e.errno != errno.EEXIST:
             raise
     os.chdir(WORKING_DIRECTORY)
-    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.INFO)
+    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
     _log = logging.getLogger()
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
-    
+
+    logging.getLogger('boto3').setLevel(logging.ERROR)
+
 _set_working_dir()
 _log.debug('Loading')
 
@@ -58,7 +60,7 @@ def getfilenames(jid):
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-  
+
     sfile = os.path.join(CURRENT_JOB_DIR, "session.foqus")
     # result session file to keep on record
     rfile = os.path.join(CURRENT_JOB_DIR, "results_session.foqus")
@@ -75,7 +77,9 @@ class TurbineLiteDB:
     def __init__(self, close_after=True):
         self._sns = boto3.client('sns', region_name='us-east-1')
         topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
+        topic_messages = self._sns.create_topic(Name='FOQUS-Message-Topic')
         self._topic_arn = topic['TopicArn']
+        self._topic_msg_arn = topic_messages['TopicArn']
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
@@ -91,8 +95,13 @@ class TurbineLiteDB:
         _log.info("%s.closeConnection", self.__class__)
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
-    def add_message(self, msg, jobid, rc=0):
-        _log.info("%s.add_message", self.__class__)
+    def add_message(self, msg, jobid, **kw):
+        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid)
+        d.update(kw)
+        obj = json.dumps(d)
+        _log.debug("%s.add_message: %s", self.__class__, obj)
+        self._sns.publish(Message=obj, TopicArn=self._topic_msg_arn)
+
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
         self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
@@ -105,7 +114,8 @@ class TurbineLiteDB:
         _log.info("%s.consumer_id", self.__class__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
-        self._sns_notification(dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id))
+        self._sns_notification(dict(resource='consumer', instanceid=_instanceid,
+                                    event='running', rc=rc, consumer=self.consumer_id))
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         _log.info("%s.get_job_id", self.__class__)
         return guid, jid, simId, reset
@@ -117,16 +127,27 @@ class TurbineLiteDB:
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         _log.info("%s.job_prepare", self.__class__)
     def job_change_status(self, jobGuid, status, rc=0):
-        _log.info("%s.job_change_status", self.__class__)
+        _log.info("%s.job_change_status %s", self.__class__, status)
         self._sns_notification(dict(resource='job', event='status',
             rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
     def job_save_output(self, jobGuid, workingDir, rc=0):
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
+        scrub_empty_string_values_for_dynamo(output)
+        _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
         self._sns_notification(dict(resource='job',
             event='output', jobid=jobGuid, value=output, rc=rc))
 
+def scrub_empty_string_values_for_dynamo(db):
+    """ DynamoDB throws expection if there is an empty string in dict
+    ValidationException: ExpressionAttributeValues contains invalid value:
+    One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
+    """
+    if type(db) is not dict: return
+    for k,v in db.items():
+        if v in  ("",u""): db[k] = "NULL"
+        else: scrub_empty_string_values_for_dynamo(v)
 
 class _KeepAliveTimer(threading.Thread):
     def __init__(self, turbineDB, freq=60):
@@ -161,7 +182,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self.hWaitStop = win32event.CreateEvent(None,0,0,None)
         socket.setdefaulttimeout(60)
         self.stop = False
-        self._instanceid = "UNKNOWN"
+        self._receipt_handle= None
+        self._sqs = boto3.client('sqs', region_name='us-east-1')
+        self._queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
 
     @property
     def stop(self):
@@ -178,53 +201,65 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self.stop = True
 
     def SvcDoRun(self):
+        """ Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
+        """
         servicemanager.LogMsg(servicemanager.EVENTLOG_INFORMATION_TYPE,
                               servicemanager.PYS_SERVICE_STARTED,
                               (self._svc_name_,''))
 
+        global _instanceid
         _log.debug("starting")
-        VisibilityTimeout = 300
-        if DEBUG:
-            VisibilityTimeout = 0
+        self._receipt_handle= None
+        VisibilityTimeout = 60*10
         try:
-            self._instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
         except:
-            pass
-
-        if self.stop: return
+            _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
         db.consumer_register()
-        job_desc = None
-        while not job_desc:
-            if self.stop:
-                return
-            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
-
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
-        dat = None
+        while not self.stop:
+            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+            if not job_desc: continue
+            try:
+                dat = self.setup_foqus(db, job_desc)
+            except NotImplementedError, ex:
+                _log.exception("setup foqus NotImplementedError: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
+            except urllib2.URLError, ex:
+                _log.exception("setup foqus URLError: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
+            except Exception, ex:
+                _log.exception("setup foqus exception: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                raise
+            else:
+                _log.debug("BEFORE run_foqus")
+                self._delete_sqs_job()
+                self.run_foqus(db, dat, job_desc)
 
-        try:
-            dat = self.setup_foqus(db, job_desc)
-        except NotImplementedError, ex:
-            _log.debug("FOQUS NotImplementedError: %s", ex)
-            db.job_change_status(job_desc['Id'], "error")
-            db.add_message("job %s: failed in setup", job_desc['Id'])
-        except Exception, ex:
-            _log.info("setup foqus exception: %s", str(ex))
+        _log.debug("STOP CALLED")
 
-        if dat is not None:
-            self.run_foqus(db, dat, job_desc)
+    def _delete_sqs_job(self):
+        """ Delete the job after setup completes or there is an error.
+        """
+        _log.debug("DELETE received message from queue: %s", self._receipt_handle)
+        self._sqs.delete_message(
+            QueueUrl=self._queue_url,
+            ReceiptHandle=self._receipt_handle
+        )
 
-        if not DEBUG:
-            # DELETE received message from queue
-            sqs.delete_message(
-                QueueUrl=queue_url,
-                ReceiptHandle=receipt_handle
-            )
-
-    def pop_job(self, VisibilityTimeout):
+    def pop_job(self, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
 
         SQS Job Body Contain Job description, for example:
@@ -235,13 +270,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         "Visible":false,
         "Id":"8a3033b4-6de2-409c-8552-904889929704"}]
         """
-        _instanceid = self._instanceid
-
-        sqs = boto3.client('sqs', region_name='us-east-1')
-        queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
         # Receive message from SQS queue
-        response = sqs.receive_message(
-            QueueUrl=queue_url,
+        response = self._sqs.receive_message(
+            QueueUrl=self._queue_url,
             AttributeNames=[
                 'SentTimestamp'
             ],
@@ -257,7 +288,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             return
 
         message = response['Messages'][0]
-        receipt_handle = message['ReceiptHandle']
+        self._receipt_handle = message['ReceiptHandle']
         body = json.loads(message['Body'])
         job_desc = json.loads(body['Message'])
         _log.info('Job Desription: ' + body['Message'])
@@ -327,11 +358,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         # dat.flowsheet.nodes.
         s3 = boto3.client('s3', region_name='us-east-1')
         bucket_name = 'foqus-simulations'
-        l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
-        if not l.has_key('Contents'):
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
-            return
-
+        flowsheet_name = job_desc['Simulation']
+        username = 'anonymous'
+        prefix = '%s/%s' %flowsheet_name
+        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
+        assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
         for nkey in dat.flowsheet.nodes:
             if dat.flowsheet.nodes[nkey].turbApp is None:
@@ -342,7 +373,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             node = dat.flowsheet.nodes[nkey]
             turb_app = node.turbApp[0]
             model_name = node.modelName
-            sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
+            #sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
+            sinter_filename = '/'.join((username, flowsheet_name, nkey, '%s.json' %model_name))
+
             s3_key_list = map(lambda i: i['Key'] , l['Contents'])
             assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
             simulation_name = job_desc.get('Simulation')
@@ -426,9 +459,13 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         return dat
 
     def run_foqus(self, db, dat, job_desc):
+        """ Run FOQUS Flowsheet in thread
+        db -- TurbineLiteDB instance
+        dat -- foqus.framework.session.session
+        dat.flowsheet -- foqus.framework.graph.graph
         """
-        Run FOQUS Flowsheet in thread
-        """
+        assert isinstance(db, TurbineLiteDB)
+        assert isinstance(dat, Session)
         exit_code = 0
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         guid = job_desc['Id']
@@ -446,11 +483,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 break
 
         if terminate:
-            db.add_message("job %s: terminate" %guid)
+            db.add_message("job %s: terminate" %guid, guid)
             return
 
         if self.stop:
-            db.add_message("job %s: windows service stopped" %guid)
+            db.add_message("job %s: windows service stopped" %guid, guid)
             return
 
         if gt.res[0]:
@@ -483,9 +520,6 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         #stop all Turbine consumers
         dat.flowsheet.turbConfig.stopAllConsumers()
         dat.flowsheet.turbConfig.closeTurbineLiteDB()
-
-        #sys.exit(exit_code)
-        return exit_code
 
 
 if __name__ == '__main__':

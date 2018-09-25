@@ -13,6 +13,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 const tablename = 'FOQUS_Resources';
+const topic = 'arn:aws:sns:us-east-1:754323349409:FOQUS-Update-Topic';
 
 var process_job_event = function(ts, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
@@ -28,15 +29,20 @@ var process_job_event = function(ts, message, callback) {
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set " + status + " = :s, ConsumerId=:c",
+        UpdateExpression: "set #w = :s, ConsumerId=:c",
         ExpressionAttributeValues:{
             ":s":ts,
             ":c":consumer
         },
+        ExpressionAttributeNames:{
+            "#w":status
+        },
         ReturnValues:"UPDATED_NEW"
     };
     if (e == 'output') {
-        var output = JSON.stringify(message['value']);
+        //var output = JSON.stringify(message['value']['output']);
+        var output = message['value'];
+
         //params.UpdateExpression = "set output=:o";
         //params.ExpressionAttributeValues = {":o":message['value']};
         params = {
@@ -61,7 +67,21 @@ var process_job_event = function(ts, message, callback) {
     dynamodb.update(params, function(err, data) {
       console.log("Update: " + JSON.stringify(data));
       if (err) {
+        // NOTE: data is null, but apparently there is no error when a value is ""
+        // ValidationException: ExpressionAttributeValues contains invalid value:
+        // One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
         console.log(err, err.stack);
+        var message = "failed to update dynamodb output field job Id=%s\n%s" %(job,message['value']);
+        console.log("publish: " + message);
+        var params = {
+          Message: message,
+          TopicArn: topic
+        };
+        //console.log("publish: " +  updates[i]);
+        sns.publish(params, function(err, data) {
+          if (err) console.log(err, err.stack); // an error occurred
+          else     console.log(data);           // successful response
+        });
         callback(null, "Error");
       } else {
         callback(null, "Success");
@@ -81,6 +101,8 @@ var process_consumer_event = function(ts, message, callback) {
     if (instance_id != NaN) {
       update_expr = "set " + e + " =:s, instance=:i";
       expr_attr_vals = {":s":ts, ":i":instance_id};
+    } else {
+      instance_id = "None";
     }
     var params = {
         TableName:tablename,

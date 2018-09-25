@@ -1333,6 +1333,13 @@ class mainWindow(QMainWindow):
             if self.singleRun.res[0]:
                 self.dat.flowsheet.loadValues(self.singleRun.res[0])
                 #self.dat.flowsheet.results.headersFromGraph()
+
+                # HACK (JRB):  SETUP DEFAULT VALUES FOR REQUIRED KEYS
+                #
+                for key,value in (('nodeError',{}), ('turbineMessages',{})):
+                    if not self.singleRun.res[0].has_key(key):
+                        self.singleRun.res[0][key] = value
+
                 self.dat.flowsheet.results.add_result(
                     set_name='Single_runs',
                     result_name='single_{}'.format(self.dat.flowsheet.singleCount),
@@ -1385,7 +1392,7 @@ class mainWindow(QMainWindow):
                         ("Please check if model is "
                         "available in Turbine."))
                     msgBox.exec_()
-                    
+
     def loadDefaultInput(self):
         '''
             Return inputs to default values

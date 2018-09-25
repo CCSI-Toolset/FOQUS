@@ -20,7 +20,7 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod == "POST") {
       //var body = JSON.parse(event.body);
       var session_id = uuidv4();
-      callback(null, {statusCode:'200', body: session_id,
+      callback(null, {statusCode:'200', body: JSON.stringify(session_id),
         headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/text'}
       });
   }

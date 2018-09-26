@@ -70,16 +70,8 @@ class optimization(threading.Thread):
             Upload the FOQUS flowsheet to Turbine, so the flowsheet
             can be run through Turbine in parallel
         '''
-        fname = "tmp_to_turbine_opt"
-        self.dat.save(
-            filename = fname,
-            updateCurrentFile = False,
-            changeLogMsg = "Save for turbine submission",
-            indent = 0,
-            keepData = False)
         self.dat.flowsheet.uploadFlowseetToTurbine(
-            self.dat.name,
-            fname,
+            self.dat,
             reset=False)
 
     def run(self):

@@ -430,12 +430,11 @@ class Graph(threading.Thread):
                 err = True
         return err
 
-    def uploadFlowseetToTurbine(self,
-        simname,
-        dat,
-        reset=False):
+    def uploadFlowseetToTurbine(self, dat, reset=False):
         '''
+        Save a session and upload it to turbine
         '''
+        simname = dat.name
         sessionFile = "tmp_to_turbine"
         dat.save(
             filename = sessionFile,

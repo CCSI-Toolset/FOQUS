@@ -901,7 +901,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                             resubs=sim.turbineResub)
                     else:
                         self.dat.flowsheet.uploadFlowseetToTurbine(
-                            simname=self.dat.name,
                             dat=self.dat,
                             reset=False)
                         self.gThread = self.dat.flowsheet.runListAsThread(

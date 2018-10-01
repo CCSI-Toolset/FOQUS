@@ -360,7 +360,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         bucket_name = 'foqus-simulations'
         flowsheet_name = job_desc['Simulation']
         username = 'anonymous'
-        prefix = '%s/%s' %flowsheet_name
+        prefix = '%s/%s' %(username,flowsheet_name)
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
         assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")

@@ -41,7 +41,9 @@ exports.handler = function(event, context, callback) {
     client.listObjects(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
-        var sim_d = new Object();
+        var foqus_sim_d = new Object();
+        var acm_sim_d = new Object();
+        var aspenplus_sim_d = new Object();
         var simulation_set = new Set([]);
         var value = "";
 
@@ -50,7 +52,13 @@ exports.handler = function(event, context, callback) {
             value = data.Contents[index].Key;
             console.log("XXX: " + value);
             if (value.endsWith('.foqus')) {
-              sim_d[value.split('/')[1]] = new Set([]);
+              foqus_sim_d[value.split('/')[1]] = new Set([]);
+            }
+            else if (value.endsWith('acm_sinter.json')) {
+              acm_sim_d[value.split('/')[1]] = new Set([]);
+            }
+            else if (value.endsWith('aspenplus_sinter.json')) {
+              aspenplus_sim_d[value.split('/')[1]] = new Set([]);
             }
         }
         if (event.queryStringParameters != null) {
@@ -63,18 +71,38 @@ exports.handler = function(event, context, callback) {
             for (var index = 0; index < data.Contents.length; ++index) {
                 value = data.Contents[index].Key;
                 var key = value.split('/')[1];
-                if (key in sim_d) {
+                if (key in foqus_sim_d) {
                   if (value.lastIndexOf('/') != value.length-1) {
-                    sim_d[key].add({Name:value});
+                    foqus_sim_d[key].add({Name:value});
+                  }
+                }
+                else if (key in acm_sim_d) {
+                  if (value.lastIndexOf('/') != value.length-1) {
+                    acm_sim_d[key].add({Name:value});
+                  }
+                }
+                else if (key in aspenplus_sim_d) {
+                  if (value.lastIndexOf('/') != value.length-1) {
+                    aspenplus_sim_d[key].add({Name:value});
                   }
                 }
             }
           }
         }
-        for (var key in sim_d) {
-          console.log(sim_d[key]);
+        for (var key in foqus_sim_d) {
+          console.log(foqus_sim_d[key]);
           simulation_set.add({Name:key, Application:"foqus",
-            StagedInputs:Array.from(sim_d[key])});
+            StagedInputs:Array.from(foqus_sim_d[key])});
+        }
+        for (var key in acm_sim_d) {
+          console.log(acm_sim_d[key]);
+          simulation_set.add({Name:key, Application:"ACM",
+            StagedInputs:Array.from(acm_sim_d[key])});
+        }
+        for (var key in aspenplus_sim_d) {
+          console.log(aspenplus_sim_d[key]);
+          simulation_set.add({Name:key, Application:"aspenplus",
+            StagedInputs:Array.from(aspenplus_sim_d[key])});
         }
         console.log("SET: " + JSON.stringify(Array.from(simulation_set)));
         var content = JSON.stringify(Array.from(simulation_set));

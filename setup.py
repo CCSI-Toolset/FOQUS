@@ -5,8 +5,19 @@ See LICENSE.md for license and copyright details.
 """
 from __future__ import print_function
 from setuptools import setup, find_packages
+import sys
 import os
 
+if "ssh" in sys.argv:
+    connectType = 'ssh'
+    sys.argv.remove("ssh")
+elif "https" in sys.argv:
+    connectType = 'https'
+    sys.argv.remove("https")
+else:
+    connectType = 'https'
+        
+    
 # Add build number file to help if BUILD_NUMBER env var is set
 # this is mostly for building on Jenkins, but you could set the
 # env var on a local setup too.  If build number doesn't exist
@@ -40,8 +51,10 @@ install_requires=[
     'pandas>0.20'],
 
 #dependency_links=[]
-dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
-#dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+if connectType == 'https':
+    dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+elif connectType == 'ssh':
+    dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
 
 # Set all the package parameters
 pkg_name             = "foqus"

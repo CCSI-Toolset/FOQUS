@@ -365,6 +365,7 @@ class Node():
                     vdflt = item.get("default", None),
                     unit = str(item.get("units", "")),
                     vst = "sinter",
+                    dtype = dtype,
                     vdesc = str(item.get("description", "")),
                     tags = [])
             #Add outputs

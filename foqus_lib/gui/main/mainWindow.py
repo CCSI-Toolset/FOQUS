@@ -1192,10 +1192,7 @@ class mainWindow(QMainWindow):
         """
         Uploading FOQUS session to current Turbine
         """
-        self.dat.flowsheet.uploadFlowseetToTurbine(
-            self.dat.name,
-            dat=self.dat,
-            reset=False)
+        self.dat.flowsheet.uploadFlowseetToTurbine(dat=self.dat, reset=False)
         msgBox = QMessageBox()
         msgBox.setWindowTitle("Success")
         msgBox.setText("The current FOQUS session has been uploaded to Turbine")
@@ -1232,10 +1229,7 @@ class mainWindow(QMainWindow):
         elif self.dat.foqusSettings.runFlowsheetMethod == 1:
             # Submit to Turbine <-> FOQUS consumer
             # first save a session file (need to upload to turbine)
-            self.dat.flowsheet.uploadFlowseetToTurbine(
-                self.dat.name,
-                dat=self.dat,
-                reset=False)
+            self.dat.flowsheet.uploadFlowseetToTurbine(dat=self.dat, reset=False)
             if valList is not None:
                 self.multiRun = self.dat.flowsheet.runListAsThread(
                     valList,

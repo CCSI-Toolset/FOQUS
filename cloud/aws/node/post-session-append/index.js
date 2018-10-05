@@ -91,7 +91,9 @@ exports.handler = function(event, context, callback) {
         var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
         dynamodb.batchWrite(params, function(err, data) {
           console.log("BATCH WRITE")
-          if (err) console.log(err, err.stack); // an error occurred
+          if (err) {
+            console.log(err, err.stack); // an error occurred
+          }
           else {
             console.log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
             callback(null, {statusCode:'200', body: JSON.stringify(id_list),

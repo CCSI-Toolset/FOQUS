@@ -328,7 +328,10 @@ class Graph(threading.Thread):
             to -1 (meaning not run yet).
         '''
         self.solTime = sd.get('solTime', 0)
-        self.input.loadValues(sd['input'])
+        try:
+            self.input.loadValues(sd['input'])
+        except:
+            pass
         o = sd.get('output', None)
         if o:
             self.output.loadValues(sd['output'])
@@ -598,7 +601,7 @@ class Graph(threading.Thread):
         #return new job number
         return jid
 
-    def solveListValTurbine(self, valueList=None, maxSend=50, sid=None, jobIds=[]):
+    def solveListValTurbine(self, valueList=None, maxSend=20, sid=None, jobIds=[]):
         '''
             Send a list of flowsheet runs to Turbine, this allows the
             flowsheets to be solved in parallel.

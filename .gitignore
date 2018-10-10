@@ -75,3 +75,4 @@ foqus_lib/help/html/turbine_client_license.html
 installer.wixobj
 version.wxi
 zzFOQUS_User_Manual.ps
+pytest.log

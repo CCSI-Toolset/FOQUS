@@ -50,6 +50,7 @@ class GraphEx(foqusException):
         self.codeString[100] = "Single Node Calculation Success"
         self.codeString[201] = \
             "Found cycle in tree while finding calculation order"
+        self.codeString[1001] = "Missing/Incomplete result dictionary"
 
 class Graph(threading.Thread):
     """
@@ -321,20 +322,17 @@ class Graph(threading.Thread):
         return sd
 
     def loadValues(self, sd):
-        '''
-            This loads values for the graph variables from a dictionary
-            it also loads status codes if they are present.  If no
-            status codes are in the dictionary, all status codes are set
-            to -1 (meaning not run yet).
-        '''
+        """Loads values for the graph variables from a dictionary it also loads
+        status codes if they are present.  If no status codes are in the
+        dictionary, error codes are set to -1 (not run yet).
+        """
         self.solTime = sd.get('solTime', 0)
-        try:
-            self.input.loadValues(sd['input'])
-        except:
-            pass
+        o = sd.get('input', None)
+        if o is not None:
+            self.input.loadValues(o)
         o = sd.get('output', None)
-        if o:
-            self.output.loadValues(sd['output'])
+        if o is not None:
+            self.output.loadValues(o)
         self.setErrorCode(sd.get('graphError', -1))
         ne = sd.get('nodeError', {})
         tm = sd.get('turbineMessages', {})

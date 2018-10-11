@@ -87,15 +87,20 @@ def sd_col_list(sd, time=None):
     Take a value dict saved from results and turn it into a list of columns
     labels and data
     """
-    assert sd.has_key("nodeError")
-    assert sd.has_key("turbineMessages")
-    assert sd.has_key("input")
-    assert sd.has_key("output")
-    assert sd.has_key("graphError")
-    assert sd.has_key("solTime")
-    assert sd.has_key("nodeSettings")
-
     if time is None: time = iso_time_str()
+    
+    try:
+        assert sd.has_key("nodeError")
+        assert sd.has_key("turbineMessages")
+        assert sd.has_key("input")
+        assert sd.has_key("output")
+        assert sd.has_key("graphError")
+        assert sd.has_key("solTime")
+        assert sd.has_key("nodeSettings")
+    except AssertionError:
+        columns = ["time", "err"]
+        dat = [time, 1001]
+
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]
 
@@ -317,7 +322,8 @@ class Results(pd.DataFrame):
 
     def add_result(self, sd, set_name="default", result_name="res", time=None):
         """
-        Add a set of flowseheet results to the data frame
+        Add a set of flowseheet results to the data frame.  If sd is missing
+        anything most values will be left NaN and the graph error will be 1001
         """
         if len(self["set"]) > 0:
             names = list(self.loc[self["set"] == set_name].loc[:,"result"])

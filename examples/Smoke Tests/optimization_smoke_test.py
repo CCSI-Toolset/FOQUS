@@ -164,6 +164,12 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.varForm.cellWidget(3,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(4,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(5,1).setCurrentIndex(1)
+        # Set the Scales
+        MainWin.optSetupFrame.varForm.cellWidget(0,2).setCurrentIndex(1)
+        MainWin.optSetupFrame.varForm.cellWidget(1,2).setCurrentIndex(2)
+        MainWin.optSetupFrame.varForm.cellWidget(3,2).setCurrentIndex(3)
+        MainWin.optSetupFrame.varForm.cellWidget(4,2).setCurrentIndex(4)
+        MainWin.optSetupFrame.varForm.cellWidget(5,2).setCurrentIndex(5)
         # Switch to the Objective tab and set the objective
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(2)
         MainWin.optSetupFrame.fAddButton.click()
@@ -186,6 +192,23 @@ try: # Catch any exception and stop all timers before finishing up
         while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
             None
         print("Got here")
+        ## Switch to another solver
+        MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
+        solverName = MainWin.optSetupFrame.solverBox.findText("OptCMA")
+        MainWin.optSetupFrame.solverBox.setCurrentIndex(solverName)
+        
+        
+        MainWin.optSetupFrame.applyChanges()
+        MainWin.optSetupFrame.setSolver(MainWin.optSetupFrame.solverBox.currentText())
+        MainWin.optSetupFrame.lastSolver = MainWin.optSetupFrame.solverBox.currentText()
+        
+        MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
+        
+        MainWin.optSetupFrame.optMonitorFrame.startButton.click()
+        while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
+            None
+        print("Got here 2")
+        
         time.sleep(5)
         if not go(): break
 
@@ -198,9 +221,9 @@ except Exception as e:
     with open(testOutFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))
 timersStop() #make sure all timers are stopped
-
-#Try to close FOQUS
-timers['msg_no'].start(1000)
-MainWin.close()
-timerWait('msg_no')
-print("Exited Code")
+#
+##Try to close FOQUS
+#timers['msg_no'].start(1000)
+#MainWin.close()
+#timerWait('msg_no')
+#print("Exited Code")

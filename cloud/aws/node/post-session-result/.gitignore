@@ -7,5 +7,4 @@ deploy.env
 event_sources.json
 package-lock.json 
 .DS_Store
-.env
 .lambda

@@ -330,6 +330,9 @@ class Graph(threading.Thread):
         o = sd.get('input', None)
         if o is not None:
             self.input.loadValues(o)
+        else:
+            logging.getLogger("foqus." + __name__).error(
+                "Failed to get 'input' from results: sd={}".format(sd))
         o = sd.get('output', None)
         if o is not None:
             self.output.loadValues(o)

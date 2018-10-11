@@ -647,6 +647,10 @@ class Graph(threading.Thread):
         gid = self.solveListValTurbineGetGenerator()
         if gid is None:
             return
+
+        logging.getLogger("foqus." + __name__).debug(
+            "Turbine Result Generator: {0}".format(gid))
+
         ######
         # monitor the turbine session.
         ######
@@ -665,9 +669,12 @@ class Graph(threading.Thread):
                 #this means some exception getting page, no results
                 #should either get previously read page of negative page
                 break
+            logging.getLogger("foqus." + __name__).debug(
+                "Turbine Result Generator Page: {0} {1}".format(page, rp))
             if page is not None and page > rp:
                 jres = self.solveListValTurbineGeneratorReadPage(
                     gid, page, maxRes)
+                logging.getLogger("foqus." + __name__).debug("JRES: %d" %len(jres))
                 if len(jres) == maxRes:
                     skipWait = True
                 if jres is None:
@@ -683,13 +690,15 @@ class Graph(threading.Thread):
             else: #page == 0, page already read, or page = -1
                 pass
             if jres is not None:
+                logging.getLogger("foqus." + __name__).debug(
+                    "Turbine Result Generator Results LEN: {0}".format(len(jres)))
                 rp += 1
                 for job in jres:
                     try:
                         i = jobIds.index(job['Id'])
                     except ValueError:
-                        # ignore it must be a failed job that got
-                        # resubmitted
+                        logging.getLogger("foqus." + __name__).debug(
+                            "Job {0} ignore it must be a failed job that got resubmitted".format(job['Id']))
                         continue
                     jobRes = job.get('Output', None)
                     if jobRes is None:

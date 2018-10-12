@@ -17,7 +17,7 @@ except ImportError:
     from mock import MagicMock,patch
 
 
-def xtest_results_empty():
+def test_results_empty():
     """ Paging results from session results generator
     solTime -- Amount of time used to solve graph outputs
     """

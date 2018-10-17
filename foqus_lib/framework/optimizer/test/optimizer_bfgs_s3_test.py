@@ -1,4 +1,4 @@
-"""results_s3_test.py
+"""optimizer_bfgs_s3_test.py
 
 * This contains tests for results instance
 

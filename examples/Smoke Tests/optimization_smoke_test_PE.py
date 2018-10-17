@@ -3,9 +3,6 @@ from PyQt5 import QtCore, QtWidgets
 This test focuses on the input importance portion of the UQ
 """
 MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
-#testOutFile = 'ui_test_out.txt'
-#with open(testOutFile, 'w') as f: # file to write test results to
-#    f.write('Test Results\n')
 timers = {} # mainly put all timers in a dic so I can easily stop them all
 
 def go(sleep=0.25, MainWin=MainWin):
@@ -29,7 +26,7 @@ def getButton(w, label):
 global errorCount
 global errorTitle
 global errorFile
-errorFile = "AutoErrLog_optimization_smoke_test.txt"
+errorFile = "AutoErrLog_optimization_smoke_test_PE.txt"
 errorCount = 0
         
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
@@ -100,6 +97,8 @@ def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     except AttributeError:
         None
 
+
+
 def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
@@ -165,11 +164,11 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.homeAction.trigger()
         if not go(): break
         # Enter some information
-        MainWin.dashFrame.sessionNameEdit.setText("Optimization Test")
+        MainWin.dashFrame.sessionNameEdit.setText("Parameter Estimation Test")
         if not go(): break
         MainWin.dashFrame.tabWidget.setCurrentIndex(1)
         if not go(): break
-        MainWin.dashFrame.setSessionDescription("Rosenbrock Optimization Description Text")
+        MainWin.dashFrame.setSessionDescription("PE Optimization Description Text")
         if not go(): break
         # Make a flowsheet
         MainWin.fsEditAction.trigger()
@@ -177,16 +176,15 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.addNodeAction.trigger()
         if not go(): break
         MainWin.flowsheetEditor.sc.mousePressEvent(
-            None, dbg_x=10, dbg_y=10, dbg_name="Rosenbrock")
+            None, dbg_x=10, dbg_y=10, dbg_name="model")
         if not go(): break
         MainWin.toggleNodeEditorAction.trigger()
         if not go(): break
-        MainWin.nodeDock.addInput("x1")
-        MainWin.nodeDock.addInput("x2")
-        MainWin.nodeDock.addInput("x3")
-        MainWin.nodeDock.addInput("x4")
-        MainWin.nodeDock.addInput("x5")
-        MainWin.nodeDock.addInput("x6")
+        MainWin.nodeDock.addInput("a")
+        MainWin.nodeDock.addInput("b")
+        MainWin.nodeDock.addInput("c")
+        MainWin.nodeDock.addInput("x")
+        MainWin.nodeDock.addInput("ydata")
         MainWin.nodeDock.inputVarTable.item(0, 5).setText("-10")
         MainWin.nodeDock.inputVarTable.item(0, 6).setText("10")
         MainWin.nodeDock.inputVarTable.item(1, 5).setText("-10")
@@ -195,31 +193,22 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.nodeDock.inputVarTable.item(2, 6).setText("10")
         MainWin.nodeDock.inputVarTable.item(3, 5).setText("-10")
         MainWin.nodeDock.inputVarTable.item(3, 6).setText("10")
-        MainWin.nodeDock.inputVarTable.item(4, 5).setText("-10")
-        MainWin.nodeDock.inputVarTable.item(4, 6).setText("10")
-        MainWin.nodeDock.inputVarTable.item(5, 5).setText("-10")
-        MainWin.nodeDock.inputVarTable.item(5, 6).setText("10")
-        MainWin.nodeDock.inputVarTable.item(0, 4).setText("4")
-        MainWin.nodeDock.inputVarTable.item(1, 4).setText("5")
-        MainWin.nodeDock.inputVarTable.item(2, 4).setText("4")
-        MainWin.nodeDock.inputVarTable.item(3, 4).setText("5")
-        MainWin.nodeDock.inputVarTable.item(4, 4).setText("4")
-        MainWin.nodeDock.inputVarTable.item(5, 4).setText("4")
-        MainWin.nodeDock.inputVarTable.item(0, 1).setText("4")
-        MainWin.nodeDock.inputVarTable.item(1, 1).setText("5")
-        MainWin.nodeDock.inputVarTable.item(2, 1).setText("4")
-        MainWin.nodeDock.inputVarTable.item(3, 1).setText("5")
-        MainWin.nodeDock.inputVarTable.item(4, 1).setText("4")
-        MainWin.nodeDock.inputVarTable.item(5, 1).setText("4")
+        MainWin.nodeDock.inputVarTable.item(4, 5).setText("-50")
+        MainWin.nodeDock.inputVarTable.item(4, 6).setText("50")
+        MainWin.nodeDock.inputVarTable.item(0, 4).setText("1")
+        MainWin.nodeDock.inputVarTable.item(1, 4).setText("1")
+        MainWin.nodeDock.inputVarTable.item(2, 4).setText("1")
+        MainWin.nodeDock.inputVarTable.item(3, 4).setText("4")
+        MainWin.nodeDock.inputVarTable.item(4, 4).setText("0")
+        MainWin.nodeDock.inputVarTable.item(0, 1).setText("1")
+        MainWin.nodeDock.inputVarTable.item(1, 1).setText("1")
+        MainWin.nodeDock.inputVarTable.item(2, 1).setText("1")
+        MainWin.nodeDock.inputVarTable.item(3, 1).setText("2")
+        MainWin.nodeDock.inputVarTable.item(4, 1).setText("0")
         MainWin.nodeDock.toolBox.setCurrentIndex(1)
-        MainWin.nodeDock.addOutput("f")
+        MainWin.nodeDock.addOutput("y")
         MainWin.nodeDock.tabWidget.setCurrentIndex(2)
-        MainWin.nodeDock.pyCode.setPlainText("f['f'] = 0 \
-                                             \nf['f'] += (1-x['x1'])**2 + 100.0*(x['x2']-x['x1']**2)**2 \
-                                             \nf['f'] += (1-x['x2'])**2 + 100.0*(x['x3']-x['x2']**2)**2 \
-                                             \nf['f'] += (1-x['x3'])**2 + 100.0*(x['x4']-x['x3']**2)**2 \
-                                             \nf['f'] += (1-x['x4'])**2 + 100.0*(x['x5']-x['x4']**2)**2 \
-                                             \nf['f'] += (1-x['x5'])**2 + 100.0*(x['x6']-x['x5']**2)**2")
+        MainWin.nodeDock.pyCode.setPlainText("f['y'] = x['a'] * x['x']**2 + x['b'] * x['x'] + x['c']")
         MainWin.nodeDock.tabWidget.setCurrentIndex(0)
         if not go(): break
         # Before running start up a timer to close completed run msgbox
@@ -235,21 +224,65 @@ try: # Catch any exception and stop all timers before finishing up
         # Set up the variables
         MainWin.optSetupFrame.varForm.cellWidget(0,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(1,1).setCurrentIndex(1)
-        MainWin.optSetupFrame.varForm.cellWidget(3,1).setCurrentIndex(1)
-        MainWin.optSetupFrame.varForm.cellWidget(4,1).setCurrentIndex(1)
-        MainWin.optSetupFrame.varForm.cellWidget(5,1).setCurrentIndex(1)
-#        # Set the Scales
-#        MainWin.optSetupFrame.varForm.cellWidget(0,2).setCurrentIndex(1)
-#        MainWin.optSetupFrame.varForm.cellWidget(1,2).setCurrentIndex(2)
-#        MainWin.optSetupFrame.varForm.cellWidget(3,2).setCurrentIndex(3)
-#        MainWin.optSetupFrame.varForm.cellWidget(4,2).setCurrentIndex(4)
-#        MainWin.optSetupFrame.varForm.cellWidget(5,2).setCurrentIndex(5)
+        MainWin.optSetupFrame.varForm.cellWidget(2,1).setCurrentIndex(1)
+        MainWin.optSetupFrame.varForm.cellWidget(3,1).setCurrentIndex(2)
+        MainWin.optSetupFrame.varForm.cellWidget(4,1).setCurrentIndex(2)
+        # Add Samples
+        MainWin.optSetupFrame.tabWidget.setCurrentIndex(1)
+        MainWin.optSetupFrame.addSampleButton.click()
+        MainWin.optSetupFrame.addSampleButton.click()
+        MainWin.optSetupFrame.addSampleButton.click()
+        MainWin.optSetupFrame.addSampleButton.click()
+        MainWin.optSetupFrame.addSampleButton.click()
+        # Set Sample Values
+        try:
+            MainWin.optSetupFrame.sampleTable.item(0,0).setText("0")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(0,0, QtWidgets.QTableWidgetItem("0"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(0,1).setText("1")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(0,1, QtWidgets.QTableWidgetItem("1"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(1,0).setText("1")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(1,0, QtWidgets.QTableWidgetItem("1"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(1,1).setText("0")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(1,1, QtWidgets.QTableWidgetItem("0"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(2,0).setText("2")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(2,0, QtWidgets.QTableWidgetItem("2"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(2,1).setText("3")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(2,1, QtWidgets.QTableWidgetItem("3"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(3,0).setText("3")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(3,0, QtWidgets.QTableWidgetItem("3"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(3,1).setText("10")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(3,1, QtWidgets.QTableWidgetItem("10"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(4,0).setText("4")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(4,0, QtWidgets.QTableWidgetItem("4"))
+        try:
+            MainWin.optSetupFrame.sampleTable.item(4,1).setText("21")
+        except:
+            MainWin.optSetupFrame.sampleTable.setItem(4,1, QtWidgets.QTableWidgetItem("21"))
+        
+        
         # Switch to the Objective tab and set the objective
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(2)
         MainWin.optSetupFrame.fAddButton.click()
-        MainWin.optSetupFrame.fTable.setItem(0,0, QtWidgets.QTableWidgetItem("f['Rosenbrock']['f']"))
+        MainWin.optSetupFrame.fTable.setItem(0,0, QtWidgets.QTableWidgetItem("sum([(f[i]['model']['y'] - x[i]['model']['ydata'])**2 for i in range(len(x))])"))
         MainWin.optSetupFrame.fTable.setItem(0,1, QtWidgets.QTableWidgetItem("1"))
-        MainWin.optSetupFrame.fTable.setItem(0,2, QtWidgets.QTableWidgetItem("10000"))
+        MainWin.optSetupFrame.fTable.setItem(0,2, QtWidgets.QTableWidgetItem("100"))
         ## Switch to the Solver tab and set the solver
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
         solverName = MainWin.optSetupFrame.solverBox.findText("NLopt")
@@ -260,13 +293,13 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.setSolver(MainWin.optSetupFrame.solverBox.currentText())
         MainWin.optSetupFrame.lastSolver = MainWin.optSetupFrame.solverBox.currentText()
         
-        MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
-        
-        MainWin.optSetupFrame.optMonitorFrame.startButton.click()
-        while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
-            None
-#        print("Got here")
-        time.sleep(5)
+#        MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
+#        
+#        MainWin.optSetupFrame.optMonitorFrame.startButton.click()
+#        while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
+#            None
+##        print("Got here")
+#        time.sleep(5)
         
         if not go(): break
 

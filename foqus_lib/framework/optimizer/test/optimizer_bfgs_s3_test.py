@@ -121,4 +121,7 @@ def test_optimization_bfgs_session_results(mock_read_generator_page, mock_get_ge
     #            bounds=bounds,
     #            options={'ftol':ftol, 'eps':eps, 'maxfun':maxeval})
     #E       AttributeError: 'module' object has no attribute 'optimize'
+    _log.debug("OPT: " + str(opt))
+    assert isinstance(opt, BFGS.opt)
+
     opt.optimize()

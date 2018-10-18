@@ -19,6 +19,7 @@ import logging
 import math
 import numpy
 import scipy
+import scipy.optimize
 import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization

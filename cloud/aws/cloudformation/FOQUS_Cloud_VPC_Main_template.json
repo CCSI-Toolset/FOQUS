@@ -93,7 +93,12 @@
         "GroupName": "SLMSecurityGroup",
         "GroupDescription" : "Security Group for SLM Server",
         "SecurityGroupEgress" : [ ],
-        "SecurityGroupIngress" : [ ],
+        "SecurityGroupIngress" : [
+          {"IpProtocol": "udp", "CidrIp": "131.243.0.0/16", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "131.243.0.0/16", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "34.239.51.211/32", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "131.243.0.0/16", "FromPort":3389, "ToPort": 3389},
+          {"IpProtocol": "tcp", "CidrIp": "69.181.155.133/32", "FromPort":3389, "ToPort": 3389} ],
         "Tags" :  [ {"Key" : "Name", "Value" : "SLMSecurityGroup" } ],
         "VpcId" : { "Ref" : "VPC" }
       }

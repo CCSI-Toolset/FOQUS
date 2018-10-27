@@ -11,7 +11,7 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 
 ### Install
 See the [installation](INSTALL.md) instructions for details.
-To see videos on how to install FOQUS, please go to: https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd 
+To see videos on how to install FOQUS, please click [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd). 
 
 ### FAQ
 See our [FAQ](FAQs.md) for frequently asked questions and answers

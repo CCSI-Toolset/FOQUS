@@ -2,7 +2,7 @@
 
 ## FOQUS Installation Videos
 
-To see videos on how to install FOQUS, please go to: https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd
+To see videos on how to install FOQUS, please click [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd).
 The instructions shown below (in this page) were used in the videos. 
 
 ## Install Python

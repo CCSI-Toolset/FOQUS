@@ -1,5 +1,10 @@
 # FOQUS Install
 
+## FOQUS Installation Videos
+
+To see videos on how to install FOQUS, please click [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd).
+The instructions shown below (in this page) were used in the videos. 
+
 ## Install Python
 
 Install Python 2.7 with PyQt5. The [Anaconda Python distribution](https://www.anaconda.com/download/#windows) is the recommended way to install Python. Anaconda comes with most required packages and the latest versions

@@ -7,7 +7,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-from option import *
+from foqus_lib.framework.foqusOptions.option import *
 
 class optionList(dict):
     def __init__(self):

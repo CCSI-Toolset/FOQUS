@@ -407,7 +407,7 @@ class pymodel_pg(pymodel):
         try:
             f = open('gams/GamsInput.inc', 'w')
         except:
-            print "Couldn't open GAMS input file"
+            print("Couldn't open GAMS input file")
             return
         #Comments
         f.write("* Input parameters \n\n")
@@ -672,14 +672,14 @@ class pymodel_pg(pymodel):
             process.wait()  #could get fancy later and add a timeout
         except:
             node.calcError = -2
-            print "Is GAMS installed?  Are the heat integration GAMS files available?"
+            print("Is GAMS installed?  Are the heat integration GAMS files available?")
             return
 
         #read GAMS output file
         try:
             f = open('gams\GamsOutput.txt','r')
         except:
-            print "couldn't open GAMS output file"
+            print("couldn't open GAMS output file")
             return
         #pull GAMS results in the node variables
         costUtiHr = float((f.readline()).strip())           # utility cost (hourly) ($MM/hr)
@@ -713,7 +713,7 @@ class pymodel_pg(pymodel):
                 numpy.nan,
                 numpy.nan,
                 numpy.nan]
-        print "done with hi calc"
+        print("done with hi calc")
 
         for var in node.outVars:
             if self.outputs[var]:

@@ -6,7 +6,6 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-from __future__ import division
 import os
 import time
 import json
@@ -14,8 +13,8 @@ import math
 import subprocess
 import logging
 import traceback
-from nodeVars import *
-from nodeModelTypes import nodeModelTypes
+from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx

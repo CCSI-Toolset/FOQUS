@@ -204,5 +204,5 @@ class foqusListener(threading.Thread):
                     conn.send(['outputNames', self.outputNames])
             if quitListening: break
         # do whatever to finish up
-        print "exiting foqus listener"
+        print("exiting foqus listener")
         self.listener.close()

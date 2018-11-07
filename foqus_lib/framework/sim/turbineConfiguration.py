@@ -31,9 +31,9 @@ from collections import OrderedDict
 try:
     import turbineLiteDB
 except Exception as e:
-    print "Problem importing turbineLiteDB."
-    print "Without this you cannot run turbine simulations locally."
-    print e
+    logging.getLogger("foqus." + __name__).exception(
+        "Problem importing turbineLiteDB.")
+
 from foqus_lib.framework.foqusException.foqusException import *
 import turbine.commands.turbine_application_script
 import turbine.commands.turbine_session_script
@@ -387,7 +387,6 @@ class turbineConfiguration():
 
     def consumerID(self, nodeName):
         ci = self.consumers.get(nodeName, None)
-        print ci.cid
         if ci is None:
             return None
         cid = ci.cid
@@ -817,7 +816,6 @@ class turbineConfiguration():
         try:
             output = turbine.commands.turbine_session_script.start_jobs(
                 self.turbineConfigParse(), sid)
-            print "startSession:OUTPUT: ", output
             return json.loads(output)
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
@@ -883,7 +881,6 @@ class turbineConfiguration():
                     postAddress]),
                 e = e,
                 tb=traceback.format_exc())
-        print "getCompletedJobGen.RESULT: ", gid
         return json.loads(gid)
 
     def getCompletedJobPage(self, sid, gen):
@@ -1274,7 +1271,6 @@ class turbineConfiguration():
                     raise TurbineInterfaceEx(code = 355)
 
     def getAppByExtension(self, modelFile):
-        print "MODEL FILE: ", modelFile
         junk, modelExt = os.path.splitext(modelFile) #get model ext
         app = self.appExtensions.get(modelExt, None)
         if not app: # unknown extension type
@@ -1432,9 +1428,6 @@ class turbineConfiguration():
         for s in simList:
             simListLower.append(s.lower())
         exists = name.lower() in simListLower
-        print name.lower()
-        print simListLower
-        print exists
         if exists and not update:
             raise TurbineInterfaceEx(
                 code = 309,
@@ -1577,9 +1570,9 @@ if __name__ == '__main__':
     t = turbineConfiguration()
     t.path = "config_east.cfg"
     t.updateSettings()
-    print t.getApplicationList()
-    print t.getSimulationList()
-    print t.getSessionList()
+    print(t.getApplicationList())
+    print(t.getSimulationList())
+    print(t.getSessionList())
     t.uploadSimulation("ftest01", "ftest.foqus")
-    print t.createSession()
-    print t.getSessionList()
+    print(t.createSession())
+    print(t.getSessionList())

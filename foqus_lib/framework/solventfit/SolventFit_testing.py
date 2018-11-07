@@ -51,7 +51,7 @@ class SolventFit:
 
         if emul_params is None:
             emul_params = {'bte':'[0,1000,1]', 'nterms':'20', 'order':'2'}
-                           
+
         if calib_params is None:
             calib_params = {'bte': '[0,2000,1]'}
 
@@ -70,9 +70,9 @@ class SolventFit:
             mydir = os.path.dirname(__file__)
             src = os.path.join(mydir, f)
                 # shutil.copyfile(src, f)
-        
+
         #create string for input to command window
-        
+
         commandItems = [rpath, 'solvfit_calibfit.R',
                         str(nx_design), str(nx_var), str(nx_out), xdatfile, ydatfile, modelfile,
                         expfile, priorsfile, initsfile,disc, writepost, writedisc,
@@ -100,8 +100,8 @@ class SolventFit:
 
         # out, error = p.communicate()
         # if error:
-        #     print out
-        #     print error
+        #     print(out)
+        #     print(error)
         #     outf = open('solventfit_log', 'w')
         #     outf.write(out)
         #     outf.write('\n\n\n')
@@ -116,8 +116,7 @@ class SolventFit:
 
 
 rdsfile=SolventFit.calibfit('Rscript',1,3,3,'example2/xdat.csv','example2/ydatmult.csv','example2/solvfit_calibrator5_test.rds','example2/expdatmult.csv',priorsfile='example2/morrispriorsmultfile.txt',disc=True)
-    
+
     #  rdsfile = fit('1','3','3','example/xdat.csv','example/ydatmult.csv','example/solvfit_calibrator4mult_em.rds','example/expdatmult.csv',priorsfile='example/morrispriorsmultfile.txt',disc=True,incl_em=True)
-    
-print rdsfile
-        
+
+print(rdsfile)

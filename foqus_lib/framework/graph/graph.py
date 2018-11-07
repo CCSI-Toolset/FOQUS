@@ -20,7 +20,7 @@ import threading
 import logging
 import sys
 from collections import OrderedDict
-from node import *   # Node, input var and output var classes
+from foqus_lib.framework.graph.node import *   # Node, input var and output var classes
 from nodeModelTypes import nodeModelTypes
 from edge import *   # Edge and variable connection classes
 from OptGraphOptim import *  # Objective function calculation class

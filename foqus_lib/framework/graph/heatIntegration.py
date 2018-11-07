@@ -286,7 +286,7 @@ def heatIntegrationCalc(node):
 	try:
 		f = open('gams/GamsInput.inc', 'w')
 	except:
-		print "Couldn't open GAMS input file"
+		print("Couldn't open GAMS input file")
 		return
 	#Comments
 	f.write("* Input parameters \n\n")
@@ -531,7 +531,7 @@ def heatIntegrationCalc(node):
 		process.wait()  #could get fancy later and add a timeout
 	except:
 		node.calcError = -2
-		print "Is GAMS installed?  Are the heat integration GAMS files available?"
+		print("Is GAMS installed?  Are the heat integration GAMS files available?")
 		return
 
 
@@ -539,7 +539,7 @@ def heatIntegrationCalc(node):
 	try:
 		f = open('gams\GamsOutput.txt','r')
 	except:
-		print "couldn't open GAMS output file"
+		print("couldn't open GAMS output file")
 		return
 	#pull GAMS results in the node variables
 	node.outVars["Utility.Cost"].value = float((f.readline()).strip())  # utility cost
@@ -559,7 +559,7 @@ def heatIntegrationCalc(node):
 	else:
                 node.outVars["FH.Heat.Addition"].value = None
 	node.outVars["Min.No.HX"].value  = int(float((f.readline()).strip()))   # minimum number of heat exchangers
-	print "done with hi calc"
+	print("done with hi calc")
 
 	for var in node.outVars:
                 if node.outVars[var]:

@@ -8,7 +8,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-import Queue
+import queue
 import foqus_lib.framework.sampleResults.results as resultList
 import multiprocessing.dummy as multiprocessing
 import numpy

@@ -31,11 +31,11 @@ def fit(nx_design, nx_var, xdatfile, ydatfile, modelfile, expfile, priorsfile, d
     print(stdout)
     print(stderr)
 
-    return(modelfile)
+    return modelfile
 
 # ---------------------------------------
 # Example usage
 # ---------------------------------------
 rdsfile = fit('1','3','example/xdat.csv','example/ydat.csv','solvfit_calibrator.rds',
               'example/expdat1.csv','example/priors.txt', disc=True)
-print rdsfile
+print(rdsfile)

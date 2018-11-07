@@ -1145,7 +1145,7 @@ class turbineConfiguration():
                         "marked failed.")
                     try:
                         self.killJob(jobID, state)
-                    except Exception, e:
+                    except Exception as e:
                         logging.getLogger("foqus." + __name__).exception(
                             "Job " + str(jobID) + \
                             " Wait time-out, failed to terminate"\

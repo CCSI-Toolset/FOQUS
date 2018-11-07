@@ -8,7 +8,7 @@ import os
 import types
 import platform
 from ConfigParser import RawConfigParser
-from StringIO import StringIO
+from io import StringIO
 
 from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *

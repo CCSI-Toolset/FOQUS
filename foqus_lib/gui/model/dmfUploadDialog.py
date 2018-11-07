@@ -34,7 +34,7 @@ except:
         .exception('Failed to import or launch DMFBrowser')
     useDMF = False
 from urllib2 import urlopen
-from StringIO import StringIO
+from io import StringIO
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog,\

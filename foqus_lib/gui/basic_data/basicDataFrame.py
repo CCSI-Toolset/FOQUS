@@ -4,7 +4,7 @@ import platform
 import subprocess
 from urllib2 import urlopen
 
-from StringIO import StringIO
+from io import StringIO
 
 if os.name == 'nt':
     try:

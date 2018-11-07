@@ -9,7 +9,7 @@ See LICENSE.md for license and copyright details.
 import numpy as np
 import pandas as pd
 import re
-import StringIO
+from io import StringIO
 import json
 import datetime
 import logging
@@ -88,7 +88,7 @@ def sd_col_list(sd, time=None):
     labels and data
     """
     if time is None: time = iso_time_str()
-    
+
     try:
         assert sd.has_key("nodeError")
         assert sd.has_key("turbineMessages")

@@ -9,7 +9,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
-import ConfigParser
+import configparser
 import urlparse
 import json
 import re
@@ -560,7 +560,7 @@ class turbineConfiguration():
             using the information to update the current Turbine config
             information.
         '''
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:
             config.read(path)
@@ -579,7 +579,7 @@ class turbineConfiguration():
             configuration file.
         '''
         path = self.getFile()
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:
             config.read(path)
@@ -625,7 +625,7 @@ class turbineConfiguration():
             (this can be used to write the configuration file)
         '''
         self.checkAddress()
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         config.add_section("Consumer")
         config.add_section("Job")
@@ -1238,7 +1238,7 @@ class turbineConfiguration():
                 # Jobs not done but I'm not waiting any more (timeout)
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Wait time-out, failed to terminate"\
@@ -1250,7 +1250,7 @@ class turbineConfiguration():
             elif runStart and time.clock() - runStart > maxRunTime:
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Run time-out, failed to terminate"\
@@ -1262,7 +1262,7 @@ class turbineConfiguration():
             elif stopFlag != None and stopFlag.isSet():
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Graph thread terminate, failed to"\

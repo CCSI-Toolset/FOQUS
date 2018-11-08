@@ -17,7 +17,7 @@ class SolventFit:
     def getVarNames(datfile):
         f = open(datfile,'r')
         reader = csv.reader(f)
-        varNames = reader.next()
+        varNames = next(reader)
         f.close()
         return varNames
 
@@ -41,7 +41,7 @@ class SolventFit:
 
         if emul_params is None:
             emul_params = {'bte':'[0,10000,1]', 'nterms':'20', 'order':'3'}
-                           
+
         if calib_params is None:
             calib_params = {'bte': '[0,50000,1]'}
 
@@ -58,7 +58,6 @@ class SolventFit:
         files = ['solvfit_calibfit.R', 'solvfit_emulfit.R']
         for f in files:
             mydir = os.path.dirname(__file__)
-            print mydir
             src = os.path.join(mydir, f)
             shutil.copyfile(src, f)
 
@@ -82,17 +81,15 @@ class SolventFit:
                         emul_params['bte'], emul_params['nterms'], emul_params['order'],
                         calib_params['bte'], disc_params['nterms'], disc_params['order'],
                         pt_mass,incl_em,model_func,restartfile]
-        commandItems = map(str, commandItems)
-        print commandItems
-        print ' '.join(commandItems)
+        commandItems = list(map(str, commandItems))
         Common.runCommandInWindow(' '.join(commandItems),
                                   'solventfit_log')
 
 
         # out, error = p.communicate()
         # if error:
-        #     print out
-        #     print error
+        #     print(out)
+        #     print(error)
         #     outf = open('solventfit_log', 'w')
         #     outf.write(out)
         #     outf.write('\n\n\n')
@@ -102,7 +99,7 @@ class SolventFit:
             #return None
 
         return modelfile
-        
+
     @staticmethod
     def fit(xdatfile, ydatfile, ytable, xtable, exptable,
             genPostSample=True, # posterior sample is ALWAYS generated, set to True to copy sample to user-specified file
@@ -112,7 +109,7 @@ class SolventFit:
 
         # get input variable names
         inVarNames = SolventFit.getVarNames(xdatfile)
-        
+
         nx_out = sum(1 for y in ytable if y is not None)
 
         ### ytable should be an array of length N, where N is the number of outputs, observed and unobserved.
@@ -120,7 +117,7 @@ class SolventFit:
         ### if output is observed, ytable[i] should contain the following fields: {'outputName': varName}
 
         ### xtable should be an array of length N, where N is the number of inputs.
-        ### xtable[i] should contain the following fields: 
+        ### xtable[i] should contain the following fields:
         ###     {'type':%s, 'value':%s, 'min':%f, 'max':%f, 'pdf':%d, 'param1':%f, 'param2':%f}
         ###      'type' can only be DESIGN or VARIABLE.
         # ... parse xtable
@@ -170,7 +167,7 @@ class SolventFit:
         param2 += fixedVals
         minval += fixedVals
         maxval += fixedVals
-        fixedVals = map(str, fixedVals )
+        fixedVals = list(map(str, fixedVals ))
 
         # ... reorder the columns in xdatfile: design followed by random
         lines = []
@@ -179,15 +176,15 @@ class SolventFit:
         for row in reader:
             lines.append(row)
         f.close()
-        cols = zip(*lines)
+        cols = list(zip(*lines))
         newcols = []
         for i in xdesign:
             newcols.append(cols[i])
         for i in xrand:
             newcols.append(cols[i])
-        xdat = zip(*newcols)  # list of tuples with data in correct order
+        xdat = list(zip(*newcols))  # list of tuples with data in correct order
         Common.initFolder(SolventFit.dname)
-        xdatfile_ = Common.getLocalFileName(SolventFit.dname, xdatfile, '.ordered') 
+        xdatfile_ = Common.getLocalFileName(SolventFit.dname, xdatfile, '.ordered')
         f = open(xdatfile_,'w')
         xdat[0] = ['"%s"' % x for x in xdat[0]]
         for i, row in enumerate(xdat):
@@ -198,7 +195,7 @@ class SolventFit:
                 f.write(','.join(row + tuple(fixedVals)) + '\n')
         f.close()
         xdatfile = xdatfile_  # use ordered file for training
-        
+
         # ... write priors file for variable inputs
         ### *** THE FORMAT OF THIS DATA FILE IS: (contains nx_var columns)
         ### Line 1: dist type: 0=fixed, 1=normal, 2=gamma, 3=lognormal, 4=uniform
@@ -210,22 +207,22 @@ class SolventFit:
         priorsfile = SolventFit.dname + os.path.sep + 'priors.txt'
         f = open(priorsfile,'w')
         f.write(' '.join([str(e) for e in dist]) + '\n')
-        f.write(' '.join([str(e) for e in param1]) + '\n') 
-        f.write(' '.join([str(e) for e in param2]) + '\n') 
-        f.write(' '.join([str(e) for e in minval]) + '\n') 
+        f.write(' '.join([str(e) for e in param1]) + '\n')
+        f.write(' '.join([str(e) for e in param2]) + '\n')
+        f.write(' '.join([str(e) for e in minval]) + '\n')
         f.write(' '.join([str(e) for e in maxval]) + '\n')
         f.write(' '.join(['0'] * len(dist)) + '\n')
         f.close()
-        
+
         # ... write priors sample
         priorsamplefile = SolventFit.dname + os.path.sep + 'prior.samples.std'
-        priorsample = zip(*priorsample)
+        priorsample = list(zip(*priorsample))
         f = open(priorsamplefile,'w')
         f.write('%d %d 0\n' % (N, len(xrand)))  # header
         for row in priorsample:
             f.write(' '.join([str(e) for e in row]) + '\n')
         f.close()
-        
+
         ### exptable should be an array of length p where p = number of experiments.
         ### exptable[i] should be a numeric array:
         ### TODO Sham: The format was changed to add Std Devs. Need to change writing of expfile to reflect change if different from below:
@@ -289,7 +286,7 @@ class SolventFit:
             return None
 
         with open(postsamplefile) as f:
-            postsample = [map(float, line.split()) for line in f.readlines()]
+            postsample = [list(map(float, line.split())) for line in f.readlines()]
 
         # ----- plot histogram for 1 random input -----
         if len(xrand) == 1:

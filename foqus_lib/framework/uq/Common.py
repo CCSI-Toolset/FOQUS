@@ -72,8 +72,8 @@ class Common(obj):
                     try:
                         if os.path.isfile(file_path):
                             os.unlink(file_path)
-                    except Exception, e:
-                        print e
+                    except Exception as e:
+                        print(e)
         else:
             os.mkdir(dname)
         return None
@@ -96,7 +96,7 @@ class Common(obj):
             error = 'The selected regression response surface does not work with the data. \nPlease select a different response surface.\n\n'
             showDeveloperHelpMessage = False
         if not usePyside or QtWidgets.QApplication.instance() is None:
-            print error
+            print(error)
         else:
             msgBox = QtWidgets.QMessageBox()
             msgBox.setIcon(QtWidgets.QMessageBox.Critical)
@@ -120,7 +120,7 @@ class Common(obj):
                                                                     showErrorSignal = None,
                                                                     plotOuuValuesSignal = None,
                                                                     ):
-        from LocalExecutionModule import LocalExecutionModule
+        from .LocalExecutionModule import LocalExecutionModule
 
         psuadePath = LocalExecutionModule.getPsuadePath()
         if psuadePath is None:
@@ -293,7 +293,7 @@ class Common(obj):
                         continue
             iteration += 1
         if printOutputToScreen:
-            print '\n\n'
+            print('\n\n')
 
         logFile.close()
 
@@ -326,15 +326,15 @@ class Common(obj):
         with open(userRegressionFile) as regF:
             lines = regF.readlines()
             for line in lines:
-                print line
+                print(line)
                 if line.strip().lower().startswith('labels') and ''.join(line.lower().split()).startswith('labels='):
                     labelsLine = line
                     break
 
         useNodeNames = False
         if labelsLine: # labels line found. Check them
-            exec labelsLine
-            print "labels", labels
+            exec(labelsLine)
+            print("labels", labels)
             newName = outName.replace('.','_') # Input name that includes node name in the variable name
             if newName in labels:
                 useNodeNames = True

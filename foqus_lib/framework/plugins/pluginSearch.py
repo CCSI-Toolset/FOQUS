@@ -14,6 +14,7 @@ import sys
 import os
 import importlib
 import logging
+import imp
 
 class plugins():
     '''
@@ -47,7 +48,7 @@ class plugins():
                                     info("Reloading Plugin: " + \
                                     os.path.join(p, fname))
                                 self.plugins[mname[0]] = \
-                                    reload(self.plugins[mname[0]])
+                                    imp.reload(self.plugins[mname[0]])
                             else:
                                 logging.getLogger("foqus." + __name__).\
                                     info("Loading Plugin: " + \
@@ -59,7 +60,7 @@ class plugins():
                                 exception("Error Loading Plugin: " + \
                                 os.path.join(p, fname))
         # Now check that the plugins have what they need to be used
-        for pkey, p in self.plugins.items():
+        for pkey, p in list(self.plugins.items()):
             try:
                 av = p.checkAvailable()
             except:

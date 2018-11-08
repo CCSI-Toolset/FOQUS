@@ -10,7 +10,7 @@ import os
 import logging
 import time
 import re
-import StringIO
+from io import StringIO
 import shutil
 import pickle #not sure why this is here probably remove
 from pprint import pprint

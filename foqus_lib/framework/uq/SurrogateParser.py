@@ -1,9 +1,9 @@
 import os, re
 import numpy as np
-from Model import Model
-from SampleData import SampleData
-from SamplingMethods import SamplingMethods
-from Distribution import Distribution
+from .Model import Model
+from .SampleData import SampleData
+from .SamplingMethods import SamplingMethods
+from .Distribution import Distribution
 
 class SurrogateParser:
     
@@ -722,7 +722,7 @@ class SurrogateParser:
         line = f.readline()	#skip comment
         theta = []              #theta
         line = f.readline()
-        for i in xrange(nx): 
+        for i in range(nx): 
             strs = line.split()
             theta.append([float(s) for s in strs])
         line = f.readline()	#skip comment
@@ -743,7 +743,7 @@ class SurrogateParser:
         ystd = [float(s) for s in strs]
         line = f.readline()	#skip comment
         xdat = []               #input training data
-        for i in xrange(nds):   
+        for i in range(nds):   
             line = f.readline()
             strs = line.split()
             xdat.append([float(s) for s in strs])
@@ -755,13 +755,13 @@ class SurrogateParser:
         else:
             nf = (nx + 1)*(nx + 2)/2
         beta = []               #beta matrix
-        for i in xrange(nf):
+        for i in range(nf):
             line = f.readline()
             strs = line.split()
             beta.append([float(s) for s in strs])
         line = f.readline()	#skip comment
         gamma = []              #gamma matrix
-        for i in xrange(nds):
+        for i in range(nds):
             line = f.readline()
             strs = line.split()
             gamma.append([float(s) for s in strs])
@@ -890,7 +890,7 @@ class SurrogateParser:
             f.write('# Interpolate function for ALAMO\n')
             f.write('#==================================================\n')
             f.write('def interpolate(npts, XX, oid):\n')
-            for iy in xrange(nOutputs):                     
+            for iy in range(nOutputs):                     
                 f.write('   if oid == %d:\n' % iy)
                 f.write('      %s\n' % eqns_new[iy])
             f.write('   Ys = npts * [0.0]\n')
@@ -973,8 +973,8 @@ class SurrogateParser:
         if data is not None:
             ncols = numInputs + numOutputs
             data = np.reshape(data, [numSamples, ncols])
-            inputData = data[:,xrange(numInputs)]
-            outputData = data[:,xrange(numInputs, ncols)]
+            inputData = data[:,range(numInputs)]
+            outputData = data[:,range(numInputs, ncols)]
 
         # observed data
         numSamples_obs = 0
@@ -987,8 +987,8 @@ class SurrogateParser:
             ncols = numInputs + 2*numOutputs + numOutputs
             numSamples_obs = len(data)/ncols
             data = np.reshape(data, [numSamples_obs, ncols])
-            inputData_obs = data[:,xrange(numInputs)]
-            outputData_obs = data[:,xrange(numInputs, numInputs+numOutputs)]
+            inputData_obs = data[:,range(numInputs)]
+            outputData_obs = data[:,range(numInputs, numInputs+numOutputs)]
 
         # outputEqns
         outputEqns = []
@@ -1020,12 +1020,12 @@ class SurrogateParser:
         model.setName(infile)
         model.setInputNames(inData['inputNames'])
         model.setOutputNames(inData['outputNames'])
-        print model.getNumInputs()
+        print(model.getNumInputs())
         model.setInputTypes([Model.VARIABLE] * model.getNumInputs())
-        print model.getInputTypes()
+        print(model.getInputTypes())
         model.setInputMins(inData['inputMins'])
         model.setInputMaxs(inData['inputMaxs'])
-        model.setSelectedOutputs(xrange(model.getNumOutputs()))
+        model.setSelectedOutputs(range(model.getNumOutputs()))
         
         data = SampleData(model)
         data.setNumSamples(inData['numSamples'])

@@ -22,7 +22,7 @@ import time
 import copy
 import csv
 import pickle
-import Queue
+import queue
 import sys
 import logging
 import math
@@ -35,7 +35,7 @@ from foqus_lib.framework.optimizer.optimization import optimization
 try:
     import cma
     cma_available = True
-except ImportError, e:
+except ImportError as e:
     logging.getLogger("foqus." + __name__).exception("CMA-ES not found")
     cma_available = False
 

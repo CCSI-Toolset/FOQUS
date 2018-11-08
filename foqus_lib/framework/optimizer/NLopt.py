@@ -16,7 +16,7 @@ import time   # Some of these things are left over from CMA-ES
 import copy   # too lazy to sort out which I really need in here
 import csv
 import pickle
-import Queue
+import queue
 import sys
 import logging
 import math
@@ -30,7 +30,7 @@ from foqus_lib.framework.optimizer.optimization import optimization
 try:
     import nlopt
     nlopt_available = True
-except ImportError, e:
+except ImportError as e:
     nlopt_available = False
 
 def checkAvailable():

@@ -9,7 +9,7 @@ See LICENSE.md for license and copyright details.
 import numpy as np
 import pandas as pd
 import re
-import StringIO
+from io import StringIO
 import json
 import datetime
 import logging
@@ -88,15 +88,15 @@ def sd_col_list(sd, time=None):
     labels and data
     """
     if time is None: time = iso_time_str()
-    
+
     try:
-        assert sd.has_key("nodeError")
-        assert sd.has_key("turbineMessages")
-        assert sd.has_key("input")
-        assert sd.has_key("output")
-        assert sd.has_key("graphError")
-        assert sd.has_key("solTime")
-        assert sd.has_key("nodeSettings")
+        assert "nodeError" in sd
+        assert "turbineMessages" in sd
+        assert "input" in sd
+        assert "output" in sd
+        assert "graphError" in sd
+        assert "solTime" in sd
+        assert "nodeSettings" in sd
     except AssertionError:
         columns = ["time", "err"]
         dat = [time, 1001]
@@ -106,7 +106,7 @@ def sd_col_list(sd, time=None):
 
     # input, output, and node settings columns
     for s in [["input"]*2, ["output"]*2, ["nodeSettings", "setting"]]:
-        for n, d in sd[s[0]].iteritems():
+        for n, d in sd[s[0]].items():
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
                 el = sd[s[0]][n][v]
@@ -253,7 +253,7 @@ class Results(pd.DataFrame):
 
         sd = {
             "__columns":list(self.columns),
-            "__indexes":map(convertIndex, list(self.index)),
+            "__indexes":list(map(convertIndex, list(self.index))),
             "__filters":{},
             "__current_filter":self._current_filter}
         for f in self.filters:
@@ -353,7 +353,7 @@ class Results(pd.DataFrame):
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
-        for row in xrange(data.getNumSamples()):
+        for row in range(data.getNumSamples()):
             self.loc[row, "set"] = set_name
             self.loc[row, "result"] = result_name
             for i, col in enumerate(columns):
@@ -475,7 +475,7 @@ class Results(pd.DataFrame):
                 tstack.append(np.logical_xor(t1))
         if len(tstack) > 0:
             mask = tstack.pop()
-        indexes = map(int, list(self[mask].index))
+        indexes = list(map(int, list(self[mask].index)))
         return (indexes, mask)
 
     def clearData(self, *args, **kwargs):

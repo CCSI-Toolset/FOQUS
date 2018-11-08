@@ -14,7 +14,7 @@ from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
 from foqus_lib.framework.uq.ExperimentalDesign import ExperimentalDesign
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
-from Preview import Preview
+from .Preview import Preview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 #from SimSetup_UI import Ui_Dialog
@@ -58,7 +58,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
         if isinstance(model, Model):
             data = SampleData(model)
             dists = []
-            for i in xrange(model.getNumInputs()):
+            for i in range(model.getNumInputs()):
                 dists = dists + ['U']
             data.setInputDistributions(dists)
         else:
@@ -224,9 +224,9 @@ class SimSetup(_SimSetup, _SimSetupUI):
             else:
                 loadInputNames = data.getInputNames()
                 loadInputTypes = data.getInputTypes()
-                loadVariableNames = set([loadInputNames[modelIndex] for modelIndex in xrange(len(loadInputNames)) if loadInputTypes[modelIndex] == Model.VARIABLE])
+                loadVariableNames = set([loadInputNames[modelIndex] for modelIndex in range(len(loadInputNames)) if loadInputTypes[modelIndex] == Model.VARIABLE])
                 modelInputNames = self.model.getInputNames()
-                modelVariableNames = set([modelInputNames[modelIndex] for modelIndex in xrange(len(modelInputNames)) if modelInputTypes[modelIndex] == Model.VARIABLE])
+                modelVariableNames = set([modelInputNames[modelIndex] for modelIndex in range(len(modelInputNames)) if modelInputTypes[modelIndex] == Model.VARIABLE])
                 if not loadVariableNames <= modelVariableNames:
                     compatible = False
                     prompt = "This file does not have the same variable names as the setup model!"
@@ -286,7 +286,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
             self.loadData.setInputDistributions(data.getInputDistributions())
 
         dists = []
-        for modelIndex in xrange(self.model.getNumInputs()):
+        for modelIndex in range(self.model.getNumInputs()):
             d = Distribution(Distribution.SAMPLE)
             d.setParameterValues(sampleFile, modelIndex + 1)
             dists.append(d)
@@ -320,7 +320,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
                 message = 'Distribution settings not correct or entirely filled out! %s' % error
             else:
                 rowsToWarnAboutMass = []
-                for row in xrange(self.distTable.rowCount()):
+                for row in range(self.distTable.rowCount()):
                     for col in [3,4]:
                         item = self.distTable.item(row,col)
                         if col == 3:
@@ -510,7 +510,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
 
         # First get parameters for the model
         row = 0
-        for inputNum in xrange(self.model.getNumInputs()):
+        for inputNum in range(self.model.getNumInputs()):
             if modelTypes[inputNum] == Model.VARIABLE:
                 # Type
                 combobox = self.distTable.cellWidget(row, 1)
@@ -566,7 +566,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
         # Now get distributions for the SampleData object
         numSampleFromFile = 0
         row = 0
-        for inputNum in xrange(self.model.getNumInputs()):
+        for inputNum in range(self.model.getNumInputs()):
             if modelTypes[inputNum] == Model.VARIABLE:
                 # Only collect those that are not fixed to generate inputs
                 combobox = self.distTable.cellWidget(row, 5)
@@ -653,10 +653,10 @@ class SimSetup(_SimSetup, _SimSetupUI):
         # Add fixed inputs back in
 ##        print runData.getNumSamples()
         fullInputData = [0] * runData.getNumSamples()
-        for row in xrange(runData.getNumSamples()):
+        for row in range(runData.getNumSamples()):
             rowData = []
             selectedIndex = 0
-            for col in xrange(runData.getNumInputs()):
+            for col in range(runData.getNumInputs()):
                 if col in selectedInputs:
                     rowData.append(selectedInputData[row][selectedIndex])
                     selectedIndex = selectedIndex + 1

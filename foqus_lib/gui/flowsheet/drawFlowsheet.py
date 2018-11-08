@@ -452,8 +452,8 @@ class drawFlowsheet(QGraphicsView):
         and event handing is done by the fsSecne object contained in
         drawFlowsheet object
     '''
-    nodeSelected = QtCore.pyqtSignal([types.StringType])
-    edgeSelected = QtCore.pyqtSignal([types.IntType])
+    nodeSelected = QtCore.pyqtSignal([bytes])
+    edgeSelected = QtCore.pyqtSignal([int])
     noneSelected = QtCore.pyqtSignal()
     updateFS = QtCore.pyqtSignal()
     updateFSPos = QtCore.pyqtSignal()
@@ -491,13 +491,13 @@ class drawFlowsheet(QGraphicsView):
                 edge.curve,
                 edge.tear)
         # draw edges
-        for name, node in self.dat.flowsheet.nodes.iteritems():
+        for name, node in self.dat.flowsheet.nodes.items():
             self.scene().drawNode(node.x,node.y,name,node.modelName)
         # redraw the scene
         self.scene().update()
 
     def highlightSingleNode(self, name):
-        print name
+        print(name)
         self.scene().selectedNodes = [name]
         self.scene().selectedEdges = []
         self.createScene()

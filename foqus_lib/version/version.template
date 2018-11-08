@@ -5,7 +5,7 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-
+from __future__ import absolute_import, division, print_function
 import argparse, sys
 
 version = "2017.12.0.{BUILDNUMBER}" #Build in Jenkins inserts build number
@@ -48,14 +48,14 @@ if __name__ == '__main__':
         action="store_true")
     args = parser.parse_args()
     if args.version:
-        print version
+        print(version)
     if args.copyright:
-        print copyright
+        print(copyright)
     if args.license:
-        print license
+        print(license)
     if args.support:
-        print support
+        print(support)
     if args.webpage:
-        print webpage
+        print(webpage)
     if len(sys.argv) <= 1:
-        print version
+        print(version)

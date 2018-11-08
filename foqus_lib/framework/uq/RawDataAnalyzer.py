@@ -2,11 +2,11 @@ import os
 import subprocess
 import tempfile
 import platform
-from Model import Model
-from SampleData import SampleData
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from Plotter import Plotter
+from .Model import Model
+from .SampleData import SampleData
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Plotter import Plotter
 
 class RawDataAnalyzer:
 

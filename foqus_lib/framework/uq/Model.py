@@ -92,13 +92,13 @@ Methods:
 import numbers, json
 import numpy
 
-from SamplingMethods import SamplingMethods
-from Distribution import *
+from .SamplingMethods import SamplingMethods
+from .Distribution import *
 
 class Model:
-    FIXED, VARIABLE = range(2) #Input type
-    GATEWAY, LOCAL, EMULATOR = range(3) #Run type
-    NOT_CALCULATED, NEED_TO_CALCULATE, CALCULATED = range(3) #Emulator output status
+    FIXED, VARIABLE = list(range(2)) #Input type
+    GATEWAY, LOCAL, EMULATOR = list(range(3)) #Run type
+    NOT_CALCULATED, NEED_TO_CALCULATE, CALCULATED = list(range(3)) #Emulator output status
     def __init__(self):
         self.name = None
         self.driverName = None
@@ -264,11 +264,11 @@ class Model:
         if len(names) == 1:
             #Remove single value from tuple. Needed if argument is a collection
             names = names[0] 
-        if isinstance(names, basestring): #Single string
+        if isinstance(names, str): #Single string
             self.inputNames = (names,)
         #Check all items in collection are strings
-        elif all(isinstance(name, basestring) for name in names): 
-            self.inputNames = tuple([unicode(name) for name in names])
+        elif all(isinstance(name, str) for name in names): 
+            self.inputNames = tuple([str(name) for name in names])
         else:
             raise TypeError('Not all names are strings!')
 
@@ -276,7 +276,7 @@ class Model:
         self.flowsheetFixed = [False] * self.numInputs       
 
     def getInputNames(self):
-        self.inputNames = tuple([unicode(name) for name in self.inputNames])
+        self.inputNames = tuple([str(name) for name in self.inputNames])
         return self.inputNames
 
     def setOutputNames(*arg):
@@ -284,10 +284,10 @@ class Model:
         names = arg[1:]
         if len(names) == 1:
             names = names[0]
-        if isinstance(names, basestring): #Single string
+        if isinstance(names, str): #Single string
             self.outputNames = (names,)
         #Check all items in collection are strings
-        elif all(isinstance(name, basestring) for name in names):
+        elif all(isinstance(name, str) for name in names):
             self.outputNames = tuple(names)
         else:
             raise TypeError('Not all names are strings!')

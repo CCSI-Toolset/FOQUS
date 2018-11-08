@@ -1,9 +1,9 @@
 import os
-from UQRSAnalysis import UQRSAnalysis
-from UQAnalysis import UQAnalysis
-from RSAnalyzer import RSAnalyzer
-from ResponseSurfaces import ResponseSurfaces
-from Common import Common
+from .UQRSAnalysis import UQRSAnalysis
+from .UQAnalysis import UQAnalysis
+from .RSAnalyzer import RSAnalyzer
+from .ResponseSurfaces import ResponseSurfaces
+from .Common import Common
 
 
 class RSValidation(UQRSAnalysis):

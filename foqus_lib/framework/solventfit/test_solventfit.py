@@ -1,5 +1,5 @@
 from Distribution import Distribution
-from SolventFit import SolventFit as S
+from .SolventFit import SolventFit as S
 
 xdatfile = 'example/xdat.csv'
 ydatfile = 'example/ydat.csv'

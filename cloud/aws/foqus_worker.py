@@ -262,9 +262,9 @@ def run_foqus(job_desc):
         #sim_list = node.gr.turbConfig.getSimulationList()
         sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
 
-        print "==="*20
-        print sim_list
-        print "==="*20
+        print("==="*20)
+        print(sim_list)
+        print("==="*20)
         sim_d = filter(lambda i: i['Name'] == model_name, sim_list)
         assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %simulation_name
         if len(sim_d) == 0:
@@ -494,7 +494,7 @@ def main():
     curs.execute(sqlstr)
     jobs_all = curs.fetchall()
     for item in jobs_all:
-        print item
+        print(item)
     conn.close()
     """
     _log.debug("starting")

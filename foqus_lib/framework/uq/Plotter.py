@@ -86,7 +86,7 @@ class Plotter:
     def gencolors(ncolors, cmap):
 
         cm = plt.get_cmap(cmap)
-        vv = range(ncolors)
+        vv = list(range(ncolors))
         cNorm = colors.Normalize(vmin=0, vmax=vv[-1])
         scalarMap = cmx.ScalarMappable(norm=cNorm, cmap=cm)
         colorVals = [scalarMap.to_rgba(i) for i in range(ncolors)]
@@ -140,8 +140,8 @@ class Plotter:
                 if i < nseries:
                     c = colorVals[i]
                     if star is not None:
-                        k = [e for e in xrange(len(xdat[i])) if e not in star]
-                        l = [e for e in xrange(len(xdat[i])) if e in star]
+                        k = [e for e in range(len(xdat[i])) if e not in star]
+                        l = [e for e in range(len(xdat[i])) if e in star]
                         ax.scatter(xdat[i][k], ydat[i][k], color='k', s=40)
                         ax.scatter(xdat[i][l], ydat[i][l], color=c, marker='*', s=80)
                     else:
@@ -176,8 +176,8 @@ class Plotter:
             ax = fig.add_subplot(111)
             c = 'm'
             if star is not None:
-                k = [e for e in xrange(len(xdat[0])) if e not in star]
-                l = [e for e in xrange(len(xdat[0])) if e in star]
+                k = [e for e in range(len(xdat[0])) if e not in star]
+                l = [e for e in range(len(xdat[0])) if e in star]
                 ax.scatter(xdat[0][k], ydat[0][k], color='k', s=40)
                 ax.scatter(xdat[0][l], ydat[0][l], color=c, marker='*', s=80)
             else:
@@ -356,7 +356,7 @@ class Plotter:
         else:   # handle multiple PDFs as a result of RS uncertainty
             P = len(pdfs)     
             colorVals = Plotter.gencolors(P, 'jet')
-            for i in xrange(P):
+            for i in range(P):
                 cdf = np.cumsum(pdfs[i])
                 if i == 3:
                     ax2.plot(xdat, cdf, linewidth=3, color='k', label='Mean CDF')
@@ -407,7 +407,7 @@ class Plotter:
                 self.cdfL = cdfs[P-2]
                 self.xlabel = xlabel
                 self.ylen = len(cdfs[0])
-                self.ydat = [float(i)/self.ylen for i in xrange(1,self.ylen+1)]
+                self.ydat = [float(i)/self.ylen for i in range(1,self.ylen+1)]
 
                 # set up slider steps
                 N = len(self.cdfU)
@@ -438,7 +438,7 @@ class Plotter:
                 self.slider.on_changed(self.update)
 
                 # assume particular order of CDFs
-                for i in xrange(P-2):   
+                for i in range(P-2):   
                     self.ax.plot(self.cdfs[i], self.ydat, color='k')
                 yu, = self.ax.plot(self.cdfU, self.ydat, linewidth=3, color='r', label='Upper CDF')
                 yl, = self.ax.plot(self.cdfL, self.ydat, linewidth=3, color='b', label='Lower CDF')
@@ -519,7 +519,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson: 
                     return
-                for cid, func in self.observers.iteritems():
+                for cid, func in self.observers.items():
                     func(discrete_val)
                     
         p = ChangingPlot()
@@ -545,7 +545,7 @@ class Plotter:
             nplots = len(dat)
             colorVals = Plotter.gencolors(nplots, 'summer_r')
             fig, ax = plt.subplots(nrows=nplots, ncols=1, sharex=True)
-            for i in xrange(nplots):
+            for i in range(nplots):
                 dat_i = dat[i]
                 std_i = std[i]
                 #print dat_i, std_i
@@ -610,7 +610,7 @@ class Plotter:
         dy = dx.copy()
         dz = dat.flatten()
         dz[np.argwhere(dz<np.spacing(1))] = 0  # zero out small elements
-        cc = np.tile(range(lx), (ly,1))
+        cc = np.tile(list(range(lx)), (ly,1))
         cc = cc.T.flatten()
 
         # generate colors
@@ -861,7 +861,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson: 
                     return
-                for cid, func in self.observers.iteritems():
+                for cid, func in self.observers.items():
                     func(discrete_val)
                     
         p = ChangingPlot()
@@ -914,7 +914,7 @@ class Plotter:
             minTruth = min(truth)
             maxTruth = max(truth)
             numPoints = 10
-            sparseTruth = [minTruth + r/numPoints * (maxTruth - minTruth) for r in xrange(numPoints + 1)]
+            sparseTruth = [minTruth + r/numPoints * (maxTruth - minTruth) for r in range(numPoints + 1)]
             under = [(1-error_tol)*t for t in sparseTruth]
             over = [(1+error_tol)*t for t in sparseTruth]
             under_plot, = ax2.plot(sparseTruth, under, color='g', linestyle=':', label=env_label)
@@ -965,7 +965,7 @@ class Plotter:
             fig, axes = plt.subplots(nrows=N, ncols=N) # This is the source of slow plots. Not sure if this can be sped up
             A = axes.flat
 
-            for i in xrange(1,N+1):
+            for i in range(1,N+1):
                 k = sbi[p]
                 ax = A[k-1]
                 # ... plot histogram for diagonal subplot
@@ -987,13 +987,13 @@ class Plotter:
                     label.set_rotation(90)
                 p = p+1
 
-                for j in xrange(1,i):
+                for j in range(1,i):
                     # ... delete the unused (lower-triangular) axes                
                     k = (i-1)*N+j
                     ax = A[k-1]
                     fig.delaxes(ax)
 
-                for j in xrange(i+1,N+1):
+                for j in range(i+1,N+1):
                     k = sbi[p]
                     ax = A[k-1]
                     # ... plot 2D heatmap for upper-triangular subplot

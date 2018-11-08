@@ -48,14 +48,14 @@ if __name__ == '__main__':
         action="store_true")
     args = parser.parse_args()
     if args.version:
-        print version
+        print(version)
     if args.copyright:
-        print copyright
+        print(copyright)
     if args.license:
-        print license
+        print(license)
     if args.support:
-        print support
+        print(support)
     if args.webpage:
-        print webpage
+        print(webpage)
     if len(sys.argv) <= 1:
-        print version
+        print(version)

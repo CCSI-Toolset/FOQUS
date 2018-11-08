@@ -1,6 +1,6 @@
-from UQAnalysis import UQAnalysis
-from RawDataAnalyzer import RawDataAnalyzer
-from Common import Common
+from .UQAnalysis import UQAnalysis
+from .RawDataAnalyzer import RawDataAnalyzer
+from .Common import Common
 
 class UncertaintyAnalysis(UQAnalysis):
 

@@ -57,12 +57,12 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
             outputItems = QTreeWidgetItem( items[-1])
             outputItems.setText(0, nkey)
             outputItems.setText(1, "output")
-            for vkey, var in node.inVars.iteritems():
+            for vkey, var in node.inVars.items():
                 vItem = QTreeWidgetItem( inputItems )
                 vItem.setText(0, nkey)
                 vItem.setText(1, "input")
                 vItem.setText(2, vkey)
-            for vkey, var in node.outVars.iteritems():
+            for vkey, var in node.outVars.items():
                 vItem = QTreeWidgetItem( outputItems )
                 vItem.setText(0, nkey)
                 vItem.setText(1, "output")

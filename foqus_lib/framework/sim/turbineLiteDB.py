@@ -43,7 +43,6 @@ class turbineLiteDB():
             "\\Turbine\\Lite\\Data\\TurbineCompactDatabase.sdf"
 
     def __del__(self):
-        print "Deleting turbineLiteDB instance"
         self.closeConnection()
 
     def connectionString(self):

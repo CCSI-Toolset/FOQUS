@@ -8,8 +8,8 @@ def pred(modelfile, xdatfile, yhatfile, nsamples='50', transform='1'):
                           nsamples, transform],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    print stdout
-    print stderr
+    print(stdout)
+    print(stderr)
 
     return yhatfile
 
@@ -20,5 +20,4 @@ rdsfile = 'solvfit_emulator.rds'
 infile = 'example/infile.emulpred'
 outfile = 'outfile.emulpred'
 resfile = pred(rdsfile, infile, outfile)
-print resfile
-
+print(resfile)

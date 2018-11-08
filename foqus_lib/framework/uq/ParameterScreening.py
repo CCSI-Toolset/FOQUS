@@ -1,9 +1,9 @@
-from UQAnalysis import UQAnalysis
-from RawDataAnalyzer import RawDataAnalyzer
-from Common import Common
+from .UQAnalysis import UQAnalysis
+from .RawDataAnalyzer import RawDataAnalyzer
+from .Common import Common
 
 class ParameterScreening(UQAnalysis):
-    MOAT, LSA, MARSRANK, SOT, DELTA, GP = range(6)
+    MOAT, LSA, MARSRANK, SOT, DELTA, GP = list(range(6))
 
     fullNames = ('MOAT', 'Local Sensitivity Analysis', 'MARS Ranking', 
                  'Sum of Trees', 'Delta Test', 'Gaussian Process')

@@ -65,10 +65,10 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             "OR":dataFilter.DF_OR,
             "XOR":dataFilter.DF_XOR}
         self.ropDictRev = {}
-        for key, item in self.ropDict.iteritems():
+        for key, item in self.ropDict.items():
             self.ropDictRev[item] = key
         self.copDictRev = {}
-        for key, item in self.copDict.iteritems():
+        for key, item in self.copDict.items():
             self.copDictRev[item] = key
         self.updateFilterBox()
         self.updateForm()
@@ -306,6 +306,6 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
                 fltr.fstack.append([dataFilter.DF_RULE, rule])
             else:
                 #something wrong
-                print "message box here"
+                print("message box here")
                 return 1
         return 0

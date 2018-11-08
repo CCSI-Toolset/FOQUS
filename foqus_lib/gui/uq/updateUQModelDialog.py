@@ -135,8 +135,8 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
 
             data.model.setRunType(Model.EMULATOR)
             data.model.setOutputNames(outputNames)
-            data.model.setSelectedOutputs(range(len(outputNames)))
-            data.model.setEmulatorOutputStatus(range(len(outputNames)), Model.NEED_TO_CALCULATE)
+            data.model.setSelectedOutputs(list(range(len(outputNames))))
+            data.model.setEmulatorOutputStatus(list(range(len(outputNames))), Model.NEED_TO_CALCULATE)
             data.setOutputData(outputData)
             fnameRoot = Common.getFileNameRoot(fileName)
             data.model.setName(fnameRoot + '.emulatorTestData')

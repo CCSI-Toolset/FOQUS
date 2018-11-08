@@ -2,10 +2,10 @@ import os
 import subprocess
 import tempfile
 import platform
-from Model import Model
-from SampleData import SampleData
-from LocalExecutionModule import LocalExecutionModule
-from Common import Common
+from .Model import Model
+from .SampleData import SampleData
+from .LocalExecutionModule import LocalExecutionModule
+from .Common import Common
 
 class DataProcessor:
 
@@ -31,7 +31,7 @@ class DataProcessor:
                 types = data.getInputTypes()
                 inVarNames = SampleData.getInputNames(data)
                 varNames = []
-                for i in xrange(len(types)):
+                for i in range(len(types)):
                     if types[i] == Model.VARIABLE:
                         varNames.append(inVarNames[i])
 

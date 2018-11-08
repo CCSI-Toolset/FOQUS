@@ -7,6 +7,7 @@ import tempfile
 import time
 import platform
 import logging
+import io
 
 try:
     from PyQt5 import QtGui, QtCore, QtWidgets
@@ -129,7 +130,7 @@ class Common(obj):
         scriptHandle = None
         psFileName = ''
 
-        if isinstance(arg1, file) or \
+        if isinstance(arg1, io.IOBase) or \
            isinstance(arg1, tempfile.SpooledTemporaryFile): #script
             scriptHandle = arg1
             if arg2 is not None:
@@ -142,7 +143,7 @@ class Common(obj):
         elif isinstance(arg1, str):
             psFileName = arg1
             if arg2 is not None:
-                if isinstance(arg2, file) or \
+                if isinstance(arg2, io.IOBase) or \
                    isinstance(arg1, tempfile.SpooledTemporaryFile): #script
                     scriptHandle = arg2
                 elif isinstance(arg2, bool):
@@ -226,22 +227,22 @@ class Common(obj):
                     readChars = False
             else:
                 nextline = p.stdout.readline()
-                if not 'OUU' in nextline and 'iteration = ' in nextline:
+                if not 'OUU' in nextline.decode("utf-8") and 'iteration = ' in nextline.decode("utf-8"):
                     readChars = True
-            out += nextline
-            if nextline == '' and p.poll() is not None:
+            out += nextline.decode("utf-8")
+            if nextline.decode("utf-8") == '' and p.poll() is not None:
                 break
-            logFile.write(nextline)
+            logFile.write(nextline.decode("utf-8"))
             if printOutputToScreen:
                 #print nextline.strip()
                 sys.stdout.write(nextline)
             if usePyside and QtWidgets.QApplication.instance() is not None:
                 textedit = Common.dialog.textedit
                 if textInsertSignal is None:
-                    textedit.insertPlainText(nextline)
+                    textedit.insertPlainText(nextline.decode("utf-8"))
                 else:
                     #print 'insert signal'
-                    textInsertSignal.emit(nextline)
+                    textInsertSignal.emit(nextline.decode("utf-8"))
                 if ensureVisibleSignal is None:
                     textedit.ensureCursorVisible()
                 else:

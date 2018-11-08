@@ -5,7 +5,7 @@ Methods:
 
     getName():
         Gets name of the model
-    
+
     setName(name):
         Sets the run file name (name of the driver or emulator file)
 
@@ -14,63 +14,63 @@ Methods:
 
     setNumSamples(value):
         Sets number of samples
-        
+
     getNumSamples():
         Get number of samples
-        
+
     getNumInputs():
         Get number of inputs
-        
+
     getNumOutputs():
         Get number of outputs
-        
+
     setInputNames(names):
         Sets input names
         Arguments:
             Can be a collection (list, tuple) of names as a single argument -OR-
                 multiple arguments with each being a single name
-                
+
     getInputNames():
         Get input names. Returns tuple of names
-        
+
     setOutputNames(names):
         Sets output names
         Arguments:
             Can be a collection (list, tuple) of names as a single argument -OR-
                 multiple arguments with each being a single name
-                
+
     getOutputNames():
         Get output names. Returns tuple of names
-        
+
     setInputTypes(values):
         Sets input types (Model.VARIABLE or Model.FIXED)
         Arguments:
             A collection of values
-            
+
     getInputTypes():
         Get input types. Returns tuple of input types (Model.VARIABLE or Model.FIXED)
-        
+
     setInputMins(values):
         Sets input minimum values
         Arguments:
             A collection of values
-            
+
     getInputMins():
         Get input minimums. Returns numpy.array of minimum values
-        
+
     setInputMaxs(values):
         Sets input maximum values
         Arguments:
             A collection of values
-            
+
     getInputMaxs():
         Get input maximums. Returns numpy.array of maximum values
-        
+
     setInputDefaults(values):
         Sets input default values
         Arguments:
             A collection of values
-            
+
     getInputDefaults():
         Get input defaults. Returns numpy.array of default values
 
@@ -131,7 +131,7 @@ class Model:
 
     def saveDict(self):
         '''
-            Put model contents in a dictionary, so it can be easily 
+            Put model contents in a dictionary, so it can be easily
             saved in a json file.
         '''
         sd = dict()
@@ -228,7 +228,7 @@ class Model:
 
     def setRunType(self, runType):
         self.runType = runType
-    
+
     def getNumInputs(self):
         return self.numInputs
 
@@ -263,17 +263,17 @@ class Model:
         names = arg[1:]
         if len(names) == 1:
             #Remove single value from tuple. Needed if argument is a collection
-            names = names[0] 
+            names = names[0]
         if isinstance(names, str): #Single string
             self.inputNames = (names,)
         #Check all items in collection are strings
-        elif all(isinstance(name, str) for name in names): 
+        elif all(isinstance(name, str) for name in names):
             self.inputNames = tuple([str(name) for name in names])
         else:
             raise TypeError('Not all names are strings!')
 
         self.numInputs = len(self.inputNames)
-        self.flowsheetFixed = [False] * self.numInputs       
+        self.flowsheetFixed = [False] * self.numInputs
 
     def getInputNames(self):
         self.inputNames = tuple([str(name) for name in self.inputNames])
@@ -294,10 +294,10 @@ class Model:
 
         self.numOutputs = len(self.outputNames)
         self.emulatorOutputStatus = [Model.NOT_CALCULATED] * self.numOutputs
-       
+
 
     def getOutputNames(self):
-        return self.outputNames        
+        return self.outputNames
 
     def setInputTypes(self, types):
         if len(types) != self.numInputs:
@@ -311,10 +311,10 @@ class Model:
         if len(mins) != self.numInputs:
             raise ValueError('Number of minimums does not match number of inputs!')
         self.inputMins = numpy.array(mins)
-        
+
     def getInputMins(self):
         return self.inputMins
-        
+
     def setInputMaxs(self, maxs):
         if len(maxs) != self.numInputs:
             raise ValueError('Number of maximums does not match number of inputs!')
@@ -339,7 +339,7 @@ class Model:
             if not param2Vals:
                 param2Vals = [None]
             #print distTypes, param1Vals, param2Vals
-            for dist, val1, val2 in map(None, distTypes, param1Vals, param2Vals):
+            for dist, val1, val2 in zip(distTypes, param1Vals, param2Vals):
                 if dist is None:
                     distribObj = None
                 else:
@@ -375,4 +375,3 @@ class Model:
 
     def getSelectedOutputs(self):
         return self.outputSelections
- 

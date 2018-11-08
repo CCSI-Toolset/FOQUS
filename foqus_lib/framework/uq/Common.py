@@ -235,7 +235,7 @@ class Common(obj):
             logFile.write(nextline.decode("utf-8"))
             if printOutputToScreen:
                 #print nextline.strip()
-                sys.stdout.write(nextline)
+                sys.stdout.write(nextline.decode("utf-8"))
             if usePyside and QtWidgets.QApplication.instance() is not None:
                 textedit = Common.dialog.textedit
                 if textInsertSignal is None:
@@ -256,7 +256,7 @@ class Common(obj):
             if plotOuuValuesSignal is not None:
                 if not grabz:
                     pat = 'Outer optimization iteration = ([0-9]*)'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         grabz = False
                         grabx = True
@@ -266,13 +266,13 @@ class Common(obj):
                         continue
                 if grabx:
                     pat = 'Current Level 1 input \s*[0-9]* = (.*)'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         x.append(float(regex[0]))     # input value
                         continue
 
                 pat = 'computing objective .* nFuncEval = (.*)'
-                regex = re.findall(pat, nextline)
+                regex = re.findall(pat, nextline.decode("utf-8"))
                 if regex:
                     grabx = False
                     grabz = True
@@ -283,7 +283,7 @@ class Common(obj):
 
                 if grabz:
                     pat = 'computed  objective .* = (.*)\.'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         z.append(float(regex[0]))
                         grabz = False

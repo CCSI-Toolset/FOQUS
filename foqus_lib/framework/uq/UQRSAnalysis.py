@@ -1,12 +1,10 @@
 import os
 import abc #abstract base class
 from collections import OrderedDict
-from ResponseSurfaces import ResponseSurfaces
-from UQAnalysis import UQAnalysis
+from .ResponseSurfaces import ResponseSurfaces
+from .UQAnalysis import UQAnalysis
 
-class UQRSAnalysis(UQAnalysis):
-    __metaclass__ = abc.ABCMeta
-
+class UQRSAnalysis(UQAnalysis, metaclass=abc.ABCMeta):
     def __init__(self, ensemble, output, analysisType, responseSurface,
                  subType = None, rsOptions = None, userRegressionFile = None,
                  xprior = None):

@@ -266,11 +266,11 @@ class Node():
         # Below is just to maintain compatibility with older session files
         # It may be deleted at some point in the future
         if 'inVars' in sd:
-            for vkey, var in sd["inVars"].iteritems():
+            for vkey, var in sd["inVars"].items():
                 v = self.gr.input.addVariable(self.name, vkey)
                 v.loadDict(var)
         if 'outVars' in sd:
-            for vkey, var in sd["outVars"].iteritems():
+            for vkey, var in sd["outVars"].items():
                 v = self.gr.output.addVariable(self.name, vkey)
                 v.loadDict(var)
 
@@ -317,12 +317,12 @@ class Node():
         # where added by user and can stay.  the sinter set name may
         # be a little out dated, but I'll stick with it for now
         # the only variable sets should be sinter and user
-        names = self.inVars.keys()
+        names = list(self.inVars.keys())
         delSets = ["sinter", "pymodel"]
         for name in names:
             if self.gr.input[self.name][name].set in delSets:
                  del self.gr.input[self.name][name]
-        names = self.outVars.keys()
+        names = list(self.outVars.keys())
         for name in names:
             if self.gr.output[self.name][name].set in delSets:
                 del self.gr.output[self.name][name]
@@ -339,9 +339,9 @@ class Node():
             # i'm not going to use the pymodel instance for anything
             # else there is no need to copy them.  I'll create a
             # different instance for running the model.
-            for vkey, v in inst.inputs.iteritems():
+            for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
-            for vkey, v in inst.outputs.iteritems():
+            for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
         elif self.modelType == nodeModelTypes.MODEL_TURBINE:
             sc = self.gr.turbConfig.getSinterConfig(self.modelName)
@@ -355,7 +355,7 @@ class Node():
                 getAppByExtension(modelFile)
             self.turbApp = app
             #Add inputs
-            for name, item in sc["inputs"].iteritems():
+            for name, item in sc["inputs"].items():
                 dtype = self.stringToType(item.get('type', 'float'))
                 self.gr.input[self.name][name] = NodeVars(
                     value = item.get("default", 0.0),
@@ -368,7 +368,7 @@ class Node():
                     vdesc = str(item.get("description", "")),
                     tags = [])
             #Add outputs
-            for name, item in sc["outputs"].iteritems():
+            for name, item in sc["outputs"].items():
                 dtype = self.stringToType(item.get('type', 'float'))
                 self.gr.output[self.name][name] = NodeVars(
                     value = item.get("default", 0.0),
@@ -387,7 +387,7 @@ class Node():
             #addTurbineOptions
             self.addTurbineOptions()
             if "settings" in sc:
-                for name, item in sc["settings"].iteritems():
+                for name, item in sc["settings"].items():
                     self.options.add(
                         name=name,
                         default=item['default'],
@@ -398,7 +398,7 @@ class Node():
         if outfile is None:
             outfile = "{0}.json".format(self.modelName)
         sc = self.gr.turbConfig.getSinterConfig(self.modelName)
-        for name, item in sc["inputs"].iteritems():
+        for name, item in sc["inputs"].items():
             if name in self.gr.input[self.name]:
                 item['default'] = self.gr.input[self.name][name].value
                 item['default'] = item['default']
@@ -409,7 +409,7 @@ class Node():
         '''
             Change the current input values to their defaults
         '''
-        for key, var in self.inVars.iteritems():
+        for key, var in self.inVars.items():
             var.value = var.default
 
     def runCalc(self, nanout=False):
@@ -433,7 +433,7 @@ class Node():
             # ouput values for initial guess though so I made this
             # optional and disabled for now.  Should check node status
             # instead of depending on nan
-            for vname, var in self.outVars.iteritems():
+            for vname, var in self.outVars.items():
                 var.makeNaN()
         # Run Python script before model
         if self.pythonCode != "" and self.pythonCode is not None\
@@ -476,9 +476,9 @@ class Node():
         x = dict()
         f = dict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
-        for vkey, var in self.inVars.iteritems():
+        for vkey, var in self.inVars.items():
             x[vkey] = var.value
-        for vkey, var in self.outVars.iteritems():
+        for vkey, var in self.outVars.items():
             f[vkey] = var.value
         return x, f
 
@@ -499,14 +499,14 @@ class Node():
             self.pyModel = \
                 self.gr.pymodels.plugins[self.modelName].pymodel_pg()
         #set the instance inputs
-        for vkey, v in self.gr.input[self.name].iteritems():
+        for vkey, v in self.gr.input[self.name].items():
             if vkey in self.pyModel.inputs:
                 self.pyModel.inputs[vkey].value = v.value
         # run the model
         self.pyModel.setNode(self)
         self.pyModel.run()
         #set the node outputs
-        for vkey, v in self.gr.output[self.name].iteritems():
+        for vkey, v in self.gr.output[self.name].items():
             if vkey in self.pyModel.outputs:
                 v.value = self.pyModel.outputs[vkey].value
 
@@ -519,9 +519,9 @@ class Node():
         x = AtDict()
         f = AtDict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
-        for vkey, var in self.inVars.iteritems():
+        for vkey, var in self.inVars.items():
             x[vkey] = var.value
-        for vkey, var in self.outVars.iteritems():
+        for vkey, var in self.outVars.items():
             f[vkey] = var.value
         # Now try to execute the post code
         try:
@@ -530,7 +530,7 @@ class Node():
             # modification of the input values (you can if you get
             # tricky but don't know why you would.  That would be very
             # confusing.
-            for vkey, var in f.iteritems():
+            for vkey, var in f.items():
                 if vkey in self.outVars:
                     self.outVars[vkey].value = var
         except PyCodeInterupt as e:
@@ -569,7 +569,7 @@ class Node():
             inputSetL1["ConsumerId"] = cid
             #inputSetL1["ConsumerId"] = cid.replace('-', "")
         runList = [inputSetL1]
-        for vkey, var in self.gr.input[self.name].iteritems():
+        for vkey, var in self.gr.input[self.name].items():
             if var.set == "sinter":
                 try:
                     if self.altInput is not None:
@@ -582,7 +582,7 @@ class Node():
                         code=23,
                         msg="Node: {0}, Var: {1}, Value: {2}".format(
                             self.name, vkey, var.value))
-        for vkey, var in self.options.iteritems():
+        for vkey, var in self.options.items():
             if var.optSet == NodeOptionSets.SINTER_OPTIONS:
                 inputSetL1['Input'][vkey] = var.value
         s = json.dumps(runList, sort_keys=True, indent=2)

@@ -31,7 +31,7 @@ global errorTitle
 global errorFile
 errorFile = "AutoErrLog_optimization_smoke_test_CRS2.txt"
 errorCount = 0
-        
+
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
@@ -65,7 +65,7 @@ def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
             errFile.close()
     except:
         None
-        
+
 def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if a, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
@@ -121,7 +121,7 @@ def start_opt_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go)
     if 'optMonitor' in str(type(w)):
         timers['start_opt_scheme'].stop()
         w.startButton.click()
-        
+
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
     """Add a timer to do something.  Timers are needed because some things like
@@ -259,26 +259,26 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.solverBox.setCurrentIndex(solverName)
         solverOptionName = MainWin.optSetupFrame.solverOptionTable.cellWidget(0,1).findText('"CRS2"')
         MainWin.optSetupFrame.solverOptionTable.cellWidget(0,1).setCurrentIndex(solverOptionName)
-        
+
         MainWin.optSetupFrame.applyChanges()
         MainWin.optSetupFrame.setSolver(MainWin.optSetupFrame.solverBox.currentText())
         MainWin.optSetupFrame.lastSolver = MainWin.optSetupFrame.solverBox.currentText()
-        
+
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
-        
+
         MainWin.optSetupFrame.optMonitorFrame.startButton.click()
         while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
             None
 #        print("Got here")
         time.sleep(5)
-        
+
         if not go(): break
 
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print("Exception stopping script")
     timersStop()
     with open(errorFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))

@@ -1,7 +1,7 @@
 from foqus_lib.framework.foqusOptions.optionList import optionList
 import threading
 import copy
-import Queue
+import queue
 import os
 import foqus_lib.framework.uq.SurrogateParser
 import json
@@ -38,8 +38,8 @@ class surrogate(threading.Thread):
             'inputOptions',
             'outputOptions'
         ]
-        self.msgQueue = Queue.Queue() # queue for messages to print
-        self.resQueue = Queue.Queue() # a queue for plots and monitoring
+        self.msgQueue = queue.Queue() # queue for messages to print
+        self.resQueue = queue.Queue() # a queue for plots and monitoring
         self.inputOptions=dict()
         self.outputOptions=dict()
         self.inputCols = []

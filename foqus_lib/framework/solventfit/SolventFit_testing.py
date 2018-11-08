@@ -27,7 +27,7 @@ class SolventFit:
     def getVarNames(datfile):
         f = open(datfile,'r')
         reader = csv.reader(f)
-        varNames = reader.next()
+        varNames = next(reader)
         f.close()
         return varNames
 
@@ -79,7 +79,7 @@ class SolventFit:
                         emul_params['bte'], emul_params['nterms'], emul_params['order'],
                         calib_params['bte'], disc_params['nterms'], disc_params['order'],
                         pt_mass,incl_em,model_func,restartfile]
-        commandItems = map(str, commandItems)
+        commandItems = list(map(str, commandItems))
         Common.runCommandInWindow(' '.join(commandItems),
                                   'solventfit_log')
 

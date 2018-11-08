@@ -61,12 +61,12 @@ try:
 except:
     usePyside = False
 
-from Model import Model
-from SampleData import SampleData
-from Distribution import Distribution
-from ResponseSurfaces import ResponseSurfaces
-from SamplingMethods import SamplingMethods
-from Common import Common
+from .Model import Model
+from .SampleData import SampleData
+from .Distribution import Distribution
+from .ResponseSurfaces import ResponseSurfaces
+from .SamplingMethods import SamplingMethods
+from .Common import Common
 
 from turbine.commands import turbine_psuade_session_script
 from turbine.commands import _open_config
@@ -198,7 +198,7 @@ class LocalExecutionModule(object):
                         inputDistParam2s = inputDistParam2s + [None]
                         # Insert input values
                         if hasSampleData:
-                            for i in xrange(len(inputData)):
+                            for i in range(len(inputData)):
                                 inputRow = inputData[i]
                                 inputRow.insert(len(inputNames) - 1, fixedVal)
                                 inputData[i] = inputRow
@@ -270,7 +270,7 @@ class LocalExecutionModule(object):
         model.setInputMins(inputMins)
         model.setInputMaxs(inputMaxs)
         model.setInputDefaults(inputDefaults)
-        model.setSelectedOutputs(range(len(outputNames)))
+        model.setSelectedOutputs(list(range(len(outputNames))))
         model.setDriverName(driverName)
         model.setOptDriverName(optDriverName)
         model.setAuxDriverName(auxDriverName)
@@ -316,9 +316,9 @@ class LocalExecutionModule(object):
 
             #Read csv file
             reader = csv.reader(csvfile, dialect)
-            headers = reader.next()
+            headers = next(reader)
             try:
-                map(float, headers)
+                list(map(float, headers))
                 headers = [''] * len(headers)
                 csvfile.seek(0)
             except: # Headers exist
@@ -327,7 +327,7 @@ class LocalExecutionModule(object):
             numInputs = None
             if askForNumInputs:
                 if not usePyside or QtWidgets.QApplication.instance() is None:
-                    numInputs = int(raw_input('How many of the columns are inputs (Inputs must be on the left)?'))
+                    numInputs = int(input('How many of the columns are inputs (Inputs must be on the left)?'))
                 else:
                     numInputs, ok = QtWidgets.QInputDialog.getInt(None, 'Number of inputs',
                                                           'How many of the columns are inputs (Inputs must be on the left)?',
@@ -342,7 +342,7 @@ class LocalExecutionModule(object):
                 while row[-1] == '': row.pop()
                 if not numInputs and not askForNumInputs:
                     numInputs = len(row)
-                row = map(float, row)
+                row = list(map(float, row))
                 inputVals.append(row[:numInputs])
                 outputVals.append(row[numInputs:])
                 if len(headers) > len(row):
@@ -370,18 +370,18 @@ class LocalExecutionModule(object):
         model.setInputTypes([Model.VARIABLE] * numInputs)
         mins = list(inputVals[0])
         for rowVals in inputVals[1:]:
-            for col in xrange(numInputs):
+            for col in range(numInputs):
                 if rowVals[col] < mins[col]:
                     mins[col] = rowVals[col]
         model.setInputMins(mins)
         maxs = list(inputVals[0])
         for rowVals in inputVals[1:]:
-            for col in xrange(numInputs):
+            for col in range(numInputs):
                 if rowVals[col] < maxs[col]:
                     maxs[col] = rowVals[col]
         model.setInputMaxs(maxs)
         model.setInputDefaults([(min + max)/2 for min,max in zip(mins,maxs)])
-        model.setSelectedOutputs(range(numOutputs))
+        model.setSelectedOutputs(list(range(numOutputs)))
         model.setRunType(Model.LOCAL)
 
         data = SampleData(model)
@@ -425,7 +425,7 @@ class LocalExecutionModule(object):
 
         # process samples
         data = [None]*numSamples
-        for i in xrange(nlines-k-1):
+        for i in range(nlines-k-1):
             line = lines[i+k+1]
             nums = line.split()
             data[i] = [float(x) for x in nums]
@@ -459,7 +459,7 @@ class LocalExecutionModule(object):
                 outputData = outputData.tolist()
             numOutputs = len(outputData[0])
         else:
-            outputData = [[] for i in xrange(numSamples)]
+            outputData = [[] for i in range(numSamples)]
 
         f = open(fileName, 'w')
         f.write(' '.join(map(str, [numSamples, numInputs, numOutputs])))
@@ -505,7 +505,7 @@ class LocalExecutionModule(object):
 
         # process samples
         data = [None]*numExps
-        for i in xrange(nlines-k-1):
+        for i in range(nlines-k-1):
             line = lines[i+k+1]
             nums = line.split()
             data[i] = [float(x) for x in nums]
@@ -690,7 +690,7 @@ class LocalExecutionModule(object):
         out, error=p.communicate()
 
         if error:
-            print error
+            print(error)
             return False
 
         lines = out.splitlines()
@@ -778,7 +778,7 @@ class LocalExecutionModule(object):
 
         f.write('[Inputs]\n')
         inputNames = data.getInputNames()
-        for i in xrange(data.getNumInputs()):
+        for i in range(data.getNumInputs()):
             f.write('%s=%d\n' % (inputNames[i], i))
 
 
@@ -790,11 +790,11 @@ class LocalExecutionModule(object):
 ##        captureFraction = false;
 
         outputNames = data.getOutputNames()
-        for i in xrange(data.getNumOutputs()):
+        for i in range(data.getNumOutputs()):
             f.write('var%d=%s\n' % (i + 1, outputNames[i]))
 
         f.write('[OutputsOrder]\n')
-        for i in xrange(data.getNumOutputs()):
+        for i in range(data.getNumOutputs()):
             f.write('%d=var%d\n' % (i, i + 1))
 
         f.close()
@@ -810,7 +810,7 @@ class LocalExecutionModule(object):
         names = data.getInputNames()
         mins = data.getInputMins()
         maxs = data.getInputMaxs()
-        indices = range(data.getNumInputs())
+        indices = list(range(data.getNumInputs()))
         for i, name, minimum, maximum in zip(indices, names, mins, maxs):
             outf.write('   variable %d %s = %e %e\n' % (i + 1, name,
                                                         minimum, maximum))
@@ -830,7 +830,7 @@ class LocalExecutionModule(object):
         outf.write('OUTPUT\n')
         outf.write('   dimension = %d\n' % data.getNumOutputs())
         names = data.getOutputNames()
-        indices = range(data.getNumOutputs())
+        indices = list(range(data.getNumOutputs()))
         for i, name in zip(indices, names):
             outf.write('   variable %d %s\n' % (i + 1, name))
         outf.write('END\n')
@@ -891,7 +891,7 @@ class LocalExecutionModule(object):
             return -1
 
         if LocalExecutionModule.runType == Model.LOCAL:
-            print 'getting config'
+            print('getting config')
             config = _open_config(LocalExecutionModule.configFile)
         else:
             config = None
@@ -1009,7 +1009,7 @@ if usePyside:
             #print outputStatus
             emulatorFileName = 'emulatorData'
             self.data.writeToPsuade(emulatorFileName)
-            from RSAnalyzer import RSAnalyzer  ## importing at top creates circular import
+            from .RSAnalyzer import RSAnalyzer  ## importing at top creates circular import
             LocalExecutionModule.runStarted = True
             Common.initFolder(RSAnalyzer.dname)
             c = self.Communicate()

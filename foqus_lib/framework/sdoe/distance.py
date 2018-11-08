@@ -47,7 +47,7 @@ def criterion(candid, # candidates
 
     for i in range(numdes):
         # CONFIRM: this draws from [1, ..., len(candid)-1]
-        rand_index = random.sample(range(1, len(candid)), numpt)
+        rand_index = random.sample(list(range(1, len(candid))), numpt)
         # ASK: what happens if numpt > len(candid)?
         cand_rand = np.asarray(itemgetter(*rand_index)(candid))
         dist = dist_fcn(compute_min_dist(cand_rand, scl, histmat=histmat))

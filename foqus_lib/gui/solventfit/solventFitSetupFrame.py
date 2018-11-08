@@ -65,7 +65,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             self.replotInstruction.hide()
             self.numExperiments_static.setText('Number of experiments:')
 
-        self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in xrange(self.output_table.columnCount())]
+        self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in range(self.output_table.columnCount())]
         self.outputCol_index  = {'obs':0, 'name':1, 'rs1':2}
 
         self.output_groupBox.setEnabled(False)
@@ -351,7 +351,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.output_table.setColumnCount(len(self.outputCol_index))
         self.outputMeans = [0] * nOutputs
         self.outputStdDevs = [0] * nOutputs
-        for i in xrange(nOutputs):
+        for i in range(nOutputs):
 
             # compute mean and standard deviation
             yi = y[:,i]
@@ -414,7 +414,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
     def refreshUserRegressionFiles(self):
         rows = self.output_table.rowCount()
-        for row in xrange(rows):
+        for row in range(rows):
             combo = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
             if combo is not None:
                 combo.refresh()
@@ -431,14 +431,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
     def setObsTableRowCount(self, count):
         self.obs_table.setRowCount(count)
-        for row in xrange(count):
+        for row in range(count):
             item = self.obs_table.verticalHeaderItem(row)
             if item is None:
                 item = QTableWidgetItem('Experiment %d' % (row + 1))
                 self.obs_table.setVerticalHeaderItem(row, item)
 
                 # Populate default values
-                for col in xrange(self.obs_table.columnCount()):
+                for col in range(self.obs_table.columnCount()):
                     value = self.obsTableDefaultValues[col]
                     if value is not None:
                         item = QTableWidgetItem('%g' % value)
@@ -506,8 +506,8 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.freeze()
         self.numExperiments_spin.setValue(numExps)
         self.obs_table.setRowCount(numExps)
-        for r in xrange(numExps):
-            for c in xrange(data.shape[1]):
+        for r in range(numExps):
+            for c in range(data.shape[1]):
                 item = self.obs_table.item(r, c)
                 if item is None:
                     item = QTableWidgetItem()
@@ -524,9 +524,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         designVariables, indices = self.inputPrior_table.getDesignVariables()
         indices = [index + 1 for index in indices]
         data = []
-        for row in xrange(self.obs_table.rowCount()):
+        for row in range(self.obs_table.rowCount()):
             rowValues = []
-            for col in xrange(self.obs_table.columnCount()):
+            for col in range(self.obs_table.columnCount()):
                 item = self.obs_table.item(row, col)
                 rowValues.append(float(item.text()))
             data.append(rowValues)
@@ -542,10 +542,10 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         ### Store info before change
         colValues = {}
 
-        for c in xrange(self.obs_table.columnCount()):
+        for c in range(self.obs_table.columnCount()):
             columnHeader = self.obs_table.horizontalHeaderItem(c).text()
             values = [''] * numRows
-            for r in xrange(numRows):
+            for r in range(numRows):
                 item = self.obs_table.item(r, c)
                 if item is not None:
                     values[r] = item.text()
@@ -570,7 +570,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         numDesignVariables = len(designVariables)
         for i, name in enumerate(designVariables):
             labels.append(name + ' Value')
-        for row in xrange(self.output_table.rowCount()):
+        for row in range(self.output_table.rowCount()):
             chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
             if chkbox is not None and chkbox.isChecked():
                 name = self.output_table.item(row, self.outputCol_index['name']).text()
@@ -599,7 +599,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                     item.setText(value)
                     self.obsTableValues[(row,col)] = value
             elif col >= numDesignVariables:
-                for row in xrange(numRows):
+                for row in range(numRows):
                     item = self.obs_table.item(row, col)
                     if item is None:
                         item = QTableWidgetItem()
@@ -611,7 +611,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
     def getNumObservedOutputs(self):
         count = 0
-        for row in xrange(self.output_table.rowCount()):
+        for row in range(self.output_table.rowCount()):
             chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
             if chkbox is not None and chkbox.isChecked():
                 count += 1
@@ -620,14 +620,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
     def getObservedOutputsIndices(self):
         count = 0
         indices = []
-        for row in xrange(self.output_table.rowCount()):
+        for row in range(self.output_table.rowCount()):
             chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
             if chkbox is not None and chkbox.isChecked():
                 indices.append(row)
         return indices
 
     def checkOutputTable(self):
-        for i in xrange(self.output_table.rowCount()):
+        for i in range(self.output_table.rowCount()):
             chkbox = self.output_table.cellWidget(i, self.outputCol_index['obs'])
             if chkbox is not None and chkbox.isChecked():
                 return True
@@ -635,12 +635,12 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
     def checkObs(self):
         b = False
-        for r in xrange(self.obs_table.rowCount()):
+        for r in range(self.obs_table.rowCount()):
             names,indices = self.inputPrior_table.getDesignVariables()
             numDesign = len(names)
             mins = self.inputPrior_table.getMins()
             maxs = self.inputPrior_table.getMaxs()
-            for c in xrange(self.obs_table.columnCount()):
+            for c in range(self.obs_table.columnCount()):
                 item = self.obs_table.item(r,c)
                 if item is not None:
                     text = item.text()
@@ -767,7 +767,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 nOutputs = self.output_table.rowCount()
                 col_index = self.outputCol_index
                 ytable = [None]*nOutputs
-                for i in xrange(nOutputs):
+                for i in range(nOutputs):
                     chkbox = self.output_table.cellWidget(i, col_index['obs'])
                     if chkbox.isChecked():
                         outputName = self.output_table.item(i, col_index['name']).text()
@@ -780,9 +780,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 # parse obs table
                 numExp = self.obs_table.rowCount()
                 obsTable = [0] * numExp
-                for i in xrange(numExp):
+                for i in range(numExp):
                     values = [i + 1]
-                    for j in xrange(self.obs_table.columnCount()):
+                    for j in range(self.obs_table.columnCount()):
                         item = self.obs_table.item(i, j)
                         values.append(item.text())
                     obsTable[i] = values
@@ -792,7 +792,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 designVariables, indices = self.inputPrior_table.getDesignVariables()
                 for i, name in enumerate(designVariables):
                     labels.append('"%s"' % name)
-                for row in xrange(self.output_table.rowCount()):
+                for row in range(self.output_table.rowCount()):
                     chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
                     if chkbox is not None and chkbox.isChecked():
                         name = self.output_table.item(row, self.outputCol_index['name']).text()

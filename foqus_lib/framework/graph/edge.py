@@ -75,12 +75,12 @@ class edge():
 		n2 = gr.nodes[self.end]
 		for con in self.con:
 			if con.active:
-				if con.fromName in n1.outVars.keys():
+				if con.fromName in list(n1.outVars.keys()):
 					try:
 						n2.inVars[con.toName].value = n1.outVars[con.fromName].value
 					except:
 						self.err = True
-				elif con.fromName in n1.inVars.keys():
+				elif con.fromName in list(n1.inVars.keys()):
 					try:
 						n2.inVars[con.toName].value = n1.inVars[con.fromName].value
 					except:

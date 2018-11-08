@@ -43,31 +43,31 @@ def flowsheetToUQModel(gr):
     # Set output names and set all outputs as selected
     keys =  gr.output.compoundNames()
     uqModel.setOutputNames(keys)
-    uqModel.setSelectedOutputs(range(len(keys)))
+    uqModel.setSelectedOutputs(list(range(len(keys))))
     return uqModel
     
 def printUQModel(self):
     '''
         Print the UQ model, to make sure things are working as expected.
     '''
-    print "Model Name:"
-    print self.getName()
-    print "\nRun File:"
-    print self.getDriverName()
-    print "\nRun Type (0 = Gateway, 1 = Local):"
-    print self.getRunType()
-    print "\nInput Names:"
-    print self.getInputNames()
-    print "\nInput Types (0 = Fixed, 1 = Variable):"
-    print self.getInputTypes()
-    print "\nInput Minimums:"
-    print self.getInputMins()
-    print "\nInput Maximums:"
-    print self.getInputMaxs()
-    print "\nInput Defaults:"
-    print self.getInputDefaults()
-    print "\nOutput Names:"
-    print self.getOutputNames()
-    print "\nSelected Outputs:"
-    print self.getSelectedOutputs()
-    print "\n\n"
+    print("Model Name:")
+    print(self.getName())
+    print("\nRun File:")
+    print(self.getDriverName())
+    print("\nRun Type (0 = Gateway, 1 = Local):")
+    print(self.getRunType())
+    print("\nInput Names:")
+    print(self.getInputNames())
+    print("\nInput Types (0 = Fixed, 1 = Variable):")
+    print(self.getInputTypes())
+    print("\nInput Minimums:")
+    print(self.getInputMins())
+    print("\nInput Maximums:")
+    print(self.getInputMaxs())
+    print("\nInput Defaults:")
+    print(self.getInputDefaults())
+    print("\nOutput Names:")
+    print(self.getOutputNames())
+    print("\nSelected Outputs:")
+    print(self.getSelectedOutputs())
+    print("\n\n")

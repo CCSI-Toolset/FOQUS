@@ -79,7 +79,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         inputNames = data.getInputNames()
         variableInputIndices = []
         for e in xtable:
-            if e['type'] != u'Fixed':
+            if e['type'] != 'Fixed':
                 variableInputIndices.append(inputNames.index(e['name']))
         nVariableInputs = len(variableInputIndices)
         nOutputs = len(outputs)
@@ -95,7 +95,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             f.write("1 0\n")         # assume initial point has not been run
             for x in init_input:           
                 f.write(' % .16e\n' % x)
-            for i in xrange(totalOutputs):
+            for i in range(totalOutputs):
                 f.write(' 9.9999999999999997e+34\n')
             f.write("PSUADE_IO\n")
 
@@ -114,7 +114,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             inputUB = data.getInputMaxs()
         if inputDefaults is None:
             inputDefaults = data.getInputDefaults()
-        indices = range(nInputs)
+        indices = list(range(nInputs))
         variableIndex = 1
         fixedIndex = 1
         for i, name, inType, lb, ub, default in zip(indices, inputNames, \
@@ -133,7 +133,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         for e in xtable:
             cnt = cnt + 1
             t = e['type']
-            if t == u'Opt: Primary Discrete (Z1d)':
+            if t == 'Opt: Primary Discrete (Z1d)':
                 opttypes.append(cnt)
 
         nn = len(opttypes)
@@ -198,17 +198,17 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         for ii in range(nOutputs):
           ind = outputs[ii]
           f.write('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
-          print('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
+          print(('   variable %d %s\n' % (ii+1, outputNames[ind-1])))
         outActive = nOutputs + 1
         for ii in range(len(constraints)):
           if constraints[ii]:
             f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
-            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print(('   variable %d %s\n' % (outActive , outputNames[ii])))
             outActive = outActive + 1
         for ii in range(len(derivatives)):
           if derivatives[ii]:
             f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
-            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print(('   variable %d %s\n' % (outActive , outputNames[ii])))
             outActive = outActive + 1
         f.write('END\n')
 
@@ -282,7 +282,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         outfiles = {}
         nbins_max = 20
         nscenarios_max = 1501
-        for nbins in xrange(2,nbins_max):
+        for nbins in range(2,nbins_max):
 
             # write script to invoke scenario compression
             f = tempfile.SpooledTemporaryFile()
@@ -291,7 +291,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 fname = win32api.GetShortPathName(fname)
             f.write('read_std %s\n' % fname)
             f.write('genhistogram\n')
-            for x in xrange(nInputs):
+            for x in range(nInputs):
                 f.write('%d\n' % nbins)
             f.write('quit\n')
             f.seek(0)
@@ -384,19 +384,19 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         vartypes = []
         for e in xtable:
           t = e['type']
-          if t == u'Opt: Primary Continuous (Z1)':
+          if t == 'Opt: Primary Continuous (Z1)':
             vartypes.append(1)
-          elif t == u'Opt: Primary Continuous (Z1c)':
+          elif t == 'Opt: Primary Continuous (Z1c)':
             vartypes.append(1)
-          elif t == u'Opt: Primary Discrete (Z1d)':
+          elif t == 'Opt: Primary Discrete (Z1d)':
             vartypes.append(1)
-          elif t == u'Opt: Recourse (Z2)':
+          elif t == 'Opt: Recourse (Z2)':
             vartypes.append(2)
-          elif t == u'UQ: Discrete (Z3)':
+          elif t == 'UQ: Discrete (Z3)':
             vartypes.append(3)
-          elif t == u'UQ: Continuous (Z4)':
+          elif t == 'UQ: Continuous (Z4)':
             vartypes.append(4)
-          if t != u'Fixed':
+          if t != 'Fixed':
             init_input.append(e['value'])
         M1 = vartypes.count(1)
         M2 = vartypes.count(2)
@@ -537,7 +537,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         # ________ M1 < nInputs ________
         f.write('%d\n' % M2)  # number of operating opt variables
         if M1+M2 == nInputs:
-            for i in xrange(nInputs):
+            for i in range(nInputs):
                 f.write('%d\n' % vartypes[i])
             if useBobyqa:
                 f.write('n\n')    # use BOBYQA means 'no' to use own driver
@@ -549,7 +549,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # ________ M1+M2 < nInputs ________
         f.write('%d\n' % M3)  # number of discrete UQ variables
-        for i in xrange(nInputs):
+        for i in range(nInputs):
             f.write('%d\n' % vartypes[i])
 
         # ... set objective function w.r.t. to uncertainty
@@ -705,7 +705,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             return pv
 
         if N > nv:
-            i = np.setdiff1d(range(len(p)),v)  # indices to interior points
+            i = np.setdiff1d(list(range(len(p))),v)  # indices to interior points
             r = np.random.permutation(i)
             N = N-nv                           # number of interior points
             r = r[0:N]                         # randomized interior indices
@@ -715,7 +715,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             R = 10
             indices = []
             h = []
-            for i in xrange(R):
+            for i in range(R):
                 r = np.random.permutation(v)
                 r = r[0:N]
                 indices.append(r)               # randomized vertex indices

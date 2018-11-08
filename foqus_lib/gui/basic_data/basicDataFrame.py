@@ -2,7 +2,7 @@ import os
 import logging
 import platform
 import subprocess
-from urllib2 import urlopen
+from urllib.request import urlopen
 
 from io import StringIO
 

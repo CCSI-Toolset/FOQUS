@@ -40,7 +40,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.setupUi(self)
         self.dat = dat
         self.blockapply = False
-        self.tools = sorted(dat.surrogateMethods.plugins.keys(),
+        self.tools = sorted(list(dat.surrogateMethods.plugins.keys()),
             key=lambda s: s.lower())
         self.toolSelectBox.clear()
         self.toolSelectBox.addItems(self.tools)

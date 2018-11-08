@@ -2,11 +2,11 @@ import os
 import subprocess
 import tempfile
 import platform
-from SamplingMethods import SamplingMethods
-from SampleData import SampleData
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from Plotter import Plotter
+from .SamplingMethods import SamplingMethods
+from .SampleData import SampleData
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Plotter import Plotter
 
 class SampleRefiner:
 

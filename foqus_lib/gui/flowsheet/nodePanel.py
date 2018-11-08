@@ -7,7 +7,7 @@ See LICENSE.md for license and copyright details.
 import os
 import types
 import platform
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 from io import StringIO
 
 from foqus_lib.gui.dialogs.tagSelectDialog import *
@@ -404,7 +404,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         elif self.modelTypeBox.currentIndex() == 2:
             # model type is plugin
             sl = sorted(
-                self.dat.pymodels.plugins.keys(),
+                list(self.dat.pymodels.plugins.keys()),
                 key=lambda s: s.lower())
             self.simNameBox.addItems(sl)
         try:
@@ -431,7 +431,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         table.clearContents()
         table.setRowCount(len(vars))
         row = 0
-        for name in sorted(vars.keys(), key=lambda s: s.lower()):
+        for name in sorted(list(vars.keys()), key=lambda s: s.lower()):
             var = vars[name]
             if var.con == 1:
                 bgColor = QColor(255, 255, 200)
@@ -510,7 +510,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         table.clearContents()
         table.setRowCount(len(vars))
         row = 0
-        for name in sorted(vars.keys(), key = lambda s: s.lower()):
+        for name in sorted(list(vars.keys()), key = lambda s: s.lower()):
             var = vars[name]
             gh.setTableItem(table, row,
                 self.ovCols["Name"],

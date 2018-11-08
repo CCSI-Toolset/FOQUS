@@ -15,7 +15,7 @@ See LICENSE.md for license and copyright details.
 import time
 import copy
 import csv
-import Queue
+import queue
 import sys
 import logging
 import math

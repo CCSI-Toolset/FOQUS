@@ -8,25 +8,25 @@ import numpy as np
 from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
 #from PySide import QtCore, QtGui
 from PyQt5 import QtCore, QtGui
-from Model import Model
-from SampleData import SampleData
-from Distribution import Distribution
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from ResponseSurfaces import ResponseSurfaces
-from RSAnalyzer import RSAnalyzer
-from Plotter import Plotter
-from UQAnalysis import UQAnalysis
-from UQRSAnalysis import UQRSAnalysis
+from .Model import Model
+from .SampleData import SampleData
+from .Distribution import Distribution
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .ResponseSurfaces import ResponseSurfaces
+from .RSAnalyzer import RSAnalyzer
+from .Plotter import Plotter
+from .UQAnalysis import UQAnalysis
+from .UQRSAnalysis import UQRSAnalysis
 
 class RSInference(UQRSAnalysis):
 
     def __init__(self, ensemble, ytable, xtable, obsTable, genPostSample = False, addDisc = False,
                  showList = None, endFunction = None, disableWhilePlotting = None,
                  userRegressionFile = None):
-        outputs = [i + 1 for i in xrange(len(ytable)) if ytable[i] is not None]
+        outputs = [i + 1 for i in range(len(ytable)) if ytable[i] is not None]
         super(RSInference, self).__init__(ensemble, outputs, UQAnalysis.INFERENCE, [y['rsIndex'] for y in ytable if y is not None])
-        self.inputs = [i + 1 for i in xrange(len(xtable)) if xtable[i] is None or xtable[i]['type'] != 'Fixed']
+        self.inputs = [i + 1 for i in range(len(xtable)) if xtable[i] is None or xtable[i]['type'] != 'Fixed']
         self.ytable = ytable
         self.xtable = xtable
         self.obsTable = obsTable
@@ -192,7 +192,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         ###     {'rsIndex':%d, 'legendreOrder':%d, 'userRegressionFile':%s, 'userRegressionArg':%d}
         ### if MARS options are set, then ytable[i] should contain additional fields:
         ###     {'rsIndex':%d, 'legendreOrder':%d, 'userRegressionFile':%s, 'userRegressionArg':%d, 'marsBases':%d, 'marsInteractions':%d}
-        for i in xrange(nOutputs):
+        for i in range(nOutputs):
             obs = ytable[i]
             if obs is not None:
                 if 'rsIndex' not in obs:
@@ -226,7 +226,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                         error = 'RSInference: In function infer(), "userRegressionFile" is required for USER REGRESSION response surface.'
                         Common.showError(error)
                         return None
-                    if userArg is not None and isinstance(userArg, (int,long, str)):
+                    if userArg is not None and isinstance(userArg, (int, str)):
                         userRegressionArgs.append(userArg)
                     else:
                         userRegressionArgs.append(1)  # if no output index or name is given, use 1 as default
@@ -242,7 +242,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 indices.append(i)
 
         # delete unobserved outputs from data
-        odelete = [i+1 for i in xrange(nOutputs) if i not in indices]  # stores the (1-indexed) output variable indices that are unobserved
+        odelete = [i+1 for i in range(nOutputs) if i not in indices]  # stores the (1-indexed) output variable indices that are unobserved
         if odelete:
             # ... write script
             nOutputs = SampleData.getNumOutputs(data) - len(odelete)
@@ -289,7 +289,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             indexfile = RSInferencer.dname + os.path.sep + 'indexfile'
             f = open(indexfile, 'w')
             f.write('%d\n' % nVariableInputs)
-            for i in xrange(nVariableInputs):
+            for i in range(nVariableInputs):
                 k = i+1
                 e = xtable[i]
                 if e['type'] == 'Fixed':
@@ -303,7 +303,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         inputNames = data.getInputNames()
         variableInputNames = [inputName for i, inputName in enumerate(inputNames) if inputTypes[i] == Model.VARIABLE]
         newShow = []
-        for i in xrange(nVariableInputs):
+        for i in range(nVariableInputs):
             e = xtable[j]
             if e['name'] == variableInputNames[i]:
                 # ... nullify xtable's entries corresponding to design/fixed inputs
@@ -356,7 +356,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         f.write('%d %d %d %s\n' % (nExp, nOutputs, nDesignInVars, dstr))
         # ... write data
         nterms = nDesignInVars + 2*nOutputs + 1
-        for i in xrange(nExp):
+        for i in range(nExp):
             e = exptable[i]
             if len(e) == nterms:
                 estr = [str(s) for s in e]
@@ -385,7 +385,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             mcmcfile = win32api.GetShortPathName(mcmcfile)
         f.write('%s\n' % mcmcfile)        # spec file for building the likelihood function
         f.write('y\n')                    # do include response surface uncertainties
-        for i in xrange(nOutputs):        # for each output, set RS; all outputs are observed in this data file
+        for i in range(nOutputs):        # for each output, set RS; all outputs are observed in this data file
             rsIndex = rsIndices[i]
             f.write('%d\n' % rsIndex)
             if rsIndex == ResponseSurfaces.LEGENDRE:
@@ -398,7 +398,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 f.write('%s\n' % driverFile)   # driver file
                 f.write('y\n')                             # apply auxillary arg (output index)
                 arg = userRegressionArgs[i]
-                if isinstance(arg, (int, long)):
+                if isinstance(arg, int):
                     formatString = '%d\n'
                 else:
                     formatString = '%s\n'
@@ -540,7 +540,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         nVariableInputs = len(variableInputNames)
 
         if show is None:  # default: show all inputs
-            showInputs = xrange(nVariableInputs)
+            showInputs = range(nVariableInputs)
         else:
             showInputs = show
         nshow = len(showInputs)
@@ -556,7 +556,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         # extract data from mfile
         xlim = []
         ylim = []
-        for r in xrange(nshow):
+        for r in range(nshow):
             i_ = showInputs[r]
             i = i_ + 1    # psuade is 1-indexed
             datvar = 'X\(%d,:\)' % i
@@ -572,7 +572,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             ylabel.append('Probabilities')
             xlim.append([xmin[i_], xmax[i_]])
             ylim.append(None)   # placeholder, actual limits will get set later
-            for c in xrange(r+1,nshow):
+            for c in range(r+1,nshow):
                 j_ = showInputs[c]
                 j = j_ + 1 # psuade is 1-indexed
                 xdat.append(xd)
@@ -590,7 +590,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 xlim.append([xmin[j_], xmax[j_]])
             hmin = max(0, min(hdat))
             hmax = min(1, max(hdat))
-        for e in xrange(len(ylim)):
+        for e in range(len(ylim)):
             if ylim[e] is None:
                 ylim[e] = [hmin, hmax]
         zlim = [zmin, zmax]

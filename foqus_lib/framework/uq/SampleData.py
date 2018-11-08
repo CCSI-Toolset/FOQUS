@@ -119,11 +119,11 @@ import os
 import numpy
 import copy
 import time
-from Model import Model
-from Distribution import Distribution
-from SamplingMethods import SamplingMethods
-from ResponseSurfaces import ResponseSurfaces
-from UQAnalysis import UQAnalysis
+from .Model import Model
+from .Distribution import Distribution
+from .SamplingMethods import SamplingMethods
+from .ResponseSurfaces import ResponseSurfaces
+from .UQAnalysis import UQAnalysis
 
 
 class SampleData(object):
@@ -151,7 +151,7 @@ class SampleData(object):
     def __deepcopy__(self, memo):
         x = SampleData.__new__(SampleData)
         memo[id(self)] = x
-        for n,v in self.__dict__.iteritems():
+        for n,v in self.__dict__.items():
             if n == 'session':
                 setattr(x, n, self.__getattribute__(n))
             elif n == 'analyses':
@@ -225,46 +225,46 @@ class SampleData(object):
             for analDict in sd['analyses']:
                 type = UQAnalysis.getTypeEnumValue(analDict['type'])
                 if type == UQAnalysis.PARAM_SCREEN:
-                    from ParameterScreening import ParameterScreening
+                    from .ParameterScreening import ParameterScreening
                     anal = ParameterScreening(self, analDict['outputs'], analDict['subType'])
                 elif type == UQAnalysis.UNCERTAINTY:
-                    from UncertaintyAnalysis import UncertaintyAnalysis
+                    from .UncertaintyAnalysis import UncertaintyAnalysis
                     anal = UncertaintyAnalysis(self, analDict['outputs'])
                 elif type == UQAnalysis.CORRELATION:
-                    from CorrelationAnalysis import CorrelationAnalysis
+                    from .CorrelationAnalysis import CorrelationAnalysis
                     anal = CorrelationAnalysis(self, analDict['outputs'])
                 elif type == UQAnalysis.SENSITIVITY:
-                    from SensitivityAnalysis import SensitivityAnalysis
+                    from .SensitivityAnalysis import SensitivityAnalysis
                     anal = SensitivityAnalysis(self, analDict['outputs'], analDict['subType'])
                 elif type == UQAnalysis.VISUALIZATION:
-                    from Visualization import Visualization
+                    from .Visualization import Visualization
                     anal = Visualization(self, analDict['outputs'], analDict['inputs'])
                 else: #RS Analyses
                     userRegressionFile = analDict['userRegressionFile'] if 'userRegressionFile' in analDict else None
                     if type == UQAnalysis.RS_VALIDATION:
-                        from RSValidation import RSValidation
+                        from .RSValidation import RSValidation
                         testFile = analDict['testFile'] if 'testFile' in analDict else None
                         anal = RSValidation(self, analDict['outputs'], analDict['rs'], analDict['rsOptions'],
                                             analDict['genCodeFile'], analDict['nCV'], userRegressionFile,
                                             testFile)
                     elif type == UQAnalysis.RS_UNCERTAINTY:
-                        from RSUncertaintyAnalysis import RSUncertaintyAnalysis
+                        from .RSUncertaintyAnalysis import RSUncertaintyAnalysis
                         anal = RSUncertaintyAnalysis(self, analDict['outputs'], analDict['subType'],
                                                      analDict['rs'], analDict['rsOptions'],
                                                      userRegressionFile, analDict['xprior'])
                     elif type == UQAnalysis.RS_SENSITIVITY:
-                        from RSSensitivityAnalysis import RSSensitivityAnalysis
+                        from .RSSensitivityAnalysis import RSSensitivityAnalysis
                         anal = RSSensitivityAnalysis(self, analDict['outputs'], analDict['subType'],
                                                      analDict['rs'], analDict['rsOptions'],
                                                      userRegressionFile, analDict['xprior'])
                     elif type == UQAnalysis.INFERENCE:
-                        from RSInference import RSInference
+                        from .RSInference import RSInference
                         anal = RSInference(self, analDict['ytable'], analDict['xtable'],
                                            analDict['obsTable'], analDict['genPostSample'],
                                            analDict['addDisc'], analDict['showList'],
                                            userRegressionFile = userRegressionFile)
                     elif type == UQAnalysis.RS_VISUALIZATION:
-                        from RSVisualization import RSVisualization
+                        from .RSVisualization import RSVisualization
                         anal = RSVisualization(self, analDict['outputs'], analDict['inputs'], analDict['rs'],
                                                      analDict['minVal'], analDict['maxVal'],
                                                      analDict['rsOptions'], userRegressionFile)
@@ -285,7 +285,7 @@ class SampleData(object):
         return self.ID
 
     def setSampleMethod(self, value):
-        if isinstance(value, basestring): #Single string
+        if isinstance(value, str): #Single string
             value = SamplingMethods.getEnumValue(value)
         self.sampleMethod = value
 
@@ -504,7 +504,7 @@ class SampleData(object):
             return
         if folderStructure is None:
             folderStructure = []
-        if isinstance(folderStructure, basestring):
+        if isinstance(folderStructure, str):
             folderStructure = [folderStructure]
         folderStructure.insert(0, self.ID)
         self.session.removeArchiveFolder(folderStructure)
@@ -609,12 +609,12 @@ class SampleData(object):
                     hasOutputData = False
                 else:
                     hasOutputData = True
-        for i in xrange(self.getNumSamples()):
+        for i in range(self.getNumSamples()):
             outf.write('%d %d\n' % (i + 1, self.runState[i]))
-            for j in xrange(self.getNumInputs()):
+            for j in range(self.getNumInputs()):
                 if types[j] == Model.VARIABLE or fixedAsVariables:
                     outf.write(' % .16e\n' % self.inputData[i][j])
-            for j in xrange(self.getNumOutputs()):
+            for j in range(self.getNumOutputs()):
                 if hasOutputData and not numpy.isnan(self.outputData[i][j]):
                     outf.write(' % .16e\n' % self.outputData[i][j])
                 else:
@@ -675,7 +675,7 @@ class SampleData(object):
         outf.write('OUTPUT\n')
         outf.write('   dimension = %d\n' % self.getNumOutputs())
         names = self.getOutputNames()
-        indices = range(self.getNumOutputs())
+        indices = list(range(self.getNumOutputs()))
         for i, name in zip(indices, names):
             outf.write('   variable %d %s\n' % (i + 1, name))
         outf.write('END\n')

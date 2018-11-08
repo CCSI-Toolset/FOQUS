@@ -14,7 +14,7 @@ def main(nSamples, nInputs):
         np.savetxt(f, r, delimiter=' ')
         f.close()
 
-    print 'Sample of size (%d,%d) written to %s' % (nSamples, nInputs, fname)
+    print('Sample of size (%d,%d) written to %s' % (nSamples, nInputs, fname))
     return None
 
 if __name__ == '__main__':

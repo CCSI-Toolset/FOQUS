@@ -1,4 +1,4 @@
-import node as gn
+from . import node as gn
 import subprocess
 
 def makeHeatIntegrationNode(node):

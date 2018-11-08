@@ -17,7 +17,7 @@ class SolventFit:
     def getVarNames(datfile):
         f = open(datfile,'r')
         reader = csv.reader(f)
-        varNames = reader.next()
+        varNames = next(reader)
         f.close()
         return varNames
 
@@ -81,7 +81,7 @@ class SolventFit:
                         emul_params['bte'], emul_params['nterms'], emul_params['order'],
                         calib_params['bte'], disc_params['nterms'], disc_params['order'],
                         pt_mass,incl_em,model_func,restartfile]
-        commandItems = map(str, commandItems)
+        commandItems = list(map(str, commandItems))
         Common.runCommandInWindow(' '.join(commandItems),
                                   'solventfit_log')
 
@@ -167,7 +167,7 @@ class SolventFit:
         param2 += fixedVals
         minval += fixedVals
         maxval += fixedVals
-        fixedVals = map(str, fixedVals )
+        fixedVals = list(map(str, fixedVals ))
 
         # ... reorder the columns in xdatfile: design followed by random
         lines = []
@@ -176,13 +176,13 @@ class SolventFit:
         for row in reader:
             lines.append(row)
         f.close()
-        cols = zip(*lines)
+        cols = list(zip(*lines))
         newcols = []
         for i in xdesign:
             newcols.append(cols[i])
         for i in xrand:
             newcols.append(cols[i])
-        xdat = zip(*newcols)  # list of tuples with data in correct order
+        xdat = list(zip(*newcols))  # list of tuples with data in correct order
         Common.initFolder(SolventFit.dname)
         xdatfile_ = Common.getLocalFileName(SolventFit.dname, xdatfile, '.ordered')
         f = open(xdatfile_,'w')
@@ -216,7 +216,7 @@ class SolventFit:
 
         # ... write priors sample
         priorsamplefile = SolventFit.dname + os.path.sep + 'prior.samples.std'
-        priorsample = zip(*priorsample)
+        priorsample = list(zip(*priorsample))
         f = open(priorsamplefile,'w')
         f.write('%d %d 0\n' % (N, len(xrand)))  # header
         for row in priorsample:
@@ -286,7 +286,7 @@ class SolventFit:
             return None
 
         with open(postsamplefile) as f:
-            postsample = [map(float, line.split()) for line in f.readlines()]
+            postsample = [list(map(float, line.split())) for line in f.readlines()]
 
         # ----- plot histogram for 1 random input -----
         if len(xrand) == 1:

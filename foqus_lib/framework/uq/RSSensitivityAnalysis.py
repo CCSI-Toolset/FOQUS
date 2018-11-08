@@ -1,9 +1,9 @@
-from UQRSAnalysis import UQRSAnalysis
-from UQAnalysis import UQAnalysis
-from ResponseSurfaces import ResponseSurfaces
-from RSAnalyzer import RSAnalyzer
-from SensitivityAnalysis import SensitivityAnalysis
-from Common import Common
+from .UQRSAnalysis import UQRSAnalysis
+from .UQAnalysis import UQAnalysis
+from .ResponseSurfaces import ResponseSurfaces
+from .RSAnalyzer import RSAnalyzer
+from .SensitivityAnalysis import SensitivityAnalysis
+from .Common import Common
 
 
 class RSSensitivityAnalysis(UQRSAnalysis):

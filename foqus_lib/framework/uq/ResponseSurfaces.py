@@ -1,9 +1,9 @@
 from scipy import misc
 
 class ResponseSurfaces:
-    MARS, LINEAR, QUADRATIC, CUBIC, QUARTIC = range(5)
-    SELECTIVE, GP, VAL_8, SVM, PWL, VAL_11, MARSBAG = range(6, 13)
-    SOT, LEGENDRE, USER, VAL_17, KRIGING, VAL_19, KNN, RBF = range(14, 22)
+    MARS, LINEAR, QUADRATIC, CUBIC, QUARTIC = list(range(5))
+    SELECTIVE, GP, VAL_8, SVM, PWL, VAL_11, MARSBAG = list(range(6, 13))
+    SOT, LEGENDRE, USER, VAL_17, KRIGING, VAL_19, KNN, RBF = list(range(14, 22))
     
     fullNames = ('MARS', 'Linear Regression', 'Quadratic Regression',
                  'Cubic Regression', 'Quartic Regression', None, None,
@@ -20,7 +20,7 @@ class ResponseSurfaces:
 
     @staticmethod
     def getFullName(num):
-        if isinstance(num, basestring):
+        if isinstance(num, str):
             num = ResponseSurfaces.getEnumValue(num)                
         return ResponseSurfaces.fullNames[num]
 

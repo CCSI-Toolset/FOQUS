@@ -15,18 +15,18 @@ timers = {}
 
 def go(MainWin=MainWin):
     '''
-        Process gui events so that gui can still function(ish) while 
+        Process gui events so that gui can still function(ish) while
         script is running also add delay between calls to GUI stuff to
-        make the execution fun to watch.  Also checks the stop flag and 
+        make the execution fun to watch.  Also checks the stop flag and
         returns True keep going or False to stop.
     '''
     MainWin.app.processEvents()
-    time.sleep(0.25) 
+    time.sleep(0.25)
     return not MainWin.helpDock.stop
 
 def getButton(w, label):
     blist = w.buttons()
-    #print [b.text() for b in blist]
+    #print([b.text() for b in blist])
     for b in blist:
         if b.text().replace("&", "") == label:
             return b
@@ -111,7 +111,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
     w = MainWin.app.activeWindow()
     if 'AnalysisDialog' in str(type(w)):
        timers['rs_analyze'].stop()
-       ### switch to expert mode 
+       ### switch to expert mode
        w.modeButton.click()
        MainWin.app.processEvents()
        timers['rs_inference'].start(10000)
@@ -122,24 +122,24 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
     '''
-        Using timers to push buttons on popups and modal dialogs and 
+        Using timers to push buttons on popups and modal dialogs and
         other things were I need an easy way to make things happen from
         a seperate thread.  Usually where something is blocking the main
         GUI loop.
-        
+
         name: string name of timer
         cd is the timer call back function
     '''
     timers[name] =  QtCore.QTimer(MainWin)
     timers[name].timeout.connect(cb)
-        
+
 def timersStop(timers=timers):
     '''
         Call stop for all timers to make sure they all stop
     '''
     for key, t in timers.iteritems():
         t.stop()
-        
+
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
@@ -150,7 +150,7 @@ addTimer('rs_analyze', rsAnalyze)
 addTimer('rs_inference', rsInference)
 # Start timer to stop script for running too long
 # This won't work it execution of the script is blocked.
-timers['time_out'].start(MAX_RUN_TIME) 
+timers['time_out'].start(MAX_RUN_TIME)
 
 try:
     #raise(Exception("Test excpetion handeling"))
@@ -159,8 +159,8 @@ try:
         ### This is the dialog I created for this type of stuff
         if (HAVE_TEXT == 1):
            dialog = Common.textDialog(MainWin)
-           dialog.show() 
-           textedit = dialog.textedit 
+           dialog.show()
+           textedit = dialog.textedit
            textedit.insertPlainText('Do not move your mouse or type anything until the end\n')
            textedit.ensureCursorVisible() # Scroll the window to the bottom
 
@@ -174,7 +174,7 @@ try:
         if not go(): break
         time.sleep(TIME_STEP)
 
-        ### Enter session name 
+        ### Enter session name
         if (HAVE_TEXT == 1):
            textedit.insertPlainText('Typing in the session name = VLE \n')
            textedit.ensureCursorVisible() # Scroll the window to the bottom
@@ -196,7 +196,7 @@ try:
         if not go(): break
         time.sleep(TIME_STEP)
 
-        ### add simulation in UQ module ('Load File') 
+        ### add simulation in UQ module ('Load File')
         if (HAVE_TEXT == 1):
            textedit.insertPlainText('   Clicking the load file button, enter file name\n')
            textedit.ensureCursorVisible() # Scroll the window to the bottom
@@ -229,7 +229,7 @@ try:
         timers['rs_analyze'].stop()
         if not go(): break
 
-        ### Wait 
+        ### Wait
         if (HAVE_TEXT == 1):
            textedit.insertPlainText('This test will terminate in 30 seconds\n')
            textedit.ensureCursorVisible() # Scroll the window to the bottom
@@ -240,7 +240,7 @@ try:
         ### Close FOQUS
         timers['msg_no'].start(1000)
         if (HAVE_TEXT == 1):
-           dialog.close() 
+           dialog.close()
         MainWin.close()
         timers['msg_no'].stop()
         break
@@ -248,9 +248,9 @@ try:
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print("Exception stopping script")
     timersStop()
     with open(testOutFile, 'a') as f:
         f.write('Exception: {0}\n'.format(e))
     raise(e)
-timersStop() #make sure all timers are stopped 
+timersStop() #make sure all timers are stopped

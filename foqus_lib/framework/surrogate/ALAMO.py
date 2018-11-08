@@ -19,7 +19,7 @@ See LICENSE.md for license and copyright details.
 
 import numpy as np
 import threading
-import Queue
+import queue
 import logging
 import subprocess
 import os
@@ -171,7 +171,7 @@ class surrogateMethod(surrogate):
             hint="Adaptive sampling method to be used by ALAMO when more data points are needed by the model"
             "If random is used a simulator must be provided by the user. If SNOBFIT is used a simulator must be"
             " by the user and MATLAB must be istalled.",
-            validValues = sorted(self.samplers.keys(),
+            validValues = sorted(list(self.samplers.keys()),
                 key=lambda k: self.samplers[k]))
         self.options.add(
             name="MAXITER",
@@ -268,7 +268,7 @@ class surrogateMethod(surrogate):
                 "mean square error, and a convex penalty consisting of "
                 "the sum of square errors and a term penalizing model "
                 "size.",
-            validValues = sorted(self.modelers.keys(),
+            validValues = sorted(list(self.modelers.keys()),
                 key=lambda k: self.modelers[k]))
         self.options.add(
             name="CONVPEN",
@@ -330,7 +330,7 @@ class surrogateMethod(surrogate):
             default="Fortran",
             desc="Format for printing basis functions and models found by ALAMO. Fortran must be selected to generate FOQUS UQ and flowsheet models.",
             hint="",
-            validValues = sorted(self.funform.keys(), key=lambda k: self.funform[k]))
+            validValues = sorted(list(self.funform.keys()), key=lambda k: self.funform[k]))
         self.options.add(
             name="MIPOPTCA",
             section="Solver Settings",
@@ -447,7 +447,7 @@ class surrogateMethod(surrogate):
 
     def updateOptions(self):
         filters = sorted(
-            self.dat.flowsheet.results.filters.keys(),
+            list(self.dat.flowsheet.results.filters.keys()),
             key = lambda s: s.lower())
         self.options["Validation Data Filter"].validValues = filters
         self.options["Initial Data Filter"].validValues = filters
@@ -598,15 +598,15 @@ class surrogateMethod(surrogate):
         modeler = self.modelers.get(self.options['MODELER'].value, 1)
         preset = self.options['PRESET'].value
         maxtime = self.options['MAXTIME'].value
-        mono = map(str, self.options['MONOMIALPOWER'].value)
-        multi2 = map(str, self.options['MULTI2POWER'].value)
-        multi3 = map(str, self.options['MULTI3POWER'].value)
-        ratios = map(str, self.options['RATIOPOWER'].value)
+        mono = list(map(str, self.options['MONOMIALPOWER'].value))
+        multi2 = list(map(str, self.options['MULTI2POWER'].value))
+        multi3 = list(map(str, self.options['MULTI3POWER'].value))
+        ratios = list(map(str, self.options['RATIOPOWER'].value))
         expfcns = int(self.options['EXPFCNS'].value)
         logfcns = int(self.options['LOGFCNS'].value)
         sinfcns = int(self.options['SINFCNS'].value)
         cosfcns = int(self.options['COSFCNS'].value)
-        custombas = map(str, self.options['CUSTOMBAS'].value)
+        custombas = list(map(str, self.options['CUSTOMBAS'].value))
         convpen = self.options['CONVPEN'].value
         regularizer = int(self.options['REGULARIZER'].value)
         mipoptca = self.options['MIPOPTCA'].value

@@ -4,7 +4,7 @@ import numpy
 snobfit_available = True
 try:
 	from snobfit import snobfit
-except ImportError, e:
+except ImportError as e:
 	snobfit_available = False
 
 
@@ -51,7 +51,7 @@ class opt():
 		gr.scaleGlobalVariables(xnames)
 		xinit = gr.getGlobalVariables(xnames, 'scaled', True)
 		for xn in xnames:
-			print(xn + ": " + str(gr.x[xn].value) + "  scaled: " + str(gr.x[xn].scaled))
+			print((xn + ": " + str(gr.x[xn].value) + "  scaled: " + str(gr.x[xn].scaled)))
 		print("----------------------")
 		print("Optimizer = SNOBFIT-NIST")
 
@@ -85,7 +85,7 @@ class opt():
 		if ofile != "":
 			gr.closeCSV()
 		print("-------------------------")
-		print("Elapsed Time: " + str(time.clock() - start) + " sec")
+		print(("Elapsed Time: " + str(time.clock() - start) + " sec"))
 		print("-------------------------")
 		print("Solution")
 		print("-------------------------")
@@ -95,7 +95,7 @@ class opt():
 		gr.solve() #resolve with optimal input
 		xfinal = gr.getGlobalVariables(xnames, 'value', True)
 
-		print("best f " + str(fopt))
-		print("best x (scaled): " + str(xopt))
-		print("best x (notscaled): " + str(xfinal))
-		print("number of iterations: " + str(nit))
+		print(("best f " + str(fopt)))
+		print(("best x (scaled): " + str(xopt)))
+		print(("best x (notscaled): " + str(xfinal)))
+		print(("number of iterations: " + str(nit)))

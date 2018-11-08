@@ -44,7 +44,7 @@ from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.help.helpBrowser import*
 from foqus_lib.gui.surrogate.surrogateFrame import*
 from foqus_lib.gui.heatIntegration.heatIntegrationFrame import*
-from ConfigParser import *
+from configparser import *
 
 class mainWindow(QMainWindow):
     """
@@ -535,7 +535,7 @@ class mainWindow(QMainWindow):
         # Add/update model in Turbine Action
         self.addTurbineModelAction = QAction(
             QIcon(self.iconPaths['add']),
-            'Add\Update Model to Turbine...',
+            'Add\\Update Model to Turbine...',
             self)
         self.addTurbineModelAction.triggered.connect(self.addTurbModel)
         self.mainMenu.addAction(self.addTurbineModelAction)
@@ -1331,7 +1331,7 @@ class mainWindow(QMainWindow):
                 # HACK (JRB):  SETUP DEFAULT VALUES FOR REQUIRED KEYS
                 #
                 for key,value in (('nodeError',{}), ('turbineMessages',{})):
-                    if not self.singleRun.res[0].has_key(key):
+                    if key not in self.singleRun.res[0]:
                         self.singleRun.res[0][key] = value
 
                 self.dat.flowsheet.results.add_result(
@@ -1426,7 +1426,7 @@ class mainWindow(QMainWindow):
         self.timer.start(delay)
 
     def highlight(self):
-        print self.index
+        print(self.index)
         if self.index == self.endIndex:
             self.timer.stop()
             self.flowsheetEditor.sc.selectedNodes = []

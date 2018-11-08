@@ -26,7 +26,7 @@ if __name__ == '__main__':
     # Read the samples from the input file made by ALAMO
     samples = []
     with open(inputFile, 'r') as f:
-        print "Reading Input File {}".format(inputFile)
+        print("Reading Input File {}".format(inputFile))
         line = f.readline() # read and ignore first line
         line = f.readline()
         while(line):
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         conn.recv()
     conn.send(['run'])
     n = conn.recv()[1]
-    print 'Submitted {0} samples to FOQUS'.format(n)
+    print('Submitted {0} samples to FOQUS'.format(n))
     conn.send(['result'])
     msg = conn.recv()
     status = msg[1]

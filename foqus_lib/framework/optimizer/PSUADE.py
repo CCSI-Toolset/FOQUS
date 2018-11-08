@@ -11,7 +11,7 @@
 import time
 import copy
 import csv
-import Queue
+import queue
 import sys
 import logging
 import math
@@ -20,7 +20,7 @@ import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
-    
+
 def checkAvailable():
     '''
         Plugins should have this function to check availability of any
@@ -35,13 +35,13 @@ class opt(optimization):
         The optimization solver class.  Should be called opt and inherit
         optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:
-        - available True or False, False it some required thing is not 
+        - available True or False, False it some required thing is not
             present
         - name The name of the solver
         - mp True or False, can use parallel?
         - mobj True or False, handles multiple objectives?
         - options An optionList object to add solver options to
-        
+
         Some functions must also be implemented.  Following this example
         __init()__ call base class init, set attributes, add options
         optimize() run optimization periodically send out results for
@@ -68,12 +68,12 @@ class opt(optimization):
         self.minVars = 2  #minimum number of decision variables
         self.maxVars = 10000 #max variables
         self.options.add(
-            name='upper', 
+            name='upper',
             default=10.0,
             dtype=float, #don't need this if default is proper type
             desc="Upper bound on scaled variables (usually 10.0)")
         self.options.add(
-            name='lower', 
+            name='lower',
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)")
         self.options.add(
@@ -108,7 +108,7 @@ class opt(optimization):
         lower = self.options["lower"].value
         tol = self.options["tol"].value
         setName = self.options["Results name"].value
-        #Increment set name if already used 
+        #Increment set name if already used
         setName = self.dat.flowsheet.results.incrimentSetName(setName)
         #
         # Options are all read in so now initialize things
@@ -121,4 +121,3 @@ class opt(optimization):
             "Starting PSUADE optimization")
 
         self.msgQueue.put("This doesn't do anything yet")
-        

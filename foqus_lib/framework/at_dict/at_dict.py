@@ -4,7 +4,7 @@ class AtDict(dict):
             return self[name]
 
     def __setattr__(self, name, value):
-        if name in self.keys():
+        if name in list(self.keys()):
             self[name] = value
         else:
              super(AtDict, self).__setattr__(name, value)

@@ -21,9 +21,9 @@ import logging
 import sys
 from collections import OrderedDict
 from foqus_lib.framework.graph.node import *   # Node, input var and output var classes
-from nodeModelTypes import nodeModelTypes
-from edge import *   # Edge and variable connection classes
-from OptGraphOptim import *  # Objective function calculation class
+from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
+from foqus_lib.framework.graph.edge import *   # Edge and variable connection classes
+from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.graph.nodeVars import *
 
@@ -140,7 +140,7 @@ class Graph(threading.Thread):
             flowsheet.
         '''
         names = set()
-        for nkey, node in self.nodes.iteritems():
+        for nkey, node in self.nodes.items():
             if node.modelType in [
                 nodeModelTypes.MODEL_TURBINE,
                 nodeModelTypes.MODEL_DMF_LITE,
@@ -225,7 +225,7 @@ class Graph(threading.Thread):
 
     def saveNodeDict(self):
         sd = {}
-        for nkey, node in self.nodes.iteritems():
+        for nkey, node in self.nodes.items():
             sd[nkey] = node.saveDict()
         return sd
 
@@ -239,7 +239,7 @@ class Graph(threading.Thread):
     def saveSimDict(self):
         sd = {}
         # Save simulation (model) list
-        for key, sim in self.simList.iteritems():
+        for key, sim in self.simList.items():
             sd[key]  = sim.saveDict()
         return sd
 
@@ -280,7 +280,7 @@ class Graph(threading.Thread):
         self.simList     = dict()
         self.onlySingleNode = sd.get('onlySingleNode', None)
         #load nodes
-        for nkey, nd in sd["nodes"].iteritems():
+        for nkey, nd in sd["nodes"].items():
             n = self.addNode(nkey)
             n.loadDict(nd)
         #load edges
@@ -313,11 +313,11 @@ class Graph(threading.Thread):
             'nodeSettings':{},
             'turbineMessages':{}
         }
-        for nkey, node in self.nodes.iteritems():
+        for nkey, node in self.nodes.items():
             sd['nodeError'][nkey] = node.calcError
             sd['turbineMessages'][nkey] = node.turbineMessages
             sd['nodeSettings'][nkey] = {}
-            for okey, opt in node.options.iteritems():
+            for okey, opt in node.options.items():
                 sd['nodeSettings'][nkey][okey] = opt.value
         return sd
 
@@ -352,7 +352,7 @@ class Graph(threading.Thread):
         ave_x = 0
         ave_y = 0
         ave_z = 0
-        for name, node in self.nodes.iteritems():
+        for name, node in self.nodes.items():
             ave_x += node.x
             ave_y += node.y
             ave_z += node.z
@@ -367,7 +367,7 @@ class Graph(threading.Thread):
             This sets all the error codes in the nodes and the graph to
             -1, which I am using to mean not executed.
         '''
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             node.calcError = -1
         self.setErrorCode(-1)
 
@@ -376,7 +376,7 @@ class Graph(threading.Thread):
             Go through all the nodes and if they are turbine runs with a
             session id, kill all the jobs in that session.
         '''
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             node.killTurbineSession()
 
     def generateGlobalVariables(self):
@@ -390,8 +390,8 @@ class Graph(threading.Thread):
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
-        self.xnames = self.x.keys() # get a list of input names
-        self.fnames = self.f.keys() # get a list of output names
+        self.xnames = list(self.x.keys()) # get a list of input names
+        self.fnames = list(self.f.keys()) # get a list of output names
         self.markConnectedInputs() #mark which inputs are set by con.
 
     def markConnectedInputs(self):
@@ -400,8 +400,8 @@ class Graph(threading.Thread):
             considered inputs for optimization or UQ purposes.
         '''
         # clear all the connected flags
-        for [name, node] in self.nodes.iteritems():
-            for [vname, var] in node.inVars.iteritems():
+        for [name, node] in self.nodes.items():
+            for [vname, var] in node.inVars.items():
                 var.con = False
         # look at edges and find connections
         for edge in self.edges:
@@ -418,12 +418,12 @@ class Graph(threading.Thread):
         '''
             Return all input variables to there default value
         '''
-        for key, n in self.nodes.iteritems():
+        for key, n in self.nodes.items():
             n.loadDefaultValues()
 
     def createNodeTurbineSessions(self, forceNew=True):
         err = False
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             # may want to raise an exception if sid
             # comes back as 0.  That would probably
             # be a problem contacting the gateway
@@ -758,7 +758,7 @@ class Graph(threading.Thread):
         self.solveListValTurbineDelGenerator(gid)
 
     def solveListVal(self, valueList):
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
                 logging.getLogger("foqus." + __name__).debug(
                         "DMF will sync node {}".format(key))
@@ -927,7 +927,7 @@ class Graph(threading.Thread):
             more than one tear they are converged simultaneously.
             I know that is probably not best but it is easy for now
         '''
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
                 logging.getLogger("foqus." + __name__).debug(
                         "DMF will sync node {}".format(key))
@@ -945,7 +945,7 @@ class Graph(threading.Thread):
         # check if you only want to run a single node, this lest you run
         # calculations on a node in using the system already setup for
         # the graph but only evaluates a single node.
-        if self.onlySingleNode in self.nodes.keys():
+        if self.onlySingleNode in list(self.nodes.keys()):
             name = self.onlySingleNode
             if self.runNode(name) != 0:
                 self.setErrorCode(1)
@@ -961,7 +961,7 @@ class Graph(threading.Thread):
             return
         #Take the pre and post solve nodes out of the calculation order
         fs_sub = []
-        for nkey, node in self.nodes.iteritems():
+        for nkey, node in self.nodes.items():
             if nkey in self.pre_solve_nodes:
                 node.seq = False
             elif nkey in self.post_solve_nodes:
@@ -1308,7 +1308,7 @@ class Graph(threading.Thread):
         if newName == oldName: return
         # Check if new name is in use
         # if it is don't rename
-        if newName in self.nodes.keys(): raise
+        if newName in list(self.nodes.keys()): raise
         # search edges and change names
         for edge in self.edges:
             if edge.start == oldName: edge.start = newName
@@ -1366,10 +1366,10 @@ class Graph(threading.Thread):
         adjEdgeR = []      # edge reverse adj lists
         # if no subgraph nodes where specified use the whole graph
         if subGraphNodes == None:
-            subGraphNodes = self.nodes.keys()
+            subGraphNodes = list(self.nodes.keys())
         # if no subgraph edges where specified use the whole graph
         if subGraphEdges == None:
-            subGraphEdges = range(len(self.edges))
+            subGraphEdges = list(range(len(self.edges)))
         # find edges to nodes not in the sub graph, also tear and inactive edges depending on options
         delSet = [] # set of edges to delete
         for i in range(len(subGraphEdges)):
@@ -1420,7 +1420,7 @@ class Graph(threading.Thread):
 
     def adjLists(self):
         # adds a list of adjacent node to each node
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             node.adj = []
             node.revAdj = []
             node.adjEdge = []
@@ -1817,10 +1817,10 @@ class Graph(threading.Thread):
         self.adjLists()
         depth = 0
         tearSet = []  # list of back/tear edges
-        for key, node in self.nodes.iteritems():
+        for key, node in self.nodes.items():
             node.depth  = None
             node.parent = None
-        for vkey, vnode in self.nodes.iteritems():
+        for vkey, vnode in self.nodes.items():
             if vnode.depth == None:
                 cyc(vkey, vnode, depth)
         return tearSet

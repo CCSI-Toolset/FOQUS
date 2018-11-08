@@ -51,7 +51,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.penForms = ['None', 'Quadratic', 'Linear', 'Step']
         #
         self.osolvers = sorted(
-            self.dat.optSolvers.plugins.keys(),
+            list(self.dat.optSolvers.plugins.keys()),
             key=lambda s: s.lower())
         self.methods = self.dat.optSolvers.plugins #dict of solvers
         self.optMonitorFrame = optMonitor(self.dat, self)

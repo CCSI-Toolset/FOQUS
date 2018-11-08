@@ -6,12 +6,12 @@ Methods:
     setSampleMethod(value):
         Sets sample method with SamplingMethods value.  Can be string full name
         or PSUADE abbrev
-        
+
     getSampleMethod():
         Get sample method
-        
+
     setNumSamples(value):
-        Sets the number of samples within the model 
+        Sets the number of samples within the model
     getNumSamples():
         Get number of samples
 
@@ -60,7 +60,7 @@ Methods:
                                 (std dev, beta, etc.)
                                 Use None for those values that are empty
                                     (e.g. mean for uniform distribution)
-           
+
 
     getInputDistributions():
         Get input distributions.  Returns tuple of Distribution enum values
@@ -107,7 +107,7 @@ Methods:
 
     getValidSamples():
         Returns a new SampleData object that contains all the valid samples (run state = True)
-        
+
     writeToPsuade():
         Writes SampleData object to a psuade file
 
@@ -173,7 +173,7 @@ class SampleData(object):
             sd['inputData'] = self.inputData.tolist()
         else:
             sd['inputData'] = self.inputData
-            
+
         if isinstance(self.outputData, numpy.ndarray):
             sd['outputData'] = self.outputData.tolist()
         else:
@@ -277,7 +277,7 @@ class SampleData(object):
 
     def getSession(self):
         return self.session
-            
+
     def setID(self, string):
         self.ID = string
 
@@ -300,16 +300,16 @@ class SampleData(object):
 
     def getNumSamples(self):
         return self.numSamples
-       
+
     def setNumSamplesAdded(self, value):
         self.numSamplesAdded = value
-        
+
     def getNumSamplesAdded(self):
         return self.numSamplesAdded
-        
+
     def setOrigNumSamples(self, value):
         self.origNumSamples = value
-        
+
     def getOrigNumSamples(self):
         return self.origNumSamples
 
@@ -554,7 +554,7 @@ class SampleData(object):
             newSamples.setOutputData(outputs[indices])
         runState = self.runState
         newSamples.setRunState(runState[indices])
-        
+
         return newSamples
 
     def deleteInputs(self, indices):
@@ -597,7 +597,7 @@ class SampleData(object):
             numInputs = types.count(Model.VARIABLE)
         outf.write('%d %d %d\n' % (numInputs, self.getNumOutputs(),
                                    self.getNumSamples()))
-        
+
         #Write out data
         hasOutputData = False
         if self.outputData is not None:
@@ -622,7 +622,7 @@ class SampleData(object):
 
         outf.write('PSUADE_IO\n')
         outf.write('PSUADE\n')
-        
+
         #Write inputs
         outf.write('INPUT\n')
         numFixed = self.getNumInputs() - numInputs
@@ -639,10 +639,10 @@ class SampleData(object):
             self.setInputDistributions([Distribution.UNIFORM] * self.getNumInputs())
             distributions = self.getInputDistributions()
             self.setInputDistributions([])
-            
+
         fixedIndex = 1;
         variableIndex = 1;
-        for name, minimum, maximum, inType, dist, default in map(None, names, mins, maxs, types, distributions, defaults):
+        for name, minimum, maximum, inType, dist, default in zip(names, mins, maxs, types, distributions, defaults):
             if not fixedAsVariables and inType == Model.FIXED:
                 outf.write('   fixed %d %s =  % .16e\n' % (fixedIndex, name, default))
                 fixedIndex = fixedIndex + 1
@@ -744,17 +744,17 @@ class SampleData(object):
         else:
             rs = ResponseSurfaces.getPsuadeName(rs)
         outf.write('   analyzer rstype = %s\n' % rs)
-            
+
         order = self.getLegendreOrder()
         if order is not None:
             outf.write('   analyzer rs_legendre_order = %d\n' % self.getLegendreOrder())
         outf.write('   analyzer threshold = 1.000000e+00\n')
         outf.write('   diagnostics 1\n')
         outf.write('END\n')
-        
+
         outf.write('END\n')
         outf.close()
-            
+
     def writeToCsv(self, filename, inputsOnly = False, outputsOnly = False, inputIndex = None, outputIndices = None):
         outf = open(filename, 'w')
 
@@ -779,7 +779,7 @@ class SampleData(object):
         for name in varNames[1:]:
             outf.write(',"%s"' % name)
         outf.write('\n')
-        
+
         # Write data
         inData = self.getInputData()
         outData = self.getOutputData()

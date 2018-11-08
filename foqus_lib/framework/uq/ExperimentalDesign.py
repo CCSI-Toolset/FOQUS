@@ -93,7 +93,7 @@ class ExperimentalDesign:
         outf.write('ANALYSIS\n')
         outf.write('   diagnostics 2\n')
         outf.write('END\n')
-        
+
         outf.write('END\n')
         outf.close()
 
@@ -116,12 +116,12 @@ class ExperimentalDesign:
         if data.getInputDefaults() is not None:
             newModel.setInputDefaults(data.getInputDefaults()[selectedInputs])
         returnData = SampleData(newModel)
-        
+
         if numSamples:
             returnData.setNumSamples(numSamples)
         else:
             returnData.setNumSamples(data.getNumSamples())
-           
+
         if sampleMethod >= 0:
             returnData.setSampleMethod(sampleMethod)
         else:
@@ -165,13 +165,13 @@ class ExperimentalDesign:
                 if platform.system() == 'Windows':
                     import win32api
                     tmpfile = win32api.GetShortPathName(tmpfile)
-                f.write('load %s\n' % tmpfile)
-                f.write('pdfconvert\n')
-                f.write('write %s\n' % psuadeDataFile)
+                f.write(('load %s\n' % tmpfile).encode())
+                f.write(b'pdfconvert\n')
+                f.write(('write %s\n' % psuadeDataFile).encode())
                 nOutputs = returnData.getNumOutputs()
                 if nOutputs > 1:
-                    f.write('n\n')     # write all outputs
-                f.write('quit\n')
+                    f.write(b'n\n')     # write all outputs
+                f.write(b'quit\n')
                 f.seek(0)
                 out, error = Common.invokePsuade(f)
                 f.close()

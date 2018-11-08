@@ -355,7 +355,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
                     if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
                         f = tempfile.SpooledTemporaryFile()
                         for i in range(2):
-                            f.write('cdf_lookup\n')
+                            f.write(b'cdf_lookup\n')
                             distNum = dist
                             if dist == Distribution.BETA:
                                 distNum = 4
@@ -365,16 +365,16 @@ class SimSetup(_SimSetup, _SimSetupUI):
                                 distNum = 6
                             elif dist == Distribution.EXPONENTIAL:
                                 distNum = 7
-                            f.write('%d\n' % distNum) # Number of distribution
-                            f.write('%f\n' % distParam1) # Parameter 1
+                            f.write(b'%d\n' % distNum) # Number of distribution
+                            f.write(b'%f\n' % distParam1) # Parameter 1
                             if distParam2 is not None:
-                                f.write('%f\n' % distParam2) # Parameter 2
+                                f.write(b'%f\n' % distParam2) # Parameter 2
                             if i == 0:
                                 val = minVal
                             else:
                                 val = maxVal
-                            f.write('%f\n' % val) # Min or max value
-                        f.write('quit\n')
+                            f.write(b'%f\n' % val) # Min or max value
+                        f.write(b'quit\n')
                         f.seek(0)
 
                         # invoke psuade
@@ -398,7 +398,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
                         lines = out.splitlines()
                         vals = []
                         for line in lines:
-                            if 'Cumulative probability = ' in line:
+                            if 'Cumulative probability = ' in line.decode('utf-8'):
                                 words = line.split()
                                 vals.append(float(words[-1]))
 

@@ -471,7 +471,7 @@ class LocalExecutionModule(object):
             else:
                 f.write(' '.join(map(str, inRow + outRow)))
                 f.write('\n')
-                
+
         f.close()
 
 
@@ -696,10 +696,10 @@ class LocalExecutionModule(object):
         lines = out.splitlines()
         compatible = False
         for line in lines:
-            if 'PSUADE version' in line:
+            if 'PSUADE version' in line.decode("utf-8"):
                 words = line.split()
                 versionNum = words[-1]
-                nums = versionNum.split('.')
+                nums = versionNum.decode("utf-8").split('.')
                 reqds = LocalExecutionModule.psuadeVersion.split('.')
                 lastEqual = False
                 for i, (num, reqd) in enumerate(zip(nums, reqds)):
@@ -750,7 +750,7 @@ class LocalExecutionModule(object):
         if len(lines) >= 2:
             for line in lines:   # skip first line with version info
                 for lib in libs:
-                    if (lib in line) and (installedString in line):
+                    if (lib in line.decode("utf-8")) and (installedString in line.decode("utf-8")):
                         foundLibs[lib] = True
                         break
 

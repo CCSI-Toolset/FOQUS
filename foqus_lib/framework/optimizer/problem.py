@@ -233,25 +233,24 @@ class problem():
             self.samp[key].append(samples.get(key, float('nan')))
 
     def runSamples(self, X, slv):
-        '''
-            Runs the flowsheet samples for the objective calculation
+        """Runs the flowsheet samples for the objective calculation
 
-            X:  a list of flat vector of descision variable values.
-                The variableordering is given by the list self.v
+        Args:
+        X: a list of flat vector of descision variable values.
+            The variableordering is given by the list self.v
+        gr: is the graph (flowsheet) object that will be used to
+            run the samples
 
-            gr: is the graph (flowsheet) object that will be used to
-                run the samples
-
-            If a set of samples is defined by self.samp, each flowsheet
-            will be run number of smapls times for each X
-        '''
+        If a set of samples is defined by self.samp, each flowsheet
+        will be run number of smapls times for each X
+        """
         self.userInterupt = False
         self.maxTimeInterupt = False
         snum = 1
         # Setup new sample vectors that have the decision and sample
         # variables and the
         samp = [] # the sample set for FOQUS graph
-        if self.vs > 0 and self.numSamples() > 0:
+        if len(self.vs) > 0 and self.numSamples() > 0:
             snum = self.numSamples()
             for xvec in X:
                 vals = slv.graph.input.unflatten(self.v, xvec, unScale=True)

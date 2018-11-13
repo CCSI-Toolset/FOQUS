@@ -29,7 +29,7 @@ def getButton(w, label):
 global errorCount
 global errorTitle
 global errorFile
-errorFile = "AutoErrLog_optimization_smoke_test.txt"
+errorFile = "AutoErrLog_optimization_smoke_test_constraint.txt"
 errorCount = 0
         
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
@@ -238,18 +238,22 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.varForm.cellWidget(3,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(4,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(5,1).setCurrentIndex(1)
-#        # Set the Scales
-#        MainWin.optSetupFrame.varForm.cellWidget(0,2).setCurrentIndex(1)
-#        MainWin.optSetupFrame.varForm.cellWidget(1,2).setCurrentIndex(2)
-#        MainWin.optSetupFrame.varForm.cellWidget(3,2).setCurrentIndex(3)
-#        MainWin.optSetupFrame.varForm.cellWidget(4,2).setCurrentIndex(4)
-#        MainWin.optSetupFrame.varForm.cellWidget(5,2).setCurrentIndex(5)
         # Switch to the Objective tab and set the objective
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(2)
         MainWin.optSetupFrame.fAddButton.click()
         MainWin.optSetupFrame.fTable.setItem(0,0, QtWidgets.QTableWidgetItem("f['Rosenbrock']['f']"))
         MainWin.optSetupFrame.fTable.setItem(0,1, QtWidgets.QTableWidgetItem("1"))
         MainWin.optSetupFrame.fTable.setItem(0,2, QtWidgets.QTableWidgetItem("10000"))
+        ## Set the Inequality Constraints
+        MainWin.optSetupFrame.gAddButton.click()
+        MainWin.optSetupFrame.gTable.setItem(0,0, QtWidgets.QTableWidgetItem("3-x['Rosenbrock']['x1']"))
+        MainWin.optSetupFrame.gTable.setItem(0,1, QtWidgets.QTableWidgetItem("10000"))
+        MainWin.optSetupFrame.gAddButton.click()
+        MainWin.optSetupFrame.gTable.setItem(1,0, QtWidgets.QTableWidgetItem("8-x['Rosenbrock']['x6']"))
+        MainWin.optSetupFrame.gTable.setItem(1,1, QtWidgets.QTableWidgetItem("10000"))
+        MainWin.optSetupFrame.gAddButton.click()
+        MainWin.optSetupFrame.gTable.setItem(2,0, QtWidgets.QTableWidgetItem("2-x['Rosenbrock']['x4']"))
+        MainWin.optSetupFrame.gTable.setItem(2,1, QtWidgets.QTableWidgetItem("10000"))
         ## Switch to the Solver tab and set the solver
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
         solverName = MainWin.optSetupFrame.solverBox.findText("NLopt")
@@ -265,9 +269,10 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.optMonitorFrame.startButton.click()
         while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
             None
-#        print("Got here")
+#        MainWin.optSetupFrame.optMonitorFrame.updateStatus()
+#        print(MainWin.nodeDock.inputVarTable.item(0, 1).text())
         time.sleep(5)
-        
+
         if not go(): break
 
         break

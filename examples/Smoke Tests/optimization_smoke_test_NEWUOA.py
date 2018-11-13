@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtWidgets
 This test focuses on the input importance portion of the UQ
 """
 MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
-#testOutFile = 'ui_test_out.txt'
+#testOutFile = 'AutoErrLog_optimization_smoke_test_COBYLA.txt'
 #with open(testOutFile, 'w') as f: # file to write test results to
 #    f.write('Test Results\n')
 timers = {} # mainly put all timers in a dic so I can easily stop them all
@@ -29,7 +29,7 @@ def getButton(w, label):
 global errorCount
 global errorTitle
 global errorFile
-errorFile = "AutoErrLog_optimization_smoke_test.txt"
+errorFile = "AutoErrLog_optimization_smoke_test_NEWUOA.txt"
 errorCount = 0
         
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
@@ -99,6 +99,7 @@ def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
             errFile.close()
     except AttributeError:
         None
+
 
 def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
@@ -251,10 +252,13 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.fTable.setItem(0,1, QtWidgets.QTableWidgetItem("1"))
         MainWin.optSetupFrame.fTable.setItem(0,2, QtWidgets.QTableWidgetItem("10000"))
         ## Switch to the Solver tab and set the solver
-        MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
+
+        MainWin.optSetupFrame.tabWidget.setCurrentIndex(3)
         solverName = MainWin.optSetupFrame.solverBox.findText("NLopt")
+        ### Select Sub-Solver for NLopt
         MainWin.optSetupFrame.solverBox.setCurrentIndex(solverName)
-        
+        solverOptionName = MainWin.optSetupFrame.solverOptionTable.cellWidget(0,1).findText('"NEWUOA"')
+        MainWin.optSetupFrame.solverOptionTable.cellWidget(0,1).setCurrentIndex(solverOptionName)
         
         MainWin.optSetupFrame.applyChanges()
         MainWin.optSetupFrame.setSolver(MainWin.optSetupFrame.solverBox.currentText())

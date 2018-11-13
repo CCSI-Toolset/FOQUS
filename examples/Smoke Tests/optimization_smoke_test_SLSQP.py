@@ -29,7 +29,7 @@ def getButton(w, label):
 global errorCount
 global errorTitle
 global errorFile
-errorFile = "AutoErrLog_optimization_smoke_test.txt"
+errorFile = "AutoErrLog_optimization_smoke_test_SLSQP.txt"
 errorCount = 0
         
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
@@ -252,7 +252,7 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.fTable.setItem(0,2, QtWidgets.QTableWidgetItem("10000"))
         ## Switch to the Solver tab and set the solver
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(4)
-        solverName = MainWin.optSetupFrame.solverBox.findText("NLopt")
+        solverName = MainWin.optSetupFrame.solverBox.findText("SLSQP")
         MainWin.optSetupFrame.solverBox.setCurrentIndex(solverName)
         
         

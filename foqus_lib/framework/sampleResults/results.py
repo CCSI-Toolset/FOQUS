@@ -88,7 +88,7 @@ def sd_col_list(sd, time=None):
     labels and data
     """
     if time is None: time = iso_time_str()
-    
+
     try:
         assert sd.has_key("nodeError")
         assert sd.has_key("turbineMessages")
@@ -100,10 +100,10 @@ def sd_col_list(sd, time=None):
     except AssertionError:
         columns = ["time", "err"]
         dat = [time, 1001]
+        return (columns, dat)
 
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]
-
     # input, output, and node settings columns
     for s in [["input"]*2, ["output"]*2, ["nodeSettings", "setting"]]:
         for n, d in sd[s[0]].iteritems():

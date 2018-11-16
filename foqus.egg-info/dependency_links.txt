@@ -1,1 +1,0 @@
-git+ssh://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient

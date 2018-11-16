@@ -104,7 +104,9 @@ class TurbineLiteDB:
 
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='running', rc=rc, consumer=self.consumer_id))
+        self._sns_notification(dict(resource='consumer', event='running', rc=rc, 
+            consumer=self.consumer_id, instanceid=_instanceid))
+
     def consumer_status(self):
         _log.info("%s.consumer_status", self.__class__)
         #assert status in ['up','down','terminate'], ''

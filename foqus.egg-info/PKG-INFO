@@ -1,0 +1,12 @@
+Metadata-Version: 1.2
+Name: foqus
+Version: 2017.12.0.0
+Summary: FOQUS tool for simulation based optimization, uncertainty quantification, and surrogate models
+Home-page: http://www.acceleratecarboncapture.org/
+Author: CCSI FOQUS Team
+Author-email: Support ccsi-support@acceleratecarboncapture.org
+Maintainer: John Eslick
+Maintainer-email: john.eslick@netl.doe.gov
+License: See LICENSE.md for license and copyright details.
+Description: UNKNOWN
+Platform: UNKNOWN

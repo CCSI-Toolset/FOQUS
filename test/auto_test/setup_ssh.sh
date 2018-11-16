@@ -1,3 +1,5 @@
+conda env create -f ../../foqus_env.yml
+. activate foqus_env
 cd ../..
 conda uninstall cycler
 pip install cycler --trusted-host pypi.python.org

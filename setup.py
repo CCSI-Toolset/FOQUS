@@ -36,11 +36,11 @@ print("Setting version as {0}".format(ver.version))
 
 install_requires=[
     'adodbapi',
-    'boto3',
-    #'TurbineClient',
-    'pyparsing',
+    #'boto3',
+    'TurbineClient',
+    #'pyparsing',
     #'py4j',
-    'requests',
+    #'requests',
     #'networkx',
     #'redis',
     #'logstash_formatter',
@@ -51,10 +51,10 @@ install_requires=[
     'pandas>0.20'],
 
 dependency_links=[]
-#if connectType == 'https':
-#    dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
-#elif connectType == 'ssh':
-#    dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+if connectType == 'https':
+    dependency_links=['git+https://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
+elif connectType == 'ssh':
+    dependency_links=['git+ssh://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
 
 # Set all the package parameters
 pkg_name             = "foqus"

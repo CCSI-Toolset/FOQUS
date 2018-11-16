@@ -1,0 +1,7 @@
+adodbapi
+TurbineClient
+matplotlib
+scipy
+numpy
+cma
+pandas>0.20

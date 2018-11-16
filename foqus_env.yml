@@ -3,14 +3,14 @@ channels:
   - javascript
   - conda-forge
 dependencies:
-  - python=2.7
+  - python=3.6
   - pip
   - numpy
-  - pandas=0.21
+  - pandas
   - boto3
   - pyparsing
   - requests
-  - matplotlib=2.0.0
+  - matplotlib
   - scipy
   - numpy
   - pyqt
@@ -21,3 +21,4 @@ dependencies:
     - cma
     - adodbapi
     - python-ntlm
+    #- "--editable=git+ssh://git@github.com/eslickj/turb_client.git@py3#egg=TurbineClient"

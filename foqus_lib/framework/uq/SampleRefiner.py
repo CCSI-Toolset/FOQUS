@@ -28,7 +28,7 @@ class SampleRefiner:
         # write script
         suffix = '.refine_%d' % (nSamples + nSamplesNew)
         fnameOut = Common.getLocalFileName(SampleRefiner.dname, fname, suffix) 
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)

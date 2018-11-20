@@ -52,7 +52,7 @@ class Visualizer:
             mfile = mfileRoot + '.m'
             for i in x:
                 # write script
-                f = tempfile.SpooledTemporaryFile()
+                f = tempfile.SpooledTemporaryFile(mode="wt")
                 if platform.system() == 'Windows':
                     import win32api
                     fname = win32api.GetShortPathName(fname)
@@ -110,7 +110,7 @@ class Visualizer:
                 return None
             
             # write script
-            f = tempfile.SpooledTemporaryFile()
+            f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
                 fname = win32api.GetShortPathName(fname)
@@ -195,7 +195,7 @@ class Visualizer:
                 return None
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -376,7 +376,7 @@ class Visualizer:
 
         # write script
         cmd = 'rs%d' % rsdim
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if setMARS:
             f.write('rs_expert\n')
         if platform.system() == 'Windows':

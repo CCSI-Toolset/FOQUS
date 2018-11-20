@@ -285,7 +285,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         for nbins in range(2,nbins_max):
 
             # write script to invoke scenario compression
-            f = tempfile.SpooledTemporaryFile()
+            f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
                 fname = win32api.GetShortPathName(fname)
@@ -521,7 +521,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # write script
         #f = open('ouu.in','w')
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fnameOUU = win32api.GetShortPathName(fnameOUU)

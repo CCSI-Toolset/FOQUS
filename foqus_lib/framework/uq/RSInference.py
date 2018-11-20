@@ -247,7 +247,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             # ... write script
             nOutputs = SampleData.getNumOutputs(data) - len(odelete)
             outfile = Common.getLocalFileName(RSInferencer.dname, fname, '.infdat')
-            f = tempfile.SpooledTemporaryFile()
+            f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
                 fname = win32api.GetShortPathName(fname)
@@ -371,7 +371,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
 
         # write script
         cmd = 'rsmcmc'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -608,7 +608,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
 
         # write script
         cmd = 'iplot2_pdf'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)

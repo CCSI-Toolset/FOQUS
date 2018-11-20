@@ -353,7 +353,7 @@ class SimSetup(_SimSetup, _SimSetupUI):
                     dist = combobox.currentIndex()
                     # Create file for psuade input
                     if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
-                        f = tempfile.SpooledTemporaryFile(mode="wt")
+                        f = tempfile.SpooledTemporaryFile()
                         for i in range(2):
                             f.write(b'cdf_lookup\n')
                             distNum = dist

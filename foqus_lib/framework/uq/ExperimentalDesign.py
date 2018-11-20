@@ -161,7 +161,7 @@ class ExperimentalDesign:
                 # add back in the full PDF info
                 RSAnalyzer.writeRSdata(tmpfile,y,data,inputPDF=distributions)
                 # write script to PDF conversion
-                f = tempfile.SpooledTemporaryFile(mode="wt")
+                f = tempfile.SpooledTemporaryFile()
                 if platform.system() == 'Windows':
                     import win32api
                     tmpfile = win32api.GetShortPathName(tmpfile)

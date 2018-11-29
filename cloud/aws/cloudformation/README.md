@@ -1,16 +1,18 @@
 
-== PIP troposphere
+## PIP troposphere
 pip install troposphere
 pip install awacs
 
-== Configuration File:  foqus_templates.cfg
+## Configuration File:  foqus_templates.cfg
+```
 [CloudInit]
 admin_password = mysecretpassword
 [S3]
 bucket = foqus-files
+```
 
-== DynamoDB
-=== Create FOQUS_Resources table
+## DynamoDB
+### Create FOQUS_Resources table
 ```
 % aws --profile ccsi dynamodb create-table --cli-input-json file://dynamodb_foqus_resources_schema.json
 {
@@ -48,13 +50,13 @@ bucket = foqus-files
     }
 }
 ```
-=== Describe table
+### Describe table
 Use this JSON description to create a schema for a new table
 ```
 % aws --profile ccsi dynamodb describe-table --table-name FOQUS_Resources
 
 ```
-=== Delete FOQUS_Resources table
+### Delete FOQUS_Resources table
 ```
 % aws --profile ccsi dynamodb delete-table --table-name FOQUS_Resources
 ```

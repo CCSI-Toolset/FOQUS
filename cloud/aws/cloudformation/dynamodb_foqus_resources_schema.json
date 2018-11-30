@@ -1,0 +1,27 @@
+{
+        "AttributeDefinitions": [
+            {
+                "AttributeName": "Id", 
+                "AttributeType": "S"
+            }, 
+            {
+                "AttributeName": "Type", 
+                "AttributeType": "S"
+            }
+        ], 
+        "ProvisionedThroughput": {
+            "WriteCapacityUnits": 10, 
+            "ReadCapacityUnits": 10
+        }, 
+        "TableName": "FOQUS_Resources", 
+        "KeySchema": [
+            {
+                "KeyType": "HASH", 
+                "AttributeName": "Type"
+            }, 
+            {
+                "KeyType": "RANGE", 
+                "AttributeName": "Id"
+            }
+        ]
+}

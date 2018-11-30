@@ -121,7 +121,7 @@ exports.handler = function(event, context, callback) {
             console.log('Data: ', data.Items.length);
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
-                if (item.success != undefined) {
+                if (item.success != undefined && item.output != undefined) {
                   console.log('success item: ', item);
                   finished_jobs[item.Id] = item;
                 } else if (item.error != undefined) {

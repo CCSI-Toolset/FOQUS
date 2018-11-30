@@ -78,7 +78,7 @@ class Plotter:
         dat = [float(s) for s in tokens]
         if (ntokens > nlines) & (nlines > 1):   # reshape data if it's a matrix
             ncols = ntokens/nlines
-            dat = np.reshape(dat, [nlines,ncols])
+            dat = np.reshape(dat, [int(nlines),int(ncols)])
 
         return dat
 

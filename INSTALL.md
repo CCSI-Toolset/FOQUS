@@ -74,7 +74,7 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
 
 ### Install online documentation
 
-* Download the [HTML documentation](https://github.com/CCSI-Toolset/foqus/releases/download/1.0.0/FOQUS_User_Manual_HTML.zip).
+* Download the `FOQUS_User_Manual_HTML.zip` file from the [latest release](https://github.com/CCSI-Toolset/FOQUS/releases/latest).
 * Extract html documentation and copy the files to foqus_lib/help/html.
 
 ## Optional FOQUS Settings

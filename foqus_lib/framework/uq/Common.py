@@ -300,6 +300,7 @@ class Common(obj):
 
         # process error
         out2, error = p.communicate()
+        error = error.decode('utf-8')
         try:
             p.terminate()
         except:

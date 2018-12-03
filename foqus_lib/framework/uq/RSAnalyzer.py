@@ -368,7 +368,7 @@ class RSAnalyzer:
                     setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -671,7 +671,7 @@ class RSAnalyzer:
                     setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -771,7 +771,7 @@ class RSAnalyzer:
 
         # write script
         cmd = 'rs_ua'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)
@@ -984,7 +984,7 @@ class RSAnalyzer:
 
         # write script
         cmd = 'aeua'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fnameRS = win32api.GetShortPathName(fnameRS)
@@ -1105,7 +1105,7 @@ class RSAnalyzer:
                 setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)
@@ -1247,7 +1247,7 @@ class RSAnalyzer:
             dname = win32api.GetShortPathName(dname)
         fnameTrain = Common.getLocalFileName(dname, fnameRS, '.traindat') 
         # ... write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)

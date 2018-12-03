@@ -65,7 +65,7 @@ class DataProcessor:
 
         # write script
         outfile = Common.getLocalFileName(DataProcessor.dname, fname, '.filtered')
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)        
@@ -113,7 +113,7 @@ class DataProcessor:
 
         # write script
         outfile = Common.getLocalFileName(DataProcessor.dname, fname, '.deleted')
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)

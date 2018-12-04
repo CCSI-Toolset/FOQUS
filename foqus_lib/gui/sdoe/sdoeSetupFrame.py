@@ -1,0 +1,813 @@
+import platform
+import os
+import logging
+import numpy
+import copy
+from foqus_lib.gui.uq.updateUQModelDialog import *
+from foqus_lib.gui.uq.SimSetup import *
+from foqus_lib.gui.uq.stopEnsembleDialog import *
+from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
+from foqus_lib.framework.uq.SampleData import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.ResponseSurfaces import *
+from foqus_lib.framework.uq.DataProcessor import *
+from foqus_lib.framework.uq.RawDataAnalyzer import *
+from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.Visualizer import *
+from foqus_lib.framework.uq.SampleRefiner import *
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.sdoe import *
+from .sdoeAnalysisDialog import sdoeAnalysisDialog
+
+from PyQt5 import QtCore, uic, QtGui
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
+from PyQt5.QtGui import QCursor, QColor
+
+from PyQt5 import uic
+mypath = os.path.dirname(__file__)
+_sdoeSetupFrameUI, _sdoeSetupFrame = \
+        uic.loadUiType(os.path.join(mypath, "sdoeSetupFrame_UI.ui"))
+
+
+class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
+
+    numberCol = 0
+    typeCol = 1
+    setupCol = 2
+    nameCol = 3
+
+
+    def __init__(self, dat, parent=None):
+        super(sdoeSetupFrame, self).__init__(parent=parent)
+        self.setupUi(self)
+        self.dat = dat
+        LocalExecutionModule.session = dat
+        self.filterWidget = uqDataBrowserFrame(self)
+        self.filterWidget.indicesSelectedSignal.connect(self.createFilteredEnsemble)
+        self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
+        self.filterFrame.layout().addWidget(self.filterWidget)
+
+        ###### Set up simulation ensembles section
+        self.addFileButton.setEnabled(False)
+        self.loadFileButton.clicked.connect(self.loadSimulation)
+        self.loadFileButton.setEnabled(True)
+        self.cloneButton.clicked.connect(self.cloneSimulation)
+        self.cloneButton.setEnabled(False)
+        self.deleteButton.clicked.connect(self.deleteSimulation)
+        self.deleteButton.setEnabled(False)
+        self.saveButton.clicked.connect(self.saveSimulation)
+        self.saveButton.setEnabled(False)
+        self.confirmButton.clicked.connect(self.confirmEnsembles)
+        self.confirmButton.setEnabled(False)
+
+        self.filesTable.resizeColumnsToContents()
+        self.filesTable.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.filesTable.itemSelectionChanged.connect(self.simSelected)
+        self.filesTable.cellChanged.connect(self.simDescriptionChanged)
+
+        self.aggFilesTable.hide()
+        self.backSelectionButton.setEnabled(False)
+        self.analyzeButton.setEnabled(False)
+
+        ##### Set up UQ toolbox
+        self.dataTabs.setEnabled(False)
+
+        ### Perform all connects here
+        # ........ DATA PAGE ..............
+        self.dataTabs.setCurrentIndex(0)
+        self.dataTabs.currentChanged[int].connect(self.getDataTab)
+        self.deleteSaveButton.clicked.connect(self.delete)
+        self.changeOutputsButton.clicked.connect(self.updateOutputValues)
+        self.resetDeleteTableButton.clicked.connect(self.redrawDeleteTable)
+        self.deleteTable.itemChanged.connect(self.deleteTableCellChanged)
+        self.deleteTable.verticalScrollBar().valueChanged.connect(self.scrollDeleteTable)
+
+    ########################### Go through list of ensembles ##############################
+
+    def confirmEnsembles(self):
+        hist_list = []
+        cand_list = []
+        numFiles = len(self.dat.uqSimList)
+        for i in range(numFiles):
+            if self.filesTable.cellWidget(i, self.typeCol) == 'History':
+                hist_list.append(self.dat.uqSimList[i])
+            elif self.filesTable.cellWidget(i, self.typeCol) == 'Candidate':
+                cand_list.append(self.dat.uqSimList[i])
+
+        return hist_list, cand_list
+
+    #######################################################################################
+    def refresh(self):
+        numSims = len(self.dat.uqSimList)
+        self.filesTable.setRowCount(numSims)
+        for i in range(numSims):
+            self.updateSimTableRow(i)
+
+        if numSims == 0:
+            self.dataTabs.setEnabled(False)
+
+    def simSelected(self):
+        selectedIndexes = self.filesTable.selectedIndexes()
+        if not selectedIndexes:
+            self.cloneButton.setEnabled(False)
+            self.deleteButton.setEnabled(False)
+            self.saveButton.setEnabled(False)
+            self.dataTabs.setEnabled(False)
+            self.deleteTable.clear()
+            self.deleteTable.setRowCount(0)
+            self.deleteTable.setColumnCount(0)
+            return
+        self.dataTabs.setEnabled(False) #Prevent uq toolbox changes
+        self.cloneButton.setEnabled(True)
+        self.deleteButton.setEnabled(True)
+        self.saveButton.setEnabled(True)
+
+        row = selectedIndexes[0].row()
+        sim = self.dat.uqSimList[row]
+
+
+        self.freeze()
+        self.initUQToolBox()
+        self.dataTabs.setEnabled(True)
+        self.unfreeze()
+        QCoreApplication.processEvents()
+
+
+    def simDescriptionChanged(self, row, column):
+        if column == sdoeSetupFrame.nameCol:
+            sim = self.dat.uqSimList[row]
+            item = self.filesTable.item(row, column)
+            newName = item.text()
+            sim.setModelName(newName)
+
+
+    def cloneSimulation(self):
+        # Get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        sim = copy.deepcopy(self.dat.uqSimList[row]) # Create copy of sim
+        sim.clearRunState()
+        sim.turbineSession = None
+        sim.turbineJobIds = []
+        self.dat.uqSimList.append(sim)  # Add to simulation list
+        res = Results()
+        res.uq_add_result(sim)
+        self.dat.uqFilterResultsList.append(sim)
+
+        # Update table
+        self.updateSimTable()
+
+
+    def loadSimulation(self):
+
+        self.freeze()
+
+        # Get file name
+        if platform.system() == 'Windows':
+            allFiles = '*.*'
+        else:
+            allFiles = '*'
+        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Ensemble", '' , "CSV (Comma delimited) (*.csv)")
+        if len(fileName) == 0:
+            self.unfreeze()
+            return
+
+        if fileName.endswith('.csv'):
+            data = LocalExecutionModule.readSampleFromCsvFile(fileName)
+        else:
+            try:
+                data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
+            except:
+                import traceback
+                traceback.print_exc()
+                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                                           'File does not have the correct format! Please consult the users manual about the format.')
+                logging.getLogger("foqus." + __name__).exception(
+                    "Error loading psuade file.")
+                self.unfreeze()
+                return
+        data.setSession(self.dat)
+        self.dat.uqSimList.append(data)
+
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList.append(res)
+
+        # Update table
+        self.updateSimTable()
+        self.dataTabs.setEnabled(True)
+        self.unfreeze()
+
+    def updateSimTable(self):
+        # Update table
+        numSims = len(self.dat.uqSimList)
+        self.filesTable.setRowCount(numSims)
+        self.updateSimTableRow(numSims - 1)
+        self.filesTable.selectRow(numSims - 1)
+
+    def deleteSimulation(self):
+        # Get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+
+        # Delete simulation
+        self.dat.uqSimList.pop(row)
+        self.dat.uqFilterResultsList.pop(row)
+        self.dataTabs.setCurrentIndex(0)
+        self.refresh()
+        numSims = len(self.dat.uqSimList)
+        if numSims > 0:
+            if row >= numSims:
+                self.filesTable.selectRow(numSims - 1)
+                row = numSims - 1
+            sim = self.dat.uqSimList[row]
+
+
+    def saveSimulation(self):
+        psuadeFilter = 'Psuade Files (*.dat)'
+        csvFilter = 'Comma-Separated Values (Excel) (*.csv)'
+
+        # Get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+
+        sim = self.dat.uqSimList[row]
+        fileName, selectedFilter = QFileDialog.getSaveFileName(self,
+                                                               "File to Save Ensemble",
+                                                               '',
+                                                               psuadeFilter + ';;' + csvFilter)
+        if fileName == '':
+            return
+        if selectedFilter == psuadeFilter:
+            sim.writeToPsuade(fileName)
+        else:
+            sim.writeToCsv(fileName)
+
+    def editSim(self):
+        sender = self.sender()
+        row = sender.property('row')
+
+        viewOnly = True
+        if sender.text() == 'Revise':
+            viewOnly = False
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+        simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
+        result = simDialog.show()
+
+    def addDataToSimTable(self, data):
+        if data is None:
+            return
+        self.dat.uqSimList.append(data)
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList.append(res)
+
+        self.updateSimTable()
+
+    def changeDataInSimTable(self, data, row):
+        if data is None:
+            return
+        self.dat.uqSimList[row] = data
+        res = Results()
+        res.uq_add_result(data)
+        self.dat.uqFilterResultsList[row] = res
+
+        self.updateSimTableRow(row)
+
+
+    def updateSimTableRow(self, row):
+        data = self.dat.uqSimList[row]
+        item = self.filesTable.item(row, self.numberCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(str(row + 1))
+        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        flags = item.flags()
+        mask = ~(Qt.ItemIsEditable)
+        item.setFlags(flags & mask)
+        self.filesTable.setItem(row, self.numberCol, item)
+
+        item = self.filesTable.item(row, self.nameCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(data.getModelName())
+        self.filesTable.setItem(row, self.nameCol, item)
+
+        viewButton = self.filesTable.cellWidget(row, self.setupCol)
+        newViewButton = False
+        if viewButton is None:
+            newViewButton = True
+            viewButton = QPushButton()
+            viewButton.setText('View')
+
+        viewButton.setProperty('row', row)
+        if newViewButton:
+            viewButton.clicked.connect(self.editSim)
+            self.filesTable.setCellWidget(row, self.setupCol, viewButton)
+
+
+        # Resize table
+        #print 'resize'
+        self.resizeColumns()
+        minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
+                   self.filesTable.columnWidth(2) + self.filesTable.columnWidth(3)
+        if self.filesTable.verticalScrollBar().isVisible():
+            minWidth += self.filesTable.verticalScrollBar().width()
+        self.filesTable.setMinimumWidth(minWidth)
+
+
+    def resizeColumns(self):
+        self.filesTable.resizeColumnsToContents()
+
+
+    def initUQToolBox(self):
+
+        # call this only after a row in simulationTable is selected
+        self.initData()
+        QCoreApplication.processEvents()
+        self.dataTabs.setEnabled(True)
+        self.initDelete()
+        self.drawDataDeleteTable = False
+        QCoreApplication.processEvents()
+
+    def freeze(self):
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.WaitCursor))
+
+    def semifreeze(self):
+        QApplication.setOverrideCursor(QCursor(QtCore.Qt.BusyCursor))
+
+    def unfreeze(self):
+        QApplication.restoreOverrideCursor()
+
+    @staticmethod
+    def isnumeric(str):
+        try:
+            float(str)
+            return True
+        except ValueError:
+            return False
+
+    # ........ DATA PAGE ...................
+    def initData(self):
+        self.dataTabs.setCurrentIndex(0)
+        self.initFilter()
+
+    def getDataTab(self):
+        tabIndex = self.dataTabs.currentIndex()
+        deleteIndex = 0
+
+        if tabIndex == deleteIndex:
+            if self.drawDataDeleteTable:
+                self.initDelete()
+                self.drawDataDeleteTable = False
+
+    # ........ DATA PAGE: FILTER TAB ...................
+    def initFilter(self):
+        self.refreshFilterData()
+
+    def createFilteredEnsemble(self, indices):
+        self.freeze()
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[row]
+
+        newdata = data.getSubSample(indices)
+
+        newdata.setModelName(data.getModelName().split('.')[0] + '.filtered')
+        newdata.setSession(self.dat)
+
+        # add to simulation table, select new data
+        self.dat.uqSimList.append(newdata)
+        res = Results()
+        res.uq_add_result(newdata)
+        self.dat.uqFilterResultsList.append(res)
+
+        self.updateSimTable()
+
+        # reset components
+        self.unfreeze()
+
+    def refreshFilterData(self, updateResult = False):
+        indexes = self.filesTable.selectedIndexes()
+        if len(indexes) == 0:
+            return
+        row = indexes[0].row()
+        data = self.dat.uqSimList[row]
+
+        if updateResult or not self.dat.uqFilterResultsList:
+            if not self.dat.uqFilterResultsList:
+                self.dat.uqFilterResultsList = [None] * len(self.dat.uqSimList)
+            res = Results()
+            res.uq_add_result(data)
+            self.dat.uqFilterResultsList[row] = res
+        else:
+            res = self.dat.uqFilterResultsList[row]
+
+        self.filterWidget.init(self.dat)
+        self.filterWidget.setResults(res)
+        self.filterWidget.refreshContents()
+
+
+    # ........ DATA PAGE: DELETE TAB ...................
+    def initDelete(self):
+
+        # TO DO: call initDelete() only if the delete tab is selected
+
+        Common.initFolder(DataProcessor.dname)
+
+        self.freeze()
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[row]
+        #data = data.getValidSamples() # filter out samples that have no output results
+
+        # populate table
+        self.inputData = data.getInputData()
+        self.outputData = data.getOutputData()
+        inputNames = data.getInputNames()
+        self.nInputs = data.getNumInputs()
+        outputNames = data.getOutputNames()
+        self.nOutputs = data.getNumOutputs()
+        self.nSamples = data.getNumSamples()
+        self.nSamplesAdded = data.getNumSamplesAdded()
+
+        self.isDrawingDeleteTable = True
+        self.deleteTable.cellClicked.connect(self.activateDeleteButton)
+        self.deleteTable.setColumnCount(self.nInputs + self.nOutputs + 1)
+        self.deleteTable.setRowCount(self.nSamples + 1)
+        self.deleteTable.setHorizontalHeaderLabels(('Variables',) + inputNames + outputNames)
+        self.deleteTable.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.deleteTable.customContextMenuRequested.connect(self.popup)
+        self.deleteTable.verticalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
+        self.deleteTable.verticalHeader().customContextMenuRequested.connect(self.popup)
+        sampleLabels = tuple([str(i) for i in range(1, self.nSamples+1)])
+        self.deleteTable.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
+        inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
+        inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
+        mask = ~(Qt.ItemIsEditable)
+        checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
+        end = self.nSamples
+
+        # Blank corner cell
+        item = QTableWidgetItem()
+        flags = item.flags()
+        item.setFlags(flags & mask)
+        self.deleteTable.setItem(0, 0, item)
+
+        self.deleteScrollRow = 1
+        if end > 15:
+            end = 15
+        for r in range(end):
+            item = QTableWidgetItem()
+            flags = item.flags()
+            item.setFlags(flags & checkboxMask)
+            item.setCheckState(Qt.Unchecked)
+            self.deleteTable.setItem(r+1, 0, item)
+
+        for c in range(self.nInputs):         # populate input values
+            item = QTableWidgetItem()
+            flags = item.flags()
+            item.setFlags(flags & mask)
+            self.deleteTable.setItem(0, c+1, item)
+            for r in range(end):
+                item = QTableWidgetItem(self.format % self.inputData[r][c])
+                flags = item.flags()
+                item.setFlags(flags & mask)
+                if r < self.nSamples - self.nSamplesAdded:
+                    color = inputColor
+                else:
+                    color = inputRefinedColor
+                item.setBackground(color)
+                self.deleteTable.setItem(r+1, c+1, item)
+        for c in range(self.nOutputs):        # output values populated in redrawDeleteTable()
+            item = self.deleteTable.item(0, self.nInputs+c+1)
+            if item is None:
+                item = QTableWidgetItem()
+                self.deleteTable.setItem(0, self.nInputs+c+1, item)
+            flags = item.flags()
+            item.setFlags(flags & mask)
+            item.setCheckState(Qt.Unchecked)
+
+            for r in range(end):
+                item = self.deleteTable.item(r+1, self.nInputs+c+1)
+                if item is None:
+                    item = QTableWidgetItem()
+                    self.deleteTable.setItem(r+1, self.nInputs+c+1, item)
+        self.redrawDeleteTable()
+
+        self.unfreeze()
+
+    def popup(self, pos):
+        menu = QMenu()
+        checkAction = menu.addAction("Check selected rows")
+        unCheckAction = menu.addAction("Uncheck selected rows")
+        action = menu.exec_(self.delete_table.mapToGlobal(pos))
+        check = None
+        if action == checkAction:
+            check = Qt.Checked
+        elif action == unCheckAction:
+            check = Qt.Unchecked
+        if check is not None:
+            self.freeze()
+            rows = set([i.row() for i in self.delete_table.selectionModel().selection().indexes()])
+            nSamples = self.delete_table.rowCount() - 1
+            for r in rows:
+                item = self.delete_table.item(r, 0)
+                if item is None:
+                    item = QTableWidgetItem()
+                    flags = item.flags()
+                    mask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
+                    item.setFlags(flags & mask)
+                    item.setCheckState(check)
+                    self.delete_table.setItem(r, 0, item)
+                if (item is not None):
+                    item.setCheckState(check)
+            self.activateDeleteButton(rows.pop(), 0)
+            self.unfreeze()
+
+    def scrollDeleteTable(self, first):
+        if first >= self.inputData.shape[0]: return
+        self.isDrawingDeleteTable = True
+        if first == 0:
+            first = 1
+        if first > 1:
+            first -= 1
+        self.deleteScrollRow = first
+
+        inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
+        inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
+        outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
+        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
+        mask = ~(Qt.ItemIsEditable)
+        checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
+        numRows = self.deleteTable.rowCount()
+        end = first + 15
+        if end > numRows:
+            end = numRows
+        for r in range(first, end):
+            item = self.deleteTable.item(r, 0)
+            if item is None:
+                item = QTableWidgetItem()
+                flags = item.flags()
+                item.setFlags(flags & checkboxMask)
+                item.setCheckState(Qt.Unchecked)
+                self.deleteTable.setItem(r, 0, item)
+            for c in range(self.nInputs):         # populate input values
+                item = self.deleteTable.item(r, c + 1)
+                if item is None:
+                    item = QTableWidgetItem(self.format % self.inputData[r - 1][c])
+                    flags = item.flags()
+                    item.setFlags(flags & mask)
+                    if r - 1 < self.nSamples - self.nSamplesAdded:
+                        color = inputColor
+                    else:
+                        color = inputRefinedColor
+                    item.setBackground(color)
+                    self.deleteTable.setItem(r, c+1, item)
+            if isinstance(self.outputData, numpy.ndarray):
+                for c in range(self.nOutputs):        # populate output values
+                    item = self.deleteTable.item(r, self.nInputs + c + 1)
+                    if item is None:
+                        if math.isnan(self.outputData[r-1][c]):
+                            item = QTableWidgetItem()
+                        else:
+                            item = QTableWidgetItem(self.format % self.outputData[r - 1][c])
+                        if r - 1 < self.nSamples - self.nSamplesAdded:
+                            color = outputColor
+                        else:
+                            color = outputRefinedColor
+                        item.setBackground(color)
+                        self.deleteTable.setItem(r, self.nInputs+c+1, item)
+
+        self.isDrawingDeleteTable = False
+
+
+    def redrawDeleteTable(self):
+        # Does not rewrite input values for speed purposes.  These never change
+
+        self.isDrawingDeleteTable = True
+        self.freeze()
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[row]
+        data = data.getValidSamples() # filter out samples that have no output results
+
+        outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
+        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
+        for c in range(self.nInputs):
+            item = self.deleteTable.item(0, c+1)
+            item.setCheckState(Qt.Unchecked)
+            for r in range(self.nSamples):
+                item = self.deleteTable.item(r+1, 0)
+                if item is not None:
+                    item.setCheckState(Qt.Unchecked)
+
+        for c in range(self.nOutputs):        # populate output values
+            item = self.deleteTable.item(0, self.nInputs+c+1)
+            item.setCheckState(Qt.Unchecked)
+            for r in range(self.deleteScrollRow - 1, self.deleteScrollRow + 14):
+                item = self.deleteTable.item(r+1, self.nInputs+c+1)
+                if item is not None:
+                    if isinstance(self.outputData, numpy.ndarray) and not numpy.isnan(self.outputData[r][c]):
+                        item.setText(self.format % self.outputData[r][c])
+                    else:
+                        item.setText('')
+                    if r < self.nSamples - self.nSamplesAdded:
+                        color = outputColor
+                    else:
+                        color = outputRefinedColor
+                    item.setBackground(outputColor)
+
+        self.deleteTable.resizeRowsToContents()
+        self.deleteTable.resizeColumnsToContents()
+
+        self.deleteTable.setEnabled(True)
+        self.deleteSaveButton.setEnabled(False)
+        self.changeOutputsButton.setEnabled(False)
+
+        self.isDrawingDeleteTable = False
+        self.unfreeze()
+
+
+    def getDeleteSelections(self):
+
+        nSamples = self.deleteTable.rowCount() - 1
+        nVars = self.deleteTable.columnCount() - 1
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[row]
+        data = data.getValidSamples() # filter out samples that have no output results
+
+        # get data info
+        nInputs = data.getNumInputs()
+        nOutputs = data.getNumOutputs()
+
+        # get selections
+        samples = []
+        vars = []
+        for i in range(1,nSamples+1):
+            item = self.deleteTable.item(i, 0)
+            if (item is not None) and item.checkState() == Qt.Checked:
+                samples.append(i - 1)
+        for i in range(1,nVars+1):
+            item = self.deleteTable.item(0, i)
+            if (item is not None) and item.checkState() == Qt.Checked:
+                vars.append(i - 1)
+
+        # partition selections into inputs and outputs
+        inVars = []
+        outVars = []
+        if vars:
+            vars = numpy.array(vars)
+            k = numpy.where(vars < nInputs)
+            inVars = vars[k]
+            inVars = inVars.tolist()
+            k = numpy.where(vars >= nInputs)
+            outVars = vars[k]
+            outVars = outVars.tolist()
+            outVars = [x-nInputs for x in outVars]
+
+        return (samples, inVars, outVars, nSamples, nInputs, nOutputs)  # first 3 output args are 1-indexed
+
+    def activateDeleteButton(self, row, column):
+
+        if row == 0 or column == 0:
+            b = False
+            samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
+            if samples or inVars or outVars:
+                if (nSamples - len(samples) > 0) and (nInputs - len(inVars) > 0) and (nOutputs - len(outVars) > 0):
+                    b = True
+
+            self.deleteSaveButton.setEnabled(b)
+            return b
+
+    def enableDelete(self, b):
+        self.deleteTable.setEnabled(b)
+        self.deleteSaveButton.setEnabled(b)
+
+    def delete(self):
+
+        # check arguments
+        if not self.activateDeleteButton(0, 0):
+            return
+
+        self.enableDelete(False)
+        self.freeze()
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[row]
+        fname = Common.getLocalFileName(DataProcessor.dname, data.getModelName().split()[0], '.dat')
+        data.writeToPsuade(fname)
+
+        # perform deletion
+        samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
+        if samples:
+            samplesToKeep = [i for i in range(nSamples) if i not in samples]
+            newdata = data.getSubSample(samplesToKeep)
+        else:
+            newdata = copy.deepcopy(data)
+        if inVars:
+            newdata.deleteInputs(inVars)
+        if outVars:
+            newdata.deleteOutputs(outVars)
+
+        newdata.setModelName(data.getModelName().split('.')[0] + '.deleted')
+        newdata.setSession(self.dat)
+
+        # add to simulation table, select new data
+        self.dat.uqSimList.append(newdata)
+        res = Results()
+        res.uq_add_result(newdata)
+        self.dat.uqFilterResultsList.append(res)
+        self.updateSimTable()
+
+        self.deleteTable.resizeColumnsToContents()
+
+        # reset components
+        self.unfreeze()
+
+    def deleteTableCellChanged(self, item):
+        if self.isDrawingDeleteTable:
+            return
+
+        index = self.deleteTable.indexFromItem(item)
+        row = index.row()
+        col = index.column()
+
+
+        modifiedColor = QtGui.QColor(0, 250, 0, 100)      # translucent green
+
+        # get selected row
+        simRow = self.filesTable.selectedIndexes()[0].row()
+        data = self.dat.uqSimList[simRow]
+
+        nInputs = data.getNumInputs()
+        outputData = data.getOutputData()
+        nOutputs = data.getNumOutputs()
+        nSamples = data.getNumSamples()
+
+        if col <= nInputs or row == 0:
+            return
+
+        if len(outputData) == 0:
+            item.setBackground(modifiedColor)
+        else:
+            origValue = outputData[row - 1, col - nInputs - 1]
+            value = float(item.text())
+
+            if value != origValue:
+                item.setBackground(modifiedColor)
+
+        self.changeOutputsButton.setEnabled(True)
+
+
+    def updateOutputValues(self):
+        # Warn user
+        button = QMessageBox.question(self, 'Change output values?',
+                                   'You are about to permanently change the output values.  This cannot be undone.  Do you want to proceed?',
+                                   QMessageBox.Yes, QMessageBox.No)
+        if button != QMessageBox.Yes:
+            return
+
+
+        # get selected row
+        row = self.filesTable.selectedIndexes()[0].row()
+        origData = self.dat.uqSimList[row]
+        data = self.dat.uqSimList[row]
+
+        nInputs = data.getNumInputs()
+        outputData = data.getOutputData()
+        nOutputs = data.getNumOutputs()
+        nSamples = data.getNumSamples()
+        runState = data.getRunState()
+
+        if len(outputData) == 0:
+            outputData = numpy.empty((nSamples, nOutputs))
+            outputData[:] = numpy.NAN
+        for outputNum in range(nOutputs):
+            for sampleNum in range(nSamples):
+                item = self.deleteTable.item(sampleNum + 1, outputNum + nInputs + 1)
+                if item is not None:
+                    if len(item.text()) > 0:
+                        value = float(item.text())
+                        outputData[sampleNum, outputNum] = value
+                if outputNum == nOutputs - 1:
+                    hasNan = False
+                    for c in range(nOutputs):
+                        if numpy.isnan(outputData[sampleNum, c]):
+                            hasNan = True
+                    if not hasNan:
+                        runState[sampleNum] = True
+        origData.setOutputData(outputData)
+        origData.setRunState(runState)
+        self.outputData = outputData
+        self.redrawDeleteTable()
+        self.updateSimTableRow(row)

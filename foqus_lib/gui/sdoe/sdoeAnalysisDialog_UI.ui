@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1920</width>
+    <height>1155</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>9</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Squential Design of Experiments</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout_4">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="infoGroup">
+     <property name="maximumSize">
+      <size>
+       <width>16777215</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Ensemble Summary</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <widget class="QTableWidget" name="infoTable">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <attribute name="horizontalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <row>
+         <property name="text">
+          <string># Columns</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>Candidate File</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>History File</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>Output Directory</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>Info</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>8</string>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>aggCandidate.csv</string>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>aggHistory.csv</string>
+         </property>
+        </item>
+        <item row="3" column="0">
+         <property name="text">
+          <string>~/SDOE_files/</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1" rowspan="2">
+    <widget class="QGroupBox" name="analysisGroup">
+     <property name="font">
+      <font>
+       <pointsize>11</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Sequential Design of Experiments (SDOE) Set-up</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_7">
+      <item>
+       <widget class="QGroupBox" name="optimalityGroup">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="title">
+         <string>Optimality Method Selection</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="1">
+            <widget class="QRadioButton" name="Maximin_radioButton">
+             <property name="text">
+              <string>Maximin</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="Minimax_radioButton">
+             <property name="text">
+              <string>Minimax</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="inputs_groupBox">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="title">
+         <string>Inputs</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <item>
+          <widget class="QGroupBox" name="range_groupBox">
+           <property name="font">
+            <font>
+             <pointsize>9</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Design Specification</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="1" column="0">
+             <widget class="QLabel" name="maxDesignSize_static">
+              <property name="text">
+               <string>Max Design Size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="minSizeTip_static">
+              <property name="text">
+               <string>Please choose the size for a small grouping.</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="minDesignSize_static">
+              <property name="text">
+               <string>Min Design Size</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="3">
+             <widget class="QLabel" name="maxSizeTip_static">
+              <property name="text">
+               <string>Minimize difference between min and max for efficient computation</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="4">
+             <spacer name="horizontalSpacer_3">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="4">
+             <spacer name="horizontalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="1">
+             <widget class="QSpinBox" name="minDesignSize_spin">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="maxDesignSize_spin">
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="value">
+               <number>8</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="inputInstruction_static">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>For each input, specify the type. </string>
+           </property>
+           <property name="wordWrap">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="index_static">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>* Index: unique identifier for the input combination</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="spaceFilling_static">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>* Space-filling: inputs to be considered for SDOE</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="response_static">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>*  Response: outputs to be considered for SDOE</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="confidence_static">
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string>* Confidence: confidence widths to be optimized</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="inputSdoeTable">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>150</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Designate input type:
+Variable for uncertain inputs
+Fixed for deterministic inputs
+Design for control inputs that can vary from experiments</string>
+           </property>
+           <row>
+            <property name="text">
+             <string/>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string/>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string/>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string/>
+            </property>
+           </row>
+           <column>
+            <property name="text">
+             <string>Display?</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Include?</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Name</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Min</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Max</string>
+            </property>
+           </column>
+           <item row="0" column="3">
+            <property name="text">
+             <string>Index</string>
+            </property>
+           </item>
+           <item row="1" column="3">
+            <property name="text">
+             <string>Space-filling</string>
+            </property>
+           </item>
+           <item row="2" column="3">
+            <property name="text">
+             <string>Response</string>
+            </property>
+           </item>
+           <item row="3" column="3">
+            <property name="text">
+             <string>Confidence</string>
+            </property>
+           </item>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="progress_groupBox">
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="title">
+         <string>SDOE Progress</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <item>
+            <widget class="QLabel" name="sampleSizeTest_static">
+             <property name="text">
+              <string>Sample Size n = 200</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_5">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="testSdoeButton">
+             <property name="text">
+              <string>Test SDOE</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <widget class="QLabel" name="sampleSize_static">
+             <property name="text">
+              <string>Sample Size n</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="sampleSize_spin">
+             <property name="minimum">
+              <number>1</number>
+             </property>
+             <property name="maximum">
+              <number>1000</number>
+             </property>
+             <property name="value">
+              <number>200</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="estimate_static">
+             <property name="text">
+              <string>Estimated Runtime: xxx seconds</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="estimateRuntimeButton">
+             <property name="text">
+              <string>Estimate Runtime</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_infSave_3">
+           <item>
+            <widget class="QLabel" name="designInfo_static">
+             <property name="text">
+              <string>d = 8, n = 100</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QProgressBar" name="SDOE_progressBar">
+             <property name="value">
+              <number>24</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="runSdoeButton">
+             <property name="font">
+              <font>
+               <pointsize>13</pointsize>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="text">
+              <string>Run SDOE</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGroupBox" name="analysisTableGroup">
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="title">
+      <string>Analyses Performed</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_3">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="deleteAnalysisButton">
+        <property name="text">
+         <string>Delete</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <spacer name="horizontalSpacer_4">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QTableWidget" name="analysisTable">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <row>
+         <property name="text">
+          <string>1</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>2</string>
+         </property>
+        </row>
+        <row>
+         <property name="text">
+          <string>3</string>
+         </property>
+        </row>
+        <column>
+         <property name="text">
+          <string>Design Size d</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Sample Size n</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Runtime (in seconds)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Plot SDOE</string>
+         </property>
+        </column>
+        <item row="0" column="0">
+         <property name="text">
+          <string>8</string>
+         </property>
+        </item>
+        <item row="0" column="1">
+         <property name="text">
+          <string>500</string>
+         </property>
+        </item>
+        <item row="0" column="2">
+         <property name="text">
+          <string>45</string>
+         </property>
+        </item>
+        <item row="0" column="3">
+         <property name="text">
+          <string>View</string>
+         </property>
+        </item>
+        <item row="1" column="0">
+         <property name="text">
+          <string>7</string>
+         </property>
+        </item>
+        <item row="1" column="1">
+         <property name="text">
+          <string>500</string>
+         </property>
+        </item>
+        <item row="1" column="2">
+         <property name="text">
+          <string>45</string>
+         </property>
+        </item>
+        <item row="1" column="3">
+         <property name="text">
+          <string>View</string>
+         </property>
+        </item>
+        <item row="2" column="0">
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+        <item row="2" column="1">
+         <property name="text">
+          <string>500</string>
+         </property>
+        </item>
+        <item row="2" column="2">
+         <property name="text">
+          <string>45</string>
+         </property>
+        </item>
+        <item row="2" column="3">
+         <property name="text">
+          <string>View</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>analysisTable</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

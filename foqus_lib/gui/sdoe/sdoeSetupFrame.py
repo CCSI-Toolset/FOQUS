@@ -49,6 +49,52 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
+    ## This delegate is used to make the checkboxes in the delete table centered
+    class MyItemDelegate(QStyledItemDelegate):
+
+        def paint(self, painter, option, index):
+            if index.row() == 0 or index.column() == 0:
+                textMargin = QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
+                newRect = QStyle.alignedRect(option.direction, Qt.AlignCenter,
+                                             QSize(option.decorationSize.width() + 5,
+                                                   option.decorationSize.height()),
+                                             QRect(option.rect.x() + textMargin, option.rect.y(),
+                                                   option.rect.width() - (2 * textMargin),
+                                                   option.rect.height()))
+                option.rect = newRect
+            QStyledItemDelegate.paint(self, painter, option, index)
+
+        def editorEvent(self, event, model, option, index):
+            # make sure that the item is checkable
+            flags = model.flags(index);
+            if not (flags & Qt.ItemIsUserCheckable) or not(flags & Qt.ItemIsEnabled):
+                return False
+            # make sure that we have a check state
+            value = index.data(Qt.CheckStateRole)
+            if value is None:
+                return False
+            # make sure that we have the right event type
+            if event.type() == QEvent.MouseButtonRelease:
+                textMargin = QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
+                checkRect = QStyle.alignedRect(option.direction, Qt.AlignCenter, option.decorationSize,
+                                               QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
+                                                     option.rect.width() - (2 * textMargin),
+                                                     option.rect.height()));
+                if not checkRect.contains(event.pos()):
+                    return False
+            elif event.type() == QEvent.KeyPress:
+                if (event.key() != Qt.Key_Space and event.key() != Qt.Key_Select):
+                    return False
+            else:
+                return False;
+
+            if int(value) == Qt.Checked:
+                state = Qt.Unchecked
+            else:
+                state = Qt.Checked
+
+            return model.setData(index, state, Qt.CheckStateRole)
+
 
     def __init__(self, dat, parent=None):
         super(sdoeSetupFrame, self).__init__(parent=parent)
@@ -78,6 +124,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+
         ##### Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.clicked.connect(self.backToSelection)
@@ -96,12 +145,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.resetButton.clicked.connect(self.redrawDeleteTable)
         self.deleteTable.itemChanged.connect(self.deleteTableCellChanged)
         self.deleteTable.verticalScrollBar().valueChanged.connect(self.scrollDeleteTable)
+        self.delegate = sdoeSetupFrame.MyItemDelegate(self)
+        self.deleteTable.setItemDelegate(self.delegate)
+
 
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
+        self.createEnsembleList()
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
+        self.analyzeButton.clicked.connect(self.launchSdoe)
         self.analyzeButton.setEnabled(True)
         self.filesTable.setEnabled(False)
         self.addFileButton.setEnabled(False)
@@ -111,34 +165,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
+        self.updateAggTableRow()
 
-        aggNames = ['aggCandidate.csv', 'aggHistory.csv', '~/SDOE_files/']
-        for i in range(len(aggNames)):
-            item = self.aggFilesTable.item(i, self.descriptorCol)
-            item.setText(aggNames[i])
-            self.aggFilesTable.setItem(i, self.descriptorCol, item)
-
-        viewButton1 = QPushButton()
-        viewButton1.setText('View')
-        viewButton1.clicked.connect(self.editSim)
-        self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton1)
-
-        viewButton2 = QPushButton()
-        viewButton2.setText('View')
-        viewButton2.clicked.connect(self.editSim)
-        self.aggFilesTable.setCellWidget(1, self.viewCol, viewButton2)
-
-        self.aggFilesTable.resizeColumnsToContents()
-
+    def createEnsembleList(self):
         hist_list = []
         cand_list = []
         numFiles = len(self.dat.uqSimList)
         for i in range(numFiles):
-            if self.filesTable.cellWidget(i, self.typeCol) == 'History':
+            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
                 hist_list.append(self.dat.uqSimList[i])
-            elif self.filesTable.cellWidget(i, self.typeCol) == 'Candidate':
+            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
                 cand_list.append(self.dat.uqSimList[i])
-
         return hist_list, cand_list
 
 
@@ -234,7 +271,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             return
 
         if fileName.endswith('.csv'):
-            data = LocalExecutionModule.readSampleFromCsvFile(fileName)
+            data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
         else:
             try:
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
@@ -382,6 +419,44 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def resizeColumns(self):
         self.filesTable.resizeColumnsToContents()
+        self.aggFilesTable.resizeColumnsToContents()
+
+
+    def updateAggTableRow(self):
+
+        viewButton1 = QPushButton()
+        viewButton1.setText('View')
+        viewButton1.clicked.connect(self.editSim)
+        self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton1)
+
+        viewButton2 = QPushButton()
+        viewButton2.setText('View')
+        viewButton2.clicked.connect(self.editSim)
+        self.aggFilesTable.setCellWidget(1, self.viewCol, viewButton2)
+
+        aggNames = ['aggCandidate.csv', 'aggHistory.csv', '~/SDOE_files/']
+        for i in range(len(aggNames)):
+            item = self.aggFilesTable.item(i, self.descriptorCol)
+            item.setText(aggNames[i])
+            self.aggFilesTable.setItem(i, self.descriptorCol, item)
+
+        # Resize table
+        #print 'resize'
+        self.resizeColumns()
+        minWidth = 2 + self.aggFilesTable.columnWidth(0) + self.aggFilesTable.columnWidth(1) + \
+                   self.aggFilesTable.columnWidth(2)
+        if self.aggFilesTable.verticalScrollBar().isVisible():
+            minWidth += self.aggFilesTable.verticalScrollBar().width()
+        self.aggFilesTable.setMinimumWidth(minWidth)
+
+    def launchSdoe(self):
+        # sender = self.sender()
+        # row  = sender.property('row')
+        sim = self.dat.uqSimList[0]
+
+        dialog = sdoeAnalysisDialog(0 + 1, sim, self)
+        dialog.exec_()
+        dialog.deleteLater()
 
 
     def initUQToolBox(self):

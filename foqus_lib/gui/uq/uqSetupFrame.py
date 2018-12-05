@@ -23,7 +23,7 @@ from .AnalysisDialog import AnalysisDialog
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
-    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog, QMenu
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor, QColor
 

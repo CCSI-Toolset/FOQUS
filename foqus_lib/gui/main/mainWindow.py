@@ -75,6 +75,7 @@ class mainWindow(QMainWindow):
             showUQ: if false the uq interface is hidden
             showOpt: if true the optimization interface is hidden
             showOuu: if true the optimization interface is hidden
+            showSDOE: if false the sdoe interface is hidden
             ts: test script to run
         """
         QMainWindow.__init__(self)  # call base constructor
@@ -269,6 +270,7 @@ class mainWindow(QMainWindow):
             'optimize':      ':/icons/icons/opt48.svg',
             'ouu':           ':/icons/icons/ouu48.svg',
             'uq':            ':/icons/icons/uq48.svg',
+            'sdoe':          ':/icons/icons/sdoe48.svg',
             'data':          ':/icons/icons/data.svg',
             'data48':        ':/icons/icons/data48.svg',
             'drm48':         ':/icons/icons/drm48.svg',
@@ -371,8 +373,8 @@ class mainWindow(QMainWindow):
         # SDOE setup action
         if self.showSDOE:
             self.sdoeSetupAction = QAction(
-                QIcon(self.iconPaths['ouu']),
-                'OUU',
+                QIcon(self.iconPaths['sdoe']),
+                'SDOE',
                 self)
             self.sdoeSetupAction.setToolTip(
                 "Sequential Design of Experiments")
@@ -816,7 +818,7 @@ class mainWindow(QMainWindow):
 
     def showOuuSetup(self):
         '''
-            Show the UQ screen
+            Show the OUU screen
         '''
         self.changeScreen()
         self.mainWidget.setCurrentIndex(self.screenIndex['ouu'])

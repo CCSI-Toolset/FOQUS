@@ -24,7 +24,7 @@ from .sdoeAnalysisDialog import sdoeAnalysisDialog
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
-    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog, QMenu
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor, QColor
 
@@ -35,11 +35,19 @@ _sdoeSetupFrameUI, _sdoeSetupFrame = \
 
 
 class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
+    runsFinishedSignal = QtCore.pyqtSignal()
+    addDataSignal = QtCore.pyqtSignal(SampleData)
+    changeDataSignal = QtCore.pyqtSignal(SampleData)
+    format = '%.5f'             # numeric format for table entries in UQ Toolbox
+    drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
     numberCol = 0
     typeCol = 1
     setupCol = 2
     nameCol = 3
+
+    descriptorCol = 0
+    viewCol = 1
 
 
     def __init__(self, dat, parent=None):
@@ -70,7 +78,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
-        self.aggFilesTable.hide()
+        ##### Set up Ensemble Aggregation section
+        self.aggFilesTable.setEnabled(False)
+        self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
 
@@ -81,15 +91,45 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # ........ DATA PAGE ..............
         self.dataTabs.setCurrentIndex(0)
         self.dataTabs.currentChanged[int].connect(self.getDataTab)
-        self.deleteSaveButton.clicked.connect(self.delete)
-        self.changeOutputsButton.clicked.connect(self.updateOutputValues)
-        self.resetDeleteTableButton.clicked.connect(self.redrawDeleteTable)
+        self.deletionButton.clicked.connect(self.delete)
+        self.changeButton.clicked.connect(self.updateOutputValues)
+        self.resetButton.clicked.connect(self.redrawDeleteTable)
         self.deleteTable.itemChanged.connect(self.deleteTableCellChanged)
         self.deleteTable.verticalScrollBar().valueChanged.connect(self.scrollDeleteTable)
 
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
+        self.aggFilesTable.setEnabled(True)
+        self.backSelectionButton.setEnabled(True)
+        self.analyzeButton.setEnabled(True)
+        self.filesTable.setEnabled(False)
+        self.addFileButton.setEnabled(False)
+        self.loadFileButton.setEnabled(False)
+        self.cloneButton.setEnabled(False)
+        self.deleteButton.setEnabled(False)
+        self.saveButton.setEnabled(False)
+        self.confirmButton.setEnabled(False)
+        self.dataTabs.setEnabled(False)
+
+        aggNames = ['aggCandidate.csv', 'aggHistory.csv', '~/SDOE_files/']
+        for i in range(len(aggNames)):
+            item = self.aggFilesTable.item(i, self.descriptorCol)
+            item.setText(aggNames[i])
+            self.aggFilesTable.setItem(i, self.descriptorCol, item)
+
+        viewButton1 = QPushButton()
+        viewButton1.setText('View')
+        viewButton1.clicked.connect(self.editSim)
+        self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton1)
+
+        viewButton2 = QPushButton()
+        viewButton2.setText('View')
+        viewButton2.clicked.connect(self.editSim)
+        self.aggFilesTable.setCellWidget(1, self.viewCol, viewButton2)
+
+        self.aggFilesTable.resizeColumnsToContents()
+
         hist_list = []
         cand_list = []
         numFiles = len(self.dat.uqSimList)
@@ -100,6 +140,22 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 cand_list.append(self.dat.uqSimList[i])
 
         return hist_list, cand_list
+
+
+    def backToSelection(self):
+        self.aggFilesTable.setEnabled(False)
+        self.backSelectionButton.setEnabled(False)
+        self.analyzeButton.setEnabled(False)
+        self.filesTable.setEnabled(True)
+        self.addFileButton.setEnabled(False)
+        self.loadFileButton.setEnabled(True)
+        self.cloneButton.setEnabled(True)
+        self.deleteButton.setEnabled(True)
+        self.saveButton.setEnabled(True)
+        self.confirmButton.setEnabled(True)
+        self.dataTabs.setEnabled(True)
+
+
 
     #######################################################################################
     def refresh(self):
@@ -126,6 +182,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
+        self.confirmButton.setEnabled(True)
 
         row = selectedIndexes[0].row()
         sim = self.dat.uqSimList[row]
@@ -296,6 +353,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setText(data.getModelName())
         self.filesTable.setItem(row, self.nameCol, item)
 
+        combo = QComboBox()
+        combo.addItems(['Candidate', 'History'])
+        self.filesTable.setCellWidget(row, self.typeCol, combo)
+
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False
         if viewButton is None:
@@ -415,8 +476,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     # ........ DATA PAGE: DELETE TAB ...................
     def initDelete(self):
 
-        # TO DO: call initDelete() only if the delete tab is selected
-
         Common.initFolder(DataProcessor.dname)
 
         self.freeze()
@@ -424,7 +483,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.uqSimList[row]
-        #data = data.getValidSamples() # filter out samples that have no output results
 
         # populate table
         self.inputData = data.getInputData()
@@ -506,7 +564,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         menu = QMenu()
         checkAction = menu.addAction("Check selected rows")
         unCheckAction = menu.addAction("Uncheck selected rows")
-        action = menu.exec_(self.delete_table.mapToGlobal(pos))
+        action = menu.exec_(self.deleteTable.mapToGlobal(pos))
         check = None
         if action == checkAction:
             check = Qt.Checked
@@ -514,17 +572,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             check = Qt.Unchecked
         if check is not None:
             self.freeze()
-            rows = set([i.row() for i in self.delete_table.selectionModel().selection().indexes()])
-            nSamples = self.delete_table.rowCount() - 1
+            rows = set([i.row() for i in self.deleteTable.selectionModel().selection().indexes()])
+            nSamples = self.deleteTable.rowCount() - 1
             for r in rows:
-                item = self.delete_table.item(r, 0)
+                item = self.deleteTable.item(r, 0)
                 if item is None:
                     item = QTableWidgetItem()
                     flags = item.flags()
                     mask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
                     item.setFlags(flags & mask)
                     item.setCheckState(check)
-                    self.delete_table.setItem(r, 0, item)
+                    self.deleteTable.setItem(r, 0, item)
                 if (item is not None):
                     item.setCheckState(check)
             self.activateDeleteButton(rows.pop(), 0)
@@ -628,8 +686,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteTable.resizeColumnsToContents()
 
         self.deleteTable.setEnabled(True)
-        self.deleteSaveButton.setEnabled(False)
-        self.changeOutputsButton.setEnabled(False)
+        self.deletionButton.setEnabled(False)
+        self.changeButton.setEnabled(False)
 
         self.isDrawingDeleteTable = False
         self.unfreeze()
@@ -685,12 +743,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 if (nSamples - len(samples) > 0) and (nInputs - len(inVars) > 0) and (nOutputs - len(outVars) > 0):
                     b = True
 
-            self.deleteSaveButton.setEnabled(b)
+            self.deletionButton.setEnabled(b)
             return b
 
     def enableDelete(self, b):
         self.deleteTable.setEnabled(b)
-        self.deleteSaveButton.setEnabled(b)
+        self.deletionButton.setEnabled(b)
 
     def delete(self):
 
@@ -766,7 +824,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             if value != origValue:
                 item.setBackground(modifiedColor)
 
-        self.changeOutputsButton.setEnabled(True)
+        self.changeButton.setEnabled(True)
 
 
     def updateOutputValues(self):

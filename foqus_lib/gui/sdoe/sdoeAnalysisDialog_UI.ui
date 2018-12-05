@@ -53,7 +53,7 @@
         </attribute>
         <row>
          <property name="text">
-          <string># Columns</string>
+          <string># Inputs</string>
          </property>
         </row>
         <row>
@@ -78,22 +78,22 @@
         </column>
         <item row="0" column="0">
          <property name="text">
-          <string>8</string>
+          <string/>
          </property>
         </item>
         <item row="1" column="0">
          <property name="text">
-          <string>aggCandidate.csv</string>
+          <string/>
          </property>
         </item>
         <item row="2" column="0">
          <property name="text">
-          <string>aggHistory.csv</string>
+          <string/>
          </property>
         </item>
         <item row="3" column="0">
          <property name="text">
-          <string>~/SDOE_files/</string>
+          <string/>
          </property>
         </item>
        </widget>
@@ -140,6 +140,9 @@
             <widget class="QRadioButton" name="Minimax_radioButton">
              <property name="text">
               <string>Minimax</string>
+             </property>
+             <property name="checked">
+              <bool>true</bool>
              </property>
             </widget>
            </item>
@@ -198,7 +201,7 @@
             <item row="1" column="3">
              <widget class="QLabel" name="maxSizeTip_static">
               <property name="text">
-               <string>Minimize difference between min and max for efficient computation</string>
+               <string>Minimize difference between min and max for efficient computation.</string>
               </property>
              </widget>
             </item>
@@ -258,7 +261,7 @@
             </font>
            </property>
            <property name="text">
-            <string>For each input, specify the type. </string>
+            <string>For each input, specify the type, and wether it should be part of the analysis.</string>
            </property>
            <property name="wordWrap">
             <bool>true</bool>
@@ -464,31 +467,40 @@ Design for control inputs that can vary from experiments</string>
           </layout>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
            <item>
             <widget class="QLabel" name="sampleSize_static">
              <property name="text">
               <string>Sample Size n</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
            </item>
            <item>
             <widget class="QSpinBox" name="sampleSize_spin">
              <property name="minimum">
-              <number>1</number>
+              <number>10</number>
              </property>
              <property name="maximum">
               <number>1000</number>
              </property>
              <property name="value">
               <number>200</number>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="estimate_static">
-             <property name="text">
-              <string>Estimated Runtime: xxx seconds</string>
              </property>
             </widget>
            </item>
@@ -505,15 +517,75 @@ Design for control inputs that can vary from experiments</string>
              </property>
             </spacer>
            </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QSlider" name="sampleSizeRuntime_slider">
+           <property name="minimum">
+            <number>1</number>
+           </property>
+           <property name="maximum">
+            <number>1000</number>
+           </property>
+           <property name="value">
+            <number>200</number>
+           </property>
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
            <item>
-            <widget class="QPushButton" name="estimateRuntimeButton">
-             <property name="text">
-              <string>Estimate Runtime</string>
+            <spacer name="horizontalSpacer_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
              </property>
-             <property name="autoDefault">
-              <bool>false</bool>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QLabel" name="estimate_static">
+             <property name="text">
+              <string>Estimated Runtime:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignCenter</set>
              </property>
             </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="time_dynamic">
+             <property name="text">
+              <string>xxx</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="units_static">
+             <property name="text">
+              <string>seconds</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="horizontalSpacer_8">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </item>
@@ -607,21 +679,6 @@ Design for control inputs that can vary from experiments</string>
           <bold>false</bold>
          </font>
         </property>
-        <row>
-         <property name="text">
-          <string>1</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>2</string>
-         </property>
-        </row>
-        <row>
-         <property name="text">
-          <string>3</string>
-         </property>
-        </row>
         <column>
          <property name="text">
           <string>Design Size d</string>
@@ -642,66 +699,6 @@ Design for control inputs that can vary from experiments</string>
           <string>Plot SDOE</string>
          </property>
         </column>
-        <item row="0" column="0">
-         <property name="text">
-          <string>8</string>
-         </property>
-        </item>
-        <item row="0" column="1">
-         <property name="text">
-          <string>500</string>
-         </property>
-        </item>
-        <item row="0" column="2">
-         <property name="text">
-          <string>45</string>
-         </property>
-        </item>
-        <item row="0" column="3">
-         <property name="text">
-          <string>View</string>
-         </property>
-        </item>
-        <item row="1" column="0">
-         <property name="text">
-          <string>7</string>
-         </property>
-        </item>
-        <item row="1" column="1">
-         <property name="text">
-          <string>500</string>
-         </property>
-        </item>
-        <item row="1" column="2">
-         <property name="text">
-          <string>45</string>
-         </property>
-        </item>
-        <item row="1" column="3">
-         <property name="text">
-          <string>View</string>
-         </property>
-        </item>
-        <item row="2" column="0">
-         <property name="text">
-          <string>6</string>
-         </property>
-        </item>
-        <item row="2" column="1">
-         <property name="text">
-          <string>500</string>
-         </property>
-        </item>
-        <item row="2" column="2">
-         <property name="text">
-          <string>45</string>
-         </property>
-        </item>
-        <item row="2" column="3">
-         <property name="text">
-          <string>View</string>
-         </property>
-        </item>
        </widget>
       </item>
      </layout>
@@ -713,5 +710,54 @@ Design for control inputs that can vary from experiments</string>
   <tabstop>analysisTable</tabstop>
  </tabstops>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>sampleSizeRuntime_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sampleSize_spin</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1424</x>
+     <y>1035</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1464</x>
+     <y>997</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sampleSize_spin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sampleSizeRuntime_slider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1483</x>
+     <y>998</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1484</x>
+     <y>1027</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sampleSize_spin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>time_dynamic</receiver>
+   <slot>setNum(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1507</x>
+     <y>980</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1469</x>
+     <y>1060</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

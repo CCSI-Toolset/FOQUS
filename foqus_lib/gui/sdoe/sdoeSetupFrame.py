@@ -127,6 +127,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
 
         ##### Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -170,15 +172,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dataTabs.setEnabled(False)
 
     def createEnsembleList(self):
-        hist_list = []
         cand_list = []
+        hist_list = []
         numFiles = len(self.dat.uqSimList)
         for i in range(numFiles):
-            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
-                hist_list.append(self.dat.uqSimList[i])
-            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
+            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
                 cand_list.append(self.dat.uqSimList[i])
-        return hist_list, cand_list
+            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
+                hist_list.append(self.dat.uqSimList[i])
+        return cand_list, hist_list
 
 
     def backToSelection(self):
@@ -191,8 +193,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
-        self.confirmButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
+        self.refresh()
 
 
 
@@ -202,6 +204,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setRowCount(numSims)
         for i in range(numSims):
             self.updateSimTableRow(i)
+
+        if numSims >= 2:
+            if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
+                self.confirmButton.setEnabled(True)
 
         if numSims == 0:
             self.dataTabs.setEnabled(False)
@@ -423,6 +429,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setMinimumWidth(minWidth)
 
     def on_combobox_changed(self):
+        self.createEnsembleList()
         if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
             self.confirmButton.setEnabled(True)
         else:
@@ -448,16 +455,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewButton.clicked.connect(self.editSim)
             self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
 
-        historyData = self.createEnsembleList()[0][0]
-        candidateData = self.createEnsembleList()[1][0]
+        candidateData = self.createEnsembleList()[0][0]
+        historyData = self.createEnsembleList()[1][0]
 
         item = self.aggFilesTable.item(0, self.descriptorCol)
-        item.setText(historyData.getModelName())
+        item.setText(candidateData.getModelName())
         self.aggFilesTable.setItem(0, self.descriptorCol, item)
 
         item = self.aggFilesTable.item(1, self.descriptorCol)
-        item.setText(candidateData.getModelName())
+        item.setText(historyData.getModelName())
         self.aggFilesTable.setItem(1, self.descriptorCol, item)
+
 
         item = self.aggFilesTable.item(2, self.descriptorCol)
         item.setText('~/SDOE_files/')
@@ -474,9 +482,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setMinimumWidth(minWidth)
 
     def launchSdoe(self):
-        historyData = self.createEnsembleList()[0][0]
-        candidateData = self.createEnsembleList()[1][0]
-        dialog = sdoeAnalysisDialog(historyData, candidateData)
+        candidateData = self.createEnsembleList()[0][0]
+        historyData = self.createEnsembleList()[1][0]
+        dialog = sdoeAnalysisDialog(candidateData, historyData)
         dialog.exec_()
         dialog.deleteLater()
 

@@ -40,11 +40,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     plotCol = 4
 
 
-    def __init__(self, historyData, candidateData, parent=None):
+    def __init__(self, candidateData, historyData, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
-        self.historyData = historyData
         self.candidateData = candidateData
+        self.historyData = historyData
 
         self.setWindowTitle('Sequential Design of Experiments')
 

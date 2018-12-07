@@ -49,6 +49,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
+    dname = os.getcwd() + os.path.sep + 'SDOE_files'
+
+
     ## This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
 
@@ -124,8 +127,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
-        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
-
 
         ##### Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -142,6 +143,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dataTabs.currentChanged[int].connect(self.getDataTab)
         self.deletionButton.clicked.connect(self.delete)
         self.changeButton.clicked.connect(self.updateOutputValues)
+        self.changeButton.hide()
         self.resetButton.clicked.connect(self.redrawDeleteTable)
         self.deleteTable.itemChanged.connect(self.deleteTableCellChanged)
         self.deleteTable.verticalScrollBar().valueChanged.connect(self.scrollDeleteTable)
@@ -152,7 +154,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
-        self.createEnsembleList()
+        Common.initFolder(self.dname)
+        self.updateAggTable()
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
         self.analyzeButton.clicked.connect(self.launchSdoe)
@@ -165,7 +168,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
-        self.updateAggTableRow()
 
     def createEnsembleList(self):
         hist_list = []
@@ -219,7 +221,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
-        self.confirmButton.setEnabled(True)
 
         row = selectedIndexes[0].row()
         sim = self.dat.uqSimList[row]
@@ -302,6 +303,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setRowCount(numSims)
         self.updateSimTableRow(numSims - 1)
         self.filesTable.selectRow(numSims - 1)
+
+    def updateAggTable(self):
+        self.updateAggTableRow(0)
+        self.updateAggTableRow(1)
 
     def deleteSimulation(self):
         # Get selected row
@@ -393,6 +398,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         combo = QComboBox()
         combo.addItems(['Candidate', 'History'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
+        combo.currentTextChanged.connect(self.on_combobox_changed)
 
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False
@@ -416,29 +422,47 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             minWidth += self.filesTable.verticalScrollBar().width()
         self.filesTable.setMinimumWidth(minWidth)
 
+    def on_combobox_changed(self):
+        if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
+            self.confirmButton.setEnabled(True)
+        else:
+            self.confirmButton.setEnabled(False)
+
 
     def resizeColumns(self):
         self.filesTable.resizeColumnsToContents()
         self.aggFilesTable.resizeColumnsToContents()
 
 
-    def updateAggTableRow(self):
+    def updateAggTableRow(self, row):
 
-        viewButton1 = QPushButton()
-        viewButton1.setText('View')
-        viewButton1.clicked.connect(self.editSim)
-        self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton1)
+        viewButton = self.aggFilesTable.cellWidget(row, self.viewCol)
+        newViewButton = False
+        if viewButton is None:
+            newViewButton = True
+            viewButton = QPushButton()
+            viewButton.setText('View')
 
-        viewButton2 = QPushButton()
-        viewButton2.setText('View')
-        viewButton2.clicked.connect(self.editSim)
-        self.aggFilesTable.setCellWidget(1, self.viewCol, viewButton2)
+        viewButton.setProperty('row', row)
+        if newViewButton:
+            viewButton.clicked.connect(self.editSim)
+            self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
 
-        aggNames = ['aggCandidate.csv', 'aggHistory.csv', '~/SDOE_files/']
-        for i in range(len(aggNames)):
-            item = self.aggFilesTable.item(i, self.descriptorCol)
-            item.setText(aggNames[i])
-            self.aggFilesTable.setItem(i, self.descriptorCol, item)
+        historyData = self.createEnsembleList()[0][0]
+        candidateData = self.createEnsembleList()[1][0]
+
+        item = self.aggFilesTable.item(0, self.descriptorCol)
+        item.setText(historyData.getModelName())
+        self.aggFilesTable.setItem(0, self.descriptorCol, item)
+
+        item = self.aggFilesTable.item(1, self.descriptorCol)
+        item.setText(candidateData.getModelName())
+        self.aggFilesTable.setItem(1, self.descriptorCol, item)
+
+        item = self.aggFilesTable.item(2, self.descriptorCol)
+        item.setText('~/SDOE_files/')
+        self.aggFilesTable.setItem(2, self.descriptorCol, item)
+
 
         # Resize table
         #print 'resize'
@@ -450,11 +474,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setMinimumWidth(minWidth)
 
     def launchSdoe(self):
-        # sender = self.sender()
-        # row  = sender.property('row')
-        sim = self.dat.uqSimList[0]
-
-        dialog = sdoeAnalysisDialog(0 + 1, sim, self)
+        historyData = self.createEnsembleList()[0][0]
+        candidateData = self.createEnsembleList()[1][0]
+        dialog = sdoeAnalysisDialog(historyData, candidateData)
         dialog.exec_()
         dialog.deleteLater()
 
@@ -815,7 +837,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             b = False
             samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
             if samples or inVars or outVars:
-                if (nSamples - len(samples) > 0) and (nInputs - len(inVars) > 0) and (nOutputs - len(outVars) > 0):
+                if (nSamples - len(samples) > 0) and (nInputs - len(inVars) > 0):
                     b = True
 
             self.deletionButton.setEnabled(b)
@@ -887,8 +909,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nOutputs = data.getNumOutputs()
         nSamples = data.getNumSamples()
 
-        if col <= nInputs or row == 0:
-            return
 
         if len(outputData) == 0:
             item.setBackground(modifiedColor)

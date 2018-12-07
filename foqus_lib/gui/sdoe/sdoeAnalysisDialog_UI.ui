@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1155</height>
+    <width>1280</width>
+    <height>749</height>
    </rect>
   </property>
   <property name="font">
@@ -344,26 +344,6 @@ Variable for uncertain inputs
 Fixed for deterministic inputs
 Design for control inputs that can vary from experiments</string>
            </property>
-           <row>
-            <property name="text">
-             <string/>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string/>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string/>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string/>
-            </property>
-           </row>
            <column>
             <property name="text">
              <string>Display?</string>
@@ -394,26 +374,6 @@ Design for control inputs that can vary from experiments</string>
              <string>Max</string>
             </property>
            </column>
-           <item row="0" column="3">
-            <property name="text">
-             <string>Index</string>
-            </property>
-           </item>
-           <item row="1" column="3">
-            <property name="text">
-             <string>Space-filling</string>
-            </property>
-           </item>
-           <item row="2" column="3">
-            <property name="text">
-             <string>Response</string>
-            </property>
-           </item>
-           <item row="3" column="3">
-            <property name="text">
-             <string>Confidence</string>
-            </property>
-           </item>
           </widget>
          </item>
         </layout>

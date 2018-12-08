@@ -194,6 +194,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
+        self.confirmButton.setEnabled(False)
         self.refresh()
 
 
@@ -208,6 +209,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if numSims >= 2:
             if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
                 self.confirmButton.setEnabled(True)
+        else:
+            self.confirmButton.setEnabled(False)
 
         if numSims == 0:
             self.dataTabs.setEnabled(False)

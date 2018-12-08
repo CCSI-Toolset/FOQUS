@@ -9,6 +9,7 @@ from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SamplingMethods import *
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.sdoe import *
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.gui.uq.AnalysisInfoDialog import AnalysisInfoDialog
 from foqus_lib.gui.sdoe.sdoeSetupFrame import *
@@ -31,6 +32,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     candidateFileRow = 1
     historyFileRow = 2
     outputDirRow = 3
+
+    # input SDOE Table
+    displayCol = 0
+    includeCol = 1
+    nameCol = 2
+    typeCol = 3
+    minCol = 4
+    maxCol = 5
 
     # Analysis table
     numberCol = 0
@@ -85,6 +94,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.outputDirRow, 0, item)
 
+        ## Connections here
+        self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
+        self.analysisTableGroup.setEnabled(False)
+        self.progress_groupBox.setEnabled(False)
+
+        # Initialize inputSdoeTable
+        self.updateInputSdoeTable()
+
         # Resize tables
         self.infoTable.resizeColumnsToContents()
         self.analysisTable.resizeColumnsToContents()
@@ -95,7 +112,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.infoTable.verticalScrollBar().isVisible():
             width += self.infoTable.verticalScrollBar().width()
         self.infoTable.setMaximumWidth(width)
-        #self.infoGroup.setMinimumWidth(width + 22)
         maxHeight = 4
         for i in range(6):
             maxHeight += self.infoTable.rowHeight(i)
@@ -108,8 +124,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             width += self.inputSdoeTable.verticalScrollBar().width()
         self.inputSdoeTable.setMinimumWidth(width)
         self.inputSdoeTable.setMaximumWidth(width)
-        self.inputSdoeTable.setRowCount(0)
-
 
         width = 2 + self.analysisTable.verticalHeader().width()
         for i in range(self.analysisTable.columnCount()):
@@ -123,10 +137,52 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisTable.itemSelectionChanged.connect(self.analysisSelected)
         self.analysisTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.analysisTable.setWordWrap(True)
-        self.refreshAnalysisTable()
-        self.analysisSelected()
+        # self.refreshAnalysisTable()
+        # self.analysisSelected()
 
-        self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
+    def updateInputSdoeTable(self):
+        numInputs = self.historyData.getNumInputs()
+        self.inputSdoeTable.setRowCount(numInputs)
+        for row in range(numInputs):
+            self.updateInputSdoeTableRow(row)
+
+    def updateInputSdoeTableRow(self, row):
+        # set names for inputs
+        inputNames = self.historyData.getInputNames()
+        item = self.inputSdoeTable.item(row, self.nameCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(inputNames[row])
+        self.inputSdoeTable.setItem(row, self.nameCol, item)
+
+        # create checkboxes for display and include columns
+        checkbox1 = QCheckBox()
+        checkbox2 = QCheckBox()
+        self.inputSdoeTable.setCellWidget(row, self.displayCol, checkbox1)
+        self.inputSdoeTable.setCellWidget(row, self.includeCol, checkbox2)
+        checkbox1.setProperty('row', row)
+        checkbox2.setProperty('row', row)
+
+        # create comboboxes for type column
+        combo = QComboBox()
+        combo.addItems(['Index', 'Space-filling', 'Response', 'Confidence'])
+        self.inputSdoeTable.setCellWidget(row, self.typeCol, combo)
+
+        # Min column
+        minValue = min(min(self.historyData.getInputData()[:,row]), min(self.candidateData.getInputData()[:,row]))
+        item = self.inputSdoeTable.item(row, self.minCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(str(minValue))
+        self.inputSdoeTable.setItem(row, self.minCol, item)
+
+        # Max column
+        maxValue = max(max(self.historyData.getInputData()[:,row]), max(self.candidateData.getInputData()[:,row]))
+        item = self.inputSdoeTable.item(row, self.maxCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(str(maxValue))
+        self.inputSdoeTable.setItem(row, self.maxCol, item)
 
 
     def analysisSelected(self):

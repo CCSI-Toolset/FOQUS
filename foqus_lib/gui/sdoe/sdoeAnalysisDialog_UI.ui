@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>749</height>
+    <height>692</height>
    </rect>
   </property>
   <property name="font">
@@ -37,7 +37,7 @@
       <string>Ensemble Summary</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
-      <item row="0" column="0">
+      <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
        <widget class="QTableWidget" name="infoTable">
         <property name="maximumSize">
          <size>
@@ -184,13 +184,6 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="minSizeTip_static">
-              <property name="text">
-               <string>Please choose the size for a small grouping.</string>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="minDesignSize_static">
               <property name="text">
@@ -199,13 +192,6 @@
              </widget>
             </item>
             <item row="1" column="3">
-             <widget class="QLabel" name="maxSizeTip_static">
-              <property name="text">
-               <string>Minimize difference between min and max for efficient computation.</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="4">
              <spacer name="horizontalSpacer_3">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -218,7 +204,7 @@
               </property>
              </spacer>
             </item>
-            <item row="0" column="4">
+            <item row="0" column="3">
              <spacer name="horizontalSpacer_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
@@ -233,6 +219,9 @@
             </item>
             <item row="0" column="1">
              <widget class="QSpinBox" name="minDesignSize_spin">
+              <property name="toolTip">
+               <string>Please choose the size for a small grouping.</string>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>
@@ -240,6 +229,10 @@
             </item>
             <item row="1" column="1">
              <widget class="QSpinBox" name="maxDesignSize_spin">
+              <property name="toolTip">
+               <string>Minimize difference between min and max
+for efficient computation.</string>
+              </property>
               <property name="minimum">
                <number>1</number>
               </property>
@@ -249,79 +242,6 @@
              </widget>
             </item>
            </layout>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="inputInstruction_static">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>For each input, specify the type, and wether it should be part of the analysis.</string>
-           </property>
-           <property name="wordWrap">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="index_static">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>* Index: unique identifier for the input combination</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="spaceFilling_static">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>* Space-filling: inputs to be considered for SDOE</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="response_static">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>*  Response: outputs to be considered for SDOE</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QLabel" name="confidence_static">
-           <property name="font">
-            <font>
-             <pointsize>11</pointsize>
-             <weight>50</weight>
-             <bold>false</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>* Confidence: confidence widths to be optimized</string>
-           </property>
           </widget>
          </item>
          <item>
@@ -339,10 +259,12 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>Designate input type:
-Variable for uncertain inputs
-Fixed for deterministic inputs
-Design for control inputs that can vary from experiments</string>
+            <string>For each input, specify the type, and wether
+it should be part of the analysis.
+* Index: unique identifier for the input combination
+* Space-filling: inputs to be considered for SDOE
+* Response: outputs to be considered for SDOE
+* Confidence: confidence widths to be optimized</string>
            </property>
            <column>
             <property name="text">
@@ -523,7 +445,7 @@ Design for control inputs that can vary from experiments</string>
            <item>
             <widget class="QLabel" name="time_dynamic">
              <property name="text">
-              <string>xxx</string>
+              <string>---</string>
              </property>
             </widget>
            </item>

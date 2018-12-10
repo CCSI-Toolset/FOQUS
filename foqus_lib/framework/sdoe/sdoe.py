@@ -1,5 +1,5 @@
-from distance import criterion
-from candidate import load_candidates
+from .distance import criterion
+from .candidate import load_candidates
 import configparser, time, os
 import numpy as np
 
@@ -46,4 +46,4 @@ def run(config_file, debug=False):
             
 # TO DO: plot, interpolate simulation time        
 
-run('config.ini', debug=True)
+#run('config.ini', debug=True)

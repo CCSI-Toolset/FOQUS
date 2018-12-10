@@ -9,7 +9,7 @@ from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SamplingMethods import *
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.sdoe import *
+from foqus_lib.framework.sdoe import sdoe
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.gui.uq.AnalysisInfoDialog import AnalysisInfoDialog
 from foqus_lib.gui.sdoe.sdoeSetupFrame import *
@@ -97,10 +97,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Connections here
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
         self.analysisTableGroup.setEnabled(False)
-        self.progress_groupBox.setEnabled(False)
+        #self.progress_groupBox.setEnabled(False)
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
+        self.runSdoeButton.setEnabled(True)
+        self.runSdoeButton.clicked.connect(self.runSdoe)
 
         # Resize tables
         self.infoTable.resizeColumnsToContents()
@@ -272,6 +274,53 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if numAnalyses > 0:
             if row >= numAnalyses:
                 self.analysisTable.selectRow(numAnalyses - 1)
+
+    def writeConfigFile(self):
+        dname = '/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files'
+        configFile = os.path.join(dname, 'config.ini')
+        f = open(configFile, 'w')
+        ## METHOD
+        f.write('[METHOD]\n')
+
+        if self.Minimax_radioButton.isChecked():
+            f.write('mode = minimax\n')
+        elif self.Maximin_radioButton.isChecked():
+            f.write('mode = maximin\n')
+
+        f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
+        f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
+        f.write('\n')
+        ## INPUT
+        f.write('[INPUT]\n')
+        f.write('history_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/historical_data.csv\n')
+        f.write('candidate_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/candidate.csv\n')
+        f.write('min_vals = ')
+        for row in range(self.historyData.getNumInputs()-1):
+            f.write((self.inputSdoeTable.item(row, self.minCol).text()) + ', ')
+        f.write(self.inputSdoeTable.item(self.historyData.getNumInputs()-1, self.minCol).text())
+        f.write('\n')
+
+        f.write('max_vals = ')
+        for row in range(self.historyData.getNumInputs() - 1):
+            f.write((self.inputSdoeTable.item(row, self.maxCol).text()) + ', ')
+        f.write(self.inputSdoeTable.item(self.historyData.getNumInputs() - 1, self.maxCol).text())
+        f.write('\n')
+        f.write('\n')
+
+        ## OUTPUT
+        f.write('[OUTPUT]\n')
+        f.write('results_dir = %s\n' % dname)
+        f.write('\n')
+
+        ## TEST
+        f.write('[TEST]\n')
+        f.write('run_list = 100, 500, 2000\n')
+
+        f.close()
+
+    def runSdoe(self):
+        self.writeConfigFile()
+        sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

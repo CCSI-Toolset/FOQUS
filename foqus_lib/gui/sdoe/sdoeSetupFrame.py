@@ -194,7 +194,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
-        self.confirmButton.setEnabled(False)
         self.refresh()
 
 
@@ -206,14 +205,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for i in range(numSims):
             self.updateSimTableRow(i)
 
-        if numSims >= 2:
-            if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
-                self.confirmButton.setEnabled(True)
-        else:
-            self.confirmButton.setEnabled(False)
-
         if numSims == 0:
             self.dataTabs.setEnabled(False)
+            self.confirmButton.setEnabled(False)
 
     def simSelected(self):
         selectedIndexes = self.filesTable.selectedIndexes()
@@ -303,6 +297,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Update table
         self.updateSimTable()
+        self.confirmButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
         self.unfreeze()
 
@@ -407,7 +402,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         combo = QComboBox()
         combo.addItems(['Candidate', 'History'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
-        combo.currentTextChanged.connect(self.on_combobox_changed)
 
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False
@@ -430,13 +424,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if self.filesTable.verticalScrollBar().isVisible():
             minWidth += self.filesTable.verticalScrollBar().width()
         self.filesTable.setMinimumWidth(minWidth)
-
-    def on_combobox_changed(self):
-        self.createEnsembleList()
-        if (len(self.createEnsembleList()[0]) >= 1) and (len(self.createEnsembleList()[1]) >= 1):
-            self.confirmButton.setEnabled(True)
-        else:
-            self.confirmButton.setEnabled(False)
 
 
     def resizeColumns(self):

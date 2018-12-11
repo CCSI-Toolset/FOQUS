@@ -261,10 +261,9 @@ for efficient computation.</string>
            <property name="toolTip">
             <string>For each input, specify the type, and wether
 it should be part of the analysis.
-* Index: unique identifier for the input combination
+* Index: unique identifier for the input combination. Not required, but encouraged.
 * Space-filling: inputs to be considered for SDOE
-* Response: outputs to be considered for SDOE
-* Confidence: confidence widths to be optimized</string>
+</string>
            </property>
            <column>
             <property name="text">
@@ -317,13 +316,6 @@ it should be part of the analysis.
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QLabel" name="sampleSizeTest_static">
-             <property name="text">
-              <string>Sample Size n = 200</string>
-             </property>
-            </widget>
-           </item>
-           <item>
             <spacer name="horizontalSpacer_5">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
@@ -366,7 +358,7 @@ it should be part of the analysis.
            <item>
             <widget class="QLabel" name="sampleSize_static">
              <property name="text">
-              <string>Sample Size n</string>
+              <string>Number of Random Starts n = 10^</string>
              </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
@@ -376,13 +368,13 @@ it should be part of the analysis.
            <item>
             <widget class="QSpinBox" name="sampleSize_spin">
              <property name="minimum">
-              <number>10</number>
+              <number>3</number>
              </property>
              <property name="maximum">
-              <number>1000</number>
+              <number>7</number>
              </property>
              <property name="value">
-              <number>200</number>
+              <number>3</number>
              </property>
             </widget>
            </item>
@@ -404,13 +396,22 @@ it should be part of the analysis.
          <item>
           <widget class="QSlider" name="sampleSizeRuntime_slider">
            <property name="minimum">
-            <number>1</number>
+            <number>3</number>
            </property>
            <property name="maximum">
-            <number>1000</number>
+            <number>7</number>
+           </property>
+           <property name="singleStep">
+            <number>1</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
            </property>
            <property name="value">
-            <number>200</number>
+            <number>3</number>
+           </property>
+           <property name="tracking">
+            <bool>true</bool>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -568,7 +569,7 @@ it should be part of the analysis.
         </column>
         <column>
          <property name="text">
-          <string>Sample Size n</string>
+          <string># of Random Starts</string>
          </property>
         </column>
         <column>
@@ -594,34 +595,34 @@ it should be part of the analysis.
  <resources/>
  <connections>
   <connection>
-   <sender>sampleSizeRuntime_slider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sampleSize_spin</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1424</x>
-     <y>1035</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1464</x>
-     <y>997</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>sampleSize_spin</sender>
    <signal>valueChanged(int)</signal>
    <receiver>sampleSizeRuntime_slider</receiver>
    <slot>setValue(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1483</x>
-     <y>998</y>
+     <x>1064</x>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1484</x>
-     <y>1027</y>
+     <x>958</x>
+     <y>562</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>sampleSizeRuntime_slider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>sampleSize_spin</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>958</x>
+     <y>562</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>1064</x>
+     <y>526</y>
     </hint>
    </hints>
   </connection>
@@ -632,12 +633,12 @@ it should be part of the analysis.
    <slot>setNum(int)</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>1507</x>
-     <y>980</y>
+     <x>1064</x>
+     <y>526</y>
     </hint>
     <hint type="destinationlabel">
-     <x>1469</x>
-     <y>1060</y>
+     <x>992</x>
+     <y>596</y>
     </hint>
    </hints>
   </connection>

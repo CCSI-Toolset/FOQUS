@@ -97,12 +97,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Connections here
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
         self.analysisTableGroup.setEnabled(False)
-        #self.progress_groupBox.setEnabled(False)
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         self.runSdoeButton.setEnabled(True)
         self.runSdoeButton.clicked.connect(self.runSdoe)
+        self.testSdoeButton.clicked.connect(self.testSdoe)
 
         # Resize tables
         self.infoTable.resizeColumnsToContents()
@@ -167,8 +167,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # create comboboxes for type column
         combo = QComboBox()
-        combo.addItems(['Index', 'Space-filling', 'Response', 'Confidence'])
+        combo.addItems(['Index', 'Space-filling', 'Response', 'Weight'])
         self.inputSdoeTable.setCellWidget(row, self.typeCol, combo)
+        combo.model().item(2).setEnabled(False)
+        combo.model().item(3).setEnabled(False)
+
 
         # Min column
         minValue = min(min(self.historyData.getInputData()[:,row]), min(self.candidateData.getInputData()[:,row]))
@@ -309,16 +312,20 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         ## OUTPUT
         f.write('[OUTPUT]\n')
-        f.write('results_dir = %s\n' % dname)
+        f.write('results_dir = %s\n' %dname)
         f.write('\n')
 
         ## TEST
         f.write('[TEST]\n')
-        f.write('run_list = 100, 500, 2000\n')
+        f.write('run_list = %d\n' %(10^(int(self.sampleSize_spin.value()))))
 
         f.close()
 
     def runSdoe(self):
+        self.writeConfigFile()
+        sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
+
+    def testSdoe(self):
         self.writeConfigFile()
         sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
 

@@ -97,12 +97,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Connections here
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
         self.analysisTableGroup.setEnabled(False)
+        self.progress_groupBox.setEnabled(False)
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
-        self.runSdoeButton.setEnabled(True)
-        self.runSdoeButton.clicked.connect(self.runSdoe)
         self.testSdoeButton.clicked.connect(self.testSdoe)
+        self.testSdoeButton.setEnabled(False)
+        self.runSdoeButton.clicked.connect(self.runSdoe)
 
         # Resize tables
         self.infoTable.resizeColumnsToContents()
@@ -328,6 +329,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def testSdoe(self):
         self.writeConfigFile()
         sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
+        self.progress_groupBox.setEnabled(True)
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

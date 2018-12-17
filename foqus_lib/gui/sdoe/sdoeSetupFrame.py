@@ -351,17 +351,29 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         sender = self.sender()
         row = sender.property('row')
 
-        viewOnly = True
-        if sender.text() == 'Revise':
-            viewOnly = False
         self.changeDataSignal.disconnect()
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
-        #simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
-        #result = simDialog.show()
 
         previewData = self.dat.uqSimList[row]
         dialog = Preview(previewData, self)
         dialog.show()
+
+    def editAgg(self):
+        sender = self.sender()
+        row = sender.property('row')
+        cand_list, hist_list = self.getEnsembleList()
+        candidateData = cand_list[0]
+        historyData = hist_list[0]
+
+        if row == 0:
+            previewData = candidateData
+            dialog = Preview(previewData, self)
+            dialog.show()
+
+        if row == 1:
+            previewData = historyData
+            dialog = Preview(previewData, self)
+            dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
@@ -449,7 +461,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         viewButton.setProperty('row', row)
         if newViewButton:
-            viewButton.clicked.connect(self.editSim)
+            viewButton.clicked.connect(self.editAgg)
             self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
 
         ### BN TO DO: update!
@@ -486,7 +498,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         candidateData = cand_list[0]
         historyData = hist_list[0]        
 
-        dialog = sdoeAnalysisDialog(candidateData, historyData)
+        dialog = sdoeAnalysisDialog(candidateData, historyData, self)
         dialog.exec_()
         dialog.deleteLater()
 

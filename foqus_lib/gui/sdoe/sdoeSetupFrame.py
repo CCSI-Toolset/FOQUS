@@ -356,8 +356,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewOnly = False
         self.changeDataSignal.disconnect()
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
-        simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
-        result = simDialog.show()
+        #simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
+        #result = simDialog.show()
+
+        previewData = self.dat.uqSimList[row]
+        dialog = Preview(previewData, self)
+        dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()

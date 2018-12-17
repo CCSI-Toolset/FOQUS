@@ -49,11 +49,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     plotCol = 4
 
 
-    def __init__(self, candidateData, historyData, parent=None):
+    def __init__(self, candidateData, historyData, dname, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.candidateData = candidateData
         self.historyData = historyData
+        self.dname = dname
 
         self.setWindowTitle('Sequential Design of Experiments')
 
@@ -86,7 +87,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.infoTable.setItem(self.historyFileRow, 0, item)
 
         # Output Directory
-        dname = '~/SDOE_files/'
+        dname = self.dname
         item = QTableWidgetItem(dname)
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()

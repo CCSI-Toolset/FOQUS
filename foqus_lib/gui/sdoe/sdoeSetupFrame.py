@@ -478,7 +478,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(1, self.descriptorCol, item)
 
         item = self.aggFilesTable.item(2, self.descriptorCol)
-        item.setText('~/SDOE_files/')
+        item.setText(self.dname)
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
 
@@ -496,9 +496,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         ### BN TO DO: update!                                                                                                     cand_list, hist_list = self.getEnsembleList()
         cand_list, hist_list = self.getEnsembleList()
         candidateData = cand_list[0]
-        historyData = hist_list[0]        
+        historyData = hist_list[0]
+        dname = self.dname
 
-        dialog = sdoeAnalysisDialog(candidateData, historyData, self)
+        dialog = sdoeAnalysisDialog(candidateData, historyData, dname, self)
         dialog.exec_()
         dialog.deleteLater()
 

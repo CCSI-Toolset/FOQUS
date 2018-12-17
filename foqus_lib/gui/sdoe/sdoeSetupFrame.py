@@ -170,8 +170,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
-
-    def createEnsembleList(self):
+        
+    def getEnsembleList(self):
         cand_list = []
         hist_list = []
         numFiles = len(self.dat.uqSimList)
@@ -182,7 +182,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 hist_list.append(self.dat.uqSimList[i])
         return cand_list, hist_list
 
-
+    def createEnsembleList(self):
+        cand_agg, hist_agg = self.getEnsembleList()
+        ### BN: check headings, sort columns, merge
+        return cand_agg, hist_agg
+    
     def backToSelection(self):
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
@@ -195,8 +199,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
         self.refresh()
-
-
 
     #######################################################################################
     def refresh(self):
@@ -228,13 +230,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = selectedIndexes[0].row()
         sim = self.dat.uqSimList[row]
 
-
         self.freeze()
         self.initUQToolBox()
         self.dataTabs.setEnabled(True)
         self.unfreeze()
         QCoreApplication.processEvents()
-
 
     def simDescriptionChanged(self, row, column):
         if column == sdoeSetupFrame.nameCol:
@@ -242,7 +242,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             item = self.filesTable.item(row, column)
             newName = item.text()
             sim.setModelName(newName)
-
 
     def cloneSimulation(self):
         # Get selected row
@@ -259,7 +258,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # Update table
         self.updateSimTable()
 
-
+        
     def loadSimulation(self):
 
         self.freeze()
@@ -297,7 +296,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Update table
         self.updateSimTable()
-        self.confirmButton.setEnabled(True)
+        self.confirmButton.setEnabled(True)  # PS TO DO: self.confirmButton.setEnabled(self.hasCandidates()) 
         self.dataTabs.setEnabled(True)
         self.unfreeze()
 
@@ -360,6 +359,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         simDialog = SimSetup(self.dat.uqSimList[row], self.dat, viewOnly, returnDataSignal = self.changeDataSignal, parent=self)
         result = simDialog.show()
 
+    def hasCandidates(self):
+        cand_list, hist_list = self.getEnsembleList()
+        return (len(cand_list) > 0)
+    
     def addDataToSimTable(self, data):
         if data is None:
             return
@@ -445,8 +448,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewButton.clicked.connect(self.editSim)
             self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
 
-        candidateData = self.createEnsembleList()[0][0]
-        historyData = self.createEnsembleList()[1][0]
+        ### BN TO DO: update!
+        cand_list, hist_list = self.getEnsembleList()
+        candidateData = cand_list[0]
+        historyData = hist_list[0]
 
         item = self.aggFilesTable.item(0, self.descriptorCol)
         item.setText(candidateData.getModelName())
@@ -455,7 +460,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item = self.aggFilesTable.item(1, self.descriptorCol)
         item.setText(historyData.getModelName())
         self.aggFilesTable.setItem(1, self.descriptorCol, item)
-
 
         item = self.aggFilesTable.item(2, self.descriptorCol)
         item.setText('~/SDOE_files/')
@@ -472,8 +476,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setMinimumWidth(minWidth)
 
     def launchSdoe(self):
-        candidateData = self.createEnsembleList()[0][0]
-        historyData = self.createEnsembleList()[1][0]
+
+        ### BN TO DO: update!                                                                                                     cand_list, hist_list = self.getEnsembleList()
+        cand_list, hist_list = self.getEnsembleList()
+        candidateData = cand_list[0]
+        historyData = hist_list[0]        
+
         dialog = sdoeAnalysisDialog(candidateData, historyData)
         dialog.exec_()
         dialog.deleteLater()

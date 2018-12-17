@@ -102,7 +102,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         self.testSdoeButton.clicked.connect(self.testSdoe)
-        self.testSdoeButton.setEnabled(False)
+        #self.testSdoeButton.setEnabled(False)
         self.runSdoeButton.clicked.connect(self.runSdoe)
 
         # Resize tables
@@ -318,17 +318,19 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         ## TEST
         f.write('[TEST]\n')
-        f.write('run_list = %d\n' %(10^(int(self.sampleSize_spin.value()))))
+        f.write('number_random_starts = %d\n' %(pow(10,int(self.sampleSize_spin.value()))))
 
         f.close()
 
+        return configFile
+
     def runSdoe(self):
-        self.writeConfigFile()
-        sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
+        sdoe.run(self.writeConfigFile())
+        self.analysisTableGroup.setEnabled(True)
 
     def testSdoe(self):
-        self.writeConfigFile()
-        sdoe.run('/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files/config.ini')
+        sdoe.test(self.writeConfigFile())
+        self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
 
     def freeze(self):

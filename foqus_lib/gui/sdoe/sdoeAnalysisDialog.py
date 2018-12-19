@@ -3,6 +3,8 @@ import os
 import numpy
 import shutil
 import textwrap
+from tqdm import tqdm
+
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -27,6 +29,7 @@ _sdoeAnalysisDialogUI, _sdoeAnalysisDialog = \
 
 
 class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
+
     # Info table
     numInputsRow = 0
     candidateFileRow = 1
@@ -64,7 +67,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Num inputs
         item = QTableWidgetItem(str(historyData.getNumInputs()))
-        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
         item.setForeground(Qt.black)
@@ -72,7 +75,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Candidate File
         item = QTableWidgetItem(candidateData.getModelName())
-        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
         item.setForeground(Qt.black)
@@ -80,7 +83,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # History File
         item = QTableWidgetItem(historyData.getModelName())
-        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
         item.setForeground(Qt.black)
@@ -89,7 +92,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # Output Directory
         dname = self.dname
         item = QTableWidgetItem(dname)
-        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
         item.setForeground(Qt.black)
@@ -100,10 +103,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisTableGroup.setEnabled(False)
         self.progress_groupBox.setEnabled(False)
 
+
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         self.testSdoeButton.clicked.connect(self.testSdoe)
-        #self.testSdoeButton.setEnabled(False)
+        self.sampleSize_spin.valueChanged.connect(self.on_spinbox_changed)
         self.runSdoeButton.clicked.connect(self.runSdoe)
 
         # Resize tables
@@ -112,7 +116,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.resizeColumnsToContents()
         self.show()
 
-        width = 2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)
+        width = 2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)+self.infoTable.columnWidth(1)
         if self.infoTable.verticalScrollBar().isVisible():
             width += self.infoTable.verticalScrollBar().width()
         self.infoTable.setMaximumWidth(width)
@@ -141,6 +145,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisTable.itemSelectionChanged.connect(self.analysisSelected)
         self.analysisTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.analysisTable.setWordWrap(True)
+
         # self.refreshAnalysisTable()
         # self.analysisSelected()
 
@@ -319,20 +324,39 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         ## TEST
         f.write('[TEST]\n')
-        f.write('number_random_starts = %d\n' %(pow(10,int(self.sampleSize_spin.value()))))
+        f.write('number_random_starts = %d\n' %(10 ** int(self.sampleSize_spin.value())))
 
         f.close()
 
         return configFile
 
     def runSdoe(self):
-        sdoe.run(self.writeConfigFile())
+        min_size = self.minDesignSize_spin.value()
+        max_size = self.maxDesignSize_spin.value()
+        numIter = (max_size + 1) - min_size
+        f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
+        for d in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
+            sdoe.run(self.writeConfigFile(), d)
+            self.SDOE_progressBar.setValue((100/numIter) * (d-min_size+1))
         self.analysisTableGroup.setEnabled(True)
+        f.close()
 
     def testSdoe(self):
-        sdoe.test(self.writeConfigFile())
+        runtime = sdoe.test(self.writeConfigFile())
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
+        return runtime
+
+    def on_spinbox_changed(self):
+        self.updateRunTime(self.testSdoe())
+        self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
+                                                           10 ** int(self.sampleSize_spin.value())))
+
+    def updateRunTime(self, runtime):
+        delta = runtime/200
+        estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
+                       int(self.maxDesignSize_spin.value()-self.minDesignSize_spin.value()+1))
+        self.time_dynamic.setText(str(estimateTime))
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -342,3 +366,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def unfreeze(self):
         QApplication.restoreOverrideCursor()
+
+    def updateProgressBar(self):
+        g = open(os.path.join(self.dname, 'testing.txt'), 'r')
+        progress = int(g.readlines()[-1][0:3])
+        self.SDOE_progressBar.setValue(progress)
+        g.close()

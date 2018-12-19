@@ -65,53 +65,11 @@
           <layout class="QGridLayout" name="gridLayout_4">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_3">
-             <item row="0" column="0">
-              <widget class="QPushButton" name="addFileButton">
-               <property name="minimumSize">
-                <size>
-                 <width>5</width>
-                 <height>5</height>
-                </size>
-               </property>
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="toolTip">
-                <string>Click to generate a new ensemble.</string>
-               </property>
-               <property name="text">
-                <string>Add New...</string>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QPushButton" name="loadFileButton">
-               <property name="font">
-                <font>
-                 <weight>50</weight>
-                 <bold>false</bold>
-                </font>
-               </property>
-               <property name="toolTip">
-                <string>Click to load an existing ensemble
-saved as a .csv file.</string>
-               </property>
-               <property name="text">
-                <string>Load from File...</string>
-               </property>
-              </widget>
-             </item>
+             <property name="sizeConstraint">
+              <enum>QLayout::SetNoConstraint</enum>
+             </property>
              <item row="0" column="2">
               <widget class="QPushButton" name="cloneButton">
-               <property name="minimumSize">
-                <size>
-                 <width>5</width>
-                 <height>5</height>
-                </size>
-               </property>
                <property name="font">
                 <font>
                  <weight>50</weight>
@@ -126,8 +84,8 @@ saved as a .csv file.</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="3">
-              <widget class="QPushButton" name="deleteButton">
+             <item row="0" column="0">
+              <widget class="QPushButton" name="addFileButton">
                <property name="font">
                 <font>
                  <weight>50</weight>
@@ -135,10 +93,10 @@ saved as a .csv file.</string>
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to delete ensemble.</string>
+                <string>Click to generate a new ensemble.</string>
                </property>
                <property name="text">
-                <string>Delete Selected</string>
+                <string>Add New...</string>
                </property>
               </widget>
              </item>
@@ -159,16 +117,56 @@ saved as a .csv file.</string>
                </property>
               </widget>
              </item>
+             <item row="0" column="3">
+              <widget class="QPushButton" name="deleteButton">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Click to delete ensemble.</string>
+               </property>
+               <property name="text">
+                <string>Delete Selected</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QPushButton" name="loadFileButton">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Click to load an existing ensemble
+saved as a .csv file.</string>
+               </property>
+               <property name="text">
+                <string>Load from File...</string>
+               </property>
+              </widget>
+             </item>
             </layout>
+           </item>
+           <item row="0" column="1">
+            <spacer name="horizontalSpacer">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
            <item row="1" column="0" colspan="2">
             <widget class="QTableWidget" name="filesTable">
-             <property name="minimumSize">
-              <size>
-               <width>5</width>
-               <height>5</height>
-              </size>
-             </property>
              <property name="baseSize">
               <size>
                <width>0</width>
@@ -235,6 +233,19 @@ candidate and history files.</string>
              </property>
             </widget>
            </item>
+           <item row="2" column="0">
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </widget>
         </item>
@@ -257,39 +268,6 @@ candidate and history files.</string>
            <string>Ensemble Aggregation</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
-           <item row="1" column="2">
-            <widget class="QPushButton" name="analyzeButton">
-             <property name="toolTip">
-              <string>Click to analyze ensemble.</string>
-             </property>
-             <property name="text">
-              <string>Analyze</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="backSelectionButton">
-             <property name="toolTip">
-              <string>Click to go back to ensemble selection.</string>
-             </property>
-             <property name="text">
-              <string>Back to Selection</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
            <item row="0" column="0" colspan="3">
             <widget class="QTableWidget" name="aggFilesTable">
              <row>
@@ -343,6 +321,39 @@ candidate and history files.</string>
               </property>
              </item>
             </widget>
+           </item>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="analyzeButton">
+             <property name="toolTip">
+              <string>Click to analyze ensemble.</string>
+             </property>
+             <property name="text">
+              <string>Analyze</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="backSelectionButton">
+             <property name="toolTip">
+              <string>Click to go back to ensemble selection.</string>
+             </property>
+             <property name="text">
+              <string>Back to Selection</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

@@ -170,6 +170,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
+
+    def on_combobox_changed(self):
+        self.confirmButton.setEnabled(self.hasCandidates())
         
     def getEnsembleList(self):
         cand_list = []
@@ -198,7 +201,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
-        self.refresh()
+        self.confirmButton.setEnabled(self.hasCandidates())
 
     #######################################################################################
     def refresh(self):
@@ -296,7 +299,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Update table
         self.updateSimTable()
-        self.confirmButton.setEnabled(True)  # PS TO DO: self.confirmButton.setEnabled(self.hasCandidates()) 
         self.dataTabs.setEnabled(True)
         self.unfreeze()
 
@@ -306,6 +308,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setRowCount(numSims)
         self.updateSimTableRow(numSims - 1)
         self.filesTable.selectRow(numSims - 1)
+        self.confirmButton.setEnabled(self.hasCandidates())
 
     def updateAggTable(self):
         self.updateAggTableRow(0)
@@ -326,6 +329,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 self.filesTable.selectRow(numSims - 1)
                 row = numSims - 1
             sim = self.dat.uqSimList[row]
+        self.confirmButton.setEnabled(self.hasCandidates())
 
 
     def saveSimulation(self):
@@ -421,6 +425,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         combo = QComboBox()
         combo.addItems(['Candidate', 'History'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
+        combo.currentTextChanged.connect(self.on_combobox_changed)
 
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False

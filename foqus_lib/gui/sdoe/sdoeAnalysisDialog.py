@@ -4,6 +4,7 @@ import numpy
 import shutil
 import textwrap
 from tqdm import tqdm
+from multiprocessing.connection import Client
 
 
 from foqus_lib.framework.uq.SampleData import *
@@ -45,12 +46,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     maxCol = 5
 
     # Analysis table
-    numberCol = 0
-    designCol = 1
-    sampleCol = 2
-    runtimeCol = 3
-    plotCol = 4
+    designCol = 0
+    sampleCol = 1
+    runtimeCol = 2
+    plotCol = 3
 
+    analysis = []
 
     def __init__(self, candidateData, historyData, dname, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
@@ -116,7 +117,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.resizeColumnsToContents()
         self.show()
 
-        width = 2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)+self.infoTable.columnWidth(1)
+        width = 2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)
         if self.infoTable.verticalScrollBar().isVisible():
             width += self.infoTable.verticalScrollBar().width()
         self.infoTable.setMaximumWidth(width)
@@ -133,7 +134,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setMinimumWidth(width)
         self.inputSdoeTable.setMaximumWidth(width)
 
-        width = 2 + self.analysisTable.verticalHeader().width()
+        width = 30 + self.analysisTable.verticalHeader().width()
         for i in range(self.analysisTable.columnCount()):
             width += self.analysisTable.columnWidth(i)
         #            print self.analysisTable.columnWidth(i)
@@ -202,32 +203,24 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if not selectedIndexes:
             self.deleteAnalysisButton.setEnabled(False)
             return
-        row = selectedIndexes[0].row()
-        analysis = self.data.getAnalysisAtIndex(row)
-        info = analysis.getAdditionalInfo()
         self.deleteAnalysisButton.setEnabled(True)
 
-    def refreshAnalysisTable(self):
-        numAnalyses = self.data.getNumAnalyses()
-        self.analysisTable.setRowCount(numAnalyses)
-        for i in range(numAnalyses):
-            self.updateAnalysisTableRow(i)
+    def updateAnalysisTable(self):
+        numAnalysis = len(self.analysis)
+        self.analysisTable.setRowCount(numAnalysis)
+        for row in range(numAnalysis):
+            self.updateAnalysisTableRow(row)
 
-    def updateAnalysisTableWithNewRow(self):
-        numAnalyses = self.data.getNumAnalyses()
-        self.analysisTable.setRowCount(numAnalyses)
-        self.updateAnalysisTableRow(numAnalyses - 1)
-        self.analysisTable.selectRow(numAnalyses - 1)
+
 
     def updateAnalysisTableRow(self, row):
-        analysis = self.data.getAnalysisAtIndex(row)
 
         # Design Size
         item = self.analysisTable.item(row, self.designCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.designCol, item)
-        designSize = analysis.getDesignSize()
+        designSize = self.analysis[row][0]
         item.setText(str(designSize))
 
         # Sample Size
@@ -235,7 +228,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.sampleCol, item)
-        sampleSize = analysis.getSampleSize()
+        sampleSize = self.analysis[row][1]
         item.setText(str(sampleSize))
 
         # Runtime
@@ -243,47 +236,29 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.runtimeCol, item)
-            runtime = analysis.getRunTime()
+            runtime = round(self.analysis[row][2], 2)
             item.setText(str(runtime))
 
         # Plot SDOE
-        plotButton = self.analysisTable.cellWidget(row, self.plotCol)
-        newPlotButton = False
-        if plotButton is None:
-            newPlotButton = True
-            plotButton = QPushButton()
-            plotButton.setText('Plot SDOE')
+        viewButton = self.analysisTable.cellWidget(row, self.plotCol)
+        newViewButton = False
+        if viewButton is None:
+            newViewButton = True
+            viewButton = QPushButton()
+            viewButton.setText('View')
 
-        plotButton.setProperty('row', row)
-        if newPlotButton:
-            plotButton.clicked.connect(self.Plotter.plotSDOE())
-            self.analysisTable.setCellWidget(row, self.plotCol, plotButton)
+        viewButton.setProperty('row', row)
+        if newViewButton:
+            #viewButton.clicked.connect(self.Plotter.plotSDOE())
+            self.analysisTable.setCellWidget(row, self.plotCol, viewButton)
 
         self.analysisTable.resizeColumnsToContents()
         self.analysisTable.resizeRowsToContents()
 
-    def showInfo(self):
-        row = self.analysisTable.selectedIndexes()[0].row()
-        analysis = self.data.getAnalysisAtIndex(row)
-        self.analysisInfoDialog = AnalysisInfoDialog(analysis.getAdditionalInfo(), self)
-        self.analysisInfoDialog.show()
-
-    def showAnalysisResults(self):
-        row = self.analysisTable.selectedIndexes()[0].row()
-        analysis = self.data.getAnalysisAtIndex(row)
-        showList = None
-
-
     def deleteAnalysis(self):
         row = self.analysisTable.selectedIndexes()[0].row()
-
-        # Delete simulation
-        self.data.removeAnalysisByIndex(row)
-        self.refreshAnalysisTable()
-        numAnalyses = self.data.getNumAnalyses()
-        if numAnalyses > 0:
-            if row >= numAnalyses:
-                self.analysisTable.selectRow(numAnalyses - 1)
+        self.analysis.pop(row)
+        self.updateAnalysisTable()
 
     def writeConfigFile(self):
         dname = '/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files'
@@ -336,10 +311,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         numIter = (max_size + 1) - min_size
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
         for d in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
-            sdoe.run(self.writeConfigFile(), d)
+            design_size, n, elapsed_time = sdoe.run(self.writeConfigFile(), d)
+            self.analysis.append([design_size, n, elapsed_time])
+            self.analysisTableGroup.setEnabled(True)
+            self.updateAnalysisTable()
             self.SDOE_progressBar.setValue((100/numIter) * (d-min_size+1))
-        self.analysisTableGroup.setEnabled(True)
         f.close()
+        self.SDOE_progressBar.setValue(0)
+
 
     def testSdoe(self):
         runtime = sdoe.test(self.writeConfigFile())
@@ -352,11 +331,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
 
+
     def updateRunTime(self, runtime):
         delta = runtime/200
         estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
                        int(self.maxDesignSize_spin.value()-self.minDesignSize_spin.value()+1))
         self.time_dynamic.setText(str(estimateTime))
+
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -366,9 +347,3 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def unfreeze(self):
         QApplication.restoreOverrideCursor()
-
-    def updateProgressBar(self):
-        g = open(os.path.join(self.dname, 'testing.txt'), 'r')
-        progress = int(g.readlines()[-1][0:3])
-        self.SDOE_progressBar.setValue(progress)
-        g.close()

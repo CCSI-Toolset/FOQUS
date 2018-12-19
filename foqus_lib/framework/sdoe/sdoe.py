@@ -35,11 +35,11 @@ def test(config_file):
     t0 = time.time()
     best_val, cand_rand, rand_index = criterion(cand, scl, d, n, mode=mode, histmat=histmat)
     elapsed_time = time.time() - t0
-    fname = 'sdoe_candidates_%d_%d' % (d, n)
-    fname = os.path.join(outdir, fname)
-    header_str = ', '.join(header)
-    np.savetxt(fname, cand_rand, delimiter=', ', header=header_str)
-    print(('d=%d, n=%d: best_val=%f, elapsed_time=%fs' % (d, n, best_val, elapsed_time)))
+    # fname = 'sdoe_candidates_%d_%d' % (d, n)
+    # fname = os.path.join(outdir, fname)
+    # header_str = ', '.join(header)
+    # np.savetxt(fname, cand_rand, delimiter=', ', header=header_str)
+    #print(('d=%d, n=%d: best_val=%f, elapsed_time=%fs' % (d, n, best_val, elapsed_time)))
     return elapsed_time
 
 
@@ -85,6 +85,7 @@ def run(config_file, d, test=False):
     header_str = ', '.join(header)
     np.savetxt(fname, cand_rand, delimiter=', ', header=header_str)
     print(('d=%d, n=%d: best_val=%f, elapsed_time=%fs' % (d, n, best_val, elapsed_time)))
+    return (d, n, elapsed_time)
 
 # TO DO: plot, interpolate simulation time
 

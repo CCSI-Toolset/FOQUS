@@ -367,7 +367,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = sender.property('row')
         cand_list, hist_list = self.getEnsembleList()
         candidateData = cand_list[0]
-        historyData = hist_list[0]
+        if len(hist_list) == 0:
+            historyData = None
+        else:
+            historyData = hist_list[0]
 
         if row == 0:
             previewData = candidateData

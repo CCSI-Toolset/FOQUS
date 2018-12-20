@@ -215,8 +215,8 @@ selection-color: rgb(0, 0, 0);</string>
             <widget class="QPushButton" name="confirmButton">
              <property name="font">
               <font>
-               <family>.SF NS Text</family>
-               <pointsize>13</pointsize>
+               <family>MS Shell Dlg 2</family>
+               <pointsize>9</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>
@@ -324,6 +324,12 @@ candidate and history files.</string>
            </item>
            <item row="1" column="2">
             <widget class="QPushButton" name="analyzeButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
              <property name="toolTip">
               <string>Click to analyze ensemble.</string>
              </property>
@@ -334,6 +340,12 @@ candidate and history files.</string>
            </item>
            <item row="1" column="1">
             <widget class="QPushButton" name="backSelectionButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
              <property name="toolTip">
               <string>Click to go back to ensemble selection.</string>
              </property>
@@ -377,8 +389,8 @@ candidate and history files.</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>897</width>
-              <height>313</height>
+              <width>863</width>
+              <height>294</height>
              </size>
             </property>
             <property name="currentIndex">

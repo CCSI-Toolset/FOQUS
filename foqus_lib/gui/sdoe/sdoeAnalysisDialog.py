@@ -53,7 +53,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     analysis = []
 
-    def __init__(self, candidateData, historyData, dname, parent=None):
+    def __init__(self, candidateData, dname, historyData=None, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.candidateData = candidateData
@@ -67,7 +67,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         mask = ~(Qt.ItemIsEnabled)
 
         # Num inputs
-        item = QTableWidgetItem(str(historyData.getNumInputs()))
+        item = QTableWidgetItem(str(candidateData.getNumInputs()))
         item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
@@ -83,7 +83,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.infoTable.setItem(self.candidateFileRow, 0, item)
 
         # History File
-        item = QTableWidgetItem(historyData.getModelName())
+        if historyData == None:
+            item = QTableWidgetItem('None')
+        else:
+            item = QTableWidgetItem(historyData.getModelName())
         item.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
@@ -151,14 +154,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # self.analysisSelected()
 
     def updateInputSdoeTable(self):
-        numInputs = self.historyData.getNumInputs()
+        numInputs = self.candidateData.getNumInputs()
         self.inputSdoeTable.setRowCount(numInputs)
         for row in range(numInputs):
             self.updateInputSdoeTableRow(row)
 
     def updateInputSdoeTableRow(self, row):
         # set names for inputs
-        inputNames = self.historyData.getInputNames()
+        inputNames = self.candidateData.getInputNames()
         item = self.inputSdoeTable.item(row, self.nameCol)
         if item is None:
             item = QTableWidgetItem()
@@ -182,7 +185,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
 
         # Min column
-        minValue = min(min(self.historyData.getInputData()[:,row]), min(self.candidateData.getInputData()[:,row]))
+        minValue = min(self.candidateData.getInputData()[:,row])
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -190,7 +193,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = max(max(self.historyData.getInputData()[:,row]), max(self.candidateData.getInputData()[:,row]))
+        maxValue = max(self.candidateData.getInputData()[:,row])
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()
@@ -280,15 +283,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f.write('history_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/historical_data.csv\n')
         f.write('candidate_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/candidate.csv\n')
         f.write('min_vals = ')
-        for row in range(self.historyData.getNumInputs()-1):
+        for row in range(self.candidateData.getNumInputs()-1):
             f.write((self.inputSdoeTable.item(row, self.minCol).text()) + ', ')
-        f.write(self.inputSdoeTable.item(self.historyData.getNumInputs()-1, self.minCol).text())
+        f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs()-1, self.minCol).text())
         f.write('\n')
 
         f.write('max_vals = ')
-        for row in range(self.historyData.getNumInputs() - 1):
+        for row in range(self.candidateData.getNumInputs() - 1):
             f.write((self.inputSdoeTable.item(row, self.maxCol).text()) + ', ')
-        f.write(self.inputSdoeTable.item(self.historyData.getNumInputs() - 1, self.maxCol).text())
+        f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs() - 1, self.maxCol).text())
         f.write('\n')
         f.write('\n')
 

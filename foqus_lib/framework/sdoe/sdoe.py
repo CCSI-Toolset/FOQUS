@@ -85,7 +85,7 @@ def run(config_file, d, test=False):
     header_str = ', '.join(header)
     np.savetxt(fname, cand_rand, delimiter=', ', header=header_str)
     print(('d=%d, n=%d: best_val=%f, elapsed_time=%fs' % (d, n, best_val, elapsed_time)))
-    return (d, n, elapsed_time)
+    return (mode, d, n, elapsed_time)
 
 # TO DO: plot, interpolate simulation time
 

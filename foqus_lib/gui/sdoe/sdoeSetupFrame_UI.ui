@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>692</height>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -215,8 +215,8 @@ selection-color: rgb(0, 0, 0);</string>
             <widget class="QPushButton" name="confirmButton">
              <property name="font">
               <font>
-               <family>MS Shell Dlg 2</family>
-               <pointsize>9</pointsize>
+               <family>.SF NS Text</family>
+               <pointsize>13</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>
@@ -268,6 +268,51 @@ candidate and history files.</string>
            <string>Ensemble Aggregation</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_5">
+           <item row="1" column="2">
+            <widget class="QPushButton" name="analyzeButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Click to analyze ensemble.</string>
+             </property>
+             <property name="text">
+              <string>Analyze</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="backSelectionButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Click to go back to ensemble selection.</string>
+             </property>
+             <property name="text">
+              <string>Back to Selection</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <spacer name="horizontalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
            <item row="0" column="0" colspan="3">
             <widget class="QTableWidget" name="aggFilesTable">
              <row>
@@ -322,51 +367,6 @@ candidate and history files.</string>
              </item>
             </widget>
            </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="analyzeButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to analyze ensemble.</string>
-             </property>
-             <property name="text">
-              <string>Analyze</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="backSelectionButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to go back to ensemble selection.</string>
-             </property>
-             <property name="text">
-              <string>Back to Selection</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
           </layout>
          </widget>
         </item>
@@ -389,8 +389,8 @@ candidate and history files.</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>863</width>
-              <height>294</height>
+              <width>897</width>
+              <height>313</height>
              </size>
             </property>
             <property name="currentIndex">

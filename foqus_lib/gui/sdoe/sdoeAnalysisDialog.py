@@ -46,10 +46,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     maxCol = 5
 
     # Analysis table
-    designCol = 0
-    sampleCol = 1
-    runtimeCol = 2
-    plotCol = 3
+    methodCol = 0
+    designCol = 1
+    sampleCol = 2
+    runtimeCol = 3
+    plotCol = 4
 
     analysis = []
 
@@ -218,12 +219,20 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def updateAnalysisTableRow(self, row):
 
+        # Optimality Method
+        item = self.analysisTable.item(row, self.methodCol)
+        if item is None:
+            item = QTableWidgetItem()
+            self.analysisTable.setItem(row, self.methodCol, item)
+        optMethod = self.analysis[row][0]
+        item.setText(str(optMethod))
+
         # Design Size
         item = self.analysisTable.item(row, self.designCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.designCol, item)
-        designSize = self.analysis[row][0]
+        designSize = self.analysis[row][1]
         item.setText(str(designSize))
 
         # Sample Size
@@ -231,7 +240,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.sampleCol, item)
-        sampleSize = self.analysis[row][1]
+        sampleSize = self.analysis[row][2]
         item.setText(str(sampleSize))
 
         # Runtime
@@ -239,7 +248,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.runtimeCol, item)
-            runtime = round(self.analysis[row][2], 2)
+            runtime = round(self.analysis[row][3], 2)
             item.setText(str(runtime))
 
         # Plot SDOE
@@ -314,8 +323,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         numIter = (max_size + 1) - min_size
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
         for d in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
-            design_size, n, elapsed_time = sdoe.run(self.writeConfigFile(), d)
-            self.analysis.append([design_size, n, elapsed_time])
+            mode, design_size, n, elapsed_time = sdoe.run(self.writeConfigFile(), d)
+            self.analysis.append([mode, design_size, n, elapsed_time])
             self.analysisTableGroup.setEnabled(True)
             self.updateAnalysisTable()
             self.SDOE_progressBar.setValue((100/numIter) * (d-min_size+1))
@@ -339,8 +348,16 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         delta = runtime/200
         estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
                        int(self.maxDesignSize_spin.value()-self.minDesignSize_spin.value()+1))
-        self.time_dynamic.setText(str(estimateTime))
+        if estimateTime < 60:
+            self.time_dynamic.setText('%d seconds' % estimateTime)
+        elif estimateTime < 3600:
+            self.time_dynamic.setText('%d min, %d s' % (int(estimateTime/60), estimateTime%60))
 
+        elif estimateTime > 3600:
+            timeHr = int(estimateTime/3600)
+            timeMin = int((estimateTime - (timeHr*3600))/60)
+            timeSec = (estimateTime - (timeHr*3600))%60
+            self.time_dynamic.setText('%d h, %d min, %d s' % (timeHr, timeMin, timeSec))
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

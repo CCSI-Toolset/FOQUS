@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>692</height>
+    <height>755</height>
    </rect>
   </property>
   <property name="font">
@@ -226,7 +226,7 @@
                <string>Please choose the size for a small grouping.</string>
               </property>
               <property name="minimum">
-               <number>1</number>
+               <number>2</number>
               </property>
              </widget>
             </item>
@@ -468,14 +468,7 @@ it should be part of the analysis.
            <item>
             <widget class="QLabel" name="time_dynamic">
              <property name="text">
-              <string>0</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QLabel" name="units_static">
-             <property name="text">
-              <string>seconds</string>
+              <string>0 seconds</string>
              </property>
             </widget>
            </item>
@@ -514,7 +507,7 @@ it should be part of the analysis.
             <widget class="QPushButton" name="runSdoeButton">
              <property name="font">
               <font>
-               <pointsize>9</pointsize>
+               <pointsize>13</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>
@@ -547,23 +540,7 @@ it should be part of the analysis.
       <string>Analyses Performed</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="1" column="1">
-       <widget class="QPushButton" name="deleteAnalysisButton">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
+      <item row="2" column="0">
        <spacer name="horizontalSpacer_4">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -589,6 +566,11 @@ it should be part of the analysis.
         </property>
         <column>
          <property name="text">
+          <string>Optimality Method</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
           <string>Design Size d</string>
          </property>
         </column>
@@ -607,6 +589,29 @@ it should be part of the analysis.
           <string>Plot SDOE</string>
          </property>
         </column>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="deleteAnalysisButton">
+        <property name="font">
+         <font>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+        <property name="text">
+         <string>Delete</string>
+        </property>
+        <property name="autoDefault">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="analysisInstructions_static">
+        <property name="text">
+         <string>* All the results for the analyses performed are located in the SDOE output directory</string>
+        </property>
        </widget>
       </item>
      </layout>

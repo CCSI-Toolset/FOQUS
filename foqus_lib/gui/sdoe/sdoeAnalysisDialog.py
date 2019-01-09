@@ -3,6 +3,7 @@ import os
 import numpy
 import shutil
 import textwrap
+from datetime import datetime
 from tqdm import tqdm
 from multiprocessing.connection import Client
 
@@ -12,10 +13,11 @@ from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.SamplingMethods import *
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.sdoe import sdoe
+from foqus_lib.framework.sdoe import sdoe, df_utils
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.gui.uq.AnalysisInfoDialog import AnalysisInfoDialog
-from foqus_lib.gui.sdoe.sdoeSetupFrame import *
+from .sdoeSetupFrame import *
+from .sdoePreview import sdoePreview
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -108,6 +110,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisTableGroup.setEnabled(False)
         self.progress_groupBox.setEnabled(False)
 
+        # spin box bounds
+        self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
@@ -261,7 +265,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         viewButton.setProperty('row', row)
         if newViewButton:
-            #viewButton.clicked.connect(self.Plotter.plotSDOE())
+            viewButton.clicked.connect(self.editSdoe)
             self.analysisTable.setCellWidget(row, self.plotCol, viewButton)
 
         self.analysisTable.resizeColumnsToContents()
@@ -273,9 +277,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.updateAnalysisTable()
 
     def writeConfigFile(self):
-        dname = '/Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/SDOE_files'
-        configFile = os.path.join(dname, 'config.ini')
+        timestamp = datetime.now().isoformat()
+        outdir = os.path.join(self.dname, timestamp)
+        os.makedirs(outdir, exist_ok=False)
+        configFile = os.path.join(outdir, 'config.ini')
         f = open(configFile, 'w')
+
         ## METHOD
         f.write('[METHOD]\n')
 
@@ -286,11 +293,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
         f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
+        f.write('number_random_starts = %d\n' % self.sampleSize_spin.value())
         f.write('\n')
         ## INPUT
         f.write('[INPUT]\n')
-        f.write('history_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/historical_data.csv\n')
-        f.write('candidate_file = /Users/sotorrio1/PycharmProjects/FOQUS-sotorrio1/examples/SDOE/candidate.csv\n')
+        if self.historyData is None:
+            f.write('history_file = \n')
+        else:
+            f.write('history_file = %s\n' % os.path.join(self.dname, self.historyData.getModelName()))
+        f.write('candidate_file = %s\n' % os.path.join(self.dname, self.candidateData.getModelName()))
         f.write('min_vals = ')
         for row in range(self.candidateData.getNumInputs()-1):
             f.write((self.inputSdoeTable.item(row, self.minCol).text()) + ', ')
@@ -302,16 +313,17 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write((self.inputSdoeTable.item(row, self.maxCol).text()) + ', ')
         f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs() - 1, self.maxCol).text())
         f.write('\n')
+
+        f.write('include = all')
+        ### TO DO: add only the variables that are selected
+        f.write('\n')
+
         f.write('\n')
 
         ## OUTPUT
         f.write('[OUTPUT]\n')
-        f.write('results_dir = %s\n' %dname)
+        f.write('results_dir = %s\n' %outdir)
         f.write('\n')
-
-        ## TEST
-        f.write('[TEST]\n')
-        f.write('number_random_starts = %d\n' %(10 ** int(self.sampleSize_spin.value())))
 
         f.close()
 
@@ -322,18 +334,19 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
-        for d in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
-            mode, design_size, n, elapsed_time = sdoe.run(self.writeConfigFile(), d)
-            self.analysis.append([mode, design_size, n, elapsed_time])
+        for nd in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
+            mode, design_size, num_restarts, elapsed_time, outfile = sdoe.run(self.writeConfigFile(), nd)
+            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile])
             self.analysisTableGroup.setEnabled(True)
             self.updateAnalysisTable()
-            self.SDOE_progressBar.setValue((100/numIter) * (d-min_size+1))
+            self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
         f.close()
         self.SDOE_progressBar.setValue(0)
 
 
     def testSdoe(self):
-        runtime = sdoe.test(self.writeConfigFile())
+        #test using max design size and nd=200
+        runtime = sdoe.run(self.writeConfigFile(), self.maxDesignSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
         return runtime
@@ -358,6 +371,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             timeMin = int((estimateTime - (timeHr*3600))/60)
             timeSec = (estimateTime - (timeHr*3600))%60
             self.time_dynamic.setText('%d h, %d min, %d s' % (timeHr, timeMin, timeSec))
+
+    def editSdoe(self):
+        sender = self.sender()
+        row = sender.property('row')
+        sdoeData = LocalExecutionModule.readSampleFromCsvFile(self.analysis[row][4], False)
+        tempdir = os.path.join(*self.analysis[row][4].split(os.sep)[0:-1])
+        dirname = os.path.join(os.sep, tempdir)
+        dialog = sdoePreview(sdoeData, dirname, self)
+        dialog.show()
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

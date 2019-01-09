@@ -3,6 +3,7 @@ import os
 import logging
 import numpy
 import copy
+import shutil
 from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.uq.SimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
@@ -19,8 +20,9 @@ from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.sdoe import *
+from foqus_lib.framework.sdoe import df_utils
 from .sdoeAnalysisDialog import sdoeAnalysisDialog
+from .sdoePreview import sdoePreview
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
@@ -49,7 +51,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
-    dname = os.getcwd() + os.path.sep + 'SDOE_files'
+    dname = os.path.join(os.getcwd(),'SDOE_files')
 
 
     ## This delegate is used to make the checkboxes in the delete table centered
@@ -152,11 +154,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.delegate = sdoeSetupFrame.MyItemDelegate(self)
         self.deleteTable.setItemDelegate(self.delegate)
 
+        # Create SDOE directory
+        Common.initFolder(self.dname)
+
 
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
-        Common.initFolder(self.dname)
         self.updateAggTable()
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
@@ -296,6 +300,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         res = Results()
         res.uq_add_result(data)
         self.dat.uqFilterResultsList.append(res)
+        shutil.copy(fileName, self.dname)
 
         # Update table
         self.updateSimTable()
@@ -359,7 +364,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
 
         previewData = self.dat.uqSimList[row]
-        dialog = Preview(previewData, self)
+        dialog = sdoePreview(previewData, self.dname, self)
         dialog.show()
 
     def editAgg(self):
@@ -374,12 +379,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         if row == 0:
             previewData = candidateData
-            dialog = Preview(previewData, self)
+            dialog = sdoePreview(previewData, self.dname, self)
             dialog.show()
 
         if row == 1:
             previewData = historyData
-            dialog = Preview(previewData, self)
+            dialog = sdoePreview(previewData, self.dname, self)
             dialog.show()
 
     def hasCandidates(self):

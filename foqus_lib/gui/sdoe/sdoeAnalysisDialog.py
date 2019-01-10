@@ -52,6 +52,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     runtimeCol = 3
     plotCol = 4
 
+    testRuntime = []
     analysis = []
 
     def __init__(self, candidateData, dname, historyData=None, parent=None):
@@ -281,7 +282,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 include_list.append(self.inputSdoeTable.item(row, self.nameCol).text())
         return include_list
 
-    def writeConfigFile(self):
+    def writeConfigFile(self, test=False):
         timestamp = datetime.now().isoformat()
         outdir = os.path.join(self.dname, timestamp)
         os.makedirs(outdir, exist_ok=False)
@@ -298,7 +299,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
         f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
-        f.write('number_random_starts = %d\n' % 10**(self.sampleSize_spin.value()))
+        if test:
+            f.write('number_random_starts = 200\n')
+        else:
+            f.write('number_random_starts = %d\n' % 10**(self.sampleSize_spin.value()))
         f.write('\n')
         ## INPUT
         f.write('[INPUT]\n')
@@ -334,15 +338,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         return configFile
 
-    def runSdoe(self, include=None):
-        ### TO DO: check everything by default
+    def runSdoe(self):
 
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
-        for nd in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
-            ### TO DO: pass in "include" into sdoe
+        for nd in tqdm(range(min_size, max_size+1), file = f):
             mode, design_size, num_restarts, elapsed_time, outfile = sdoe.run(self.writeConfigFile(), nd)
             self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile])
             self.analysisTableGroup.setEnabled(True)
@@ -354,13 +356,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def testSdoe(self):
         #test using max design size and nd=200
-        runtime = sdoe.run(self.writeConfigFile(), self.maxDesignSize_spin.value(), test=True)
+        runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
-        return runtime
+        self.updateRunTime(runtime)
+        self.testRuntime.append(runtime)
 
     def on_spinbox_changed(self):
-        self.updateRunTime(self.testSdoe())
+        self.updateRunTime(self.testRuntime[0])
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
 

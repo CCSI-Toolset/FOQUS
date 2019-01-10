@@ -502,7 +502,6 @@ it should be part of the analysis.
             <widget class="QPushButton" name="runSdoeButton">
              <property name="font">
               <font>
-               <pointsize>13</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>

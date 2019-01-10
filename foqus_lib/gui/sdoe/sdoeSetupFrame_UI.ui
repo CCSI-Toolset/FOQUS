@@ -104,7 +104,6 @@
               <widget class="QPushButton" name="saveButton">
                <property name="font">
                 <font>
-                 <family>.SF NS Text</family>
                  <weight>50</weight>
                  <bold>false</bold>
                 </font>
@@ -215,8 +214,6 @@ selection-color: rgb(0, 0, 0);</string>
             <widget class="QPushButton" name="confirmButton">
              <property name="font">
               <font>
-               <family>.SF NS Text</family>
-               <pointsize>13</pointsize>
                <weight>50</weight>
                <bold>false</bold>
               </font>

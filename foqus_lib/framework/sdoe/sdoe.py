@@ -59,7 +59,6 @@ def run(config_file, nd, test=False):
     fname = os.path.join(outdir, 'candidates_d{}_n{}_{}'.format(nd, nr, '+'.join(include)))
     write(fname, cand_rand)
     print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, best_val, elapsed_time)))
-    #plot(fname)
 
     return mode, nd, nr, elapsed_time, fname
 
@@ -113,8 +112,5 @@ def plot(fname, show=None, nbins=20, area=10):
     title = 'SDOE candidates from {}'.format(fname)
     fig.canvas.set_window_title(title)
     plt.tight_layout()
-
-    #plt.savefig(fname + '.png')
     plt.show()
 
-# run('config.ini', 5)

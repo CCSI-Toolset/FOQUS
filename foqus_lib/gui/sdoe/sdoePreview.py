@@ -3,10 +3,10 @@ import os
 
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.RSInference import RSInferencer
 from foqus_lib.framework.sdoe import sdoe
+
+#from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -27,11 +27,15 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
 
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
+        if count == 0:
+            self.fixedInputsCheck.setHidden(True)
 
-
+        self.inputList.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.fixedInputsCheck.toggled.connect(self.refresh)
         self.plotSdoeButton.clicked.connect(self.plotSdoe)
 
         self.refresh()
+        self.inputList.selectAll()
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -50,6 +54,17 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         def getInputIndex(self):
             return self.inputIndex
 
+    def selectAll(self):
+        numItems = self.inputList.count()
+        for i in range(numItems):
+            self.inputList.item(i).setSelected(True)
+
+    def checkItemSelected(self, item):
+        items = self.inputList.selectedItems()
+        itemsName = []
+        for item in items:
+            itemsName.append(item.text())
+        return itemsName
 
     def refresh(self):
 
@@ -63,10 +78,11 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         self.table.setColumnCount(self.data.getNumInputs())
         headers = []
         self.table.setRowCount(inputData.shape[0])
-        showFixed = 0
+        showFixed = self.fixedInputsCheck.checkState()
 
         refinedColor = QColor(255, 255, 0, 100)
 
+        self.inputList.clear()
         c = 0
         for i, inputName in enumerate(inputNames):
             inputType = inputTypes[i]
@@ -84,6 +100,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 c = c + 1
                 if inputType == Model.VARIABLE:
                     item = sdoePreview.listItem(inputNames[i], i)
+                    self.inputList.addItem(item)
         self.table.setColumnCount(len(headers))
         self.table.setHorizontalHeaderLabels(headers)
         self.table.resizeColumnsToContents()
@@ -91,6 +108,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         QApplication.restoreOverrideCursor()
 
     def plotSdoe(self):
+        show = self.checkItemSelected(QListWidgetItem())
         fname = os.path.join(self.dirname, self.data.getModelName())
-        sdoe.plot(fname)
+        sdoe.plot(fname, show=show)
         self.setModal(True)

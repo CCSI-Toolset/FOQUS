@@ -267,11 +267,6 @@ it should be part of the analysis.
            </property>
            <column>
             <property name="text">
-             <string>Display?</string>
-            </property>
-           </column>
-           <column>
-            <property name="text">
              <string>Include?</string>
             </property>
            </column>

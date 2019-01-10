@@ -37,16 +37,8 @@ def check(cfiles, hfiles):
         return cand_df, []
 
     hist_df = merge(hfiles)
+
     cols = cand_df.columns.tolist()
     hist_df = hist_df[cols]
 
     return cand_df, hist_df
-
-
-'''
-hfiles = ['candidate.csv', 'out/candidates_d5_n10000_w']
-cfiles = ['out/hist']
-cand_df, hist_df = check(cfiles, hfiles)
-print(cand_df)
-print(hist_df)
-'''

@@ -5,7 +5,6 @@ import shutil
 import textwrap
 from datetime import datetime
 from tqdm import tqdm
-from multiprocessing.connection import Client
 
 
 from foqus_lib.framework.uq.SampleData import *
@@ -40,12 +39,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     outputDirRow = 3
 
     # input SDOE Table
-    displayCol = 0
-    includeCol = 1
-    nameCol = 2
-    typeCol = 3
-    minCol = 4
-    maxCol = 5
+    includeCol = 0
+    nameCol = 1
+    typeCol = 2
+    minCol = 3
+    maxCol = 4
 
     # Analysis table
     methodCol = 0
@@ -173,13 +171,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         item.setText(inputNames[row])
         self.inputSdoeTable.setItem(row, self.nameCol, item)
 
-        # create checkboxes for display and include columns
-        checkbox1 = QCheckBox()
-        checkbox2 = QCheckBox()
-        self.inputSdoeTable.setCellWidget(row, self.displayCol, checkbox1)
-        self.inputSdoeTable.setCellWidget(row, self.includeCol, checkbox2)
-        checkbox1.setProperty('row', row)
-        checkbox2.setProperty('row', row)
+        # create checkboxes for include column
+        checkbox = QCheckBox()
+        checkbox.setChecked(True)
+        self.inputSdoeTable.setCellWidget(row, self.includeCol, checkbox)
+        checkbox.setProperty('row', row)
+
 
         # create comboboxes for type column
         combo = QComboBox()
@@ -276,6 +273,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysis.pop(row)
         self.updateAnalysisTable()
 
+    def checkInclude(self):
+        numInputs = self.candidateData.getNumInputs()
+        include_list = []
+        for row in range(numInputs):
+            if self.inputSdoeTable.cellWidget(row, self.includeCol).isChecked():
+                include_list.append(self.inputSdoeTable.item(row, self.nameCol).text())
+        return include_list
+
     def writeConfigFile(self):
         timestamp = datetime.now().isoformat()
         outdir = os.path.join(self.dname, timestamp)
@@ -293,7 +298,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
         f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
-        f.write('number_random_starts = %d\n' % self.sampleSize_spin.value())
+        f.write('number_random_starts = %d\n' % 10**(self.sampleSize_spin.value()))
         f.write('\n')
         ## INPUT
         f.write('[INPUT]\n')
@@ -314,8 +319,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs() - 1, self.maxCol).text())
         f.write('\n')
 
-        f.write('include = all')
-        ### TO DO: add only the variables that are selected
+        include_list = self.checkInclude()
+        f.write('include = %s' % ','.join(include_list))
         f.write('\n')
 
         f.write('\n')
@@ -329,12 +334,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         return configFile
 
-    def runSdoe(self):
+    def runSdoe(self, include=None):
+        ### TO DO: check everything by default
+
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
         for nd in tqdm(range(min_size, max_size+1), file = f):  # iterate over number of designs
+            ### TO DO: pass in "include" into sdoe
             mode, design_size, num_restarts, elapsed_time, outfile = sdoe.run(self.writeConfigFile(), nd)
             self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile])
             self.analysisTableGroup.setEnabled(True)

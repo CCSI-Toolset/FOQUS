@@ -187,13 +187,44 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 cand_list.append(self.dat.uqSimList[i])
             elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
                 hist_list.append(self.dat.uqSimList[i])
-        return cand_list, hist_list
+        return cand_list, hist_list   # returns sample data structures
 
-    def createEnsembleList(self):
-        cand_agg, hist_agg = self.getEnsembleList()
-        ### BN: check headings, sort columns, merge
+    def aggregateEnsembleList(self):
+        cand_list, hist_list = self.getEnsembleList()
+
+        cand_csv_list = []
+        for cand in cand_list:
+            cand_path = os.path.join(self.dname, cand.getModelName())
+            if not os.path.exists(cand_path):
+                cand.writeToCsv(cand_path)
+            cand_csv_list.append(cand_path)
+
+        hist_csv_list = []
+        for hist in hist_list:
+            hist_path = os.path.join(self.dname, hist.getModelName())
+            if not os.path.exists(hist_path):
+                hist.writeToCsv(hist_path)
+            hist_csv_list.append(hist_path)
+
+        cand_agg, hist_agg = df_utils.check(cand_csv_list, hist_csv_list)
         return cand_agg, hist_agg
-    
+
+    def createAggData(self):
+        cand_agg, hist_agg = self.aggregateEnsembleList()  # these are dfs
+
+        cand_fname = os.path.join(self.dname, 'aggregate_candidates.csv')
+        df_utils.write(cand_fname, cand_agg)
+        candidateData = LocalExecutionModule.readSampleFromCsvFile(cand_fname, askForNumInputs=False)
+
+        hist_fname = os.path.join(self.dname, 'aggregate_history.csv')
+        if len(hist_agg) == 0:
+            historyData = None
+        else:
+            df_utils.write(hist_fname, hist_agg)
+            historyData = LocalExecutionModule.readSampleFromCsvFile(hist_fname, askForNumInputs=False)
+
+        return candidateData, historyData
+
     def backToSelection(self):
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
@@ -370,12 +401,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def editAgg(self):
         sender = self.sender()
         row = sender.property('row')
-        cand_list, hist_list = self.getEnsembleList()
-        candidateData = cand_list[0]
-        if len(hist_list) == 0:
-            historyData = None
-        else:
-            historyData = hist_list[0]
+        candidateData, historyData = self.createAggData()
 
         if row == 0:
             previewData = candidateData
@@ -383,9 +409,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             dialog.show()
 
         if row == 1:
-            previewData = historyData
-            dialog = sdoePreview(previewData, self.dname, self)
-            dialog.show()
+            if historyData is not None:
+                previewData = historyData
+                dialog = sdoePreview(previewData, self.dname, self)
+                dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
@@ -477,13 +504,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewButton.clicked.connect(self.editAgg)
             self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
 
-        ### BN TO DO: update!
-        cand_list, hist_list = self.getEnsembleList()
-        candidateData = cand_list[0]
-        if len(hist_list) == 0:
-            historyData = None
-        else:
-            historyData = hist_list[0]
+        candidateData, historyData = self.createAggData()
 
         item = self.aggFilesTable.item(0, self.descriptorCol)
         item.setText(candidateData.getModelName())
@@ -511,19 +532,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setMinimumWidth(minWidth)
 
     def launchSdoe(self):
-
-        ### BN TO DO: update!                                                                                                     cand_list, hist_list = self.getEnsembleList()
-        cand_list, hist_list = self.getEnsembleList()
-        candidateData = cand_list[0]
-        if len(hist_list) == 0:
-            historyData = None
-        else:
-            historyData = hist_list[0]
+        candidateData, historyData = self.createAggData()
         dname = self.dname
 
         dialog = sdoeAnalysisDialog(candidateData, dname, historyData, self)
         dialog.exec_()
-        dialog.deleteLater()
+        # dialog.deleteLater()
 
 
     def initUQToolBox(self):

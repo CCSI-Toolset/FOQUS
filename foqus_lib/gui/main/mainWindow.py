@@ -40,6 +40,7 @@ from foqus_lib.gui.basic_data.basicDataParentFrame import *
 from foqus_lib.gui.optimization.optSetupFrame import *
 from foqus_lib.gui.ouu.ouuSetupFrame import *
 from foqus_lib.gui.uq.uqSetupFrame import *
+from foqus_lib.gui.sdoe.sdoeSetupFrame import *
 from foqus_lib.gui.uq.updateUQModelDialog import *
 from foqus_lib.gui.help.helpBrowser import*
 from foqus_lib.gui.surrogate.surrogateFrame import*
@@ -60,6 +61,7 @@ class mainWindow(QMainWindow):
                  showOpt = True,
                  showOuu = True,
                  showBasicData = False,
+                 showSDOE = True,
                  ts = None):
         """
         Main window initialization
@@ -73,6 +75,7 @@ class mainWindow(QMainWindow):
             showUQ: if false the uq interface is hidden
             showOpt: if true the optimization interface is hidden
             showOuu: if true the optimization interface is hidden
+            showSDOE: if false the sdoe interface is hidden
             ts: test script to run
         """
         QMainWindow.__init__(self)  # call base constructor
@@ -83,6 +86,7 @@ class mainWindow(QMainWindow):
         self.splash = splash
         self.showOuu = showOuu
         self.showBasicDataTab = showBasicData
+        self.showSDOE = showSDOE
         self.setIconPaths() # stores icon paths in a dict
         self.statusBar() # add a status bar to the main window
         self.statusBar().showMessage("Working Directory: {0}".format(
@@ -113,6 +117,8 @@ class mainWindow(QMainWindow):
         self.optSetupFrame.updateGraph.connect(self.refreshFlowsheet)
         # OUU screen
         self.ouuSetupFrame = ouuSetupFrame(self.dat, self)
+        # SDOE screen
+        self.sdoeSetupFrame = sdoeSetupFrame(self.dat, self)
         # surrogate screen
         self.surFrame = surrogateFrame(self.dat, self)
         self.surFrame.setStatusBar.connect(self.setStatus)
@@ -131,9 +137,10 @@ class mainWindow(QMainWindow):
         self.mainWidget.addWidget(self.uqSetupFrame)     # 3
         self.mainWidget.addWidget(self.optSetupFrame)    # 4
         self.mainWidget.addWidget(self.ouuSetupFrame)    # 5
-        self.mainWidget.addWidget(self.surFrame)         # 6
-        self.mainWidget.addWidget(self.heatIntFrame)     # 7
-        self.mainWidget.addWidget(self.fsettingsFrame)   # 8
+        self.mainWidget.addWidget(self.sdoeSetupFrame)   # 6
+        self.mainWidget.addWidget(self.surFrame)         # 7
+        self.mainWidget.addWidget(self.heatIntFrame)     # 8
+        self.mainWidget.addWidget(self.fsettingsFrame)   # 9
         # make a dictionary to look up widget indexes in stacked widget
         self.screenIndex = {
             'home': 0,
@@ -142,9 +149,10 @@ class mainWindow(QMainWindow):
             'uq':3,
             'opt':4,
             'ouu':5,
-            'surrogate':6,
-            'heatInt':7,
-            'settings':8}
+            'sdoe': 6,
+            'surrogate':7,
+            'heatInt':8,
+            'settings':9}
         ## Create toolboxes for editing nodes and edges in flowsheet
         #node editor
         self.nodeDock = nodeDock(self.dat, self)
@@ -262,6 +270,7 @@ class mainWindow(QMainWindow):
             'optimize':      ':/icons/icons/opt48.svg',
             'ouu':           ':/icons/icons/ouu48.svg',
             'uq':            ':/icons/icons/uq48.svg',
+            'sdoe':          ':/icons/icons/sdoe48.svg',
             'data':          ':/icons/icons/data.svg',
             'data48':        ':/icons/icons/data48.svg',
             'drm48':         ':/icons/icons/drm48.svg',
@@ -360,6 +369,20 @@ class mainWindow(QMainWindow):
             self.ouuSetupAction.setCheckable(True)
             self.mainToolbarActionGroup.addAction(self.ouuSetupAction)
             self.toolbarMain.addAction(self.ouuSetupAction)
+
+        # SDOE setup action
+        if self.showSDOE:
+            self.sdoeSetupAction = QAction(
+                QIcon(self.iconPaths['sdoe']),
+                'SDOE',
+                self)
+            self.sdoeSetupAction.setToolTip(
+                "Sequential Design of Experiments")
+            self.sdoeSetupAction.triggered.connect(self.showSdoeSetup)
+            self.sdoeSetupAction.setCheckable(True)
+            self.mainToolbarActionGroup.addAction(self.sdoeSetupAction)
+            self.toolbarMain.addAction(self.sdoeSetupAction)
+
         # Add surrogate model button
         self.surrogateAction = QAction(
             QIcon(self.iconPaths['surrogate48']),
@@ -795,10 +818,17 @@ class mainWindow(QMainWindow):
 
     def showOuuSetup(self):
         '''
-            Show the UQ screen
+            Show the OUU screen
         '''
         self.changeScreen()
         self.mainWidget.setCurrentIndex(self.screenIndex['ouu'])
+
+    def showSdoeSetup(self):
+        '''
+            Show the SDOE screen
+        '''
+        self.changeScreen()
+        self.mainWidget.setCurrentIndex(self.screenIndex['sdoe'])
 
     def showSurrogate(self):
         self.changeScreen()

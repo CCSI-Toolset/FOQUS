@@ -276,11 +276,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def checkInclude(self):
         numInputs = self.candidateData.getNumInputs()
+        min_vals = []
+        max_vals = []
         include_list = []
         for row in range(numInputs):
             if self.inputSdoeTable.cellWidget(row, self.includeCol).isChecked():
+                min_vals.append(self.inputSdoeTable.item(row, self.minCol).text())
+                max_vals.append(self.inputSdoeTable.item(row, self.maxCol).text())
                 include_list.append(self.inputSdoeTable.item(row, self.nameCol).text())
-        return include_list
+        return min_vals, max_vals, include_list
 
     def writeConfigFile(self, test=False):
         timestamp = datetime.now().isoformat()
@@ -311,22 +315,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             f.write('history_file = %s\n' % os.path.join(self.dname, self.historyData.getModelName()))
         f.write('candidate_file = %s\n' % os.path.join(self.dname, self.candidateData.getModelName()))
-        f.write('min_vals = ')
-        for row in range(self.candidateData.getNumInputs()-1):
-            f.write((self.inputSdoeTable.item(row, self.minCol).text()) + ', ')
-        f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs()-1, self.minCol).text())
-        f.write('\n')
-
-        f.write('max_vals = ')
-        for row in range(self.candidateData.getNumInputs() - 1):
-            f.write((self.inputSdoeTable.item(row, self.maxCol).text()) + ', ')
-        f.write(self.inputSdoeTable.item(self.candidateData.getNumInputs() - 1, self.maxCol).text())
-        f.write('\n')
-
-        include_list = self.checkInclude()
+        min_vals, max_vals, include_list = self.checkInclude()
+        f.write('min_vals = %s\n' % ','.join(min_vals))
+        f.write('max_vals = %s\n' % ','.join(max_vals))
         f.write('include = %s' % ','.join(include_list))
         f.write('\n')
-
         f.write('\n')
 
         ## OUTPUT

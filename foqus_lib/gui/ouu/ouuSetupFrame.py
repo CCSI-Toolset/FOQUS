@@ -1,5 +1,5 @@
 import sys
-import os
+import os, re
 import math
 from nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
@@ -752,6 +752,10 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         return dest
 
     def analyze(self):
+        dir = os.getcwd()
+        for f in os.listdir(dir):
+            if re.search('psuadeEval.out', f)
+                os.remove(os.path.join(dir, f)
 
         if self.run_button.text() == 'Run OUU': # Run OUU
             names, indices = self.input_table.getPrimaryVariables()

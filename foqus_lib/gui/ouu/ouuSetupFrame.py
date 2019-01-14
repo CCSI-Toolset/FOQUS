@@ -754,7 +754,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     def analyze(self):
         dir = os.getcwd()
         for f in os.listdir(dir):
-            if re.search('psuadeEval.out', f)
+            if re.search('psuadeEval.out', f):
                 os.remove(os.path.join(dir, f)
 
         if self.run_button.text() == 'Run OUU': # Run OUU

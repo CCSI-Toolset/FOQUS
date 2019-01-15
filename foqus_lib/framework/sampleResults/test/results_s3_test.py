@@ -38,8 +38,7 @@ def test_results_empty():
     assert 5 == obj.count_cols()
 
 def test_add_result_single():
-    """ BROKEN...
-    blows up in Results.sd_col_list
+    """
     """
     obj = results.Results()
     setName = 's3test'
@@ -58,7 +57,7 @@ def test_add_result_single():
                     time=None,
                     sd=sd)
 
-    assert 5 == obj.count_cols()
+    assert 4 == obj.count_cols()
 
 def test_results_session_broke_result_page():
     """ Paging results from session results generator
@@ -99,13 +98,14 @@ def test_results_session_broke_result_page():
         maxSend=20,
         sid=session_id, jobIds=jids)
 
-    assert g.status['success'] == 3
+    assert g.status['success'] == 0
     assert g.status['unfinished'] == 0
-    assert len(g.res) == 3
+    assert g.status['error'] == 1
+    assert len(g.res) == 1
     assert set(map(lambda i: i['Id'], g.res)) == set(jids)
-    for i in g.res:
-        assert i['session'] == session_id
-        assert i['graphError'] == 0
+    i = g.res[0]
+    assert i['session'] == session_id
+    assert i['graphError'] == -3
 
 
 

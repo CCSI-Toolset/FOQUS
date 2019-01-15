@@ -107,6 +107,7 @@ class Model:
         self.auxDriverName = None
         self.runType = None
         self.numInputs = 0
+        self.numVarInputs = 0
         self.numOutputs = 0
         self.inputNames = None
         self.outputNames = None
@@ -231,6 +232,16 @@ class Model:
 
     def getNumInputs(self):
         return self.numInputs
+
+    def getNumVarInputs(self):
+        inputTypes = self.getInputTypes()
+        numInputs = self.getNumInputs()
+        count = 0
+        for i in range(numInputs):
+            if inputTypes[i]:
+                count += 1
+        self.numVarInputs = count
+        return self.numVarInputs
 
     def getNumOutputs(self):
         return self.numOutputs

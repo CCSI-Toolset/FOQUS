@@ -291,9 +291,9 @@ class MarsDegreeSpinBox(QSpinBox):
         super(MarsDegreeSpinBox, self).__init__(parent)
 
     def init(self, data):
-        nInputs = data.getNumInputs()
-        self.setRange(min([2, nInputs]), nInputs)
-        self.setValue(min([8, nInputs]))
+        nVarInputs = data.getNumVarInputs()
+        self.setRange(min([2, nVarInputs]), nVarInputs)
+        self.setValue(min([8, nVarInputs]))
 
 class LegendreSpinBox(QSpinBox):
     def __init__(self, parent = None):

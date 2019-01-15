@@ -322,6 +322,10 @@ class SampleData(object):
     def getNumInputs(self):
         return self.model.getNumInputs()
 
+    def getNumVarInputs(self):
+        return self.model.getNumVarInputs()
+
+
     def getNumOutputs(self):
         return self.model.getNumOutputs()
 

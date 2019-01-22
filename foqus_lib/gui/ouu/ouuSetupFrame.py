@@ -1,7 +1,7 @@
 import sys
 import os, re
 import math
-from nodeToUQModel import nodeToUQModel
+from .nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
@@ -264,8 +264,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         numSamples = data.shape[0]
         numInputs = data.shape[1]
         table.setRowCount(numSamples + 1)
-        for r in xrange(numSamples):
-            for c in xrange(numInputs):
+        for r in range(numSamples):
+            for c in range(numInputs):
                 item = QTableWidgetItem('%g' % data[r,c])
                 table.setItem(r, c, item)
         table.resizeColumnsToContents()
@@ -285,11 +285,11 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         names = {self.z3_table: 'Z3', self.z4_table: 'Z4'}
         assert(numCols <= table.columnCount())
         values = []
-        for r in xrange(table.rowCount()):
+        for r in range(table.rowCount()):
             rowVals = []
             rowHasData = False
             rowFull = True
-            for c in xrange(numCols):
+            for c in range(numCols):
                 item = table.item(r,c)
                 if not item:
                     rowFull = False
@@ -317,8 +317,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     def activateCompressSample(self, on):
         if on:
             rowCount = 0
-            for r in xrange(self.z3_table.rowCount()):
-                for c in xrange(self.z3_table.columnCount()):
+            for r in range(self.z3_table.rowCount()):
+                for c in range(self.z3_table.columnCount()):
                     rowFull = True
                     item = self.z3_table.item(r,c)
                     if item:
@@ -409,7 +409,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.outputs_table.setRowCount(len(outputNames))
         self.useAsConstraint = [False] * len(outputNames)
         self.useAsDerivative = [False] * len(outputNames)
-        for r in xrange(len(outputNames)):
+        for r in range(len(outputNames)):
             # radio = QRadioButton()
             # if r == 0:
             #     radio.setChecked(True)
@@ -559,7 +559,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
 
 
     def addToInputPlots(self, x):
-        for i in xrange(len(self.inputPoints)):
+        for i in range(len(self.inputPoints)):
             self.inputPoints[i].append(x[i])
             if i > 0 and i in self.plotsToUpdate:
                 numPoints = len(self.inputPoints[i])
@@ -575,7 +575,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     def managePlots(self):
         names, indices = self.input_table.getPrimaryVariables()
         if len(self.inputPlots) < len(names):  #add plots
-            for i in xrange(len(self.inputPlots), len(names)):
+            for i in range(len(self.inputPlots), len(names)):
                 fig = Figure(
                     figsize=(400,200),
                     dpi=72,
@@ -589,7 +589,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                 self.plotsLayout.addWidget(canvas)
                 canvas.setParent(self.plots_group)
         elif len(self.inputPlots) > len(names): #remove plots
-            for i in xrange(len(names), len(self.inputPlots)):
+            for i in range(len(names), len(self.inputPlots)):
                 self.inputPlots[i]['fig'].clf()
                 self.inputPlots[i]['canvas'].deleteLater()
                 del self.inputPlots[i]
@@ -600,7 +600,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
 
         self.plots_group.setMinimumHeight(190 * (len(names) + 1))
 
-        self.inputPoints = [[] for i in xrange(len(names) + 1)]
+        self.inputPoints = [[] for i in range(len(names) + 1)]
         self.clearPlots()
 
     def clearPlots(self):
@@ -613,8 +613,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.objCanvas.draw()
 
         if 'inputPoints' in self.__dict__:
-            self.inputPoints = [[] for i in xrange(len(self.inputPoints))]
-            for i in xrange(1, len(self.inputPoints)):
+            self.inputPoints = [[] for i in range(len(self.inputPoints))]
+            for i in range(1, len(self.inputPoints)):
                 if len(self.inputPlots[i - 1]['ax'].lines) > 0:
                     self.inputPlots[i - 1]['ax'].lines = []
                     self.inputPlots[i - 1]['canvas'].draw()
@@ -748,7 +748,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         mydir = os.path.dirname(__file__)
         src = os.path.join(mydir, 'foqusPSUADEClient.py')
         shutil.copyfile(src, dest)
-        os.chmod(dest, 0700)
+        os.chmod(dest, 0o700)
         return dest
 
     def analyze(self):
@@ -812,7 +812,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             y = []
             self.useAsConstraint = [False] * numOutputs
             self.useAsDerivative = [False] * numOutputs
-            for r in xrange(numOutputs):
+            for r in range(numOutputs):
                 type = self.outputs_table.cellWidget(r,0).currentText()
                 if type == ouuSetupFrame.ObjFuncText:
                     y.append(r + 1)

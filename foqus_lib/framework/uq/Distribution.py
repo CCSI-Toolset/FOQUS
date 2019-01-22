@@ -42,7 +42,7 @@
 import numbers
 
 class Distribution:
-    UNIFORM, NORMAL, LOGNORMAL, TRIANGLE, GAMMA, BETA, EXPONENTIAL, WEIBULL, SAMPLE = range(9)
+    UNIFORM, NORMAL, LOGNORMAL, TRIANGLE, GAMMA, BETA, EXPONENTIAL, WEIBULL, SAMPLE = list(range(9))
     fullNames = ('Uniform', 'Normal', 'Lognormal', 'Triangle', 'Gamma',
                  'Beta', 'Exponential', 'Weibull', 'Sample')
     psuadeNames = ('U', 'N', 'L', 'T', 'G', 'B', 'E', 'W', 'S')

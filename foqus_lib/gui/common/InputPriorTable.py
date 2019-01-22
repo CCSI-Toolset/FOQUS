@@ -13,7 +13,7 @@ class InputPriorTable(QTableWidget):
     typeChanged = pyqtSignal()
     pdfChanged = pyqtSignal()
 
-    SIMSETUP, RSANALYSIS, INFERENCE, OUU = range(4)
+    SIMSETUP, RSANALYSIS, INFERENCE, OUU = list(range(4))
 
     def __init__(self, parent = None):
         super(InputPriorTable, self).__init__(parent)
@@ -84,7 +84,7 @@ class InputPriorTable(QTableWidget):
             self.setColumnHidden(col_index['value'], True)
         r = 0   # row index
 
-        for i in xrange(nInputs):
+        for i in range(nInputs):
             # # do not add fixed input variables to table
             if (self.mode != InputPriorTable.SIMSETUP and inVarTypes[i] == Model.FIXED): # or \
             #    (self.mode == InputPriorTable.SIMSETUP and data.getInputFlowsheetFixed(i)):
@@ -262,19 +262,19 @@ class InputPriorTable(QTableWidget):
     def setupLB(self):
         inVarTypes = self.data.getInputTypes()
         self.lb = self.data.getInputMins()
-        self.lbVariable = [self.lb[i] for i in xrange(len(self.lb)) if inVarTypes[i] == Model.VARIABLE]
+        self.lbVariable = [self.lb[i] for i in range(len(self.lb)) if inVarTypes[i] == Model.VARIABLE]
 
     def setupUB(self):
         inVarTypes = self.data.getInputTypes()
         self.ub = self.data.getInputMaxs()
-        self.ubVariable = [self.ub[i] for i in xrange(len(self.ub)) if inVarTypes[i] == Model.VARIABLE]
+        self.ubVariable = [self.ub[i] for i in range(len(self.ub)) if inVarTypes[i] == Model.VARIABLE]
 
     def setupDists(self):
         if self.dist == None:
             self.distVariable = None
         else:
             inVarTypes = self.data.getInputTypes()
-            self.distVariable = [self.dist[i] for i in xrange(len(self.dist)) if inVarTypes[i] == Model.VARIABLE]
+            self.distVariable = [self.dist[i] for i in range(len(self.dist)) if inVarTypes[i] == Model.VARIABLE]
 
     def resizeColumns(self):
         col_index = self.col_index
@@ -376,14 +376,14 @@ class InputPriorTable(QTableWidget):
         numRows = self.rowCount()
         #Disable typechanged signal
         self.useTypeChangedSignal = False
-        for row in xrange(numRows):
+        for row in range(numRows):
             self.updateRow(row, col_index['type'])
         self.useTypeChangedSignal = True
 
     def setSolventFitMode(self, on):
         distNames = Distribution.fullNames
         if 'pdf' in self.col_index:
-            for r in xrange(self.rowCount()):
+            for r in range(self.rowCount()):
                 combobox = self.cellWidget(r, self.col_index['pdf'])
                 # Change distributions
                 count = combobox.count()
@@ -392,7 +392,7 @@ class InputPriorTable(QTableWidget):
                         index = combobox.currentIndex()
                         if index == 3 or index > 4 :
                             combobox.setCurrentIndex(0)
-                        for i in xrange(count - 5):
+                        for i in range(count - 5):
                             combobox.removeItem(5)
                         combobox.removeItem(3)
                 else:
@@ -417,7 +417,7 @@ class InputPriorTable(QTableWidget):
         numRows = self.rowCount()
         #Disable typechanged signal
         self.useTypeChangedSignal = False
-        for row in xrange(numRows):
+        for row in range(numRows):
             self.updateRow(row, col_index['type'])
         self.useTypeChangedSignal = True
 
@@ -716,7 +716,7 @@ class InputPriorTable(QTableWidget):
 
     def isSamplePDFChosen(self):
         col_index = self.col_index
-        for row in xrange(self.rowCount()):
+        for row in range(self.rowCount()):
             combobox = self.cellWidget(row, col_index['pdf'])
             if combobox.currentText() == Distribution.getFullName(Distribution.SAMPLE):
                 return True
@@ -785,7 +785,7 @@ class InputPriorTable(QTableWidget):
                 combobox.setCurrentIndex(0) # Prevent calling twice with Browse...
                 combobox.insertItem(index, os.path.basename(dispFName))
                 combobox.setCurrentIndex(index)
-                for row in xrange(self.rowCount()):
+                for row in range(self.rowCount()):
                     if row != currentRow:
                         combo = self.cellWidget(row, col_index['p1'])
                         if combo is not None and isinstance(combo, QComboBox):
@@ -839,7 +839,7 @@ class InputPriorTable(QTableWidget):
 
     def setAllToType(self, value):
         numRows = self.rowCount()
-        for row in xrange(numRows):
+        for row in range(numRows):
             combobox = self.cellWidget(row, self.col_index['type'])
             combobox.setCurrentIndex(value)
 
@@ -848,7 +848,7 @@ class InputPriorTable(QTableWidget):
         if isinstance(type, str): #String
             if type not in self.typeItems:
                 raise Exception('setCheckedToType value is not among accepted values')
-        for r in xrange(self.rowCount()):
+        for r in range(self.rowCount()):
             checkbox = self.cellWidget(r, col_index['check'])
             combo = self.cellWidget(r, col_index['type'])
             if checkbox.isChecked():
@@ -864,7 +864,7 @@ class InputPriorTable(QTableWidget):
         col_index = self.col_index
         col = col_index['type']
         count = 0
-        for row in xrange(self.rowCount()):
+        for row in range(self.rowCount()):
             combo = self.cellWidget(row, col)
             if combo.currentText() == 'Design':
                 count += 1
@@ -874,7 +874,7 @@ class InputPriorTable(QTableWidget):
         col_index = self.col_index
         col = col_index['type']
         count = 0
-        for row in xrange(self.rowCount()):
+        for row in range(self.rowCount()):
             combo = self.cellWidget(row, col)
             if combo.currentText() == 'Variable':
                 count += 1
@@ -913,7 +913,7 @@ class InputPriorTable(QTableWidget):
         indices = []
         if 'type' in col_index:
             col = col_index['type']
-            for row in xrange(self.rowCount()):
+            for row in range(self.rowCount()):
                 combo = self.cellWidget(row, col)
                 if typeString in combo.currentText():
                     names.append(self.item(row, col_index['name']).text())
@@ -924,7 +924,7 @@ class InputPriorTable(QTableWidget):
         nInputs = self.rowCount()
         col_index = self.col_index
         showList = []
-        for i in xrange(nInputs):
+        for i in range(nInputs):
             chkbox = self.cellWidget(i, col_index['check'])
             if chkbox is not None and chkbox.isEnabled() and chkbox.isChecked():
                 showList.append(i)
@@ -969,7 +969,7 @@ class InputPriorTable(QTableWidget):
         b = False
         nInputs = self.rowCount()
         col_index = self.col_index
-        for i in xrange(nInputs):
+        for i in range(nInputs):
             inputName = self.item(i, col_index['name']).text()
             type = 'Variable'
             if 'type' in col_index:
@@ -1068,7 +1068,7 @@ class InputPriorTable(QTableWidget):
         nInputs = self.rowCount()
         col_index = self.col_index
         values = [None]*nInputs
-        for i in xrange(nInputs):
+        for i in range(nInputs):
             inType = 'Variable'
             value = {}
             if 'name' in col_index:
@@ -1111,7 +1111,7 @@ class InputPriorTable(QTableWidget):
                         param1 = None
                         param2 = None
                     else:
-                        print i
+                        print(i)
                         dtype = self.distVariable[i].getDistributionType()
                         param1, param2 = self.distVariable[i].getParameterValues()
                     xmin = self.lbVariable[i]

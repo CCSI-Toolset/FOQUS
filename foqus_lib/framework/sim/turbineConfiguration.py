@@ -9,13 +9,13 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
-import ConfigParser
-import urlparse
+import configparser
+import urllib.parse
 import json
 import re
 import time
 import random
-import urllib2
+import urllib.request
 import ssl
 import logging
 import traceback
@@ -25,15 +25,16 @@ import signal
 import socket
 import dateutil  #for py2exe
 import dateutil.parser  #for py2exe seems to miss it
+import imp
 if os.name == 'nt':
     import win32process
 from collections import OrderedDict
 try:
-    import turbineLiteDB
+    from . import turbineLiteDB
 except Exception as e:
-    print "Problem importing turbineLiteDB."
-    print "Without this you cannot run turbine simulations locally."
-    print e
+    logging.getLogger("foqus." + __name__).exception(
+        "Problem importing turbineLiteDB.")
+
 from foqus_lib.framework.foqusException.foqusException import *
 import turbine.commands.turbine_application_script
 import turbine.commands.turbine_session_script
@@ -57,7 +58,7 @@ class TurbineInterfaceEx(foqusException):
             #If no code was given, but an original exception is given
             #try to convert the original exception into something I can
             #understand
-            if isinstance(e, urllib2.HTTPError):
+            if isinstance(e, urllib.request.HTTPError):
                 if e.code == 401:
                     self.code = 11
                 elif e.code == 404:
@@ -68,7 +69,7 @@ class TurbineInterfaceEx(foqusException):
                         str(e.code)
                     )
                     self.code = 10
-            elif isinstance(e, urllib2.URLError):
+            elif isinstance(e, urllib.request.URLError):
                 if isinstance(e.reason, ssl.SSLError):
                     self.code = 5
                 elif isinstance(e.reason, str):
@@ -387,7 +388,6 @@ class turbineConfiguration():
 
     def consumerID(self, nodeName):
         ci = self.consumers.get(nodeName, None)
-        print ci.cid
         if ci is None:
             return None
         cid = ci.cid
@@ -479,7 +479,7 @@ class turbineConfiguration():
         '''
             Stop all the consumers that were started by FOQUS
         '''
-        names = self.consumers.keys()
+        names = list(self.consumers.keys())
         for name in names:
             self.stopConsumer(name)
         logging.getLogger("foqus." + __name__)\
@@ -492,7 +492,7 @@ class turbineConfiguration():
             try again this reloads turbine so it doesn't store anything
             and you can change the configuration.
         '''
-        reload(turbine.commands)
+        imp.reload(turbine.commands)
         # make sure turbine doesn't change my log settings by telling it
         # the log settings have already been done and not to change them
         turbine.commands._setup_logging.done = True
@@ -561,7 +561,7 @@ class turbineConfiguration():
             using the information to update the current Turbine config
             information.
         '''
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:
             config.read(path)
@@ -580,7 +580,7 @@ class turbineConfiguration():
             configuration file.
         '''
         path = self.getFile()
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:
             config.read(path)
@@ -626,7 +626,7 @@ class turbineConfiguration():
             (this can be used to write the configuration file)
         '''
         self.checkAddress()
-        config = ConfigParser.ConfigParser()
+        config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         config.add_section("Consumer")
         config.add_section("Job")
@@ -817,7 +817,6 @@ class turbineConfiguration():
         try:
             output = turbine.commands.turbine_session_script.start_jobs(
                 self.turbineConfigParse(), sid)
-            print "startSession:OUTPUT: ", output
             return json.loads(output)
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
@@ -883,7 +882,6 @@ class turbineConfiguration():
                     postAddress]),
                 e = e,
                 tb=traceback.format_exc())
-        print "getCompletedJobGen.RESULT: ", gid
         return json.loads(gid)
 
     def getCompletedJobPage(self, sid, gen):
@@ -904,7 +902,7 @@ class turbineConfiguration():
                 self.turbineConfigParse(),
                 "",
                 "")
-        except urllib2.HTTPError as e:
+        except urllib.request.HTTPError as e:
             if e.code == 404:
                 #logging.getLogger("foqus." + __name__).debug(
                 #    "404 getting result page.")
@@ -923,7 +921,7 @@ class turbineConfiguration():
                         postAddress]),
                     e = e,
                     tb=traceback.format_exc())
-        except urllib2.URLError as e:
+        except urllib.request.URLError as e:
             raise TurbineInterfaceEx(
                 code = 0,
                 msg = "".join([
@@ -1148,7 +1146,7 @@ class turbineConfiguration():
                         "marked failed.")
                     try:
                         self.killJob(jobID, state)
-                    except Exception, e:
+                    except Exception as e:
                         logging.getLogger("foqus." + __name__).exception(
                             "Job " + str(jobID) + \
                             " Wait time-out, failed to terminate"\
@@ -1241,7 +1239,7 @@ class turbineConfiguration():
                 # Jobs not done but I'm not waiting any more (timeout)
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Wait time-out, failed to terminate"\
@@ -1253,7 +1251,7 @@ class turbineConfiguration():
             elif runStart and time.clock() - runStart > maxRunTime:
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Run time-out, failed to terminate"\
@@ -1265,7 +1263,7 @@ class turbineConfiguration():
             elif stopFlag != None and stopFlag.isSet():
                 try:
                     self.killJob(jobID, state)
-                except Exception, e:
+                except Exception:
                     logging.getLogger("foqus." + __name__).exception(
                         "Job " + str(jobID) + \
                         " Graph thread terminate, failed to"\
@@ -1274,7 +1272,6 @@ class turbineConfiguration():
                     raise TurbineInterfaceEx(code = 355)
 
     def getAppByExtension(self, modelFile):
-        print "MODEL FILE: ", modelFile
         junk, modelExt = os.path.splitext(modelFile) #get model ext
         app = self.appExtensions.get(modelExt, None)
         if not app: # unknown extension type
@@ -1432,9 +1429,6 @@ class turbineConfiguration():
         for s in simList:
             simListLower.append(s.lower())
         exists = name.lower() in simListLower
-        print name.lower()
-        print simListLower
-        print exists
         if exists and not update:
             raise TurbineInterfaceEx(
                 code = 309,
@@ -1517,10 +1511,10 @@ class turbineConfiguration():
         # Check that user name and password are filled in
         # for TurbineLite I Just use None, None you don't have to enter
         # anything, so for TurbineLite this should pass
-        if not isinstance(username, basestring) or username == '':
+        if not isinstance(username, str) or username == '':
             if not self.address.startswith('http://'):
                 errList.append('empty username')
-        if not isinstance(password, basestring) or password == '':
+        if not isinstance(password, str) or password == '':
             if not self.address.startswith('http://'):
                 errList.append('empty password')
         n = None
@@ -1534,7 +1528,7 @@ class turbineConfiguration():
         for section in sections:
             url = cp.get(section, 'url')
             scheme,netloc,path,params,query,fragment =\
-                urlparse.urlparse(url)
+                urllib.parse.urlparse(url)
             if scheme != 'https' and scheme != 'http':
                 errList.append(
                     'section %s URL should be https or http'%section)
@@ -1577,9 +1571,9 @@ if __name__ == '__main__':
     t = turbineConfiguration()
     t.path = "config_east.cfg"
     t.updateSettings()
-    print t.getApplicationList()
-    print t.getSimulationList()
-    print t.getSessionList()
+    print((t.getApplicationList()))
+    print((t.getSimulationList()))
+    print((t.getSessionList()))
     t.uploadSimulation("ftest01", "ftest.foqus")
-    print t.createSession()
-    print t.getSessionList()
+    print((t.createSession()))
+    print((t.getSessionList()))

@@ -18,18 +18,18 @@ def fit(nx_design, nx_var, xdatfile, ydatfile, modelfile, expfile, priorsfile, d
     writedisc = booldict[writedisc]
 
     if disc_params is None:
-        disc_params = {'nterms':'20', 
+        disc_params = {'nterms':'20',
                        'order':'2'}
 
-    p = subprocess.Popen(['Rscript', 'solvfit_calibfit.R', 
-                          nx_design, nx_var, xdatfile, ydatfile, modelfile, 
+    p = subprocess.Popen(['Rscript', 'solvfit_calibfit.R',
+                          nx_design, nx_var, xdatfile, ydatfile, modelfile,
                           expfile, priorsfile, disc, writepost, writedisc,
                           emul_params['bte'], emul_params['nterms'], emul_params['order'],
                           calib_params['bte'], disc_params['nterms'], disc_params['order']],
                          stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     stdout, stderr = p.communicate()
-    print stdout
-    print stderr
+    print(stdout)
+    print(stderr)
 
     return modelfile
 
@@ -38,5 +38,4 @@ def fit(nx_design, nx_var, xdatfile, ydatfile, modelfile, expfile, priorsfile, d
 # ---------------------------------------
 rdsfile = fit('1','3','example/xdat.csv','example/ydat.csv','solvfit_calibrator.rds',
               'example/expdat1.csv','example/priors.txt', disc=True)
-print rdsfile
-
+print(rdsfile)

@@ -7,7 +7,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-from option import *
+from foqus_lib.framework.foqusOptions.option import *
 
 class optionList(dict):
     def __init__(self):
@@ -28,7 +28,7 @@ class optionList(dict):
             change.
         '''
         if sd == None: return
-        for k, v in sd.iteritems():
+        for k, v in sd.items():
             if k in self:
                 self[k].value = v
 
@@ -37,7 +37,7 @@ class optionList(dict):
             Load the option values from a dictionary.
         '''
         sd = {}
-        for k, v in self.iteritems():
+        for k, v in self.items():
             sd[k] = v.value
         return sd
 
@@ -61,7 +61,7 @@ class optionList(dict):
             self[opt].loadDict(sd['options'][opt])
         self.order = sd.get(
             'order',
-            sorted(self.keys(), key=lambda s: s.lower()))
+            sorted(list(self.keys()), key=lambda s: s.lower()))
 
     def addIfNew(
         self,

@@ -6,12 +6,12 @@ Methods:
     setSampleMethod(value):
         Sets sample method with SamplingMethods value.  Can be string full name
         or PSUADE abbrev
-        
+
     getSampleMethod():
         Get sample method
-        
+
     setNumSamples(value):
-        Sets the number of samples within the model 
+        Sets the number of samples within the model
     getNumSamples():
         Get number of samples
 
@@ -60,7 +60,7 @@ Methods:
                                 (std dev, beta, etc.)
                                 Use None for those values that are empty
                                     (e.g. mean for uniform distribution)
-           
+
 
     getInputDistributions():
         Get input distributions.  Returns tuple of Distribution enum values
@@ -107,7 +107,7 @@ Methods:
 
     getValidSamples():
         Returns a new SampleData object that contains all the valid samples (run state = True)
-        
+
     writeToPsuade():
         Writes SampleData object to a psuade file
 
@@ -119,11 +119,11 @@ import os
 import numpy
 import copy
 import time
-from Model import Model
-from Distribution import Distribution
-from SamplingMethods import SamplingMethods
-from ResponseSurfaces import ResponseSurfaces
-from UQAnalysis import UQAnalysis
+from .Model import Model
+from .Distribution import Distribution
+from .SamplingMethods import SamplingMethods
+from .ResponseSurfaces import ResponseSurfaces
+from .UQAnalysis import UQAnalysis
 
 
 class SampleData(object):
@@ -151,7 +151,7 @@ class SampleData(object):
     def __deepcopy__(self, memo):
         x = SampleData.__new__(SampleData)
         memo[id(self)] = x
-        for n,v in self.__dict__.iteritems():
+        for n,v in self.__dict__.items():
             if n == 'session':
                 setattr(x, n, self.__getattribute__(n))
             elif n == 'analyses':
@@ -173,7 +173,7 @@ class SampleData(object):
             sd['inputData'] = self.inputData.tolist()
         else:
             sd['inputData'] = self.inputData
-            
+
         if isinstance(self.outputData, numpy.ndarray):
             sd['outputData'] = self.outputData.tolist()
         else:
@@ -225,46 +225,46 @@ class SampleData(object):
             for analDict in sd['analyses']:
                 type = UQAnalysis.getTypeEnumValue(analDict['type'])
                 if type == UQAnalysis.PARAM_SCREEN:
-                    from ParameterScreening import ParameterScreening
+                    from .ParameterScreening import ParameterScreening
                     anal = ParameterScreening(self, analDict['outputs'], analDict['subType'])
                 elif type == UQAnalysis.UNCERTAINTY:
-                    from UncertaintyAnalysis import UncertaintyAnalysis
+                    from .UncertaintyAnalysis import UncertaintyAnalysis
                     anal = UncertaintyAnalysis(self, analDict['outputs'])
                 elif type == UQAnalysis.CORRELATION:
-                    from CorrelationAnalysis import CorrelationAnalysis
+                    from .CorrelationAnalysis import CorrelationAnalysis
                     anal = CorrelationAnalysis(self, analDict['outputs'])
                 elif type == UQAnalysis.SENSITIVITY:
-                    from SensitivityAnalysis import SensitivityAnalysis
+                    from .SensitivityAnalysis import SensitivityAnalysis
                     anal = SensitivityAnalysis(self, analDict['outputs'], analDict['subType'])
                 elif type == UQAnalysis.VISUALIZATION:
-                    from Visualization import Visualization
+                    from .Visualization import Visualization
                     anal = Visualization(self, analDict['outputs'], analDict['inputs'])
                 else: #RS Analyses
                     userRegressionFile = analDict['userRegressionFile'] if 'userRegressionFile' in analDict else None
                     if type == UQAnalysis.RS_VALIDATION:
-                        from RSValidation import RSValidation
+                        from .RSValidation import RSValidation
                         testFile = analDict['testFile'] if 'testFile' in analDict else None
                         anal = RSValidation(self, analDict['outputs'], analDict['rs'], analDict['rsOptions'],
                                             analDict['genCodeFile'], analDict['nCV'], userRegressionFile,
                                             testFile)
                     elif type == UQAnalysis.RS_UNCERTAINTY:
-                        from RSUncertaintyAnalysis import RSUncertaintyAnalysis
+                        from .RSUncertaintyAnalysis import RSUncertaintyAnalysis
                         anal = RSUncertaintyAnalysis(self, analDict['outputs'], analDict['subType'],
                                                      analDict['rs'], analDict['rsOptions'],
                                                      userRegressionFile, analDict['xprior'])
                     elif type == UQAnalysis.RS_SENSITIVITY:
-                        from RSSensitivityAnalysis import RSSensitivityAnalysis
+                        from .RSSensitivityAnalysis import RSSensitivityAnalysis
                         anal = RSSensitivityAnalysis(self, analDict['outputs'], analDict['subType'],
                                                      analDict['rs'], analDict['rsOptions'],
                                                      userRegressionFile, analDict['xprior'])
                     elif type == UQAnalysis.INFERENCE:
-                        from RSInference import RSInference
+                        from .RSInference import RSInference
                         anal = RSInference(self, analDict['ytable'], analDict['xtable'],
                                            analDict['obsTable'], analDict['genPostSample'],
                                            analDict['addDisc'], analDict['showList'],
                                            userRegressionFile = userRegressionFile)
                     elif type == UQAnalysis.RS_VISUALIZATION:
-                        from RSVisualization import RSVisualization
+                        from .RSVisualization import RSVisualization
                         anal = RSVisualization(self, analDict['outputs'], analDict['inputs'], analDict['rs'],
                                                      analDict['minVal'], analDict['maxVal'],
                                                      analDict['rsOptions'], userRegressionFile)
@@ -277,7 +277,7 @@ class SampleData(object):
 
     def getSession(self):
         return self.session
-            
+
     def setID(self, string):
         self.ID = string
 
@@ -285,7 +285,7 @@ class SampleData(object):
         return self.ID
 
     def setSampleMethod(self, value):
-        if isinstance(value, basestring): #Single string
+        if isinstance(value, str): #Single string
             value = SamplingMethods.getEnumValue(value)
         self.sampleMethod = value
 
@@ -300,16 +300,16 @@ class SampleData(object):
 
     def getNumSamples(self):
         return self.numSamples
-       
+
     def setNumSamplesAdded(self, value):
         self.numSamplesAdded = value
-        
+
     def getNumSamplesAdded(self):
         return self.numSamplesAdded
-        
+
     def setOrigNumSamples(self, value):
         self.origNumSamples = value
-        
+
     def getOrigNumSamples(self):
         return self.origNumSamples
 
@@ -507,7 +507,7 @@ class SampleData(object):
             return
         if folderStructure is None:
             folderStructure = []
-        if isinstance(folderStructure, basestring):
+        if isinstance(folderStructure, str):
             folderStructure = [folderStructure]
         folderStructure.insert(0, self.ID)
         self.session.removeArchiveFolder(folderStructure)
@@ -557,7 +557,7 @@ class SampleData(object):
             newSamples.setOutputData(outputs[indices])
         runState = self.runState
         newSamples.setRunState(runState[indices])
-        
+
         return newSamples
 
     def deleteInputs(self, indices):
@@ -600,7 +600,7 @@ class SampleData(object):
             numInputs = types.count(Model.VARIABLE)
         outf.write('%d %d %d\n' % (numInputs, self.getNumOutputs(),
                                    self.getNumSamples()))
-        
+
         #Write out data
         hasOutputData = False
         if self.outputData is not None:
@@ -612,12 +612,12 @@ class SampleData(object):
                     hasOutputData = False
                 else:
                     hasOutputData = True
-        for i in xrange(self.getNumSamples()):
+        for i in range(self.getNumSamples()):
             outf.write('%d %d\n' % (i + 1, self.runState[i]))
-            for j in xrange(self.getNumInputs()):
+            for j in range(self.getNumInputs()):
                 if types[j] == Model.VARIABLE or fixedAsVariables:
                     outf.write(' % .16e\n' % self.inputData[i][j])
-            for j in xrange(self.getNumOutputs()):
+            for j in range(self.getNumOutputs()):
                 if hasOutputData and not numpy.isnan(self.outputData[i][j]):
                     outf.write(' % .16e\n' % self.outputData[i][j])
                 else:
@@ -625,7 +625,7 @@ class SampleData(object):
 
         outf.write('PSUADE_IO\n')
         outf.write('PSUADE\n')
-        
+
         #Write inputs
         outf.write('INPUT\n')
         numFixed = self.getNumInputs() - numInputs
@@ -642,10 +642,10 @@ class SampleData(object):
             self.setInputDistributions([Distribution.UNIFORM] * self.getNumInputs())
             distributions = self.getInputDistributions()
             self.setInputDistributions([])
-            
+
         fixedIndex = 1;
         variableIndex = 1;
-        for name, minimum, maximum, inType, dist, default in map(None, names, mins, maxs, types, distributions, defaults):
+        for name, minimum, maximum, inType, dist, default in zip(names, mins, maxs, types, distributions, defaults):
             if not fixedAsVariables and inType == Model.FIXED:
                 outf.write('   fixed %d %s =  % .16e\n' % (fixedIndex, name, default))
                 fixedIndex = fixedIndex + 1
@@ -678,7 +678,7 @@ class SampleData(object):
         outf.write('OUTPUT\n')
         outf.write('   dimension = %d\n' % self.getNumOutputs())
         names = self.getOutputNames()
-        indices = range(self.getNumOutputs())
+        indices = list(range(self.getNumOutputs()))
         for i, name in zip(indices, names):
             outf.write('   variable %d %s\n' % (i + 1, name))
         outf.write('END\n')
@@ -747,17 +747,17 @@ class SampleData(object):
         else:
             rs = ResponseSurfaces.getPsuadeName(rs)
         outf.write('   analyzer rstype = %s\n' % rs)
-            
+
         order = self.getLegendreOrder()
         if order is not None:
             outf.write('   analyzer rs_legendre_order = %d\n' % self.getLegendreOrder())
         outf.write('   analyzer threshold = 1.000000e+00\n')
         outf.write('   diagnostics 1\n')
         outf.write('END\n')
-        
+
         outf.write('END\n')
         outf.close()
-            
+
     def writeToCsv(self, filename, inputsOnly = False, outputsOnly = False, inputIndex = None, outputIndices = None):
         outf = open(filename, 'w')
 
@@ -782,7 +782,7 @@ class SampleData(object):
         for name in varNames[1:]:
             outf.write(',"%s"' % name)
         outf.write('\n')
-        
+
         # Write data
         inData = self.getInputData()
         outData = self.getOutputData()

@@ -6,12 +6,12 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-import Queue
+import queue
 import logging
 import threading
 import copy
 from foqus_lib.framework.foqusOptions.optionList import optionList
-from problem import *
+from .problem import *
 import sys
 import os
 import importlib
@@ -37,8 +37,8 @@ class optimization(threading.Thread):
         self.requireScaling = True
         self.minVars = 1
         self.maxVars = 100
-        self.msgQueue = Queue.Queue() # queue for messages to print
-        self.resQueue = Queue.Queue() # a queue for plots and monitoring
+        self.msgQueue = queue.Queue() # queue for messages to print
+        self.resQueue = queue.Queue() # a queue for plots and monitoring
         self.ex = None
         self.updateGraph = False
 

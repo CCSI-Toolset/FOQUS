@@ -23,7 +23,7 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         cols = self.dat.flowsheet.results.columns
         self.colListWidget.addItems(cols)
         self.comboBox.addItems(
-            self.dat.flowsheet.results.calculated_columns.keys())
+            list(self.dat.flowsheet.results.calculated_columns.keys()))
         self.newButton.clicked.connect(self.add_dialog)
         self.delButton.clicked.connect(self.del_current)
         self.doneButton.clicked.connect(self.close)

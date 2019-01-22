@@ -40,7 +40,7 @@ class RSCombo1(QComboBox):
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.RBF))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.USER))
         #poly, mars, svm, krig, sot, knn, rbf, user = range(0, len(rs))
-        poly, mars, gp, krig, sot, knn, rbf, user = range(0, len(rs))
+        poly, mars, gp, krig, sot, knn, rbf, user = list(range(0, len(rs)))
         # ... disable polynomial RS if not sufficient samples for linear regression
         disable = []
         items = [None]*len(rs)

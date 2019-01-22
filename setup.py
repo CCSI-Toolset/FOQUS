@@ -16,8 +16,8 @@ elif "https" in sys.argv:
     sys.argv.remove("https")
 else:
     connectType = 'https'
-        
-    
+
+
 # Add build number file to help if BUILD_NUMBER env var is set
 # this is mostly for building on Jenkins, but you could set the
 # env var on a local setup too.  If build number doesn't exist
@@ -36,11 +36,11 @@ print("Setting version as {0}".format(ver.version))
 
 install_requires=[
     'adodbapi',
-    'boto3',
+    #'boto3',
     'TurbineClient',
-    'pyparsing',
+    #'pyparsing',
     #'py4j',
-    'requests',
+    #'requests',
     #'networkx',
     #'redis',
     #'logstash_formatter',
@@ -50,11 +50,11 @@ install_requires=[
     'cma',
     'pandas>0.20'],
 
-#dependency_links=[]
+dependency_links=[]
 if connectType == 'https':
-    dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+    dependency_links=['git+https://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
 elif connectType == 'ssh':
-    dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
+    dependency_links=['git+ssh://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
 
 # Set all the package parameters
 pkg_name             = "foqus"

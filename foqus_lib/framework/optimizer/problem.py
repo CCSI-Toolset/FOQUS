@@ -5,7 +5,7 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from __future__ import division
+
 import copy
 import time
 import math
@@ -15,6 +15,7 @@ import logging
 import operator
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.at_dict.at_dict import AtDict
+from functools import reduce
 
 class objectiveFunction():
     def __init__(self, pycode = "", ps = 1, failval = 1000):
@@ -106,7 +107,7 @@ class problem():
             'solverOptions':{}}
         for skey in self.solverOptions:
             sd['solverOptions'][skey] = {}
-            for okey, ov in self.solverOptions[skey].iteritems():
+            for okey, ov in self.solverOptions[skey].items():
                 sd['solverOptions'][skey][okey] = ov
         return sd
 
@@ -135,15 +136,15 @@ class problem():
         #
         self.solverOptions = {}
         if not 'solverOptions' in sd: return
-        for dkey, d in sd['solverOptions'].iteritems():
+        for dkey, d in sd['solverOptions'].items():
             self.solverOptions[dkey] = {}
-            for okey, ov in d.iteritems():
+            for okey, ov in d.items():
                 self.solverOptions[dkey][okey] = ov
 
     def loadSamples(self, fname):
         with open(fname, 'rb') as f:
             cr = csv.reader(f)
-            head = [h.strip() for h in cr.next()]
+            head = [h.strip() for h in next(cr)]
             for h in head:
                 if not self.samp.get(h, False):
                     self.samp[h] = []
@@ -158,7 +159,7 @@ class problem():
         w = []
         mapDict = {}
         j = 0
-        for key, lst in sdict.iteritems():
+        for key, lst in sdict.items():
             w.append(lst)
             mapDict[key] = j
             j += 1
@@ -178,7 +179,7 @@ class problem():
             for i in range(len(w)):
                 w2[i][j] = w[i][c[i]]
             j += 1
-            for i in reversed(range(len(c))):
+            for i in reversed(list(range(len(c)))):
                 c[i] += 1
                 if c[i] == cmax[i] and i != 0:
                     c[i] = 0
@@ -189,13 +190,13 @@ class problem():
         nsamp = j
         sa = {}
         for i in range(nsamp):
-            for key, j in mapDict.iteritems():
+            for key, j in mapDict.items():
                 sa[key] = w2[j][i]
             self.addSample(sa)
 
     def deleteSamples(self, rows):
         rows = sorted(rows, reverse=True)
-        for key, item in self.samp.iteritems():
+        for key, item in self.samp.items():
             for r in rows:
                 del(item[r])
 
@@ -206,7 +207,7 @@ class problem():
         if len(self.samp) == 0:
             n = 0
         else:
-            n = len(self.samp.values()[0])
+            n = len(list(self.samp.values())[0])
         return n
 
     def addSampleVar(self, vname):
@@ -232,25 +233,24 @@ class problem():
             self.samp[key].append(samples.get(key, float('nan')))
 
     def runSamples(self, X, slv):
-        '''
-            Runs the flowsheet samples for the objective calculation
+        """Runs the flowsheet samples for the objective calculation
 
-            X:  a list of flat vector of descision variable values.
-                The variableordering is given by the list self.v
+        Args:
+        X: a list of flat vector of descision variable values.
+            The variableordering is given by the list self.v
+        gr: is the graph (flowsheet) object that will be used to
+            run the samples
 
-            gr: is the graph (flowsheet) object that will be used to
-                run the samples
-
-            If a set of samples is defined by self.samp, each flowsheet
-            will be run number of smapls times for each X
-        '''
+        If a set of samples is defined by self.samp, each flowsheet
+        will be run number of smapls times for each X
+        """
         self.userInterupt = False
         self.maxTimeInterupt = False
         snum = 1
         # Setup new sample vectors that have the decision and sample
         # variables and the
         samp = [] # the sample set for FOQUS graph
-        if self.vs > 0 and self.numSamples() > 0:
+        if len(self.vs) > 0 and self.numSamples() > 0:
             snum = self.numSamples()
             for xvec in X:
                 vals = slv.graph.input.unflatten(self.v, xvec, unScale=True)

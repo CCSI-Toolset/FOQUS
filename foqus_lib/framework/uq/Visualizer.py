@@ -4,11 +4,11 @@ import tempfile
 import re
 import platform
 import numpy as np
-from Model import Model
-from SampleData import SampleData
-from LocalExecutionModule import LocalExecutionModule
-from Common import Common
-from Plotter import Plotter
+from .Model import Model
+from .SampleData import SampleData
+from .LocalExecutionModule import LocalExecutionModule
+from .Common import Common
+from .Plotter import Plotter
 
 class Visualizer:
 
@@ -24,7 +24,7 @@ class Visualizer:
         
         # check if selected inputs are valid
         nInputs = data.getNumInputs()
-        validInputs = set(x).issubset(xrange(1,nInputs+1))
+        validInputs = set(x).issubset(range(1,nInputs+1))
         if not validInputs:
             error = 'Visualizer: In function xScatter(), x is out of range for valid inputs.'
             Common.showError(error)
@@ -35,7 +35,7 @@ class Visualizer:
 
         types = data.getInputTypes()
         variableIndices = []
-        for i in xrange(len(types)):
+        for i in range(len(types)):
             if types[i] == Model.VARIABLE:
                 variableIndices.append(i + 1)
 
@@ -52,7 +52,7 @@ class Visualizer:
             mfile = mfileRoot + '.m'
             for i in x:
                 # write script
-                f = tempfile.SpooledTemporaryFile()
+                f = tempfile.SpooledTemporaryFile(mode="wt")
                 if platform.system() == 'Windows':
                     import win32api
                     fname = win32api.GetShortPathName(fname)
@@ -86,7 +86,7 @@ class Visualizer:
                 y = Plotter.getdata(mfile_, datvar)
                 y = y[:,0]
                 ydat.append(y)
-                sampleIndices = range(1,len(y)+1)
+                sampleIndices = list(range(1,len(y)+1))
                 xdat.append(sampleIndices)
                 ptitle.append('Scatter Plot of %s' % inVarName)
                 ylabel.append(inVarName)
@@ -110,7 +110,7 @@ class Visualizer:
                 return None
             
             # write script
-            f = tempfile.SpooledTemporaryFile()
+            f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
                 fname = win32api.GetShortPathName(fname)
@@ -170,13 +170,13 @@ class Visualizer:
 
         types = data.getInputTypes()
         variableIndices = []
-        for i in xrange(len(types)):
+        for i in range(len(types)):
             if types[i] == Model.VARIABLE:
                 variableIndices.append(i + 1)
 
         # process user arguments
         if cmd == 'splot':
-            validInputs = set(x).issubset(xrange(1,nInputs+1))
+            validInputs = set(x).issubset(range(1,nInputs+1))
             if not validInputs:
                 error = 'Visualizer: In function yScatter(), x is out of range for valid inputs.'
                 Common.showError(error)
@@ -195,7 +195,7 @@ class Visualizer:
                 return None
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -237,7 +237,7 @@ class Visualizer:
     def yScatterPlot(data, y, x, cmd, mfile):
         types = data.getInputTypes()
         variableIndices = []
-        for i in xrange(len(types)):
+        for i in range(len(types)):
             if types[i] == Model.VARIABLE:
                 variableIndices.append(i + 1)
 
@@ -297,7 +297,7 @@ class Visualizer:
     @staticmethod
     def showRS(fnameRS, y, x, rsdim, rsMethodName, **kwargs):
 
-        from ResponseSurfaces import ResponseSurfaces
+        from .ResponseSurfaces import ResponseSurfaces
 
         # read data
         data = LocalExecutionModule.readSampleFromPsuadeFile(fnameRS)   # rstype/order written to data
@@ -308,7 +308,7 @@ class Visualizer:
         inputNames = data.getInputNames()
         variableIndices = []
         variableNames = []
-        for i in xrange(len(types)):
+        for i in range(len(types)):
             if types[i] == Model.VARIABLE:
                 variableIndices.append(i + 1)
                 variableNames.append(inputNames[i])
@@ -342,7 +342,7 @@ class Visualizer:
                             return None
                 elif rsIndex in [ResponseSurfaces.MARS, ResponseSurfaces.MARSBAG]: # check for MARS options
                     if rsOptions is not None:
-                        from RSAnalyzer import RSAnalyzer
+                        from .RSAnalyzer import RSAnalyzer
                         marsOptions = RSAnalyzer.checkMARS(data, rsOptions)
                         if marsOptions is not None:
                             marsBases, marsInteractions, marsNormOutputs = marsOptions
@@ -376,7 +376,7 @@ class Visualizer:
 
         # write script
         cmd = 'rs%d' % rsdim
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if setMARS:
             f.write('rs_expert\n')
         if platform.system() == 'Windows':
@@ -413,12 +413,12 @@ class Visualizer:
                 f.write('%s\n' % marsNormOutputs)
         nInputs = SampleData.getNumInputs(data)
         if nInputs > rsdim:
-            for d in xrange(0,rsdim):
+            for d in range(0,rsdim):
                 #f.write('%d\n' % (variableIndices.index(x[d]) + 1))   # select input
                 f.write('%d\n' % (variableNames.index(x[d]) + 1))   # select input
             f.write('y\n')               # set nominal values for other inputs
         elif nInputs == rsdim:
-            for d in xrange(0,rsdim-1):  # psuade can infer last remaining input
+            for d in range(0,rsdim-1):  # psuade can infer last remaining input
                 #f.write('%d\n' % (variableIndices.index(x[d]) + 1))   # select input
                 f.write('%d\n' % (variableNames.index(x[d]) + 1))   # select input
         elif nInputs < rsdim:
@@ -507,7 +507,7 @@ class Visualizer:
             ydat = []
             zdat = []
             vdat = []
-            for g in xrange(1,ngrid+1):
+            for g in range(1,ngrid+1):
                 xdat.append(Plotter.getdata(mfile, 'X\(:,:,%d\)' % g))
                 ydat.append(Plotter.getdata(mfile, 'Y\(:,:,%d\)' % g))
                 zdat.append(Plotter.getdata(mfile, 'Z\(:,:,%d\)' % g))

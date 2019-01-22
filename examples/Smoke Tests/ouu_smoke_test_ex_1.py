@@ -32,7 +32,7 @@ global errorTitle
 global errorFile
 errorFile = "AutoErrLog_ouu_ex_1.txt"
 errorCount = 0
-        
+
 def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
@@ -66,7 +66,7 @@ def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
             errFile.close()
     except:
         None
-        
+
 def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if a, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
@@ -129,7 +129,7 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
 def timersStop(timers=timers):
     """Stop all timers"""
-    for key, t in timers.iteritems():
+    for key, t in timers.items():
         t.stop()
 
 def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
@@ -164,20 +164,21 @@ try: # Catch any exception and stop all timers before finishing up
         if not go(): break
         MainWin.dashFrame.setSessionDescription("Optimization Under Uncertainty Description Text")
         if not go(): break
-        
+
         ## -----------------Start Error Monitoring----------------------------
         timers['Error_okay'].start(1000)
         timers['Error_okay_text'].start(1000)
         ## -------------------------------------------------------------------
-    
+
         global errorTitle
         errorTitle = "Set Window to OUU"
-    
+
         #Set Window to OUU
         MainWin.ouuSetupAction.trigger()
         errorTitle = "Check Box for Model File"
         MainWin.ouuSetupFrame.modelFile_radio.setChecked(True)
-        fname = "../GitHub/FOQUS/foqus/examples/OUU/test_suite/ouu_optdriver.in"
+        fname = os.path.join(os.path.dirname(__file__), "../../../examples/OUU/test_suite/ouu_optdriver.in")
+#        fname = "../GitHub/FOQUS/foqus/examples/OUU/test_suite/ouu_optdriver.in"
 #        fname = 'C:/Users/318051/Documents/GitHub/FOQUS/foqus/examples/OUU/test_suite/ouu_optdriver.in'
         errorTitle = "Open optdriver.in File"
         MainWin.ouuSetupFrame.filesDir, name = os.path.split(fname)
@@ -202,7 +203,7 @@ try: # Catch any exception and stop all timers before finishing up
         for ii in range(4):
             c = MainWin.ouuSetupFrame.input_table.cellWidget(ii,0)
             c.setChecked(False)
-            
+
         for ii in range(4):
             MainWin.ouuSetupFrame.input_table.verticalScrollBar().setValue(ii+2)
             MainWin.app.processEvents()
@@ -212,17 +213,17 @@ try: # Catch any exception and stop all timers before finishing up
         for ii in range(4):
             c = MainWin.ouuSetupFrame.input_table.cellWidget(ii+4,0)
             c.setChecked(False)
-        
+
         for ii in range(4):
            MainWin.ouuSetupFrame.input_table.verticalScrollBar().setValue(ii+6)
            MainWin.app.processEvents()
            c = MainWin.ouuSetupFrame.input_table.cellWidget(ii+8,0)
            c.setChecked(True)
-           
+
         MainWin.ouuSetupFrame.setX3()
-        
+
         errorTitle = "Set Inner Solver"
-        
+
         MainWin.ouuSetupFrame.secondarySolver_combo.setCurrentIndex(0)
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(2)
 #        #MainWin.ouuSetupFrame.x4SampleScheme_label.setEnabled(False)
@@ -234,10 +235,11 @@ try: # Catch any exception and stop all timers before finishing up
 #        MainWin.ouuSetupFrame.z4LoadSample_radio.setChecked(True)
 #        MainWin.ouuSetupFrame.x4FileBrowse_button.setEnabled(True)
 #        #MainWin.ouuSetupFrame.x4FileBrowse_button.setChecked(True)
-        
+
         errorTitle = "Load x3 samples"
-        
-        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample.smp'
+
+        #fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample.smp'
+        fname = os.path.join(os.path.dirname(__file__), "../../../examples/OUU/test_suite/x3sample.smp")
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]
         numInputs = inData.shape[1]
@@ -253,8 +255,8 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
         MainWin.ouuSetupFrame.run_button.click()
         errNum = errorCount
-        timers['msg_okay'].start(1000) 
-        while MainWin.ouuSetupFrame.OUUobj.thread.isRunning(): # while is running
+        timers['msg_okay'].start(1000)
+        while MainWin.ouuSetupFrame.OUUobj.thread().isRunning(): # while is running
             if not go():
                 MainWin.ouuSetupFrame.OUUobj.thread.terminate()
                 break
@@ -265,18 +267,18 @@ try: # Catch any exception and stop all timers before finishing up
                 break
         time.sleep(1)
         timers['msg_okay'].stop()
-        
+
         ## -----------------Stop Error Monitoring----------------------------
         if not timerWait('Error_okay'): break
         if not timerWait('Error_okay_text'): break
         ## -------------------------------------------------------------------
 
         break
-    
+
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print("Exception stopping script")
     timersStop()
     with open(testOutFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))

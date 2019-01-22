@@ -10,7 +10,7 @@ def nodeToUQModel(name, node):
     uqModel = Model()
     uqModel.setName( name )
     uqModel.setRunType(Model.GATEWAY) #Basically run through John's stuff
-    keys = node.inVars.keys()
+    keys = list(node.inVars.keys())
     typ     = []  # Type for each input (Fixed or Variable)
     val     = []  # Current value of inputs in the node
     min     = []  # minimums for inputs
@@ -32,33 +32,33 @@ def nodeToUQModel(name, node):
     uqModel.setInputMaxs( max )
     uqModel.setInputDefaults( default )
     # Set output names and set all outputs as selected
-    keys = node.outVars.keys()
+    keys = list(node.outVars.keys())
     uqModel.setOutputNames(['%s.%s' % (name, key) for key in keys] )
-    uqModel.setSelectedOutputs( range(len(keys)) )
+    uqModel.setSelectedOutputs( list(range(len(keys))) )
     return uqModel
 	
 def printUQModel(self):
     '''
         Print the UQ model, to make sure things are working as expected.
     '''
-    print "Model Name:"
-    print self.getName()
-    print "\nRun File:"
-    print self.getRunFileName()
-    print "\nRun Type (0 = Gateway, 1 = Local):"
-    print self.getRunType()
-    print "\nInput Names:"
-    print self.getInputNames()
-    print "\nInput Types (0 = Fixed, 1 = Variable):"
-    print self.getInputTypes()
-    print "\nInput Minimums:"
-    print self.getInputMins()
-    print "\nInput Maximums:"
-    print self.getInputMaxs()
-    print "\nInput Defaults:"
-    print self.getInputDefaults()
-    print "\nOutput Names:"
-    print self.getOutputNames()
-    print "\nSelected Outputs:"
-    print self.getSelectedOutputs()
-    print "\n\n"
+    print("Model Name:")
+    print(self.getName())
+    print("\nRun File:")
+    print(self.getRunFileName())
+    print("\nRun Type (0 = Gateway, 1 = Local):")
+    print(self.getRunType())
+    print("\nInput Names:")
+    print(self.getInputNames())
+    print("\nInput Types (0 = Fixed, 1 = Variable):")
+    print(self.getInputTypes())
+    print("\nInput Minimums:")
+    print(self.getInputMins())
+    print("\nInput Maximums:")
+    print(self.getInputMaxs())
+    print("\nInput Defaults:")
+    print(self.getInputDefaults())
+    print("\nOutput Names:")
+    print(self.getOutputNames())
+    print("\nSelected Outputs:")
+    print(self.getSelectedOutputs())
+    print("\n\n")

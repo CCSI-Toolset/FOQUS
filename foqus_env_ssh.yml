@@ -1,23 +1,22 @@
-name: foqus_env
+name: foqus_env_py3
 channels:
   - javascript
   - conda-forge
 dependencies:
-  - python=2.7
   - pip
   - numpy
-  - pandas=0.21
+  - pandas
   - boto3
   - pyparsing
   - requests
-  - matplotlib=2.0.0
+  - matplotlib
   - scipy
   - numpy
   - pyqt
-  - pywin32
   - nlopt
   - pip:
     - Flask-Testing
     - cma
     - adodbapi
     - python-ntlm
+    #- "--editable=git+ssh://git@github.com/eslickj/turb_client.git@py3#egg=TurbineClient"

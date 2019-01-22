@@ -87,7 +87,7 @@ class Preview(_Preview, _PreviewUI):
             inputType = inputTypes[i]
             if showFixed or inputType == Model.VARIABLE:
                 headers.append(inputName)
-                for r in xrange(inputData.shape[0]):
+                for r in range(inputData.shape[0]):
                     item = self.table.item(r, c)
                     if item is None:
                         item = QTableWidgetItem('%g' % inputData[r][i])
@@ -120,7 +120,7 @@ class Preview(_Preview, _PreviewUI):
         newSamples = None
         if numSamplesAdded > 0:
             numSamples = self.data.getNumSamples()
-            samples = range(numSamples)
+            samples = list(range(numSamples))
             k = numSamples - numSamplesAdded
             newSamples = samples[k:]
 
@@ -163,7 +163,7 @@ class Preview(_Preview, _PreviewUI):
         newSamples = None
         if numSamplesAdded > 0:
             numSamples = self.data.getNumSamples()
-            samples = range(numSamples)
+            samples = list(range(numSamples))
             k = numSamples - numSamplesAdded
             newSamples = samples[k:]
 

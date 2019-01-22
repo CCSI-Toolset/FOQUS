@@ -105,7 +105,7 @@ def makeSplash():
     splashScr[1] = QSplashScreen(pixmap=pixmap)
 
 def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
-             showBasicData=True, ts = None):
+             showBasicData=True, showSDOE = True, ts = None):
     """
     This function starts the main window of the FOQUS GUI.
 
@@ -143,6 +143,7 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
         showUQ=showUQ,
         showOpt=showOpt,
         showBasicData=showBasicData,
+        showSDOE=showSDOE,
         ts=ts)
     mainWin.app = app
     app.exec_()

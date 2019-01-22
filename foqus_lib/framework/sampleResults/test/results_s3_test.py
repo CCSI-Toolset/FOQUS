@@ -127,7 +127,7 @@ def test_results_session_result_page_1():
     #obj = results.Results()
     setName = 's3test'
     name = 'whatever'
-    jids = map(lambda i: i['Id'], page)
+    jids = [i['Id'] for i in page]
     g = Graph()
     #g.solveListValTurbineCreateSession = MagicMock(return_value=session_id)
     g.solveListValTurbineGetGenerator = MagicMock(return_value=result_id)
@@ -151,7 +151,7 @@ def test_results_session_result_page_1():
     assert g.status['success'] == 3
     assert g.status['unfinished'] == 0
     assert len(g.res) == 3
-    assert set(map(lambda i: i['Id'], g.res)) == set(jids)
+    assert set([i['Id'] for i in g.res]) == set(jids)
     for i in g.res:
         assert i['session'] == session_id
         assert i['graphError'] == 0
@@ -191,7 +191,7 @@ def test_results_session_result_page_1_to_9(mock_read_generator_page, mock_get_g
         try:
             with open(fname) as fd:
                 page = json.load(fd)
-                ijids = map(lambda i: i['Id'], page)
+                ijids = [i['Id'] for i in page]
                 g.turbConfig.createJobsInSession = MagicMock(return_value=ijids)
                 return page
         except IOError:
@@ -199,8 +199,8 @@ def test_results_session_result_page_1_to_9(mock_read_generator_page, mock_get_g
             return -2
     #mock_get_generator_page.return_value.get.side_effect = _get_page_num
     #mock_read_generator_page.return_value.get.side_effect= _get_page
-    mock_get_generator_page.side_effect = range(1,10)
-    mock_read_generator_page.side_effect = map(lambda i: _get_page(i), range(1,10))
+    mock_get_generator_page.side_effect = list(range(1,10))
+    mock_read_generator_page.side_effect = [_get_page(i) for i in range(1,10)]
 
     # NOTE: Getting the jids
     jids = list()
@@ -208,12 +208,12 @@ def test_results_session_result_page_1_to_9(mock_read_generator_page, mock_get_g
     page_num = 0
     for page in mock_read_generator_page.side_effect:
         _log.debug("JIDS: %s" %str(jids))
-        jids += map(lambda i: i['Id'], page)
+        jids += [i['Id'] for i in page]
 
     # RESET Page num
     test_results_session_result_page_1_to_9.page_num = 0
-    mock_get_generator_page.side_effect = range(1,10)
-    mock_read_generator_page.side_effect = map(lambda i: _get_page(i), range(1,10))
+    mock_get_generator_page.side_effect = list(range(1,10))
+    mock_read_generator_page.side_effect = [_get_page(i) for i in range(1,10)]
 
     g.resubMax = 0 # NOTE: SHOULD BE in constructor
     g.turbchkfreq = 0
@@ -237,7 +237,7 @@ def test_results_session_result_page_1_to_9(mock_read_generator_page, mock_get_g
     # NOTE: Two jobs are None
     assert len(g.res) == 18
     assert g.res.count(None) == 2
-    finished_jobs = filter(lambda i: i is not None, g.res)
+    finished_jobs = [i for i in g.res if i is not None]
 
     #assert set(map(lambda i: i['Id'], g.res)) == set(jids)
     for i in finished_jobs:

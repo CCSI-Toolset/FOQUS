@@ -1,9 +1,9 @@
 import numpy
-from UQRSAnalysis import UQRSAnalysis
-from ResponseSurfaces import ResponseSurfaces
-from UQAnalysis import UQAnalysis
-from Visualizer import Visualizer
-from Common import Common
+from .UQRSAnalysis import UQRSAnalysis
+from .ResponseSurfaces import ResponseSurfaces
+from .UQAnalysis import UQAnalysis
+from .Visualizer import Visualizer
+from .Common import Common
 
 
 class RSVisualization(UQRSAnalysis):

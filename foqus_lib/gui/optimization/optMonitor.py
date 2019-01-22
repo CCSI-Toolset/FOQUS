@@ -11,7 +11,7 @@ import math
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-from optMessageWindow import *
+from .optMessageWindow import *
 import os
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QWidget, QMessageBox, QVBoxLayout
@@ -144,14 +144,14 @@ class optMonitor(_optMonitor, _optMonitorUI):
             0.75,
             len(self.xnames) + 0.25,
             auto = False)
-        self.coordFigAx.set_yticks(range(11))
-        self.coordFigAx.set_xticks(range(1, len(self.xnames) + 1))
+        self.coordFigAx.set_yticks(list(range(11)))
+        self.coordFigAx.set_xticks(list(range(1, len(self.xnames) + 1)))
         self.coordFigAx.set_xticklabels(
             self.xnames,
             rotation = 'vertical')
         self.bestX = [11]*len(self.xnames)
         self.sampLim = [ [11]*len(self.xnames), [11]*len(self.xnames)]
-        self.coordXCoord = range(1,(len(self.bestX)+1))
+        self.coordXCoord = list(range(1,(len(self.bestX)+1)))
         self.coorFigLine1 = self.coordFigAx.plot(
             self.coordXCoord,
             self.bestX)

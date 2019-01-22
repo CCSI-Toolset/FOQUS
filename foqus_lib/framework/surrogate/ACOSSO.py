@@ -14,7 +14,7 @@ See LICENSE.md for license and copyright details.
 """
 import numpy as np
 import threading
-import Queue
+import queue
 import logging
 import subprocess
 import os
@@ -147,7 +147,7 @@ class surrogateMethod(surrogate):
 
     def updateOptions(self):
         filters = sorted(
-            self.dat.flowsheet.results.filters.keys(),
+            list(self.dat.flowsheet.results.filters.keys()),
             key = lambda s: s.lower())
         self.options["Data Filter"].validValues = filters
 

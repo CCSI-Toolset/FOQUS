@@ -1,19 +1,19 @@
-from OUU import OUU
+from .OUU import OUU
 
 
 y = 1
-xtable = [{'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'Opt: Primary (X1)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'Opt: Primary (X1)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'Opt: Primary (X1)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'Opt: Primary (X1)'}, 
-          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': u'Opt: Recourse (X2)'}, 
-          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': u'Opt: Recourse (X2)'}, 
-          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': u'Opt: Recourse (X2)'}, 
-          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': u'Opt: Recourse (X2)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'UQ: Discrete (X3)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'UQ: Discrete (X3)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'UQ: Discrete (X3)'}, 
-          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': u'UQ: Continuous (X4)'}]
+xtable = [{'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'Opt: Primary (X1)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'Opt: Primary (X1)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'Opt: Primary (X1)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'Opt: Primary (X1)'},
+          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': 'Opt: Recourse (X2)'},
+          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': 'Opt: Recourse (X2)'},
+          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': 'Opt: Recourse (X2)'},
+          {'param2': None, 'param1': None, 'max': 10.0, 'pdf': 0, 'min': -10.0, 'type': 'Opt: Recourse (X2)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'UQ: Discrete (X3)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'UQ: Discrete (X3)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'UQ: Discrete (X3)'},
+          {'param2': None, 'param1': None, 'max': 5.0, 'pdf': 0, 'min': -5.0, 'type': 'UQ: Continuous (X4)'}]
 phi = {'type':1}
 #phi = {'type':2, 'beta':.2}
 #phi = {'type':3, 'alpha':.01}
@@ -37,4 +37,4 @@ results = OUU.ouu(fname,y,xtable,phi,x3sample=x3sample,x4sample=x4sample,useRS=u
 #f.close()
 #results = OUU.getResults(lines)
 
-print results
+print(results)

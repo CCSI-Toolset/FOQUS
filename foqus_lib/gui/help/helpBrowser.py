@@ -78,7 +78,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         if b is not None:
             b.click()
         else:
-            print '{0} has no button {1}'.format(w, label)
+            print('{0} has no button {1}'.format(w, label))
 
     def msgBoxOK(self):
         w = self.getWindow()
@@ -109,7 +109,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
 
     def setStopTrue(self):
         self.stop = True
-        print "Stopping dbg"
+        print("Stopping dbg")
 
     def loadDbgCode(self, fileName=None):
         if fileName is None:
@@ -180,7 +180,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             del self.timer
             self.timer = None
         except Exception as e:
-            print "error stopping timer: {0}".format(e)
+            print("error stopping timer: {0}".format(e))
 
     def clearLogView(self):
         '''

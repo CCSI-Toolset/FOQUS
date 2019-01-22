@@ -7,15 +7,15 @@ import copy
 import re
 import numpy as np
 from scipy import stats
-from Model import Model
-from SampleData import SampleData
-from SamplingMethods import SamplingMethods
-from Distribution import Distribution
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from ResponseSurfaces import ResponseSurfaces
-from RawDataAnalyzer import RawDataAnalyzer
-from Plotter import Plotter
+from .Model import Model
+from .SampleData import SampleData
+from .SamplingMethods import SamplingMethods
+from .Distribution import Distribution
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .ResponseSurfaces import ResponseSurfaces
+from .RawDataAnalyzer import RawDataAnalyzer
+from .Plotter import Plotter
 
 class RSAnalyzer:
 
@@ -105,12 +105,12 @@ class RSAnalyzer:
 
             f.write('PSUADE_IO (Note : inputs not true inputs if pdf ~=U)\n')
             f.write('%d %d %d\n' % (nVariableInputs, nOutputs, nSamples))
-            for i in xrange(nSamples):
+            for i in range(nSamples):
                 f.write('%d %d\n' % (i+1, S[i]))
-                for j in xrange(nInputs):
+                for j in range(nInputs):
                     if inputTypes[j] == Model.VARIABLE:
                         f.write(' % .16e\n' % X[i][j])
-                for j in xrange(nOutputs):
+                for j in range(nOutputs):
                     if np.isnan(Y[i][j]):
                          f.write(' 9.9999999999999997e+34\n')
                     else:
@@ -129,7 +129,7 @@ class RSAnalyzer:
             inputLB = SampleData.getInputMins(data) 
         if inputUB is None:
             inputUB = SampleData.getInputMaxs(data)
-        indices = range(nInputs)
+        indices = list(range(nInputs))
         variableIndex = 1
         fixedIndex = 1
         for i, name, inType, lb, ub in zip(indices, inputNames, inputTypes, inputLB, inputUB):
@@ -171,7 +171,7 @@ class RSAnalyzer:
         f.write('OUTPUT\n')
         f.write('   dimension = %d\n' % nOutputs)
         outputNames = SampleData.getOutputNames(data)
-        indices = range(nOutputs)
+        indices = list(range(nOutputs))
         for i, name in zip(indices, outputNames):
             f.write('   variable %d %s\n' % (i+1, name))
         f.write('END\n')
@@ -272,7 +272,7 @@ class RSAnalyzer:
             inputUB = SampleData.getInputMaxs(data)
             dist = list(SampleData.getInputDistributions(data))
             priorIndex = 0
-            for i in xrange(nInputs):
+            for i in range(nInputs):
                 if inVarTypes[i] == Model.VARIABLE:
                     prior = xprior[priorIndex]
                     if prior is not None and prior['type'] != 'Fixed':
@@ -368,7 +368,7 @@ class RSAnalyzer:
                     setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -575,7 +575,7 @@ class RSAnalyzer:
 
         # process samples
         data = [None]*numSamples
-        for i in xrange(nlines-k-1):
+        for i in range(nlines-k-1):
             line = lines[i+k+1]
             nums = line.split()
             data[i] = [float(x) for x in nums]
@@ -671,7 +671,7 @@ class RSAnalyzer:
                     setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -771,7 +771,7 @@ class RSAnalyzer:
 
         # write script
         cmd = 'rs_ua'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)
@@ -875,7 +875,7 @@ class RSAnalyzer:
         # generate samples from each output
         ns = 50   # number of samples to be drawn from each output
         ysamples = []
-        for i in xrange(nSamples):
+        for i in range(nSamples):
             m = rsdat0[i]
             if rserr[i] > 0:
                 ys = np.random.normal(loc=m, scale=rserr[i], size=ns)
@@ -957,14 +957,14 @@ class RSAnalyzer:
             indexfile = RSAnalyzer.dname + os.path.sep + 'indexfile'
             f = open(indexfile, 'w')
             f.write('%d\n' % nVariableInputs)
-            for i in xrange(nVariableInputs):
+            for i in range(nVariableInputs):
                 k = i+1
                 e = xtable[i]
                 if e['type'] == 'Fixed':
                     f.write('%d %d %f\n' % (k, 0, e['value']))
             f.close()
         # ... nullify xtable's entries corresponding to fixed inputs
-        for i in xrange(nVariableInputs):
+        for i in range(nVariableInputs):
             e = xtable[i]
             if e['type'] == 'Fixed': 
                 xtable[i] = None
@@ -984,7 +984,7 @@ class RSAnalyzer:
 
         # write script
         cmd = 'aeua'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fnameRS = win32api.GetShortPathName(fnameRS)
@@ -1049,7 +1049,7 @@ class RSAnalyzer:
         outVarNames = data.getOutputNames()
         
         P = 50  # number of cdfs
-        datvars = ['Y%d' % i for i in xrange(1,P+1)]
+        datvars = ['Y%d' % i for i in range(1,P+1)]
         datvars.extend(['YU','YL'])
         cdfs = []
         for d in datvars:
@@ -1105,7 +1105,7 @@ class RSAnalyzer:
                 setMARS = True
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)
@@ -1121,7 +1121,7 @@ class RSAnalyzer:
         if setMARS:
             if showErrorBars:
                 # for bootstrap SA: MARSBAG -> MARS 
-                for i in xrange(nBootstrap):
+                for i in range(nBootstrap):
                     nSamples = data.getNumSamples()
                     nSamplesBS = math.floor(.5*nSamples)  # number of samples in each bootstrap group
                                                           # This is the number of unique samples drawn with replacement
@@ -1142,7 +1142,7 @@ class RSAnalyzer:
 
         if rsIndex == ResponseSurfaces.USER and userRegressionFile is not None:
             outVarNames = data.getOutputNames()
-            for i in xrange(nBootstrap):
+            for i in range(nBootstrap):
                 f.write('1\n')                         # number of basis functions
                 if platform.system() == 'Windows':
                     userRegressionFile = win32api.GetShortPathName(userRegressionFile)
@@ -1247,7 +1247,7 @@ class RSAnalyzer:
             dname = win32api.GetShortPathName(dname)
         fnameTrain = Common.getLocalFileName(dname, fnameRS, '.traindat') 
         # ... write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             fnameRS = win32api.GetShortPathName(fnameRS)
         f.write('load %s\n' % fnameRS)
@@ -1352,7 +1352,7 @@ class RSAnalyzer:
         ydat = SampleData.getOutputData(data)
         fmt = '%1.4e'
         nOutputs = SampleData.getNumOutputs(data)
-        for i in xrange(nOutputs):
+        for i in range(nOutputs):
             y = ydat[:,i]
             moments = {'mean': fmt % np.mean(y),
                        'std': fmt % np.std(y),

@@ -2,11 +2,11 @@ import os
 import subprocess
 import tempfile
 import platform
-from SamplingMethods import SamplingMethods
-from SampleData import SampleData
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from Plotter import Plotter
+from .SamplingMethods import SamplingMethods
+from .SampleData import SampleData
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Plotter import Plotter
 
 class SampleRefiner:
 
@@ -28,7 +28,7 @@ class SampleRefiner:
         # write script
         suffix = '.refine_%d' % (nSamples + nSamplesNew)
         fnameOut = Common.getLocalFileName(SampleRefiner.dname, fname, suffix) 
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)

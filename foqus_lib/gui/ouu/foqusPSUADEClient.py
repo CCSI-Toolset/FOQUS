@@ -34,11 +34,11 @@ def getInputData(inFileName):
     inData  = nSamp * [0]
     if not multiSample:
         inData[0] = []
-    for cnt in xrange(nLines):
+    for cnt in range(nLines):
         lineIn = lines[cnt + 1]
         nCols  = lineIn.split()
         row = len(nCols) * [0]
-        for ind in xrange(len(nCols)):
+        for ind in range(len(nCols)):
             row[ind] = eval(nCols[ind])
         if multiSample:
             inData[cnt] = row
@@ -49,7 +49,7 @@ def getInputData(inFileName):
         toks = lineIn.split()
         numFixed = int(toks[2])
         fixedVals = []
-        for i in xrange(numFixed):
+        for i in range(numFixed):
             lineIn = lines[nLines + 2 + i]
             toks = lineIn.split()
             fixedVals.append(float(toks[4]))

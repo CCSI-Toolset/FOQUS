@@ -32,7 +32,7 @@ class MainWindow(QtWidgets.QMainWindow):
         self.valueSignal.connect(self.printValue)
 
     def popup(self):
-        print "pushed"
+        print("pushed")
         self.d = Dialog("Dialog 1", self, signal = self.valueSignal)
         #self.d.exec_()
         #self.d.setModal(True)
@@ -40,7 +40,7 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def printValue(self, value):
         self.value = value
-        print self.value
+        print(self.value)
 
 
 if __name__ == "__main__":

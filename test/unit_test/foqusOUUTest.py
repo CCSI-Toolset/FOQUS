@@ -265,7 +265,7 @@ try:
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print ("Exception stopping script")
     timersStop()
     with open(testOutFile, 'a') as f:
         f.write('Exception: {0}\n'.format(e))

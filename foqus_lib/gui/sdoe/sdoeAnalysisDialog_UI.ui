@@ -500,12 +500,6 @@ it should be part of the analysis.
            </item>
            <item>
             <widget class="QPushButton" name="runSdoeButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
              <property name="text">
               <string>Run SDOE</string>
              </property>
@@ -587,12 +581,6 @@ it should be part of the analysis.
       </item>
       <item row="2" column="1">
        <widget class="QPushButton" name="deleteAnalysisButton">
-        <property name="font">
-         <font>
-          <weight>50</weight>
-          <bold>false</bold>
-         </font>
-        </property>
         <property name="text">
          <string>Delete</string>
         </property>
@@ -605,6 +593,16 @@ it should be part of the analysis.
        <widget class="QLabel" name="analysisInstructions_static">
         <property name="text">
          <string>* All the results for the analyses performed are located in the SDOE output directory</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QPushButton" name="loadAnalysisButton">
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
+        <property name="text">
+         <string>Populate Inputs</string>
         </property>
        </widget>
       </item>

@@ -79,7 +79,7 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
 def timersStop(timers=timers):
     """Stop all timers"""
-    for key, t in timers.iteritems():
+    for key, t in timers.items():
         t.stop()
 
 def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):

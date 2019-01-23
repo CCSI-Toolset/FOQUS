@@ -47,7 +47,7 @@ def timersStop(timers=timers):
     '''
         Call stop for all timers to make sure they all stop
     '''
-    for key, t in timers.iteritems():
+    for key, t in timers.items():
         t.stop()
         
 # make the timers that will be needed just start and stop as needed

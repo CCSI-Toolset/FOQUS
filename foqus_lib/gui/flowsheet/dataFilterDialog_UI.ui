@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>787</width>
+    <width>666</width>
     <height>411</height>
    </rect>
   </property>
@@ -19,7 +19,7 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2">
+  <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
@@ -69,189 +69,63 @@
     </layout>
    </item>
    <item>
-    <widget class="QFrame" name="splitFrame">
-     <property name="frameShape">
-      <enum>QFrame::StyledPanel</enum>
-     </property>
-     <property name="frameShadow">
-      <enum>QFrame::Raised</enum>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_5">
-      <item>
-       <widget class="QTableWidget" name="ruleTable">
-        <column>
-         <property name="text">
-          <string>Term 1</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Operator</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Term 2</string>
-         </property>
-        </column>
-       </widget>
-      </item>
-      <item>
-       <widget class="QFrame" name="TreeFrame">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QLabel" name="label">
-           <property name="text">
-            <string>Columns (double click to copy)</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QListWidget" name="colList"/>
-         </item>
-        </layout>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
-     <item>
-      <widget class="QCheckBox" name="sortCheck">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="3" column="0">
+      <widget class="QCheckBox" name="noResultsCheckBox">
        <property name="text">
-        <string>Sort Data</string>
+        <string>No Results</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_3">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-       <property name="sizeType">
-        <enum>QSizePolicy::Fixed</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
-     </item>
-     <item>
+     <item row="2" column="0">
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>Sort term:</string>
-       </property>
-       <property name="buddy">
-        <cstring>sortTermEdit</cstring>
+        <string>Sort by column(s):</string>
        </property>
       </widget>
      </item>
-     <item>
+     <item row="0" column="0">
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Filter by column(s):</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <widget class="QLineEdit" name="filterTermEdit">
+       <property name="text">
+        <string>[]</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="2">
       <widget class="QLineEdit" name="sortTermEdit">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>200</width>
-         <height>16777215</height>
-        </size>
+       <property name="text">
+        <string>[]</string>
        </property>
       </widget>
      </item>
-     <item>
-      <spacer name="horizontalSpacer_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
+     <item row="3" column="2">
+      <widget class="QLabel" name="label_4">
+       <property name="text">
+        <string>Filter out all results</string>
        </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>40</width>
-         <height>20</height>
-        </size>
-       </property>
-      </spacer>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Columns (Double-Click to Copy)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QListWidget" name="colList"/>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
-     <item>
-      <widget class="QPushButton" name="addRuleButton">
-       <property name="text">
-        <string>Add Rule</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/add.svg</normaloff>:/icons/icons/add.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="addOpButton">
-       <property name="text">
-        <string>Add Operation</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/add.svg</normaloff>:/icons/icons/add.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="muButton">
-       <property name="text">
-        <string>Move Up</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/up.svg</normaloff>:/icons/icons/up.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="mdButton">
-       <property name="text">
-        <string>Move Down</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/down.svg</normaloff>:/icons/icons/down.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="deleteButton">
-       <property name="text">
-        <string>Delete</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/delete.svg</normaloff>:/icons/icons/delete.svg</iconset>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="showColButton">
-       <property name="text">
-        <string>Show Columns</string>
-       </property>
-       <property name="icon">
-        <iconset resource="../icons.qrc">
-         <normaloff>:/icons/icons/search.svg</normaloff>:/icons/icons/search.svg</iconset>
-       </property>
-      </widget>
-     </item>
      <item>
       <spacer name="horizontalSpacer_2">
        <property name="orientation">

@@ -17,67 +17,25 @@ import time
 from collections import OrderedDict
 
 class dataFilter(object):
-    DF_NOT = 0
-    DF_AND = 1
-    DF_OR = 2
-    DF_XOR = 3
-    DF_END_OP = 9
-    DF_RULE = 10
 
-    def __init__(self):
-        self.fstack = []
-        self.sortTerm = None
+    def __init__(self, no_results=False, lock=False):
+        self.filterTerm = None       # list of columns to filter by
+        self.sortTerm = None         # list of columns to sort by
+        self.no_results = no_results # if true return no matches
+        self.lock = lock
 
     def saveDict(self):
-        sd = {
-            'fstack':[],
-            'sortTerm':self.sortTerm}
-        for i in self.fstack:
-            if i[0] < self.DF_END_OP:
-                sd['fstack'].append(i)
-            elif i[0] == self.DF_RULE:
-                sd['fstack'].append([i[0], i[1].saveDict()])
+        sd = {'filterTerm':self.filterTerm,
+              'sortTerm':self.sortTerm,
+              'self.no_results':self.no_results,
+              'self.lock':self.lock}
         return sd
 
     def loadDict(self, sd):
+        self.filterTerm = sd.get('filterTerm', None)
         self.sortTerm = sd.get('sortTerm', None)
-        self.fstack = []
-        fs = sd.get('fstack', [])
-        for i in fs:
-            if i[0] < self.DF_END_OP:
-                self.fstack.append(i)
-            elif i[0] == self.DF_RULE:
-                dfr = dataFilterRule()
-                dfr.loadDict(i[1])
-                self.fstack.append([i[0], dfr])
+        self.no_results = sd.get('no_results', False)
         return self
-
-class dataFilterRule(object):
-    OP_EQ = 0
-    OP_L = 1
-    OP_G = 2
-    OP_LE = 3
-    OP_GE = 4
-    OP_IN = 5
-    OP_NEQ = 6
-    OP_AEQ = 7
-
-    def __init__(self, op=0):
-        self.op = op
-        self.term1 = 'err'
-        self.term2 = 0
-
-    def saveDict(self):
-        sd = {
-            'op':self.op,
-            'term1':self.term1,
-            'term2':self.term2}
-        return sd
-
-    def loadDict(self, sd):
-        self.op = sd['op']
-        self.term1 = sd['term1']
-        self.term2 = sd['term2']
 
 def iso_time_str():
     return str(datetime.datetime.utcnow().isoformat())
@@ -152,6 +110,7 @@ def incriment_name(name, exnames):
     return "".join([name, "_", str(index).zfill(4)])
 
 def search_term_list(st):
+    st = st.strip()
     if st.startswith('['):
         try:
             st = json.loads(st)
@@ -161,6 +120,8 @@ def search_term_list(st):
             raise Exception('Error reading sort terms. When using multiple sort'
                 'terms, enclose the column names in "". See log for deatils')
     else:
+        if st.startswith('"'):
+            ft = json.loads(st)
         st = [st]
     ascend = [True]*len(st)
     for i, t in enumerate(st):
@@ -169,24 +130,41 @@ def search_term_list(st):
             ascend[i] = False
     return st, ascend
 
+def filter_term_list(ft):
+    ft = ft.strip()
+    if ft.startswith('['):
+        try:
+            ft = json.loads(ft)
+        except:
+            logging.getLogger("foqus." + __name__).exception(
+                "Error reading filer filter terms")
+            raise Exception('Error reading filter terms. When using multiple sort'
+                'terms, enclose the column names in "". See log for deatils')
+    else:
+        if ft.startswith('"'):
+            ft = json.loads(ft)
+        ft = [ft]
+    return ft
+
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
         if "set" not in self.columns:
             self.filters = None # do this to avoid set column from attribute warn
             self.filters = {} # now that atribute exists set to empty dict
-            self.filters["none"] = \
-                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+            self.filters["none"] = dataFilter(no_results=True)
             self.filters["all"] = dataFilter()
             self._current_filter = None
             self._filter_indexes = None # avoid set column from attribute warn
             self._filter_indexes = [] # now that atribute exists set to empty list
+            self.flatTable = None # avoid set column from attribute warn
             self.flatTable = True
             self["set"] = []
             self["result"] = []
             self._filter_mask = None
-            self.hidden_cols = None
+            self.hidden_cols = None # avoid set column from attribute warn
             self.hidden_cols = []
+            self.calculated_columns = None # avoid set column from attribute warn
             self.calculated_columns = OrderedDict()
 
     def set_calculated_column(self, name, expr):
@@ -200,6 +178,16 @@ class Results(pd.DataFrame):
             return self.filter_term(key)
         for key in self.calculated_columns:
             self["calc."+key] = eval(self.calculated_columns[key])
+
+    def delete_calculation(self, name):
+        try:
+            del self.calculated_columns[name]
+        except:
+            pass
+        try:
+            self.drop("calc."+name, axis=1, inplace=True)
+        except:
+            pass
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
@@ -268,16 +256,6 @@ class Results(pd.DataFrame):
                     sd[key][j] = bool(e)
         sd["calculated_columns"] = self.calculated_columns
         return sd
-
-    def delete_calculation(self, name):
-        try:
-            del self.calculated_columns[name]
-        except:
-            pass
-        try:
-            self.drop("calc."+name, axis=1, inplace=True)
-        except:
-            pass
 
     def loadDict(self, sd):
         """
@@ -390,94 +368,6 @@ class Results(pd.DataFrame):
         """
         return len(self.columns)
 
-    def filter_term(self, t):
-        """
-        Return the value of a filter term. Array for all rows.
-        """
-        if t in self.columns:
-            return np.array(list(self.loc[:, t]))
-        elif t == "True" or t == "true":
-            return np.array([True]*len(self.index))
-        elif t == "False" or t == "false":
-            return np.array([False]*len(self.index))
-        else:
-            return np.array([t]*len(self.index))
-
-    def filter_eval_rule(self, rule):
-        """
-        Evaluate whether a rule is true or false element-wise vector for all rows
-        """
-        t1 = self.filter_term(rule.term1)
-        t2 = self.filter_term(rule.term2)
-        if rule.op == dataFilterRule.OP_EQ: # Equal
-            return t1 == t2
-        elif rule.op == dataFilterRule.OP_AEQ: # Approximatly equal
-            return np.isclose(t1, t2, rtol=1e-5, atol=1e-6)
-        elif rule.op == dataFilterRule.OP_L: # <
-            return np.less(t1, t2)
-        elif rule.op == dataFilterRule.OP_G: # >
-            return np.greater(t1, t2)
-        elif rule.op == dataFilterRule.OP_LE: # <=
-            return np.less_equal(t1, t2)
-        elif rule.op == dataFilterRule.OP_GE: # >=
-            return np.greater_equal(t1, t2)
-        elif rule.op == dataFilterRule.OP_NEQ: # not equal
-            return np.not_equal(t1, t2)
-        elif rule.op == dataFilterRule.OP_TRUE: # all true
-            return np.array([True]*self.row_count())
-        elif rule.op == dataFilterRule.OP_FALSE: # all false
-            return np.array([False]*self.row_count())
-
-    def filter_indexes(self, fltr=None):
-        """
-        Return a list of indexes matching a filter.
-        """
-        if fltr is None:
-            fltr = self.current_filter()
-        if fltr is None:
-            self.sort_index(inplace=True)
-            return (list(self.index), [True]*len(self.index))
-        st = self.filters[fltr].sortTerm
-        if st is None or st == "" or st == False:
-            self.sort_index(inplace=True)
-        else:
-            st, ascend = search_term_list(st)
-            self.sort_values(by=st, ascending=ascend, inplace=True)
-
-        # Evaluate all the rules
-        fstack = []
-        for r in self.filters[fltr].fstack:
-            if r[0] == dataFilter.DF_RULE:
-                fstack.append([r[0], self.filter_eval_rule(r[1])])
-            else:
-                fstack.append(r)
-
-        mask = [True]*len(self.index)
-        tstack = []
-        #combine the masks
-        for item in fstack:
-            if item[0] == dataFilter.DF_RULE:
-                tstack.append(item[1])
-            elif item[0] == dataFilter.DF_AND:
-                t2 = tstack.pop()
-                t1 = tstack.pop()
-                tstack.append(np.logical_and(t1, t2))
-            elif item[0] == dataFilter.DF_NOT:
-                t1 = tstack.pop()
-                tstack.append(np.logical_not(t1))
-            elif item[0] == dataFilter.DF_OR:
-                t2 = tstack.pop()
-                t1 = tstack.pop()
-                tstack.append(np.logical_or(t1))
-            elif item[0] == dataFilter.DF_XOR:
-                t2 = tstack.pop()
-                t1 = tstack.pop()
-                tstack.append(np.logical_xor(t1))
-        if len(tstack) > 0:
-            mask = tstack.pop()
-        indexes = list(map(int, list(self[mask].index)))
-        return (indexes, mask)
-
     def clearData(self, *args, **kwargs):
         self.clear_data(*args, **kwargs)
 
@@ -486,3 +376,48 @@ class Results(pd.DataFrame):
         for i in indexes:
             self.drop(i, inplace=True)
         self.update_filter_indexes()
+
+    def filter_term(self, t):
+        """
+        Return the value of a filter term. Array for all rows.
+        """
+        if t in self.columns:
+            return np.array(list(self.loc[:, t]), dtype=bool)
+        else:
+            raise Exception("Filter term ({}) not in columns".format(t))
+
+    def filter_indexes(self, fltr=None):
+        """
+        Return a list of indexes matching a filter.  FOQUS should also have
+        standard "all" and "none" filters.  This treats those names special and
+        returns all no results ignoring any changes that may have been made.
+        Also all doesn't sort, you need to make a filter for that.
+        """
+        # Get the filter or resort and return all if none
+        if fltr is None:
+            fltr = self.current_filter()
+        if fltr is None or fltr == "all":
+            self.sort_index(inplace=True)
+            return (list(self.index), [True]*len(self.index))
+        if fltr == "none" or self.filters[fltr].no_results:
+            return ([], [False]*len(self.index))
+        # Swap the name for the actual filter object
+        fltr = self.filters[fltr]
+        # If a sort term string is provided, sort
+        st = fltr.sortTerm
+        if st is None or st == "" or st == False:
+            self.sort_index(inplace=True)
+        else:
+            st, ascend = search_term_list(st)
+            self.sort_values(by=st, ascending=ascend, inplace=True)
+        # now look at the filter columns
+        ft = fltr.filterTerm
+        mask = [True]*len(self.index)
+        if ft is None or ft == "" or ft == False:
+            return (list(self.index), [True]*len(self.index))
+        else:
+            ft = filter_term_list(ft)
+            for t in ft:
+                mask = mask and self.filter_term(t)
+        indexes = list(map(int, list(self[mask].index)))
+        return (indexes, mask)

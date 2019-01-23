@@ -602,7 +602,7 @@ it should be part of the analysis.
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Populate Inputs</string>
+         <string>Load Analysis</string>
         </property>
        </widget>
       </item>

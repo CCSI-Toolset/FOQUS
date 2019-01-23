@@ -406,15 +406,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
                        int(self.maxDesignSize_spin.value()-self.minDesignSize_spin.value()+1))
         if estimateTime < 60:
-            self.time_dynamic.setText('%d seconds' % estimateTime)
+            self.time_dynamic.setText(f"{estimateTime:02d} seconds")
         elif estimateTime < 3600:
-            self.time_dynamic.setText('%d min, %d s' % (int(estimateTime/60), estimateTime%60))
+            self.time_dynamic.setText(f"{int(estimateTime/60):02d}:{estimateTime%60:02d}")
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
             timeMin = int((estimateTime - (timeHr*3600))/60)
             timeSec = (estimateTime - (timeHr*3600))%60
-            self.time_dynamic.setText('%d h, %d min, %d s' % (timeHr, timeMin, timeSec))
+            self.time_dynamic.setText(f"{timeHr:02d}:{timeMin:02d}:{timeSec:02d}")
 
     def editSdoe(self):
         sender = self.sender()

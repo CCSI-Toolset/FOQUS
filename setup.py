@@ -44,10 +44,13 @@ install_requires=[
     #'networkx',
     #'redis',
     #'logstash_formatter',
+    'PyQt5',
+    'sip',
     'matplotlib',
     'scipy',
     'numpy',
     'cma',
+    'tqdm',
     'pandas>0.20'],
 
 dependency_links=[]
@@ -79,6 +82,9 @@ setup(
     maintainer_email = pkg_maintainer_email,
     url = pkg_url,
     packages = find_packages(),
+    package_data={
+        '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
+            '*.html', '*.gms', '*.gpr', '*.ccs']},
     include_package_data=True,
     scripts = [
         'foqus.py',

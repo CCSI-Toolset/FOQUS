@@ -8,7 +8,7 @@ Copy the Data\bs Simple\_flow.foqus file from the example files to a convenient 
 	\item Open FOQUS.
 	\item Open the Simple\_flow.foqus session from the example files.
 	\item Click the \bu{Flowsheet} button from the Home window.
-	\item Click \bu{Flowsheet Data} in the toolbar on the left side of the Home window (Figure \ref{fig.data.table1}).
+	\item Click \bu{Results and Filtering} in the toolbar on the left side of the Home window (Figure \ref{fig.data.table1}).
 \end{enumerate}
 
 \begin{figure}[H]
@@ -29,8 +29,8 @@ This tutorial is broken up into mini-tutorials in the remaining subsections, whi
 	\item Open FOQUS.
 	\item Open the Simple\_flow.foqus session from the example files.
 	\item Click \bu{Flowsheet} in the main toolbar at the top of the FOQUS Home window.
-	\item Click \bu{Flowsheet Data} in the toolbar on the left side of the Home window (Figure \ref{fig.data.table1}).
-	\item Click \bu{Edit Filters} (Figure \ref{fig.data.table1}).
+	\item Click \bu{Results and Filtering} in the toolbar on the left side of the Home window (Figure \ref{fig.data.table1}).
+	\item Click \bu{Add/Edit Filters} (Figure \ref{fig.data.table1}).
 	\item Click \bu{New Filter}.
 	\item Enter ``Sort1'' as the new filter name.
 	\item Click \bu{New Filter}.
@@ -65,10 +65,10 @@ This tutorial is broken up into mini-tutorials in the remaining subsections, whi
 
 \begin{enumerate}
 	\setcounter{enumi}{15}
-	\item Click \bu{Edit Filters} (Figure \ref{fig.filter.1.result}). The dialog box in Figure \ref{fig.filter.2} should display.
+	\item Click \bu{Add/Edit Filters} (Figure \ref{fig.filter.1.result}). The dialog box in Figure \ref{fig.filter.2} should display.
 	\item Select ``Sort2'' from \bu{Filter} drop-down list.
 	\item Select the ``Sort Data'' checkbox.
-	\item Enter \verb|["Error", "-result"]| in the \bu{Sort Term} field.  This will sort the data first by \textbf{\underline{Error}} code then by \textbf{\underline{result}} in reverse alphabetical order.
+	\item Enter \verb|["err", "-result"]| in the \bu{Sort Term} field.  This will sort the data first by \textbf{\underline{err}} (error code) then by \textbf{\underline{result}} in reverse alphabetical order.
 	\item Click \bu{Done}.
 \end{enumerate}
 
@@ -83,7 +83,7 @@ This tutorial is broken up into mini-tutorials in the remaining subsections, whi
 \begin{enumerate}
 	\setcounter{enumi}{20}
 	\item Select ``Sort2'' in the \bu{Current Filter} drop-down list (Figure \ref{fig.filter.2.result}). 
-	\item The results are shown in Figure \ref{fig.filter.2.result}. The data should be sorted so all \textbf{\underline{Error}} code zero results are first then sorted in reverse alphabetical order by \textbf{\underline{result}}.
+	\item The results are shown in Figure \ref{fig.filter.2.result}. The data should be sorted so all \textbf{\underline{err}} (error code) zero results are first then sorted in reverse alphabetical order by \textbf{\underline{result}}.
 \end{enumerate}
 
 \begin{figure}[H]

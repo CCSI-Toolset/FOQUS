@@ -80,7 +80,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         simulations may be available and they may not match your flowsheet
         """
         QMessageBox.warning(self, "Warning", "You are changing the Turbine server"
-            " connection.  The the new server may not have the simulations or"
+            " connection.  The new server may not have the simulations or"
             " correct versions of simulations for your flowsheet.  Please upload"
             " or update simluations on Turbine as necessary.")
 

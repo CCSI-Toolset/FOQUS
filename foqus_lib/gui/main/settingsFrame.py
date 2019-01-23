@@ -71,6 +71,18 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.TestTurb.clicked.connect(self.turbineTest)
         self.testLite.clicked.connect(self.turbineLiteTest)
         self.changePort.clicked.connect(self.updateTurbineLitePort)
+        self.runMethodCombo.currentIndexChanged.connect(
+            self.displayAvailablityWarning)
+
+    def displayAvailablityWarning(self):
+        """
+        Warn that changing the Turbine server means that a different set of
+        simulations may be available and they may not match your flowsheet
+        """
+        QMessageBox.warning(self, "Warning", "You are changing the Turbine server"
+            " connection.  The new server may not have the simulations or"
+            " correct versions of simulations for your flowsheet.  Please upload"
+            " or update simluations on Turbine as necessary.")
 
     def updateTurbineLitePort(self):
         """

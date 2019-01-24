@@ -12,14 +12,53 @@ import os
 
 from foqus_lib.framework.sampleResults.results import *
 import foqus_lib.gui.helpers.guiHelpers as gh
+from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
+from PyQt5.QtCore import QObject, QEvent, QDataStream, Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QSplitter, QInputDialog,\
-    QLineEdit
+    QLineEdit, QAbstractItemView
 mypath = os.path.dirname(__file__)
 _dataFilterDialogUI, _dataFilterDialog = \
         uic.loadUiType(os.path.join(mypath, "dataFilterDialog_UI.ui"))
+
+def _list_item_mime_to_text(mime_data):
+    if mime_data.hasText():
+        return mime_data
+    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    if not data:
+        return mime_data
+    ds = QDataStream(data)
+    ds.readInt32() # read row (don't need)
+    ds.readInt32() # read col (don't need)
+    value = None
+    for i in range(ds.readInt32()):
+        if Qt.ItemDataRole(ds.readInt32()) == Qt.DisplayRole:
+            value = ds.readQVariant()
+            break
+    if value is None:
+        return mime_data
+    value = '"{}"'.format(value)
+    mime_data.setText(value)
+    return mime_data
+
+
+class _DragEnterHandler(QObject):
+    def __init__(self, parent=None):
+        super(_DragEnterHandler, self).__init__(parent=parent)
+
+    def eventFilter(self, obj, event):
+        if event.type() == QEvent.DragEnter:
+            try:
+                _list_item_mime_to_text(event.mimeData())
+            except:
+                event.ignore()
+            event.accept()
+        else:
+            event.accept()
+
+        return QObject.eventFilter(self, obj, event)
 
 
 class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
@@ -34,15 +73,33 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             self.results = self.dat.flowsheet.results
         else:
             self.results = results
-        self.colList.itemDoubleClicked.connect(self.copyCol2)
+
+        self.selectFilterBox.currentIndexChanged.connect(self.selectFilter)
         self.newFilterButton.clicked.connect(self.addFilter)
         self.deleteFilterButton.clicked.connect(self.delFilter)
         self.doneButton.clicked.connect(self.doneClicked)
+        self.addCalcButton.clicked.connect(self.showCalcEdit)
+        self.prevFilter = None
+        # Set up column list widget for help selecting fileter and sort terms
+        self.updateColList()
+        self.colList.itemDoubleClicked.connect(self.copyCol2)
+        self.colList.setDragDropMode(QAbstractItemView.DragOnly)
+        # When draging into sort and filter text boxes add text to mimedata
+        self.filterTermEdit.installEventFilter(_DragEnterHandler(self))
+        self.sortTermEdit.installEventFilter(_DragEnterHandler(self))
+        # Initially populate the dialog
         self.updateFilterBox()
         self.updateForm()
-        self.prevFilter = None
+
+    def updateColList(self):
+        self.colList.clear()
         headings = self.results.columns
         self.colList.addItems(headings)
+
+    def showCalcEdit(self):
+        calculatedColumnsDialog(self.dat, parent=self).exec_()
+        self.results.calculate_columns()
+        self.updateColList()
 
     def copyCol(self):
         self.copyCol2(self.colList.currentItem())
@@ -102,8 +159,9 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             fltr = self.results.current_filter()
         self.selectFilterBox.blockSignals(True)
         self.selectFilterBox.clear()
-        items = sorted(self.results.filters.keys())
-        self.selectFilterBox.addItems(items)
+        items = list(sorted(self.results.filters.keys()))
+        self.selectFilterBox.addItems(
+            [i for i in items if i not in ["all", "none"]])
         i = self.selectFilterBox.findText(fltr)
         if i > 0:
             self.selectFilterBox.setCurrentIndex(i)
@@ -112,6 +170,8 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
 
     def updateForm(self):
         fltrName = self.selectFilterBox.currentText()
+        if not fltrName:
+            return
         fltr = self.results.filters[fltrName]
         self.sortTermEdit.setText(fltr.sortTerm)
         self.filterTermEdit.setText(fltr.filterTerm)

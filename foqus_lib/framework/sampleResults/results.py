@@ -18,17 +18,15 @@ from collections import OrderedDict
 
 class dataFilter(object):
 
-    def __init__(self, no_results=False, lock=False):
+    def __init__(self, no_results=False):
         self.filterTerm = None       # list of columns to filter by
         self.sortTerm = None         # list of columns to sort by
         self.no_results = no_results # if true return no matches
-        self.lock = lock
 
     def saveDict(self):
         sd = {'filterTerm':self.filterTerm,
               'sortTerm':self.sortTerm,
-              'self.no_results':self.no_results,
-              'self.lock':self.lock}
+              'no_results':self.no_results}
         return sd
 
     def loadDict(self, sd):
@@ -121,7 +119,7 @@ def search_term_list(st):
                 'terms, enclose the column names in "". See log for deatils')
     else:
         if st.startswith('"'):
-            ft = json.loads(st)
+            st = json.loads(st)
         st = [st]
     ascend = [True]*len(st)
     for i, t in enumerate(st):

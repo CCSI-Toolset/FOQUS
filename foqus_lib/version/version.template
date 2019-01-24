@@ -5,7 +5,7 @@
 """
 import argparse, sys
 
-version = "{VERSION}" #Build in Jenkins inserts build number
+version = "{VERSION}"
 copyright = "See LICENSE.md for license and copyright details."
 license = "See LICENSE.md for license and copyright details."
 author = "CCSI FOQUS Team"

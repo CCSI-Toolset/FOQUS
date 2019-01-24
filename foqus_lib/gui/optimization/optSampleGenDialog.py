@@ -17,7 +17,7 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
     SAMPLE_FULL_FACT = 0
     SAMPLE_FILE = 1
 
-    def __init__(self, varNames):
+    def __init__(self, varNames, parent=None):
         super(optSampleGenDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.varNames = varNames

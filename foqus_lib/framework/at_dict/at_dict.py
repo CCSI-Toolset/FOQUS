@@ -28,9 +28,8 @@ class OrderedAtDict(AtDict):
     def __iter__(self):
         for k in self._ordered_keys:
             yield k
-    
-    def iteritems(self):
-        """ NOTE: iteritems is removed in python3 dict """
+
+    def items(self):
         for k in self:
             yield (k, self[k])
 

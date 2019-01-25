@@ -16,8 +16,8 @@ _dataBrowserDialogUI, _dataBrowserDialog = \
 
 
 class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
-    def __init__(self, dat, parent=None):
-        super(dataBrowserDialog, self).__init__(parent=parent)
+    def __init__(self, dat, parent=None, flags=QtCore.Qt.WindowCloseButtonHint):
+        super(dataBrowserDialog, self).__init__(parent=parent, flags=flags)
         self.setupUi(self)
         self.dat = dat
         #self.closeButton.clicked.connect( self.closeButtonClick )

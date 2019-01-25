@@ -41,16 +41,9 @@ print("Setting version as {0}".format(ver.version))
 
 install_requires=[
     'adodbapi',
-    #'boto3',
     'TurbineClient',
-    #'pyparsing',
-    #'py4j',
-    #'requests',
-    #'networkx',
-    #'redis',
-    #'logstash_formatter',
     'PyQt5',
-    'sip',
+    'sip',   # not sure if I need this
     'matplotlib',
     'scipy',
     'numpy',
@@ -58,11 +51,14 @@ install_requires=[
     'tqdm',
     'pandas>0.20'],
 
+if os.name == 'nt':
+    install_requires.append("pywin23")
+
 dependency_links=[]
 if connectType == 'https':
-    dependency_links=['git+https://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
+    dependency_links=['git+https://git@github.com/CCSI-Toolset/turb_client.git#egg=TurbineClient']
 elif connectType == 'ssh':
-    dependency_links=['git+ssh://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
+    dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client.git#egg=TurbineClient']
 
 setup(
     name = ver.name,

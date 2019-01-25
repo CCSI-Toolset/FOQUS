@@ -41,13 +41,13 @@ If more than one flowsheet evaluation is used in the objective function calculat
 	\item In the drop-down list, verify ``Simple Python Expression'' is selected.
 	\item Add an objective function by clicking \bu{+} to the right of the Objective Function table.
 	\item The objective function is the cost of electricity from the cost spreadsheet.  Enter:\\
-	   \verb|f["Cost"]["COE"][0]|\\
+	   \verb|f.Cost.COE|\\
 	    in the \textbf{\underline{Expression}} column.
 	\item Enter 1 in the \textbf{\underline{Penalty Scale}} column. This setting is used mostly for multi-objective optimization to apply the constraint penalty to different objectives.
 	\item Enter 500 in the \textbf{\underline{Value for Failure}} column. This should be worse than the objective for any non-failed simulations.
 	\item Add a constraint by clicking \bu{+} next to the Inequality Constraints table.
 	\item The constraint is that the fraction of CO$_2$ captured must be greater than or equal to 0.9. The constraint is in the form $g(\mathbf{x}) \leq 0$; therefore, in the \textbf{\underline{Expression}} column enter: \\
-	 \verb|0.9 - f["BFB"]["removalCO2"][0]|.
+	 \verb|0.9 - f.BFB.removalCO2|.
 	\item Enter 1000 for the \textbf{\underline{Penalty Factor}}.
 	\item The constraint penalty \textbf{\underline{Form}} should be linear.
 	\item The \textbf{\underline{Variable Explorer}} button can be used to help select flowsheet variables.

@@ -4,9 +4,6 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from __future__ import division  # No integer division
-from __future__ import print_function  # Python 3 style print
-from __future__ import absolute_import  # disable implicit relative imports
 
 # Imports
 import signal

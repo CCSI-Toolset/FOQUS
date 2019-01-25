@@ -128,21 +128,6 @@ def search_term_list(st):
             ascend[i] = False
     return st, ascend
 
-def filter_term_list(ft):
-    ft = ft.strip()
-    if ft.startswith('['):
-        try:
-            ft = json.loads(ft)
-        except:
-            logging.getLogger("foqus." + __name__).exception(
-                "Error reading filer filter terms")
-            raise Exception('Error reading filter terms. When using multiple sort'
-                'terms, enclose the column names in "". See log for deatils')
-    else:
-        if ft.startswith('"'):
-            ft = json.loads(ft)
-        ft = [ft]
-    return ft
 
 class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
@@ -176,6 +161,11 @@ class Results(pd.DataFrame):
             return self.filter_term(key)
         for key in self.calculated_columns:
             self["calc."+key] = eval(self.calculated_columns[key])
+
+    def calculate_filter_expr(self, expr):
+        def c(key):
+            return self.filter_term(key)
+        return np.array(eval(expr), dtype=bool)
 
     def delete_calculation(self, name):
         try:
@@ -380,7 +370,7 @@ class Results(pd.DataFrame):
         Return the value of a filter term. Array for all rows.
         """
         if t in self.columns:
-            return np.array(list(self.loc[:, t]), dtype=bool)
+            return np.array(list(self.loc[:, t]))
         else:
             raise Exception("Filter term ({}) not in columns".format(t))
 
@@ -412,10 +402,8 @@ class Results(pd.DataFrame):
         ft = fltr.filterTerm
         mask = [True]*len(self.index)
         if ft is None or ft == "" or ft == False:
-            return (list(self.index), [True]*len(self.index))
+            return (list(self.index), mask)
         else:
-            ft = filter_term_list(ft)
-            for t in ft:
-                mask = mask and self.filter_term(t)
+            mask = self.calculate_filter_expr(ft)
         indexes = list(map(int, list(self[mask].index)))
         return (indexes, mask)

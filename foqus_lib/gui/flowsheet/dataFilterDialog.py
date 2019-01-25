@@ -10,6 +10,8 @@ import json
 import logging
 import os
 
+_log = logging.getLogger("foqus.{}".format(__name__))
+
 from foqus_lib.framework.sampleResults.results import *
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
@@ -23,7 +25,7 @@ mypath = os.path.dirname(__file__)
 _dataFilterDialogUI, _dataFilterDialog = \
         uic.loadUiType(os.path.join(mypath, "dataFilterDialog_UI.ui"))
 
-def _list_item_mime_to_text(mime_data):
+def _list_item_mime_to_text(mime_data, c=False):
     if mime_data.hasText():
         return mime_data
     data = mime_data.data('application/x-qabstractitemmodeldatalist')
@@ -39,20 +41,27 @@ def _list_item_mime_to_text(mime_data):
             break
     if value is None:
         return mime_data
-    value = '"{}"'.format(value)
+    if c:
+        value = 'c("{}")'.format(value)
+    else:
+        value = '"{}"'.format(value)
     mime_data.setText(value)
     return mime_data
 
 
-class _DragEnterHandler(QObject):
-    def __init__(self, parent=None):
-        super(_DragEnterHandler, self).__init__(parent=parent)
+class _DropHandler(QObject):
+    def __init__(self, parent=None, c=False):
+        super(_DropHandler, self).__init__(parent=parent)
+        self.c = c
 
     def eventFilter(self, obj, event):
         if event.type() == QEvent.DragEnter:
+            event.accept()
+        elif event.type() == QEvent.Drop:
             try:
-                _list_item_mime_to_text(event.mimeData())
+                _list_item_mime_to_text(event.mimeData(), self.c)
             except:
+                _log.exception("Drop could not convert mime type to text")
                 event.ignore()
             event.accept()
         else:
@@ -85,8 +94,8 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.colList.itemDoubleClicked.connect(self.copyCol2)
         self.colList.setDragDropMode(QAbstractItemView.DragOnly)
         # When draging into sort and filter text boxes add text to mimedata
-        self.filterTermEdit.installEventFilter(_DragEnterHandler(self))
-        self.sortTermEdit.installEventFilter(_DragEnterHandler(self))
+        self.filterTermEdit.installEventFilter(_DropHandler(self, True))
+        self.sortTermEdit.installEventFilter(_DropHandler(self, False))
         # Initially populate the dialog
         self.updateFilterBox()
         self.updateForm()
@@ -175,7 +184,6 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         fltr = self.results.filters[fltrName]
         self.sortTermEdit.setText(fltr.sortTerm)
         self.filterTermEdit.setText(fltr.filterTerm)
-        self.noResultsCheckBox.setChecked(fltr.no_results)
 
     def applyChanges(self, usePrev=False):
         if usePrev:
@@ -189,5 +197,4 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         fltr = r.filters[fltrName]
         fltr.sortTerm = self.sortTermEdit.text()
         fltr.filterTerm = self.filterTermEdit.text()
-        fltr.no_results = self.noResultsCheckBox.isChecked()
         return 0

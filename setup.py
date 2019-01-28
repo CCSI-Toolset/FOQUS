@@ -48,7 +48,7 @@ install_requires=[
     'numpy',
     'cma',
     'tqdm',
-    'pandas>0.20'],
+    'pandas>0.20']
 
 if os.name == 'nt':
     install_requires.append("adodbapi>=2.6.0.7")

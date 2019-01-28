@@ -52,7 +52,7 @@ install_requires=[
 
 if os.name == 'nt':
     install_requires.append("adodbapi>=2.6.0.7")
-    install_requires.append("pywin23")
+    install_requires.append("pywin32")
 
 dependency_links=[]
 if connectType == 'https':

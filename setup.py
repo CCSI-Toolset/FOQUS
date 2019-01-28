@@ -40,7 +40,6 @@ import foqus_lib.version.version as ver
 print("Setting version as {0}".format(ver.version))
 
 install_requires=[
-    'adodbapi',
     'TurbineClient',
     'PyQt5',
     'sip',   # not sure if I need this
@@ -52,6 +51,7 @@ install_requires=[
     'pandas>0.20'],
 
 if os.name == 'nt':
+    install_requires.append("adodbapi>=2.6.0.7")
     install_requires.append("pywin23")
 
 dependency_links=[]

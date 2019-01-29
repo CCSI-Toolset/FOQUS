@@ -3,10 +3,21 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from __future__ import print_function
 from setuptools import setup, find_packages
 import sys
 import os
+import subprocess
+
+# default_version is the version if "git describe --tags" falls through
+# Addtional package info is set in foqus_lib/version/version.template.
+# The version module, just makes it a bit easier for FOQUS to pull package info
+default_version = "3.0.0"
+
+try:
+    version=subprocess.check_output(
+        ["git", "describe", "--tags"]).decode('utf-8').strip()
+except:
+    version=default_version
 
 if "ssh" in sys.argv:
     connectType = 'ssh'
@@ -17,16 +28,10 @@ elif "https" in sys.argv:
 else:
     connectType = 'https'
 
-
-# Add build number file to help if BUILD_NUMBER env var is set
-# this is mostly for building on Jenkins, but you could set the
-# env var on a local setup too.  If build number doesn't exist
-# it defaults to 0.
-build_name = os.environ.get('BUILD_NUMBER', '0')
-# change version.py to include the build_number
+# Write the version module
 with open("foqus_lib/version/version.template", 'r') as f:
     verfile = f.read()
-verfile = verfile.replace("{BUILDNUMBER}", build_name)
+verfile = verfile.format(VERSION=version)
 with open("foqus_lib/version/version.py", 'w') as f:
     f.write(verfile)
 
@@ -35,52 +40,36 @@ import foqus_lib.version.version as ver
 print("Setting version as {0}".format(ver.version))
 
 install_requires=[
-    'adodbapi',
-    #'boto3',
     'TurbineClient',
-    #'pyparsing',
-    #'py4j',
-    #'requests',
-    #'networkx',
-    #'redis',
-    #'logstash_formatter',
     'PyQt5',
-    'sip',
+    'sip',   # not sure if I need this
     'matplotlib',
     'scipy',
     'numpy',
     'cma',
     'tqdm',
-    'pandas>0.20'],
+    'pandas>0.20']
+
+if os.name == 'nt':
+    install_requires.append("adodbapi>=2.6.0.7")
+    install_requires.append("pywin32")
 
 dependency_links=[]
 if connectType == 'https':
-    dependency_links=['git+https://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
+    dependency_links=['git+https://git@github.com/CCSI-Toolset/turb_client.git#egg=TurbineClient']
 elif connectType == 'ssh':
-    dependency_links=['git+ssh://git@github.com/CSRussell2319/turb_client.git@py3#egg=TurbineClient']
-
-# Set all the package parameters
-pkg_name             = "foqus"
-pkg_version          = ver.version
-pkg_license          = ver.license
-pkg_description      = "FOQUS tool for simulation based optimization,"\
-                       " uncertainty quantification, and surrogate models"
-pkg_author           = ver.author
-pkg_author_email     = ver.support
-pkg_maintainer       = ver.maintainer
-pkg_maintainer_email = ver.maintainer_email
-pkg_url              = ver.webpage
+    dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client.git#egg=TurbineClient']
 
 setup(
-    name = pkg_name,
-    version = pkg_version,
-    license = pkg_license,
-    description = pkg_description,
-    author = pkg_author,
-    author_email = pkg_author_email,
-    maintainer = pkg_maintainer,
-    maintainer_email = pkg_maintainer_email,
-    url = pkg_url,
+    name = ver.name,
+    version = ver.version,
+    license = ver.license,
+    description = ver.description,
+    author = ver.author,
+    author_email = ver.support,
+    maintainer = ver.maintainer,
+    maintainer_email = ver.maintainer_email,
+    url = ver.webpage,
     packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',

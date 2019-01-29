@@ -147,7 +147,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         width = 30 + self.analysisTable.verticalHeader().width()
         for i in range(self.analysisTable.columnCount()):
             width += self.analysisTable.columnWidth(i)
-        #            print self.analysisTable.columnWidth(i)
         if self.analysisTable.verticalScrollBar().isVisible():
             width += self.analysisTable.verticalScrollBar().width()
         self.analysisTable.setMinimumWidth(width)
@@ -156,9 +155,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisTable.itemSelectionChanged.connect(self.analysisSelected)
         self.analysisTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.analysisTable.setWordWrap(True)
-
-        # self.refreshAnalysisTable()
-        # self.analysisSelected()
 
     def updateInfoTable(self, candidateData, historyData):
 
@@ -386,12 +382,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testRuntime.append(runtime)
 
     def on_min_design_spinbox_changed(self):
-        # self.updateRunTime(self.testRuntime[0])
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
 
     def on_max_design_spinbox_changed(self):
-        # self.updateRunTime(self.testRuntime[0])
         self.testSdoeButton.setEnabled(True)
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))

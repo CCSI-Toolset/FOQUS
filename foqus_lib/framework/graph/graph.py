@@ -657,6 +657,7 @@ class Graph(threading.Thread):
         ######
         rp = 0 #pages already read
         skipWait = False #skip the wait between checking for results
+        self.status['error'] = 0
         while self.status["unfinished"] > 0:
             # pause in between checking status, don't want to overwhelm
             # turbine with status requests.

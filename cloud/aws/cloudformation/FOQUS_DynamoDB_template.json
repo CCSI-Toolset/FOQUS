@@ -1,0 +1,165 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Metadata": {
+        "License": "MIT No Attribution"
+    },
+    "Description": "FOQUS_Resources DynamoDB table auto scaling and TTL",
+    "Parameters": {
+        "userTableName": {
+            "Type": "String",
+            "Default": "FOQUS_Resources",
+            "Description": "Name of the user table"
+        }
+    },
+    "Resources": {
+        "tableMyAppUser": {
+            "Type": "AWS::DynamoDB::Table",
+            "Properties": {
+                "TableName": { "Ref": "userTableName" },
+                "AttributeDefinitions": [
+                    {
+                        "AttributeName": "Id",
+                        "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "Type",
+                        "AttributeType": "S"
+                    }
+                ],
+                "KeySchema": [
+                    {
+                        "KeyType": "HASH",
+                        "AttributeName": "Type"
+                    },
+                    {
+                        "KeyType": "RANGE",
+                        "AttributeName": "Id"
+                    }
+                ],
+                "ProvisionedThroughput": {
+                    "ReadCapacityUnits": "10",
+                    "WriteCapacityUnits": "10"
+                },
+                "TimeToLiveSpecification": {
+                  "AttributeName": "TTL",
+                  "Enabled": "TRUE"
+                }
+            }
+        },
+        "ScalingRole": {
+            "Type": "AWS::IAM::Role",
+            "Properties": {
+                "AssumeRolePolicyDocument": {
+                    "Version": "2012-10-17",
+                    "Statement": [{
+                        "Effect": "Allow",
+                        "Principal": {
+                            "Service": [
+                                "application-autoscaling.amazonaws.com"
+                            ]
+                        },
+                        "Action": [
+                            "sts:AssumeRole"
+                        ]
+                    }]
+                },
+                "Path": "/",
+                "Policies": [{
+                    "PolicyName": "root",
+                    "PolicyDocument": {
+                        "Version": "2012-10-17",
+                        "Statement": [{
+                            "Effect": "Allow",
+                            "Action": [
+                                "dynamodb:DescribeTable",
+                                "dynamodb:UpdateTable",
+                                "cloudwatch:PutMetricAlarm",
+                                "cloudwatch:DescribeAlarms",
+                                "cloudwatch:GetMetricStatistics",
+                                "cloudwatch:SetAlarmState",
+                                "cloudwatch:DeleteAlarms"
+                            ],
+                            "Resource": "*"
+                        }]
+                    }
+                }]
+            }
+        },
+        "UserTableWriteCapacityScalableTarget": {
+            "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+            "Properties": {
+                "MaxCapacity": 100,
+                "MinCapacity": 10,
+                "ResourceId": {
+                    "Fn::Join": [
+                        "/", [
+                            "table",
+                            { "Ref": "tableMyAppUser" }
+                        ]
+                    ]
+                },
+                "RoleARN": {
+                    "Fn::GetAtt": ["ScalingRole", "Arn"]
+                },
+                "ScalableDimension": "dynamodb:table:WriteCapacityUnits",
+                "ServiceNamespace": "dynamodb"
+            }
+        },
+        "UserTableWriteScalingPolicy": {
+            "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+            "Properties": {
+                "PolicyName": "WriteAutoScalingPolicy",
+                "PolicyType": "TargetTrackingScaling",
+                "ScalingTargetId": {
+                    "Ref": "UserTableWriteCapacityScalableTarget"
+                },
+                "TargetTrackingScalingPolicyConfiguration": {
+                    "TargetValue": 70.0,
+                    "ScaleInCooldown": 60,
+                    "ScaleOutCooldown": 60,
+                    "PredefinedMetricSpecification": {
+                        "PredefinedMetricType": "DynamoDBWriteCapacityUtilization"
+                    }
+                }
+            }
+        },
+        "UserTableReadCapacityScalableTarget": {
+            "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+            "Properties": {
+                "MaxCapacity": 100,
+                "MinCapacity": 10,
+                "ResourceId": {
+                    "Fn::Join": [
+                        "/", [
+                            "table",
+                            { "Ref": "tableMyAppUser" }
+                        ]
+                    ]
+                },
+                "RoleARN": {
+                    "Fn::GetAtt": ["ScalingRole", "Arn"]
+                },
+                "ScalableDimension": "dynamodb:table:ReadCapacityUnits",
+                "ServiceNamespace": "dynamodb"
+            }
+        },
+        "UserTableReadScalingPolicy": {
+            "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+            "Properties": {
+                "PolicyName": "ReadAutoScalingPolicy",
+                "PolicyType": "TargetTrackingScaling",
+                "ScalingTargetId": {
+                    "Ref": "UserTableReadCapacityScalableTarget"
+                },
+                "TargetTrackingScalingPolicyConfiguration": {
+                    "TargetValue": 70.0,
+                    "ScaleInCooldown": 60,
+                    "ScaleOutCooldown": 60,
+                    "PredefinedMetricSpecification": {
+                        "PredefinedMetricType": "DynamoDBReadCapacityUtilization"
+                    }
+                }
+            }
+        }
+    }
+}

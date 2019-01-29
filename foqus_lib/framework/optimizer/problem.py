@@ -142,7 +142,7 @@ class problem():
                 self.solverOptions[dkey][okey] = ov
 
     def loadSamples(self, fname):
-        with open(fname, 'rb') as f:
+        with open(fname, 'r') as f:
             cr = csv.reader(f)
             head = [h.strip() for h in next(cr)]
             for h in head:

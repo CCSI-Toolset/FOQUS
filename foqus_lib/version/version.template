@@ -8,7 +8,7 @@ See LICENSE.md for license and copyright details.
 from __future__ import absolute_import, division, print_function
 import argparse, sys
 
-version = "2017.12.0.{BUILDNUMBER}" #Build in Jenkins inserts build number
+version = "3.0.0.{BUILDNUMBER}" #Build in Jenkins inserts build number
 copyright = "See LICENSE.md for license and copyright details."
 license = "See LICENSE.md for license and copyright details."
 author = "CCSI FOQUS Team"

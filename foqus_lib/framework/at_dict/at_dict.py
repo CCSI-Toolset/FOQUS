@@ -29,7 +29,7 @@ class OrderedAtDict(AtDict):
         for k in self._ordered_keys:
             yield k
 
-    def iteritems(self):
+    def items(self):
         for k in self:
             yield (k, self[k])
 

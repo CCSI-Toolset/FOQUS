@@ -7,7 +7,7 @@ See LICENSE.md for license and copyright details.
 import os
 import foqus_lib.gui.helpers.guiHelpers as gh
 from PyQt5 import uic
-from PyQt5.QtWidgets import QDialog, QFileDialog
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 mypath = os.path.dirname(__file__)
 _optSampleGenDialogUI, _optSampleGenDialog = \
         uic.loadUiType(os.path.join(mypath, "optSampleGenDialog_UI.ui"))
@@ -17,7 +17,7 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
     SAMPLE_FULL_FACT = 0
     SAMPLE_FILE = 1
 
-    def __init__(self, varNames):
+    def __init__(self, varNames, parent=None):
         super(optSampleGenDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.varNames = varNames
@@ -48,6 +48,11 @@ class optSampleGenDialog(_optSampleGenDialog, _optSampleGenDialogUI):
             for row, var in enumerate(self.varNames):
                 self.sampleSettings[var] = gh.getCellJSON(
                     self.ffactTable, row, 1)
+                if(not isinstance(self.sampleSettings[var],list)):
+                    QMessageBox.warning(self, "Error",
+                        "A list of number is need for each variable "
+                        "(e.g. [1.0, 2.0])")
+                    return
         if self.sampleType == self.SAMPLE_FILE:
             self.sampleSettings = self.FileEdit.text()
         self.done(QDialog.Accepted)

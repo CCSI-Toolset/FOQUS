@@ -75,7 +75,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
     def genSamples(self):
         self.applyChanges()
         prob = self.dat.optProblem
-        genDialog = optSampleGenDialog(sorted(prob.vs))
+        genDialog = optSampleGenDialog(sorted(prob.vs), self)
         r = genDialog.exec_()
         if r == QDialog.Accepted:
             #call the appropriate method to generate samples

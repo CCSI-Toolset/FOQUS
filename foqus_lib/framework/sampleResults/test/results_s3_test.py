@@ -77,7 +77,7 @@ def test_results_session_broke_result_page():
     #obj = results.Results()
     setName = 's3test'
     name = 'whatever'
-    jids = map(lambda i: i['Id'], page)
+    jids = list(map(lambda i: i['Id'], page))
     g = Graph()
     #g.solveListValTurbineCreateSession = MagicMock(return_value=session_id)
     g.solveListValTurbineGetGenerator = MagicMock(return_value=result_id)

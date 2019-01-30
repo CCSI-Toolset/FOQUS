@@ -17,6 +17,8 @@ default_version = "3.0.0"
 try:
     version=subprocess.check_output(
         ["git", "describe", "--tags"]).decode('utf-8').strip()
+    version = version.replace("-", ".dev", 1)
+    version = version.replace("-", "+", 1)
 except:
     version=default_version
 

@@ -10,7 +10,7 @@ import os
 import threading
 import adodbapi
 import adodbapi.apibase
-adodbapi.adodbapi.defaultCursorLocation = adodbapi.adUseServer
+adodbapi.adodbapi.defaultCursorLocation = 2 #adodbapi.adUseServer
 
 class DBException(Exception):
     pass

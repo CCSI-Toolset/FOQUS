@@ -94,7 +94,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             "Services\webAPI\SelfManagedWebApplicationWindowsService.exe.config")
         #Get XML string
         try:
-            with open(tcfg, 'rb') as f:
+            with open(tcfg, 'r') as f:
                 xmls = f.read()
         except:
             logging.getLogger("foqus." + __name__).exception(
@@ -145,7 +145,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         tree.write(tcfgs, encoding="utf-8", xml_declaration=True)
         tcfgs = tcfgs.getvalue().replace(
             "<unity>", '<unity xmlns="{0}">'.format(xmlns))
-        with open(tcfg, 'wb') as f:
+        with open(tcfg, 'w') as f:
             f.write(tcfgs)
         QMessageBox.information(
             self,

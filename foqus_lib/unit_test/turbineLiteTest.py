@@ -8,4 +8,3 @@ import os
 
 class turbineLiteTest(unittest.TestCase):
     pass
-    

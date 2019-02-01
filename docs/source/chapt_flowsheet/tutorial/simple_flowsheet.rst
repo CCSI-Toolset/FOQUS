@@ -23,10 +23,10 @@ provided.
 
 3. Set the session description.
 
-   #. Select the **Description** tab (Figure
+   a. Select the **Description** tab (Figure
       `[fig.session.description1] <#fig.session.description1>`__).
 
-   #. Type the description shown in Figure
+   b. Type the description shown in Figure
       `[fig.session.description1] <#fig.session.description1>`__. The
       buttons above the **Description** tab box can be used to format
       the text.
@@ -42,12 +42,12 @@ provided.
 
 5. Add a node named “calc.”
 
-   #. Click the **Add Node** button in the toolbar on the left side of
+   a. Click the **Add Node** button in the toolbar on the left side of
       the Home window.
 
-   #. Click a location on the gridded flowsheet area.
+   b. Click a location on the gridded flowsheet area.
 
-   #. Enter the node name “calc” in the dialog box.
+   c. Enter the node name “calc” in the dialog box.
 
 6. Click the **Select Mode** button in the toolbar.
 
@@ -58,23 +58,23 @@ provided.
    simulation the input and output variables are populated
    automatically, and this step is not necessary.)
 
-   #. Click **+** above the **Input Variables** table.
+   a. Click **+** above the **Input Variables** table.
 
-   #. Enter x1 in the variable **Name** dialog box.
+   b. Enter x1 in the variable **Name** dialog box.
 
-   #. Click **+** above the **Input Variables** table.
+   c. Click **+** above the **Input Variables** table.
 
-   #. Enter x2 in the variable **Name** dialog box.
+   d. Enter x2 in the variable **Name** dialog box.
 
-   #. Enter -2 and 2 for the **Min** and **Max** of x1 in the **Input
+   e. Enter -2 and 2 for the **Min** and **Max** of x1 in the **Input
       Variables** table.
 
-   #. Enter -1 and 4 for the **Min** and **Max** of x2 in the **Input
+   f. Enter -1 and 4 for the **Min** and **Max** of x2 in the **Input
       Variables** table.
 
-   #. Enter 1 for the value of x1.
+   g. Enter 1 for the value of x1.
 
-   #. Enter 4 for the value of x2.
+   h. Enter 4 for the value of x2.
 
 .. figure:: ../figs/simple_flow_1.svg
    :alt: Flowsheet, Input Variables
@@ -86,13 +86,13 @@ provided.
    external simulation the input and output variables are populated
    automatically.)
 
-   #. Click **Output Variables** to show the **Output Variables** table
+   a. Click **Output Variables** to show the **Output Variables** table
       (Figure `[fig.simple.flow2] <#fig.simple.flow2>`__).
 
-   #. Click **+** above the **Output Variables** table to add a
+   b. Click **+** above the **Output Variables** table to add a
       variable.
 
-   #. Enter z in the output **Name** dialog box.
+   c. Enter z in the output **Name** dialog box.
 
 .. figure:: ../figs/simple_flow_2.svg
    :alt: Flowsheet, Output Variables
@@ -113,10 +113,10 @@ by a node script.
 
 10. Add a calculation to the node.
 
-    #. Click the **Node Script** tab (Figure
+    a. Click the **Node Script** tab (Figure
        `[fig.simple.flow3] <#fig.simple.flow3>`__).
 
-    #. | Enter the following code into the Python code box:
+    b. | Enter the following code into the Python code box:
        | ``f['z'] = x['x1']*math.sqrt(x['x2'])``
 
 11. Click the **Variables** tab.
@@ -134,9 +134,9 @@ result. The simulation should report an error.
 
    Node Calculation
 
-10. Save the FOQUS session.
+13. Save the FOQUS session.
 
-    #. Click the **Session** drop-down menu at the top of the Home
+    a. Click the **Session** drop-down menu at the top of the Home
        window (Figure
        `[fig.simple.flow.save] <#fig.simple.flow.save>`__).
 

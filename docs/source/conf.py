@@ -169,7 +169,7 @@ html_logo = "_static/big_ccsi.png"
 # pixels large.
 #
 #html_favicon = "source/_static/idaes-logo.ico"
-#html_favicon = "_static/idaes-logo.ico"
+html_favicon = "_static/foqus.ico"
 
 
 # Add any paths that contain custom static files (such as style sheets) here,

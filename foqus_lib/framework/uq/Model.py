@@ -242,7 +242,7 @@ class Model:
                 count += 1
         self.numVarInputs = count
         return self.numVarInputs
-    
+      
     def getNumOutputs(self):
         return self.numOutputs
 

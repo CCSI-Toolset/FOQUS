@@ -46,7 +46,7 @@ def run(config_file, nd, test=False):
 
     # do a quick test to get an idea of runtime
     if test:
-        nr  =200 # number of random starts for testing, set to a small number
+        nr = 200 # number of random starts for testing, set to a small number
         best_val, cand_rand, rand_index = criterion(cand, include, scl, nr, nd, mode=mode, hist=hist)
         elapsed_time = time.time() - t0
         return elapsed_time
@@ -73,24 +73,11 @@ def plot(fname, show=None, nbins=20, area=10):
         show = list(df)
     nshow = len(show)
 
-    # subplot indices
-    sb_indices = np.reshape(range(nshow ** 2), [nshow, nshow])
-
-    # generate subplots
-    fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
-    A = axes.flat
-
-    for i in range(nshow):
-
-        for j in range(i):
-            # ... delete the unused (lower-triangular) axes
-            k = sb_indices[i][j]
-            fig.delaxes(A[k])
-
-        k = sb_indices[i][i]
-        ax = A[k]
-        xname = names[i]
-        # ... plot histogram for diagonal subplot
+    # handle case for one input
+    if nshow == 1:
+        fig = plt.figure()
+        ax = fig.add_subplot(111)
+        xname = names[0]
         n, bins, patches = ax.hist(df[xname], nbins)
         xmin = bins[0]
         xmax = bins[-1]
@@ -98,16 +85,43 @@ def plot(fname, show=None, nbins=20, area=10):
         ax.set_ylabel('Frequency')
         ax.grid(True, axis='both')
 
-        for j in range(i + 1, nshow):
-            k = sb_indices[i][j]
+    else: # multiple inputs
+        
+        # subplot indices
+        sb_indices = np.reshape(range(nshow ** 2), [nshow, nshow])
+
+        # generate subplots
+        fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
+        A = axes.flat
+    
+        for i in range(nshow):
+
+            for j in range(i):
+                # ... delete the unused (lower-triangular) axes
+                k = sb_indices[i][j]
+                fig.delaxes(A[k])
+
+            k = sb_indices[i][i]
             ax = A[k]
-            yname = names[j]
-            # ... plot scatter for off-diagonal subplot
-            # ... area/alpha can be customized to visualize weighted points (future feature)
-            ax.scatter(df[xname], df[yname], s=area, alpha=0.5)
+            xname = names[i]
+            # ... plot histogram for diagonal subplot
+            n, bins, patches = ax.hist(df[xname], nbins)
+            xmin = bins[0]
+            xmax = bins[-1]
             ax.set_xlabel(xname)
-            ax.set_ylabel(yname)
+            ax.set_ylabel('Frequency')
             ax.grid(True, axis='both')
+
+            for j in range(i + 1, nshow):
+                k = sb_indices[i][j]
+                ax = A[k]
+                yname = names[j]
+                # ... plot scatter for off-diagonal subplot
+                # ... area/alpha can be customized to visualize weighted points (future feature)
+                ax.scatter(df[xname], df[yname], s=area, alpha=0.5)
+                ax.set_xlabel(xname)
+                ax.set_ylabel(yname)
+                ax.grid(True, axis='both')
 
     title = 'SDOE candidates from {}'.format(fname)
     fig.canvas.set_window_title(title)

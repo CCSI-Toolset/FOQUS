@@ -14,7 +14,7 @@
    height="694"
    id="svg3803"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="flowsheetEdit.svg"
    inkscape:export-filename="C:\Users\jeslick\work\foqus\manual\Figs_Overview_General\flowsheetEdit.png"
    inkscape:export-xdpi="90"
@@ -58,15 +58,15 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
-     inkscape:cx="449.88207"
+     inkscape:cx="451.90238"
      inkscape:cy="334.62035"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1648"
-     inkscape:window-height="1008"
+     inkscape:window-height="981"
      inkscape:window-x="97"
-     inkscape:window-y="64"
+     inkscape:window-y="28"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -80,7 +80,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -98,189 +98,194 @@
        width="825" />
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.988281"
        y="262.93362"
-       id="text3861"
-       sodipodi:linespacing="125%"><tspan
+       id="text3861"><tspan
          sodipodi:role="line"
          id="tspan3863"
          x="-20.988281"
-         y="262.93362">1) Selection mode</tspan></text>
+         y="262.93362"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">1) Selection mode</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-19.967773"
        y="303.21933"
-       id="text3865"
-       sodipodi:linespacing="125%"><tspan
+       id="text3865"><tspan
          sodipodi:role="line"
          id="tspan3867"
          x="-19.967773"
-         y="303.21933">2) Add node mode</tspan><tspan
+         y="303.21933"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">2) Add node mode</tspan><tspan
          sodipodi:role="line"
          x="-19.967773"
          y="330.71933"
-         id="tspan3873" /></text>
+         id="tspan3873"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-19.967773"
        y="342.07648"
-       id="text3869"
-       sodipodi:linespacing="125%"><tspan
+       id="text3869"><tspan
          sodipodi:role="line"
          id="tspan3871"
          x="-19.967773"
-         y="342.07648">3) Add edge mode</tspan></text>
+         y="342.07648"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">3) Add edge mode</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-21.095703"
        y="374.64789"
-       id="text3875"
-       sodipodi:linespacing="125%"><tspan
+       id="text3875"><tspan
          sodipodi:role="line"
          id="tspan3877"
          x="-21.095703"
-         y="374.64789">4) Center flowsheet in display</tspan><tspan
+         y="374.64789"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">4) Center flowsheet in display</tspan><tspan
          sodipodi:role="line"
          x="-21.095703"
          y="402.14789"
-         id="tspan3879" /></text>
+         id="tspan3879"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-21.697266"
        y="412.07648"
-       id="text3881"
-       sodipodi:linespacing="125%"><tspan
+       id="text3881"><tspan
          sodipodi:role="line"
          id="tspan3883"
          x="-21.697266"
-         y="412.07648">5) Delete selected</tspan><tspan
+         y="412.07648"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">5) Delete selected</tspan><tspan
          sodipodi:role="line"
          x="-21.697266"
          y="439.57648"
-         id="tspan3885" /></text>
+         id="tspan3885"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-21.729492"
        y="449.79074"
-       id="text3887"
-       sodipodi:linespacing="125%"><tspan
+       id="text3887"><tspan
          sodipodi:role="line"
          id="tspan3889"
          x="-21.729492"
-         y="449.79074">6) Run a simulation</tspan></text>
+         y="449.79074"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">6) Run a simulation</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.988281"
        y="486.64789"
-       id="text3891"
-       sodipodi:linespacing="125%"><tspan
+       id="text3891"><tspan
          sodipodi:role="line"
          id="tspan3893"
          x="-20.988281"
-         y="486.64789">7) Stop a simulation</tspan></text>
+         y="486.64789"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">7) Stop a simulation</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.988281"
        y="524.93359"
-       id="text3895"
-       sodipodi:linespacing="125%"><tspan
+       id="text3895"><tspan
          sodipodi:role="line"
          id="tspan3897"
          x="-20.988281"
-         y="524.93359">8) Set inputs to defaults</tspan></text>
+         y="524.93359"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">8) Set inputs to defaults</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-21.697266"
        y="562.64789"
-       id="text3899"
-       sodipodi:linespacing="125%"><tspan
+       id="text3899"><tspan
          sodipodi:role="line"
          id="tspan3901"
          x="-21.697266"
-         y="562.64789">9) Determine tear edges</tspan></text>
+         y="562.64789"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">9) Determine tear edges</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-21.804688"
        y="599.21936"
-       id="text3903"
-       sodipodi:linespacing="125%"><tspan
+       id="text3903"><tspan
          sodipodi:role="line"
          id="tspan3905"
          x="-21.804688"
-         y="599.21936">10) Flowsheet solver settings</tspan><tspan
+         y="599.21936"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">10) Flowsheet solver settings</tspan><tspan
          sodipodi:role="line"
          x="-21.804688"
          y="626.71936"
-         id="tspan3907" /></text>
+         id="tspan3907"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.515625"
        y="638.36218"
-       id="text3909"
-       sodipodi:linespacing="125%"><tspan
+       id="text3909"><tspan
          sodipodi:role="line"
          id="tspan3911"
          x="-20.515625"
-         y="638.36218">11) Toggle node editor display</tspan><tspan
+         y="638.36218"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">11) Toggle node editor display</tspan><tspan
          sodipodi:role="line"
          x="-20.515625"
          y="665.86218"
-         id="tspan3913" /></text>
+         id="tspan3913"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif"> </tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.515625"
        y="680.64789"
-       id="text3915"
-       sodipodi:linespacing="125%"><tspan
+       id="text3915"><tspan
          sodipodi:role="line"
          id="tspan3917"
          x="-20.515625"
-         y="680.64789">12) Toggle edge editor display</tspan></text>
+         y="680.64789"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">12) Toggle edge editor display</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
        x="-20.988281"
        y="727.50507"
-       id="text3919"
-       sodipodi:linespacing="125%"><tspan
+       id="text3919"><tspan
          sodipodi:role="line"
          id="tspan3921"
          x="-20.988281"
-         y="727.50507">13) Show results from all flowsheet runs</tspan></text>
+         y="727.50507"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">13) Show results from all flowsheet runs</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="364"
-       y="337.50504"
-       id="text3923"
-       sodipodi:linespacing="125%"><tspan
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="346.82739"
+       y="319.3223"
+       id="text3923"><tspan
          sodipodi:role="line"
          id="tspan3925"
-         x="364"
-         y="337.50504">14) Node, represents a simulation</tspan></text>
+         x="346.82739"
+         y="319.3223"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">14) Node, represents a simulation</tspan></text>
     <text
        xml:space="preserve"
-       style="font-size:22px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       x="369.71429"
-       y="528.36218"
-       id="text3927"
-       sodipodi:linespacing="125%"><tspan
+       style="font-style:normal;font-weight:normal;line-height:0%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+       x="326.27774"
+       y="530.38251"
+       id="text3927"><tspan
          sodipodi:role="line"
-         x="369.71429"
-         y="528.36218"
-         id="tspan3935">15) Edge, connects simulation data</tspan></text>
+         x="326.27774"
+         y="530.38251"
+         id="tspan3935"
+         style="font-size:22px;line-height:1.25;font-family:sans-serif">15) Edge, connects simulation data</tspan></text>
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart)"
        d="m 314.28572,412.36218 44.28571,-84.28571"
@@ -289,8 +294,9 @@
        sodipodi:nodetypes="cc" />
     <path
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow2Lstart)"
-       d="M 398.57143,430.93361 375,506.6479"
+       d="m 398.57143,430.93361 -50.84555,74.70414"
        id="path4429"
-       inkscape:connector-curvature="0" />
+       inkscape:connector-curvature="0"
+       sodipodi:nodetypes="cc" />
   </g>
 </svg>

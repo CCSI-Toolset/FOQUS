@@ -1,5 +1,5 @@
-Flowsheets and Settings Reference
-=================================
+Reference
+=========
 
 .. toctree::
     :maxdepth: 2

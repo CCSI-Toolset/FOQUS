@@ -1,5 +1,5 @@
-Flowsheets and Settings Tutorial
-================================
+Tutorial
+========
 
 .. toctree::
     :maxdepth: 1

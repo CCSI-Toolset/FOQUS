@@ -14,7 +14,7 @@
    height="492"
    id="svg8221"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="edgeEditor.svg"
    inkscape:export-filename="C:\Users\jeslick\work\foqus\manual\Figs_Tutorials_Opt\edgeEditor.png"
    inkscape:export-xdpi="90"
@@ -34,10 +34,10 @@
      inkscape:document-units="px"
      inkscape:current-layer="g4795-8-13-1-2-9"
      showgrid="false"
-     inkscape:window-width="938"
-     inkscape:window-height="956"
+     inkscape:window-width="1154"
+     inkscape:window-height="827"
      inkscape:window-x="357"
-     inkscape:window-y="70"
+     inkscape:window-y="53"
      inkscape:window-maximized="0"
      fit-margin-top="0"
      fit-margin-left="0"
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -82,21 +82,16 @@
          height="30.468775"
          x="295.43405"
          y="180.23398" />
-      <flowRoot
+      <text
          xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-1-4"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"
-         inkscape:export-filename="C:\Users\jeslick\work\foqus\manual\Figs_Tutorials_Opt\edgeEditor.png"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-6-3"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-2-5"
-             id="use3803-4-9-5-2-9-8-1"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2">26</flowPara></flowRoot>    </g>
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         x="319.14297"
+         y="200.93463"
+         id="text3705"><tspan
+           sodipodi:role="line"
+           id="tspan3703"
+           x="319.14297"
+           y="200.93463">26</tspan></text>
+    </g>
   </g>
 </svg>

@@ -14,7 +14,7 @@
    height="668"
    id="svg3429"
    version="1.1"
-   inkscape:version="0.48.4 r9939"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)"
    sodipodi:docname="recycle_tut3.svg"
    inkscape:export-filename="recycle_tut3.png"
    inkscape:export-xdpi="90"
@@ -28,21 +28,21 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="422.00001"
-     inkscape:cy="362.57144"
+     inkscape:zoom="0.75539473"
+     inkscape:cx="120.90748"
+     inkscape:cy="460.45804"
      inkscape:document-units="px"
-     inkscape:current-layer="g4795-8-13-1-8-6-9-4-2-2-9-8-6-1"
+     inkscape:current-layer="layer1"
      showgrid="false"
      fit-margin-top="0"
      fit-margin-left="0"
      fit-margin-right="0"
      fit-margin-bottom="0"
-     inkscape:window-width="1473"
-     inkscape:window-height="892"
-     inkscape:window-x="150"
-     inkscape:window-y="150"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1920"
+     inkscape:window-height="981"
+     inkscape:window-x="0"
+     inkscape:window-y="28"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata3434">
     <rdf:RDF>
@@ -51,7 +51,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -68,154 +68,130 @@
        height="668"
        width="854" />
     <g
-       transform="translate(-289.84393,598.46525)"
-       id="g4795-8-13-1-8-6-9-4-2">
+       id="g86"
+       transform="translate(716.18186,45.009581)">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4"
-             id="use3803-4-9-5-2-9-5-8-9-8-1"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7">7b</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79"
+           sodipodi:role="line">7d</tspan></text>
+    </g>
     <g
-       transform="translate(-83.84393,523.46525)"
-       id="g4795-8-13-1-8-6-9-4-2-2">
+       transform="translate(432.88627,116.49539)"
+       id="g86-9">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4-7"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61-0"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5-7"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5-9"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4-7"
-             id="use3803-4-9-5-2-9-5-8-9-8-1-3"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7-1">7c</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81-9"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79-0"
+           sodipodi:role="line">11</tspan></text>
+    </g>
     <g
-       transform="translate(-4.84393,288.46525)"
-       id="g4795-8-13-1-8-6-9-4-2-2-9">
+       transform="translate(431.56246,234.31459)"
+       id="g86-3">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61-3"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5-7-6"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5-9-5"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4-7-8"
-             id="use3803-4-9-5-2-9-5-8-9-8-1-3-0"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7-1-2">7d</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81-0"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79-09"
+           sodipodi:role="line">9</tspan></text>
+    </g>
     <g
-       transform="translate(-288.84393,477.46525)"
-       id="g4795-8-13-1-8-6-9-4-2-2-9-8">
+       transform="translate(434.21008,317.71469)"
+       id="g86-35">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61-2"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5-7-6-0"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5-9-5-2"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6"
-             id="use3803-4-9-5-2-9-5-8-9-8-1-3-0-4"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7-1-2-8">9</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81-4"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79-7"
+           sodipodi:role="line">10</tspan></text>
+    </g>
     <g
-       transform="translate(-288.84393,560.46525)"
-       id="g4795-8-13-1-8-6-9-4-2-2-9-8-6">
+       transform="translate(434.21008,348.18347)"
+       id="g86-4">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6-5"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61-4"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5-7-6-0-0"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5-9-5-2-9"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6-5"
-             id="use3803-4-9-5-2-9-5-8-9-8-1-3-0-4-0"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7-1-2-8-0">10</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81-8"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79-79"
+           sodipodi:role="line">7b</tspan></text>
+    </g>
     <g
-       transform="translate(-288.84393,362.46525)"
-       id="g4795-8-13-1-8-6-9-4-2-2-9-8-6-1">
+       transform="translate(636.75319,278.00036)"
+       id="g86-45">
       <rect
-         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6-5-7"
+         style="fill:#fff6d5;stroke:#000000;stroke-width:0.70078278;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         id="rect3793-4-7-2-8-7-8-3-1-0-4-7-8-61-35"
          width="46.81974"
          height="30.468775"
-         x="295.43405"
-         y="180.23398" />
-      <flowRoot
-         xml:space="preserve"
-         style="font-size:18px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-         id="flowRoot3799-0-4-4-7-4-2-7-3-9-5-7-6-0-0-4"
-         transform="translate(0,4.4593548)"
-         inkscape:export-xdpi="90"
-         inkscape:export-ydpi="90"><flowRegion
-           id="flowRegion3801-9-0-5-4-0-4-8-5-4-5-9-5-2-9-0"><use
-             x="0"
-             y="0"
-             xlink:href="#rect3793-4-7-2-8-7-8-3-1-0-4-7-8-6-5-7"
-             id="use3803-4-9-5-2-9-5-8-9-8-1-3-0-4-0-9"
-             width="827"
-             height="576" /></flowRegion><flowPara
-           id="flowPara4773-1-7-4-5-2-8-8-7-1-2-8-0-4">11</flowPara></flowRoot>    </g>
+         x="-425.19128"
+         y="425.63199" />
+      <text
+         id="text81-2"
+         y="446.34177"
+         x="-401.81509"
+         style="font-style:normal;font-weight:normal;font-size:18.66666603px;line-height:0.01%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none"
+         xml:space="preserve"><tspan
+           y="446.34177"
+           x="-401.81509"
+           id="tspan79-1"
+           sodipodi:role="line">7c</tspan></text>
+    </g>
   </g>
 </svg>

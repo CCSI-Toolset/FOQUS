@@ -7,14 +7,14 @@ plan to use gPROMS simulations with FOQUS, the CCSI team strongly
 encourages you to read the ``SimSinter gPROMS Technical Manual,''
 which is included in the FOQUS distribution.  The default location is
 at C:\textbackslash Program Files (x86)\textbackslash foqus
-\textbackslash foqus \textbackslash doc.  It is also available on the CCSI website.  
+\textbackslash foqus \textbackslash doc.  It is also available on the CCSI website.
 
 Unlike Aspen, changes must be made to the gPROMS simulation process in
 order to work with SimSinter.  Therefore, this section consists of a
 series of tutorials for every step of configuring gPROMS and SimSinter
 to work together.  All the tutorials are required in order to have a
 gPROMS simulation be runnable with SimSinter. They are divided up to
-make later reference easier.  
+make later reference easier.
 
 \subsection{Configuring gPROMS to Work with SimSinter} \label{gPROMSConfigSubSection}
 
@@ -26,7 +26,7 @@ The modification to the gPROMS simulation must be done by a developer with an in
 
 \item Open the gPROMS simulation file (ends in .gPJ) in ModelBuilder
   4.0 or newer.  For this example, use the gPROMS install test
-  file ``BufferTank\_FO.gPJ'', found in: 
+  file ``BufferTank\_FO.gPJ'', found in:
 
 C:\textbackslash
   SimSinterFiles\textbackslash gPROMS\_Test\textbackslash
@@ -41,7 +41,7 @@ C:\textbackslash
 	\end{center}
 \end{figure}
 
-\item This simulation was originally a simple BufferTank simulation.  However, it was modified into an example of all the different kinds of variables the user can pass into gPROMS via SimSinter.  Therefore, it has a lot of extra variables that do not really do anything, with very generic names, like ``SingleInt.''  
+\item This simulation was originally a simple BufferTank simulation.  However, it was modified into an example of all the different kinds of variables the user can pass into gPROMS via SimSinter.  Therefore, it has a lot of extra variables that do not really do anything, with very generic names, like ``SingleInt.''
 The simulation consists of a single model, ``BufferTank'', that contains all the simulation logic, and most of the parameter and variable declarations.
 The SimSinter simulation will change some of these PARAMETERS and VARIABLES to change the output of the simulation.
 
@@ -53,8 +53,8 @@ The SimSinter simulation will change some of these PARAMETERS and VARIABLES to c
 	\end{center}
 \end{figure}
 
-\item The example file contains two Processes.  SimSinter can only run gPROMS Processes, so any gPROMS simulation must be driven from a Process.  
-``SimulateTank'' is the original BufferTank example with hardcoded values, ``SimulateTank\_Sinter'' contains the example of setting values with Sinter.  The ``SimulateTank\_Sinter'' example will be recreated in this tutorial.   
+\item The example file contains two Processes.  SimSinter can only run gPROMS Processes, so any gPROMS simulation must be driven from a Process.
+``SimulateTank'' is the original BufferTank example with hardcoded values, ``SimulateTank\_Sinter'' contains the example of setting values with Sinter.  The ``SimulateTank\_Sinter'' example will be recreated in this tutorial.
 
 \begin{figure}[H]
 	\begin{center}
@@ -85,7 +85,7 @@ The SimSinter simulation will change some of these PARAMETERS and VARIABLES to c
 	\end{center}
 \end{figure}
 
-\item The new process will be named ``SimulateTank\_1''.  Rename the process by right-clicking on it and selecting \textbf{\underline{Rename}}.  
+\item The new process will be named ``SimulateTank\_1''.  Rename the process by right-clicking on it and selecting \textbf{\underline{Rename}}.
 
 \begin{figure}[H]
 	\begin{center}
@@ -95,7 +95,7 @@ The SimSinter simulation will change some of these PARAMETERS and VARIABLES to c
 	\end{center}
 \end{figure}
 
-\item Now open up the new ``SimulateTank\_tutorial'' Process.  It has the same hard-coded values as ``SimulateTank''.  
+\item Now open up the new ``SimulateTank\_tutorial'' Process.  It has the same hard-coded values as ``SimulateTank''.
 
 \begin{figure}[H]
 	\begin{center}
@@ -106,9 +106,9 @@ The SimSinter simulation will change some of these PARAMETERS and VARIABLES to c
 \end{figure}
 
 
-\item First, the user needs to add a FOREIGN\_OBJECT named ``FO'' in the PARAMETER section.  
+\item First, the user needs to add a FOREIGN\_OBJECT named ``FO'' in the PARAMETER section.
 Then the user needs to set that FOREIGN\_OBJECT to ``SimpleEventFOI::dummy'' in the SET section.
-This FOREIGN\_OBJECT is how inputs are received from SimSinter.  
+This FOREIGN\_OBJECT is how inputs are received from SimSinter.
 
 \begin{figure}[H]
 	\begin{center}
@@ -121,9 +121,9 @@ This FOREIGN\_OBJECT is how inputs are received from SimSinter.
 \item This particular simulation has a large number of input variables
   that simply demonstrate how to set different types.  These are named based on their type.  Any variable named similarly to ``SingleInt'' or ``ArraySelector'' can be safely ignored for this tutorial.  For a full list of the methods for setting different types see the later section specifically for covering that.
   %Should a Section number be added in sentence above to replace, "later section..."?
-Any variable in the simulation can be an input, whether it is defined in the Process or one of the models referenced by the process, or in a model referenced by a model,… etc.
+Any variable in the simulation can be an input, whether it is defined in the Process or one of the models referenced by the process, or in a model referenced by a model,ï¿½ etc.
 All inputs take their values from the FOREIGN\_OBJECT defined, followed by the type name, two underscores, the input variable name, an open parenthesis, an optional index variable (for arrays), and closed with a close parenthesis and a semicolon.
-For a scalar: 
+For a scalar:
 \begin{lstlisting}
 FO.<Type>__<InputName>();
 \end{lstlisting}
@@ -148,8 +148,8 @@ For this example the user only really needs to set ``T101.Alpha'' in PARAMETER, 
 \end{figure}
 
 
-\item Now test ``SimulateTank\_tutorial'' by selecting it and clicking the green \textbf{\underline{Simulate}} triangle.  When the simulation runs it will ask for every input variable the user has defined.  
-For the example variables that do not effect the simulation, such as ``SingleInt'', any valid value will work.  
+\item Now test ``SimulateTank\_tutorial'' by selecting it and clicking the green \textbf{\underline{Simulate}} triangle.  When the simulation runs it will ask for every input variable the user has defined.
+For the example variables that do not effect the simulation, such as ``SingleInt'', any valid value will work.
 For the values that do effect the simulation, these values work:
 
 \begin{lstlisting}
@@ -208,7 +208,7 @@ When the user has finished setting up these fields, click \textbf{\underline{Exp
 	\end{center}
 \end{figure}
 
-\item The resulting .gENCRYPT file will be saved to a subdirectory named ``Input'' in the save directory specified in Step 3.  The first part of the name will be identical to the .gPJ filename.  The user should not rename it because the SinterConfig file will guess this name, and currently changing it requires editing the SinterConfig file.  
+\item The resulting .gENCRYPT file will be saved to a subdirectory named ``Input'' in the save directory specified in Step 3.  The first part of the name will be identical to the .gPJ filename.  The user should not rename it because the SinterConfig file will guess this name, and currently changing it requires editing the SinterConfig file.
 
 \end{enumerate}
 
@@ -236,12 +236,12 @@ Now that the gPROMS process has been prepared, the SimSinter configuration can b
 \end{figure}
 
 \item	The SinterConfigGUI Open Simulation window displays (Figure \ref{fig.sinter.gproms.openpage}). If ``SinterConfigGUI'' was
-  opened from FOQUS, the filename text box already contains the correct file.  To proceed immediately click \textbf{\underline{Open File and Configure Variables}} or click \textbf{\underline{Browse}} to search for the file. 
+  opened from FOQUS, the filename text box already contains the correct file.  To proceed immediately click \textbf{\underline{Open File and Configure Variables}} or click \textbf{\underline{Browse}} to search for the file.
 
-This tutorial will use the .gPJ file edited in Section \ref{gPROMSConfigSubSection}.  Remember that SinterConfigGUI cannot read the .gENCRYPT file that is actually run by SimSinter.  Instead, the user must open the .gPJ file the ModelBuilder uses.  
+This tutorial will use the .gPJ file edited in Section \ref{gPROMSConfigSubSection}.  Remember that SinterConfigGUI cannot read the .gENCRYPT file that is actually run by SimSinter.  Instead, the user must open the .gPJ file the ModelBuilder uses.
 
-Once the file is selected, click \textbf{\underline{Open File and Configure Variables.}}  
-  
+Once the file is selected, click \textbf{\underline{Open File and Configure Variables.}}
+
 	\begin{figure}[H]
 		\begin{center}
 			\includegraphics[scale=0.55]{Chapt_sinter/figs/ap/02_FileOpenScreen}
@@ -265,7 +265,7 @@ Enter the remaining fields to provide the meta-data to describe the simulation t
 	\end{center}
 \end{figure}
 
-\item 	The SinterConfigGUI Variable Configuration Page window displays as shown in 
+\item 	The SinterConfigGUI Variable Configuration Page window displays as shown in
 Figure \ref{fig.sinter.gproms.settings}.  gPROMS has two settings, \textbf{\underline{ProcessName}} and \textbf{\underline{password}}.  SimSinter has guessed at both the \textbf{\underline{ProcessName}} and the \textbf{\underline{password}}.  For this example the \textbf{\underline{password}} is correct, but the \textbf{\underline{ProcessName}} is incorrect.  SimulateTank is the process that isn't configured to work with SimSinter.
 On the left side we can see the \textbf{\underline{Variable Tree}}.  The root is connected to the three processes defined in this .gPJ file.
 First, change the \textbf{\underline{ProcessName}} to ``SimulateTank\_tutorial''.
@@ -287,12 +287,12 @@ SimSinter also does its best to identify the \textbf{\underline{Default}} values
 The default can only be calculated from the file if it was defined purely in terms of actual numbers.  SimSinter cannot evaluate other variables or functions.  Therefore,
 \begin{lstlisting}
 DEFAULT 2 * 3.1415 * 12
-\end{lstlisting} 
+\end{lstlisting}
 %Odd spacing here. Can "will work. However" be moved up to the line above?
-will work.  However, 
+will work.  However,
 \begin{lstlisting}
 DEFAULT 2 * PI * radius
-\end{lstlisting} 
+\end{lstlisting}
  %Odd spacing here. Can "will not work" be moved up to the line above?
  will not work, because SimSinter does not know the value of either PI
  or radius, and SimSinter will just set the default to 0.
@@ -318,7 +318,7 @@ Notice that the \textbf{\underline{Make Input}} button is disabled.  As stated a
 	\end{center}
 \end{figure}
 
-\item If \textbf{\underline{Make Output}} is clicked, ``FlowOut'' will be made an Output Variable as shown in Figure \ref{fig.sinter.gproms.outputs2}.  
+\item If \textbf{\underline{Make Output}} is clicked, ``FlowOut'' will be made an Output Variable as shown in Figure \ref{fig.sinter.gproms.outputs2}.
 The Description can be updated, but SimSinter made a good guess in this example; therefore, there is no need to change the description.
 
 
@@ -367,7 +367,7 @@ HeightFO = 7.5
 	\end{center}
 \end{figure}
 
-\item	When finished making output variables, click \textbf{\underline{Next}} at the bottom of the variables page.  
+\item	When finished making output variables, click \textbf{\underline{Next}} at the bottom of the variables page.
 If there were any input vectors, the Vector Default Initialization page will display.  Here the default values of the vectors may be edited.
 
 \begin{figure}[H]
@@ -383,4 +383,3 @@ If there were any input vectors, the Vector Default Initialization page will dis
   from FOQUS.
 
 \end{enumerate}
-

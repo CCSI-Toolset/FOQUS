@@ -324,7 +324,7 @@ class SampleData(object):
 
     def getNumVarInputs(self):
         return self.model.getNumVarInputs()
-    
+
     def getNumOutputs(self):
         return self.model.getNumOutputs()
 

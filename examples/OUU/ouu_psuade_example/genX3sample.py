@@ -9,7 +9,7 @@ def main(nSamples, nInputs):
     r = (b-a)*np.random.random_sample((nSamples,nInputs))+a
 
     fname = 'x3sample.txt'
-    with open(fname,'wb') as f:
+    with open(fname,'w') as f:
         f.write(b'%d %d\n' % (nSamples,nInputs))
         np.savetxt(f, r, delimiter=' ')
         f.close()

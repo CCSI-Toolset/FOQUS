@@ -351,7 +351,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
             if self.simNameEdit.currentText() == "":
                 try:
-                    with open(fileName, 'rb') as f:
+                    with open(fileName, 'r') as f:
                         sc_json = json.loads(f.read().decode(UTF8))
                         simNameGuess = sc_json[SC_TITLE]
                 except Exception as e:

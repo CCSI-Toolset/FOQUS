@@ -643,7 +643,7 @@ if __name__ == '__main__':
                         db.add_message(
                             "consumer={0}, job={1} error loading job or"
                             "inputs".format(consumer_uuid, jid), guid)
-                        with open(ofile, 'wb') as f:
+                        with open(ofile, 'w') as f:
                             json.dump({"graphError":50}, f)
                         db.job_save_output(guid, workingDirectory)
                         db.job_change_status(guid, "error")

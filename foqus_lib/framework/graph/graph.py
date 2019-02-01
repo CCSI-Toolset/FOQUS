@@ -95,7 +95,7 @@ class Graph(threading.Thread):
         self.errorStat = -1 # Solve error code
         self.setErrorCode(-1)
         #
-        self.turbConfig = turbineConfiguration() #turbine config
+        self.turbConfig = TurbineConfiguration() #turbine config
         self.simList   = dict() #list of simulations
         self.turbSession = None #Turbine session for remote turbine
         self.turbineJobIds = [] #Job list for remote turbine

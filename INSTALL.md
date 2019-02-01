@@ -12,7 +12,8 @@ you can skip steps 1 to 4.
 3. Set up a foqus environment.
   > conda create -n foqus -python=3
 4. Activate the environment
-  > source activate foqus
+  - Linux: > source activate foqus
+  - Windows: > conda activate foqus
 
 If you create an environment in which to install FOQUS, you will need to ensure that environment is active before running FOQUS.
 
@@ -30,16 +31,17 @@ There are 2 ways to get FOQUS either download it from the [github page](https://
 
 ## Install FOQUS
 
-8. There are two ways to install FOQUS.  The first one is in-place with will leave the FOQUS source where it is and any changes made to these files will result in changes to FOQUS.  This mode is often used by developers but it can be convenient for other users. The other option is to do a regular install which copies compiled FOQUS files to a central Python package location.
+8. Install requirements
+  - > ```pip install -r requirements.txt```
+9. There are two ways to install FOQUS.  The first one is in-place which will leave the FOQUS source where it is and any changes made to these files will result in changes to the installed version of FOQUS.  This mode is often used by developers but it can be convenient for other users. The other option is to do a regular install which copies compiled FOQUS files to a central Python package location.
   - install in-place
     - > ``python setup.py develop``
-    - or if you need to download dependencies over ssh
-    - > ``python setup.py develop ssh``
   - regular install
     - > ``python setup.py install``
-    - or if you need to download dependencies over ssh
-    - > ``python setup.py develop ssh``
 
+On Windows, the setup.py script creates a foqus.bat file which will activate the correct conda environment (if installed in a conda environment) then run the foqus.py script.  The batch file assumes that "python" can be found in a location in the  PATH environment variable.  If you are using a conda environment, part of activating the environment is adding the correct Python interpretor location to the exec path. If you are not using a conda environment, and "python" is not in your exec path, you may want to edit the batch file to include the full Python interpretor path or add the directory to PATH.  The batch file can be relocated to a convenient location, and you can add windows shortcuts to launch it.
+
+On Linux and OSX, activate the conda environment if necessary by entering the commend ```source activate <environment where FOQUS is installed>``` in terminal.  The foqus.py script should be in the executable path so just running ```foqus.py``` should run FOQUS.
 
 ## Install Optional Software
 

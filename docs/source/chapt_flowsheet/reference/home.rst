@@ -46,13 +46,35 @@ The figure below illustrates the **Session** menu.
     Home Window, Session Drop-Down Menu
 
 
+1. **Add\\Update Model to Turbine** enables additional models to be uploaded to Turbine. Turbine provides simulation job queuing functionality so models cannot be run in FOQUS until they have been added to the Turbine server.
+2. **Add\\Update Model to DMF** enables additional models to be uploaded to the DMF. If models are uploaded to the DMF FOQUS can automatically upload the models to Turbine as needed.
+3. **New Session** clears all session information so that a new session can be started.
+4. **Open Recent** shows a list of recently open FOQUS sessions that can be quickly reloaded for convenience.
+5. **Open Session** opens a session that was previously saved to a file.
+6. **Save Session** saves the current session with the current session file name. If the session has not been previously saved, the user will be prompted to enter a file name. **Save Session** commands the user to save two session files: (1) a file with the selected name and (2) if backup option is enabled, a backup file with a name constructed from the **Session Name** and **ID**.  The Session **ID** is shown on the **Session, Metadata** tab.  The backup file is saved to the working directory. This system prevents accidental saving over an important file. It also enables the user to open any previously saved session.
+7. **Save Session As** is similar to **Save Session**; however, the user is prompted for a new file name.
+8. **Logout from DMF Repositories** Allows the user to logout of a DMF server.
+9. **Exit FOQUS** exits FOQUS. The user is asked whether to save the current session before exiting.
+
 Adding or Changing Turbine Simulations
 --------------------------------------
 
+Before running any flowsheet where a node is linked to a simulation, the simulation must be uploaded to the Turbine gateway. To use a simulation at least two things are required: (1) the simulation file (e.g., Aspen Plus file, Excel file) and (2) the SimSinter configuration. The SimSinter configuration file is a JavaScript Object Notation (JSON) formatted file that specifies the simulation, input, and output. Any additional files required to run the simulation must also be uploaded.
 
 .. figure:: ../figs/turbineUpload.svg
-    :width: 500px
+    :width: 600px
     :align: center
     :figclass: align-center
 
     Turbine Upload Dialog Box
+
+1. **Create/Edit** enables use of the SimSinter configuration Graphical User Interface (GUI) to create a SimSinter configuration file. See the :ref:`SimSinter documentation <sinter_main>` for more information.
+2. **Browse** displays a file browser, which can be used to select an existing SimSinter configuration file. Once a SimSinter configuration file is selected, the **Application** type is filled in. The SimSinter **Configuration File** and simulation file are automatically added to the file upload table.
+3. **Simulation Name** enables entry of a new name if uploading a new simulation. An existing simulation can be selected from the drop-down list if an existing simulation is being modified. After selecting a SimSinter configuration file, the simulation name is guessed from the SimSinter configuration file name, but it can be edited.
+4. **Application** displays the application that will be used to run the simulation. This is filled in automatically based on information in the SimSinter configuration file, and cannot be edited.
+5. **Add Files** enables uploading of any auxiliary files that may be required by the simulation. Multiple files may be selected at once.
+6. **Remove Files** enables added files to be removed from the list of files to upload.
+7. **File Table** displays a list of files to be uploaded to Turbine.
+8. **Delete** allows the simulation with the name currently displayed in the **Simulation Name** drop-down list to be deleted from Turbine. Only simulations that have not been run can be deleted.
+9. **Resource Relative Path** enables the user to set the path of resource files relative to the simulation working directory. To set the directory, select files in the **File Table**. Multiple files can be selected. Click **Resource Relative Path**, and type the relative path to assign to the selected resource files.
+10. **Turbine Gateway Selection** enables the user to select the instance of Turbine to which to upload the simulation. **Current** is the Turbine instance currently set to run simulations. **Remote** is configured Remote instance. **Local** is the TurbineLite instance installed on the local computer. **Remote + Local** allows simulations to be uploaded to both the local and remote instances of Turbine. **Multiple/Custom**  allows simulations to be uploaded to other Turbine instances by selecting Turbine configuration files.

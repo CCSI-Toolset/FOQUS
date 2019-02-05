@@ -25,14 +25,10 @@ _solventFitSetupFrameUI, _solventFitSetupFrame = \
 class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
 
-    #def __init__(self, wizardMode = False, userRegressionFile = None, parent=None):
 
     def init(self, wizardMode = False, userRegressionFile = None, parent=None):
         super(solventFitSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
-        #self.originalData = data
-        #data = data.getValidSamples() # filter out samples that have no output results
-        #self.data = data
         self.wizardMode = wizardMode
         self.userRegressionFile = userRegressionFile
         self.fileDir = ''
@@ -899,10 +895,10 @@ if __name__ == "__main__":
 
     MainFrame = solventFitSetupFrame()
     MainWindow.setCentralWidget(MainFrame)
-    #MainFrameLayout = QVBoxLayout(MainFrame)
+    MainFrameLayout = QVBoxLayout(MainFrame)
 
-    #label = QLabel('A Label')
-    #MainFrameLayout.addWidget(label)
+    label = QLabel('A Label')
+    MainFrameLayout.addWidget(label)
 
-    MainWindow.show()
+    MainFrameLayout.show()
     sys.exit(app.exec_())

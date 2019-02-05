@@ -1,6 +1,8 @@
 python-dateutil==2.5.0
 PyQt5
 sip
+sphinx
+sphinx_rtd_theme
 matplotlib
 scipy
 numpy

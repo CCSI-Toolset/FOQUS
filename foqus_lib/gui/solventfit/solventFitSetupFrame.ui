@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1254</width>
-    <height>651</height>
+    <width>1280</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -63,9 +63,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-496</y>
-        <width>1217</width>
-        <height>1127</height>
+        <y>-286</y>
+        <width>1239</width>
+        <height>1015</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -153,175 +153,184 @@
         </widget>
        </item>
        <item>
-        <widget class="QGroupBox" name="input_groupBox">
-         <property name="minimumSize">
-          <size>
-           <width>500</width>
-           <height>0</height>
-          </size>
-         </property>
+        <widget class="QGroupBox" name="inAndOutgroupBox">
          <property name="title">
-          <string>Input Settings:</string>
+          <string/>
          </property>
-         <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <widget class="SolventFitInputsTable" name="inputPrior_table">
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <item>
+           <widget class="QGroupBox" name="output_groupBox">
+            <property name="title">
+             <string>Output Settings:</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2">
+             <item row="1" column="0">
+              <widget class="QTableWidget" name="output_table">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Designate a response surface for each observed output.</string>
+               </property>
+               <column>
+                <property name="text">
+                 <string>Observed?</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Output Name</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Response Surface</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>(cont'd)</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Legendre Order</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>MARS # Basis Func's</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>MARS Deg. of Interaction</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="outputInstruction">
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>1. Select the outputs that have been observed. (Distribution is assumed to be known through experiment or expert knowledge.) 
+2. For the observed outputs, select the response surface type. (Solvent Fit requires Solvent Fit Emulator)</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="input_groupBox">
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>150</height>
+              <width>500</width>
+              <height>0</height>
              </size>
             </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
+            <property name="title">
+             <string>Input Settings:</string>
             </property>
-            <property name="toolTip">
-             <string>Designate input type:
+            <layout class="QGridLayout" name="gridLayout">
+             <item row="1" column="0">
+              <widget class="SolventFitInputsTable" name="inputPrior_table">
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>150</height>
+                </size>
+               </property>
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Designate input type:
 Variable for uncertain inputs
 Fixed for deterministic inputs
 Design for control inputs that can vary from experiments</string>
-            </property>
-            <column>
-             <property name="text">
-              <string>Input Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Type</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Display?</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Fixed Value</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>PDF</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>PDF Param1</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>PDF Param2</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Min</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Max</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="inputInstruction">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>3. For each input, specify the type. Variable: change in value within an experiment.  Fixed: Same between all experiments.  Design: Fixed within each experiment, but different between experiments.
+               </property>
+               <column>
+                <property name="text">
+                 <string>Input Name</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Type</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Display?</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Fixed Value</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>PDF</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>PDF Param1</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>PDF Param2</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Min</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Max</string>
+                </property>
+               </column>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="inputInstruction">
+               <property name="font">
+                <font>
+                 <pointsize>9</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>3. For each input, specify the type. Variable: change in value within an experiment.  Fixed: Same between all experiments.  Design: Fixed within each experiment, but different between experiments.
 4. Select the variable inputs you want displayed in the final output.  (This only affects what is displayed, not the underlying numerical calculations. You can change this later and replot without redoing the calculations.)</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="output_groupBox">
-         <property name="title">
-          <string>Output Settings:</string>
-         </property>
-         <layout class="QGridLayout" name="gridLayout_2">
-          <item row="1" column="0">
-           <widget class="QTableWidget" name="output_table">
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Designate a response surface for each observed output.</string>
-            </property>
-            <column>
-             <property name="text">
-              <string>Observed?</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Output Name</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Response Surface</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>(cont'd)</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>Legendre Order</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>MARS # Basis Func's</string>
-             </property>
-            </column>
-            <column>
-             <property name="text">
-              <string>MARS Deg. of Interaction</string>
-             </property>
-            </column>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="outputInstruction">
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="text">
-             <string>1. Select the outputs that have been observed. (Distribution is assumed to be known through experiment or expert knowledge.) 
-2. For the observed outputs, select the response surface type. (Solvent Fit requires Solvent Fit Emulator)</string>
-            </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </widget>
           </item>
          </layout>

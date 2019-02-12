@@ -310,7 +310,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return min_vals, max_vals, include_list
 
     def writeConfigFile(self, test=False):
-        timestamp = datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+        timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
         outdir = os.path.join(self.dname, timestamp)
         os.makedirs(outdir, exist_ok=False)
         configFile = os.path.join(outdir, 'config.ini')

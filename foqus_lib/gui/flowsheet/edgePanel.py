@@ -115,7 +115,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.indexBox.clear()
         self.indexBox.addItems(
             list(map(str, list(range(len(self.dat.flowsheet.edges))))))
-        if self.index >= 0 and self.index != None:
+        if self.index is not None and self.index >= 0:
             self.indexBox.setCurrentIndex(self.index)
         self.index = self.indexBox.currentIndex()
         if len(self.dat.flowsheet.edges) > 0:

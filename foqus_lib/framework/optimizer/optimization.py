@@ -6,12 +6,12 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 
-import Queue
+import queue
 import logging
 import threading
 import copy
 from foqus_lib.framework.foqusOptions.optionList import optionList
-from problem import *
+from .problem import *
 import sys
 import os
 import importlib
@@ -37,8 +37,8 @@ class optimization(threading.Thread):
         self.requireScaling = True
         self.minVars = 1
         self.maxVars = 100
-        self.msgQueue = Queue.Queue() # queue for messages to print
-        self.resQueue = Queue.Queue() # a queue for plots and monitoring
+        self.msgQueue = queue.Queue() # queue for messages to print
+        self.resQueue = queue.Queue() # a queue for plots and monitoring
         self.ex = None
         self.updateGraph = False
 
@@ -65,23 +65,6 @@ class optimization(threading.Thread):
         '''
         self.stop.set()
 
-    def uploadFlowsheetToTurbine(self):
-        '''
-            Upload the FOQUS flowsheet to Turbine, so the flowsheet
-            can be run through Turbine in parallel
-        '''
-        fname = "tmp_to_turbine_opt"
-        self.dat.save(
-            filename = fname,
-            updateCurrentFile = False,
-            changeLogMsg = "Save for turbine submission",
-            indent = 0,
-            keepData = False)
-        self.dat.flowsheet.uploadFlowseetToTurbine(
-            self.dat.name,
-            fname,
-            reset=False)
-
     def run(self):
         '''
             This function overloads the Thread class function, and is
@@ -89,7 +72,7 @@ class optimization(threading.Thread):
         '''
         try:
             if self.dat.foqusSettings.runFlowsheetMethod == 1:
-                self.uploadFlowsheetToTurbine()
+                self.dat.flowsheet.uploadFlowseetToTurbine(self.dat, reset=False)
             self.optimize()
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(

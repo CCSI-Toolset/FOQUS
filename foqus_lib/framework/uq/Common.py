@@ -7,6 +7,7 @@ import tempfile
 import time
 import platform
 import logging
+import io
 
 try:
     from PyQt5 import QtGui, QtCore, QtWidgets
@@ -72,8 +73,8 @@ class Common(obj):
                     try:
                         if os.path.isfile(file_path):
                             os.unlink(file_path)
-                    except Exception, e:
-                        print e
+                    except Exception as e:
+                        print(e)
         else:
             os.mkdir(dname)
         return None
@@ -96,7 +97,7 @@ class Common(obj):
             error = 'The selected regression response surface does not work with the data. \nPlease select a different response surface.\n\n'
             showDeveloperHelpMessage = False
         if not usePyside or QtWidgets.QApplication.instance() is None:
-            print error
+            print(error)
         else:
             msgBox = QtWidgets.QMessageBox()
             msgBox.setIcon(QtWidgets.QMessageBox.Critical)
@@ -120,7 +121,7 @@ class Common(obj):
                                                                     showErrorSignal = None,
                                                                     plotOuuValuesSignal = None,
                                                                     ):
-        from LocalExecutionModule import LocalExecutionModule
+        from .LocalExecutionModule import LocalExecutionModule
 
         psuadePath = LocalExecutionModule.getPsuadePath()
         if psuadePath is None:
@@ -129,7 +130,7 @@ class Common(obj):
         scriptHandle = None
         psFileName = ''
 
-        if isinstance(arg1, file) or \
+        if isinstance(arg1, io.IOBase) or \
            isinstance(arg1, tempfile.SpooledTemporaryFile): #script
             scriptHandle = arg1
             if arg2 is not None:
@@ -142,7 +143,7 @@ class Common(obj):
         elif isinstance(arg1, str):
             psFileName = arg1
             if arg2 is not None:
-                if isinstance(arg2, file) or \
+                if isinstance(arg2, io.IOBase) or \
                    isinstance(arg1, tempfile.SpooledTemporaryFile): #script
                     scriptHandle = arg2
                 elif isinstance(arg2, bool):
@@ -226,22 +227,22 @@ class Common(obj):
                     readChars = False
             else:
                 nextline = p.stdout.readline()
-                if not 'OUU' in nextline and 'iteration = ' in nextline:
+                if not 'OUU' in nextline.decode("utf-8") and 'iteration = ' in nextline.decode("utf-8"):
                     readChars = True
-            out += nextline
-            if nextline == '' and p.poll() is not None:
+            out += nextline.decode("utf-8")
+            if nextline.decode("utf-8") == '' and p.poll() is not None:
                 break
-            logFile.write(nextline)
+            logFile.write(nextline.decode("utf-8"))
             if printOutputToScreen:
                 #print nextline.strip()
-                sys.stdout.write(nextline)
+                sys.stdout.write(nextline.decode("utf-8"))
             if usePyside and QtWidgets.QApplication.instance() is not None:
                 textedit = Common.dialog.textedit
                 if textInsertSignal is None:
-                    textedit.insertPlainText(nextline)
+                    textedit.insertPlainText(nextline.decode("utf-8"))
                 else:
                     #print 'insert signal'
-                    textInsertSignal.emit(nextline)
+                    textInsertSignal.emit(nextline.decode("utf-8"))
                 if ensureVisibleSignal is None:
                     textedit.ensureCursorVisible()
                 else:
@@ -255,7 +256,7 @@ class Common(obj):
             if plotOuuValuesSignal is not None:
                 if not grabz:
                     pat = 'Outer optimization iteration = ([0-9]*)'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         grabz = False
                         grabx = True
@@ -265,13 +266,13 @@ class Common(obj):
                         continue
                 if grabx:
                     pat = 'Current Level 1 input \s*[0-9]* = (.*)'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         x.append(float(regex[0]))     # input value
                         continue
 
                 pat = 'computing objective .* nFuncEval = (.*)'
-                regex = re.findall(pat, nextline)
+                regex = re.findall(pat, nextline.decode("utf-8"))
                 if regex:
                     grabx = False
                     grabz = True
@@ -282,7 +283,7 @@ class Common(obj):
 
                 if grabz:
                     pat = 'computed  objective .* = (.*)\.'
-                    regex = re.findall(pat, nextline)
+                    regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         z.append(float(regex[0]))
                         grabz = False
@@ -293,12 +294,13 @@ class Common(obj):
                         continue
             iteration += 1
         if printOutputToScreen:
-            print '\n\n'
+            print('\n\n')
 
         logFile.close()
 
         # process error
         out2, error = p.communicate()
+        error = error.decode('utf-8')
         try:
             p.terminate()
         except:
@@ -326,15 +328,15 @@ class Common(obj):
         with open(userRegressionFile) as regF:
             lines = regF.readlines()
             for line in lines:
-                print line
+                print(line)
                 if line.strip().lower().startswith('labels') and ''.join(line.lower().split()).startswith('labels='):
                     labelsLine = line
                     break
 
         useNodeNames = False
         if labelsLine: # labels line found. Check them
-            exec labelsLine
-            print "labels", labels
+            exec(labelsLine)
+            print("labels", labels)
             newName = outName.replace('.','_') # Input name that includes node name in the variable name
             if newName in labels:
                 useNodeNames = True

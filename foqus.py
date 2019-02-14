@@ -4,9 +4,6 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from __future__ import division  # No integer division
-from __future__ import print_function  # Python 3 style print
-from __future__ import absolute_import  # disable implicit relative imports
 
 # Imports
 import signal
@@ -26,7 +23,8 @@ guiAvail = False
 splash_timeout_ms = 10000 # initial Splash screen hide in ms
 splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
-
+# global variables
+dat = None
 
 def guiImport():
     """
@@ -48,7 +46,7 @@ def guiImport():
         from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox, \
             QFileDialog
         from PyQt5.QtGui import QPixmap, QPainter
-        from PyQt5 import QtSvg, QtXml
+        from PyQt5 import QtSvg
         #import foqus_lib.gui.icons_rc
         # This import has to be done before QApplicationCore instance is created, but also only works for later versions
         # of PyQt5. This is also only necesary because QWebView was depecrated in later versions of PyQt5
@@ -104,7 +102,7 @@ def makeSplash():
     splashScr[1] = QSplashScreen(pixmap=pixmap)
 
 def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
-             showBasicData=True, ts = None):
+             showBasicData=True, showSDOE = True, ts = None):
     """
     This function starts the main window of the FOQUS GUI.
 
@@ -142,6 +140,7 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
         showUQ=showUQ,
         showOpt=showOpt,
         showBasicData=showBasicData,
+        showSDOE=showSDOE,
         ts=ts)
     mainWin.app = app
     app.exec_()
@@ -644,7 +643,7 @@ if __name__ == '__main__':
                         db.add_message(
                             "consumer={0}, job={1} error loading job or"
                             "inputs".format(consumer_uuid, jid), guid)
-                        with open(ofile, 'wb') as f:
+                        with open(ofile, 'w') as f:
                             json.dump({"graphError":50}, f)
                         db.job_save_output(guid, workingDirectory)
                         db.job_change_status(guid, "error")

@@ -19,11 +19,11 @@ from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
-from AnalysisDialog import AnalysisDialog
+from .AnalysisDialog import AnalysisDialog
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
-    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog
+    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog, QMenu
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor, QColor
 
@@ -430,7 +430,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
     def refresh(self):
         numSims = len(self.dat.uqSimList)
         self.simulationTable.setRowCount(numSims)
-        for i in xrange(numSims):
+        for i in range(numSims):
             self.updateSimTableRow(i)
 
         if numSims == 0:
@@ -500,7 +500,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.infoTable.setMaximumWidth(maxWidth)
         self.infoGroupBox.setMaximumWidth(maxWidth + 22)
         maxHeight = 4
-        for i in xrange(4):
+        for i in range(4):
             maxHeight += self.infoTable.rowHeight(i)
         self.infoTable.setMaximumHeight(maxHeight)
 
@@ -559,7 +559,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         progressBar.setStyleSheet(style)
 
     def addSimulation(self):
-        nodes = self.dat.flowsheet.nodes.keys()
+        nodes = list(self.dat.flowsheet.nodes.keys())
 
         updateDialog = updateUQModelDialog(self.dat, self)
         result = updateDialog.exec_()
@@ -872,7 +872,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 # will coly this and overwrite sample inputs
                 inpDict = self.dat.flowsheet.saveValues()['input']
                 # create the input list for samples to run
-                for i in xrange(len(inputs)):
+                for i in range(len(inputs)):
                     runAlready = runState[i]
                     if not runAlready:
                         # sample not run already
@@ -893,7 +893,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                     #first need to upload the simulation to Turbine
                     fname = "tmp_to_turbine_uq"
                     if sim.turbineSession is not None:
-                        self.runMap = range(len(inputs))
+                        self.runMap = list(range(len(inputs)))
                         self.gThread = self.dat.flowsheet.runListAsThread(
                             sid=sim.turbineSession,
                             jobIds=sim.turbineJobIds,
@@ -901,7 +901,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                             resubs=sim.turbineResub)
                     else:
                         self.dat.flowsheet.uploadFlowseetToTurbine(
-                            simname=self.dat.name,
                             dat=self.dat,
                             reset=False)
                         self.gThread = self.dat.flowsheet.runListAsThread(
@@ -1148,7 +1147,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.delete_table.customContextMenuRequested.connect(self.popup)
         self.delete_table.verticalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
         self.delete_table.verticalHeader().customContextMenuRequested.connect(self.popup)
-        sampleLabels = tuple([str(i) for i in xrange(1, self.nSamples+1)])
+        sampleLabels = tuple([str(i) for i in range(1, self.nSamples+1)])
         self.delete_table.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
         inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
@@ -1166,19 +1165,19 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.deleteScrollRow = 1
         if end > 15:
             end = 15
-        for r in xrange(end):
+        for r in range(end):
             item = QTableWidgetItem()
             flags = item.flags()
             item.setFlags(flags & checkboxMask)
             item.setCheckState(Qt.Unchecked)
             self.delete_table.setItem(r+1, 0, item)
 
-        for c in xrange(self.nInputs):         # populate input values
+        for c in range(self.nInputs):         # populate input values
             item = QTableWidgetItem()
             flags = item.flags()
             item.setFlags(flags & mask)
             self.delete_table.setItem(0, c+1, item)
-            for r in xrange(end):
+            for r in range(end):
                 item = QTableWidgetItem(self.format % self.inputData[r][c])
                 flags = item.flags()
                 item.setFlags(flags & mask)
@@ -1188,7 +1187,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                     color = inputRefinedColor
                 item.setBackground(color)
                 self.delete_table.setItem(r+1, c+1, item)
-        for c in xrange(self.nOutputs):        # output values populated in redrawDeleteTable()
+        for c in range(self.nOutputs):        # output values populated in redrawDeleteTable()
             item = self.delete_table.item(0, self.nInputs+c+1)
             if item is None:
                 item = QTableWidgetItem()
@@ -1197,7 +1196,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             item.setFlags(flags & mask)
             item.setCheckState(Qt.Unchecked)
 
-            for r in xrange(end):
+            for r in range(end):
                 item = self.delete_table.item(r+1, self.nInputs+c+1)
                 if item is None:
                     item = QTableWidgetItem()
@@ -1253,7 +1252,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         end = first + 15
         if end > numRows:
             end = numRows
-        for r in xrange(first, end):
+        for r in range(first, end):
             item = self.delete_table.item(r, 0)
             if item is None:
                 item = QTableWidgetItem()
@@ -1261,7 +1260,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 item.setFlags(flags & checkboxMask)
                 item.setCheckState(Qt.Unchecked)
                 self.delete_table.setItem(r, 0, item)
-            for c in xrange(self.nInputs):         # populate input values
+            for c in range(self.nInputs):         # populate input values
                 item = self.delete_table.item(r, c + 1)
                 if item is None:
                     item = QTableWidgetItem(self.format % self.inputData[r - 1][c])
@@ -1274,7 +1273,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                     item.setBackground(color)
                     self.delete_table.setItem(r, c+1, item)
             if isinstance(self.outputData, numpy.ndarray):
-                for c in xrange(self.nOutputs):        # populate output values
+                for c in range(self.nOutputs):        # populate output values
                     item = self.delete_table.item(r, self.nInputs + c + 1)
                     if item is None:
                         if math.isnan(self.outputData[r-1][c]):
@@ -1309,19 +1308,19 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
         outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
-        for c in xrange(self.nInputs):
+        for c in range(self.nInputs):
             item = self.delete_table.item(0, c+1)
             item.setCheckState(Qt.Unchecked)
-            for r in xrange(self.nSamples):
+            for r in range(self.nSamples):
                 item = self.delete_table.item(r+1, 0)
                 if item is not None:
                     item.setCheckState(Qt.Unchecked)
 
-        for c in xrange(self.nOutputs):        # populate output values
+        for c in range(self.nOutputs):        # populate output values
             item = self.delete_table.item(0, self.nInputs+c+1)
             item.setCheckState(Qt.Unchecked)
             #for r in xrange(self.nSamples):
-            for r in xrange(self.deleteScrollRow - 1, self.deleteScrollRow + 14):
+            for r in range(self.deleteScrollRow - 1, self.deleteScrollRow + 14):
                 item = self.delete_table.item(r+1, self.nInputs+c+1)
                 if item is not None:
                     if isinstance(self.outputData, numpy.ndarray) and not numpy.isnan(self.outputData[r][c]):
@@ -1362,11 +1361,11 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # get selections
         samples = []
         vars = []
-        for i in xrange(1,nSamples+1):
+        for i in range(1,nSamples+1):
             item = self.delete_table.item(i, 0)
             if (item is not None) and item.checkState() == Qt.Checked:
                 samples.append(i - 1)
-        for i in xrange(1,nVars+1):
+        for i in range(1,nVars+1):
             item = self.delete_table.item(0, i)
             if (item is not None) and item.checkState() == Qt.Checked:
                 vars.append(i - 1)
@@ -1421,7 +1420,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # perform deletion
         samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
         if samples:
-            samplesToKeep = [i for i in xrange(nSamples) if i not in samples]
+            samplesToKeep = [i for i in range(nSamples) if i not in samples]
             newdata = data.getSubSample(samplesToKeep)
         else:
             newdata = copy.deepcopy(data)
@@ -1510,8 +1509,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         if len(outputData) == 0:
             outputData = numpy.empty((nSamples, nOutputs))
             outputData[:] = numpy.NAN
-        for outputNum in xrange(nOutputs):
-            for sampleNum in xrange(nSamples):
+        for outputNum in range(nOutputs):
+            for sampleNum in range(nSamples):
                 item = self.delete_table.item(sampleNum + 1, outputNum + nInputs + 1)
                 if item is not None:
                     if len(item.text()) > 0:
@@ -1519,7 +1518,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                         outputData[sampleNum, outputNum] = value
                 if outputNum == nOutputs - 1:
                     hasNan = False
-                    for c in xrange(nOutputs):
+                    for c in range(nOutputs):
                         if numpy.isnan(outputData[sampleNum, c]):
                             hasNan = True
                     if not hasNan:

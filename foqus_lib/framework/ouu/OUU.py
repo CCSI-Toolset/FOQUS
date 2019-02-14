@@ -51,7 +51,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         inputDefaults = None
         distributions = None
         init_input = None
-        
+
         # process keyworded arguments
         for key in kwargs:
             k = key.lower()
@@ -79,27 +79,31 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         inputNames = data.getInputNames()
         variableInputIndices = []
         for e in xtable:
-            if e['type'] != u'Fixed':
+            if e['type'] != 'Fixed':
                 variableInputIndices.append(inputNames.index(e['name']))
         nVariableInputs = len(variableInputIndices)
         nOutputs = len(outputs)
         nSamples = num_fmin = 1  # number of random restarts
-        
+        nConstraints = constraints.count(True)
+        nDerivatives = derivatives.count(True)
+        totalOutputs = nOutputs + nConstraints + nDerivatives
+
         f = open(outfile, 'w')
         if init_input:
             f.write('PSUADE_IO\n')
-            f.write('%d %d %d\n' % (nVariableInputs, nOutputs, nSamples))
+            f.write('%d %d %d\n' % (nVariableInputs, totalOutputs, nSamples))
             f.write("1 0\n")         # assume initial point has not been run
-            for x in init_input:           
+            for x in init_input:
                 f.write(' % .16e\n' % x)
-            f.write(' 9.9999999999999997e+34\n')
+            for i in range(totalOutputs):
+                f.write(' 9.9999999999999997e+34\n')
             f.write("PSUADE_IO\n")
 
         # TO DO: merge with RSAnalyzer.writeRSdata()
         f.write('PSUADE\n')
 
         # ... input ...
-        numFixed = nInputs - nVariableInputs        
+        numFixed = nInputs - nVariableInputs
         f.write('INPUT\n')
         if numFixed > 0:
           f.write('   num_fixed %d\n' % numFixed)
@@ -110,7 +114,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             inputUB = data.getInputMaxs()
         if inputDefaults is None:
             inputDefaults = data.getInputDefaults()
-        indices = range(nInputs)
+        indices = list(range(nInputs))
         variableIndex = 1
         fixedIndex = 1
         for i, name, inType, lb, ub, default in zip(indices, inputNames, \
@@ -129,7 +133,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         for e in xtable:
             cnt = cnt + 1
             t = e['type']
-            if t == u'Opt: Primary Discrete (Z1d)':
+            if t == 'Opt: Primary Discrete (Z1d)':
                 opttypes.append(cnt)
 
         nn = len(opttypes)
@@ -194,17 +198,17 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         for ii in range(nOutputs):
           ind = outputs[ii]
           f.write('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
-          print('   variable %d %s\n' % (ii+1, outputNames[ind-1]))
+          print(('   variable %d %s\n' % (ii+1, outputNames[ind-1])))
         outActive = nOutputs + 1
         for ii in range(len(constraints)):
           if constraints[ii]:
             f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
-            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print(('   variable %d %s\n' % (outActive , outputNames[ii])))
             outActive = outActive + 1
         for ii in range(len(derivatives)):
           if derivatives[ii]:
             f.write('   variable %d %s\n' % (outActive , outputNames[ii]))
-            print('   variable %d %s\n' % (outActive , outputNames[ii]))
+            print(('   variable %d %s\n' % (outActive , outputNames[ii])))
             outActive = outActive + 1
         f.write('END\n')
 
@@ -278,16 +282,16 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         outfiles = {}
         nbins_max = 20
         nscenarios_max = 1501
-        for nbins in xrange(2,nbins_max):
+        for nbins in range(2,nbins_max):
 
             # write script to invoke scenario compression
-            f = tempfile.SpooledTemporaryFile()
+            f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
                 fname = win32api.GetShortPathName(fname)
             f.write('read_std %s\n' % fname)
             f.write('genhistogram\n')
-            for x in xrange(nInputs):
+            for x in range(nInputs):
                 f.write('%d\n' % nbins)
             f.write('quit\n')
             f.seek(0)
@@ -380,19 +384,19 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         vartypes = []
         for e in xtable:
           t = e['type']
-          if t == u'Opt: Primary Continuous (Z1)':
+          if t == 'Opt: Primary Continuous (Z1)':
             vartypes.append(1)
-          elif t == u'Opt: Primary Continuous (Z1c)':
+          elif t == 'Opt: Primary Continuous (Z1c)':
             vartypes.append(1)
-          elif t == u'Opt: Primary Discrete (Z1d)':
+          elif t == 'Opt: Primary Discrete (Z1d)':
             vartypes.append(1)
-          elif t == u'Opt: Recourse (Z2)':
+          elif t == 'Opt: Recourse (Z2)':
             vartypes.append(2)
-          elif t == u'UQ: Discrete (Z3)':
+          elif t == 'UQ: Discrete (Z3)':
             vartypes.append(3)
-          elif t == u'UQ: Continuous (Z4)':
+          elif t == 'UQ: Continuous (Z4)':
             vartypes.append(4)
-          if t != u'Fixed':
+          if t != 'Fixed':
             init_input.append(e['value'])
         M1 = vartypes.count(1)
         M2 = vartypes.count(2)
@@ -450,7 +454,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
           return None
 
         # write script
-        f = OUU.writescript(vartypes,fnameOUU,phi,x3sample,x4sample,useRS,
+        f = OUU.writescript(vartypes,fnameOUU,outputsAsConstraint, phi,x3sample,x4sample,useRS,
                     useBobyqa, useEnsOptDriver = (ensOptDriver != None))
 
         # delete previous history file
@@ -506,7 +510,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         return self.results
 
     @staticmethod
-    def writescript(vartypes,fnameOUU,phi=None,x3sample=None,x4sample=None,
+    def writescript(vartypes,fnameOUU,outputsAsConstraint,phi=None,x3sample=None,x4sample=None,
                     useRS=False,useBobyqa=False,useEnsOptDriver=None):
 
         M1 = vartypes.count(1)
@@ -517,47 +521,50 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
 
         # write script
         #f = open('ouu.in','w')
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fnameOUU = win32api.GetShortPathName(fnameOUU)
-        f.write('run %s\n' % fnameOUU)
-        f.write('y\n')        # ready to proceed
+        f.write(('run %s\n' % fnameOUU).encode())
+        f.write(b'y\n')        # ready to proceed
         # ... partition variables
-        f.write('%d\n' % M1)  # number of design opt variables
+        f.write(('%d\n' % M1).encode()) # number of design opt variables
         if M1 == nInputs:
-            f.write('quit\n')
+            f.write(b'quit\n')
             f.seek(0)
             return f
 
         # ________ M1 < nInputs ________
-        f.write('%d\n' % M2)  # number of operating opt variables
+        f.write(('%d\n' % M2).encode())  # number of operating opt variables
         if M1+M2 == nInputs:
-            for i in xrange(nInputs):
-                f.write('%d\n' % vartypes[i])
+            for i in range(nInputs):
+                f.write(('%d\n' % vartypes[i]).encode())
             if useBobyqa:
-                f.write('n\n')    # use BOBYQA means 'no' to use own driver
+                f.write(b'n\n')    # use BOBYQA means 'no' to use own driver
             else:
-                f.write('y\n')    # use own driver as optimizer
+                f.write(b'y\n')    # use own driver as optimizer
             f.write('quit\n')
             f.seek(0)
             return f
 
         # ________ M1+M2 < nInputs ________
-        f.write('%d\n' % M3)  # number of discrete UQ variables
-        for i in xrange(nInputs):
-            f.write('%d\n' % vartypes[i])
+        f.write(('%d\n' % M3).encode())  # number of discrete UQ variables
+        for i in range(nInputs):
+            f.write(('%d\n' % vartypes[i]).encode())
 
         # ... set objective function w.r.t. to uncertainty
         ftype  = phi['type']
-        f.write('%d\n' % ftype)  # optimization objective w.r.t. UQ variables
+        f.write(('%d\n' % ftype).encode())  # optimization objective w.r.t. UQ variables
         if ftype == 2:
             beta = max(0,phi['beta'])         # beta >= 0
-            f.write('%f\n' % beta)
+            f.write(('%f\n' % beta).encode())
         elif ftype == 3:
             alpha = phi['alpha']
             alpha = min(max(alpha,0.5),1.0)   # 0.05 <= alpha <= 1.0
-            f.write('%f\n' % alpha)
+            f.write(('%f\n' % alpha).encode())
+
+        if outputsAsConstraint.count(True) > 0:
+            f.write(b'1\n')
 
         # ... get sample for discrete UQ variables
         # The file format should be:
@@ -569,7 +576,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 import win32api
                 x3sample['file'] = win32api.GetShortPathName(x3sample['file'])
 
-            f.write('%s\n' % x3sample['file'])  # sample file for discrete UQ variables
+            f.write(('%s\n' % x3sample['file']).encode())  # sample file for discrete UQ variables
 
         # ... get sample for continuous UQ variables
         # The file format should be:
@@ -584,22 +591,22 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                 if platform.system() == 'Windows':
                     import win32api
                     x4sample['file'] = win32api.GetShortPathName(x4sample['file'])
-                f.write('1\n')                      # load samples for continuous UQ vars
-                f.write('%s\n' % x4sample['file'])  # sample file for continuous UQ vars
+                f.write(b'1\n')                      # load samples for continuous UQ vars
+                f.write(('%s\n' % x4sample['file']).encode()) # sample file for continuous UQ vars
             else:
-                f.write('2\n')    # generate samples for continuous UQ variables
+                f.write(b'2\n')    # generate samples for continuous UQ variables
             # ... apply response surface
             if useRS:
-                f.write('y\n')    # use response surface
+                f.write(b'y\n')    # use response surface
                 if loadcs:
                     Nrs = x4sample['nsamplesRS']
-                    f.write('%d\n' % Nrs)  # number of points to build RS (range: [M4+1,N] where N=samplesize)
+                    f.write(('%d\n' % Nrs).encode()) # number of points to build RS (range: [M4+1,N] where N=samplesize)
                     randsample = True      # set to False to pass in subsample based on convex hull analysis
                                            # set to True to use psuade's built-in random sampler
                     if randsample:
-                        f.write('2\n')         # 2 to generate random sample
+                        f.write(b'2\n')         # 2 to generate random sample
                     else:
-                        f.write('1\n')         # 1 to upload subsample file
+                        f.write(b'1\n')         # 1 to upload subsample file
                         x,y = RSAnalyzer.readRSsample(x4sample['file'])
                         xsub = OUU.subsample(x,Nrs)
                         dname = OUU.dname
@@ -608,27 +615,27 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
                             dname = win32api.GetShortPathName(dname)
                         x4subsample = Common.getLocalFileName(dname, x4sample['file'], '.subsample')
                         RSAnalyzer.writeRSsample(x4subsample,xsub)
-                        f.write('%s\n' % x4subsample)  # subsample file containing subset of original points
+                        f.write(('%s\n' % x4subsample).encode())  # subsample file containing subset of original points
             else:
-                f.write('n\n')    # do not use response surface
+                f.write(b'n\n')    # do not use response surface
             # ... # create samples for continuous UQ variables
             if not loadcs:
                 Nmin = M4+1
                 if x4sample['method'] == SamplingMethods.LH:
-                    f.write('1\n')    # sampling scheme: Latin Hypercube
+                    f.write(b'1\n')    # sampling scheme: Latin Hypercube
                     nSamples = x4sample['nsamples']
                     nSamples = min(max(nSamples,Nmin),1000)
-                    f.write('%d\n' % nSamples)   # number of samples (range: [M4+1,1000])
+                    f.write(('%d\n' % nSamples).encode())   # number of samples (range: [M4+1,1000])
                 elif x4sample['method'] == SamplingMethods.FACT:
-                    f.write('2\n')    # sampling scheme: Factorial
+                    f.write(b'2\n')    # sampling scheme: Factorial
                     nlevels = x4sample['nlevels']
                     nlevels = min(max(nlevels,3),100)
-                    f.write('%d\n' % nlevels)  # number of levels per variable (range: [3,100])
+                    f.write(('%d\n' % nlevels).encode())  # number of levels per variable (range: [3,100])
                 elif x4sample['method'] == SamplingMethods.LPTAU:
-                    f.write('3\n')    # sampling scheme: Quasi Monte Carlo
+                    f.write(b'3\n')    # sampling scheme: Quasi Monte Carlo
                     nSamples = x4sample['nsamples']
                     nSamples = min(max(nSamples,Nmin),1000)
-                    f.write('%d\n' % nSamples)   # number of samples (range: [M4+1,1000])
+                    f.write(('%d\n' % nSamples).encode())   # number of samples (range: [M4+1,1000])
 
         # ... choose optimizer
         if M2 > 0:
@@ -636,20 +643,20 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             #    f.write('n\n')    # use BOBYQA
             #else:
             #    f.write('y\n')    # use own driver as optimizer
-            f.write('y\n')    # use own driver as optimizer
+            f.write(b'y\n')    # use own driver as optimizer
 
         # ... choose ensemble optimization driver
         if M3+M4 > 0: #and not useBobyqa:
             if useEnsOptDriver:
-                f.write('y\n')   # use ensemble driver
+                f.write(b'y\n')   # use ensemble driver
             else:
-                f.write('n\n')
+                f.write(b'n\n')
 
         # ... choose mode to run simulations for computing statistics
         if M3+M4 > 0:
-            f.write('n\n')  # do not use asynchronous mode (not tested)
+            f.write(b'n\n')  # do not use asynchronous mode (not tested)
 
-        f.write('quit\n')
+        f.write(b'quit\n')
         f.seek(0)
 
         #for line in f:
@@ -698,7 +705,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             return pv
 
         if N > nv:
-            i = np.setdiff1d(range(len(p)),v)  # indices to interior points
+            i = np.setdiff1d(list(range(len(p))),v)  # indices to interior points
             r = np.random.permutation(i)
             N = N-nv                           # number of interior points
             r = r[0:N]                         # randomized interior indices
@@ -708,7 +715,7 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
             R = 10
             indices = []
             h = []
-            for i in xrange(R):
+            for i in range(R):
                 r = np.random.permutation(v)
                 r = r[0:N]
                 indices.append(r)               # randomized vertex indices
@@ -780,5 +787,5 @@ class psuadeWorker(QtCore.QObject):
         if out is None:
             return
         self.fileHandle.close()
-        self.functionSignal.emit(out, error)
+        self.functionSignal.emit(out, error.decode("utf-8"))
         self.finishedSignal.emit()

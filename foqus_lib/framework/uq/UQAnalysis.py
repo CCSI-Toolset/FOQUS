@@ -1,12 +1,10 @@
 import abc #abstract base class
 import time
 
-class UQAnalysis(object):
-    __metaclass__ = abc.ABCMeta
-    
+class UQAnalysis(object, metaclass=abc.ABCMeta):
     PARAM_SCREEN, UNCERTAINTY, CORRELATION, SENSITIVITY, VISUALIZATION, \
     RS_VALIDATION, RS_UNCERTAINTY, RS_SENSITIVITY, INFERENCE, \
-    RS_VISUALIZATION = range(10)
+    RS_VISUALIZATION = list(range(10))
 
     fullNames = ('Parameter Screening', 'Uncertainty Analysis',
                  'Correlation Analysis', 'Sensitivity Analysis',
@@ -16,7 +14,7 @@ class UQAnalysis(object):
 
     codeNames = ('ps', 'ua', 'ca', 'sa', 'viz', 'rsvalid', 'rsua', 'rssa', 'inf', 'rsviz')
 
-    FIRST_ORDER, SECOND_ORDER, TOTAL_ORDER = range(3)
+    FIRST_ORDER, SECOND_ORDER, TOTAL_ORDER = list(range(3))
     sensitivityTypes = ('First-order', 'Second-order', 'Total-order')
 
     @staticmethod

@@ -178,7 +178,7 @@ def makeWorkingDirFiles():
     '''
     wdir = os.path.abspath(os.getcwd())
     try:
-        tc = turbineConfiguration()
+        tc = TurbineConfiguration()
         tc.writeConfig(overwrite=False)
     except:
         logging.getLogger("foqus." + __name__).exception(

@@ -42,7 +42,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         try:
             self.edge.curve = float( self.curveBox.text() )
         except:
-            print "Curve must be a number"
+            print("Curve must be a number")
         self.edge.start = self.fromBox.currentText()
         self.edge.end = self.toBox.currentText()
         self.edge.con = []
@@ -114,8 +114,8 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.indexBox.blockSignals(True)
         self.indexBox.clear()
         self.indexBox.addItems(
-            map(str, range(len(self.dat.flowsheet.edges))))
-        if self.index >= 0 and self.index != None:
+            list(map(str, list(range(len(self.dat.flowsheet.edges))))))
+        if self.index is not None and self.index >= 0:
             self.indexBox.setCurrentIndex(self.index)
         self.index = self.indexBox.currentIndex()
         if len(self.dat.flowsheet.edges) > 0:

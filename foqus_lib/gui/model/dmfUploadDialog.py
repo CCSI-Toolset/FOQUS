@@ -33,8 +33,8 @@ except:
     logging.getLogger("foqus." + __name__)\
         .exception('Failed to import or launch DMFBrowser')
     useDMF = False
-from urllib2 import urlopen
-from StringIO import StringIO
+from urllib.request import urlopen
+from io import StringIO
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog,\
@@ -104,7 +104,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
         i = 0
         if len(repo_props) > 0:
-            print "Validating the following properties file(s):"
+            print("Validating the following properties file(s):")
         while i < len(repo_props):
             is_valid, return_vals = Common().validateAndGetKeyProps(
                 os.path.join(self.PROP_LOC, repo_props[i]))
@@ -298,7 +298,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                     resource_bytestream_list=resource_bytestream_list,
                     resource_name_list=resource_name_list)
         except Exception as e:
-            print e
+            print(e)
             QMessageBox.information(self, "Error", str(e))
             return
         finally:
@@ -336,7 +336,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                     self.files[0] = ['configuration', fileName]
                     with open(str(fileName), "rb") as f:
                         scf = json.loads(f.read().decode('utf-8'))
-                        print scf["model"]["file"]
+                        print(scf["model"]["file"])
                         m = scf["model"]["file"]
                         m_path = os.path.join(os.path.dirname(fileName), m)
                         _, m_ext = os.path.splitext(m_path)
@@ -351,10 +351,10 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
             if self.simNameEdit.currentText() == "":
                 try:
-                    with open(fileName, 'rb') as f:
+                    with open(fileName, 'r') as f:
                         sc_json = json.loads(f.read().decode(UTF8))
                         simNameGuess = sc_json[SC_TITLE]
-                except Exception, e:
+                except Exception as e:
                     simNameGuess = os.path.basename(fileName)
                     simNameGuess = simNameGuess.rsplit('.')[0]
 

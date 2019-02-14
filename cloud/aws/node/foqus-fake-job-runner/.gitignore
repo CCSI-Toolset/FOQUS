@@ -1,0 +1,10 @@
+logs
+*.log
+build
+node_modules
+.lock-wscript
+deploy.env
+event_sources.json
+.DS_Store
+.env
+.lambda

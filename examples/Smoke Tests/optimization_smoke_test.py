@@ -3,9 +3,9 @@ from PyQt5 import QtCore, QtWidgets
 This test focuses on the input importance portion of the UQ
 """
 MAX_RUN_TIME = 50000 # Maximum time to let script run in ms.
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f: # file to write test results to
-    f.write('Test Results\n')
+#testOutFile = 'ui_test_out.txt'
+#with open(testOutFile, 'w') as f: # file to write test results to
+#    f.write('Test Results\n')
 timers = {} # mainly put all timers in a dic so I can easily stop them all
 
 def go(sleep=0.25, MainWin=MainWin):
@@ -25,6 +25,80 @@ def getButton(w, label):
         if b.text().replace("&", "") == label:
             return b
     return None
+
+global errorCount
+global errorTitle
+global errorFile
+errorFile = "AutoErrLog_optimization_smoke_test.txt"
+errorCount = 0
+        
+def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'Error' in str(w.windowTitle()):
+            w.close()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: " + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: " + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except:
+        None
+        
+def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
+    """Close the Error dialog if a, stops timer once the window comes up"""
+    w = MainWin.app.activeWindow()
+    try:
+        if 'FOQUS UQ developers' in str(w.text()):
+            getButton(w, 'OK').click()
+            global errorCount
+            global errorTitle
+            global errorFile
+#            timers['Error_okay_text'].stop()
+            if (errorCount == 0):
+                errFile = open(errorFile,"w")
+            else:
+                errFile = open(errorFile,"a")
+            errorCount += 1
+            errFile.write("############################################################################\n")
+            errFile.write("Error Number: " + str(errorCount) + "\n")
+            errFile.write("Error Title: \n" + errorTitle + "\n")
+            try:
+                errFile.write("Error Text: \n" + w.text() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Detailed Text: \n" + w.detailedText() + "\n")
+            except:
+                None
+            try:
+                errFile.write("Error Informative Text: \n" + w.informativeText() + "\n")
+            except:
+                None
+            errFile.close()
+    except AttributeError:
+        None
 
 def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
@@ -62,10 +136,10 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
 def timersStop(timers=timers):
     """Stop all timers"""
-    for key, t in timers.iteritems():
+    for key, t in iter(timers.items()):
         t.stop()
 
-def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
+def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=errorFile):
     """Wait sleep*n seconds for timer to finish its job."""
     for i in range(n):
         if not go(sleep=sleep): return False
@@ -164,6 +238,12 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.varForm.cellWidget(3,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(4,1).setCurrentIndex(1)
         MainWin.optSetupFrame.varForm.cellWidget(5,1).setCurrentIndex(1)
+#        # Set the Scales
+#        MainWin.optSetupFrame.varForm.cellWidget(0,2).setCurrentIndex(1)
+#        MainWin.optSetupFrame.varForm.cellWidget(1,2).setCurrentIndex(2)
+#        MainWin.optSetupFrame.varForm.cellWidget(3,2).setCurrentIndex(3)
+#        MainWin.optSetupFrame.varForm.cellWidget(4,2).setCurrentIndex(4)
+#        MainWin.optSetupFrame.varForm.cellWidget(5,2).setCurrentIndex(5)
         # Switch to the Objective tab and set the objective
         MainWin.optSetupFrame.tabWidget.setCurrentIndex(2)
         MainWin.optSetupFrame.fAddButton.click()
@@ -185,17 +265,18 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.optSetupFrame.optMonitorFrame.startButton.click()
         while MainWin.optSetupFrame.optMonitorFrame.opt.isAlive(): # while is running
             None
-        print("Got here")
+#        print("Got here")
         time.sleep(5)
+        
         if not go(): break
 
         break
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print ("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
+    with open(errorFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))
 timersStop() #make sure all timers are stopped
 

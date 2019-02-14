@@ -10,7 +10,7 @@ import os
 import logging
 import time
 import re
-import StringIO
+from io import StringIO
 import shutil
 import pickle #not sure why this is here probably remove
 from pprint import pprint
@@ -71,6 +71,18 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.TestTurb.clicked.connect(self.turbineTest)
         self.testLite.clicked.connect(self.turbineLiteTest)
         self.changePort.clicked.connect(self.updateTurbineLitePort)
+        self.runMethodCombo.currentIndexChanged.connect(
+            self.displayAvailablityWarning)
+
+    def displayAvailablityWarning(self):
+        """
+        Warn that changing the Turbine server means that a different set of
+        simulations may be available and they may not match your flowsheet
+        """
+        QMessageBox.warning(self, "Warning", "You are changing the Turbine server"
+            " connection.  The new server may not have the simulations or"
+            " correct versions of simulations for your flowsheet.  Please upload"
+            " or update simluations on Turbine as necessary.")
 
     def updateTurbineLitePort(self):
         """
@@ -82,7 +94,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             "Services\webAPI\SelfManagedWebApplicationWindowsService.exe.config")
         #Get XML string
         try:
-            with open(tcfg, 'rb') as f:
+            with open(tcfg, 'r') as f:
                 xmls = f.read()
         except:
             logging.getLogger("foqus." + __name__).exception(
@@ -133,7 +145,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         tree.write(tcfgs, encoding="utf-8", xml_declaration=True)
         tcfgs = tcfgs.getvalue().replace(
             "<unity>", '<unity xmlns="{0}">'.format(xmlns))
-        with open(tcfg, 'wb') as f:
+        with open(tcfg, 'w') as f:
             f.write(tcfgs)
         QMessageBox.information(
             self,

@@ -70,8 +70,10 @@ exports.handler = function(event, context, callback) {
         }};
         var item = null;
         var i = 0;
+        var id_list = [];
         for(var i=0; i<body.length; i++) {
           var d = new Date(milliseconds+i);
+          id_list.push(body[i].Id);
           item = {Id: body[i].Id,
                   Type: "Job",
                   Create: d.toISOString(),
@@ -89,11 +91,13 @@ exports.handler = function(event, context, callback) {
         var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
         dynamodb.batchWrite(params, function(err, data) {
           console.log("BATCH WRITE")
-          if (err) console.log(err, err.stack); // an error occurred
+          if (err) {
+            console.log(err, err.stack); // an error occurred
+          }
           else {
             console.log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
-            callback(null, {statusCode:'200', body: body.length,
-              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
+            callback(null, {statusCode:'200', body: JSON.stringify(id_list),
+              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
             });
           }
         });

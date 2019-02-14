@@ -1,0 +1,164 @@
+{
+  "AWSTemplateFormatVersion" : "2010-09-09",
+
+  "Description" : "FOQUS Cloud VPC with Internet Gateway and SLM EIP",
+  "Parameters" : {
+    "AvailabilityZone" : {
+      "Type" : "String",
+      "Description" : "AvailabilityZone",
+      "Default" : "us-east-1a",
+      "MinLength": "5",
+      "MaxLength": "20",
+      "ConstraintDescription" : "AvailabilityZone to put Public Subnet on"
+    }
+  },
+
+  "Mappings" : {
+  },
+
+  "Resources" : {
+
+    "VPC" : {
+      "Type" : "AWS::EC2::VPC",
+      "Properties" : {
+        "CidrBlock" : "10.0.0.0/16",
+        "Tags" : [
+          {"Key" : "Application", "Value" : { "Ref" : "AWS::StackName"} },
+          {"Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "PublicSubnetA" : {
+      "Type" : "AWS::EC2::Subnet",
+      "Properties" : {
+        "VpcId" : { "Ref" : "VPC" },
+        "CidrBlock" : "10.0.0.0/24",
+        "AvailabilityZone" : { "Ref" : "AvailabilityZone"} ,
+        "Tags" : [
+          {"Key" : "Application", "Value" : { "Ref" : "AWS::StackName"} },
+          {"Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "InternetGateway" : {
+      "Type" : "AWS::EC2::InternetGateway",
+      "Properties" : {
+        "Tags" : [
+          {"Key" : "Application", "Value" : { "Ref" : "AWS::StackName"} },
+          {"Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "AttachGateway" : {
+      "Type" : "AWS::EC2::VPCGatewayAttachment",
+      "Properties" : {
+         "VpcId" : { "Ref" : "VPC" },
+         "InternetGatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "PublicRouteTable" : {
+      "Type" : "AWS::EC2::RouteTable",
+      "Properties" : {
+        "VpcId" : {"Ref" : "VPC"},
+        "Tags" : [
+          {"Key" : "Application", "Value" : { "Ref" : "AWS::StackName"} },
+          {"Key" : "Network", "Value" : "Public" }
+        ]
+      }
+    },
+
+    "PublicRoute" : {
+      "Type" : "AWS::EC2::Route",
+      "Properties" : {
+        "RouteTableId" : { "Ref" : "PublicRouteTable" },
+        "DestinationCidrBlock" : "0.0.0.0/0",
+        "GatewayId" : { "Ref" : "InternetGateway" }
+      }
+    },
+
+    "PublicSubnetRouteTableAssociationA" : {
+      "Type" : "AWS::EC2::SubnetRouteTableAssociation",
+      "Properties" : {
+        "SubnetId" : { "Ref" : "PublicSubnetA" },
+        "RouteTableId" : { "Ref" : "PublicRouteTable" }
+      }
+    },
+    "SLMSecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupName": "SLMSecurityGroup",
+        "GroupDescription" : "Security Group for SLM Server",
+        "SecurityGroupEgress" : [ ],
+        "SecurityGroupIngress" : [
+          {"IpProtocol": "udp", "CidrIp": "131.243.0.0/16", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "131.243.0.0/16", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "34.239.51.211/32", "FromPort":5093, "ToPort": 5094},
+          {"IpProtocol": "tcp", "CidrIp": "131.243.0.0/16", "FromPort":3389, "ToPort": 3389},
+          {"IpProtocol": "tcp", "CidrIp": "69.181.155.133/32", "FromPort":3389, "ToPort": 3389} ],
+        "Tags" :  [ {"Key" : "Name", "Value" : "SLMSecurityGroup" } ],
+        "VpcId" : { "Ref" : "VPC" }
+      }
+    },
+    "SLMServerNetworkInterface":  {
+       "Type" : "AWS::EC2::NetworkInterface",
+       "Properties" : {
+          "Description" : "Network Interface for the SLM License Server",
+          "GroupSet" : [{ "Ref" : "SLMSecurityGroup" }],
+          "PrivateIpAddress" : "10.0.0.100",
+          "SourceDestCheck" : false,
+          "SubnetId" : { "Ref" : "PublicSubnetA" },
+          "Tags" : [{"Key" : "Name", "Value" : "SLMServerNetworkInterface" }]
+       }
+    },
+    "SLMPublicIPAddress": {
+       "Type" : "AWS::EC2::EIP",
+       "Properties" : {
+          "Domain" : "vpc"
+       },
+       "DependsOn" : "AttachGateway"
+    },
+    "SLMPublicEIPAssociation": {
+       "Type": "AWS::EC2::EIPAssociation",
+       "Properties": {
+          "AllocationId": { "Fn::GetAtt" : [ "SLMPublicIPAddress", "AllocationId" ]},
+          "NetworkInterfaceId": { "Ref" : "SLMServerNetworkInterface"}
+       }
+    }
+  },
+
+  "Outputs" : {
+
+    "VpcId" : {
+      "Value" : {"Ref" : "VPC"},
+      "Description" : "VPC ID of newly created VPC"
+    },
+    "SLMNetworkInterfaceId" : {
+      "Value" : { "Ref" : "SLMServerNetworkInterface"},
+      "Description" : "SLM Server Network Interface Id"
+    },
+    "InternetGatewayId" : {
+      "Value" : { "Ref" : "InternetGateway" },
+      "Description" : "Internet Gateway Id"
+    },
+    "PublicSubnetA" : {
+      "Value" : {"Ref" : "PublicSubnetA"},
+      "Description" : "Public Subnet in AZ A"
+    },
+    "AllocationId" : {
+      "Value" : { "Fn::GetAtt" : [ "SLMPublicIPAddress", "AllocationId" ]},
+      "Description" : "SLM EIP AllocationId"
+    },
+    "PrivateSLMIPAddress" : {
+      "Value" : { "Fn::GetAtt" : [ "SLMServerNetworkInterface", "PrimaryPrivateIpAddress" ]},
+      "Description" : "SLM Private IP Address"
+    },
+    "PublicSLMIPAddress" : {
+      "Value" : { "Ref" : "SLMPublicIPAddress"},
+      "Description" : "SLM Private IP Address"
+    }
+  }
+}

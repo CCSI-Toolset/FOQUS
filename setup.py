@@ -3,19 +3,29 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from __future__ import print_function
 from setuptools import setup, find_packages
+import sys
 import os
+import subprocess
+import shutil
 
-# Add build number file to help if BUILD_NUMBER env var is set
-# this is mostly for building on Jenkins, but you could set the
-# env var on a local setup too.  If build number doesn't exist
-# it defaults to 0.
-build_name = os.environ.get('BUILD_NUMBER', '0')
-# change version.py to include the build_number
+# default_version is the version if "git describe --tags" falls through
+# Addtional package info is set in foqus_lib/version/version.template.
+# The version module, just makes it a bit easier for FOQUS to pull package info
+default_version = "3.0.0"
+
+try:
+    version=subprocess.check_output(
+        ["git", "describe", "--tags"]).decode('utf-8').strip()
+    version = version.replace("-", ".dev", 1)
+    version = version.replace("-", "+", 1)
+except:
+    version=default_version
+
+# Write the version module
 with open("foqus_lib/version/version.template", 'r') as f:
     verfile = f.read()
-verfile = verfile.replace("{BUILDNUMBER}", build_name)
+verfile = verfile.format(VERSION=version)
 with open("foqus_lib/version/version.py", 'w') as f:
     f.write(verfile)
 
@@ -23,70 +33,72 @@ with open("foqus_lib/version/version.py", 'w') as f:
 import foqus_lib.version.version as ver
 print("Setting version as {0}".format(ver.version))
 
-install_requires=[
-    'adodbapi',
-    'boto3',
-    'TurbineClient',
-    'pyparsing',
-    #'py4j',
-    'requests',
-    #'networkx',
-    #'redis',
-    #'logstash_formatter',
-    'matplotlib',
-    'scipy',
-    'numpy',
-    'cma',
-    'pandas>0.20'],
-
-#dependency_links=[]
-dependency_links=['git+https://github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
-#dependency_links=['git+ssh://git@github.com/CCSI-Toolset/turb_client@2.0.0-alpha#egg=TurbineClient']
-
-# Set all the package parameters
-pkg_name             = "foqus"
-pkg_version          = ver.version
-pkg_license          = ver.license
-pkg_description      = "FOQUS tool for simulation based optimization,"\
-                       " uncertainty quantification, and surrogate models"
-pkg_author           = ver.author
-pkg_author_email     = ver.support
-pkg_maintainer       = ver.maintainer
-pkg_maintainer_email = ver.maintainer_email
-pkg_url              = ver.webpage
-
-setup(
-    name = pkg_name,
-    version = pkg_version,
-    license = pkg_license,
-    description = pkg_description,
-    author = pkg_author,
-    author_email = pkg_author_email,
-    maintainer = pkg_maintainer,
-    maintainer_email = pkg_maintainer_email,
-    url = pkg_url,
+dist = setup(
+    name = ver.name,
+    version = ver.version,
+    license = ver.license,
+    description = ver.description,
+    author = ver.author,
+    author_email = ver.support,
+    maintainer = ver.maintainer,
+    maintainer_email = ver.maintainer_email,
+    url = ver.webpage,
     packages = find_packages(),
+    package_data={
+        '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
+            '*.html', '*.gms', '*.gpr', '*.ccs']},
     include_package_data=True,
     scripts = [
         'foqus.py',
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
-        'icons_rc.py'],
-    install_requires=install_requires,
-    dependency_links=dependency_links
+        'icons_rc.py']
 )
 
-print("\n\n\n")
-print("==============================================================")
-print("The following packages can be installed by the user")
-print("==============================================================")
-print("PSUADE (Required for UQ features): ")
-print("    https://github.com/LLNL/psuade\n")
-print("Turbine (Windows only, run Aspen, Excel, and gPROMS): ")
-print("    (url tbd)\n")
-print("ALAMO (ALAMO Surogate models): ")
-print("    (url tbd)\n")
-print("NLOpt Python (Additional optimization solvers):")
-print("    https://nlopt.readthedocs.io/en/latest/NLopt_Installation/\n")
-print("==============================================================")
-print("\n")
+if os.name == 'nt': # Write a batch file on windows to make it easier to launch
+    #first see if this is a conda env
+    foqus_path = subprocess.check_output(
+        ["where", "$PATH:foqus.py"]).decode('utf-8').split("\n")[0].strip()
+    if "CONDA_DEFAULT_ENV" in os.environ:
+        #we're using conda
+        env = os.environ["CONDA_DEFAULT_ENV"]
+        conda_path = shutil.which("conda")
+    else:
+        env = None
+    with open("foqus.bat", 'w') as f:
+        if env is not None:
+            f.write('cmd /c "{} activate {} && python {}'\
+                .format(conda_path, env, foqus_path))
+        else:
+            f.write('"cmd /c python {}"\n'.format(foqus_path))
+
+print("""
+
+==============================================================
+**Installed FOQUS {}**
+
+**Optional addtional sotfware**
+
+PSUADE (Required for UQ features):
+   https://github.com/LLNL/psuade
+
+Turbine (Windows only, run Aspen, Excel, and gPROMS):
+    https://github.com/CCSI-Toolset/turb_sci_gate/releases
+
+ALAMO (ALAMO Surogate models):
+    http://archimedes.cheme.cmu.edu/?q=alamo
+
+NLOpt Python (Additional optimization solvers):
+    https://nlopt.readthedocs.io/en/latest/NLopt_Installation/
+
+**Batch file/Running FOQUS**
+
+Linux:
+    Run the command
+    > foqus.py
+
+Windows:
+    On Windows, this script makes a batch file to run FOQUS.
+    This batch file can be placed in any conveinient location.
+==============================================================
+""".format(ver.version))

@@ -1,6 +1,6 @@
 """foqus_worker.py
 * The AWS Cloud FOQUS worker to start FOQUS
-
+This is mostly for testing.
 Joshua Boverhof, Lawrence Berkeley National Lab
 
 See LICENSE.md for license and copyright details.
@@ -262,9 +262,9 @@ def run_foqus(job_desc):
         #sim_list = node.gr.turbConfig.getSimulationList()
         sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
 
-        print "==="*20
-        print sim_list
-        print "==="*20
+        print("==="*20)
+        print(sim_list)
+        print("==="*20)
         sim_d = filter(lambda i: i['Name'] == model_name, sim_list)
         assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %simulation_name
         if len(sim_d) == 0:
@@ -436,9 +436,22 @@ class TurbineLiteDB:
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
+        scrub_empty_string_values_for_dynamo(output)
+        _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
+        time.sleep(5)
         self._sns_notification(dict(resource='job',
             event='output', jobid=jobGuid, value=output, rc=rc))
 
+
+def scrub_empty_string_values_for_dynamo(db):
+    """ DynamoDB throws expection if there is an empty string in dict
+    ValidationException: ExpressionAttributeValues contains invalid value:
+    One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
+    """
+    if type(db) is not dict: return
+    for k,v in db.items():
+        if v in  ("",u""): db[k] = "NULL"
+        else: scrub_empty_string_values_for_dynamo(v)
 
 class _KeepAliveTimer(threading.Thread):
     def __init__(self, turbineDB, freq=60):
@@ -481,7 +494,7 @@ def main():
     curs.execute(sqlstr)
     jobs_all = curs.fetchall()
     for item in jobs_all:
-        print item
+        print(item)
     conn.close()
     """
     _log.debug("starting")

@@ -9,7 +9,7 @@ import json
 import os
 
 from foqus_lib.gui.flowsheet.columns import *
-import dataFilterDialog
+from . import dataFilterDialog
 from foqus_lib.gui.flowsheet.dataModel import *
 from foqus_lib.gui.flowsheet.runRowsDialog import *
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
@@ -343,7 +343,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         if filterName == '':
             self.results.set_filter(None)
         elif not filterName in self.results.filters:
-            print "error"
+            print("error")
         else:
             self.results.set_filter(filterName)
         self.tableView.setModel(dataModel(self.results, self))

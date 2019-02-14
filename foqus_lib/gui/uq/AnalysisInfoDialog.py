@@ -14,7 +14,7 @@ class AnalysisInfoDialog(QDialog):
         self.resize(400, 400)
         self.gridLayout = QGridLayout(self)
         self.table = QTableWidget()
-        self.table.setRowCount(len(info.keys()))
+        self.table.setRowCount(len(list(info.keys())))
         self.table.setColumnCount(1)
 
         boldFont = QFont()
@@ -24,7 +24,7 @@ class AnalysisInfoDialog(QDialog):
         totalHeight = 20
         totalWidth = 50
         row = 0
-        for key in info.keys():
+        for key in list(info.keys()):
             if key in ('xprior', 'xtable', 'ytable', 'obsTable'):
                 continue
             #item = QTableWidgetItem(key)
@@ -33,7 +33,7 @@ class AnalysisInfoDialog(QDialog):
                 strings = []
                 for strItem in info[key]:
                     if isinstance(strItem, dict):
-                        ks = strItem.keys()
+                        ks = list(strItem.keys())
                         for k in ks:
                             if strItem[k] is None:
                                 del strItem[k]
@@ -52,7 +52,7 @@ class AnalysisInfoDialog(QDialog):
             self.gridLayout.addWidget(self.table)
             self.table.horizontalHeader().setHidden(True)
             self.table.setRowCount(row)
-            self.table.setVerticalHeaderLabels([key for key in info.keys() if key not in ('xprior', 'xtable', 'ytable', 'obsTable')])
+            self.table.setVerticalHeaderLabels([key for key in list(info.keys()) if key not in ('xprior', 'xtable', 'ytable', 'obsTable')])
             #self.table.verticalHeader().setHidden(True)
             self.table.setWordWrap(True)
             self.table.resizeColumnsToContents()
@@ -64,7 +64,7 @@ class AnalysisInfoDialog(QDialog):
                 width += self.table.verticalScrollBar().width()
             self.table.setMinimumWidth(width)
             maxHeight = 3
-            for i in xrange(row):
+            for i in range(row):
                 maxHeight += self.table.rowHeight(i)
             self.table.setMinimumHeight(maxHeight)
 
@@ -80,7 +80,7 @@ class AnalysisInfoDialog(QDialog):
                 values = info[key]
                 for d in values:
                     if d is not None and 'type' in d and d['type'] == 'Design':
-                        keys = d.keys()
+                        keys = list(d.keys())
                         for k in keys:
                             if k not in ('name', 'type'):
                                 del d[k]
@@ -96,7 +96,7 @@ class AnalysisInfoDialog(QDialog):
                 self.gridLayout.addWidget(label)
                 table = QTableWidget()
                 self.gridLayout.addWidget(table)
-                table.setRowCount(len([1 for i in xrange(len(values)) if values[i] is not None]))
+                table.setRowCount(len([1 for i in range(len(values)) if values[i] is not None]))
 
                 # column headers
                 if key == 'obsTable':
@@ -113,7 +113,7 @@ class AnalysisInfoDialog(QDialog):
                         columnHeaders.append(out + ' Std Dev')
                     table.setColumnCount(len(columnHeaders))
                     table.setHorizontalHeaderLabels(columnHeaders)
-                    table.setVerticalHeaderLabels(['Experiment ' + str(num) for num in xrange(1, len(values) + 1)])
+                    table.setVerticalHeaderLabels(['Experiment ' + str(num) for num in range(1, len(values) + 1)])
                 else:
                     columnSet = set()
                     if key == 'ytable':
@@ -145,7 +145,7 @@ class AnalysisInfoDialog(QDialog):
                 table.setWordWrap(True)
 
                 r = 0
-                for i in xrange(len(values)):
+                for i in range(len(values)):
                     if key == 'obsTable':
                         for c, string in enumerate(values[r][1:]):
                             item = QTableWidgetItem(string)
@@ -169,7 +169,7 @@ class AnalysisInfoDialog(QDialog):
                 width = 2
                 if key == 'obsTable':
                     width += table.verticalHeader().width()
-                for i in xrange(table.columnCount()):
+                for i in range(table.columnCount()):
                     width += table.columnWidth(i)
                 if table.verticalScrollBar().isVisible():
                     width += table.verticalScrollBar().width()
@@ -177,7 +177,7 @@ class AnalysisInfoDialog(QDialog):
                     width = 800
                 table.setMinimumWidth(width)
                 maxHeight = 3 + table.horizontalHeader().height()
-                for i in xrange(table.rowCount()):
+                for i in range(table.rowCount()):
                     maxHeight += table.rowHeight(i)
                 maxHeight = min([maxHeight, 400])
                 table.setMinimumHeight(maxHeight)

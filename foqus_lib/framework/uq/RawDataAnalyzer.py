@@ -2,11 +2,11 @@ import os
 import subprocess
 import tempfile
 import platform
-from Model import Model
-from SampleData import SampleData
-from Common import Common
-from LocalExecutionModule import LocalExecutionModule
-from Plotter import Plotter
+from .Model import Model
+from .SampleData import SampleData
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .Plotter import Plotter
 
 class RawDataAnalyzer:
 
@@ -19,7 +19,7 @@ class RawDataAnalyzer:
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -130,7 +130,7 @@ class RawDataAnalyzer:
 
         # write script
         cmd = 'ua'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -200,7 +200,7 @@ class RawDataAnalyzer:
 
         # write script
         cmd = 'ca'
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)
@@ -286,7 +286,7 @@ class RawDataAnalyzer:
                 return None
 
         # write script
-        f = tempfile.SpooledTemporaryFile()
+        f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
             fname = win32api.GetShortPathName(fname)

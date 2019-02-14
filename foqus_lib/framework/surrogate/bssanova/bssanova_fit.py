@@ -18,5 +18,5 @@ def fit(xdatfile, ydatfile, modelfile,
 # Example usage
 # ---------------------------------------
 rdsfile = fit('xdat.csv','ydat.csv','bssanova_fit.rds')
-print rdsfile
+print(rdsfile)
 

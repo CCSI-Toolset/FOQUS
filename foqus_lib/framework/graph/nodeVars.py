@@ -120,8 +120,8 @@ class NodeVarList(OrderedDict):
         smaller changes working to new variable list objects
         """
         self.odict = OrderedDict()
-        for node in sorted(self.keys(), key=lambda s: s.lower()):
-            for var in sorted(self[node].keys(), key=lambda s: s.lower()):
+        for node in sorted(list(self.keys()), key=lambda s: s.lower()):
+            for var in sorted(list(self[node].keys()), key=lambda s: s.lower()):
                 self.odict['.'.join([node, var])] = self[node][var]
         return self.odict
 
@@ -134,8 +134,8 @@ class NodeVarList(OrderedDict):
             sort: if true sort the names alphabetically
         """
         l = []
-        for node in self.keys():
-            for var in self[node].keys():
+        for node in list(self.keys()):
+            for var in list(self[node].keys()):
                 l.append('.'.join([node, var]))
         if sort:
             return sorted(l, key = lambda s: s.lower())
@@ -169,7 +169,7 @@ class NodeVarList(OrderedDict):
             if node not in self:
                 logging.getLogger("foqus." + __name__).debug(
                     "Cannot load variable node not in flowsheet, node:"
-                    " {0} not in {1}".format(node, self.keys()))
+                    " {0} not in {1}".format(node, list(self.keys())))
                 raise NodeVarListEx(2, msg=node)
             for var in sd[node]:
                 self[node][var].value = sd[node][var]
@@ -202,16 +202,16 @@ class NodeVarList(OrderedDict):
         """
         Scale all the variables in the list
         """
-        for key, NodeVars in self.iteritems():
-            for vkey, var in NodeVars.iteritems():
+        for key, NodeVars in self.items():
+            for vkey, var in NodeVars.items():
                 var.scale()
 
     def makeNaN(self):
         """
         Make all the variable values NaN
         """
-        for key, NodeVars in self.iteritems():
-            for vkey, var in NodeVars.iteritems():
+        for key, NodeVars in self.items():
+            for vkey, var in NodeVars.items():
                 var.makeNaN()
 
     def count(self):

@@ -21,10 +21,10 @@ from foqus_lib.framework.uq.RawDataAnalyzer import *
 from foqus_lib.framework.uq.RSAnalyzer import *
 from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
-from AnalysisInfoDialog import *
-from InferenceDialog import *
+from .AnalysisInfoDialog import *
+from .InferenceDialog import *
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-import RSCombos
+from . import RSCombos
 
 #from AnalysisDialog_UI import Ui_Dialog
 from PyQt5 import uic
@@ -161,13 +161,13 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.infoGroup.setMinimumWidth(width + 22)
         #self.infoGroup.setMaximumWidth(width + 60)
         maxHeight = 4
-        for i in xrange(6):
+        for i in range(6):
             maxHeight += self.infoTable.rowHeight(i)
         self.infoTable.setMaximumHeight(maxHeight)
 
 #        print self.analysisTable.verticalHeader().width()
         width = 2 + self.analysisTable.verticalHeader().width()
-        for i in xrange(self.analysisTable.columnCount()):
+        for i in range(self.analysisTable.columnCount()):
             width += self.analysisTable.columnWidth(i)
 #            print self.analysisTable.columnWidth(i)
         if self.analysisTable.verticalScrollBar().isVisible():
@@ -214,7 +214,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def refreshAnalysisTable(self):
         numAnalyses = self.data.getNumAnalyses()
         self.analysisTable.setRowCount(numAnalyses)
-        for i in xrange(numAnalyses):
+        for i in range(numAnalyses):
             self.updateAnalysisTableRow(i)
 
     def updateAnalysisTableWithNewRow(self):
@@ -247,7 +247,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.rsCol, item)
         if isinstance(analysis, UQRSAnalysis):
-            if isinstance(analysis.getResponseSurface(), basestring):
+            if isinstance(analysis.getResponseSurface(), str):
                 item.setText(ResponseSurfaces.getFullName(analysis.getResponseSurface()))
             else:
                 names = [ResponseSurfaces.getFullName(rs) for rs in analysis.getResponseSurface()]
@@ -550,7 +550,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         numItems = combo1.count()
         sa = numItems
         inf = numItems
-        for i in xrange(numItems):
+        for i in range(numItems):
             if combo1.itemText(i).startswith('Sensitivity'):
                 sa = i
             elif 'Infer' in combo1.itemText(i):
@@ -610,10 +610,10 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                         disable = ['Total-order (Requires at most 10 inputs)']
                     else:
                         enable = ['First-order', 'Second-order', 'Total-order']
-            for i in xrange(len(enable)):
+            for i in range(len(enable)):
                 s = enable[i]
                 combo2.addItem(s)
-            for i in xrange(len(disable)):
+            for i in range(len(disable)):
                 s = disable[i]
                 combo2.addItem(s)
                 model = combo2.model()
@@ -630,7 +630,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def initRSAnalyzeCombo1(self, combo1, combo2, expertMode = False, samplePDFChosen = False):
         numItems = combo1.count()
         sa = numItems
-        for i in xrange(numItems):
+        for i in range(numItems):
             text = combo1.itemText(i)
             if text.startswith('Sensitivity'):
                 sa = i

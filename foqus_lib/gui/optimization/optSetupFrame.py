@@ -51,7 +51,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.penForms = ['None', 'Quadratic', 'Linear', 'Step']
         #
         self.osolvers = sorted(
-            self.dat.optSolvers.plugins.keys(),
+            list(self.dat.optSolvers.plugins.keys()),
             key=lambda s: s.lower())
         self.methods = self.dat.optSolvers.plugins #dict of solvers
         self.optMonitorFrame = optMonitor(self.dat, self)
@@ -75,7 +75,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
     def genSamples(self):
         self.applyChanges()
         prob = self.dat.optProblem
-        genDialog = optSampleGenDialog(sorted(prob.vs))
+        genDialog = optSampleGenDialog(sorted(prob.vs), self)
         r = genDialog.exec_()
         if r == QDialog.Accepted:
             #call the appropriate method to generate samples

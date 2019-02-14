@@ -1,7 +1,7 @@
 import numpy
-from UQAnalysis import UQAnalysis
-from Visualizer import Visualizer
-from Common import Common
+from .UQAnalysis import UQAnalysis
+from .Visualizer import Visualizer
+from .Common import Common
 
 class Visualization(UQAnalysis):
     def __init__(self, ensemble, output, inputs):

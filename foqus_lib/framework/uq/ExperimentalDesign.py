@@ -9,9 +9,9 @@ from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.uq.SampleData import SampleData
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.SamplingMethods import SamplingMethods
-from LocalExecutionModule import LocalExecutionModule
-from RSAnalyzer import RSAnalyzer
-from Common import Common
+from .LocalExecutionModule import LocalExecutionModule
+from .RSAnalyzer import RSAnalyzer
+from .Common import Common
 
 class ExperimentalDesign:
 
@@ -26,7 +26,7 @@ class ExperimentalDesign:
         names = data.getInputNames()
         mins = data.getInputMins()
         maxs = data.getInputMaxs()
-        indices = range(data.getNumInputs())
+        indices = list(range(data.getNumInputs()))
         for i, name, minimum, maximum in zip(indices, names, mins, maxs):
             outf.write('   variable %d %s = %e %e\n' % (i + 1, name,
                                                         minimum, maximum))
@@ -59,7 +59,7 @@ class ExperimentalDesign:
         outf.write('OUTPUT\n')
         outf.write('   dimension = %d\n' % data.getNumOutputs())
         names = data.getOutputNames()
-        indices = range(data.getNumOutputs())
+        indices = list(range(data.getNumOutputs()))
         for i, name in zip(indices, names):
             outf.write('   variable %d %s\n' % (i + 1, name))
         outf.write('END\n')
@@ -93,7 +93,7 @@ class ExperimentalDesign:
         outf.write('ANALYSIS\n')
         outf.write('   diagnostics 2\n')
         outf.write('END\n')
-        
+
         outf.write('END\n')
         outf.close()
 
@@ -116,12 +116,12 @@ class ExperimentalDesign:
         if data.getInputDefaults() is not None:
             newModel.setInputDefaults(data.getInputDefaults()[selectedInputs])
         returnData = SampleData(newModel)
-        
+
         if numSamples:
             returnData.setNumSamples(numSamples)
         else:
             returnData.setNumSamples(data.getNumSamples())
-           
+
         if sampleMethod >= 0:
             returnData.setSampleMethod(sampleMethod)
         else:
@@ -165,13 +165,13 @@ class ExperimentalDesign:
                 if platform.system() == 'Windows':
                     import win32api
                     tmpfile = win32api.GetShortPathName(tmpfile)
-                f.write('load %s\n' % tmpfile)
-                f.write('pdfconvert\n')
-                f.write('write %s\n' % psuadeDataFile)
+                f.write(('load %s\n' % tmpfile).encode())
+                f.write(b'pdfconvert\n')
+                f.write(('write %s\n' % psuadeDataFile).encode())
                 nOutputs = returnData.getNumOutputs()
                 if nOutputs > 1:
-                    f.write('n\n')     # write all outputs
-                f.write('quit\n')
+                    f.write(b'n\n')     # write all outputs
+                f.write(b'quit\n')
                 f.seek(0)
                 out, error = Common.invokePsuade(f)
                 f.close()

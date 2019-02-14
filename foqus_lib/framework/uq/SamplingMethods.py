@@ -1,7 +1,7 @@
 import numpy as np
 
 class SamplingMethods:
-    MC, LPTAU, LH, OA, MOAT, GMOAT, LSA, METIS, GMETIS, FACT = range(10)
+    MC, LPTAU, LH, OA, MOAT, GMOAT, LSA, METIS, GMETIS, FACT = list(range(10))
     fullNames = ('Monte Carlo', 'Quasi Monte Carlo', 'Latin Hypercube',
                  'Orthogonal Array', 'Morris Design', 'Generalized Morris Design',
                  'Gradient Sample', 'METIS', 'Monte Carlo', 'Full Factorial Design')

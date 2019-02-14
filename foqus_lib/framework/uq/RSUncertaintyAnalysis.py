@@ -1,13 +1,13 @@
-from UQRSAnalysis import UQRSAnalysis
-from UQAnalysis import UQAnalysis
-from ResponseSurfaces import ResponseSurfaces
-from RSAnalyzer import RSAnalyzer
-from Common import Common
+from .UQRSAnalysis import UQRSAnalysis
+from .UQAnalysis import UQAnalysis
+from .ResponseSurfaces import ResponseSurfaces
+from .RSAnalyzer import RSAnalyzer
+from .Common import Common
 
 
 class RSUncertaintyAnalysis(UQRSAnalysis):
 
-    ALEATORY_ONLY, ALEATORY_EPISTEMIC = range(2)
+    ALEATORY_ONLY, ALEATORY_EPISTEMIC = list(range(2))
     
     def __init__(self, ensemble, output, subType, responseSurface, rsOptions = None,
                  userRegressionFile = None, xprior = None):

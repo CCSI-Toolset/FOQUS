@@ -47,7 +47,7 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         self.updateAvailableTagsRec(self.availTags, self.mainTagList)
 
     def updateAvailableTagsRec(self, tdict, item):
-        for key in sorted(tdict.keys(), key = lambda s: s.lower()):
+        for key in sorted(list(tdict.keys()), key = lambda s: s.lower()):
             val = tdict[key]
             i = QTreeWidgetItem(item)
             i.setText(0, key)

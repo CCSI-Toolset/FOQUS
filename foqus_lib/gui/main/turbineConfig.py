@@ -5,10 +5,8 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
-from foqus_lib.framework.sim.turbineConfiguration\
-    import TurbineInterfaceEx
-from foqus_lib.framework.sim.turbineConfiguration\
-    import turbineConfiguration
+from foqus_lib.framework.sim.turbineConfiguration import (
+    TurbineInterfaceEx, TurbineConfiguration)
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QDialog
 mypath = os.path.dirname(__file__)
@@ -32,10 +30,10 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
             self.cfile = cfile
         # make a turbine config object to save and load turbine configs
         if self.cfile:
-            self.tconf = turbineConfiguration(self.cfile)
+            self.tconf = TurbineConfiguration(self.cfile)
             self.tconf.readConfig()
         else:
-            self.tconf = turbineConfiguration()
+            self.tconf = TurbineConfiguration()
         # fill out default information
         self.addressEdit.setText(self.tconf.address)
         self.userEdit.setText(self.tconf.user)

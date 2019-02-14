@@ -268,7 +268,7 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
 def timersStop(timers=timers):
     """Stop all timers"""
-    for key, t in timers.iteritems():
+    for key, t in iter(timers.items()):
         t.stop()
 
 def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
@@ -425,7 +425,7 @@ try: # Catch any exception and stop all timers before finishing up
 except Exception as e:
     # if there is any exception make sure the timers are stopped
     # before reraising it
-    print "Exception stopping script"
+    print ("Exception stopping script")
     timersStop()
     with open(testOutFile, 'a') as f:
         f.write('ERROR: Exception: {0}\n'.format(e))

@@ -13,12 +13,13 @@ import time
 import copy
 import csv
 import pickle
-import Queue
+import queue
 import sys
 import logging
 import math
 import numpy
 import scipy
+import scipy.optimize
 import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization

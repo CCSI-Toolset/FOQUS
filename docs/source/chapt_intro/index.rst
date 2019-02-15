@@ -72,7 +72,7 @@ Process simulations are often time consuming and occasionally fail to converge. 
 ALAMO
 ~~~~~
 
-While simulation based optimization, can often do a good job of providing optimal design and operating conditions for a predetermined flowsheet, it cannot provide an optimal flowsheet.  To obtain a more optimal flowsheet, a mixed integer nonlinear program must be solved. These types of problems cannot generally be solved using simulation based optimization. A solution is to generate relatively simple algebraic models that accurately represent the high fidelity models. FOQUS currently provides an interface for ALAMO \citep{Cozad_2014}, which builds surrogate model that are well suited for superstructure optimization.
+While simulation based optimization can often do a good job of providing optimal design and operating conditions for a predetermined flowsheet, it cannot provide an optimal flowsheet.  To obtain a more optimal flowsheet, a mixed integer nonlinear program must be solved. These types of problems cannot generally be solved using simulation based optimization. A solution is to generate relatively simple algebraic models that accurately represent the high fidelity models. FOQUS currently provides an interface for ALAMO \citep{Cozad_2014}, which builds surrogate model that are well suited for superstructure optimization.
 
 ACOSSO
 ~~~~~~

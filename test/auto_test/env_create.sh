@@ -1,1 +1,0 @@
-conda env create -f ../../foqus_env.yml

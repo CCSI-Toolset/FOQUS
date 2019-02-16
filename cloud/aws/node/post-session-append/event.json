@@ -1,8 +1,0 @@
-{
-  "body": "[{\"Initialize\": false, \"Input\": {}, \"Reset\": false, \"Simulation\":\"OUU\",\"Visible\": false}]",
-  "headers": {
-    "Accept": "application/json"
-  },
-  "httpMethod": "POST",
-  "path": "/Session/9d8494a2-6ba0-4bef-878d-53fdf6ebe8ee"
-}

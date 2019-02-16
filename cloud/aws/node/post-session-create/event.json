@@ -1,8 +1,0 @@
-{
-  "body": "{}",
-  "headers": {
-    "Accept": "application/json"
-  },
-  "httpMethod": "POST",
-  "path": "/Session"
-}

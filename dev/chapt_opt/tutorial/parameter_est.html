@@ -1,0 +1,480 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parameter Estimation &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Uncertainty Quantification" href="../../chapt_uq/index.html" />
+    <link rel="prev" title="Optimization" href="simple.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Optimization</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference/optimization.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="simple.html">Optimization</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Parameter Estimation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Optimization</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Parameter Estimation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_opt/tutorial/parameter_est.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="parameter-estimation">
+<h1>Parameter Estimation<a class="headerlink" href="#parameter-estimation" title="Permalink to this headline">¶</a></h1>
+<p><strong>Note:</strong> The NLopt solvers are used for the tutorial, but are an
+optional to the installation. See the install instructions for more
+information about installing NLopt.</p>
+<p>This tutorial provides a very simple example of using the sampling with
+optimization. Sampling can be used to do optimization under uncertainty
+where there are several scenarios with differing values of uncertain
+parameters. Sampling can also be used to do parameter estimation, where
+estimated values must be compared against several data points. This
+tutorial will focus on parameter estimation.</p>
+<p>At any point in this tutorial, the FOQUS session can be saved and the
+tutorial can be started again from that point.</p>
+<p>The model is given by Equation <a class="reference external" href="#eq.pe.tut">[eq.pe.tut]</a>. The unknown
+parameters are <span class="math notranslate nohighlight">\(a\)</span>, <span class="math notranslate nohighlight">\(b\)</span>, and <span class="math notranslate nohighlight">\(c\)</span>. The x and y data are
+given in Table <a class="reference external" href="#table.pe.data">[table.pe.data]</a>.</p>
+<div class="math notranslate nohighlight">
+\[\label{eq.pe.tut}
+y = ax^2 + bx + c\]</div>
+<table border="1" class="docutils" id="id3">
+<caption><span class="caption-text">x-y Data</span><a class="headerlink" href="#id3" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="32%" />
+<col width="12%" />
+<col width="12%" />
+<col width="12%" />
+<col width="16%" />
+<col width="16%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Sample</th>
+<th class="head">1</th>
+<th class="head">2</th>
+<th class="head">3</th>
+<th class="head">4</th>
+<th class="head">5</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>x</td>
+<td>0</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr class="row-odd"><td>y</td>
+<td>1</td>
+<td>0</td>
+<td>3</td>
+<td>10</td>
+<td>21</td>
+</tr>
+</tbody>
+</table>
+<p>The first step is to create a flowsheet with one node. The node will
+have the input variables: a, b, c, x, and ydata; and output variable y.</p>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>In the <strong>Session Name</strong> field, enter “PE_tutorial” (see Figure
+<a class="reference external" href="#fig.pe.tut1">[fig.pe.tut1]</a>).</li>
+<li>Click the <strong>Flowsheet</strong> button in the top toolbar.</li>
+</ol>
+<div class="figure" id="fig-pe-tut1">
+<img alt="Session Setup" src="../../_images/par_est_tut1.svg" /><p class="caption"><span class="caption-text">Session Setup</span></p>
+</div>
+<ol class="arabic simple" start="4">
+<li>Add a node to the flowsheet named “model.”<ol class="arabic">
+<li>Click <strong>Add Node</strong> in the left toolbar (see Figure
+<a class="reference external" href="#fig.pe.tut2">[fig.pe.tut2]</a>).</li>
+<li>Click anywhere on the gridded flowsheet area.</li>
+<li>Select “model” in the <strong>Name</strong> drop-down list and then click
+<strong>OK</strong>.</li>
+</ol>
+</li>
+<li>Click the <strong>Selection Mode</strong> icon in the left toolbar (see Figure
+<a class="reference external" href="#fig.pe.tut2">[fig.pe.tut2]</a>).</li>
+<li>Click the <strong>Node Editor</strong> icon in the left toolbar (see Figure
+<a class="reference external" href="#fig.pe.tut2">[fig.pe.tut2]</a>).</li>
+<li>In the Node Edit input table, add the variables a, b, c, x, and
+ydata. The ydata variable will be used as an input for the known y
+sample point data, later in the tutorial.<ol class="arabic">
+<li>Click the <strong>Add Input</strong> icon (see Figure
+<a class="reference external" href="#fig.pe.tut2">[fig.pe.tut2]</a>).</li>
+<li>Enter “a” for the variable name in the <strong>Name</strong> column.</li>
+<li>Enter -10 and 10 for the min and max in the <strong>Min</strong> and <strong>Max</strong>
+columns for a, b, c, and x.</li>
+<li>Repeat for all of the inputs.</li>
+<li>Enter 1 for the value of a, b, and c in the <strong>Value</strong> column.</li>
+<li>Enter 2 for the value of x in the <strong>Value</strong> column.</li>
+<li>The <strong>Value</strong>, <strong>Min</strong>, and <strong>Max</strong> for ydata do not matter.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-pe-tut2">
+<img alt="Adding Node and Inputs" src="../../_images/par_est_tut2.svg" /><p class="caption"><span class="caption-text">Adding Node and Inputs</span></p>
+</div>
+<ol class="arabic simple" start="8">
+<li>Click <strong>Output Variables</strong> (see Figure
+<a class="reference external" href="#fig.pe.tut3">[fig.pe.tut3]</a>).</li>
+<li>Add the output variable y.<ol class="arabic">
+<li>Click the <strong>Add Output</strong> icon (see Figure
+<a class="reference external" href="#fig.pe.tut3">[fig.pe.tut3]</a>).</li>
+<li>Enter “y” for the variable name in the <strong>Name</strong> column.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-pe-tut3">
+<img alt="Adding Outputs" src="../../_images/par_est_tut3.svg" /><p class="caption"><span class="caption-text">Adding Outputs</span></p>
+</div>
+<ol class="arabic" start="10">
+<li><p class="first">Add the model equation to the node.</p>
+<ol class="arabic">
+<li><p class="first">Click the <strong>Node Script</strong> tab.</p>
+</li>
+<li><p class="first">Enter the following code in the calculations box:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">f</span><span class="p">[</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;a&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span>\
+ <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;b&#39;</span><span class="p">]</span><span class="o">*</span><span class="n">x</span><span class="p">[</span><span class="s1">&#39;x&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;c&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-pe-tut4">
+<img alt="Adding Node Calculation" src="../../_images/par_est_tut4.svg" /><p class="caption"><span class="caption-text">Adding Node Calculation</span></p>
+</div>
+<ol class="arabic simple" start="11">
+<li>Return to the Output Variables table in the Node Editor, by clicking
+on the <strong>Variables</strong> tab, and selecting <strong>Output Variables</strong>.</li>
+<li>Click <strong>Run</strong> in the left toolbar in the FOQUS Home window, to test
+a single flowsheet evaluation and ensure there are no errors.</li>
+<li>When the run is complete, there should be no error and the value of
+y should be 7 in the Output Variables table.</li>
+</ol>
+<p>The next step is to setup the optimization. The objective function is to
+minimize the sum of the squared errors between the estimated value of y
+and the observed value of y. There are five data points in Table
+<a class="reference external" href="#table.pe.data">[table.pe.data]</a>, so there are five flowsheet
+evaluations that need to go into the calculation of the objective.</p>
+<ol class="arabic" start="14">
+<li><p class="first">Click the <strong>Optimization</strong> button in the top toolbar of the Home
+window (see Figure <a class="reference external" href="#fig.pe.tut5">[fig.pe.tut5]</a>).</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Select “Decision” in the <strong>Type</strong> column drop-down lists for
+“model.a,” “model.b,” and</div>
+<div class="line">“model.c.” The <strong>Scale</strong> column will automatically be set to
+linear.</div>
+</div>
+</li>
+<li><p class="first">Select “Sample” in the <strong>Type</strong> column drop-down lists for “model.x”
+and “model.ydata.”</p>
+</li>
+</ol>
+<div class="figure" id="fig-pe-tut5">
+<img alt="Optimization Variables" src="../../_images/par_est_tut5.svg" /><p class="caption"><span class="caption-text">Optimization Variables</span></p>
+</div>
+<p>The decision variables in the optimization problem will be changed by
+the optimization solver to try to minimize the objective, and the sample
+variables are used to construct the samples that will go into the
+objective function calculation.</p>
+<ol class="arabic simple" start="17">
+<li>Select the <strong>Samples</strong> tab (see Figure
+<a class="reference external" href="#fig.pe.tut6">[fig.pe.tut6]</a>).</li>
+<li>Click <strong>Add Sample</strong> five times to add five samples.</li>
+<li>Enter the data from Table <a class="reference external" href="#table.pe.data">[table.pe.data]</a> in
+the Samples table.</li>
+<li>For larger sample sets, <strong>Generate Samples</strong> has an option to load
+from a CSV file.</li>
+</ol>
+<div class="figure" id="fig-pe-tut6">
+<img alt="Optimization Samples" src="../../_images/par_est_tut6.svg" /><p class="caption"><span class="caption-text">Optimization Samples</span></p>
+</div>
+<p>The objective function is the sum of the square difference between y and
+ydata for each sample in Table <a class="reference external" href="#table.pe.data">[table.pe.data]</a>. The
+optimization solver changes the a, b, and c to minimize the objective.</p>
+<ol class="arabic" start="21">
+<li><p class="first">Click the <strong>Objective/Constraints</strong> tab.</p>
+</li>
+<li><p class="first">Click the <strong>Add Objective</strong> icon on the right side of the Objective
+Function table (see Figure <a class="reference external" href="#fig.pe.tut7">[fig.pe.tut7]</a>).</p>
+</li>
+<li><p class="first">In the <strong>Expression</strong> column, enter the following (without the line
+break):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">sum</span><span class="p">([(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;model&#39;</span><span class="p">][</span><span class="s1">&#39;ydata&#39;</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>
+ <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">))])</span>
+</pre></div>
+</div>
+<p>The above expression uses Python list comprehension to calculate the
+sum of squared errors. The keys for x and f are: sample index, node
+name, variable name, time step.</p>
+</li>
+<li><p class="first">Enter 1 for the <strong>Penalty Scale</strong>.</p>
+</li>
+<li><p class="first">Enter 100 for the <strong>Value for Failure</strong>.</p>
+</li>
+<li><p class="first">No constraints are required.</p>
+</li>
+</ol>
+<div class="figure" id="fig-pe-tut7">
+<img alt="Objective Function" src="../../_images/par_est_tut7.svg" /><p class="caption"><span class="caption-text">Objective Function</span></p>
+</div>
+<p>Once the objective is set up, a solver needs to be selected and
+configured. Almost any solver in FOQUS should work well for this problem
+with the default values.</p>
+<ol class="arabic simple" start="27">
+<li>Click the <strong>Solver</strong> tab (see Figure
+<a class="reference external" href="#fig.pe.tut8">[fig.pe.tut8]</a>).</li>
+<li>Select “NLopt” from the <strong>Select Solver</strong> drop-down list. NLopt is a
+collection of solvers that share a standard interface
+<a href="#id1"><span class="problematic" id="id2">:raw-latex:`\citep{Johnson_2015}`</span></a>.</li>
+<li>Select “BOBYQA” under the Solver Options table in the <strong>Settings</strong>
+column drop-down list.</li>
+</ol>
+<div class="figure" id="fig-pe-tut8">
+<img alt="Optimization Samples" src="../../_images/par_est_tut8.svg" /><p class="caption"><span class="caption-text">Optimization Samples</span></p>
+</div>
+<ol class="arabic simple" start="30">
+<li>Click the <strong>Run</strong> tab (see Figure <a class="reference external" href="#fig.pe.tut9">[fig.pe.tut9]</a>).</li>
+<li>Click the <strong>Start</strong> button.</li>
+<li>The Optimization Solver Messages window displays the solver
+progress. As the solver runs, the best results found is placed into
+the flowsheet.</li>
+<li>The <strong>Best Solution Parallel Coordinate Plot</strong> shows the scaled
+decision variable values for the best solution found so far.</li>
+<li>The <strong>Objective Function Plot</strong> shows the value of the objective
+function as the optimization progresses.</li>
+</ol>
+<div class="figure" id="fig-pe-tut9">
+<img alt="Running Optimization" src="../../_images/par_est_tut9.svg" /><p class="caption"><span class="caption-text">Running Optimization</span></p>
+</div>
+<p>The best result at the end of the optimization is stored in the
+flowsheet. All flowsheet evaluations run during the optimization are
+stored in the flowsheet results table.</p>
+<ol class="arabic simple" start="35">
+<li>Once the optimization has completed, click <strong>Flowsheet</strong> in the top
+toolbar.</li>
+<li>Open the <strong>Node Editor</strong> and look at the <strong>Input Variables</strong> table.
+The approximate result should be a = 2, b = -3, and c = 1 (see
+Figure <a class="reference external" href="#fig.pe.tut10">[fig.pe.tut10]</a>).</li>
+</ol>
+<div class="figure" id="fig-pe-tut10">
+<img alt="Flowsheet, Input Variables Results" src="../../_images/par_est_tut10.svg" /><p class="caption"><span class="caption-text">Flowsheet, Input Variables Results</span></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapt_uq/index.html" class="btn btn-neutral float-right" title="Uncertainty Quantification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="simple.html" class="btn btn-neutral float-left" title="Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

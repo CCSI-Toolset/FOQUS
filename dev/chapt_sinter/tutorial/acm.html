@@ -1,0 +1,445 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Aspen Custom Modeler Configuration &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Microsoft Excel Configuration" href="excel.html" />
+    <link rel="prev" title="Aspen Plus Configuration" href="ap.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Simulation Standard Interface (SimSinter)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">SimSinter Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ap.html">Aspen Plus Configuration</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Aspen Custom Modeler Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel.html">Microsoft Excel Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gproms.html">gPROMS Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Simulation Standard Interface (SimSinter)</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Aspen Custom Modeler Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_sinter/tutorial/acm.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aspen-custom-modeler-configuration">
+<span id="sec-tut-simsinter-acm"></span><h1>Aspen Custom Modeler Configuration<a class="headerlink" href="#aspen-custom-modeler-configuration" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p class="first">The “SinterConfigGUI” can be launched from FOQUS, via the
+<strong>Create/Edit</strong> button found in <strong>File</strong><span class="math notranslate nohighlight">\(\rightarrow\)</span>
+<strong>Add/Update Model to Turbine</strong> or “SinterConfigGUI” may be run on
+its own by selecting <strong>SimSinter</strong> <span class="math notranslate nohighlight">\(\rightarrow\)</span>
+<strong>SinterConfigGUI</strong> from the Start menu.</p>
+</li>
+<li><p class="first">The splash window displays, as shown in Figure
+<a class="reference external" href="#fig.sinter.acm.splash">[fig.sinter.acm.splash]</a>. The user may
+click the splash screen to proceed, or wait ten seconds for it to
+close automatically.</p>
+<div class="figure" id="fig-sinter-acm-splash">
+<img alt="SinterConfigGUI Splash Screen" src="../../_images/01_Splash_Screen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Splash Screen</span></p>
+</div>
+</li>
+<li><div class="first line-block">
+<div class="line">The SinterConfigGUI Open Simulation window displays (Figure
+<a class="reference external" href="#fig.sinter.acm.openpage">[fig.sinter.acm.openpage]</a>). If
+“SinterConfigGUI” was opened from FOQUS, the filename text box
+already contains the correct file. To proceed immediately click
+<strong>Open File and Configure Variables</strong> or click <strong>Browse</strong> to search
+for the file. For this tutorial, the ACM model for bubbling
+fluidized bed adsorber installed in the FOQUS examplesOUUBFB_Cap
+folder is selected (BFB_OUU_COE.acmf). Once the file is selected,
+click <strong>Open File and Configure Variables</strong>. The user can open a
+fresh ACM simulation (.acmf file) or an existing SimSinter
+configuration file. For this example, open a fresh simulation.</div>
+<div class="line">Note: Opening the simulation may take a few minutes depending on
+how quickly Aspen Custom Modeler can be opened.</div>
+</div>
+<div class="figure" id="fig-sinter-acm-openpage">
+<img alt="SinterConfigGUI Open Simulation Window" src="../../_images/02_FileOpenScreen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Open Simulation Window</span></p>
+</div>
+</li>
+<li><p class="first">Aspen Custom Modeler starts in the background. This is so the user
+can observe things about the simulation while working on the
+configuration file.</p>
+</li>
+<li><p class="first">The SinterConfigGUI Simulation Meta-Data window displays. (Figure
+<a class="reference external" href="#fig.sinter.acm.savename">[fig.sinter.acm.savename]</a>). The first
+and most important piece of metadata is <strong>SimSinter Save Location</strong>
+at the top of the window. This is where the sinter configuration file
+is saved. The system attempts to locate a reasonable file location
+and file name; however, the user must confirm the correct file
+location, since it automatically overwrites whatever file name
+currently exists.</p>
+<div class="figure" id="fig-sinter-acm-savename">
+<img alt="SinterConfigGUI Simulation Meta-Data Page Save Name Text Box" src="../../_images/03_MetaDataSave.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Simulation Meta-Data Page Save Name Text Box</span></p>
+</div>
+</li>
+<li><p class="first">Continue to complete the remaining fields and then click <strong>Next</strong>
+(Figure <a class="reference external" href="#fig.sinter.acm.metadata">[fig.sinter.acm.metadata]</a>).</p>
+<div class="figure" id="fig-sinter-acm-metadata">
+<img alt="../../_images/04_MetaDataFilled.png" src="../../_images/04_MetaDataFilled.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Simulation Meta-Data Page with Data Completed</span></p>
+</div>
+</li>
+<li><p class="first">In the <strong>SinterConfigGUI Variable Configuration Page</strong>, (Figure
+<a class="reference external" href="#fig.sinter.acm.variableempty">[fig.sinter.acm.variableempty]</a>)
+notice that the ACM <strong>Selected Input Variables</strong>: <strong>TimeSeries</strong>,
+<strong>Snapshot</strong>, <strong>RunMode</strong>, <strong>printlevel</strong> and <strong>homotopy</strong> are
+already included in the input variables. <strong>TimeSeries</strong> and
+<strong>Snapshot</strong> are for dynamic simulations. <strong>RunMode</strong> can be either
+“Steady State” or “Dynamic”. The Dynamic mode requires a dynamic ACM
+model. For this simulation, the RunMode is Steady State. The
+<strong>homotopy</strong> variable can be set to “1” so that homotopy is on by
+default. Notice that the <strong>Dynamic</strong> column (the first column) in
+each row contains a checkbox, enabling the user to select if the
+input variable in the row is a dynamic variable. Also notice that a
+<strong>Variable Type</strong> search box is on the left. This search is exactly
+the same as Variable Find on the Tools menu in Aspen Custom Modeler.
+Please refer to the ACM documentation for details on search patterns.</p>
+<div class="figure" id="fig-sinter-acm-variableempty">
+<img alt="SinterConfigGUI Variable Configuration Page before Input" src="../../_images/05_VariablesEmpty.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page before Input</span></p>
+</div>
+</li>
+<li><p class="first">A search for everything in the “BFBAdsT” block has been selected. The
+following <strong>Search in Progress</strong> dialog is displayed (Figure
+<a class="reference external" href="#fig.sinter.acm.variableprogress">[fig.sinter.acm.variableprogress]</a>).
+Sometimes large searches take a while.</p>
+<div class="figure" id="fig-sinter-acm-variableprogress">
+<img alt="Search in Progress Bar Page" src="../../_images/06_Search.png" />
+<p class="caption"><span class="caption-text">Search in Progress Bar Page</span></p>
+</div>
+</li>
+<li><p class="first">First, select the “BFBadsT.A1” scalar variable in the <strong>Selected
+Path</strong> field (Figure
+<a class="reference external" href="#fig.sinter.acm.variableselected">[fig.sinter.acm.variableselected]</a>).</p>
+<div class="figure" id="fig-sinter-acm-variableselected">
+<img alt="../../_images/07_VariablesSelected.png" src="../../_images/07_VariablesSelected.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page BFBadsT.A1 Selected</span></p>
+</div>
+</li>
+<li><p class="first">If the user double-clicks, presses Enter, or clicks <strong>Preview</strong> or
+<strong>Lookup</strong>, information displays in the <strong>Preview Variable</strong> section
+(Figure
+<a class="reference external" href="#fig.sinter.acm.variablepreview">[fig.sinter.acm.variablepreview]</a>).
+Here, the user can verify the variable choices.</p>
+<div class="figure" id="fig-sinter-acm-variablepreview">
+<img alt="../../_images/08_VariablePreview.png" src="../../_images/08_VariablePreview.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page BFBadsT.A1 Preview</span></p>
+</div>
+</li>
+<li><p class="first">“BFBadsT.A1” is the correct variable; therefore, click <strong>Make
+Input</strong>. Information displays in the <strong>Selected Input Variables</strong>
+section (Figure
+<a class="reference external" href="#fig.sinter.acm.variableinput">[fig.sinter.acm.variableinput]</a>).</p>
+<div class="figure" id="fig-sinter-acm-variableinput">
+<img alt="../../_images/09_VariablesInput.png" src="../../_images/09_VariablesInput.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page BFBadsT.A1 Made Input</span></p>
+</div>
+</li>
+<li><p class="first">Change the variable name from “BFBadsT.A1” to something more
+descriptive (e.g., “WaterA”). Set <strong>Name</strong>, <strong>Description</strong> and
+<strong>Min/Max</strong> as shown in Figure
+<a class="reference external" href="#fig.sinter.acm.variablename">[fig.sinter.acm.variablename]</a>.</p>
+<div class="figure" id="fig-sinter-acm-variablename">
+<img alt="../../_images/10_VariablesInput2.png" src="../../_images/10_VariablesInput2.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page BFBadsT.A1 Change Name</span></p>
+</div>
+</li>
+<li><p class="first">One input variable is now displayed (Figure
+<a class="reference external" href="#fig.sinter.acm.vectorpreview">[fig.sinter.acm.vectorpreview]</a>).
+At least one output variable is required. In this example, the vector
+of calculated bubble sizes is wanted. Scroll down under <strong>Search</strong>
+and select “BFBadsT.db.Value,” “BFBadsT.db.Value(0),”
+“BFBadsT.db.Value(1),” etc. If a name with a number in parenthesis at
+the end is selected, it is a specific entry in the vector. If a basic
+name is selected (“BFBadsT.db.Value”), the entire vector is
+displayed. Select the whole vector and click <strong>Preview</strong>.</p>
+<div class="figure" id="fig-sinter-acm-vectorpreview">
+<img alt="SinterConfigGUI Variable Configuration Page Vector Preview" src="../../_images/11_VariablesArray1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Vector Preview</span></p>
+</div>
+</li>
+<li><p class="first">Click <strong>Make Output</strong> if the variable the user wants is selected.
+Notice that this variable has a unit “m” (Figure
+<a class="reference external" href="#fig.sinter.acm.vectoroutput">[fig.sinter.acm.vectoroutput]</a>).</p>
+<div class="figure" id="fig-sinter-acm-vectoroutput">
+<img alt="SinterConfigGUI Variable Configuration Page Vector As Output" src="../../_images/12_VariablesOutput.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Vector As Output</span></p>
+</div>
+</li>
+<li><p class="first">Change the <strong>Name</strong> of the variable to “Diameter.” Bubble size is
+measured in meters; however, meters should be converted to
+millimeters (mm). Now, the output from the simulation should present
+bubble diameter in mm (Figure
+<a class="reference external" href="#fig.sinter.acm.vectorunits">[fig.sinter.acm.vectorunits]</a>).
+Internal to the simulation, the unit remains “m.”</p>
+<div class="figure" id="fig-sinter-acm-vectorunits">
+<img alt="../../_images/13_VariablesUnits.png" src="../../_images/13_VariablesUnits.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Output Change Units</span></p>
+</div>
+</li>
+<li><p class="first">To add a single item in a vector, select “BFBadsT.Ar.Value(1)” and
+click <strong>Make Input</strong> (See Figure
+<a class="reference external" href="#fig.sinter.acm.vectorremoval">[fig.sinter.acm.vectorremoval]</a>).
+To remove item that was just added, select it and click <strong>Remove
+Variable</strong>.</p>
+<div class="figure" id="fig-sinter-acm-vectorremoval">
+<img alt="SinterConfigGUI Variable Configuration Page Removal Demo" src="../../_images/14_VariablesInput2.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Removal Demo</span></p>
+</div>
+</li>
+<li><p class="first">Select the correct variable vector “BFBadsT.Ar.Value” and make it an
+input (Figure
+<a class="reference external" href="#fig.sinter.acm.vectorreadd">[fig.sinter.acm.vectorreadd]</a>).
+Notice that a <strong>Default</strong> or <strong>Min/Max</strong> cannot be set in the GUI for
+a vector. The correct defaults (from the simulation) are set
+automatically. To change the <strong>Min/Max</strong> values, the user must edit
+the JSON file in a text editor.</p>
+<div class="figure" id="fig-sinter-acm-vectorreadd">
+<img alt="SinterConfigGUI Variable Configuration Page Read Input" src="../../_images/15_VariablesInput4.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Read Input</span></p>
+</div>
+</li>
+<li><p class="first">Click <strong>Next</strong> to display the SinterConfigGUI Vector Default
+Initialization window as shown in Figure
+<a class="reference external" href="#fig.sinter.acm.vectorinput">[fig.sinter.acm.vectorinput]</a>. Since
+the input variable “Value” is a vector, its default values can be
+modified in the window. In this case there is no need to change the
+values.</p>
+<div class="figure" id="fig-sinter-acm-vectorinput">
+<img alt="SinterConfigGUI Vector Default Initialization Input Page" src="../../_images/16_VectorInput.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Vector Default Initialization Input Page</span></p>
+</div>
+</li>
+<li><p class="first">The simulation is now setup. Save the configuration file by clicking
+<strong>Finish</strong>. The file is saved to the location specified on the
+SinterConfigGUI Simulation Meta-Data page. Clicking <strong>Finish</strong> will
+close the SinterConfigGUI, but NOT Aspen Custom Modeler. The user
+must close ACM manually.</p>
+</li>
+<li><p class="first">If “SinterConfigGUI” was launched from FOQUS, the path to the
+configuration file is automatically passed to FOQUS. The next step in
+FOQUS is to click <strong>OK</strong> in the Add/Update Turbine Model window.
+FOQUS may then be used to upload it to the Turbine gateway. If
+“SinterConfigGUI” was not launched from FOQUS (e.g., it was launched
+from the Start menu), the configuration file name must be entered in
+FOQUS manually.</p>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="excel.html" class="btn btn-neutral float-right" title="Microsoft Excel Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ap.html" class="btn btn-neutral float-left" title="Aspen Plus Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,309 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Aspen Plus Configuration &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Aspen Custom Modeler Configuration" href="acm.html" />
+    <link rel="prev" title="Tutorial" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Simulation Standard Interface (SimSinter)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">SimSinter Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Aspen Plus Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="acm.html">Aspen Custom Modeler Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel.html">Microsoft Excel Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gproms.html">gPROMS Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Simulation Standard Interface (SimSinter)</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Aspen Plus Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_sinter/tutorial/ap.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="aspen-plus-configuration">
+<h1>Aspen Plus Configuration<a class="headerlink" href="#aspen-plus-configuration" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p class="first">The initial steps for opening a simulation and entering metadata for
+an Aspen Plus simulation are similar to ACM. Refer to the SimSinter
+ACM tutorial <a class="reference external" href="#sec.tut.simsinter.acm">[sec.tut.simsinter.acm]</a>. In
+this tutorial, a flash model “Flash_Example.bkp” installed in the
+“C:SimSinterFilesAspen_Plus_Install_Test” is used as an example.
+Open the Aspen Plus file and enter the metadata as shown in Figure
+<a class="reference external" href="#fig.sinter.ap.metadata">[fig.sinter.ap.metadata]</a>.</p>
+<div class="figure" id="fig-sinter-ap-metadata">
+<img alt="SinterConfigGUI Simulation Meta-Data with Data Completed" src="../../_images/04_MetaDataFilled1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Simulation Meta-Data with Data Completed</span></p>
+</div>
+</li>
+<li><p class="first">The <strong>SinterConfigGUI Variable Configuration Page</strong> displays as
+illustrated in Figure
+<a class="reference external" href="#fig.sinter.ap.variableempty">[fig.sinter.ap.variableempty]</a>.
+Aspen Plus has no settings, so there are no setting variables in the
+input section. Unlike ACM, AspenPlus displays the <strong>Variable Tree</strong>
+on the left side, so the user can explore the tree as is done in
+Aspen Plus Tools <span class="math notranslate nohighlight">\(\rightarrow\)</span> Variable Explorer.
+Unfortunately, searching is not possible.</p>
+<div class="figure" id="fig-sinter-ap-variableempty">
+<img alt="SinterConfigGUI Variable Configuration Page Empty Variables" src="../../_images/05_VariablesEmpty1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Empty Variables</span></p>
+</div>
+</li>
+<li><p class="first"><strong>Variable Tree</strong> nodes can be expanded for searching (Figure
+<a class="reference external" href="#fig.sinter.ap.expandtree">[fig.sinter.ap.expandtree]</a>).</p>
+<div class="figure" id="fig-sinter-ap-expandtree">
+<img alt="../../_images/06_VariablesExpanded.png" src="../../_images/06_VariablesExpanded.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Expanded Aspen Plus
+Variable Tree</span></p>
+</div>
+</li>
+<li><p class="first">The user can type the node address directly into the <strong>Selected
+Path</strong> field (this is useful for copy/paste from Aspen Plus’ Variable
+Explorer) (Figure
+<a class="reference external" href="#fig.sinter.ap.selectvar">[fig.sinter.ap.selectvar]</a>). Click
+<strong>Lookup</strong> or <strong>Preview</strong> (which automatically causes the tree to
+expand and selects selected variables in the <strong>Variable Tree</strong>).</p>
+<div class="figure" id="fig-sinter-ap-selectvar">
+<img alt="../../_images/07_VariablesSelected1.png" src="../../_images/07_VariablesSelected1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Aspen Plus Variable
+Selected</span></p>
+</div>
+</li>
+<li><p class="first">To make the temperature of the Flash chamber an <strong>Input Variable</strong>,
+click <strong>Make Input</strong>. Additionally, the user can <strong>Name</strong> the
+variable, fix the <strong>Description</strong>, and enter the <strong>Min/Max</strong> fields
+by clicking on the appropriate text and entering it.</p>
+<div class="figure" id="fig-sinter-ap-inputvar">
+<img alt="SinterConfigGUI Variable Configuration Page Input Variable" src="../../_images/08_VariablesInput.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Input Variable</span></p>
+</div>
+</li>
+<li><p class="first">Select an <strong>Output Variable</strong>, <strong>Preview</strong> it, and click <strong>Make
+Output</strong>. Next, update the fields as with the <strong>Input Variable</strong> to
+give a better <strong>Name</strong> and <strong>Description</strong>.</p>
+<div class="figure" id="fig-sinter-ap-outputvar">
+<img alt="SinterConfigGUI Variable Configuration Page Output Variable" src="../../_images/09_VariablesOutput.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Output Variable</span></p>
+</div>
+</li>
+<li><p class="first">The task is complete. Save it by clicking <strong>Save</strong> or CTRL+S. The
+file is saved to the location specified in the SinterConfigGUI
+Simulation Meta-Data page. If the user wishes to save a copy under a
+different name, navigate back to the SinterConfigGUI Simulation
+Meta-Data page and change the name.</p>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="acm.html" class="btn btn-neutral float-right" title="Aspen Custom Modeler Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

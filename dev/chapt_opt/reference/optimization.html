@@ -1,0 +1,522 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tutorial" href="../tutorial/index.html" />
+    <link rel="prev" title="Optimization" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Optimization</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#problem-set-up">Problem Set Up</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#solver-options">Solver Options</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#running-optimization">Running Optimization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Optimization</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_opt/reference/optimization.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<p>The simulation based optimization tool provides a plug-in system where
+different derivative free optimization (DFO) solvers can be used with
+FOQUS. Several solvers are provided with FOQUS. The CMA-ES solver
+<a href="#id1"><span class="problematic" id="id2">:raw-latex:`\citep{Hansen_2006}`</span></a> is a good global derivative free
+optimization (DFO) solver. The NLopt library provides access to several
+DFO solvers <a href="#id3"><span class="problematic" id="id4">:raw-latex:`\citep{Johnson_2015}`</span></a>. SLSQP and BFGS from the
+Scipy module are also provided <a href="#id5"><span class="problematic" id="id6">:raw-latex:`\citep{Scipy_2015}`</span></a>. Since
+FOQUS does not generally have access to derivative information the Scipy
+solvers rely on finite difference approximations, and should only be
+used with well-behaved functions. Due to convergence tolerances in
+process simulators, finite difference approximations may not be good for
+many of FOQUS’s intended applications.</p>
+<p>CMA-ES offers a restart feature, which can be used to resume an
+optimization if it is interrupted for any reason. Other solvers may use
+an auto-save feature, which does not provide the ability to restart, but
+will allow optimization to start from the best solution found up to the
+point the optimization was interrupted. Samples making up the population
+in CMA-ES can be run in parallel. The NLopt and Scipy plugins do not
+offer parallel computing for standard optimization. For any solver,
+parallel computation can be used for parameter estimation and
+optimization under uncertainty, where multiple flowsheet evaluations go
+into an objective function calculation.</p>
+<div class="section" id="problem-set-up">
+<h2>Problem Set Up<a class="headerlink" href="#problem-set-up" title="Permalink to this headline">¶</a></h2>
+<p>See Chapter <a class="reference external" href="#chpt.flowsheet">[chpt.flowsheet]</a> for information about
+setting up a flowsheet in FOQUS. Once the flowsheet has been set up and
+tested, an optimization problem can be added. FOQUS allows multiple
+flowsheet evaluations to be used to calculate a single objective
+function value. This allows FOQUS to do parameter estimation and
+scenario based optimization under uncertainty. There are three types of
+variables used in the optimization problem: (1) fixed variables do not
+change during the optimization, (2) decision variables are modified by
+the optimization algorithm to find the best value of the objective
+function, and (3) sample variables, which are used to construct the
+multiple flowsheet evaluations that can go into an objective
+calculation. If no sample variables are defined, each objective function
+value will be based on a single flowsheet evaluation. Figure
+<a class="reference external" href="#fig.opt.problem.variables">[fig.opt.problem.variables]</a> shows the
+<strong>Variables</strong> tab selection form.</p>
+<div class="figure" id="fig-opt-problem-variables">
+<img alt="Optimization Variable Selection" src="../../_images/opt_problem_variables.svg" /><p class="caption"><span class="caption-text">Optimization Variable Selection</span></p>
+</div>
+<ol class="arabic simple">
+<li>The <strong>Variables</strong> tab contains the form for variables selection.</li>
+<li>The <strong>Variable</strong> column shows the name of input variables in the
+flowsheet. If a variable is set by a connection to another variable
+through an edge, it is not shown in the table. The format for a
+variable name is {Node Name}.{Variable Name}.</li>
+<li>The <strong>Type</strong> column allows the variables to be assigned as one of
+three types (1) fixed, (2) decision, or (3) sample.</li>
+<li>The <strong>Scale</strong> column allows the scaling method to be set for each
+variable. Decision variables must be scaled. Scaling is ignored for
+other variables. In the FOQUS example files, there is a scaling
+spreadsheet that provides a demonstration of the different scaling
+methods. The upper and lower bound are used in the scaling
+calculations. Regardless of the scaling method, the optimizer sees
+the decision variables as running from 0 at their minimum to 10 at
+their maximum.</li>
+<li>The <strong>Min</strong> and <strong>Max</strong> columns are used to define the upper and
+lower bounds for the variables. FOQUS requires that all optimization
+problems be bounded.</li>
+<li>The <strong>Value</strong> column provides the starting point for the
+optimization. How the starting point is used depends on the
+optimization method. The starting point for sample variables is
+irrelevant. Fixed variables will remain at their starting point
+during the optimization.</li>
+</ol>
+<p>The sample variables define a set of samples that will be used to
+calculate an objective function. For each objective function, the
+decision variables are fixed at values set by the optimization solver,
+and the flowsheet is evaluated for each row on the sample table. The
+results of the samples can be used to calculate the objective function.
+Using the <strong>Samples</strong> tab is optional. If no sample variables are set,
+each objective function value will be based on a single simulation.
+Figure <a class="reference external" href="#fig.opt.problem.samples">[fig.opt.problem.samples]</a> shows
+the Samples table form.</p>
+<div class="figure" id="fig-opt-problem-samples">
+<img alt="Optimization Sample Table" src="../../_images/opt_problem_samples.svg" /><p class="caption"><span class="caption-text">Optimization Sample Table</span></p>
+</div>
+<ol class="arabic simple">
+<li>The <strong>Samples</strong> tab contains the table used to define samples for
+objective function calculations. If there are no sample variables,
+the table should be empty.</li>
+<li><strong>Add Sample</strong> adds a row to the Samples table.</li>
+<li><strong>Delete Samples</strong> deletes the selected rows from the Samples table.</li>
+<li><strong>Generate Samples</strong> opens a dialog box that provides a selection of
+methods to generate samples or read samples from a file.</li>
+<li><strong>Clear Samples</strong> clears the Samples table.</li>
+</ol>
+<p>Once the variables and (optionally) samples have been selected, the
+objective function and constraints can be defined. FOQUS is set up to
+handle multi-objective optimization, but no multi-objective optimization
+plug-ins are currently provided in the FOQUS installer, so some of the
+options may seem to be extraneous. There are two methods for entering
+the objective function and constraints into FOQUS: (1) Simple Python
+expressions and (2) a more extensive Python function. Python expressions
+are easier and sufficient for most cases. If the objective function is
+complicated it may be necessary to write a Python function, which can be
+as complex as needed.</p>
+<p>The variables used in the Python code for the objective function or
+constraints are stored in two Python dictionaries, “f” for outputs and
+“x” for inputs. There are two ways to index the dictionaries depending
+on whether or not sample variables are used. For an input variable with
+sampling, the indexing is
+<code class="docutils literal notranslate"><span class="pre">x[Sample</span> <span class="pre">Index][’Node</span> <span class="pre">Name’][’Variable</span> <span class="pre">Name’][Time</span> <span class="pre">Step</span> <span class="pre">Index]</span></code>. If
+no sample variables are defined, the sample index is not needed, so the
+indexing would be, <code class="docutils literal notranslate"><span class="pre">x[’Node</span> <span class="pre">Name’][’Variable</span> <span class="pre">Name’][Time</span> <span class="pre">Step]</span></code>. Node
+Name and Variable Name are strings so they should be in quotes. The
+sample and time step indexes are integers. For steady state simulations,
+the time step should be 0.</p>
+<p>Figure <a class="reference external" href="#fig.opt.problem.objective1">[fig.opt.problem.objective1]</a>
+shows the form for entering the objective function and constraints as
+Python expressions.</p>
+<div class="figure" id="fig-opt-problem-objective1">
+<img alt="Optimization Simple Objective Function" src="../../_images/opt_problem_objective1.svg" /><p class="caption"><span class="caption-text">Optimization Simple Objective Function</span></p>
+</div>
+<ol class="arabic simple">
+<li>The <strong>Objective/Constraints</strong> tab contains the form used to enter the
+objective function and constraints.</li>
+<li>The drop-down list enables the selection of either the “Simple Python
+Expression” or “Custom Python” form of the objective function.</li>
+<li><strong>+</strong> adds an objective function to the table. The solvers currently
+available are single objective and will only use the first objective
+function.</li>
+<li><strong>-</strong> removes the selected objective from the table.</li>
+<li>The Python expression for the objective function can be entered in
+the <strong>Expression</strong> column.</li>
+<li>The <strong>Penalty Scale</strong> column is intended for use with multi-objective
+solvers and allows the constraint violation penalty to be applied
+differently to objective functions with different magnitudes.</li>
+<li>The <strong>Value for Failure</strong> column contains the value to be assigned to
+the objective function if the objective cannot be evaluated for any
+reason. The value should be higher than the expected highest value
+for a successful objective.</li>
+<li><strong>+</strong> adds an inequality constraint.</li>
+<li><strong>-</strong> removes selected inequality constraints.</li>
+<li>The inequality constraints are in the form
+<span class="math notranslate nohighlight">\(g(\mathbf{x}) \leq 0\)</span>. The <strong>Expression</strong> column contains the
+Python expression for <span class="math notranslate nohighlight">\(g(\mathbf{x})\)</span>.</li>
+<li>The <strong>Penalty Factor</strong> contains the coefficient <span class="math notranslate nohighlight">\(a\)</span> used in
+calculating the penalty for a constraint violation, see Equations
+<a class="reference external" href="#eq.linear.constriant">[eq.linear.constriant]</a> to
+<a class="reference external" href="#eq.step.constriant">[eq.step.constriant]</a>.</li>
+<li>The <strong>Form</strong> column contains a selection of different methods to
+calculate a constraint penalty.</li>
+<li><strong>Check Input</strong> checks the problem for any mistakes that can be
+detected before running the optimization.</li>
+<li><strong>Variable Explorer</strong> enables the user to browse the variables in the
+simulation. They can be copied and pasted into the Python expression.
+The variables are provided without the sample index.</li>
+</ol>
+<p>The calculations for each type of constraint penalty are given in
+Equations <a class="reference external" href="#eq.linear.constriant">[eq.linear.constriant]</a> to
+<a class="reference external" href="#eq.step.constriant">[eq.step.constriant]</a>.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\label{eq.linear.constriant}
+    \text{Linear penalty form:  }p_i =
+    \begin{cases}
+        0 &amp; \text{if } g_i(\mathbf{x}) \leq 0\\
+        a \times g_i(\mathbf{x}) &amp; \text{if } g_i(\mathbf{x}) &gt; 0
+    \end{cases}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\label{eq.quadratic.constriant}
+\text{Quadratic penalty form:  }p_i =
+\begin{cases}
+0 &amp; \text{if } g_i(\mathbf{x}) \leq 0\\
+a \times g_i(\mathbf{x})^2 &amp; \text{if } g_i(\mathbf{x}) &gt; 0
+\end{cases}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\label{eq.step.constriant}
+\text{Step penalty form:  }p_i =
+\begin{cases}
+0 &amp; \text{if } g_i(\mathbf{x}) \leq 0\\
+a &amp; \text{if } g_i(\mathbf{x}) &gt; 0
+\end{cases}\end{split}\]</div>
+<p>If the Simple Python Expression method of entering the objective
+function does not offer enough flexibility, the Custom Python method can
+be used. The Custom Python method enables the user to enter the
+objective calculation as a Python function, which also should include
+any required constraint penalties.</p>
+<p>Figure <a class="reference external" href="#fig.opt.problem.objective2">[fig.opt.problem.objective2]</a>
+shows the Custom Python objective form. The top text box provides
+instructions for writing a custom objective function. The bottom text
+box provides a place to enter Python code. The numpy and math modules
+have been imported and are available as numpy and math. To use the
+Custom Python objective, the user must define a function called
+“onjfunc(x, f, fail).” The three arguments are: (1) “x” is the
+dictionary of input variables, (2) “f” is the dictionary of output
+variables, and (3) “fail” is a boolean vector that indicates whether a
+particular sample calculation has failed. The “objfunc” function should
+return three values: (1) a list of objective function values for
+multi-objective optimization (in most cases with single objective
+optimization this will be a list with one value), (2) a list of
+constraint violations, and (3) the total constraint penalty. The
+constraint violation and penalty information are only used for
+debugging, so they are not required. It is safe to return [0] and 0 for
+the constraint information regardless of whether a constraint penalty
+has been added to the objective.</p>
+<div class="figure" id="fig-opt-problem-objective2">
+<img alt="Custom Objective Function" src="../../_images/opt_problem_objective2.svg" /><p class="caption"><span class="caption-text">Custom Objective Function</span></p>
+</div>
+<p>The code in Figure
+<a class="reference external" href="#fig.opt.problem.objective2_code">[fig.opt.problem.objective2_code]</a>
+provides an example of a custom objective function for parameter
+estimation. The objective function minimizes the sum of the differences
+between simulation and empirical data. In this case the decision
+variables would be model parameters. The first line defines a function
+with three arguments. The “x” and “f” arguments are the input and output
+variables. The variable indexing is explained in the simple objective
+function section. The “fail” argument is a boolean vector where element
+“i” is true if sample “i” failed. If there are no sample variables,
+“fail” will only have one element.</p>
+<p>The “if” in the function determines if any flowsheet evaluation failed,
+and assigns a bad objective function value if so. If all the flowsheet
+evaluations where successful, the results are used to calculate the
+objective function. In the objective function calculation, Python list
+comprehension is used to calculate the sum of squared errors. In this
+case, no constraint penalty is needed. The objective function is
+returned as a list with only one element. The last two return values are
+debugging information for constraints. In this case, the “zeros” are
+just place holders and have no real utility.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">objfunc</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fail</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">fail</span><span class="p">):</span> <span class="c1"># any simulation failed</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="mi">100000</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1">#simulations successful</span>
+        <span class="n">obj</span><span class="o">=</span><span class="nb">sum</span><span class="p">([(</span><span class="n">f</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Test&#39;</span><span class="p">][</span><span class="s1">&#39;y&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;Test&#39;</span><span class="p">][</span><span class="s1">&#39;ydata&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span><span class="o">**</span><span class="mi">2</span>\
+          <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">f</span><span class="p">))])</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">obj</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p>[fig.opt.problem.objective2_code]</p>
+</div>
+<div class="section" id="solver-options">
+<span id="sec-opt-solver-options"></span><h2>Solver Options<a class="headerlink" href="#solver-options" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>Solver</strong> tab in the <strong>Optimization</strong> button tool enables the
+selection of the DFO method and setting of solver parameters. Figure
+<a class="reference external" href="#fig.opt.solver.form">[fig.opt.solver.form]</a> illustrates the solver
+form.</p>
+<div class="figure" id="fig-opt-solver-form">
+<img alt="Optimization Solver Form" src="../../_images/opt_solver_form.svg" /><p class="caption"><span class="caption-text">Optimization Solver Form</span></p>
+</div>
+<p>Elements of the solver form are:</p>
+<ol class="arabic simple">
+<li><strong>Select Solver</strong> drop-down list, which enables the user to select
+from available DFO solvers.</li>
+<li><strong>Description</strong> text box provides a description of the selected DFO
+solver.</li>
+<li><strong>Solver Options</strong> table contains the solver settings and a
+description of each option. The settings depend on the selected
+plug-in.</li>
+</ol>
+</div>
+<div class="section" id="running-optimization">
+<h2>Running Optimization<a class="headerlink" href="#running-optimization" title="Permalink to this headline">¶</a></h2>
+<p>The optimization monitor is displayed under the <strong>Run</strong> tab in the
+<strong>Optimization</strong> button tool. The optimization monitor, illustrated in
+Figure <a class="reference external" href="#fig.opt.run.form">[fig.opt.run.form]</a>, is used to monitor
+the progress of the optimization as it runs.</p>
+<div class="figure" id="fig-opt-run-form">
+<img alt="Optimization Monitor Form" src="../../_images/opt_run_form.svg" /><p class="caption"><span class="caption-text">Optimization Monitor Form</span></p>
+</div>
+<p>Elements of the optimization monitor are:</p>
+<ol class="arabic simple">
+<li><strong>Start</strong> starts the optimization.</li>
+<li><strong>Stop</strong> stops the optimization. The best solution found when
+optimization is stopped is stored in the flowsheet.</li>
+<li><strong>Update delay</strong> is how often the user interface communicates with
+the optimization thread to update the display.</li>
+<li><strong>Optimization Solver Messages</strong> displays output from the
+optimization solver.</li>
+<li><strong>Best Solution Parallel Coordinate Plot</strong> displays the values of the
+decision variables scaled. This plot is helpful in identifying when
+variables are at, or near, their bounds.</li>
+<li><strong>Objective Function Plot</strong> displays the objective function value at
+each iteration.</li>
+<li><strong>Status Box</strong> displays the current iteration, how many samples have
+been run, how many sample were successful, and how many failed.</li>
+<li><strong>Clear</strong> deletes solver messages from the solve message box.</li>
+</ol>
+<p>As the optimization runs, the FOQUS flowsheet is updated to include the
+best solution found. If sampling is used, the first sample in the best
+objective function is stored in the flowsheet. If for any reason the
+optimization terminates, the best solution found is available in the
+flowsheet. The results for all flowsheet evaluations done for the
+optimization are available in the Results table in the Flowsheet Editor.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tutorial/index.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../index.html" class="btn btn-neutral float-left" title="Optimization" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

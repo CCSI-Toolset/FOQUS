@@ -1,0 +1,475 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Response Surface Based Analysis &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Bayesian Inference" href="inf.html" />
+    <link rel="prev" title="Single-Output Analysis" href="analysis.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Uncertainty Quantification</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sim.html">Simulation Ensemble Creation and Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Data Manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Single-Output Analysis</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Response Surface Based Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inf.html">Bayesian Inference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Uncertainty Quantification</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Response Surface Based Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_uq/tutorial/rs.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="response-surface-based-analysis">
+<span id="tutorial-uq-rs"></span><h1>Response Surface Based Analysis<a class="headerlink" href="#response-surface-based-analysis" title="Permalink to this headline">¶</a></h1>
+<p>For simulation models that are expensive to run, response surface
+analysis can be a resourceful option. To construct a response surface, a
+space-filling sampling design is desired. For example, quasi-Monte Carlo
+(LPTAU) or Latin hypercube sampling schemes are recommended.
+Additionally, there are several possibilities for curve fitting methods.
+If the sample size is relatively small, polynomial regression or
+Gaussian process (if installed as part of PSUADE) is preferred.
+Alternatively, if the sample size is large enough (one hundred or more),
+cubic splines (if installed) may also be feasible.</p>
+<div class="section" id="response-surface-model-validation">
+<h2>Response Surface Model Validation<a class="headerlink" href="#response-surface-model-validation" title="Permalink to this headline">¶</a></h2>
+<p>To proceed with response surface based analysis, the user needs to find
+a suitable response surface with which to approximate the
+input-to-output mapping. Validation is performed to see how well a
+particular response surface can predict a subset of the withheld data.</p>
+<ol class="arabic">
+<li><p class="first">Load “lptau100_10inputs_4outputs.dat” from the examplesUQ folder.
+Note: This is an extremely small simulation ensemble, as this is used
+to highlight the differences (in validation results) between a good
+response surface and a bad one.</p>
+</li>
+<li><p class="first">Click Analyze for the current ensemble. A new dialog page displays
+(Figure<a class="reference external" href="#fig:uqt_rs_validate">[fig:uqt_rs_validate]</a>).</p>
+</li>
+<li><p class="first">Under “Analysis” (bottom section), under Step 1, select “Response
+Surface.”</p>
+<div class="figure" id="id1">
+<img alt="Analysis Dialog, Response Surface Validation of Linear Model" src="../../_images/22_RSValidationScreen2.png" />
+<p class="caption"><span class="caption-text">Analysis Dialog, Response Surface Validation of Linear Model</span></p>
+</div>
+<p>[fig:uqt_rs_validate]</p>
+</li>
+<li><p class="first">Under Step 2, select “removalCO2” as the output for analysis.</p>
+</li>
+<li><p class="first">Under Step 3, select “Polynomial” for response surface method.</p>
+</li>
+<li><p class="first">There are multiple types of polynomial response surfaces, with
+increasing complexity as the user navigates down the list. For now,
+select “Linear” in the next drop-down list.</p>
+</li>
+<li><p class="first">Insert 5.00 as the error envelope for the validation plot. Click
+Validate. The result is illustrated in
+Figure<a class="reference external" href="#fig:uqt_rs_validate_results">[fig:uqt_rs_validate_results]</a>.</p>
+</li>
+</ol>
+<div class="figure" id="id2">
+<img alt="Linear Response Validation Results" src="../../_images/23_RSValidationLinear.png" />
+<p class="caption"><span class="caption-text">Linear Response Validation Results</span></p>
+</div>
+<p>[fig:uqt_rs_validate_results]</p>
+<p>The cross-validation results for the linear regression model are
+displayed as a histogram of errors to the left and a plot of predicted
+values versus actual values to the right. The histogram displays the
+cross validation error distribution, which provides the user information
+on what the errors are like overall. If this distribution is not
+centered on zero, there may be a systematic bias in the response surface
+model. If the distribution is too wide, it is not a good fit. As for the
+plot of predicted values versus actual values, the more closely the
+points are to the diagonal, the better the fit. Most response surface
+models, with the exception of MARS, also provide uncertainty information
+about the response surface. The vertical error bars on the left plot
+reflect the uncertainty in the linear response’s predictions.</p>
+<p>In summary, these two figures should provide sufficient information for
+the user to judge how good the fit is. As is apparent in the figures,
+the linear model consistently overestimates and thus is an ill-suited
+response surface to model our data. In general, the user may use a few
+response surface methods to see which method gives the best fit.</p>
+</div>
+<div class="section" id="response-surface-based-uncertainty-analysis">
+<h2>Response Surface Based Uncertainty Analysis<a class="headerlink" href="#response-surface-based-uncertainty-analysis" title="Permalink to this headline">¶</a></h2>
+<p>These capabilities are similar to those for ensemble data analysis. The
+difference is that the results are now derived from a much larger
+ensemble that is computed from the response surface. With the 100
+samples from the ensemble data, a response surface is trained and is
+used to generate 100K samples internally to compute the results for
+uncertainty and sensitivity analyses. (Note: Validation must be
+performed before these analyses are available.)</p>
+<p>After the response surface validation step, select “Uncertainty
+Analysis” to be the UQ analysis in Step 7 of “Analysis” (Figure
+<a class="reference external" href="#fig:uqt_rs_validate">[fig:uqt_rs_validate]</a>). Click <strong>Analyze</strong> and
+a distribution representing the output uncertainty will be displayed
+(Figure <a class="reference external" href="#fig:uqt_rsua_results">[fig:uqt_rsua_results]</a>).</p>
+<div class="figure" id="id3">
+<img alt="Response Surface Based Uncertainty Analysis Results" src="../../_images/24_RSUAResults.png" />
+<p class="caption"><span class="caption-text">Response Surface Based Uncertainty Analysis Results</span></p>
+</div>
+<p>[fig:uqt_rsua_results]</p>
+<p>Compare the response surface based uncertainty results (Figure
+<a class="reference external" href="#fig:uqt_rsua_results">[fig:uqt_rsua_results]</a>) to the results from
+ensemble data analysis (Figure
+<a class="reference external" href="#fig:uqt_ua_results">[fig:uqt_ua_results]</a>). The two main
+differences are easily seen.</p>
+<ul class="simple">
+<li>Two PDFs on top plot: A response surface (in this case, linear
+regression) is used to predict the output values corresponding to the
+input samples. From the validation step (left plot of
+Figure<a class="reference external" href="#fig:uqt_rs_validate_results">[fig:uqt_rs_validate_results]</a>).
+Note: There is error associated with the response surface’s
+predictions. This error is propagated in uncertainty analysis, in the
+form of standard deviations around the predicted output values (i.e.,
+the means).
+Accordingly, two histograms are presented: The “mean PDF” represents
+the output probability distribution computed from the response
+surface’s predicted output values only, without consideration for the
+uncertainties surrounding these predicted values. The “ensemble PDF”
+represents the output probability distribution that encompasses the
+uncertainties surrounding these predicted values. In most cases, the
+ensemble PDF should have a larger spread because it is accounting for
+more uncertainties (i.e., those that stem from the approximations
+inherent in the response surface).</li>
+<li>Multiple cumulative distribution functions (CDFs) on bottom plot: The
+“mean CDF” is constructed from a cumulative sum on the mean PDF in
+the top plot. Since each predicted output value (i.e., the mean) has
+an associated standard deviation, this information is used to
+construct other PDFs that correspond to output values that are +/- 1,
+2, and 3 standard deviations from the mean. These PDFs are then
+converted to CDFs and shown as colored lines. These colored lines
+provide an uncertainty “envelope” around the mean CDF.</li>
+</ul>
+</div>
+<div class="section" id="response-surface-based-mixed-epistemic-aleatory-uncertainty-analysis">
+<h2>Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis<a class="headerlink" href="#response-surface-based-mixed-epistemic-aleatory-uncertainty-analysis" title="Permalink to this headline">¶</a></h2>
+<p>In “Expert Mode”, the user can perform more advanced uncertainty
+analysis that handles both epistemic and aleatory uncertainties. To do
+so, the user will need to designate the uncertainty type (epistemic or
+aleatory) for each uncertain input. In general, epistemic uncertainties
+are reducible uncertainties that arise due to lack of knowledge, such as
+simplifying assumptions in a mathematical model. Therefore, epistemic
+uncertainty is often characterized by upper and lower bounds. On the
+other hand, aleatory uncertainties are irreducible uncertainties that
+represent natural, physical variability in the phenomenon under study.
+As such, aleatory uncertainties are often characterized by
+distributions. Hence, the user is required to provide a PDF for each
+aleatory input. (In FOQUS, with the exception of mixed
+epistemic-aleatory uncertainty analysis, all uncertain inputs are
+treated as aleatory inputs.)</p>
+<p>To perform mixed epistemic-aleatory uncertainty (Figure
+<a class="reference external" href="#fig:uqt_rsaeua">[fig:uqt_rsaeua]</a>), switch to “Expert Mode” by
+clicking the <strong>Mode</strong> button that toggles between the analysis modes.
+After response surface validation, select “Uncertainty Analysis” in the
+first <strong>Choose UQ Analysis</strong> drop-down list, then “Epistemic-Aleatory”
+in the secondary drop-down list, for the UQ analysis. In the input
+table, designate the parameter <strong>Type</strong> (“Epistemic”, “Aleatory” or
+“Fixed”) and the corresponding information for each input. Once
+complete, click <strong>Analyze</strong>.</p>
+<div class="figure" id="id4">
+<img alt="Response Surface Based Mixed Epistemic-Aleatory Uncertainty" src="../../_images/24a_RSAEUA.png" />
+<p class="caption"><span class="caption-text">Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis</span></p>
+</div>
+<p>[fig:uqt_rsaeua]</p>
+<p>The results of mixed epistemic-aleatory uncertainty analysis is a plot
+(Figure <a class="reference external" href="#fig:uqt_rsaeua_results">[fig:uqt_rsaeua_results]</a>)
+containing multiple CDFs. In the mixed analysis, the epistemic inputs
+are sampled according to their lower and upper bounds. Each sample point
+spawns a response surface based uncertainty analysis, in which the
+epistemic inputs are fixed at their sampled value and the aleatory input
+uncertainties are propagated to generate a CDF that represents the
+output uncertainty. A slider is provided for the user to extract the
+probability range corresponding to a particular value of the output.</p>
+<div class="figure" id="id5">
+<img alt="Response Surface Based Mixed Epistemic-Aleatory Uncertainty" src="../../_images/24b_RSAEUAResults.png" />
+<p class="caption"><span class="caption-text">Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis
+Results</span></p>
+</div>
+<p>[fig:uqt_rsaeua_results]</p>
+</div>
+<div class="section" id="response-surface-based-sensitivity-analysis">
+<h2>Response Surface Based Sensitivity Analysis<a class="headerlink" href="#response-surface-based-sensitivity-analysis" title="Permalink to this headline">¶</a></h2>
+<p>For quantitative sensitivity analysis, follows these steps:</p>
+<ol class="arabic simple">
+<li>In the Choose UQ Analysis drop-down list (Step 6 of “Analysis”),
+select “Sensitivity Analysis.”</li>
+<li>In the next drop-down list, select “First-order” and click Analyze.
+(This analysis may take a long time depending on the sample size and
+the response surface used.)</li>
+</ol>
+<p>Prediction errors are associated with the response surface’s predictions
+of the output values (left plot of Figure
+<a class="reference external" href="#fig:uqt_rs_validate_results">[fig:uqt_rs_validate_results]</a>).
+Earlier, it was observed that the response surface error contributed to
+the output uncertainty, leading to a larger spread in the output PDF
+(top plot of Figure <a class="reference external" href="#fig:uqt_rsua_results">[fig:uqt_rsua_results]</a>).
+In Figure <a class="reference external" href="#fig:uqt_rssa_results">[fig:uqt_rssa_results]</a>, the
+response surface error contributed to uncertainty (shown as blue error
+bars) surrounding each input’s contribution to the output variance
+(shown as yellow bars).</p>
+<div class="figure" id="id6">
+<img alt="Response Surface Based First-order Sensitivity Results" src="../../_images/25_RSSobol1Results.png" />
+<p class="caption"><span class="caption-text">Response Surface Based First-order Sensitivity Results</span></p>
+</div>
+<p>[fig:uqt_rssa_results]</p>
+</div>
+<div class="section" id="response-surface-based-visualization">
+<h2>Response Surface Based Visualization<a class="headerlink" href="#response-surface-based-visualization" title="Permalink to this headline">¶</a></h2>
+<p>The response surface that has been validated can also be visualized.</p>
+<ol class="arabic">
+<li><p class="first">Select one input next to “Visualize Response Surface.”</p>
+</li>
+<li><p class="first">Click <strong>Visualize</strong> to display a 2-D line plot that displays
+“removalCO2” versus the selected input.</p>
+<div class="figure" id="id7">
+<img alt="1-D Response Surface Visualization" src="../../_images/26_1DRSVis.png" />
+<p class="caption"><span class="caption-text">1-D Response Surface Visualization</span></p>
+</div>
+<p>[fig:uqt_rs1_results]</p>
+</li>
+<li><p class="first">Select another input next to the first one for a 2-D response surface
+visualization.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Click <strong>Visualize</strong> to display a figure with a 3-D surface plot and
+a 2-D contour plot (Figure
+<a class="reference external" href="#fig:uqt_rs2_results">[fig:uqt_rs2_results]</a>).</div>
+</div>
+<div class="figure" id="id8">
+<img alt="2-D Response Surface Visualization" src="../../_images/27_2DRSVis.png" />
+<p class="caption"><span class="caption-text">2-D Response Surface Visualization</span></p>
+</div>
+<p>[fig:uqt_rs2_results]</p>
+</li>
+<li><p class="first">Select another input next to the second one for a 3-D response
+surface visualization.</p>
+</li>
+<li><p class="first">Click <strong>Visualize</strong> to display a 3-D isosurface plot. Move the slider
+to see the points in the 3-D input space that fall within the small
+range of “removalCO2” (Figure
+<a class="reference external" href="#fig:uqt_rs3_results">[fig:uqt_rs3_results]</a>).</p>
+<div class="figure" id="id9">
+<img alt="3-D Response Surface Visualization" src="../../_images/28_3DRSVis.png" />
+<p class="caption"><span class="caption-text">3-D Response Surface Visualization</span></p>
+</div>
+<p>[fig:uqt_rs3_results]</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="inf.html" class="btn btn-neutral float-right" title="Bayesian Inference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="analysis.html" class="btn btn-neutral float-left" title="Single-Output Analysis" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

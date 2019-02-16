@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Microsoft Excel Configuration &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="gPROMS Configuration" href="gproms.html" />
+    <link rel="prev" title="Aspen Custom Modeler Configuration" href="acm.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Simulation Standard Interface (SimSinter)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">SimSinter Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ap.html">Aspen Plus Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="acm.html">Aspen Custom Modeler Configuration</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Microsoft Excel Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="gproms.html">gPROMS Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Simulation Standard Interface (SimSinter)</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Microsoft Excel Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_sinter/tutorial/excel.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="microsoft-excel-configuration">
+<span id="sec-tut-simsinter-excel"></span><h1>Microsoft Excel Configuration<a class="headerlink" href="#microsoft-excel-configuration" title="Permalink to this headline">¶</a></h1>
+<ol class="arabic">
+<li><p class="first">The “SinterConfigGUI” can be launched from FOQUS, via the
+<strong>Create/Edit</strong> button found in <strong>File</strong><span class="math notranslate nohighlight">\(\rightarrow\)</span>
+<strong>Add/Update Model to Turbine</strong> or “SinterConfigGUI” may be run on
+its own by selecting <strong>CCSI Tools</strong> <span class="math notranslate nohighlight">\(\rightarrow\)</span> <strong>FOQUS</strong>
+<span class="math notranslate nohighlight">\(\rightarrow\)</span> <strong>SinterConfigGUI</strong> from the Start menu.</p>
+</li>
+<li><p class="first">The splash window displays, as shown in Figure
+<a class="reference external" href="#fig.sinter.acm.splash">[fig.sinter.acm.splash]</a>. The user may
+click the splash screen to proceed, or wait 10 seconds for it to
+close automatically.</p>
+<div class="figure" id="fig-sinter-excel-splash">
+<img alt="SinterConfigGUI Splash Screen" src="../../_images/01_Splash_Screen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Splash Screen</span></p>
+</div>
+</li>
+<li><p class="first">The SinterConfigGUI Open Simulation window displays (Figure
+<a class="reference external" href="#fig.sinter.acm.openpage">[fig.sinter.acm.openpage]</a>). If
+“SinterConfigGUI” was opened from FOQUS, the filename text box
+already contains the correct file. To proceed immediately click
+<strong>Open File and Configure Variables</strong> or click <strong>Browse</strong> to search
+for the file. For this tutorial, a fresh copy of the BMI test is
+opened. It can be found at:</p>
+<p>C:SimSinterFiles\ Excel_Install_Testexceltest.xlsm.</p>
+<div class="figure" id="fig-sinter-excel-openpage">
+<img alt="SinterConfigGUI Open Simulation Screen" src="../../_images/02_FileOpenScreen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Open Simulation Screen</span></p>
+</div>
+</li>
+<li><p class="first">Microsoft Excel starts in the background. This is so the user can
+observe things about the worksheet while working on the configuration
+file.</p>
+</li>
+<li><p class="first">In the “SinterConfigGUI” the SinterConfigGUI Simulation Meta-Data
+page is now displayed (Figure
+<a class="reference external" href="#fig.sinter.excel.savename">[fig.sinter.excel.savename]</a>). The
+first and most important piece of metadata is <strong>Save Location</strong> at
+the top of the window. This is where the sinter configuration file is
+saved. The system attempts to locate a reasonable file location and
+file name; however, the user must confirm the correct file location,
+since it automatically overwrites whatever filename currently exists.</p>
+<div class="figure" id="fig-sinter-excel-savename">
+<img alt="SinterConfigGUI Simulation Meta-Data Save Text Box" src="../../_images/04_MetaDataSave.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Simulation Meta-Data Save Text Box</span></p>
+</div>
+</li>
+<li><p class="first">Continue to complete in the remaining fields and click <strong>Next</strong>.</p>
+</li>
+<li><p class="first">In the SinterConfigGUI Variable Configuration Page, (Figure
+<a class="reference external" href="#fig.sinter.excel.variableempty">[fig.sinter.excel.variableempty]</a>)
+notice that the Excel setting variable <strong>macro</strong> is already included
+in the <strong>Selected Input Variables.</strong> If the Excel spreadsheet has a
+macro that should be run after SimSinter sets the inputs, but before
+SimSinter gets the outputs, enter the macros name in the <strong>Name</strong>
+text box. If the default is left blank, no macro is run (unless a
+name is supplied in the input variables when running the simulation).</p>
+<div class="figure" id="fig-sinter-excel-variableempty">
+<img alt="SinterConfigGUI Variable Configuration Page before Input" src="../../_images/06_VariablesEmpty.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page before Input</span></p>
+</div>
+</li>
+<li><p class="first">The Excel simulation has the same <strong>Variable Tree</strong> structure as
+Aspen Plus, as shown in (Figure
+<a class="reference external" href="#fig.sinter.excel.variableselected">[fig.sinter.excel.variableselected]</a>).
+Only the variables in the active section of the Excel spreadsheet
+appear in the <strong>Variable Tree</strong>. If, for some reason, a cell does not
+appear the in tree, the user may manually enter the cell into the
+<strong>Selected Path</strong> text box. In this case, select the “height$C$4”
+variable.</p>
+<p>Note: Row is first in the <strong>Variable Tree</strong>, yet column is first in
+the <strong>Path</strong>.</p>
+<div class="figure" id="fig-sinter-excel-variableselected">
+<img alt="../../_images/07_VariablesSelected2.png" src="../../_images/07_VariablesSelected2.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Selecting a Variable
+from the Excel Variable Tree</span></p>
+</div>
+</li>
+<li><p class="first">If the user double-clicks, presses enter, clicks <strong>Preview</strong>, or
+clicks <strong>Lookup</strong>, the variable will be displayed in the <strong>Preview
+Variable</strong> frame. Click the <strong>Make Input</strong> button to make the
+variable an input variable. Now the variable is in the <strong>Selected
+Input Variables</strong> section, and its meta-data may be edited (Figure
+<a class="reference external" href="#fig.sinter.excel.variableinputs">[fig.sinter.excel.variableinputs]</a>).</p>
+<div class="figure" id="fig-sinter-excel-variableinputs">
+<img alt="../../_images/08_VariablesInput1.png" src="../../_images/08_VariablesInput1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Description “Joe’s
+Height”</span></p>
+</div>
+</li>
+<li><p class="first">Enter an output variable (such as, “BMI$C$3”), by selecting the
+variables in the <strong>Variable Tree</strong>, clicking <strong>Preview</strong>, and then
+clicking <strong>Make Output</strong> (Figure
+<a class="reference external" href="#fig.sinter.excel.variableoutput">[fig.sinter.excel.variableoutput]</a>).</p>
+<div class="figure" id="fig-sinter-excel-variableoutput">
+<img alt="../../_images/09_VariablesOutput1.png" src="../../_images/09_VariablesOutput1.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Variable Configuration Page Selecting Excel Output
+Variables</span></p>
+</div>
+</li>
+<li><p class="first">The simulation is now set up. To save the configuration file, click
+<strong>Finish</strong> or press CTRL+S. The file is saved to the location that
+was set on the SinterConfigGUI Simulation Meta-Data window. A user
+can save a copy under a different name, by navigating back to the
+SinterConfigGUI Simulation Meta-Data window using <strong>Back</strong>, and then
+changing the name. This creates a second version of the file.</p>
+</li>
+</ol>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="gproms.html" class="btn btn-neutral float-right" title="gPROMS Configuration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="acm.html" class="btn btn-neutral float-left" title="Aspen Custom Modeler Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,275 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Surrogates with the Flowsheet &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Sequential Design of Experiments (SDOE)" href="../../chapt_sdoe/index.html" />
+    <link rel="prev" title="Surrogates with UQ Tools" href="uq_model.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Surrogate Modeling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Surrogate Models Overview</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="alamo.html">ALAMO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="acosso.html">ACOSSO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bssanova.html">BSS-ANOVA</a></li>
+<li class="toctree-l4"><a class="reference internal" href="uq_model.html">Surrogates with UQ Tools</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Surrogates with the Flowsheet</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Surrogate Modeling</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Surrogates with the Flowsheet</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_surrogates/tutorial/flowsheet.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surrogates-with-the-flowsheet">
+<span id="tutorial-surrogate-fs"></span><h1>Surrogates with the Flowsheet<a class="headerlink" href="#surrogates-with-the-flowsheet" title="Permalink to this headline">¶</a></h1>
+<p>This section provides a brief tutorial for using the flowsheet plugin
+models generated by surrogate modeling methods. In the next FOQUS
+release all surrogate modeling methods will produce a model that can be
+run in a FOQUS flowsheet. <strong>Currently iREVEAL does not produce a
+flowsheet model.</strong></p>
+<p><strong>Before doing this tutorial complete the ALAMO tutorial in
+Section</strong><a class="reference external" href="#sec.surrogate.alamo">[sec.surrogate.alamo]</a><strong>.</strong></p>
+<ol class="arabic simple">
+<li>Open FOQUS. If FOQUS has not been closed since completing the ALAMO
+tutorial, close it and reopen it. There is a known issue where
+existing flowsheet model plugins may not update until FOQUS is
+restarted.</li>
+<li>Enter “FS_Plugin_Tutorial” as the Session Name.</li>
+<li>Click the <strong>Flowsheet</strong> button from the Home window.</li>
+<li>Click the <strong>Add Node</strong> icon in the left toolbar (see Figure
+<a class="reference external" href="#fig.pg.tut1">[fig.pg.tut1]</a>).</li>
+<li>Click a location for the node in the Flowsheet area.</li>
+<li>Enter “model” for the node name (without quotes).</li>
+<li>Click the <strong>Node Editor</strong> icon in the left toolbar (see Figure
+<a class="reference external" href="#fig.pg.tut1">[fig.pg.tut1]</a>).</li>
+<li>In the <strong>Node Editor</strong>, select “Plugin” from the Model <strong>Type</strong>
+drop-down list.</li>
+<li>Select “ALAMO_Tutorial_FS” from the <strong>Model</strong> drop-down list.</li>
+<li>Set the <strong>Value</strong> of the <strong>Input Variables</strong> “eq.x1” to 2.</li>
+<li>Set the <strong>Value</strong> of the <strong>Input Variables</strong> “eq.x2” to 3.</li>
+<li>Click the <strong>Run</strong> icon in the left toolbar (see Figure
+<a class="reference external" href="#fig.pg.tut1">[fig.pg.tut1]</a>).</li>
+<li>Wait for the Flowsheet evaluation to complete. It should finish
+successfully.</li>
+<li>Check the value of the <strong>Output Variables</strong>; the approximate values
+should be z1 = 5 and z2 = 13.</li>
+</ol>
+<div class="figure" id="fig-pg-tut1">
+<img alt="Plugin Flowsheet" src="../../_images/fs_plugin.svg" /><p class="caption"><span class="caption-text">Plugin Flowsheet</span></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapt_sdoe/index.html" class="btn btn-neutral float-right" title="Sequential Design of Experiments (SDOE)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="uq_model.html" class="btn btn-neutral float-left" title="Surrogates with UQ Tools" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

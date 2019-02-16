@@ -1,0 +1,420 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Optimization Under Uncertainty" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Optimization Under Uncertainty</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ouu-variables">OUU Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ouu-objective-functions">OUU Objective Functions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#mathematical-formulations">Mathematical Formulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#ouu-user-interface">OUU User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Optimization Under Uncertainty</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapt_ouu/reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>[sec:ouu_overview]</p>
+<div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<p>The FOQUS OUU module supports several variants of optimization under
+uncertainty. This chapter first presents the mathematical formulations
+of these variants. Subsequently, details of the OUU graphical user
+interface will be discussed.</p>
+<div class="section" id="ouu-variables">
+<h2>OUU Variables<a class="headerlink" href="#ouu-variables" title="Permalink to this headline">¶</a></h2>
+<p>Suppose a simulation model is available for an OUU study. Let this
+simulation model be represented by the following function:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}Y = F(Z_1,Z_2,Z_3,Z_4),\\which is characterized by four types of variables:\end{aligned}\end{align} \]</div>
+<ol class="arabic simple">
+<li><strong>Design/Decision/Optimization variables</strong><ul>
+<li>Notation: <span class="math notranslate nohighlight">\(Z_1\)</span> with dimension <span class="math notranslate nohighlight">\(n_1\)</span></li>
+<li>Definition: Design variables are continuous variables that may be
+bounded or unbounded. They are generally the set of optimization
+variables in a single-stage optimization or the set of outer
+optimization variables in the two-stage optimization.</li>
+</ul>
+</li>
+<li><strong>Recourse/Operating variables</strong><ul>
+<li>Notation: <span class="math notranslate nohighlight">\(Z_2\)</span> with dimension <span class="math notranslate nohighlight">\(n_2\)</span></li>
+<li>Definition: Operating variables are optimization variables in the
+inner optimization for a given scenario (or realization) of the
+uncertain variables in a two-stage optimization.</li>
+</ul>
+</li>
+<li><strong>Discrete uncertain variables</strong><ul>
+<li>Notation: <span class="math notranslate nohighlight">\(Z_3\)</span> with dimension <span class="math notranslate nohighlight">\(n_3\)</span></li>
+<li>Definition: Discrete variables are uncertain variables that have
+an enumerable set of states (called scenarios) such that each
+state is associated with a finite probability and the sum of
+probabilities for all the scenarios is equal to <span class="math notranslate nohighlight">\(1\)</span>.</li>
+</ul>
+</li>
+<li><strong>Continuous uncertain variables</strong><ul>
+<li>Notation: <span class="math notranslate nohighlight">\(Z_4\)</span> with dimension <span class="math notranslate nohighlight">\(n_4\)</span></li>
+<li>Definition: Continuous uncertain variables are associated with a
+joint probability distribution function from which a sample can be
+drawn to compute the basic statistics.</li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="ouu-objective-functions">
+<h2>OUU Objective Functions<a class="headerlink" href="#ouu-objective-functions" title="Permalink to this headline">¶</a></h2>
+<p>In the presence of uncertainties, OUU seeks to find the optimal solution
+in some statistical sense. For example, an optimization goal may to be
+find the design settings that minimizes the statistical mean of the
+system response. Other popular objective functions are:</p>
+<ol class="arabic simple">
+<li>a linear combination of statistical mean and standard deviation of
+some selected output,</li>
+<li>probability of exceeding the best value is smaller than some
+percentage at any point in the design space (this is analogous to
+conditional value at risk).</li>
+</ol>
+<p>Note that these metrics are defined in the design variable space - that
+is, at each iteration of an OUU algorithm, the selected metric will be
+computed for the decision point under consideration. Since the
+calculation of these statistical metrics requires a sample (possibly
+large), OUU can benefit from parallel computing capabilities (e.g., the
+Turbine gateway).</p>
+</div>
+<div class="section" id="mathematical-formulations">
+<h2>Mathematical Formulations<a class="headerlink" href="#mathematical-formulations" title="Permalink to this headline">¶</a></h2>
+<p>FOQUS supports two types of OUU methods: single-stage OUU and two-stage
+OUU. The main difference between single-stage and two-stage OUU is the
+presence of the recourse (or operational) variables. Strictly speaking,
+since recourse variables are generally hidden (they are only needed in
+the inner stage and their values are not used in the outer stage of
+two-stage OUU), the distinction between single-stage and two-stage OUU
+is not clear. Nevertheless, for the sake of clarify, we will describe
+details of each formulation separately. The current OUU does not support
+linearly or nonlinearly-constrained optimization.</p>
+<div class="section" id="single-stage-formulation">
+<h3>Single-Stage Formulation<a class="headerlink" href="#single-stage-formulation" title="Permalink to this headline">¶</a></h3>
+<p>In this formulation, there is no recourse variable:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}Y = F(Z_1, Z_3, Z_4)\\and the optimization problem becomes:\end{aligned}\end{align} \]</div>
+<div class="math notranslate nohighlight">
+\[\min_{Z_1} \mathbf{\Phi}_{Z_3,Z_4}
+\left[ F(Z_1,Z_3,Z_4)
+\right]\]</div>
+<p>where <span class="math notranslate nohighlight">\(\Phi_{Z_3,Z_4} [F(Z_1,Z_3,Z_4)]\)</span> is the statistical metric
+(one of the three options given above).</p>
+<p>For example, if the objective function is the statistical mean, then the
+formulation becomes:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}  \min_{Z_1} \mathbf{E}_{Z_3,Z_4} [F(Z_1,Z_3,Z_4)]
+  \approx
+  \min_{Z_1} {
+  \sum^{n_3}_{j=1} \pi_j \left(
+  \int {F(Z_1,Z_3,Z_4)
+  P(Z_4) d Z_4} \right)}\\where, again, :math:`n_3` is the number of scenarios for the discrete\end{aligned}\end{align} \]</div>
+<p>uncertain variables, <span class="math notranslate nohighlight">\(\pi_j\)</span> is the probability of the
+<span class="math notranslate nohighlight">\(j\)</span>-th scenario, and <span class="math notranslate nohighlight">\(P(Z_4)\)</span> is the joint probability of
+the continuous uncertain variables.</p>
+</div>
+<div class="section" id="two-stage-formulation">
+<h3>Two-Stage Formulation<a class="headerlink" href="#two-stage-formulation" title="Permalink to this headline">¶</a></h3>
+<p>In this formulation all four types of variables are present. The
+objective function is given by:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}  \begin{array}{lcl}
+  &amp; &amp; \displaystyle \min_{Z_3,Z_4}
+  \mathbf{\Phi}_{Z_3,Z_4} \left[
+  \min_{Z_2}
+  F(Z_1,Z_2,Z_3,Z_4) \right].
+  \end{array}\\If the objective function is the statistical mean, the formulation\end{aligned}\end{align} \]</div>
+<p>becomes:</p>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\begin{split}  \begin{array}{lcl}
+  &amp; &amp; \displaystyle \min_{Z_1}
+  \mathbf{E}_{Z_3,Z_4} \left[
+  \min_{Z_2} F(Z_1,Z_2,Z_3,Z_4) \right]\\
+  &amp;\approx&amp; \displaystyle \min_{Z_1} \sum^{n_3}_{j=1} \pi_j
+  \left(
+  \int \left[
+  \min_{Z_2} F(Z_1,Z_2,Z_3,Z_4) \right] P(Z_4) d Z_4
+  \right)
+  \end{array}\end{split}\\Let\end{aligned}\end{align} \]</div>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}G(\mathbf{Z_1,Z_3,Z_4}) = \min_{Z_2} F(Z_1,Z_2,Z_3,Z_4).\\Then the two-stage equation can be rewritten as:\end{aligned}\end{align} \]</div>
+<div class="math notranslate nohighlight">
+\[ \begin{align}\begin{aligned}\begin{split}  \begin{array}{lcl}
+  &amp; &amp; \displaystyle \min_{Z_1}
+  \mathbf{E}_{Z_3,Z_4} \left[
+  G(Z_1,Z_3,Z_4) \right]\\
+  &amp;\approx&amp; \displaystyle \min_{Z_1} \sum^{n_3}_{j=1} \pi_j
+  \left( \int
+  G(Z_1,Z_3,Z_4) P(Z_4) d Z_4
+  \right)
+  \end{array}\end{split}\\which is a single-stage OUU with respect to the :math:`G` function.\end{aligned}\end{align} \]</div>
+</div>
+</div>
+<div class="section" id="ouu-user-interface">
+<h2>OUU User Interface<a class="headerlink" href="#ouu-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>The OUU module enables the user to perform optimization under
+uncertainty studies on a flowsheet. From the OUU tab, the user can set
+up the different types of optimization parameters, select from the
+different OUU options, and run the optimization. This screen is shown in
+Figure [fig:ouu_screen].</p>
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../_images/1_OUUScreen.png"><img alt="Optimization Under Uncertainty Screen" src="../_images/1_OUUScreen.png" style="width: 6.50000in; height: 4.00000in;" /></a>
+<p class="caption"><span class="caption-text">Optimization Under Uncertainty Screen</span></p>
+</div>
+<ol class="arabic simple">
+<li><strong>Model</strong> provides two options for setting up the model: (1) select a
+node from the flowsheet that has already been instantiated; or (2)
+load the model from a file in the PSUADE full file format (with the
+opt_driver variable set to the simulation executable.)</li>
+<li><strong>Variables</strong> displays all variables defined in the model that can be
+used in this context. Each available variable can be set to either
+one of the 5 types:<ul>
+<li>fixed (the parameter’s value is fixed throughout the optimization
+process)</li>
+<li>primary (parameter for the outer optimization)</li>
+<li>recourse (parameter for the inner optimization)</li>
+<li>discrete (categorical uncertain parameter that contributes to
+scenarios)</li>
+<li>continuous (continuous uncertain parameter with a given
+probability distribution)</li>
+</ul>
+</li>
+<li><strong>Optimization Setup</strong> allows users to select the objective function
+for OUU. It also allows users to select the inner optimization
+solver. There are two options for the inner solver: (1) the
+simulation model provided by users is an optimizer itself, and (2)
+the simulation provided by users needs to be wrapped around by
+another optimizer in FOQUS.</li>
+<li><strong>UQ Setup</strong> allows users to set up the continuous uncertain
+parameters. There are two options: (1) FOQUS can generate a sample
+internally, or (2) a user-generated sample can be loaded into FOQUS.
+The sample size should be larger than the number of continuous
+uncertain parameters. Optionally, response surface can be turned on
+to enable the statistical moments to be computed more accurately even
+with small samples. Users can also select a smaller subset of the
+sample for building response surfaces and evaluate the response
+surfaces with the larger samples.</li>
+<li><strong>Launch/Progress</strong> has the ‘Run OUU’ button to launch OUU runs.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Optimization Under Uncertainty" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

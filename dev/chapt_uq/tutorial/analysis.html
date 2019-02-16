@@ -1,0 +1,410 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Single-Output Analysis &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Response Surface Based Analysis" href="rs.html" />
+    <link rel="prev" title="Data Manipulation" href="data.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Uncertainty Quantification</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sim.html">Simulation Ensemble Creation and Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Data Manipulation</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Single-Output Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rs.html">Response Surface Based Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inf.html">Bayesian Inference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Uncertainty Quantification</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Single-Output Analysis</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_uq/tutorial/analysis.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="single-output-analysis">
+<h1>Single-Output Analysis<a class="headerlink" href="#single-output-analysis" title="Permalink to this headline">¶</a></h1>
+<p>From the Single-Output Analysis Screen, the user can perform analyses
+that are specific to a particular output of interest. Here, the
+“removalCO2” output parameter is discussed.</p>
+<div class="section" id="parameter-selection">
+<h2>Parameter Selection<a class="headerlink" href="#parameter-selection" title="Permalink to this headline">¶</a></h2>
+<p>For simulation models that have a large number of input parameters, it
+is common practice to down-select to a smaller subset of the most
+important input parameters that are most relevant to the output of
+interest. This is done so subsequent detailed studies can be performed
+more efficiently. By using a smaller set of inputs, a smaller set of
+samples may be needed.</p>
+<ol class="arabic">
+<li><p class="first">From the UQ window, load the file “gmoat5012_9levels.filtered” in
+examplesUQ. (This file contains the same set of samples that
+resulted from data filtering. They are included here to make each
+demo self-inclusive.)</p>
+</li>
+<li><p class="first">Click <strong>Analysis</strong>. A new page is displayed (Figure
+<a class="reference external" href="#fig:uqt_analysis_param">[fig:uqt_analysis_param]</a>).</p>
+<div class="figure" id="id1">
+<img alt="Analysis Dialog, Parameter Selection" src="../../_images/15_ParameterSelection2.png" />
+<p class="caption"><span class="caption-text">Analysis Dialog, Parameter Selection</span></p>
+</div>
+<p>[fig:uqt_analysis_param]</p>
+</li>
+<li><p class="first">Under the Qualitative Parameter Selection section, select
+“removalCO2” as the output.</p>
+</li>
+<li><p class="first">Select “MOAT” as the method to be used.</p>
+</li>
+<li><p class="first">Click <strong>Compute input importance</strong>. A graph should appear with the
+results (Figure
+<a class="reference external" href="#fig:uqt_param_results">[fig:uqt_param_results]</a>).</p>
+<div class="figure" id="id2">
+<img alt="Parameter Selection Results" src="../../_images/16_ParamSelectionResults.png" />
+<p class="caption"><span class="caption-text">Parameter Selection Results</span></p>
+</div>
+<p>[fig:uqt_param_results]</p>
+</li>
+</ol>
+<p>The bars in the plot represent the importance of a particular input in
+determining the value of the output. For example, the values of dH3 and
+dS3 are very important in determining the value of removalCO2, whereas
+Hce and hp have no affect (the y-axis displays the average changes in
+the model output as a result of changing the inputs in their respective
+ranges. For example, from Figure
+<a class="reference external" href="#fig:uqt_param_results">[fig:uqt_param_results]</a>, changing dH2 in
+its range results in an average change in CO<span class="math notranslate nohighlight">\(_2\)</span> removal as much
+as about 57 percent with a margin of +/- 3 percent). Thus, it would be
+safe to exclude any inputs that have negligible bar lengths from
+analysis. Next, down-select the ten most important inputs based on these
+results. See Section <a class="reference external" href="#subsubsec:uqt_vardel">[subsubsec:uqt_vardel]</a>
+for details. Change the number of samples and scheme as desired and then
+generate new samples. Click <strong>Launch</strong> to run these samples to obtain
+another simulation ensemble that can be analyzed.</p>
+</div>
+<div class="section" id="ensemble-data-analysis">
+<h2>Ensemble Data Analysis<a class="headerlink" href="#ensemble-data-analysis" title="Permalink to this headline">¶</a></h2>
+<p>If the user is interested in the output uncertainty of “removalCO2”
+based on the uncertainties from the ten most important input parameters,
+perform uncertainty analysis, which would compute the probability
+distribution and sample statistics of “removalCO2.”</p>
+<ol class="arabic">
+<li><p class="first">Load “lptau20k_10inputs_4outputs.filtered” from the examples\ UQ
+folder. Assume this is the file that the user would receive after
+running the cloned simulation ensemble in which the user has
+down-selected the ten most important inputs, set the Sampling Scheme
+to “Quasi-Monte Carlo (LPTAU)”, set the sample size to 20K, and
+performed data filtering to retain only the samples with the status
+output equal to “0.”</p>
+</li>
+<li><p class="first">Click Analyze. A new page displays
+(Figure<a class="reference external" href="#fig:uqt_analysis_ua">[fig:uqt_analysis_ua]</a>).</p>
+</li>
+<li><p class="first">Select “Ensemble Data” to indicate that analysis is to be directly
+performed on the raw sample data.</p>
+</li>
+<li><p class="first">Select “removalCO2” as the output variable to analyze.</p>
+</li>
+<li><p class="first">Select “Uncertainty Analysis” and then click Analyze.</p>
+<div class="figure" id="id3">
+<img alt="Analysis Dialog, Ensemble Data Uncertainty Analysis" src="../../_images/17_UAScreen2.png" />
+<p class="caption"><span class="caption-text">Analysis Dialog, Ensemble Data Uncertainty Analysis</span></p>
+</div>
+<p>[fig:uqt_analysis_ua]</p>
+<p>Once uncertainty analysis is complete, results display (Figure
+<a class="reference external" href="#fig:uqt_ua_results">[fig:uqt_ua_results]</a>) illustrating the
+probability distribution function (PDF), cumulative distribution
+function (CDF), and the sufficient statistics (e.g., mean, standard
+deviation) of “removalCO2” (top left corner of the PDF plot). This is
+used to evaluate if the output uncertainty is acceptable. If the
+output uncertainty is too great or the user prefers the system to
+operate within a higher percentage of capture, pursue further
+analyses to understand the relationships between the inputs and
+outputs, and investigate what can be done to reduce the output
+uncertainties by reducing the input uncertainties.</p>
+<div class="figure" id="id4">
+<img alt="Ensemble Data Uncertainty Analysis Results" src="../../_images/18_UAResults.png" />
+<p class="caption"><span class="caption-text">Ensemble Data Uncertainty Analysis Results</span></p>
+</div>
+<p>[fig:uqt_ua_results]</p>
+<p>Next, the user may apply variance-based sensitivity analysis to
+quantify each input’s contribution to the output variance:</p>
+</li>
+<li><p class="first">From the bottom of the “Analysis” section, select “Sensitivity
+Analysis.”</p>
+</li>
+<li><p class="first">There are three options for sensitivity analysis: (1) first-order,
+(2) second-order, and (3) total-order. First-order analysis examines
+the effect of varying an input parameter alone. Second-order analysis
+examines the effect of varying pairs of input parameters. Total-order
+analysis examines all interactions’ effect of varying an input
+parameter alone and as a combination with any other input parameters.
+For this demonstration, select “Total-order” and click Analyze. The
+total sensitivity indices display in a graph. Note: If the simulation
+ensemble has more than ten inputs, “Total-order” is disabled (since
+any reasonable sample size is not sufficient). Additionally, since
+quantitative sensitivity analysis in general requires large ensembles
+with many samples (thousands or more), ensemble sensitivity analysis
+(without the use of response surfaces) is often less practical and
+accurate than response surface based analyses. The result is
+illustrated in
+Figure<a class="reference external" href="#fig:uqt_sa_results">[fig:uqt_sa_results]</a>.</p>
+</li>
+</ol>
+<div class="figure" id="id5">
+<img alt="Ensemble Data Total-order Sensitivity Analysis Results" src="../../_images/19_TotalOrderSAResults.png" />
+<p class="caption"><span class="caption-text">Ensemble Data Total-order Sensitivity Analysis Results</span></p>
+</div>
+<p>[fig:uqt_sa_results]</p>
+<p>These results confirm that “removalCO2” is more sensitive to “dH3” and
+“dS3” than other inputs. (The y-axis displays an approximate percentage
+of output variance attributed to each individual parameter. Since total
+sensitivity includes higher order interaction terms with other
+parameters, the sum of these total sensitivity indices usually exceeds
+1.)</p>
+</div>
+<div class="section" id="ensemble-data-visualization">
+<h2>Ensemble Data Visualization<a class="headerlink" href="#ensemble-data-visualization" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic">
+<li><p class="first">In this release, ensemble data visualization is only available in
+“Expert” mode. At the top of the “Analyze” page, toggle the bar to
+expert mode and select “removalCO2” as the output. Next, to
+“Visualize Data,” choose an input (e.g., “UQ_dH1”) and click
+<strong>Visualize</strong> for a 2-D scatter plot of “removalCO2” versus that
+input (Figure
+<a class="reference external" href="#fig:uqt_splot1_results">[fig:uqt_splot1_results]</a>).</p>
+<div class="figure" id="id6">
+<img alt="Ensemble Data Visualization of One Input" src="../../_images/20_VisOneInput.png" />
+<p class="caption"><span class="caption-text">Ensemble Data Visualization of One Input</span></p>
+</div>
+<p>[fig:uqt_splot1_results]</p>
+</li>
+<li><p class="first">Next, select a second input (e.g., “UQ_dH2”) and click <strong>Visualize</strong>
+for a 3-D scatter plot of “removalCO2” versus the two inputs. (Note:
+The input selections must be unique for the <strong>Visualize</strong> button to
+be enabled.) Figure
+<a class="reference external" href="#fig:uqt_splot2_results">[fig:uqt_splot2_results]</a> shows the
+results.</p>
+<div class="figure" id="id7">
+<img alt="Ensemble Data Visualization of Two Inputs" src="../../_images/21_VisTwoInputs.png" />
+<p class="caption"><span class="caption-text">Ensemble Data Visualization of Two Inputs</span></p>
+</div>
+<p>[fig:uqt_splot2_results]</p>
+<p>The plot in Figure
+<a class="reference external" href="#fig:uqt_splot2_results">[fig:uqt_splot2_results]</a> can be rotated
+by clicking and dragging.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="rs.html" class="btn btn-neutral float-right" title="Response Surface Based Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="data.html" class="btn btn-neutral float-left" title="Data Manipulation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

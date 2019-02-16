@@ -1,0 +1,432 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Flowsheet Result Data &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Using a Remote Turbine Instance" href="remote.html" />
+    <link rel="prev" title="Flowsheets with Recycle" href="recycle.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flowsheets and Settings</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="files.html">Example Files</a></li>
+<li class="toctree-l4"><a class="reference internal" href="simple_flowsheet.html">Creating a Flowsheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_flowsheet.html">Creating a Flowsheet with Linked Simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recycle.html">Flowsheets with Recycle</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Flowsheet Result Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote.html">Using a Remote Turbine Instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Flowsheets and Settings</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Flowsheet Result Data</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_flowsheet/tutorial/data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="flowsheet-result-data">
+<span id="tutorials-fs-data"></span><h1>Flowsheet Result Data<a class="headerlink" href="#flowsheet-result-data" title="Permalink to this headline">¶</a></h1>
+<p>Flowsheet evaluation results are stored in a table in the FOQUS session.
+This data can be used for many purposes. The flowsheet evaluations may
+be single runs, part of an optimization problem, or part of a UQ
+ensemble. This tutorial provide information about sorting, filtering,
+and exporting data.</p>
+<p>Copy the DataSimple_flow.foqus file from the example files to a
+convenient location (see section
+<a class="reference external" href="#tutorial.example.files">[tutorial.example.files]</a>). This file is
+similar to the one created in the tutorial Section
+<a class="reference external" href="#tutorial.simple.flow">[tutorial.simple.flow]</a>, but it has been run
+an additional 100 times using a UQ ensemble (see Chapter
+<a class="reference external" href="#chpt.uq">[chpt.uq]</a>).</p>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Open the Simple_flow.foqus session from the example files.</li>
+<li>Click the <strong>Flowsheet</strong> button from the Home window.</li>
+<li>Click <strong>Flowsheet Data</strong> in the toolbar on the left side of the Home
+window (Figure <a class="reference external" href="#fig.data.table1">[fig.data.table1]</a>).</li>
+</ol>
+<div class="figure" id="fig-data-table1">
+<img alt="Flowsheet Results Data Table, All Data" src="../../_images/data_table_1.svg" /><p class="caption"><span class="caption-text">Flowsheet Results Data Table, All Data</span></p>
+</div>
+<p>A data table should be displayed like the one shown in Figure
+<a class="reference external" href="#fig.data.table1">[fig.data.table1]</a>. There are 102 flowsheet
+evaluations. The first two evaluations are single runs, as can be seen
+in the <strong>SetName</strong> column, and the remaining 100 evaluation are from a
+UQ ensemble. The <strong>Error</strong> column shows several of the evaluations
+resulted in an error from a negative number being passed to the square
+root function.</p>
+<p>This tutorial is broken up into mini-tutorials in the remaining
+subsections, which can be done independently. They each use the example
+data file described above.</p>
+<div class="section" id="sorting-data">
+<h2>Sorting Data<a class="headerlink" href="#sorting-data" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Open the Simple_flow.foqus session from the example files.</li>
+<li>Click <strong>Flowsheet</strong> in the main toolbar at the top of the FOQUS Home
+window.</li>
+<li>Click <strong>Flowsheet Data</strong> in the toolbar on the left side of the Home
+window (Figure <a class="reference external" href="#fig.data.table1">[fig.data.table1]</a>).</li>
+<li>Click <strong>Edit Filters</strong> (Figure
+<a class="reference external" href="#fig.data.table1">[fig.data.table1]</a>).</li>
+<li>Click <strong>New Filter</strong>.</li>
+<li>Enter “Sort1” as the new filter name.</li>
+<li>Click <strong>New Filter</strong>.</li>
+<li>Enter “Sort2” as the new filter name.</li>
+<li>Select “Sort1” from the <strong>Filter</strong> drop-down list.</li>
+<li>Select the <strong>Sort Data</strong> checkbox.</li>
+<li>Enter <code class="docutils literal notranslate"><span class="pre">[&quot;-result&quot;]</span></code> as the <strong>Sort Term</strong>. Include the square
+brackets. The square brackets indicate that there is a list of sort
+terms, although in this case there is only one. If multiple search
+terms are given, the additional terms will be used to sort results
+having the same value for the previous terms. The “-” in front of
+<strong>result</strong> indicates the results should be sorted in reverse. The
+names of the sort terms come from the column headings, and are case
+sensitive.</li>
+<li>Click <strong>Done</strong> to save the filters and return to the results table.</li>
+</ol>
+<div class="figure" id="fig-filter-1">
+<img alt="Sort1 Data Filter" src="../../_images/filter_1.svg" /><p class="caption"><span class="caption-text">Sort1 Data Filter</span></p>
+</div>
+<ol class="arabic simple" start="14">
+<li>Select “Sort1” from the <strong>Current Filter</strong> drop-down list (Figure
+<a class="reference external" href="#fig.filter.1.result">[fig.filter.1.result]</a>).</li>
+<li>The results are shown in Figure
+<a class="reference external" href="#fig.filter.1.result">[fig.filter.1.result]</a>. The data should be
+sorted in reverse alphabetical order by <strong>result</strong>. Some of the
+columns are hidden to make the relevant results easier to see.</li>
+</ol>
+<div class="figure" id="fig-filter-1-result">
+<img alt="Sort1 Data Filter Results" src="../../_images/filter_1_result.svg" /><p class="caption"><span class="caption-text">Sort1 Data Filter Results</span></p>
+</div>
+<ol class="arabic simple" start="16">
+<li>Click <strong>Edit Filters</strong> (Figure
+<a class="reference external" href="#fig.filter.1.result">[fig.filter.1.result]</a>). The dialog box in
+Figure <a class="reference external" href="#fig.filter.2">[fig.filter.2]</a> should display.</li>
+<li>Select “Sort2” from <strong>Filter</strong> drop-down list.</li>
+<li>Select the “Sort Data” checkbox.</li>
+<li>Enter <code class="docutils literal notranslate"><span class="pre">[&quot;Error&quot;,</span> <span class="pre">&quot;-result&quot;]</span></code> in the <strong>Sort Term</strong> field. This will
+sort the data first by <strong>Error</strong> code then by <strong>result</strong> in reverse
+alphabetical order.</li>
+<li>Click <strong>Done</strong>.</li>
+</ol>
+<div class="figure" id="fig-filter-2">
+<img alt="Sort2 Data Filter" src="../../_images/filter_2.svg" /><p class="caption"><span class="caption-text">Sort2 Data Filter</span></p>
+</div>
+<ol class="arabic simple" start="21">
+<li>Select “Sort2” in the <strong>Current Filter</strong> drop-down list (Figure
+<a class="reference external" href="#fig.filter.2.result">[fig.filter.2.result]</a>).</li>
+<li>The results are shown in Figure
+<a class="reference external" href="#fig.filter.2.result">[fig.filter.2.result]</a>. The data should be
+sorted so all <strong>Error</strong> code zero results are first then sorted in
+reverse alphabetical order by <strong>result</strong>.</li>
+</ol>
+<div class="figure" id="fig-filter-2-result">
+<img alt="Sort2 Data Filter Result" src="../../_images/filter_2_result.svg" /><p class="caption"><span class="caption-text">Sort2 Data Filter Result</span></p>
+</div>
+</div>
+<div class="section" id="filtering-data">
+<h2>Filtering Data<a class="headerlink" href="#filtering-data" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Open the Simple_flow.foqus session from the example files.</li>
+<li>Click the <strong>Flowsheet</strong> button in the Home window.</li>
+<li>Click the Results Data button (Table icon in left toolbar).</li>
+<li>In the data table dialog, click <strong>Edit Filters</strong>.</li>
+<li>Click <strong>New Filter</strong> and enter “Filter1” in the <strong>Filter</strong> field as
+the new filter name.</li>
+</ol>
+<p>The completed filter settings are shown in Figure
+<a class="reference external" href="#fig.filter.3">[fig.filter.3]</a>. The buttons along the bottom of the
+filter editor dialog are used to add, delete, and change the order of
+rules and operations. Rules are conditions that are placed on data to be
+displayed. Operations are used to modify or combine rules. FOQUS uses
+reverse polish notation for the order of operations. The example filter
+in <a class="reference external" href="#fig.filter.3">[fig.filter.3]</a> is equivalent to (Error = 0 AND
+SetName <span class="math notranslate nohighlight">\(\in\)</span> {UQ_Ensemble, Single_runs}) OR Index <span class="math notranslate nohighlight">\(&lt;\)</span> 3.</p>
+<p>The filter terms can be numbers, strings, lists of numbers, lists of
+strings or column headings. When entering column headings as search
+terms, do not enclose the column heading in quotes. This distinguishes
+column heading names from strings. The other types of terms are in JSON
+format. Strings are enclosed in double quotes, numbers have no quotes,
+and lists are enclosed in square brackets with elements separated by
+commas.</p>
+<ol class="arabic simple" start="7">
+<li>Click <strong>Add Rule</strong> three times.</li>
+<li>Click <strong>Add Operation</strong> two times.</li>
+<li>Fill out the rule and operation rows as shown in Figure
+<a class="reference external" href="#fig.filter.3">[fig.filter.3]</a>.</li>
+<li>Click <strong>Done</strong>.</li>
+</ol>
+<div class="figure" id="fig-filter-3">
+<img alt="Filter1 Data Filter" src="../../_images/filter_3.svg" /><p class="caption"><span class="caption-text">Filter1 Data Filter</span></p>
+</div>
+<ol class="arabic simple" start="11">
+<li>In the data table dialog, select “Filter1” from the <strong>Current
+Filter</strong> drop-down list.</li>
+<li>The result is displayed in Figure
+<a class="reference external" href="#fig.filter.3.result">[fig.filter.3.result]</a>.</li>
+</ol>
+<div class="figure" id="fig-filter-3-result">
+<img alt="Filter1 Data Filter Result" src="../../_images/filter_3_result.svg" /><p class="caption"><span class="caption-text">Filter1 Data Filter Result</span></p>
+</div>
+</div>
+<div class="section" id="exporting-data">
+<h2>Exporting Data<a class="headerlink" href="#exporting-data" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial uses a spreadsheet program such as Excel or Open Office.
+The exported data is subject to the selected filter. See the previous
+tutorials in this section for more information about sorting and
+filtering data to be exported.</p>
+<div class="section" id="clipboard">
+<h3>Clipboard<a class="headerlink" href="#clipboard" title="Permalink to this headline">¶</a></h3>
+<p>FOQUS can export data directly to the Clipboard. The data can be pasted
+into a spreadsheet or as text. Copying data to the Clipboard eliminates
+the need for an intermediate file when creating spreadsheets.</p>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Open a spreadsheet program.</li>
+<li>Open the Simple_flow.foqus session from the example files.</li>
+<li>Click the <strong>Flowsheet</strong> button in the Home window.</li>
+<li>Click the Results Data button (Table icon in left toolbar).</li>
+<li>Click on the <strong>Menu</strong> drop-down list in the data table dialog.</li>
+<li>Select “Export” from the <strong>Menu</strong> drop-down list.</li>
+<li>Click <strong>Copy Data to Clipboard</strong>.</li>
+<li>Select Paste in the spreadsheet program. The data table in FOQUS
+should paste into the spreadsheet. Filters can be used to sort or
+reduce the exported data.</li>
+</ol>
+</div>
+<div class="section" id="csv-file">
+<h3>CSV File<a class="headerlink" href="#csv-file" title="Permalink to this headline">¶</a></h3>
+<p>CSV (comma separated value) files can be read by almost any spreadsheet
+program, and are common formats readable by many types of software.
+FOQUS exports CSV files using the column headings from the data table as
+a header.</p>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Open a spreadsheet program.</li>
+<li>Open the Simple_flow.foqus session from the example files.</li>
+<li>Click the <strong>Flowsheet</strong> button in the Home window.</li>
+<li>Click the Results Data button (Table icon in left toolbar).</li>
+<li>Click the <strong>Menu</strong> drop-down list.</li>
+<li>Select “Export” from the <strong>Menu</strong> drop-down list.</li>
+<li>Click <strong>Export to CSV File</strong>.</li>
+<li>Enter a file name in the file dialog.</li>
+<li>In the spreadsheet program, open the CSV file exported in the
+previous step.</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="remote.html" class="btn btn-neutral float-right" title="Using a Remote Turbine Instance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="recycle.html" class="btn btn-neutral float-left" title="Flowsheets with Recycle" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

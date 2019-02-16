@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Sample Results &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Tutorial" href="../tutorial/index.html" />
+    <link rel="prev" title="Flowsheet" href="flowsheet.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flowsheets and Settings</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Reference</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l4"><a class="reference internal" href="home.html">Home Menu</a></li>
+<li class="toctree-l4"><a class="reference internal" href="settings.html">Settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flowsheet.html">Flowsheet</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Sample Results</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Flowsheets and Settings</a> &raquo;</li>
+        
+          <li><a href="index.html">Reference</a> &raquo;</li>
+        
+      <li>Sample Results</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_flowsheet/reference/results.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="sample-results">
+<span id="sec-flowsheet-results-table"></span><h1>Sample Results<a class="headerlink" href="#sample-results" title="Permalink to this headline">¶</a></h1>
+<p>Flowsheet evaluations that have been run in a FOQUS session can be
+viewed by clicking the table button in the flowsheet toolbar (#13 in
+Figure <a class="reference external" href="#fig.flowsheet.editor">[fig.flowsheet.editor]</a>). The results
+are displayed in a table, and the contents can be copied and pasted into
+a spreadsheet or exported to a CSV file. Figure
+<a class="reference external" href="#fig.results.table">[fig.results.table]</a> show the Flowsheet Results
+Table window.</p>
+<div class="figure" id="fig-results-table">
+<img alt="Flowsheet Results Table Window" src="../../_images/resultsTable.svg" /><p class="caption"><span class="caption-text">Flowsheet Results Table Window</span></p>
+</div>
+<ol class="arabic simple">
+<li><strong>Menu</strong> contains a menu with four sub menus.<ol class="arabic">
+<li><strong>Import</strong> data from files or the clipboard.</li>
+<li><strong>Export</strong> data to files or the clipboard.</li>
+<li><strong>Edit</strong> or delete data.</li>
+<li><strong>View</strong> options for the table.</li>
+</ol>
+</li>
+<li>The <strong>Current Filter</strong> drop-down list enables the user to select a
+data filter, which can be used to filter and sort data.</li>
+<li><strong>Edit Filters</strong> enables the user to create or edit data filters.</li>
+</ol>
+<div class="section" id="error-codes">
+<h2>Error Codes<a class="headerlink" href="#error-codes" title="Permalink to this headline">¶</a></h2>
+<p>Error codes are listed in the <strong>Flowsheet Results</strong> table for the whole
+flowsheet and for individual nodes. Table
+<a class="reference external" href="#table.fs.error">[table.fs.error]</a> shows the flowsheet error codes
+and Table <a class="reference external" href="#table.node.error">[table.node.error]</a> shows the node
+error codes. The most common flowsheet error is 1, a node calculation
+failed. The most common node error is 7, Turbine simulation error. These
+errors are typically caused by a simulation that fails to converge or
+has some other calculation error (e.g., ACM does not converge or an
+Excel spreadsheet simulation with a division by 0 error).</p>
+<table border="1" class="docutils" id="id1">
+<caption><span class="caption-text">Flowsheet Error Codes</span><a class="headerlink" href="#id1" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="9%" />
+<col width="91%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Code</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-1</td>
+<td>Did not run or finish</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>Success</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>A node calculation failed</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Failed to create a worker node</td>
+</tr>
+<tr class="row-even"><td>5</td>
+<td>Unknown tear solver</td>
+</tr>
+<tr class="row-odd"><td>11</td>
+<td>Wegstein failed to converge</td>
+</tr>
+<tr class="row-even"><td>12</td>
+<td>Direct failed to converge</td>
+</tr>
+<tr class="row-odd"><td>16</td>
+<td>Presolve node error</td>
+</tr>
+<tr class="row-even"><td>17</td>
+<td>Postsolve node error</td>
+</tr>
+<tr class="row-odd"><td>19</td>
+<td>Unhandled exception during evaluation (see log)</td>
+</tr>
+<tr class="row-even"><td>20</td>
+<td>Flowsheet thread terminated</td>
+</tr>
+<tr class="row-odd"><td>21</td>
+<td>Missing session name</td>
+</tr>
+<tr class="row-even"><td>40</td>
+<td>Error connecting to Turbine</td>
+</tr>
+<tr class="row-odd"><td>50</td>
+<td>Error loading session or inputs</td>
+</tr>
+<tr class="row-even"><td>100</td>
+<td>Single node calculation success</td>
+</tr>
+<tr class="row-odd"><td>201</td>
+<td>Cycle in determining calculation order (invalid tear set)</td>
+</tr>
+</tbody>
+</table>
+<table border="1" class="docutils" id="id2">
+<caption><span class="caption-text">Node Error Codes</span><a class="headerlink" href="#id2" title="Permalink to this table">¶</a></caption>
+<colgroup>
+<col width="13%" />
+<col width="87%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Code</th>
+<th class="head">Meaning</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>-1</td>
+<td>Did not run or finish</td>
+</tr>
+<tr class="row-odd"><td>0</td>
+<td>Success</td>
+</tr>
+<tr class="row-even"><td>1</td>
+<td>Simulation error (see log)</td>
+</tr>
+<tr class="row-odd"><td>3</td>
+<td>Exceeded maximum wait time</td>
+</tr>
+<tr class="row-even"><td>4</td>
+<td>Failed to create Turbine session ID</td>
+</tr>
+<tr class="row-odd"><td>5</td>
+<td>Failed to add Turbine job</td>
+</tr>
+<tr class="row-even"><td>6</td>
+<td>Exceeded maximum run time</td>
+</tr>
+<tr class="row-odd"><td>7</td>
+<td>Turbine simulation error</td>
+</tr>
+<tr class="row-even"><td>8</td>
+<td>Failed to start Turbine job</td>
+</tr>
+<tr class="row-odd"><td>10</td>
+<td>Failed to get Turbine jobs status</td>
+</tr>
+<tr class="row-even"><td>11</td>
+<td>Flowsheet thread terminated</td>
+</tr>
+<tr class="row-odd"><td>20</td>
+<td>Error in node script</td>
+</tr>
+<tr class="row-even"><td>23</td>
+<td>Could not convert Numpy value to list</td>
+</tr>
+<tr class="row-odd"><td>27</td>
+<td>Cannot read variable result (see log)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../tutorial/index.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="flowsheet.html" class="btn btn-neutral float-left" title="Flowsheet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

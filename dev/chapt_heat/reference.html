@@ -1,0 +1,447 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial" href="tutorial.html" />
+    <link rel="prev" title="Heat Integration" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Heat Integration</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#heat-integration">Heat Integration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#steam-cycle">Steam Cycle</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Heat Integration</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapt_heat/reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reference">
+<span id="section-plugin"></span><h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="heat-integration">
+<h2>Heat Integration<a class="headerlink" href="#heat-integration" title="Permalink to this headline">¶</a></h2>
+<p>The Heat Integration Node performs heat integration calculations for the
+entire process in the meta-flowsheet. This node transfers simulation
+results to a GAMS-based heat integration program, solves the program,
+and transfers part of important heat integration results from GAMS to
+the graphical interface. The detailed heat integration results can be
+found in \gamsHeatIntegration.lst. All input and output variables in
+the nodes connected to the Heat Integration Node (with the edge pointing
+to the heat integration node) are automatically transferred to heat
+integration. However, only the variables with heat integration tags are
+considered and processed in heat integration. Heat integration tags are
+described in the Heat Integration Tutorial in Section
+<a class="reference external" href="#sec.hi.tut">[sec.hi.tut]</a>.</p>
+<p>The Heat Integration Node Editor widget is illustrated in Figure
+<a class="reference external" href="#heat.int.inputs">[heat.int.inputs]</a> and Figure
+<a class="reference external" href="#heat.int.outputs">[heat.int.outputs]</a>. To specify a node as a Heat
+Integration Node, expand the <strong>Model</strong> section, expand the <strong>Model</strong>
+drop-down list, and then select “heat_integration.” Some input variables
+control the performance of heat integration. Output variables display
+heat integration results, which are used as final results or inputs for
+steam cycle calculations.</p>
+<div class="figure" id="heat-int-inputs">
+<img alt="Heat Integration Node Editor (Input Variables)" src="../_images/heat_int_inputs.png" />
+<p class="caption"><span class="caption-text">Heat Integration Node Editor (Input Variables)</span></p>
+</div>
+<p>The Heat Integration Node <strong>Input Variables</strong> are listed below:</p>
+<ul class="simple">
+<li>Exchanger minimum approach temperature (<strong>EMAT</strong>) is the minimum
+temperature difference between hot streams and cold streams for heat
+exchanger area calculations. The value of EMAT is usually not larger
+than that of HRAT (see below). The default value of EMAT is set to
+5K. When a small value of HRAT is chosen (e.g., 3-5K), the value of
+EMAT should also be small (e.g., 1-3K).</li>
+<li>Heat recovery approach temperature (<strong>HRAT</strong>) is the minimum
+temperature difference between hot streams and cold streams for
+utility consumption calculations. Smaller HRAT usually leads to lower
+utility consumptions but higher capital cost of the heat exchanger
+network. An appropriate value should be selected for HRAT in order to
+achieve the best economic performance. The typical value of HRAT in
+industrial applications is 10K, which is also the default value of
+HRAT. The user may choose other HRAT values depending on their
+applications (e.g., in power plants, HRAT can be as low as 3-5K for
+higher heat recovery).</li>
+<li><strong>Life.Plant</strong> is the operating life of the plant. The default value
+is 20 years. The user can change the value depending on detailed
+applications.</li>
+<li><strong>Net.Power</strong> is the net power output of a power plant without carbon
+capture and storage (CCS). This is an optional input variable;
+therefore, it has no default value. The user only needs to assign a
+value to it when the steam cycle node is also present in the
+flowsheet. The net power output is used to calculate the amount of
+heat recovered for steam cycle via the heat exchanger network.</li>
+<li><strong>No.Stream</strong> is the number of process streams (for heat integration)
+in the plant. This is an optional input variable without default
+value. When the value of “No.Stream” is not assigned, the number of
+process streams is calculated by the Python program via heat
+integration tags (see the Heat Integration Tutorial in Section
+<a class="reference external" href="#sec.hi.tut">[sec.hi.tut]</a>).</li>
+<li><strong>Operation.Hours</strong> is the annual operational hours of the plant. For
+power, refinery, and chemical industries, the typical value is
+7500-8500 hours. The default value here is 8000 hours.</li>
+<li><strong>ROR</strong> is the rate of return for the project. The default value is
+10 percent. The user should select appropriate values for ROR based
+on their own projects. The variables <strong>Life.Plant</strong>, <strong>No.Stream</strong>,
+<strong>Operation.Hours</strong>, and <strong>ROR</strong> are used for the cost calculation.</li>
+</ul>
+<div class="figure" id="heat-int-outputs">
+<img alt="Heat Integration Node Editor (Output Variables)" src="../_images/heat_int_outputs.png" />
+<p class="caption"><span class="caption-text">Heat Integration Node Editor (Output Variables)</span></p>
+</div>
+<p>The <strong>Output Variables</strong> of the Heat Integration Node are listed below:</p>
+<ul class="simple">
+<li><strong>Capital.Cost</strong> is the minimum approximated capital cost for the
+heat exchanger network (in million U.S. dollars). The capital cost is
+calculated from the heat exchanger area (see below).</li>
+<li><strong>Cooling.Water.Consumption</strong> is the minimum cooling water
+consumption rate (represented by energy rate GJ/hr) predicted by heat
+integration. Cooling water is an outside utility with the temperature
+of 20°C.</li>
+<li><strong>FH.Heat.Addition</strong> is the amount of heat recovered to feed water
+heaters in the steam cycle. This variable is only valid when steam
+cycle calculations are also presented. If more heat is added to the
+steam cycle, higher net power output is expected. The value of
+“FH.Heat.Addition” is a vector with five elements. The first to fifth
+element of the vector represents the amount of heat added to the
+first-stage to the fifth-stage of the feed water heater in the steam
+cycle. The temperature of the feed water increases from the
+first-stage to the fifth-stage; therefore, heat added to the feed
+water heaters achieves a higher efficiency power generation from the
+first-stage to the fifth-stage heater. The temperature range for the
+five feed water heaters are 34-65°C, 65-96°C, 96-128°C, 128-160°C,
+and 160-195°C. These values are obtained from a supercritical power
+plant simulation model in Thermoflex.</li>
+<li><strong>Heat.Exchanger.Area</strong> is the minimum heat exchanger area (in square
+meters), which is used for the capital cost calculation.</li>
+<li><strong>IP_Steam.Consumption</strong> is the minimum intermediate-pressure steam
+consumption rate (in GJ/hr). Note: Both intermediate- and
+low-pressure steam are treated as a utility in heat integration
+calculations here; however, they are actually extracted from the
+steam cycle in the power plant. Therefore, minimizing steam
+consumption is equivalent to maximizing the net power output.
+Intermediate-pressure steam is extracted from the crossover of the
+pressurized intermediate-pressure turbine (PIPT) and the
+intermediate-pressure turbine (IPT) with the temperature of 230°C.</li>
+<li><strong>LP_Steam.Consumption</strong> is the minimum low-pressure steam
+consumption rate (in GJ/hr). Low-pressure steam is extracted from the
+crossover of IPT and low-pressure steam turbine (LPT) with the
+temperature of 164°C.</li>
+<li><strong>Total.Cost</strong> is the minimum approximated total annualized cost for
+the heat exchanger network (in million U.S. dollars per year), which
+equals the sum of utility cost and annualized capital cost.</li>
+<li><strong>Utility.Cost</strong> is the minimum utility cost (in million U.S. dollars
+per year), which equals the sum of the cost of cooling water,
+intermediate-pressure steam, and low-pressure steam. It can also be
+treated as scaled total utility consumption where the consumption
+rate of each utility is weighted by its cost.</li>
+</ul>
+</div>
+<div class="section" id="steam-cycle">
+<h2>Steam Cycle<a class="headerlink" href="#steam-cycle" title="Permalink to this headline">¶</a></h2>
+<p>The Steam Cycle Node performs steam cycle and power output calculations
+for a power plant with CCS (and possibly heat integration). Correlations
+for net power output with steam extraction and heat addition to feed
+water heaters, which are obtained from a supercritical power plant model
+in Thermoflex, are utilized to calculate net power output and net
+efficiency with CCS in the Steam Cycle Node. These correlations are
+currently hard coded in Python for this node. The users will have a
+choice to provide their own correlations in future versions of FOQUS.</p>
+<p>The Steam Cycle Node Editor widget is illustrated in Figure
+<a class="reference external" href="#steam.cycle.inputs">[steam.cycle.inputs]</a> and Figure
+<a class="reference external" href="#steam.cycle.outputs">[steam.cycle.outputs]</a>.</p>
+<p>To specify a node as a Steam Cycle Node, expand the <strong>Model</strong> section,
+click on the <strong>Model</strong> drop-down list, and then select “steam_cycle.”
+All input variables (potentially) can be contributed to power output
+calculations; however, not all input variables are required to have a
+value assigned, except net power output and net efficiency without CCS.
+Output variables describe effects of CCS and heat integration to net
+power output and net efficiency.</p>
+<div class="figure" id="steam-cycle-inputs">
+<img alt="Steam Cycle Node Editor (Input Variables)" src="../_images/steam_cycle_inputs.png" />
+<p class="caption"><span class="caption-text">Steam Cycle Node Editor (Input Variables)</span></p>
+</div>
+<p>The <strong>Input Variables</strong> of the Steam Cycle Node are described below:</p>
+<ul>
+<li><p class="first"><strong>Electricity.Consumption</strong> is the total electricity consumption in
+all processes other than steam cycle. The input value of this
+variable can be provided by the user or transferred from simulation
+outputs.</p>
+</li>
+<li><p class="first"><strong>FH.Heat.Addition</strong> is the amount of heat recovered to feed water
+heaters in steam cycle. The input value of this variable can be
+transferred from heat integration output.</p>
+</li>
+<li><p class="first"><strong>IP_Steam.Consumption</strong> is the intermediate-pressure steam
+consumption rate in heat exchangers. It is usually provided by heat
+integration, and sometimes it can be directly provided by simulation.</p>
+</li>
+<li><p class="first"><strong>IP_Steam.Injection</strong> is the intermediate-pressure steam injection
+rate to process streams. In some equipment, such as regenerators in
+the capture process, steam needs to be injected directly into the
+input stream to provide a large amount of heat and realize fast heat
+transfer. The steam injection rate is different from the steam
+consumption rate as it does not need heat exchangers and is not
+considered in heat integration. This variable is typically provided
+by simulation output.</p>
+</li>
+<li><p class="first"><strong>LP_Steam.Consumption</strong> is the low-pressure steam consumption rate
+in heat exchangers provided by heat integration or simulation output.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>LP_Steam.Injection</strong> is the low-pressure steam injection rate to
+process</div>
+<div class="line">streams provided by simulation output.</div>
+</div>
+</li>
+<li><p class="first"><strong>Net.Efficiency</strong> is the net efficiency of the power plant without
+CCS. Its default value is 42.06 percent, which is the efficiency of a
+typical supercritical pulverized coal-fired power plant without CCS.
+The user should change the value when another type of power plant is
+applied.</p>
+</li>
+<li><p class="first"><strong>Net.Power</strong> is the net power output of a power plant without CCS.
+The user must give an input to this variable to perform steam cycle
+calculations. Both <strong>Net.Efficiency</strong> and <strong>Net.Power</strong> provide base
+case values for a power plant without CCS and heat integration.</p>
+</li>
+</ul>
+<div class="figure" id="steam-cycle-outputs">
+<img alt="Steam Cycle Node Editor (Output Variables)" src="../_images/steam_cycle_outputs.png" />
+<p class="caption"><span class="caption-text">Steam Cycle Node Editor (Output Variables)</span></p>
+</div>
+<p>The <strong>Output Variables</strong> of the Steam Cycle Node are listed below:</p>
+<ul class="simple">
+<li><strong>Delta.Efficiency.CCS</strong> is the change of the net efficiency of a
+power plant with CCS compared to the base case value. This variable
+is expected to be negative since CCS decreases the net power output
+to a certain degree.</li>
+<li><strong>Delta.Efficiency.HI</strong> is the change of the net efficiency of a
+power plant with heat integration compared to the base case value.
+This variable is expected to be positive since heat integration
+potentially increases the net power output.</li>
+<li><strong>Delta.Power.CCS</strong> is the change of the net power output of a power
+plant with CCS compared to the base case value.</li>
+<li><strong>Delta.Power.HI</strong> is the change of the net power output of a power
+plant with CCS compared to the base case value.</li>
+<li><strong>Net.Efficiency.CCS</strong> is the net efficiency of the power plant with
+CCS given the base case value.</li>
+<li><strong>Net.Power.CCS</strong> is the net power output of the power plant with CCS
+assigned as the base case value.</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Heat Integration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

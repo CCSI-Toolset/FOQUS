@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Surrogate Models Overview &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial" href="tutorial/index.html" />
+    <link rel="prev" title="Surrogate Modeling" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Surrogate Modeling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Surrogate Models Overview</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#data-selection">Data Selection</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#variables">Variables</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#method-settings">Method Settings</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#execution">Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Surrogate Modeling</a> &raquo;</li>
+        
+      <li>Surrogate Models Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapt_surrogates/reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surrogate-models-overview">
+<h1>Surrogate Models Overview<a class="headerlink" href="#surrogate-models-overview" title="Permalink to this headline">¶</a></h1>
+<p>Large-scale computational models are crucial tools to analyze complex
+systems. When coupled with uncertainty quantification and optimization
+methods, the resulting computational expense becomes intractable. In
+order to face the computational burden, surface approximation methods,
+black box models, or surrogate models are commonly used. FOQUS provides
+a selection of surrogate modeling tools all using a similar work-flow.
+This section provides an overview of the surrogate modeling features and
+capabilities. The details of each tool are provided in the tutorial
+sections.</p>
+<p>The following surrogate modeling tools are currently available:</p>
+<ul class="simple">
+<li>ACOSSO – Adaptive COmponent Selection and Shrinkage Operator is a
+regularization method for simultaneous model fitting and variable
+selection based in nonparametric regression methods. ACCOSSO is
+suitable for approximating models with many inputs and no sharp
+changes.</li>
+<li>ALAMO – Automated Learning of Algebraic Models for Optimization
+generates algebraic models from data sets. These surrogate models are
+ideal for equation oriented optimization problems (which are easily
+differentiable), such as super structure optimization.</li>
+<li>BSS-ANOVA – Bayesian Smoothing Spline Analysis of Variance is a
+method similar to ACOSSO.</li>
+<li>iREVEAL – Surrogate models for CFD simulations using Kriging or
+Neural Networks. It contains special features specifically designed
+for working with CFDs.</li>
+</ul>
+<div class="section" id="data-selection">
+<h2>Data Selection<a class="headerlink" href="#data-selection" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>Data</strong> tab allows the selection of training data to be used to
+generate a surrogate model (Figure
+<a class="reference external" href="#fig.surrogate.data">[fig.surrogate.data]</a>). If the session is
+associated with a flowsheet data (results from a single flowsheet run,
+optimization runs, or UQ samples), then the flowsheet data is available
+to be the training data and the table will be populated accordingly.</p>
+<div class="figure" id="fig-surrogate-data">
+<img alt="Surrogate Data Form" src="../_images/data_form.svg" /><p class="caption"><span class="caption-text">Surrogate Data Form</span></p>
+</div>
+<ol class="arabic simple">
+<li><strong>Run</strong> the surrogate modeling method.</li>
+<li><strong>Stop</strong> the surrogate modeling method.</li>
+<li><strong>Surrogate modeling tool</strong> enables the user to select the desired
+surrogate modeling tool from the <strong>Tool</strong> drop-down list.</li>
+<li><strong>Description</strong> of the selected surrogate method.</li>
+<li><strong>Add Samples</strong> enables the user to generate new training data using
+a model specified in the flowsheet or an emulator (i.e., a basic
+response surface provided as part of the UQ module).</li>
+<li><strong>Flowsheet Results</strong> are summarized below.</li>
+<li>The data table has a <strong>Menu</strong> drop-down list that contains display,
+import/export, and edit commands.</li>
+<li>Select a data filter from the <strong>Current Filter</strong> drop-down for
+current data display.</li>
+<li>Add or edit new data filters from <strong>Edit Filters</strong>. This dialog is
+shown in Figure <a class="reference external" href="#fig.filter.1.result">[fig.filter.1.result]</a>.</li>
+<li>The <strong>Display</strong> table displays the results of flowsheet evaluations
+stored in the FOQUS session file. The columns are:<ul>
+<li><strong>SetName</strong> is a name assigned to samples. This is typically
+equivalent to one UQ sample run or one optimization run.</li>
+<li><strong>ResultName</strong> is a string representing a result name.</li>
+<li><strong>Error</strong> is the simulation result status; 0 indicates success,
+other numbers represent an error. A column for each node displays
+the error status of each node.</li>
+<li><strong>Time</strong> displays the time when the result was stored.</li>
+<li><strong>Elapsed Time</strong> describes how long a result took to calculate.</li>
+<li><strong>Tags</strong> enables a list of string labels to be applied to results.
+This could be used to mark results to be used for a particular
+purpose such as model validation.</li>
+<li>The remaining columns display the input and output variables.</li>
+</ul>
+</li>
+</ol>
+<p>Filters can be used to select data. See Section
+<a class="reference external" href="#tutorials.fs.data">[tutorials.fs.data]</a> for more information on
+creating filters to the results. The “All” and “None” filters are
+available by default. These can be used, for example, to assign all the
+data as a training set, or to split the data into a separate training
+set and a test set.</p>
+</div>
+<div class="section" id="variables">
+<h2>Variables<a class="headerlink" href="#variables" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>Variables</strong> section is illustrated in Figure
+<a class="reference external" href="#fig.surrogate.vars">[fig.surrogate.vars]</a>. This section allows
+selection of input and output variables used in a surrogate model. Some
+surrogate methods such as ALAMO may generate and run additional samples
+while building surrogates. The <strong>Min/Max</strong> columns provide bounds on the
+variables. Selecting the checkbox next to the variable <strong>Name</strong>
+indicates that it should be included in the surrogate generation.
+Failure to select a checkbox for any variables will result in error
+during surrogate generation.</p>
+<div class="figure" id="fig-surrogate-vars">
+<img alt="Surrogate Variable Selection" src="../_images/vars.svg" /><p class="caption"><span class="caption-text">Surrogate Variable Selection</span></p>
+</div>
+</div>
+<div class="section" id="method-settings">
+<h2>Method Settings<a class="headerlink" href="#method-settings" title="Permalink to this headline">¶</a></h2>
+<p>The <strong>Method Settings</strong> table is illustrated in Figure
+<a class="reference external" href="#fig.surrogate.settings">[fig.surrogate.settings]</a>. The settings
+available in this table depend on the surrogate tool. A description of
+each setting is provided in the third column of the table.</p>
+<div class="figure" id="fig-surrogate-settings">
+<img alt="Surrogate Settings" src="../_images/settings.svg" /><p class="caption"><span class="caption-text">Surrogate Settings</span></p>
+</div>
+</div>
+<div class="section" id="execution">
+<h2>Execution<a class="headerlink" href="#execution" title="Permalink to this headline">¶</a></h2>
+<p>Clicking <strong>Run</strong> starts the surrogate model building process. The
+execution monitor displays after <strong>Run</strong> is clicked (see Figure
+<a class="reference external" href="#fig.surrogate.monitor">[fig.surrogate.monitor]</a>). The execution
+monitor displays the status of the surrogate build. The messages
+displayed depends on the surrogate tool.</p>
+<div class="figure" id="fig-surrogate-monitor">
+<img alt="Surrogate Status Monitor" src="../_images/monitor.svg" /><p class="caption"><span class="caption-text">Surrogate Status Monitor</span></p>
+</div>
+<p>After a successful execution and model building, the results are
+displayed. Note that in this case, the surrogate modeling tool ends with
+an error, the errors are displayed in this window. After surrogate
+generation completes, one or two Python files will be generated
+depending on the tool. Each tool generates a file that encodes the
+surrogate model as a general Python script that can be used to evaluate
+output values for UQ analyses within the UQ module. The other file, if
+available, is a FOQUS flowsheet plugin model that allows the surrogate
+to be run in a FOQUS flowsheet. The next version of FOQUS will generate
+a FOQUS flowsheet plugin model (i.e., the second file) for all surrogate
+tools.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial/index.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Surrogate Modeling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

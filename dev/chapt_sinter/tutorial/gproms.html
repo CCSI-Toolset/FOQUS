@@ -1,0 +1,585 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>gPROMS Configuration &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Heat Integration" href="../../chapt_heat/index.html" />
+    <link rel="prev" title="Microsoft Excel Configuration" href="excel.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Simulation Standard Interface (SimSinter)</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">SimSinter Configuration</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="ap.html">Aspen Plus Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="acm.html">Aspen Custom Modeler Configuration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="excel.html">Microsoft Excel Configuration</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">gPROMS Configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Simulation Standard Interface (SimSinter)</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>gPROMS Configuration</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_sinter/tutorial/gproms.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="gproms-configuration">
+<span id="sec-tut-simsinter-gproms"></span><h1>gPROMS Configuration<a class="headerlink" href="#gproms-configuration" title="Permalink to this headline">¶</a></h1>
+<p>gPROMS is significantly different from the other simulators SimSinter
+supports, and the workflow is also significantly different. If you plan
+to use gPROMS simulations with FOQUS, the CCSI team strongly encourages
+you to read the “SimSinter gPROMS Technical Manual,” which is included
+in the FOQUS distribution. The default location is at C:Program Files
+(x86)foqus \foqus \doc. It is also available on the CCSI website.</p>
+<p>Unlike Aspen, changes must be made to the gPROMS simulation process in
+order to work with SimSinter. Therefore, this section consists of a
+series of tutorials for every step of configuring gPROMS and SimSinter
+to work together. All the tutorials are required in order to have a
+gPROMS simulation be runnable with SimSinter. They are divided up to
+make later reference easier.</p>
+<div class="section" id="configuring-gproms-to-work-with-simsinter">
+<span id="gpromsconfigsubsection"></span><h2>Configuring gPROMS to Work with SimSinter<a class="headerlink" href="#configuring-gproms-to-work-with-simsinter" title="Permalink to this headline">¶</a></h2>
+<p>Unlike Aspen, changes have to be made to the gPROMS simulation process
+in order to work with SimSinter. In fact, SimSinter does not define the
+inputs to the simulation, gPROMS does. On the other hand, gPROMS does
+not determine the outputs, SimSinter does. This odd and
+counter-intuitive situation is the result of how gPROMS <a class="reference external" href="gO:Run_XML">gO:Run_XML</a> is
+designed.</p>
+<p>The modification to the gPROMS simulation must be done by a developer
+with an intimate understanding of the simulation, usually the simulation
+writer. In some cases additional variables may need to be added to
+handle an extra step between taking the input and inserting it into the
+variable where gPROMS will use the data.</p>
+<ol class="arabic">
+<li><p class="first">Open the gPROMS simulation file (ends in .gPJ) in ModelBuilder 4.0 or
+newer. For this example, use the gPROMS install test file
+“BufferTank_FO.gPJ”, found in:</p>
+<p>C:\ SimSinterFilesgPROMS_Test\ BufferTank_FO.gPJ</p>
+<p>Double-click on the .gPJ file to open ModelBuilder, as shown in
+Figure
+<a class="reference external" href="#fig.sinter.gproms.openbuffertank">[fig.sinter.gproms.openbuffertank]</a>.</p>
+<div class="figure" id="fig-sinter-gproms-openbuffertank">
+<img alt="Opening BufferTank in gPROMS Model Builder" src="../../_images/01_OpenBufferTank.png" />
+<p class="caption"><span class="caption-text">Opening BufferTank in gPROMS Model Builder</span></p>
+</div>
+</li>
+<li><p class="first">This simulation was originally a simple BufferTank simulation.
+However, it was modified into an example of all the different kinds
+of variables the user can pass into gPROMS via SimSinter. Therefore,
+it has a lot of extra variables that do not really do anything, with
+very generic names, like “SingleInt.” The simulation consists of a
+single model, “BufferTank”, that contains all the simulation logic,
+and most of the parameter and variable declarations. The SimSinter
+simulation will change some of these PARAMETERS and VARIABLES to
+change the output of the simulation.</p>
+<div class="figure" id="fig-sinter-gproms-viewbuffertank">
+<img alt="Viewing BufferTank in gPROMS Model Builder" src="../../_images/02_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Viewing BufferTank in gPROMS Model Builder</span></p>
+</div>
+</li>
+<li><p class="first">The example file contains two Processes. SimSinter can only run
+gPROMS Processes, so any gPROMS simulation must be driven from a
+Process. “SimulateTank” is the original BufferTank example with
+hardcoded values, “SimulateTank_Sinter” contains the example of
+setting values with Sinter. The “SimulateTank_Sinter” example will be
+recreated in this tutorial.</p>
+<div class="figure" id="fig-sinter-gproms-viewsimulatetank">
+<img alt="Viewing SimulateTank in gPROMS Model Builder" src="../../_images/03_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Viewing SimulateTank in gPROMS Model Builder</span></p>
+</div>
+</li>
+<li><p class="first">First copy the existing hard-coded Process “SimulateTank”.</p>
+<div class="figure" id="fig-sinter-gproms-copysimulatetank">
+<img alt="Copying SimulateTank" src="../../_images/04_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Copying SimulateTank</span></p>
+</div>
+</li>
+<li><p class="first">Right-click on Processes and select <strong>Paste</strong> to make a new process.</p>
+<div class="figure" id="fig-sinter-gproms-pastesimulatetank">
+<img alt="Paste SimulateTank" src="../../_images/05_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Paste SimulateTank</span></p>
+</div>
+</li>
+<li><p class="first">The new process will be named “SimulateTank_1”. Rename the process by
+right-clicking on it and selecting <strong>Rename</strong>.</p>
+<div class="figure" id="fig-sinter-gproms-renamesimulatetank">
+<img alt="Rename SimulateTank" src="../../_images/06_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Rename SimulateTank</span></p>
+</div>
+</li>
+<li><p class="first">Now open up the new “SimulateTank_tutorial” Process. It has the same
+hard-coded values as “SimulateTank”.</p>
+<div class="figure" id="id1">
+<img alt="Opening SimulateTank_tutorial" src="../../_images/07_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Opening SimulateTank_tutorial</span></p>
+</div>
+<p>[fig.sinter.gproms.opensimulatetank_tutorial]</p>
+</li>
+<li><p class="first">First, the user needs to add a FOREIGN_OBJECT named “FO” in the
+PARAMETER section. Then the user needs to set that FOREIGN_OBJECT to
+“SimpleEventFOI::dummy” in the SET section. This FOREIGN_OBJECT is
+how inputs are received from SimSinter.</p>
+<div class="figure" id="fig-sinter-gproms-foreignobject">
+<img alt="Adding the FOREIGN_OBJECT" src="../../_images/08_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Adding the FOREIGN_OBJECT</span></p>
+</div>
+</li>
+<li><p class="first">This particular simulation has a large number of input variables that
+simply demonstrate how to set different types. These are named based
+on their type. Any variable named similarly to “SingleInt” or
+“ArraySelector” can be safely ignored for this tutorial. For a full
+list of the methods for setting different types see the later section
+specifically for covering that. Any variable in the simulation can be
+an input, whether it is defined in the Process or one of the models
+referenced by the process, or in a model referenced by a model,� etc.
+All inputs take their values from the FOREIGN_OBJECT defined,
+followed by the type name, two underscores, the input variable name,
+an open parenthesis, an optional index variable (for arrays), and
+closed with a close parenthesis and a semicolon. For a scalar:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FO</span><span class="o">.&lt;</span><span class="n">Type</span><span class="o">&gt;</span><span class="n">__</span><span class="o">&lt;</span><span class="n">InputName</span><span class="o">&gt;</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>SimSinter can only handle arrays inputted in FOR loops such as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">FOR</span> <span class="n">ii</span> <span class="p">:</span><span class="o">=</span> <span class="mi">1</span> <span class="n">TO</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">size</span><span class="o">&gt;</span> <span class="n">DO</span>
+  <span class="o">&lt;</span><span class="n">ArrayName</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ii</span><span class="p">)</span> <span class="p">:</span><span class="o">=</span> <span class="n">FO</span><span class="o">.&lt;</span><span class="n">Type</span><span class="o">&gt;</span><span class="mi">1</span><span class="n">__</span><span class="o">&lt;</span><span class="n">InputName</span><span class="o">&gt;</span><span class="p">(</span><span class="n">ii</span><span class="p">);</span>
+<span class="n">END</span>
+</pre></div>
+</div>
+<p>For this example the user only really needs to set “T101.Alpha” in
+PARAMETER, “T101.FlowIn” in ASSIGN, and “T101.Height” in INITIAL.</p>
+<div class="figure" id="fig-sinter-gproms-setupinputvariables">
+<img alt="Setting up Input Variables" src="../../_images/09_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Setting up Input Variables</span></p>
+</div>
+</li>
+<li><p class="first">Now test “SimulateTank_tutorial” by selecting it and clicking the
+green <strong>Simulate</strong> triangle. When the simulation runs it will ask for
+every input variable the user has defined. For the example variables
+that do not effect the simulation, such as “SingleInt”, any valid
+value will work. For the values that do effect the simulation, these
+values work:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">REAL__AlphaFO</span> <span class="o">=</span> <span class="o">.</span><span class="mi">08</span>
+<span class="n">REAL__FlowInFO</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">REAL__HeightFO</span> <span class="o">=</span> <span class="mf">7.5</span>
+</pre></div>
+</div>
+<div class="figure" id="fig-sinter-gproms-testingtutorial">
+<img alt="Testing SimulateTank_Tutorial" src="../../_images/10_EditBufferTank.png" />
+<p class="caption"><span class="caption-text">Testing SimulateTank_Tutorial</span></p>
+</div>
+</li>
+</ol>
+</div>
+<div class="section" id="exporting-an-encrypted-simulation-to-run-with-simsinter">
+<h2>Exporting an Encrypted Simulation to Run with SimSinter<a class="headerlink" href="#exporting-an-encrypted-simulation-to-run-with-simsinter" title="Permalink to this headline">¶</a></h2>
+<p>SimSinter can only run encrypted gPROMS simulations. These files have
+the .gENCRYPT extension. If the additions to the simulation for reading
+input variables ran correctly in the previous section, the user is ready
+to export that process for use by SimSinter.</p>
+<ol class="arabic">
+<li><p class="first">Right-click on the Process to export (“SimulateTank_tutorial”) and
+select <strong>Export</strong>.</p>
+<div class="figure" id="fig-sinter-gproms-selectexport">
+<img alt="Select “Export”" src="../../_images/11_Export.png" />
+<p class="caption"><span class="caption-text">Select “Export”</span></p>
+</div>
+</li>
+<li><p class="first">In the resulting Export window, select <strong>Encrypted input file for
+simulation by gO:RUN</strong> and click <strong>OK</strong>.</p>
+<div class="figure" id="fig-sinter-gproms-selectencrypted">
+<img alt="Select “Encrypted Input File”" src="../../_images/12_Export.png" />
+<p class="caption"><span class="caption-text">Select “Encrypted Input File”</span></p>
+</div>
+</li>
+<li><p class="first">On the second page, set the <strong>Export directory</strong> to a directory the
+user can find. Preferably one without any other files in it so the
+user will not be confused by the output. If the filename or the
+<strong>Encryption password</strong> are not changed, SimSinter will be able to
+guess the password. If either of those values are changed, the user
+will have to set the correct password in the SinterConfigGUI password
+setting. A Decryption password is probably unnecessary, as the user
+has the original file. SimSinter does not use it. When the user has
+finished setting up these fields, click <strong>Export Entity</strong>.</p>
+<div class="figure" id="fig-sinter-gproms-exportentity">
+<img alt="Export Entity Page" src="../../_images/13_Export.png" />
+<p class="caption"><span class="caption-text">Export Entity Page</span></p>
+</div>
+</li>
+<li><p class="first">The resulting .gENCRYPT file will be saved to a subdirectory named
+“Input” in the save directory specified in Step 3. The first part of
+the name will be identical to the .gPJ filename. The user should not
+rename it because the SinterConfig file will guess this name, and
+currently changing it requires editing the SinterConfig file.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="configuring-simsinter-to-work-with-gproms">
+<h2>Configuring SimSinter to Work with gPROMS<a class="headerlink" href="#configuring-simsinter-to-work-with-gproms" title="Permalink to this headline">¶</a></h2>
+<p>Now that the gPROMS process has been prepared, the SimSinter
+configuration can be done.</p>
+<ol class="arabic">
+<li><p class="first">The “SinterConfigGUI” can be launched from FOQUS, via the
+<strong>Create/Edit</strong> button found in <strong>File</strong><span class="math notranslate nohighlight">\(\rightarrow\)</span>
+<strong>Add/Update Model to Turbine</strong> or “SinterConfigGUI” may be run on
+its own by selecting <strong>CCSI Tools</strong> <span class="math notranslate nohighlight">\(\rightarrow\)</span> <strong>FOQUS</strong>
+<span class="math notranslate nohighlight">\(\rightarrow\)</span> <strong>SinterConfigGUI</strong> from the Start menu.</p>
+</li>
+<li><p class="first">The splash window displays, as shown in Figure
+<a class="reference external" href="#fig.sinter.gproms.splash">[fig.sinter.gproms.splash]</a>. The user
+may click the splash screen to proceed, or wait 10 seconds for it to
+close automatically.</p>
+<div class="figure" id="fig-sinter-gproms-splash">
+<img alt="SinterConfigGUI Splash Screen" src="../../_images/01_Splash_Screen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Splash Screen</span></p>
+</div>
+</li>
+<li><p class="first">The SinterConfigGUI Open Simulation window displays (Figure
+<a class="reference external" href="#fig.sinter.gproms.openpage">[fig.sinter.gproms.openpage]</a>). If
+“SinterConfigGUI” was opened from FOQUS, the filename text box
+already contains the correct file. To proceed immediately click
+<strong>Open File and Configure Variables</strong> or click <strong>Browse</strong> to search
+for the file.</p>
+<p>This tutorial will use the .gPJ file edited in Section
+<a class="reference external" href="#gPROMSConfigSubSection">1.1</a>. Remember that SinterConfigGUI
+cannot read the .gENCRYPT file that is actually run by SimSinter.
+Instead, the user must open the .gPJ file the ModelBuilder uses.</p>
+<p>Once the file is selected, click <strong>Open File and Configure
+Variables.</strong></p>
+<div class="figure" id="fig-sinter-gproms-openpage">
+<img alt="SinterConfigGUI Open Simulation Screen" src="../../_images/02_FileOpenScreen.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Open Simulation Screen</span></p>
+</div>
+</li>
+<li><p class="first">The SinterConfigGUI Simulation Meta-Data window displays as shown in
+(Figure
+<a class="reference external" href="#fig.sinter.gproms.savename">[fig.sinter.gproms.savename]</a>).
+Unlike the other simulations, gPROMS has not started up in any way.
+SinterConfigGUI does not get information from gPROMS directly, it
+must parse the .gPJ file instead.</p>
+</li>
+<li><p class="first">The first and most important piece of meta-data is the <strong>SimSinter
+Save Location</strong> at the top of the window. This is where the Sinter
+configuration file is saved. The system suggests a file location and
+name. The user should confirm this is the intended location of the
+files to not accidently overwrite other files. Enter the remaining
+fields to provide the meta-data to describe the simulation that was
+just opened and then click <strong>Next</strong>.</p>
+<div class="figure" id="fig-sinter-gproms-savename">
+<img alt="SinterConfigGUI Simulation Meta-Data Save Text Box" src="../../_images/17_MetaDataPage.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Simulation Meta-Data Save Text Box</span></p>
+</div>
+</li>
+<li><p class="first">The SinterConfigGUI Variable Configuration Page window displays as
+shown in Figure
+<a class="reference external" href="#fig.sinter.gproms.settings">[fig.sinter.gproms.settings]</a>.
+gPROMS has two settings, <strong>ProcessName</strong> and <strong>password</strong>. SimSinter
+has guessed at both the <strong>ProcessName</strong> and the <strong>password</strong>. For
+this example the <strong>password</strong> is correct, but the <strong>ProcessName</strong> is
+incorrect. SimulateTank is the process that isn’t configured to work
+with SimSinter. On the left side we can see the <strong>Variable Tree</strong>.
+The root is connected to the three processes defined in this .gPJ
+file. First, change the <strong>ProcessName</strong> to “SimulateTank_tutorial”.</p>
+<div class="figure" id="fig-sinter-gproms-settings">
+<img alt="SinterConfigGUI gPROMS Settings Configuration" src="../../_images/18_Settings.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI gPROMS Settings Configuration</span></p>
+</div>
+</li>
+<li><p class="first">After changing the <strong>ProcessName</strong>, click Enter (or clicks away). The
+<strong>Selected Input Variables</strong> will automatically display all of the
+available input variables. This is because the input variables have
+been configured in gPROMS, and SimSinter has parsed them out of the
+.gPJ file, as long as you have the <strong>ProcessName</strong> set correctly.
+This also means that the user cannot add new input variables in
+SinterConfigGUI, only in gPROMS. SimSinter also does its best to
+identify the <strong>Default</strong> values, <strong>Min</strong>, and <strong>Max</strong> of the
+variables. The default can only be calculated from the file if it was
+defined purely in terms of actual numbers. SimSinter cannot evaluate
+other variables or functions. Therefore,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEFAULT</span> <span class="mi">2</span> <span class="o">*</span> <span class="mf">3.1415</span> <span class="o">*</span> <span class="mi">12</span>
+</pre></div>
+</div>
+<p>will work. However,</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DEFAULT</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">PI</span> <span class="o">*</span> <span class="n">radius</span>
+</pre></div>
+</div>
+<p>will not work, because SimSinter does not know the value of either PI
+or radius, and SimSinter will just set the default to 0.</p>
+<p><strong>Min</strong> and <strong>Max</strong> values are taken from the variable type, if there
+is one.</p>
+<div class="figure" id="fig-sinter-gproms-inputs">
+<img alt="SinterConfigGUI Automatically Displays Input Variables" src="../../_images/19_InputVariables.png" />
+<p class="caption"><span class="caption-text">SinterConfigGUI Automatically Displays Input Variables</span></p>
+</div>
+</li>
+<li><p class="first">Now the output values can be entered. Expand the
+“SimulateTank_tutorial” Process on the Variable Tree, expand the
+“T101” model, and then double-click on “FlowOut” to make it the
+Preview Variable. Notice that the <strong>Make Input</strong> button is disabled.
+As stated above, the user cannot make new Input Variables in
+SinterConfigGUI. Only <strong>Make Output</strong> is allowed.</p>
+<div class="figure" id="fig-sinter-gproms-outputs1">
+<img alt="Preview of the FlowOut Variable" src="../../_images/20_OutputVariables.png" />
+<p class="caption"><span class="caption-text">Preview of the FlowOut Variable</span></p>
+</div>
+</li>
+<li><p class="first">If <strong>Make Output</strong> is clicked, “FlowOut” will be made an Output
+Variable as shown in Figure
+<a class="reference external" href="#fig.sinter.gproms.outputs2">[fig.sinter.gproms.outputs2]</a>. The
+Description can be updated, but SimSinter made a good guess in this
+example; therefore, there is no need to change the description.</p>
+<div class="figure" id="fig-sinter-gproms-outputs2">
+<img alt="FlowOut as an Input Variable" src="../../_images/21_OutputVariables.png" />
+<p class="caption"><span class="caption-text">FlowOut as an Input Variable</span></p>
+</div>
+</li>
+<li><p class="first">By the same method, make Output Variables “HoldUp” and “Height.”</p>
+<div class="figure" id="fig-sinter-gproms-outputs3">
+<img alt="HoldUp and Height Output Variables" src="../../_images/22_OutputVariables.png" />
+<p class="caption"><span class="caption-text">HoldUp and Height Output Variables</span></p>
+</div>
+</li>
+<li><p class="first">The variables names should be made shorter. Simply click on the
+<strong>Name</strong> column and change the name to your preferred name.</p>
+<div class="figure" id="fig-sinter-gproms-outputs4">
+<img alt="Editing Variable Names" src="../../_images/23_OutputVariables.png" />
+<p class="caption"><span class="caption-text">Editing Variable Names</span></p>
+</div>
+</li>
+<li><p class="first">For future testing, make sure the defaults are good values. The only
+three input variables that matter have the following defaults:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">AlphaFO</span>  <span class="o">=</span> <span class="mf">0.8</span>
+<span class="n">FlowInFO</span> <span class="o">=</span> <span class="mi">14</span>
+<span class="n">HeightFO</span> <span class="o">=</span> <span class="mf">7.5</span>
+</pre></div>
+</div>
+<div class="figure" id="fig-sinter-gproms-defaults">
+<img alt="Editing Defaults" src="../../_images/24_Defaults.png" />
+<p class="caption"><span class="caption-text">Editing Defaults</span></p>
+</div>
+</li>
+<li><p class="first">When finished making output variables, click <strong>Next</strong> at the bottom
+of the variables page. If there were any input vectors, the Vector
+Default Initialization page will display. Here the default values of
+the vectors may be edited.</p>
+<div class="figure" id="fig-sinter-gproms-vectors">
+<img alt="Editing Vectors" src="../../_images/25_Vectorss.png" />
+<p class="caption"><span class="caption-text">Editing Vectors</span></p>
+</div>
+</li>
+<li><p class="first">Finally, click <strong>Finish</strong> and save your configuration file. Your
+gPROMS simulation should now be runnable from FOQUS.</p>
+</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../../chapt_heat/index.html" class="btn btn-neutral float-right" title="Heat Integration" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="excel.html" class="btn btn-neutral float-left" title="Microsoft Excel Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

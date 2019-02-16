@@ -1,0 +1,325 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Surrogates with UQ Tools &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Surrogates with the Flowsheet" href="flowsheet.html" />
+    <link rel="prev" title="BSS-ANOVA" href="bssanova.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Surrogate Modeling</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Surrogate Models Overview</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="alamo.html">ALAMO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="acosso.html">ACOSSO</a></li>
+<li class="toctree-l4"><a class="reference internal" href="bssanova.html">BSS-ANOVA</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Surrogates with UQ Tools</a></li>
+<li class="toctree-l4"><a class="reference internal" href="flowsheet.html">Surrogates with the Flowsheet</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Surrogate Modeling</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Surrogates with UQ Tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_surrogates/tutorial/uq_model.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="surrogates-with-uq-tools">
+<span id="tutorial-surrogate-uq"></span><h1>Surrogates with UQ Tools<a class="headerlink" href="#surrogates-with-uq-tools" title="Permalink to this headline">¶</a></h1>
+<p>For the purpose of this tutorial, we will use ACOSSO to demonstrate the
+use of a surrogate within the UQ module. The steps are the same
+regardless of the surrogate tool chosen.</p>
+<p>To perform the UQ analysis, Python is required for use the “User
+Regression” response surface that will be used. Before starting this
+tutorial, you will need to install Python 2.7.x (not Python 3). (See
+<a class="reference external" href="https://www.python.org/downloads/">https://www.python.org/downloads/</a>). In addition, if *.py files have
+been re-associated with other executables (e.g. editors), please change
+the association back to python.exe.</p>
+<ol class="arabic simple">
+<li>Load a fresh session by clicking the Session button from the Home
+window. Select Open Session and then navigate to the “examples/UQ”
+directory. Select “Rosenbrock_no_vectors.foqus.” This will load a
+session with a simple flowsheet containing a single node.</li>
+<li>Click Settings and ensure that (1) FOQUS Flowsheet Run Method is set
+to “Local”, and that (2) proper paths are set for PSUADE and RScript.</li>
+<li>Train an ACOSSO surrogate of this node by clicking the <strong>Surrogates</strong>
+button from the Home window.<ol class="arabic">
+<li>Click Add Samples and select “Use Flowsheet”. This will display
+the Simulation Ensemble Setup dialog.</li>
+<li>Within this dialog, ensure all variables are set to “Variable”
+type in the Distributions tab. In the Sampling scheme tab, select
+“Monte Carlo” as your sampling scheme, set the number of samples
+to 100, and then click Generate Samples to generate the set of
+input values. Click Done to return to the Surrogates screen.</li>
+<li>Once sample generation completes, click the Uncertainty button
+from the Home window.</li>
+<li>Click the Launch button to generate the samples.</li>
+<li>Click the Surrogates button from the Home window. The Data tab of
+the Surrogates screen should now displays a Flowsheet Results
+table that is populated with the values of the new input samples.</li>
+<li>From the Variables tab, select all of the checkboxes. (There
+should be six checkboxes for input variables and one checkbox for
+output variable.) Here, you are defining the inputs and outputs
+for your surrogate function.</li>
+<li>From the Method Settings tab, note the name of the file next to
+“FOQUS Model (for UQ)”. This will be the name of the UQ driver
+file that contains the Python code that implements the surrogate
+function.</li>
+<li>On top of this screen, select “ACOSSO” as your surrogate tool from
+the Tool drop-down list and then click on the green arrow to start
+training the surrogate.</li>
+<li>Once complete, a popup window will display, reminding you of the
+location of the drive file. Note the location as you will need
+this information later inside the UQ module.</li>
+</ol>
+</li>
+<li>Perform a response-surface-based uncertainty analysis by clicking the
+<strong>Uncertainty</strong> button from the Home window.<ol class="arabic">
+<li>In the Uncertainty Quantification Simulation Ensembles table. A
+row corresponding to the ensemble that was just generated for
+surrogate training should be displayed. This same ensemble can be
+used or a new one can be created to be used as the test data set
+for analysis. In the row corresponding to the ensemble to be
+analyzed, click the Analyze button to proceed. This action will
+bring up an analysis dialog.</li>
+<li>Within this analysis dialog, navigate to “Analysis” section. For
+Step 1, select “Response Surface”. For Step 3, select “User
+Regression” in the first drop-down list. Lastly, for “User
+Regression File”, browse to the same location as the UQ driver
+file that was generated within the Surrogates module. (This is the
+same location that was previously noted from the popup message.)
+At this point, your surrogate function is now set up as a
+user-defined response surface and all response-surface-based UQ
+analyses are accessible.</li>
+<li>Click Validate (Step 4) to perform response surface validation.
+Once complete, a figure with cross-validation results will be
+displayed: a histogram of errors to the left and a plot of
+predicted values versus actual values to the right. For more
+information, refer to the UQ Tutorial in
+Section<a class="reference external" href="#tutorial.uq.rs">[tutorial.uq.rs]</a>.</li>
+<li>Once a “Response Surface” has been validated, other UQ analysis
+options are available. Choose “Uncertainty Analysis” in Step 5 and
+click Analyze to perform uncertainty analysis using your ACOSSO
+surrogate.</li>
+</ol>
+</li>
+</ol>
+<p>During validation, if the error, “RSAnalyzer: RSTest_hs.m does not
+exist.” displays, this is likely caused by incompatibility with the
+surrogate and the test data. An example scenario might be your test data
+has six inputs, but your surrogate assumes five inputs. This is easily
+fixed by returning to the Surrogates screen, clicking on the
+<strong>Variables</strong> tab, and making sure the appropriate selections are made
+(i.e., check off six inputs instead of just five).</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="flowsheet.html" class="btn btn-neutral float-right" title="Surrogates with the Flowsheet" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="bssanova.html" class="btn btn-neutral float-left" title="BSS-ANOVA" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

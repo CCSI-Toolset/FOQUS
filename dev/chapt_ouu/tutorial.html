@@ -1,0 +1,400 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tutorial &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Surrogate Modeling" href="../chapt_surrogates/index.html" />
+    <link rel="prev" title="Reference" href="reference.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Optimization Under Uncertainty</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="reference.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Tutorial</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-1-ouu-with-discrete-uncertain-parameters-only">Example 1: OUU with Discrete Uncertain Parameters Only</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-2-ouu-with-continuous-uncertain-parameters-only">Example 2: OUU with Continuous Uncertain Parameters Only</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-3-ouu-with-continuous-uncertain-parameters-and-response-surface">Example 3: OUU with Continuous Uncertain Parameters and Response Surface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-4-ouu-with-discrete-and-continuous-uncertain-parameters">Example 4: OUU with Discrete and Continuous Uncertain Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-5-ouu-with-mixed-uncertain-parameters-and-response-surface">Example 5: OUU with Mixed Uncertain Parameters and Response Surface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-6-ouu-with-user-provided-samples-and-response-surface">Example 6: OUU with User-provided Samples and Response Surface</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-7-ouu-with-large-user-provided-samples-and-response-surface">Example 7: OUU with Large User-provided Samples and Response Surface</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Optimization Under Uncertainty</a> &raquo;</li>
+        
+      <li>Tutorial</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapt_ouu/tutorial.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tutorial">
+<h1>Tutorial<a class="headerlink" href="#tutorial" title="Permalink to this headline">¶</a></h1>
+<p>This section walks through a few examples of running OUU.</p>
+<div class="section" id="example-1-ouu-with-discrete-uncertain-parameters-only">
+<h2>Example 1: OUU with Discrete Uncertain Parameters Only<a class="headerlink" href="#example-1-ouu-with-discrete-uncertain-parameters-only" title="Permalink to this headline">¶</a></h2>
+<p>This example has only discrete uncertain parameters and the objective
+function is computed from the mean estimation with the scenarios from a
+sample file.</p>
+<div class="figure" id="id1">
+<a class="reference internal image-reference" href="../_images/2_OUUExample1.png"><img alt="OUU Example with Discrete Uncertain Parameters" src="../_images/2_OUUExample1.png" style="width: 6.00000in; height: 4.00000in;" /></a>
+<p class="caption"><span class="caption-text">OUU Example with Discrete Uncertain Parameters</span></p>
+</div>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, and variable <span class="math notranslate nohighlight">\(9-12\)</span> as <span class="math notranslate nohighlight">\(Z_3\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
+examples/OUU/test_suite directory and load the x3sample.smp sample
+file (see Figure [fig:ouu_ex1]).</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-2-ouu-with-continuous-uncertain-parameters-only">
+<h2>Example 2: OUU with Continuous Uncertain Parameters Only<a class="headerlink" href="#example-2-ouu-with-continuous-uncertain-parameters-only" title="Permalink to this headline">¶</a></h2>
+<p>This example has only continuous uncertain parameters and the objective
+function is computed from the mean estimation with a Latin hypercube
+sample of size <span class="math notranslate nohighlight">\(200\)</span> for <span class="math notranslate nohighlight">\(Z_4\)</span>.</p>
+<div class="figure" id="id2">
+<a class="reference internal image-reference" href="../_images/3_OUUExample2.png"><img alt="OUU Example with Continuous Uncertain Parameters" src="../_images/3_OUUExample2.png" style="width: 6.00000in; height: 4.00000in;" /></a>
+<p class="caption"><span class="caption-text">OUU Example with Continuous Uncertain Parameters</span></p>
+</div>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, and variable <span class="math notranslate nohighlight">\(9-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
+new sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’, set ‘Sample Scheme’ to ‘Latin Hypercube’
+and set sample size to <span class="math notranslate nohighlight">\(200\)</span> (see Figure [fig:ouu_ex2]).</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-3-ouu-with-continuous-uncertain-parameters-and-response-surface">
+<h2>Example 3: OUU with Continuous Uncertain Parameters and Response Surface<a class="headerlink" href="#example-3-ouu-with-continuous-uncertain-parameters-and-response-surface" title="Permalink to this headline">¶</a></h2>
+<p>This example is similar to Example 2 except that response surfaces will
+be used on the <span class="math notranslate nohighlight">\(Z_4\)</span> sample (that is, the <span class="math notranslate nohighlight">\(Z_4\)</span> sample will
+be used to construct response surfaces and the means will be estimated
+from a large sample evaluated on the response surfaces).</p>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, and variable <span class="math notranslate nohighlight">\(9-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
+new sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’, set ‘Sample Scheme’ to ‘Latin Hypercube’
+and set sample size to <span class="math notranslate nohighlight">\(200\)</span>.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, check the ‘Use
+Response Surface’ box (see Figure [fig:ouu_ex2]).</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-4-ouu-with-discrete-and-continuous-uncertain-parameters">
+<h2>Example 4: OUU with Discrete and Continuous Uncertain Parameters<a class="headerlink" href="#example-4-ouu-with-discrete-and-continuous-uncertain-parameters" title="Permalink to this headline">¶</a></h2>
+<p>This example has both discrete and continuous parameters. The discrete
+scenarios will be loaded from a sample file. A Latin hypercube sample
+will be generated for the continuous variables.</p>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, variable <span class="math notranslate nohighlight">\(9\)</span> as <span class="math notranslate nohighlight">\(Z_3\)</span>, and
+variable <span class="math notranslate nohighlight">\(10-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
+examples/OUU/test_suite directory and load the x3sample4.smp sample
+file.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
+new sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’, set ‘Sample Scheme’ to Latin hypercube
+and set ‘Sample Size’ to <span class="math notranslate nohighlight">\(100\)</span>.</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-5-ouu-with-mixed-uncertain-parameters-and-response-surface">
+<h2>Example 5: OUU with Mixed Uncertain Parameters and Response Surface<a class="headerlink" href="#example-5-ouu-with-mixed-uncertain-parameters-and-response-surface" title="Permalink to this headline">¶</a></h2>
+<p>This example is similar to Example 4 except that response surfaces will
+be used to estimate the means for the continuous uncertain variables.</p>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, variable <span class="math notranslate nohighlight">\(9\)</span> as <span class="math notranslate nohighlight">\(Z_3\)</span>, and
+variable <span class="math notranslate nohighlight">\(10-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
+examples/OUU/test_suite directory and load the x3sample4.smp sample
+file.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
+new sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’, set ‘Sample Scheme’ to Latin hypercube
+and set ‘Sample Size’ to <span class="math notranslate nohighlight">\(100\)</span>.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, check the ‘Use
+Response Surface’ box.</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-6-ouu-with-user-provided-samples-and-response-surface">
+<h2>Example 6: OUU with User-provided Samples and Response Surface<a class="headerlink" href="#example-6-ouu-with-user-provided-samples-and-response-surface" title="Permalink to this headline">¶</a></h2>
+<p>This example is similar to Example 4 except that a sample for
+<span class="math notranslate nohighlight">\(Z_4\)</span> will be used (instead of the Latin hypercube sample
+generated internally).</p>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, variable <span class="math notranslate nohighlight">\(9\)</span> as <span class="math notranslate nohighlight">\(Z_3\)</span>, and
+variable <span class="math notranslate nohighlight">\(10-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
+examples/OUU/test_suite directory and load the x3sample4.smp sample
+file.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Load
+existing sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’ and load the <span class="math notranslate nohighlight">\(Z_4\)</span> sample
+examples/OUU/test_suite/x4sample4.smp.</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+<div class="section" id="example-7-ouu-with-large-user-provided-samples-and-response-surface">
+<h2>Example 7: OUU with Large User-provided Samples and Response Surface<a class="headerlink" href="#example-7-ouu-with-large-user-provided-samples-and-response-surface" title="Permalink to this headline">¶</a></h2>
+<p>This example is similar to Example 5 except that a sample for
+<span class="math notranslate nohighlight">\(Z_4\)</span> is provided (instead of generated internally).</p>
+<ol class="arabic simple">
+<li>Start FOQUS and click the ‘OUU’ icon.</li>
+<li>Under ‘Model’, browse and load
+examples/OUU/test_suite/ouu_optdriver.in.</li>
+<li>Under ‘Variables’, set variable <span class="math notranslate nohighlight">\(1-4\)</span> as <span class="math notranslate nohighlight">\(Z_1\)</span>, variable
+<span class="math notranslate nohighlight">\(5-8\)</span> as <span class="math notranslate nohighlight">\(Z_2\)</span>, and variable <span class="math notranslate nohighlight">\(9-12\)</span> as <span class="math notranslate nohighlight">\(Z_4\)</span>.</li>
+<li>Under ‘Optimization Setup’, select the first objection function
+(default) and select ‘use model as optimizer’ as the ‘Inner Solver’.</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Load
+existing sample for <span class="math notranslate nohighlight">\(Z_4\)</span>’ and load the <span class="math notranslate nohighlight">\(Z_4\)</span> sample
+examples/OUU/test_suite/x4sampleLarge.smp (<span class="math notranslate nohighlight">\(10000\)</span> sample
+points).</li>
+<li>Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Use
+Response Surface’ and set ‘Sample Size’ to <span class="math notranslate nohighlight">\(100\)</span>.</li>
+<li>Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../chapt_surrogates/index.html" class="btn btn-neutral float-right" title="Surrogate Modeling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reference.html" class="btn btn-neutral float-left" title="Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

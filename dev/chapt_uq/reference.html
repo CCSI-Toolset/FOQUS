@@ -1,0 +1,726 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reference &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial" href="tutorial/index.html" />
+    <link rel="prev" title="Uncertainty Quantification" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Uncertainty Quantification</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#uq-user-interface">UQ User Interface</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial/index.html">Tutorial</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">Uncertainty Quantification</a> &raquo;</li>
+        
+      <li>Reference</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/chapt_uq/reference.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <p>[sec:uq_overview]</p>
+<div class="section" id="reference">
+<h1>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">¶</a></h1>
+<p>The Uncertainty Quantification (UQ) module of FOQUS provides a multitude
+of analysis and visualization capabilities to facilitate the
+understanding of uncertainty’s impact on a given system. In a generic UQ
+study, the workflow is usually comprised of the following steps:</p>
+<ol class="arabic simple">
+<li>Define the objectives of the analysis.</li>
+<li>Specify and acquire the simulation model, which implements an
+input-to-output mapping from inputs to outputs.</li>
+<li>Select the inputs that have uncertainty and characterize said
+uncertainty in the form of <em>prior</em> distributions.</li>
+<li>Identify relevant data from physical experiments that can be used to
+refine these prior distributions on the inputs.</li>
+<li>Generate a set of input samples according to the input distribution.</li>
+<li>Propagate the set of input samples through the simulation model to
+get the corresponding output values.</li>
+<li>Analyze the results to make informed decisions about subsequent
+analyses.</li>
+</ol>
+<p>FOQUS UQ provides tools to perform Steps 5-7. With respect to Step 7, a
+variety of analysis capabilities are available. They include parameter
+screening methods, response surface construction/validation/prediction,
+uncertainty analysis, sensitivity analysis, and visualization.</p>
+<p>In this chapter, components of the UQ user interface are first
+explained, then the use of these components for UQ analyses is
+illustrated.</p>
+<div class="section" id="uq-user-interface">
+<h2>UQ User Interface<a class="headerlink" href="#uq-user-interface" title="Permalink to this headline">¶</a></h2>
+<p>The UQ module enables the user to perform UQ studies on a flowsheet.
+From the Uncertainty button on the Home window, the user can configure
+different simulation ensembles (different sets of samples generated
+using different sampling schemes), run them, and perform analyses. This
+screen is illustrated in Figure <a class="reference external" href="#fig:uq_screen">[fig:uq_screen]</a>.</p>
+<div class="figure" id="id1">
+<img alt="Uncertainty Quantification Screen" src="../_images/1_UQScreen2.png" />
+<p class="caption"><span class="caption-text">Uncertainty Quantification Screen</span></p>
+</div>
+<p>[fig:uq_screen]</p>
+<ol class="arabic">
+<li><p class="first"><strong>Simulation Ensemble Table</strong> displays all of the simulation
+ensembles: each ensemble being a row in the table. A simulation
+ensemble is a collection of sample points where each sample point has
+a different set of values for the uncertain variables. The values of
+these variables are generated based on the sampling scheme designated
+by the user. When launched, the output values of the sample points
+are calculated based on the generated sample input values.
+Subsequently, the corresponding simulation outputs can be analyzed.
+For each ensemble, the table displays the <strong>Ensemble</strong> index, <strong>Run
+Status</strong> (how many have been completed), <strong>Setup</strong> and <strong>Launch</strong>
+options (discussed below), and a <strong>Descriptor</strong>. The <strong>Descriptor</strong>
+contains the name of the corresponding node in the flowsheet or the
+name of the file if the ensemble was loaded from a file. Additional
+sample information such as <strong># Inputs</strong>, <strong># Outputs</strong>, <strong>Sample
+Design</strong>, and <strong>Sample Size</strong> are also displayed on the right.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><strong>Add New</strong> creates a simulation ensemble (a set of input samples)
+as a new row in the <strong>Simulation Ensemble Table</strong>. Once clicked, a
+dialog is displayed to prompt the user to choose between using (1)
+a flowsheet (an exact simulation model) or (2) a response surface
+(an approximate simulation model or an emulator) associated with
+the ensemble.</div>
+<div class="line">If using an emulator, the user must browse a PSUADE-formatted file
+that contains the training data for the emulator (in this version,
+the response surface type has been designated inside the sample
+file and can only be changed by editing the sample file) and select
+the output(s) to be evaluated by the trained emulator.
+Subsequently, a simulation setup dialog box is displayed for
+setting up the distributions of input variables and the sampling
+scheme to generate samples of the uncertain input variables. This
+<strong>Simulation Ensemble Setup</strong> dialog is explained in further detail
+in Section <a class="reference external" href="#subsec:uq_simsetup">1.1</a>.</div>
+</div>
+</li>
+<li><p class="first"><strong>Load from File</strong> loads a simulation ensemble from a sample file
+that conforms to the PSUADE full file format. (See Section
+<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a> for details on the PSUADE full
+file format.) The user can click <strong>Save Selected</strong> to save an
+existing ensemble as a PSUADE full file, and load it by clicking
+<strong>Load from File</strong> to perform further analyses.</p>
+</li>
+<li><p class="first"><strong>Clone Selected</strong> clones the selected simulation ensemble and adds
+the copy as a new row at the end of the table. This ensemble can then
+be edited (e.g., depending on whether the ensemble has been run, the
+user has different options for modifying the ensemble). This allows
+the user to create a new ensemble similar to the current ensemble
+without having to start from scratch (i.e., setting up the input
+parameters). For example: (1) <strong>Clone Selected</strong> can be used in
+conjunction with <strong>Load from File</strong> to clone an existing ensemble
+before input/output modification to prepare a new but similar
+ensemble for UQ analysis. (2) <strong>Clone Selected</strong> can also be used to
+prepare a fresh ensemble for evaluation via a different simulation
+model. In this case, the user should save the cloned ensemble, reload
+it by clicking <strong>Add New</strong>, associate it with a node, and then click
+<strong>Launch</strong> to start the runs.</p>
+</li>
+<li><p class="first"><strong>Delete Selected</strong> deletes the currently selected simulation
+ensemble.</p>
+</li>
+<li><p class="first"><strong>Revise</strong> enables a user to change a simulation ensemble before
+launching the run. If the ensemble was previously run or it is cloned
+from an already-generated sample, the corresponding button becomes
+<strong>View</strong> so the user can view the input samples in the simulation
+ensemble.</p>
+</li>
+<li><p class="first"><strong>Launch</strong> starts the simulation process of the ensemble. (<strong>Launch</strong>
+is not enabled until the user has setup everything needed for
+simulations.) A simulation is launched for each sample point to
+compute the corresponding outputs.</p>
+</li>
+<li><p class="first"><strong>Analyze</strong>, when enabled (after all simulation results are ready),
+enables the user to perform various UQ analysis to the ensemble. When
+clicked, a new dialog box displays, allowing the user to configure
+and run analysis.</p>
+</li>
+<li><p class="first"><strong>Data Manipulation</strong> enables (1) the deletion of inputs, outputs, or
+samples, (2) the modification of output values for specific sample
+points, and (3) the range-based filtering of samples.</p>
+</li>
+<li><p class="first"><strong>Inspection/Deletion/Output Value Modification</strong> serves three
+purposes: it enables the user to (1) view the numerical values of
+samples in table form, (2) delete variables and/or samples, and (3)
+edit the output values of specific samples. <strong>Deletion</strong> creates a
+new simulation ensemble as a new row in the simulation table that
+contains only those inputs/outputs and samples that were not selected
+for deletion. <strong>Output Value Modification</strong> changes the values within
+the ensemble itself.</p>
+</li>
+<li><p class="first"><strong>Filtering</strong> enables the user to filter samples based on the values
+of an input or output. First, select the ensemble to be filtered from
+the <strong>Simulation Ensemble Table</strong>. Once filtering is complete, a new
+simulation ensemble is added as a new row in the simulation table.
+The new simulation ensemble contains only those samples that satisfy
+the filtering criterion (with input or output samples within the
+specified range).</p>
+</li>
+<li><p class="first"><strong>Reset Table</strong> resets the table to default, meaning all variable and
+sample selections are unselected and output values within the table
+are reverted back to their original values, thus undoing any edits to
+the table.</p>
+</li>
+<li><p class="first">The table displays the values of inputs and outputs for each sample.
+Inputs are highlighted in pink; outputs are highlighted in yellow.
+The user can select which variables (columns) to delete by selecting
+the checkboxes on top. Likewise, the user can select which samples
+(rows) to delete by selecting the checkboxes on the left. Multiple
+samples can also be selected/deselected by using (1) Shift+Click or
+Ctrl+Click to select multiple rows, or (2) right-clicking to bring up
+a menu to check or uncheck the checkboxes corresponding to the rows
+of the selected samples. In addition, the user can change any output
+value by editing the appropriate cell. These modified cells are
+highlighted green until changes are made permanent by clicking the
+appropriate button.</p>
+</li>
+<li><p class="first"><strong>Perform Deletion then Save as New Ensemble</strong> creates a new
+simulation ensemble as a new row in the <strong>Simulation Ensemble
+Table</strong>. The new ensemble is without the variables and samples that
+were previously selected for removal.</p>
+</li>
+<li><p class="first"><strong>Make Output Value Changes Permanent</strong> overwrites the output values
+in the current ensemble with those that are highlighted green in the
+table.</p>
+<p>The <strong>Filtering</strong> tab is illustrated in Figure
+<a class="reference external" href="#fig:uq_deltab">[fig:uq_deltab]</a> and enables the user to filter
+samples based on the values of an input or output.</p>
+<div class="figure" id="id2">
+<img alt="Filtering Tab" src="../_images/2_FilteringTab2.png" />
+<p class="caption"><span class="caption-text">Filtering Tab</span></p>
+</div>
+<p>[fig:uq_deltab]</p>
+</li>
+<li><p class="first"><strong>Filter Input</strong> filters based on the value of a certain input.
+Select an input variable as the filter target, and enter the lower
+and upper thresholds to specify a range of values to be kept in the
+new ensemble.</p>
+</li>
+<li><p class="first"><strong>Filter Output</strong> filters based on the value of a certain output.
+Select an output variable as the filter target, and enter the lower
+and upper thresholds to specify a range of values to be kept in the
+new ensemble.</p>
+</li>
+<li><p class="first">Once the filter settings are set, click <strong>Perform Filtering then Save
+as New Ensemble</strong> to apply the filter and create a new simulation
+ensemble.</p>
+<p>The single-output <strong>Analysis of Ensemble</strong> dialog, which is displayed
+when <strong>Analyze</strong> is clicked for the selected ensemble, has two modes,
+as shown in Figure <a class="reference external" href="#fig:uq_analysisW">[fig:uq_analysisW]</a> and
+Figure <a class="reference external" href="#fig:uqt_rsaeua">[fig:uqt_rsaeua]</a>.</p>
+<div class="figure" id="id3">
+<img alt="Analysis Dialog, Ensemble Data Analysis, Wizard Mode" src="../_images/3_AnalysisSection2.png" />
+<p class="caption"><span class="caption-text">Analysis Dialog, Ensemble Data Analysis, Wizard Mode</span></p>
+</div>
+<p>[fig:uq_analysisW]</p>
+</li>
+<li><p class="first">Select <strong>Wizard</strong> or <strong>Expert</strong> mode. The <strong>Wizard</strong> mode provides
+more detailed guidance on how to perform UQ analysis. For users
+familiar with UQ analysis techniques, the <strong>Expert</strong> mode provides
+more functionality and flexibility but with less guidance on its use.
+For example, users will be able to customize the input distributions,
+as well as run more advanced uncertainty analysis that handles both
+epistemic and aleatory uncertainties.</p>
+</li>
+<li><p class="first">The <strong>Analyses Performed</strong> section provides the user a history of
+previous analyses that were performed. The results of these analyses
+are cached, so the user can plot the analysis results without having
+to recompute them.</p>
+</li>
+<li><p class="first">The <strong>Analysis Table</strong> populates as the user performs analyses. It
+lists previous analyses that the user has performed, along with some
+of the main analysis settings (analysis type, inputs and outputs
+analyzed, etc.)</p>
+</li>
+<li><p class="first">Depending on the type of analysis performed, the <strong>Additional Info</strong>
+button displays any additional settings or parameters set by the user
+in the selected analysis that were not shown in the <strong>Analysis
+Table</strong>.</p>
+</li>
+<li><p class="first">The <strong>Results</strong> button will display the results of the selected
+analysis.</p>
+</li>
+<li><p class="first">The <strong>Delete</strong> button will delete the selected analysis from the
+history of previous analyses. Once deleted, the user will need to
+perform the analysis again to see its results.</p>
+</li>
+<li><p class="first">The <strong>Qualitative Parameter Selection</strong> (top part of the <strong>Analysis
+of Ensemble</strong> dialog) houses the controls for parameter selection
+analysis. Parameter selection is a qualitative sensitivity analysis
+method that identifies a group of dominant input parameters that are
+recommended for inclusion in subsequent UQ analyses, as they are the
+ones that most impact the output uncertainty. The parameter screening
+results are shown as bar graphs so that the user can rank the
+uncertain parameters visually.</p>
+</li>
+<li><p class="first">Before performing parameter selection, the user must select a single
+output for identifying parameter sensitivities from the <strong>Choose
+output to analyze</strong> drop-down list.</p>
+</li>
+<li><p class="first">There are several methods of parameter selection. The list of
+parameter selection methods available depends on the sample scheme of
+the selected ensemble. Select the appropriate method from the
+<strong>Choose Parameter Selection Method</strong> drop-down list. Then click
+<strong>Compute input importance</strong> to start the analysis.</p>
+</li>
+<li><p class="first">The <strong>Ensemble Data</strong> radio button directs FOQUS to perform analyses
+on the raw ensemble data.</p>
+</li>
+<li><p class="first">To view plots of the raw ensemble data, choose the desired input(s)
+from the <strong>Select the input(s)</strong> drop-down lists. Then click
+<strong>Visualize</strong>. If multiple inputs are selected, each must be unique.</p>
+</li>
+<li><p class="first">To perform an analysis, select the desired analysis (“Uncertainty
+Analysis” or “Sensitivity Analysis”) from the <strong>Choose UQ Analysis</strong>
+drop-down list. Uncertainty Analysis computes and displays the
+probability distribution of the single selected output parameter and
+displays its sufficient statistics, such as mean, standard deviation,
+skewness, and kurtosis. Sensitivity Analysis computes and displays
+each uncertain input parameter’s contribution to the total variance
+of the output. If Sensitivity Analysis is selected, choose the type
+of sensitivity analysis desired in the next drop-down list. There are
+three options for Sensitivity Analysis: (1) first-order, (2)
+second-order, and (3) total-order.</p>
+<ul class="simple">
+<li>First-order analysis examines the effect of varying an input
+parameter alone.</li>
+<li>Second-order analysis examines the effect of varying pairs of
+input parameters.</li>
+<li>Total-order analysis examines all interactions’ effect of varying
+an input parameter alone and as a combination with any other input
+parameters.</li>
+</ul>
+<p>Click <strong>Analyze</strong> to run the analysis. (Note: Raw ensemble data
+analysis may not be suitable if the sample size is small. It may be
+useful if the data set has tens of thousands of sample points or if
+an adequate response surface cannot be constructed. Otherwise,
+response surface-based analyses are recommended.)</p>
+<div class="figure" id="id4">
+<img alt="Analysis Dialog, Response Surface Analysis, Wizard Mode" src="../_images/4_Analyze2.png" />
+<p class="caption"><span class="caption-text">Analysis Dialog, Response Surface Analysis, Wizard Mode</span></p>
+</div>
+<p>[fig:uq_analysisW2]</p>
+<p>[itm:uq_analysis]</p>
+</li>
+<li><p class="first"><strong>Response Surface</strong> enables the user to perform all analyses related
+to response surfaces. A response surface is an approximation of the
+input-to-output relationship. This is an inexpensive way to
+approximate the values of outputs given different input values when
+the actual simulation of output values is computationally intensive.
+FOQUS uses the data (i.e., input-output samples) to fit a response
+surface scheme. The first step in this analysis is to select which
+output to analyze.</p>
+</li>
+<li><p class="first">Select the <strong>Response Surface Model</strong> to be used to approximate the
+input-to-output mapping. Selection of “Polynomial” or “MARS” requires
+one further selection in the second drop-down list. If “Polynomial”
+is chosen in the first drop-down list and “Legendre” is chosen in the
+second drop-down list, the user needs to specify a number for the
+<strong>Legendre polynomial order</strong> before analysis can proceed.
+[itm:uq_rs]</p>
+</li>
+<li><p class="first">The response surface selected must be validated before further
+analyses can be performed. The user can specify the error envelope
+for the validation plot. When <strong>Validate</strong> is clicked, the resulting
+plots display the best fit between the response surface (based on the
+model selected) and the actual data.</p>
+</li>
+<li><p class="first"><strong>Choose UQ Analysis</strong> enables the user to perform
+response-surface-based UQ analyses. Select the analysis in the first
+drop-down list. If the desired analysis is Sensitivity Analysis,
+select the desired type of sensitivity analysis in the second
+drop-down list and then click <strong>Analyze</strong>. <strong>Uncertainty Analysis</strong>
+and <strong>Sensitivity Analysis</strong> compute and display the same quantities
+as in item #<a class="reference external" href="#itm:uq_analysis">[itm:uq_analysis]</a>. However, the
+results displayed are based on samples drawn from the trained
+response surface, not the simulation ensemble itself. Moreover, if
+the selected response surface has uncertainty, the resulting plots
+also reflect this uncertainty information.</p>
+</li>
+<li><p class="first">FOQUS also provides visualization capabilities, enabling the user to
+view the response surface as a function of one or multiple inputs. Up
+to three inputs can be visualized at once. Click <strong>Visualize</strong> to
+view. A 2-D line plot displays if only one input parameter is
+selected. A 3-D surface plot and a 2-D contour plot display if two
+input parameters are selected. A 3-D isosurface plot with a slider
+bar displays if three input parameters are chosen. For the isosurface
+plot, the user can use the slider to selectively display the 3-D
+input parameter space that activates a particular range in the output
+parameter.</p>
+<p>Finally, the <strong>Bayesian Inference of Ensemble</strong> dialog (shown in
+Figure <a class="reference external" href="#fig:uq_inf">[fig:uq_inf]</a>) is used to calculate the
+posterior distributions (prior distributions integrated with data) of
+the uncertain input parameters. Inference utilizes Markov Chain Monte
+Carlo (MCMC) to compute the posterior distributions, using response
+surfaces that serve as fast approximations to the actual simulation
+model.</p>
+<div class="figure" id="id5">
+<img alt="Bayesian Inference Dialog" src="../_images/5_InferenceWizard2.png" />
+<p class="caption"><span class="caption-text">Bayesian Inference Dialog</span></p>
+</div>
+<p>[fig:uq_inf]</p>
+</li>
+<li><p class="first">Inference uses a response surface to approximate the input-to-output
+mapping. In <strong>Output Settings</strong>, select the observed outputs and
+select the response surface type that works best with each observed
+output. As in item (<a class="reference external" href="#itm:uq_rs">[itm:uq_rs]</a>), further selections
+may be required based on the response surface chosen. The simulation
+ensemble is used as the training data for generating the response
+surfaces.</p>
+</li>
+<li><p class="first">The user can specify which inputs are fixed, design (fixed per
+experiment, but changes between experiments), or variable using the
+<strong>Input Settings Table</strong>. In addition, the user can specify which
+inputs are displayed in the resulting plots of the posterior
+distributions. By default, once inference completes, all inputs will
+be displayed in the plots. To omit specific inputs, clear the
+checkboxes from the <strong>Display</strong> column of the table. Finally, in
+<strong>Expert</strong> mode, this table can also be used to modify the input
+prior distributions. The default prior is the input distribution
+specified in the simulation ensemble. To change the prior
+distribution type, use the drop-down list in the <strong>PDF</strong> column and
+enter corresponding values for the PDF parameters. To change the
+range of a uniform prior, scroll all the way to the right to modify
+<strong>Min/Max</strong>.</p>
+</li>
+<li><p class="first">The <strong>Observations</strong> section enables the user to add experimental
+data in the form of observations of certain output variables. At
+least one observation is required. Currently, the observation noise
+model is assumed to be a normal distribution. Other distributions may
+be supported in the future. To specify the observation noise model,
+enter the mean (and standard deviation, if standard inference is
+selected) for each output observation. For convenience, the <strong>Mean</strong>
+and <strong>Standard Deviation</strong> fields have been populated with the
+statistics from the ensemble uncertainty analysis. If any inputs are
+selected as design inputs, their values will also be required here.</p>
+</li>
+<li><p class="first"><strong>Save Posterior Input Samples to File</strong> checkbox, when selected,
+saves the posterior input samples as a PSUADE sample file (format
+described in Section <a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>). This
+file characterizes the input uncertainty as a set of samples, which
+can be re-used in the <strong>Simulation Ensemble Setup</strong> dialog, to
+evaluate the outputs corresponding to these posterior input samples.</p>
+</li>
+<li><p class="first">If saving posterior samples to a file, click <strong>Browse</strong> to set the
+name and location of where this file is saved.</p>
+</li>
+<li><p class="first">Click <strong>Infer</strong> to start the analysis. (Note: If the inference
+returns an invalid posterior distribution (i.e., one with no
+samples), it usually means the prior distributions or that the
+observation data distributions are not prescribed appropriately. In
+this case, it is recommended that the user experiment with different
+priors and/or data distribution means and/or standard deviations.)</p>
+</li>
+<li><p class="first">Inference calculations often take a very long time. If inference has
+run to completion, use Replot to generate new plots (e.g., to only
+display a subset of the input posterior graphs) from the cached
+inference results.</p>
+</li>
+</ol>
+<div class="section" id="simulation-ensemble-setup-dialog">
+<span id="subsec-uq-simsetup"></span><h3>Simulation Ensemble Setup Dialog<a class="headerlink" href="#simulation-ensemble-setup-dialog" title="Permalink to this headline">¶</a></h3>
+<p>The <strong>Simulation Ensemble Setup</strong> dialog (shown in Figure
+<a class="reference external" href="#fig:uq_sim_dist">[fig:uq_sim_dist]</a>) is used to create a new
+simulation ensemble. This is done by: (1) setting up distribution
+parameters and generating samples, or (2) loading samples from a file.
+This dialog is displayed when selecting <strong>Add New</strong> on the UQ window
+(Figure <a class="reference external" href="#fig:uq_screen">[fig:uq_screen]</a>).</p>
+<div class="figure" id="id6">
+<img alt="Simulation Ensemble Setup Dialog, Distributions Tab" src="../_images/6_SimSetupDist2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Distributions Tab</span></p>
+</div>
+<p>[fig:uq_sim_dist]</p>
+<ol class="arabic">
+<li><p class="first">Choose how to generate samples. There are three options: (1) <strong>Choose
+sampling scheme</strong> (default), (2) <strong>Load flowsheet samples</strong>, or (3)
+<strong>Load all samples from a single file</strong>. The option 3 is explained in
+item (<a class="reference external" href="#itm:uq_sim_last">[itm:uq_sim_last]</a>). [itm:uq_sim_first]</p>
+</li>
+<li><p class="first">If <strong>Choose Sampling Scheme</strong> is selected, the <strong>Distributions</strong> tab
+is displayed. The user specifies the input uncertainty information.</p>
+</li>
+<li><p class="first">The <strong>Distributions Table</strong> is pre-populated with input variable
+information gathered from the flowsheet node. Under the <strong>Type</strong>
+column drop-down list, the user can select “Fixed” or “Variable”.
+Selecting “Fixed” means that the input is fixed at its default value
+for all the samples. Changing the type to “Variable” means that the
+input is uncertain; therefore, its value varies between samples. With
+any fixed input, the only parameter that can be changed is the
+<strong>Default</strong> value (i.e., all samples of this input are fixed at this
+default value). With any variable input, the <strong>Min/Max</strong> values, as
+well as the probability distribution function (<strong>PDF</strong>), for that
+input can be changed. Some PDFs have their own parameters (e.g., mean
+and standard deviation for a normal distribution), which are required
+in the columns right of the distribution column. See the PSUADE
+manual for more details on the different PDFs.</p>
+</li>
+<li><p class="first"><strong>All Fixed</strong> and <strong>All Variable</strong> are convenient ways to set all the
+inputs to variable or fixed.</p>
+</li>
+<li><p class="first">Note: A “Sample” PDF refers to sampling with replacement (i.e., input
+samples would be randomly drawn, with replacement, from a sample
+file). If the selected distribution for any input is “Sample”, then
+the following parameters are required: (1) the path of the sample
+file (which must conform to the sample format specified in Section
+<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>); (2) the output index that
+designates which output is to be used.</p>
+</li>
+<li><p class="first">In the <strong>Sampling scheme</strong> tab (Figure
+<a class="reference external" href="#fig:uq_sim_samplescheme">[fig:uq_sim_samplescheme]</a>), specify
+the sampling scheme, the sample size, and perform sample generation.</p>
+<div class="figure" id="id7">
+<img alt="Simulation Ensemble Setup Dialog, Sampling Scheme Tab" src="../_images/7_SimSetupSchemes2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Sampling Scheme Tab</span></p>
+</div>
+<p>[fig:uq_sim_samplescheme]</p>
+</li>
+<li><p class="first">Each radio button displays a different list of sampling schemes on
+the right. The radio buttons serve as a guide to help in the
+selection of the appropriate sampling schemes for target analyses. A
+sampling scheme must be selected from the list on the right to
+proceed.</p>
+</li>
+<li><p class="first">Set the number of samples to be generated from the <strong># of samples</strong>
+spinbox.</p>
+</li>
+<li><p class="first">When all parameters are set, click <strong>Generate Samples</strong>. This
+generates the values for all the input variables, based on the
+sampling scheme selected.</p>
+</li>
+<li><p class="first">Once samples have been generated, click <strong>Preview Samples</strong> to view
+the samples that were generated. This displays the sample values in
+table form, as well as graphically as a scatter plot.</p>
+</li>
+<li><p class="first">From item (<a class="reference external" href="#itm:uq_sim_first">[itm:uq_sim_first]</a>), if the user
+elects to load all samples from a single file, click <strong>Browse</strong> to
+select the file containing the samples (Figure
+<a class="reference external" href="#fig:uq_sim_loadsample">[fig:uq_sim_loadsample]</a>). This file must
+conform to the PSUADE full file format, the PSUADE sample format, or
+CSV file (all formats described in Section
+<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>). Note: This is the only place
+where all the formats are supported. Once the file is loaded, the
+file name displays in the text box. These samples can now be used in
+the same way as an ensemble that was newly generated (as described
+above).</p>
+<div class="figure" id="id8">
+<img alt="Simulation Ensemble Setup Dialog, Load Samples Option" src="../_images/8_SimSetupLoad2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Load Samples Option</span></p>
+</div>
+<p>[fig:uq_sim_loadsample]</p>
+<p>[itm:uq_sim_last]</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tutorial/index.html" class="btn btn-neutral float-right" title="Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Uncertainty Quantification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

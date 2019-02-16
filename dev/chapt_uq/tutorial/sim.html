@@ -1,0 +1,481 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Simulation Ensemble Creation and Execution &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Data Manipulation" href="data.html" />
+    <link rel="prev" title="Tutorial" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Uncertainty Quantification</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Simulation Ensemble Creation and Execution</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Data Manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Single-Output Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rs.html">Response Surface Based Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inf.html">Bayesian Inference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Uncertainty Quantification</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Simulation Ensemble Creation and Execution</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_uq/tutorial/sim.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="simulation-ensemble-creation-and-execution">
+<span id="subsec-uqt-sim"></span><h1>Simulation Ensemble Creation and Execution<a class="headerlink" href="#simulation-ensemble-creation-and-execution" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, a simulation ensemble is created and run.</p>
+<ol class="arabic">
+<li><p class="first">From the FOQUS main screen, click the <strong>Session</strong> button and then
+select <strong>Open Session</strong> to open a session. Browse to the examples
+folder, go into the UQ subfolder, and then select the
+“Rosenbrock_novectors.foqus” problem (Figure
+<a class="reference external" href="#fig:uqt_home">[fig:uqt_home]</a>).</p>
+<div class="figure" id="id1">
+<img alt="Home Screen" src="../../_images/1_home2.png" />
+<p class="caption"><span class="caption-text">Home Screen</span></p>
+</div>
+<p>[fig:uqt_home]</p>
+</li>
+<li><p class="first">Opening this file loads a session that has a flowsheet with one node
+(Figure <a class="reference external" href="#fig:uqt_flowsheet">[fig:uqt_flowsheet]</a>). See Section
+<a class="reference external" href="#subsec.opt.tutorial.flowsheet">[subsec.opt.tutorial.flowsheet]</a>
+for a detailed example of creating a flowsheet.</p>
+<div class="figure" id="id2">
+<img alt="Flowsheet for Rosenbrock Example" src="../../_images/2_flowsheet2.png" />
+<p class="caption"><span class="caption-text">Flowsheet for Rosenbrock Example</span></p>
+</div>
+<p>[fig:uqt_flowsheet]</p>
+</li>
+<li><p class="first">Click the <strong>Uncertainty</strong> button (Figure
+<a class="reference external" href="#fig:uqt_uqhome">[fig:uqt_uqhome]</a>).</p>
+<div class="figure" id="id3">
+<img alt="Uncertainty Quantification Screen" src="../../_images/3_UQScreen2.png" />
+<p class="caption"><span class="caption-text">Uncertainty Quantification Screen</span></p>
+</div>
+<p>[fig:uqt_uqhome]</p>
+</li>
+<li><p class="first">Click Add New to create a new simulation ensemble.</p>
+</li>
+<li><p class="first">The Add New Ensemble dialog displays
+(Figure<a class="reference external" href="#fig:uqt_addnew">[fig:uqt_addnew]</a>). The “Use
+flowsheet” option should be enabled.</p>
+</li>
+<li><div class="first line-block">
+<div class="line"><em>This item describes additional features and is provided for
+information only. It is not intended to be followed as part of the
+step-by-step tutorial.</em></div>
+<div class="line">An alternative is to use an emulator by selecting “Use emulator.”
+This alternative is preferred if the actual simulation model is too
+computationally expensive to be practical for a large number of
+samples. This option enables the user to trade off accuracy for
+speed by training a response surface to approximate the actual
+simulation model. If this option is selected (Figure
+<a class="reference external" href="#fig:uqt_addnew_emulator">[fig:uqt_addnew_emulator]</a>), the user
+needs to provide a training data file containing a small simulation
+ensemble generated from the actual simulation model. This training
+data file is be in the PSUADE full file format (Section
+<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>).</div>
+</div>
+<ul class="simple">
+<li>Click Browse and select the training data file with which to train
+the response surface. The inputs, outputs and response surface
+type is read from the training data and populated accordingly on
+this dialog box.</li>
+<li>Select Output(s) of Interest. To select multiple outputs, the user
+can use Shift + Click to select a range, or use Ctrl + Click to
+select/deselect individual outputs.</li>
+</ul>
+</li>
+<li><p class="first">Click OK.</p>
+<div class="figure" id="id4">
+<img alt="Add New Ensemble Dialog, Flowsheet Option" src="../../_images/4_AddNewEnsemble2.png" />
+<p class="caption"><span class="caption-text">Add New Ensemble Dialog, Flowsheet Option</span></p>
+</div>
+<p>[fig:uqt_addnew]</p>
+<div class="figure" id="id5">
+<img alt="Add New Ensemble Dialog, Emulator Option" src="../../_images/4a_AddNewEnsemble2_Emulator.png" />
+<p class="caption"><span class="caption-text">Add New Ensemble Dialog, Emulator Option</span></p>
+</div>
+<p>[fig:uqt_addnew_emulator]</p>
+</li>
+<li><p class="first">This displays the Simulation Ensemble Setup dialog box
+(Figure<a class="reference external" href="#fig:uqt_sim">[fig:uqt_sim]</a>) that prompts the user
+for options specific to the creation of input samples.</p>
+</li>
+<li><p class="first">Within the Distributions tab, the Distributions Table has all the
+inputs from the flowsheet node, each displayed in its own row.</p>
+<ol class="arabic simple">
+<li>Click the All Variable button.</li>
+<li>Change the Type of “x2” to “fixed.”</li>
+<li>Enter 5 into the Default column for “x2.”</li>
+</ol>
+<p>Subsequently, other cells in the row are enabled or disabled
+according to the type selection.</p>
+<div class="figure" id="id6">
+<img alt="Simulation Ensemble Setup Dialog, Distributions Tab" src="../../_images/5_SimSetup2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Distributions Tab</span></p>
+</div>
+<p>[fig:uqt_sim]</p>
+<p>In this dialog, extra options that are available related to
+simulation ensemble setup are discussed.</p>
+<ul>
+<li><p class="first">Change the PDF of “x6” by exploring the drop-down list in the
+<strong>PDF</strong> column of the <strong>Distributions Table</strong>. The drop-down list
+is denoted by box (9c) in Figure
+<a class="reference external" href="#fig:uqt_sim_pdfs">[fig:uqt_sim_pdfs]</a>. If any of the
+parametric distributions are selected (e.g., “Normal”,
+“Lognormal”, “Weibull”), the user is prompted to enter the
+appropriate parameters for the selected distribution. If
+non-parametric distribution “Sample” is selected, the user needs
+to specify the name of the sample file (a CSV or PSUADE sample
+format is located in Section
+<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>) that contains samples for
+the variable “x6.” The user also needs to specify the output index
+to indicate which output in the sample file to use. The resulting
+simulation ensemble would contain “x6” samples that are randomly
+drawn (with replacement) from the samples in this file.</p>
+<div class="figure" id="id7">
+<img alt="Simulation Ensemble Setup Dialog, Distributions Tab, PDF" src="../../_images/6_SimSetupPDFs2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Distributions Tab, PDF
+Selection</span></p>
+</div>
+<p>[fig:uqt_sim_pdfs]</p>
+</li>
+<li><p class="first">Alternatively, select Choose sampling scheme (box (8) of
+Figure<a class="reference external" href="#fig:uqt_sim">[fig:uqt_sim]</a>), and try selecting
+“Load all samples from a single file.” With this selection, a new
+dialog box
+(Figure<a class="reference external" href="#fig:uq_sim_loadsample">[fig:uq_sim_loadsample]</a>)
+prompts the user to browse to a PSUADE full file, a PSUADE sample
+file, or CSV file (all formats are described in
+Section<a class="reference external" href="#ap:psuadefiles">[ap:psuadefiles]</a>) that contains
+all the samples for all the input variables in the model.</p>
+</li>
+</ul>
+<p>Both of these options offer the user additional flexibility with
+respect to characterizing input uncertainty or generating the input
+samples directly.</p>
+</li>
+<li><p class="first">Once complete, switch to the Sampling Scheme tab
+(Figure<a class="reference external" href="#fig:uqt_sim_samplescheme">[fig:uqt_sim_samplescheme]</a>).</p>
+<div class="figure" id="id8">
+<img alt="Simulation Ensemble Setup Dialog, Sampling Scheme Tab" src="../../_images/7_SimSetupSampling2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Setup Dialog, Sampling Scheme Tab</span></p>
+</div>
+<p>[fig:uqt_sim_samplescheme]</p>
+</li>
+<li><p class="first">Select a sampling scheme with the assumption that the user is unsure
+which sampling scheme to use, but wants to perform some kind of
+response surface analysis. This example helps the user find a
+suitable one.</p>
+<ol class="arabic simple">
+<li>Click For response surface analysis. Note the list on the right
+changes accordingly.</li>
+<li>Select “Latin Hypercube” from the list on the right.</li>
+</ol>
+</li>
+<li><p class="first">To generate 500 samples, change the value in “# of samples.” Some
+sampling schemes may impose a constraint on the number of samples. If
+the user has entered an incompatible sample size, a pop-up window
+displays with guidance on the recommended samples size.</p>
+</li>
+<li><p class="first">Click Generate Samples to generate the sample values for all the
+variable input parameters. On Windows, if the user did not install
+PSUADE in its default location (C:Program Files (x86)psuade_project
+1.7.1binpsuade.exe) and the user did not update the PSUADE path in
+FOQUS settings (refer to
+Section<a class="reference external" href="#session-menu">[session-menu]</a>), then the user is
+prompted to locate the PSUADE executable in a file dialog.</p>
+</li>
+<li><p class="first">Once the samples are generated, the user can examine them by clicking
+Preview Samples. This displays a table of the values, as well as the
+option to view scatter plots of the input values. The user can also
+select multiple inputs at once to view them as separate scatter plots
+on the same figure.</p>
+</li>
+<li><p class="first">When finished, click Done.</p>
+</li>
+<li><p class="first">The simulation ensemble should be displayed in the Simulation
+Ensemble Table. If the user would like to change any of the
+parameters and regenerate a new set of samples, simply click the
+Revise button.</p>
+</li>
+<li><p class="first">Next, calculate the output value for each sample. Click Launch. The
+user should see the progress bar quickly advance, displaying the
+status of completed runs
+(Figure<a class="reference external" href="#fig:uqt_ensem_added">[fig:uqt_ensem_added]</a>).</p>
+<div class="figure" id="id9">
+<img alt="Simulation Ensemble Added" src="../../_images/8_EnsembleAdded2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Added</span></p>
+</div>
+<p>[fig:uqt_ensem_added]</p>
+</li>
+<li><p class="first">Next, look at the output.</p>
+<ol class="arabic">
+<li><p class="first">Click Analyze for “Ensemble 1”
+(Figure<a class="reference external" href="#fig:uqt_ensem_complete">[fig:uqt_ensem_complete]</a>).</p>
+<div class="figure" id="id10">
+<img alt="Simulation Ensemble Evaluation Complete" src="../../_images/9_EnsembleEvalComplete2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Evaluation Complete</span></p>
+</div>
+<p>[fig:uqt_ensem_complete]</p>
+</li>
+<li><p class="first">Step 1 of “Analysis” (bottom page), the user selects Ensemble Data
+(Figure<a class="reference external" href="#fig:uqt_analysis">[fig:uqt_analysis]</a>).</p>
+<div class="figure" id="id11">
+<img alt="Simulation Ensemble Analysis" src="../../_images/10_AnalysisDialog2.png" />
+<p class="caption"><span class="caption-text">Simulation Ensemble Analysis</span></p>
+</div>
+<p>[fig:uqt_analysis]</p>
+</li>
+<li><p class="first">Step 2 of “Analysis” is to select “Rosenbrock.f”
+(Figure<a class="reference external" href="#fig:uqt_analysis">[fig:uqt_analysis]</a>).</p>
+</li>
+<li><p class="first">Step 3 of “Analysis” is to keep the analysis method as
+“Uncertainty Analysis” and then click Analyze. The user should see
+two graphs displaying the probability and cumulative distributions
+plots (Figure<a class="reference external" href="#fig:10a.rosenua">[fig:10a.rosenua]</a>).</p>
+</li>
+</ol>
+<div class="figure" id="fig-10a-rosenua">
+<img alt="Uncertainty Analysis Results" src="../../_images/10a_RosenbrockUA.png" />
+<p class="caption"><span class="caption-text">Uncertainty Analysis Results</span></p>
+</div>
+</li>
+</ol>
+<p>Prior to this, the “Rosenbrock” example was selected to illustrate the
+process of creating and running a simulation ensemble because
+simulations complete quickly using this simple model. But from this
+point on, the adsorber subsystem of the A650.1 design is used as a
+motivating example to better illustrate how one would apply UQ within
+the context of CCSI.</p>
+<p>A quick recap on our motivating example: The A650.1 design consists of
+two coupled reactors: (1) the two-stage bubbling fluidized bed adsorber
+and (2) moving bed regenerator, in which the output (outlet of sorbent
+stream) from one reactor is the input (inlet) for the other. The
+performance of the entire carbon capture system is obtained by solving
+these two reactors simultaneously, accounting for the interactions
+between the reactors. However, it is also necessary to study the
+individual effects of the adsorber and the regenerator without the side
+effects of their coupling since the two reactors display distinct
+characteristics under different operating conditions. Thus, the Process
+Design/Synthesis Team has given us a version of the A650.1 model that
+can be run in two modes: (1) coupled and (2) decoupled. In this section,
+analysis results are presented from running the A650.1 model using the
+decoupled mode and examining the adsorber in isolation from the
+regenerator.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="data.html" class="btn btn-neutral float-right" title="Data Manipulation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,346 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data Manipulation &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Single-Output Analysis" href="analysis.html" />
+    <link rel="prev" title="Simulation Ensemble Creation and Execution" href="sim.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Uncertainty Quantification</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sim.html">Simulation Ensemble Creation and Execution</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Data Manipulation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="analysis.html">Single-Output Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="rs.html">Response Surface Based Analysis</a></li>
+<li class="toctree-l4"><a class="reference internal" href="inf.html">Bayesian Inference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Uncertainty Quantification</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Data Manipulation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_uq/tutorial/data.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-manipulation">
+<h1>Data Manipulation<a class="headerlink" href="#data-manipulation" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, instructions to change the data before analysis are
+described. Current capabilities include sample filtering, input/output
+variable deletion, and output value modification.</p>
+<div class="section" id="filtering">
+<h2>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h2>
+<p>Filtering involves selecting out samples whose values of a certain input
+or output fall into a certain range. Typically, when runs are returned
+from the Turbine gateway, there could be simulations that failed to
+converge in Aspen, thus the simulation samples corresponding to these
+failed runs should be excluded from analysis. Follow the steps below to
+filter out the samples due to failed runs:</p>
+<ol class="arabic">
+<li><p class="first">Click Load from File on the UQ window
+(Figure<a class="reference external" href="#fig:uqt_data_filter">[fig:uqt_data_filter]</a>).</p>
+<div class="figure" id="id1">
+<img alt="Data Manipulation, Filtering Tab" src="../../_images/11_FilteringTab2.png" />
+<p class="caption"><span class="caption-text">Data Manipulation, Filtering Tab</span></p>
+</div>
+<p>[fig:uqt_data_filter]</p>
+</li>
+<li><p class="first">Select the file “gmoat5012_9levels.res” in the examplesUQ folder.
+This file is an actual simulation ensemble that has already been run
+on the Turbine gateway. To find this file, the user may need to
+change the file filter to “All files.”</p>
+</li>
+<li><p class="first">Select the Filtering tab.</p>
+</li>
+<li><p class="first">Next, filtering the loaded simulation ensemble based on output values
+is performed. In particular, the user should keep only the samples in
+which the output parameter status is “0.”</p>
+<ol class="arabic simple">
+<li>Select Filter Output.</li>
+<li>Select “status” from the Choose Output drop-down list.</li>
+<li>Enter -.00001 and .00001 as Lower Threshold and Upper Threshold
+respectively, and then click return within “Lower threshold” and
+“Upper threshold.”</li>
+<li>Click Perform Filtering then Save as New Ensemble.</li>
+</ol>
+</li>
+<li><p class="first">Once filtering is complete, a new row should be added to the
+simulation table (Figure
+<a class="reference external" href="#fig:uqt_data_filter_results">[fig:uqt_data_filter_results]</a>).
+This ensemble contains only those samples that have a status value of
+“0.” Analysis can now be performed on this new ensemble because this
+ensemble contains only the valid simulations (i.e., those with output
+status value of 0), in which Aspen calculations have properly
+converged.</p>
+<div class="figure" id="id2">
+<img alt="Data Manipulation, Filtering Results" src="../../_images/12_FilterResults2.png" />
+<p class="caption"><span class="caption-text">Data Manipulation, Filtering Results</span></p>
+</div>
+<p>[fig:uqt_data_filter_results]</p>
+</li>
+</ol>
+</div>
+<div class="section" id="variable-deletion">
+<span id="subsubsec-uqt-vardel"></span><h2>Variable Deletion<a class="headerlink" href="#variable-deletion" title="Permalink to this headline">¶</a></h2>
+<p>If an input or output variable is to be removed from consideration for
+analysis, this can be done in the <strong>Inspection/Deletion/Output Value
+Modification</strong> tab. Delete the status output from the previous filtering
+as it is no longer needed for further analysis.</p>
+<ol class="arabic simple">
+<li>Verify that the ensemble that resulted from filtering is selected. If
+not, select that ensemble.</li>
+<li>Click the Inspection/Deletion/Output Modification tab.</li>
+<li>Scroll to the right of the table to the outputs, which are colored
+yellow.</li>
+<li>Select the checkbox corresponding to the “status” output (the first
+output).</li>
+<li>Click Perform Deletion then Save as New Ensemble.</li>
+</ol>
+<p>The results are illustrated in Figure
+<a class="reference external" href="#fig:uqt_data_mod">[fig:uqt_data_mod]</a>. Note: The output count has
+decreased by one for the new ensemble. The user can verify that the
+“status” output was removed in the new ensemble by viewing this in the
+<strong>Inspection/Deletion/Output Value Modification</strong> tab again. Deletion of
+an input can be performed similarly by selecting its checkbox and
+clicking the <strong>Perform Deletion then Save as New Ensemble</strong> button.</p>
+<div class="figure" id="id3">
+<img alt="Data Manipulation, Inspection/Deletion" src="../../_images/13_DataManipulation2.png" />
+<p class="caption"><span class="caption-text">Data Manipulation, Inspection/Deletion</span></p>
+</div>
+<p>[fig:uqt_data_mod]</p>
+</div>
+<div class="section" id="output-value-modification">
+<h2>Output Value Modification<a class="headerlink" href="#output-value-modification" title="Permalink to this headline">¶</a></h2>
+<p>To change the value of an output for a sample or several samples, follow
+steps below:</p>
+<ol class="arabic simple">
+<li>Select an ensemble.</li>
+<li>Click the Inspection/Deletion/Output Value Modification tab.</li>
+<li>Scroll to the right to the outputs.</li>
+<li>Click on a cell for one of the outputs and enter a new value. Do the
+same for another cell. Notice that the modified cells turn green.
+This indicates the cells that have been modified.</li>
+<li>Click Make Output Value Changes Permanent to permanently change the
+values. The modified cells will turn yellow, indicating the permanent
+change. If the user wishes to reset the table and start over before
+making changes permanent, click the Reset Table.</li>
+</ol>
+<div class="figure" id="id4">
+<img alt="Data Manipulation, Value Modification" src="../../_images/14_DataManipulation_OutputModification2.png" />
+<p class="caption"><span class="caption-text">Data Manipulation, Value Modification</span></p>
+</div>
+<p>[fig:uqt_data_mod_output]</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="analysis.html" class="btn btn-neutral float-right" title="Single-Output Analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="sim.html" class="btn btn-neutral float-left" title="Simulation Ensemble Creation and Execution" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

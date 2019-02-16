@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Optimization &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Parameter Estimation" href="parameter_est.html" />
+    <link rel="prev" title="Tutorial" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_flowsheet/index.html">Flowsheets and Settings</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Optimization</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference/optimization.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Optimization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="parameter_est.html">Parameter Estimation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Optimization</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Optimization</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_opt/tutorial/simple.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="optimization">
+<span id="sec-opt-tutorial"></span><h1>Optimization<a class="headerlink" href="#optimization" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial is a step-by-step walk through of simulation-based
+optimization. This tutorial builds on the tutorial in Section
+<a class="reference external" href="#tutorial.sim.flowsheet">[tutorial.sim.flowsheet]</a>.</p>
+<ol class="arabic simple">
+<li>Open FOQUS.</li>
+<li>Load the FOQUS session from the tutorial “Creating a Flowsheet with
+Linked Simulations” in Section
+<a class="reference external" href="#tutorial.sim.flowsheet">[tutorial.sim.flowsheet]</a> or if that
+tutorial has not yet been completed, complete it first.</li>
+</ol>
+<div class="section" id="problem-set-up">
+<h2>Problem Set Up<a class="headerlink" href="#problem-set-up" title="Permalink to this headline">¶</a></h2>
+<p>If the simulation runs successfully and the results are reasonable,
+proceed to define the optimization problem. There are four steps to
+setting up the optimization problem: (1) select the variables, (2)
+define samples (optional), (3) define the objective function, and
+constraints and (4) select and configure the solver.</p>
+<ol class="arabic simple" start="3">
+<li>Select the <strong>Optimization</strong> button from the toolbar at the top of the
+Home window (Figure
+<a class="reference external" href="#tut.opt.problem.vars">[tut.opt.problem.vars]</a>). Select the
+<strong>Variables</strong> tab.</li>
+<li>Select “Decision” from the drop-down list in the <strong>Type</strong> column as
+the variable type for all 17 variables shown. If more than 17
+variables are shown, the edge connecting the “BFB” node to the “Cost”
+node was most likely not configured properly. The scale will
+automatically change to linear, which is acceptable for most
+problems.</li>
+<li>The <strong>Min</strong>, <strong>Max</strong>, and <strong>Value</strong> columns can be changed. The
+<strong>Min</strong> and <strong>Max</strong> columns define the lower and upper bounds. The
+<strong>Value</strong> column specifies the initial point. For this example the
+defaults are acceptable.</li>
+</ol>
+<div class="figure" id="tut-opt-problem-vars">
+<img alt="Optimization Problem Variables" src="../../_images/optProblemVar.svg" /><p class="caption"><span class="caption-text">Optimization Problem Variables</span></p>
+</div>
+<p>If more than one flowsheet evaluation is used in the objective function
+calculation (e.g., parameter estimation or optimization under
+uncertainty), the next step is to setup the samples under the
+<strong>Samples</strong> tab. In this case only one evaluation is used to calculate
+an objective function value, so the sample setup is not needed. The next
+step is to define the objective function and constraints using the form
+under the <strong>Objective/Constraints</strong> tab as shown in Figure
+<a class="reference external" href="#tut.opt.problem.obj">[tut.opt.problem.obj]</a>.</p>
+<div class="figure" id="tut-opt-problem-obj">
+<img alt="Optimization Problem Objective" src="../../_images/optProblemObj.svg" /><p class="caption"><span class="caption-text">Optimization Problem Objective</span></p>
+</div>
+<ol class="arabic" start="6">
+<li><p class="first">Select the <strong>Objective/Constraints</strong> tab (see Figure
+<a class="reference external" href="#tut.opt.problem.obj">[tut.opt.problem.obj]</a>).</p>
+</li>
+<li><p class="first">In the drop-down list, verify “Simple Python Expression” is
+selected.</p>
+</li>
+<li><p class="first">Add an objective function by clicking <strong>+</strong> to the right of the
+Objective Function table.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">The objective function is the cost of electricity from the cost
+spreadsheet. Enter:</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">f.Cost.COE</span></code></div>
+<div class="line">in the <strong>Expression</strong> column.</div>
+</div>
+</li>
+<li><p class="first">Enter 1 in the <strong>Penalty Scale</strong> column. This setting is used mostly
+for multi-objective optimization to apply the constraint penalty to
+different objectives.</p>
+</li>
+<li><p class="first">Enter 500 in the <strong>Value for Failure</strong> column. This should be worse
+than the objective for any non-failed simulations.</p>
+</li>
+<li><p class="first">Add a constraint by clicking <strong>+</strong> next to the Inequality
+Constraints table.</p>
+</li>
+<li><div class="first line-block">
+<div class="line">The constraint is that the fraction of CO<span class="math notranslate nohighlight">\(_2\)</span> captured
+must be greater than or equal to 0.9. The constraint is in the
+form <span class="math notranslate nohighlight">\(g(\mathbf{x}) \leq 0\)</span>; therefore, in the
+<strong>Expression</strong> column enter:</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">0.9</span> <span class="pre">-</span> <span class="pre">f.BFB.removalCO2</span></code>.</div>
+</div>
+</li>
+<li><p class="first">Enter 1000 for the <strong>Penalty Factor</strong>.</p>
+</li>
+<li><p class="first">The constraint penalty <strong>Form</strong> should be linear.</p>
+</li>
+<li><p class="first">The <strong>Variable Explorer</strong> button can be used to help select
+flowsheet variables.</p>
+</li>
+</ol>
+</div>
+<div class="section" id="solver-settings">
+<h2>Solver Settings<a class="headerlink" href="#solver-settings" title="Permalink to this headline">¶</a></h2>
+<p>The last step before running the optimization is to select and configure
+the solver. The solver configuration form is shown in Figure
+<a class="reference external" href="#tut.opt.solver">[tut.opt.solver]</a>.</p>
+<div class="figure" id="tut-opt-solver">
+<img alt="Optimization Solver Setup" src="../../_images/optSolver.svg" /><p class="caption"><span class="caption-text">Optimization Solver Setup</span></p>
+</div>
+<ol class="arabic simple" start="17">
+<li>Select the <strong>Solver</strong> tab (see Figure
+<a class="reference external" href="#tut.opt.solver">[tut.opt.solver]</a>).</li>
+<li>Select “OptCMA” from the <strong>Select Solver</strong> drop-down list.</li>
+<li>The default options are acceptable. Solver options are described in
+the Solver Options table.</li>
+</ol>
+</div>
+<div class="section" id="running-optimization">
+<h2>Running Optimization<a class="headerlink" href="#running-optimization" title="Permalink to this headline">¶</a></h2>
+<p>The optimization run form is shown in Figure
+<a class="reference external" href="#tut.opt.run">[tut.opt.run]</a>.</p>
+<div class="figure" id="tut-opt-run">
+<img alt="Optimization Monitor" src="../../_images/optRun.svg" /><p class="caption"><span class="caption-text">Optimization Monitor</span></p>
+</div>
+<ol class="arabic simple" start="20">
+<li>Click the <strong>Run</strong> tab to display the optimization run form (see
+Figure <a class="reference external" href="#tut.opt.run">[tut.opt.run]</a>).</li>
+<li>Click <strong>Start</strong>.</li>
+<li>Once the optimization has run for while click <strong>Stop</strong>.</li>
+</ol>
+<p>As the optimization run, the best result found is stored in the
+Flowsheet. If an optimization is run with sample variables the first
+sample in the set with the best objective function will be stored in the
+flowsheet. All simulation results can be viewed in the Flowsheet Results
+table.</p>
+<p>The run form displays some diagnostic information as the optimization
+runs. The parts of the display labeled in Figure
+<a class="reference external" href="#tut.opt.run">[tut.opt.run]</a> are described below.</p>
+<ol class="arabic simple" start="23">
+<li>The Optimization Solver Messages window displays information from
+the solver.</li>
+<li>The <strong>Best Solution Parallel Coordinate Plot</strong> shows the value of
+the scaled decision variables, which is useful to see where the best
+solution is relative to the variable bounds.</li>
+<li>The <strong>Objective Function Plot</strong> shows the best value of the
+objective function found as a function of the optimization iteration
+or sample number.</li>
+<li>While the optimization is running, the status bar shows the amount
+of time that has elapsed since starting the optimization.</li>
+</ol>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parameter_est.html" class="btn btn-neutral float-right" title="Parameter Estimation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

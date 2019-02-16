@@ -1,0 +1,367 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Creating a Flowsheet &mdash; FOQUS</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../../_static/foqus.ico"/>
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../_static/theme_and_schema.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Creating a Flowsheet with Linked Simulations" href="sim_flowsheet.html" />
+    <link rel="prev" title="Example Files" href="files.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> FOQUS
+          
+
+          
+            
+            <img src="../../_static/big_ccsi.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.1.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_intro/index.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">Flowsheets and Settings</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html#contents">Contents</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../reference/index.html">Reference</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="index.html">Tutorial</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="files.html">Example Files</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">Creating a Flowsheet</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sim_flowsheet.html">Creating a Flowsheet with Linked Simulations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="recycle.html">Flowsheets with Recycle</a></li>
+<li class="toctree-l4"><a class="reference internal" href="data.html">Flowsheet Result Data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="remote.html">Using a Remote Turbine Instance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_opt/index.html">Optimization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_uq/index.html">Uncertainty Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_ouu/index.html">Optimization Under Uncertainty</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_surrogates/index.html">Surrogate Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sdoe/index.html">Sequential Design of Experiments (SDOE)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_solventfit/index.html">Solvent Fit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_sinter/index.html">Simulation Standard Interface (SimSinter)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_heat/index.html">Heat Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../chapt_debug/index.html">Debugging</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">FOQUS</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Flowsheets and Settings</a> &raquo;</li>
+        
+          <li><a href="index.html">Tutorial</a> &raquo;</li>
+        
+      <li>Creating a Flowsheet</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../../_sources/chapt_flowsheet/tutorial/simple_flowsheet.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="creating-a-flowsheet">
+<span id="tutorial-simple-flow"></span><h1>Creating a Flowsheet<a class="headerlink" href="#creating-a-flowsheet" title="Permalink to this headline">¶</a></h1>
+<p>This tutorial provides information about the basic use of FOQUS and
+setting up a very simple flowsheet. A single node flowsheet will be
+created that performs a simple calculation using a square root so that
+simulation errors can be observed when a negative input value is
+provided.</p>
+<ol class="arabic simple">
+<li>Start FOQUS (see Section
+<a class="reference external" href="#sec.flowsheet.starting.foqus">[sec.flowsheet.starting.foqus]</a>).</li>
+<li>In the session form enter the <strong>Session Name</strong> as “Simple_Flow”
+(Figure <a class="reference external" href="#fig.session.name1">[fig.session.name1]</a>).</li>
+</ol>
+<div class="figure" id="fig-session-name1">
+<img alt="Setting the Session Name" src="../../_images/session_name1.svg" /><p class="caption"><span class="caption-text">Setting the Session Name</span></p>
+</div>
+<ol class="arabic simple" start="3">
+<li>Set the session description.<ol class="loweralpha">
+<li>Select the <strong>Description</strong> tab (Figure
+<a class="reference external" href="#fig.session.description1">[fig.session.description1]</a>).</li>
+<li>Type the description shown in Figure
+<a class="reference external" href="#fig.session.description1">[fig.session.description1]</a>. The
+buttons above the <strong>Description</strong> tab box can be used to format
+the text.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-session-description1">
+<img alt="Setting the Session Description" src="../../_images/session_description1.svg" /><p class="caption"><span class="caption-text">Setting the Session Description</span></p>
+</div>
+<ol class="arabic simple" start="4">
+<li>Click the <strong>Flowsheet</strong> button at the top of the Home window (Figure
+<a class="reference external" href="#fig.simple.flow1">[fig.simple.flow1]</a>).</li>
+<li>Add a node named “calc.”<ol class="loweralpha">
+<li>Click the <strong>Add Node</strong> button in the toolbar on the left side of
+the Home window.</li>
+<li>Click a location on the gridded flowsheet area.</li>
+<li>Enter the node name “calc” in the dialog box.</li>
+</ol>
+</li>
+<li>Click the <strong>Select Mode</strong> button in the toolbar.</li>
+<li>Open the Node Editor by clicking the <strong>Node Editor</strong> button in the
+toolbar.</li>
+<li>Add input variables to the node. (When linking a node to an external
+simulation the input and output variables are populated
+automatically, and this step is not necessary.)<ol class="loweralpha">
+<li>Click <strong>+</strong> above the <strong>Input Variables</strong> table.</li>
+<li>Enter x1 in the variable <strong>Name</strong> dialog box.</li>
+<li>Click <strong>+</strong> above the <strong>Input Variables</strong> table.</li>
+<li>Enter x2 in the variable <strong>Name</strong> dialog box.</li>
+<li>Enter -2 and 2 for the <strong>Min</strong> and <strong>Max</strong> of x1 in the <strong>Input
+Variables</strong> table.</li>
+<li>Enter -1 and 4 for the <strong>Min</strong> and <strong>Max</strong> of x2 in the <strong>Input
+Variables</strong> table.</li>
+<li>Enter 1 for the value of x1.</li>
+<li>Enter 4 for the value of x2.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-simple-flow1">
+<img alt="Flowsheet, Input Variables" src="../../_images/simple_flow_1.svg" /><p class="caption"><span class="caption-text">Flowsheet, Input Variables</span></p>
+</div>
+<ol class="arabic simple" start="9">
+<li>Add an output variable to the node. (When linking a node to an
+external simulation the input and output variables are populated
+automatically.)<ol class="loweralpha">
+<li>Click <strong>Output Variables</strong> to show the <strong>Output Variables</strong> table
+(Figure <a class="reference external" href="#fig.simple.flow2">[fig.simple.flow2]</a>).</li>
+<li>Click <strong>+</strong> above the <strong>Output Variables</strong> table to add a
+variable.</li>
+<li>Enter z in the output <strong>Name</strong> dialog box.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-simple-flow2">
+<img alt="Flowsheet, Output Variables" src="../../_images/simple_flow_2.svg" /><p class="caption"><span class="caption-text">Flowsheet, Output Variables</span></p>
+</div>
+<p>In this example, the node is not linked to any external simulation. The
+FOQUS nodes contain a section called node script, which can be used to
+do calculations before, after or instead of a simulation linked to the
+node. The node script can be used for things such as unit conversion,
+simple calculations, or simulation convergence procedures. The node
+scripts are written as Python. The <strong>Input Variables</strong> are contained in
+a dictionary named x and the <strong>Output Variables</strong> are contained in a
+dictionary named f. The dictionary keys are the variables names shown in
+the input and output tables. Only <strong>Output Variables</strong> can be modified
+by a node script.</p>
+<ol class="arabic" start="10">
+<li><p class="first">Add a calculation to the node.</p>
+<ol class="loweralpha">
+<li><p class="first">Click the <strong>Node Script</strong> tab (Figure
+<a class="reference external" href="#fig.simple.flow3">[fig.simple.flow3]</a>).</p>
+</li>
+<li><div class="first line-block">
+<div class="line">Enter the following code into the Python code box:</div>
+<div class="line"><code class="docutils literal notranslate"><span class="pre">f['z']</span> <span class="pre">=</span> <span class="pre">x['x1']*math.sqrt(x['x2'])</span></code></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p class="first">Click the <strong>Variables</strong> tab.</p>
+</li>
+<li><p class="first">Click the <strong>Run</strong> button (Figure
+<a class="reference external" href="#fig.simple.flow3">[fig.simple.flow3]</a>).</p>
+</li>
+</ol>
+<p>The flowsheet should run successfully and the output value should be 2.
+Rerun the flowsheet with a negative value for x2, and observe the
+result. The simulation should report an error.</p>
+<div class="figure" id="fig-simple-flow3">
+<img alt="Node Calculation" src="../../_images/simple_flow_3.svg" /><p class="caption"><span class="caption-text">Node Calculation</span></p>
+</div>
+<ol class="arabic simple" start="13">
+<li>Save the FOQUS session.<ol class="loweralpha">
+<li>Click the <strong>Session</strong> drop-down menu at the top of the Home
+window (Figure
+<a class="reference external" href="#fig.simple.flow.save">[fig.simple.flow.save]</a>).</li>
+<li>Click <strong>Save</strong>. The exact location of save in the menu depends on
+whether or not the data management framework is enabled.</li>
+<li>The <strong>Change Log</strong> entry can be left blank.</li>
+<li>The default file name is the session name. Change the file name
+and location if desired.</li>
+</ol>
+</li>
+</ol>
+<div class="figure" id="fig-simple-flow-save">
+<img alt="Save Session" src="../../_images/simple_flow_save.svg" /><p class="caption"><span class="caption-text">Save Session</span></p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="sim_flowsheet.html" class="btn btn-neutral float-right" title="Creating a Flowsheet with Linked Simulations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="files.html" class="btn btn-neutral float-left" title="Example Files" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright copyright (c) 2012 - 2018 by CCSI Team All rights reserved.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

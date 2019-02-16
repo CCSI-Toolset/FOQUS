@@ -15,7 +15,7 @@ class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
         self.parent = parent
         self.setupUi(self)
         self.dmfGroup.hide()
-        self.solventFitGroup.hide()
+        # self.solventFitGroup.hide()
         self.solventFitFrame.init(parent=self)
 
 
@@ -28,3 +28,4 @@ if __name__ == "__main__":
 
     MainWindow.show()
     sys.exit(app.exec_())
+

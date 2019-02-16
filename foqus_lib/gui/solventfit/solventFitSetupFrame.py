@@ -16,7 +16,7 @@ from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication,\
-    QTableWidgetItem, QCheckBox, QMainWindow, QVBoxLayout, QLabel
+    QTableWidgetItem, QCheckBox, QMainWindow, QVBoxLayout
 mypath = os.path.dirname(__file__)
 _solventFitSetupFrameUI, _solventFitSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "solventFitSetupFrame.ui"))
@@ -469,7 +469,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             msgbox.setText('File format not recognized!  File must be in PSUADE simple or CSV format.')
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
-            #combobox.setCurrentIndex(0)
             return
 
         showMessage = False
@@ -672,11 +671,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                                 response = msgbox.exec_()
                                 self.obs_table.setCurrentCell(r,c)
                                 self.obs_table.setFocus()
-                            #self.colorChanged.add((r, c))
                             item.setForeground(QColor(192,0,0))
                             return False
                         else:
-                            #self.colorChanged.add((r, c))
                             item.setForeground(QColor(0,0,0))
                             b = True
                     else:
@@ -730,7 +727,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             self.discrepancySave_edit.setEnabled(False)
             self.discrepancySave_button.setEnabled(False)
 
-        #self.inf_button.setEnabled(b)
         self.inf_button.setEnabled(b)
         if self.newAnalysis_radio.isChecked():
             self.trainingAllowInfer = b
@@ -795,8 +791,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                         labels.append('"%s"' % name)
                 obsTable = [labels] + obsTable
 
-    ##            fname = Common.getLocalFileName(RSInferencer.dname, data.getModelName(), '.dat')
-    ##            data.writeToPsuade(fname)
 
                 # perform inference
                 saveSample = self.infSave_chkbox.isChecked()
@@ -854,8 +848,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 #            self.enableInf(True)
 
     def finishInfer(self):  # Called after inference is done
-#        mfile = 'matlabmcmc2.m'
-#        if os.path.exists(mfile):  #Inference happened just fine
         if self.infSave_chkbox.isChecked() and self.inference.inferencer.sampleFile is not None:
             sampleFile = self.infSave_edit.text()
             if os.path.exists(sampleFile):
@@ -868,7 +860,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.unfreeze()
         self.inf_button.setText('Infer')
         self.enableInf(True)
-        #self.inf_button.setEnabled(True)
         self.output_table.setEnabled(True)
         self.inputPrior_table.setEnabled(True)
 
@@ -895,10 +886,6 @@ if __name__ == "__main__":
 
     MainFrame = solventFitSetupFrame()
     MainWindow.setCentralWidget(MainFrame)
-    MainFrameLayout = QVBoxLayout(MainFrame)
 
-    label = QLabel('A Label')
-    MainFrameLayout.addWidget(label)
-
-    MainFrameLayout.show()
+    MainWindow.show()
     sys.exit(app.exec_())

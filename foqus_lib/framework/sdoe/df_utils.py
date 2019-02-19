@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 
 
@@ -8,7 +9,7 @@ def write(fname, df):
 
 def load(fname):
     # load file as data frame
-    df = pd.read_csv(fname)
+    df = pd.read_csv(os.path.join('c:/', fname))
     df.rename(columns=lambda x: x.strip())
     return df
 

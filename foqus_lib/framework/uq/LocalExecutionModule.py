@@ -311,7 +311,7 @@ class LocalExecutionModule(object):
     def readDataFromCsvFile(fileName, askForNumInputs = True):
         with open(fileName, 'rb') as csvfile:
             # Detect dialect of csv file
-            dialect = csv.Sniffer().sniff(csvfile.read(1024))
+            dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.seek(0)
 
             #Read csv file

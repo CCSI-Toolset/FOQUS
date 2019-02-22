@@ -413,9 +413,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def editSdoe(self):
         sender = self.sender()
         row = sender.property('row')
-        sdoeData = LocalExecutionModule.readSampleFromCsvFile(self.analysis[row][4], False)
-        tempdir = os.path.join(*self.analysis[row][4].split(os.sep)[0:-1])
-        dirname = os.path.join(os.sep, tempdir)
+        fullName = self.analysis[row][4]
+        dirname, filename = os.path.split(fullName)
+        sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         dialog = sdoePreview(sdoeData, dirname, self)
         dialog.show()
 

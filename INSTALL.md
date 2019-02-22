@@ -31,17 +31,30 @@ There are 2 ways to get FOQUS either download it from the [github page](https://
 
 ## Install FOQUS
 
-8. Install requirements
-  - > ```pip install -r requirements.txt```
-9. There are two ways to install FOQUS.  The first one is in-place which will leave the FOQUS source where it is and any changes made to these files will result in changes to the installed version of FOQUS.  This mode is often used by developers but it can be convenient for other users. The other option is to do a regular install which copies compiled FOQUS files to a central Python package location.
-  - install in-place
+8. Open the Anaconda prompt, and use the Anaconda prompt to go to the folder that contains the downloaded FOQUS software. The default name of the downloaded FOQUS folder is "FOQUS-master" (if you download the latest development version of FOQUS from the master branch).
+9. Install 'git' by typing: conda install git
+10. Set up the environment, including several libraries (except for turbine) by typing: conda env create –f foqus_env.yml 
+11. Type: conda activate foqus_env
+12. Install additional requirements by typing: pip install –r requirements.txt
+  - Note: Most libraries will already be installed in Step 10. But this step will make sure that turbine client is installed and configured.
+13. There are two ways to install FOQUS.  The first one is in-place which will leave the FOQUS source where it is and any changes made to these files will result in changes to the installed version of FOQUS.  This mode is often used by developers but it can be convenient for other users. The other option is to do a regular install which copies compiled FOQUS files to a central Python package location.
+  - Install in-place:
     - > ``python setup.py develop``
-  - regular install
+  - Regular install:
     - > ``python setup.py install``
+14. Update py-dateutil and python-dateutil by typing these commands:
+  - pip uninstall py-dateutil
+  - pip uninstall python-dateutil
+  - conda install python-dateutil
+15. Open FOQUS by typing: python foqus.py
+16. The GUI should start working and ask for a ‘working directory’ if this is the first time you are installing FOQUS.
+17. However, once the working directory is specified, FOQUS might fail again (DLL load failure) due to PyQt5. Downgrading PyQt5 library from 5.12 to 5.9 solved this problem:
+  - Type: pip install PyQT5==5.9
+18. Repeat Step 15 to open FOQUS, if necessary.
 
-On Windows, the setup.py script creates a foqus.bat file which will activate the correct conda environment (if installed in a conda environment) then run the foqus.py script.  The batch file assumes that "python" can be found in a location in the  PATH environment variable.  If you are using a conda environment, part of activating the environment is adding the correct Python interpretor location to the exec path. If you are not using a conda environment, and "python" is not in your exec path, you may want to edit the batch file to include the full Python interpretor path or add the directory to PATH.  The batch file can be relocated to a convenient location, and you can add windows shortcuts to launch it.
+On Windows, the setup.py script (Step 13) creates a foqus.bat file which will activate the correct conda environment (if installed in a conda environment) then run the foqus.py script.  The batch file assumes that "python" can be found in a location in the  PATH environment variable.  If you are using a conda environment, part of activating the environment is adding the correct Python interpretor location to the exec path. If you are not using a conda environment, and "python" is not in your exec path, you may want to edit the batch file to include the full Python interpretor path or add the directory to PATH.  The batch file can be relocated to a convenient location, and you can add windows shortcuts to launch it.
 
-On Linux and OSX, activate the conda environment if necessary by entering the commend ```source activate <environment where FOQUS is installed>``` in terminal.  The foqus.py script should be in the executable path so just running ```foqus.py``` should run FOQUS.
+On Linux and OSX, activate the conda environment if necessary by entering the command ```source activate <environment where FOQUS is installed>``` in terminal.  The foqus.py script should be in the executable path so just running ```foqus.py``` should run FOQUS.
 
 ## Install Optional Software
 

@@ -4,7 +4,7 @@
 
 Python 3.6 or higher is required to run FOQUS. [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/download/) are convenient Python distributions, but the choice of interpreter is up to the user. One advantage of using Miniconda or Anaconda is that it is easy to create self-contained environments, which can help with managing package version dependencies. This guide will walk through the installation process with a few optional steps for installing Miniconda and setting up an environment.
 
-If you have a working version of Python 3.6 or greater, which you prefer to Anaconda,
+If you have a working version of Python 3.6 or greater, which you prefer over Anaconda,
 you can skip steps 1 to 4.
 
 1. Get the correct version of [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for your environment, preferably a Python 3 version, but Python and 3.x environments can be installed with either.  
@@ -19,7 +19,7 @@ If you create an environment in which to install FOQUS, you will need to ensure 
 
 ## Install git
 
-Git can be used for developers, who want to contribute to FOQUS, but it is also used to install some FOQUS requirements. There are a few ways to install git. If you are using Anaconda, it can be installed with conda. Otherwise, git clients can be found here https://git-scm.com/download/.ref
+Git can be used for developers who want to contribute to FOQUS, but it is also used to install some FOQUS requirements. There are a few ways to install git. If you are using Anaconda, it can be installed with conda. Otherwise, git clients can be found here https://git-scm.com/download/.ref
 
 5. Install git
   - Option 1:

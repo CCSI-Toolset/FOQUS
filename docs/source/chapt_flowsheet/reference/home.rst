@@ -4,7 +4,7 @@ Home Menu
 Session Information Display
 ---------------------------
 
-Information related to a flowsheet and tool settings is organized into a FOQUS session. The session screen displays information about the current session. A menu is available by clicking the **Session** drop-down menu. The figure below illustrates the Home window.
+FOQUS flowsheet information and settings are stored in a session. The session screen displays information about the current session. A menu is available by clicking the **Session** drop-down menu. The figure below shows the Home window.
 
 .. figure:: ../figs/homescreen.svg
     :width: 600px
@@ -25,7 +25,7 @@ Information related to a flowsheet and tool settings is organized into a FOQUS s
   G. **DRM-Builder** displays the dynamic reduced model builder, which can be used to develop reduced models for dynamic simulations.
   H. **Settings** displays the main FOQUS settings window.
 
-2. **Help** toggles the Help browser. The Help browser contains HTML help, as well as additional licensing information about other libraries and software included in the FOQUS installation.
+2. **Help** toggles the Help browser. The Help browser contains HTML help, licensing and copyright information, log messages, and debugging console.
 
 3. The main Session window displays information about the current session and is divided into three tabs:
 
@@ -39,22 +39,19 @@ Session Menu
 The figure below illustrates the **Session** menu.
 
 .. figure:: ../figs/sessionMenu.svg
-    :width: 300px
     :align: center
     :figclass: align-center
 
     Home Window, Session Drop-Down Menu
 
-
-1. **Add\\Update Model to Turbine** enables additional models to be uploaded to Turbine. Turbine provides simulation job queuing functionality so models cannot be run in FOQUS until they have been added to the Turbine server.
-2. **Add\\Update Model to DMF** enables additional models to be uploaded to the DMF. If models are uploaded to the DMF FOQUS can automatically upload the models to Turbine as needed.
+1. **Add Current FOQUS Session to Turbine...*** upload the current FOQUS session to Turbine.  This can be used run a flowsheet in parallel with turbine.
+2. **Add\\Update Model to Turbine** enables additional models to be uploaded to Turbine. Turbine provides simulation job queuing functionality so models cannot be run in FOQUS until they have been added to the Turbine server.
 3. **New Session** clears all session information so that a new session can be started.
 4. **Open Recent** shows a list of recently open FOQUS sessions that can be quickly reloaded for convenience.
 5. **Open Session** opens a session that was previously saved to a file.
 6. **Save Session** saves the current session with the current session file name. If the session has not been previously saved, the user will be prompted to enter a file name. **Save Session** commands the user to save two session files: (1) a file with the selected name and (2) if backup option is enabled, a backup file with a name constructed from the **Session Name** and **ID**.  The Session **ID** is shown on the **Session, Metadata** tab.  The backup file is saved to the working directory. This system prevents accidental saving over an important file. It also enables the user to open any previously saved session.
 7. **Save Session As** is similar to **Save Session**; however, the user is prompted for a new file name.
-8. **Logout from DMF Repositories** Allows the user to logout of a DMF server.
-9. **Exit FOQUS** exits FOQUS. The user is asked whether to save the current session before exiting.
+8. **Exit FOQUS** exits FOQUS. The user is asked whether to save the current session before exiting.
 
 Adding or Changing Turbine Simulations
 --------------------------------------

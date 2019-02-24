@@ -10,12 +10,10 @@ ensemble. This tutorial provide information about sorting, filtering,
 and exporting data.
 
 Copy the Data\Simple_flow.foqus file from the example files to a
-convenient location (see section
-`[tutorial.example.files] <#tutorial.example.files>`__). This file is
+convenient location (see section :ref:`tutorial.example.files`). This file is
 similar to the one created in the tutorial Section
-`[tutorial.simple.flow] <#tutorial.simple.flow>`__, but it has been run
-an additional 100 times using a UQ ensemble (see Chapter
-`[chpt.uq] <#chpt.uq>`__).
+:ref:`tutorial.sim.flowsheet`, but it has been run
+an additional 100 times using a UQ ensemble (see :ref:`chapt_uq/index:Uncertainty Quantification`).
 
 #. Open FOQUS.
 
@@ -24,7 +22,7 @@ an additional 100 times using a UQ ensemble (see Chapter
 #. Click the **Flowsheet** button from the Home window.
 
 #. Click **Flowsheet Data** in the toolbar on the left side of the Home
-   window (Figure `[fig.data.table1] <#fig.data.table1>`__).
+   window.
 
 .. figure:: ../figs/data_table_1.svg
    :alt: Flowsheet Results Data Table, All Data
@@ -32,8 +30,8 @@ an additional 100 times using a UQ ensemble (see Chapter
 
    Flowsheet Results Data Table, All Data
 
-A data table should be displayed like the one shown in Figure
-`[fig.data.table1] <#fig.data.table1>`__. There are 102 flowsheet
+A data table should be displayed like the one shown in the figure below.
+There are 102 flowsheet
 evaluations. The first two evaluations are single runs, as can be seen
 in the **SetName** column, and the remaining 100 evaluation are from a
 UQ ensemble. The **Error** column shows several of the evaluations
@@ -55,10 +53,9 @@ Sorting Data
    window.
 
 #. Click **Flowsheet Data** in the toolbar on the left side of the Home
-   window (Figure `[fig.data.table1] <#fig.data.table1>`__).
+   Window.
 
-#. Click **Edit Filters** (Figure
-   `[fig.data.table1] <#fig.data.table1>`__).
+#. Click **Edit Filters**.
 
 #. Click **New Filter**.
 
@@ -70,9 +67,7 @@ Sorting Data
 
 #. Select “Sort1” from the **Filter** drop-down list.
 
-#. Select the **Sort Data** checkbox.
-
-#. Enter ``["-result"]`` as the **Sort Term**. Include the square
+#. Enter ``["-result"]`` as the **Sort by Column**. Include the square
    brackets. The square brackets indicate that there is a list of sort
    terms, although in this case there is only one. If multiple search
    terms are given, the additional terms will be used to sort results
@@ -89,11 +84,9 @@ Sorting Data
 
    Sort1 Data Filter
 
-14. Select “Sort1” from the **Current Filter** drop-down list (Figure
-    `[fig.filter.1.result] <#fig.filter.1.result>`__).
+14. Select “Sort1” from the **Current Filter** drop-down list.
 
-15. The results are shown in Figure
-    `[fig.filter.1.result] <#fig.filter.1.result>`__. The data should be
+15. The results are shown in below. The data should be
     sorted in reverse alphabetical order by **result**. Some of the
     columns are hidden to make the relevant results easier to see.
 
@@ -103,15 +96,11 @@ Sorting Data
 
    Sort1 Data Filter Results
 
-16. Click **Edit Filters** (Figure
-    `[fig.filter.1.result] <#fig.filter.1.result>`__). The dialog box in
-    Figure `[fig.filter.2] <#fig.filter.2>`__ should display.
+16. Click **Edit Filters**.
 
 17. Select “Sort2” from **Filter** drop-down list.
 
-18. Select the “Sort Data” checkbox.
-
-19. Enter ``["Error", "-result"]`` in the **Sort Term** field. This will
+19. Enter ``["err", "-result"]`` in the **Sort Term** field. This will
     sort the data first by **Error** code then by **result** in reverse
     alphabetical order.
 
@@ -123,11 +112,9 @@ Sorting Data
 
    Sort2 Data Filter
 
-21. Select “Sort2” in the **Current Filter** drop-down list (Figure
-    `[fig.filter.2.result] <#fig.filter.2.result>`__).
+21. Select “Sort2” in the **Current Filter** drop-down list.
 
-22. The results are shown in Figure
-    `[fig.filter.2.result] <#fig.filter.2.result>`__. The data should be
+22. The results are shown in below. The data should be
     sorted so all **Error** code zero results are first then sorted in
     reverse alphabetical order by **result**.
 
@@ -140,42 +127,28 @@ Sorting Data
 Filtering Data
 --------------
 
-#. Open FOQUS.
+1. Open FOQUS.
 
-#. Open the Simple_flow.foqus session from the example files.
+2. Open the Simple_flow.foqus session from the example files.
 
-#. Click the **Flowsheet** button in the Home window.
+3. Click the **Flowsheet** button in the Home window.
 
-#. Click the Results Data button (Table icon in left toolbar).
+4. Click the Results Data button (Table icon in left toolbar).
 
-#. In the data table dialog, click **Edit Filters**.
+5. In the data table dialog, click **Edit Filters**.
 
-#. Click **New Filter** and enter “Filter1” in the **Filter** field as
+6. Click **New Filter** and enter “Filter1” in the **Filter** field as
    the new filter name.
 
-The completed filter settings are shown in Figure
-`[fig.filter.3] <#fig.filter.3>`__. The buttons along the bottom of the
-filter editor dialog are used to add, delete, and change the order of
-rules and operations. Rules are conditions that are placed on data to be
-displayed. Operations are used to modify or combine rules. FOQUS uses
-reverse polish notation for the order of operations. The example filter
-in `[fig.filter.3] <#fig.filter.3>`__ is equivalent to (Error = 0 AND
-SetName :math:`\in` {UQ_Ensemble, Single_runs}) OR Index :math:`<` 3.
+The filter expression is a Python expression.  The ``c("Comlumn Name")`` function
+returns a numpy array containing the column data. The expression should evaluate to
+a column of bools where rows containing ``True`` will be included in the filtered
+results and rows containing ``False`` will be excluded. If combining multiple logical
+expressions the numpy logical functions  https://docs.scipy.org/doc/numpy-1.15.1/reference/routines.logic.html
+should be used.  Numpy is imported as ``np``
 
-The filter terms can be numbers, strings, lists of numbers, lists of
-strings or column headings. When entering column headings as search
-terms, do not enclose the column heading in quotes. This distinguishes
-column heading names from strings. The other types of terms are in JSON
-format. Strings are enclosed in double quotes, numbers have no quotes,
-and lists are enclosed in square brackets with elements separated by
-commas.
-
-7.  Click **Add Rule** three times.
-
-8.  Click **Add Operation** two times.
-
-9.  Fill out the rule and operation rows as shown in Figure
-    `[fig.filter.3] <#fig.filter.3>`__.
+8.  In this example, results without errors in the "Single_runs" should be selected.  In the filer expression
+field enter ``np.logical_and(c("err") == 0, c("set") == "Single_runs")``
 
 10. Click **Done**.
 
@@ -188,8 +161,7 @@ commas.
 11. In the data table dialog, select “Filter1” from the **Current
     Filter** drop-down list.
 
-12. The result is displayed in Figure
-    `[fig.filter.3.result] <#fig.filter.3.result>`__.
+12. The result is displayed in the Figure below.
 
 .. figure:: ../figs/filter_3_result.svg
    :alt: Filter1 Data Filter Result

@@ -9,7 +9,7 @@ be single runs, part of an optimization problem, or part of a UQ
 ensemble. This tutorial provide information about sorting, filtering,
 and exporting data.
 
-Copy the Data\Simple_flow.foqus file from the example files to a
+Copy the Data/Simple_flow.foqus file from the example files to a
 convenient location (see section :ref:`tutorial.example.files`). This file is
 similar to the one created in the tutorial Section
 :ref:`tutorial.sim.flowsheet`, but it has been run

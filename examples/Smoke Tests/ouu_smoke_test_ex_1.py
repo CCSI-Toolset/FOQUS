@@ -238,8 +238,8 @@ try: # Catch any exception and stop all timers before finishing up
 
         errorTitle = "Load x3 samples"
 
-        #fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample.smp'
-        fname = os.path.join(os.path.dirname(__file__), "../../../examples/OUU/test_suite/x3sample.smp")
+        #fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/ex1_x3sample.smp'
+        fname = os.path.join(os.path.dirname(__file__), "../../../examples/OUU/test_suite/ex1_x3sample.smp")
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]
         numInputs = inData.shape[1]

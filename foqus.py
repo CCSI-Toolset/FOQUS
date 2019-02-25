@@ -84,18 +84,19 @@ def makeSplash():
     # Make a painter to add text to
     painter = QPainter(pixmap)
     font = painter.font()  # current font for drawing text
-    font.setPointSize(14)
+    font.setPointSize(8)
     font.setBold(True)
     painter.setFont(font)
-    painter.drawText(20, 120, "Version: {}".format(ver.version))
+    painter.drawText(20, 110, "Version: {}".format(ver.version))
     font.setBold(False)
-    font.setPointSize(12)
     painter.setFont(font)
-    painter.drawText(
-        20,
-        160,
-        740,
-        150,
+    painter.drawText(20, 200, 740, 50,
+        QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
+        "License: {}".format(ver.license))
+    painter.drawText(20, 250, 740, 50,
+        QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
+        "Support: {}".format(ver.support))
+    painter.drawText(20, 300, 740, 300,
         QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
         ver.copyright)
     painter.end()
@@ -118,6 +119,7 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
     if app == None:
         app = QApplication(sys.argv)
     #create main window and start application loop
+    makeSplash()
     if showSplash:
         #add timer to show splash
         splashScr[0] = QtCore.QTimer()
@@ -125,7 +127,6 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
         # splash_timeout_ms is how long to show splash in ms
         # it is set in the first code line of this file
         splashScr[0].start(splash_timeout_ms)
-        makeSplash()
         splashScr[1].setWindowFlags(
             splashScr[1].windowFlags()|
             QtCore.Qt.WindowStaysOnTopHint)

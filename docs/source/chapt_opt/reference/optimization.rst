@@ -4,10 +4,10 @@ Reference
 The simulation based optimization tool provides a plug-in system where
 different derivative free optimization (DFO) solvers can be used with
 FOQUS. Several solvers are provided with FOQUS. The CMA-ES solver
-:raw-latex:`\citep{Hansen_2006}` is a good global derivative free
+:ref:`(Hansen 2006)<Hansen_2006>` is a good global derivative free
 optimization (DFO) solver. The NLopt library provides access to several
-DFO solvers :raw-latex:`\citep{Johnson_2015}`. SLSQP and BFGS from the
-Scipy module are also provided :raw-latex:`\citep{Scipy_2015}`. Since
+DFO solvers :ref:`(Johnson 2015)<Johnson_2015>`. SLSQP and BFGS from the
+Scipy module are also provided :ref:`(Jones et al. 2015)<Jones_2015>`. Since
 FOQUS does not generally have access to derivative information the Scipy
 solvers rely on finite difference approximations, and should only be
 used with well-behaved functions. Due to convergence tolerances in

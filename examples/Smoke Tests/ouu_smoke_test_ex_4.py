@@ -236,7 +236,7 @@ try: # Catch any exception and stop all timers before finishing up
         
         errorTitle = "Load x3 samples"
         
-        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample4.smp'
+        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/ex456_x3sample.smp'
 #        MainWin.ouuSetupFrame.x4File_edit.setText(fname)
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]

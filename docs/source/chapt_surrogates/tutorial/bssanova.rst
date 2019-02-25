@@ -5,7 +5,7 @@ BSS-ANOVA
 
 This tutorial covers the BSS-ANOVA surrogate modeling method. The
 Bayesian Smoothing Spline ANOVA (BSS-ANOVA) is essentially a Bayesian
-version of ACOSSO :raw-latex:`\citep{Reich_2009}`. It is Gaussian
+version of ACOSSO :ref:`(Reich et al. 2009)<Reich_2009>`. It is Gaussian
 Process (GP) model with a non-conventional covariance function that
 borrows its form from SS-ANOVA. It tackles the high dimensionality (of
 inputs) on two fronts: (1) variable selection to eliminate uninformative
@@ -14,7 +14,7 @@ involved among the variables in the model. This is done through a fully
 Bayesian approach which can also allow for categorical input variables
 with relative ease. Since it is closely related to ACOSSO, it generally
 works well in similar settings as ACOSSO. The BSS-ANOVA procedure also
-allows for categorical inputs :raw-latex:`\citep{Storlie_2013}`. In this
+allows for categorical inputs :ref:`(Storlie et al. 2013)<Storlie_2013>`. In this
 current implementation, BSS-ANOVA is more computationally intensive than
 ACOSSO, so ACOSSO is preferred for faster surrogate generation.
 

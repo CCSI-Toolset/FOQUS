@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>755</height>
+    <width>1920</width>
+    <height>1155</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -277,7 +277,7 @@ candidate and history files.</string>
               <string>Click to analyze ensemble.</string>
              </property>
              <property name="text">
-              <string>Analyze</string>
+              <string>Uniform Space Filling</string>
              </property>
             </widget>
            </item>

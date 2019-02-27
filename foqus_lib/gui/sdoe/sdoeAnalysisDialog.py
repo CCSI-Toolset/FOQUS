@@ -50,7 +50,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     designCol = 1
     sampleCol = 2
     runtimeCol = 3
-    plotCol = 4
+    criterionCol = 4
+    plotCol = 5
 
     testRuntime = []
     analysis = []
@@ -107,6 +108,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Connections here
         self.loadAnalysisButton.clicked.connect(self.populateAnalysis)
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
+        self.testSdoeButton.setEnabled(False)
         self.analysisTableGroup.setEnabled(False)
         self.progress_groupBox.setEnabled(False)
 
@@ -116,10 +118,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         self.testSdoeButton.clicked.connect(self.testSdoe)
+        self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         self.minDesignSize_spin.valueChanged.connect(self.on_min_design_spinbox_changed)
         self.maxDesignSize_spin.valueChanged.connect(self.on_max_design_spinbox_changed)
         self.sampleSize_spin.valueChanged.connect(self.on_sample_size_spinbox_changed)
         self.runSdoeButton.clicked.connect(self.runSdoe)
+        self.stopSdoeButton.clicked.connect(self.stopSdoe)
 
         # Resize tables
         self.infoTable.resizeColumnsToContents()
@@ -198,10 +202,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # create comboboxes for type column
         combo = QComboBox()
-        combo.addItems(['Index', 'Space-filling', 'Response', 'Weight'])
+        combo.addItems(['Space-filling', 'Index', 'Response', 'Weight'])
         self.inputSdoeTable.setCellWidget(row, self.typeCol, combo)
         combo.model().item(2).setEnabled(False)
         combo.model().item(3).setEnabled(False)
+        combo.currentTextChanged.connect(self.on_combobox_changed)
+
 
 
         # Min column
@@ -269,6 +275,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.analysisTable.setItem(row, self.runtimeCol, item)
             runtime = round(self.analysis[row][3], 2)
             item.setText(str(runtime))
+
+        # Criterion
+        item = self.analysisTable.item(row, self.criterionCol)
 
         # Plot SDOE
         viewButton = self.analysisTable.cellWidget(row, self.plotCol)
@@ -355,7 +364,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return configFile
 
     def runSdoe(self):
-
+        self.stopSdoeButton.setEnabled(True)
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
@@ -367,19 +376,32 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.analysisTableGroup.setEnabled(True)
             self.updateAnalysisTable()
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
+            if self.stopSdoe():
+                self.SDOE_progressBar.setValue(0)
+                self.analysisGroup.setEnabled(False)
+                return
         f.close()
         self.SDOE_progressBar.setValue(0)
         self.analysisGroup.setEnabled(False)
 
-
     def testSdoe(self):
+        if self.hasNoIndex():
+            reply = self.showWarning()
+            if reply == QMessageBox.Yes:
+                pass
+            else:
+                return
         #test using max design size and nd=200
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
+        self.stopSdoeButton.setEnabled(False)
         self.updateRunTime(runtime)
         self.testRuntime.append(runtime)
+
+    def stopSdoe(self):
+        True
 
     def on_min_design_spinbox_changed(self):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
@@ -394,6 +416,37 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.updateRunTime(self.testRuntime[0])
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
+
+    def on_combobox_changed(self):
+        self.testSdoeButton.setEnabled(self.hasSpaceFilling())
+
+    def hasSpaceFilling(self):
+        numInputs = self.candidateData.getNumInputs()
+        spaceFilling = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Space-filling':
+                spaceFilling += 1
+
+        return(spaceFilling > 0)
+
+    def hasNoIndex(self):
+        numInputs = self.candidateData.getNumInputs()
+        index = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Index':
+                index += 1
+        return (index == 0)
+
+    def showWarning(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Index not selected.')
+        msg.setText('You have not set an index. The index is a unique identifier for the input combination. It is not required, but encouraged.')
+        msg.setInformativeText('Do you want to continue?')
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        reply = msg.exec_()
+        return reply
+
 
     def updateRunTime(self, runtime):
         delta = runtime/200

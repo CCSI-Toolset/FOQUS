@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>755</height>
+    <width>1920</width>
+    <height>1155</height>
    </rect>
   </property>
   <property name="font">
@@ -510,6 +510,33 @@ it should be part of the analysis.
            </item>
           </layout>
          </item>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <item>
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="stopSdoeButton">
+             <property name="text">
+              <string>Stop SDOE</string>
+             </property>
+             <property name="autoDefault">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
        </widget>
       </item>
@@ -525,7 +552,7 @@ it should be part of the analysis.
       </font>
      </property>
      <property name="title">
-      <string>Analyses Performed</string>
+      <string>Created Designs</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="2" column="0">
@@ -559,17 +586,22 @@ it should be part of the analysis.
         </column>
         <column>
          <property name="text">
-          <string>Design Size d</string>
+          <string>Design Size, d</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string># of Random Starts n</string>
+          <string># of Random Starts, n</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Runtime (in seconds)</string>
+          <string>Runtime (in sec)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Criterion Value</string>
          </property>
         </column>
         <column>
@@ -592,7 +624,7 @@ it should be part of the analysis.
       <item row="1" column="0">
        <widget class="QLabel" name="analysisInstructions_static">
         <property name="text">
-         <string>* All the results for the analyses performed are located in the SDOE output directory</string>
+         <string>* All design results saved in SDOE output directory</string>
         </property>
        </widget>
       </item>
@@ -602,7 +634,7 @@ it should be part of the analysis.
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Load Analysis</string>
+         <string>Reload Design Specification</string>
         </property>
        </widget>
       </item>

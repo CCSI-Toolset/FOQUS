@@ -6,13 +6,21 @@
 import argparse, sys
 
 version = "{VERSION}"
-copyright = "See LICENSE.md for license and copyright details."
-license = "See LICENSE.md for license and copyright details."
+copyright =  \
+"""Copyright (c) 2012 - 2018 by the software owners: Oak Ridge Institute for
+Science and Education (ORISE), Los Alamos National Security, LLC., Lawrence
+Livermore National Security, LLC., The Regents of the University of California,
+through Lawrence Berkeley National Laboratory, Battelle Memorial Institute,
+Pacific Northwest Division through Pacific Northwest National Laboratory,
+Carnegie Mellon University, West Virginia University, Boston University, the
+Trustees of Princeton University, The University of Texas at Austin, URS Energy
+& Construction, Inc., et al..  All rights reserved."""
+license =  "BSD 3-Clause Variant (See LICENSE.md details)"
 author = "CCSI FOQUS Team"
-support = "Support ccsi-support@acceleratecarboncapture.org"
+support = "ccsi-support@acceleratecarboncapture.org"
 webpage = "http://www.acceleratecarboncapture.org/"
-maintainer = "John Eslick"
-maintainer_email = "john.eslick@netl.doe.gov"
+maintainer = "CCSI FOQUS Team"
+maintainer_email = "ccsi-support@acceleratecarboncapture.org"
 description = ("FOQUS tool for simulation based optimization,"
               " uncertainty quantification, and surrogate modeling")
 name = "foqus"

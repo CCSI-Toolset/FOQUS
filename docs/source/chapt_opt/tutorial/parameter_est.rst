@@ -223,7 +223,7 @@ with the default values.
 
 28. Select “NLopt” from the **Select Solver** drop-down list. NLopt is a
     collection of solvers that share a standard interface
-    :raw-latex:`\citep{Johnson_2015}`.
+    :ref:`(Johnson 2015)<Johnson_2015>`.
 
 29. Select “BOBYQA” under the Solver Options table in the **Settings**
     column drop-down list.

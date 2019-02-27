@@ -4,13 +4,8 @@ import logging
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 
-try:
-    from PyQt5.QtWebEngineWidgets import QWebEngineView as QWebView
-except:
-    from PyQt5.QtWebKitWidgets import QWebView
-
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QTextBrowser
 
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
@@ -31,13 +26,13 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.dat = dat
         self.mw = parent
         self.aboutButton.clicked.connect(self.showAbout.emit)
-        self.contentsButton.clicked.connect(self.showContents)
-        self.textBrowser = QWebView(self.tabWidget.widget(0))
+        #self.contentsButton.clicked.connect(self.showContents)
+        self.licenseButton.clicked.connect(self.showLicense)
+        self.ccsidepButton.clicked.connect(self.showCCSIDep)
+        self.textBrowser = QTextBrowser(self.tabWidget.widget(0))
         self.webviewLayout.addWidget(self.textBrowser)
-        self.backButton.clicked.connect(self.textBrowser.back)
-        self.forwardButton.clicked.connect(self.textBrowser.forward)
         self.helpPath = os.path.join(helpPath(), 'html')
-        self.showContents()
+        self.showLicense()
         self.execButton.clicked.connect(self.runDebugCode)
         self.stopButton.clicked.connect(self.setStopTrue)
         self.loadButton.clicked.connect(self.loadDbgCode)
@@ -138,9 +133,16 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
     def showContents(self):
         self.setPage(os.path.join(self.helpPath, "content.html"))
 
+    def showLicense(self):
+        self.setPage(os.path.join(self.helpPath, "license.html"))
+
+    def showCCSIDep(self):
+        self.setPage(os.path.join(self.helpPath, "ccsiDependencies.html"))
+
     def setPage(self, page):
-        self.textBrowser.load(QtCore.QUrl.fromLocalFile(page))
-        self.textBrowser.show()
+        with open(page, "r") as f:
+            s = f.read()
+        self.textBrowser.setHtml(s)
 
     def clearCode(self):
         self.pycodeEdit.clear()

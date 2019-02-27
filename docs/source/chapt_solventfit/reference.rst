@@ -8,7 +8,7 @@ deficiencies in the model form. The result is a posterior distribution
 of parameters allowing for predictions with uncertainty. uses a custom
 BSS-ANOVA-based response surface for the outputs. Like the Bayesian
 inference module, the ***SolventFit*** algorithm
-:raw-latex:`\citep{Bhat_2015}` utilizes Markov Chain Monte Carlo (MCMC)
+:ref:`(Bhat et al. 2015)<Bhat_2015>` utilizes Markov Chain Monte Carlo (MCMC)
 to compute the posterior distributions, and uses a custom
 BSS-ANOVA-based response surface (emulators) that serves as a fast
 approximations to the actual simulation model.

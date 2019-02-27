@@ -4,7 +4,7 @@
 
 Python 3.6 or higher is required to run FOQUS. [Miniconda](https://docs.conda.io/en/latest/miniconda.html) or [Anaconda](https://www.anaconda.com/download/) are convenient Python distributions, but the choice of interpreter is up to the user. One advantage of using Miniconda or Anaconda is that it is easy to create self-contained environments, which can help with managing package version dependencies. This guide will walk through the installation process with a few optional steps for installing Miniconda and setting up an environment.
 
-If you have a working version of Python 3.x, which you prefer,
+If you have a working version of Python 3.6 or greater, which you prefer over Anaconda,
 you can skip steps 1 to 4.
 
 1. Get the correct version of [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for your environment, preferably a Python 3 version, but Python and 3.x environments can be installed with either.  
@@ -17,35 +17,52 @@ you can skip steps 1 to 4.
 
 If you create an environment in which to install FOQUS, you will need to ensure that environment is active before running FOQUS.
 
+## Install git
+
+Git can be used for developers who want to contribute to FOQUS, but it is also used to install some FOQUS requirements. There are a few ways to install git. If you are using Anaconda, it can be installed with conda. Otherwise, git clients can be found here https://git-scm.com/download/.ref
+
+5. Install git
+  - Option 1:
+  > conda install git
+  - Option 2: Download and install the git client of your choice
+
 ## Get FOQUS
 
 There are 2 ways to get FOQUS either download it from the [github page](https://github.com/CCSI-Toolset/FOQUS) or if you are a developer and would like to contribute, you can fork the repository and clone your fork.
 
 5. Download FOQUS
-  - Get a tagged release [here](https://github.com/CCSI-Toolset/FOQUS/releases), or
-  - Click the clone or download button [here](https://github.com/CCSI-Toolset/FOQUS) to get the latest development version.
-6. Extract the FOQUS source to a convenient location.
-7. Get the documentation.  PDF and HTML versions of the documentation available from the [release page.](https://github.com/CCSI-Toolset/FOQUS/releases)
-  - (Optional) to make HTML help available through the FOQUS help menu, put the files from
-    the HTML manual zip file in /foqus_lib/help/html before installing.
+  - Get a tagged release [here](https://github.com/CCSI-Toolset/FOQUS/releases),
+  - Click the clone or download button [here](https://github.com/CCSI-Toolset/FOQUS) to get the latest development version. or
+  - Use the git client to clone your fork of FOQUS (if you want to contribute)
+6. If you downloaded a zip file extract the FOQUS source to a convenient location.
 
 ## Install FOQUS
 
-8. Install requirements
-  - > ```pip install -r requirements.txt```
-9. There are two ways to install FOQUS.  The first one is in-place which will leave the FOQUS source where it is and any changes made to these files will result in changes to the installed version of FOQUS.  This mode is often used by developers but it can be convenient for other users. The other option is to do a regular install which copies compiled FOQUS files to a central Python package location.
-  - install in-place
-    - > ``python setup.py develop``
-  - regular install
-    - > ``python setup.py install``
+7. Open the Anaconda prompt (or appropriate terminal or shell depending on operating system and choice of Python), and change to the directory containing the FOQUS files.
+8. If you set up a "foqus" conda environment activate it
+  - On Windows:
+  > conda activate foqus
+  - On Linux and OSX:
+  > source activate foqus
+9. Install requirements:
+  > pip install –r requirements.txt
+10. Install FOQUS.  The in-place install will allow you to easily edit source code while the regular install will install FOQUS in the central Python library location, and not allow editing of the source code.
+  - Install in-place:
+  > python setup.py develop
+  - Regular install:
+  > python setup.py install
 
-On Windows, the setup.py script creates a foqus.bat file which will activate the correct conda environment (if installed in a conda environment) then run the foqus.py script.  The batch file assumes that "python" can be found in a location in the  PATH environment variable.  If you are using a conda environment, part of activating the environment is adding the correct Python interpretor location to the exec path. If you are not using a conda environment, and "python" is not in your exec path, you may want to edit the batch file to include the full Python interpretor path or add the directory to PATH.  The batch file can be relocated to a convenient location, and you can add windows shortcuts to launch it.
+## Test FOQUS Installation
 
-On Linux and OSX, activate the conda environment if necessary by entering the commend ```source activate <environment where FOQUS is installed>``` in terminal.  The foqus.py script should be in the executable path so just running ```foqus.py``` should run FOQUS.
+11. Run foqus:
+  - On Windows a batch file (foqus.bat) is created in the source directory.  This can be moved to any convenient location, and linked by a Windows shortcut if desired.  Start FOQUS by running the batch file.  The batch file should run FOQUS in the appropriate conda environment, if an Anaconda environment was used.
+  - On Linux or OSX launch foqus in a terminal.  Activate the appropriate conda environment if necessary.
+  > foqus.py
+12. The first time FOQUS is run it will as for a working directory location.  This is the location FOQUS will put any working files.  This setting can be changed later.
 
 ## Install Optional Software
 
-There are several optional pieces of software which are not written in Python and not easily installed automatically. There are a couple packages which most users would want to install.  The first is PSUADE, which provides all of FOQUS's UQ features. The second is Turbine which is requires Windows, and is used to interface with Excel, Aspen, and gPROMS software.
+There are several optional pieces of software which are not written in Python and not easily installed automatically. There are a couple packages which most users would want to install.  The first is PSUADE, which provides FOQUS UQ functionality. The second is Turbine which is requires Windows, and is used to interface with Excel, Aspen, and gPROMS software.
 
 Other software listed below will enable additional features of FOQUS if available.
 
@@ -59,7 +76,7 @@ PSUADE install instructions are on the [psuade github](https://github.com/LLNL/p
 * This requires [Microsoft SQL Server Compact 4.0](https://www.microsoft.com/en-us/download/details.aspx?id=17876).
 * Download and install the [SimSinter](https://github.com/CCSI-Toolset/SimSinter/releases/) and [TurbineLite](https://github.com/CCSI-Toolset/turb_sci_gate/releases/) installers.
 * Install SimSinter first, then TurbineLite.
-* Do one of these two things (only after install).
+* After the install the Turbine Web API Service Will start automatically when Windows starts, but it will not start directly after the install. Do one of these two things (only after install).
     * Restart computer, or
     * Start the "Turbine Web API service": (1) open Task Manager, (2) go to the "Services" tab, (3) click the "Services" button (in the lower right corner), (4) right-click "Turbine Web API Service" from the list, and (5) click "Start"
 
@@ -105,9 +122,4 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ a
 
 ## Troubleshooting
 
-* Error "Cannot import adodbapi.base." The source of this error is unclear, but
-```pip uninstall adodbapi``` then ```pip install adodbapi``` has been found to
-resolve it.
-
-* If you are using an outdated version of Pandas, there might be issues with
-saving the FOQUS file. See [instructions](https://pandas.pydata.org/pandas-docs/stable/install.html) on how to install/update Pandas.
+* Error "Cannot import adodbapi.base." This error may occur if pywin32 installs an older version of adodbapi.  Uninstalling and reinstalling the latest version should fix the problem. ```pip uninstall adodbapi``` then ```pip install adodbapi``` has been found to resolve it.

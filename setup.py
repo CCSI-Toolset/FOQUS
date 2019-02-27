@@ -67,10 +67,16 @@ if os.name == 'nt': # Write a batch file on windows to make it easier to launch
         env = None
     with open("foqus.bat", 'w') as f:
         if env is not None:
-            f.write('cmd /c "{} activate {} && python {}'\
+            f.write('"cmd /c {} activate {} && python {} %*"'\
                 .format(conda_path, env, foqus_path))
         else:
-            f.write('"cmd /c python {}"\n'.format(foqus_path))
+            f.write('"cmd /c python {} %*"\n'.format(foqus_path))
+    with open("foqus_debug.bat", 'w') as f:
+        if env is not None:
+            f.write('"cmd /K {} activate {} && python {} %*"'\
+                .format(conda_path, env, foqus_path))
+        else:
+            f.write('"cmd /K python {} %*"\n'.format(foqus_path))
 
 print("""
 

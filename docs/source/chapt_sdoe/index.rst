@@ -57,11 +57,11 @@ For this first example, the goal is to construct a simple space-filling design w
 
 1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. (Figure `[fig:sdoe_home] <#fig:sdoe_home>'  ).
 
-.. figure: ../figs/1_home.png
+.. figure:: figs/1_home.png
    :alt: Home Screen
    
    Home Screen
    
-   [Fig:sdoe_home]
+   [fig:sdoe_home]
    
    

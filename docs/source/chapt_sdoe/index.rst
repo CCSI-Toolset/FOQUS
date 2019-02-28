@@ -50,3 +50,19 @@ We begin with some basic terminology that will help provide structure to the pro
 
 An optimal design of experiment strategy uses the utility function to evaluate potential choices of input combinations to maximize the improvement in the utility function over the available candidates. If the optimal design strategy is sequential, then the goal is to use early results from the beginning of the experiment to guide the choice of new input combinations based on what has been learned about the responses.
 
+Using SDoE Module - A Simple Example
+------------------------------------
+
+For this first example, the goal is to construct a simple space-filling design with 8 runs in a 2-dimensional space using the example files provided with FOQUS. 
+
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. 
+(Figure `[fig:sdoe_home] <#fig:sdoe_home>'  ).
+
+.. figure: ../figs/1_home.png
+   :alt: Home Screen
+   
+   Home Screen
+   
+   [Fig:sdoe_home]
+   
+   

@@ -38,13 +38,13 @@ We begin with some basic terminology that will help provide structure to the pro
 
 *	Utility function – this is a mathematical expression of the goal (or goals) of the experiment that is used to guide the selection of new input combinations, based on the prior information before the start of the experiment and during the running of the experiment. The utility function can be based on a single goal or multiple competing goals, and can be either static throughout the experiment or evolving as different goals change in importance over the course of the experiment. Common choices of goals for the experiment are:
 
-#.	refining the region of interest, 
+#.	exploring the region of interest, 
 
-#. 	improving the precision (or reducing the uncertainty) in the estimation of model parameters, 
+#. improving the precision (or reducing the uncertainty) in the estimation of model parameters, 
 
 #.	improving the precision of prediction for new observations in the design region, 
 
-#. 	quantifying the discrepancy between the model and data, or 
+#. quantifying the discrepancy between the model and data, or 
 
 #.	optimizing the value of responses of interest. 
 
@@ -55,8 +55,7 @@ Using SDoE Module - A Simple Example
 
 For this first example, the goal is to construct a simple space-filling design with 8 runs in a 2-dimensional space using the example files provided with FOQUS. 
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. 
-(Figure `[fig:sdoe_home] <#fig:sdoe_home>'  ).
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. (Figure `[fig:sdoe_home] <#fig:sdoe_home>'  ).
 
 .. figure: ../figs/1_home.png
    :alt: Home Screen

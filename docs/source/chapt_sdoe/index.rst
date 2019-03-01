@@ -88,10 +88,18 @@ Select the columns that you wish to see graphically in the right hand box , and 
    
 The plot shows histograms of each of the inputs on the diagonals to provide a view of the distribution of values as well as the range of each input. The off-diagonals show pairwise scatterplots of each pair of inputs. This should provide the experimenter with the ability to assess if the ranges specified and any constraints for the inputs have been appropriately captured with the specified candidate set. In addition, repeating this process for any historical data will provide verification that the already observed data have been suitably characterized.
 
-4. One the data have been verified for both the **Candidate** and **History** files, click on the **Confirm** button to make the **Ensemble Aggregation** window active.
+4. Once the data have been verified for both the **Candidate** and **History** files, click on the **Confirm** button to make the **Ensemble Aggregation** window active.
 
-5. 
+5. If more than one **Candidate** file was specified, then the **aggregate_candidates.csv** file that was created will have combined these files into a single file. Similarly if more than one **Histoy** file was specified, then the **aggregate_history.csv** file has been created with all runs from these files. If only a single file was selected for either the  **Candidate** and **History** files, then their aggregated matching files will be the same as the original.
 
+6. There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
+
+.. figure:: figs/4_scatterplot_aggregated.png
+   :alt: SDOE plot of aggregated inputs
+   SDOE plot of aggregated inputs
+   
+   [fig:4_scatterplot_aggregated]
+   
 Example 1: 8-run 2-D design
 ---------------------------
 

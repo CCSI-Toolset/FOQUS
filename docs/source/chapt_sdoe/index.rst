@@ -50,6 +50,15 @@ We begin with some basic terminology that will help provide structure to the pro
 
 An optimal design of experiment strategy uses the utility function to evaluate potential choices of input combinations to maximize the improvement in the utility function over the available candidates. If the optimal design strategy is sequential, then the goal is to use early results from the beginning of the experiment to guide the choice of new input combinations based on what has been learned about the responses.
 
+Why Space-Filling Designs?
+--------------------------
+
+Space-filling designs are a design of experiments strategy that is well suited to both physical experiments when there is an accompanying model to describe the process and to computer experiments. The idea behind a space-filling design is that the design points are spread throughout the input space of interest. If the goal is to predict what a new set of input combinations within the ranges of the inputs for which there is data, then having data spread throughout the space means that there should be an observed data point relatively close to where the prediction is sought.
+
+In addition, if there is a model for the process, then having data spread throughout the input space means that the match of the model to the observed data can be evaluated in multiple locations to look for possible discrepancies and to quantify the magnitude of those differences throughout the input space.
+
+Hence, for a variety of criteria, a space-filling design can serve as good choice for exploration and for understanding the relationship between the inputs and the response without making a large number of assumptions about the nature of that relationship. As we will see with some of the subsequent examples, the sequential approach allows for great flexibility to leverage what has been learned in early stages to influence the later choices of designs. In addition, the candidate-based approach that is supported in this module has the advantage that it can make the space-filling approach easier to adapt to specialized design criteria that may evolve through the sequence of stages of the sequential design.
+
 Using SDoE Module - The Basics
 ------------------------------
 

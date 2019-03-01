@@ -59,8 +59,8 @@ In addition, if there is a model for the process, then having data spread throug
 
 Hence, for a variety of criteria, a space-filling design can serve as good choice for exploration and for understanding the relationship between the inputs and the response without making a large number of assumptions about the nature of that relationship. As we will see with some of the subsequent examples, the sequential approach allows for great flexibility to leverage what has been learned in early stages to influence the later choices of designs. In addition, the candidate-based approach that is supported in this module has the advantage that it can make the space-filling approach easier to adapt to specialized design criteria that may evolve through the sequence of stages of the sequential design.
 
-Using SDoE Module - The Basics
-------------------------------
+Using the SDoE Module - The Basics
+----------------------------------
 
 In this section, we descibe the basic steps in for creating a design in this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this wondow is to click on **Create Design**. 
 

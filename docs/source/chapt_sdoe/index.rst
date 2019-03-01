@@ -36,7 +36,7 @@ We begin with some basic terminology that will help provide structure to the pro
 
 *	Responses (or outputs) – these are the measured results obtained from each experimental run. These are most desirably quantitative summaries of a characteristic of interest from running the process at the prescribed set of operating conditions (eg. CO2 capture efficiency is a typical response of interest for CCSI).
 
-*	Utility function – this is a mathematical expression of the goal (or goals) of the experiment that is used to guide the selection of new input combinations, based on the prior information before the start of the experiment and during the running of the experiment. The utility function can be based on a single goal or multiple competing goals, and can be either static throughout the experiment or evolving as different goals change in importance over the course of the experiment. Common choices of goals for the experiment are:
+*	Design criterion / Utility function – this is a mathematical expression of the goal (or goals) of the experiment that is used to guide the selection of new input combinations, based on the prior information before the start of the experiment and during the running of the experiment. The design criterion can be based on a single goal or multiple competing goals, and can be either static throughout the experiment or evolving as different goals change in importance over the course of the experiment. Common choices of goals for the experiment are:
 
 #.	exploring the region of interest, 
 
@@ -108,7 +108,20 @@ There are options to view the aggregated files for both the candidate and histor
    
    [fig:5_SDOE_page2]
 
-7. 
+7. The first choice to be made for the design is whether to optimize using **minimax** or **maximin**. The first choice, **minimax** looks to choose design points that minimize the maximum distance that any point in the input space (as characterized by the candidate set and historical data, if it is available) is away from a design point. Hence, the idea here is that if we want to use data to help predict new outcomes throughout the inputt space, then we don't want to be too far away from an observed location. The second choice, **maximin** looks to choose a design where the design points are as far away from each other as possible. In this case, the design criterion is looking to maximize how close any two points are away from their nearest neighbor. In practice the two design criterion often give similar designs, with the maximin criterion tending to push the chosen design points closer to the edges of the specified regions. 
+
+Hint: If there is uncertainty about some of the edge points in the candidate set being viable options, then **minimax** might be preferred. If the goal is to place points throughoht the input space with them going right to the edges, than **maximin** might be preferred. Note, that creating the designs is relatively easy, so it may be helpful to try both approaches to see which is preferred.
+
+8. The next choice to be made falls under **Design Specification**, when the experimenter can select the sizes of designs to be created. The **Min Design Size** specifies the smallest design size to be created. Not that the default value is set at **2**, which would lead to choosing the best two design runs from the candidate set to fill the space (after taking into account any historical data that has already been gathered).
+The **Max Design Size** specifies the largest design size to be created. The default value is set at **8**, which means that if this combination were used, designs would be created of size 2, 3, 4, 5, 6, 7 and 8. Hence, it may be prudent to select a relatively small range of values to expedite the creation of the designs, as each of these choices triggers a separate optimization search.
+
+9. Next, there are options for the columns of the candidate set to be used for the construction of the design. Under **Include?** in the box on the right hand side, the experimenter has the option of whether particular columns should be included in the space-filling design search. Unclick a box, if a particular column should not be included in the search.
+
+Next select the **Type** for each column. Typically most of the columns will be designated as **Inputs**, which means that they will be used to find the best design. In addition, we recommend including one **Index** column which contains a unique identifier for each run of the candidate set. This makes tracking which runs are included in the constructed designs. If no **Index** column is specified, a warning will appear later in the process, but it is not strictly required.
+
+Finally, the **Min** and **Max** columns in the box allow the range of values for each input column to be changed. The default is to extract the smallest and largest values from the candidate and history data files, and use these. This approach generally works well, as it scales the inputs to be in a uniform hypercube for comparing distances between the design points. 
+
+Hint: the default values for **Min** and **Max** can generally be left at their defaults unless: (1) the range of some inputs represent very different amounts of change in the process. For example, if temperature is held nearly constant, while a flow rate changes substantially, then it may be desirable to extend the range of the temperature beyond its nominal values to make the amount of change in temperature more commensurate with the amount of change in the flow rate. (2) if changes are made in the candidate or history data files. For example, if one set of designs are created from one candidate set, and then another set of designs are created from a different candidate set.
 
 
 

@@ -50,8 +50,26 @@ We begin with some basic terminology that will help provide structure to the pro
 
 An optimal design of experiment strategy uses the utility function to evaluate potential choices of input combinations to maximize the improvement in the utility function over the available candidates. If the optimal design strategy is sequential, then the goal is to use early results from the beginning of the experiment to guide the choice of new input combinations based on what has been learned about the responses.
 
-Using SDoE Module - A Simple Example
-------------------------------------
+Using SDoE Module - The Basics
+------------------------------
+
+In this section, we descibe the basic steps in for creating a design in this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this wondow is to click on **Create Design**. 
+
+.. figure:: figs/1_home.png
+   :alt: Home Screen
+   
+   SDOE Home Screen
+   
+   [fig:sdoe_home]
+   
+We now consider some details for each of these steps:
+1. In the **Ensemble Selection** box, click on the **Load from File..** button to select the file(s) for the construction of the design. Several files can be selected and added to the box listing the chosen files.
+2. For each of the files selected, identify them as either a **Candidate** file or a **History** file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed. The columns of the file should contain the different input factors that define the dimension of the input space. The rows of the file each identify one set of input values that could be selected as a run in the final design. Typically, a good candidate file will have many different candidate runs listed, and they should fill the available ranges of the inputs that could be considered. Leaving gaps or holes in the input space is possible, but generally should correspond to a region where it is not possible (or desirable) to collect data.
+**History** .csv files should have the same number of columns for the input space as the candidate file, and represent data that have already been collected. The algorithm for creating the design will aim to place points in different locations from where data have already been obtained, while filling the input space around those locations.
+
+
+Example 1: 8-run 2-D design
+---------------------------
 
 For this first example, the goal is to construct a simple space-filling design with 8 runs in a 2-dimensional space using the example files provided with FOQUS. 
 

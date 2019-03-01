@@ -63,10 +63,34 @@ In this section, we descibe the basic steps in for creating a design in this mod
    [fig:sdoe_home]
    
 We now consider some details for each of these steps:
+
 1. In the **Ensemble Selection** box, click on the **Load from File..** button to select the file(s) for the construction of the design. Several files can be selected and added to the box listing the chosen files.
-2. For each of the files selected, identify them as either a **Candidate** file or a **History** file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed. The columns of the file should contain the different input factors that define the dimension of the input space. The rows of the file each identify one set of input values that could be selected as a run in the final design. Typically, a good candidate file will have many different candidate runs listed, and they should fill the available ranges of the inputs that could be considered. Leaving gaps or holes in the input space is possible, but generally should correspond to a region where it is not possible (or desirable) to collect data.
+
+2. For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **History** file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed. The columns of the file should contain the different input factors that define the dimension of the input space. The rows of the file each identify one set of input values that could be selected as a run in the final design. Typically, a good candidate file will have many different candidate runs listed, and they should fill the available ranges of the inputs that could be considered. Leaving gaps or holes in the input space is possible, but generally should correspond to a region where it is not possible (or desirable) to collect data.
 **History** .csv files should have the same number of columns for the input space as the candidate file, and represent data that have already been collected. The algorithm for creating the design will aim to place points in different locations from where data have already been obtained, while filling the input space around those locations.
 
+3. Click on the **View** button to open the **Preview Inputs** pop-up widow, to see the list of columns contained in each file. The left hand side displays the first set of values from the file. Select the columns that you wish to see graphically in the right hand box , and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
+
+.. figure:: figs/2_preview_inputs.png
+   :alt: SDOE preview of inputs
+   
+   SDOE preview of inputs
+   
+   [fig:2_preview_inputs]
+
+Select the columns that you wish to see graphically in the right hand box , and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
+
+.. figure:: figs/3_scatterplot_inputs.png
+   :alt: SDOE plot of inputs
+   SDOE plot of inputs
+   
+   [fig:3_scatterplot_inputs]
+   
+The plot shows histograms of each of the inputs on the diagonals to provide a view of the distribution of values as well as the range of each input. The off-diagonals show pairwise scatterplots of each pair of inputs. This should provide the experimenter with the ability to assess if the ranges specified and any constraints for the inputs have been appropriately captured with the specified candidate set. In addition, repeating this process for any historical data will provide verification that the already observed data have been suitably characterized.
+
+4. One the data have been verified for both the **Candidate** and **History** files, click on the **Confirm** button to make the **Ensemble Aggregation** window active.
+
+5. 
 
 Example 1: 8-run 2-D design
 ---------------------------

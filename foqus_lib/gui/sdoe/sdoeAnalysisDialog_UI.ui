@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1155</height>
+    <width>1280</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="font">
@@ -134,6 +134,10 @@
           <layout class="QGridLayout" name="gridLayout_11">
            <item row="0" column="1">
             <widget class="QRadioButton" name="Maximin_radioButton">
+             <property name="toolTip">
+              <string>Maximize the distance
+between design points</string>
+             </property>
              <property name="text">
               <string>Maximin</string>
              </property>
@@ -141,6 +145,10 @@
            </item>
            <item row="0" column="0">
             <widget class="QRadioButton" name="Minimax_radioButton">
+             <property name="toolTip">
+              <string>Minimize how far design points
+are from any candidate point</string>
+             </property>
              <property name="text">
               <string>Minimax</string>
              </property>
@@ -223,7 +231,8 @@
             <item row="0" column="1">
              <widget class="QSpinBox" name="minDesignSize_spin">
               <property name="toolTip">
-               <string>Please choose the size for a small grouping.</string>
+               <string>Please select the
+smallest design size</string>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -233,8 +242,9 @@
             <item row="1" column="1">
              <widget class="QSpinBox" name="maxDesignSize_spin">
               <property name="toolTip">
-               <string>Minimize difference between min and max
-for efficient computation.</string>
+               <string>Select the largest design size.
+Minimize difference between min 
+and max for efficient computation.</string>
               </property>
               <property name="minimum">
                <number>1</number>
@@ -256,10 +266,10 @@ for efficient computation.</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>For each input, specify the type, and wether
-it should be part of the analysis.
+            <string>For each column, specify the type, and whether
+it should be part of the design.
+* Input: inputs to be considered for SDOE
 * Index: unique identifier for the input combination. Not required, but encouraged.
-* Space-filling: inputs to be considered for SDOE
 </string>
            </property>
            <property name="sizeAdjustPolicy">

@@ -202,7 +202,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # create comboboxes for type column
         combo = QComboBox()
-        combo.addItems(['Space-filling', 'Index', 'Response', 'Weight'])
+        combo.addItems(['Input', 'Index', 'Response', 'Weight'])
         self.inputSdoeTable.setCellWidget(row, self.typeCol, combo)
         combo.model().item(2).setEnabled(False)
         combo.model().item(3).setEnabled(False)
@@ -386,7 +386,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def testSdoe(self):
         if self.hasNoIndex():
-            reply = self.showWarning()
+            reply = self.showIndexWarning()
             if reply == QMessageBox.Yes:
                 pass
             else:
@@ -424,7 +424,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         numInputs = self.candidateData.getNumInputs()
         spaceFilling = 0
         for i in range(numInputs):
-            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Space-filling':
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Input':
                 spaceFilling += 1
 
         return(spaceFilling > 0)
@@ -437,7 +437,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 index += 1
         return (index == 0)
 
-    def showWarning(self):
+    def showIndexWarning(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle('Index not selected.')

@@ -10,7 +10,7 @@ you can skip steps 1 to 4.
 1. Get the correct version of [Miniconda](https://docs.conda.io/en/latest/miniconda.html) for your environment, preferably a Python 3 version, but Python and 3.x environments can be installed with either.  
 2. Install Miniconda by running the installer, and following a few simple prompts.
 3. Set up a foqus environment.
-  > conda create -n foqus python=3
+  > conda create -n foqus python=3 pip
 4. Activate the environment
   - Linux: > source activate foqus
   - Windows: > conda activate foqus

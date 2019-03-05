@@ -377,7 +377,7 @@
           </row>
           <row>
            <property name="text">
-            <string>Password</string>
+            <string>password</string>
            </property>
           </row>
           <column>
@@ -419,6 +419,9 @@
            </property>
           </item>
           <item row="1" column="1">
+           <property name="text">
+            <string/>
+           </property>
            <property name="flags">
             <set>ItemIsSelectable|ItemIsEditable|ItemIsDragEnabled|ItemIsUserCheckable|ItemIsEnabled</set>
            </property>
@@ -470,6 +473,11 @@
         </item>
         <item>
          <widget class="QTableWidget" name="inputs_table">
+          <column>
+           <property name="text">
+            <string>name</string>
+           </property>
+          </column>
           <column>
            <property name="text">
             <string>path</string>
@@ -547,6 +555,11 @@
         </item>
         <item>
          <widget class="QTableWidget" name="outputs_table">
+          <column>
+           <property name="text">
+            <string>name</string>
+           </property>
+          </column>
           <column>
            <property name="text">
             <string>path</string>

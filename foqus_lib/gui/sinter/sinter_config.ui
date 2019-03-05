@@ -16,7 +16,7 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_4">
     <item>
-     <widget class="QTabWidget" name="inputs_table_2">
+     <widget class="QTabWidget" name="tabs">
       <property name="currentIndex">
        <number>0</number>
       </property>
@@ -27,7 +27,7 @@
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="0" column="0">
+          <item row="1" column="0">
            <widget class="QLabel" name="label_4">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
@@ -40,10 +40,10 @@
             </property>
            </widget>
           </item>
-          <item row="6" column="2">
+          <item row="7" column="2">
            <widget class="QLineEdit" name="date"/>
           </item>
-          <item row="0" column="2">
+          <item row="1" column="2">
            <layout class="QGridLayout" name="gridLayout_2">
             <item row="1" column="0">
              <widget class="QLabel" name="label_5">
@@ -108,7 +108,7 @@
             </item>
            </layout>
           </item>
-          <item row="6" column="0">
+          <item row="7" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
              <string>date</string>
@@ -118,7 +118,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="2">
+          <item row="3" column="2">
            <widget class="QComboBox" name="filetype">
             <item>
              <property name="text">
@@ -127,7 +127,7 @@
             </item>
            </widget>
           </item>
-          <item row="3" column="0">
+          <item row="4" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
              <string>filetype-version</string>
@@ -137,7 +137,7 @@
             </property>
            </widget>
           </item>
-          <item row="8" column="0">
+          <item row="9" column="0">
            <widget class="QLabel" name="label_11">
             <property name="text">
              <string>config-version</string>
@@ -147,10 +147,10 @@
             </property>
            </widget>
           </item>
-          <item row="4" column="2">
+          <item row="5" column="2">
            <widget class="QLineEdit" name="title"/>
           </item>
-          <item row="3" column="2">
+          <item row="4" column="2">
            <widget class="QComboBox" name="filetype_version">
             <item>
              <property name="text">
@@ -159,7 +159,7 @@
             </item>
            </widget>
           </item>
-          <item row="5" column="0">
+          <item row="6" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
              <string>author</string>
@@ -169,7 +169,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0">
+          <item row="3" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
              <string>filetype</string>
@@ -179,24 +179,24 @@
             </property>
            </widget>
           </item>
-          <item row="7" column="2">
+          <item row="8" column="2">
            <widget class="QLineEdit" name="description"/>
           </item>
-          <item row="8" column="2">
+          <item row="9" column="2">
            <widget class="QLineEdit" name="config_version">
             <property name="text">
              <string>1.0</string>
             </property>
            </widget>
           </item>
-          <item row="9" column="0">
+          <item row="10" column="0">
            <widget class="QLabel" name="label_12">
             <property name="text">
              <string>model</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="0">
+          <item row="8" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
              <string>description</string>
@@ -206,7 +206,7 @@
             </property>
            </widget>
           </item>
-          <item row="9" column="2">
+          <item row="10" column="2">
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="1" column="2">
              <widget class="QPushButton" name="digest_calculate">
@@ -262,10 +262,10 @@
             </item>
            </layout>
           </item>
-          <item row="5" column="2">
+          <item row="6" column="2">
            <widget class="QLineEdit" name="author"/>
           </item>
-          <item row="4" column="0">
+          <item row="5" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>title</string>
@@ -285,16 +285,23 @@
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>413</height>
+            <height>384</height>
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="set_working_dir">
+          <property name="text">
+           <string>Set Working Directory</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </widget>
       <widget class="QWidget" name="input_files">
        <attribute name="title">
-        <string>Inout Files</string>
+        <string>Input Files</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_3">
         <item>
@@ -584,7 +591,7 @@
    </property>
    <widget class="QMenu" name="menuLoad">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionSave"/>
     <addaction name="actionLoad"/>
@@ -595,17 +602,17 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionSave">
    <property name="text">
-    <string>Save</string>
+    <string>&amp;Save</string>
    </property>
   </action>
   <action name="actionLoad">
    <property name="text">
-    <string>Load</string>
+    <string>&amp;Load</string>
    </property>
   </action>
   <action name="actionQuit">
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
   </action>
  </widget>

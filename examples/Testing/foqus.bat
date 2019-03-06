@@ -1,1 +1,0 @@
-"cmd /c C:\Users\jeslick\AppData\Local\Continuum\miniconda3\condabin\conda.BAT activate foqus && python C:\Users\jeslick\AppData\Local\Continuum\miniconda3\envs\foqus\Scripts\foqus.py %*"

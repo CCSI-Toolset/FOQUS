@@ -260,6 +260,13 @@
               </item>
              </widget>
             </item>
+            <item row="0" column="2">
+             <widget class="QPushButton" name="model_browse">
+              <property name="text">
+               <string>Browse</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </item>
           <item row="6" column="2">
@@ -317,13 +324,6 @@
            <widget class="QPushButton" name="del_input_file">
             <property name="text">
              <string>delete</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="digest_input_files">
-            <property name="text">
-             <string>calculate digest value</string>
             </property>
            </widget>
           </item>
@@ -654,7 +654,6 @@
   <tabstop>add_input_file</tabstop>
   <tabstop>del_input_file</tabstop>
   <tabstop>input_files_table</tabstop>
-  <tabstop>digest_input_files</tabstop>
  </tabstops>
  <resources/>
  <connections/>

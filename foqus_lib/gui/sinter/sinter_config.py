@@ -3,7 +3,8 @@ import json
 import logging
 from PyQt5 import uic
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QFileDialog, QDialog, QMessageBox, QAbstractItemView
+from PyQt5.QtWidgets import (QFileDialog, QDialog, QMessageBox,
+                             QAbstractItemView, QTableWidgetItem)
 import hashlib
 
 _log = logging.getLogger(__name__)
@@ -21,7 +22,9 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.actionSave.triggered.connect(self._save_dialog)
         self.actionLoad.triggered.connect(self._load_dialog)
         self.set_working_dir.clicked.connect(self._browse_for_working_dir)
+        self.model_browse.clicked.connect(self._model_browse)
         self.digest_calculate.clicked.connect(self._calc_model_digest)
+        self.add_input_file.clicked.connect(self._add_input_file)
         self.add_input.clicked.connect(self._add_input)
         self.add_output.clicked.connect(self._add_output)
         self.delete_input.clicked.connect(self._del_input)
@@ -31,6 +34,30 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.outputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.inputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.show()
+
+    def _add_input_file(self):
+        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        if dialog.exec_() == QDialog.Accepted:
+            res = dialog.selectedFiles()[0]
+            file = os.path.relpath(res)
+            row = self.input_files_table.rowCount()
+            self.input_files_table.setRowCount(row + 1)
+            item = QTableWidgetItem(file)
+            self.input_files_table.setItem(row, 0, item)
+            with open(file, "rb") as fp:
+                h = hashlib.sha1(fp.read()).hexdigest()
+            item = QTableWidgetItem(h)
+            self.input_files_table.setItem(row, 1, item)
+            item = QTableWidgetItem("sha1")
+            self.input_files_table.setItem(row, 2, item)
+            self.input_files_table.resizeColumnsToContents()
+
+    def _model_browse(self):
+        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        if dialog.exec_() == QDialog.Accepted:
+            res = dialog.selectedFiles()[0]
+            self.model_file.setText(os.path.relpath(res))
+            self.inputs_table.setRowCount(self.inputs_table.rowCount() + 1)
 
     def _add_input(self):
         self.inputs_table.setRowCount(self.inputs_table.rowCount() + 1)
@@ -116,6 +143,14 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         d["model"] = {}
         d["model"]["file"] = self.model_file.text()
         d["model"]["DigestValue"] = self.model_digest_value.text()
+        d["input-files"] = []
+        for row in range(self.input_files_table.rowCount()):
+            d2 = {}
+            d2["file"] = self.input_files_table.item(row, 0).text()
+            d2["DigestValue"] = self.input_files_table.item(row, 1).text()
+            d2["SignatureMethodAlgorithm"] = \
+                self.input_files_table.item(row, 2).text()
+            d["input-files"].append(d2)
         d["settings"] = {}
         for row in range(self.settings_table.rowCount()):
             sname = self.settings_table.verticalHeaderItem(row).text()
@@ -128,6 +163,8 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
                 self.settings_table.item(row, 2).text()
         d["inputs"] = {}
         for i in range(self.inputs_table.rowCount()):
+            if self.inputs_table.item(i, 0) is None:
+                continue
             name = self.inputs_table.item(i, 0).text()
             d["inputs"][name] = {}
             d["inputs"][name]["path"] = [self.inputs_table.item(i, 1).text()]
@@ -147,10 +184,26 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
                 d["inputs"][name]["default"] = float(d["inputs"][name]["default"])
                 d["inputs"][name]["min"] = float(d["inputs"][name]["min"])
                 d["inputs"][name]["max"] = float(d["inputs"][name]["max"])
-
         d["outputs"] = {}
+        for i in range(self.outputs_table.rowCount()):
+            if self.inputs_table.item(i, 0) is None:
+                continue
+            name = self.outputs_table.item(i, 0).text()
+            d["outputs"][name] = {}
+            d["outputs"][name]["path"] = [self.outputs_table.item(i, 1).text()]
+            d["outputs"][name]["type"] = self.outputs_table.item(i, 2).text()
+            if d["outputs"][name]["type"] == "float":
+                d["outputs"][name]["type"] = "double"
+            d["outputs"][name]["default"] = self.outputs_table.item(i, 3).text()
+            d["outputs"][name]["units"] = self.inputs_table.item(i, 5).text()
+            d["outputs"][name]["description"] = self.inputs_table.item(i, 5).text()
+            if d["outputs"][name]["type"] == "int":
+                d["outputs"][name]["default"] = int(d["outputs"][name]["default"])
+            elif d["outputs"][name]["type"] == "double":
+                d["outputs"][name]["default"] = float(d["outputs"][name]["default"])
         with open(file, "w") as fp:
             json.dump(d, fp, indent=2)
+
 
     def _browse_for_working_dir(self):
         dialog = QFileDialog(self, 'Working Directory', directory=os.getcwd())

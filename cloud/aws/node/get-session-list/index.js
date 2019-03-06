@@ -15,14 +15,15 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
+//const default_user_name = "anonymous";
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 
 // For development/testing purposes
 exports.handler = function(event, context, callback) {
   console.log(`Running index.handler: "${event.httpMethod}"`);
   console.log("request: " + JSON.stringify(event));
   console.log('==================================');
+  const user_name = event.requestContext.authorizer.principalId;
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
       body: err ? err.message : JSON.stringify(res),
@@ -33,10 +34,10 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod == "GET") {
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: default_user_name
+      Prefix: user_name
     };
     //var awsS3Client = new AWS.S3();
-    console.log("TESTING...");
+    console.log("SESSION GET: " + s3_bucket_name);
     var client = new AWS.S3();
     //var client = s3.createClient(options);
     client.listObjects(params, function(err, data) {

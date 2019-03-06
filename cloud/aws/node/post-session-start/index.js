@@ -17,8 +17,7 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
 
 // POST SESSION START:
@@ -38,6 +37,7 @@ exports.handler = function(event, context, callback) {
           'Access-Control-Allow-Origin': '*'
       },
   });
+  const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
     console.log("PATH: " + event.path)
     //var body = JSON.parse(event);
@@ -46,7 +46,7 @@ exports.handler = function(event, context, callback) {
 
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: default_user_name + '/' + session_id
+      Prefix: user_name + '/' + session_id
     };
     var client = new AWS.S3();
     var request = client.listObjects(params, function(err, data) {

@@ -230,10 +230,10 @@ class surrogateMethod(surrogate):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")
@@ -242,8 +242,8 @@ class surrogateMethod(surrogate):
             self.msgQueue.put(
                 "Process completed code: {0}".format(process.poll()))
             line = process.stderr.readline()
-            while line != '':
-                self.msgQueue.put(line.rstrip())
+            while line != b'':
+                self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stderr.readline()
             modelFile2 = os.path.join(adir, modelFile)
             driverFile2 = os.path.join(adir, driverFile)

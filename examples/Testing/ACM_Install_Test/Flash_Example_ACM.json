@@ -1,0 +1,199 @@
+{
+  "title": "Flash Example",
+  "config-version": "0.3",
+  "description": "Simple ethanol/water flash calcultion",
+  "model": {
+    "file": "Flash_Example.acmf",
+    "DigestValue": "8eede360cab95e12376c2f9d9013a794b4e86b5d",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "John Eslick",
+  "date": "Aug 2012",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Custom Modeler",
+    "version": "34.0",
+    "constraint": "ANY"
+  },
+  "settings": {
+    "RunMode": {
+      "type": "string",
+      "default": "Steady State",
+      "description": "Simulation specific setting: RunMode"
+    },
+    "Snapshot": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Snapshot"
+    },
+    "TimeSeries": {
+      "type": "double[1]",
+      "default": [
+        0.0
+      ],
+      "description": "Simulation specific setting: TimeSeries"
+    },
+    "Script": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Script"
+    },
+    "homotopy": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: homotopy"
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    },
+    "MinStepSize": {
+      "type": "double",
+      "default": 0.001,
+      "description": "Simulation specific setting: MinStepSize"
+    },
+    "TimeUnits": {
+      "type": "string",
+      "default": "Hours",
+      "description": "Simulation specific setting: TimeUnits"
+    }
+  },
+  "inputs": {
+    "feed.T": {
+      "path": [
+        "Flash.i_port.Connection(\"Feed\").T"
+      ],
+      "type": "double",
+      "default": 100.00000000000001,
+      "description": "Feed temperature (F)",
+      "units": null,
+      "min": 80.0,
+      "max": 120.0
+    },
+    "feed.P": {
+      "path": [
+        "Flash.i_port.Connection(\"Feed\").P"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "Feed pressure (psia)",
+      "units": null,
+      "min": 40.0,
+      "max": 60.0
+    },
+    "feed.F": {
+      "path": [
+        "Flash.i_port.Connection(\"Feed\").F"
+      ],
+      "type": "double",
+      "default": 48.748,
+      "description": "Feed flow rate (lbmol/hr)",
+      "units": null,
+      "min": 39.0,
+      "max": 58.68
+    },
+    "feed.etOH.molefrac": {
+      "path": [
+        "Flash.i_port.Connection(\"Feed\").z(\"ETHANOL\")"
+      ],
+      "type": "double",
+      "default": 0.08905,
+      "description": "Feed ethanol mole fraction (lbmol/lbmol)",
+      "units": null,
+      "min": 0.07124,
+      "max": 0.10686
+    },
+    "feed.H2O.molefrac": {
+      "path": [
+        "Flash.i_port.Connection(\"Feed\").z(\"WATER\")"
+      ],
+      "type": "double",
+      "default": 0.91095,
+      "description": "Feed water mole fraction (lbmol/lbmol)",
+      "units": null,
+      "min": 0.72876,
+      "max": 1.09314
+    },
+    "flash.T": {
+      "path": [
+        "Flash.o_port_liq.T"
+      ],
+      "type": "double",
+      "default": 150.00000000000003,
+      "description": "Flash block temperature (F)",
+      "units": null,
+      "min": 120.0,
+      "max": 180.0
+    },
+    "flash.P": {
+      "path": [
+        "Flash.o_port_liq.P"
+      ],
+      "type": "double",
+      "default": 20.0,
+      "description": "Flash block pressure (psia)",
+      "units": null,
+      "min": 16.0,
+      "max": 24.0
+    }
+  },
+  "outputs": {
+    "vapor.F": {
+      "path": [
+        "Flash.o_port_vap.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor stream flow (lbmol/hr)",
+      "units": null
+    },
+    "vapor.etOH.molefrac": {
+      "path": [
+        "Flash.o_port_vap.z(\"ETHANOL\")"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor ethanol mole fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "vapor.H2O.molefrac": {
+      "path": [
+        "Flash.o_port_vap.z(\"WATER\")"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor water mole fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "liquid.F": {
+      "path": [
+        "Flash.o_port_liq.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid stream flow (lbmol/hr)",
+      "units": null
+    },
+    "liquid.etOH.molefrac": {
+      "path": [
+        "Flash.o_port_liq.z(\"ETHANOL\")"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid ethanol mole fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "liquid.CO2.molefrac": {
+      "path": [
+        "Flash.o_port_liq.z(\"WATER\")"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid water mole fraction (lbmol/lbmol)",
+      "units": null
+    }
+  }
+}

@@ -278,6 +278,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Criterion
         item = self.analysisTable.item(row, self.criterionCol)
+        if item is None:
+            item = QTableWidgetItem()
+            self.analysisTable.setItem(row, self.criterionCol, item)
+            criterion = round(self.analysis[row][6], 2)
+            item.setText(str(criterion))
 
         # Plot SDOE
         viewButton = self.analysisTable.cellWidget(row, self.plotCol)
@@ -371,8 +376,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
         for nd in tqdm(range(min_size, max_size+1), file = f):
             config_file = self.writeConfigFile()
-            mode, design_size, num_restarts, elapsed_time, outfile = sdoe.run(config_file, nd)
-            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file])
+            mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, nd)
+            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
             self.analysisTableGroup.setEnabled(True)
             self.updateAnalysisTable()
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))

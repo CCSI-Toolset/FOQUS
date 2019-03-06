@@ -60,7 +60,7 @@ def run(config_file, nd, test=False):
     write(fname, cand_rand)
     print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, best_val, elapsed_time)))
 
-    return mode, nd, nr, elapsed_time, fname
+    return mode, nd, nr, elapsed_time, fname, best_val
 
 
 def plot(fname, show=None, nbins=20, area=10):

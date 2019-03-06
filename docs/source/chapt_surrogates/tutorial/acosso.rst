@@ -7,13 +7,13 @@ This tutorial covers the ACOSSO surrogate modeling method. The Adaptive
 COmponent Selection and Shrinkage Operator (ACOSSO) surface
 approximation was developed under the Smoothing Spline Analysis of
 Variance (SS-ANOVA) modeling framework
-:raw-latex:`\citep{Storlie_2011}`. As it is a smoothing type method,
+:ref:`(Storlie et al. 2011)<Storlie_2011>`. As it is a smoothing type method,
 ACOSSO works best when the underlying function is somewhat smooth. For
 functions which are known to have sharp changes or peaks, etc., other
 methods may be more appropriate. Since it implicitly performs variable
 selection, ACOSSO can also work well when there are a large number of
 input variables. The ACOSSO procedure also allows for categorical inputs
-:raw-latex:`\citep{Storlie_2013}`.
+:ref:`(Storlie et al. 2013)<Storlie_2013>`.
 
 This tutorial uses the same flowsheet and sample setup as the ALAMO
 tutorial in Section `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__.

@@ -20,7 +20,7 @@ the same value for the first criteria).
 
 FOQUS currently has two methods available for solving flowsheets with
 recycle: (1) direct substitution and (2) Wegstien
-\citep{Wegstein_1958. FOQUS will solve strongly connected
+:ref:`Wegstein 1958<Wegstein_1958>`. FOQUS will solve strongly connected
 components in the order they are encountered in the flowsheet. FOQUS
 flowsheets are generally not very complicated, so if a strongly
 connected component contains more than one tear stream, they are solved

@@ -40,8 +40,14 @@ If you are using FOQUS for your work, please reference the following paper:
 
 Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J., Leek, J., Ma, J., Mahapatra, P., Ng, B., Sahinidis, N.V., Tong, C., Zitney, S.E., 2017. Innovative computational tools and models for the design, optimization and control of carbon capture processes, in: Papadopoulos, A.I., Seferlis, P. (Eds.), Process Systems and Materials for CO2 Capture: Modelling, Design, Control and Integration. John Wiley & Sons Ltd, Chichester, UK, pp. 311–342.
 
-## User's Manual
-The PDF version of the user's manual can be accessed by clicking "FOQUS_User_Manual.pdf" in the following website: https://github.com/CCSI-Toolset/FOQUS/releases
+## Documentation and User's Manual
+The documentation for FOQUS (including the user's manual) can be accessed by clicking [here](https://ccsi-toolset.github.io/FOQUS/).
+
+Alternately, the html version of the documentation can be generated from following these steps:
+
+1. Use the Anaconda prompt to go to the "docs" folder in the folder that is generated when FOQUS is downloaded.
+2. For Windows, type "make.bat html". For Linux, type "make html".
+3. The html version of the documentation will be created, and located in the "docs\build\html" folder.
 
 ## Technical Support
 If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org

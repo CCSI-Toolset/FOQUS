@@ -236,7 +236,7 @@ try: # Catch any exception and stop all timers before finishing up
         
         errorTitle = "Load x3 samples"
         
-        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x3sample4.smp'
+        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/ex456_x3sample.smp'
 #        MainWin.ouuSetupFrame.x4File_edit.setText(fname)
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]
@@ -254,7 +254,7 @@ try: # Catch any exception and stop all timers before finishing up
         MainWin.ouuSetupFrame.z4LoadSample_radio.setChecked(True)
         MainWin.ouuSetupFrame.x4FileBrowse_button.setEnabled(True)
 
-        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/x4sample4.smp'
+        fname = '../GitHub/FOQUS/foqus/examples/OUU/test_suite/ex6_x4sample.smp'
         data = LocalExecutionModule.readDataFromSimpleFile(fname, hasColumnNumbers = False)
         inData = data[0]
         print(inData)

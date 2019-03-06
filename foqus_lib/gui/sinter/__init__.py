@@ -1,0 +1,1 @@
+from .sinter_config import SinterConfigMainWindow

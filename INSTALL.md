@@ -59,6 +59,10 @@ There are 2 ways to get FOQUS either download it from the [github page](https://
   - On Linux or OSX launch foqus in a terminal.  Activate the appropriate conda environment if necessary.
   > foqus.py
 12. The first time FOQUS is run it will as for a working directory location.  This is the location FOQUS will put any working files.  This setting can be changed later.
+13. When re-opening FOQUS on Windows:
+  - Use the Anaconda prompt to go to the folder that contains the downloaded FOQUS files.
+  - Type "conda activate foqus".
+  - Type "python foqus.py".
 
 ## Install Optional Software
 

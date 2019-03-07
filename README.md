@@ -43,5 +43,11 @@ Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J.
 ## Documentation and User's Manual
 The documentation for FOQUS (including the user's manual) can be accessed by clicking [here](https://ccsi-toolset.github.io/FOQUS/).
 
+Alternately, the html version of the documentation can be generated from following these steps:
+
+1. Use the Anaconda prompt to go to the "docs" folder in the folder that is generated when FOQUS is downloaded.
+2. For Windows, type "make.bat html". For Linux, type "make html".
+3. The html version of the documentation will be created, and located in the "docs\build\html" folder.
+
 ## Technical Support
 If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org

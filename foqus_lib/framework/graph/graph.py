@@ -26,6 +26,7 @@ from foqus_lib.framework.graph.edge import *   # Edge and variable connection cl
 from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.graph.nodeVars import *
+import pandas
 
 class GraphEx(foqusException):
     def setCodeStrings(self):
@@ -118,6 +119,9 @@ class Graph(threading.Thread):
         self.tearMaxIt   = 40
         self.tearTol     = 0.001
         self.tearTolType = "abs"
+        self.tearLog     = False
+        self.tearLogStub = "tear_log"
+        self.tearBound   = False
         self.wegAccMax   = 9.0
         self.wegAccMin   = -9.0
         self.staggerStart = 0.0
@@ -209,6 +213,9 @@ class Graph(threading.Thread):
             'tearMaxIt': self.tearMaxIt,
             'tearTol': self.tearTol,
             'tearTolType': self.tearTolType,
+            'tearLog': self.tearLog,
+            'tearLogStub': self.tearLogStub,
+            'tearBound': self.tearBound,
             'wegAccMax': self.wegAccMax,
             'wegAccMin': self.wegAccMin,
             'singleCount': self.singleCount,
@@ -252,6 +259,9 @@ class Graph(threading.Thread):
         self.tearSolver = sd.get('tearSolver', self.tearSolver)
         self.tearMaxIt = sd.get('tearMaxIt', self.tearMaxIt)
         self.tearTol = sd.get('tearTol', self.tearTol)
+        self.tearLog = sd.get('tearLog', False)
+        self.tearLogStub = sd.get('tearLogStub', "tear_log")
+        self.tearBound = sd.get('tearBound', False)
         self.tearTolType = sd.get('tearTolType', self.tearTolType)
         self.wegAccMax = sd.get('wegAccMax', self.wegAccMax)
         self.wegAccMin = sd.get('wegAccMin', self.wegAccMin)
@@ -1078,29 +1088,28 @@ class Graph(threading.Thread):
                     inVars[con.toName].value = x[i]
                 i += 1
 
-    def solveSubGraphWeg(
-        self,
-        nodeOrder,
-        tears,
-        itLimit = 40,
-        tol = 1.0e-5,
-        thetaMin = -5,
-        thetaMax = 0):
+    def solveSubGraphWeg(self, nodeOrder, tears, itLimit=40, tol=1.0e-5,
+        thetaMin=-5, thetaMax=0):
         '''
-            Use Wegstein to solve tears.  If multiple tears are given
-            they are solved simultaneously.
-            ----Arguments----
-            nodeOrder = list of nodes order in which to calculate nodes
-                        (can be a subset of all nodes)
-            tears = list of tear edges indexes if more than one they
-                    are solved simultaneously
-            ---Return Value---
-            This returns a 2 element list.
-            0 - status code, 0 means completed normally
-            1 - error history list of lists of differences between input
-                and output that are supposed to be equal.  Each list is
-                one iteration.
+        Use Wegstein to solve tears.  If multiple tears are given
+        they are solved simultaneously.
+        ----Arguments----
+        nodeOrder = list of nodes order in which to calculate nodes
+                    (can be a subset of all nodes)
+        tears = list of tear edges indexes if more than one they
+                are solved simultaneously
+        ---Return Value---
+        This returns a 2 element list.
+        0 - status code, 0 means completed normally
+        1 - error history list of lists of differences between input
+            and output that are supposed to be equal.  Each list is
+            one iteration.
         '''
+        if self.tearLog:
+            log_file = self.tearLogStub
+        else:
+            log_file = None
+        numpy.seterr(divide='ignore', invalid='ignore')
         hist = []  # error at each iteration in every variable
         i = 0      # iteration counter
         if tears == []:  # no tears nothing to solve.
@@ -1111,14 +1120,15 @@ class Graph(threading.Thread):
         else:  # start the solving
             gofx = []
             x = []
+            names = []
             xmin = []
             xmax = []
             for tear in tears:
                 nodes = self.nodes
                 from_node = self.edges[tear].start
                 to_node = self.edges[tear].end
-                gofx += [
-                    self.nodes[from_node].outVars[con.fromName].value \
+                names += [con.toName for con in self.edges[tear].con]
+                gofx += [self.nodes[from_node].outVars[con.fromName].value \
                         for con in self.edges[tear].con]
                 x += [self.nodes[to_node].inVars[con.toName].value \
                     for con in self.edges[tear].con]
@@ -1126,6 +1136,7 @@ class Graph(threading.Thread):
                     for con in self.edges[tear].con]
                 xmin += [self.nodes[to_node].inVars[con.toName].min \
                     for con in self.edges[tear].con]
+            hist = pandas.DataFrame(index=names)
             gofx = numpy.array(gofx)
             x = numpy.array(x)
             xmin = numpy.array(xmin)
@@ -1135,13 +1146,28 @@ class Graph(threading.Thread):
                 err = gofx - x
             elif self.tearTolType == "rng":
                 err = (gofx - x)/xrng
-            hist.append(err)
+            for j in range(100):
+                # dont want to pick up too many of these files
+                # but if there are multiple loops want to produce seperate
+                # files for them
+                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
+                    log_file = "{}{}.csv".format(log_file, j+1)
+                    break
+            hist["err_{}".format(i)] = err
+            hist["x_{}".format(i)] = x
+            if log_file is not None:
+                hist.to_csv(log_file)
             if numpy.max(numpy.abs(err)) < tol:
                 return [0, hist]  # already solved.
             #if not solved yet do one direct step
             x_prev = x
             gofx_prev = gofx
-            x = gofx
+            if not self.tearBound:
+                x = gofx
+            else:
+                x = numpy.max(xmin, gofx)
+                x = numpy.min(x, xmax)
+
             self.setTearX(tears, gofx)
             while True:
                 self.runGraph(nodeOrder)
@@ -1157,7 +1183,10 @@ class Graph(threading.Thread):
                     err = gofx - x
                 elif self.tearTolType == "rng":
                     err = (gofx - x)/xrng
-                hist.append(err)
+                hist["err_{}".format(i)] = err
+                hist["x_{}".format(i)] = x
+                if log_file is not None:
+                    hist.to_csv(log_file)
                 if numpy.max(numpy.abs(err)) < tol:
                     break
                 if i > itLimit - 1:
@@ -1197,6 +1226,10 @@ class Graph(threading.Thread):
             1 - error history list of lists of differences between input and output
                 that are supposed to be equal.  Each list is one iteration.
         '''
+        if self.tearLog:
+            log_file = self.tearLogStub
+        else:
+            log_file = None
         hist = []  # error at each iteration in every variable
         i = 0      # iteration counter
         if tears == []:

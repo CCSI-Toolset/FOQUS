@@ -1,0 +1,9 @@
+{
+  "feed.T": 100.0,
+  "feed.P": 50.0,
+  "feed.F": 1000.0,
+  "feed.etOH.massfrac": 0.2,
+  "feed.H2O.massfrac": 0.8,
+  "flash.T": 150.0,
+  "flash.P": 20.0
+}

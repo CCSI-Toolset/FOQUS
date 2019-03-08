@@ -329,8 +329,12 @@ class Results(pd.DataFrame):
     def exportVarsCSV(self, file, inputs, outputs, flat=True):
         #flat isn't used, just there for compatablility from when there
         #were vector vars.
-        print(inputs)
-
+        df = pd.DataFrame(columns=inputs + outputs)
+        for c in inputs:
+            df[c] = self["input."+c]
+        for c in outputs:
+            df[c] = self["output."+c]
+        df.to_csv(file)
 
     def read_csv(self, *args, **kwargs):
         """

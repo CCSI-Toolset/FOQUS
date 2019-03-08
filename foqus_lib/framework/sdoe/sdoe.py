@@ -19,6 +19,7 @@ def run(config_file, nd, test=False):
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
+    type = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
     # create outdir as needed

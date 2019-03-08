@@ -314,11 +314,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         include_list = []
         type_list = []
         for row in range(numInputs):
-            type_list.append(str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText()))
             if self.inputSdoeTable.cellWidget(row, self.includeCol).isChecked():
                 min_vals.append(self.inputSdoeTable.item(row, self.minCol).text())
                 max_vals.append(self.inputSdoeTable.item(row, self.maxCol).text())
                 include_list.append(self.inputSdoeTable.item(row, self.nameCol).text())
+                type_list.append(str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText()))
         return min_vals, max_vals, include_list, type_list
 
     def writeConfigFile(self, test=False):
@@ -530,9 +530,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         for row in range(numInputs):
             if self.inputSdoeTable.item(row, self.nameCol).text() in include:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
-                self.inputSdoeTable.cellWidget(row, self.typeCol).setCurrentText(type[row])
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
+        for i in range(len(type)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
 
         self.sampleSize_spin.setValue(int(np.log10(nr)))
         self.updateRunTime(self.testRuntime[0])

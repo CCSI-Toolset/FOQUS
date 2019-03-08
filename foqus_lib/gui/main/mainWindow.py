@@ -1410,12 +1410,6 @@ class mainWindow(QMainWindow):
                     str(err) +
                     ", " +
                     errText)
-                if err == 20:
-                    msgBox = QMessageBox()
-                    msgBox.setText(
-                        ("Please check if model is "
-                        "available in Turbine."))
-                    msgBox.exec_()
 
     def loadDefaultInput(self):
         '''

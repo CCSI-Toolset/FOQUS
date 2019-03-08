@@ -54,15 +54,17 @@ Excel spreadsheet simulation with a division by 0 error).
    +------+-----------------------------------------------------------+
    | 0    | Success                                                   |
    +------+-----------------------------------------------------------+
-   | 1    | A node calculation failed                                 |
+   | 1    | A simulation/node failed to solve                         |
+   +------+-----------------------------------------------------------+
+   | 2    | A simulation/node failed to solve while solving tears     |
    +------+-----------------------------------------------------------+
    | 3    | Failed to create a worker node                            |
    +------+-----------------------------------------------------------+
    | 5    | Unknown tear solver                                       |
    +------+-----------------------------------------------------------+
-   | 11   | Wegstein failed to converge                               |
+   | 11   | Wegstein failed, reached iteration limit                  |
    +------+-----------------------------------------------------------+
-   | 12   | Direct failed to converge                                 |
+   | 12   | Direct failed, reached iteration limit                    |
    +------+-----------------------------------------------------------+
    | 16   | Presolve node error                                       |
    +------+-----------------------------------------------------------+

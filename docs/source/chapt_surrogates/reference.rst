@@ -35,8 +35,8 @@ Data Selection
 --------------
 
 The **Data** tab allows the selection of training data to be used to
-generate a surrogate model (`Figure 
-[fig.surrogate.data] <#fig.surrogate.data>`__). If the session is
+generate a surrogate model (Figure
+`[fig.surrogate.data]<#fig.surrogate.data>`__). If the session is
 associated with a flowsheet data (results from a single flowsheet run,
 optimization runs, or UQ samples), then the flowsheet data is available
 to be the training data and the table will be populated accordingly.

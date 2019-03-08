@@ -59,24 +59,29 @@ if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     #first see if this is a conda env
     foqus_path = subprocess.check_output(
         ["where", "$PATH:foqus.py"]).decode('utf-8').split("\n")[0].strip()
-    if "CONDA_DEFAULT_ENV" in os.environ:
-        #we're using conda
-        env = os.environ["CONDA_DEFAULT_ENV"]
-        conda_path = shutil.which("conda")
+    if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
+        conda_env = os.environ["CONDA_DEFAULT_ENV"]
+        conda_path = shutil.which("conda") # unless conda is not found
     else:
-        env = None
-    with open("foqus.bat", 'w') as f:
-        if env is not None:
-            f.write('"cmd /c {} activate {} && python {} %*"'\
-                .format(conda_path, env, foqus_path))
+        conda_path = None
+        conda_env = None
+    python_path = shutil.which("python")
+    if conda_path is None:
+        print("** conda not found bat file will not activate conda environment")
+    if python_path is None:
+        print("** python not found, no bat file written")
+    else:
+        write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
+        write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
+
+def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch=):
+    with open(bat_file, 'w') as f:
+        if conda_env is not None and conda_path is not None:
+            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
+                switch, conda_path, conda_env, python_path, foqus_path))
         else:
-            f.write('"cmd /c python {} %*"\n'.format(foqus_path))
-    with open("foqus_debug.bat", 'w') as f:
-        if env is not None:
-            f.write('"cmd /K {} activate {} && python {} %*"'\
-                .format(conda_path, env, foqus_path))
-        else:
-            f.write('"cmd /K python {} %*"\n'.format(foqus_path))
+            f.write('cmd {} ""{}" "{}" %*"'.format(
+                switch, python_path, foqus_path))
 
 print("""
 
@@ -85,17 +90,37 @@ print("""
 
 **Optional addtional sotfware**
 
-PSUADE (Required for UQ features):
-   https://github.com/LLNL/psuade
+Optional software is not installed during the FOQUS installation, and is not
+strictly required to run FOQUS, however this software is highly recomended.
+Some FOQUS features will not be available without these packages.
 
-Turbine (Windows only, run Aspen, Excel, and gPROMS):
+PSUADE (Required for UQ features):
+    https://github.com/LLNL/psuade
+    PSUADE is requidred for FOQUS UQ and OUU features.
+
+SimSinter (Required by Turbine):
+    https://github.com/CCSI-Toolset/SimSinter/releases
+    This provides a standard API for interacting with process simulation software
+    cuttently is supports Aspen Plus, Aspen Custom Modeler, Excel, and gPROMS.
+    This is required for TurbineLite.
+
+TurbineLite (Windows only, run Aspen, Excel, and gPROMS):
     https://github.com/CCSI-Toolset/turb_sci_gate/releases
+    This requires SimSinter to be installed first.  TurbineLite allows local
+    execution of Aspen Plus, ACM, Excel, and gPROMS nodes in FOQUS.
 
 ALAMO (ALAMO Surogate models):
     http://archimedes.cheme.cmu.edu/?q=alamo
+    ALAMO is software to develop algebric surrogate models for complex processes.
+    Among other uses, these model can be used in algebraic modeling laguages such
+    as GAMS, AMPL, and Pyomo.  FOQUS provides an interface to ALAMO allowing
+    surragtes to be easily created from complex process models.
 
 NLOpt Python (Additional optimization solvers):
     https://nlopt.readthedocs.io/en/latest/NLopt_Installation/
+    FOQUS will make the NLOpt routines available if the NLOpt Python module is
+    installed.  NLOpt can be installed through conda using the conda-forge
+    channel.
 
 **Batch file/Running FOQUS**
 

@@ -326,6 +326,12 @@ class Results(pd.DataFrame):
                 self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
+    def exportVarsCSV(self, file, inputs, outputs, flat=True):
+        #flat isn't used, just there for compatablility from when there
+        #were vector vars.
+        print(inputs)
+
+
     def read_csv(self, *args, **kwargs):
         """
         Read results into a data frame from a CSV file.

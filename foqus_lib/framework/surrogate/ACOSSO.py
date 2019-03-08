@@ -199,7 +199,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Inputs: {0}".format(
                     json.dumps(self.input)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     xdata,
                     inputs = self.input,
                     outputs = [],
@@ -210,7 +210,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Output: {0}".format(
                     json.dumps(self.output)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     ydata,
                     inputs = [],
                     outputs = self.output,

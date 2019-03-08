@@ -10,7 +10,7 @@ run in a FOQUS flowsheet. **Currently iREVEAL does not produce a
 flowsheet model.**
 
 **Before doing this tutorial complete the ALAMO tutorial in
-Section**\ `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__\ **.**
+Section :ref:`sec.surrogate.alamo`.**
 
 #. Open FOQUS. If FOQUS has not been closed since completing the ALAMO
    tutorial, close it and reopen it. There is a known issue where
@@ -22,14 +22,14 @@ Section**\ `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__\ **.**
 #. Click the **Flowsheet** button from the Home window.
 
 #. Click the **Add Node** icon in the left toolbar (see Figure
-   `[fig.pg.tut1] <#fig.pg.tut1>`__).
+   :ref:`fig.pg.tut1`).
 
 #. Click a location for the node in the Flowsheet area.
 
 #. Enter “model” for the node name (without quotes).
 
 #. Click the **Node Editor** icon in the left toolbar (see Figure
-   `[fig.pg.tut1] <#fig.pg.tut1>`__).
+   :ref:`fig.pg.tut1`).
 
 #. In the **Node Editor**, select “Plugin” from the Model **Type**
    drop-down list.
@@ -41,7 +41,7 @@ Section**\ `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__\ **.**
 #. Set the **Value** of the **Input Variables** “eq.x2” to 3.
 
 #. Click the **Run** icon in the left toolbar (see Figure
-   `[fig.pg.tut1] <#fig.pg.tut1>`__).
+   :ref:`fig.pg.tut1`).
 
 #. Wait for the Flowsheet evaluation to complete. It should finish
    successfully.
@@ -49,6 +49,7 @@ Section**\ `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__\ **.**
 #. Check the value of the **Output Variables**; the approximate values
    should be z1 = 5 and z2 = 13.
 
+.. _fig.pg.tut1
 .. figure:: ../figs/fs_plugin.svg
    :alt: Plugin Flowsheet
    :name: fig.pg.tut1

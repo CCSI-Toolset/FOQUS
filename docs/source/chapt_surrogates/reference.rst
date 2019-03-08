@@ -35,12 +35,12 @@ Data Selection
 --------------
 
 The **Data** tab allows the selection of training data to be used to
-generate a surrogate model (:ref:`Surrogate-Data-Form`). If the session is
+generate a surrogate model (:ref:`fig.surrogate.data`). If the session is
 associated with a flowsheet data (results from a single flowsheet run,
 optimization runs, or UQ samples), then the flowsheet data is available
 to be the training data and the table will be populated accordingly.
 
-.. _Surrogate-Data-Form:
+.. _fig.surrogate.data
 .. figure:: figs/data_form.svg
    :alt: Surrogate Data Form
    :name: fig.surrogate.data
@@ -69,7 +69,7 @@ to be the training data and the table will be populated accordingly.
    current data display.
 
 #. Add or edit new data filters from **Edit Filters**. This dialog is
-   shown in Figure `[fig.filter.1.result] <#fig.filter.1.result>`__.
+   shown in Figure :ref:`fig.filter.1.result`.
 
 #. The **Display** table displays the results of flowsheet evaluations
    stored in the FOQUS session file. The columns are:
@@ -94,7 +94,7 @@ to be the training data and the table will be populated accordingly.
    -  The remaining columns display the input and output variables.
 
 Filters can be used to select data. See Section
-`[tutorials.fs.data] <#tutorials.fs.data>`__ for more information on
+:ref:`tutorials.fs.data` for more information on
 creating filters to the results. The “All” and “None” filters are
 available by default. These can be used, for example, to assign all the
 data as a training set, or to split the data into a separate training
@@ -104,7 +104,7 @@ Variables
 ---------
 
 The **Variables** section is illustrated in Figure
-`[fig.surrogate.vars] <#fig.surrogate.vars>`__. This section allows
+:ref:`fig.surrogate.vars`. This section allows
 selection of input and output variables used in a surrogate model. Some
 surrogate methods such as ALAMO may generate and run additional samples
 while building surrogates. The **Min/Max** columns provide bounds on the
@@ -113,6 +113,7 @@ indicates that it should be included in the surrogate generation.
 Failure to select a checkbox for any variables will result in error
 during surrogate generation.
 
+.. _fig.surrogate.vars
 .. figure:: figs/vars.svg
    :alt: Surrogate Variable Selection
    :name: fig.surrogate.vars
@@ -123,10 +124,11 @@ Method Settings
 ---------------
 
 The **Method Settings** table is illustrated in Figure
-`[fig.surrogate.settings] <#fig.surrogate.settings>`__. The settings
+:ref:`fig.surrogate.settings`. The settings
 available in this table depend on the surrogate tool. A description of
 each setting is provided in the third column of the table.
 
+.. _fig.surrogate.settings
 .. figure:: figs/settings.svg
    :alt: Surrogate Settings
    :name: fig.surrogate.settings
@@ -138,10 +140,11 @@ Execution
 
 Clicking **Run** starts the surrogate model building process. The
 execution monitor displays after **Run** is clicked (see Figure
-`[fig.surrogate.monitor] <#fig.surrogate.monitor>`__). The execution
+:ref:`fig.surrogate.monitor`). The execution
 monitor displays the status of the surrogate build. The messages
 displayed depends on the surrogate tool.
 
+.. _fig.surrogate.monitor
 .. figure:: figs/monitor.svg
    :alt: Surrogate Status Monitor
    :name: fig.surrogate.monitor

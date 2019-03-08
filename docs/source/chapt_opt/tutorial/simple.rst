@@ -5,13 +5,13 @@ Optimization
 
 This tutorial is a step-by-step walk through of simulation-based
 optimization. This tutorial builds on the tutorial in Section
-`[tutorial.sim.flowsheet] <#tutorial.sim.flowsheet>`__.
+:ref:`tutorial.sim.flowsheet`.
 
 #. Open FOQUS.
 
 #. Load the FOQUS session from the tutorial “Creating a Flowsheet with
    Linked Simulations” in Section
-   `[tutorial.sim.flowsheet] <#tutorial.sim.flowsheet>`__ or if that
+   :ref:`tutorial.sim.flowsheet` or if that
    tutorial has not yet been completed, complete it first.
 
 Problem Set Up
@@ -24,8 +24,7 @@ define samples (optional), (3) define the objective function, and
 constraints and (4) select and configure the solver.
 
 3. Select the **Optimization** button from the toolbar at the top of the
-   Home window (Figure
-   `[tut.opt.problem.vars] <#tut.opt.problem.vars>`__). Select the
+   Home window (Figure :ref:`tut.opt.problem.vars`). Select the
    **Variables** tab.
 
 4. Select “Decision” from the drop-down list in the **Type** column as
@@ -40,6 +39,7 @@ constraints and (4) select and configure the solver.
    **Value** column specifies the initial point. For this example the
    defaults are acceptable.
 
+.. _tut.opt.problem.vars
 .. figure:: ../figs/optProblemVar.svg
    :alt: Optimization Problem Variables
    :name: tut.opt.problem.vars
@@ -53,8 +53,9 @@ uncertainty), the next step is to setup the samples under the
 an objective function value, so the sample setup is not needed. The next
 step is to define the objective function and constraints using the form
 under the **Objective/Constraints** tab as shown in Figure
-`[tut.opt.problem.obj] <#tut.opt.problem.obj>`__.
+:ref:`tut.opt.problem.obj`.
 
+.. _tut.opt.problem.obj
 .. figure:: ../figs/optProblemObj.svg
    :alt: Optimization Problem Objective
    :name: tut.opt.problem.obj
@@ -62,7 +63,7 @@ under the **Objective/Constraints** tab as shown in Figure
    Optimization Problem Objective
 
 6.  Select the **Objective/Constraints** tab (see Figure
-    `[tut.opt.problem.obj] <#tut.opt.problem.obj>`__).
+    :ref:`tut.opt.problem.obj`).
 
 7.  In the drop-down list, verify “Simple Python Expression” is
     selected.
@@ -103,16 +104,16 @@ Solver Settings
 
 The last step before running the optimization is to select and configure
 the solver. The solver configuration form is shown in Figure
-`[tut.opt.solver] <#tut.opt.solver>`__.
+:ref:`tut.opt.solver`.
 
+.. _tut.opt.solver
 .. figure:: ../figs/optSolver.svg
    :alt: Optimization Solver Setup
    :name: tut.opt.solver
 
    Optimization Solver Setup
 
-17. Select the **Solver** tab (see Figure
-    `[tut.opt.solver] <#tut.opt.solver>`__).
+17. Select the **Solver** tab (see Figure :ref:`tut.opt.solver`).
 
 18. Select “OptCMA” from the **Select Solver** drop-down list.
 
@@ -123,8 +124,9 @@ Running Optimization
 --------------------
 
 The optimization run form is shown in Figure
-`[tut.opt.run] <#tut.opt.run>`__.
+:ref:`tut.opt.run`.
 
+.. _tut.opt.run
 .. figure:: ../figs/optRun.svg
    :alt: Optimization Monitor
    :name: tut.opt.run
@@ -132,7 +134,7 @@ The optimization run form is shown in Figure
    Optimization Monitor
 
 20. Click the **Run** tab to display the optimization run form (see
-    Figure `[tut.opt.run] <#tut.opt.run>`__).
+    Figure :ref:`tut.opt.run`).
 
 21. Click **Start**.
 
@@ -146,7 +148,7 @@ table.
 
 The run form displays some diagnostic information as the optimization
 runs. The parts of the display labeled in Figure
-`[tut.opt.run] <#tut.opt.run>`__ are described below.
+:ref:`tut.opt.run` are described below.
 
 23. The Optimization Solver Messages window displays information from
     the solver.

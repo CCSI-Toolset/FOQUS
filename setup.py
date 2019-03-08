@@ -55,6 +55,15 @@ dist = setup(
         'icons_rc.py']
 )
 
+def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
+    with open(bat_file, 'w') as f:
+        if conda_env is not None and conda_path is not None:
+            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
+                switch, conda_path, conda_env, python_path, foqus_path))
+        else:
+            f.write('cmd {} ""{}" "{}" %*"'.format(
+                switch, python_path, foqus_path))
+
 if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     #first see if this is a conda env
     foqus_path = subprocess.check_output(
@@ -74,18 +83,9 @@ if os.name == 'nt': # Write a batch file on windows to make it easier to launch
         write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
         write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
 
-def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch=):
-    with open(bat_file, 'w') as f:
-        if conda_env is not None and conda_path is not None:
-            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
-                switch, conda_path, conda_env, python_path, foqus_path))
-        else:
-            f.write('cmd {} ""{}" "{}" %*"'.format(
-                switch, python_path, foqus_path))
-
 print("""
 
-==============================================================
+==============================================================================
 **Installed FOQUS {}**
 
 **Optional addtional sotfware**
@@ -100,9 +100,9 @@ PSUADE (Required for UQ features):
 
 SimSinter (Required by Turbine):
     https://github.com/CCSI-Toolset/SimSinter/releases
-    This provides a standard API for interacting with process simulation software
-    cuttently is supports Aspen Plus, Aspen Custom Modeler, Excel, and gPROMS.
-    This is required for TurbineLite.
+    This provides a standard API for interacting with process simulation
+    software cuttently is supports Aspen Plus, Aspen Custom Modeler, Excel,
+    and gPROMS. This is required for TurbineLite.
 
 TurbineLite (Windows only, run Aspen, Excel, and gPROMS):
     https://github.com/CCSI-Toolset/turb_sci_gate/releases
@@ -111,10 +111,10 @@ TurbineLite (Windows only, run Aspen, Excel, and gPROMS):
 
 ALAMO (ALAMO Surogate models):
     http://archimedes.cheme.cmu.edu/?q=alamo
-    ALAMO is software to develop algebric surrogate models for complex processes.
-    Among other uses, these model can be used in algebraic modeling laguages such
-    as GAMS, AMPL, and Pyomo.  FOQUS provides an interface to ALAMO allowing
-    surragtes to be easily created from complex process models.
+    ALAMO is software to develop algebric surrogate models for complex
+    processes. Among other uses, these model can be used in algebraic modeling
+    laguages such as GAMS, AMPL, and Pyomo. FOQUS provides an interface to
+    ALAMO allowing surragtes to be easily created from complex process models.
 
 NLOpt Python (Additional optimization solvers):
     https://nlopt.readthedocs.io/en/latest/NLopt_Installation/
@@ -129,7 +129,9 @@ Linux:
     > foqus.py
 
 Windows:
-    On Windows, this script makes a batch file to run FOQUS.
-    This batch file can be placed in any conveinient location.
-==============================================================
+    On Windows, this script makes batch files to run FOQUS.  This batch files
+    can be placed in any conveinient location.
+        - foqus.bat: run FOQUS and close cmd window when FOQUS exits
+        - foqus_debug.bat: run FOQUS and leave cmd window open  
+==============================================================================
 """.format(ver.version))

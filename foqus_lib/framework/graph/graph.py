@@ -1107,16 +1107,22 @@ class Graph(threading.Thread):
         '''
         if self.tearLog:
             log_file = self.tearLogStub
+            for j in range(100):
+                # dont want to pick up too many of these files
+                # but if there are multiple loops want to produce seperate
+                # files for them
+                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
+                    log_file = "{}{}.csv".format(log_file, j+1)
+                    break
         else:
             log_file = None
         numpy.seterr(divide='ignore', invalid='ignore')
-        hist = []  # error at each iteration in every variable
         i = 0      # iteration counter
         if tears == []:  # no tears nothing to solve.
             #no need to iterate just run the calculations
             self.runGraph(nodeOrder)
             if self.errorStat != 0:
-                return [1, hist] #2, simulation failure
+                return [1, None] #2, simulation failure
         else:  # start the solving
             gofx = []
             x = []
@@ -1146,13 +1152,6 @@ class Graph(threading.Thread):
                 err = gofx - x
             elif self.tearTolType == "rng":
                 err = (gofx - x)/xrng
-            for j in range(100):
-                # dont want to pick up too many of these files
-                # but if there are multiple loops want to produce seperate
-                # files for them
-                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
-                    log_file = "{}{}.csv".format(log_file, j+1)
-                    break
             hist["err_{}".format(i)] = err
             hist["x_{}".format(i)] = x
             if log_file is not None:
@@ -1165,19 +1164,20 @@ class Graph(threading.Thread):
             if not self.tearBound:
                 x = gofx
             else:
-                x = numpy.max(xmin, gofx)
-                x = numpy.min(x, xmax)
-
+                x = numpy.maximum(xmin, gofx)
+                x = numpy.minimum(x, xmax)
             self.setTearX(tears, gofx)
             while True:
                 self.runGraph(nodeOrder)
                 if self.errorStat != 0:
                     logging.getLogger("foqus." + __name__).warning(
                         "Simulation failed in Wegstein")
-                    return [1, hist] #2, simulation failure
+                    return [2, hist] #2, simulation failure
                 gofx = []
                 for tear in tears:
-                    gofx += [self.nodes[self.edges[tear].start].outVars[con.fromName].value for con in self.edges[tear].con]
+                    gofx += [
+                        self.nodes[self.edges[tear].start].outVars[con.fromName].value \
+                        for con in self.edges[tear].con]
                 gofx = numpy.array(gofx)
                 if self.tearTolType == "abs":
                     err = gofx - x
@@ -1204,7 +1204,12 @@ class Graph(threading.Thread):
                 theta[theta > thetaMax] = thetaMax
                 x_prev = x
                 gofx_prev = gofx
-                x = (1.0-theta)*x_prev + (theta)*gofx_prev
+                x_next = (1.0-theta)*x_prev + (theta)*gofx_prev
+                if not self.tearBound:
+                    x = x_next
+                else:
+                    x = numpy.maximum(xmin, x_next)
+                    x = numpy.minimum(x, xmax)
                 self.setTearX(tears, x)
                 i += 1
         return [0, hist] # 0, everything is fine
@@ -1228,32 +1233,50 @@ class Graph(threading.Thread):
         '''
         if self.tearLog:
             log_file = self.tearLogStub
+            for j in range(100):
+                # dont want to pick up too many of these files
+                # but if there are multiple loops want to produce seperate
+                # files for them
+                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
+                    log_file = "{}{}.csv".format(log_file, j+1)
+                    break
         else:
             log_file = None
-        hist = []  # error at each iteration in every variable
+        names = []
+        for tear in tears:
+            names += [con.toName for con in self.edges[tear].con]
+        hist = pandas.DataFrame(index=names)
         i = 0      # iteration counter
         if tears == []:
             #no need to iterate just run the calculations
             self.runGraph(nodeOrder)
             if self.errorStat != 0:
-                logging.getLogger("foqus." + __name__).warning("Simulation failed in Direct")
+                logging.getLogger("foqus." + __name__).warning(
+                    "Simulation failed in Direct")
                 return [1, hist] #2, simulation failure
         else:
             while True:
-                err = self.tearErr(tears)
-                hist.append(err)
+                err, x = self.tearErr(tears)
+                hist["err_{}".format(i)] = err
+                hist["x_{}".format(i)] = x
+                if log_file is not None:
+                    hist.to_csv(log_file)
                 if numpy.max(numpy.abs(err)) < tol:
                     break
                 if i > itLimit - 1:
-                    logging.getLogger("foqus." + __name__).warning("Direct failed to converge in " + str(itLimit) + "iterations")
+                    logging.getLogger("foqus." + __name__).warning(
+                        "Direct failed to converge in " + str(itLimit) + "iterations")
                     return [12, hist] #1, over iteration limit tears didn't converge
                 self.transferVars(tears)
                 self.runGraph(nodeOrder)
                 if self.errorStat != 0:
-                    logging.getLogger("foqus." + __name__).warning("Simulation failed in Direct")
+                    logging.getLogger("foqus." + __name__).warning(
+                        "Simulation failed in Direct")
                     return [2, hist] #2, simulation failure
                 i += 1
-        logging.getLogger("foqus." + __name__).info("Direct substitution converged in " + str(i) + " iterations, " + self.threadName)
+        logging.getLogger("foqus." + __name__).info(
+            "Direct substitution converged in {} iterations, {}".format(
+                i, self.threadName))
         return [0, hist] # 0, everything is fine
 
     def tearErr(self, tears):
@@ -1264,7 +1287,7 @@ class Graph(threading.Thread):
             x1 += [self.nodes[self.edges[tear].end].inVars[con.toName].value for con in self.edges[tear].con]
         x0 = numpy.array(x0)
         x1 = numpy.array(x1)
-        return x0 - x1
+        return (x0 - x1, x1)
 
     def runGraph(self, order):
         '''

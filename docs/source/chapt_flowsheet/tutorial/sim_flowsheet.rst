@@ -14,15 +14,15 @@ before adding capture) supercritical pulverized coal power plant with
 solid sorbent post combustion CO\ :math:`_2` capture process added.
 
 Before starting the tutorial, see Section
-`[tutorial.example.files] <#tutorial.example.files>`__ to locate and
+:ref:`tutorial.example.files` to locate and
 copy the example files to a convenient location.
 
-#. Start FOQUS. The Session window displays (Figure :ref::ref:`fig.tut.opt.session`).
+#. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 
 #. Enter “BFB_opt” in **Session Name** (without quotes).
 
 #. Click the **Description** tab. The problem description box displays
-   and is shown in (Figure :ref::ref:`fig.tut.opt.description`).
+   and is shown in (Figure :ref:`fig.tut.opt.description`).
 
 #. In the problem description box enter information about the problem
    being solved in the FOQUS session; this information can be more
@@ -55,7 +55,7 @@ copy the example files to a convenient location.
 optimization problem: (1) the ACM model for the BFB capture system and
 (2) the Excel cost estimating spreadsheet. These models are provided in
 the example files directory, under optimization/models (see Section
-`[tutorial.example.files] <#tutorial.example.files>`__). There are two
+:ref:`tutorial.example.files`). There are two
 SimSinter configuration files: (1) BFB_sinter_config_v6.2.json for the
 process model and (2) BFB_cost_v6.2.3.json for the cost model. The next
 step is to upload the models to Turbine.
@@ -68,7 +68,7 @@ step is to upload the models to Turbine.
     the simulation, **Create/Edit** displays the SimSinter configuration
     GUI (see Figure :ref:`fig.tut.opt.upload`). See
     the SimSinter documentation or Chapter
-    `[chapt.simsinter] <#chapt.simsinter>`__ for more information.
+    :ref:`chapt.simsinter` for more information.
 
 8.  Click **Browse** to select a SimSinter configuration file (Figure
     :ref:`fig.tut.opt.upload`). Once the SimSinter

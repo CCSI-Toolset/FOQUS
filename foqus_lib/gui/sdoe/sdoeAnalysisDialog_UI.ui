@@ -497,7 +497,7 @@ it should be part of the design.
            <item>
             <widget class="QLabel" name="designInfo_dynamic">
              <property name="text">
-              <string>d = 8, n = 1000</string>
+              <string>d = 2, n = 1000</string>
              </property>
             </widget>
            </item>

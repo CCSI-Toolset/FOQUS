@@ -372,19 +372,16 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
-        f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
-        for nd in tqdm(range(min_size, max_size+1), file = f):
+        for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
             mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, nd)
             self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
             self.analysisTableGroup.setEnabled(True)
             self.updateAnalysisTable()
+            self.designInfo_dynamic.setText('d = %d, n = %d' % (nd, num_restarts))
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
-            if self.stopSdoe():
-                self.SDOE_progressBar.setValue(0)
-                self.analysisGroup.setEnabled(False)
-                return
-        f.close()
+            QApplication.processEvents()
+
         self.SDOE_progressBar.setValue(0)
         self.analysisGroup.setEnabled(False)
 
@@ -405,7 +402,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testRuntime.append(runtime)
 
     def stopSdoe(self):
-        True
+        QApplication.quit()
 
     def on_min_design_spinbox_changed(self):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),

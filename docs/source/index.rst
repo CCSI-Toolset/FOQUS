@@ -4,6 +4,7 @@ Contents
 .. toctree::
     :maxdepth: 1
 
+    chapt_install/index
     chapt_intro/index
     chapt_flowsheet/index
     chapt_opt/index

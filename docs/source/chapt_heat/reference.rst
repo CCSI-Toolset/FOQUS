@@ -16,18 +16,18 @@ the nodes connected to the Heat Integration Node (with the edge pointing
 to the heat integration node) are automatically transferred to heat
 integration. However, only the variables with heat integration tags are
 considered and processed in heat integration. Heat integration tags are
-described in the Heat Integration Tutorial in Section
-`[sec.hi.tut] <#sec.hi.tut>`__.
+described in the Heat Integration Tutorial in Section :ref:`sec.hi.tut`.
 
 The Heat Integration Node Editor widget is illustrated in Figure
-`[heat.int.inputs] <#heat.int.inputs>`__ and Figure
-`[heat.int.outputs] <#heat.int.outputs>`__. To specify a node as a Heat
+:ref:`heat.int.inputs` and Figure
+:ref:`heat.int.outputs`. To specify a node as a Heat
 Integration Node, expand the **Model** section, expand the **Model**
 drop-down list, and then select “heat_integration.” Some input variables
 control the performance of heat integration. Output variables display
 heat integration results, which are used as final results or inputs for
 steam cycle calculations.
 
+.. _heat.int.inputs
 .. figure:: figs/heat_int_inputs.png
    :alt: Heat Integration Node Editor (Input Variables)
    :name: heat.int.inputs
@@ -74,7 +74,7 @@ The Heat Integration Node **Input Variables** are listed below:
    value. When the value of “No.Stream” is not assigned, the number of
    process streams is calculated by the Python program via heat
    integration tags (see the Heat Integration Tutorial in Section
-   `[sec.hi.tut] <#sec.hi.tut>`__).
+   :ref:`sec.hi.tut`).
 
 -  **Operation.Hours** is the annual operational hours of the plant. For
    power, refinery, and chemical industries, the typical value is
@@ -85,6 +85,7 @@ The Heat Integration Node **Input Variables** are listed below:
    on their own projects. The variables **Life.Plant**, **No.Stream**,
    **Operation.Hours**, and **ROR** are used for the cost calculation.
 
+.. _heat.int.outputs
 .. figure:: figs/heat_int_outputs.png
    :alt: Heat Integration Node Editor (Output Variables)
    :name: heat.int.outputs
@@ -158,8 +159,7 @@ currently hard coded in Python for this node. The users will have a
 choice to provide their own correlations in future versions of FOQUS.
 
 The Steam Cycle Node Editor widget is illustrated in Figure
-`[steam.cycle.inputs] <#steam.cycle.inputs>`__ and Figure
-`[steam.cycle.outputs] <#steam.cycle.outputs>`__.
+:ref:`steam.cycle.inputs` and Figure :ref:`steam.cycle.outputs`.
 
 To specify a node as a Steam Cycle Node, expand the **Model** section,
 click on the **Model** drop-down list, and then select “steam_cycle.”
@@ -169,6 +169,7 @@ value assigned, except net power output and net efficiency without CCS.
 Output variables describe effects of CCS and heat integration to net
 power output and net efficiency.
 
+.. _steam.cycle.inputs
 .. figure:: figs/steam_cycle_inputs.png
    :alt: Steam Cycle Node Editor (Input Variables)
    :name: steam.cycle.inputs
@@ -217,6 +218,7 @@ The **Input Variables** of the Steam Cycle Node are described below:
    calculations. Both **Net.Efficiency** and **Net.Power** provide base
    case values for a power plant without CCS and heat integration.
 
+.. _steam.cycle.outputs
 .. figure:: figs/steam_cycle_outputs.png
    :alt: Steam Cycle Node Editor (Output Variables)
    :name: steam.cycle.outputs

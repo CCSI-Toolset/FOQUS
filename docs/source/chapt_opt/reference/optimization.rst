@@ -41,9 +41,10 @@ function, and (3) sample variables, which are used to construct the
 multiple flowsheet evaluations that can go into an objective
 calculation. If no sample variables are defined, each objective function
 value will be based on a single flowsheet evaluation. Figure
-`[fig.opt.problem.variables] <#fig.opt.problem.variables>`__ shows the
+:ref:`fig.opt.problem.variables` shows the
 **Variables** tab selection form.
 
+.. _fig.opt.problem.variables
 .. figure:: ../figs/opt_problem_variables.svg
    :alt: Optimization Variable Selection
    :name: fig.opt.problem.variables
@@ -86,9 +87,10 @@ and the flowsheet is evaluated for each row on the sample table. The
 results of the samples can be used to calculate the objective function.
 Using the **Samples** tab is optional. If no sample variables are set,
 each objective function value will be based on a single simulation.
-Figure `[fig.opt.problem.samples] <#fig.opt.problem.samples>`__ shows
+Figure :ref:`fig.opt.problem.samples` shows
 the Samples table form.
 
+.. _fig.opt.problem.samples
 .. figure:: ../figs/opt_problem_samples.svg
    :alt: Optimization Sample Table
    :name: fig.opt.problem.samples
@@ -131,10 +133,11 @@ Name and Variable Name are strings so they should be in quotes. The
 sample and time step indexes are integers. For steady state simulations,
 the time step should be 0.
 
-Figure `[fig.opt.problem.objective1] <#fig.opt.problem.objective1>`__
+Figure :ref:`fig.opt.problem.objective1`
 shows the form for entering the objective function and constraints as
 Python expressions.
 
+.. _fig.opt.problem.objective1
 .. figure:: ../figs/opt_problem_objective1.svg
    :alt: Optimization Simple Objective Function
    :name: fig.opt.problem.objective1
@@ -225,7 +228,7 @@ be used. The Custom Python method enables the user to enter the
 objective calculation as a Python function, which also should include
 any required constraint penalties.
 
-Figure `[fig.opt.problem.objective2] <#fig.opt.problem.objective2>`__
+Figure :ref:`fig.opt.problem.objective2`
 shows the Custom Python objective form. The top text box provides
 instructions for writing a custom objective function. The bottom text
 box provides a place to enter Python code. The numpy and math modules
@@ -244,14 +247,14 @@ debugging, so they are not required. It is safe to return [0] and 0 for
 the constraint information regardless of whether a constraint penalty
 has been added to the objective.
 
+.. _fig.opt.problem.objective2
 .. figure:: ../figs/opt_problem_objective2.svg
    :alt: Custom Objective Function
    :name: fig.opt.problem.objective2
 
    Custom Objective Function
 
-The code in Figure
-`[fig.opt.problem.objective2_code] <#fig.opt.problem.objective2_code>`__
+The code in Figure :ref:`fig.opt.problem.objective2_code`
 provides an example of a custom objective function for parameter
 estimation. The objective function minimizes the sum of the differences
 between simulation and empirical data. In this case the decision
@@ -291,9 +294,10 @@ Solver Options
 
 The **Solver** tab in the **Optimization** button tool enables the
 selection of the DFO method and setting of solver parameters. Figure
-`[fig.opt.solver.form] <#fig.opt.solver.form>`__ illustrates the solver
+:ref:`fig.opt.solver.form` illustrates the solver
 form.
 
+.. _fig.opt.solver.form
 .. figure:: ../figs/opt_solver_form.svg
    :alt: Optimization Solver Form
    :name: fig.opt.solver.form
@@ -317,9 +321,10 @@ Running Optimization
 
 The optimization monitor is displayed under the **Run** tab in the
 **Optimization** button tool. The optimization monitor, illustrated in
-Figure `[fig.opt.run.form] <#fig.opt.run.form>`__, is used to monitor
+Figure :ref:`fig.opt.run.form`, is used to monitor
 the progress of the optimization as it runs.
 
+.. _fig.opt.run.form
 .. figure:: ../figs/opt_run_form.svg
    :alt: Optimization Monitor Form
    :name: fig.opt.run.form

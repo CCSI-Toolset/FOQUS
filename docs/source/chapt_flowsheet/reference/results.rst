@@ -5,12 +5,12 @@ Sample Results
 
 Flowsheet evaluations that have been run in a FOQUS session can be
 viewed by clicking the table button in the flowsheet toolbar (#13 in
-Figure `[fig.flowsheet.editor] <#fig.flowsheet.editor>`__). The results
+Figure :ref:`fig.flowsheet.editor`. The results
 are displayed in a table, and the contents can be copied and pasted into
-a spreadsheet or exported to a CSV file. Figure
-`[fig.results.table] <#fig.results.table>`__ show the Flowsheet Results
-Table window.
+a spreadsheet or exported to a CSV file. Figure :ref:`fig.results.table` 
+show the Flowsheet Results Table window.
 
+.. _fig.results.table
 .. figure:: ../figs/resultsTable.svg
    :alt: Flowsheet Results Table Window
    :name: fig.results.table
@@ -36,9 +36,8 @@ Error Codes
 -----------
 
 Error codes are listed in the **Flowsheet Results** table for the whole
-flowsheet and for individual nodes. Table
-`[table.fs.error] <#table.fs.error>`__ shows the flowsheet error codes
-and Table `[table.node.error] <#table.node.error>`__ shows the node
+flowsheet and for individual nodes. Table :ref:`table.fs.error` shows the flowsheet error codes
+and Table :ref:`table.node.error` shows the node
 error codes. The most common flowsheet error is 1, a node calculation
 failed. The most common node error is 7, Turbine simulation error. These
 errors are typically caused by a simulation that fails to converge or

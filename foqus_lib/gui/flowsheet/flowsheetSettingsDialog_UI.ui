@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>548</width>
+    <width>544</width>
     <height>319</height>
    </rect>
   </property>
@@ -67,25 +67,35 @@
        </item>
        <item>
         <layout class="QGridLayout" name="gridLayout">
-         <item row="1" column="3">
+         <item row="3" column="3">
+          <widget class="QCheckBox" name="logTearCheckBox">
+           <property name="text">
+            <string>log</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="4">
           <widget class="QRadioButton" name="tearFracTolRadioButton">
            <property name="text">
             <string>Fraction of Range</string>
            </property>
           </widget>
          </item>
-         <item row="2" column="1">
-          <widget class="QLineEdit" name="tearItLimitEdit">
-           <property name="maximumSize">
-            <size>
-             <width>100</width>
-             <height>16777215</height>
-            </size>
+         <item row="3" column="0">
+          <widget class="QLabel" name="label_8">
+           <property name="text">
+            <string>Log File Stub</string>
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QLineEdit" name="tearTolEdit">
+         <item row="2" column="2">
+          <widget class="QLineEdit" name="tearItLimitEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="maximumSize">
             <size>
              <width>100</width>
@@ -95,6 +105,22 @@
           </widget>
          </item>
          <item row="1" column="2">
+          <widget class="QLineEdit" name="tearTolEdit">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>100</width>
+             <height>16777215</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="3">
           <widget class="QRadioButton" name="tearAbsTolRadioButton">
            <property name="text">
             <string>Absolute</string>
@@ -124,7 +150,7 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="4">
+         <item row="1" column="5">
           <spacer name="horizontalSpacer_2">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -136,6 +162,16 @@
             </size>
            </property>
           </spacer>
+         </item>
+         <item row="3" column="2">
+          <widget class="QLineEdit" name="logTearStubEdit"/>
+         </item>
+         <item row="4" column="0">
+          <widget class="QCheckBox" name="tearBoundCheckBox">
+           <property name="text">
+            <string>Enforce Bounds</string>
+           </property>
+          </widget>
          </item>
         </layout>
        </item>

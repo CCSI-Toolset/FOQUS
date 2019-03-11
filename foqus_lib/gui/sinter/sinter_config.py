@@ -37,6 +37,9 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.outputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.inputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.input_files_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.inputs_table.setRowCount(0)
+        self.outputs_table.setRowCount(0)
+        self.input_files_table.setRowCount(0)
         self.show()
 
     def _add_input_file(self):

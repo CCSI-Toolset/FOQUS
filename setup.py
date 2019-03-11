@@ -96,12 +96,12 @@ Some FOQUS features will not be available without these packages.
 
 PSUADE (Required for UQ features):
     https://github.com/LLNL/psuade
-    PSUADE is requidred for FOQUS UQ and OUU features.
+    PSUADE is required for FOQUS UQ and OUU features.
 
 SimSinter (Required by Turbine):
     https://github.com/CCSI-Toolset/SimSinter/releases
     This provides a standard API for interacting with process simulation
-    software cuttently is supports Aspen Plus, Aspen Custom Modeler, Excel,
+    software; currently it supports Aspen Plus, Aspen Custom Modeler, Excel,
     and gPROMS. This is required for TurbineLite.
 
 TurbineLite (Windows only, run Aspen, Excel, and gPROMS):

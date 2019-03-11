@@ -227,7 +227,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Inputs: {0}".format(
                     json.dumps(self.input)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     xdata,
                     inputs = self.input,
                     outputs = [],
@@ -238,7 +238,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Output: {0}".format(
                     json.dumps(self.output)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     ydata,
                     inputs = [],
                     outputs = self.output,
@@ -324,9 +324,9 @@ class surrogateMethod(surrogate):
             lines.append('                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)')
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
-            lines.append('                print stdout')
+            lines.append('                print(stdout)')
             lines.append('            if stderr:')
-            lines.append('                print stderr')
+            lines.append('                print(stderr)')
             lines.append('')
             lines.append('            # read results and instantiate output value')
             lines.append("            ypred = numpy.loadtxt(outfileName)")

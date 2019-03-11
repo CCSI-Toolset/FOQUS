@@ -42,9 +42,9 @@ variable where gPROMS will use the data.
    C:\\ SimSinterFiles\gPROMS_Test\\ BufferTank_FO.gPJ
 
    Double-click on the .gPJ file to open ModelBuilder, as shown in
-   Figure
-   `[fig.sinter.gproms.openbuffertank] <#fig.sinter.gproms.openbuffertank>`__.
+   Figure :ref:`fig.sinter.gproms.openbuffertank`.
 
+   .. _fig.sinter.gproms.openbuffertank
    .. figure:: ../figs/gPROMS/01_OpenBufferTank.png
       :alt: Opening BufferTank in gPROMS Model Builder
       :name: fig.sinter.gproms.openbuffertank
@@ -61,6 +61,7 @@ variable where gPROMS will use the data.
    simulation will change some of these PARAMETERS and VARIABLES to
    change the output of the simulation.
 
+   .. _fig.sinter.gproms.viewbuffertank
    .. figure:: ../figs/gPROMS/02_EditBufferTank.png
       :alt: Viewing BufferTank in gPROMS Model Builder
       :name: fig.sinter.gproms.viewbuffertank
@@ -74,6 +75,7 @@ variable where gPROMS will use the data.
    setting values with Sinter. The “SimulateTank_Sinter” example will be
    recreated in this tutorial.
 
+   .. _fig.sinter.gproms.viewsimulatetank
    .. figure:: ../figs/gPROMS/03_EditBufferTank.png
       :alt: Viewing SimulateTank in gPROMS Model Builder
       :name: fig.sinter.gproms.viewsimulatetank
@@ -82,6 +84,7 @@ variable where gPROMS will use the data.
 
 #. First copy the existing hard-coded Process “SimulateTank”.
 
+   .. _fig.sinter.gproms.copysimulatetank
    .. figure:: ../figs/gPROMS/04_EditBufferTank.png
       :alt: Copying SimulateTank
       :name: fig.sinter.gproms.copysimulatetank
@@ -90,6 +93,7 @@ variable where gPROMS will use the data.
 
 #. Right-click on Processes and select **Paste** to make a new process.
 
+   .. _fig.sinter.gproms.pastesimulatetank
    .. figure:: ../figs/gPROMS/05_EditBufferTank.png
       :alt: Paste SimulateTank
       :name: fig.sinter.gproms.pastesimulatetank
@@ -99,6 +103,7 @@ variable where gPROMS will use the data.
 #. The new process will be named “SimulateTank_1”. Rename the process by
    right-clicking on it and selecting **Rename**.
 
+   .. _fig.sinter.gproms.renamesimulatetank
    .. figure:: ../figs/gPROMS/06_EditBufferTank.png
       :alt: Rename SimulateTank
       :name: fig.sinter.gproms.renamesimulatetank
@@ -120,6 +125,7 @@ variable where gPROMS will use the data.
    “SimpleEventFOI::dummy” in the SET section. This FOREIGN_OBJECT is
    how inputs are received from SimSinter.
 
+   .. _fig.sinter.gproms.foreignobject
    .. figure:: ../figs/gPROMS/08_EditBufferTank.png
       :alt: Adding the FOREIGN_OBJECT
       :name: fig.sinter.gproms.foreignobject
@@ -154,6 +160,7 @@ variable where gPROMS will use the data.
    For this example the user only really needs to set “T101.Alpha” in
    PARAMETER, “T101.FlowIn” in ASSIGN, and “T101.Height” in INITIAL.
 
+   .. _fig.sinter.gproms.setupinputvariables
    .. figure:: ../figs/gPROMS/09_EditBufferTank.png
       :alt: Setting up Input Variables
       :name: fig.sinter.gproms.setupinputvariables
@@ -173,6 +180,7 @@ variable where gPROMS will use the data.
       REAL__FlowInFO = 14
       REAL__HeightFO = 7.5
 
+   .. _fig.sinter.gproms.testingtutorial
    .. figure:: ../figs/gPROMS/10_EditBufferTank.png
       :alt: Testing SimulateTank_Tutorial
       :name: fig.sinter.gproms.testingtutorial
@@ -190,6 +198,7 @@ to export that process for use by SimSinter.
 #. Right-click on the Process to export (“SimulateTank_tutorial”) and
    select **Export**.
 
+   .. _fig.sinter.gproms.selectexport
    .. figure:: ../figs/gPROMS/11_Export.png
       :alt: Select “Export”
       :name: fig.sinter.gproms.selectexport
@@ -199,6 +208,7 @@ to export that process for use by SimSinter.
 #. In the resulting Export window, select **Encrypted input file for
    simulation by gO:RUN** and click **OK**.
 
+   .. _fig.sinter.gproms.selectencrypted
    .. figure:: ../figs/gPROMS/12_Export.png
       :alt: Select “Encrypted Input File”
       :name: fig.sinter.gproms.selectencrypted
@@ -215,6 +225,7 @@ to export that process for use by SimSinter.
    has the original file. SimSinter does not use it. When the user has
    finished setting up these fields, click **Export Entity**.
 
+   .. _fig.sinter.gproms.exportentity
    .. figure:: ../figs/gPROMS/13_Export.png
       :alt: Export Entity Page
       :name: fig.sinter.gproms.exportentity
@@ -239,11 +250,12 @@ configuration can be done.
    its own by selecting **CCSI Tools** :math:`\rightarrow` **FOQUS**
    :math:`\rightarrow` **SinterConfigGUI** from the Start menu.
 
-#. The splash window displays, as shown in Figure
-   `[fig.sinter.gproms.splash] <#fig.sinter.gproms.splash>`__. The user
+#. The splash window displays, as shown in Figure 
+   :ref:`fig.sinter.gproms.splash`. The user
    may click the splash screen to proceed, or wait 10 seconds for it to
    close automatically.
 
+   .. _fig.sinter.gproms.splash
    .. figure:: ../figs/ap/01_Splash_Screen.png
       :alt: SinterConfigGUI Splash Screen
       :name: fig.sinter.gproms.splash
@@ -251,7 +263,7 @@ configuration can be done.
       SinterConfigGUI Splash Screen
 
 #. The SinterConfigGUI Open Simulation window displays (Figure
-   `[fig.sinter.gproms.openpage] <#fig.sinter.gproms.openpage>`__). If
+   :ref:`fig.sinter.gproms.openpage`). If
    “SinterConfigGUI” was opened from FOQUS, the filename text box
    already contains the correct file. To proceed immediately click
    **Open File and Configure Variables** or click **Browse** to search
@@ -265,6 +277,7 @@ configuration can be done.
    Once the file is selected, click **Open File and Configure
    Variables.**
 
+   .. _fig.sinter.gproms.openpage
    .. figure:: ../figs/ap/02_FileOpenScreen.png
       :alt: SinterConfigGUI Open Simulation Screen
       :name: fig.sinter.gproms.openpage
@@ -272,8 +285,7 @@ configuration can be done.
       SinterConfigGUI Open Simulation Screen
 
 #. The SinterConfigGUI Simulation Meta-Data window displays as shown in
-   (Figure
-   `[fig.sinter.gproms.savename] <#fig.sinter.gproms.savename>`__).
+   (Figure :ref:`fig.sinter.gproms.savename`).
    Unlike the other simulations, gPROMS has not started up in any way.
    SinterConfigGUI does not get information from gPROMS directly, it
    must parse the .gPJ file instead.
@@ -286,6 +298,7 @@ configuration can be done.
    fields to provide the meta-data to describe the simulation that was
    just opened and then click **Next**.
 
+   .. _fig.sinter.gproms.savename
    .. figure:: ../figs/gPROMS/17_MetaDataPage.png
       :alt: SinterConfigGUI Simulation Meta-Data Save Text Box
       :name: fig.sinter.gproms.savename
@@ -293,8 +306,7 @@ configuration can be done.
       SinterConfigGUI Simulation Meta-Data Save Text Box
 
 #. The SinterConfigGUI Variable Configuration Page window displays as
-   shown in Figure
-   `[fig.sinter.gproms.settings] <#fig.sinter.gproms.settings>`__.
+   shown in Figure :ref:`fig.sinter.gproms.settings`.
    gPROMS has two settings, **ProcessName** and **password**. SimSinter
    has guessed at both the **ProcessName** and the **password**. For
    this example the **password** is correct, but the **ProcessName** is
@@ -303,6 +315,7 @@ configuration can be done.
    The root is connected to the three processes defined in this .gPJ
    file. First, change the **ProcessName** to “SimulateTank_tutorial”.
 
+   .. _fig.sinter.gproms.settings
    .. figure:: ../figs/gPROMS/18_Settings.png
       :alt: SinterConfigGUI gPROMS Settings Configuration
       :name: fig.sinter.gproms.settings
@@ -337,6 +350,7 @@ configuration can be done.
    **Min** and **Max** values are taken from the variable type, if there
    is one.
 
+   .. _fig.sinter.gproms.inputs
    .. figure:: ../figs/gPROMS/19_InputVariables.png
       :alt: SinterConfigGUI Automatically Displays Input Variables
       :name: fig.sinter.gproms.inputs
@@ -350,6 +364,7 @@ configuration can be done.
    As stated above, the user cannot make new Input Variables in
    SinterConfigGUI. Only **Make Output** is allowed.
 
+   .. _fig.sinter.gproms.outputs1
    .. figure:: ../figs/gPROMS/20_OutputVariables.png
       :alt: Preview of the FlowOut Variable
       :name: fig.sinter.gproms.outputs1
@@ -357,11 +372,11 @@ configuration can be done.
       Preview of the FlowOut Variable
 
 #. If **Make Output** is clicked, “FlowOut” will be made an Output
-   Variable as shown in Figure
-   `[fig.sinter.gproms.outputs2] <#fig.sinter.gproms.outputs2>`__. The
+   Variable as shown in Figure :ref:`fig.sinter.gproms.outputs2`. The
    Description can be updated, but SimSinter made a good guess in this
    example; therefore, there is no need to change the description.
 
+   .. _fig.sinter.gproms.outputs2
    .. figure:: ../figs/gPROMS/21_OutputVariables.png
       :alt: FlowOut as an Input Variable
       :name: fig.sinter.gproms.outputs2
@@ -370,6 +385,7 @@ configuration can be done.
 
 #. By the same method, make Output Variables “HoldUp” and “Height.”
 
+   .. _fig.sinter.gproms.outputs3
    .. figure:: ../figs/gPROMS/22_OutputVariables.png
       :alt: HoldUp and Height Output Variables
       :name: fig.sinter.gproms.outputs3
@@ -379,6 +395,7 @@ configuration can be done.
 #. The variables names should be made shorter. Simply click on the
    **Name** column and change the name to your preferred name.
 
+   .. _fig.sinter.gproms.outputs4
    .. figure:: ../figs/gPROMS/23_OutputVariables.png
       :alt: Editing Variable Names
       :name: fig.sinter.gproms.outputs4
@@ -394,6 +411,7 @@ configuration can be done.
       FlowInFO = 14
       HeightFO = 7.5
 
+   .. _fig.sinter.gproms.defaults
    .. figure:: ../figs/gPROMS/24_Defaults.png
       :alt: Editing Defaults
       :name: fig.sinter.gproms.defaults
@@ -405,6 +423,7 @@ configuration can be done.
    Default Initialization page will display. Here the default values of
    the vectors may be edited.
 
+   .. _fig.sinter.gproms.vectors
    .. figure:: ../figs/gPROMS/25_Vectorss.png
       :alt: Editing Vectors
       :name: fig.sinter.gproms.vectors

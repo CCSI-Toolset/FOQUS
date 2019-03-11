@@ -21,11 +21,14 @@ class flowsheetSettingsDialog(_flowsheetSettingsDialog, _flowsheetSettingsDialog
         # Fill in the form with the current settings
         i = self.tearSolverBox.findText(self.gr.tearSolver)
         self.tearSolverBox.setCurrentIndex(i)
-        self.tearTolEdit.setText( str(self.gr.tearTol) )
-        self.tearItLimitEdit.setText( str(self.gr.tearMaxIt) )
-        self.wegAccMinEdit.setText( str(self.gr.wegAccMin) )
-        self.wegAccMaxEdit.setText( str(self.gr.wegAccMax) )
-        self.staggerTimeEdit.setText( str(self.gr.staggerStart) )
+        self.tearTolEdit.setText(str(self.gr.tearTol) )
+        self.tearItLimitEdit.setText(str(self.gr.tearMaxIt))
+        self.wegAccMinEdit.setText(str(self.gr.wegAccMin))
+        self.wegAccMaxEdit.setText(str(self.gr.wegAccMax))
+        self.staggerTimeEdit.setText(str(self.gr.staggerStart))
+        self.logTearCheckBox.setChecked(self.gr.tearLog)
+        self.logTearStubEdit.setText(self.gr.tearLogStub)
+        self.tearBoundCheckBox.setChecked(self.gr.tearBound)
         if self.gr.tearTolType == "abs":
             self.tearAbsTolRadioButton.setChecked(True)
         elif self.gr.tearTolType == "rng":
@@ -37,7 +40,10 @@ class flowsheetSettingsDialog(_flowsheetSettingsDialog, _flowsheetSettingsDialog
         self.gr.tearMaxIt = int(float(self.tearItLimitEdit.text()))
         self.gr.wegAccMin = float(self.wegAccMinEdit.text())
         self.gr.wegAccMax = float(self.wegAccMaxEdit.text())
-        self.gr.staggerStart = float( self.staggerTimeEdit.text() )
+        self.gr.staggerStart = float(self.staggerTimeEdit.text())
+        self.gr.tearLog = self.logTearCheckBox.isChecked()
+        self.gr.tearLogStub = self.logTearStubEdit.text()
+        self.gr.tearBound = self.tearBoundCheckBox.isChecked()
         if self.tearAbsTolRadioButton.isChecked():
             self.gr.tearTolType = "abs"
         elif self.tearFracTolRadioButton.isChecked():

@@ -532,10 +532,10 @@ class surrogateMethod(surrogate):
                 stdin = None,
                 creationflags=win32process.CREATE_NO_WINDOW)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")

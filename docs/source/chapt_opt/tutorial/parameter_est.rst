@@ -17,7 +17,7 @@ tutorial can be started again from that point.
 
 The model is given by Equation `[eq.pe.tut] <#eq.pe.tut>`__. The unknown
 parameters are :math:`a`, :math:`b`, and :math:`c`. The x and y data are
-given in Table `[table.pe.data] <#table.pe.data>`__.
+given in Table :ref:`table.pe.data`.
 
 .. math::
 
@@ -40,10 +40,11 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 #. Open FOQUS.
 
 #. In the **Session Name** field, enter “PE_tutorial” (see Figure
-   `[fig.pe.tut1] <#fig.pe.tut1>`__).
+   :ref:`fig.pe.tut1`).
 
 #. Click the **Flowsheet** button in the top toolbar.
 
+.. _fig.pe.tut1
 .. figure:: ../figs/par_est_tut1.svg
    :alt: Session Setup
    :name: fig.pe.tut1
@@ -53,7 +54,7 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 4. Add a node to the flowsheet named “model.”
 
    #. Click **Add Node** in the left toolbar (see Figure
-      `[fig.pe.tut2] <#fig.pe.tut2>`__).
+      :ref:`fig.pe.tut2`).
 
    #. Click anywhere on the gridded flowsheet area.
 
@@ -61,17 +62,17 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
       **OK**.
 
 5. Click the **Selection Mode** icon in the left toolbar (see Figure
-   `[fig.pe.tut2] <#fig.pe.tut2>`__).
+   :ref:`fig.pe.tut2`).
 
 6. Click the **Node Editor** icon in the left toolbar (see Figure
-   `[fig.pe.tut2] <#fig.pe.tut2>`__).
+   :ref:`fig.pe.tut2`).
 
 7. In the Node Edit input table, add the variables a, b, c, x, and
    ydata. The ydata variable will be used as an input for the known y
    sample point data, later in the tutorial.
 
    #. Click the **Add Input** icon (see Figure
-      `[fig.pe.tut2] <#fig.pe.tut2>`__).
+      :ref:`fig.pe.tut2`).
 
    #. Enter “a” for the variable name in the **Name** column.
 
@@ -86,6 +87,7 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 
    #. The **Value**, **Min**, and **Max** for ydata do not matter.
 
+.. _fig.pe.tut2
 .. figure:: ../figs/par_est_tut2.svg
    :alt: Adding Node and Inputs
    :name: fig.pe.tut2
@@ -93,15 +95,16 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
    Adding Node and Inputs
 
 8. Click **Output Variables** (see Figure
-   `[fig.pe.tut3] <#fig.pe.tut3>`__).
+   :ref:`fig.pe.tut3`).
 
 9. Add the output variable y.
 
    #. Click the **Add Output** icon (see Figure
-      `[fig.pe.tut3] <#fig.pe.tut3>`__).
+      :ref:`fig.pe.tut3`).
 
    #. Enter “y” for the variable name in the **Name** column.
 
+.. _fig.pe.tut3
 .. figure:: ../figs/par_est_tut3.svg
    :alt: Adding Outputs
    :name: fig.pe.tut3
@@ -120,6 +123,7 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
            + x['b']*x['x'] + x['c']
 
 
+.. _fig.pe.tut4
 .. figure:: ../figs/par_est_tut4.svg
    :alt: Adding Node Calculation
    :name: fig.pe.tut4
@@ -138,11 +142,11 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 The next step is to setup the optimization. The objective function is to
 minimize the sum of the squared errors between the estimated value of y
 and the observed value of y. There are five data points in Table
-`[table.pe.data] <#table.pe.data>`__, so there are five flowsheet
+:ref:`table.pe.data`, so there are five flowsheet
 evaluations that need to go into the calculation of the objective.
 
 14. Click the **Optimization** button in the top toolbar of the Home
-    window (see Figure `[fig.pe.tut5] <#fig.pe.tut5>`__).
+    window (see Figure :ref:`fig.pe.tut5`).
 
 15. | Select “Decision” in the **Type** column drop-down lists for
       “model.a,” “model.b,” and
@@ -152,6 +156,7 @@ evaluations that need to go into the calculation of the objective.
 16. Select “Sample” in the **Type** column drop-down lists for “model.x”
     and “model.ydata.”
 
+.. _fig.pe.tut5
 .. figure:: ../figs/par_est_tut5.svg
    :alt: Optimization Variables
    :name: fig.pe.tut5
@@ -163,17 +168,17 @@ the optimization solver to try to minimize the objective, and the sample
 variables are used to construct the samples that will go into the
 objective function calculation.
 
-17. Select the **Samples** tab (see Figure
-    `[fig.pe.tut6] <#fig.pe.tut6>`__).
+17. Select the **Samples** tab (see Figure :ref:`fig.pe.tut6`).
 
 18. Click **Add Sample** five times to add five samples.
 
-19. Enter the data from Table `[table.pe.data] <#table.pe.data>`__ in
+19. Enter the data from Table :ref:`table.pe.data` in
     the Samples table.
 
 20. For larger sample sets, **Generate Samples** has an option to load
     from a CSV file.
 
+.. _fig.pe.tut6
 .. figure:: ../figs/par_est_tut6.svg
    :alt: Optimization Samples
    :name: fig.pe.tut6
@@ -181,13 +186,13 @@ objective function calculation.
    Optimization Samples
 
 The objective function is the sum of the square difference between y and
-ydata for each sample in Table `[table.pe.data] <#table.pe.data>`__. The
+ydata for each sample in Table :ref:`table.pe.data`. The
 optimization solver changes the a, b, and c to minimize the objective.
 
 21. Click the **Objective/Constraints** tab.
 
 22. Click the **Add Objective** icon on the right side of the Objective
-    Function table (see Figure `[fig.pe.tut7] <#fig.pe.tut7>`__).
+    Function table (see Figure :ref:`fig.pe.tut7`).
 
 23. In the **Expression** column, enter the following (without the line
     break):
@@ -208,6 +213,7 @@ optimization solver changes the a, b, and c to minimize the objective.
 
 26. No constraints are required.
 
+.. _fig.pe.tut7
 .. figure:: ../figs/par_est_tut7.svg
    :alt: Objective Function
    :name: fig.pe.tut7
@@ -218,8 +224,7 @@ Once the objective is set up, a solver needs to be selected and
 configured. Almost any solver in FOQUS should work well for this problem
 with the default values.
 
-27. Click the **Solver** tab (see Figure
-    `[fig.pe.tut8] <#fig.pe.tut8>`__).
+27. Click the **Solver** tab (see Figure :ref:`fig.pe.tut8`).
 
 28. Select “NLopt” from the **Select Solver** drop-down list. NLopt is a
     collection of solvers that share a standard interface
@@ -228,13 +233,14 @@ with the default values.
 29. Select “BOBYQA” under the Solver Options table in the **Settings**
     column drop-down list.
 
+.. _fig.pe.tut8
 .. figure:: ../figs/par_est_tut8.svg
    :alt: Optimization Samples
    :name: fig.pe.tut8
 
    Optimization Samples
 
-30. Click the **Run** tab (see Figure `[fig.pe.tut9] <#fig.pe.tut9>`__).
+30. Click the **Run** tab (see Figure :ref:`fig.pe.tut9`).
 
 31. Click the **Start** button.
 
@@ -248,6 +254,7 @@ with the default values.
 34. The **Objective Function Plot** shows the value of the objective
     function as the optimization progresses.
 
+.. _fig.pe.tut9
 .. figure:: ../figs/par_est_tut9.svg
    :alt: Running Optimization
    :name: fig.pe.tut9
@@ -263,8 +270,9 @@ stored in the flowsheet results table.
 
 36. Open the **Node Editor** and look at the **Input Variables** table.
     The approximate result should be a = 2, b = -3, and c = 1 (see
-    Figure `[fig.pe.tut10] <#fig.pe.tut10>`__).
+    Figure :ref:`fig.pe.tut10`).
 
+.. _fig.pe.tut10
 .. figure:: ../figs/par_est_tut10.svg
    :alt: Flowsheet, Input Variables Results
    :name: fig.pe.tut10

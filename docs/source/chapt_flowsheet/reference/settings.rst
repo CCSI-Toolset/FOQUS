@@ -11,9 +11,10 @@ the Home window. The FOQUS settings can be stored in two locations: (1)
 (2) “foqus.cfg” in the working directory.
 
 The Settings screen displays settings grouped into tabs. Figure
-`[fig.settings.options] <#fig.settings.options>`__ shows **Settings,
+:ref:`fig.settings.options` shows **Settings,
 FOQUS** tab.
 
+.. _fig.settings.options
 .. figure:: ../figs/settings_options.svg
    :alt: Settings, FOQUS Tab
    :name: fig.settings.options
@@ -91,10 +92,10 @@ Options in the **Settings, FOQUS** tab are described below.
    screen.
 
 The **Turbine** tab contains settings for configuring the local and
-remote instance of Turbine. Figure
-`[fig.settings.turbine] <#fig.settings.turbine>`__ shows the FOQUS
+remote instance of Turbine. Figure :ref:`fig.settings.turbine` shows the FOQUS
 Turbine settings.
 
+.. _fig.settings.turbine
 .. figure:: ../figs/settings_turbine.svg
    :alt: Settings, Turbine Tab
    :name: fig.settings.turbine
@@ -159,10 +160,10 @@ of Turbine.
 
 The **Logging** tab contains settings related to the FOQUS log files,
 which provide debugging information. The FOQUS log files are stored in
-the logs directory in the working directory. Figure
-`[fig.settings.logging] <#fig.settings.logging>`__ show the FOQUS log
+the logs directory in the working directory. Figure :ref:`fig.settings.logging` show the FOQUS log
 settings. There are two log files (1) FOQUS and (2) Turbine Client.
 
+.. _fig.settings.logging
 .. figure:: ../figs/settings_logging.svg
    :alt: Settings, Logging Tab
    :name: fig.settings.logging

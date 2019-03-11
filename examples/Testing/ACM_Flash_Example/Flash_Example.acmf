@@ -1,0 +1,703 @@
+Version "30.0-0";
+Libraries "Modeler.acml", "SystemLibrary.acml";
+Model Flash_Stage
+  
+  //-----------------------------------------------------------
+  // Ports
+  i_port as input MULTIPORT of MainPort (MIN_CONNECTIONS:1, MAX_CONNECTIONS:4);
+  o_port_liq as output MainPort;
+  o_port_vap as output MainPort;
+  q_port as input HeatPort;
+  //-----------------------------------------------------------
+
+  //-----------------------------------------------------------
+  // variables
+  VapFrac as VapFraction;
+  Hin_mol(i_port.CONNECTIONSET) as enth_mol;
+  Hin(i_port.CONNECTIONSET) as enthflow;
+  z_total( ComponentList ) as molefraction;
+  //-----------------------------------------------------------
+
+  FOR i IN i_port.ConnectionSet DO
+    EnthInMolar: call (Hin_mol(i)) = pEnth_mol(i_port.CONNECTION(i).T, i_port.CONNECTION(i).P, i_port.CONNECTION(i).z);
+    EnthInFlows: 0 = Hin(i) - Hin_mol(i) * i_port.CONNECTION(i).F;
+  ENDFOR
+  
+  FOR j IN ComponentList DO
+    TotalMoleFraction: 0 = 2000* (SIGMA(i_port.CONNECTION.z(j) * i_port.CONNECTION.F) - z_total(j) * SIGMA(i_port.CONNECTION.F));
+  ENDFOR
+
+  FlashCalc: call (o_port_vap.z, o_port_liq.z, VapFrac, o_port_vap.h, o_port_liq.h) = pFlash (o_port_liq.T, o_port_liq.P, z_total);
+
+  EnthBal: 0 = SIGMA(Hin) + q_port.Q - o_port_liq.h * o_port_liq.F - o_port_vap.h * o_port_vap.F;
+  MassBalance: 0 = SIGMA(i_port.CONNECTION.F) - o_port_vap.F - o_port_liq.F;
+
+  VapFlow: 0 = o_port_vap.F - SIGMA(i_port.CONNECTION.F)*VapFrac;
+  Temp:  o_port_liq.T = o_port_vap.T;
+  Press: o_port_liq.P = o_port_vap.P;
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+  Current_Icon : "Flash_Stage_01";
+TYPE Flash_Stage_T1 ROLE "ICON" text
+Name = Flash_Stage_01
+lines = 37
+
+sub main
+call Path.Begin
+'' <<Path:0
+call Path.Box(-0.5,0.5,0.5,-0.5,0,0,1)
+'' >>
+call Path.End
+end sub
+
+sub LabPos
+call Label.at(0,0)
+end sub
+
+sub ports
+call Port.name("UniversalIN")
+call Port.at(-0.499652,-0.000274796)
+call Port.direction(0)
+call Port.name("UniversalOUT")
+call Port.at(0.499762,-0.000274796)
+call Port.IOtype(1)
+call Port.direction(0)
+call Port.name("i_port")
+call Port.at(-0.327218,0.499432)
+call Port.direction(270)
+call Port.name("q_port")
+call Port.at(-0.499652,-0.297635)
+call Port.direction(0)
+call Port.name("o_port_vap")
+call Port.at(0.362518,0.499432)
+call Port.IOtype(1)
+call Port.direction(90)
+call Port.name("o_port_liq")
+call Port.at(-0.327218,-0.499981)
+call Port.IOtype(1)
+call Port.direction(270)
+end sub
+
+
+
+endtext
+
+Flash_Stage_T1_I0 as Flash_Stage_T1;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+End
+SystemData : Text
+globaldatasection
+EndText;
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllGlobals">
+  <FORM NAME="AllGlobals" CLSID="{6BA76840-806B-11D0-BE51-0000C09984EF}">
+    { Version : 1
+SizeX : 5250
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}
+  </FORM>
+</FORMLIST>
+EndText;
+
+FLOWSHEET
+  Flash as Flash_Stage;
+  Feed as Connection;
+  Vapor as Connection;
+  Liquid as Connection;
+  Connect Flash.i_port with Feed;
+  Connect Flash.o_port_vap with Vapor;
+  Connect Flash.o_port_liq with Liquid;
+
+CONSTRAINTS
+  // Flowsheet variables and equations...
+END
+
+//SYSTEM SECTION - WARNING: DO NOT EDIT
+SystemData : Text
+<FORMLIST DEFAULTFORM="AllVariables">
+  <FORM NAME="AllVariables" MODEL="Flash">
+    { Version : 1
+SizeX : 10905
+SizeY : 6885
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Feed">
+    { Version : 1
+SizeX : 10515
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Vapor">
+    { Version : 1
+SizeX : 10035
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+  <FORM NAME="AllVariables" MODEL="Liquid">
+    { Version : 1
+SizeX : 8640
+SizeY : 3750
+ShowAllVariables : True
+ShowAllAttributes : False
+ExpandAll : True
+ShowRegistryAttributes : True
+VariablesPaths : [ ]
+AttributesPaths : [ ]
+ColumnWidths : [ ]
+}  </FORM>
+</FORMLIST>
+EndText;
+
+//SYSTEM SECTION END
+  ActiveTasks : [];
+  Flash.Hin("Feed") : -6.281743042757659;
+  Flash.Hin_mol("Feed") : -0.2840910974133236;
+  Flash.i_port.Connection("Feed").F.spec : Fixed;
+  Flash.i_port.Connection("Feed").F.Units : "lbmol/hr";
+  Flash.i_port.Connection("Feed").F : 22.11172085276;
+  Flash.i_port.Connection("Feed").P.spec : Fixed;
+  Flash.i_port.Connection("Feed").P.Units : "psi";
+  Flash.i_port.Connection("Feed").P : 3.44737865;
+  Flash.i_port.Connection("Feed").T.spec : Fixed;
+  Flash.i_port.Connection("Feed").T.Units : "F";
+  Flash.i_port.Connection("Feed").T : 37.777776;
+  Flash.i_port.Connection("Feed").z("ETHANOL").spec : Fixed;
+  Flash.i_port.Connection("Feed").z("ETHANOL").Units : "lbmol/lbmol";
+  Flash.i_port.Connection("Feed").z("ETHANOL") : 8.905e-002;
+  Flash.i_port.Connection("Feed").z("WATER").spec : Fixed;
+  Flash.i_port.Connection("Feed").z("WATER").Units : "lbmol/lbmol";
+  Flash.i_port.Connection("Feed").z("WATER") : 0.91095;
+  Flash.o_port_liq.F.Units : "lbmol/hr";
+  Flash.o_port_liq.F : 19.99287350730162;
+  Flash.o_port_liq.h.Units : "Btu/lbmol";
+  Flash.o_port_liq.h : -0.2840711894670749;
+  Flash.o_port_liq.P.spec : Fixed;
+  Flash.o_port_liq.P.Units : "psi";
+  Flash.o_port_liq.P : 1.37895146;
+  Flash.o_port_liq.T.spec : Fixed;
+  Flash.o_port_liq.T.Units : "F";
+  Flash.o_port_liq.T : 65.555554;
+  Flash.o_port_liq.z("ETHANOL").Units : "lbmol/lbmol";
+  Flash.o_port_liq.z("ETHANOL") : 1.008106548807662e-002;
+  Flash.o_port_liq.z("WATER").Units : "lbmol/lbmol";
+  Flash.o_port_liq.z("WATER") : 0.9899189345119234;
+  Flash.o_port_vap.F.Units : "lbmol/hr";
+  Flash.o_port_vap.F : 2.118847345458382;
+  Flash.o_port_vap.h.Units : "Btu/lbmol";
+  Flash.o_port_vap.h : -0.2337988554702696;
+  Flash.o_port_vap.P.Units : "psi";
+  Flash.o_port_vap.P : 1.37895146;
+  Flash.o_port_vap.T.Units : "F";
+  Flash.o_port_vap.T : 65.555554;
+  Flash.o_port_vap.z("ETHANOL").Units : "lbmol/lbmol";
+  Flash.o_port_vap.z("ETHANOL") : 0.8341796206342389;
+  Flash.o_port_vap.z("WATER").Units : "lbmol/lbmol";
+  Flash.o_port_vap.z("WATER") : 0.1658203793657612;
+  Flash.q_port.Q.Units : "Btu/hr";
+  Flash.q_port.Q : 0.1069596003893301;
+  Flash.VapFrac.Units : "lbmol/lbmol";
+  Flash.VapFrac : 9.582462439570394e-002;
+  Flash.z_total("ETHANOL").Units : "lbmol/lbmol";
+  Flash.z_total("ETHANOL") : 8.905e-002;
+  Flash.z_total("WATER").Units : "lbmol/lbmol";
+  Flash.z_total("WATER") : 0.91095;
+  Graphics : TEXT CLSID {A0DFFFE6-908E-11CE-A964-0000C08C668E}
+# of PFS Objects = 5
+SIZE -2.91549 0.520796 -0.720354 1.98584
+BLOCK
+ID: Flash
+Version: 1
+ICON: "Flash_Stage_01"
+Flag 0
+Section 
+At -1.153540 0.720354
+Label At 0.000000 0.000000
+Scale 1.000000 Modifier 0
+STREAM
+ID: Feed
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 1
+At -2.915487 1.976106
+Label At 0.717365 0.000000
+ROUTE 0 0
+$ $ 0.0 0.0
+ROUTE 1 0
+r r -2.915487 1.976106 0
+x x -1.480758 1.976106 0
+y y -1.480758 1.419786 0
+t u -1.480758 1.219786 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Vapor
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At 0.520796 1.985841
+Label At -0.655909 0.000000
+ROUTE 0 0
+r l 0.520796 1.985841 0
+x y -0.791022 1.985841 0
+y 0 -0.791022 1.419786 0
+t u -0.791022 1.219786 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+STREAM
+ID: Liquid
+Version: 2
+Flag 0
+TYPE 0 TERMINAL 2
+At 0.296903 -0.720354
+Label At -0.888830 0.000000
+ROUTE 0 0
+r l 0.296903 -0.720354 0
+x y -1.480758 -0.720354 0
+y 0 -1.480758 0.020373 0
+t d -1.480758 0.220373 0
+$ C 1.000000 0.0
+$ $ 0.0 0.0
+ROUTE 1 0
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 1
+$ $ 0.0 0.0
+ROUTE 1 1
+$ $ 0.0 0.0
+At 0.000000 0.000000
+Label At 0.000000 0.000000
+ROUTE 0 2
+$ $ 0.0 0.0
+ROUTE 1 2
+$ $ 0.0 0.0
+LEGEND
+Version: 2
+Dim: -3.8792 -3.2 -3.10475 -3.35806
+Size: 0.00967742
+Font: 1 0 =Times New Roman
+# of PFS Objects = 0
+VIEWPORT -5.485398 6.572667 3.300000 -3.009677
+LAYOUT
+TableFormat 1
+Pages 1 1 1 1
+PAGESETUP
+PAPERSIZE 
+PAPERSOURCE 
+ORIENTATION -1
+PRINTPAGENO 1 1
+LEFTMARGIN 0.5"
+RIGHTMARGIN 0.5"
+TOPMARGIN 0.5"
+BOTTOMMARGIN 0.5"
+VISIBILITY 0.030000
+PFDFLAG 255 255
+PFDMODE 0
+SCALE 0.009677
+
+ENDTEXT;
+END
+
+Properties
+Package : "PropertiesPlus";
+DefinitionText : TEXT MM "30.0" FLAVOR "NO" VERSION "30.0" DATETIME "Wed Nov 26 13:01:40 2014" 
+MACHINE "WIN-NT/VC" 
+? SETUP MAIN ? \ "RUN-CLASS" RUN-CLASS = PROP \ \ SIMULATE INTERACTIVE = NO \ 
+? SETUP GLOBAL ? ? SETUP "SIM-OPTIONS" ? ; "ENG_MOLE" ; ? ODATABANKS ? \ 
+ODATABANKS AUTO-PARAM = YES \ ? DATABANKS ? \ DATABANKS \ ? COMPONENTS MAIN ? 
+\ COMPONENTS CID = ETHANOL ANAME = C2H6O-2 OUTNAME = ETHANOL TYPE = CONV 
+DBNAME1 = "ETHANOL" ANAME1 = "C2H6O-2" /  CID = WATER ANAME = H2O OUTNAME = 
+WATER TYPE = CONV DBNAME1 = "WATER" ANAME1 = "H2O" \ ? COMPONENTS "COMP-LIST" 
+GLOBAL ? ? PROPERTIES MAIN ? \ GPROPERTIES GBASEOPSET = "PENG-ROB" GOPSETNAME
+ = "PENG-ROB" PARCON = -1 \ ? PROPERTIES "OPTION-SETS" "PENG-ROB" ? \ PARAM 
+BASE = "PENG-ROB" \ ? PROPERTIES "MOLEC-STRUCT" ETHANOL ? ? PROPERTIES 
+"MOLEC-STRUCT" WATER ? ? PROPERTIES PARAMETERS BINARY SCALAR "MLQKIJ-1" ? ; 
+"ENG_MOLE" ; \ PROP-LIST PARAMNAME = MLQKIJ SETNO = 1 \ ? PROPERTIES 
+PARAMETERS BINARY SCALAR "RKTKIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = 
+RKTKIJ SETNO = 1 UNITROW = 0 \ ? PROPERTIES PARAMETERS BINARY "T-DEPENDENT" 
+"ANDKIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = ANDKIJ SETNO = 1 UNITROW
+ = 0 TUNITROW = 22 TUNITLABEL = F NEL = 2 \ ? PROPERTIES PARAMETERS BINARY 
+"T-DEPENDENT" "ANDMIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = ANDMIJ 
+SETNO = 1 UNITROW = 0 TUNITROW = 22 TUNITLABEL = F NEL = 2 \ ? PROPERTIES 
+PARAMETERS BINARY "T-DEPENDENT" "MUKIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST 
+PARAMNAME = MUKIJ SETNO = 1 UNITROW = 0 TUNITROW = 22 TUNITLABEL = F NEL = 6 
+\ ? PROPERTIES PARAMETERS BINARY "T-DEPENDENT" "MULIJ-1" ? ; "ENG_MOLE" ; \ 
+PROP-LIST PARAMNAME = MULIJ SETNO = 1 UNITROW = 0 TUNITROW = 22 TUNITLABEL = 
+F NEL = 11 \ ? PROPERTIES PARAMETERS BINARY "T-DEPENDENT" "PRKBV-1" ? ; 
+"ENG_MOLE" ; \ PROP-LIST PARAMNAME = PRKBV SETNO = 1 UNITROW = 0 TUNITROW = 22 
+TUNITLABEL = F BDBANK = ( "APV84 EOS-LIT" ) NEL = 5 \ ? PROPERTIES PARAMETERS 
+BINARY "T-DEPENDENT" "PRLIJ-1" ? ; "ENG_MOLE" ; \ PROP-LIST PARAMNAME = PRLIJ 
+SETNO = 1 UNITROW = 0 TUNITROW = 22 TUNITLABEL = F NEL = 8 \ 
+
+ GRAPHICS_BACKUP
+PFS V NONE
+$CONFIG
+paramdata APV84 ENRTL-RK
+paramdata APV84 VLE-IG
+paramdata APV84 VLE-RK
+paramdata APV84 VLE-HOC
+paramdata APV84 LLE-LIT
+paramdata APV84 LLE-ASPEN
+paramdata APV84 VLE-LIT
+paramdata APV84 BINARY
+paramdata APV84 EOS-LIT
+paramdata APV84 HENRY-AP
+paramdata APV84 SRK-ASPEN
+paramdata APV84 PC-SAFT
+paramdata APV84 POLYPCSF
+paramdata APV84 HYSYS
+purebank APV84 PURE25
+purebank APV84 AQUEOUS
+purebank APV84 SOLIDS
+purebank APV84 INORGANIC
+regdbank 1
+ftn_check 1
+autoblockid 1
+autostreamid 1
+showblockid 1
+showstreamid 1
+autoplacement 1
+grid 2
+gridresolution 0.100000
+scale 0
+streamprefix 
+blockprefix B
+labelscale 1.000000
+qwformat %.0f
+tempformat %.0f
+presformat %.0f
+flowformat %.0f
+strmqwformat %.0f
+vflowformat %.0f
+mflowformat %.0f
+vfracformat %.0f
+pseudobatch 0
+partial 1
+animation 1
+runanyway 0
+browserheight 7530
+browserwidth 10725
+browsertreewidth 2370
+polyplusenabled 1
+dynaplusenabled 1
+bfracenabled 1
+rtfenabled 1
+rspenabled 0
+pinchenabled 0
+linklimit 5000
+material_color 0
+material_style 0
+material_width 1
+heat_color 0
+heat_style 2
+heat_width 1
+heat_termid Q
+work_color 0
+work_style 1
+work_width 1
+work_termid W
+connections_color 9
+connections_style 3
+connections_width 1
+measurements_color 4
+measurements_style 3
+measurements_width 1
+displayeoconn 0
+displayeomeas 1
+displayeomeastype 2
+showeoviews 0
+eoautosave 1
+allow_system_userprops 0
+copy_estimation 1
+copy_retrieved 1
+purge_incomp_params 0
+set_default_biparams 0
+set_default_dataset1 0
+set_default_dataset0 1
+roottype 1
+exchangerfile 1
+streamformat 1
+runsettingfile 1
+usermodelfile 1
+fortranfile 0
+allow_system_autoparam 1
+timeout 1000
+#
+#
+E_LINK
+
+$_SUMMARY_FILE
+ MMSUMMARY30.0                                                                  
+ IDSET RUNID (PROPERTIES) (114 *5)                                              
+ IDSET IT (PROPERTIES) (117 *6 119 *6 115 *1)                                   
+ LSET RUNID (%RUNID)                                                            
+ LSET IT (%IT)                                                                  
+ IDSET VERS (PROPERTIES) (345 *6 346 *6 347 *6 348 *6 355 *6)                   
+ LSET VERS (%VERS)                                                              
+ DSET RUN-STATUS VERS @VERS ( "30.0" "WINDOWS" "" "leek2" "STARION" )           
+ IDSET STRNAM (PROPERTIES) (1233 *6)                                            
+ LSET STRNAM (%STRNAM)                                                          
+ IDSET ID_STRPR (PROPERTIES) ( 454 *2 <119> 1236 *2 <125> 1237 *2 <29> 1238 *2  
+ <55> 1239 *2 <55> 1083 *6 1084 *6 )                                            
+ LSET L_STRPR (%ID_STRPR)                                                       
+ IDSET ID_GUID (PROPERTIES) ( 1270 *6 )                                         
+ LSET L_GUID (%ID_GUID)                                                         
+ IDSET STATUS (PROPERTIES) (125 *1 126 *1 127 *1 128 *1 129 *1 130 *1)          
+ LSET STATUS (%STATUS)                                                          
+ DSET RUN-STATUS STATUS @STATUS ( 8 * * * * * )                                 
+ DSET RUN-STATUS COMPSTAT @L_1 (0)                                              
+ DSET RUN-STATUS RUNID @RUNID ("_0131ddc")                                      
+ DSET RUN-STATUS IT @IT ( "NOVEMBER 26, 2014   1:01:38 P.M." "_0131ddc.inm" 2)  
+
+ENDTEXT;
+TimeStamp : "30411196 734694704";
+
+Default as ComponentList; 
+Within Default
+  Components :["ETHANOL","WATER"];
+EndWithin
+End
+
+Options
+  AbsoluteSingularityTol: 1.e-004;
+  AbsPerturb: 1.e-005;
+  AbsTearTol: 1.e-005;
+  AbsTol: 1.e-005;
+  AssignmentWarningsEnabled: True;
+  ChangeTol: 1.e-005;
+  CheckProcDerivs: "Off";
+  Compression: True;
+  CurrentUOMSet: "Metric";
+  Decomposer.ProgID: "AspenTech.Decomposer";
+  Decomposition.MultipleGroup: True;
+  DerivAbsTol: 1.e-003;
+  DerivRelTol: 0.1;
+  EqnTol: 1.e-005;
+  EquationSensCheck: False;
+  EquationSensTol: 10000000000.;
+  EstimationPrintLevel: "Medium";
+  EstimationReturntoBestPoint: False;
+  EstimationSolver: 2;
+  Estimator: 1;
+  ExplicitEventTolerance: 1.e-005;
+  Feasopt.MaxAbsStep: 10.;
+  Feasopt.MaxEval: 100;
+  Feasopt.MaxRelStep: 10.;
+  Feasopt.OptTol: 1.e-004;
+  Homotopy.InitialStep: 0.1;
+  Homotopy.MaximumStep: 1.;
+  Homotopy.MinimumStep: 1.e-002;
+  Homotopy.StepDecrement: 0.5;
+  Homotopy.StepIncrement: 10;
+  Integration.AbsErrorTol: 1.e-005;
+  Integration.AbsTearTol: 1.e-005;
+  Integration.DiscontinuityEventTol: 1.e-005;
+  Integration.EnforceMinStep: False;
+  Integration.IncSensErrors: False;
+  Integration.InitStepSize: 5.e-003;
+  Integration.ItplToComTime: True;
+  Integration.LocateIEvents: False;
+  Integration.MaxOrder: 5;
+  Integration.MaxStepSize: 1.;
+  Integration.MinStepSize: 1.e-003;
+  Integration.ProgID: "AspenTech.UnifiedIntegrator";
+  Integration.RcvTornVars: False;
+  Integration.ReInitAfterEE: False;
+  Integration.ReInitAfterIE: False;
+  Integration.RelErrorTol: 1.e-005;
+  Integration.RelTearTol: 1.e-005;
+  Integration.RewindToLastConvStep: False;
+  Integration.ShowHIErrors: 0;
+  Integration.ShowHTIErrors: 0;
+  Integration.StepRedFact: 0.5;
+  Integration.StepSize: 1.e-002;
+  Integration.StepSizeType: "Variable";
+  Integration.TestSAndAVars: False;
+  Integration.UsePrevAfterEE: False;
+  Integrator: "ImplicitEuler";
+  KeepCompiledEvaluationFiles: False;
+  LinearSolver: "MA48";
+  ListEquivalenceVariables: True;
+  LogLikelihood.MaxIter: 100;
+  LogLikelihood.SolTol: 1.e-004;
+  MA48.DropTol: 0.;
+  MA48.EnableRefineIter: True;
+  MA48.MaxRefineIter: 10;
+  MA48.PivotSearch: 3;
+  MA48.PivotTol: 1.e-050;
+  MA48.Repivot: 0;
+  MA48.UseTranspose: 0;
+  MaxTearIter: 100;
+  Nl2sol.AbsFuncTol: 1.e-020;
+  Nl2sol.FalseConvTol: 0.;
+  Nl2sol.MaxIter: 50;
+  Nl2sol.RelFuncTol: 1.e-004;
+  Nl2sol.SolTol: 1.e-004;
+  NLASolver: "Standard";
+  Nonlinear.AbsPert: 1.e-005;
+  Nonlinear.BestOnFail: True;
+  Nonlinear.BoundClip: 1.e-006;
+  Nonlinear.BoundFrac: 1.;
+  Nonlinear.ConvCrit: "Residual";
+  Nonlinear.CreepIter: 0;
+  Nonlinear.CreepSize: 0.1;
+  Nonlinear.Dogleg: False;
+  Nonlinear.HiResidual: 0;
+  Nonlinear.HiVarSteps: 0;
+  Nonlinear.MathsPrint: 0;
+  Nonlinear.MaxDivSteps: 10;
+  Nonlinear.MaxFastNewtonSteps: 5;
+  Nonlinear.MaxIter: 100;
+  Nonlinear.MaxStepRed: 10;
+  Nonlinear.MaxVarStep: 50.;
+  Nonlinear.Method: "Mixed Newton";
+  Nonlinear.RangeFrac: 0.;
+  Nonlinear.SingPert: 1.e-002;
+  OptimizationObjFun: "Minimize";
+  OptimizationPrintLevel: "Medium";
+  Optimizer: 1;
+  PrintLevel: 2;
+  PropInfo: -1;
+  RelativeSingularityCheck: True;
+  RelativeSingularityTol: 1.e-002;
+  RelPerturb: 1.e-005;
+  RelTearTol: 1.e-005;
+  RelTol: 1.e-005;
+  RunMode: "SteadyState";
+  SaveFreeVariableValues: True;
+  Scaling: False;
+  SensErrorCheck: True;
+  SnapshotSettings.EnableDynInitialization: True;
+  SnapshotSettings.EnableFileSaved: False;
+  SnapshotSettings.EnableInitialization: True;
+  SnapshotSettings.EnableInitialSpec: True;
+  SnapshotSettings.EnableMaximum: True;
+  SnapshotSettings.EnableonReinitialization: False;
+  SnapshotSettings.EnableProblemEdit: True;
+  SnapshotSettings.EnableRegularSnapshot: False;
+  SnapshotSettings.EnableSteadyState: True;
+  SnapshotSettings.Interval: 2.;
+  SnapshotSettings.Maximum: 10;
+  SnapshotSettings.SaveConvergedOnly: True;
+  SnapshotSettings.TakeAutoSnapshots: True;
+  SyncSteps: "Full";
+  Tearing: "update";
+  TearUpdate: "Direct";
+  TimeSettings.CommunicationInterval: 1.e-002;
+  TimeSettings.CommunicationUnits: "Hours";
+  TimeSettings.DisplayUpdateInterval: 2000;
+  TimeSettings.EnablePauseAt: False;
+  TimeSettings.EnableStepFor: False;
+  TimeSettings.PauseAt: 0.;
+  TimeSettings.RealTimeSyncFactor: 0.;
+  TimeSettings.RecordHistory: False;
+  TimeSettings.StepFor: 0;
+  TimeSettings.TimeDisplayUnits: "Hours";
+  UseCompiledEvaluation: False;
+  UseSavedSnapshotOnLoad: False;
+  WatchGroup: 0;
+  WatchSubGroup: 0;
+  Wegstein.MaxAcceleration: 0.;
+  Wegstein.MinAcceleration: -5.;
+  OpenLASolver: "";
+  OpenNLASolver: "";
+  OpenOPTSolver: "";
+  OpenESTSolver: "";
+End
+Optimization
+  IsDynamic : FALSE;
+  ElementSizeBoundsAutomatic : TRUE;
+  EndTime : 1.000000000000000;
+  Control.FinalTime_Initial : 1.000000000000000;
+  Control.FinalTime_Upper : 2.000000000000000;
+  Control.FinalTime_Lower : 0.5000000000000000;
+  Control.FinalTime_IsFixed : TRUE;
+  Control.FinalTime_IsObjective : FALSE;
+  Control.Elements : 5;
+  Control.FixedInterval : TRUE;
+  Control.MovingElementsVarying : FALSE;
+  Control.PiecewiseLinear : FALSE;
+  Control(0) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(1) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(2) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(3) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+  Control(4) : 0.2000000000000000, 0.05000000000000000, 0.4000000000000000 ;
+End
+Estimation
+  CalcHeteroParams : TRUE;
+  ExperimentTimeUnit: "";
+End
+Homotopy
+ Enabled: FALSE;
+End
+SimulationAccessExtension
+  ENABLED: false;
+End
+OnLineLinks
+  Protocol: "OPC", 1;
+  //Server: "";
+  IO: Synchronous, Cached;
+  Bounds: Clip;
+  Quality: UseLast;
+  Update: 1000;
+  PrintLevel: 2;
+  Enabled: OFF;
+  Input Events : Before SS Run, After DYN Step, After INI Step, Before INI Run;
+  Output Events: After SS Run, After DYN Step, After INI Step, After INI Run;
+End

@@ -227,7 +227,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Inputs: {0}".format(
                     json.dumps(self.input)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     xdata,
                     inputs = self.input,
                     outputs = [],
@@ -238,7 +238,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Output: {0}".format(
                     json.dumps(self.output)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     ydata,
                     inputs = [],
                     outputs = self.output,
@@ -261,10 +261,10 @@ class surrogateMethod(surrogate):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")
@@ -273,8 +273,8 @@ class surrogateMethod(surrogate):
             self.msgQueue.put(
                 "Process completed code: {0}".format(process.poll()))
             line = process.stderr.readline()
-            while line != '':
-                self.msgQueue.put(line.rstrip())
+            while line != b'':
+                self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stderr.readline()
             modelFile2 = os.path.join(adir, modelFile)
             driverFile2 = os.path.join(adir, driverFile)
@@ -324,9 +324,9 @@ class surrogateMethod(surrogate):
             lines.append('                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)')
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
-            lines.append('                print stdout')
+            lines.append('                print(stdout)')
             lines.append('            if stderr:')
-            lines.append('                print stderr')
+            lines.append('                print(stderr)')
             lines.append('')
             lines.append('            # read results and instantiate output value')
             lines.append("            ypred = numpy.loadtxt(outfileName)")

@@ -11,7 +11,7 @@ In this tutorial, a simulation ensemble is created and run.
    “Rosenbrock_novectors.foqus" problem (Figure
    :ref:`fig.uqt_home`).
 
-   .. _fig.uqt_home
+   .. _fig.uqt_home:
    .. figure:: ../figs/tutorial/1_home2.png
       :alt: Home Screen
       :name: fig.uqt_home
@@ -23,7 +23,7 @@ In this tutorial, a simulation ensemble is created and run.
    :ref:`subsec.opt.tutorial.flowsheet`
    for a detailed example of creating a flowsheet.
 
-   .. _fig.uqt_flowsheet
+   .. _fig.uqt_flowsheet:
    .. figure:: ../figs/tutorial/2_flowsheet2.png
       :alt: Flowsheet for Rosenbrock Example
       :name: fig.uqt_flowsheet
@@ -33,7 +33,7 @@ In this tutorial, a simulation ensemble is created and run.
 #. Click the **Uncertainty** button (Figure
    :ref:`fig.uqt_uqhome`).
 
-   .. _fig.uqt_uqhome
+   .. _fig.uqt_uqhome:
    .. figure:: ../figs/tutorial/3_UQScreen2.png
       :alt: Uncertainty Quantification Screen
       :name: fig.uqt_uqhome
@@ -72,7 +72,7 @@ In this tutorial, a simulation ensemble is created and run.
 
 #. Click OK.
 
-   .. _fig.uqt_addnew
+   .. _fig.uqt_addnew:
    .. figure:: ../figs/tutorial/4_AddNewEnsemble2.png
       :alt: Add New Ensemble Dialog, Flowsheet Option
       :name: fig.uqt_addnew
@@ -83,7 +83,7 @@ In this tutorial, a simulation ensemble is created and run.
 
       \centering
 
-   .. _fig.uqt_addnew_emulator
+   .. _fig.uqt_addnew_emulator:
    .. figure:: ../figs/tutorial/4a_AddNewEnsemble2_Emulator.png
       :alt: Add New Ensemble Dialog, Emulator Option
       :name: fig.uqt_addnew_emulator
@@ -110,7 +110,7 @@ In this tutorial, a simulation ensemble is created and run.
    Subsequently, other cells in the row are enabled or disabled
    according to the type selection.
 
-   .. _fig.uqt_sim
+   .. _fig.uqt_sim:
    .. figure:: ../figs/tutorial/5_SimSetup2.png
       :alt: Simulation Ensemble Setup Dialog, Distributions Tab
       :name:
@@ -140,7 +140,7 @@ In this tutorial, a simulation ensemble is created and run.
       simulation ensemble would contain “x6” samples that are randomly
       drawn (with replacement) from the samples in this file.
 
-      .. _fig.uqt_sim_pdfs
+      .. _fig.uqt_sim_pdfs:
       .. figure:: ../figs/tutorial/6_SimSetupPDFs2.png
          :alt: Simulation Ensemble Setup Dialog, Distributions Tab, PDF
          :name: fig.uqt_sim_pdfs
@@ -169,7 +169,7 @@ In this tutorial, a simulation ensemble is created and run.
 #. Once complete, switch to the Sampling Scheme tab
    (Figure :ref:`fig.uqt_sim_samplescheme`).
 
-   .. _fig.uqt_sim_samplescheme
+   .. _fig.uqt_sim_samplescheme:
    .. figure:: ../figs/tutorial/7_SimSetupSampling2.png
       :alt: Simulation Ensemble Setup Dialog, Sampling Scheme Tab
       :name: fig.uqt_sim_samplescheme
@@ -217,7 +217,7 @@ In this tutorial, a simulation ensemble is created and run.
    status of completed runs
    (Figure :ref:`fig.uqt_ensem_added`).
 
-   .. _fig.uqt_ensem_added
+   .. _fig.uqt_ensem_added:
    .. figure:: ../figs/tutorial/8_EnsembleAdded2.png
       :alt: Simulation Ensemble Added
       :name: fig.uqt_ensem_added
@@ -229,7 +229,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Click Analyze for “Ensemble 1”
       (Figure :ref:`fig.uqt_ensem_complete`).
 
-      .. _fig.uqt_ensem_complete
+      .. _fig.uqt_ensem_complete:
       .. figure:: ../figs/tutorial/9_EnsembleEvalComplete2.png
          :alt: Simulation Ensemble Evaluation Complete
          :name: fig.uqt_ensem_complete
@@ -239,7 +239,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Step 1 of “Analysis” (bottom page), the user selects Ensemble Data
       (Figure :ref:`fig.uqt_analysis`).
 
-      .. _fig.uqt_analysis
+      .. _fig.uqt_analysis:
       .. figure:: ../figs/tutorial/10_AnalysisDialog2.png
          :alt: Simulation Ensemble Analysis
          :name: fig.uqt_analysis
@@ -254,6 +254,7 @@ In this tutorial, a simulation ensemble is created and run.
       two graphs displaying the probability and cumulative distributions
       plots (Figure :ref:`fig.10a.rosenua`).
 
+   .. _fig.10a.rosenua:
    .. figure:: ../figs/tutorial/10a_RosenbrockUA.png
       :alt: Uncertainty Analysis Results
       :name: fig.10a.rosenua

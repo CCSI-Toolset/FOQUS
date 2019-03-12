@@ -44,7 +44,7 @@ value will be based on a single flowsheet evaluation. Figure
 :ref:`fig.opt.problem.variables` shows the
 **Variables** tab selection form.
 
-.. _fig.opt.problem.variables
+.. _fig.opt.problem.variables:
 .. figure:: ../figs/opt_problem_variables.svg
    :alt: Optimization Variable Selection
    :name: fig.opt.problem.variables
@@ -90,7 +90,7 @@ each objective function value will be based on a single simulation.
 Figure :ref:`fig.opt.problem.samples` shows
 the Samples table form.
 
-.. _fig.opt.problem.samples
+.. _fig.opt.problem.samples:
 .. figure:: ../figs/opt_problem_samples.svg
    :alt: Optimization Sample Table
    :name: fig.opt.problem.samples
@@ -137,7 +137,7 @@ Figure :ref:`fig.opt.problem.objective1`
 shows the form for entering the objective function and constraints as
 Python expressions.
 
-.. _fig.opt.problem.objective1
+.. _fig.opt.problem.objective1:
 .. figure:: ../figs/opt_problem_objective1.svg
    :alt: Optimization Simple Objective Function
    :name: fig.opt.problem.objective1
@@ -247,7 +247,7 @@ debugging, so they are not required. It is safe to return [0] and 0 for
 the constraint information regardless of whether a constraint penalty
 has been added to the objective.
 
-.. _fig.opt.problem.objective2
+.. _fig.opt.problem.objective2:
 .. figure:: ../figs/opt_problem_objective2.svg
    :alt: Custom Objective Function
    :name: fig.opt.problem.objective2
@@ -297,7 +297,7 @@ selection of the DFO method and setting of solver parameters. Figure
 :ref:`fig.opt.solver.form` illustrates the solver
 form.
 
-.. _fig.opt.solver.form
+.. _fig.opt.solver.form:
 .. figure:: ../figs/opt_solver_form.svg
    :alt: Optimization Solver Form
    :name: fig.opt.solver.form
@@ -324,7 +324,7 @@ The optimization monitor is displayed under the **Run** tab in the
 Figure :ref:`fig.opt.run.form`, is used to monitor
 the progress of the optimization as it runs.
 
-.. _fig.opt.run.form
+.. _fig.opt.run.form:
 .. figure:: ../figs/opt_run_form.svg
    :alt: Optimization Monitor Form
    :name: fig.opt.run.form

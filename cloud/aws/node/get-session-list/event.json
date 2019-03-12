@@ -4,5 +4,10 @@
     "Accept": "application/json"
   },
   "httpMethod": "GET",
-  "path": "/Session"
+  "path": "/Session",
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
 }

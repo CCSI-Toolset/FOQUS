@@ -23,7 +23,6 @@ exports.handler = function(event, context, callback) {
   console.log(`Running index.handler: "${event.httpMethod}"`);
   console.log("request: " + JSON.stringify(event));
   console.log('==================================');
-  const user_name = event.requestContext.authorizer.principalId;
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
       body: err ? err.message : JSON.stringify(res),
@@ -31,6 +30,19 @@ exports.handler = function(event, context, callback) {
           'Content-Type': 'application/json',
       },
   });
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
+  const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "GET") {
     var params = {
       Bucket: s3_bucket_name,

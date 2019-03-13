@@ -12,8 +12,9 @@
 'use uuid'
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-const tablename = 'FOQUS_Resources';
-const topic = 'arn:aws:sns:us-east-1:754323349409:FOQUS-Update-Topic';
+const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
+const topic = process.env.FOQUS_SNS_JOB_TOPIC_ARN;
+
 
 var process_job_event = function(ts, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
@@ -71,8 +72,15 @@ var process_job_event = function(ts, message, callback) {
         // ValidationException: ExpressionAttributeValues contains invalid value:
         // One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
         console.log(err, err.stack);
-        var message = "failed to update dynamodb output field job Id=%s\n%s" %(job,message['value']);
-        console.log("publish: " + message);
+
+        var message = "";
+        if (e == 'output')
+          message = "failed to update dynamodb output field job Id=%s\n%s" %(job,message['value']);
+        else if (e == 'status')
+          message = "failed to update dynamodb status fields job Id=%s\n%s" %(job,message['status']);
+        console.log("ERROR: " + message);
+        callback(message, "Error");
+        /*
         var params = {
           Message: message,
           TopicArn: topic
@@ -86,6 +94,8 @@ var process_job_event = function(ts, message, callback) {
       } else {
         callback(null, "Success");
       }
+      */
+    }
     });
 }
 

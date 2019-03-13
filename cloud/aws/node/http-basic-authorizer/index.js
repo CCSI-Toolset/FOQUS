@@ -64,9 +64,10 @@ exports.handler = function(event, context, callback) {
         console.log('GetItem Data: ', data);
         if(err) {
           console.log("Error: ", err);
-          callback(null, {statusCode:'400', body: JSON.stringify(data),
-            headers: {'Content-Type': 'application/json',}});
-        } else if (data.Item != null){
+          //callback(null, {statusCode:'400', body: JSON.stringify(data),
+          //  headers: {'Content-Type': 'application/json',}});
+          callback("Unauthorized: User " +user.name);
+        } else if (data != null && data.Item != null){
           if (data.Item.Id == user.name) {
             if (data.Item.Password == user.pass) {
               console.log("Allow: user=" + user.name);

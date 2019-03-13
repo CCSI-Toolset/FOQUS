@@ -1,11 +1,16 @@
 {
-"body":"{\"Name\":\"test_simulation\", \"Description\":\"Test Sinter Configuration\", \"filetype\":\"sinterconfig\"}",
+"body":"{\"Name\":\"test_flowsheet\", \"Description\":\"Test Flowsheet Configuration\", \"filetype\":\"FOQUS_Session\"}",
   "headers": {
     "Accept": "application/json"
   },
   "httpMethod": "PUT",
-  "path": "/simulation/test_simulation/input/configuration",
+  "path": "/simulation/test_flowsheet/input/configuration",
   "queryStringParameters": {
     "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
   }
 }

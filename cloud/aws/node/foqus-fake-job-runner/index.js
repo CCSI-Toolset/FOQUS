@@ -16,7 +16,9 @@ const AWS = require('aws-sdk');
 //const tablename = 'FOQUS_Resources';
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
-const queueURL = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue';
+const queueURL = process.env.FOQUS_JOB_QUEUE;
+const topicArn = process.env.FOQUS_SNS_TOPIC_ARN;
+
 
 var publish_job_updates = function(message) {
   /* { MessageId: '1f811f27-fd27-4d13-b1a4-85f7adead4c6',
@@ -112,7 +114,7 @@ var publish_job_updates = function(message) {
      console.log("publish: " + message);
      var params = {
        Message: message,
-       TopicArn: 'arn:aws:sns:us-east-1:754323349409:FOQUS-Update-Topic'
+       TopicArn: topicArn
      };
      //console.log("publish: " +  updates[i]);
      sns.publish(params, function(err, data) {

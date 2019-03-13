@@ -39,7 +39,6 @@ remotely (see Figure :ref:`fig.remote.settings`).
 #. Click the **Turbine** tab; this displays the Turbine settings shown
    in Figure :ref:`fig.remote.settings`.
 
-.. _fig.remote.settings1
 .. figure:: ../figs/settings_turbine_01.svg
    :alt: Run Method Settings
    :name: fig.remote.settings1
@@ -68,7 +67,6 @@ remotely (see Figure :ref:`fig.remote.settings`).
       to the **Turbine Configuration (remote)** field. Select the file
       created in Step 6e.
 
-.. _fig.remote.settings
 .. figure:: ../figs/remoteSetting.svg
    :alt: Remote Turbine Settings
    :name: fig.remote.settings

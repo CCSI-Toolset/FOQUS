@@ -28,7 +28,6 @@ simultaneously. More advanced solution options will be added if a need
 arises. Figure :ref:`fig.flowsheet.recycle`
 shows how a simple flowsheet with recycle would be solved.
 
-.. _fig.flowsheet.recycle
 .. figure:: ../figs/recycle.svg
    :alt: Flowsheet Recycle
    :name: fig.flowsheet.recycle
@@ -42,7 +41,6 @@ Figure :ref:`fig.flowsheet.editor` illustrates
 the main **Flowsheet Editor** screen and a description of the pieces.
 The toolbar on the left contains various flowsheet tools.
 
-.. _fig.flowsheet.editor`
 .. figure:: ../figs/flowsheetEdit.svg
    :alt: Flowsheet Editor
    :name: fig.flowsheet.editor
@@ -123,7 +121,6 @@ The **Node Editor** enables the assignment of simulations to a node, and
 editing variables. Figure :ref:`fig.node.editor.input` shows the Node
 Editor window with the input variables section of the toolbox displayed.
 
-.. _fig.node.editor.input
 .. figure:: ../figs/nodeEditInput.svg
    :alt: Node Editor Window
    :name: fig.node.editor.input
@@ -284,7 +281,6 @@ Figure :ref:`fig.post.calc` illustrates the **Node
 Script** tab of the **Node Editor** with calculations for an
 optimization test problem.
 
-.. _fig.post.calc
 .. figure:: ../figs/postCalc.svg
    :alt: Node Script Tab
    :name: fig.post.calc
@@ -302,7 +298,6 @@ Edge Editor
 The **Edge Editor** is illustrated in Figure :ref:`fig.edge.editor`. The **Edge Editor** can be
 used to set connections between node variables.
 
-.. _fig.edge.editor
 .. figure:: ../figs/edgeEdit.svg
    :alt: Edge Editor
    :name: fig.edge.editor

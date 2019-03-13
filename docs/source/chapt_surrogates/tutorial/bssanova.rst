@@ -54,7 +54,6 @@ version 3.1 or later (see
 #. Click the **Run** icon (Figure
    :ref:`fig.bssanova.settings`).
 
-.. _fig.bssanova.settings
 .. figure:: ../figs/bssanova_settings.svg
    :alt: BSS-ANOVA Session Set Up
    :name: fig.bssanova.settings

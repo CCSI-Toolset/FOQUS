@@ -75,7 +75,6 @@ FOQUS.
 
 #. Click the **Run** icon (Figure :ref:`fig.acosso.settings`).
 
-.. _fig.acosso.settings
 .. figure:: ../figs/acosso_settings.svg
    :alt: ACOSSO Session Set Up
    :name: fig.acosso.settings

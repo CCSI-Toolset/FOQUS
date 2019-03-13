@@ -9,7 +9,6 @@ Aspen Plus Configuration
    Open the Aspen Plus file and enter the metadata as shown in Figure
    :ref:`fig.sinter.ap.metadata`.
 
-   .. _fig.sinter.ap.metadata
    .. figure:: ../figs/ap/04_MetaDataFilled.png
       :alt: SinterConfigGUI Simulation Meta-Data with Data Completed
       :name: fig.sinter.ap.metadata
@@ -24,7 +23,6 @@ Aspen Plus Configuration
    Aspen Plus Tools :math:`\rightarrow` Variable Explorer.
    Unfortunately, searching is not possible.
 
-   .. _fig.sinter.ap.variableempty
    .. figure:: ../figs/ap/05_VariablesEmpty.png
       :alt: SinterConfigGUI Variable Configuration Page Empty Variables
       :name: fig.sinter.ap.variableempty
@@ -34,7 +32,6 @@ Aspen Plus Configuration
 #. **Variable Tree** nodes can be expanded for searching (Figure
    :ref:`fig.sinter.ap.expandtree`).
 
-   .. _fig.sinter.ap.expandtree
    .. figure:: ../figs/ap/06_VariablesExpanded.png
       :name: fig.sinter.ap.expandtree
 
@@ -47,7 +44,6 @@ Aspen Plus Configuration
    **Lookup** or **Preview** (which automatically causes the tree to
    expand and selects selected variables in the **Variable Tree**).
 
-   .. _fig.sinter.ap.selectvar
    .. figure:: ../figs/ap/07_VariablesSelected.png
       :name: fig.sinter.ap.selectvar
 
@@ -59,7 +55,6 @@ Aspen Plus Configuration
    variable, fix the **Description**, and enter the **Min/Max** fields
    by clicking on the appropriate text and entering it.
 
-   .. _fig.sinter.ap.inputvar
    .. figure:: ../figs/ap/08_VariablesInput.png
       :alt: SinterConfigGUI Variable Configuration Page Input Variable
       :name: fig.sinter.ap.inputvar
@@ -70,7 +65,6 @@ Aspen Plus Configuration
    Output**. Next, update the fields as with the **Input Variable** to
    give a better **Name** and **Description**.
 
-   .. _fig.sinter.ap.outputvar
    .. figure:: ../figs/ap/09_VariablesOutput.png
       :alt: SinterConfigGUI Variable Configuration Page Output Variable
       :name: fig.sinter.ap.outputvar

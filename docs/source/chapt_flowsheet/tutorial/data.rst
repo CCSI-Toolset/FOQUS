@@ -24,7 +24,6 @@ an additional 100 times using a UQ ensemble (see :ref:`chapt_uq/index:Uncertaint
 #. Click **Flowsheet Data** in the toolbar on the left side of the Home
    window.
 
-.. _fig.data.table1
 .. figure:: ../figs/data_table_1.svg
    :alt: Flowsheet Results Data Table, All Data
    :name: fig.data.table1
@@ -79,7 +78,6 @@ Sorting Data
 
 #. Click **Done** to save the filters and return to the results table.
 
-.. _fig.filter.1
 .. figure:: ../figs/filter_1.svg
    :alt: Sort1 Data Filter
    :name: fig.filter.1
@@ -92,7 +90,6 @@ Sorting Data
     sorted in reverse alphabetical order by **result**. Some of the
     columns are hidden to make the relevant results easier to see.
 
-.. _fig.filter.1.result
 .. figure:: ../figs/filter_1_result.svg
    :alt: Sort1 Data Filter Results
    :name: fig.filter.1.result
@@ -109,7 +106,6 @@ Sorting Data
 
 20. Click **Done**.
 
-.. _fig.filter.2
 .. figure:: ../figs/filter_2.svg
    :alt: Sort2 Data Filter
    :name: fig.filter.2
@@ -122,7 +118,6 @@ Sorting Data
     sorted so all **Error** code zero results are first then sorted in
     reverse alphabetical order by **result**.
 
-.. _fig.filter.2.result
 .. figure:: ../figs/filter_2_result.svg
    :alt: Sort2 Data Filter Result
    :name: fig.filter.2.result
@@ -157,7 +152,6 @@ field enter ``np.logical_and(c("err") == 0, c("set") == "Single_runs")``
 
 10. Click **Done**.
 
-.. _fig.filter.3
 .. figure:: ../figs/filter_3.svg
    :alt: Filter1 Data Filter
    :name: fig.filter.3
@@ -169,7 +163,6 @@ field enter ``np.logical_and(c("err") == 0, c("set") == "Single_runs")``
 
 12. The result is displayed in the Figure below.
 
-.. _fig.filter.3.result
 .. figure:: ../figs/filter_3_result.svg
    :alt: Filter1 Data Filter Result
    :name: fig.filter.3.result

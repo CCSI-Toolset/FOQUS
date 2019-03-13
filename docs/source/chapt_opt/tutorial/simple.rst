@@ -39,7 +39,6 @@ constraints and (4) select and configure the solver.
    **Value** column specifies the initial point. For this example the
    defaults are acceptable.
 
-.. _tut.opt.problem.vars
 .. figure:: ../figs/optProblemVar.svg
    :alt: Optimization Problem Variables
    :name: tut.opt.problem.vars
@@ -55,7 +54,6 @@ step is to define the objective function and constraints using the form
 under the **Objective/Constraints** tab as shown in Figure
 :ref:`tut.opt.problem.obj`.
 
-.. _tut.opt.problem.obj
 .. figure:: ../figs/optProblemObj.svg
    :alt: Optimization Problem Objective
    :name: tut.opt.problem.obj
@@ -106,7 +104,6 @@ The last step before running the optimization is to select and configure
 the solver. The solver configuration form is shown in Figure
 :ref:`tut.opt.solver`.
 
-.. _tut.opt.solver
 .. figure:: ../figs/optSolver.svg
    :alt: Optimization Solver Setup
    :name: tut.opt.solver
@@ -126,7 +123,6 @@ Running Optimization
 The optimization run form is shown in Figure
 :ref:`tut.opt.run`.
 
-.. _tut.opt.run
 .. figure:: ../figs/optRun.svg
    :alt: Optimization Monitor
    :name: tut.opt.run

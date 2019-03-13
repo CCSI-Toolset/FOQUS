@@ -24,7 +24,6 @@ Flowsheet Setup
 #. Name the session “Surrogate_Tutorial_1” (Figure
    :ref:`fig.tut.sur.session`).
 
-.. _fig.tut.sur.session
 .. figure:: ../figs/session1.svg
    :alt: Session Set Up
    :name: fig.tut.sur.session
@@ -39,7 +38,6 @@ Flowsheet Setup
 5. Display the Node Editor by clicking the **Node Editor** toggle
    button.
 
-.. _fig.tut.sur.flowsheet
 .. figure:: ../figs/flowsheet.svg
    :alt: Flowsheet Setup
    :name: fig.tut.sur.flowsheet
@@ -63,7 +61,6 @@ and output variables to the node.
 
 9. Add two output variables “z1” and “z2.”
 
-.. _fig.tut.sur.nodeEdit.Input
 .. figure:: ../figs/nodeInput.svg
    :alt: Node Variables
    :name: fig.tut.sur.nodeEdit.Input
@@ -89,7 +86,6 @@ simulation model and calculations are performed directly in FOQUS.
     “f” stores output values while the dictionary “x” stores input
     values.
 
-    .. _fig.tut.sur.nodeEdit.eq
     .. figure:: ../figs/nodeEq.svg
        :alt: Node Script
        :name: fig.tut.sur.nodeEdit.eq
@@ -117,7 +113,6 @@ data is provided and adaptive sampling is used.
 15. The **Add New Ensemble - Model Selection** dialog will appear. Click
     **OK** to set up the sampling scheme.
 
-.. _fig.tut.sur.new.uq.ens
 .. figure:: ../figs/uqNewEns.svg
    :alt: Add a New Sample Ensemble
    :name: fig.tut.sur.new.uq.ens
@@ -132,7 +127,6 @@ data is provided and adaptive sampling is used.
 
 18. Select the **Sampling scheme** tab.
 
-.. _fig.tut.sur.new.uq.sample1
 .. figure:: ../figs/uqSample1.svg
    :alt: Sample Distributions
    :name: fig.tut.sur.new.uq.sample1
@@ -149,7 +143,6 @@ data is provided and adaptive sampling is used.
 
 22. Click **Done**.
 
-.. _fig.tut.sur.new.uq.sample2
 .. figure:: ../figs/uqSample2.svg
    :alt: Sample Methods
    :name: fig.tut.sur.new.uq.sample2
@@ -160,7 +153,6 @@ data is provided and adaptive sampling is used.
     in the UQ tool window (Figure :ref:`fig.tut.sur.new.uq.sample3`).
     Click **Launch** to run and generate the samples.
 
-.. _fig.tut.sur.new.uq.sample3
 .. figure:: ../figs/uqSample3.svg
    :alt: Run Samples
    :name: fig.tut.sur.new.uq.sample3
@@ -183,7 +175,6 @@ single test run from the UQ samples.
 26. Click **Edit Filters** in the **Flowsheet Results** section to
     create a filter.
 
-.. _fig.tut.sur.data
 .. figure:: ../figs/data.svg
    :alt: Surrogate Data
    :name: fig.tut.sur.data
@@ -207,7 +198,6 @@ single test run from the UQ samples.
 
 29. Click **Done**.
 
-.. _fig.tut.sur.dataFilter
 .. figure:: ../figs/dataFilter.svg
    :alt: Data Filter Dialog
    :name: fig.tut.sur.dataFilter
@@ -232,7 +222,6 @@ selecting more.
 
 32. Select the checkbox for both output variables.
 
-.. _fig.tut.sur.vaiables
 .. figure:: ../figs/variables.svg
    :alt: Variable Selection
    :name: fig.tut.sur.vaiables
@@ -276,7 +265,6 @@ the following format: [element 1, element 2].
 42. Save this FOQUS session for use in the ACOSSO and BSS-ANOVA
     tutorials.
 
-.. _fig.alamo.method.settigs
 .. figure:: ../figs/alamo_settings.svg
    :alt: ALAMO Method Settings
    :name: fig.alamo.method.settigs
@@ -307,7 +295,6 @@ Execution
     #. Finally, the statistics display the quality metrics of the models
        generated.
 
-.. _fig.alamo.res
 .. figure:: ../figs/alamo_exec.svg
    :alt: ALAMO Execution
    :name: fig.alamo.res
@@ -331,6 +318,7 @@ As mentioned in section `1.5 <#tutorial.alamo.methodsettings>`__ the
 method settings are very important. A brief description and hints are
 included in Table :ref:`tutorial.alamo.table`.
 
+.. _tutorial.alamo.table:
 .. table:: ALAMO Method Settings
 
    +-----------------------------------+-----------------------------------+

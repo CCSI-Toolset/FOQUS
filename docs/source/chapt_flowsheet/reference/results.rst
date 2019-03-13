@@ -10,7 +10,6 @@ are displayed in a table, and the contents can be copied and pasted into
 a spreadsheet or exported to a CSV file. Figure :ref:`fig.results.table` 
 show the Flowsheet Results Table window.
 
-.. _fig.results.table:
 .. figure:: ../figs/resultsTable.svg
    :alt: Flowsheet Results Table Window
    :name: fig.results.table
@@ -44,7 +43,7 @@ errors are typically caused by a simulation that fails to converge or
 has some other calculation error (e.g., ACM does not converge or an
 Excel spreadsheet simulation with a division by 0 error).
 
-.. _table.fs.error
+.. _table.fs.error:
 .. table:: Flowsheet Error Codes
 
    +------+-----------------------------------------------------------+
@@ -85,7 +84,7 @@ Excel spreadsheet simulation with a division by 0 error).
    | 201  | Cycle in determining calculation order (invalid tear set) |
    +------+-----------------------------------------------------------+
 
-.. _table.node.error
+.. _table.node.error:
 .. table:: Node Error Codes
 
    +------+---------------------------------------+

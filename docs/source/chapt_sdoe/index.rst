@@ -64,7 +64,6 @@ Using the SDoE Module - The Basics
 
 In this section, we descibe the basic steps in for creating a design with this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on **Create Design**. 
 
-.. _fig.sdoe_home:
 .. figure:: figs/1_home.png
    :alt: Home Screen
    :name: fig.sdoe_home
@@ -80,14 +79,12 @@ We now consider some details for each of these steps:
 
 3. Click on the **View** button to open the **Preview Inputs** pop-up widow, to see the list of columns contained in each file. The left hand side displays the first few rows of input combinations from the file. Select the columns that you wish to see graphically in the right hand box , and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
 
-.. _fig.2_preview_inputs:
 .. figure:: figs/2_preview_inputs.png
    :alt: SDOE preview of inputs
    :name: fig.2_preview_inputs
    
    SDOE preview of inputs
 
-.. _fig.3_scatterplot_inputs:
 .. figure:: figs/3_scatterplot_inputs.png
    :alt: SDOE plot of inputs
    :name: fig.3_scatterplot_inputs
@@ -102,7 +99,6 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
 There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
 
-.. _fig.4_scatterplot_aggregated:
 .. figure:: figs/4_scatterplot_aggregated.png
    :alt: SDOE plot of aggregated inputs
    :name: fig.4_scatterplot_aggregated
@@ -111,7 +107,6 @@ There are options to view the aggregated files for both the candidate and histor
    
 6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Create Design** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
-.. _fig.5_SDOE_page2:
 .. figure:: figs/5_SDOE_page2.png
    :alt: SDOE second window
    :name: fig.5_SDOE_page2
@@ -146,7 +141,6 @@ For this first example, the goal is to construct a simple space-filling design w
 
 1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. :ref:`fig.sdoe_home_2`.
 
-.. _fig.sdoe_home_2:
 .. figure:: figs/1_home.png
    :alt: Home Screen
    :name: fig.sdoe_home_2

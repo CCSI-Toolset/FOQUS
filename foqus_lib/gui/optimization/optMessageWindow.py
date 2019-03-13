@@ -1,6 +1,6 @@
 """
-John Eslick, 2013
-Copyright Carnegie Mellon University
+John Eslick, Carnegie Mellon University, 2013
+See LICENSE.md for license and copyright details.
 """
 import os
 from PyQt5 import uic

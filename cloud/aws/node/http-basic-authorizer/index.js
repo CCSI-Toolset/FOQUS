@@ -16,15 +16,19 @@ const tableName = "TurbineUsers";
 exports.handler = function(event, context, callback) {
     console.log('Received event:', JSON.stringify(event, null, 2));
     var headers = event.headers;
+    const keys = Object.keys(event.headers);
+    for (const key of keys) {
+      event.headers[key.toLowerCase()] = event.headers[key];
+    }
 
-    if (!headers.Authorization ) {
+    if (!headers.authorization ) {
         // WWW-Authenticate: Basic realm="User Visible Realm"
         callback("Unauthorized: No Authorization header");
         return
     }
-    var array = headers.Authorization.split(' ');
+    var array = headers.authorization.split(' ');
     if (array[0] != "Basic") {
-      callback("Unauthorized: Bad Header " + headers.Authorization);
+      callback("Unauthorized: Bad Header " + headers.authorization);
       return
     }
     var token = array[1];
@@ -77,12 +81,12 @@ exports.handler = function(event, context, callback) {
                   return;
                 }
                 console.log("Unauthorized: user=" + user.name + ", wrong password");
-                context.fail("Unauthorized: " + headers.Authorization);
+                context.fail("Unauthorized: " + headers.authorization);
                 return;
               }
          }
          console.log("Unauthorized: No such user=" + user.name);
-         context.fail("Unauthorized: " + headers.Authorization);
+         context.fail("Unauthorized: " + headers.authorization);
         }
   });
 }

@@ -19,7 +19,7 @@ const path = require('path');
 const abspath = path.resolve(dirPath);
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
-
+const foqus_job_topic = process.env.FOQUS_JOB_TOPIC;
 // POST SESSION START:
 //  1.  Grab oldest S3 File in bucket foqus-sessions/{username}/{session_uuid}/*.json
 //  2.  Send each job to SNS Job Topic
@@ -75,7 +75,7 @@ exports.handler = function(event, context, callback) {
 
         var sns = new AWS.SNS();
         var request_topic = sns.createTopic({
-            Name: 'FOQUS-Job-Topic'
+            Name: foqus_job_topic,
           }, function(err, data) {
                 if (err) {
                   console.log(err.stack);

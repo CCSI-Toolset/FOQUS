@@ -1,6 +1,7 @@
 /**
- * Lambda Function, listens on a SNS Topic for job notifications.  These
- * notifications are changes of job status, results, etc.
+ * Name: foqus-sns-update
+ * Description:  listens on a FOQUS_UPDATE_TOPIC for job notifications.  These
+ *   notifications are changes of job status, results, etc.
  * @module foqus-sns-update
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
@@ -13,7 +14,7 @@
 const AWS = require('aws-sdk');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
-const topic = process.env.FOQUS_SNS_JOB_TOPIC_ARN;
+const topic = process.env.FOQUS_MESSAGE_TOPIC_ARN;
 
 
 var process_job_event = function(ts, message, callback) {

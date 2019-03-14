@@ -17,7 +17,7 @@ const AWS = require('aws-sdk');
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
 const queueURL = process.env.FOQUS_JOB_QUEUE;
-const topicArn = process.env.FOQUS_SNS_TOPIC_ARN;
+const topicArn = process.env.FOQUS_SNS_UPDATE_TOPIC_ARN;
 
 
 var publish_job_updates = function(message) {

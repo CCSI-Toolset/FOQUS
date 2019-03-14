@@ -14,7 +14,6 @@ Microsoft Excel Configuration
    click the splash screen to proceed, or wait 10 seconds for it to
    close automatically.
 
-   .. _fig.sinter.excel.splash
    .. figure:: ../figs/ap/01_Splash_Screen.png
       :alt: SinterConfigGUI Splash Screen
       :name: fig.sinter.excel.splash
@@ -31,7 +30,6 @@ Microsoft Excel Configuration
 
    C:\SimSinterFiles\\ Excel_Install_Test\exceltest.xlsm.
 
-   .. _fig.sinter.excel.openpage
    .. figure:: ../figs/ap/02_FileOpenScreen.png
       :alt: SinterConfigGUI Open Simulation Screen
       :name: fig.sinter.excel.openpage
@@ -50,7 +48,6 @@ Microsoft Excel Configuration
    file name; however, the user must confirm the correct file location,
    since it automatically overwrites whatever filename currently exists.
 
-   .. _fig.sinter.excel.savename
    .. figure:: ../figs/Excel/04_MetaDataSave.png
       :alt: SinterConfigGUI Simulation Meta-Data Save Text Box
       :name: fig.sinter.excel.savename
@@ -68,7 +65,6 @@ Microsoft Excel Configuration
    text box. If the default is left blank, no macro is run (unless a
    name is supplied in the input variables when running the simulation).
 
-   .. _fig.sinter.excel.variableempty
    .. figure:: ../figs/Excel/06_VariablesEmpty.png
       :alt: SinterConfigGUI Variable Configuration Page before Input
       :name: fig.sinter.excel.variableempty
@@ -87,7 +83,6 @@ Microsoft Excel Configuration
    Note: Row is first in the **Variable Tree**, yet column is first in
    the **Path**.
 
-   .. _fig.sinter.excel.variableselected
    .. figure:: ../figs/Excel/07_VariablesSelected.png
       :name: fig.sinter.excel.variableselected
 
@@ -101,7 +96,6 @@ Microsoft Excel Configuration
    Input Variables** section, and its meta-data may be edited (Figure
    :ref:`fig.sinter.excel.variableinputs`).
 
-   .. _fig.sinter.excel.variableinputs
    .. figure:: ../figs/Excel/08_VariablesInput.png
       :name: fig.sinter.excel.variableinputs
 
@@ -112,7 +106,6 @@ Microsoft Excel Configuration
    variables in the **Variable Tree**, clicking **Preview**, and then
    clicking **Make Output** (Figure :ref:`fig.sinter.excel.variableoutput`).
 
-   .. _fig.sinter.excel.variableoutput
    .. figure:: ../figs/Excel/09_VariablesOutput.png
       :name: fig.sinter.excel.variableoutput
 

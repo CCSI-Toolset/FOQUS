@@ -27,7 +27,6 @@ control the performance of heat integration. Output variables display
 heat integration results, which are used as final results or inputs for
 steam cycle calculations.
 
-.. _heat.int.inputs
 .. figure:: figs/heat_int_inputs.png
    :alt: Heat Integration Node Editor (Input Variables)
    :name: heat.int.inputs
@@ -85,7 +84,6 @@ The Heat Integration Node **Input Variables** are listed below:
    on their own projects. The variables **Life.Plant**, **No.Stream**,
    **Operation.Hours**, and **ROR** are used for the cost calculation.
 
-.. _heat.int.outputs
 .. figure:: figs/heat_int_outputs.png
    :alt: Heat Integration Node Editor (Output Variables)
    :name: heat.int.outputs
@@ -169,7 +167,6 @@ value assigned, except net power output and net efficiency without CCS.
 Output variables describe effects of CCS and heat integration to net
 power output and net efficiency.
 
-.. _steam.cycle.inputs
 .. figure:: figs/steam_cycle_inputs.png
    :alt: Steam Cycle Node Editor (Input Variables)
    :name: steam.cycle.inputs
@@ -218,7 +215,6 @@ The **Input Variables** of the Steam Cycle Node are described below:
    calculations. Both **Net.Efficiency** and **Net.Power** provide base
    case values for a power plant without CCS and heat integration.
 
-.. _steam.cycle.outputs
 .. figure:: figs/steam_cycle_outputs.png
    :alt: Steam Cycle Node Editor (Output Variables)
    :name: steam.cycle.outputs

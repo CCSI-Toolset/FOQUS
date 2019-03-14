@@ -13,7 +13,6 @@ Aspen Custom Modeler Configuration
    click the splash screen to proceed, or wait ten seconds for it to
    close automatically.
 
-   .. _fig.sinter.acm.splash
    .. figure:: ../figs/ap/01_Splash_Screen.png
       :alt: SinterConfigGUI Splash Screen
       :name: fig.sinter.acm.splash
@@ -34,7 +33,6 @@ Aspen Custom Modeler Configuration
    | Note: Opening the simulation may take a few minutes depending on
      how quickly Aspen Custom Modeler can be opened.
 
-   .. _fig.sinter.acm.openpage
    .. figure:: ../figs/ap/02_FileOpenScreen.png
       :alt: SinterConfigGUI Open Simulation Window
       :name: fig.sinter.acm.openpage
@@ -54,7 +52,6 @@ Aspen Custom Modeler Configuration
    location, since it automatically overwrites whatever file name
    currently exists.
 
-   .. _fig.sinter.acm.savename
    .. figure:: ../figs/acm/03_MetaDataSave.png
       :alt: SinterConfigGUI Simulation Meta-Data Page Save Name Text Box
       :name: fig.sinter.acm.savename
@@ -64,7 +61,6 @@ Aspen Custom Modeler Configuration
 #. Continue to complete the remaining fields and then click **Next**
    (Figure :ref:`fig.sinter.acm.metadata`).
 
-   .. _fig.sinter.acm.metadata
    .. figure:: ../figs/acm/04_MetaDataFilled.png
       :name: fig.sinter.acm.metadata
 
@@ -86,7 +82,6 @@ Aspen Custom Modeler Configuration
    the same as Variable Find on the Tools menu in Aspen Custom Modeler.
    Please refer to the ACM documentation for details on search patterns.
 
-   .. _fig.sinter.acm.variableempty
    .. figure:: ../figs/acm/05_VariablesEmpty.png
       :alt: SinterConfigGUI Variable Configuration Page before Input
       :name: fig.sinter.acm.variableempty
@@ -98,7 +93,6 @@ Aspen Custom Modeler Configuration
    :ref:`fig.sinter.acm.variableprogress`).
    Sometimes large searches take a while.
 
-   .. _fig.sinter.acm.variableprogress
    .. figure:: ../figs/acm/06_Search.png
       :alt: Search in Progress Bar Page
       :name: fig.sinter.acm.variableprogress
@@ -108,7 +102,6 @@ Aspen Custom Modeler Configuration
 #. First, select the “BFBadsT.A1” scalar variable in the **Selected
    Path** field (Figure :ref:`fig.sinter.acm.variableselected`).
 
-   .. _fig.sinter.acm.variableselected
    .. figure:: ../figs/acm/07_VariablesSelected.png
       :name: fig.sinter.acm.variableselected
 
@@ -119,7 +112,6 @@ Aspen Custom Modeler Configuration
    (Figure :ref:`fig.sinter.acm.variablepreview`).
    Here, the user can verify the variable choices.
 
-   .. _fig.sinter.acm.variablepreview
    .. figure:: ../figs/acm/08_VariablePreview.png
       :name: fig.sinter.acm.variablepreview
 
@@ -129,7 +121,6 @@ Aspen Custom Modeler Configuration
    Input**. Information displays in the **Selected Input Variables**
    section (Figure :ref:`fig.sinter.acm.variableinput`).
 
-   .. _fig.sinter.acm.variableinput
    .. figure:: ../figs/acm/09_VariablesInput.png
       :name: fig.sinter.acm.variableinput
 
@@ -139,7 +130,6 @@ Aspen Custom Modeler Configuration
    descriptive (e.g., “WaterA”). Set **Name**, **Description** and
    **Min/Max** as shown in Figure :ref:`fig.sinter.acm.variablename`.
 
-   .. _fig.sinter.acm.variablename
    .. figure:: ../figs/acm/10_VariablesInput2.png
       :name: fig.sinter.acm.variablename
 
@@ -154,7 +144,6 @@ Aspen Custom Modeler Configuration
    name is selected (“BFBadsT.db.Value”), the entire vector is
    displayed. Select the whole vector and click **Preview**.
 
-   .. _fig.sinter.acm.vectorpreview
    .. figure:: ../figs/acm/11_VariablesArray1.png
       :alt: SinterConfigGUI Variable Configuration Page Vector Preview
       :name: fig.sinter.acm.vectorpreview
@@ -165,7 +154,6 @@ Aspen Custom Modeler Configuration
    Notice that this variable has a unit “m” (Figure 
    :ref:`fig.sinter.acm.vectoroutput`).
 
-   .. _fig.sinter.acm.vectoroutput
    .. figure:: ../figs/acm/12_VariablesOutput.png
       :alt: SinterConfigGUI Variable Configuration Page Vector As Output
       :name: fig.sinter.acm.vectoroutput
@@ -178,7 +166,6 @@ Aspen Custom Modeler Configuration
    bubble diameter in mm (Figure :ref:`fig.sinter.acm.vectorunits`).
    Internal to the simulation, the unit remains “m.”
 
-   .. _fig.sinter.acm.vectorunits
    .. figure:: ../figs/acm/13_VariablesUnits.png
       :name: fig.sinter.acm.vectorunits
 
@@ -189,7 +176,6 @@ Aspen Custom Modeler Configuration
    To remove item that was just added, select it and click **Remove
    Variable**.
 
-   .. _fig.sinter.acm.vectorremoval
    .. figure:: ../figs/acm/14_VariablesInput2.png
       :alt: SinterConfigGUI Variable Configuration Page Removal Demo
       :name: fig.sinter.acm.vectorremoval
@@ -203,7 +189,6 @@ Aspen Custom Modeler Configuration
    automatically. To change the **Min/Max** values, the user must edit
    the JSON file in a text editor.
 
-   .. _fig.sinter.acm.vectorreadd
    .. figure:: ../figs/acm/15_VariablesInput4.png
       :alt: SinterConfigGUI Variable Configuration Page Read Input
       :name: fig.sinter.acm.vectorreadd
@@ -217,7 +202,6 @@ Aspen Custom Modeler Configuration
    modified in the window. In this case there is no need to change the
    values.
 
-   .. _fig.sinter.acm.vectorinput
    .. figure:: ../figs/acm/16_VectorInput.png
       :alt: SinterConfigGUI Vector Default Initialization Input Page
       :name: fig.sinter.acm.vectorinput

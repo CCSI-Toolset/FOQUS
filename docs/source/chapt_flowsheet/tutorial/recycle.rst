@@ -34,7 +34,6 @@ two reactors in recycle loops. The flowsheet contains mixers, reactors,
 separators, and splitters. Each node uses a set of simple calculations
 in the node script section. The tear edges are shown in light blue.
 
-.. _fig.recycle.tut1
 .. figure:: ../figs/recycle_tut1.svg
    :alt: Flowsheet with Recycle
    :name: fig.recycle.tut1
@@ -66,14 +65,12 @@ in the node script section. The tear edges are shown in light blue.
    :ref:`fig.recycle.tut2`. The tear solver settings
    are shown in Figure :ref:`fig.tear.settings`.
 
-.. _fig.recycle.tut2
 .. figure:: ../figs/recycle_tut2.svg
    :alt: React_01 Node
    :name: fig.recycle.tut2
 
    React_01 Node
 
-.. _fig.tear.settings
 .. figure:: ../figs/tear_solver_settings.svg
    :alt: Tear Solver Settings
    :name: fig.tear.settings
@@ -95,7 +92,6 @@ in the node script section. The tear edges are shown in light blue.
 
 8. Close the Edge Editor.
 
-.. _fig.recycle.tut3
 .. figure:: ../figs/recycle_tut3.svg
    :alt: Edge Edit
    :name: fig.recycle.tut3

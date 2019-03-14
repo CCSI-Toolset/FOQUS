@@ -14,7 +14,6 @@ provided.
 #. In the session form enter the **Session Name** as “Simple_Flow”
    (Figure :ref:`fig.session.name1`).
 
-.. _fig.session.name1
 .. figure:: ../figs/session_name1.svg
    :alt: Setting the Session Name
    :name: fig.session.name1
@@ -31,7 +30,6 @@ provided.
       buttons above the **Description** tab box can be used to format
       the text.
 
-.. _fig.session.description1
 .. figure:: ../figs/session_description1.svg
    :alt: Setting the Session Description
    :name: fig.session.description1
@@ -77,7 +75,6 @@ provided.
 
    h. Enter 4 for the value of x2.
 
-.. _fig.simple.flow1
 .. figure:: ../figs/simple_flow_1.svg
    :alt: Flowsheet, Input Variables
    :name: fig.simple.flow1
@@ -96,7 +93,6 @@ provided.
 
    c. Enter z in the output **Name** dialog box.
 
-.. _fig.simple.flow2
 .. figure:: ../figs/simple_flow_2.svg
    :alt: Flowsheet, Output Variables
    :name: fig.simple.flow2
@@ -130,7 +126,6 @@ The flowsheet should run successfully and the output value should be 2.
 Rerun the flowsheet with a negative value for x2, and observe the
 result. The simulation should report an error.
 
-.. _fig.simple.flow3
 .. figure:: ../figs/simple_flow_3.svg
    :alt: Node Calculation
    :name: fig.simple.flow3
@@ -150,7 +145,6 @@ result. The simulation should report an error.
     #. The default file name is the session name. Change the file name
        and location if desired.
 
-.. _fig.simple.flow.save
 .. figure:: ../figs/simple_flow_save.svg
    :alt: Save Session
    :name: fig.simple.flow.save

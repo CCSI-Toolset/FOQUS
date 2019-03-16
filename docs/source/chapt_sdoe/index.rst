@@ -97,13 +97,14 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
 5. If more than one **Candidate** file was specified, then the **aggregate_candidates.csv** file that was created will have combined these files into a single file. Similarly if more than one **Histoy** file was specified, then the **aggregate_history.csv** file has been created with all runs from these files. If only a single file was selected for either the  **Candidate** and **History** files, then their aggregated matching files will be the same as the original.
 
-There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
+..
+   There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
 
-.. figure:: figs/4_scatterplot_aggregated.png
-   :alt: SDOE plot of aggregated inputs
-   :name: fig.4_scatterplot_aggregated
+   .. figure:: figs/4_scatterplot_aggregated.png
+      :alt: SDOE plot of aggregated inputs
+      :name: fig.4_scatterplot_aggregated
 
-   SDOE plot of aggregated inputs
+      SDOE plot of aggregated inputs
    
 6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Create Design** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 

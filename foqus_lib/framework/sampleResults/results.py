@@ -177,6 +177,11 @@ class Results(pd.DataFrame):
         except:
             pass
 
+    def delete_rows(self, rows, filtered=True):
+        idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
+        self.drop(idxs, axis=0, inplace=True)
+        self.update_filter_indexes()
+
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
 
@@ -407,7 +412,10 @@ class Results(pd.DataFrame):
             self.sort_index(inplace=True)
         else:
             st, ascend = search_term_list(st)
-            self.sort_values(by=st, ascending=ascend, inplace=True)
+            if len(st) == 0:
+                self.sort_index(inplace=True)
+            else:
+                self.sort_values(by=st, ascending=ascend, inplace=True)
         # now look at the filter columns
         ft = fltr.filterTerm
         mask = [True]*len(self.index)

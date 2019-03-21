@@ -235,8 +235,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         ret = msgBox.exec_()
         if ret == QMessageBox.Yes:
             rows = self.selectedRows()
-            rl = self.results
-            rl.deleteRows(rows, fltr=True)
+            self.results.delete_rows(rows, filtered=True)
             self.refreshContents()
 
     def editDataSet(self):

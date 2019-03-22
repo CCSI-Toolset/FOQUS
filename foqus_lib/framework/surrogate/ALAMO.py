@@ -87,9 +87,9 @@ class surrogateMethod(surrogate):
              "<b>Automatic Learning of Algebraic Models for Optimization"
              " (ALAMO)</b>"
              "<p class=\"hangingindent\">Cozad, A., N. V. Sahinidis "
-             "and D. C. Miller, Automatic "
-             "Learning of Algebraic Models for"
-             " Optimization, AIChE Journal, accepted, 2014. </p></html>")
+             "and D. C. Miller, Learning surrogate models "
+             "for simulation‐based optimization, "
+             "AIChE Journal, 60, p. 2211–2227, 2014.</p></html>")
         self.alamoDir = 'alamo'
         self.inputCols = [
             ('XFACTOR', float, 1.0),

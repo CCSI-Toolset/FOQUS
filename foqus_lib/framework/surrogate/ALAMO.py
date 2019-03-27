@@ -822,8 +822,8 @@ class surrogateMethod(surrogate):
             #a cut and paste job for now
             af.write("\nBEGIN_VALDATA\n")
             # Reset data filter to validation set
-            self.graph.results.set_filter(validFilter)
-            for i in range(nvaldata):
+            res.set_filter(validFilter)
+            for i in res.get_indexes(filtered=True):
                 line = [0]*(nin+nout)
                 p = 0
                 for j, vname in enumerate(self.input):

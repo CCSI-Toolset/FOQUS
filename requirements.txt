@@ -1,13 +1,1 @@
-#PyQt5==5.9
-sip
-sphinx
-sphinx_rtd_theme
-matplotlib
-scipy
 numpy
-cma
-tqdm
-pandas>0.20
-pywin32; sys_platform == 'win32'
-adodbapi>=2.6.0.7; sys_platform == 'win32'
-TurbineClient

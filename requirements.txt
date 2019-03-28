@@ -1,4 +1,4 @@
-#PyQt5==5.9
+PyQt5==5.9
 sip
 sphinx
 sphinx_rtd_theme

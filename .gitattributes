@@ -1,0 +1,6 @@
+
+# default line endings
+* text=auto
+
+# force requirements.txt to use Unix-style endings
+requirements.txt text eol=lf

@@ -49,7 +49,6 @@ Section :ref:`sec.surrogate.alamo`.**
 #. Check the value of the **Output Variables**; the approximate values
    should be z1 = 5 and z2 = 13.
 
-.. _fig.pg.tut1
 .. figure:: ../figs/fs_plugin.svg
    :alt: Plugin Flowsheet
    :name: fig.pg.tut1

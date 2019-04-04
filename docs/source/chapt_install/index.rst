@@ -1,3 +1,5 @@
+.. _install_label:
+
 Installation
 ============
 
@@ -15,15 +17,15 @@ If you have a working version of Python 3.6 or greater, which you prefer over An
 
 If you create an environment in which to install FOQUS, you will need to ensure that environment is active before installing FOQUS. On Windows, once FOQUS is installed a batch file is created that will activate the proper environment when running FOQUS. On Linux or Mac, you will need to activate the appropriate environment before running FOQUS.
 
-Install git
------------
+.. Install git
+.. -----------
 
-Git can be used for developers who want to contribute to FOQUS, but it is also used to install some FOQUS requirements. There are a few ways to install git. If you are using Anaconda, it can be installed with conda. Otherwise, git clients can be found here https://git-scm.com/download/.ref
+.. Git can be used for developers who want to contribute to FOQUS, but it is also used to install some FOQUS requirements. There are a few ways to install git. If you are using Anaconda, it can be installed with conda. Otherwise, git clients can be found here https://git-scm.com/download/.ref
 
-5. Install git
+.. 5. Install git
 
-  * Option 1, use conda: ``conda install git``
-  * Option 2: download and install the git client of your choice
+..   * Option 1, use conda: ``conda install git``
+..   * Option 2: download and install the git client of your choice
 
 Get FOQUS
 ---------

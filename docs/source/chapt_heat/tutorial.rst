@@ -57,7 +57,6 @@ Start FOQUS. Start a new session. In the “Session Information” screen,
 under the **Metadata** tab, enter “BFB_CP_HI_SC” in the **Session Name**
 field (Figure :ref:`start.session`). Save the session.
 
-.. _start.session
 .. figure:: ./figs/start_session.png
    :alt: Start a New Session
    :name: start.session
@@ -76,7 +75,6 @@ dialog, upload the BFB ACM model file (Figure
 for the BFB model is BFB_3ads_2rgn.json. Enter “BFB_3ads_2rgn” in the
 **Simulation Name** drop-down list.
 
-.. _upload model
 .. figure:: figs/upload_model.png
    :alt: Upload Simulation Models
    :name: upload model
@@ -107,7 +105,6 @@ and compressor process. It is a user-specified Python calculation node
 and is described later. All edges should be the same directions as those
 in the figure.
 
-.. _flowsheet.heat.int
 .. figure:: figs/flowsheet_heat_int.png
    :alt: Flowsheet of Heat Integration Example
    :name: flowsheet.heat.int
@@ -129,7 +126,6 @@ Edit Nodes
      description for heat integration tags is covered later. No other
      changes are required for the two nodes.
 
-.. _bfb.node.edit
 .. figure:: figs/bfb_node_edit.png
    :alt: BFB Node Editor
    :name: bfb.node.edit
@@ -144,21 +140,18 @@ Edit Nodes
    dialog box, choose “None” in the **Type** drop-down list and leave
    the **Model** drop-down list blank.
 
-   .. _total.cons.inputs
    .. figure:: figs/total_cons_inputs.png
       :alt: Total Consumption Node Editor (Input Variables)
       :name: total.cons.inputs
 
       Total Consumption Node Editor (Input Variables)
 
-   .. _total.cons.outputs
    .. figure:: figs/total_cons_outputs.png
       :alt: Total Consumption Node Editor (Output Variables)
       :name: total.cons.outputs
 
       Total Consumption Node Editor (Output Variables)
 
-   .. _total.cons.python
    .. figure:: figs/total_cons_python.png
       :alt: Total Consumption Node Editor (Python Codes)
       :name: total.cons.python
@@ -206,7 +199,6 @@ Edit Nodes
    Editor for the **Heat Integration Node** is shown in Figure
    :ref:`heat.int.node.edit`.
 
-.. _heat.int.node.edit
 .. figure:: figs/heat_int_node_edit.png
    :alt: Heat Integration Node Editor
    :name: heat.int.node.edit
@@ -236,35 +228,30 @@ variables. The editor for Edge *0* (BFB :math:`\rightarrow` Compressor),
 :math:`\rightarrow` Heat Integration) and *2* (Compressor
 :math:`\rightarrow` Heat Integration) have no variable connections.
 
-.. _edge.0.edit
 .. figure:: figs/edge_0_edit.png
    :alt: Editor for Edge 0
    :name: edge.0.edit
 
    Editor for Edge 0
 
-.. _edge.3.edit
 .. figure:: figs/edge_3_edit.png
    :alt: Editor for Edge 3
    :name: edge.3.edit
 
    Editor for Edge 3
 
-.. _edge.4.edit
 .. figure:: figs/edge_4_edit.png
    :alt: Editor for Edge 4
    :name: edge.4.edit
 
    Editor for Edge 4
 
-.. _edge.5.edit
 .. figure:: figs/edge_5_edit.png
    :alt: Editor for Edge 5
    :name: edge.5.edit
 
    Editor for Edge 5
 
-.. _edge.6.edit
 .. figure:: figs/edge_6_edit.png
    :alt: Editor for Edge 6
    :name: edge.6.edit
@@ -284,6 +271,7 @@ of heat source the variable is involved in. The detailed lists of tags
 are provided in Tables :ref:`tag.1`, :ref:`tag.2`,
 :ref:`tag.3`, and :ref:`tag.4`.
 
+.. _tag.1:
 .. table:: Tag 1: Block Name
 
    +-----------------------+-----------------------+-----------------------+
@@ -295,6 +283,7 @@ are provided in Tables :ref:`tag.1`, :ref:`tag.2`,
    |                       | associated with       |                       |
    +-----------------------+-----------------------+-----------------------+
 
+.. _tag.2:
 .. table:: Tag 2: Type of Port
 
    +---------------------+----------------------------------+----------+
@@ -311,6 +300,7 @@ are provided in Tables :ref:`tag.1`, :ref:`tag.2`,
    | “Blk_Var”           | Block variable (not in any port) |          |
    +---------------------+----------------------------------+----------+
 
+.. _tag.3:
 .. table:: Tag 3: Type of Variable
 
    +---------+-----------------------------+----------+
@@ -321,6 +311,7 @@ are provided in Tables :ref:`tag.1`, :ref:`tag.2`,
    | “Q”     | Heat duty or heat flow rate |          |
    +---------+-----------------------------+----------+
 
+.. _tag.4:
 .. table:: Tag 4: Type of Heat Source
 
    +-----------------------+-----------------------+-----------------------+
@@ -391,7 +382,6 @@ illustrated below.
 Take the variable “BFBadsB_Q” in the BFB model as an example (Figure
 :ref:`add.heat.int.tags`):
 
-.. _add.heat.int.tags
 .. figure:: figs/add_heat_int_tags.png
    :alt: Procedures for Adding Heat Integration Tags
    :name: add.heat.int.tags
@@ -448,42 +438,36 @@ Compressor output variables are shown in Figures
 :ref:`heat.int.tags.comp.2`, and
 :ref:`heat.int.tags.comp.3`.
 
-.. _heat.int.tags.bfb.1
 .. figure:: figs/heat_int_tags_bfb_1.png
    :alt: Heat Integration Tags for BFB Output Variables (1)
    :name: heat.int.tags.bfb.1
 
    Heat Integration Tags for BFB Output Variables (1)
 
-.. _heat.int.tags.bfb.2
 .. figure:: figs/heat_int_tags_bfb_2.png
    :alt: Heat Integration Tags for BFB Output Variables (2)
    :name: heat.int.tags.bfb.2
 
    Heat Integration Tags for BFB Output Variables (2)
 
-.. _heat.int.tags.bfb.3
 .. figure:: figs/heat_int_tags_bfb_3.png
    :alt: Heat Integration Tags for BFB Output Variables (3)
    :name: heat.int.tags.bfb.3
 
    Heat Integration Tags for BFB Output Variables (3)
 
-.. _heat.int.tags.comp.1
 .. figure:: figs/heat_int_tags_comp_1.png
    :alt: Heat Integration Tags for Compressor Output Variables (1)
    :name: heat.int.tags.comp.1
 
    Heat Integration Tags for Compressor Output Variables (1)
 
-.. _heat.int.tags.comp.2
 .. figure:: ./figs/heat_int_tags_comp_2.png
    :alt: Heat Integration Tags for Compressor Output Variables (2)
    :name: heat.int.tags.comp.2
 
    Heat Integration Tags for Compressor Output Variables (2)
 
-.. _heat.int.tags.comp.3
 .. figure:: ./figs/heat_int_tags_comp_3.png
    :alt: Heat Integration Tags for Compressor Output Variables (3)
    :name: heat.int.tags.comp.3
@@ -521,14 +505,12 @@ cycle calculation results (Figure
 output and net efficiency with CCS and heat integration, as well as
 their changes compared to the base case.
 
-.. _heat.int.results
 .. figure:: figs/heat_int_results.png
    :alt: Heat Integration Results (Heat Integration Node)
    :name: heat.int.results
 
    Heat Integration Results (Heat Integration Node)
 
-.. _steam.cycle.results
 .. figure:: figs/steam_cycle_results.png
    :alt: Steam Cycle Calculation Results (Steam Cycle Node)
    :name: steam.cycle.results

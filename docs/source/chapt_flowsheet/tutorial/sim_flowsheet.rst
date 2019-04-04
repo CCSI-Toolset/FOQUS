@@ -37,14 +37,12 @@ copy the example files to a convenient location.
    tab provides a record of the changes made each time the session is
    saved.
 
-.. _fig.tut.opt.session
 .. figure:: ../figs/session.svg
    :alt: Session Setup
    :name: fig.tut.opt.session
 
    Session Setup
 
-.. _fig.tut.opt.description
 .. figure:: ../figs/description.svg
    :alt: Session Description
    :name: fig.tut.opt.description
@@ -87,14 +85,12 @@ step is to upload the models to Turbine.
 11. | Repeat the upload process for the cost model. Name the model
     | BFB_v6_2_Cost.
 
-.. _fig.tut.opt.menu.upload
 .. figure:: ../figs/menu_upload.svg
    :alt: Open Upload to Turbine Dialog
    :name: fig.tut.opt.menu.upload
 
    Open Upload to Turbine Dialog
 
-.. _fig.tut.opt.upload
 .. figure:: ../figs/upload.svg
    :alt: Upload to Turbine Dialog
    :name: fig.tut.opt.upload
@@ -102,7 +98,7 @@ step is to upload the models to Turbine.
    Upload to Turbine Dialog
 
 The next step is to create the flowsheet. Figure
-:ref:`fig.tut.opt.drawFlowsheet`illustrates
+:ref:`fig.tut.opt.drawFlowsheet` illustrates
 the steps to draw the flowsheet.
 
 12. Click **Flowsheet** at the top of the Home window.
@@ -122,7 +118,6 @@ the steps to draw the flowsheet.
     illustrated in Figure
     :ref:`fig.tut.opt.nodeEditor`.
 
-.. _fig.tut.opt.drawFlowsheet
 .. figure:: ../figs/flowsheetDraw.svg
    :alt: Flowsheet Editor
    :name: fig.tut.opt.drawFlowsheet
@@ -148,7 +143,6 @@ simulation uploaded to Turbine. The Node Editor is illustrated in Figure
 22. Repeat the process for the cost node, assigning it the BFB_v6_2_cost
     simulation.
 
-.. _fig.tut.opt.nodeEditor
 .. figure:: ../figs/nodeEditor.svg
    :alt: Node Editor
    :name: fig.tut.opt.nodeEditor
@@ -176,7 +170,6 @@ transferred from the BFB simulation to the cost simulation.
     **Auto** button should be used carefully. There should be 46
     connected variables.
 
-.. _fig.tut.opt.edgeEditor
 .. figure:: ../figs/edgeEditor.svg
    :alt: Edge Editor
    :name: fig.tut.opt.edgeEditor

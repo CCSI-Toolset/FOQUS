@@ -40,7 +40,6 @@ associated with a flowsheet data (results from a single flowsheet run,
 optimization runs, or UQ samples), then the flowsheet data is available
 to be the training data and the table will be populated accordingly.
 
-.. _fig.surrogate.data
 .. figure:: figs/data_form.svg
    :alt: Surrogate Data Form
    :name: fig.surrogate.data
@@ -113,7 +112,6 @@ indicates that it should be included in the surrogate generation.
 Failure to select a checkbox for any variables will result in error
 during surrogate generation.
 
-.. _fig.surrogate.vars
 .. figure:: figs/vars.svg
    :alt: Surrogate Variable Selection
    :name: fig.surrogate.vars
@@ -128,7 +126,6 @@ The **Method Settings** table is illustrated in Figure
 available in this table depend on the surrogate tool. A description of
 each setting is provided in the third column of the table.
 
-.. _fig.surrogate.settings
 .. figure:: figs/settings.svg
    :alt: Surrogate Settings
    :name: fig.surrogate.settings
@@ -144,7 +141,6 @@ execution monitor displays after **Run** is clicked (see Figure
 monitor displays the status of the surrogate build. The messages
 displayed depends on the surrogate tool.
 
-.. _fig.surrogate.monitor
 .. figure:: figs/monitor.svg
    :alt: Surrogate Status Monitor
    :name: fig.surrogate.monitor

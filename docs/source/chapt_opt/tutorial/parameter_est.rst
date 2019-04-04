@@ -24,6 +24,7 @@ given in Table :ref:`table.pe.data`.
    \label{eq.pe.tut}
    y = ax^2 + bx + c
 
+.. _table.pe.data:
 .. table:: x-y Data
 
    +--------+---+---+---+----+----+
@@ -44,7 +45,6 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 
 #. Click the **Flowsheet** button in the top toolbar.
 
-.. _fig.pe.tut1
 .. figure:: ../figs/par_est_tut1.svg
    :alt: Session Setup
    :name: fig.pe.tut1
@@ -87,7 +87,6 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 
    #. The **Value**, **Min**, and **Max** for ydata do not matter.
 
-.. _fig.pe.tut2
 .. figure:: ../figs/par_est_tut2.svg
    :alt: Adding Node and Inputs
    :name: fig.pe.tut2
@@ -104,7 +103,6 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 
    #. Enter “y” for the variable name in the **Name** column.
 
-.. _fig.pe.tut3
 .. figure:: ../figs/par_est_tut3.svg
    :alt: Adding Outputs
    :name: fig.pe.tut3
@@ -122,8 +120,6 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
           f['y'] = x['a']*x['x']**2\
            + x['b']*x['x'] + x['c']
 
-
-.. _fig.pe.tut4
 .. figure:: ../figs/par_est_tut4.svg
    :alt: Adding Node Calculation
    :name: fig.pe.tut4
@@ -156,7 +152,6 @@ evaluations that need to go into the calculation of the objective.
 16. Select “Sample” in the **Type** column drop-down lists for “model.x”
     and “model.ydata.”
 
-.. _fig.pe.tut5
 .. figure:: ../figs/par_est_tut5.svg
    :alt: Optimization Variables
    :name: fig.pe.tut5
@@ -178,7 +173,6 @@ objective function calculation.
 20. For larger sample sets, **Generate Samples** has an option to load
     from a CSV file.
 
-.. _fig.pe.tut6
 .. figure:: ../figs/par_est_tut6.svg
    :alt: Optimization Samples
    :name: fig.pe.tut6
@@ -213,7 +207,6 @@ optimization solver changes the a, b, and c to minimize the objective.
 
 26. No constraints are required.
 
-.. _fig.pe.tut7
 .. figure:: ../figs/par_est_tut7.svg
    :alt: Objective Function
    :name: fig.pe.tut7
@@ -233,7 +226,6 @@ with the default values.
 29. Select “BOBYQA” under the Solver Options table in the **Settings**
     column drop-down list.
 
-.. _fig.pe.tut8
 .. figure:: ../figs/par_est_tut8.svg
    :alt: Optimization Samples
    :name: fig.pe.tut8
@@ -254,7 +246,6 @@ with the default values.
 34. The **Objective Function Plot** shows the value of the objective
     function as the optimization progresses.
 
-.. _fig.pe.tut9
 .. figure:: ../figs/par_est_tut9.svg
    :alt: Running Optimization
    :name: fig.pe.tut9
@@ -272,7 +263,6 @@ stored in the flowsheet results table.
     The approximate result should be a = 2, b = -3, and c = 1 (see
     Figure :ref:`fig.pe.tut10`).
 
-.. _fig.pe.tut10
 .. figure:: ../figs/par_est_tut10.svg
    :alt: Flowsheet, Input Variables Results
    :name: fig.pe.tut10

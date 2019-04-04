@@ -1,16 +1,12 @@
-
-| CI Build | Status |
-|:---|:---:|
-| Jenkins Manual | [![Build Status](https://keeling.lbl.gov/buildStatus/icon?job=foqus-docs)](https://keeling.lbl.gov/job/foqus-docs) |
+[![Documentation Status](https://readthedocs.org/projects/foqus/badge/?version=latest)](https://foqus.readthedocs.io/en/latest/?badge=latest)
 
 # FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
-
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
 
 ## Getting Started
 
 ### Install
-See the [installation](INSTALL.md) instructions for details.
+See the [installation](https://foqus.readthedocs.io/en/latest/chapt_install/index.html) instructions for details.
 To see videos on how to install FOQUS, please click [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd). 
 
 ### FAQ
@@ -41,7 +37,7 @@ If you are using FOQUS for your work, please reference the following paper:
 Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J., Leek, J., Ma, J., Mahapatra, P., Ng, B., Sahinidis, N.V., Tong, C., Zitney, S.E., 2017. Innovative computational tools and models for the design, optimization and control of carbon capture processes, in: Papadopoulos, A.I., Seferlis, P. (Eds.), Process Systems and Materials for CO2 Capture: Modelling, Design, Control and Integration. John Wiley & Sons Ltd, Chichester, UK, pp. 311–342.
 
 ## Documentation and User's Manual
-The documentation for FOQUS (including the user's manual) can be accessed by clicking [here](https://ccsi-toolset.github.io/FOQUS/).
+The documentation for FOQUS (including the user's manual) can be accessed by clicking [here](https://foqus.readthedocs.io/en/latest/).
 
 Alternately, the html version of the documentation can be generated from following these steps:
 

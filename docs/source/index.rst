@@ -17,6 +17,7 @@ Contents
     chapt_heat/index
     chapt_debug/index
     references
+    copyright
 
 FOQUS
 =====

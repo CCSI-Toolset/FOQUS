@@ -19,9 +19,9 @@ import imp
 _log = logging.getLogger("foqus." + __name__)
 
 class plugins():
-    '''
-        This class maintains a list of DFO solver plugins
-    '''
+    """
+    This class maintains a list of DFO solver plugins
+    """
     def __init__(self, idString, pathList, charLimit=200):
         self.idString = idString
         self.pathList = pathList
@@ -40,7 +40,8 @@ class plugins():
                 for fname in pgfiles:
                     mname = fname.rsplit('.', 1) #split off extension
                     if len(mname) > 1 and mname[1] == 'py':
-                        with open(os.path.join(p, fname), 'r') as f:
+                        with open(os.path.join(p, fname), 'r',
+                            encoding="utf-8") as f:
                             try:
                                 l = self.idString in f.read(self.charLimit)
                             except:

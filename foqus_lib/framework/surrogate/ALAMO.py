@@ -1,7 +1,7 @@
 """ #FOQUS_SURROGATE_PLUGIN ALAMO.py
 
 Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extension and
+150 characters of text.  They also need to have a .py extension and
 inherit the surrogate class.
 
 * This is an example of a surrogate model builder plugin for FOQUS,

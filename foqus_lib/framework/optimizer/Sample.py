@@ -1,7 +1,7 @@
 """ #FOQUS_OPT_PLUGIN Sample.py
 
 Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extention and
+150 characters of text.  They also need to hav a .py extension and
 inherit the optimization class.
 
 * Just evaluates the objective function for flowsheet results and

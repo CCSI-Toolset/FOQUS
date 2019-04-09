@@ -1,7 +1,7 @@
 """ #FOQUS_SURROGATE_PLUGIN ACOSSO.py
 
 Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first 150
-characters of text.  They also need to hav a .py extention and inherit the
+characters of text.  They also need to hav a .py extension and inherit the
 surrogate class.
 
 * Plugin wprapper for the ACOSSO surrogate model builer.

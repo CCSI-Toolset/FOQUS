@@ -1,7 +1,7 @@
 """#FOQUS_OPT_PLUGIN BFGS.py
 
 Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first 150 characters,
-have a .py extention and inherit the optimization class.
+have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for scipy BFGS using finite dif
 * Uses scipy optimization module

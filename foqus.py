@@ -549,8 +549,6 @@ if __name__ == '__main__':
                     state='setup')
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
-
-
         try:
             logging.getLogger("foqus." + __name__).info(
                 "FOQUS consumer {0} started, waiting for jobs..."\
@@ -671,14 +669,15 @@ if __name__ == '__main__':
                         db.add_message(
                             "consumer={0}, job {1} finished, success"\
                                 .format(consumer_uuid, jid), guid)
+                        logging.getLogger("foqus." + __name__)\
+                            .info("Job {0} finished with success".format(jid))
                     else:
                         db.job_change_status(guid, "error")
                         db.add_message(
                             "consumer={0}, job {1} finished, error"\
                                 .format(consumer_uuid, jid), guid)
-                    logging.getLogger("foqus." + __name__)\
-                        .info("Job {0} finished"\
-                        .format(jid))
+                        logging.getLogger("foqus." + __name__)\
+                            .info("Job {0} finished with error".format(jid))
         except KeyboardInterrupt:
             if guid:
                 try:

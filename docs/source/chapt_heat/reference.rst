@@ -16,12 +16,11 @@ the nodes connected to the Heat Integration Node (with the edge pointing
 to the heat integration node) are automatically transferred to heat
 integration. However, only the variables with heat integration tags are
 considered and processed in heat integration. Heat integration tags are
-described in the Heat Integration Tutorial in Section
-`[sec.hi.tut] <#sec.hi.tut>`__.
+described in the Heat Integration Tutorial in Section :ref:`sec.hi.tut`.
 
 The Heat Integration Node Editor widget is illustrated in Figure
-`[heat.int.inputs] <#heat.int.inputs>`__ and Figure
-`[heat.int.outputs] <#heat.int.outputs>`__. To specify a node as a Heat
+:ref:`heat.int.inputs` and Figure
+:ref:`heat.int.outputs`. To specify a node as a Heat
 Integration Node, expand the **Model** section, expand the **Model**
 drop-down list, and then select “heat_integration.” Some input variables
 control the performance of heat integration. Output variables display
@@ -74,7 +73,7 @@ The Heat Integration Node **Input Variables** are listed below:
    value. When the value of “No.Stream” is not assigned, the number of
    process streams is calculated by the Python program via heat
    integration tags (see the Heat Integration Tutorial in Section
-   `[sec.hi.tut] <#sec.hi.tut>`__).
+   :ref:`sec.hi.tut`).
 
 -  **Operation.Hours** is the annual operational hours of the plant. For
    power, refinery, and chemical industries, the typical value is
@@ -158,8 +157,7 @@ currently hard coded in Python for this node. The users will have a
 choice to provide their own correlations in future versions of FOQUS.
 
 The Steam Cycle Node Editor widget is illustrated in Figure
-`[steam.cycle.inputs] <#steam.cycle.inputs>`__ and Figure
-`[steam.cycle.outputs] <#steam.cycle.outputs>`__.
+:ref:`steam.cycle.inputs` and Figure :ref:`steam.cycle.outputs`.
 
 To specify a node as a Steam Cycle Node, expand the **Model** section,
 click on the **Model** drop-down list, and then select “steam_cycle.”

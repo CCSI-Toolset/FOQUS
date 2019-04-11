@@ -9,11 +9,10 @@ created that performs a simple calculation using a square root so that
 simulation errors can be observed when a negative input value is
 provided.
 
-#. Start FOQUS (see Section
-   `[sec.flowsheet.starting.foqus] <#sec.flowsheet.starting.foqus>`__).
+#. Start FOQUS (see Section :ref:`sec.flowsheet.starting.foqus`).
 
 #. In the session form enter the **Session Name** as “Simple_Flow”
-   (Figure `[fig.session.name1] <#fig.session.name1>`__).
+   (Figure :ref:`fig.session.name1`).
 
 .. figure:: ../figs/session_name1.svg
    :alt: Setting the Session Name
@@ -24,10 +23,10 @@ provided.
 3. Set the session description.
 
    a. Select the **Description** tab (Figure
-      `[fig.session.description1] <#fig.session.description1>`__).
+      :ref:`fig.session.description1`).
 
    b. Type the description shown in Figure
-      `[fig.session.description1] <#fig.session.description1>`__. The
+      :ref:`fig.session.description1`. The
       buttons above the **Description** tab box can be used to format
       the text.
 
@@ -38,7 +37,7 @@ provided.
    Setting the Session Description
 
 4. Click the **Flowsheet** button at the top of the Home window (Figure
-   `[fig.simple.flow1] <#fig.simple.flow1>`__).
+   :ref:`fig.simple.flow1`).
 
 5. Add a node named “calc.”
 
@@ -87,7 +86,7 @@ provided.
    automatically.)
 
    a. Click **Output Variables** to show the **Output Variables** table
-      (Figure `[fig.simple.flow2] <#fig.simple.flow2>`__).
+      (Figure :ref:`fig.simple.flow2`).
 
    b. Click **+** above the **Output Variables** table to add a
       variable.
@@ -114,15 +113,14 @@ by a node script.
 10. Add a calculation to the node.
 
     a. Click the **Node Script** tab (Figure
-       `[fig.simple.flow3] <#fig.simple.flow3>`__).
+       :ref:`fig.simple.flow3`).
 
     b. | Enter the following code into the Python code box:
        | ``f['z'] = x['x1']*math.sqrt(x['x2'])``
 
 11. Click the **Variables** tab.
 
-12. Click the **Run** button (Figure
-    `[fig.simple.flow3] <#fig.simple.flow3>`__).
+12. Click the **Run** button (Figure :ref:`fig.simple.flow3`).
 
 The flowsheet should run successfully and the output value should be 2.
 Rerun the flowsheet with a negative value for x2, and observe the
@@ -137,8 +135,7 @@ result. The simulation should report an error.
 13. Save the FOQUS session.
 
     a. Click the **Session** drop-down menu at the top of the Home
-       window (Figure
-       `[fig.simple.flow.save] <#fig.simple.flow.save>`__).
+       window (Figure :ref:`fig.simple.flow.save`).
 
     #. Click **Save**. The exact location of save in the menu depends on
        whether or not the data management framework is enabled.

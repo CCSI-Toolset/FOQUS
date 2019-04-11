@@ -20,7 +20,7 @@ remote Turbine instance are:
    to tie-up the user’s machine running simulations.
 
 The steps below demonstrate how to set up FOQUS to run flowsheets
-remotely (see Figure `[fig.remote.settings] <#fig.remote.settings>`__).
+remotely (see Figure :ref:`fig.remote.settings`).
 
 #. Obtain a user name, password, and URL from the site’s Turbine
    administrator.
@@ -28,7 +28,7 @@ remotely (see Figure `[fig.remote.settings] <#fig.remote.settings>`__).
 #. Open FOQUS.
 
 #. Click **Settings** at the top right of the Home window (Figure
-   `[fig.remote.settings1] <#fig.remote.settings1>`__).
+   :ref:`fig.remote.settings1`).
 
 #. Select “Remote” from the **FOQUS Flowsheet Run Method** drop-down
    list. A message box will appear. The user will be warned that the
@@ -37,7 +37,7 @@ remotely (see Figure `[fig.remote.settings] <#fig.remote.settings>`__).
    upload the models into Turbine again (please see Step 7).
 
 #. Click the **Turbine** tab; this displays the Turbine settings shown
-   in Figure `[fig.remote.settings] <#fig.remote.settings>`__.
+   in Figure :ref:`fig.remote.settings`.
 
 .. figure:: ../figs/settings_turbine_01.svg
    :alt: Run Method Settings
@@ -52,7 +52,7 @@ remotely (see Figure `[fig.remote.settings] <#fig.remote.settings>`__).
 
    #. Click **New/Edit** next to the **Turbine Configuration (remote)**
       field. The Turbine Configuration window displays (see Figure
-      `[fig.remote.settings] <#fig.remote.settings>`__).
+      :ref:`fig.remote.settings`).
 
    #. Select “Cluster/Cloud” from the **Turbine Gateway Version**
       drop-down list in the Turbine Configuration window.
@@ -78,9 +78,8 @@ ensure that all simulations referenced by flowsheets to be run are
 uploaded to the remote Turbine gateway.
 
 7. Upload any necessary simulations to Turbine (see Section
-   `[overview.turbine.upload] <#overview.turbine.upload>`__ and the
-   tutorial in Section
-   `[tutorial.sim.flowsheet] <#tutorial.sim.flowsheet>`__)
+   :ref:`overview.turbine.upload` and the
+   tutorial in Section :ref:`tutorial.sim.flowsheet`)
 
 Once all settings are specified there is no apparent difference between
 running flowsheets locally or on a remote Turbine gateway, and FOQUS can

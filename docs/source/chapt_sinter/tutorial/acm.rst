@@ -9,8 +9,7 @@ Aspen Custom Modeler Configuration
    its own by selecting **SimSinter** :math:`\rightarrow`
    **SinterConfigGUI** from the Start menu.
 
-#. The splash window displays, as shown in Figure
-   `[fig.sinter.acm.splash] <#fig.sinter.acm.splash>`__. The user may
+#. The splash window displays, as shown in Figure :ref:`fig.sinter.acm.splash`. The user may
    click the splash screen to proceed, or wait ten seconds for it to
    close automatically.
 
@@ -21,7 +20,7 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Splash Screen
 
 #. | The SinterConfigGUI Open Simulation window displays (Figure
-     `[fig.sinter.acm.openpage] <#fig.sinter.acm.openpage>`__). If
+     :ref:`fig.sinter.acm.openpage`). If
      “SinterConfigGUI” was opened from FOQUS, the filename text box
      already contains the correct file. To proceed immediately click
      **Open File and Configure Variables** or click **Browse** to search
@@ -45,7 +44,7 @@ Aspen Custom Modeler Configuration
    configuration file.
 
 #. The SinterConfigGUI Simulation Meta-Data window displays. (Figure
-   `[fig.sinter.acm.savename] <#fig.sinter.acm.savename>`__). The first
+   :ref:`fig.sinter.acm.savename`). The first
    and most important piece of metadata is **SimSinter Save Location**
    at the top of the window. This is where the sinter configuration file
    is saved. The system attempts to locate a reasonable file location
@@ -60,7 +59,7 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Simulation Meta-Data Page Save Name Text Box
 
 #. Continue to complete the remaining fields and then click **Next**
-   (Figure `[fig.sinter.acm.metadata] <#fig.sinter.acm.metadata>`__).
+   (Figure :ref:`fig.sinter.acm.metadata`).
 
    .. figure:: ../figs/acm/04_MetaDataFilled.png
       :name: fig.sinter.acm.metadata
@@ -68,7 +67,7 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Simulation Meta-Data Page with Data Completed
 
 #. In the **SinterConfigGUI Variable Configuration Page**, (Figure
-   `[fig.sinter.acm.variableempty] <#fig.sinter.acm.variableempty>`__)
+   :ref:`fig.sinter.acm.variableempty`)
    notice that the ACM **Selected Input Variables**: **TimeSeries**,
    **Snapshot**, **RunMode**, **printlevel** and **homotopy** are
    already included in the input variables. **TimeSeries** and
@@ -91,7 +90,7 @@ Aspen Custom Modeler Configuration
 
 #. A search for everything in the “BFBAdsT” block has been selected. The
    following **Search in Progress** dialog is displayed (Figure
-   `[fig.sinter.acm.variableprogress] <#fig.sinter.acm.variableprogress>`__).
+   :ref:`fig.sinter.acm.variableprogress`).
    Sometimes large searches take a while.
 
    .. figure:: ../figs/acm/06_Search.png
@@ -101,8 +100,7 @@ Aspen Custom Modeler Configuration
       Search in Progress Bar Page
 
 #. First, select the “BFBadsT.A1” scalar variable in the **Selected
-   Path** field (Figure
-   `[fig.sinter.acm.variableselected] <#fig.sinter.acm.variableselected>`__).
+   Path** field (Figure :ref:`fig.sinter.acm.variableselected`).
 
    .. figure:: ../figs/acm/07_VariablesSelected.png
       :name: fig.sinter.acm.variableselected
@@ -111,8 +109,7 @@ Aspen Custom Modeler Configuration
 
 #. If the user double-clicks, presses Enter, or clicks **Preview** or
    **Lookup**, information displays in the **Preview Variable** section
-   (Figure
-   `[fig.sinter.acm.variablepreview] <#fig.sinter.acm.variablepreview>`__).
+   (Figure :ref:`fig.sinter.acm.variablepreview`).
    Here, the user can verify the variable choices.
 
    .. figure:: ../figs/acm/08_VariablePreview.png
@@ -122,8 +119,7 @@ Aspen Custom Modeler Configuration
 
 #. “BFBadsT.A1” is the correct variable; therefore, click **Make
    Input**. Information displays in the **Selected Input Variables**
-   section (Figure
-   `[fig.sinter.acm.variableinput] <#fig.sinter.acm.variableinput>`__).
+   section (Figure :ref:`fig.sinter.acm.variableinput`).
 
    .. figure:: ../figs/acm/09_VariablesInput.png
       :name: fig.sinter.acm.variableinput
@@ -132,16 +128,14 @@ Aspen Custom Modeler Configuration
 
 #. Change the variable name from “BFBadsT.A1” to something more
    descriptive (e.g., “WaterA”). Set **Name**, **Description** and
-   **Min/Max** as shown in Figure
-   `[fig.sinter.acm.variablename] <#fig.sinter.acm.variablename>`__.
+   **Min/Max** as shown in Figure :ref:`fig.sinter.acm.variablename`.
 
    .. figure:: ../figs/acm/10_VariablesInput2.png
       :name: fig.sinter.acm.variablename
 
       SinterConfigGUI Variable Configuration Page BFBadsT.A1 Change Name
 
-#. One input variable is now displayed (Figure
-   `[fig.sinter.acm.vectorpreview] <#fig.sinter.acm.vectorpreview>`__).
+#. One input variable is now displayed (Figure :ref:`fig.sinter.acm.vectorpreview`).
    At least one output variable is required. In this example, the vector
    of calculated bubble sizes is wanted. Scroll down under **Search**
    and select “BFBadsT.db.Value,” “BFBadsT.db.Value(0),”
@@ -157,8 +151,8 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Variable Configuration Page Vector Preview
 
 #. Click **Make Output** if the variable the user wants is selected.
-   Notice that this variable has a unit “m” (Figure
-   `[fig.sinter.acm.vectoroutput] <#fig.sinter.acm.vectoroutput>`__).
+   Notice that this variable has a unit “m” (Figure 
+   :ref:`fig.sinter.acm.vectoroutput`).
 
    .. figure:: ../figs/acm/12_VariablesOutput.png
       :alt: SinterConfigGUI Variable Configuration Page Vector As Output
@@ -169,8 +163,7 @@ Aspen Custom Modeler Configuration
 #. Change the **Name** of the variable to “Diameter.” Bubble size is
    measured in meters; however, meters should be converted to
    millimeters (mm). Now, the output from the simulation should present
-   bubble diameter in mm (Figure
-   `[fig.sinter.acm.vectorunits] <#fig.sinter.acm.vectorunits>`__).
+   bubble diameter in mm (Figure :ref:`fig.sinter.acm.vectorunits`).
    Internal to the simulation, the unit remains “m.”
 
    .. figure:: ../figs/acm/13_VariablesUnits.png
@@ -179,8 +172,7 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Variable Configuration Page Output Change Units
 
 #. To add a single item in a vector, select “BFBadsT.Ar.Value(1)” and
-   click **Make Input** (See Figure
-   `[fig.sinter.acm.vectorremoval] <#fig.sinter.acm.vectorremoval>`__).
+   click **Make Input** (See Figure :ref:`fig.sinter.acm.vectorremoval`).
    To remove item that was just added, select it and click **Remove
    Variable**.
 
@@ -191,8 +183,7 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Variable Configuration Page Removal Demo
 
 #. Select the correct variable vector “BFBadsT.Ar.Value” and make it an
-   input (Figure
-   `[fig.sinter.acm.vectorreadd] <#fig.sinter.acm.vectorreadd>`__).
+   input (Figure :ref:`fig.sinter.acm.vectorreadd`).
    Notice that a **Default** or **Min/Max** cannot be set in the GUI for
    a vector. The correct defaults (from the simulation) are set
    automatically. To change the **Min/Max** values, the user must edit
@@ -205,8 +196,8 @@ Aspen Custom Modeler Configuration
       SinterConfigGUI Variable Configuration Page Read Input
 
 #. Click **Next** to display the SinterConfigGUI Vector Default
-   Initialization window as shown in Figure
-   `[fig.sinter.acm.vectorinput] <#fig.sinter.acm.vectorinput>`__. Since
+   Initialization window as shown in Figure 
+   :ref:`fig.sinter.acm.vectorinput`. Since
    the input variable “Value” is a vector, its default values can be
    modified in the window. In this case there is no need to change the
    values.

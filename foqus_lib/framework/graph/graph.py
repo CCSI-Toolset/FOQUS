@@ -26,6 +26,7 @@ from foqus_lib.framework.graph.edge import *   # Edge and variable connection cl
 from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.graph.nodeVars import *
+import pandas
 
 class GraphEx(foqusException):
     def setCodeStrings(self):
@@ -118,6 +119,9 @@ class Graph(threading.Thread):
         self.tearMaxIt   = 40
         self.tearTol     = 0.001
         self.tearTolType = "abs"
+        self.tearLog     = False
+        self.tearLogStub = "tear_log"
+        self.tearBound   = False
         self.wegAccMax   = 9.0
         self.wegAccMin   = -9.0
         self.staggerStart = 0.0
@@ -209,6 +213,9 @@ class Graph(threading.Thread):
             'tearMaxIt': self.tearMaxIt,
             'tearTol': self.tearTol,
             'tearTolType': self.tearTolType,
+            'tearLog': self.tearLog,
+            'tearLogStub': self.tearLogStub,
+            'tearBound': self.tearBound,
             'wegAccMax': self.wegAccMax,
             'wegAccMin': self.wegAccMin,
             'singleCount': self.singleCount,
@@ -252,6 +259,9 @@ class Graph(threading.Thread):
         self.tearSolver = sd.get('tearSolver', self.tearSolver)
         self.tearMaxIt = sd.get('tearMaxIt', self.tearMaxIt)
         self.tearTol = sd.get('tearTol', self.tearTol)
+        self.tearLog = sd.get('tearLog', False)
+        self.tearLogStub = sd.get('tearLogStub', "tear_log")
+        self.tearBound = sd.get('tearBound', False)
         self.tearTolType = sd.get('tearTolType', self.tearTolType)
         self.wegAccMax = sd.get('wegAccMax', self.wegAccMax)
         self.wegAccMin = sd.get('wegAccMin', self.wegAccMin)
@@ -1019,20 +1029,15 @@ class Graph(threading.Thread):
                     if self.edges[edgeIndex].tear == True:
                         tears.append(edgeIndex)
                 # Run the selected tear solver on the SCC
-                if self.tearSolver == "Wegstein":
+                if self.tearSolver == "Wegstein" or self.tearSolver == "Direct":
                     [errCode, hist] = self.solveSubGraphWeg(
                         order,
                         tears,
                         itLimit = self.tearMaxIt,
                         tol = self.tearTol,
                         thetaMin = self.wegAccMin,
-                        thetaMax = self.wegAccMax)
-                elif self.tearSolver == "Direct":
-                    [errCode, hist] = self.solveSubGraphDirect(
-                        order,
-                        tears,
-                        itLimit = self.tearMaxIt,
-                        tol = self.tearTol)
+                        thetaMax = self.wegAccMax,
+                        direct=self.tearSolver == "Direct")
                 else:
                     errCode = 5
                 if errCode != 0:
@@ -1078,47 +1083,56 @@ class Graph(threading.Thread):
                     inVars[con.toName].value = x[i]
                 i += 1
 
-    def solveSubGraphWeg(
-        self,
-        nodeOrder,
-        tears,
-        itLimit = 40,
-        tol = 1.0e-5,
-        thetaMin = -5,
-        thetaMax = 0):
+    def solveSubGraphWeg(self, nodeOrder, tears, itLimit=40, tol=1.0e-5,
+        thetaMin=-5, thetaMax=0, direct=False):
         '''
-            Use Wegstein to solve tears.  If multiple tears are given
-            they are solved simultaneously.
-            ----Arguments----
-            nodeOrder = list of nodes order in which to calculate nodes
-                        (can be a subset of all nodes)
-            tears = list of tear edges indexes if more than one they
-                    are solved simultaneously
-            ---Return Value---
+        Use Wegstein to solve tears.  If multiple tears are given
+        they are solved simultaneously.
+
+        Args:
+            nodeOrder: list of nodes order in which to calculate nodes
+                (can be a subset of all nodes)
+            tears: list of tear edges indexes if more than one they
+                are solved simultaneously
+            direct: If true use direct method
+
+        Returns:
             This returns a 2 element list.
             0 - status code, 0 means completed normally
             1 - error history list of lists of differences between input
                 and output that are supposed to be equal.  Each list is
                 one iteration.
         '''
-        hist = []  # error at each iteration in every variable
+        if self.tearLog:
+            log_file = self.tearLogStub
+            for j in range(100):
+                # dont want to pick up too many of these files
+                # but if there are multiple loops want to produce seperate
+                # files for them
+                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
+                    log_file = "{}{}.csv".format(log_file, j+1)
+                    break
+        else:
+            log_file = None
+        numpy.seterr(divide='ignore', invalid='ignore')
         i = 0      # iteration counter
         if tears == []:  # no tears nothing to solve.
             #no need to iterate just run the calculations
             self.runGraph(nodeOrder)
             if self.errorStat != 0:
-                return [1, hist] #2, simulation failure
+                return [1, None]
         else:  # start the solving
             gofx = []
             x = []
+            names = []
             xmin = []
             xmax = []
             for tear in tears:
                 nodes = self.nodes
                 from_node = self.edges[tear].start
                 to_node = self.edges[tear].end
-                gofx += [
-                    self.nodes[from_node].outVars[con.fromName].value \
+                names += [con.toName for con in self.edges[tear].con]
+                gofx += [self.nodes[from_node].outVars[con.fromName].value \
                         for con in self.edges[tear].con]
                 x += [self.nodes[to_node].inVars[con.toName].value \
                     for con in self.edges[tear].con]
@@ -1126,6 +1140,7 @@ class Graph(threading.Thread):
                     for con in self.edges[tear].con]
                 xmin += [self.nodes[to_node].inVars[con.toName].min \
                     for con in self.edges[tear].con]
+            hist = pandas.DataFrame(index=names)
             gofx = numpy.array(gofx)
             x = numpy.array(x)
             xmin = numpy.array(xmin)
@@ -1135,92 +1150,74 @@ class Graph(threading.Thread):
                 err = gofx - x
             elif self.tearTolType == "rng":
                 err = (gofx - x)/xrng
-            hist.append(err)
+            hist["xmin"] = xmin
+            hist["xmax"] = xmax
+            hist["err_{}".format(i)] = err
+            hist["x_{}".format(i)] = x
+            hist["g(x_{})".format(i)] = gofx
+            if log_file is not None:
+                hist.to_csv(log_file)
             if numpy.max(numpy.abs(err)) < tol:
                 return [0, hist]  # already solved.
             #if not solved yet do one direct step
             x_prev = x
             gofx_prev = gofx
             x = gofx
+            if self.tearBound:
+                hist["next_x_{}_unbound".format(i)] = x
+                x[x > xmax] = xmax[x > xmax]
+                x[x < xmin] = xmin[x < xmin]
+            hist["next_x_{}".format(i)] = x
             self.setTearX(tears, gofx)
             while True:
                 self.runGraph(nodeOrder)
                 if self.errorStat != 0:
                     logging.getLogger("foqus." + __name__).warning(
-                        "Simulation failed in Wegstein")
-                    return [1, hist] #2, simulation failure
+                        "Simulation failed in tear solve")
+                    return [2, hist] #2, simulation failure
                 gofx = []
                 for tear in tears:
-                    gofx += [self.nodes[self.edges[tear].start].outVars[con.fromName].value for con in self.edges[tear].con]
+                    gofx += [
+                        self.nodes[self.edges[tear].start].outVars[con.fromName].value \
+                        for con in self.edges[tear].con]
                 gofx = numpy.array(gofx)
                 if self.tearTolType == "abs":
                     err = gofx - x
                 elif self.tearTolType == "rng":
                     err = (gofx - x)/xrng
-                hist.append(err)
+                hist["err_{}".format(i)] = err
+                hist["x_{}".format(i)] = x
+                hist["g(x_{})".format(i)] = gofx
+                if log_file is not None:
+                    hist.to_csv(log_file)
                 if numpy.max(numpy.abs(err)) < tol:
                     break
                 if i > itLimit - 1:
                     logging.getLogger("foqus." + __name__).warning(
-                        "Wegstein failed to converge in {0} iterations"\
+                        "tear failed to converge in {0} iterations"\
                         .format(itLimit))
+                    err_code = 12 if direct else 11
                     return [11, hist]
-                denom = x - x_prev
-                slope = numpy.divide((gofx - gofx_prev), denom)
-                #if x and previous x are same just do direct sub
-                #for those elements
-                slope[numpy.isnan(slope)] = 0.0
-                theta = 1.0/(1.0 - slope)
-                theta[theta < thetaMin] = thetaMin
-                theta[theta > thetaMax] = thetaMax
+                if not direct:
+                    denom = x - x_prev
+                    slope = numpy.divide((gofx - gofx_prev), denom)
+                    #if x and previous x are same just do direct sub
+                    #for those elements
+                    slope[numpy.absolute(denom) < 1e-10] = 0.0
+                    theta = 1.0/(1.0 - slope)
+                    theta[theta < thetaMin] = thetaMin
+                    theta[theta > thetaMax] = thetaMax
+                    hist["theta_{}".format(i)] = theta
                 x_prev = x
                 gofx_prev = gofx
-                x = (1.0-theta)*x_prev + (theta)*gofx_prev
+                x = gofx if direct else (1.0-theta)*x + (theta)*gofx
+                if self.tearBound:
+                    hist["next_x_{}_unbound".format(i)] = x
+                    x[x > xmax] = xmax[x > xmax]
+                    x[x < xmin] = xmin[x < xmin]
+                hist["next_x_{}".format(i)] = x
                 self.setTearX(tears, x)
                 i += 1
-        return [0, hist] # 0, everything is fine
-
-    def solveSubGraphDirect(self, nodeOrder, tears, itLimit = 40, tol = 1.0e-5):
-        '''
-            Use direct substitution to solve tears.  If multiple tears are given they are
-            solved simultaneously.
-
-            Arguments:
-
-            nodeOrder = list of nodes order in which to calculate nodes (can be a subset of all nodes)
-            tears = list of tear edges indexes if more than one they are solved simultaneously
-
-            Return Value:
-
-            This returns a 2 element list.
-            0 - status code, 0 means completed normally
-            1 - error history list of lists of differences between input and output
-                that are supposed to be equal.  Each list is one iteration.
-        '''
-        hist = []  # error at each iteration in every variable
-        i = 0      # iteration counter
-        if tears == []:
-            #no need to iterate just run the calculations
-            self.runGraph(nodeOrder)
-            if self.errorStat != 0:
-                logging.getLogger("foqus." + __name__).warning("Simulation failed in Direct")
-                return [1, hist] #2, simulation failure
-        else:
-            while True:
-                err = self.tearErr(tears)
-                hist.append(err)
-                if numpy.max(numpy.abs(err)) < tol:
-                    break
-                if i > itLimit - 1:
-                    logging.getLogger("foqus." + __name__).warning("Direct failed to converge in " + str(itLimit) + "iterations")
-                    return [12, hist] #1, over iteration limit tears didn't converge
-                self.transferVars(tears)
-                self.runGraph(nodeOrder)
-                if self.errorStat != 0:
-                    logging.getLogger("foqus." + __name__).warning("Simulation failed in Direct")
-                    return [2, hist] #2, simulation failure
-                i += 1
-        logging.getLogger("foqus." + __name__).info("Direct substitution converged in " + str(i) + " iterations, " + self.threadName)
         return [0, hist] # 0, everything is fine
 
     def tearErr(self, tears):
@@ -1231,7 +1228,7 @@ class Graph(threading.Thread):
             x1 += [self.nodes[self.edges[tear].end].inVars[con.toName].value for con in self.edges[tear].con]
         x0 = numpy.array(x0)
         x1 = numpy.array(x1)
-        return x0 - x1
+        return (x0 - x1, x1)
 
     def runGraph(self, order):
         '''

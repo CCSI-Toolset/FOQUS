@@ -8,10 +8,10 @@ with process simulations. This tutorial uses four models: (1) bubbling
 fluidized bed (BFB) model in ACM, (2) multi-stage compressor model in
 ACM, (3) heat integration model in GAMS, and (4) simplified steam cycle
 model in Python. Heat integration and steam cycle models are included in
-FOQUS as plug-in models (as described in Section
-`[section.plugin] <#section.plugin>`__). Because most detailed steps for
-adding/editing models, building flowsheets, and running simulations have
-already been covered in the previous section, they are skipped here.
+FOQUS as plug-in models (as described in Section :ref:`section.plugin`. 
+Because most detailed steps for adding/editing models, building 
+flowsheets, and running simulations have already been covered in the 
+previous section, they are skipped here.
 
 Example ACM and JSON files are provided with the FOQUS installer and are
 typically installed at: C:\Program Files
@@ -55,7 +55,7 @@ Start a New Session
 
 Start FOQUS. Start a new session. In the “Session Information” screen,
 under the **Metadata** tab, enter “BFB_CP_HI_SC” in the **Session Name**
-field (Figure `[start.session] <#start.session>`__). Save the session.
+field (Figure :ref:`start.session`). Save the session.
 
 .. figure:: ./figs/start_session.png
    :alt: Start a New Session
@@ -71,7 +71,7 @@ turbine.
 
 Choose **Add/Update Model to Turbine**. In the **Turbine Upload**
 dialog, upload the BFB ACM model file (Figure
-`[upload model] <#upload model>`__). The SimSinter configuration file
+:ref:`upload model`). The SimSinter configuration file
 for the BFB model is BFB_3ads_2rgn.json. Enter “BFB_3ads_2rgn” in the
 **Simulation Name** drop-down list.
 
@@ -90,7 +90,7 @@ Flowsheet Setup
 
 Navigate to the **Flowsheet** window and build the flowsheet for this
 heat integration example. The flowsheet for this tutorial is shown in
-Figure `[flowsheet.heat.int] <#flowsheet.heat.int>`__. Build the
+Figure :ref:`flowsheet.heat.int`. Build the
 flowsheet in the same way as the figure. The nodes **BFB**,
 **Compressor**, **Heat Integration**, and **Steam Cycle** correspond to
 the BFB simulation in ACM, compressor simulation in ACM, heat
@@ -115,7 +115,7 @@ Edit Nodes
 ----------
 
 -  | **BFB** and **Compressor Nodes**: Figure
-     `[bfb.node.edit] <#bfb.node.edit>`__ illustrates the edit of the
+     :ref:`bfb.node.edit` illustrates the edit of the
      **BFB** Node. From the “Node Edit” dialog box, select “Turbine”
      from the **Type** drop-down list, and
    | “BFB_3ads_2rgn” from the **Model** drop-down list. Next, select the
@@ -135,9 +135,8 @@ Edit Nodes
 -  **Total Consumption Node**: The user is required to define the
    **Total Consumption Node**. The Node Editor for the **Total
    Consumption Node** is illustrated in Figures
-   `[total.cons.inputs] <#total.cons.inputs>`__,
-   `[total.cons.outputs] <#total.cons.outputs>`__, and
-   `[total.cons.python] <#total.cons.python>`__. Within the Node Edit
+   :ref:`total.cons.inputs`, :ref:`total.cons.outputs`, and
+   :ref:`total.cons.python`. Within the Node Edit
    dialog box, choose “None” in the **Type** drop-down list and leave
    the **Model** drop-down list blank.
 
@@ -160,7 +159,7 @@ Edit Nodes
       Total Consumption Node Editor (Python Codes)
 
    #. | In the **Input Variables** section (Figure
-        `[total.cons.inputs] <#total.cons.inputs>`__): add the following
+        :ref:`total.cons.inputs`): add the following
         three variables: (1) “Electricity.Consumption.Cap,” (2)
         “Electricity.Consumption.Comp,” and (3)
       | “MP_Steam.Injection.Cap.” The value and default value should
@@ -170,7 +169,7 @@ Edit Nodes
         variables of node **BFB** and **Compressor**.
 
    #. In the **Output Variables** area of the **Node Edit** dialog box
-      (Figure `[total.cons.outputs] <#total.cons.outputs>`__), add two
+      (Figure :ref:`total.cons.outputs`), add two
       variables: (1) “Electricity.Consumption” and (2)
       “LP_Steam.Injection.” The value should remain 0.0. The user can
       optionally enter the unit and description. These variables are
@@ -178,7 +177,7 @@ Edit Nodes
       Node**.
 
    #. From the **Node Edit** dialog box (Figure
-      `[total.cons.python] <#total.cons.python>`__), click the **Node
+      :ref:`total.cons.python`), click the **Node
       Script** tab. Enter the following Python code in the dialog to
       perform node calculations:
 
@@ -198,7 +197,7 @@ Edit Nodes
    to 2.0. Enter the value of “Net.Power” as 650.33, which is the base
    case net power output. Leave all other fields unchanged. The Node
    Editor for the **Heat Integration Node** is shown in Figure
-   `[heat.int.node.edit] <#heat.int.node.edit>`__.
+   :ref:`heat.int.node.edit`.
 
 .. figure:: figs/heat_int_node_edit.png
    :alt: Heat Integration Node Editor
@@ -221,11 +220,11 @@ variables. The editor for Edge *0* (BFB :math:`\rightarrow` Compressor),
 :math:`\rightarrow` Total Consumption), *5* (Heat Integration
 :math:`\rightarrow` Steam Cycle), and *6* (Total Consumption
 :math:`\rightarrow` Steam Cycle) are illustrated in Figure
-`[edge.0.edit] <#edge.0.edit>`__, Figure
-`[edge.3.edit] <#edge.3.edit>`__, Figure
-`[edge.4.edit] <#edge.4.edit>`__, Figure
-`[edge.5.edit] <#edge.5.edit>`__ and Figure
-`[edge.6.edit] <#edge.6.edit>`__, respectively. Edge *1* (BFB
+:ref:`edge.0.edit`, Figure
+:ref:`edge.3.edit`, Figure
+:ref:`edge.4.edit`, Figure
+:ref:`edge.5.edit` and Figure
+:ref:`edge.6.edit`, respectively. Edge *1* (BFB
 :math:`\rightarrow` Heat Integration) and *2* (Compressor
 :math:`\rightarrow` Heat Integration) have no variable connections.
 
@@ -269,9 +268,10 @@ Four types of tags are needed for heat integration, and they identify
 (1) which block the variable is associated with, (2) which type of port
 the variable is in, (3) what type of variable it is, and (4) which kind
 of heat source the variable is involved in. The detailed lists of tags
-are provided in Tables `[tag.1] <#tag.1>`__, `[tag.2] <#tag.2>`__,
-`[tag.3] <#tag.3>`__, and `[tag.4] <#tag.4>`__.
+are provided in Tables :ref:`tag.1`, :ref:`tag.2`,
+:ref:`tag.3`, and :ref:`tag.4`.
 
+.. _tag.1:
 .. table:: Tag 1: Block Name
 
    +-----------------------+-----------------------+-----------------------+
@@ -283,6 +283,7 @@ are provided in Tables `[tag.1] <#tag.1>`__, `[tag.2] <#tag.2>`__,
    |                       | associated with       |                       |
    +-----------------------+-----------------------+-----------------------+
 
+.. _tag.2:
 .. table:: Tag 2: Type of Port
 
    +---------------------+----------------------------------+----------+
@@ -299,6 +300,7 @@ are provided in Tables `[tag.1] <#tag.1>`__, `[tag.2] <#tag.2>`__,
    | “Blk_Var”           | Block variable (not in any port) |          |
    +---------------------+----------------------------------+----------+
 
+.. _tag.3:
 .. table:: Tag 3: Type of Variable
 
    +---------+-----------------------------+----------+
@@ -309,6 +311,7 @@ are provided in Tables `[tag.1] <#tag.1>`__, `[tag.2] <#tag.2>`__,
    | “Q”     | Heat duty or heat flow rate |          |
    +---------+-----------------------------+----------+
 
+.. _tag.4:
 .. table:: Tag 4: Type of Heat Source
 
    +-----------------------+-----------------------+-----------------------+
@@ -377,7 +380,7 @@ The steps for adding heat integration tags for some related variable are
 illustrated below.
 
 Take the variable “BFBadsB_Q” in the BFB model as an example (Figure
-`[add.heat.int.tags] <#add.heat.int.tags>`__):
+:ref:`add.heat.int.tags`):
 
 .. figure:: figs/add_heat_int_tags.png
    :alt: Procedures for Adding Heat Integration Tags
@@ -427,13 +430,13 @@ and then click **Insert**. Heat integration tags for all other variables
 can be added in the same way.
 
 The heat integration tags for BFB output variables are shown in Figures
-`[heat.int.tags.bfb.1] <#heat.int.tags.bfb.1>`__,
-`[heat.int.tags.bfb.2] <#heat.int.tags.bfb.2>`__ and,
-`[heat.int.tags.bfb.3] <#heat.int.tags.bfb.3>`__; the tags for
+:ref:`heat.int.tags.bfb.1`,
+:ref:`heat.int.tags.bfb.2` and,
+:ref:`heat.int.tags.bfb.3`; the tags for
 Compressor output variables are shown in Figures
-`[heat.int.tags.comp.1] <#heat.int.tags.comp.1>`__,
-`[heat.int.tags.comp.2] <#heat.int.tags.comp.2>`__, and
-`[heat.int.tags.comp.3] <#heat.int.tags.comp.3>`__.
+:ref:`heat.int.tags.comp.1`,
+:ref:`heat.int.tags.comp.2`, and
+:ref:`heat.int.tags.comp.3`.
 
 .. figure:: figs/heat_int_tags_bfb_1.png
    :alt: Heat Integration Tags for BFB Output Variables (1)
@@ -493,12 +496,12 @@ The user views simulation results via the Node Editor. In this example,
 the most important results can be found in the **Output Variables**
 section in the **Heat Integration Node** and **Steam Cycle Node**. The
 heat integration results (Figure
-`[heat.int.results] <#heat.int.results>`__) include consumptions of
+:ref:`heat.int.results`) include consumptions of
 steam and cooling water, the amount of heat recovered in the steam
 cycle, the heat exchanger area, the utility cost, the capital cost for
 the heat exchanger network, and the total annualized cost. The steam
 cycle calculation results (Figure
-`[steam.cycle.results] <#steam.cycle.results>`__) include net power
+:ref:`steam.cycle.results`) include net power
 output and net efficiency with CCS and heat integration, as well as
 their changes compared to the base case.
 

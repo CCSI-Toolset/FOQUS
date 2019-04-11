@@ -37,6 +37,9 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.outputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.inputs_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.input_files_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.inputs_table.setRowCount(0)
+        self.outputs_table.setRowCount(0)
+        self.input_files_table.setRowCount(0)
         self.show()
 
     def _add_input_file(self):
@@ -72,7 +75,6 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
             self.model_file.setText(os.path.relpath(res))
-            self.inputs_table.setRowCount(self.inputs_table.rowCount() + 1)
 
     def _add_input(self):
         row = self.inputs_table.rowCount()

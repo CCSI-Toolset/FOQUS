@@ -128,8 +128,8 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
 
     mainWin = MW.mainWindow(
         "FOQUS", # window title
-        1024, # width
-        768, # height
+        800, # width
+        600, # height
         dat, # FOQUS session data
         splashScr[1], #splash screen to use for about
         showUQ=showUQ,

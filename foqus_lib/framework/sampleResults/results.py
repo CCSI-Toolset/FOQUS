@@ -177,6 +177,11 @@ class Results(pd.DataFrame):
         except:
             pass
 
+    def delete_rows(self, rows, filtered=True):
+        idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
+        self.drop(idxs, axis=0, inplace=True)
+        self.update_filter_indexes()
+
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
 
@@ -326,6 +331,16 @@ class Results(pd.DataFrame):
                 self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
+    def exportVarsCSV(self, file, inputs, outputs, flat=True):
+        #flat isn't used, just there for compatablility from when there
+        #were vector vars.
+        df = pd.DataFrame(columns=inputs + outputs)
+        for c in inputs:
+            df[c] = self["input."+c]
+        for c in outputs:
+            df[c] = self["output."+c]
+        df.to_csv(file)
+
     def read_csv(self, *args, **kwargs):
         """
         Read results into a data frame from a CSV file.
@@ -397,7 +412,10 @@ class Results(pd.DataFrame):
             self.sort_index(inplace=True)
         else:
             st, ascend = search_term_list(st)
-            self.sort_values(by=st, ascending=ascend, inplace=True)
+            if len(st) == 0:
+                self.sort_index(inplace=True)
+            else:
+                self.sort_values(by=st, ascending=ascend, inplace=True)
         # now look at the filter columns
         ft = fltr.filterTerm
         mask = [True]*len(self.index)

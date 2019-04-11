@@ -66,10 +66,9 @@ In this section, we descibe the basic steps in for creating a design with this m
 
 .. figure:: figs/1_home.png
    :alt: Home Screen
+   :name: fig.sdoe_home
    
    SDOE Home Screen
-   
-   [fig:sdoe_home]
    
 We now consider some details for each of these steps:
 
@@ -82,17 +81,15 @@ We now consider some details for each of these steps:
 
 .. figure:: figs/2_preview_inputs.png
    :alt: SDOE preview of inputs
+   :name: fig.2_preview_inputs
    
    SDOE preview of inputs
-   
-   [fig:2_preview_inputs]
-
 
 .. figure:: figs/3_scatterplot_inputs.png
    :alt: SDOE plot of inputs
+   :name: fig.3_scatterplot_inputs
+
    SDOE plot of inputs
-   
-   [fig:3_scatterplot_inputs]
    
 The plot shows histograms of each of the inputs on the diagonals to provide a view of the distribution of values as well as the range of each input. The off-diagonals show pairwise scatterplots of each pair of inputs. This should provide the experimenter with the ability to assess if the ranges specified and any constraints for the inputs have been appropriately captured for the specified candidate set. In addition, repeating this process for any historical data will provide verification that the already observed data have been suitably characterized.
 
@@ -100,21 +97,22 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
 5. If more than one **Candidate** file was specified, then the **aggregate_candidates.csv** file that was created will have combined these files into a single file. Similarly if more than one **Histoy** file was specified, then the **aggregate_history.csv** file has been created with all runs from these files. If only a single file was selected for either the  **Candidate** and **History** files, then their aggregated matching files will be the same as the original.
 
-There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
+..
+   There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed, by (ADD DETAILS WHEN AVAILABLE). In this plot the (BLACK) points represent the candidate locations, while the (RED) points represent already collected data from the history file.
 
-.. figure:: figs/4_scatterplot_aggregated.png
-   :alt: SDOE plot of aggregated inputs
-   SDOE plot of aggregated inputs
-   
-   [fig:4_scatterplot_aggregated]
+   .. figure:: figs/4_scatterplot_aggregated.png
+      :alt: SDOE plot of aggregated inputs
+      :name: fig.4_scatterplot_aggregated
+
+      SDOE plot of aggregated inputs
    
 6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Create Design** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
 .. figure:: figs/5_SDOE_page2.png
    :alt: SDOE second window
+   :name: fig.5_SDOE_page2
+
    SDOE second window
-   
-   [fig:5_SDOE_page2]
 
 7. The first choice to be made for the design is whether to optimize using **minimax** or **maximin**. The first choice, **minimax**, looks to choose design points that minimize the maximum distance that any point in the input space (as characterized by the candidate set and historical data, if it is available) is away from a design point. Hence, the idea here is that if we want to use data to help predict new outcomes throughout the input space, then we never want to be too far away from an observed location. The second choice, **maximin** looks to choose a design where the design points are as far away from each other as possible. In this case, the design criterion is looking to maximize how close any two points are away from their nearest neighbor. In practice the two design criterion often give similar designs, with the **maximin** criterion tending to push the chosen design points closer to the edges of the specified regions. 
 
@@ -142,13 +140,12 @@ Example 1: 8-run 2-D design
 
 For this first example, the goal is to construct a simple space-filling design with 8 runs in a 2-dimensional space using the example files provided with FOQUS. 
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. `[fig:sdoe_home] <#fig:sdoe_home>`__.
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. :ref:`fig.sdoe_home_2`.
 
 .. figure:: figs/1_home.png
    :alt: Home Screen
+   :name: fig.sdoe_home_2
    
    Home Screen
-   
-   [fig:sdoe_home]
    
    

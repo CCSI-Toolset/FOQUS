@@ -528,6 +528,8 @@ class Graph(threading.Thread):
                     self.turbConfig.startSession,
                     turbSession)
             except:
+                logging.getLogger("foqus." + __name__).exception(
+                    "Failed to start session")
                 self.setErrorCode(40)
                 return None
         return jobIds
@@ -542,6 +544,8 @@ class Graph(threading.Thread):
                 self.turbConfig.getCompletedJobGen,
                 self.turbSession)
         except:
+            logging.getLogger("foqus." + __name__).exception(
+                "Failed to get generator")
             self.setErrorCode(40)
             return None
         logging.getLogger("foqus." + __name__).debug(

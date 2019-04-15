@@ -1,7 +1,7 @@
 """ #FOQUS_SURROGATE_PLUGIN BSS-ANOVA.py
 
 Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to have a .py extention and
+150 characters of text.  They also need to have a .py extension and
 inherit the surrogate class.
 
 * Plugin wrapper for the BSS-ANOVA surrogate model builer.

@@ -488,9 +488,9 @@ class TurbineConfiguration():
                 else:
                     # retry
                     pass
-            rt = waitTime*(i+1)**waitPow
-            _log.debug("Turbine Interface Error: {}.  Retry {} in {}s. {}"\
-                    .format(e.code, i+1, rt, e.getCodeString()))
+                rt = waitTime*(i+1)**waitPow
+                _log.exception("Turbine Interface Error: Retry {} in {}s."\
+                        .format(i+1, rt))
             time.sleep(rt)
         # If ran out of tries re-raise last exception
         raise e
@@ -814,8 +814,8 @@ class TurbineConfiguration():
             gid = turbine.commands.post_page_by_url(
                 postAddress,
                 self.turbineConfigParse(),
-                "",
-                "")
+                section=b"",
+                data=b"")
         except Exception as e:
             raise TurbineInterfaceEx(
                 code = 0,
@@ -841,8 +841,8 @@ class TurbineConfiguration():
             page = turbine.commands.post_page_by_url(
                 postAddress,
                 self.turbineConfigParse(),
-                "",
-                "")
+                section=b"",
+                data=b"")
         except urllib.request.HTTPError as e:
             if e.code == 404:
                 return -1  # no more jobs to get
@@ -981,8 +981,8 @@ class TurbineConfiguration():
             turbine.commands.post_page_by_url(
                 termAddress,
                 self.turbineConfigParse(),
-                "",
-                "")
+                section=b"",
+                data=b"")
             _log.info("Terminating Job {} posting to:".format(jobID, termAddress))
         except Exception as e:
             _log.exception(

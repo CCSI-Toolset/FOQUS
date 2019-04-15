@@ -1,8 +1,8 @@
 """ #FOQUS_SURROGATE_PLUGIN ACOSSO.py
 
-Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extention and
-inherit the surrogate class.
+Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first 150
+characters of text.  They also need to have a .py extension and inherit the
+surrogate class.
 
 * Plugin wprapper for the ACOSSO surrogate model builer.
 * ACOSSO is excuted in R and a working R install with the quadprog
@@ -31,11 +31,11 @@ from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
 
 def checkAvailable():
-    '''
-        Plug-ins should have this function to check availability of any
-        additional required software.  If requirements are not available
-        plug-in will not be available.
-    '''
+    """
+    Plug-ins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plug-in will not be available.
+    """
     # Need to check for R and quadprog?
     return True
 

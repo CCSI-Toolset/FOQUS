@@ -54,14 +54,21 @@ exports.handler = function(event, context, callback) {
                 var item = data.Items[i];
                 if (item.SessionId == session_id) {
                   console.log('item: ', item);
-                  body.push({Id: item.Id,
+                  var obj =  {Id: item.Id,
                     Application: item.Application,
                     SessionId: item.SessionId,
                     Initialize: item.Initialize,
                     Input:item.Input,
+                    State:"create",
                     Reset:item.Reset,
                     Simulation: item.Simulation,
-                    Output:item.Output});
+                    Create: item.Create,
+                    Output:item.Output}
+                  if (item.Submit) {
+                    obj.Submit = item.Submit;
+                    obj.State = "submit";
+                  }
+                  body.push(obj);
                 }
               }
               callback(null, {statusCode:'200', body: JSON.stringify(body), headers: {'Content-Type': 'application/json',}});

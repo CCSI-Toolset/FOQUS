@@ -7,5 +7,10 @@
   "path": "/simulation",
   "queryStringParameters": {
     "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
   }
 }

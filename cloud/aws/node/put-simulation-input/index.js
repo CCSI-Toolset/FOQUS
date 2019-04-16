@@ -30,6 +30,18 @@ exports.handler = function(event, context, callback) {
       },
   });
 
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
   const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "PUT") {
     var array = event.path.split('/');
@@ -74,10 +86,11 @@ exports.handler = function(event, context, callback) {
         obj.aspenfile.endsWith('.bkp')) {
           params.Key = user_name + "/" + name + "/aspenplus_sinter.json";
       }
-      else if (obj.Type == "FOQUS_Session") {
+      else if (obj.filetype == "FOQUS_Session") {
         params.Key = user_name + "/" + name + "/session.foqus";
       }
       else {
+        console.log(event.body);
         done(new Error(`Inspection failed to identify configuration file type`));
         return;
       }

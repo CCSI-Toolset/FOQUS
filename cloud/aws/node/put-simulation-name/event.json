@@ -1,11 +1,16 @@
 {
-"body":"{\"Application\":\"foqus\", \"StagedInputs\":[], \"Name\":\"test_simulation\"}",
+"body":"{\"Application\":\"foqus\", \"StagedInputs\":[], \"Name\":\"test_flowsheet\"}",
   "headers": {
     "Accept": "application/json"
   },
   "httpMethod": "PUT",
-  "path": "/simulation/test_simulation",
+  "path": "/simulation/test_flowsheet",
   "queryStringParameters": {
     "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
   }
 }

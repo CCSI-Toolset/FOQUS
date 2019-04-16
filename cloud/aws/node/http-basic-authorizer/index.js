@@ -12,7 +12,7 @@
 'use AWS.DynamoDB'
 'use uuid'
 const AWS = require('aws-sdk');
-const tableName = "TurbineUsers";
+const tableName = "FOQUS_Resources";
 exports.handler = function(event, context, callback) {
     console.log('Received event:', JSON.stringify(event, null, 2));
     var headers = event.headers;
@@ -50,44 +50,43 @@ exports.handler = function(event, context, callback) {
     }
     */
     var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-    dynamodb.query({ TableName: tableName,
-        KeyConditionExpression: '#N = :user',
-        ExpressionAttributeNames: {"#N":"Name"},
-        ExpressionAttributeValues: { ":user":user.name}
+    /*
+    dynamodb.scan({ TableName: tableName }, function(err, data) {
+       if (err) console.log(err);
+       else console.log(data);
+    });
+    */
+    dynamodb.get({ TableName:tableName,
+       Key:{"Id": user.name, "Type":"User" }
       },
       function(err,data) {
+        // Data:  { Item: { Password: 'changeme', Id: 'test', Type: 'User' } }
+        console.log('GetItem Data: ', data);
         if(err) {
           console.log("Error: ", err);
-          callback(null, {statusCode:'400', body: JSON.stringify(data), headers: {'Content-Type': 'application/json',}});
-        } else {
-          //var a = data.Items
-          console.log('Data: ', data.Items.length);
-          for (var i=0; i<data.Items.length; i++) {
-              var item = data.Items[i];
-              console.log('item: ', item);
-              //obj.push({Name: item.Name, Id: item.Id});
-              // Id -- username,
-              // Output -- token
-              if (item.Name == user.name) {
-                //var content = JSON.stringify(obj);
-                if (item.Password == user.pass) {
-                  console.log("Allow: user=" + user.name);
-                  //methodArn="arn:aws:execute-api:us-east-1:754323349409:407osudx4l/dev/GET/session"
-                  //policy ARN -> "arn:aws:execute-api:us-east-1:754323349409:407osudx4l/dev/*"
-                  var arn_array = event.methodArn.split('/').slice(0,1);
-                  arn_array.push('*');
-                  var methodArn = arn_array.join( '/' );
-                  callback(null, generateAllow(user.name, methodArn));
-                  return;
-                }
-                console.log("Unauthorized: user=" + user.name + ", wrong password");
-                context.fail("Unauthorized: " + headers.authorization);
-                return;
-              }
-         }
-         console.log("Unauthorized: No such user=" + user.name);
+          //callback(null, {statusCode:'400', body: JSON.stringify(data),
+          //  headers: {'Content-Type': 'application/json',}});
+          callback("Unauthorized: User " +user.name);
+        } else if (data != null && data.Item != null){
+          if (data.Item.Id == user.name) {
+            if (data.Item.Password == user.pass) {
+              console.log("Allow: user=" + user.name);
+              var arn_array = event.methodArn.split('/').slice(0,1);
+              arn_array.push('*');
+              var methodArn = arn_array.join( '/' );
+              callback(null, generateAllow(user.name, methodArn));
+              return;
+            }
+            console.log("Unauthorized: user=" + user.name + ", wrong password");
+            context.fail("Unauthorized: " + headers.authorization);
+            return;
+          }
+         console.log("Unauthorized: bad match user " + user.name + "!=" + data.Id);
          context.fail("Unauthorized: " + headers.authorization);
-        }
+       } else {
+         console.log('Unauthorized: No Entry for User Id=' + user.name);
+         context.fail("Unauthorized: " + headers.authorization);
+       }
   });
 }
 

@@ -35,6 +35,18 @@ exports.handler = function(event, context, callback) {
   });
   const dynamo_put_cb = function (err, res) {
   };
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
   const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
     console.log("BODY: " + event.body)

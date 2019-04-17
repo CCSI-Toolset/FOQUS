@@ -65,14 +65,10 @@ exports.handler = function(event, context, callback) {
       Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
       Body: content
     };
-    //var awsS3Client = new AWS.S3();
-    console.log("TESTING...");
+
     var client = new AWS.S3();
-    //var client = s3.createClient(options);
     var request = client.putObject(params, function(err, data) {
-        console.log("putObject");
-        if (err) console.log(err, err.stack); // an error occurred
-        else     console.log("S3 PUTOBJECT")
+        if (err) console.log(err, err.stack);
     });
     request.on('success', function(response) {
         console.log("S3 SUCCESS: " + JSON.stringify(response.data));

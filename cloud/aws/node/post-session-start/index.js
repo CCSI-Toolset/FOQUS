@@ -55,37 +55,37 @@ exports.handler = function(event, context, callback) {
     //var body = JSON.parse(event);
     var session_id = event.path.split('/')[2];
     console.log("SESSIONID: " + session_id);
-
+    console.log("SESSION BUCKET_NAME: " + s3_bucket_name);
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: user_name + '/' + session_id
+      Prefix: user_name + '/' + session_id + '/',
+      StartAfter: user_name + '/' + session_id + '/'
     };
     var client = new AWS.S3();
-    var request = client.listObjects(params, function(err, data) {
+    var request = client.listObjectsV2(params, function(err, data) {
         if (err) {
           console.log(err, err.stack); // an error occurred
           done(new Error(`"${err.stack}"`));
           return;
         }
-        else     console.log("DATA: " + data);
     });
     request.on('success', function(response) {
         console.log("SUCCESS: " + JSON.stringify(response.data));
-        console.log("LEN: " + response.data.Contents.length)
+        console.log("LEN: " + response.data.Contents.length);
+        console.log("Create Topic: Name=" + foqus_job_topic);
 
         var sns = new AWS.SNS();
         var request_topic = sns.createTopic({
             Name: foqus_job_topic,
           }, function(err, data) {
                 if (err) {
+                  console.log("ERROR: Failed to SNS CREATE TOPIC");
                   console.log(err.stack);
                   done(new Error(`"${err.stack}"`));
                   return;
                 }
-                else     console.log("TOPIC: " + JSON.stringify(data));
         });
         request_topic.on('success', function(response_topic) {
-
             var topicArn = response_topic.data.TopicArn;
             console.log("SUCCESS: " + JSON.stringify(response_topic.data));
             var id_list = [];
@@ -97,8 +97,14 @@ exports.handler = function(event, context, callback) {
                   Bucket: s3_bucket_name,
                   Key: response.data.Contents[index].Key,
                 };
+                console.log("PARAMS: " + JSON.stringify(params));
+                if (params.Key.endsWith('.json') == false) {
+                  console.log("SKIP: " + JSON.stringify(params));
+                  continue;
+                }
                 var request = client.getObject(params, function(err, data) {
                   if (err) {
+                    console.log("ERROR: Failed to S3 GET Object");
                     console.log(err, err.stack); // an error occurred
                     done(new Error(`"${err.stack}"`));
                     return;
@@ -117,14 +123,10 @@ exports.handler = function(event, context, callback) {
                       };
                       sns.publish(params, function(err, data) {
                         if (err) {
-                          console.log("ERROR")
+                          console.log("ERROR: Failed to SNS Publish Job Start");
                           console.log(err, err.stack); // an error occurred
-                          //done(new Error(`"${err.stack}"`));
-                          //done(new Error(`SNS Publish ERROR:   "${err.stack}"`));
-                          //return;
-                        }
-                        else  {
-                          console.log("PUBLISH: " + JSON.stringify(data));           // successful response
+                          done(new Error(`"${err.stack}"`));
+                          return;
                         }
                       });
                     }

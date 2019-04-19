@@ -4,8 +4,6 @@ import numpy
 import shutil
 import textwrap
 from datetime import datetime
-from tqdm import tqdm
-
 
 from foqus_lib.framework.uq.SampleData import *
 from foqus_lib.framework.uq.Model import *
@@ -19,7 +17,7 @@ from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
 from PyQt5 import uic
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, pyqtSignal, QObject, QThread
 from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QCheckBox, \
     QTableWidgetItem, QAbstractItemView, QGridLayout, QDialog, QLabel, \
     QPushButton
@@ -123,7 +121,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.maxDesignSize_spin.valueChanged.connect(self.on_max_design_spinbox_changed)
         self.sampleSize_spin.valueChanged.connect(self.on_sample_size_spinbox_changed)
         self.runSdoeButton.clicked.connect(self.runSdoe)
-        self.stopSdoeButton.clicked.connect(self.stopSdoe)
 
         # Resize tables
         self.infoTable.resizeColumnsToContents()
@@ -368,7 +365,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return configFile
 
     def runSdoe(self):
-        self.stopSdoeButton.setEnabled(True)
+        self.runSdoeButton.setText('Stop SDOE')
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
@@ -377,12 +374,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, nd)
             self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
             self.analysisTableGroup.setEnabled(True)
+            self.loadAnalysisButton.setEnabled(False)
+            self.deleteAnalysisButton.setEnabled(False)
             self.updateAnalysisTable()
             self.designInfo_dynamic.setText('d = %d, n = %d' % (nd, num_restarts))
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
             QApplication.processEvents()
 
         self.SDOE_progressBar.setValue(0)
+        self.runSdoeButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
 
     def testSdoe(self):
@@ -397,12 +397,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
         self.progress_groupBox.setEnabled(True)
-        self.stopSdoeButton.setEnabled(False)
         self.updateRunTime(runtime)
         self.testRuntime.append(runtime)
-
-    def stopSdoe(self):
-        QApplication.quit()
 
     def on_min_design_spinbox_changed(self):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),

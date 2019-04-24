@@ -291,7 +291,7 @@ class turbineLiteDB():
             self.closeConnection()
             if row is None:
                 return None
-            return row[0]
+            return row[0].decode('utf-8')
         except Exception as e:
             self.closeConnection()
             if rc > 1:

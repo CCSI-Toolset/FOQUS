@@ -117,7 +117,7 @@ formulation becomes:
    \int {F(Z_1,Z_3,Z_4)
    P(Z_4) d Z_4} \right)}
 
- where, again, :math:`n_3` is the number of scenarios for the discrete
+where, again, :math:`n_3` is the number of scenarios for the discrete
 uncertain variables, :math:`\pi_j` is the probability of the
 :math:`j`-th scenario, and :math:`P(Z_4)` is the joint probability of
 the continuous uncertain variables.
@@ -137,7 +137,7 @@ objective function is given by:
    F(Z_1,Z_2,Z_3,Z_4) \right].
    \end{array}
 
- If the objective function is the statistical mean, the formulation
+If the objective function is the statistical mean, the formulation
 becomes:
 
 .. math::

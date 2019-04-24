@@ -7,16 +7,16 @@ This tutorial covers the ACOSSO surrogate modeling method. The Adaptive
 COmponent Selection and Shrinkage Operator (ACOSSO) surface
 approximation was developed under the Smoothing Spline Analysis of
 Variance (SS-ANOVA) modeling framework
-:raw-latex:`\citep{Storlie_2011}`. As it is a smoothing type method,
+:ref:`(Storlie et al. 2011)<Storlie_2011>`. As it is a smoothing type method,
 ACOSSO works best when the underlying function is somewhat smooth. For
 functions which are known to have sharp changes or peaks, etc., other
 methods may be more appropriate. Since it implicitly performs variable
 selection, ACOSSO can also work well when there are a large number of
 input variables. The ACOSSO procedure also allows for categorical inputs
-:raw-latex:`\citep{Storlie_2013}`.
+:ref:`(Storlie et al. 2013)<Storlie_2013>`.
 
 This tutorial uses the same flowsheet and sample setup as the ALAMO
-tutorial in Section `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__.
+tutorial in Section :ref:`sec.surrogate.alamo`.
 The statistics software “R” is also required to use ACOSSO and
 BSS-ANOVA. Before starting this tutorial, you will need to install R
 version 3.1 or later (see
@@ -55,11 +55,11 @@ FOQUS.
       a file browser that can be used to set the path.
 
 #. Complete the ALAMO tutorial in Section
-   `[sec.surrogate.alamo] <#sec.surrogate.alamo>`__ through Step 32, or
+   :ref:`sec.surrogate.alamo` through Step 32, or
    load the FOQUS session saved after completing the ALAMO tutorial.
 
 #. Click the **Surrogates** button in the Home window (Figure
-   `[fig.acosso.settings] <#fig.acosso.settings>`__).
+   :ref:`fig.acosso.settings`).
 
 #. Select “ACOSSO” in the **Tool** drop-down list.
 
@@ -73,8 +73,7 @@ FOQUS.
 
 #. Set “FOQUS Model (for Flowsheet)” to “ACOSSO_Tutorial_FS.py.”
 
-#. Click the **Run** icon (Figure
-   `[fig.acosso.settings] <#fig.acosso.settings>`__).
+#. Click the **Run** icon (Figure :ref:`fig.acosso.settings`).
 
 .. figure:: ../figs/acosso_settings.svg
    :alt: ACOSSO Session Set Up
@@ -87,7 +86,6 @@ FOQUS.
 
 12. When the run completes, a UQ driver file is created, allowing the
     ACOSSO surrogate to be used as a user-defined response surface in UQ
-    analyses. (See Section
-    `[tutorial.surrogate.uq] <#tutorial.surrogate.uq>`__.)
+    analyses. (See Section :ref:`tutorial.surrogate.uq`.)
 
 13. ACOSSO also produces a flowsheet plugin; however.

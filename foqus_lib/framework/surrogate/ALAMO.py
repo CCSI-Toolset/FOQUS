@@ -1,7 +1,7 @@
 """ #FOQUS_SURROGATE_PLUGIN ALAMO.py
 
 Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extention and
+150 characters of text.  They also need to have a .py extension and
 inherit the surrogate class.
 
 * This is an example of a surrogate model builder plugin for FOQUS,
@@ -87,9 +87,9 @@ class surrogateMethod(surrogate):
              "<b>Automatic Learning of Algebraic Models for Optimization"
              " (ALAMO)</b>"
              "<p class=\"hangingindent\">Cozad, A., N. V. Sahinidis "
-             "and D. C. Miller, Automatic "
-             "Learning of Algebraic Models for"
-             " Optimization, AIChE Journal, accepted, 2014. </p></html>")
+             "and D. C. Miller, Learning surrogate models "
+             "for simulation‐based optimization, "
+             "AIChE Journal, 60, p. 2211–2227, 2014.</p></html>")
         self.alamoDir = 'alamo'
         self.inputCols = [
             ('XFACTOR', float, 1.0),
@@ -532,10 +532,10 @@ class surrogateMethod(surrogate):
                 stdin = None,
                 creationflags=win32process.CREATE_NO_WINDOW)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")
@@ -822,8 +822,8 @@ class surrogateMethod(surrogate):
             #a cut and paste job for now
             af.write("\nBEGIN_VALDATA\n")
             # Reset data filter to validation set
-            self.graph.results.set_filter(validFilter)
-            for i in range(nvaldata):
+            res.set_filter(validFilter)
+            for i in res.get_indexes(filtered=True):
                 line = [0]*(nin+nout)
                 p = 0
                 for j, vname in enumerate(self.input):

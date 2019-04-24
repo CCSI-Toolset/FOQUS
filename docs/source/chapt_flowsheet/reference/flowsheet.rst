@@ -20,12 +20,12 @@ the same value for the first criteria).
 
 FOQUS currently has two methods available for solving flowsheets with
 recycle: (1) direct substitution and (2) Wegstien
-\citep{Wegstein_1958. FOQUS will solve strongly connected
+:ref:`Wegstein 1958<Wegstein_1958>`. FOQUS will solve strongly connected
 components in the order they are encountered in the flowsheet. FOQUS
 flowsheets are generally not very complicated, so if a strongly
 connected component contains more than one tear stream, they are solved
 simultaneously. More advanced solution options will be added if a need
-arises. Figure `[fig.flowsheet.recycle] <#fig.flowsheet.recycle>`__
+arises. Figure :ref:`fig.flowsheet.recycle`
 shows how a simple flowsheet with recycle would be solved.
 
 .. figure:: ../figs/recycle.svg
@@ -37,7 +37,7 @@ shows how a simple flowsheet with recycle would be solved.
 Flowsheet Editor
 ----------------
 
-Figure `[fig.flowsheet.editor] <#fig.flowsheet.editor>`__ illustrates
+Figure :ref:`fig.flowsheet.editor` illustrates
 the main **Flowsheet Editor** screen and a description of the pieces.
 The toolbar on the left contains various flowsheet tools.
 
@@ -118,8 +118,7 @@ Node Editor
 -----------
 
 The **Node Editor** enables the assignment of simulations to a node, and
-editing variables. Figure
-`[fig.node.editor.input] <#fig.node.editor.input>`__ shows the Node
+editing variables. Figure :ref:`fig.node.editor.input` shows the Node
 Editor window with the input variables section of the toolbox displayed.
 
 .. figure:: ../figs/nodeEditInput.svg
@@ -146,7 +145,7 @@ Editor window with the input variables section of the toolbox displayed.
    stops a single node run or a flowsheet run.
 
 #. There are three tabs in the **Node Editor**: (1) **Variables** tab,
-   shown in Figure `[fig.node.editor.input] <#fig.node.editor.input>`__,
+   shown in Figure :ref:`fig.node.editor.input`,
    (2) **Position** tab displays the coordinates of the node, and (3)
    **Node Script** tab enabling the entry of Python code to be executed
    after the simulation is run.
@@ -278,7 +277,7 @@ There are three type of **Node Script** that can be used: (1) **Pre**
 runs before a node simulation, (2) **Post** runs after a node
 simulation, and (3) **Total** scripts how a node runs the simulation.
 
-Figure `[fig.post.calc] <#fig.post.calc>`__ illustrates the **Node
+Figure :ref:`fig.post.calc` illustrates the **Node
 Script** tab of the **Node Editor** with calculations for an
 optimization test problem.
 
@@ -296,8 +295,7 @@ update the node variables after the calculations are executed.
 Edge Editor
 -----------
 
-The **Edge Editor** is illustrated in Figure
-`[fig.edge.editor] <#fig.edge.editor>`__. The **Edge Editor** can be
+The **Edge Editor** is illustrated in Figure :ref:`fig.edge.editor`. The **Edge Editor** can be
 used to set connections between node variables.
 
 .. figure:: ../figs/edgeEdit.svg

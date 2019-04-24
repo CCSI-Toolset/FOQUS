@@ -3,11 +3,11 @@ Aspen Plus Configuration
 
 #. The initial steps for opening a simulation and entering metadata for
    an Aspen Plus simulation are similar to ACM. Refer to the SimSinter
-   ACM tutorial `[sec.tut.simsinter.acm] <#sec.tut.simsinter.acm>`__. In
+   ACM tutorial :ref:`sec.tut.simsinter.acm`. In
    this tutorial, a flash model “Flash_Example.bkp” installed in the
    “C:\SimSinterFiles\Aspen_Plus_Install_Test” is used as an example.
    Open the Aspen Plus file and enter the metadata as shown in Figure
-   `[fig.sinter.ap.metadata] <#fig.sinter.ap.metadata>`__.
+   :ref:`fig.sinter.ap.metadata`.
 
    .. figure:: ../figs/ap/04_MetaDataFilled.png
       :alt: SinterConfigGUI Simulation Meta-Data with Data Completed
@@ -16,8 +16,7 @@ Aspen Plus Configuration
       SinterConfigGUI Simulation Meta-Data with Data Completed
 
 #. The **SinterConfigGUI Variable Configuration Page** displays as
-   illustrated in Figure
-   `[fig.sinter.ap.variableempty] <#fig.sinter.ap.variableempty>`__.
+   illustrated in Figure :ref:`fig.sinter.ap.variableempty`.
    Aspen Plus has no settings, so there are no setting variables in the
    input section. Unlike ACM, AspenPlus displays the **Variable Tree**
    on the left side, so the user can explore the tree as is done in
@@ -31,7 +30,7 @@ Aspen Plus Configuration
       SinterConfigGUI Variable Configuration Page Empty Variables
 
 #. **Variable Tree** nodes can be expanded for searching (Figure
-   `[fig.sinter.ap.expandtree] <#fig.sinter.ap.expandtree>`__).
+   :ref:`fig.sinter.ap.expandtree`).
 
    .. figure:: ../figs/ap/06_VariablesExpanded.png
       :name: fig.sinter.ap.expandtree
@@ -41,8 +40,7 @@ Aspen Plus Configuration
 
 #. The user can type the node address directly into the **Selected
    Path** field (this is useful for copy/paste from Aspen Plus’ Variable
-   Explorer) (Figure
-   `[fig.sinter.ap.selectvar] <#fig.sinter.ap.selectvar>`__). Click
+   Explorer) (Figure :ref:`fig.sinter.ap.selectvar`). Click
    **Lookup** or **Preview** (which automatically causes the tree to
    expand and selects selected variables in the **Variable Tree**).
 

@@ -4,6 +4,7 @@ Contents
 .. toctree::
     :maxdepth: 1
 
+    chapt_install/index
     chapt_intro/index
     chapt_flowsheet/index
     chapt_opt/index
@@ -15,6 +16,8 @@ Contents
     chapt_sinter/index
     chapt_heat/index
     chapt_debug/index
+    references
+    copyright
 
 FOQUS
 =====

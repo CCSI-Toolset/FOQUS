@@ -14,17 +14,15 @@ before adding capture) supercritical pulverized coal power plant with
 solid sorbent post combustion CO\ :math:`_2` capture process added.
 
 Before starting the tutorial, see Section
-`[tutorial.example.files] <#tutorial.example.files>`__ to locate and
+:ref:`tutorial.example.files` to locate and
 copy the example files to a convenient location.
 
-#. Start FOQUS. The Session window displays (Figure
-   `[fig.tut.opt.session] <#fig.tut.opt.session>`__).
+#. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 
 #. Enter “BFB_opt” in **Session Name** (without quotes).
 
 #. Click the **Description** tab. The problem description box displays
-   and is shown in (Figure
-   `[fig.tut.opt.description] <#fig.tut.opt.description>`__).
+   and is shown in (Figure :ref:`fig.tut.opt.description`).
 
 #. In the problem description box enter information about the problem
    being solved in the FOQUS session; this information can be more
@@ -55,23 +53,23 @@ copy the example files to a convenient location.
 optimization problem: (1) the ACM model for the BFB capture system and
 (2) the Excel cost estimating spreadsheet. These models are provided in
 the example files directory, under optimization/models (see Section
-`[tutorial.example.files] <#tutorial.example.files>`__). There are two
+:ref:`tutorial.example.files`). There are two
 SimSinter configuration files: (1) BFB_sinter_config_v6.2.json for the
 process model and (2) BFB_cost_v6.2.3.json for the cost model. The next
 step is to upload the models to Turbine.
 
 6.  Open the **Add\Update Model to Turbine** dialog box (Figure
-    `[fig.tut.opt.menu.upload] <#fig.tut.opt.menu.upload>`__).
+    :ref:`fig.tut.opt.menu.upload`).
 
 7.  In this case, the SimSinter configuration files have already been
     created. If a SimSinter configuration file needs to be created for
     the simulation, **Create/Edit** displays the SimSinter configuration
-    GUI (see Figure `[fig.tut.opt.upload] <#fig.tut.opt.upload>`__). See
+    GUI (see Figure :ref:`fig.tut.opt.upload`). See
     the SimSinter documentation or Chapter
-    `[chapt.simsinter] <#chapt.simsinter>`__ for more information.
+    :ref:`chapt.simsinter` for more information.
 
 8.  Click **Browse** to select a SimSinter configuration file (Figure
-    `[fig.tut.opt.upload] <#fig.tut.opt.upload>`__). Once the SimSinter
+    :ref:`fig.tut.opt.upload`). Once the SimSinter
     configuration file is selected, the simulation file and sinterconfig
     file is automatically added to the files to upload. The application
     type is entered automatically. If there are additional files
@@ -100,7 +98,7 @@ step is to upload the models to Turbine.
    Upload to Turbine Dialog
 
 The next step is to create the flowsheet. Figure
-`[fig.tut.opt.drawFlowsheet] <#fig.tut.opt.drawFlowsheet>`__ illustrates
+:ref:`fig.tut.opt.drawFlowsheet` illustrates
 the steps to draw the flowsheet.
 
 12. Click **Flowsheet** at the top of the Home window.
@@ -118,7 +116,7 @@ the steps to draw the flowsheet.
 
 18. Click **Toggle Node Editor**. The Node Editor displays as
     illustrated in Figure
-    `[fig.tut.opt.nodeEditor] <#fig.tut.opt.nodeEditor>`__.
+    :ref:`fig.tut.opt.nodeEditor`.
 
 .. figure:: ../figs/flowsheetDraw.svg
    :alt: Flowsheet Editor
@@ -129,7 +127,7 @@ the steps to draw the flowsheet.
 Each node must be assigned the appropriate simulation. Use the Node
 Editor to set the simulation type and the simulation name from
 simulation uploaded to Turbine. The Node Editor is illustrated in Figure
-`[fig.tut.opt.nodeEditor] <#fig.tut.opt.nodeEditor>`__
+:ref:`fig.tut.opt.nodeEditor`
 
 19. Under **Model** and **Type**, set the simulation **Type** to
     Turbine. This indicates that the simulation is to be run with
@@ -156,13 +154,13 @@ estimation spreadsheet must be set, so that required information can be
 transferred from the BFB simulation to the cost simulation.
 
 23. Click **Toggle Node Editor** to hide the Node Editor (Figure
-    `[fig.tut.opt.drawFlowsheet] <#fig.tut.opt.drawFlowsheet>`__).
+    :ref:`fig.tut.opt.drawFlowsheet`).
 
 24. Select the edge on the flowsheet with the **Selection** tool.
 
 25. Click **Toggle Edge Editor** to show the Edge Editor. The Edge
     Editor is shown in Figure
-    `[fig.tut.opt.edgeEditor] <#fig.tut.opt.edgeEditor>`__.
+    :ref:`fig.tut.opt.edgeEditor`.
 
 26. For convenience, all of the variables that should be connected from
     the ACM model to the Excel spreadsheet have been given the same
@@ -183,7 +181,7 @@ executing a single evaluation before setting up the optimization
 problem.
 
 27. Click **Run** in the Flowsheet Editor (Figure
-    `[fig.tut.opt.drawFlowsheet] <#fig.tut.opt.drawFlowsheet>`__).
+    :ref:`fig.tut.opt.drawFlowsheet`).
 
 28. The flowsheet may take a few minutes to run. The BFB simulation
     takes a significant amount of time to open in ACM. While running

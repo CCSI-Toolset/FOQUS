@@ -8,9 +8,9 @@
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",
-    "test": "./node_modules/.bin/node-lambda run",
-    "package": "./node_modules/.bin/node-lambda package",
-    "deploy": "./node_modules/.bin/node-lambda deploy"
+    "test": "./node_modules/.bin/node-lambda run --configFile=deploy.env",
+    "package": "./node_modules/.bin/node-lambda package --configFile=deploy.env",
+    "deploy": "./node_modules/.bin/node-lambda deploy --configFile=deploy.env"
   },
   "author": "Joshua Boverhof",
   "license": "MIT"

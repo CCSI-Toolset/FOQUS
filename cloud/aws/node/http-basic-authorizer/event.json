@@ -36,7 +36,7 @@
     },
     "requestContext": {
         "path": "/request",
-        "accountId": "123456789012",
+        "accountId": "",
         "resourceId": "05c7jb",
         "stage": "test",
         "requestId": "...",

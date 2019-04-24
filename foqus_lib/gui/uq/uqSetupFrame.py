@@ -359,7 +359,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         LocalExecutionModule.session = dat
         self.filterWidget = uqDataBrowserFrame(self)
         self.filterWidget.indicesSelectedSignal.connect(self.createFilteredEnsemble)
-        self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
         self.filterFrame.layout().addWidget(self.filterWidget)
 
         ###### Set up simulation ensembles section

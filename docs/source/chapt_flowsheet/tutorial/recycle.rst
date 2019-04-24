@@ -2,22 +2,21 @@ Flowsheets with Recycle
 =======================
 
 This section provides a tutorial on working with flowsheets containing
-recycle. Sections `[tutorial.simple.flow] <#tutorial.simple.flow>`__ and
-`[tutorial.sim.flowsheet] <#tutorial.sim.flowsheet>`__ provide tutorials
+recycle. Sections :ref:`tutorial.simple.flow` and
+:ref:`tutorial.sim.flowsheet` provide tutorials
 for creating flowsheets, in this section a pre-constructed flowsheet is
 used.
 
 #. From the example files, copy the Recycle\Mass_Bal_Test_02.foqus
    example file to a convenient location (see Section
-   `[tutorial.example.files] <#tutorial.example.files>`__).
+   :ref:`tutorial.example.files`.
 
 #. Open FOQUS.
 
 3. Open the Mass_Bal_Test_02.foqus file.
 
    #. Open the **Session** drop-down menu on the right side of the
-      **Session** button (Figure
-      `[fig.recycle.tut1] <#fig.recycle.tut1>`__).
+      **Session** button (Figure :ref:`fig.recycle.tut1`).
 
    #. Select **Open Session** from the drop-down menu.
 
@@ -30,8 +29,7 @@ used.
 4. Click **Flowsheet** button from the toolbar at the top of the Home
    window.
 
-The flowsheet is shown in Figure
-`[fig.recycle.tut1] <#fig.recycle.tut1>`__. The flowsheet consists of
+The flowsheet is shown in Figure :ref:`fig.recycle.tut1`. The flowsheet consists of
 two reactors in recycle loops. The flowsheet contains mixers, reactors,
 separators, and splitters. Each node uses a set of simple calculations
 in the node script section. The tear edges are shown in light blue.
@@ -45,7 +43,7 @@ in the node script section. The tear edges are shown in light blue.
 5. Inspect a node.
 
    #. Make sure the Selection tool is selected (Figure
-      `[fig.recycle.tut2] <#fig.recycle.tut2>`__).
+      :ref:`fig.recycle.tut2`.
 
    #. Open the Node Editor by clicking the **Node Edit** button in the
       left toolbar in the Flowsheet view.
@@ -64,8 +62,8 @@ in the node script section. The tear edges are shown in light blue.
       dictionary.
 
 6. Click the gear icon in the left toolbar (see Figure
-   `[fig.recycle.tut2] <#fig.recycle.tut2>`__). The tear solver settings
-   are shown in Figure `[fig.tear.settings] <#fig.tear.settings>`__.
+   :ref:`fig.recycle.tut2`. The tear solver settings
+   are shown in Figure :ref:`fig.tear.settings`.
 
 .. figure:: ../figs/recycle_tut2.svg
    :alt: React_01 Node
@@ -84,7 +82,7 @@ in the node script section. The tear edges are shown in light blue.
    #. Close the Node Editor.
 
    #. Open the Edge Editor. Click the **Edge Editor** icon in the left
-      toolbar (see Figure `[fig.recycle.tut3] <#fig.recycle.tut3>`__).
+      toolbar (see Figure :ref:`fig.recycle.tut3`.
 
    #. Click the edge between “React_01” and “Sep_01.”
 
@@ -107,7 +105,7 @@ automatically be selected.
 
 9.  Automatically select a tear edge set by clicking the **Tear** icon
     in the left toolbar (see Figure
-    `[fig.recycle.tut3] <#fig.recycle.tut3>`__).
+    :ref:`fig.recycle.tut3`).
 
 10. Open the Node Editor and look at node “Sep_01.” In the Input
     Variables table, notice that some of the input lines are colored
@@ -119,4 +117,4 @@ automatically be selected.
 
 12. The results of the completed run are in the flowsheet. An entry will
     also be created in the Flowsheet Results data table (see Section
-    `[tutorials.fs.data] <#tutorials.fs.data>`__).
+    :ref:`tutorials.fs.data`.

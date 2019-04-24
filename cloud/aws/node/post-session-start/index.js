@@ -11,6 +11,7 @@
 'use AWS.S3'
 'use uuid'
 console.log('Loading function');
+const debug = require("debug")("post-session-start")
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
 const fs = require('fs');
@@ -62,16 +63,16 @@ exports.handler = function(event, context, callback) {
       StartAfter: user_name + '/' + session_id + '/'
     };
     var client = new AWS.S3();
-    var request = client.listObjectsV2(params, function(err, data) {
+    var request_list = client.listObjectsV2(params, function(err, data) {
         if (err) {
           console.log(err, err.stack); // an error occurred
           done(new Error(`"${err.stack}"`));
           return;
         }
     });
-    request.on('success', function(response) {
-        console.log("SUCCESS: " + JSON.stringify(response.data));
-        console.log("LEN: " + response.data.Contents.length);
+    request_list.on('success', function(response_list) {
+        console.log("SUCCESS: " + JSON.stringify(response_list.data));
+        console.log("LEN: " + response_list.data.Contents.length);
         console.log("Create Topic: Name=" + foqus_job_topic);
 
         var sns = new AWS.SNS();
@@ -92,46 +93,54 @@ exports.handler = function(event, context, callback) {
 
             // TAKE S3 LIST OBJECTS
             // Could have multiple S3 objects ( each representing single start )
-            for (var index = 0; index < response.data.Contents.length; index++) {
+            var promises = [];
+            for (var index = 0; index < response_list.data.Contents.length; index++) {
                 var params = {
                   Bucket: s3_bucket_name,
-                  Key: response.data.Contents[index].Key,
+                  Key: response_list.data.Contents[index].Key,
                 };
-                console.log("PARAMS: " + JSON.stringify(params));
                 if (params.Key.endsWith('.json') == false) {
-                  console.log("SKIP: " + JSON.stringify(params));
+                  debug("SKIP: %s", JSON.stringify(params));
                   continue;
                 }
-                var request = client.getObject(params, function(err, data) {
-                  if (err) {
-                    console.log("ERROR: Failed to S3 GET Object");
-                    console.log(err, err.stack); // an error occurred
-                    done(new Error(`"${err.stack}"`));
-                    return;
-                  }
-                  else {
-                    var obj = JSON.parse(data.Body.toString('ascii'));
+                debug("PARAMS: %s", JSON.stringify(params));
+
+                var request_get_obj = client.getObject(params, function(err, data) {
+                    if (err) {
+                        debug("ERROR: Ignoring Failed to S3 GET Object %s ",
+                            response_list.data.Contents[index].Key);
+                        console.log(err, err.stack);
+                        //done(new Error(`"${err.stack}"`));
+                        //return;
+                    }
+                }
+                // TODO:
+                // Grab All S3 Files, load them into JSON parsed OBJECTS
+                // After all ingested, then send them iterativly to SNS
+                // and call done with the number sent.
+                // currently this goes file by file.
+                request_get_obj.on('success', function(response_get_obj) {
+                    var obj = JSON.parse(response_get_obj.data.Body.toString('ascii'));
                     console.log("SESSION: " + JSON.stringify(obj));
                     for (var index=0; index < obj.length; index++) {
-                      console.log("INDEX: " + index);
-                      id_list.push(obj[index]['Id']);
-                      var payload = JSON.stringify(obj[index]);
-                      console.log("Payload: " + payload);
-                      var params = {
-                        Message: payload,
-                        TopicArn: topicArn
-                      };
-                      sns.publish(params, function(err, data) {
-                        if (err) {
-                          console.log("ERROR: Failed to SNS Publish Job Start");
-                          console.log(err, err.stack); // an error occurred
-                          done(new Error(`"${err.stack}"`));
-                          return;
-                        }
-                      });
+                        console.log("INDEX: " + index);
+                        id_list.push(obj[index]['Id']);
+                        var payload = JSON.stringify(obj[index]);
+                        console.log("Payload: " + payload);
+                        var params = {
+                            Message: payload,
+                            TopicArn: topicArn
+                        };
+                        sns.publish(params, function(err, data) {
+                            if (err) {
+                              console.log("ERROR: Failed to SNS Publish Job Start");
+                              console.log(err, err.stack); // an error occurred
+                              done(new Error(`"${err.stack}"`));
+                              return;
+                            }
+                        });
                     }
                     done(null, id_list);
-                  }
                 });
             }
         });

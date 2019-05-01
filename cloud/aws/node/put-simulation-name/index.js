@@ -28,6 +28,18 @@ exports.handler = function(event, context, callback) {
           'Content-Type': 'application/json',
       },
   });
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
   const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "PUT") {
     var name = event.path.split('/').pop();
@@ -54,21 +66,23 @@ exports.handler = function(event, context, callback) {
     var client = new AWS.S3();
     //var client = s3.createClient(options);
     client.putObject(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else {
-        callback(null, {statusCode:'200', body: event.body,
-          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
-        });
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+        done(new Error(`Failed to S3 upload meta information`));
       }
-    });
-
-    params.Body = "{}";
-    params.Key = user_name + "/" + name + "/" + config_filename;
-    client.putObject(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
       else {
-        callback(null, {statusCode:'200', body: event.body,
-          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        params.Body = "{}";
+        params.Key = user_name + "/" + name + "/" + config_filename;
+        client.putObject(params, function(err, data) {
+          if (err) {
+            console.log(err, err.stack);
+            done(new Error(`Failed to S3 upload application file`));
+          }
+          else {
+            callback(null, {statusCode:'200', body: event.body,
+              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+            });
+          }
         });
       }
     });

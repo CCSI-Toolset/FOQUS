@@ -520,8 +520,8 @@ class OUU(QtCore.QObject): # Must inherit from QObject for plotting to stay in m
         nInputs = M1+M2+M3+M4
 
         # write script
-        #f = open('ouu.in','w')
-        f = tempfile.SpooledTemporaryFile(mode="wt")
+        #f = open('ouu.in','w+b')
+        f = tempfile.SpooledTemporaryFile(mode="w+b")
         if platform.system() == 'Windows':
             import win32api
             fnameOUU = win32api.GetShortPathName(fnameOUU)
@@ -787,5 +787,5 @@ class psuadeWorker(QtCore.QObject):
         if out is None:
             return
         self.fileHandle.close()
-        self.functionSignal.emit(out, error.decode("utf-8"))
+        self.functionSignal.emit(out, error)
         self.finishedSignal.emit()

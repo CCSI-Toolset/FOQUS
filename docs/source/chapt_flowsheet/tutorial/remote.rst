@@ -19,6 +19,9 @@ remote Turbine instance are:
 -  Simulations can be run on machines other than the user’s, so as not
    to tie-up the user’s machine running simulations.
 
+Running Remote Turbine on Your Own Computer
+-------------------------------------------
+
 To run remote turbine on you own computer (e.g., if your
 computer has multiple processors):
 
@@ -103,10 +106,12 @@ computer has multiple processors):
 
    Example of Running the Flowsheet with Remote Turbine
 
+Running Remote Turbine on AWS (Amazon Web Service) or Multiple Computers
+------------------------------------------------------------------------
+
 The steps below demonstrate how to set up FOQUS to run flowsheets
 remotely if the user would like to run FOQUS in parallel in AWS
-(Amazon Web Service) or on multiple computers
-(see Figure :ref:`fig.remote.settings`).
+or on multiple computers (see Figure :ref:`fig.remote.settings`).
 
 1. Obtain a user name, password, and URL from the site’s Turbine
    administrator.

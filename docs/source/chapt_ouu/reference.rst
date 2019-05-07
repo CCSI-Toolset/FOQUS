@@ -173,6 +173,88 @@ becomes:
 
  which is a single-stage OUU with respect to the :math:`G` function.
 
+Windows Users
+-------------
+
+Before using the OUU module, Windows users may need to update the
+following registry keys:
+
+1. HKEY_CLASSES_ROOT\\Applications\\python.exe\\shell\\open\\command
+2. HKEY_CLASSES_ROOT\\py_auto_file\\shell\\open\\command
+
+To update these registry keys:
+
+1. Open the Registry Editor by going to the Windows Start menu,
+   typing "regedit" (without the quotes), and selecting
+   "regedit" (Figure :ref:`fig.Start_Menu`).
+
+.. figure:: ../chapt_ouu/figs/Start_Menu.jpg
+   :alt: regedit in the Windows Start menu
+   :name: fig.Start_Menu
+
+   regedit in the Windows Start menu
+
+2. After the Registry Editor is opened, locate "HKEY_CLASSES_ROOT"
+   (Figure :ref:`fig.HKEY_CLASSES_ROOT`).
+
+.. figure:: ../chapt_ouu/figs/HKEY_CLASSES_ROOT.jpg
+   :alt: HKEY_CLASSES_ROOT in the Registry Editor
+   :name: fig.HKEY_CLASSES_ROOT
+
+   HKEY_CLASSES_ROOT in the Registry Editor
+
+3. Under "HKEY_CLASSES_ROOT", locate "Applications"
+   (Figure :ref:`fig.Applications`).
+
+.. figure:: ../chapt_ouu/figs/Applications.jpg
+   :alt: Applications under HKEY_CLASSES_ROOT
+   :name: fig.Applications
+
+   Applications under HKEY_CLASSES_ROOT
+
+4. Under "Applications", locate "python.exe\\shell\\open\\command"
+   (Figure :ref:`fig.python`).
+
+.. figure:: ../chapt_ouu/figs/python.jpg
+   :alt: python under Applications
+   :name: fig.python
+
+   python under Applications
+
+5. In the table on the right, double-click "(Default)"
+   under "Name" (Figure :ref:`fig.python`).
+
+6. In the input box (Figure :ref:`fig.python`),
+   type (including the quotations):
+   "the location of the Anaconda 3 version of python.exe" "%1" %*
+
+7. After clicking "OK", the information you typed in the input box
+   should appear under "Data" in the table on the right
+   (Figure :ref:`fig.python`).
+
+8. Under "HKEY_CLASSES_ROOT", locate "py_auto_file\\shell\\open\\command"
+   (Figure :ref:`fig.py_auto_file`).
+
+.. figure:: ../chapt_ouu/figs/py_auto_file.jpg
+   :alt: py_auto_file under HKEY_CLASSES_ROOT
+   :name: fig.py_auto_file
+
+   py_auto_file under HKEY_CLASSES_ROOT
+
+9. In the table on the right, double-click "(Default)"
+   under "Name" (Figure :ref:`fig.py_auto_file`).
+
+10. In the input box (Figure :ref:`fig.py_auto_file`),
+    type (including the quotations):
+    "the location of the Anaconda 3 version of python.exe" "%1" %*
+
+11. Note that the code in Step 10 and Step 6 are the same
+    (Figure :ref:`fig.python`).
+
+12. After clicking "OK", the information you typed in the input box
+    should appear under "Data" in the table on the right
+    (Figure :ref:`fig.py_auto_file`).
+
 OUU User Interface
 ------------------
 

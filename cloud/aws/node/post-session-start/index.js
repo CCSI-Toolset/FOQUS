@@ -21,7 +21,7 @@ const abspath = path.resolve(dirPath);
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
 const foqus_job_topic = process.env.FOQUS_JOB_TOPIC;
-// POST SESSION START:
+// post-session-start:
 //  1.  Grab oldest S3 File in bucket foqus-sessions/{username}/{session_uuid}/*.json
 //  2.  Send each job to SNS Job Topic
 //  3.  Update DynamoDB TurbineResources table UUID for each job, State=submit, Submit=MS_SINCE_EPOCH
@@ -38,6 +38,7 @@ exports.handler = function(event, context, callback) {
           'Access-Control-Allow-Origin': '*'
       },
   });
+
   if (event.requestContext == null) {
     context.fail("No requestContext for user mapping")
     return;
@@ -86,6 +87,10 @@ exports.handler = function(event, context, callback) {
                   return;
                 }
         });
+        //
+        // List of files {seconds_since_epoch}.json
+        // containing Array of job requests
+        //
         request_topic.on('success', function(response_topic) {
             var topicArn = response_topic.data.TopicArn;
             console.log("SUCCESS: " + JSON.stringify(response_topic.data));
@@ -104,24 +109,19 @@ exports.handler = function(event, context, callback) {
                   continue;
                 }
                 debug("PARAMS: %s", JSON.stringify(params));
-
-                var request_get_obj = client.getObject(params, function(err, data) {
-                    if (err) {
-                        debug("ERROR: Ignoring Failed to S3 GET Object %s ",
-                            response_list.data.Contents[index].Key);
-                        console.log(err, err.stack);
-                        //done(new Error(`"${err.stack}"`));
-                        //return;
-                    }
-                }
-                // TODO:
                 // Grab All S3 Files, load them into JSON parsed OBJECTS
                 // After all ingested, then send them iterativly to SNS
                 // and call done with the number sent.
                 // currently this goes file by file.
-                request_get_obj.on('success', function(response_get_obj) {
-                    var obj = JSON.parse(response_get_obj.data.Body.toString('ascii'));
-                    console.log("SESSION: " + JSON.stringify(obj));
+                let promise = client.getObject(params).promise();
+                promises.push(promise);
+              }
+              Promise.all(promises).then(function(values) {
+                  // return the result to the caller of the Lambda function
+                  for (var i=0 ; i < values.length; i++ ) {
+                    var data = values[i];
+                    var obj = JSON.parse(data.Body.toString('ascii'));
+                    console.log("SESSION(" + session_id + "):  Notify Starting " + obj.length);
                     for (var index=0; index < obj.length; index++) {
                         console.log("INDEX: " + index);
                         id_list.push(obj[index]['Id']);
@@ -140,9 +140,9 @@ exports.handler = function(event, context, callback) {
                             }
                         });
                     }
-                    done(null, id_list);
-                });
-            }
+                  }
+                  done(null, id_list);
+              });
         });
     });
   }

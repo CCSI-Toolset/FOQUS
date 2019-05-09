@@ -16,11 +16,12 @@ const AWS = require('aws-sdk');
 //const tablename = 'FOQUS_Resources';
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
-const queueURL = process.env.FOQUS_JOB_QUEUE;
-const topicArn = process.env.FOQUS_SNS_UPDATE_TOPIC_ARN;
+const queue_name = process.env.FOQUS_JOB_QUEUE;
+const update_topic_name = process.env.FOQUS_UPDATE_TOPIC;
+const log = require("debug")("foqus-fake-job-runner")
 
 
-var publish_job_updates = function(message) {
+async function publish_job_updates(topic_arn, message) {
   /* { MessageId: '1f811f27-fd27-4d13-b1a4-85f7adead4c6',
        ReceiptHandle: 'AQEB1q2ZIZ4UEsnFiVN+DOqvgvQvAxPx0qzAxQ6vg93p23XYhB34oRVJcf7NdztezonVVgMH+EApkjN8OYq7oUByd3gxveYhOr+EzBKFObnPwFkK11KG5L1u7QYrEKbn8Bxq8+UWL0WEoDpFNO4fb1HbIOiLBl/D5HsfnnvaRGiKSjbYC+oRejSqIkx005USbMcCQrzbM3kmfiRHBxM2iD4vMsmgYWtOBigF8ZMf4iIbMiUrwCbPUWIHrvNSfs8z0ldEsNruymMbEFUJ00eqIZlPJdVl2YCi1Ve4fKZn1Sbsm+hzV7VPxEIZwbULXigeKO9dRL2mJT9hmBOn4HLM6v2/udkDhJHcDp9jLtz2tJZ4tSTwPwKe9CloXBDWgNanoKcE8PthgSK5M/YgznscntCZMw==',
        MD5OfBody: '689dde5570fcd38a36712a9309cf4913',
@@ -114,21 +115,30 @@ var publish_job_updates = function(message) {
      console.log("publish: " + message);
      var params = {
        Message: message,
-       TopicArn: topicArn
+       TopicArn: topic_arn
      };
      //console.log("publish: " +  updates[i]);
-     sns.publish(params, function(err, data) {
+     await sns.publish(params, function(err, data) {
        if (err) console.log(err, err.stack); // an error occurred
        else     console.log(data);           // successful response
-     });
+     }).promise();
      // SLEEP HACK
-     var waitTill = new Date(new Date().getTime() + seconds * 1000);
-     while(waitTill > new Date()){};
+     //var waitTill = new Date(new Date().getTime() + seconds * 1000);
+     //while(waitTill > new Date()){};
    }
 }
+/*
+function handleGetQueue(err, data) {
+  if (err) {
+    log(err, err.stack);
+  }
+  else {
+    log("DATA: " + data);
+  }
+}
+*/
 
 
-console.log('Loading function');
 exports.handler = function(event, context, callback) {
   /*
     "Message": "[{"status\": \"setup\",
@@ -139,10 +149,121 @@ exports.handler = function(event, context, callback) {
     \"job\": \"71d054c2-ca79-4c30-a96b-9078eacd901d\"}]",
   */
     //console.log('Received event:', JSON.stringify(event, null, 4));
-    console.log('Pop job off Queue: ', queueURL);
-    console.log('==================================');
+
+    var request = sns.createTopic({Name: update_topic_name,});
+    var promise = request.promise();
+    promise.then(handleGetQueueURL)
+      .then(handleGetQueueData)
+      .then(handleProcessQueueData)
+      .catch(handleError);
+
+    var update_topic_arn = "";
+    function handleGetQueueURL(data) {
+        log("handleGetQueueURL: " + JSON.stringify(data));
+        update_topic_arn = data.TopicArn;
+        var response =  sqs.getQueueUrl({QueueName: queue_name});
+        return response.promise();
+    };
+    var job_queue_url = "";
+    function handleGetQueueData(data) {
+      log("handleGetQueueData: " + JSON.stringify(data));
+      job_queue_url = data.QueueUrl;
+      var params = {
+        QueueUrl: job_queue_url,
+        AttributeNames: ['All'],
+        MaxNumberOfMessages: 1,
+        VisibilityTimeout: 1,
+        WaitTimeSeconds: 0
+      };
+      var response = sqs.receiveMessage(params);
+      return response.promise();
+    };
+
+    function handleProcessQueueData(response) {
+      log("handleProcessQueueData: " + JSON.stringify(response));
+      var msg = null;
+      for(var idx in response.Messages) {
+        msg = response.Messages[idx];
+        return handleParseSQSBody(JSON.parse(msg.Body)).then(handleParseSQSMessage);
+      }
+      callback();
+    };
+
+    function handleParseSQSBody(body) {
+      var promise = new Promise(function(resolve, reject){
+          setTimeout(function() {
+            log('handleParseSQSBody: ' + body);
+            log('parse: ' + body.Message)
+            resolve(JSON.parse(body.Message));
+          }, 1000);
+      });
+      return promise;
+    };
+    /*
+     * handleParseSQSMessage: {"Initialize":false,
+     *    "Input":{},"Reset":false,
+     *    "Simulation":"OUU","Visible":false,
+     *    "Id":"4c797185-16a9-4b70-aea8-07d810475334"}
+     */
+    function handleParseSQSMessage(msg) {
+      var promise = new Promise(function(resolve, reject){
+          log('handleParseSQSMessage: ' + JSON.stringify(msg));
+          if (msg.Simulation == 'OUU') {
+              var updates = [
+                "[{\"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+                "[{\"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+                "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": \"DUMMY\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+                "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+              ]
+              var promises = [];
+              for (var i in updates) {
+                var obj = JSON.parse(updates[i]);
+                obj[0].jobid = msg.Id;
+                var message = JSON.stringify(obj);
+                log(`publish(${update_topic_arn}): ${message}`);
+                var params = {
+                  Message: message,
+                  TopicArn: update_topic_arn,
+                  Timeout: 2000*i
+                };
+                promises.push(promiseSNSPublish(params));
+              }
+              resolve(promises[0].then(promises[1]).then(promises[2]).then(promises[3]));
+              //resolve(Promise.all(promises));
+              //resolve(msg);
+          } else {
+              reject(new Error(`Unsupported simulation "${msg.Simulation}"`));
+          }
+      });
+      return promise;
+    };
+
+    function promiseSNSPublish(params) {
+      var timeout = params["Timeout"];
+      delete params["Timeout"];
+      var promise = new Promise(function(resolve, reject){
+          setTimeout(function() {
+            log('handleSNSPublish: ' + JSON.stringify(params));
+            var request = sns.publish(params);
+            resolve(request.promise());
+          }, timeout);
+      });
+      return promise;
+    };
+
+    function handleError(error) {
+      log("handleError")
+      if (error.name == "AWS.SimpleQueueService.NonExistentQueue") {
+        log("NonExistentQueue: " + queue_name);
+      } else {
+        log(error, error.stack);
+      }
+      callback(error);
+    };
+
+    /*
     var params = {
-      QueueUrl: queueURL, /* required */
+      QueueUrl: queue_url,
       AttributeNames: [
         'All'
       ],
@@ -158,7 +279,11 @@ exports.handler = function(event, context, callback) {
             return;
         }
         console.log("FOUND ONE SEND JOB CHANGE UPDATES");
-        publish_job_updates(data.Messages[0]);
+        var topic_arn = create_update_topic().promise();
+        var subscription_arn = subscribe_queue_to_topic().promise();
+
+        publish_job_updates(topic_arn, data.Messages[0]);
+
         var deleteParams = {
           QueueUrl: queueURL,
           ReceiptHandle: data.Messages[0].ReceiptHandle
@@ -175,4 +300,5 @@ exports.handler = function(event, context, callback) {
         console.log("NO MESSAGES");
       }
     });
+    */
 };

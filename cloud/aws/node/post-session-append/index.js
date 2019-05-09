@@ -1,5 +1,9 @@
 /**
- * Lambda Function, Add an Array of jobs to a Session
+ * Lambda Function, Add an Array of jobs to a Session.
+ * Uploads JSON Array of jobs to S3 Session bucket with
+ * key "s3://{SESSION_BUCKET_NAME}/user_name/milliseconds_since_epoch.json".
+ * Next for each item in array a DynamoDB entry is made in FOQUS_Resources.
+ *
  * @module post-session-append
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
@@ -10,22 +14,22 @@
 'use AWS.S3'
 'use AWS.DynamoDB'
 'use uuid'
-console.log('Loading function');
+const log = require("debug")("post-session-start")
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
 const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-//const default_user_name = "anonymous";
-const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
+const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 
-// For development/testing purposes
+
 exports.handler = function(event, context, callback) {
-  console.log(`Running index.handler: "${event.httpMethod}"`);
-  console.log("request: " + JSON.stringify(event));
-  console.log('==================================');
+  log(`Running index.handler: "${event.httpMethod}"`);
+  log("request: " + JSON.stringify(event));
+  log('==================================');
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
       body: err ? err.message : JSON.stringify(res),
@@ -33,14 +37,12 @@ exports.handler = function(event, context, callback) {
           'Content-Type': 'application/json',
       },
   });
-  const dynamo_put_cb = function (err, res) {
-  };
   if (event.requestContext == null) {
     context.fail("No requestContext for user mapping")
     return;
   }
   if (event.requestContext.authorizer == null) {
-    console.log("API Gateway Testing");
+    log("API Gateway Testing");
     var content = JSON.stringify([]);
     callback(null, {statusCode:'200', body: content,
       headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
@@ -49,7 +51,7 @@ exports.handler = function(event, context, callback) {
   }
   const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
-    console.log("BODY: " + event.body)
+    log("BODY: " + event.body)
     var body = JSON.parse(event.body);
     var milliseconds = (new Date).getTime();
     var session_id = event.path.substring(event.path.lastIndexOf("/") + 1,
@@ -68,15 +70,18 @@ exports.handler = function(event, context, callback) {
 
     var client = new AWS.S3();
     var request = client.putObject(params, function(err, data) {
-        if (err) console.log(err, err.stack);
+        if (err) {
+          log(err, err.stack);
+          done(err);
+        }
     });
     request.on('success', function(response) {
-        console.log("S3 SUCCESS: " + JSON.stringify(response.data));
+        log("S3 SUCCESS: " + JSON.stringify(response.data));
         var items = [];
         var params = {
           RequestItems: {
-            "FOQUS_Resources": items
         }};
+        params["RequestItems"][tablename] = items;
         var item = null;
         var i = 0;
         var id_list = [];
@@ -96,15 +101,16 @@ exports.handler = function(event, context, callback) {
 
           items.push({PutRequest: { Item: item } });
         }
-        console.log(JSON.stringify(params));
+        log(JSON.stringify(params));
         var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
         dynamodb.batchWrite(params, function(err, data) {
-          console.log("BATCH WRITE")
+          log("BATCH WRITE")
           if (err) {
-            console.log(err, err.stack); // an error occurred
+            log(err, err.stack); // an error occurred
+            done(err);
           }
           else {
-            console.log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
+            log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
             callback(null, {statusCode:'200', body: JSON.stringify(id_list),
               headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
             });
@@ -115,6 +121,6 @@ exports.handler = function(event, context, callback) {
   else {
           done(new Error(`Unsupported method "${event.httpMethod}"`));
   }
-  console.log('==================================');
-  console.log('Stopping index.handler');
+  log('==================================');
+  log('Stopping index.handler');
 };

@@ -3,7 +3,7 @@ logs
 build
 node_modules
 .lock-wscript
-deploy.env
+*.env
 event_sources.json
 .DS_Store
 .env

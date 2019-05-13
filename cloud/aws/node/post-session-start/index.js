@@ -29,7 +29,6 @@ const foqus_update_topic = process.env.FOQUS_UPDATE_TOPIC;
 exports.handler = function(event, context, callback) {
   debug(`Running index.handler: "${event.httpMethod}"`);
   debug("request: " + JSON.stringify(event));
-  debug('==================================');
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
       body: err ? err.message : JSON.stringify(res),

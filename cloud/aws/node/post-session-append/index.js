@@ -14,7 +14,9 @@
 'use AWS.S3'
 'use AWS.DynamoDB'
 'use uuid'
-const log = require("debug")("post-session-start")
+const log = require("debug")("post-session-append")
+
+
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
 const fs = require('fs');
@@ -101,22 +103,25 @@ exports.handler = function(event, context, callback) {
 
           items.push({PutRequest: { Item: item } });
         }
-        log(JSON.stringify(params));
+        log("BatchWrite: " + JSON.stringify(params));
         var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
         dynamodb.batchWrite(params, function(err, data) {
-          log("BATCH WRITE")
           if (err) {
-            log(err, err.stack); // an error occurred
-            done(err);
+            log(new Error(`"${err.stack}"`));
+            //callback(null, {statusCode:'500', body: "DynamoDB BatchWrite failed",
+            //  headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+            //});
+            callback(new Error(`"${err.stack}"`));
           }
           else {
-            log("Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
+            log("BatchWrite Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
             callback(null, {statusCode:'200', body: JSON.stringify(id_list),
               headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
             });
           }
         });
     });
+
   }
   else {
           done(new Error(`Unsupported method "${event.httpMethod}"`));

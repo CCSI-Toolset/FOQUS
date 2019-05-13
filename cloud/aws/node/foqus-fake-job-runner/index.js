@@ -37,10 +37,10 @@ async function publish_job_updates(topic_arn, message) {
    job_request = JSON.parse(job_request.Message);
    console.log("FOUND JOB: " +  job_request.Id);
    var updates = [
-     "[{\"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-     "[{\"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-     "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": \"DUMMY\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-     "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+     "[{\"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\"}]",
+     "[{\"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\"]",
+     "[{\"event\": \"output\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"resource\": \"job\", \"value\": \"DUMMY\", \"rc\": 0}]",
+     "[{\"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"b5dd83d8-3762-470d-9ba1-34ce6f0e753d\"}]",
    ]
 
    /*

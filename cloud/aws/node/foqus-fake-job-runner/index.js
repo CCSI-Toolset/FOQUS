@@ -12,8 +12,6 @@
 'use AWS.S3'
 'use uuid'
 const AWS = require('aws-sdk');
-//const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-//const tablename = 'FOQUS_Resources';
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
 const queue_name = process.env.FOQUS_JOB_QUEUE;
@@ -172,7 +170,7 @@ exports.handler = function(event, context, callback) {
         QueueUrl: job_queue_url,
         AttributeNames: ['All'],
         MaxNumberOfMessages: 1,
-        VisibilityTimeout: 1,
+        VisibilityTimeout: 10,
         WaitTimeSeconds: 0
       };
       var response = sqs.receiveMessage(params);

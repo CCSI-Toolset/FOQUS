@@ -1,6 +1,9 @@
 /**
- * Lambda Function, moves all jobs in session from state 'create|pause' to
- * 'submit'.
+ * Lambda Function, lists all files with S3 Prefix s3://bucket/{session_id}/,
+ *   get each file which contains a JSON array of job descriptions and Publish
+ *   each job to the FOQUS Update Notification topic where the lambda function
+ *   foqus-sns-update is listening.
+ *
  * @module post-session-start
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
@@ -62,8 +65,8 @@ exports.handler = function(event, context, callback) {
       Prefix: user_name + '/' + session_id + '/',
       StartAfter: user_name + '/' + session_id + '/'
     };
-    var client = new AWS.S3();
-    var request_list = client.listObjectsV2(params, function(err, data) {
+    var s3 = new AWS.S3();
+    var request_list = s3.listObjectsV2(params, function(err, data) {
         if (err) {
           debug(err, err.stack); // an error occurred
           done(new Error(`"${err.stack}"`));
@@ -112,7 +115,7 @@ exports.handler = function(event, context, callback) {
                 // After all ingested, then send them iterativly to SNS
                 // and call done with the number sent.
                 // currently this goes file by file.
-                let promise = client.getObject(params).promise();
+                let promise = s3.getObject(params).promise();
                 promises.push(promise);
               }
               Promise.all(promises).then(function(values) {
@@ -124,6 +127,9 @@ exports.handler = function(event, context, callback) {
                     for (var index=0; index < obj.length; index++) {
                         debug("INDEX: " + index);
                         id_list.push(obj[index]['Id']);
+                        obj[index].status = 'submit'
+                        obj[index].jobid = obj[index].Id
+                        obj[index].consumer = '00000000-0000-0000-0000-000000000000';
                         var payload = JSON.stringify(obj[index]);
                         debug("Payload: " + payload);
                         var params = {

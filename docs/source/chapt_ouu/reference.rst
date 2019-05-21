@@ -278,7 +278,7 @@ Figure [fig:ouu\_screen].
 
 #. **Variables** displays all variables defined in the model that can be
    used in this context. Each available variable can be set to either
-   one of the 5 types:
+   one of the 6 types:
 
    -  "Fixed": The parameter’s value is fixed throughout the optimization
       process.

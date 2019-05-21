@@ -11,8 +11,7 @@
 console.log('Loading function');
 const AWS = require('aws-sdk');
 const path = require('path');
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 
 // PATH: /session/{GUID}/result/{GUID}/{page_num}
 exports.handler = function(event, context, callback) {
@@ -29,6 +28,7 @@ exports.handler = function(event, context, callback) {
   });
   if (event.httpMethod == "GET") {
     console.log("PATH: " + event.path);
+    const user_name = event.requestContext.authorizer.principalId;
       var path = event.path.split('/');
       var page = path.pop();
       var gen_id = path.pop();
@@ -40,7 +40,7 @@ exports.handler = function(event, context, callback) {
 
       var params = {
         Bucket: s3_bucket_name,
-        Key: default_user_name + '/' + session_id + "/" + gen_id + "/" + page + '.json',
+        Key: user_name + '/' + session_id + "/" + gen_id + "/" + page + '.json',
       };
       var client = new AWS.S3();
       client.getObject(params, function(err, data) {

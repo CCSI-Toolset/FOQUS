@@ -4,8 +4,13 @@
     "Accept": "application/json"
   },
   "httpMethod": "GET",
-  "path": "/session/2c367f25-ccc9-44c4-9f1d-51f69186b105/result/b3943818-0791-48e0-8543-90ed8f456ad6/1",
+  "path": "/session/9d8494a2-6ba0-4bef-878d-53fdf6ebe8ee/result/00000000-0000-0000-0000-000000000000/1",
   "queryStringParameters": {
     "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
   }
 }

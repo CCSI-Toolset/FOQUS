@@ -15,8 +15,6 @@
 'use AWS.DynamoDB'
 'use uuid'
 const log = require("debug")("post-session-append")
-
-
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
 const fs = require('fs');

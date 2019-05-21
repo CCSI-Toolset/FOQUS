@@ -4,6 +4,7 @@ build
 node_modules
 .lock-wscript
 deploy.env
+test.env
 event_sources.json
 package-lock.json 
 .DS_Store

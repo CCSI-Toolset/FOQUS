@@ -15,8 +15,7 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-simulations";
+const s3_bucket_name = process.env.SIMULATION_BUCKET_NAME;
 
 // PATH: /simulation/OUU/input/configuration
 exports.handler = function(event, context, callback) {
@@ -37,6 +36,7 @@ exports.handler = function(event, context, callback) {
     var array = event.path.split('/');
     var item = array.pop();
     var key = null;
+    const user_name = event.requestContext.authorizer.principalId;
 
     if (item == "input") {
       done(new Error(`Unsupported path "${event.path}"`));
@@ -67,10 +67,10 @@ exports.handler = function(event, context, callback) {
       Bucket: s3_bucket_name
     };
     if (key == "configuration") {
-      params.Prefix = default_user_name + "/" + sim_name + "/";
+      params.Prefix = user_name + "/" + sim_name + "/";
     }
     else {
-      params.Key = default_user_name + "/" + sim_name + "/" + key;
+      params.Key = user_name + "/" + sim_name + "/" + key;
       console.log("FILE RETRIEVE: " + params.Key);
       client.getObject(params, function(err, data) {
         /* FILE RETRIEVE: anonymous/OUU/BFB/BFB_v11_FBS_01_26_2018.acmf

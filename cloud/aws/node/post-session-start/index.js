@@ -127,6 +127,7 @@ exports.handler = function(event, context, callback) {
                     for (var index=0; index < obj.length; index++) {
                         debug("INDEX: " + index);
                         id_list.push(obj[index]['Id']);
+                        obj[index].resource = 'job'
                         obj[index].status = 'submit'
                         obj[index].jobid = obj[index].Id
                         obj[index].consumer = '00000000-0000-0000-0000-000000000000';
@@ -134,6 +135,12 @@ exports.handler = function(event, context, callback) {
                         debug("Payload: " + payload);
                         var params = {
                             Message: payload,
+                            MessageAttributes: {
+                              'event': {
+                                DataType: 'String',
+                                StringValue: 'job.submit'
+                              },
+                            },
                             TopicArn: topicArn
                         };
                         sns.publish(params, function(err, data) {

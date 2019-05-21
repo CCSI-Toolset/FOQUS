@@ -10,6 +10,7 @@
  */
 'use strict';
 'use uuid'
+var util = require('util');
 const AWS = require('aws-sdk');
 const log = require("debug")("foqus-sns-update")
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
@@ -166,10 +167,17 @@ var process_consumer_event = function(ts, message, callback) {
  *
  */
 exports.handler = function(event, context, callback) {
-    log('Received event:', JSON.stringify(event, null, 4));
+    //log('Received event:', JSON.stringify(event, null, 4));
     var message = JSON.parse(event.Records[0].Sns.Message);
     var ts = event.Records[0].Sns.Timestamp;
+    log('Received event:', event.Records[0].Sns.Message);
 
+    if (util.isArray(message) == false) {
+        message.resource = "job";
+        message.event = "submit"
+        message = [message];
+
+    }
     for (var i = 0; i < message.length; i++) {
       var resource = message[i]['resource'];
       if (resource == "job") {

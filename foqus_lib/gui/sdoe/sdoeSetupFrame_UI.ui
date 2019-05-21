@@ -85,7 +85,7 @@
               </widget>
              </item>
              <item row="0" column="0">
-              <widget class="QPushButton" name="addFileButton">
+              <widget class="QPushButton" name="addSimulationButton">
                <property name="font">
                 <font>
                  <weight>50</weight>

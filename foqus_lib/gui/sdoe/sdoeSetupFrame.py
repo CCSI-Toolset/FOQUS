@@ -4,7 +4,7 @@ import logging
 import numpy
 import copy
 import shutil
-from foqus_lib.gui.uq.updateUQModelDialog import *
+from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.uq.SimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
@@ -112,7 +112,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterFrame.layout().addWidget(self.filterWidget)
 
         ###### Set up simulation ensembles section
-        self.addFileButton.setEnabled(False)
+        self.addSimulationButton.clicked.connect(self.addSimulation)
+        self.addSimulationButton.setEnabled(True)
         self.loadFileButton.clicked.connect(self.loadSimulation)
         self.loadFileButton.setEnabled(True)
         self.cloneButton.clicked.connect(self.cloneSimulation)
@@ -167,7 +168,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.analyzeButton.clicked.connect(self.launchSdoe)
         self.analyzeButton.setEnabled(True)
         self.filesTable.setEnabled(False)
-        self.addFileButton.setEnabled(False)
+        self.addSimulationButton.setEnabled(False)
         self.loadFileButton.setEnabled(False)
         self.cloneButton.setEnabled(False)
         self.deleteButton.setEnabled(False)
@@ -230,7 +231,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
         self.filesTable.setEnabled(True)
-        self.addFileButton.setEnabled(False)
+        self.addSimulationButton.setEnabled(True)
         self.loadFileButton.setEnabled(True)
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
@@ -238,7 +239,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dataTabs.setEnabled(True)
         self.confirmButton.setEnabled(self.hasCandidates())
 
-    #######################################################################################
     def refresh(self):
         numSims = len(self.dat.uqSimList)
         self.filesTable.setRowCount(numSims)
@@ -281,6 +281,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             newName = item.text()
             sim.setModelName(newName)
 
+    def addSimulation(self):
+
+        updateDialog = updateSDOEModelDialog(self.dat, self)
+        result = updateDialog.exec_()
+        if result == QDialog.Rejected:
+            return
+
+        simDialog = SimSetup(self.dat.uqModel, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        simDialog.show()
+
+
     def cloneSimulation(self):
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
@@ -296,7 +307,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # Update table
         self.updateSimTable()
 
-        
+
     def loadSimulation(self):
 
         self.freeze()
@@ -417,7 +428,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
         return (len(cand_list) > 0)
-    
+
     def addDataToSimTable(self, data):
         if data is None:
             return

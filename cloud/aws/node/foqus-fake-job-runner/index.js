@@ -171,8 +171,16 @@ exports.handler = function(event, context, callback) {
       var msg = null;
       for(var idx in response.Messages) {
         msg = response.Messages[idx];
-        return handleParseSQSBody(JSON.parse(msg.Body)).then(handleParseSQSMessage);
+        var deleteParams = {
+          QueueUrl: job_queue_url,
+          ReceiptHandle: msg.ReceiptHandle
+        };
+        log("handleProcessQueueData:  " + job_queue_url);
+        return handleParseSQSBody(JSON.parse(msg.Body))
+          .then(handleParseSQSMessage)
+          .then(sqs.deleteMessage(deleteParams).promise());
       }
+      log("handleProcessQueueData: no queued jobs available on " + job_queue_url);
       callback();
     };
 

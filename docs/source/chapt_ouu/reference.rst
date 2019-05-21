@@ -278,20 +278,22 @@ Figure [fig:ouu\_screen].
 
 #. **Variables** displays all variables defined in the model that can be
    used in this context. Each available variable can be set to either
-   one of the 5 types:
+   one of the 6 types:
 
-   -  fixed (the parameter’s value is fixed throughout the optimization
-      process)
+   -  "Fixed": The parameter’s value is fixed throughout the optimization
+      process.
 
-   -  primary (parameter for the outer optimization)
+   -  "Opt: Primary Continuous (Z1)": Continuous parameter for the outer optimization.
+   
+   -  "Opt: Primary Discrete (Z1d)": Discrete parameter for the outer optimization.
 
-   -  recourse (parameter for the inner optimization)
+   -  "Opt: Recourse (Z2)": Recourse parameter for the inner optimization.
 
-   -  discrete (categorical uncertain parameter that contributes to
-      scenarios)
+   -  "UQ: Discrete (Z3)": Discrete or categorical uncertain parameter that contributes to
+      scenarios.
 
-   -  continuous (continuous uncertain parameter with a given
-      probability distribution)
+   -  "UQ: Continuous (Z4)": Continuous uncertain parameter with a given
+      probability distribution.
 
 #. **Optimization Setup** allows users to select the objective function
    for OUU. It also allows users to select the inner optimization

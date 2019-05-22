@@ -140,9 +140,15 @@ exports.handler = function(event, context, callback) {
         headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
       });
     };
-
+    function handleDone() {
+        log("handleDone");
+        callback(null, {statusCode:'200', body: JSON.stringify(id_list),
+          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        });
+    }
     var promise = parseBodyJSON(event);
     promise.then(writeToDynamo)
       .then(putS3)
+      .then(handleDone)
       .catch(handleError);
 };

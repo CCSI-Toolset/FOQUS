@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>979</width>
-    <height>858</height>
+    <width>1516</width>
+    <height>1207</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -107,28 +107,20 @@
     </layout>
    </item>
    <item>
-    <widget class="QGroupBox" name="groupBox">
-     <property name="maximumSize">
-      <size>
-       <width>16777215</width>
-       <height>120</height>
-      </size>
-     </property>
-     <property name="title">
-      <string>Method Description</string>
-     </property>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="QTextBrowser" name="methodDescriptionBox"/>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item>
     <widget class="QTabWidget" name="toolBox">
      <property name="currentIndex">
       <number>0</number>
      </property>
+     <widget class="QWidget" name="tab_5">
+      <attribute name="title">
+       <string>Method Description</string>
+      </attribute>
+      <layout class="QVBoxLayout" name="verticalLayout_7">
+       <item>
+        <widget class="QTextBrowser" name="methodDescriptionBox"/>
+       </item>
+      </layout>
+     </widget>
      <widget class="QWidget" name="tab">
       <attribute name="title">
        <string>Data</string>

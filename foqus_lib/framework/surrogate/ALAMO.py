@@ -686,7 +686,7 @@ class surrogateMethod(surrogate):
             af.write("sampler {0}\n".format(adaptive))
             af.write("maxiter {0}\n".format(maxiter))
             af.write("maxsim {0}\n".format(maxsim))
-            af.write("simulator {0}\n".format(adaptiveExe))
+            af.write("simulator {} {}\n".format("python", adaptiveExe))
             af.write('#simin input.txt\n')
             af.write('#simout output.txt\n')
             af.write("ninputs {0}\n".format(nin))

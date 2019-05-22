@@ -27,56 +27,72 @@ const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 
 
 exports.handler = function(event, context, callback) {
-  log(`Running index.handler: "${event.httpMethod}"`);
-  log("request: " + JSON.stringify(event));
-  log('==================================');
-  const done = (err, res) => callback(null, {
-      statusCode: err ? '400' : '200',
-      body: err ? err.message : JSON.stringify(res),
-      headers: {
-          'Content-Type': 'application/json',
-      },
-  });
-  if (event.requestContext == null) {
-    context.fail("No requestContext for user mapping")
-    return;
-  }
-  if (event.requestContext.authorizer == null) {
-    log("API Gateway Testing");
-    var content = JSON.stringify([]);
-    callback(null, {statusCode:'200', body: content,
-      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
-    });
-    return;
-  }
-  const user_name = event.requestContext.authorizer.principalId;
-  if (event.httpMethod == "POST") {
-    log("BODY: " + event.body)
-    var body = JSON.parse(event.body);
-    var milliseconds = (new Date).getTime();
-    var session_id = event.path.substring(event.path.lastIndexOf("/") + 1,
-                        event.path.length);
-    // Add JOB UUIDS
-    for (var i=0; i<body.length; i++) {
-      body[i].Id = uuidv4();
+    log(`Running index.handler: "${event.httpMethod}"`);
+
+    if (event.requestContext == null) {
+        context.fail("No requestContext for user mapping");
+        callback(null, {statusCode:'500', body: "No requestContext for user mapping",
+          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        });
+        return;
     }
-    var content = JSON.stringify(body);
-
-    var params = {
-      Bucket: s3_bucket_name,
-      Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
-      Body: content
+    if (event.requestContext.authorizer == null) {
+        log("API Gateway Testing");
+        var content = JSON.stringify([]);
+        callback(null, {statusCode:'200', body: content,
+          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        });
+        return;
+    }
+    if (event.httpMethod != "POST") {
+        context.fail(`Unsupported method "${event.httpMethod}"`);
+        callback(null, {statusCode:'400', body: new Error(`Unsupported method "${event.httpMethod}"`),
+          headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        });
+        return;
+    }
+    const s3 = new AWS.S3();
+    const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
+    const user_name = event.requestContext.authorizer.principalId;
+    const milliseconds = (new Date).getTime();
+    const session_id = event.path.substring(event.path.lastIndexOf("/") + 1,
+                        event.path.length);
+    var id_list = [];
+    var obj = null;
+    function parseBodyJSON() {
+        var promise = new Promise(function(resolve, reject){
+            log('parseBodyJSON');
+            obj = JSON.parse(event.body);
+            for (var i=0; i<obj.length; i++) {
+                obj[i].Id = uuidv4();
+            }
+            resolve(obj);
+        });
+        return promise;
     };
-
-    var client = new AWS.S3();
-    var request = client.putObject(params, function(err, data) {
-        if (err) {
-          log(err, err.stack);
-          done(err);
-        }
-    });
-    request.on('success', function(response) {
-        log("S3 SUCCESS: " + JSON.stringify(response.data));
+    function putS3() {
+        var promise = new Promise(function(resolve, reject){
+            log(`putS3 items: ${obj.length}`);
+            var content = JSON.stringify(obj);
+            if(content == undefined) {
+                throw new Error("s3 object is undefined")
+            }
+            if(content.length == undefined) {
+                throw new Error("s3 object is empty")
+            }
+            var params = {
+              Bucket: s3_bucket_name,
+              Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
+              Body: content
+            };
+            log(`putS3(${params.Bucket}):  ${params.Key}`);
+            var request = s3.putObject(params);
+            resolve(request.promise());
+        });
+        return promise;
+    };
+    function writeToDynamo(obj) {
+        log(`writeToDynamo:  count=${obj.length}`);
         var items = [];
         var params = {
           RequestItems: {
@@ -84,46 +100,49 @@ exports.handler = function(event, context, callback) {
         params["RequestItems"][tablename] = items;
         var item = null;
         var i = 0;
-        var id_list = [];
-        for(var i=0; i<body.length; i++) {
+        for(var i=0; i<obj.length; i++) {
           var d = new Date(milliseconds+i);
-          id_list.push(body[i].Id);
-          item = {Id: body[i].Id,
+          id_list.push(obj[i].Id);
+          item = {Id: obj[i].Id,
                   Type: "Job",
                   Create: d.toISOString(),
                   SessionId: session_id,
                   User: user_name,
-                  Initialize: body[i].Initialize,
-                  Input: body[i].Input,
-                  Reset:body[i].Reset,
-                  Simulation: body[i].Simulation,
+                  Initialize: obj[i].Initialize,
+                  Input: obj[i].Input,
+                  Reset:obj[i].Reset,
+                  Simulation: obj[i].Simulation,
                   Application: "foqus"};
 
           items.push({PutRequest: { Item: item } });
         }
-        log("BatchWrite: " + JSON.stringify(params));
-        var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-        dynamodb.batchWrite(params, function(err, data) {
-          if (err) {
-            log(new Error(`"${err.stack}"`));
-            //callback(null, {statusCode:'500', body: "DynamoDB BatchWrite failed",
-            //  headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
-            //});
-            callback(new Error(`"${err.stack}"`));
-          }
-          else {
-            log("BatchWrite Unprocessed Items: " + JSON.stringify(data.UnprocessedItems));           // successful response
-            callback(null, {statusCode:'200', body: JSON.stringify(id_list),
-              headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
-            });
-          }
-        });
-    });
+        log(`Dynamodb.batchWrite to ${tablename}`);
+        var response = dynamodb.batchWrite(params);
+        return response.promise().then(checkForUnprocessedItems);
+    };
+    function checkForUnprocessedItems(response) {
+        log(`checkForUnprocessedItems: ${JSON.stringify(response)}`);
+        if (Object.keys(response.UnprocessedItems).length == 0) {
+          log("Zero UnprocessedItems")
+          return;
+        }
+        var params = {
+          RequestItems: {
+        }};
+        params["RequestItems"][tablename] = response.UnprocessedItems;
+        log(`Dynamodb.batchWrite to ${tablename}`);
+        var response = dynamodb.batchWrite(params);
+        return response.promise().then(checkForUnprocessedItems);
+    }
+    function handleError(error) {
+      log(`handleError ${error.name}`);
+      callback(error, {statusCode:'400', body: error.name,
+        headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+      });
+    };
 
-  }
-  else {
-          done(new Error(`Unsupported method "${event.httpMethod}"`));
-  }
-  log('==================================');
-  log('Stopping index.handler');
+    var promise = parseBodyJSON(event);
+    promise.then(writeToDynamo)
+      .then(putS3)
+      .catch(handleError);
 };

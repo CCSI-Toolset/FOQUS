@@ -159,9 +159,15 @@ class Results(pd.DataFrame):
                 # this would happen for cols with less than two .'s
                 continue
             if typ=="input":
-                fs.nodes[node].inVars[var].value = self.loc[row, col]
+                try:
+                    fs.nodes[node].inVars[var].value = self.loc[row, col]
+                except KeyError:
+                    pass
             elif typ=="output":
-                fs.nodes[node].outVars[var].value = self.loc[row, col]
+                try:
+                    fs.nodes[node].outVars[var].value = self.loc[row, col]
+                except KeyError:
+                    pass
 
     def set_calculated_column(self, name, expr):
         self.calculated_columns[name] = expr
@@ -193,6 +199,12 @@ class Results(pd.DataFrame):
     def delete_rows(self, rows, filtered=True):
         idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
         self.drop(idxs, axis=0, inplace=True)
+        self.update_filter_indexes()
+
+    def edit_set_name(self, name, rows, filtered=True):
+        idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
+        for idx in idxs:
+            self.loc[idx, "set"] = name
         self.update_filter_indexes()
 
     def incrimentSetName(self, name):

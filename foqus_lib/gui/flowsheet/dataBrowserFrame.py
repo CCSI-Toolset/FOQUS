@@ -172,8 +172,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         rows = self.selectedRows()
         if len(rows) < 1:
             return
-        self.results.rowToFlowsheet(
-            rows[0], self.dat.flowsheet, fltr=True)
+        self.results.row_to_flow(
+            self.dat.flowsheet, rows[0], filtered=True)
         self.dat.mainWin.refresh()
 
     def runSelectedRows(self):
@@ -270,7 +270,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
 
-        self.results.addResult( )
+        self.results.add_result(sd=self.dat.flowsheet.saveValues(),
+                                result_name="empty", empty=True)
         self.refreshContents()
 
     def selectedRows(self):

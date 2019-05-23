@@ -145,7 +145,6 @@ In this tutorial, a simulation ensemble is created and run.
       Figure :ref:`fig.uqt_sim`), and try selecting
       “Load all samples from a single file.” With this selection, a new
       dialog box
-      (Figure :ref:`fig.uq_sim_loadsample`)
       prompts the user to browse to a PSUADE full file, a PSUADE sample
       file, or CSV file (all formats are described in
       Section\ `[ap:psuadefiles] <#ap:psuadefiles>`__) that contains
@@ -188,7 +187,7 @@ In this tutorial, a simulation ensemble is created and run.
    PSUADE in its default location (C:\Program Files (x86)\psuade_project
    1.7.1\bin\psuade.exe) and the user did not update the PSUADE path in
    FOQUS settings (refer to
-   Section :ref:`session-menu`), then the user is
+   Section :ref:`section.settings`), then the user is
    prompted to locate the PSUADE executable in a file dialog.
 
 #. Once the samples are generated, the user can examine them by clicking

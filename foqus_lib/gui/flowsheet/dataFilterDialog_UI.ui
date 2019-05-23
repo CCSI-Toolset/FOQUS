@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>729</width>
-    <height>411</height>
+    <width>849</width>
+    <height>499</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -122,7 +122,7 @@
       </sizepolicy>
      </property>
      <property name="title">
-      <string>Columns (Drag and Drop or Double-Click to Copy)</string>
+      <string>Columns (Drag and Drop)</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>

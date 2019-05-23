@@ -16,9 +16,9 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
         self.setupUi(self) # Create the widgets
         self.dat = dat     # all of the session data
         self.nodeMask = None
-        self.refreshButton.clicked.connect( self.refreshVars )
-        self.closeButton.clicked.connect( self.close )
-        self.treeWidget.currentItemChanged.connect( self.itemSelect )
+        self.refreshButton.clicked.connect(self.refreshVars)
+        self.closeButton.clicked.connect(self.close)
+        self.treeWidget.currentItemChanged.connect(self.itemSelect)
         self.format = "optimization"
 
     def itemSelect(self, item, prev):
@@ -33,7 +33,7 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
             if self.format == "node":
                 text = "%s[\"%s\"]" % (mode, vkey)
             elif self.format == "optimization":
-                text = "%s[\"%s\"][\"%s\"][0]" % (mode, nkey, vkey)
+                text = "%s[\"%s\"][\"%s\"]" % (mode, nkey, vkey)
             self.varText.setText(text)
 
     def refreshVars(self):

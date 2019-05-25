@@ -107,8 +107,7 @@ class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
         data.model.setInputMins(mins)
         data.model.setInputMaxs(maxs)
         data.model.setInputDefaults(defaults)
-        #data.setSession = self.dat
-        self.dat.uqModel = data.model
+        self.dat.model = data.model
         self.done(QDialog.Accepted)
 
     def reject(self):

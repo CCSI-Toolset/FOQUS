@@ -5,7 +5,7 @@ import numpy
 import copy
 import shutil
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
-from foqus_lib.gui.uq.SimSetup import *
+from foqus_lib.gui.sdoe.sdoeSimSetup import *
 from foqus_lib.gui.uq.stopEnsembleDialog import *
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 from foqus_lib.framework.uq.SampleData import *
@@ -182,12 +182,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def getEnsembleList(self):
         cand_list = []
         hist_list = []
-        numFiles = len(self.dat.uqSimList)
+        numFiles = len(self.dat.sdoeSimList)
         for i in range(numFiles):
             if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
-                cand_list.append(self.dat.uqSimList[i])
+                cand_list.append(self.dat.sdoeSimList[i])
             elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
-                hist_list.append(self.dat.uqSimList[i])
+                hist_list.append(self.dat.sdoeSimList[i])
         return cand_list, hist_list   # returns sample data structures
 
     def aggregateEnsembleList(self):
@@ -240,7 +240,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmButton.setEnabled(self.hasCandidates())
 
     def refresh(self):
-        numSims = len(self.dat.uqSimList)
+        numSims = len(self.dat.sdoeSimList)
         self.filesTable.setRowCount(numSims)
         for i in range(numSims):
             self.updateSimTableRow(i)
@@ -266,7 +266,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(True)
 
         row = selectedIndexes[0].row()
-        sim = self.dat.uqSimList[row]
+        sim = self.dat.sdoeSimList[row]
 
         self.freeze()
         self.initUQToolBox()
@@ -276,7 +276,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def simDescriptionChanged(self, row, column):
         if column == sdoeSetupFrame.nameCol:
-            sim = self.dat.uqSimList[row]
+            sim = self.dat.sdoeSimList[row]
             item = self.filesTable.item(row, column)
             newName = item.text()
             sim.setModelName(newName)
@@ -288,21 +288,21 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if result == QDialog.Rejected:
             return
 
-        simDialog = SimSetup(self.dat.uqModel, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal = self.addDataSignal, parent = self)
         simDialog.show()
 
 
     def cloneSimulation(self):
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        sim = copy.deepcopy(self.dat.uqSimList[row]) # Create copy of sim
+        sim = copy.deepcopy(self.dat.sdoeSimList[row]) # Create copy of sim
         sim.clearRunState()
         sim.turbineSession = None
         sim.turbineJobIds = []
-        self.dat.uqSimList.append(sim)  # Add to simulation list
+        self.dat.sdoeSimList.append(sim)  # Add to simulation list
         res = Results()
-        res.uq_add_result(sim)
-        self.dat.uqFilterResultsList.append(sim)
+        res.sdoe_add_result(sim)
+        self.dat.sdoeFilterResultsList.append(sim)
 
         # Update table
         self.updateSimTable()
@@ -337,11 +337,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 self.unfreeze()
                 return
         data.setSession(self.dat)
-        self.dat.uqSimList.append(data)
+        self.dat.sdoeSimList.append(data)
 
         res = Results()
-        res.uq_add_result(data)
-        self.dat.uqFilterResultsList.append(res)
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList.append(res)
         shutil.copy(fileName, self.dname)
 
         # Update table
@@ -351,7 +351,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def updateSimTable(self):
         # Update table
-        numSims = len(self.dat.uqSimList)
+        numSims = len(self.dat.sdoeSimList)
         self.filesTable.setRowCount(numSims)
         self.updateSimTableRow(numSims - 1)
         self.filesTable.selectRow(numSims - 1)
@@ -366,16 +366,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = self.filesTable.selectedIndexes()[0].row()
 
         # Delete simulation
-        self.dat.uqSimList.pop(row)
-        self.dat.uqFilterResultsList.pop(row)
+        self.dat.sdoeSimList.pop(row)
+        self.dat.sdoeFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
-        numSims = len(self.dat.uqSimList)
+        numSims = len(self.dat.sdoeSimList)
         if numSims > 0:
             if row >= numSims:
                 self.filesTable.selectRow(numSims - 1)
                 row = numSims - 1
-            sim = self.dat.uqSimList[row]
+            sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
 
 
@@ -386,7 +386,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
 
-        sim = self.dat.uqSimList[row]
+        sim = self.dat.sdoeSimList[row]
         fileName, selectedFilter = QFileDialog.getSaveFileName(self,
                                                                "File to Save Ensemble",
                                                                '',
@@ -405,7 +405,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.changeDataSignal.disconnect()
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
 
-        previewData = self.dat.uqSimList[row]
+        previewData = self.dat.sdoeSimList[row]
         dialog = sdoePreview(previewData, self.dname, self)
         dialog.show()
 
@@ -432,26 +432,26 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def addDataToSimTable(self, data):
         if data is None:
             return
-        self.dat.uqSimList.append(data)
+        self.dat.sdoeSimList.append(data)
         res = Results()
-        res.uq_add_result(data)
-        self.dat.uqFilterResultsList.append(res)
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList.append(res)
 
         self.updateSimTable()
 
     def changeDataInSimTable(self, data, row):
         if data is None:
             return
-        self.dat.uqSimList[row] = data
+        self.dat.sdoeSimList[row] = data
         res = Results()
-        res.uq_add_result(data)
-        self.dat.uqFilterResultsList[row] = res
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList[row] = res
 
         self.updateSimTableRow(row)
 
 
     def updateSimTableRow(self, row):
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
         item = self.filesTable.item(row, self.numberCol)
         if item is None:
             item = QTableWidgetItem()
@@ -601,7 +601,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
 
         newdata = data.getSubSample(indices)
 
@@ -609,10 +609,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         newdata.setSession(self.dat)
 
         # add to simulation table, select new data
-        self.dat.uqSimList.append(newdata)
+        self.dat.sdoeSimList.append(newdata)
         res = Results()
-        res.uq_add_result(newdata)
-        self.dat.uqFilterResultsList.append(res)
+        res.sdoe_add_result(newdata)
+        self.dat.sdoeFilterResultsList.append(res)
 
         self.updateSimTable()
 
@@ -624,16 +624,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if len(indexes) == 0:
             return
         row = indexes[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
 
-        if updateResult or not self.dat.uqFilterResultsList:
-            if not self.dat.uqFilterResultsList:
-                self.dat.uqFilterResultsList = [None] * len(self.dat.uqSimList)
+        if updateResult or not self.dat.sdoeFilterResultsList:
+            if not self.dat.sdoeFilterResultsList:
+                self.dat.sdoeFilterResultsList = [None] * len(self.dat.sdoeSimList)
             res = Results()
-            res.uq_add_result(data)
-            self.dat.uqFilterResultsList[row] = res
+            res.sdoe_add_result(data)
+            self.dat.sdoeFilterResultsList[row] = res
         else:
-            res = self.dat.uqFilterResultsList[row]
+            res = self.dat.sdoeFilterResultsList[row]
 
         self.filterWidget.init(self.dat)
         self.filterWidget.setResults(res)
@@ -649,7 +649,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
 
         # populate table
         self.inputData = data.getInputData()
@@ -820,7 +820,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
         data = data.getValidSamples() # filter out samples that have no output results
 
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
@@ -867,7 +867,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
         data = data.getValidSamples() # filter out samples that have no output results
 
         # get data info
@@ -928,7 +928,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[row]
+        data = self.dat.sdoeSimList[row]
         fname = Common.getLocalFileName(DataProcessor.dname, data.getModelName().split()[0], '.dat')
         data.writeToPsuade(fname)
 
@@ -948,10 +948,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         newdata.setSession(self.dat)
 
         # add to simulation table, select new data
-        self.dat.uqSimList.append(newdata)
+        self.dat.sdoeSimList.append(newdata)
         res = Results()
-        res.uq_add_result(newdata)
-        self.dat.uqFilterResultsList.append(res)
+        res.sdoe_add_result(newdata)
+        self.dat.sdoeFilterResultsList.append(res)
         self.updateSimTable()
 
         self.deleteTable.resizeColumnsToContents()
@@ -972,7 +972,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         simRow = self.filesTable.selectedIndexes()[0].row()
-        data = self.dat.uqSimList[simRow]
+        data = self.dat.sdoeSimList[simRow]
 
         nInputs = data.getNumInputs()
         outputData = data.getOutputData()
@@ -1003,8 +1003,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        origData = self.dat.uqSimList[row]
-        data = self.dat.uqSimList[row]
+        origData = self.dat.sdoeSimList[row]
+        data = self.dat.sdoeSimList[row]
 
         nInputs = data.getNumInputs()
         outputData = data.getOutputData()

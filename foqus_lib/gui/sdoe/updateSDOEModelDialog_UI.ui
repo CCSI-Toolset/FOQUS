@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>updateUQModelDialog</class>
- <widget class="QDialog" name="updateUQModelDialog">
+ <class>updateSDOEModelDialog</class>
+ <widget class="QDialog" name="updateSDOEModelDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -100,9 +100,6 @@ the default value.</string>
        </widget>
       </item>
      </layout>
-     <zorder>exampleLabel</zorder>
-     <zorder>exampleLabel</zorder>
-     <zorder>instructionsLabel</zorder>
     </widget>
    </item>
    <item>
@@ -143,7 +140,7 @@ the default value.</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>accepted()</signal>
-   <receiver>updateUQModelDialog</receiver>
+   <receiver>updateSDOEModelDialog</receiver>
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
@@ -159,7 +156,7 @@ the default value.</string>
   <connection>
    <sender>buttonBox</sender>
    <signal>rejected()</signal>
-   <receiver>updateUQModelDialog</receiver>
+   <receiver>updateSDOEModelDialog</receiver>
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">

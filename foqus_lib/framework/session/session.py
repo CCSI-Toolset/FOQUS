@@ -306,6 +306,8 @@ class session:
         self.surrogateCurrent = None
         self.uqSimList = [] # list of UQ simulation ensembles
         self.uqFilterResultsList = [] # list of UQ filter results
+        self.sdoeSimList = [] # list of SDOE simulation ensembles
+        self.sdoeFilterResultsList = [] # list of SDOE filter results
         self.ID = time.strftime('Session_%y%m%d%H%M%S') #session id
         self.archiveFolder = \
             os.path.join(os.getcwd(), '%s_files' % self.ID)
@@ -461,6 +463,13 @@ class session:
         sd["uqFilterResultsList"] = []
         for filter in self.uqFilterResultsList:
             sd['uqFilterResultsList'].append(filter.saveDict())
+        # Save SDOE sim list
+        sd["sdoeSimList"] = []
+        for sim in self.sdoeSimList:
+            sd['sdoeSimList'].append(sim.saveDict())
+        sd["sdoeFilterResultsList"] = []
+        for filter in self.sdoeFilterResultsList:
+            sd['sdoeFilterResultsList'].append(filter.saveDict())
         if filename:
             #write two copies of the file one is backup you can keep
             #forever, one is the specified file name with most recent
@@ -567,6 +576,22 @@ class session:
                 filterResults = Results()
                 filterResults.loadDict(filterDict)
                 self.uqFilterResultsList.append(filterResults)
+        # Load SDOE Stuff
+        self.sdoeSimList = []
+        if 'sdoeSimList' in sd:
+            for simDict in sd['sdoeSimList']:
+                model = Model()
+                model.loadDict(simDict['model'])
+                sim = SampleData(model)
+                sim.setSession(self)
+                sim.loadDict(simDict)
+                self.sdoeSimList.append(sim)
+        self.sdoeFilterResultsList = []
+        if 'sdoeFilterResultsList' in sd:
+            for filterDict in sd['sdoeFilterResultsList']:
+                filterResults = Results()
+                filterResults.loadDict(filterDict)
+                self.sdoeFilterResultsList.append(filterResults)
         self.currentFile = None
 
     def removeArchive(self):

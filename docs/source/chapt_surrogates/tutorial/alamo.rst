@@ -186,21 +186,15 @@ single test run from the UQ samples.
 
 28. Add the filter for initial data.
 
-    #. Click **New Filter**, and enter “Initial” as the filter name.
+    #. Click **New Filter**, and enter “f1” as the filter name.
 
-    #. Click **Add Rule**.
-
-    #. In the “Term 1” column enter: set (no quotes).
-
-    #. In the “Term 2” column enter: “UQ_Ensemble” (with quotes).
-
-    #. In the “Operator” column select “=.”
+    #. Type the **Filter expression**: c(“set”) = = “UQ_Ensemble”.
 
 29. Click **Done**.
 
-.. figure:: ../figs/dataFilter.svg
+.. figure:: ../figs/dataFilter_surrogate_upd.png
    :alt: Data Filter Dialog
-   :name: fig.tut.sur.dataFilter
+   :name: fig.tut.sur.dataFilter_surrogate_upd
 
    Data Filter Dialog
 

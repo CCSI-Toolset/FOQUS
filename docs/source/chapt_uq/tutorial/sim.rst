@@ -240,7 +240,9 @@ In this tutorial, a simulation ensemble is created and run.
    #. Step 3 of “Analysis” is to keep the analysis method as
       “Uncertainty Analysis” and then click Analyze. The user should see
       two graphs displaying the probability and cumulative distributions
-      plots (Figure :ref:`fig.10a.rosenua`).
+      plots (Figure :ref:`fig.10a.rosenua`). Users should keep in mind
+      these figures are intended to show what type of plots they would get, 
+      but they should not expect to reproduce the exact same plots.
 
    .. figure:: ../figs/tutorial/10a_RosenbrockUA2.png.png
       :alt: Uncertainty Analysis Results

@@ -209,7 +209,7 @@ In this tutorial, a simulation ensemble is created and run.
    status of completed runs
    (Figure :ref:`fig.uqt_ensem_added`).
 
-   .. figure:: ../figs/tutorial/8_EnsembleAdded2.png
+   .. figure:: ../figs/tutorial/8_EnsembleAdded3.png
       :alt: Simulation Ensemble Added
       :name: fig.uqt_ensem_added
 
@@ -220,7 +220,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Click Analyze for “Ensemble 1”
       (Figure :ref:`fig.uqt_ensem_complete`).
 
-      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete2.png
+      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete3.png
          :alt: Simulation Ensemble Evaluation Complete
          :name: fig.uqt_ensem_complete
 
@@ -229,7 +229,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Step 1 of “Analysis” (bottom page), the user selects Ensemble Data
       (Figure :ref:`fig.uqt_analysis`).
 
-      .. figure:: ../figs/tutorial/10_AnalysisDialog2.png
+      .. figure:: ../figs/tutorial/10_AnalysisDialog3.png
          :alt: Simulation Ensemble Analysis
          :name: fig.uqt_analysis
 
@@ -243,7 +243,7 @@ In this tutorial, a simulation ensemble is created and run.
       two graphs displaying the probability and cumulative distributions
       plots (Figure :ref:`fig.10a.rosenua`).
 
-   .. figure:: ../figs/tutorial/10a_RosenbrockUA.png
+   .. figure:: ../figs/tutorial/10a_RosenbrockUA2.png.png
       :alt: Uncertainty Analysis Results
       :name: fig.10a.rosenua
 

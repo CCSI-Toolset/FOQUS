@@ -87,7 +87,7 @@ have the input variables: a, b, c, x, and ydata; and output variable y.
 
    #. The **Value**, **Min**, and **Max** for ydata do not matter.
 
-.. figure:: ../figs/par_est_tut2.svg
+.. figure:: ../figs/par_est_tut2_new.png
    :alt: Adding Node and Inputs
    :name: fig.pe.tut2
 

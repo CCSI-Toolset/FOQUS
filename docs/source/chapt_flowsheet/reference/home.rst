@@ -53,6 +53,8 @@ The figure below illustrates the **Session** menu.
 7. **Save Session As** is similar to **Save Session**; however, the user is prompted for a new file name.
 8. **Exit FOQUS** exits FOQUS. The user is asked whether to save the current session before exiting.
 
+.. _overview.turbine.upload:
+
 Adding or Changing Turbine Simulations
 --------------------------------------
 

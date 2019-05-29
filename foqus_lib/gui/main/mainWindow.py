@@ -393,10 +393,8 @@ class mainWindow(QMainWindow):
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
         #Setings Action
-        self.mainSettingsAction = QAction(
-            QIcon(self.iconPaths['settings48']),
-            'Settings',
-            self)
+        self.mainSettingsAction = QAction(QIcon(self.iconPaths['settings48']),
+                                          'Settings', self)
         self.mainSettingsAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.mainSettingsAction)
         self.mainSettingsAction.triggered.connect(self.showSettings)

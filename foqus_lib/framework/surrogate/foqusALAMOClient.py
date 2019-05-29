@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 """foqusALAMOClient.py
 
 * The purpose of this scrip is to be the simulator executable for

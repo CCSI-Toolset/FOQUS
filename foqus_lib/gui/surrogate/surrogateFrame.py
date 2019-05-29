@@ -46,6 +46,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.toolSelectBox.addItems(self.tools)
         self.createOptionsTables()
         self.toolSelectBox.currentIndexChanged.connect(self.selectTool)
+        self.toolBox.setCurrentIndex(1)
         self.dataBrowser = dataBrowserFrame(
             dat, self.toolBox.currentWidget())
         self.dataBrowser.editFiltersButton.clicked.connect(
@@ -75,6 +76,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             self.selectTool(0)
         except:
             pass
+        self.toolBox.setCurrentIndex(0)
 
     def selectAllInputs(self):
         table = self.inputTable
@@ -112,7 +114,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         '''
         self.monitorTextBox.setPlainText("")
         self.applyChanges()
-        self.toolBox.setCurrentIndex(3)
+        self.toolBox.setCurrentIndex(4)
         if self.dat.surrogateProblem == None: return
         tool = self.toolSelectBox.currentText()
         pg = self.dat.surrogateMethods.plugins[tool].\

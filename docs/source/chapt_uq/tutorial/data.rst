@@ -22,12 +22,17 @@ filter out the samples due to failed runs:
 
       \centering
 
-   .. figure:: ../figs/tutorial/11_FilteringTab2.png
+   .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_1.png
       :alt: Data Manipulation, Filtering Tab
 
       Data Manipulation, Filtering Tab
+      
+      [fig:uqt_data_filter]
+      
+   .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_2.png
+      :alt: Data Manipulation, Filtering Dialog Box
 
-   [fig:uqt_data_filter]
+      Data Manipulation, Filtering Dialog Box
 
 #. Select the file “gmoat5012_9levels.res” in the examples\UQ folder.
    This file is an actual simulation ensemble that has already been run
@@ -36,19 +41,18 @@ filter out the samples due to failed runs:
 
 #. Select the Filtering tab.
 
-#. Next, filtering the loaded simulation ensemble based on output values
-   is performed. In particular, the user should keep only the samples in
-   which the output parameter status is “0.”
+#.  Filtering the loaded simulation ensemble based on output values is performed.
 
-   #. Select Filter Output.
+    #. Click on "New Filter", and create a filter named "f1"
+    #. Add the Filter Expression c("output.status") == 0, since the user should keep only the samples in which the output      parameter status is “0.”
+    #. Click "Done"
+    #. Select 'f1' as the " Current Filter" in the Flowsheet Result window within "Filtering Tab"
+    #. Once the Filtering is complete, click on "Save as New Ensemble" and a new row should be added to the simulation table
 
-   #. Select “status” from the Choose Output drop-down list.
+ .. figure:: ../figs/tutorial/Data_ManipulationFiltering_Results.png
+    :alt: Data Manipulation, Applying the filter
+ Data Manipulation, Applying the filter
 
-   #. Enter -.00001 and .00001 as Lower Threshold and Upper Threshold
-      respectively, and then click return within “Lower threshold” and
-      “Upper threshold.”
-
-   #. Click Perform Filtering then Save as New Ensemble.
 
 #. Once filtering is complete, a new row should be added to the
    simulation table (Figure
@@ -61,7 +65,6 @@ filter out the samples due to failed runs:
 
    .. figure:: ../figs/tutorial/12_FilterResults2.png
       :alt: Data Manipulation, Filtering Results
-
       Data Manipulation, Filtering Results
 
    [fig:uqt_data_filter_results]

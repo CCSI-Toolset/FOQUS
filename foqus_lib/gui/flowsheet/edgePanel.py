@@ -12,18 +12,27 @@ _edgeDockUI, _edgeDock = \
         uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
 
 class edgeDock(_edgeDock, _edgeDockUI):
+    """
+    Dock widget for editing an edge.  In FOQUS an edge connects variables in
+    two nodes.
+    """
     redrawFlowsheet = QtCore.pyqtSignal()
 
     def __init__(self, dat, parent=None):
-        '''
-            Initialize the edge edit dock widget
-        '''
+        """
+        Initialize the edge edit dock widget
+
+        Args:
+            parent: parent widget
+        Returns:
+            None
+        """
         super().__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
         self.index = None
-        self.addConButton.clicked.connect(self.addConnection)
+        self.addConButton.clicked.connect(self.clickAddConnection)
         self.deleteConButton.clicked.connect(self.delConnection)
         self.autoButton.clicked.connect(self.autoConnect)
         self.fromBox.currentIndexChanged.connect(self.updateConnections)
@@ -31,6 +40,15 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.indexBox.currentIndexChanged.connect(self.changeIndex)
         self.show()
         self.edge = None
+
+    def clickAddConnection(self):
+        """
+        For PyQt5 buttons also send a checked argument to the callback even when
+        they are not checkable. You can't set a callback that takes args unless
+        you account for the checked argument.  So this just drops the checked
+        arg and calls addConection().
+        """
+        self.addConnection()
 
     def applyChanges(self):
         '''
@@ -57,16 +75,26 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.redrawFlowsheet.emit()
 
     def changeIndex(self, index):
+        """
+        Callback to update when a differnt edge is selected from the edge index
+        pulldown.
+
+        Args:
+            index: the new pulldown selection index
+        Returns:
+            None
+        """
         if self.index != None:
             self.applyChanges()
         self.setEdgeIndex(index)
 
     def setEdgeIndex(self, index):
-        '''
-            Set the index of the edge to display/edit
+        """
+        Set the index of the edge to display/edit
 
-            index:  the index of the edge in the graph
-        '''
+        Args:
+            index: the index of the edge in the graph
+        """
         if index == None:
             #if there are edges in the for clearContent will update the
             #form with edge 0 selected
@@ -79,6 +107,14 @@ class edgeDock(_edgeDock, _edgeDockUI):
             self.updateForm()
 
     def clearContent(self):
+        """
+        Clears the edge editor.
+
+        Args:
+            None
+        Return:
+            None
+        """
         self.index = None
         self.updateIndexBox()
         if self.index < 0:
@@ -94,9 +130,14 @@ class edgeDock(_edgeDock, _edgeDockUI):
             self.updateNodeSelection()
 
     def updateForm(self):
-        '''
-            Synchronize the edge edit form with the current edge index
-        '''
+        """
+        Synchronize the edge edit form with the current edge index
+
+        Args:
+            None
+        Returns:
+            None
+        """
         #self.indexBox.setText(str(self.index))
         self.updateIndexBox()
         if self.index == None or self.index < 0:
@@ -109,11 +150,16 @@ class edgeDock(_edgeDock, _edgeDockUI):
             self.updateConnections()
 
     def updateIndexBox(self):
-        '''
-            Add all edge indexes to the index combo and set the current
-            text to the current index.  If the current index is not in
-            the list set the index to the first thing on the list.
-        '''
+        """
+        Add all edge indexes to the index combo and set the current text to the
+        current index. If the current index is not in the list set the index to
+        the first thing on the list.
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.indexBox.blockSignals(True)
         self.indexBox.clear()
         self.indexBox.addItems(
@@ -126,10 +172,15 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.indexBox.blockSignals(False)
 
     def updateNodeSelection(self):
-        '''
-            Fill in the to and from node selection boxes and set the
-            current selection to match the selected edge
-        '''
+        """
+        Fill in the to and from node selection boxes and set the current
+        selection to match the selected edge.
+
+        Args:
+            None
+        Returns:
+            None
+        """
         self.fromBox.blockSignals(True)
         self.toBox.blockSignals(True)
         self.fromBox.clear()
@@ -251,9 +302,14 @@ class edgeDock(_edgeDock, _edgeDockUI):
             self.connectTable.removeRow(row)
 
     def closeEvent(self, event):
-        '''
+        """
         Intercept the close event and apply changes to node before closing
-        '''
+
+        Args:
+            event (QEvent): The triggering event
+        Returns:
+            None
+        """
         self.applyChanges()
         self.lockConnection.setChecked(True)
         event.accept()

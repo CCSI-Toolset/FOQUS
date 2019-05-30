@@ -114,6 +114,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         ###### Set up simulation ensembles section
         self.addSimulationButton.clicked.connect(self.addSimulation)
         self.addSimulationButton.setEnabled(True)
+        self.addDataSignal.connect(self.addDataToSimTable)
         self.loadFileButton.clicked.connect(self.loadSimulation)
         self.loadFileButton.setEnabled(True)
         self.cloneButton.clicked.connect(self.cloneSimulation)
@@ -408,6 +409,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         previewData = self.dat.sdoeSimList[row]
         dialog = sdoePreview(previewData, self.dname, self)
         dialog.show()
+
+    def addDataToSimTable(self, data):
+        if data is None:
+            return
+        self.dat.sdoeSimList.append(data)
+        res = Results()
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList.append(res)
+
+        self.updateSimTable()
 
     def editAgg(self):
         sender = self.sender()

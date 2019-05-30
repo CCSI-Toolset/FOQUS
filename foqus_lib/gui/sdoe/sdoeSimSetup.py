@@ -551,32 +551,13 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
 
     ### Preview button
     def preview(self):
-        if self.loadSamplesRadio.isChecked():
-            previewData = self.loadData
-        else:
-            previewData = self.runData
+        previewData = self.runData
+        dirname = os.getcwd()
 
-        #self.setModal(False)
-        dialog = sdoePreview(previewData, self)
-        #dialog.exec_()
+        dialog = sdoePreview(previewData, dirname, self)
         dialog.show()
-        #self.setModal(True)
 
     ### Return data
     def getData(self):
-        if self.loadSamplesRadio.isChecked():
-            returnData = self.loadData
-        elif self.flowsheetDataRadio.isChecked():
-            self.session.flowsheet.results.exportPSUADE("temp/psuadeData2.tmp")
-            returnData = LocalExecutionModule.readSampleFromPsuadeFile("temp/psuadeData2.tmp")
-        else:
-            returnData = self.runData
-        return returnData
-
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    fileName = 'C:\\Users\\ou3.THE-LAB\\Documents\CCSI\\pt6_optimize\\sim-based_optimize\\trunk\\examples\\UQ\\lptau5k_10inputs_4outputs.filtered'
-    model = LocalExecutionModule.readSampleFromPsuadeFile(fileName, False)
-    form = sdoeSimSetup(model)
-    result = form.exec_()
+        print("NAME OF THE DATA MODEL: ", self.runData.getModelName())
+        return self.runData

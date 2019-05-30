@@ -143,9 +143,9 @@ simulation uploaded to Turbine. The Node Editor is illustrated in Figure
 22. Repeat the process for the cost node, assigning it the BFB_v6_2_cost
     simulation.
 
-.. figure:: ../figs/nodeEditor.svg
+.. figure:: ../figs/nodeEditor_upd.png
    :alt: Node Editor
-   :name: fig.tut.opt.nodeEditor
+   :name: fig.tut.opt.nodeEditor_upd
 
    Node Editor
 

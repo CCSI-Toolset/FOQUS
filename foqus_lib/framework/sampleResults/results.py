@@ -16,6 +16,8 @@ import logging
 import time
 from collections import OrderedDict
 
+_log = logging.getLogger("foqus.{}".format(__name__))
+
 class dataFilter(object):
 
     def __init__(self, no_results=False):
@@ -152,20 +154,23 @@ class Results(pd.DataFrame):
 
     def row_to_flow(self, fs, row, filtered=True):
         idx = list(self.get_indexes(filtered=filtered))[row]
+        _log.debug("Row to flowsheet, table row {} dataframe index {}".format(
+            row, idx))
         for col in self.columns:
             try:
                 (typ, node, var) = col.split(".", 2)
             except ValueError:
-                # this would happen for cols with less than two .'s
+                # this would happen for cols with less than two .'s and is
+                # totally fine
                 continue
             if typ=="input":
                 try:
-                    fs.nodes[node].inVars[var].value = self.loc[row, col]
+                    fs.nodes[node].inVars[var].value = self.loc[idx, col]
                 except KeyError:
                     pass
             elif typ=="output":
                 try:
-                    fs.nodes[node].outVars[var].value = self.loc[row, col]
+                    fs.nodes[node].outVars[var].value = self.loc[idx, col]
                 except KeyError:
                     pass
 

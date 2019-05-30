@@ -42,7 +42,7 @@ def _list_item_mime_to_text(mime_data, c=False):
 def _canInsertFromMimeData(data):
     try:
         _list_item_mime_to_text(data, True)
-        if mime_data.hasText():
+        if data.hasText():
             return True
         else:
             return False

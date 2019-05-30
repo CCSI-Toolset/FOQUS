@@ -9,41 +9,38 @@ In this tutorial, a simulation ensemble is created and run.
    select **Open Session** to open a session. Browse to the examples
    folder, go into the UQ subfolder, and then select the
    “Rosenbrock_novectors.foqus" problem (Figure
-   `[fig:uqt_home] <#fig:uqt_home>`__).
+   :ref:`fig.uqt_home`).
 
    .. figure:: ../figs/tutorial/1_home2.png
       :alt: Home Screen
+      :name: fig.uqt_home
 
       Home Screen
 
-   [fig:uqt_home]
-
 #. Opening this file loads a session that has a flowsheet with one node
-   (Figure `[fig:uqt_flowsheet] <#fig:uqt_flowsheet>`__). See Section
-   `[subsec.opt.tutorial.flowsheet] <#subsec.opt.tutorial.flowsheet>`__
+   (Figure :ref:`fig.uqt_flowsheet`). See Section
+   :ref:`tutorial.simple.flow`
    for a detailed example of creating a flowsheet.
 
    .. figure:: ../figs/tutorial/2_flowsheet2.png
       :alt: Flowsheet for Rosenbrock Example
+      :name: fig.uqt_flowsheet
 
       Flowsheet for Rosenbrock Example
 
-   [fig:uqt_flowsheet]
-
 #. Click the **Uncertainty** button (Figure
-   `[fig:uqt_uqhome] <#fig:uqt_uqhome>`__).
+   :ref:`fig.uqt_uqhome`).
 
    .. figure:: ../figs/tutorial/3_UQScreen2.png
       :alt: Uncertainty Quantification Screen
+      :name: fig.uqt_uqhome
 
       Uncertainty Quantification Screen
-
-   [fig:uqt_uqhome]
 
 #. Click Add New to create a new simulation ensemble.
 
 #. The Add New Ensemble dialog displays
-   (Figure\ `[fig:uqt_addnew] <#fig:uqt_addnew>`__\ ). The “Use
+   (Figure :ref:`fig.uqt_addnew`). The “Use
    flowsheet” option should be enabled.
 
 #. | *This item describes additional features and is provided for
@@ -55,7 +52,7 @@ In this tutorial, a simulation ensemble is created and run.
      samples. This option enables the user to trade off accuracy for
      speed by training a response surface to approximate the actual
      simulation model. If this option is selected (Figure
-     `[fig:uqt_addnew_emulator] <#fig:uqt_addnew_emulator>`__), the user
+     :ref:`fig.uqt_addnew_emulator`), the user
      needs to provide a training data file containing a small simulation
      ensemble generated from the actual simulation model. This training
      data file is be in the PSUADE full file format (Section
@@ -74,10 +71,9 @@ In this tutorial, a simulation ensemble is created and run.
 
    .. figure:: ../figs/tutorial/4_AddNewEnsemble2.png
       :alt: Add New Ensemble Dialog, Flowsheet Option
+      :name: fig.uqt_addnew
 
       Add New Ensemble Dialog, Flowsheet Option
-
-   [fig:uqt_addnew]
 
    .. raw:: latex
 
@@ -85,17 +81,16 @@ In this tutorial, a simulation ensemble is created and run.
 
    .. figure:: ../figs/tutorial/4a_AddNewEnsemble2_Emulator.png
       :alt: Add New Ensemble Dialog, Emulator Option
+      :name: fig.uqt_addnew_emulator
 
       Add New Ensemble Dialog, Emulator Option
-
-   [fig:uqt_addnew_emulator]
 
    .. raw:: latex
 
       \resume{enumerate}
 
 #. This displays the Simulation Ensemble Setup dialog box
-   (Figure\ `[fig:uqt_sim] <#fig:uqt_sim>`__\ ) that prompts the user
+   (Figure :ref:`fig.uqt_sim` ) that prompts the user
    for options specific to the creation of input samples.
 
 #. Within the Distributions tab, the Distributions Table has all the
@@ -112,10 +107,9 @@ In this tutorial, a simulation ensemble is created and run.
 
    .. figure:: ../figs/tutorial/5_SimSetup2.png
       :alt: Simulation Ensemble Setup Dialog, Distributions Tab
+      :name: fig.uqt_sim
 
       Simulation Ensemble Setup Dialog, Distributions Tab
-
-   [fig:uqt_sim]
 
    .. raw:: latex
 
@@ -127,7 +121,7 @@ In this tutorial, a simulation ensemble is created and run.
    -  Change the PDF of “x6” by exploring the drop-down list in the
       **PDF** column of the **Distributions Table**. The drop-down list
       is denoted by box (9c) in Figure
-      `[fig:uqt_sim_pdfs] <#fig:uqt_sim_pdfs>`__. If any of the
+      :ref:`fig.uqt_sim_pdfs`. If any of the
       parametric distributions are selected (e.g., “Normal”,
       “Lognormal”, “Weibull”), the user is prompted to enter the
       appropriate parameters for the selected distribution. If
@@ -142,20 +136,18 @@ In this tutorial, a simulation ensemble is created and run.
 
       .. figure:: ../figs/tutorial/6_SimSetupPDFs2.png
          :alt: Simulation Ensemble Setup Dialog, Distributions Tab, PDF
+         :name: fig.uqt_sim_pdfs
 
          Simulation Ensemble Setup Dialog, Distributions Tab, PDF
          Selection
 
-      [fig:uqt_sim_pdfs]
-
    -  Alternatively, select Choose sampling scheme (box (8) of
-      Figure\ `[fig:uqt_sim] <#fig:uqt_sim>`__\ ), and try selecting
+      Figure :ref:`fig.uqt_sim`), and try selecting
       “Load all samples from a single file.” With this selection, a new
       dialog box
-      (Figure\ `[fig:uq_sim_loadsample] <#fig:uq_sim_loadsample>`__\ )
       prompts the user to browse to a PSUADE full file, a PSUADE sample
       file, or CSV file (all formats are described in
-      Section\ `[ap:psuadefiles] <#ap:psuadefiles>`__\ ) that contains
+      Section\ `[ap:psuadefiles] <#ap:psuadefiles>`__) that contains
       all the samples for all the input variables in the model.
 
    Both of these options offer the user additional flexibility with
@@ -167,14 +159,13 @@ In this tutorial, a simulation ensemble is created and run.
       \resume{enumerate}
 
 #. Once complete, switch to the Sampling Scheme tab
-   (Figure\ `[fig:uqt_sim_samplescheme] <#fig:uqt_sim_samplescheme>`__\ ).
+   (Figure :ref:`fig.uqt_sim_samplescheme`).
 
    .. figure:: ../figs/tutorial/7_SimSetupSampling2.png
       :alt: Simulation Ensemble Setup Dialog, Sampling Scheme Tab
+      :name: fig.uqt_sim_samplescheme
 
       Simulation Ensemble Setup Dialog, Sampling Scheme Tab
-
-   [fig:uqt_sim_samplescheme]
 
 #. Select a sampling scheme with the assumption that the user is unsure
    which sampling scheme to use, but wants to perform some kind of
@@ -196,7 +187,7 @@ In this tutorial, a simulation ensemble is created and run.
    PSUADE in its default location (C:\Program Files (x86)\psuade_project
    1.7.1\bin\psuade.exe) and the user did not update the PSUADE path in
    FOQUS settings (refer to
-   Section\ `[session-menu] <#session-menu>`__\ ), then the user is
+   Section :ref:`section.settings`), then the user is
    prompted to locate the PSUADE executable in a file dialog.
 
 #. Once the samples are generated, the user can examine them by clicking
@@ -215,48 +206,47 @@ In this tutorial, a simulation ensemble is created and run.
 #. Next, calculate the output value for each sample. Click Launch. The
    user should see the progress bar quickly advance, displaying the
    status of completed runs
-   (Figure\ `[fig:uqt_ensem_added] <#fig:uqt_ensem_added>`__\ ).
+   (Figure :ref:`fig.uqt_ensem_added`).
 
-   .. figure:: ../figs/tutorial/8_EnsembleAdded2.png
+   .. figure:: ../figs/tutorial/8_EnsembleAdded3.png
       :alt: Simulation Ensemble Added
+      :name: fig.uqt_ensem_added
 
       Simulation Ensemble Added
-
-   [fig:uqt_ensem_added]
 
 #. Next, look at the output.
 
    #. Click Analyze for “Ensemble 1”
-      (Figure\ `[fig:uqt_ensem_complete] <#fig:uqt_ensem_complete>`__\ ).
+      (Figure :ref:`fig.uqt_ensem_complete`).
 
-      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete2.png
+      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete3.png
          :alt: Simulation Ensemble Evaluation Complete
+         :name: fig.uqt_ensem_complete
 
          Simulation Ensemble Evaluation Complete
 
-      [fig:uqt_ensem_complete]
-
    #. Step 1 of “Analysis” (bottom page), the user selects Ensemble Data
-      (Figure\ `[fig:uqt_analysis] <#fig:uqt_analysis>`__\ ).
+      (Figure :ref:`fig.uqt_analysis`).
 
-      .. figure:: ../figs/tutorial/10_AnalysisDialog2.png
+      .. figure:: ../figs/tutorial/10_AnalysisDialog3.png
          :alt: Simulation Ensemble Analysis
+         :name: fig.uqt_analysis
 
          Simulation Ensemble Analysis
 
-      [fig:uqt_analysis]
-
    #. Step 2 of “Analysis” is to select “Rosenbrock.f”
-      (Figure\ `[fig:uqt_analysis] <#fig:uqt_analysis>`__\ ).
+      (Figure :ref:`fig.uqt_analysis`).
 
    #. Step 3 of “Analysis” is to keep the analysis method as
       “Uncertainty Analysis” and then click Analyze. The user should see
       two graphs displaying the probability and cumulative distributions
-      plots (Figure\ `[fig:10a.rosenua] <#fig:10a.rosenua>`__\ ).
+      plots (Figure :ref:`fig.10a.rosenua`). Users should keep in mind
+      these figures are intended to show what type of plots they would get, 
+      but they should not expect to reproduce the exact same plots.
 
-   .. figure:: ../figs/tutorial/10a_RosenbrockUA.png
+   .. figure:: ../figs/tutorial/10a_RosenbrockUA2.png.png
       :alt: Uncertainty Analysis Results
-      :name: fig:10a.rosenua
+      :name: fig.10a.rosenua
 
       Uncertainty Analysis Results
 

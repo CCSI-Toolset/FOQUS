@@ -15,8 +15,7 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-simulations";
+const s3_bucket_name = process.env.SIMULATION_BUCKET_NAME;
 
 
 exports.handler = function(event, context, callback) {
@@ -30,6 +29,20 @@ exports.handler = function(event, context, callback) {
           'Content-Type': 'application/json',
       },
   });
+
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
+  const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "PUT") {
     var array = event.path.split('/');
     var item = array.pop();
@@ -65,19 +78,25 @@ exports.handler = function(event, context, callback) {
 
     if (key == "configuration") {
       var obj = JSON.parse(event.body);
-      if (obj.filetype == "sinterconfig" && obj.title != undefined) {
-        params.Key = default_user_name + "/" + name + "/" + obj.title + "-sinter.json";
+      if (obj.filetype == "sinterconfig" && obj.aspenfile != undefined &&
+        obj.aspenfile.endsWith('.acmf')) {
+          params.Key = user_name + "/" + name + "/acm_sinter.json";
       }
-      else if (obj.Type == "FOQUS_Session") {
-        params.Key = default_user_name + "/" + name + "/session.foqus";
+      else if (obj.filetype == "sinterconfig" && obj.aspenfile != undefined &&
+        obj.aspenfile.endsWith('.bkp')) {
+          params.Key = user_name + "/" + name + "/aspenplus_sinter.json";
+      }
+      else if (obj.filetype == "FOQUS_Session") {
+        params.Key = user_name + "/" + name + "/session.foqus";
       }
       else {
+        console.log(event.body);
         done(new Error(`Inspection failed to identify configuration file type`));
         return;
       }
     }
     else {
-      params.Key = default_user_name + "/" + name + "/" + key;
+      params.Key = user_name + "/" + name + "/" + key;
     }
 
     var client = new AWS.S3();

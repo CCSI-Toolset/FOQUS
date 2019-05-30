@@ -1,0 +1,11 @@
+{
+  "homotopy": 0,
+  "printlevel": 0,
+  "feed.T": 100.00000000000001,
+  "feed.P": 50.0,
+  "feed.F": 48.748,
+  "feed.etOH.molefrac": 0.08905,
+  "feed.H2O.molefrac": 1.91095,
+  "flash.T": 150.00000000000003,
+  "flash.P": 20.0
+}

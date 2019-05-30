@@ -66,7 +66,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'FOQUS'
-copyright = u'copyright (c) 2012 - 2018 by CCSI Team All rights reserved.'
+copyright = u'2012 - 2019 by CCSI Team All rights reserved.'
 author = u'CCSI'
 
 # The version info for the project you're documenting, acts as replacement for

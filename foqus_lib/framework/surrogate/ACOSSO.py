@@ -1,8 +1,8 @@
 """ #FOQUS_SURROGATE_PLUGIN ACOSSO.py
 
-Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extention and
-inherit the surrogate class.
+Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first 150
+characters of text.  They also need to have a .py extension and inherit the
+surrogate class.
 
 * Plugin wprapper for the ACOSSO surrogate model builer.
 * ACOSSO is excuted in R and a working R install with the quadprog
@@ -31,11 +31,11 @@ from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
 
 def checkAvailable():
-    '''
-        Plug-ins should have this function to check availability of any
-        additional required software.  If requirements are not available
-        plug-in will not be available.
-    '''
+    """
+    Plug-ins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plug-in will not be available.
+    """
     # Need to check for R and quadprog?
     return True
 
@@ -199,7 +199,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Inputs: {0}".format(
                     json.dumps(self.input)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     xdata,
                     inputs = self.input,
                     outputs = [],
@@ -210,7 +210,7 @@ class surrogateMethod(surrogate):
                     return
                 self.msgQueue.put("    Output: {0}".format(
                     json.dumps(self.output)))
-                self.dat.flowsheet.results.exportVarsCVS(
+                self.dat.flowsheet.results.exportVarsCSV(
                     ydata,
                     inputs = [],
                     outputs = self.output,
@@ -230,10 +230,10 @@ class surrogateMethod(surrogate):
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")
@@ -242,8 +242,8 @@ class surrogateMethod(surrogate):
             self.msgQueue.put(
                 "Process completed code: {0}".format(process.poll()))
             line = process.stderr.readline()
-            while line != '':
-                self.msgQueue.put(line.rstrip())
+            while line != b'':
+                self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stderr.readline()
             modelFile2 = os.path.join(adir, modelFile)
             driverFile2 = os.path.join(adir, driverFile)
@@ -293,9 +293,9 @@ class surrogateMethod(surrogate):
             lines.append('                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)')
             lines.append('            stdout, stderr = p.communicate()')
             lines.append('            if stdout:')
-            lines.append('                print stdout')
+            lines.append('                print(stdout)')
             lines.append('            if stderr:')
-            lines.append('                print stderr')
+            lines.append('                print(stderr)')
             lines.append('')
             lines.append('            # read results and instantiate output value')
             lines.append("            ypred = numpy.loadtxt(outfileName)")

@@ -90,19 +90,6 @@ def uq_sd_col_list(sd):
     else:
         return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
 
-def sdoe_sd_col_list(sd):
-
-    xvals = sd.getInputData()
-    yvals = sd.getOutputData()
-    xnames = ['input.'+name for name in sd.getInputNames()]
-    ynames = ['output.'+name for name in sd.getOutputNames()]
-
-    if len(yvals) == 0:
-        return (xnames , xvals)
-
-    else:
-        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
-
 def incriment_name(name, exnames):
     """
     Check if a name is already in a list of names. If it is generate a new
@@ -163,6 +150,25 @@ class Results(pd.DataFrame):
             self.calculated_columns = None # avoid set column from attribute warn
             self.calculated_columns = OrderedDict()
 
+    def row_to_flow(self, fs, row, filtered=True):
+        idx = list(self.get_indexes(filtered=filtered))[row]
+        for col in self.columns:
+            try:
+                (typ, node, var) = col.split(".", 2)
+            except ValueError:
+                # this would happen for cols with less than two .'s
+                continue
+            if typ=="input":
+                try:
+                    fs.nodes[node].inVars[var].value = self.loc[row, col]
+                except KeyError:
+                    pass
+            elif typ=="output":
+                try:
+                    fs.nodes[node].outVars[var].value = self.loc[row, col]
+                except KeyError:
+                    pass
+
     def set_calculated_column(self, name, expr):
         self.calculated_columns[name] = expr
         c = "calc.{}".format(name)
@@ -189,6 +195,17 @@ class Results(pd.DataFrame):
             self.drop("calc."+name, axis=1, inplace=True)
         except:
             pass
+
+    def delete_rows(self, rows, filtered=True):
+        idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
+        self.drop(idxs, axis=0, inplace=True)
+        self.update_filter_indexes()
+
+    def edit_set_name(self, name, rows, filtered=True):
+        idxs = [list(self.get_indexes(filtered=filtered))[i] for i in rows]
+        for idx in idxs:
+            self.loc[idx, "set"] = name
+        self.update_filter_indexes()
 
     def incrimentSetName(self, name):
         return incriment_name(name, list(self["set"]))
@@ -299,7 +316,8 @@ class Results(pd.DataFrame):
         """
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
-    def add_result(self, sd, set_name="default", result_name="res", time=None):
+    def add_result(self, sd, set_name="default", result_name="res", time=None,
+                   empty=False):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001
@@ -309,15 +327,19 @@ class Results(pd.DataFrame):
         else:
             names = []
         result_name = incriment_name(result_name, names)
-        columns, dat = sd_col_list(sd, time=time)
+        if sd is not None:
+            columns, dat = sd_col_list(sd, time=time)
+        else:
+            columns, dat = (tuple(),tuple())
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan]*self.count_rows(filtered=False)
         row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
-        for i, col in enumerate(columns):
-            self.loc[row, col] = dat[i]
+        if not empty:
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
     def uq_add_result(self, data, set_name="default", result_name="res", time=None):
@@ -339,24 +361,15 @@ class Results(pd.DataFrame):
                 self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
-    def sdoe_add_result(self, data, set_name="default", result_name="res", time=None):
-
-        if len(self["set"]) > 0:
-            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
-        else:
-            names = []
-        result_name = incriment_name(result_name, names)
-        columns, dat = sdoe_sd_col_list(data)
-
-        for c in columns:
-            if c not in self.columns:
-                self[c] = [np.nan] * self.count_rows(filtered=False)
-        for row in range(data.getNumSamples()):
-            self.loc[row, "set"] = set_name
-            self.loc[row, "result"] = result_name
-            for i, col in enumerate(columns):
-                self.loc[row, col] = dat[row][i]
-        self.update_filter_indexes()
+    def exportVarsCSV(self, file, inputs, outputs, flat=True):
+        #flat isn't used, just there for compatablility from when there
+        #were vector vars.
+        df = pd.DataFrame(columns=inputs + outputs)
+        for c in inputs:
+            df[c] = self["input."+c]
+        for c in outputs:
+            df[c] = self["output."+c]
+        df.to_csv(file)
 
     def read_csv(self, *args, **kwargs):
         """
@@ -364,7 +377,7 @@ class Results(pd.DataFrame):
         """
         s = kwargs.pop("s", None)
         if s is not None:
-            path = StringIO.StringIO(s)
+            path = StringIO(s)
             kwargs["filepath_or_buffer"] = path
         df = pd.read_csv(*args, **kwargs)
         col_del = []
@@ -429,7 +442,10 @@ class Results(pd.DataFrame):
             self.sort_index(inplace=True)
         else:
             st, ascend = search_term_list(st)
-            self.sort_values(by=st, ascending=ascend, inplace=True)
+            if len(st) == 0:
+                self.sort_index(inplace=True)
+            else:
+                self.sort_values(by=st, ascending=ascend, inplace=True)
         # now look at the filter columns
         ft = fltr.filterTerm
         mask = [True]*len(self.index)

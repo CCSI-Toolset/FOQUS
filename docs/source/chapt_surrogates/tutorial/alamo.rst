@@ -14,7 +14,7 @@ simulation model such as: Excel, Aspen plus, Aspen custom modeler, etc.
 Note: Before starting this tutorial the ALAMO product must be downloaded
 from the products page on the CCSI website. The path for the ALAMO
 executable file must be set in FOQUS settings (see Section
-`[section.settings] <#section.settings>`__).
+:ref:`section.settings`).
 
 Flowsheet Setup
 ---------------
@@ -22,7 +22,7 @@ Flowsheet Setup
 #. Open FOQUS.
 
 #. Name the session “Surrogate_Tutorial_1” (Figure
-   `[fig.tut.sur.session] <#fig.tut.sur.session>`__).
+   :ref:`fig.tut.sur.session`).
 
 .. figure:: ../figs/session1.svg
    :alt: Session Set Up
@@ -31,7 +31,7 @@ Flowsheet Setup
    Session Set Up
 
 3. Navigate to the Flowsheet Editor (Figure
-   `[fig.tut.sur.flowsheet] <#fig.tut.sur.flowsheet>`__).
+   :ref:`fig.tut.sur.flowsheet`).
 
 4. Add a Flowsheet Node named “eq.”
 
@@ -44,13 +44,12 @@ Flowsheet Setup
 
    Flowsheet Setup
 
-The **Node Editor** displays (Figure
-`[fig.tut.sur.nodeEdit.Input] <#fig.tut.sur.nodeEdit.Input>`__). The
-first step to setting up the node for this problem is to add input and
-output variables to the node.
+The **Node Editor** displays (Figure :ref:`fig.tut.sur.nodeEdit.Input`). 
+Thefirst step to setting up the node for this problem is to add input
+and output variables to the node.
 
 6. If the input variables table is not displayed as shown in Figure
-   `[fig.tut.sur.nodeEdit.Input] <#fig.tut.sur.nodeEdit.Input>`__, click
+   :ref:`fig.tut.sur.nodeEdit.Input`, click
    the **Variables** tab and then click the **Input Variables** toolbox
    section.
 
@@ -74,8 +73,8 @@ simulation model and calculations are performed directly in FOQUS.
 10. Click on the **Node Script** tab in the Node Editor to enter the
     test equation (this step replaces the use of a simulator).
 
-11. Enter the following equations (Figure
-    `[fig.tut.sur.nodeEdit.eq] <#fig.tut.sur.nodeEdit.eq>`__):
+11. Enter the following equations (Figure 
+    :ref:`fig.tut.sur.nodeEdit.eq`):
 
     ::
 
@@ -107,8 +106,7 @@ initial data to generate more points if needed. In this case, initial
 data is provided and adaptive sampling is used.
 
 13. Select the UQ tool by clicking on the **Uncertainty** button on the
-    Home window (Figure
-    `[fig.tut.sur.new.uq.ens] <#fig.tut.sur.new.uq.ens>`__).
+    Home window (Figure :ref:`fig.tut.sur.new.uq.ens`).
 
 14. Click the **Add New** button.
 
@@ -122,7 +120,7 @@ data is provided and adaptive sampling is used.
    Add a New Sample Ensemble
 
 16. The sample ensemble setup dialog displays (Figure
-    `[fig.tut.sur.new.uq.sample1] <#fig.tut.sur.new.uq.sample1>`__).
+    :ref:`fig.tut.sur.new.uq.sample1`).
     Select **Choose sampling scheme**.
 
 17. Click the **All Variable** button.
@@ -136,7 +134,7 @@ data is provided and adaptive sampling is used.
    Sample Distributions
 
 19. The **Sampling schem\ e** dialog should display (Figure
-    `[fig.tut.sur.new.uq.sample2] <#fig.tut.sur.new.uq.sample2>`__).
+    :ref:`fig.tut.sur.new.uq.sample2`).
     Select “Latin Hypercube” from the list.
 
 20. Set the **# of samples** to “10.”
@@ -152,8 +150,7 @@ data is provided and adaptive sampling is used.
    Sample Methods
 
 23. Once the samples have been generated a new sample ensemble displays
-    in the UQ tool window (Figure
-    `[fig.tut.sur.new.uq.sample3] <#fig.tut.sur.new.uq.sample3>`__).
+    in the UQ tool window (Figure :ref:`fig.tut.sur.new.uq.sample3`).
     Click **Launch** to run and generate the samples.
 
 .. figure:: ../figs/uqSample3.svg
@@ -171,7 +168,7 @@ will be used. A filter must be created to separate the results of the
 single test run from the UQ samples.
 
 24. Click on the **Surrogates** button from the Home window. The
-    surrogate tool displays `[fig.tut.sur.data] <#fig.tut.sur.data>`__.
+    surrogate tool displays :ref:`fig.tut.sur.data`.
 
 25. Select “ALAMO” from the **Tool** drop-down list.
 
@@ -184,26 +181,20 @@ single test run from the UQ samples.
 
    Surrogate Data
 
-27. Figure `[fig.tut.sur.dataFilter] <#fig.tut.sur.dataFilter>`__
+27. Figure :ref:`fig.tut.sur.dataFilter`
     displays the Data Filter Editor.
 
 28. Add the filter for initial data.
 
-    #. Click **New Filter**, and enter “Initial” as the filter name.
+    #. Click **New Filter**, and enter “f1” as the filter name.
 
-    #. Click **Add Rule**.
-
-    #. In the “Term 1” column enter: set (no quotes).
-
-    #. In the “Term 2” column enter: “UQ_Ensemble” (with quotes).
-
-    #. In the “Operator” column select “=.”
+    #. Type the **Filter expression**: c(“set”) = = “UQ_Ensemble”.
 
 29. Click **Done**.
 
-.. figure:: ../figs/dataFilter.svg
+.. figure:: ../figs/dataFilter_surrogate_upd.png
    :alt: Data Filter Dialog
-   :name: fig.tut.sur.dataFilter
+   :name: fig.tut.sur.dataFilter_surrogate_upd
 
    Data Filter Dialog
 
@@ -219,7 +210,7 @@ other and for the model building, selecting one output is the same as
 selecting more.
 
 30. Select the **Variable\ s** tab (Figure
-    `[fig.tut.sur.vaiables] <#fig.tut.sur.vaiables>`__).
+    :ref:`fig.tut.sur.vaiables`).
 
 31. Select the checkbox for both input variables.
 
@@ -243,7 +234,7 @@ method settings values. Strings must be contained in quotes. Lists have
 the following format: [element 1, element 2].
 
 33. Click on the **Method Settings** tab (see Figure
-    `[fig.alamo.method.settigs] <#fig.alamo.method.settigs>`__).
+    :ref:`fig.alamo.method.settigs`).
 
 34. Set the **FOQUS Model (for UQ)** to “ALAMO_tutorial_UQ.py.”
 
@@ -263,7 +254,7 @@ the following format: [element 1, element 2].
     **LOGFCNS**, **SINFCNS**, **COSFCNS**).
 
 41. Leave the rest of settings as default (see Table
-    `[tutorial.alamo.table] <#tutorial.alamo.table>`__).
+    :ref:`tutorial.alamo.table`).
 
 42. Save this FOQUS session for use in the ACOSSO and BSS-ANOVA
     tutorials.
@@ -293,8 +284,7 @@ Execution
 
     #. Once the surrogate model has finished, the equations are
        displayed in the execution window. It may be necessary to scroll
-       up a little. The result is shown in Figure
-       `[fig.alamo.res] <#fig.alamo.res>`__.
+       up a little. The result is shown in Figure :ref:`fig.alamo.res`.
 
     #. Finally, the statistics display the quality metrics of the models
        generated.
@@ -313,16 +303,16 @@ perform UQ analysis of the models, and a FOQUS Python plugin model that
 allows it to be used in a FOQUS flowsheet. The equations can also be
 viewed in the results section.
 
-See tutorial Section
-`[tutorial.surrogate.uq] <#tutorial.surrogate.uq>`__ and
-`[tutorial.surrogate.fs] <#tutorial.surrogate.fs>`__ for information
+See tutorial Section :ref:`tutorial.surrogate.uq` and
+:ref:`tutorial.surrogate.fs` for information
 about analyzing the model with the UQ tools or running the model on the
 flowsheet.
 
 As mentioned in section `1.5 <#tutorial.alamo.methodsettings>`__ the
 method settings are very important. A brief description and hints are
-included in Table `[tutorial.alamo.table] <#tutorial.alamo.table>`__.
+included in Table :ref:`tutorial.alamo.table`.
 
+.. _tutorial.alamo.table:
 .. table:: ALAMO Method Settings
 
    +-----------------------------------+-----------------------------------+

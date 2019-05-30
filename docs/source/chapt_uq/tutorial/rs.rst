@@ -160,13 +160,14 @@ first **Choose UQ Analysis** drop-down list, then “Epistemic-Aleatory”
 in the secondary drop-down list, for the UQ analysis. In the input
 table, designate the parameter **Type** (“Epistemic”, “Aleatory” or
 “Fixed”) and the corresponding information for each input. Once
-complete, click **Analyze**.
+complete, click **Analyze**. In this tutorial we consider dH1 & dH2 as 
+epistemic uncertain parameters, and rest of them are aleatory.
 
 .. raw:: latex
 
    \centering
 
-.. figure:: ../figs/tutorial/24a_RSAEUA.png
+.. figure:: ../figs/tutorial/24a_RSAEUA_upd.png
    :alt: Response Surface Based Mixed Epistemic-Aleatory Uncertainty
 
    Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis
@@ -183,7 +184,7 @@ uncertainties are propagated to generate a CDF that represents the
 output uncertainty. A slider is provided for the user to extract the
 probability range corresponding to a particular value of the output.
 
-.. figure:: ../figs/tutorial/24b_RSAEUAResults.png
+.. figure:: ../figs/tutorial/24b_RSAEUAResults_upd.png
    :alt: Response Surface Based Mixed Epistemic-Aleatory Uncertainty
 
    Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis

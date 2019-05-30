@@ -182,7 +182,7 @@ screen is illustrated in Figure `[fig:uq_screen] <#fig:uq_screen>`__.
    `[fig:uq_deltab] <#fig:uq_deltab>`__ and enables the user to filter
    samples based on the values of an input or output.
 
-   .. figure:: figs/overview/2_FilteringTab2.png
+   .. figure:: figs/overview/2_FilteringTab_upd1.png
       :alt: Filtering Tab
 
       Filtering Tab
@@ -192,20 +192,22 @@ screen is illustrated in Figure `[fig:uq_screen] <#fig:uq_screen>`__.
    .. raw:: latex
 
       \resume{enumerate}
+      
+   .. figure:: figs/overview/2_FilteringTab_upd2.png
+      :alt: Filtering Dialog Box
 
-#. **Filter Input** filters based on the value of a certain input.
-   Select an input variable as the filter target, and enter the lower
-   and upper thresholds to specify a range of values to be kept in the
-   new ensemble.
+      Filtering Dialog Box
+      
+   .. raw:: latex
 
-#. **Filter Output** filters based on the value of a certain output.
-   Select an output variable as the filter target, and enter the lower
-   and upper thresholds to specify a range of values to be kept in the
-   new ensemble.
+      \resume{enumerate}
 
-#. Once the filter settings are set, click **Perform Filtering then Save
-   as New Ensemble** to apply the filter and create a new simulation
-   ensemble.
+#. Click on Add/Edit Filters, in the Flowsheet Results window within the "Filtering Tab"
+
+#. 1. Within the Filter Dialog Box, Click on "New Filter" to add a filter
+   2. Enter a filter expression in python format. Variables can be dragged into the expression, from the "Columns", click Done.
+
+#. Select a "Current Filter" after which the the filtered ensemble can be saved by clicking on " Save as New Ensemble"
 
    The single-output **Analysis of Ensemble** dialog, which is displayed
    when **Analyze** is clicked for the selected ensemble, has two modes,

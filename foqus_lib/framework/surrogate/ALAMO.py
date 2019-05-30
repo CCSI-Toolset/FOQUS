@@ -1,7 +1,7 @@
 """ #FOQUS_SURROGATE_PLUGIN ALAMO.py
 
 Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to hav a .py extention and
+150 characters of text.  They also need to have a .py extension and
 inherit the surrogate class.
 
 * This is an example of a surrogate model builder plugin for FOQUS,
@@ -87,9 +87,9 @@ class surrogateMethod(surrogate):
              "<b>Automatic Learning of Algebraic Models for Optimization"
              " (ALAMO)</b>"
              "<p class=\"hangingindent\">Cozad, A., N. V. Sahinidis "
-             "and D. C. Miller, Automatic "
-             "Learning of Algebraic Models for"
-             " Optimization, AIChE Journal, accepted, 2014. </p></html>")
+             "and D. C. Miller, Learning surrogate models "
+             "for simulation‐based optimization, "
+             "AIChE Journal, 60, p. 2211–2227, 2014.</p></html>")
         self.alamoDir = 'alamo'
         self.inputCols = [
             ('XFACTOR', float, 1.0),
@@ -471,6 +471,14 @@ class surrogateMethod(surrogate):
             This function overloads the Thread class function,
             and is called when you run start() to start a new thread.
         '''
+        alamoExe = self.dat.foqusSettings.alamo_path
+        try:
+            assert(os.path.isfile(alamoExe))
+        except AssertionError:
+            msg = "The ALAMO executable was not found. Check the ALAMO exec "\
+                  "path in settings and that ALAMO is installed."
+            self.msgQueue.put(msg)
+            raise AssertionError(msg)
         try:
             #Setup dictionaries to convert between foqus and ALAMO
             #variable names.  Also setup a list of input and output
@@ -495,14 +503,9 @@ class surrogateMethod(surrogate):
             alamoDirFull = os.path.abspath(alamoDir)
             self.setupWorkingDir()
             adpexe = os.path.join(alamoDirFull, 'foqusALAMOClient.py')
-            if os.path.isfile(adpexe):
-                adpexe = win32api.GetShortPathName(adpexe)
-                self.writeAlamoInputFile(adaptiveExe=adpexe)
-            else:
-                self.writeAlamoInputFile(adaptiveExe=adpexe)
+            self.writeAlamoInputFile(adaptiveExe=adpexe)
             if self.checkNumVars():
                 return
-            alamoExe = self.dat.foqusSettings.alamo_path
             alamoInput = self.options["Input File"].value
             alamoOutput = alamoInput.rsplit('.', 1)[0] + '.lst'
             self.msgQueue.put("------------------------------------")
@@ -532,10 +535,10 @@ class surrogateMethod(surrogate):
                 stdin = None,
                 creationflags=win32process.CREATE_NO_WINDOW)
             line = process.stdout.readline()
-            while process.poll() == None or line != '':
-                if line == '': time.sleep(0.2)
-                if line != '':
-                    self.msgQueue.put(line.rstrip())
+            while process.poll() == None or line != b'':
+                if line == b'': time.sleep(0.2)
+                if line != b'':
+                    self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
                     self.msgQueue.put("**terminated by user**")
@@ -569,10 +572,23 @@ class surrogateMethod(surrogate):
                     "Exception in ALAMO Thread",
                     exc_info=sys.exc_info())
 
-    def writeAlamoInputFile(self, adaptiveExe="foqusALAMOClient.py"):
-        '''
-            Write the input file for the ALAMO executable
-        '''
+    def writeAlamoInputFile(self, adaptiveExe="foqusALAMOClient.py", ):
+        """Write the input file for the ALAMO executable."""
+        # Get around the need to associate py files with a python
+        # interperater in Windows.
+        adaptive = self.samplers.get(self.options['SAMPLER'].value, False)
+        if os.name == "nt":
+            if adaptive:
+                with open(adaptiveExe + ".bat", "w") as f:
+                    f.write("python {} %*".format(adaptiveExe))
+                adaptiveExe += ".bat"
+            # On Windows, need to use short file names for ALAMO 
+            adaptiveExe = win32api.GetShortPathName(adaptiveExe)
+        if not adaptive:
+            maxiter = 1
+            adaptive = 1
+        else:
+            maxiter = self.options["MAXITER"].value
         #Number f input and output variables
         nin = self.nInput()
         nout = self.nOutput()
@@ -589,12 +605,6 @@ class surrogateMethod(surrogate):
         #Get some option values
         nsample = self.options['NSAMPLE'].value
         maxsim = self.options['MAXSIM'].value
-        adaptive = self.samplers.get(self.options['SAMPLER'].value, 0)
-        if adaptive == 0:
-            maxiter = 1
-            adaptive = 1
-        else:
-            maxiter = self.options["MAXITER"].value
         modeler = self.modelers.get(self.options['MODELER'].value, 1)
         preset = self.options['PRESET'].value
         maxtime = self.options['MAXTIME'].value
@@ -686,7 +696,7 @@ class surrogateMethod(surrogate):
             af.write("sampler {0}\n".format(adaptive))
             af.write("maxiter {0}\n".format(maxiter))
             af.write("maxsim {0}\n".format(maxsim))
-            af.write("simulator {0}\n".format(adaptiveExe))
+            af.write("simulator {}\n".format(adaptiveExe))
             af.write('#simin input.txt\n')
             af.write('#simout output.txt\n')
             af.write("ninputs {0}\n".format(nin))
@@ -822,8 +832,8 @@ class surrogateMethod(surrogate):
             #a cut and paste job for now
             af.write("\nBEGIN_VALDATA\n")
             # Reset data filter to validation set
-            self.graph.results.set_filter(validFilter)
-            for i in range(nvaldata):
+            res.set_filter(validFilter)
+            for i in res.get_indexes(filtered=True):
                 line = [0]*(nin+nout)
                 p = 0
                 for j, vname in enumerate(self.input):

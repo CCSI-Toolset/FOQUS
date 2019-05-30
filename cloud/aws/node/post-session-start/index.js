@@ -17,10 +17,9 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
-
+const foqus_job_topic = process.env.FOQUS_JOB_TOPIC;
 // POST SESSION START:
 //  1.  Grab oldest S3 File in bucket foqus-sessions/{username}/{session_uuid}/*.json
 //  2.  Send each job to SNS Job Topic
@@ -38,6 +37,19 @@ exports.handler = function(event, context, callback) {
           'Access-Control-Allow-Origin': '*'
       },
   });
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
+  const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
     console.log("PATH: " + event.path)
     //var body = JSON.parse(event);
@@ -46,7 +58,7 @@ exports.handler = function(event, context, callback) {
 
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: default_user_name + '/' + session_id
+      Prefix: user_name + '/' + session_id
     };
     var client = new AWS.S3();
     var request = client.listObjects(params, function(err, data) {
@@ -63,7 +75,7 @@ exports.handler = function(event, context, callback) {
 
         var sns = new AWS.SNS();
         var request_topic = sns.createTopic({
-            Name: 'FOQUS-Job-Topic'
+            Name: foqus_job_topic,
           }, function(err, data) {
                 if (err) {
                   console.log(err.stack);

@@ -10,7 +10,7 @@ Microsoft Excel Configuration
    :math:`\rightarrow` **SinterConfigGUI** from the Start menu.
 
 #. The splash window displays, as shown in Figure
-   `[fig.sinter.acm.splash] <#fig.sinter.acm.splash>`__. The user may
+   :ref:`fig.sinter.acm.splash`. The user may
    click the splash screen to proceed, or wait 10 seconds for it to
    close automatically.
 
@@ -21,7 +21,7 @@ Microsoft Excel Configuration
       SinterConfigGUI Splash Screen
 
 #. The SinterConfigGUI Open Simulation window displays (Figure
-   `[fig.sinter.acm.openpage] <#fig.sinter.acm.openpage>`__). If
+   :ref:`fig.sinter.acm.openpage`). If
    “SinterConfigGUI” was opened from FOQUS, the filename text box
    already contains the correct file. To proceed immediately click
    **Open File and Configure Variables** or click **Browse** to search
@@ -41,8 +41,7 @@ Microsoft Excel Configuration
    file.
 
 #. In the “SinterConfigGUI” the SinterConfigGUI Simulation Meta-Data
-   page is now displayed (Figure
-   `[fig.sinter.excel.savename] <#fig.sinter.excel.savename>`__). The
+   page is now displayed (Figure :ref:`fig.sinter.excel.savename`). The
    first and most important piece of metadata is **Save Location** at
    the top of the window. This is where the sinter configuration file is
    saved. The system attempts to locate a reasonable file location and
@@ -58,7 +57,7 @@ Microsoft Excel Configuration
 #. Continue to complete in the remaining fields and click **Next**.
 
 #. In the SinterConfigGUI Variable Configuration Page, (Figure
-   `[fig.sinter.excel.variableempty] <#fig.sinter.excel.variableempty>`__)
+   :ref:`fig.sinter.excel.variableempty`)
    notice that the Excel setting variable **macro** is already included
    in the **Selected Input Variables.** If the Excel spreadsheet has a
    macro that should be run after SimSinter sets the inputs, but before
@@ -74,7 +73,7 @@ Microsoft Excel Configuration
 
 #. The Excel simulation has the same **Variable Tree** structure as
    Aspen Plus, as shown in (Figure
-   `[fig.sinter.excel.variableselected] <#fig.sinter.excel.variableselected>`__).
+   :ref:`fig.sinter.excel.variableselected`).
    Only the variables in the active section of the Excel spreadsheet
    appear in the **Variable Tree**. If, for some reason, a cell does not
    appear the in tree, the user may manually enter the cell into the
@@ -95,7 +94,7 @@ Microsoft Excel Configuration
    Variable** frame. Click the **Make Input** button to make the
    variable an input variable. Now the variable is in the **Selected
    Input Variables** section, and its meta-data may be edited (Figure
-   `[fig.sinter.excel.variableinputs] <#fig.sinter.excel.variableinputs>`__).
+   :ref:`fig.sinter.excel.variableinputs`).
 
    .. figure:: ../figs/Excel/08_VariablesInput.png
       :name: fig.sinter.excel.variableinputs
@@ -105,8 +104,7 @@ Microsoft Excel Configuration
 
 #. Enter an output variable (such as, “BMI$C$3”), by selecting the
    variables in the **Variable Tree**, clicking **Preview**, and then
-   clicking **Make Output** (Figure
-   `[fig.sinter.excel.variableoutput] <#fig.sinter.excel.variableoutput>`__).
+   clicking **Make Output** (Figure :ref:`fig.sinter.excel.variableoutput`).
 
    .. figure:: ../figs/Excel/09_VariablesOutput.png
       :name: fig.sinter.excel.variableoutput

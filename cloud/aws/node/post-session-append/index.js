@@ -17,8 +17,8 @@ const fs = require('fs');
 const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
+//const default_user_name = "anonymous";
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
 
 // For development/testing purposes
@@ -35,6 +35,19 @@ exports.handler = function(event, context, callback) {
   });
   const dynamo_put_cb = function (err, res) {
   };
+  if (event.requestContext == null) {
+    context.fail("No requestContext for user mapping")
+    return;
+  }
+  if (event.requestContext.authorizer == null) {
+    console.log("API Gateway Testing");
+    var content = JSON.stringify([]);
+    callback(null, {statusCode:'200', body: content,
+      headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+    });
+    return;
+  }
+  const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
     console.log("BODY: " + event.body)
     var body = JSON.parse(event.body);
@@ -49,7 +62,7 @@ exports.handler = function(event, context, callback) {
 
     var params = {
       Bucket: s3_bucket_name,
-      Key: default_user_name + '/' + session_id + '/' + milliseconds + '.json',
+      Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
       Body: content
     };
     //var awsS3Client = new AWS.S3();
@@ -78,7 +91,7 @@ exports.handler = function(event, context, callback) {
                   Type: "Job",
                   Create: d.toISOString(),
                   SessionId: session_id,
-                  User: default_user_name,
+                  User: user_name,
                   Initialize: body[i].Initialize,
                   Input: body[i].Input,
                   Reset:body[i].Reset,

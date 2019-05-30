@@ -42,8 +42,7 @@ variable where gPROMS will use the data.
    C:\\ SimSinterFiles\gPROMS_Test\\ BufferTank_FO.gPJ
 
    Double-click on the .gPJ file to open ModelBuilder, as shown in
-   Figure
-   `[fig.sinter.gproms.openbuffertank] <#fig.sinter.gproms.openbuffertank>`__.
+   Figure :ref:`fig.sinter.gproms.openbuffertank`.
 
    .. figure:: ../figs/gPROMS/01_OpenBufferTank.png
       :alt: Opening BufferTank in gPROMS Model Builder
@@ -110,10 +109,9 @@ variable where gPROMS will use the data.
 
    .. figure:: ../figs/gPROMS/07_EditBufferTank.png
       :alt: Opening SimulateTank_tutorial
+      :name: fig.sinter.gproms.opensimulatetank_tutorial
 
       Opening SimulateTank_tutorial
-
-   [fig.sinter.gproms.opensimulatetank_tutorial]
 
 #. First, the user needs to add a FOREIGN_OBJECT named “FO” in the
    PARAMETER section. Then the user needs to set that FOREIGN_OBJECT to
@@ -239,8 +237,8 @@ configuration can be done.
    its own by selecting **CCSI Tools** :math:`\rightarrow` **FOQUS**
    :math:`\rightarrow` **SinterConfigGUI** from the Start menu.
 
-#. The splash window displays, as shown in Figure
-   `[fig.sinter.gproms.splash] <#fig.sinter.gproms.splash>`__. The user
+#. The splash window displays, as shown in Figure 
+   :ref:`fig.sinter.gproms.splash`. The user
    may click the splash screen to proceed, or wait 10 seconds for it to
    close automatically.
 
@@ -251,7 +249,7 @@ configuration can be done.
       SinterConfigGUI Splash Screen
 
 #. The SinterConfigGUI Open Simulation window displays (Figure
-   `[fig.sinter.gproms.openpage] <#fig.sinter.gproms.openpage>`__). If
+   :ref:`fig.sinter.gproms.openpage`). If
    “SinterConfigGUI” was opened from FOQUS, the filename text box
    already contains the correct file. To proceed immediately click
    **Open File and Configure Variables** or click **Browse** to search
@@ -272,8 +270,7 @@ configuration can be done.
       SinterConfigGUI Open Simulation Screen
 
 #. The SinterConfigGUI Simulation Meta-Data window displays as shown in
-   (Figure
-   `[fig.sinter.gproms.savename] <#fig.sinter.gproms.savename>`__).
+   (Figure :ref:`fig.sinter.gproms.savename`).
    Unlike the other simulations, gPROMS has not started up in any way.
    SinterConfigGUI does not get information from gPROMS directly, it
    must parse the .gPJ file instead.
@@ -293,8 +290,7 @@ configuration can be done.
       SinterConfigGUI Simulation Meta-Data Save Text Box
 
 #. The SinterConfigGUI Variable Configuration Page window displays as
-   shown in Figure
-   `[fig.sinter.gproms.settings] <#fig.sinter.gproms.settings>`__.
+   shown in Figure :ref:`fig.sinter.gproms.settings`.
    gPROMS has two settings, **ProcessName** and **password**. SimSinter
    has guessed at both the **ProcessName** and the **password**. For
    this example the **password** is correct, but the **ProcessName** is
@@ -357,8 +353,7 @@ configuration can be done.
       Preview of the FlowOut Variable
 
 #. If **Make Output** is clicked, “FlowOut” will be made an Output
-   Variable as shown in Figure
-   `[fig.sinter.gproms.outputs2] <#fig.sinter.gproms.outputs2>`__. The
+   Variable as shown in Figure :ref:`fig.sinter.gproms.outputs2`. The
    Description can be updated, but SimSinter made a good guess in this
    example; therefore, there is no need to change the description.
 

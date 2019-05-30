@@ -11,7 +11,6 @@ import os
 from foqus_lib.gui.flowsheet.columns import *
 from . import dataFilterDialog
 from foqus_lib.gui.flowsheet.dataModel import *
-from foqus_lib.gui.flowsheet.runRowsDialog import *
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 from PyQt5 import uic
@@ -34,7 +33,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.editMenu = self.menu.addMenu("Edit")
         self.calcMenu = self.menu.addMenu("Calculate")
         self.viewMenu = self.menu.addMenu("View")
-        self.runMenu = self.menu.addMenu("Run")
         self.addMenuActions()
         self.menuButton.setMenu(self.menu)
         self.editFiltersButton.clicked.connect(self.editFilters)
@@ -75,12 +73,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self)
         self.toClipAct.triggered.connect(self.toClipboard)
         self.expMenu.addAction(self.toClipAct)
-        # Export PSUADE sample file
-        #self.toPsuadeAct = QAction(
-        #    'Export to PSUADE File...',
-        #    self)
-        #self.toPsuadeAct.triggered.connect(self.toPsuade)
-        #self.expMenu.addAction(self.toPsuadeAct)
         # import from csv
         self.importCsvAct = QAction(
             'Import from CSV file...',
@@ -150,11 +142,6 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.editCalcCol.triggered.connect(self.showCalcEdit)
         self.calcCols.triggered.connect(self.calculate_columns)
 
-        #Run menu
-        self.runRowsAct = QAction('Run Selected Rows', self)
-        self.runRowsAct.triggered.connect(self.runSelectedRows)
-        self.runMenu.addAction(self.runRowsAct)
-
     def calculate_columns(self):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
@@ -172,36 +159,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         rows = self.selectedRows()
         if len(rows) < 1:
             return
-        self.results.rowToFlowsheet(
-            rows[0], self.dat.flowsheet, fltr=True)
+        self.results.row_to_flow(
+            self.dat.flowsheet, rows[0], filtered=True)
         self.dat.mainWin.refresh()
-
-    def runSelectedRows(self):
-        if self.results is None or self.results.empty:
-            self.results = self.dat.flowsheet.results
-
-        rows = self.selectedRows()
-        n = len(rows)
-        if n < 1:
-            return
-        elif n == 1:
-            s = ""
-        else:
-            s = "s"
-        msgBox = QMessageBox()
-        msgBox.setText("Do you want to run {} sample{}?".format(n, s))
-        msgBox.setStandardButtons(
-            QMessageBox.No |
-            QMessageBox.Yes)
-        msgBox.setDefaultButton(QMessageBox.No)
-        ret = msgBox.exec_()
-        if ret == QMessageBox.No: return
-        if self.dat.foqusSettings.runFlowsheetMethod == 1:
-            useTurbine=True
-        else:
-            useTurbine=False
-        rows, valList = self.results.runSet(rows)
-        self.dat.mainWin.runSim(rows=rows, valList=valList)
 
     def refreshContents(self):
         if self.results is None or self.results.empty:
@@ -235,8 +195,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         ret = msgBox.exec_()
         if ret == QMessageBox.Yes:
             rows = self.selectedRows()
-            rl = self.results
-            rl.deleteRows(rows, fltr=True)
+            self.results.delete_rows(rows, filtered=True)
             self.refreshContents()
 
     def editDataSet(self):
@@ -251,8 +210,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             'Enter new set name:',
             QLineEdit.Normal)
         if ok and name != '':
-            for row in rows:
-                rl.setSetName(name, row, fltr=True)
+            rl.edit_set_name(name, rows, filtered=True)
 
     def importCSV(self):
         if self.results is None or self.results.empty:
@@ -271,7 +229,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
 
-        self.results.addResult( )
+        self.results.add_result(sd=self.dat.flowsheet.saveValues(),
+                                result_name="empty", empty=True)
         self.refreshContents()
 
     def selectedRows(self):

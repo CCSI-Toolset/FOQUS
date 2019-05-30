@@ -41,7 +41,7 @@ function, and (3) sample variables, which are used to construct the
 multiple flowsheet evaluations that can go into an objective
 calculation. If no sample variables are defined, each objective function
 value will be based on a single flowsheet evaluation. Figure
-`[fig.opt.problem.variables] <#fig.opt.problem.variables>`__ shows the
+:ref:`fig.opt.problem.variables` shows the
 **Variables** tab selection form.
 
 .. figure:: ../figs/opt_problem_variables.svg
@@ -86,7 +86,7 @@ and the flowsheet is evaluated for each row on the sample table. The
 results of the samples can be used to calculate the objective function.
 Using the **Samples** tab is optional. If no sample variables are set,
 each objective function value will be based on a single simulation.
-Figure `[fig.opt.problem.samples] <#fig.opt.problem.samples>`__ shows
+Figure :ref:`fig.opt.problem.samples` shows
 the Samples table form.
 
 .. figure:: ../figs/opt_problem_samples.svg
@@ -131,7 +131,7 @@ Name and Variable Name are strings so they should be in quotes. The
 sample and time step indexes are integers. For steady state simulations,
 the time step should be 0.
 
-Figure `[fig.opt.problem.objective1] <#fig.opt.problem.objective1>`__
+Figure :ref:`fig.opt.problem.objective1`
 shows the form for entering the objective function and constraints as
 Python expressions.
 
@@ -225,16 +225,16 @@ be used. The Custom Python method enables the user to enter the
 objective calculation as a Python function, which also should include
 any required constraint penalties.
 
-Figure `[fig.opt.problem.objective2] <#fig.opt.problem.objective2>`__
+Figure :ref:`fig.opt.problem.objective2`
 shows the Custom Python objective form. The top text box provides
 instructions for writing a custom objective function. The bottom text
 box provides a place to enter Python code. The numpy and math modules
 have been imported and are available as numpy and math. To use the
 Custom Python objective, the user must define a function called
-“onjfunc(x, f, fail).” The three arguments are: (1) “x” is the
-dictionary of input variables, (2) “f” is the dictionary of output
-variables, and (3) “fail” is a boolean vector that indicates whether a
-particular sample calculation has failed. The “objfunc” function should
+"onjfunc(x, f, fail)."" The three arguments are: (1) "x" is the
+dictionary of input variables, (2) "f" is the dictionary of output
+variables, and (3) "fail" is a boolean vector that indicates whether a
+particular sample calculation has failed. The "objfunc" function should
 return three values: (1) a list of objective function values for
 multi-objective optimization (in most cases with single objective
 optimization this will be a list with one value), (2) a list of
@@ -250,8 +250,7 @@ has been added to the objective.
 
    Custom Objective Function
 
-The code in Figure
-`[fig.opt.problem.objective2_code] <#fig.opt.problem.objective2_code>`__
+The code in Figure :ref:`fig.opt.problem.objective2_code`
 provides an example of a custom objective function for parameter
 estimation. The objective function minimizes the sum of the differences
 between simulation and empirical data. In this case the decision
@@ -272,7 +271,9 @@ returned as a list with only one element. The last two return values are
 debugging information for constraints. In this case, the “zeros” are
 just place holders and have no real utility.
 
-::
+.. code-block::
+  :name: fig.opt.problem.objective2_code
+  :caption: Objective Function Code
 
    def objfunc(x, f, fail):
        if any(fail): # any simulation failed
@@ -282,7 +283,7 @@ just place holders and have no real utility.
              for i in range(len(f))])
        return [obj], [0], 0
 
-[fig.opt.problem.objective2_code]
+
 
 .. _sec.opt.solver.options:
 
@@ -291,7 +292,7 @@ Solver Options
 
 The **Solver** tab in the **Optimization** button tool enables the
 selection of the DFO method and setting of solver parameters. Figure
-`[fig.opt.solver.form] <#fig.opt.solver.form>`__ illustrates the solver
+:ref:`fig.opt.solver.form` illustrates the solver
 form.
 
 .. figure:: ../figs/opt_solver_form.svg
@@ -317,7 +318,7 @@ Running Optimization
 
 The optimization monitor is displayed under the **Run** tab in the
 **Optimization** button tool. The optimization monitor, illustrated in
-Figure `[fig.opt.run.form] <#fig.opt.run.form>`__, is used to monitor
+Figure :ref:`fig.opt.run.form`, is used to monitor
 the progress of the optimization as it runs.
 
 .. figure:: ../figs/opt_run_form.svg

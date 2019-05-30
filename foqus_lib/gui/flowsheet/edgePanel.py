@@ -145,9 +145,8 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.toBox.blockSignals( False )
 
     def updateConnections(self):
-        '''
-            Update the connection table from the currently selected edge.
-        '''
+        """Update the connection table from the currently selected edge.
+        """
         self.connectTable.clearContents()
         vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
         vars1out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
@@ -164,35 +163,41 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.connectTable.resizeColumnsToContents()
 
     def autoConnect(self):
-        N1In  = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
-        N1Out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
-        N2In  = sorted(self.dat.flowsheet.nodes[ self.toBox.currentText() ].inVars.keys())
+        N1In = self.dat.flowsheet.nodes[self.fromBox.currentText()].inVars.keys()
+        N1Out = self.dat.flowsheet.nodes[self.fromBox.currentText()].outVars.keys()
+        N2In = self.dat.flowsheet.nodes[self.toBox.currentText()].inVars.keys()
         for var in N1Out:
-            if var in N2In:  self.addConnection(var, var)
+            if var in N2In:
+                self.addConnection(var, var)
         for var in N1In:
-            if var in N2In:  self.addConnection(var, var)
+            if var not in N1Out and var in N2In:
+                self.addConnection(var, var)
 
     def addConnection(self, checked=False, fv="", tv=""):
         self.connectTable.setRowCount( self.connectTable.rowCount() + 1 )
-        vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
-        vars1out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
-        vars2 = sorted(self.dat.flowsheet.nodes[ self.toBox.currentText() ] .inVars.keys())
+        vars1in = sorted(
+            self.dat.flowsheet.nodes[self.fromBox.currentText()].inVars.keys())
+        vars1out = sorted(
+            self.dat.flowsheet.nodes[self.fromBox.currentText()].outVars.keys())
+        vars2 = sorted(
+            self.dat.flowsheet.nodes[self.toBox.currentText()] .inVars.keys())
         i = self.connectTable.rowCount() - 1
-        gh.setTableItem( self.connectTable, i, 0, fv, pullDown = vars1out + vars1in )
-        self.connectTable.cellWidget(  i,  0  ).insertSeparator( len(vars1out) )
-        gh.setTableItem( self.connectTable, i, 1, tv, pullDown = vars2 )
-        gh.setTableItem( self.connectTable, i, 2, "", check = True, editable = False )
+        gh.setTableItem(self.connectTable, i, 0, fv, pullDown=vars1out + vars1in)
+        self.connectTable.cellWidget(i, 0).insertSeparator(len(vars1out))
+        gh.setTableItem(self.connectTable, i, 1, tv, pullDown=vars2)
+        gh.setTableItem(self.connectTable, i, 2, "", check=True, editable=False)
         self.connectTable.resizeColumnsToContents()
 
     def delConnection(self):
         indexes = self.connectTable.selectedIndexes()
-        delRowSet = sorted(list(set([index.row() for index in indexes])), reverse = True)
+        delRowSet = sorted(
+            list(set([index.row() for index in indexes])), reverse=True)
         for row in delRowSet:
             self.connectTable.removeRow(row)
 
     def closeEvent(self, event):
         '''
-            Intercept the close event and apply changes to node before closing
+        Intercept the close event and apply changes to node before closing
         '''
         self.applyChanges()
         self.lockConnection.setChecked(True)

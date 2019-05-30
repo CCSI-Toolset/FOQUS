@@ -1,12 +1,15 @@
 import os
-from PyQt5 import QtCore, uic
-mypath = os.path.dirname(__file__)
-_edgeDockUI, _edgeDock = \
-        uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
+import logging
 
+from PyQt5 import QtCore, uic
 
 import foqus_lib.gui.helpers.guiHelpers as gh
-import types
+
+_log = logging.getLogger("foqus.{}".format(__name__))
+mypath = os.path.dirname(__file__)
+
+_edgeDockUI, _edgeDock = \
+        uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
 
 class edgeDock(_edgeDock, _edgeDockUI):
     redrawFlowsheet = QtCore.pyqtSignal()
@@ -15,7 +18,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         '''
             Initialize the edge edit dock widget
         '''
-        super(edgeDock, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
@@ -127,66 +130,123 @@ class edgeDock(_edgeDock, _edgeDockUI):
             Fill in the to and from node selection boxes and set the
             current selection to match the selected edge
         '''
-        self.fromBox.blockSignals( True )
-        self.toBox.blockSignals( True )
+        self.fromBox.blockSignals(True)
+        self.toBox.blockSignals(True)
         self.fromBox.clear()
         self.toBox.clear()
-        nodes = sorted( self.dat.flowsheet.nodes.keys() )
-        self.fromBox.addItems( nodes )
-        self.toBox.addItems( nodes )
+        nodes = sorted(self.dat.flowsheet.nodes.keys())
+        self.fromBox.addItems(nodes)
+        self.toBox.addItems(nodes)
         if self.edge != None:
-            index = self.fromBox.findText( self.edge.start )
+            index = self.fromBox.findText(self.edge.start)
             if index < 0: index = 0
             self.fromBox.setCurrentIndex(index)
-            index = self.toBox.findText( self.edge.end )
+            index = self.toBox.findText(self.edge.end)
             if index < 0: index = 0
             self.toBox.setCurrentIndex(index)
-        self.fromBox.blockSignals( False )
-        self.toBox.blockSignals( False )
+        self.fromBox.blockSignals(False)
+        self.toBox.blockSignals(False)
 
     def updateConnections(self):
-        '''
-            Update the connection table from the currently selected edge.
-        '''
+        """
+        Update the connection table from the currently selected edge.
+
+        Args:
+            None
+        Returns:
+            None
+        """
+        n1 = self.fromBox.currentText()
+        n2 = self.toBox.currentText()
         self.connectTable.clearContents()
-        vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
-        vars1out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
-        vars2 = sorted(self.dat.flowsheet.nodes[ self.toBox.currentText() ] .inVars.keys())
-        if self.edge.start == self.fromBox.currentText() and self.edge.end == self.toBox.currentText():
-            self.connectTable.setRowCount( len(self.edge.con) )
+        vars1in = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
+        vars1out = sorted(self.dat.flowsheet.nodes[n1].outVars.keys())
+        vars2 = sorted(self.dat.flowsheet.nodes[n2] .inVars.keys())
+        if self.edge.start == n1 and self.edge.end == n2:
+            self.connectTable.setRowCount(len(self.edge.con))
             for i in range( len(self.edge.con) ):
-                gh.setTableItem( self.connectTable, i, 0, self.edge.con[i].fromName, pullDown = vars1out + vars1in )
-                self.connectTable.cellWidget(  i,  0  ).insertSeparator( len(vars1out) )
-                gh.setTableItem( self.connectTable, i, 1, self.edge.con[i].toName, pullDown = vars2 )
-                gh.setTableItem( self.connectTable, i, 2, "", check = self.edge.con[i].active, editable = False )
+                gh.setTableItem(
+                    self.connectTable, i, 0, self.edge.con[i].fromName,
+                    pullDown=vars1out+vars1in)
+                self.connectTable.cellWidget(i,0).insertSeparator(len(vars1out))
+                gh.setTableItem(
+                    self.connectTable, i, 1, self.edge.con[i].toName,
+                    pullDown=vars2)
+                gh.setTableItem(self.connectTable, i, 2, "",
+                    check=self.edge.con[i].active, editable=False)
         else:
-            self.connectTable.setRowCount( 0 )
+            self.connectTable.setRowCount(0)
         self.connectTable.resizeColumnsToContents()
 
     def autoConnect(self):
-        N1In  = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
-        N1Out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
-        N2In  = sorted(self.dat.flowsheet.nodes[ self.toBox.currentText() ].inVars.keys())
-        for var in N1Out:
-            if var in N2In:  self.addConnection(var, var)
-        for var in N1In:
-            if var in N2In:  self.addConnection(var, var)
+        """
+        Add connections to the connection table that connect variables with the
+        same name in from node to the to node.  The vaiables can be inputs or
+        outputs in the from node, but only inputs in the to node.
 
-    def addConnection(self, checked=False, fv="", tv=""):
-        self.connectTable.setRowCount( self.connectTable.rowCount() + 1 )
-        vars1in = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].inVars.keys())
-        vars1out = sorted(self.dat.flowsheet.nodes[ self.fromBox.currentText() ].outVars.keys())
-        vars2 = sorted(self.dat.flowsheet.nodes[ self.toBox.currentText() ] .inVars.keys())
-        i = self.connectTable.rowCount() - 1
-        gh.setTableItem( self.connectTable, i, 0, fv, pullDown = vars1out + vars1in )
-        self.connectTable.cellWidget(  i,  0  ).insertSeparator( len(vars1out) )
-        gh.setTableItem( self.connectTable, i, 1, tv, pullDown = vars2 )
-        gh.setTableItem( self.connectTable, i, 2, "", check = True, editable = False )
+        Args:
+            None
+        Returns:
+            None
+        """
+        n1 = self.fromBox.currentText()
+        n2 = self.toBox.currentText()
+        N1In  = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
+        N1Out = sorted(self.dat.flowsheet.nodes[n1].outVars.keys())
+        N2In  = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
+        for var in N1Out:
+            if var in N2In:
+                self.addConnection(fv=var, tv=var)
+        for var in N1In:
+            if var in N2In:
+                self.addConnection(tv=var, fv=var)
+
+    def addConnection(self, fv="", tv=""):
+        """
+        Add a new row to the connection table, if fv and/or tv are supplied
+        and fv and tv are valid variable names, initally create the row with
+        the specified connection.
+
+        Args
+            fv (str): Input or output var in from node, "" for user selection
+            tv (str): Input var in to node, "" for user selection later
+        Returns:
+            None
+        """
+        n1 = self.fromBox.currentText()
+        n2 = self.toBox.currentText()
+        _log.debug("Adding connection from {}.{} to {}.{}".format(n1,fv,n2,tv))
+        # Add row
+        self.connectTable.setRowCount(self.connectTable.rowCount() + 1)
+        # get variable names, can connect in and out vars in n1 to in vars in n2
+        vars1in = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
+        vars1out = sorted(self.dat.flowsheet.nodes[n1].outVars.keys())
+        vars2 = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
+        # Fill in the pull down boxes
+        row = self.connectTable.rowCount() - 1
+        gh.setTableItem(
+            self.connectTable, row, 0, fv, pullDown=vars1out + vars1in)
+        # Put a seperator between output and input vars in from vars
+        self.connectTable.cellWidget(row, 0).insertSeparator(len(vars1out))
+        gh.setTableItem(
+            self.connectTable, row, 1, tv, pullDown=vars2)
+        gh.setTableItem( # This is the active checkbox
+            self.connectTable, row, 2, "", check=True, editable=False)
+        # make columns wide enough to see what's goning on
         self.connectTable.resizeColumnsToContents()
 
     def delConnection(self):
+        """
+        Delete the selected rows from the connection table
+
+        Args:
+            None
+        Returns:
+            None
+        """
         indexes = self.connectTable.selectedIndexes()
-        delRowSet = sorted(list(set([index.row() for index in indexes])), reverse = True)
+        delRowSet = \
+            sorted(list(set([index.row() for index in indexes])), reverse=True)
         for row in delRowSet:
             self.connectTable.removeRow(row)
 

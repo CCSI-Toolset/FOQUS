@@ -1,3 +1,5 @@
+.. _sec.flowsheet.starting.foqus:
+
 Getting Started
 ===============
 

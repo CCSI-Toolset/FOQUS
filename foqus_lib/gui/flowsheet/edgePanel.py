@@ -252,7 +252,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
 
     def closeEvent(self, event):
         '''
-            Intercept the close event and apply changes to node before closing
+        Intercept the close event and apply changes to node before closing
         '''
         self.applyChanges()
         self.lockConnection.setChecked(True)

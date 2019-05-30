@@ -552,12 +552,13 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     ### Preview button
     def preview(self):
         previewData = self.runData
-        dirname = os.getcwd()
+        dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+        filename = os.path.join(dirname, previewData.getModelName())
+        previewData.writeToCsv(filename, inputsOnly=True)
 
         dialog = sdoePreview(previewData, dirname, self)
         dialog.show()
 
     ### Return data
     def getData(self):
-        print("NAME OF THE DATA MODEL: ", self.runData.getModelName())
         return self.runData

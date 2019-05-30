@@ -62,7 +62,7 @@ Hence, for a variety of criteria, a space-filling design can serve as good choic
 Using the SDoE Module - The Basics
 ----------------------------------
 
-In this section, we descibe the basic steps in for creating a design with this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on **Create Design**. 
+In this section, we descibe the basic steps in for creating a design with this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on **Analyze**. 
 
 .. figure:: figs/1_home.png
    :alt: Home Screen
@@ -106,7 +106,7 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
       SDOE plot of aggregated inputs
    
-6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Create Design** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
+6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Analyze** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
 .. figure:: figs/5_SDOE_page2.png
    :alt: SDOE second window

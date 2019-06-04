@@ -164,9 +164,7 @@ Editor window with the input variables section of the toolbox displayed.
    Plugin. None allows no model to be assigned to the node; this is
    useful when the node only executes a script entered directly into
    FOQUS. Turbine is used to execute Aspen, gPROMS, or Excel
-   simulations. If simulations are stored in either the DMF lite or DMF
-   server, the DMF type models can be used. FOQUS will automatically
-   upload DMF models to Turbine as needed. Python plugins are custom
+   simulations. Python plugins are custom
    simulations or wrappers written by the user. Surrogate model methods
    may also produce Python plugin models.
 

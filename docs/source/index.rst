@@ -14,7 +14,6 @@ Contents
     chapt_sdoe/index
     chapt_solventfit/index
     chapt_sinter/index
-    chapt_heat/index
     chapt_debug/index
     references
     copyright

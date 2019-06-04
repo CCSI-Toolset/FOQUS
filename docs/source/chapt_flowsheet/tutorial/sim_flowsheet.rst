@@ -66,7 +66,7 @@ step is to upload the models to Turbine.
     the simulation, **Create/Edit** displays the SimSinter configuration
     GUI (see Figure :ref:`fig.tut.opt.upload`). See
     the SimSinter documentation or Chapter
-    :ref:`chapt.simsinter` for more information.
+    :ref:`sinter_main` for more information.
 
 8.  Click **Browse** to select a SimSinter configuration file (Figure
     :ref:`fig.tut.opt.upload`). Once the SimSinter
@@ -143,9 +143,9 @@ simulation uploaded to Turbine. The Node Editor is illustrated in Figure
 22. Repeat the process for the cost node, assigning it the BFB_v6_2_cost
     simulation.
 
-.. figure:: ../figs/nodeEditor.svg
+.. figure:: ../figs/nodeEditor_upd.png
    :alt: Node Editor
-   :name: fig.tut.opt.nodeEditor
+   :name: fig.tut.opt.nodeEditor_upd
 
    Node Editor
 

@@ -145,7 +145,6 @@ In this tutorial, a simulation ensemble is created and run.
       Figure :ref:`fig.uqt_sim`), and try selecting
       “Load all samples from a single file.” With this selection, a new
       dialog box
-      (Figure :ref:`fig.uq_sim_loadsample`)
       prompts the user to browse to a PSUADE full file, a PSUADE sample
       file, or CSV file (all formats are described in
       Section\ `[ap:psuadefiles] <#ap:psuadefiles>`__) that contains
@@ -188,7 +187,7 @@ In this tutorial, a simulation ensemble is created and run.
    PSUADE in its default location (C:\Program Files (x86)\psuade_project
    1.7.1\bin\psuade.exe) and the user did not update the PSUADE path in
    FOQUS settings (refer to
-   Section :ref:`session-menu`), then the user is
+   Section :ref:`section.settings`), then the user is
    prompted to locate the PSUADE executable in a file dialog.
 
 #. Once the samples are generated, the user can examine them by clicking
@@ -209,7 +208,7 @@ In this tutorial, a simulation ensemble is created and run.
    status of completed runs
    (Figure :ref:`fig.uqt_ensem_added`).
 
-   .. figure:: ../figs/tutorial/8_EnsembleAdded2.png
+   .. figure:: ../figs/tutorial/8_EnsembleAdded3.png
       :alt: Simulation Ensemble Added
       :name: fig.uqt_ensem_added
 
@@ -220,7 +219,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Click Analyze for “Ensemble 1”
       (Figure :ref:`fig.uqt_ensem_complete`).
 
-      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete2.png
+      .. figure:: ../figs/tutorial/9_EnsembleEvalComplete3.png
          :alt: Simulation Ensemble Evaluation Complete
          :name: fig.uqt_ensem_complete
 
@@ -229,7 +228,7 @@ In this tutorial, a simulation ensemble is created and run.
    #. Step 1 of “Analysis” (bottom page), the user selects Ensemble Data
       (Figure :ref:`fig.uqt_analysis`).
 
-      .. figure:: ../figs/tutorial/10_AnalysisDialog2.png
+      .. figure:: ../figs/tutorial/10_AnalysisDialog3.png
          :alt: Simulation Ensemble Analysis
          :name: fig.uqt_analysis
 
@@ -241,9 +240,11 @@ In this tutorial, a simulation ensemble is created and run.
    #. Step 3 of “Analysis” is to keep the analysis method as
       “Uncertainty Analysis” and then click Analyze. The user should see
       two graphs displaying the probability and cumulative distributions
-      plots (Figure :ref:`fig.10a.rosenua`).
+      plots (Figure :ref:`fig.10a.rosenua`). Users should keep in mind
+      these figures are intended to show what type of plots they would get, 
+      but they should not expect to reproduce the exact same plots.
 
-   .. figure:: ../figs/tutorial/10a_RosenbrockUA.png
+   .. figure:: ../figs/tutorial/10a_RosenbrockUA2.png.png
       :alt: Uncertainty Analysis Results
       :name: fig.10a.rosenua
 

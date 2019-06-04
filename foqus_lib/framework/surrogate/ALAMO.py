@@ -471,6 +471,14 @@ class surrogateMethod(surrogate):
             This function overloads the Thread class function,
             and is called when you run start() to start a new thread.
         '''
+        alamoExe = self.dat.foqusSettings.alamo_path
+        try:
+            assert(os.path.isfile(alamoExe))
+        except AssertionError:
+            msg = "The ALAMO executable was not found. Check the ALAMO exec "\
+                  "path in settings and that ALAMO is installed."
+            self.msgQueue.put(msg)
+            raise AssertionError(msg)
         try:
             #Setup dictionaries to convert between foqus and ALAMO
             #variable names.  Also setup a list of input and output
@@ -495,14 +503,9 @@ class surrogateMethod(surrogate):
             alamoDirFull = os.path.abspath(alamoDir)
             self.setupWorkingDir()
             adpexe = os.path.join(alamoDirFull, 'foqusALAMOClient.py')
-            if os.path.isfile(adpexe):
-                adpexe = win32api.GetShortPathName(adpexe)
-                self.writeAlamoInputFile(adaptiveExe=adpexe)
-            else:
-                self.writeAlamoInputFile(adaptiveExe=adpexe)
+            self.writeAlamoInputFile(adaptiveExe=adpexe)
             if self.checkNumVars():
                 return
-            alamoExe = self.dat.foqusSettings.alamo_path
             alamoInput = self.options["Input File"].value
             alamoOutput = alamoInput.rsplit('.', 1)[0] + '.lst'
             self.msgQueue.put("------------------------------------")
@@ -569,10 +572,23 @@ class surrogateMethod(surrogate):
                     "Exception in ALAMO Thread",
                     exc_info=sys.exc_info())
 
-    def writeAlamoInputFile(self, adaptiveExe="foqusALAMOClient.py"):
-        '''
-            Write the input file for the ALAMO executable
-        '''
+    def writeAlamoInputFile(self, adaptiveExe="foqusALAMOClient.py", ):
+        """Write the input file for the ALAMO executable."""
+        # Get around the need to associate py files with a python
+        # interperater in Windows.
+        adaptive = self.samplers.get(self.options['SAMPLER'].value, False)
+        if os.name == "nt":
+            if adaptive:
+                with open(adaptiveExe + ".bat", "w") as f:
+                    f.write("python {} %*".format(adaptiveExe))
+                adaptiveExe += ".bat"
+            # On Windows, need to use short file names for ALAMO 
+            adaptiveExe = win32api.GetShortPathName(adaptiveExe)
+        if not adaptive:
+            maxiter = 1
+            adaptive = 1
+        else:
+            maxiter = self.options["MAXITER"].value
         #Number f input and output variables
         nin = self.nInput()
         nout = self.nOutput()
@@ -589,12 +605,6 @@ class surrogateMethod(surrogate):
         #Get some option values
         nsample = self.options['NSAMPLE'].value
         maxsim = self.options['MAXSIM'].value
-        adaptive = self.samplers.get(self.options['SAMPLER'].value, 0)
-        if adaptive == 0:
-            maxiter = 1
-            adaptive = 1
-        else:
-            maxiter = self.options["MAXITER"].value
         modeler = self.modelers.get(self.options['MODELER'].value, 1)
         preset = self.options['PRESET'].value
         maxtime = self.options['MAXTIME'].value
@@ -686,7 +696,7 @@ class surrogateMethod(surrogate):
             af.write("sampler {0}\n".format(adaptive))
             af.write("maxiter {0}\n".format(maxiter))
             af.write("maxsim {0}\n".format(maxsim))
-            af.write("simulator {0}\n".format(adaptiveExe))
+            af.write("simulator {}\n".format(adaptiveExe))
             af.write('#simin input.txt\n')
             af.write('#simout output.txt\n')
             af.write("ninputs {0}\n".format(nin))

@@ -87,7 +87,7 @@
         </sizepolicy>
        </property>
        <property name="title">
-        <string>Columns</string>
+        <string>Columns (Drag and Drop)</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">
         <item>

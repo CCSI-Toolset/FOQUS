@@ -231,10 +231,10 @@ instructions for writing a custom objective function. The bottom text
 box provides a place to enter Python code. The numpy and math modules
 have been imported and are available as numpy and math. To use the
 Custom Python objective, the user must define a function called
-“onjfunc(x, f, fail).” The three arguments are: (1) “x” is the
-dictionary of input variables, (2) “f” is the dictionary of output
-variables, and (3) “fail” is a boolean vector that indicates whether a
-particular sample calculation has failed. The “objfunc” function should
+"onjfunc(x, f, fail)."" The three arguments are: (1) "x" is the
+dictionary of input variables, (2) "f" is the dictionary of output
+variables, and (3) "fail" is a boolean vector that indicates whether a
+particular sample calculation has failed. The "objfunc" function should
 return three values: (1) a list of objective function values for
 multi-objective optimization (in most cases with single objective
 optimization this will be a list with one value), (2) a list of
@@ -271,9 +271,9 @@ returned as a list with only one element. The last two return values are
 debugging information for constraints. In this case, the “zeros” are
 just place holders and have no real utility.
 
-.. _fig.opt.problem.objective2_code:
-
-::
+.. code-block::
+  :name: fig.opt.problem.objective2_code
+  :caption: Objective Function Code
 
    def objfunc(x, f, fail):
        if any(fail): # any simulation failed
@@ -282,6 +282,8 @@ just place holders and have no real utility.
            obj=sum([(f[i]['Test']['y'][0] - x[i]['Test']['ydata'][0])**2\
              for i in range(len(f))])
        return [obj], [0], 0
+
+
 
 .. _sec.opt.solver.options:
 

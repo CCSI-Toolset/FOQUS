@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/bin/env python
 """foqusPSUADEClient.py
 
 * The purpose of this script is to be the simulator executable for
@@ -12,7 +12,6 @@ See LICENSE.md for license and copyright details.
 """
 import sys
 from multiprocessing.connection import Client
-
 ###################################################
 # Function to get input data for interpolation
 #==================================================

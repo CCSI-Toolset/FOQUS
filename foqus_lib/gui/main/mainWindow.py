@@ -312,14 +312,14 @@ class mainWindow(QMainWindow):
         #separator
         self.toolbarMain.addSeparator()
         #Basic data action
-        self.basicDataAction = QAction(
-            QIcon(self.iconPaths['basicData48']),
+        if self.showBasicDataTab:
+            self.basicDataAction = QAction(QIcon(self.iconPaths['basicData48']),
             'Basic Data',
             self)
-        self.basicDataAction.triggered.connect(self.showBasicData)
-        self.basicDataAction.setCheckable(True)
-        self.mainToolbarActionGroup.addAction(self.basicDataAction)
-        self.toolbarMain.addAction(self.basicDataAction)
+            self.basicDataAction.triggered.connect(self.showBasicData)
+            self.basicDataAction.setCheckable(True)
+            self.mainToolbarActionGroup.addAction(self.basicDataAction)
+            self.toolbarMain.addAction(self.basicDataAction)
         # Flowsheet action
         self.fsEditAction = QAction(
             QIcon(self.iconPaths['flow']),
@@ -393,10 +393,8 @@ class mainWindow(QMainWindow):
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
         #Setings Action
-        self.mainSettingsAction = QAction(
-            QIcon(self.iconPaths['settings48']),
-            'Settings',
-            self)
+        self.mainSettingsAction = QAction(QIcon(self.iconPaths['settings48']),
+                                          'Settings', self)
         self.mainSettingsAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.mainSettingsAction)
         self.mainSettingsAction.triggered.connect(self.showSettings)

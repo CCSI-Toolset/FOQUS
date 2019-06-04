@@ -10,7 +10,8 @@
 'use AWS.DynamoDB'
 console.log('Loading function');
 const AWS = require('aws-sdk');
-const tableName = "FOQUS_Resources"
+const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
+
 // For development/testing purposes
 exports.handler = function(event, context, callback) {
   console.log(`Running index.handler: "${event.httpMethod}"`);
@@ -49,6 +50,10 @@ exports.handler = function(event, context, callback) {
             // [{"Initialize":false,"Input":{},"Reset":false,
             //   "Simulation":"OUU","Visible":false,
             //   "Id":"448f3787-fead-47af-b32f-ba180c8e97ee"}]
+
+            /* states = set(['submit', 'create', 'setup', 'running', 'success', 'warning',
+              'error', 'expired', 'cancel', 'terminate', 'pause'])
+             */
             console.log('Data: ', data.Items.length);
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
@@ -64,9 +69,25 @@ exports.handler = function(event, context, callback) {
                     Simulation: item.Simulation,
                     Create: item.Create,
                     Output:item.Output}
-                  if (item.Submit) {
-                    obj.Submit = item.Submit;
+                  if (item.submit) {
+                    obj.Submit = item.submit;
                     obj.State = "submit";
+                  }
+                  if (item.setup) {
+                    obj.Setup = item.setup;
+                    obj.State = "setup";
+                  }
+                  if (item.running) {
+                    obj.Running = item.running;
+                    obj.State = "running";
+                  }
+                  if (item.success) {
+                    obj.Finished = item.success;
+                    obj.State = "success";
+                  }
+                  if (item.error) {
+                    obj.Finished = item.error;
+                    obj.State = "error";
                   }
                   body.push(obj);
                 }

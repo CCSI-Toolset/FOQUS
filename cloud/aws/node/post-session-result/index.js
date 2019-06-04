@@ -6,15 +6,16 @@
  * @license See LICENSE.md
  * @see https://github.com/motdotla/node-lambda-template
  */
- 'use strict';
- 'use AWS.S3'
- 'use AWS.DynamoDB'
- 'use uuid'
+'use strict';
+'use AWS.S3'
+'use AWS.DynamoDB'
+'use uuid'
+const log = require("debug")("post-session-result")
 const uuidv4 = require('uuid/v4');
 const AWS = require('aws-sdk');
-const default_user_name = "anonymous";
-const s3_bucket_name = "foqus-sessions";
-const tableName = "FOQUS_Resources";
+const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
+
 
 function push_finished_job(item, body) {
   if (item.success != undefined) {
@@ -91,6 +92,7 @@ exports.handler = function(event, context, callback) {
       done(new Error(`Unsupported path "${event.path}"`));
       return;
     }
+    const user_name = event.requestContext.authorizer.principalId;
     var session_id = path.pop();
     var client = new AWS.S3();
     var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
@@ -112,23 +114,23 @@ exports.handler = function(event, context, callback) {
           var unfinished_jobs = {};
           var finished_jobs = {};
           if(err) {
-            console.log("Error: ", err);
+            log("Error: ", err);
             callback(null, {statusCode:'400', body: JSON.stringify(data), headers: {'Content-Type': 'application/json',}});
           } else {
             // [{"Initialize":false,"Input":{},"Reset":false,
             //   "Simulation":"OUU","Visible":false,
             //   "Id":"448f3787-fead-47af-b32f-ba180c8e97ee"}]
-            console.log('Data: ', data.Items.length);
+            log(`Data(Session=${session_id}): ${data.Items.length}`);
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
                 if (item.success != undefined && item.output != undefined) {
-                  console.log('success item: ', item);
+                  log('success item: ', item);
                   finished_jobs[item.Id] = item;
                 } else if (item.error != undefined) {
-                  console.log('error item: ', item);
+                  log('error item: ', item);
                   finished_jobs[item.Id] = item;
                 } else {
-                  console.log('unfinished item: ', item);
+                  log('unfinished item: ', item);
                   unfinished_jobs[item.Id] = item;
                 }
               }
@@ -145,46 +147,46 @@ exports.handler = function(event, context, callback) {
               var params = {
                 Bucket: s3_bucket_name,
                 MaxKeys: 1000,
-                Prefix: default_user_name + '/' + session_id + '/' + gen_id + '/page/',
+                Prefix: user_name + '/' + session_id + '/' + gen_id + '/page/',
               };
 
               // NOTE: Max 1000 Keys returned by this response
               client.listObjects(params, function(err, data) {
-                console.log("==> LIST OBJECTS: " + data.Contents.length);
+                log("==> LIST OBJECTS: " + data.Contents.length);
                 if (err) {
-                  console.log(err, err.stack); // an error occurred
+                  log(err, err.stack); // an error occurred
                   done(new Error(err));
                   return;
                 }
                 if (data.Contents == 1000) {
-                  console.log("Not Implemented: FOUND MaxKeys 1000");
+                  log("Not Implemented: FOUND MaxKeys 1000");
                   done(new Error("Not Implemented: FOUND MaxKeys 1000"));
                   return;
                 }
                 var results_set = new Set();
                 var next_page_number = 0;
                 // {user_name}/{session_id}/{generation_id}/page/{number}/{id}.json
-                var regex = default_user_name + '/' + session_id + '/' + gen_id + '/page/(\\d+)/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.json$';
-                console.log("REGEX: " + regex);
+                var regex = user_name + '/' + session_id + '/' + gen_id + '/page/(\\d+)/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})\.json$';
+                log("REGEX: " + regex);
                 for (var i=0; i<data.Contents.length; i++) {
                   var item = data.Contents[i];
-                  console.log("ITEM:  " + item.Key);
+                  log("ITEM:  " + item.Key);
                   var match = item.Key.match(regex);
                   if (match) {
                     // anonymous/90e35450-4460-4f55-a3ad-4423b8f16816/27849bcb-18aa-467c-9ad8-2252ea0a3182/page/1/3f05cf85-f891-4e94-a97d-fd90c20e6d17.json
-                    console.log("PAGE NUMBER: " + match[1]);
-                    console.log("UUID MATCH: " + match[2]);
+                    log("PAGE NUMBER: " + match[1]);
+                    log("UUID MATCH: " + match[2]);
                     var num = parseInt(match[1]);
                     if (next_page_number < num) next_page_number = num;
                     var job_id = match[2];
                     results_set.add(job_id);
                   } else {
-                    console.log("==> NO MATCH");
+                    log("==> NO MATCH");
                   }
                 }
 
-                console.log("results_set.length " + results_set.size );
-                console.log("finished_ids.length " + finished_ids.length);
+                log("results_set.length " + results_set.size );
+                log("finished_ids.length " + finished_ids.length);
                 if (results_set.size == finished_ids.length) {
                   callback(null, {statusCode:'200', body: 0, headers: {'Content-Type': 'application/json',}});
                   return;
@@ -203,27 +205,27 @@ exports.handler = function(event, context, callback) {
                 for (var i=0; i<body.length; i++) {
                   var params = {
                     Bucket: s3_bucket_name,
-                    Key: default_user_name + '/' + session_id + '/' + gen_id + "/page/" + next_page_number + '/' + body[i].Id + '.json',
+                    Key: user_name + '/' + session_id + '/' + gen_id + "/page/" + next_page_number + '/' + body[i].Id + '.json',
                     Body: JSON.stringify(body[i])
                   };
                   client.putObject(params, function(err, data) {
-                      console.log("putObject: " + params.Key);
+                      log("putObject: " + params.Key);
                       if (err) {
-                        console.log(err, err.stack); // an error occurred
+                        log(err, err.stack); // an error occurred
                       }
                   });
                 }
                 var content = JSON.stringify(body);
                 var params = {
                   Bucket: s3_bucket_name,
-                  Key: default_user_name + '/' + session_id + '/' + gen_id + "/" + next_page_number + '.json',
+                  Key: user_name + '/' + session_id + '/' + gen_id + "/" + next_page_number + '.json',
                   Body: content
                 };
 
                 var request = client.putObject(params, function(err, data) {
-                    console.log("putObject: " + params.Key);
+                    log("putObject: " + params.Key);
                     if (err) {
-                      console.log(err, err.stack); // an error occurred
+                      log(err, err.stack); // an error occurred
                       done(new Error(err));
                       return;
                     }

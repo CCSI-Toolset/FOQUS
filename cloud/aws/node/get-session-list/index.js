@@ -46,13 +46,14 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod == "GET") {
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: user_name
+      Prefix: user_name,
+      StartAfter: user_name + '/'
     };
     //var awsS3Client = new AWS.S3();
     console.log("SESSION GET: " + s3_bucket_name);
     var client = new AWS.S3();
     //var client = s3.createClient(options);
-    client.listObjects(params, function(err, data) {
+    client.listObjectsV2(params, function(err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else {
         var session_set = new Set([]);
@@ -63,7 +64,7 @@ exports.handler = function(event, context, callback) {
             session_set.add(value);
         }
         var content = JSON.stringify(Array.from(session_set));
-        console.log("DATA: " + content);           // successful response
+        console.log("S3 List Objects: " + content);
         callback(null, {statusCode:'200', body: content,
           headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
       });

@@ -1,10 +1,10 @@
 {
-  "body": "",
+"body":"missing JSON data",
   "headers": {
     "Accept": "application/json"
   },
-  "httpMethod": "GET",
-  "path": "/session/9d8494a2-6ba0-4bef-878d-53fdf6ebe8ee/result/00000000-0000-0000-0000-000000000000/1",
+  "httpMethod": "PUT",
+  "path": "/simulation/test_flowsheet/input/configuration",
   "queryStringParameters": {
     "verbose": true
   },

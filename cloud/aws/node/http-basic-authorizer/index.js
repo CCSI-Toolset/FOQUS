@@ -78,14 +78,28 @@ exports.handler = function(event, context, callback) {
               return;
             }
             console.log("Unauthorized: user=" + user.name + ", wrong password");
-            context.fail("Unauthorized: " + headers.authorization);
+            //context.fail("Unauthorized: " + headers.authorization);
+            var arn_array = event.methodArn.split('/').slice(0,1);
+            arn_array.push('*');
+            var methodArn = arn_array.join( '/' );
+            callback(null, generateDeny(user.name, methodArn));
             return;
           }
          console.log("Unauthorized: bad match user " + user.name + "!=" + data.Id);
-         context.fail("Unauthorized: " + headers.authorization);
+         //context.fail("Unauthorized: " + headers.authorization);
+         var arn_array = event.methodArn.split('/').slice(0,1);
+         arn_array.push('*');
+         var methodArn = arn_array.join( '/' );
+         callback(null, generateDeny(user.name, methodArn));
+         return;
        } else {
          console.log('Unauthorized: No Entry for User Id=' + user.name);
-         context.fail("Unauthorized: " + headers.authorization);
+         //context.fail("Unauthorized: " + headers.authorization);
+         var arn_array = event.methodArn.split('/').slice(0,1);
+         arn_array.push('*');
+         var methodArn = arn_array.join( '/' );
+         callback(null, generateDeny(user.name, methodArn));
+         return;
        }
   });
 }
@@ -121,6 +135,7 @@ var generateAllow = function(principalId, resource) {
 }
 
 var generateDeny = function(principalId, resource) {
+    console.log("Generate Deny Policy(user=" + principalId + "): " + resource);
     return generatePolicy(principalId, 'Deny', resource);
 }
 

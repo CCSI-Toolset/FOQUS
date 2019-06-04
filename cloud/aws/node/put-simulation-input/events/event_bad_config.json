@@ -1,0 +1,16 @@
+{
+"body":"missing JSON data",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "PUT",
+  "path": "/simulation/test_flowsheet/input/configuration",
+  "queryStringParameters": {
+    "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
+}

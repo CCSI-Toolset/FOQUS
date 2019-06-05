@@ -20,8 +20,9 @@
    <item>
     <widget class="QRadioButton" name="historyRadioButton">
      <property name="toolTip">
-      <string>Choose this option if your simulation model
-is a node in the flowsheet.</string>
+      <string>Choose this option if you want to
+use a historical file to generate
+your samples</string>
      </property>
      <property name="text">
       <string>Use history file</string>
@@ -56,11 +57,10 @@ is a node in the flowsheet.</string>
    <item>
     <widget class="QRadioButton" name="templateRadioButton">
      <property name="toolTip">
-      <string>Choose this option if you want to train a response
-surface that emulates your actual simulation model.
-You will need training data saved as a PSUADE file.
-If you'd like to change the response surface type and/or
-Legendre order, edit these options directly in the file.</string>
+      <string>Choose this option if you want to use a 
+template file to generate your samples.
+The example below shows the format
+required to make this work.</string>
      </property>
      <property name="text">
       <string>Use template file (see example)</string>
@@ -86,7 +86,8 @@ Legendre order, edit these options directly in the file.</string>
       <item>
        <widget class="QLabel" name="instructionsLabel">
         <property name="text">
-         <string>The template file should be a simple text
+         <string>The template file should be a simple 
+comma separated values (.csv) 
 file with at least three rows:
 - header with input names
 - minimum values

@@ -1,22 +1,12 @@
 import platform
 import os
 import logging
-import numpy
 import copy
-import shutil
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.sdoe.sdoeSimSetup import *
-from foqus_lib.gui.uq.stopEnsembleDialog import *
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
 from foqus_lib.framework.uq.DataProcessor import *
-from foqus_lib.framework.uq.RawDataAnalyzer import *
 from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.Visualizer import *
-from foqus_lib.framework.uq.SampleRefiner import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
@@ -25,10 +15,10 @@ from .sdoeAnalysisDialog import sdoeAnalysisDialog
 from .sdoePreview import sdoePreview
 
 from PyQt5 import QtCore, uic, QtGui
-from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QButtonGroup, QTableWidgetItem, QProgressBar, \
-    QPushButton, QStyle, QDialog, QMessageBox, QInputDialog, QMenu
+from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QTableWidgetItem, \
+    QPushButton, QStyle, QDialog, QMessageBox, QMenu
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
-from PyQt5.QtGui import QCursor, QColor
+from PyQt5.QtGui import QCursor
 
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)

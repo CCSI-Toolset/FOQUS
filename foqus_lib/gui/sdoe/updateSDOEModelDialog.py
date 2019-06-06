@@ -1,18 +1,12 @@
 import platform
 import os
-import logging
 import numpy as np
 
-from foqus_lib.framework.graph.graph import *
-from foqus_lib.framework.uq.flowsheetToUQModel import *
-from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.Common import Common
 
-from PyQt5 import uic, QtGui
+from PyQt5 import uic
 from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QDialog
+     QDialogButtonBox, QDialog
 mypath = os.path.dirname(__file__)
 _updateSDOEModelDialogUI, _updateSDOEModelDialog = \
         uic.loadUiType(os.path.join(mypath, "updateSDOEModelDialog_UI.ui"))

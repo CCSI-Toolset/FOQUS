@@ -1,17 +1,14 @@
-import sys
 import os
 
 from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.sdoe import sdoe
 
 #from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem, QAbstractItemView, \
+     QApplication, QTableWidgetItem
 from PyQt5.QtGui import QCursor, QColor
 mypath = os.path.dirname(__file__)
 _sdoePreviewUI, _sdoePreview = \

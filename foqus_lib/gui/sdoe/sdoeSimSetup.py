@@ -1,10 +1,7 @@
-import sys
 import os
 import copy
 import tempfile
 import subprocess
-import numpy
-import platform
 
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
@@ -21,8 +18,7 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 #from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QStackedLayout, QComboBox, QApplication, QMessageBox
+from PyQt5.QtWidgets import QStackedLayout, QComboBox, QApplication, QMessageBox
 from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
 _SimSetupUI, _sdoeSimSetup = \

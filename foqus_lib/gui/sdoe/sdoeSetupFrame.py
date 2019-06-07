@@ -16,7 +16,7 @@ from .sdoePreview import sdoePreview
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QTableWidgetItem, \
-    QPushButton, QStyle, QDialog, QMessageBox, QMenu
+    QPushButton, QStyle, QDialog, QMessageBox, QMenu, QAbstractItemView
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor
 

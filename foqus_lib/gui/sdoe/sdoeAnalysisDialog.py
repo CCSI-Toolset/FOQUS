@@ -193,7 +193,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         combo.currentTextChanged.connect(self.on_combobox_changed)
 
         # Min column
-        minValue = min(self.candidateData.getInputData()[:,row])
+        minValue = round(min(self.candidateData.getInputData()[:,row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -201,7 +201,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = max(self.candidateData.getInputData()[:,row])
+        maxValue = round(max(self.candidateData.getInputData()[:,row]), 2)
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()

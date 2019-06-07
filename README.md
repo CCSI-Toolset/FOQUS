@@ -8,7 +8,11 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 
 ### Install
 See the [installation](https://foqus.readthedocs.io/en/latest/chapt_install/index.html) instructions for details.
-To see videos on how to install FOQUS, please click [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd). 
+
+The videos on how to install FOQUS can be found by clicking these links:
+* [Python 3 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXl-H9Wp3X6SIpVWg3Ua1Y2X)
+* [Optional software for FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXn24WEhFMyrtA-0_4Rvlesw)
+* [Python 2 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd) 
 
 ### FAQ
 See our [FAQ](FAQs.md) for frequently asked questions and answers
@@ -43,7 +47,7 @@ The documentation for FOQUS (including the user's manual) can be accessed by cli
 Alternately, the html version of the documentation can be generated from following these steps:
 
 1. Use the Anaconda prompt to go to the "docs" folder in the folder that is generated when FOQUS is downloaded.
-2. For Windows, type "make.bat html". For Linux, type "make html".
+2. For Windows and Linux, type "make html".
 3. The html version of the documentation will be created, and located in the "docs\build\html" folder.
 
 ## Technical Support

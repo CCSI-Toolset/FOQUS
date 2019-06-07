@@ -6,14 +6,49 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
-
+import logging
 from PyQt5 import uic
-from PyQt5.QtWidgets import QInputDialog
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QInputDialog, QAbstractItemView
+from PyQt5.QtCore import QObject, QEvent, QDataStream, Qt, pyqtSlot
+
+_log = logging.getLogger("foqus.{}".format(__name__))
+
 mypath = os.path.dirname(__file__)
 _calculatedColumnsUI, _calculatedColumns = \
         uic.loadUiType(os.path.join(mypath, "calculatedColumns_UI.ui"))
 
+def _list_item_mime_to_text(mime_data, c=False):
+    if mime_data.hasText():
+        return
+    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    if not data:
+        return
+    ds = QDataStream(data)
+    ds.readInt32() # read row (don't need)
+    ds.readInt32() # read col (don't need)
+    value = None
+    for i in range(ds.readInt32()):
+        if Qt.ItemDataRole(ds.readInt32()) == Qt.DisplayRole:
+            value = ds.readQVariant()
+            break
+    if value is None:
+        return
+    if c:
+        value = 'c("{}")'.format(value)
+    else:
+        value = '"{}"'.format(value)
+    mime_data.setText(value)
+
+def _canInsertFromMimeData(data):
+    try:
+        _list_item_mime_to_text(data, True)
+        if data.hasText():
+            return True
+        else:
+            return False
+    except:
+        _log.exception("Drop could not convert mime type to text")
+        return False
 
 class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
     def __init__(self, dat, parent=None):
@@ -28,7 +63,8 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self.delButton.clicked.connect(self.del_current)
         self.doneButton.clicked.connect(self.close)
         self.comboBox.currentIndexChanged.connect(self.select_calc)
-        self.colListWidget.itemClicked.connect(self.click_column)
+        self.colListWidget.setDragDropMode(QAbstractItemView.DragOnly)
+        self.expressionEdit.canInsertFromMimeData = _canInsertFromMimeData
         self._current = self.comboBox.currentText()
         if len(self._current) < 1:
             self._current = None
@@ -42,9 +78,6 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self.dat.flowsheet.results.delete_calculation(self._current)
         self._current = None
         self.comboBox.removeItem(self.comboBox.currentIndex())
-
-    def click_column(self, item):
-        self.expressionEdit.insertPlainText('c("{}")'.format(item.text()))
 
     @pyqtSlot(int)
     def select_calc(self, i):

@@ -235,11 +235,11 @@ class surrogate(threading.Thread):
         method="Generic",
         comments=[],
         importLines = []):
-        '''
-            Write the code for the top protion of a flowsheet plugin
-            that does the standard imports and variable definitions in
-            the class init.  Returns string.
-        '''
+        """
+        Write the code for the top protion of a flowsheet plugin
+        that does the standard imports and variable definitions in
+        the class init.  Returns string.
+        """
         lines = [] #Join lines into a string at end (it's faster)
         # The first comment is needed for FOQUS to identify file as
         # a Python flowsheet model plugin.
@@ -286,6 +286,7 @@ class surrogate(threading.Thread):
             maxVal = gin.get(v).max
             defVal = gin.get(v).default
             desc = gin.get(v).desc
+            desc = desc.replace("\n", " ")
             #create variable object
             lines.append(s8+"self.inputs['{0}'] = NodeVars(".format(v))
             lines.append(s12+"value = {0},".format(defVal))

@@ -1,4 +1,1 @@
-Copyright
-=========
-
 ../../LICENSE.md

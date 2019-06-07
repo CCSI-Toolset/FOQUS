@@ -36,7 +36,7 @@ exports.handler = function(event, context, callback) {
   }
   if (event.requestContext.authorizer == null) {
     console.log("API Gateway Testing");
-    var content = JSON.stringify([]);
+    var content = JSON.stringify([s3_bucket_name]);
     callback(null, {statusCode:'200', body: content,
       headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
     });

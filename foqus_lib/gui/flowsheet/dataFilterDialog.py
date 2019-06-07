@@ -102,8 +102,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
 
     def updateColList(self):
         self.colList.clear()
-        headings = self.results.columns
-        self.colList.addItems(headings)
+        self.colList.addItems(self.results.columns)
 
     def showCalcEdit(self):
         calculatedColumnsDialog(self.dat, parent=self).exec_()

@@ -62,7 +62,7 @@ Options in the **Settings, FOQUS** tab are described below.
    **Working Directory** is where FOQUS reads and writes files needed to
    function. When running multiple copies of FOQUS, the **Working
    Directory** can also be specified from the command line using the
-   “-w” or “–workingDir” options. After changing the **Working
+   “-w” or “-workingDir” options. After changing the **Working
    Directory**, FOQUS should be restarted.
 
 #. **PSUADE EXE** is the path to the PSUADE executable. PSUADE provides

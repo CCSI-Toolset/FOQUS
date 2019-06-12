@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 """foqus.py
 * The main script to start FOQUS
 

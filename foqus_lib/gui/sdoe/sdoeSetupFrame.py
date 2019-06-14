@@ -351,6 +351,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def updateAggTable(self):
         self.updateAggTableRow(0)
         self.updateAggTableRow(1)
+        self.updateAggTableRow(2)
+
 
     def deleteSimulation(self):
         # Get selected row
@@ -397,34 +399,22 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
 
         previewData = self.dat.sdoeSimList[row]
-        dialog = sdoePreview(previewData, self.dname, self)
+        hname = None
+        dialog = sdoePreview(previewData, hname, self.dname, self)
         dialog.show()
-
-    def addDataToSimTable(self, data):
-        if data is None:
-            return
-        self.dat.sdoeSimList.append(data)
-        res = Results()
-        res.sdoe_add_result(data)
-        self.dat.sdoeFilterResultsList.append(res)
-
-        self.updateSimTable()
 
     def editAgg(self):
         sender = self.sender()
         row = sender.property('row')
         candidateData, historyData = self.createAggData()
 
-        if row == 0:
-            previewData = candidateData
-            dialog = sdoePreview(previewData, self.dname, self)
-            dialog.show()
-
-        if row == 1:
-            if historyData is not None:
-                previewData = historyData
-                dialog = sdoePreview(previewData, self.dname, self)
-                dialog.show()
+        previewData = candidateData
+        if historyData is not None:
+            hname = os.path.join(self.dname, historyData.getModelName())
+        else:
+            hname = None
+        dialog = sdoePreview(previewData, hname, self.dname, self)
+        dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
@@ -514,7 +504,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         viewButton.setProperty('row', row)
         if newViewButton:
             viewButton.clicked.connect(self.editAgg)
-            self.aggFilesTable.setCellWidget(row, self.viewCol, viewButton)
+            self.aggFilesTable.setCellWidget(2, self.viewCol, viewButton)
 
         candidateData, historyData = self.createAggData()
 
@@ -549,8 +539,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         dialog = sdoeAnalysisDialog(candidateData, dname, historyData, self)
         dialog.exec_()
-        # dialog.deleteLater()
-
 
     def initUQToolBox(self):
 

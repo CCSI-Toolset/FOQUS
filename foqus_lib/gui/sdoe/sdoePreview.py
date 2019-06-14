@@ -16,11 +16,12 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, dirname, parent=None):
+    def __init__(self, data, hname, dirname, parent=None):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
         self.dirname = dirname
+        self.hname = hname
 
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
@@ -107,5 +108,10 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
     def plotSdoe(self):
         show = self.checkItemSelected(QListWidgetItem())
         fname = os.path.join(self.dirname, self.data.getModelName())
-        sdoe.plot(fname, show=show)
+        hname = self.hname
+        if hname is not None:
+            hbars = True
+        else:
+            hbars = False
+        sdoe.plot(fname, hname=hname, show=show, hbars=hbars)
         self.setModal(True)

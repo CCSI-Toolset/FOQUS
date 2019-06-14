@@ -471,8 +471,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         row = sender.property('row')
         fullName = self.analysis[row][4]
         dirname, filename = os.path.split(fullName)
+        if self.historyData is None:
+            hname = None
+        else:
+            hname = os.path.join(self.dname, self.historyData.getModelName())
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
-        dialog = sdoePreview(sdoeData, dirname, self)
+        dialog = sdoePreview(sdoeData, hname, dirname, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):

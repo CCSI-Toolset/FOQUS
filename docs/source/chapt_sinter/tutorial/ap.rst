@@ -9,7 +9,7 @@ Aspen Plus Configuration
    Open the Aspen Plus file and enter the metadata as shown in Figure
    :ref:`fig.sinter.ap.metadata`.
 
-   .. figure:: ../figs/ap/04_MetaDataFilled.png
+   .. figure:: ../figs/ap/04_MetaDataFilled_upd.png
       :alt: SinterConfigGUI Simulation Meta-Data with Data Completed
       :name: fig.sinter.ap.metadata
 

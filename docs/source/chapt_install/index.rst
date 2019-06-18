@@ -49,7 +49,7 @@ Install FOQUS
   - On Windows: ``conda activate foqus``
   - On Linux and OSX: ``source activate foqus``
 
-10. Install requirements: ``pip install –r requirements.txt``
+10. Install requirements: ``pip install -r requirements.txt``
 11. Install FOQUS.  The in-place install will allow you to easily edit source code while the regular install will install FOQUS in the central Python library location, and not allow editing of the source code.
 
   - Install in-place: ``python setup.py develop``

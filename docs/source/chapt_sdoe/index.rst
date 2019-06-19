@@ -182,17 +182,22 @@ When one of the design files is opened it contains the details of each of the ru
    SDOE file containing a created design
    
    
-   
-Example 1: 8-run 2-D design
----------------------------
+Examples: 
+---------
 
-For this first example, the goal is to construct a simple space-filling design with 8 runs in a 2-dimensional space using the example files provided with FOQUS. 
+Next, we illustrate the use of the SDOE capability for several different scenarios. Example 1 constructs several designs of size 8 to 10 runs for a 2-dimensional input space based on a regular square region with a candidate set that is a regularly spaced grid. Both minimax and maximin designs are constructed to illustrate the difference in the criteria.
+Example 2 takes one of the designs created in Example 1, and considers how it might be used for sequential updating with additional experimentation. In this case the Example 1 design is considered as historical data, and the goal is to augment the design with several additional runs.
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the candidate.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. :ref:`fig.sdoe_home_2`.
+Example 1: Constructing minimax and maximin designs for a 2-D input space
+-------------------------------------------------------------------------
 
-.. figure:: figs/1_home.png
+For this first example, the goal is to construct a simple space-filling design with between 8 and 10 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. 
+
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. :ref:`fig.Ex1_1_load_candidate`.
+
+.. figure:: figs/Ex1_1_load_candidate.png
    :alt: Home Screen
-   :name: fig.sdoe_home_2
+   :name: fig.Ex1_1_load_candidate
    
    Home Screen
    

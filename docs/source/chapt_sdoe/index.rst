@@ -217,4 +217,22 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Minimax design choices
    
-4. 
+4. Once the choices for the design have been specified, click on the **Test SDOE** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran the minimum number of random starts (10^3=1000), it is estimated that the code would take 4 seconds to create the three designs (of size 8, 9 and 10). If we chose 10^4=10000 runs, then the code is estimated to take 49 seconds. It is estimated that 10^5=100000 random starts would take 8 minutes and 13 seconds, while 10^6=1 million random starts would take approximately 1 hour, 22 minutes. In this case, we selected to create designs based on 100000 random starts, since this was a suitable balance between timeliness and giving the algorithm a chance to find the best possible designs. Hence, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**.  
+
+5. Since we are also interested in examining maximin designs for the same scenario, we click on the **Reload Design Specifications** button in the **Created Design** window to repopulate the right window with the same choices that we made for all of the design options.
+
+.. figure:: figs/Ex1_4_mM_created_designs.png
+   :alt: Home Screen
+   :name: fig.Ex1_4_mM_created_designs
+   
+   Ex 1 Minimax created designs
+   
+6. After changing the  **Optimality Method Selection** to **maximin**, click on **Test SDOE**, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**. After waiting for the prescribed time, the **Created Designs** window will have 6 created designs - three that are minimax designs and three that are maximin designs.
+
+.. figure:: figs/Ex1_5_all_created_designs.png
+   :alt: Home Screen
+   :name: fig.Ex1_5_all_created_designs
+   
+   Ex 1 Created designs
+   
+   

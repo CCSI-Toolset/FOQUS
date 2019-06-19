@@ -153,15 +153,15 @@ Hint: The choice of **Number of Random Starts** involves a trade-off between the
 
 13. To see details of the design, the **View** button at the right hand side of each design row can be selected to show a table of the design, as well as a pairwise scatterplot of the inputs for the chosen design. The table and plot of the design are similar in characteristics to their counterparts for the candidate set.
 
-.. figure:: figs/8_view_designs.png
+.. figure:: figs/8_view_design.png
    :alt: SDOE second window
-   :name: fig.7_view_designs
+   :name: fig.8_view_design
 
    SDOE table of created design
    
- .. figure:: figs/9_plot_designs.png
+ .. figure:: figs/9_plot_design.png
    :alt: SDOE second window
-   :name: fig.9_plot_designs
+   :name: fig.9_plot_design
 
    SDOE pairwise plot of created design
    

@@ -159,7 +159,7 @@ Hint: The choice of **Number of Random Starts** involves a trade-off between the
 
    SDOE table of created design
    
- .. figure:: figs/9_plot_design.png
+.. figure:: figs/9_plot_design.png
    :alt: SDOE second window
    :name: fig.9_plot_design
 

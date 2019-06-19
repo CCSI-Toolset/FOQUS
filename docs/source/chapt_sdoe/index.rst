@@ -193,12 +193,28 @@ Example 1: Constructing minimax and maximin designs for a 2-D input space
 
 For this first example, the goal is to construct a simple space-filling design with between 8 and 10 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. 
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. :ref:`fig.Ex1_1_load_candidate`.
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. 
 
 .. figure:: figs/Ex1_1_load_candidate.png
    :alt: Home Screen
    :name: fig.Ex1_1_load_candidate
    
-   Home Screen
+   Ex 1 Ensemble Selection
    
+2. Next, by selecting **View** and then **Plot** it is possible to see the grid of points that will be used as the candidate points. In this case, the range for each of the inputs, X1 and X2, has been chosen to be between -1 and 1.
+
+.. figure:: figs/Ex1_2_candidate_grid.png
+   :alt: Home Screen
+   :name: fig.Ex1_2_candidate_grid
    
+   Ex 1 Candidate Grid
+   
+3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and the click on **Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optiimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, change the column called **Label** to be **Index**. This will mean that the design is not constructed using this as an input, but rather that the identifiers in this column will help identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
+
+.. figure:: figs/Ex1_3_mM_choices.png
+   :alt: Home Screen
+   :name: fig.Ex1_3_mM_choices
+   
+   Ex 1 Minimax design choices
+   
+4. 

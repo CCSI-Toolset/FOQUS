@@ -235,10 +235,11 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Created designs
    
-7. We now consider the choices between the designs to determine which is the best match for our experimental goals. We can see a list of the selected design points by clicking **View** for any of the created designs, and **Plot** allows us to see the spread of the design points throughout the input region. Clearly, there is a trade-off between the cost of the experiment (larger number of runs involve more time, effort and expense) and how well the designs fill the space. There is also a small difference in priorities between the minimax and the maximin criteria. Minimax seeks to minimize how far any candidate point (which defines our region of interest) is from a design point. Maximin seeks to spread out the design points and maximize how close the nearest points are to each other. As noted previously, minimax designs tend to avoid putting too many points on the edge of the region, while maximin designs often place a number of points right on the edges of the input space. 
+7. We now consider the choices between the designs to determine which is the best match for our experimental goals. We can see a list of the selected design points by clicking **View** for any of the created designs, and **Plot** allows us to see the spread of the design points throughout the input region. Clearly, there is a trade-off between the cost of the experiment (larger number of runs involve more time, effort and expense) and how well the designs fill the space. There is also a small difference in priorities between the minimax and the maximin criteria. Minimax seeks to minimize how far any candidate point (which defines our region of interest) is from a design point. Maximin seeks to spread out the design points and maximize how close the nearest points are to each other. As noted previously, minimax designs tend to avoid putting too many points on the edge of the region, while maximin designs often place a number of points right on the edges of the input space. After considering all of the trade-offs between the alternatives, select the design that best matches the goals of the experiment.
 
-.. figure:: figs/Ex1_6_compare_9run_designs.png
-   :alt: Home Screen
-   :name: fig.Ex1_6_compare_9run_designs
-   
-   Ex 1 Comparison of minimax and maximin 9-run designs
+8. The file for the selected design can be found in the **SDOE_files** folder. The design can then be used to guide the implementation of the experiment with the input factor levels for each run.
+
+Example 2: Augmenting the Example 1 design in a 2-D input space
+---------------------------------------------------------------
+
+In this example, we consider the sequential aspect of design, by building on the first example results. Consider the scenario where based on the results of Example 1, the experimenter selected to run the [look at which design seems best here].

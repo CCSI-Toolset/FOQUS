@@ -3,7 +3,10 @@
 Simulation Ensemble Creation and Execution
 ------------------------------------------
 
-In this tutorial, a simulation ensemble is created and run.
+Creating a simulation ensemble using the variables' distributions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this tutorial, a simulation ensemble is created (using FOQUS) and run.
 
 #. From the FOQUS main screen, click the **Session** button and then
    select **Open Session** to open a session. Browse to the examples
@@ -272,3 +275,169 @@ can be run in two modes: (1) coupled and (2) decoupled. In this section,
 analysis results are presented from running the A650.1 model using the
 decoupled mode and examining the adsorber in isolation from the
 regenerator.
+
+Automatically running FOQUS for a set of user-defined input conditions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+In this tutorial, we will show you how to automatically run a set of
+user-defined input conditions in FOQUS.
+
+This procedure will require the user to specify the input conditions
+in a CSV (comma-separated values) Excel file.
+
+We will use a simple example to show the procedure.
+
+1. Open FOQUS.
+
+2. Go to the "Session" tab, and under "Session Name" type: basic_example
+   (please see Figure :ref:`fig.Session_Tab`).
+
+.. figure:: ../figs/tutorial/Session_Tab.jpg
+   :alt: Specifying the Session Name
+   :name: fig.Session_Tab
+
+   Specifying the Session Name
+
+3. Go to the "Flowsheet" tab, and click the "Add Node" button
+   ("A" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+.. figure:: ../figs/tutorial/Flowsheet_Inputs.jpg
+   :alt: Inserting a Node and Specifying the Inputs
+   :name: fig.Flowsheet_Inputs
+
+   Inserting a Node and Specifying the Inputs
+
+4. Insert a node called "example" (without the quotes)
+   ("B" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+5. Open the Node Editor by clicking the Toggle Node Editor
+   button ("C" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+6. Under the Node Editor, click "Input Variables" and the
+   green "+" button ("D" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+7. Insert input variables x1 and x2
+   ("E" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+8. For x1, specify the value, default, minimum, and maximum as 
+   3, 3, -10, and 10, respectively
+   ("E" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+9. For x2, specify the value, default, minimum, and maximum as 
+   4, 4, -10, and 10, respectively
+   ("E" in Figure :ref:`fig.Flowsheet_Inputs`).
+
+10. Under the Node Editor, click "Output Variables" and the
+    green "+" button
+    ("A" and "B" in Figure :ref:`fig.Flowsheet_Outputs`).
+
+ .. figure:: ../figs/tutorial/Flowsheet_Outputs.jpg
+    :alt: Specifying the Outputs
+    :name: fig.Flowsheet_Outputs
+
+    Specifying the Outputs
+
+11. Insert output variables y1 and y2
+    ("C" in Figure :ref:`fig.Flowsheet_Outputs`).
+
+12. Under the Node Editor, click "Node Script"
+    ("A" in Figure :ref:`fig.Flowsheet_Equations`).
+
+ .. figure:: ../figs/tutorial/Flowsheet_Equations.jpg
+    :alt: Inserting the Equations
+    :name: fig.Flowsheet_Equations
+
+    Inserting the Equations
+
+13. In the first line under "Node Script (Python Code)",
+    type: f['y1'] = 2 * x['x1'] + 3 * x['x2']
+    ("B" in Figure :ref:`fig.Flowsheet_Equations`).
+
+14. In the second line under "Node Script (Python Code)",
+    type: f['y2'] = 3 * x['x1'] + 5 * x['x2']
+    ("B" in Figure :ref:`fig.Flowsheet_Equations`).
+
+15. Open Microsoft Excel.
+
+16. Type example.x1 and example.x2 as the headings
+    in Cells A1 and B1
+    (please see Figure :ref:`fig.Excel_Samples`).
+
+ .. figure:: ../figs/tutorial/Excel_Samples.jpg
+    :alt: Specifying the Inputs in Excel
+    :name: fig.Excel_Samples
+
+    Specifying the Inputs in Excel
+
+17. Type 1, 3, 5, 7, 9 under example.x1
+    (please see Figure :ref:`fig.Excel_Samples`).
+
+18. Type 0, 2, 4, 6, 8 under example.x2
+    (please see Figure :ref:`fig.Excel_Samples`).
+
+19. Save the Excel file, with file name "example_samples"
+    (without the quotes), and "CSV (MS-DOS)" as the file type .
+
+20. Return to FOQUS, and go to the "Uncertainty" tab
+    ("A" in Figure :ref:`fig.UQ_Tab`).
+
+ .. figure:: ../figs/tutorial/UQ_Tab.jpg
+    :alt: The Uncertainty Tab in FOQUS
+    :name: fig.UQ_Tab
+
+    The Uncertainty Tab in FOQUS
+
+21. Click the "Add New" button
+    ("B" in Figure :ref:`fig.UQ_Tab`).
+
+22. Select "Use flowsheet", and click "OK"
+    ("C" and "D" in Figure :ref:`fig.UQ_Tab`).
+
+23. Select "Load all samples from a single file"
+    ("A" in Figure :ref:`fig.CSV_Upload`).
+
+ .. figure:: ../figs/tutorial/CSV_Upload.jpg
+    :alt: Uploading the CSV File Containing the Inputs
+    :name: fig.CSV_Upload
+
+    Uploading the CSV File Containing the Inputs
+
+24. Click "Browse", and select the "example_samples" CSV file
+    ("B" in Figure :ref:`fig.CSV_Upload`).
+
+25. Click "Done" ("C" in Figure :ref:`fig.CSV_Upload`).
+
+26. The user-specified inputs should appear in the "Ensemble" table
+    (please see Figure :ref:`fig.Run_Samples`).
+
+ .. figure:: ../figs/tutorial/Run_Samples.jpg
+    :alt: The User-Specified Inputs in the Uncertainty Tab
+    :name: fig.Run_Samples
+
+    The User-Specified Inputs in the Uncertainty Tab
+
+27. Run these inputs by clicking the "Launch" button
+    (please see Figure :ref:`fig.Run_Samples`).
+
+28. After the runs are finished, the results are shown
+    in the table at the bottom of the "Uncertainty" tab
+    (please see Figure :ref:`fig.UQ_Done`).
+
+ .. figure:: ../figs/tutorial/UQ_Done.jpg
+    :alt: The Results of the Runs in the Uncertainty Tab
+    :name: fig.UQ_Done
+
+    The Results of the Runs in the Uncertainty Tab
+
+29. The user can also view the results in the Flowsheet tab
+    by clicking the "Results and Filtering" button
+    ("A" in Figure :ref:`fig.Flowsheet_Results`).
+
+ .. figure:: ../figs/tutorial/Flowsheet_Results.jpg
+    :alt: The Results of the Runs in the Flowsheet Table
+    :name: fig.Flowsheet_Results
+
+    The Results of the Runs in the Flowsheet Table
+
+30. The Flowsheet Table contains the results
+    ("B" in Figure :ref:`fig.Flowsheet_Results`).

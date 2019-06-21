@@ -72,13 +72,14 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
         width = bins[1] - bins[0]
         center = (bins[1:] + bins[:-1]) / 2
         if hbars:
+            ax.barh(center, ns, align='center', height=width)
+            ax.set_ylabel(xname)
+            ax.set_xlabel('Frequency')
+        else:
             ax.bar(center, ns, align='center', width=width)
             ax.set_xlabel(xname)
             ax.set_ylabel('Frequency')
-        else:
-            ax.barh(center, ns, align='center', width=width)
-            ax.set_ylabel(xname)
-            ax.set_xlabel('Frequency')
+
         ax.grid(True, axis='both')
         return ax
 

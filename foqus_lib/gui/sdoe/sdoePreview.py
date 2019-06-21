@@ -109,9 +109,5 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         show = self.checkItemSelected(QListWidgetItem())
         fname = os.path.join(self.dirname, self.data.getModelName())
         hname = self.hname
-        if hname is not None:
-            hbars = True
-        else:
-            hbars = False
-        sdoe.plot(fname, hname=hname, show=show, hbars=hbars)
+        sdoe.plot(fname, hname=hname, show=show)
         self.setModal(True)

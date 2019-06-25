@@ -3,6 +3,9 @@
 Creating a Flowsheet
 ====================
 
+The Basics
+~~~~~~~~~~
+
 This tutorial provides information about the basic use of FOQUS and
 setting up a very simple flowsheet. A single node flowsheet will be
 created that performs a simple calculation using a square root so that
@@ -150,3 +153,19 @@ result. The simulation should report an error.
    :name: fig.simple.flow.save
 
    Save Session
+
+Automatically running FOQUS for a set of user-defined input conditions
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+This procedure requires the Uncertainty Tab.
+
+Therefore, the instructions for this procedure can be found in the
+documentation under:
+
+Uncertainty Quantification / Tutorial / 
+Simulation Ensemble Creation and Execution / 
+Automatically running FOQUS for a set of user-defined input conditions
+
+The link for these instructions is shown below:
+
+https://foqus.readthedocs.io/en/latest/chapt_uq/tutorial/sim.html

@@ -1,6 +1,0 @@
-To run:
->> python sdoe.py
-
-The output files are in 'results' folder.
-
-The output printed to screen should look like 'sdoe.out'.

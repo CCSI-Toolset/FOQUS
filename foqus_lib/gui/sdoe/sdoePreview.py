@@ -1,17 +1,14 @@
-import sys
 import os
 
 from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.uq.SampleData import SampleData
-from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.sdoe import sdoe
 
 #from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import QListWidgetItem, QAbstractItemView, \
+     QApplication, QTableWidgetItem
 from PyQt5.QtGui import QCursor, QColor
 mypath = os.path.dirname(__file__)
 _sdoePreviewUI, _sdoePreview = \
@@ -19,11 +16,12 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, dirname, parent=None):
+    def __init__(self, data, hname, dirname, parent=None):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
         self.dirname = dirname
+        self.hname = hname
 
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
@@ -110,5 +108,6 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
     def plotSdoe(self):
         show = self.checkItemSelected(QListWidgetItem())
         fname = os.path.join(self.dirname, self.data.getModelName())
-        sdoe.plot(fname, show=show)
+        hname = self.hname
+        sdoe.plot(fname, hname=hname, show=show)
         self.setModal(True)

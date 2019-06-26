@@ -85,7 +85,7 @@
               </widget>
              </item>
              <item row="0" column="0">
-              <widget class="QPushButton" name="addFileButton">
+              <widget class="QPushButton" name="addSimulationButton">
                <property name="font">
                 <font>
                  <weight>50</weight>
@@ -274,10 +274,11 @@ candidate and history files.</string>
               </font>
              </property>
              <property name="toolTip">
-              <string>Click to analyze ensemble.</string>
+              <string>Click to create a uniform 
+space filling design</string>
              </property>
              <property name="text">
-              <string>Analyze</string>
+              <string>Uniform Space Filling</string>
              </property>
             </widget>
            </item>

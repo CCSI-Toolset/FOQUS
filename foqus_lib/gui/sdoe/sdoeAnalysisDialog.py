@@ -1,28 +1,14 @@
-import sys
 import os
-import numpy
-import shutil
-import textwrap
 from datetime import datetime
-from tqdm import tqdm
 
-
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.Visualizer import Visualizer
-from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.sdoe import sdoe, df_utils
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from foqus_lib.gui.uq.AnalysisInfoDialog import AnalysisInfoDialog
+from foqus_lib.framework.sdoe import sdoe
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QCheckBox, \
-    QTableWidgetItem, QAbstractItemView, QGridLayout, QDialog, QLabel, \
-    QPushButton
+from PyQt5.QtWidgets import QApplication, QMessageBox, QCheckBox, \
+    QTableWidgetItem, QAbstractItemView, QPushButton
 from PyQt5.QtGui import QCursor
 
 mypath = os.path.dirname(__file__)
@@ -50,7 +36,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     designCol = 1
     sampleCol = 2
     runtimeCol = 3
-    plotCol = 4
+    criterionCol = 4
+    plotCol = 5
 
     testRuntime = []
     analysis = []
@@ -107,6 +94,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Connections here
         self.loadAnalysisButton.clicked.connect(self.populateAnalysis)
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
+        self.testSdoeButton.setEnabled(False)
         self.analysisTableGroup.setEnabled(False)
         self.progress_groupBox.setEnabled(False)
 
@@ -116,6 +104,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         self.testSdoeButton.clicked.connect(self.testSdoe)
+        self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         self.minDesignSize_spin.valueChanged.connect(self.on_min_design_spinbox_changed)
         self.maxDesignSize_spin.valueChanged.connect(self.on_max_design_spinbox_changed)
         self.sampleSize_spin.valueChanged.connect(self.on_sample_size_spinbox_changed)
@@ -195,17 +184,16 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setCellWidget(row, self.includeCol, checkbox)
         checkbox.setProperty('row', row)
 
-
         # create comboboxes for type column
         combo = QComboBox()
-        combo.addItems(['Index', 'Space-filling', 'Response', 'Weight'])
+        combo.addItems(['Input', 'Index', 'Response', 'Weight'])
         self.inputSdoeTable.setCellWidget(row, self.typeCol, combo)
         combo.model().item(2).setEnabled(False)
         combo.model().item(3).setEnabled(False)
-
+        combo.currentTextChanged.connect(self.on_combobox_changed)
 
         # Min column
-        minValue = min(self.candidateData.getInputData()[:,row])
+        minValue = round(min(self.candidateData.getInputData()[:,row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -213,13 +201,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = max(self.candidateData.getInputData()[:,row])
+        maxValue = round(max(self.candidateData.getInputData()[:,row]), 2)
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()
         item.setText(str(maxValue))
         self.inputSdoeTable.setItem(row, self.maxCol, item)
-
 
     def analysisSelected(self):
         selectedIndexes = self.analysisTable.selectedIndexes()
@@ -270,6 +257,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             runtime = round(self.analysis[row][3], 2)
             item.setText(str(runtime))
 
+        # Criterion
+        item = self.analysisTable.item(row, self.criterionCol)
+        if item is None:
+            item = QTableWidgetItem()
+            self.analysisTable.setItem(row, self.criterionCol, item)
+            criterion = round(self.analysis[row][6], 2)
+            item.setText(str(criterion))
+
         # Plot SDOE
         viewButton = self.analysisTable.cellWidget(row, self.plotCol)
         newViewButton = False
@@ -302,12 +297,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_vals = []
         max_vals = []
         include_list = []
+        type_list = []
         for row in range(numInputs):
             if self.inputSdoeTable.cellWidget(row, self.includeCol).isChecked():
                 min_vals.append(self.inputSdoeTable.item(row, self.minCol).text())
                 max_vals.append(self.inputSdoeTable.item(row, self.maxCol).text())
                 include_list.append(self.inputSdoeTable.item(row, self.nameCol).text())
-        return min_vals, max_vals, include_list
+                type_list.append(str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText()))
+        return min_vals, max_vals, include_list, type_list
 
     def writeConfigFile(self, test=False):
         timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
@@ -331,6 +328,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             f.write('number_random_starts = %d\n' % 10**(self.sampleSize_spin.value()))
         f.write('\n')
+
         ## INPUT
         f.write('[INPUT]\n')
         if self.historyData is None:
@@ -338,11 +336,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             f.write('history_file = %s\n' % os.path.join(self.dname, self.historyData.getModelName()))
         f.write('candidate_file = %s\n' % os.path.join(self.dname, self.candidateData.getModelName()))
-        min_vals, max_vals, include_list = self.checkInclude()
+        min_vals, max_vals, include_list, type_list = self.checkInclude()
         f.write('min_vals = %s\n' % ','.join(min_vals))
         f.write('max_vals = %s\n' % ','.join(max_vals))
-        f.write('include = %s' % ','.join(include_list))
-        f.write('\n')
+        f.write('include = %s\n' % ','.join(include_list))
+        f.write('type = %s\n' % ','.join(type_list))
         f.write('\n')
 
         ## OUTPUT
@@ -355,24 +353,33 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return configFile
 
     def runSdoe(self):
-
+        self.runSdoeButton.setText('Stop SDOE')
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
-        f = open(os.path.join(self.dname, 'tqdm_progress.txt'), 'w')
-        for nd in tqdm(range(min_size, max_size+1), file = f):
+        for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
-            mode, design_size, num_restarts, elapsed_time, outfile = sdoe.run(config_file, nd)
-            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file])
+            mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, nd)
+            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
             self.analysisTableGroup.setEnabled(True)
+            self.loadAnalysisButton.setEnabled(False)
+            self.deleteAnalysisButton.setEnabled(False)
             self.updateAnalysisTable()
+            self.designInfo_dynamic.setText('d = %d, n = %d' % (nd, num_restarts))
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
-        f.close()
+            QApplication.processEvents()
+
         self.SDOE_progressBar.setValue(0)
+        self.runSdoeButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
 
-
     def testSdoe(self):
+        if self.hasNoIndex():
+            reply = self.showIndexWarning()
+            if reply == QMessageBox.Yes:
+                pass
+            else:
+                return
         #test using max design size and nd=200
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
@@ -395,6 +402,55 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
 
+    def on_combobox_changed(self):
+        self.testSdoeButton.setEnabled(self.hasSpaceFilling())
+        if self.hasIndex():
+            self.showIndexBlock()
+
+    def hasSpaceFilling(self):
+        numInputs = self.candidateData.getNumInputs()
+        spaceFilling = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Input':
+                spaceFilling += 1
+
+        return(spaceFilling > 0)
+
+    def hasNoIndex(self):
+        numInputs = self.candidateData.getNumInputs()
+        index = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Index':
+                index += 1
+        return index == 0
+
+    def hasIndex(self):
+        numInputs = self.candidateData.getNumInputs()
+        index = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Index':
+                index += 1
+        return index > 1
+
+    def showIndexWarning(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Index not selected.')
+        msg.setText('You have not set an index. The index is a unique identifier for the input combination. It is not required, but encouraged.')
+        msg.setInformativeText('Do you want to continue?')
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        reply = msg.exec_()
+        return reply
+
+    def showIndexBlock(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Index already selected.')
+        msg.setText('You have already set an index. The index is a unique identifier for the input combination. It is not required, but encouraged. Please select only one index for your design.')
+        msg.setStandardButtons(QMessageBox.Ok)
+        reply = msg.exec_()
+        return reply
+
     def updateRunTime(self, runtime):
         delta = runtime/200
         estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
@@ -415,8 +471,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         row = sender.property('row')
         fullName = self.analysis[row][4]
         dirname, filename = os.path.split(fullName)
+        if self.historyData is None:
+            hname = None
+        else:
+            hname = os.path.join(self.dname, self.historyData.getModelName())
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
-        dialog = sdoePreview(sdoeData, dirname, self)
+        dialog = sdoePreview(sdoeData, hname, dirname, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):
@@ -430,6 +490,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
+        type = [s.strip() for s in config['INPUT']['type'].split(',')]
         max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
         min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
         outdir = config['OUTPUT']['results_dir']
@@ -456,6 +517,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
+        for i in range(len(type)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
 
         self.sampleSize_spin.setValue(int(np.log10(nr)))
         self.updateRunTime(self.testRuntime[0])

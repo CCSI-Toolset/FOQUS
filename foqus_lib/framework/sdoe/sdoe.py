@@ -57,7 +57,7 @@ def run(config_file, nd, test=False):
     elapsed_time = time.time() - t0
 
     # save the output
-    fname = os.path.join(outdir, 'candidates_d{}_n{}_{}'.format(nd, nr, '+'.join(include)))
+    fname = os.path.join(outdir, 'candidates_d{}_n{}_{}.csv'.format(nd, nr, '+'.join(include)))
     write(fname, cand_rand)
     print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, best_val, elapsed_time)))
 

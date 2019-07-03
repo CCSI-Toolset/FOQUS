@@ -14,7 +14,7 @@ import time
 import boto3,optparse
 import sys,json,signal,os,errno,uuid,threading,time,traceback
 from os.path import expanduser
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
 from turbine.commands import turbine_simulation_script
 import logging
@@ -147,8 +147,8 @@ def scrub_empty_string_values_for_dynamo(db):
     One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
     """
     if type(db) is not dict: return
-    for k,v in db.items():
-        if v in  ("",u""): db[k] = "NULL"
+    for k,v in list(db.items()):
+        if v in  ("",""): db[k] = "NULL"
         else: scrub_empty_string_values_for_dynamo(v)
 
 class _KeepAliveTimer(threading.Thread):
@@ -214,7 +214,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._receipt_handle= None
         VisibilityTimeout = 60*10
         try:
-            _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
         except:
             _log.error("Failed to discover instance-id")
 
@@ -227,19 +227,19 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             if not job_desc: continue
             try:
                 dat = self.setup_foqus(db, job_desc)
-            except NotImplementedError, ex:
+            except NotImplementedError as ex:
                 _log.exception("setup foqus NotImplementedError: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
                 db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
-            except urllib2.URLError, ex:
+            except urllib.error.URLError as ex:
                 _log.exception("setup foqus URLError: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
                 db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
-            except Exception, ex:
+            except Exception as ex:
                 _log.exception("setup foqus exception: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
                 db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
@@ -303,11 +303,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         bucket_name = 'foqus-simulations'
         l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
         # BFB_OUU_MultVar_04.09.2018.foqus
-        if not l.has_key('Contents'):
+        if 'Contents' not in l:
             _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
             return
 
-        foqus_keys = filter(lambda i: i['Key'].endswith('.foqus'), l['Contents'])
+        foqus_keys = [i for i in l['Contents'] if i['Key'].endswith('.foqus')]
         if len(foqus_keys) == 0:
             _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s/*.foqus' %job_desc['Simulation'])
             return
@@ -364,7 +364,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         username = 'anonymous'
         prefix = '%s/%s' %(username,flowsheet_name)
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
-        assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
+        assert 'Contents' in l, "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
         for nkey in dat.flowsheet.nodes:
             if dat.flowsheet.nodes[nkey].turbApp is None:
@@ -378,7 +378,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             #sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
             sinter_filename = '/'.join((username, flowsheet_name, nkey, '%s.json' %model_name))
 
-            s3_key_list = map(lambda i: i['Key'] , l['Contents'])
+            s3_key_list = [i['Key'] for i in l['Contents']]
             assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
             simulation_name = job_desc.get('Simulation')
             #sim_list = node.gr.turbConfig.getSimulationList()
@@ -391,9 +391,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
             else:
                 _log.info("Turbine Application Not Implemented: '%s'", turb_app)
-                raise NotImplementedError, 'Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp))
+                raise NotImplementedError('Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp)))
 
-            sim_d = filter(lambda i: i['Name'] == model_name, sim_list)
+            sim_d = [i for i in sim_list if i['Name'] == model_name]
             assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %simulation_name
             if len(sim_d) == 0:
                 sim_d = None
@@ -401,7 +401,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 sim_d = sim_d[0]
 
             prefix = 'anonymous/%s/%s/' %(job_desc['Simulation'],nkey)
-            entry_list = filter(lambda i: i['Key'] != prefix and i['Key'].startswith(prefix), l['Contents'])
+            entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
             sinter_local_filename = None
             update_required = False
             for entry in entry_list:
@@ -417,13 +417,13 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                     _log.debug('CONFIGURATION FILE')
                     sinter_local_filename = file_path
                     if sim_d:
-                        si_metadata = filter(lambda i: i['Name'] == 'configuration', sim_d["StagedInputs"])
+                        si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration']
                 elif key.endswith('.acmf'):
                     _log.debug('ACMF FILE')
                     if sim_d:
-                        si_metadata = filter(lambda i: i['Name'] == 'aspenfile', sim_d["StagedInputs"])
+                        si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile']
                 else:
-                    raise NotImplementedError, 'Not allowing File "%s" to be staged in' %key
+                    raise NotImplementedError('Not allowing File "%s" to be staged in' %key)
 
                 assert len(si_metadata) < 2, 'Turbine Error:  Too many entries for "%s", "%s"' %(simulation_name, file_name)
 
@@ -448,7 +448,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
             assert sinter_local_filename is not None, 'missing sinter configuration file'
 
-            if model_name not in map(lambda i: i['Name'], sim_list):
+            if model_name not in [i['Name'] for i in sim_list]:
                 _log.debug('Adding Simulation "%s"' %model_name)
                 node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
             elif update_required:

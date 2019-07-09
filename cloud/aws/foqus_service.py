@@ -22,16 +22,54 @@ import logging.config
 
 _instanceid = None
 WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
-#WORKING_DIRECTORY = os.path.join("\\Users\\Administrator\\Desktop\\FOQUS_SERVER")
 
 DEBUG = False
 CURRENT_JOB_DIR = None
 #try: os.makedirs(WORKING_DIRECTORY)
 #except OSError as e:
 #    if e.errno != errno.EEXIST: raise
-#logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.INFO)
+#logging.basicConfig(filename="C:\\Users\\Administrator\\FOQUS-Cloud-Service.log",level=logging.DEBUG)
 _log = None
+"""
+$($env:path);C:\ProgramData\Anaconda3\python27.zip;
+C:\ProgramData\Anaconda3\lib\plat-win;
+C:\ProgramData\Anaconda3\lib\lib-tk;
+C:\ProgramData\Anaconda3\Library\bin;C:\ProgramData\Anaconda3\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\lib\site-packages;C:\ProgramData\Anaconda3\lib\site-packages\win32;C:\ProgramData\Anaconda3\lib\site-packages\win32\lib;C:\ProgramData\Anaconda3\lib\site-packages\Pythonwin
+"""
 
+
+class FOQUSJobException(Exception):
+    """ Custom Exception for holding onto the job description and user name """
+    def __init__(self, message, job_desc, user_name):
+        super().__init__(message)
+        self.job_desc = job_desc
+        self.user_name = user_name
+        
+
+class FOQUSAWSConfig:
+    """
+    {"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
+     "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
+     "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
+     "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460"
+    }
+    """
+    _inst = None
+    @classmethod
+    def get_instance(cls):
+        if cls._inst is not None: return cls._inst
+        request = urllib.request.urlopen('http://169.254.169.254/latest/user-data')
+        cls.inst = cls()
+        cls.inst._d = json.load(request)
+        return cls.inst
+    def get_update_topic_arn(self):
+        return self._d.get("FOQUS-Update-Topic-Arn")
+    def get_message_topic_arn(self):
+        return self._d.get("FOQUS-Message-Topic-Arn")    
+    def get_job_queue_url(self):
+        return self._d.get("FOQUS-Job-Queue-Url")        
+    def get_simulation_bucket_name(self):
+        return self._d.get("FOQUS-Simulation-Bucket-Name")
 
 def _set_working_dir():
     global _log
@@ -116,8 +154,9 @@ class TurbineLiteDB:
         _log.info("%s.consumer_id", self.__class__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
-        self._sns_notification(dict(resource='consumer', instanceid=_instanceid,
-                                    event='running', rc=rc, consumer=self.consumer_id))
+        d = dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id)
+        _log.info("%s.consumer_register: %s", self.__class__, str(d))
+        self._sns_notification(d)
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         _log.info("%s.get_job_id", self.__class__)
         return guid, jid, simId, reset
@@ -171,22 +210,24 @@ class _KeepAliveTimer(threading.Thread):
                 self.db.consumer_keepalive()
                 i = 0
 
-
-
-
-
 class AppServerSvc (win32serviceutil.ServiceFramework):
     _svc_name_ = "FOQUS-Cloud-Service"
     _svc_display_name_ = "FOQUS Cloud Service"
 
     def __init__(self,args):
+        _log.debug('AppServerSvc init')
         win32serviceutil.ServiceFramework.__init__(self,args)
+        _log.debug('AppServerSvc init2')
         self.hWaitStop = win32event.CreateEvent(None,0,0,None)
+        _log.debug('AppServerSvc init3')
         socket.setdefaulttimeout(60)
-        self.stop = False
-        self._receipt_handle= None
+        _log.debug('AppServerSvc init4')
+        self._stop = False
+        self._receipt_handle = None
+        _log.debug('AppServerSvc init5')
         self._sqs = boto3.client('sqs', region_name='us-east-1')
-        self._queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
+        self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
+        _log.debug('AppServerSvc init finished')
 
     @property
     def stop(self):
@@ -215,18 +256,29 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         VisibilityTimeout = 60*10
         try:
             _instanceid = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = _instanceid.decode('ascii')
         except:
             _log.error("Failed to discover instance-id")
-
+            
         db = TurbineLiteDB()
         db.consumer_register()
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
         while not self.stop:
-            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+            user_name,job_desc = None,None
+            try:
+                user_name,job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+            except FOQUSJobException as ex:
+                job_desc = ex.job_desc
+                _log.exception("setup foqus exception: %s", str(ex))
+                db.job_change_status(job_desc['Id'], "error")
+                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                self._delete_sqs_job()
+                continue
+            
             if not job_desc: continue
             try:
-                dat = self.setup_foqus(db, job_desc)
+                dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
                 _log.exception("setup foqus NotImplementedError: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
@@ -293,23 +345,28 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._receipt_handle = message['ReceiptHandle']
         body = json.loads(message['Body'])
         job_desc = json.loads(body['Message'])
-        _log.info('Job Desription: ' + body['Message'])
-
+        _log.info('Job Description: ' + body['Message'])
+        _log.info('XMessageAttributes: ' + str(body.keys()))
+        _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
+        user_name = body['MessageAttributes'].get('username').get('Value')
+        _log.info('username: ' + user_name)
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         with open(vfile,'w') as fd:
             json.dump(dict(input=job_desc['Input']), fd)
 
+        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
+        _log.info('Simulation Bucket: ' + bucket_name)
         s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = 'foqus-simulations'
-        l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
+        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s' %(user_name, job_desc['Simulation']))
         # BFB_OUU_MultVar_04.09.2018.foqus
         if 'Contents' not in l:
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
-            return
-
+            _log.info("S3 Simulation:  No keys match %s/%s" %(user_name, job_desc['Simulation']))
+            raise FOQUSJobException("S3 Bucket %s missing key username/simulation %s/%s" %(bucket_name, user_name, job_desc['Simulation']),
+                                   job_desc, user_name)
+           
         foqus_keys = [i for i in l['Contents'] if i['Key'].endswith('.foqus')]
         if len(foqus_keys) == 0:
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s/*.foqus' %job_desc['Simulation'])
+            _log.info("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,job_desc['Simulation']))
             return
         if len(foqus_keys) > 1:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
@@ -322,10 +379,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
             json.dump(job_desc, fd)
 
-        return job_desc
+        return user_name,job_desc
 
 
-    def setup_foqus(self, db, job_desc):
+    def setup_foqus(self, db, user_name, job_desc):
         """
         Move job to state setup
         Pull FOQUS nodes' simulation files from AWS S3
@@ -359,10 +416,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
         # dat.flowsheet.nodes.
         s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = 'foqus-simulations'
+        bucket_name = FOQUSAWSConfig.get_instnance().get_simulation_bucket_name()
         flowsheet_name = job_desc['Simulation']
-        username = 'anonymous'
-        prefix = '%s/%s' %(username,flowsheet_name)
+        prefix = '%s/%s' %(user_name,flowsheet_name)
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
         assert 'Contents' in l, "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
@@ -375,8 +431,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             node = dat.flowsheet.nodes[nkey]
             turb_app = node.turbApp[0]
             model_name = node.modelName
-            #sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
-            sinter_filename = '/'.join((username, flowsheet_name, nkey, '%s.json' %model_name))
+            sinter_filename = '/'.join((user_name, flowsheet_name, nkey, '%s.json' %model_name))
 
             s3_key_list = [i['Key'] for i in l['Contents']]
             assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
@@ -387,7 +442,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.info("Node Turbine Simulation Requested: (%s, %s)", turb_app, simulation_name)
 
             if turb_app == 'ACM':
-                model_filename = 'anonymous/%s/%s/%s.acmf' %(simulation_name,nkey, model_name)
+                model_filename = '%s/%s/%s/%s.acmf' %(user_name, simulation_name,nkey, model_name)
                 assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
             else:
                 _log.info("Turbine Application Not Implemented: '%s'", turb_app)
@@ -400,7 +455,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             else:
                 sim_d = sim_d[0]
 
-            prefix = 'anonymous/%s/%s/' %(job_desc['Simulation'],nkey)
+            prefix = '%s/%s/%s/' %(user_name,job_desc['Simulation'],nkey)
             entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
             sinter_local_filename = None
             update_required = False

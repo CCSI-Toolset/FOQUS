@@ -144,6 +144,10 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def doneClicked(self):
         if self.returnDataSignal:
             self.returnDataSignal.emit(self.getData())
+            dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+            filename = os.path.join(dirname, self.getData().getModelName())
+            self.getData().writeToCsv(filename, inputsOnly=True)
+
         self.accept()
 
     def setPage(self):
@@ -550,8 +554,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         previewData = self.runData
         hname = None
         dirname = os.path.join(os.getcwd(), 'SDOE_Files')
-        filename = os.path.join(dirname, previewData.getModelName())
-        previewData.writeToCsv(filename, inputsOnly=True)
 
         dialog = sdoePreview(previewData, hname, dirname, self)
         dialog.show()

@@ -80,11 +80,12 @@ def _set_working_dir():
             raise
     os.chdir(WORKING_DIRECTORY)
     logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
-    _log = logging.getLogger()
+    _log = logging.getLogger('foqus_service')
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
 
     logging.getLogger('boto3').setLevel(logging.ERROR)
-
+    logging.getLogger('botocore').setLevel(logging.ERROR)
+    logging.getLogger('urllib3').setLevel(logging.ERROR)
 _set_working_dir()
 _log.debug('Loading')
 
@@ -134,7 +135,7 @@ class TurbineLiteDB:
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
     def add_message(self, msg, jobid, **kw):
-        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid)
+        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid, resource="job")
         d.update(kw)
         obj = json.dumps(d)
         _log.debug("%s.add_message: %s", self.__class__, obj)
@@ -229,19 +230,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
         _log.debug('AppServerSvc init finished')
 
-    @property
-    def stop(self):
-        return self._stop
-
-    @stop.setter
-    def set_stop(self, value):
-        self._stop = value
-
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
         _log.debug("stop called")
-        self.stop = True
+        self._stop = True
 
     def SvcDoRun(self):
         """ Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
@@ -264,19 +257,21 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         db.consumer_register()
         kat = _KeepAliveTimer(db, freq=60)
         kat.start()
-        while not self.stop:
-            user_name,job_desc = None,None
+        while not self._stop:
+            ret = None
             try:
-                user_name,job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+                ret = self.pop_job(VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
-                _log.exception("setup foqus exception: %s", str(ex))
+                _log.exception("verify foqus exception: %s", str(ex))
                 db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 continue
             
-            if not job_desc: continue
+            if not ret: continue
+            assert type(ret) is tuple and len(ret) == 2
+            user_name,job_desc = ret
             try:
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
@@ -533,7 +528,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         while gt.isAlive():
             gt.join(10)
             status = db.consumer_status()
-            if status == 'terminate' or self.stop:
+            if status == 'terminate' or self._stop:
                 terminate = True
                 db.job_change_status(guid, "error")
                 gt.terminate()
@@ -543,7 +538,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             db.add_message("job %s: terminate" %guid, guid)
             return
 
-        if self.stop:
+        if self._stop:
             db.add_message("job %s: windows service stopped" %guid, guid)
             return
 

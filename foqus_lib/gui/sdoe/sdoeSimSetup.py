@@ -424,7 +424,22 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         runData = SampleData(model, self.session)
         res = Results()
         res.sdoe_add_result(runData)
-        runData.setModelName(res.incrimentSetName("SDOE_Ensemble"))
+        possibleNames = []
+        sdoeSimList = []
+        for i in range(len(self.session.sdoeSimList)):
+            sdoeSimList.append(self.session.sdoeSimList[i].getModelName())
+        for i in range(100):
+            possibleNames.append("SDOE_Ensemble_%s" %str(i+1))
+        for i in range(len(possibleNames)):
+            if possibleNames[i] not in sdoeSimList:
+                newName = possibleNames[i]
+                break
+            else:
+                newName = possibleNames[i+1]
+
+        runData.setModelName(newName)
+        print("THIS IS THE SDOE LIST:", sdoeSimList)
+        # runData.setModelName(res.incrimentSetName("SDOE_Ensemble"))
         runData.setFromFile(False)
 
         # Now get distributions for the SampleData object

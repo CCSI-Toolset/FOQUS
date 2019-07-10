@@ -134,7 +134,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
                 # ... area/alpha can be customized to visualize weighted points (future feature)
                 ax.scatter(df[yname], df[xname], s=area, alpha=0.5, color='b')
                 if hname:
-                    ax.scatter(hf[yname], hf[xname], s=area, alpha=0.5, color='orange')
+                    ax.scatter(hf[yname], hf[xname], s=area, alpha=0.5, color='red')
                 ax.set_ylabel(xname)
                 ax.set_xlabel(yname)
                 ax.grid(True, axis='both')

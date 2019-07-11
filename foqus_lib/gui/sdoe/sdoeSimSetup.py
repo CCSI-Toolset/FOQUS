@@ -117,7 +117,9 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         foundMETIS = foundLibs['METIS']
 
         self.schemesList.clear()
-        self.schemesList.addItems(SamplingMethods.fullNames[:-2]) # Leave out GMETIS and FULL Factorial
+        self.schemesList.addItems(SamplingMethods.fullNames[0:4])
+        self.schemesList.addItems(SamplingMethods.fullNames[7:8])
+
         if not foundMETIS:
             item = self.schemesList.item(SamplingMethods.METIS)
             text = item.text()
@@ -131,7 +133,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
 
         # Change lists of schemes displayed
         self.allSchemesRadio.toggled.connect(self.showAllSchemes)
-        self.paramScreenRadio.toggled.connect(self.showParamScreenSchemes)
         self.adaptiveRefineRadio.toggled.connect(self.showAdaptiveRefineSchemes)
         self.otherRadio.toggled.connect(self.showOtherSchemes)
 
@@ -305,7 +306,8 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
             foundMETIS = foundLibs['METIS']
 
             self.schemesList.clear()
-            self.schemesList.addItems(SamplingMethods.fullNames[:-2]) # Remove GMETIS
+            self.schemesList.addItems(SamplingMethods.fullNames[0:4])
+            self.schemesList.addItems(SamplingMethods.fullNames[7:8])
             if not foundMETIS:
                 item = self.schemesList.item(SamplingMethods.METIS)
                 text = item.text()
@@ -313,12 +315,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
-    def showParamScreenSchemes(self):
-        if self.paramScreenRadio.isChecked():
-            self.schemesList.clear()
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.MOAT))
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.GMOAT))
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.LSA))
 
     def showAdaptiveRefineSchemes(self):
         if self.adaptiveRefineRadio.isChecked():
@@ -438,8 +434,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 newName = possibleNames[i+1]
 
         runData.setModelName(newName)
-        print("THIS IS THE SDOE LIST:", sdoeSimList)
-        # runData.setModelName(res.incrimentSetName("SDOE_Ensemble"))
         runData.setFromFile(False)
 
         # Now get distributions for the SampleData object

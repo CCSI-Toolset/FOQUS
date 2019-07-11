@@ -140,6 +140,10 @@ exports.handler = function(event, context, callback) {
                                 DataType: 'String',
                                 StringValue: 'job.submit'
                               },
+                              'username': {
+                                DataType: 'String',
+                                StringValue: user_name
+                              }
                             },
                             TopicArn: topicArn
                         };

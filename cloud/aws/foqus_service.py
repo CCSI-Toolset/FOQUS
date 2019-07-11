@@ -44,7 +44,7 @@ class FOQUSJobException(Exception):
         super().__init__(message)
         self.job_desc = job_desc
         self.user_name = user_name
-        
+
 
 class FOQUSAWSConfig:
     """
@@ -65,9 +65,9 @@ class FOQUSAWSConfig:
     def get_update_topic_arn(self):
         return self._d.get("FOQUS-Update-Topic-Arn")
     def get_message_topic_arn(self):
-        return self._d.get("FOQUS-Message-Topic-Arn")    
+        return self._d.get("FOQUS-Message-Topic-Arn")
     def get_job_queue_url(self):
-        return self._d.get("FOQUS-Job-Queue-Url")        
+        return self._d.get("FOQUS-Job-Queue-Url")
     def get_simulation_bucket_name(self):
         return self._d.get("FOQUS-Simulation-Bucket-Name")
 
@@ -143,7 +143,7 @@ class TurbineLiteDB:
 
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='running', rc=rc, 
+        self._sns_notification(dict(resource='consumer', event='running', rc=rc,
             consumer=self.consumer_id, instanceid=_instanceid))
 
     def consumer_status(self):
@@ -252,7 +252,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _instanceid = _instanceid.decode('ascii')
         except:
             _log.error("Failed to discover instance-id")
-            
+
         db = TurbineLiteDB()
         db.consumer_register()
         kat = _KeepAliveTimer(db, freq=60)
@@ -268,7 +268,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 continue
-            
+
             if not ret: continue
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
@@ -341,7 +341,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         body = json.loads(message['Body'])
         job_desc = json.loads(body['Message'])
         _log.info('Job Description: ' + body['Message'])
-        _log.info('XMessageAttributes: ' + str(body.keys()))
+        for key in ['MessageAttributes', 'Id', 'Input']:
+            if not job_desc.has_key(key):
+                raise FOQUSJobException("Job Description Missing Key %s" %key)
+
         _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
         user_name = body['MessageAttributes'].get('username').get('Value')
         _log.info('username: ' + user_name)
@@ -355,17 +358,20 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s' %(user_name, job_desc['Simulation']))
         # BFB_OUU_MultVar_04.09.2018.foqus
         if 'Contents' not in l:
-            _log.info("S3 Simulation:  No keys match %s/%s" %(user_name, job_desc['Simulation']))
+            _log.error("S3 Simulation:  No keys match %s/%s" %(user_name, job_desc['Simulation']))
             raise FOQUSJobException("S3 Bucket %s missing key username/simulation %s/%s" %(bucket_name, user_name, job_desc['Simulation']),
                                    job_desc, user_name)
-           
+
         foqus_keys = [i for i in l['Contents'] if i['Key'].endswith('.foqus')]
         if len(foqus_keys) == 0:
-            _log.info("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,job_desc['Simulation']))
-            return
+            _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,job_desc['Simulation']))
+            raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name, user_name, job_desc['Simulation']),
+                                   job_desc, user_name)
+
         if len(foqus_keys) > 1:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-            return
+            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name, user_name, job_desc['Simulation']),
+                                   job_desc, user_name)
 
         _log.info("S3: Download Key %s", foqus_keys[0])
         s3.download_file(bucket_name, foqus_keys[0]['Key'], sfile)

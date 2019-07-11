@@ -123,7 +123,7 @@ exports.handler = function(event, context, callback) {
           return;
         }
       }
-      else if (obj.filetype == "FOQUS_Session") {
+      else if (obj.filetype == "FOQUS_Session" || obj.Type == "FOQUS_Session") {
         params.Key = user_name + "/" + name + "/session.foqus";
       }
       else {

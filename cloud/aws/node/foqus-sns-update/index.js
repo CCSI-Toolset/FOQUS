@@ -46,6 +46,7 @@ var process_job_event = function(ts, message, callback) {
         },
         ReturnValues:"UPDATED_NEW"
     };
+    // TODO:  ADD EVENT for Message..
     if (e == 'output') {
         //var output = JSON.stringify(message['value']['output']);
         var output = message['value'];

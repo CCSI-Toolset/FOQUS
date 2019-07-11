@@ -146,4 +146,9 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
     title = 'SDOE candidates from {}'.format(fname)
     fig.canvas.set_window_title(title)
     plt.tight_layout()
+    if hname:
+        fig.legend(labels=['cand', 'cand', 'hist'], loc='lower left', fontsize='xx-large')
+    else:
+        fig.legend(labels=['cand', 'cand'], loc='lower left', fontsize='xx-large')
+
     plt.show()

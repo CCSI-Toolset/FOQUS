@@ -389,7 +389,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if selectedFilter == psuadeFilter:
             sim.writeToPsuade(fileName)
         else:
-            sim.writeToCsv(fileName)
+            sim.writeToCsv(fileName, inputsOnly=True)
 
     def editSim(self):
         sender = self.sender()

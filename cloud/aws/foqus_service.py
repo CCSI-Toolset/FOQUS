@@ -119,6 +119,7 @@ class TurbineLiteDB:
         topic_messages = self._sns.create_topic(Name='FOQUS-Message-Topic')
         self._topic_arn = topic['TopicArn']
         self._topic_msg_arn = topic_messages['TopicArn']
+        self._user_name = None
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
@@ -126,6 +127,8 @@ class TurbineLiteDB:
 
     def __del__(self):
         _log.info("%s.delete", self.__class__)
+    def set_user_name(self, name):
+        self._user_name = name
     def connectionString(self):
         _log.info("%s.connectionString", self.__class__)
     def getConnection(self, rc=0):
@@ -272,6 +275,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             if not ret: continue
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
+            db.set_user_name(user_name)
             try:
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:

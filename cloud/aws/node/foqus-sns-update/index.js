@@ -9,40 +9,47 @@
  * @see https://github.com/motdotla/node-lambda-template
  */
 'use strict';
+'use AWS.S3'
+'use AWS.DynamoDB'
 'use uuid'
-var util = require('util');
-const AWS = require('aws-sdk');
 const log = require("debug")("foqus-sns-update")
+const AWS = require('aws-sdk');
+const util = require('util');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
-const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
+const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 //const update_topic_name = process.env.FOQUS_UPDATE_TOPIC;
 const log_topic_name = process.env.FOQUS_LOG_TOPIC_NAME;
+const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 
 //
 // process_job_event: Adds timestamp to the status field, or if output is
 //   specified it adds an output field to item.
 //
-var process_job_event = function(ts, message, callback) {
+var process_job_event = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    log('process_job_event: ' + JSON.stringify(message));
-    var e = message['event'];
-    var status = message['status'];
-    var job = message['jobid'];
-    var msecs = Date.parse(ts);
-    var consumer = message['consumer'];
+    log('process_job_event(user= ' + user_name + '): '+ JSON.stringify(message));
+    const s3 = new AWS.S3();
+    const e = message['event'];
+    const status = message['status'];
+    const job = message['jobid'];
+    const msecs = Date.parse(ts);
+    const consumer = message['consumer'];
+    const session = message['SessionId']
     var params = {
         TableName:tablename,
         Key:{
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set #w = :s, ConsumerId=:c",
+        UpdateExpression: "set #w=:s, ConsumerId=:c, #u=:u",
         ExpressionAttributeValues:{
             ":s":ts,
-            ":c":consumer
+            ":c":consumer,
+            ":u":user_name
         },
         ExpressionAttributeNames:{
-            "#w":status
+            "#w":status,
+            "#u":"User"
         },
         ReturnValues:"UPDATED_NEW"
     };
@@ -69,7 +76,54 @@ var process_job_event = function(ts, message, callback) {
             ReturnValues:"UPDATED_NEW"
         };
     }
+
     log(JSON.stringify(params));
+    publish_to_log_topic(e);
+
+    function getDynamoJob() {
+        // Job is success, put in S3
+        log("Get Job Description from dynamodb");
+        //const milliseconds = (new Date).getTime();
+        var request = dynamodb.get({ TableName: tablename,
+              Key: {"Id": job, "Type": "Job" }
+              //KeyConditionExpression: '#T = :job',
+              //ExpressionAttributeNames: {"#T":"Type", "#I":"Id"},
+              //ExpressionAttributeValues: { ":job":"Job", ":Id":job}
+          });
+        return request.promise().then(putS3);
+    };
+
+    //var obj = message;
+    function putS3(response) {
+        // Job is success, put in S3
+        const milliseconds = (new Date).getTime();
+        var promise = new Promise(function(resolve, reject){
+            if (status == 'success' || status == 'error') {
+              var content = JSON.stringify(response.Item)
+              log("put3s: " + content);
+              if(content == undefined) {
+                  throw new Error("s3 object is undefined")
+              }
+              if(content.length == undefined) {
+                  throw new Error("s3 object is empty")
+              }
+              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
+              var params = {
+                Bucket: s3_bucket_name,
+                Key: key,
+                Body: content
+              };
+              log(`putS3(${params.Bucket}):  ${params.Key}`);
+              var request = s3.putObject(params);
+              resolve(request.promise());
+            } else {
+              log(`putS3 ignore`);
+              resolve();
+            }
+        });
+        return promise;
+    };
+    /*
     dynamodb.update(params, function(err, data) {
         if (err) {
           // NOTE: data is null, but apparently there is no error when a value is ""
@@ -84,16 +138,34 @@ var process_job_event = function(ts, message, callback) {
           publish_to_log_topic(message, callback);
         }
     });
+    */
+    function handleError(error) {
+      log(`handleError ${error.name}`);
+      callback(new Error(`"${error.stack}"`), "Error")
+    };
+    function handleDone() {
+      log("handleDone");
+      callback(null, "Success");
+    };
+    var response = dynamodb.update(params);
+    if (status == 'success' || status == 'error') {
+      response.promise()
+        .then(getDynamoJob)
+        .then(handleDone)
+        .catch(handleError);
+
+    } else {
+      response.promise()
+        .then(handleDone)
+        .catch(handleError);
+    }
 }
 
-var publish_to_log_topic = function(message, callback) {
+var publish_to_log_topic = function(message) {
     var sns = new AWS.SNS();
     var request_topic = sns.createTopic({Name: log_topic_name,}, function(err, data) {
             if (err) {
               log("ERROR: Failed to SNS CREATE TOPIC");
-              //log(err);
-              callback(new Error(`"${err.stack}"`));
-              return;
             }
     });
     request_topic.on('success', function(response_topic) {
@@ -105,14 +177,6 @@ var publish_to_log_topic = function(message, callback) {
         log("SNS Publish: " + topic_arn);
         log(params);
         sns.publish(params, function(err, data) {
-            if (err) {
-              //log(err, err.stack);
-              callback(new Error(`"${err.stack}"`));
-            }
-            else {
-              //log(data);
-              callback(null, data);
-            }
         });
     });
 }
@@ -169,10 +233,11 @@ var process_consumer_event = function(ts, message, callback) {
  */
 exports.handler = function(event, context, callback) {
     //log('Received event:', JSON.stringify(event, null, 4));
-    var message = JSON.parse(event.Records[0].Sns.Message);
-    var ts = event.Records[0].Sns.Timestamp;
+    const message = JSON.parse(event.Records[0].Sns.Message);
+    const attrs = event.Records[0].Sns.MessageAttributes;
+    const ts = event.Records[0].Sns.Timestamp;
     log('Received event:', event.Records[0].Sns.Message);
-
+    log('Received event:', event.Records[0].Sns.MessageAttributes.username.Value);
     if (util.isArray(message) == false) {
         message.resource = "job";
         message.event = "submit"
@@ -182,7 +247,8 @@ exports.handler = function(event, context, callback) {
     for (var i = 0; i < message.length; i++) {
       var resource = message[i]['resource'];
       if (resource == "job") {
-          process_job_event(ts, message[i], callback);
+          const user_name = attrs.username.Value;
+          process_job_event(ts, user_name, message[i], callback);
       } else if (resource == "consumer") {
           process_consumer_event(ts, message[i], callback);
       } else {

@@ -105,7 +105,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
     if nshow == 1:
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        xname = names[0]
+        xname = show[0]
         ax = plot_hist(ax, df[xname], xname)
 
     else:  # multiple inputs
@@ -126,7 +126,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
 
             k = sb_indices[i][i]
             ax = A[k]
-            xname = names[i]
+            xname = show[i]
             # ... plot histogram for diagonal subplot
             ax = plot_hist(ax, df[xname], xname)
 

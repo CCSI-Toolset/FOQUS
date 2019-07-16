@@ -133,7 +133,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
                 ax = A[k]
-                yname = names[j]
+                yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
                 ax.scatter(df[yname], df[xname], s=area['cand'], alpha=alpha['cand'], color='b')

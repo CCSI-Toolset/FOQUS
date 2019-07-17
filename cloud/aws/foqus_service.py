@@ -268,6 +268,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 continue
+            except Exception as ex:
+                _log.exception("setup foqus exception: %s", str(ex))
+                raise
 
             if not ret: continue
             assert type(ret) is tuple and len(ret) == 2
@@ -339,15 +342,15 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         message = response['Messages'][0]
         self._receipt_handle = message['ReceiptHandle']
         body = json.loads(message['Body'])
-        job_desc = json.loads(body['Message'])
-        _log.info('Job Description: ' + body['Message'])
-        for key in ['MessageAttributes', 'Id', 'Input']:
-            if not job_desc.has_key(key):
-                raise FOQUSJobException("Job Description Missing Key %s" %key)
-
         _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
         user_name = body['MessageAttributes'].get('username').get('Value')
         _log.info('username: ' + user_name)
+        job_desc = json.loads(body['Message'])
+        _log.info('Job Description: ' + body['Message'])
+        for key in ['Id', 'Input', 'Simulation']:
+            if job_desc.get(key) is None:
+                raise FOQUSJobException("Job Description Missing Key %s" %key, job_desc, user_name)
+            
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         with open(vfile,'w') as fd:
             json.dump(dict(input=job_desc['Input']), fd)
@@ -355,26 +358,30 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         _log.info('Simulation Bucket: ' + bucket_name)
         s3 = boto3.client('s3', region_name='us-east-1')
-        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s' %(user_name, job_desc['Simulation']))
+        simulation_name = job_desc['Simulation']
+        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s' %(user_name, simulation_name))
         # BFB_OUU_MultVar_04.09.2018.foqus
         if 'Contents' not in l:
-            _log.error("S3 Simulation:  No keys match %s/%s" %(user_name, job_desc['Simulation']))
-            raise FOQUSJobException("S3 Bucket %s missing key username/simulation %s/%s" %(bucket_name, user_name, job_desc['Simulation']),
-                                   job_desc, user_name)
+            _log.error("S3 Simulation:  No keys match %s/%s" %(user_name, simulation_name))
+            raise FOQUSJobException("S3 Bucket %s missing key username/simulation %s/%s" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
 
-        foqus_keys = [i for i in l['Contents'] if i['Key'].endswith('.foqus')]
-        if len(foqus_keys) == 0:
-            _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,job_desc['Simulation']))
-            raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name, user_name, job_desc['Simulation']),
-                                   job_desc, user_name)
+        foqus_keys = [i['Key'] for i in l['Contents'] if i['Key'].endswith('.foqus')]
+        if len(foqus_keys) < 2:
+            _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,simulation_name))
+            raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
 
-        if len(foqus_keys) > 1:
+        if len(foqus_keys) != 2:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name, user_name, job_desc['Simulation']),
-                                   job_desc, user_name)
-
-        _log.info("S3: Download Key %s", foqus_keys[0])
-        s3.download_file(bucket_name, foqus_keys[0]['Key'], sfile)
+            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+        
+        _log.debug("KEYS: " + str(foqus_keys))
+        session_key = '%s/%s/session.foqus' %(user_name, simulation_name)
+        idx = foqus_keys.index(session_key)            
+        _log.info("S3: Download Key %s", session_key)
+        s3.download_file(bucket_name, session_key, sfile)
 
         # WRITE CURRENT JOB TO FILE
         with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
@@ -417,7 +424,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
         # dat.flowsheet.nodes.
         s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = FOQUSAWSConfig.get_instnance().get_simulation_bucket_name()
+        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         flowsheet_name = job_desc['Simulation']
         prefix = '%s/%s' %(user_name,flowsheet_name)
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)

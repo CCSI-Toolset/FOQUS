@@ -499,6 +499,44 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         if self.hasIndex():
             self.showIndexBlock()
+        self.checkType()
+
+    def checkType(self):
+        numInputs = self.candidateData.getNumInputs()
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Index':
+                self.clearMinMax(i)
+            else:
+                self.activateMinMax(i)
+
+    def clearMinMax(self, row):
+        item = self.inputSdoeTable.item(row, self.minCol)
+        mask = ~Qt.ItemIsEnabled
+        item.setBackground(Qt.lightGray)
+        flags = item.flags()
+        item.setFlags(flags & mask)
+
+        item = self.inputSdoeTable.item(row, self.maxCol)
+        mask = ~Qt.ItemIsEnabled
+        item.setBackground(Qt.lightGray)
+        flags = item.flags()
+        item.setFlags(flags & mask)
+
+
+    def activateMinMax(self, row):
+        item = self.inputSdoeTable.item(row, self.minCol)
+        mask = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+        item.setForeground(Qt.black)
+        item.setBackground(Qt.white)
+        flags = item.flags()
+        item.setFlags(flags | mask)
+
+        item = self.inputSdoeTable.item(row, self.maxCol)
+        mask = Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable
+        item.setForeground(Qt.black)
+        item.setBackground(Qt.white)
+        flags = item.flags()
+        item.setFlags(flags | mask)
 
     def hasSpaceFilling(self):
         numInputs = self.candidateData.getNumInputs()

@@ -1,4 +1,4 @@
-Contents
+﻿Contents
 ========
 
 .. toctree::
@@ -10,6 +10,7 @@ Contents
     chapt_opt/index
     chapt_uq/index
     chapt_ouu/index
+    chapt_pyomo/index
     chapt_surrogates/index
     chapt_sdoe/index
     chapt_solventfit/index

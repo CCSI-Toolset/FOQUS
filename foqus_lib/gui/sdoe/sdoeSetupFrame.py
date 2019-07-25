@@ -188,14 +188,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for cand in cand_list:
             cand_path = os.path.join(self.dname, cand.getModelName())
             if not os.path.exists(cand_path):
-                cand.writeToCsv(cand_path)
+                cand.writeToCsv(cand_path, inputsOnly=True)
             cand_csv_list.append(cand_path)
 
         hist_csv_list = []
         for hist in hist_list:
             hist_path = os.path.join(self.dname, hist.getModelName())
             if not os.path.exists(hist_path):
-                hist.writeToCsv(hist_path)
+                hist.writeToCsv(hist_path, inputsOnly=True)
             hist_csv_list.append(hist_path)
 
         cand_agg, hist_agg = df_utils.check(cand_csv_list, hist_csv_list)

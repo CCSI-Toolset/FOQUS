@@ -1,4 +1,4 @@
-Contents
+﻿Contents
 ========
 
 .. toctree::
@@ -15,6 +15,8 @@ Contents
     chapt_solventfit/index
     chapt_sinter/index
     chapt_debug/index
+    chapt_HI/index
+    chapt_pyomo/index
     references
     copyright
 

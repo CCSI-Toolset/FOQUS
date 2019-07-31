@@ -33,9 +33,9 @@ Procedure:
    passing through all heaters and coolers (F2,F3,RF1,RF2,RP2,RP3,B2,BY-PROD,P1,PROD), along with heat duty of each heater, cooler as
    “output variables”.
 
-.. figure:: ../figs/simsinter_file_HI.png
-   :alt: SimSinter Configuration File
-   :name: fig.tut.HI.simsinter_file_HI
+   .. figure:: ../figs/simsinter_file_HI.png
+      :alt: SimSinter Configuration File
+      :name: fig.tut.HI.simsinter_file_HI
 
 #. Once the SimSinter file is saved in .json format, upload it to turbine and keep the simulation name as “MethanolHI”.
 
@@ -51,6 +51,13 @@ Procedure:
    Where name is the block name of the heater/cooler in the Aspen model, associated with the concerned inlet/outet stream.
 
    NOTE: Ensure that all the variables are of the type “float” in the GUI
+   
+#. Run the flowsheet simulation node for testing once. 
+   The heat integration tags for output variables are seen in the rightmost column of the node editor, as shown below:
+
+   .. figure:: ../figs/HI_tags.png
+      :alt: Heat Integration Tags
+      :name: fig.tut.HI.HI_tags
 
 #. Add another node to the flowsheet window named “HI”
 

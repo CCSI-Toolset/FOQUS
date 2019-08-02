@@ -587,7 +587,7 @@ class SampleData(object):
 
 
 
-    def writeToPsuade(self, filename, fixedAsVariables = False):
+    def writeToPsuade(self, filename, fixedAsVariables = True):
         outf = open(filename, 'w')
         if self.getNamesIncludeNodes():
             outf.write('# NAMESHAVENODES\n')

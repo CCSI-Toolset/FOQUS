@@ -12,6 +12,9 @@ set BUILDDIR=build
 
 if "%1" == "" goto help
 
+REM Replace broken symlink to copyright.rst file with hardcopy of LICENSE.md file while building docs
+copy /Y ..\LICENSE.md source\copyright.rst >NUL
+
 %SPHINXBUILD% >NUL 2>NUL
 if errorlevel 9009 (
 	echo.
@@ -32,4 +35,6 @@ goto end
 %SPHINXBUILD% -M help %SOURCEDIR% %BUILDDIR% %SPHINXOPTS%
 
 :end
+REM restore broken symlink to copyright.rst so git is none the wiser
+git checkout -- source\copyright.rst
 popd

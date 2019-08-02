@@ -307,9 +307,9 @@ class InputPriorTable(QTableWidget):
                     value = float(item.text())
 
                     if value < self.lbVariable[row] or value > self.ubVariable[row]:
-                        showMessage = True
+                        showMessage = False
                         message = 'Value outside bounds. Your response surface will be extrapolating, which could lead to lower accuracy. Your new bounds will not be saved to the flowsheet.'
-                        outOfBounds = True
+                        outOfBounds = False
 
                     if 'min' in self.col_index and 'max' in self.col_index and col in (self.col_index['min'], self.col_index['max']):
                         if minItem is not None and maxItem is not None:

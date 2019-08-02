@@ -1,4 +1,4 @@
-from scipy import misc
+from scipy import special
 
 class ResponseSurfaces:
     MARS, LINEAR, QUADRATIC, CUBIC, QUARTIC = list(range(5))
@@ -54,7 +54,7 @@ class ResponseSurfaces:
     def getLegendreMaxOrder(nInputs, nSamples):
         p = 0
         m = nInputs
-        while misc.comb(p+m,p) <= nSamples:
+        while special.comb(p+m,p) <= nSamples:
             p = p + 1
         p = p - 1  # revert p to last value that satisfies the "while" condition
                    # nSamples must be equal or larger than (p+m)!/(p!m!)     
@@ -64,4 +64,4 @@ class ResponseSurfaces:
     def getPolynomialMinSampleSize(nInputs, polynomialOrder):
         p = polynomialOrder
         m = nInputs
-        return misc.comb(p+m,p)
+        return special.comb(p+m,p)

@@ -107,7 +107,7 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 ..
    There are options to view the aggregated files for both the candidate and history files, with a similar interface as was shown in step 3. In addition, a single plot of the combined candidate and history files can be viewed. In this plot the  points represent the candidate locations and points of already collected data from the history file are shown in different colors.
 
-6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Analyze** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
+6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Uniform Space Filling** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
 .. figure:: figs/5_second_window.png
    :alt: SDOE second window
@@ -242,4 +242,28 @@ For this first example, the goal is to construct a simple space-filling design w
 Example 2: Augmenting the Example 1 design in a 2-D input space
 ---------------------------------------------------------------
 
-In this example, we consider the sequential aspect of design, by building on the first example results. Consider the scenario where based on the results of Example 1, the experimenter selected to run the [look at which design seems best here].
+In this example, we consider the sequential aspect of design, by building on the first example results. Consider the scenario where based on the results of Example 1, the experimenter selected to actually implement and run the 8 run minimax design.
+
+1. In the **Ensemble Selection** box, click on **Load from File** to select the candidate set that you would like to use for the construction of the design. This may be the same candidate set that was used in Example 1, or it might have been updated based on what was learned from the first data collection. For example, if it was learned that one corner of the design space might not be desirable, then the candidate set can be updated to remove candidate points that are now considered undesirable. For the **File Type** leave the designation as **Candidate**.
+
+To load in the experimental runs that were already collected, click on **Load from File** again, and select the design file that was created in the  **SDOE_files** folder. This time, change the **File Type** to **History**. If you wish to view either of the candidate or history files, click on **View** to see either a table or plot.
+
+2. Click on the **Confirm** button at the bottom right of the **Ensemble Selection** box. This will activate the **Ensemble Aggregation** box.
+
+3. After examining that the desired files have been selected, click on the the **Uniform Space Filling** button at the bottom right corner of the **Ensemble Aggregation** window. This will open the second SDOE window that shows the **Sequential Design of Experiments Set-Up** window on the right hand side.
+
+4. Select **Minimax** or **Maximin** for the type of design to create.
+
+5. Select the **Min Design Size** and **Max Design Size** to match what is desired. If you wish to just generate a single design of the desired size, make **Min Design Size** = **Max Design Size**. Recall that this will be the number of additional points that will be added to the existing design, not the total design size.
+
+6. Next, select the options desired in the box: a) Should any of the columns be excluded from the design creation? If yes, then unclick the **Include?** box.  b) For input factors to be used in the construction of the uniform space filling design, make sure that the **Type** is designated as **Input**. If there is a label column for the candidates, then designate this as **Index**.  c) Finally, you can optionally change the **Min** and **Max** ranges for the inputs to adjust the relative emphasis that distances in each input range are designated.
+
+7. Once the set-up choices have been made, click **Test SDOE** to find out what the anticipated time is for generating designs based on different numbers of random starts.
+
+8. Select the number of random starts to use, based on available time. Recall that using more random starts is likely to produce a design that is closer to the overall best optimum.
+
+9. When the SDOE module has created the design(s) and the left window **Created Designs** is populated with the new design(s). These can be viewed with the **View** option, where the plot now shows the **History Data** with one symbol, and the newly added possible design with another symbol. This allows better assessment of the appropriateness of the new design subject to the data that have already been collected.
+
+10. To access the file that contains the created designs, go to the **SDOE_files** folder. As before, a separate folder will have been created for each design.
+
+11. If there is a desire to do another set in the sequential design, then the proceedure outlined above for Example 2 can be followed again. The only change will be that this time there will be 3 files that need to be imported: A **Candidate** file from which new runs can be selected, and two **History** files. The first of these files will be the selected design from Example 1, and the second the newly created design that was run as a result of Example 2. When the user clicks on **Confirm** in the **Ensemble Selection** window, the two **History** files will be aggregated into a single **Aggregated History** file.

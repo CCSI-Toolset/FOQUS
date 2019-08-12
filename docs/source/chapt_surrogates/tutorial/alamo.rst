@@ -137,7 +137,7 @@ data is provided and adaptive sampling is used.
     :ref:`fig.tut.sur.new.uq.sample2`).
     Select “Latin Hypercube” from the list.
 
-20. Set the **# of samples** to “10.”
+20. Set the **# of samples** to “1000.”
 
 21. Click **Generate Samples**.
 

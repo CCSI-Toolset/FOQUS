@@ -117,7 +117,9 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         foundMETIS = foundLibs['METIS']
 
         self.schemesList.clear()
-        self.schemesList.addItems(SamplingMethods.fullNames[:-2]) # Leave out GMETIS and FULL Factorial
+        self.schemesList.addItems(SamplingMethods.fullNames[0:4])
+        self.schemesList.addItems(SamplingMethods.fullNames[7:8])
+
         if not foundMETIS:
             item = self.schemesList.item(SamplingMethods.METIS)
             text = item.text()
@@ -131,7 +133,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
 
         # Change lists of schemes displayed
         self.allSchemesRadio.toggled.connect(self.showAllSchemes)
-        self.paramScreenRadio.toggled.connect(self.showParamScreenSchemes)
         self.adaptiveRefineRadio.toggled.connect(self.showAdaptiveRefineSchemes)
         self.otherRadio.toggled.connect(self.showOtherSchemes)
 
@@ -144,6 +145,10 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def doneClicked(self):
         if self.returnDataSignal:
             self.returnDataSignal.emit(self.getData())
+            dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+            filename = os.path.join(dirname, self.getData().getModelName())
+            self.getData().writeToCsv(filename, inputsOnly=True)
+
         self.accept()
 
     def setPage(self):
@@ -301,7 +306,8 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
             foundMETIS = foundLibs['METIS']
 
             self.schemesList.clear()
-            self.schemesList.addItems(SamplingMethods.fullNames[:-2]) # Remove GMETIS
+            self.schemesList.addItems(SamplingMethods.fullNames[0:4])
+            self.schemesList.addItems(SamplingMethods.fullNames[7:8])
             if not foundMETIS:
                 item = self.schemesList.item(SamplingMethods.METIS)
                 text = item.text()
@@ -309,12 +315,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
-    def showParamScreenSchemes(self):
-        if self.paramScreenRadio.isChecked():
-            self.schemesList.clear()
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.MOAT))
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.GMOAT))
-            self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.LSA))
 
     def showAdaptiveRefineSchemes(self):
         if self.adaptiveRefineRadio.isChecked():
@@ -420,7 +420,20 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         runData = SampleData(model, self.session)
         res = Results()
         res.sdoe_add_result(runData)
-        runData.setModelName(res.incrimentSetName("SDOE_Ensemble"))
+        possibleNames = []
+        sdoeSimList = []
+        for i in range(len(self.session.sdoeSimList)):
+            sdoeSimList.append(self.session.sdoeSimList[i].getModelName())
+        for i in range(100):
+            possibleNames.append("SDOE_Ensemble_%s" %str(i+1))
+        for i in range(len(possibleNames)):
+            if possibleNames[i] not in sdoeSimList:
+                newName = possibleNames[i]
+                break
+            else:
+                newName = possibleNames[i+1]
+
+        runData.setModelName(newName)
         runData.setFromFile(False)
 
         # Now get distributions for the SampleData object
@@ -550,8 +563,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         previewData = self.runData
         hname = None
         dirname = os.path.join(os.getcwd(), 'SDOE_Files')
-        filename = os.path.join(dirname, previewData.getModelName())
-        previewData.writeToCsv(filename, inputsOnly=True)
 
         dialog = sdoePreview(previewData, hname, dirname, self)
         dialog.show()

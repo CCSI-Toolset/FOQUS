@@ -11,7 +11,6 @@
  */
 'use strict';
 'use AWS.S3'
-'use AWS.DynamoDB'
 'use uuid'
 const log = require("debug")("post-session-result")
 const uuidv4 = require('uuid/v4');

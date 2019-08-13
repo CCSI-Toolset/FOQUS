@@ -1,1 +1,1 @@
-../../LICENSE.md
+.. include:: ../../LICENSE.md

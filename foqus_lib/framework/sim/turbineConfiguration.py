@@ -534,8 +534,18 @@ class TurbineConfiguration():
             self.user = config.get("Authentication", "username")
             self.pwd = config.get("Authentication", "password")
             if address:
-                self.address = config.get("Job",  "url")
-                self.address = self.address[:-5]
+                #args = config.get("Job",  "url")
+                args = config.get("Application",  "url")
+                _log.debug('turbine configuration application url="%s"', args)
+                assert args != '', 'Missing Application URL'
+                args = args.split('/')
+                self.address = None
+                while self.address is None:
+                    item = args.pop()
+                    if item.lower() == 'application':
+                        self.address = '/'.join(args)
+                        break
+                _log.debug('turbine configuration url="%s"', self.address)
             self.checkAddress()
             if self.address[-4:] in ['Lite', 'lite', 'LITE']:
                 self.turbVer = "Lite"

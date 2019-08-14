@@ -67,6 +67,13 @@ exports.handler = function(event, context, callback) {
             var max_job_ms = 0;
             var page_ms = 0;
             log("getS3Objects: " + JSON.stringify(response));
+
+            if (response.IsTruncated) {
+                //params.ContinuationToken = response.NextContinuationToken;
+                log("s3 list keys is truncated");
+                throw new Error("s3 list keys is truncated breaking results algorithm")
+            }
+
             for (var index = 0; index < response.Contents.length; ++index) {
               var key = response.Contents[index].Key;
               if (key.includes('/page/')) {
@@ -86,13 +93,15 @@ exports.handler = function(event, context, callback) {
                 Bucket: s3_bucket_name,
                 Key: key,
               };
-              job_ms = parseInt(key.split('/')[4]);
-              log(`job_ms ${job_ms}`);
-              if (job_ms > page_ms) {
-                log(`promise: get ${key}`)
-                max_job_ms = Math.max(max_job_ms, job_ms);
-                let promise = s3.getObject(params).promise();
-                promises.push(promise);
+              if (key.includes('/finished/')) {
+                job_ms = parseInt(key.split('/')[4]);
+                log(`job_ms ${job_ms}`);
+                if (job_ms > page_ms) {
+                  log(`promise: get ${key}`)
+                  max_job_ms = Math.max(max_job_ms, job_ms);
+                  let promise = s3.getObject(params).promise();
+                  promises.push(promise);
+                }
               }
             }
             // Put All S3 Objects in Page
@@ -118,7 +127,7 @@ exports.handler = function(event, context, callback) {
               request.promise().then(handleDone).catch(handleError);
             });
         };
-        var request = s3.listObjectsV2({Bucket: s3_bucket_name, MaxKeys: 100,
+        var request = s3.listObjectsV2({Bucket: s3_bucket_name, MaxKeys: 1000,
                         Prefix: prefix, StartAfter: prefix});
         request.promise().then(putS3JobPage);
     }

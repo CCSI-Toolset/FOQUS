@@ -102,7 +102,7 @@ exports.handler = function(event, context, callback) {
         };
         for (var index = 0; index < data.Contents.length; ++index) {
             var k = data.Contents[index].Key;
-            if (k.endsWith(".foqus")) {
+            if (k.endsWith("/session.foqus")) {
               var a = k.split('/');
               a.pop();
               console.log("FILE: " + k);

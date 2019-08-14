@@ -81,13 +81,49 @@ class pymodel_pg(pymodel):
             vdesc = "Low-pressure steam injection",
             vst = "pymodel",
             tags = [])
-        self.inputs["FH.Heat.Addition"] = NodeVars(
-            value = [0.0, 0.0, 0.0, 0.0, 0.0],
-            vmin = [0.0, 0.0 ,0.0 ,0.0, 0.0],
-            vmax = [10000.0, 10000.0, 10000.0, 10000.0, 10000.0],
-            vdflt = [0.0, 0.0, 0.0, 0.0, 0.0],
+        self.inputs["FH.Heat.Addition1"] = NodeVars(
+            value = 0,
+            vmin = 0,
+            vmax = 10000,
+            vdflt = 0,
             unit = "GJ/hr",
-            vdesc = "Heat addition into feed water heaters",
+            vdesc = "Heat addition into feed water heater 1",
+            vst = "pymodel",
+            tags = [])
+        self.inputs["FH.Heat.Addition2"] = NodeVars(
+            value = 0,
+            vmin = 0,
+            vmax = 10000,
+            vdflt = 0,
+            unit = "GJ/hr",
+            vdesc = "Heat addition into feed water heater 2",
+            vst = "pymodel",
+            tags = [])
+        self.inputs["FH.Heat.Addition3"] = NodeVars(
+            value = 0,
+            vmin = 0,
+            vmax = 10000,
+            vdflt = 0,
+            unit = "GJ/hr",
+            vdesc = "Heat addition into feed water heater 3",
+            vst = "pymodel",
+            tags = [])
+        self.inputs["FH.Heat.Addition4"] = NodeVars(
+            value = 0.0,
+            vmin = 0.0,
+            vmax = 10000,
+            vdflt = 0,
+            unit = "GJ/hr",
+            vdesc = "Heat addition into feed water heater 4",
+            vst = "pymodel",
+            tags = [])
+        self.inputs["FH.Heat.Addition5"] = NodeVars(
+            value = 0,
+            vmin = 0,
+            vmax = 10000,
+            vdflt = 0,
+            unit = "GJ/hr",
+            vdesc = "Heat addition into feed water heater 5",
             vst = "pymodel",
             tags = [])
         self.inputs["Electricity.Consumption"] = NodeVars(
@@ -174,12 +210,14 @@ class pymodel_pg(pymodel):
         else:
             conEle = 0.0
         # heat recovered in feed water heaters 1 - 5 (GJ/hr)
-        if self.inputs["FH.Heat.Addition"].value.any():
-            hrFH1 = self.inputs["FH.Heat.Addition"].value[0]
-            hrFH2 = self.inputs["FH.Heat.Addition"].value[1]
-            hrFH3 = self.inputs["FH.Heat.Addition"].value[2]
-            hrFH4 = self.inputs["FH.Heat.Addition"].value[3]
-            hrFH5 = self.inputs["FH.Heat.Addition"].value[4]
+        FH_Heat_Addition_Values=[self.inputs["FH.Heat.Addition1"].value,self.inputs["FH.Heat.Addition2"].value,self.inputs["FH.Heat.Addition3"].value,self.inputs["FH.Heat.Addition4"].value,self.inputs["FH.Heat.Addition5"].value]
+#        if self.inputs["FH.Heat.Addition"].value.any():
+        if [k!=0 for k in FH_Heat_Addition_Values]:
+            hrFH1 = FH_Heat_Addition_Values[0]
+            hrFH2 = FH_Heat_Addition_Values[1]
+            hrFH3 = FH_Heat_Addition_Values[2]
+            hrFH4 = FH_Heat_Addition_Values[3]
+            hrFH5 = FH_Heat_Addition_Values[4]
         else:
             hrFH1 = 0.0
             hrFH2 = 0.0

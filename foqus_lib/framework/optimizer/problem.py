@@ -342,7 +342,7 @@ class problem():
             loop to speed things up
         '''
         if self.objtype == self.OBJ_TYPE_CUST:
-            exec(self.custpy)
+            exec(self.custpy,globals())
             self.custObjFunc = objfunc
         self.inpDict = slv.graph.saveValues()['input']
 

@@ -65,6 +65,10 @@ def run(config_file, nd, test=False):
 
 
 def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
+
+    alpha = {'hist': 1.0, 'cand': 0.25}
+    area = {'hist': 40, 'cand': 25}
+
     def plot_hist(ax, xs, xname):
         ns, bins = np.histogram(xs, nbins)
         xmin = bins[0]
@@ -72,11 +76,11 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
         width = bins[1] - bins[0]
         center = (bins[1:] + bins[:-1]) / 2
         if hbars:
-            ax.barh(center, ns, align='center', height=width)
+            ax.barh(center, ns, align='center', height=width, alpha=alpha['cand'])
             ax.set_ylabel(xname)
             ax.set_xlabel('Frequency')
         else:
-            ax.bar(center, ns, align='center', width=width)
+            ax.bar(center, ns, align='center', width=width, alpha=alpha['cand'])
             ax.set_xlabel(xname)
             ax.set_ylabel('Frequency')
 
@@ -101,7 +105,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
     if nshow == 1:
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        xname = names[0]
+        xname = show[0]
         ax = plot_hist(ax, df[xname], xname)
 
     else:  # multiple inputs
@@ -122,19 +126,19 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
 
             k = sb_indices[i][i]
             ax = A[k]
-            xname = names[i]
+            xname = show[i]
             # ... plot histogram for diagonal subplot
             ax = plot_hist(ax, df[xname], xname)
 
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
                 ax = A[k]
-                yname = names[j]
+                yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[yname], df[xname], s=area, alpha=0.5, color='b')
+                ax.scatter(df[yname], df[xname], s=area['cand'], alpha=alpha['cand'], color='b')
                 if hname:
-                    ax.scatter(hf[yname], hf[xname], s=area, alpha=0.5, color='orange')
+                    ax.scatter(hf[yname], hf[xname], s=area['hist'], alpha=alpha['hist'], color='red', marker="*")
                 ax.set_ylabel(xname)
                 ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
@@ -142,4 +146,9 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
     title = 'SDOE candidates from {}'.format(fname)
     fig.canvas.set_window_title(title)
     plt.tight_layout()
+    if hname:
+        fig.legend(labels=['cand', 'cand', 'hist'], loc='lower left', fontsize='xx-large')
+    else:
+        fig.legend(labels=['cand', 'cand'], loc='lower left', fontsize='xx-large')
+
     plt.show()

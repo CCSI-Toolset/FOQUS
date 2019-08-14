@@ -34,7 +34,7 @@ var process_job_event = function(ts, user_name, message, callback) {
     const job = message['jobid'];
     const msecs = Date.parse(ts);
     const consumer = message['consumer'];
-    const session = message['SessionId']
+    const session = message['sessionid']
     var params = {
         TableName:tablename,
         Key:{
@@ -99,6 +99,12 @@ var process_job_event = function(ts, user_name, message, callback) {
         const milliseconds = (new Date).getTime();
         var promise = new Promise(function(resolve, reject){
             if (status == 'success' || status == 'error') {
+              response.Item.Output = response.Item.output;
+              response.Item.Session = response.Item.SessionId;
+              delete response.Item.output;
+              delete response.Item.SessionId;
+              response.Item.State = status;
+
               var content = JSON.stringify(response.Item)
               log("put3s: " + content);
               if(content == undefined) {
@@ -233,7 +239,7 @@ var process_consumer_event = function(ts, message, callback) {
  */
 exports.handler = function(event, context, callback) {
     //log('Received event:', JSON.stringify(event, null, 4));
-    const message = JSON.parse(event.Records[0].Sns.Message);
+    var message = JSON.parse(event.Records[0].Sns.Message);
     const attrs = event.Records[0].Sns.MessageAttributes;
     const ts = event.Records[0].Sns.Timestamp;
     log('Received event:', event.Records[0].Sns.Message);
@@ -242,7 +248,6 @@ exports.handler = function(event, context, callback) {
         message.resource = "job";
         message.event = "submit"
         message = [message];
-
     }
     for (var i = 0; i < message.length; i++) {
       var resource = message[i]['resource'];

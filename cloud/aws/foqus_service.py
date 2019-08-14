@@ -115,15 +115,25 @@ class TurbineLiteDB:
     """
     def __init__(self, close_after=True):
         self._sns = boto3.client('sns', region_name='us-east-1')
-        topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
-        topic_messages = self._sns.create_topic(Name='FOQUS-Message-Topic')
-        self._topic_arn = topic['TopicArn']
-        self._topic_msg_arn = topic_messages['TopicArn']
-        self._user_name = None
+        self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
+        self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
+        self._user_name = 'unknown'
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
-        self._sns.publish(Message=json.dumps([obj]), TopicArn=self._topic_arn)
+        _log.debug('hi0: %s' %obj)
+        resource = obj.get('resource', 'unknown')
+        status = obj.get('status', 'unknown')
+        if resource == 'consumer':
+            status = obj.get('event', 'unknown')
+        event = '%s.%s' %(resource,status)
+        _log.debug('hi1: %s' %event)
+        attrs = dict(event=dict(DataType='String', StringValue=event),
+                     username=dict(DataType='String', StringValue=self._user_name))
+        _log.debug('MessageAttributes: %s' %attrs)
+        self._sns.publish(Message=json.dumps([obj]),
+                          MessageAttributes=attrs,
+                          TopicArn=self._topic_arn)
 
     def __del__(self):
         _log.info("%s.delete", self.__class__)
@@ -137,7 +147,7 @@ class TurbineLiteDB:
         _log.info("%s.closeConnection", self.__class__)
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
-    def add_message(self, msg, jobid, **kw):
+    def add_message(self, msg, jobid="", **kw):
         d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid, resource="job")
         d.update(kw)
         obj = json.dumps(d)
@@ -159,8 +169,8 @@ class TurbineLiteDB:
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
         d = dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id)
-        _log.info("%s.consumer_register: %s", self.__class__, str(d))
         self._sns_notification(d)
+        _log.info("%s.consumer_register: %s", self.__class__, str(d))
     def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
         _log.info("%s.get_job_id", self.__class__)
         return guid, jid, simId, reset
@@ -171,18 +181,22 @@ class TurbineLiteDB:
         _log.info("%s.get_configuration_file", self.__class__)
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         _log.info("%s.job_prepare", self.__class__)
-    def job_change_status(self, jobGuid, status, rc=0):
-        _log.info("%s.job_change_status %s", self.__class__, status)
+    def job_change_status(self, job_d, status, rc=0):
+        assert type(job_d) is dict
+        _log.info("%s.job_change_status %s", self.__class__, job_d)
         self._sns_notification(dict(resource='job', event='status',
-            rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
-    def job_save_output(self, jobGuid, workingDir, rc=0):
+            rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid, consumer=self.consumer_id,
+            sessionid=job_d.get('sessionid','unknown')))
+    def job_save_output(self, job_d, workingDir, rc=0):
+        assert type(job_d) is dict
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
         scrub_empty_string_values_for_dynamo(output)
         _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
         self._sns_notification(dict(resource='job',
-            event='output', jobid=jobGuid, value=output, rc=rc))
+            event='output', jobid=job_d['Id'], username=self._user_name, value=output, rc=rc,
+            sessionid=job_d.get('sessionid','unknown')))
 
 def scrub_empty_string_values_for_dynamo(db):
     """ DynamoDB throws expection if there is an empty string in dict
@@ -257,17 +271,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
+        _log.debug("kat starta")
         db.consumer_register()
+        _log.debug("kat startb")
+        db.add_message("Consumer Registered")
+        _log.debug("kat start1")
         kat = _KeepAliveTimer(db, freq=60)
+        _log.debug("kat start2")
         kat.start()
+        _log.debug("kat start3")
         while not self._stop:
             ret = None
+            _log.debug("pop job")
             try:
                 ret = self.pop_job(VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
                 _log.exception("verify foqus exception: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
+                db.job_change_status(job_desc, "error")
                 db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 continue
@@ -283,19 +304,19 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
                 _log.exception("setup foqus NotImplementedError: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
+                db.job_change_status(job_desc, "error")
                 db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
             except urllib.error.URLError as ex:
                 _log.exception("setup foqus URLError: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
+                db.job_change_status(job_desc, "error")
                 db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
             except Exception as ex:
                 _log.exception("setup foqus exception: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
+                db.job_change_status(job_desc, "error")
                 db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
                 self._delete_sqs_job()
                 raise
@@ -411,7 +432,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             .format(db.consumer_id, jid), guid)
 
         _log.debug("setup foqus")
-        db.job_change_status(guid, "setup")
+        db.job_change_status(job_desc, "setup")
 
         configContent = db.get_configuration_file(simId)
 
@@ -539,7 +560,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         guid = job_desc['Id']
         jid = guid # NOTE: like to use actual increment job id but hard to find.
-        db.job_change_status(guid, "running")
+        db.job_change_status(job_desc, "running")
         gt = dat.flowsheet.runAsThread()
         terminate = False
         while gt.isAlive():
@@ -547,7 +568,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             status = db.consumer_status()
             if status == 'terminate' or self._stop:
                 terminate = True
-                db.job_change_status(guid, "error")
+                db.job_change_status(job_desc, "error")
                 gt.terminate()
                 break
 
@@ -565,7 +586,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             dat.flowsheet.errorStat = 19
 
         dat.saveFlowsheetValues(ofile)
-        db.job_save_output(guid, CURRENT_JOB_DIR)
+        db.job_save_output(job_desc, CURRENT_JOB_DIR)
         dat.save(
             filename = rfile,
             updateCurrentFile = False,
@@ -574,12 +595,12 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             indent = 0)
 
         if dat.flowsheet.errorStat == 0:
-            db.job_change_status(guid, "success")
+            db.job_change_status(job_desc, "success")
             db.add_message(
                 "consumer={0}, job {1} finished, success"\
                     .format(db.consumer_id, jid), guid)
         else:
-            db.job_change_status(guid, "error")
+            db.job_change_status(job_desc, "error")
             db.add_message(
                 "consumer={0}, job {1} finished, error"\
                     .format(db.consumer_id, jid), guid)

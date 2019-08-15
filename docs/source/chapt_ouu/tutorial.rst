@@ -20,7 +20,7 @@ sample file.
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_3`.
@@ -29,7 +29,7 @@ sample file.
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
-   examples/OUU/test\_suite directory and load the x3sample.smp sample
+   examples/OUU/ directory and load the ex1_x3sample.smp sample
    file (see Figure [fig:ouu\_ex1]).
 
 #. Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.
@@ -51,7 +51,7 @@ sample of size :math:`200` for :math:`Z_4`.
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
@@ -76,7 +76,7 @@ from a large sample evaluated on the response surfaces).
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
@@ -103,7 +103,7 @@ will be generated for the continuous variables.
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
@@ -113,7 +113,7 @@ will be generated for the continuous variables.
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
-   examples/OUU/test\_suite directory and load the x3sample4.smp sample
+   examples/OUU/ directory and load the ex456_x3sample.smp sample
    file.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
@@ -131,7 +131,7 @@ be used to estimate the means for the continuous uncertain variables.
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
@@ -141,7 +141,7 @@ be used to estimate the means for the continuous uncertain variables.
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
-   examples/OUU/test\_suite directory and load the x3sample4.smp sample
+   examples/OUU/ directory and load the ex456_x3sample.smp sample
    file.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, select ‘Generate
@@ -163,7 +163,7 @@ generated internally).
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, variable :math:`9` as :math:`Z_3`, and
@@ -173,12 +173,12 @@ generated internally).
    (default) and select ‘use model as optimizer’ as the ‘Inner Solver’.
 
 #. Under ‘UQ Setup’ and ‘Discrete Random Variables’, browse the
-   examples/OUU/test\_suite directory and load the x3sample4.smp sample
+   examples/OUU/ directory and load the ex456_x3sample.smp sample
    file.
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Load
    existing sample for :math:`Z_4`’ and load the :math:`Z_4` sample
-   examples/OUU/test\_suite/x4sample4.smp.
+   examples/OUU/ex6_x4sample.smp.
 
 #. Go to ‘Launch/Progress’ page, click ‘Run OUU’ and see OUU in action.
 
@@ -191,7 +191,7 @@ This example is similar to Example 5 except that a sample for
 #. Start FOQUS and click the ‘OUU’ icon.
 
 #. Under ‘Model’, browse and load
-   examples/OUU/test\_suite/ouu\_optdriver.in.
+   examples/OUU/ouu\_optdriver.in.
 
 #. Under ‘Variables’, set variable :math:`1-4` as :math:`Z_1`, variable
    :math:`5-8` as :math:`Z_2`, and variable :math:`9-12` as :math:`Z_4`.
@@ -201,7 +201,7 @@ This example is similar to Example 5 except that a sample for
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Load
    existing sample for :math:`Z_4`’ and load the :math:`Z_4` sample
-   examples/OUU/test\_suite/x4sampleLarge.smp (:math:`10000` sample
+   examples/OUU/ex7_x4sample.smp (:math:`10000` sample
    points).
 
 #. Under ‘UQ Setup’ and ‘Continuous Random Variables’, check ‘Use

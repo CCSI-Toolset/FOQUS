@@ -134,6 +134,10 @@
           <layout class="QGridLayout" name="gridLayout_11">
            <item row="0" column="1">
             <widget class="QRadioButton" name="Maximin_radioButton">
+             <property name="toolTip">
+              <string>Maximize the distance
+between design points</string>
+             </property>
              <property name="text">
               <string>Maximin</string>
              </property>
@@ -141,6 +145,10 @@
            </item>
            <item row="0" column="0">
             <widget class="QRadioButton" name="Minimax_radioButton">
+             <property name="toolTip">
+              <string>Minimize how far design points
+are from any candidate point</string>
+             </property>
              <property name="text">
               <string>Minimax</string>
              </property>
@@ -223,7 +231,8 @@
             <item row="0" column="1">
              <widget class="QSpinBox" name="minDesignSize_spin">
               <property name="toolTip">
-               <string>Please choose the size for a small grouping.</string>
+               <string>Please select the
+smallest design size</string>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -233,8 +242,9 @@
             <item row="1" column="1">
              <widget class="QSpinBox" name="maxDesignSize_spin">
               <property name="toolTip">
-               <string>Minimize difference between min and max
-for efficient computation.</string>
+               <string>Select the largest design size.
+Minimize difference between min 
+and max for efficient computation.</string>
               </property>
               <property name="minimum">
                <number>1</number>
@@ -256,10 +266,10 @@ for efficient computation.</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>For each input, specify the type, and wether
-it should be part of the analysis.
+            <string>For each column, specify the type, and whether
+it should be part of the design.
+* Input: inputs to be considered for SDOE
 * Index: unique identifier for the input combination. Not required, but encouraged.
-* Space-filling: inputs to be considered for SDOE
 </string>
            </property>
            <property name="sizeAdjustPolicy">
@@ -487,7 +497,7 @@ it should be part of the analysis.
            <item>
             <widget class="QLabel" name="designInfo_dynamic">
              <property name="text">
-              <string>d = 8, n = 1000</string>
+              <string>d = 2, n = 1000</string>
              </property>
             </widget>
            </item>
@@ -525,7 +535,7 @@ it should be part of the analysis.
       </font>
      </property>
      <property name="title">
-      <string>Analyses Performed</string>
+      <string>Created Designs</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
       <item row="2" column="0">
@@ -559,17 +569,22 @@ it should be part of the analysis.
         </column>
         <column>
          <property name="text">
-          <string>Design Size d</string>
+          <string>Design Size, d</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string># of Random Starts n</string>
+          <string># of Random Starts, n</string>
          </property>
         </column>
         <column>
          <property name="text">
-          <string>Runtime (in seconds)</string>
+          <string>Runtime (in sec)</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Criterion Value</string>
          </property>
         </column>
         <column>
@@ -592,7 +607,7 @@ it should be part of the analysis.
       <item row="1" column="0">
        <widget class="QLabel" name="analysisInstructions_static">
         <property name="text">
-         <string>* All the results for the analyses performed are located in the SDOE output directory</string>
+         <string>* All design results saved in SDOE output directory</string>
         </property>
        </widget>
       </item>
@@ -602,7 +617,7 @@ it should be part of the analysis.
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Load Analysis</string>
+         <string>Reload Design Specification</string>
         </property>
        </widget>
       </item>

@@ -46,7 +46,7 @@ class pymodel_pg(pymodel):
             tags  = [],
             dtype = float)
         self.inputs["Net.Power"] = NodeVars(
-            value = None,
+            value = 0,
             vmax  = 1000.0,
             unit  = "MW",
             vdesc = "Net power output without CCS",
@@ -80,7 +80,7 @@ class pymodel_pg(pymodel):
             tags  = [],
             dtype = float)
         self.inputs["No.Stream"] = NodeVars(
-            value = None,
+            value = 0,
             vmax  = 500.0,
             unit  = "",
             vdesc = "Number of process streams for heat integration",
@@ -111,13 +111,37 @@ class pymodel_pg(pymodel):
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["FH.Heat.Addition"] = NodeVars(
+        self.outputs["FH.Heat.Addition1"] = NodeVars(
             unit = "GJ/hr",
-            vdesc = "Heat addition to feed water heaters",
+            vdesc = "Heat addition to feed water heater 1",
             vst   = "pymodel",
             dtype = float,
             tags  = [])
-        self.outputs["FH.Heat.Addition"].setShape((5,))
+        self.outputs["FH.Heat.Addition2"] = NodeVars(
+            unit = "GJ/hr",
+            vdesc = "Heat addition to feed water heater 2",
+            vst   = "pymodel",
+            dtype = float,
+            tags  = [])
+        self.outputs["FH.Heat.Addition3"] = NodeVars(
+            unit = "GJ/hr",
+            vdesc = "Heat addition to feed water heater 3",
+            vst   = "pymodel",
+            dtype = float,
+            tags  = [])
+        self.outputs["FH.Heat.Addition4"] = NodeVars(
+            unit = "GJ/hr",
+            vdesc = "Heat addition to feed water heater 4",
+            vst   = "pymodel",
+            dtype = float,
+            tags  = [])
+        self.outputs["FH.Heat.Addition5"] = NodeVars(
+            unit = "GJ/hr",
+            vdesc = "Heat addition to feed water heater 5",
+            vst   = "pymodel",
+            dtype = float,
+            tags  = [])
+#        self.outputs["FH.Heat.Addition"].shape=(5,)
         self.outputs["Heat.Exchanger.Area"] = NodeVars(
             unit  = "m^2",
             vdesc = "Heat exchanger area",
@@ -449,6 +473,8 @@ class pymodel_pg(pymodel):
         #hot stream FCps
         f.write("Parameter FCpH(H)  F*Cp for hot process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsH[heater]:
                         f.write("\t" + heater + "\t" + str(heaterFCp[heater]) + "\n")
@@ -465,6 +491,8 @@ class pymodel_pg(pymodel):
         #cold stream FCps
         f.write("Parameter FCpC(C)  F*Cp for cold process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsC[heater]:
                         f.write("\t" + heater + "\t" + str(heaterFCp[heater]) + "\n")
@@ -484,6 +512,8 @@ class pymodel_pg(pymodel):
         #hot stream inlet temperatures
         f.write("Parameter TinH(H)  inlet temperature of hot process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsH[heater]:
                         f.write("\t" + heater + "\t" + str(heaterTin[heater]) + "\n")
@@ -500,6 +530,8 @@ class pymodel_pg(pymodel):
         #hot stream outlet temperatures
         f.write("Parameter ToutH(H)  outlet temperature of hot process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsH[heater]:
                         f.write("\t" + heater + "\t" + str(heaterTout[heater]) + "\n")
@@ -516,6 +548,8 @@ class pymodel_pg(pymodel):
         #cold stream inlet temperatures
         f.write("Parameter TinC(C)  inlet temperature of cold process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsC[heater]:
                         f.write("\t" + heater + "\t" + str(heaterTin[heater]) + "\n")
@@ -535,6 +569,8 @@ class pymodel_pg(pymodel):
         #cold stream outlet temperatures
         f.write("Parameter ToutC(C)  outlet temperature of cold process streams\n")
         f.write("/\n")
+        #Ignoring trailing digits in a number
+        f.write("$offDigit\n")
         for heater in heaterSet:
                 if heaterIsC[heater]:
                         f.write("\t" + heater + "\t" + str(heaterTout[heater]) + "\n")
@@ -702,21 +738,32 @@ class pymodel_pg(pymodel):
         self.outputs["IP_Steam.Consumption"].value = Uhot["IP_Steam"]         # intermediate-pressure steam consumption (GJ/hr)
         self.outputs["LP_Steam.Consumption"].value = Uhot["LP_Steam"]         # low-pressure steam consumption (GJ/hr)
         self.outputs["Cooling_Water.Consumption"].value = Ucold["Cooling_Water"]         # cooling water consumption (GJ/hr)
+#        self.outputs["FH.Heat.Addition"].value = 10000  ### romove after testing 7/11/2019
         if feedIs:
-            self.outputs["FH.Heat.Addition"].value = [0, 0, 0, 0, 0]
+#            self.outputs["FH.Heat.Addition"].value = [0, 0, 0, 0, 0]
+            FH_Heat_Addition=[self.outputs["FH.Heat.Addition1"],self.outputs["FH.Heat.Addition2"],self.outputs["FH.Heat.Addition3"],self.outputs["FH.Heat.Addition4"],self.outputs["FH.Heat.Addition5"]]
             for i in range(len(feedSet)):
-                self.outputs["FH.Heat.Addition"].value[i] = float((f.readline()).strip())      # heat addition to feed water heater (GJ/hr)
+#                self.outputs["FH.Heat.Addition"].value[i] = float((f.readline()).strip())      # heat addition to feed water heater (GJ/hr)
+                FH_Heat_Addition[i].value = float((f.readline()).strip())   # heat addition to feed water heater (GJ/hr)
         else:
-            self.outputs["FH.Heat.Addition"].value = [
-                numpy.nan,
-                numpy.nan,
-                numpy.nan,
-                numpy.nan,
-                numpy.nan]
+#            self.outputs["FH.Heat.Addition"].value = [
+#                numpy.nan,
+#                numpy.nan,
+#                numpy.nan,
+#                numpy.nan,
+#                numpy.nan]
+            self.outputs["FH.Heat.Addition1"].value = numpy.nan
+            self.outputs["FH.Heat.Addition2"].value = numpy.nan
+            self.outputs["FH.Heat.Addition3"].value = numpy.nan
+            self.outputs["FH.Heat.Addition4"].value = numpy.nan
+            self.outputs["FH.Heat.Addition5"].value = numpy.nan
+
         print("done with hi calc")
 
-        for var in node.outVars:
-            if self.outputs[var]:
-                self.outputs[var].toNumpy()
+# Vector Variables not supported
+#        for var in node.outVars:
+#            if self.outputs[var]:
+#                self.outputs[var].toNumpy()
+                
         # done reading GAMS output
         f.close()

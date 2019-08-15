@@ -134,7 +134,7 @@ class opt(optimization):
         # get the initial guess, flatten arrays and scale inputs
         xinit = self.graph.input.getFlat(self.prob.v, scaled=True)
         # Display a little information to check that things are working
-        self.msgQueue.put("Starting NLopt Optimization at {0}".format(
+        self.msgQueue.put("Starting SLSQP Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         self.msgQueue.put("\nDecision Variables\n---------------------")
         for xn in self.prob.v:

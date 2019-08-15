@@ -101,6 +101,21 @@ Install NLopt
 
 NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately, the Python module is not available to be installed with pip. For installation instructions, see https://nlopt.readthedocs.io/en/latest/, or NLopt can be installed with conda as follows: ``conda install -c conda-forge nlopt``
 
+Install SnobFit
+^^^^^^^^^^^^^^^
+
+SnobFit is an optional optimization library, which can be used by FOQUS for unconstrained optimization. The python package can be installed with pip using ``pip install SQSnobFit``. The plugin has been developed for version 2.1. For further details on the available versions and installation, see https://pypi.org/project/SQSnobFit/
+
+Note: Once the python package is downloaded, navigate the path to "SQSnobFit" folder. Open the ``_snobfit.py`` file, and make the following changes, in order to make the plugin work:
+
+* Comment or remove the following code lines just below ``def minimize:``
+
+  * ``if budget <= 0:``
+  
+        ``budget = 100000``
+    
+* Replace ``return Result(fbest, xbest), objfunc.get_history()`` with ``return (request,xbest,fbest)`` within ``def minimize:``
+
 Install R
 ^^^^^^^^^
 

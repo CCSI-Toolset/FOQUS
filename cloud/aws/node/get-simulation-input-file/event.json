@@ -4,8 +4,13 @@
     "Accept": "application/json"
   },
   "httpMethod": "GET",
-  "path": "/simulation/test_simulation/input/configuration",
+  "path": "/simulation/SimpleFlow/input/configuration",
   "queryStringParameters": {
     "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
   }
 }

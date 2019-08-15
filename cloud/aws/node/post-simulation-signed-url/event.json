@@ -1,0 +1,16 @@
+{
+"body":"{\"Description\":\"Test\"}",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "path": "/simulation/SimpleFlow/input/test1.json",
+  "queryStringParameters": {
+    "verbose": true
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
+}

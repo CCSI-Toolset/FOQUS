@@ -68,7 +68,27 @@ exports.handler = function(event, context, callback) {
     };
     log(`KEY: ${key}`);
     if (key == "configuration") {
+      if (event.queryStringParameters && event.queryStringParameters.SignedUrl) {
+        log("queryStringParameters SignedUrl: unsupported for configuration files");
+        callback(null, {statusCode:'406', body:'SignedUrl unsupported for configuration files',
+              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+            });
+        return;
+      }
       params.Prefix = user_name + "/" + sim_name + "/";
+    }
+    else if (event.queryStringParameters && event.queryStringParameters.SignedUrl) {
+        params.Expires = 120;
+        params.Key = user_name + "/" + sim_name + "/" + key;
+        log("queryStringParameters SignedUrl, return HTTP 302 with S3 Signed URL for Large Files");
+        var s3 = new AWS.S3();
+        var url = s3.getSignedUrl('getObject', params);
+        //var obj = {"SignedUrl":url};
+        callback(null, {statusCode:'302',
+              headers: {'Access-Control-Allow-Origin': '*',
+                'Location': url }
+            });
+        return;
     }
     else {
       params.Key = user_name + "/" + sim_name + "/" + key;

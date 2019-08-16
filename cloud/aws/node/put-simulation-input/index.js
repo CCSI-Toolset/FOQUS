@@ -41,8 +41,6 @@ exports.handler = function(event, context, callback) {
     return;
   }
   const user_name = event.requestContext.authorizer.principalId;
-
-
   if (event.httpMethod == "PUT" ) {
     var array = event.path.split('/');
     var item = array.pop();
@@ -78,9 +76,10 @@ exports.handler = function(event, context, callback) {
       Bucket: s3_bucket_name,
     };
 
-    if (event.body == null) {
-      params.Expires = 300;
-      params.Key = user_name + "/" + name + "/" + key;
+    if (event.queryStringParameters.SignedUrl) {
+      params.Expires = 120;
+      params.Key = `${user_name}/${name}/${key}`;
+      params.ContentType = 'application/json';
       log("Body is null, return HTTP 302 with S3 Signed URL for Large Files");
       var s3 = new AWS.S3();
       var url = s3.getSignedUrl('putObject', params);

@@ -34,7 +34,6 @@ exports.handler = function(event, context, callback) {
   }
   var content_type = event.headers.Accept;
   log(`Header ContentType: ${content_type}`)
-
   if (event.requestContext.authorizer == null) {
     log("API Gateway Testing");
     var content = JSON.stringify([]);
@@ -75,16 +74,26 @@ exports.handler = function(event, context, callback) {
       done(new Error(`Unsupported path "${event.path}"`));
       return;
     }
-
     var params = {
       Bucket: s3_bucket_name,
       Expires: 120,
       Key: `${user_name}/${name}/${key}`,
-      ContentType: 'application/json'
     };
-    var s3 = new AWS.S3();
+    const method = event.queryStringParameters.method;
+    if (method == "putObject") {
+      params.ContentType = 'application/json';
+    }
+    else if (method != "getObject") {
+      callback(null, {statusCode:'405', body: `unsupported s3 method: ${method}`,
+        headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
+      });
+      return;
+    }
+
+    const s3 = new AWS.S3();
     log("Params: " + JSON.stringify(params));
-    var url = s3.getSignedUrl('putObject', params);
+    log(`S3 Operation: ${method}`);
+    const url = s3.getSignedUrl(method, params);
     log(`SIGNED URL: ${url}`);
 
     //var obj = {"SignedUrl":url};

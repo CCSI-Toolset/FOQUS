@@ -4,9 +4,10 @@
     "Accept": "application/json"
   },
   "httpMethod": "POST",
-  "path": "/simulation/SimpleFlow/input/test1.json",
+  "path": "/simulation/test_simulation/input/test1.json",
   "queryStringParameters": {
-    "verbose": true
+    "verbose": true,
+    "method": "putObject"
   },
   "requestContext": {
     "authorizer": {

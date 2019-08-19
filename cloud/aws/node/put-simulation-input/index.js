@@ -76,13 +76,21 @@ exports.handler = function(event, context, callback) {
       Bucket: s3_bucket_name,
     };
 
-    if (event.queryStringParameters.SignedUrl) {
+    if (event.queryStringParameters && event.queryStringParameters.SignedUrl) {
+      if (key == "configuration") {
+        log("queryStringParameters SignedUrl: unsupported for configuration files");
+        callback(null, {statusCode:'406', body:'SignedUrl unsupported for configuration files',
+              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+            });
+        return;
+      }
       params.Expires = 120;
       params.Key = `${user_name}/${name}/${key}`;
-      params.ContentType = 'application/json';
+      //params.ContentType = 'application/json';
       log("Body is null, return HTTP 302 with S3 Signed URL for Large Files");
       var s3 = new AWS.S3();
       var url = s3.getSignedUrl('putObject', params);
+      log("S3 SignedURL: " + url);
       //var obj = {"SignedUrl":url};
       callback(null, {statusCode:'302',
             headers: {'Access-Control-Allow-Origin': '*',

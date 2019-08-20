@@ -10,6 +10,7 @@ import win32service
 import win32event
 import servicemanager
 import socket
+import os
 import time
 import boto3,optparse
 import sys,json,signal,os,errno,uuid,threading,time,traceback
@@ -171,9 +172,9 @@ class TurbineLiteDB:
         d = dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id)
         self._sns_notification(d)
         _log.info("%s.consumer_register: %s", self.__class__, str(d))
-    def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
-        _log.info("%s.get_job_id", self.__class__)
-        return guid, jid, simId, reset
+    #def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
+    #    _log.info("%s.get_job_id", self.__class__)
+    #    return guid, jid, simId, reset
 
     def jobConsumerID(self, jid, cid=None, rc=0):
         _log.info("%s.jobConsumerID", self.__class__)
@@ -305,7 +306,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             user_name,job_desc = ret
             db.set_user_name(user_name)
             try:
-                dat = self.setup_foqus(db, user_name, job_desc)
+                dat = AppServerSvc.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
                 _log.exception("setup foqus NotImplementedError: %s", str(ex))
                 msg = traceback.format_exc()
@@ -422,148 +423,162 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
         return user_name,job_desc
 
-
-    def setup_foqus(self, db, user_name, job_desc):
+    @staticmethod
+    def setup_foqus(db, user_name, job_desc):
         """
         Move job to state setup
         Pull FOQUS nodes' simulation files from AWS S3
         ACM simulations store in TurbineLite
         """
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
-
         guid = job_desc['Id']
         jid = None
-        simId = job_desc['Simulation']
-
+        simulation_name = job_desc['Simulation']
         # Run the job
         db.add_message("consumer={0}, starting job {1}"\
             .format(db.consumer_id, jid), guid)
-
         _log.debug("setup foqus")
         db.job_change_status(job_desc, "setup")
-
-        configContent = db.get_configuration_file(simId)
-
+        configContent = db.get_configuration_file(simulation_name)
         logging.getLogger("foqus." + __name__)\
             .info("Job {0} is submitted".format(jid))
-
-        #db.jobConsumerID(guid, consumer_uuid)
-        #db.job_prepare(guid, jid, configContent)
-
-        # Load the session file
         dat = Session(useCurrentWorkingDir=True)
         dat.load(sfile, stopConsumers=True)
         dat.loadFlowsheetValues(vfile)
-
-        # dat.flowsheet.nodes.
-        s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
-        flowsheet_name = job_desc['Simulation']
-        prefix = '%s/%s' %(user_name,flowsheet_name)
-        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
-        assert 'Contents' in l, "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
         for nkey in dat.flowsheet.nodes:
-            if dat.flowsheet.nodes[nkey].turbApp is None:
-                continue
-            assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
-                'DAT Flowsheet nodes turbApp is %s' %dat.flowsheet.nodes[nkey].turbApp
-
-            node = dat.flowsheet.nodes[nkey]
-            turb_app = node.turbApp[0]
-            model_name = node.modelName
-            """ TODO:  sinter filename is incorrect:
-            Needs to be acm_sinter.json or aspenplus_sinter.json nkey should
-                match the "simulation name"
-                simulation/{foqus_simulation_name}/node/{aspen_simulation_name}/acm_sinter.json
-
-            s3 copy this from:
-                simulation/{aspen_simulation_name}
-            """
-            sinter_filename = '/'.join((user_name, flowsheet_name, nkey, '%s.json' %model_name))
-
-            s3_key_list = [i['Key'] for i in l['Contents']]
-            assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
-            simulation_name = job_desc.get('Simulation')
-
-            #sim_list = node.gr.turbConfig.getSimulationList()
-            sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
-
-            _log.info("Node Turbine Simulation Requested: (%s, %s)", turb_app, simulation_name)
-
-            if turb_app == 'ACM':
-                model_filename = '%s/%s/%s/%s.acmf' %(user_name, simulation_name,nkey, model_name)
-                assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
-            else:
-                _log.info("Turbine Application Not Implemented: '%s'", turb_app)
-                raise NotImplementedError('Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp)))
-
-            sim_d = [i for i in sim_list if i['Name'] == model_name]
-            assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %simulation_name
-            if len(sim_d) == 0:
-                sim_d = None
-            else:
-                sim_d = sim_d[0]
-
-            prefix = '%s/%s/%s/' %(user_name,job_desc['Simulation'],nkey)
-            entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
-            sinter_local_filename = None
-            update_required = False
-            for entry in entry_list:
-                _log.debug("ENTRY: %s", entry)
-                key = entry['Key']
-                etag = entry.get('ETag', "").strip('"')
-                file_name = key.split('/')[-1]
-                file_path = os.path.join(CURRENT_JOB_DIR, file_name)
-                # Upload to TurbineLite
-                # if ends with json or acmf
-                si_metadata = []
-                if key.endswith('.json'):
-                    _log.debug('CONFIGURATION FILE')
-                    sinter_local_filename = file_path
-                    if sim_d:
-                        si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration']
-                elif key.endswith('.acmf'):
-                    _log.debug('ACMF FILE')
-                    if sim_d:
-                        si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile']
-                else:
-                    raise NotImplementedError('Not allowing File "%s" to be staged in' %key)
-
-                assert len(si_metadata) < 2, 'Turbine Error:  Too many entries for "%s", "%s"' %(simulation_name, file_name)
-
-                # NOTE: Multipart uploads have different ETags ( end with -2  or something )
-                #     THus the has comparison will fail
-                #     FOr now ignore it, but fixing this check is performance optimization.
-                #
-                if len(si_metadata) == 1:
-                    file_hash = si_metadata[0]['MD5Sum']
-                    if file_hash.lower() != etag.lower():
-                        _log.debug("Compare %s:  %s != %s" %(file_name, etag, file_hash))
-                        _log.debug('s3 download(%s): %s' %(CURRENT_JOB_DIR, key))
-                        s3.download_file(bucket_name, key, file_path)
-                        update_required = True
-                    else:
-                        _log.debug("MATCH")
-                        s3.download_file(bucket_name, key, file_path)
-                else:
-                    _log.debug("Add to Turbine Simulation(%s) File: %s" %(simulation_name, file_name))
-                    s3.download_file(bucket_name, key, file_path)
-                    update_required = True
-
-            assert sinter_local_filename is not None, 'missing sinter configuration file'
-
-            if model_name not in [i['Name'] for i in sim_list]:
-                _log.debug('Adding Simulation "%s"' %model_name)
-                node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
-            elif update_required:
-                # NOTE: Requires the configuration file on update, so must download_file it above...
-                _log.debug('Updating Simulation "%s"' %model_name)
-                node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
-            else:
-                _log.debug('No Update Required for Simulation "%s"' %model_name)
-
+            if dat.flowsheet.nodes[nkey].turbApp is not None:
+                AppServerSvc._setup_flowsheet_turbine_node(dat, nkey,
+                    user_name=user_name)
         return dat
+
+    @staticmethod
+    def _setup_flowsheet_turbine_node(dat, nkey, user_name):
+        """ TODO:  sinter filename is incorrect:
+        Needs to be acm_sinter.json or aspenplus_sinter.json nkey should
+            match the "simulation name"
+            simulation/{foqus_simulation_name}/node/{node_name}/simulation/{simulation_name}/[aspenplus,acm]_sinter.json
+
+        s3 copy this from:
+            {username}/{simulation_name}
+
+        test/zzfoqus_BFB_opt/BFB/BFB_sinter_config_v6.json
+
+        """
+        assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
+            'DAT Flowsheet nodes turbApp is %s' %dat.flowsheet.nodes[nkey].turbApp
+
+        node = dat.flowsheet.nodes[nkey]
+        turb_app = node.turbApp[0]
+        model_name = node.modelName
+        assert turb_app is not None
+        turb_app = turb_app.lower()
+        assert turb_app in ['acm', 'aspenplus'], 'unknown turbine application "%s"' %turb_app
+
+        """ Search S3 Bucket for node simulation
+        """
+        s3 = boto3.client('s3', region_name='us-east-1')
+        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
+        prefix = '%s/%s' %(user_name,model_name)
+        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
+        assert 'Contents' in l, 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' %(nkey, bucket_name, prefix)
+        key_sinter_filename = None
+        key_model_filename = None
+        s3_key_list = [i['Key'] for i in l['Contents']]
+        _log.debug('Node model %s staged-input files %s' %(model_name, s3_key_list))
+        for k in s3_key_list:
+            if k.endswith('/%s_sinter.json' %turb_app):
+                key_sinter_filename = k
+            elif turb_app == 'acm' and k.endswith('.acmf'):
+                assert key_model_filename is None, 'detected multiple model files'
+                key_model_filename = k
+            elif turb_app == 'aspenplus' and k.endswith('.bkp'):
+                assert key_model_filename is None, 'detected multiple model files'
+                key_model_filename = k
+
+        assert key_sinter_filename is not None, 'Flowsheet node=%s simulation=%s sinter configuration not in %s' %(nkey, model_name, str(s3_key_list))
+        assert key_model_filename is not None, 'Flowsheet node=%s simulation=%s model file not in %s' %(nkey, model_name, str(s3_key_list))
+
+        """ search TurbineLite WS for node simulation
+        """
+        sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
+        sim_d = [i for i in sim_list if i['Name'] == model_name]
+        assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %model_name
+        if len(sim_d) == 0:
+            sim_d = None
+        else:
+            log.debug("Found simulation=%s in TurbineLite" %model_name)
+            sim_d = sim_d[0]
+
+        """ upload all staged-inputs to TurbineLite if new or updated in
+        s3://{bucketname}/{username}/{simulation}
+        """
+        entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
+        update_required = False
+        target_dir = os.path.join(CURRENT_JOB_DIR, model_name)
+        os.mkdirs(target_dir, exist_ok=True)
+        sinter_local_filename = None
+        for entry in entry_list:
+            _log.debug("s3 staged input: %s", entry)
+            key = entry['Key']
+            etag = entry.get('ETag', "").strip('"')
+            # Upload to TurbineLite
+            # if ends with json or acmf
+            si_metadata = []
+            target_file_path = None
+            assert key.startswith(prefix)
+            if key == key_sinter_filename:
+                assert key_sinter_filename == '/'.join(prefix, key_sinter_filename.split('/')[-1]), \
+                    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                target_file_path = os.path.join(target_dir, key_sinter_filename.split('/')[-1])
+                sinter_local_filename = target_file_path
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration']
+            elif key == key_model_filename:
+                assert key_model_filename == '/'.join(prefix, key_model_filename.split('/')[-1]), \
+                    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                target_file_path = os.path.join(target_dir, key.split('/')[-1])
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile']
+            else:
+                args = [ i for i in key[len(prefix):].split('/') if i ]
+                args.insert(0, target_dir)
+                target_file_path = os.path.join(*args)
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == key.split('/')[-1]]
+
+            _log.debug('model="%s" key="%s" staged-in file="%s"' %(model_name, key, target_file_path))
+            assert len(si_metadata) < 2, 'Turbine Error:  Duplicate entries for "%s", "%s"' %(model_name, key)
+
+            """
+            # NOTE: Multipart uploads have different ETags ( end with -2  or something )
+            #     Thus the has comparison will fail
+            #     FOr now ignore it, but fixing this check is performance optimization.
+            #
+            """"
+            if len(si_metadata) == 1:
+                file_hash = si_metadata[0]['MD5Sum']
+                if file_hash.lower() != etag.lower():
+                    _log.debug('Updated detected(hash "%s" != "%s"):  s3.getObject "%s"' %(etag,file_hash,key))
+                    s3.download_file(bucket_name, key, target_file_path)
+                    update_required = True
+                else:
+                    _log.debug('md5 matches for staged-in file "%s"' %key)
+            else:
+                _log.debug('Add to Turbine Simulation(%s) s3.getObject: "%s"' %(model_name, file_name))
+                s3.download_file(bucket_name, key, target_file_path)
+                update_required = True
+
+        assert sinter_local_filename is not None, 'missing sinter configuration file'
+
+        if model_name not in [i['Name'] for i in sim_list]:
+            _log.debug('Adding Simulation "%s"' %model_name)
+            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
+        elif update_required:
+            # NOTE: Requires the configuration file on update, so must download_file it above...
+            _log.debug('Updating Simulation "%s"' %model_name)
+            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
+        else:
+            _log.debug('No Update Required for Simulation "%s"' %model_name)
+
+
 
     def run_foqus(self, db, dat, job_desc):
         """ Run FOQUS Flowsheet in thread

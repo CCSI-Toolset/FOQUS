@@ -716,6 +716,13 @@ class Graph(threading.Thread):
                         logging.getLogger("foqus." + __name__).debug(
                             "Job {0} ignore it must be a failed job that got resubmitted".format(job['Id']))
                         continue
+
+                    assert 'State' in job, 'Missing State Field in Job %s Record' %i
+                    if job['State'] == 'error':
+                        logging.getLogger("foqus." + __name__).error(
+                            "Job(%s) Error: {0}", i,
+                            job.get('Message', 'No Error Message Provided'))
+
                     jobRes = job.get('Output', None)
                     if jobRes is None:
                         jobErr = -3

@@ -181,12 +181,15 @@ class TurbineLiteDB:
         _log.info("%s.get_configuration_file", self.__class__)
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         _log.info("%s.job_prepare", self.__class__)
-    def job_change_status(self, job_d, status, rc=0):
+    def job_change_status(self, job_d, status, rc=0, message=None):
         assert type(job_d) is dict
         _log.info("%s.job_change_status %s", self.__class__, job_d)
-        self._sns_notification(dict(resource='job', event='status',
-            rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid, consumer=self.consumer_id,
-            sessionid=job_d.get('sessionid','unknown')))
+        d = dict(resource='job', event='status',
+            rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid,
+            consumer=self.consumer_id,
+            sessionid=job_d.get('sessionid','unknown'))
+        if message: d['Message'] = message
+        self._sns_notification(d)
     def job_save_output(self, job_d, workingDir, rc=0):
         assert type(job_d) is dict
         _log.info("%s.job_save_output", self.__class__)
@@ -288,8 +291,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
                 _log.exception("verify foqus exception: %s", str(ex))
-                db.job_change_status(job_desc, "error")
-                db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 continue
             except Exception as ex:
@@ -304,20 +308,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
                 _log.exception("setup foqus NotImplementedError: %s", str(ex))
-                db.job_change_status(job_desc, "error")
-                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
             except urllib.error.URLError as ex:
                 _log.exception("setup foqus URLError: %s", str(ex))
-                db.job_change_status(job_desc, "error")
-                db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup URLError", job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
             except Exception as ex:
+                # TODO:
                 _log.exception("setup foqus exception: %s", str(ex))
-                db.job_change_status(job_desc, "error")
-                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
             else:
@@ -375,7 +383,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         for key in ['Id', 'Input', 'Simulation']:
             if job_desc.get(key) is None:
                 raise FOQUSJobException("Job Description Missing Key %s" %key, job_desc, user_name)
-            
+
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         with open(vfile,'w') as fd:
             json.dump(dict(input=job_desc['Input']), fd)
@@ -401,10 +409,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
             raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
-        
+
         _log.debug("KEYS: " + str(foqus_keys))
         session_key = '%s/%s/session.foqus' %(user_name, simulation_name)
-        idx = foqus_keys.index(session_key)            
+        idx = foqus_keys.index(session_key)
         _log.info("S3: Download Key %s", session_key)
         s3.download_file(bucket_name, session_key, sfile)
 
@@ -464,11 +472,20 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             node = dat.flowsheet.nodes[nkey]
             turb_app = node.turbApp[0]
             model_name = node.modelName
+            """ TODO:  sinter filename is incorrect:
+            Needs to be acm_sinter.json or aspenplus_sinter.json nkey should
+                match the "simulation name"
+                simulation/{foqus_simulation_name}/node/{aspen_simulation_name}/acm_sinter.json
+
+            s3 copy this from:
+                simulation/{aspen_simulation_name}
+            """
             sinter_filename = '/'.join((user_name, flowsheet_name, nkey, '%s.json' %model_name))
 
             s3_key_list = [i['Key'] for i in l['Contents']]
             assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
             simulation_name = job_desc.get('Simulation')
+
             #sim_list = node.gr.turbConfig.getSimulationList()
             sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
 
@@ -568,7 +585,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             status = db.consumer_status()
             if status == 'terminate' or self._stop:
                 terminate = True
-                db.job_change_status(job_desc, "error")
+                db.job_change_status(job_desc, "error", message="terminate flowsheet: status=%s stop=%s" %(status, self._stop))
                 gt.terminate()
                 break
 
@@ -600,7 +617,8 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 "consumer={0}, job {1} finished, success"\
                     .format(db.consumer_id, jid), guid)
         else:
-            db.job_change_status(job_desc, "error")
+            db.job_change_status(job_desc, "error",
+                message="Flowsheet errorStat: %s" %dat.flowsheet.errorStat)
             db.add_message(
                 "consumer={0}, job {1} finished, error"\
                     .format(db.consumer_id, jid), guid)

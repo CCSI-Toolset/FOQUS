@@ -720,7 +720,7 @@ class Graph(threading.Thread):
                     assert 'State' in job, 'Missing State Field in Job %s Record' %i
                     if job['State'] == 'error':
                         logging.getLogger("foqus." + __name__).error(
-                            "Job(%s) Error: {0}", i,
+                            "Job(%s) Error: %s, i,
                             job.get('Message', 'No Error Message Provided'))
 
                     jobRes = job.get('Output', None)

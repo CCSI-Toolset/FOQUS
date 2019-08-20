@@ -126,20 +126,21 @@ exports.handler = function(event, context, callback) {
           Bucket: s3_bucket_name,
           Key: null
         };
+        log(`listObjects length: ${data.Contents.length}`);
         for (var index = 0; index < data.Contents.length; ++index) {
             var k = data.Contents[index].Key;
             if (k.endsWith("/session.foqus")) {
               var a = k.split('/');
               a.pop();
-              log("FILE: " + k);
+              log("Session Foqus file: " + k);
               if (a.pop() != sim_name) continue;
               params.Key = data.Contents[index].Key;
               break;
             }
-            if (k.endsWith("-sinter.json")) {
+            if (k.endsWith("_sinter.json")) {
               var a = k.split('/');
               a.pop();
-              log("FILE: " + k);
+              log("Sinter Configuration File Name: " + k);
               if (a.pop() != sim_name) continue;
               params.Key = data.Contents[index].Key;
               break;
@@ -159,7 +160,7 @@ exports.handler = function(event, context, callback) {
         }
       }
       callback(null, {statusCode:'404', body: "input file not found",
-        headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
+        headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'text/plain'}
       });
     });
   }

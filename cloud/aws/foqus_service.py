@@ -188,7 +188,7 @@ class TurbineLiteDB:
             rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid,
             consumer=self.consumer_id,
             sessionid=job_d.get('sessionid','unknown'))
-        if message: d['Message'] = message
+        if message: d['message'] = message
         self._sns_notification(d)
     def job_save_output(self, job_d, workingDir, rc=0):
         assert type(job_d) is dict

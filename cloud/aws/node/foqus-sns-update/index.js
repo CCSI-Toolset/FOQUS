@@ -27,7 +27,7 @@ const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 //
 var process_job_event = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    log('process_job_event(user= ' + user_name + '): '+ JSON.stringify(message));
+    log('process_job_event(username= ' + user_name + ')');
     const s3 = new AWS.S3();
     const e = message['event'];
     const status = message['status'];
@@ -35,6 +35,8 @@ var process_job_event = function(ts, user_name, message, callback) {
     const msecs = Date.parse(ts);
     const consumer = message['consumer'];
     const session = message['sessionid']
+    const error_message = message['message'];
+
     var params = {
         TableName:tablename,
         Key:{
@@ -104,7 +106,10 @@ var process_job_event = function(ts, user_name, message, callback) {
               delete response.Item.output;
               delete response.Item.SessionId;
               response.Item.State = status;
-
+              if (status == 'error') {
+                log("error: " + error_message);
+                response.Item.Message = error_message;
+              }
               var content = JSON.stringify(response.Item)
               log("put3s: " + content);
               if(content == undefined) {
@@ -243,7 +248,6 @@ exports.handler = function(event, context, callback) {
     const attrs = event.Records[0].Sns.MessageAttributes;
     const ts = event.Records[0].Sns.Timestamp;
     log('Received event:', event.Records[0].Sns.Message);
-    log('Received event:', event.Records[0].Sns.MessageAttributes.username.Value);
     if (util.isArray(message) == false) {
         message.resource = "job";
         message.event = "submit"

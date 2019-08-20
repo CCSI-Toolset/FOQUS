@@ -1373,6 +1373,9 @@ class TurbineConfiguration():
         # upload model file
         try:
             if modelFile != None:
+                if resourceType == 'aspenfile':
+                    resourceType = modelFile.split('/')[-1]
+                    _log.debug('resourceType aspenfile specified as %s' %resourceType)
                 turbine.commands.turbine_simulation_script.main_update(
                     ["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:

@@ -84,6 +84,13 @@ exports.handler = function(event, context, callback) {
             });
         return;
       }
+      if (key == 'aspenfile') {
+        log("aspenfile resource unsupported, PUT as filename directly");
+        callback(null, {statusCode:'406', body:'aspenfile resource unsupported, PUT as filename directly',
+              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+            });
+        return;
+      }
       params.Expires = 120;
       params.Key = `${user_name}/${name}/${key}`;
       //params.ContentType = 'application/json';

@@ -319,7 +319,10 @@ class TurbineConfiguration():
             _log.error("no consumer for app = {0}".format(app))
             return None
             _log.debug("  Exe: {0}".format(f))
-        proc = subprocess.Popen([f], stdout=None, stderr=None, stdin=None,
+            
+        sinter_process_log = open('%s_sinter_log.txt' %app, 'a')
+        sinter_process_log.write('starting consumer\n')
+        proc = subprocess.Popen([f], stdout=sinter_process_log, stderr=subprocess.STDOUT, stdin=None,
                                 creationflags=win32process.CREATE_NO_WINDOW)
         if proc is None:
             raise TurbineInterfaceEx(code = 151)
@@ -331,6 +334,7 @@ class TurbineConfiguration():
             time.sleep(2)
             cid = db.consumer_id(proc.pid)
             if cid is not None:
+                
                 break
         if cid is not None:
             self.consumers[nodeName] = ConsumerInfo(cid, 0, proc)
@@ -1298,6 +1302,7 @@ class TurbineConfiguration():
         simName,
         sinterConfigPath,
         update=True,
+        guid=None,
         otherResources = []):
         '''
             This function uploads a new simulation to Turbine.  The name
@@ -1307,6 +1312,8 @@ class TurbineConfiguration():
             update == True files for an existing model will be updated.
             If update is false and model exist return a model already
             exists error.
+
+            guid -- optional value to set Simulation.Id 
         '''
         # Check that the simulation name only contains:
         # letters, numbers, and _
@@ -1351,9 +1358,12 @@ class TurbineConfiguration():
                 " already exists and the update flag is not set to true"]
         # Create a new model if needed
         elif not exists:
+            args = [name, app, self.getFile()]
+            if guid:
+                args = ["-s", guid, name, app, self.getFile()]
             try:
                 turbine.commands.turbine_simulation_script.\
-                    main_create([name, app, self.getFile()])
+                    main_create(args)
             except Exception as e:
                 raise TurbineInterfaceEx(
                     code = 0,

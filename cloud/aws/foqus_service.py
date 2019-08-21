@@ -454,15 +454,12 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
 
     @staticmethod
     def _setup_flowsheet_turbine_node(dat, nkey, user_name):
-        """ TODO:  sinter filename is incorrect:
-        Needs to be acm_sinter.json or aspenplus_sinter.json nkey should
-            match the "simulation name"
-            simulation/{foqus_simulation_name}/node/{node_name}/simulation/{simulation_name}/[aspenplus,acm]_sinter.json
+        """ From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
+        Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
+        
+        The a new simulation_guid is created for all file updates to TurbineWS, so this is sidestepping that process.
 
-        s3 copy this from:
-            {username}/{simulation_name}
-
-        test/zzfoqus_BFB_opt/BFB/BFB_sinter_config_v6.json
+        TODO: Provide a simulation_id via S3 ( eg.  {simulation_name}/Id )
 
         """
         assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
@@ -503,20 +500,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         """
         sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
         sim_d = [i for i in sim_list if i['Name'] == model_name]
+        cache_sim_guid = None
         assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %model_name
         if len(sim_d) == 0:
             sim_d = None
+            cache_sim_guid = str(uuid.uuid4())
         else:
-            log.debug("Found simulation=%s in TurbineLite" %model_name)
+            _log.debug("Found simulation=%s in TurbineLite" %model_name)
             sim_d = sim_d[0]
+            cache_sim_guid = sim_d['Id']
 
         """ upload all staged-inputs to TurbineLite if new or updated in
         s3://{bucketname}/{username}/{simulation}
         """
         entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
         update_required = False
-        target_dir = os.path.join(CURRENT_JOB_DIR, model_name)
-        os.mkdirs(target_dir, exist_ok=True)
+        #target_dir = os.path.join(CURRENT_JOB_DIR, model_name)
+        target_dir = os.path.join(WORKING_DIRECTORY, 'test', cache_sim_guid)
+        os.makedirs(target_dir, exist_ok=True)
         sinter_local_filename = None
         for entry in entry_list:
             _log.debug("s3 staged input: %s", entry)
@@ -528,31 +529,30 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             target_file_path = None
             assert key.startswith(prefix)
             if key == key_sinter_filename:
-                assert key_sinter_filename == '/'.join(prefix, key_sinter_filename.split('/')[-1]), \
-                    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
-                target_file_path = os.path.join(target_dir, key_sinter_filename.split('/')[-1])
+                #assert key_sinter_filename == '/'.join(prefix, key_sinter_filename.split('/')[-1]), \
+                #    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                target_file_path = os.path.join(target_dir, "sinter_configuration.txt")
                 sinter_local_filename = target_file_path
                 if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration']
+                s3.download_file(bucket_name, key, target_file_path)
             elif key == key_model_filename:
-                assert key_model_filename == '/'.join(prefix, key_model_filename.split('/')[-1]), \
-                    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                #assert key_model_filename == '/'.join(prefix, key_model_filename.split('/')[-1]), \
+                #    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
                 target_file_path = os.path.join(target_dir, key.split('/')[-1])
                 if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile']
+                s3.download_file(bucket_name, key, target_file_path)
             else:
                 args = [ i for i in key[len(prefix):].split('/') if i ]
                 args.insert(0, target_dir)
                 target_file_path = os.path.join(*args)
                 if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == key.split('/')[-1]]
+                s3.download_file(bucket_name, key, target_file_path)
 
             _log.debug('model="%s" key="%s" staged-in file="%s"' %(model_name, key, target_file_path))
             assert len(si_metadata) < 2, 'Turbine Error:  Duplicate entries for "%s", "%s"' %(model_name, key)
-
-            """
-            # NOTE: Multipart uploads have different ETags ( end with -2  or something )
-            #     Thus the has comparison will fail
-            #     FOr now ignore it, but fixing this check is performance optimization.
-            #
-            """"
+            """NOTE: Multipart uploads have different ETags ( end with -2  or something )
+            Thus the has comparison will fail.  For now ignore it, but fixing this check is performance optimization.
+    
             if len(si_metadata) == 1:
                 file_hash = si_metadata[0]['MD5Sum']
                 if file_hash.lower() != etag.lower():
@@ -562,22 +562,27 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 else:
                     _log.debug('md5 matches for staged-in file "%s"' %key)
             else:
-                _log.debug('Add to Turbine Simulation(%s) s3.getObject: "%s"' %(model_name, file_name))
+                _log.debug('Add to Turbine Simulation(%s) s3.getObject: "%s"' %(model_name, key))
                 s3.download_file(bucket_name, key, target_file_path)
                 update_required = True
+            """
+            
 
         assert sinter_local_filename is not None, 'missing sinter configuration file'
 
-        if model_name not in [i['Name'] for i in sim_list]:
+        if sim_d is None:
             _log.debug('Adding Simulation "%s"' %model_name)
-            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
+            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, guid=cache_sim_guid, update=False)
+        """
         elif update_required:
             # NOTE: Requires the configuration file on update, so must download_file it above...
             _log.debug('Updating Simulation "%s"' %model_name)
             node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
+            _log.debug(
         else:
             _log.debug('No Update Required for Simulation "%s"' %model_name)
 
+        """
 
 
     def run_foqus(self, db, dat, job_desc):

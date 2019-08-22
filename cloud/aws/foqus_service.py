@@ -393,7 +393,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         _log.info('Simulation Bucket: ' + bucket_name)
         s3 = boto3.client('s3', region_name='us-east-1')
         simulation_name = job_desc['Simulation']
-        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s' %(user_name, simulation_name))
+        flowsheet_key = '%s/%s/session.foqus' %(user_name, simulation_name)
+
+        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s/' %(user_name, simulation_name))
         # BFB_OUU_MultVar_04.09.2018.foqus
         if 'Contents' not in l:
             _log.error("S3 Simulation:  No keys match %s/%s" %(user_name, simulation_name))
@@ -405,17 +407,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,simulation_name))
             raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
-
-        if len(foqus_keys) != 2:
+        if len(foqus_keys) > 2:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
             raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
 
-        _log.debug("KEYS: " + str(foqus_keys))
-        session_key = '%s/%s/session.foqus' %(user_name, simulation_name)
-        idx = foqus_keys.index(session_key)
-        _log.info("S3: Download Key %s", session_key)
-        s3.download_file(bucket_name, session_key, sfile)
+        if flowsheet_key not in foqus_keys:
+            _log.error("S3 Simulations:  Missing flowsheet key  %s" %str(foqus_keys))
+            raise FOQUSJobException("S3 Bucket Missing flowsheet key : %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+
+        if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
+            _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
+            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+
+        idx = foqus_keys.index(flowsheet_key)
+        _log.info("S3: Download Key %s", flowsheet_key)
+        s3.download_file(bucket_name, flowsheet_key, sfile)
 
         # WRITE CURRENT JOB TO FILE
         with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
@@ -456,7 +465,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
     def _setup_flowsheet_turbine_node(dat, nkey, user_name):
         """ From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
         Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
-        
+
         The a new simulation_guid is created for all file updates to TurbineWS, so this is sidestepping that process.
 
         TODO: Provide a simulation_id via S3 ( eg.  {simulation_name}/Id )
@@ -552,7 +561,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             assert len(si_metadata) < 2, 'Turbine Error:  Duplicate entries for "%s", "%s"' %(model_name, key)
             """NOTE: Multipart uploads have different ETags ( end with -2  or something )
             Thus the has comparison will fail.  For now ignore it, but fixing this check is performance optimization.
-    
+
             if len(si_metadata) == 1:
                 file_hash = si_metadata[0]['MD5Sum']
                 if file_hash.lower() != etag.lower():
@@ -566,7 +575,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 s3.download_file(bucket_name, key, target_file_path)
                 update_required = True
             """
-            
+
 
         assert sinter_local_filename is not None, 'missing sinter configuration file'
 

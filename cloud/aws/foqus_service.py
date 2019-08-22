@@ -486,7 +486,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         """
         s3 = boto3.client('s3', region_name='us-east-1')
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
-        prefix = '%s/%s' %(user_name,model_name)
+        prefix = '%s/%s/' %(user_name,model_name)
         l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
         assert 'Contents' in l, 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' %(nkey, bucket_name, prefix)
         key_sinter_filename = None
@@ -513,10 +513,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         cache_sim_guid = None
         assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %model_name
         if len(sim_d) == 0:
+            _log.debug('No simulation="%s" in TurbineLite' %model_name)
             sim_d = None
             cache_sim_guid = str(uuid.uuid4())
         else:
-            _log.debug("Found simulation=%s in TurbineLite" %model_name)
+            _log.debug('Found simulation="%s" in TurbineLite' %model_name)
             sim_d = sim_d[0]
             cache_sim_guid = sim_d['Id']
 
@@ -581,7 +582,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         assert sinter_local_filename is not None, 'missing sinter configuration file'
 
         if sim_d is None:
-            _log.debug('Adding Simulation "%s"' %model_name)
+            _log.debug('Adding Simulation "%s" "%s"' %(model_name,cache_sim_guid))
             node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, guid=cache_sim_guid, update=False)
         """
         elif update_required:

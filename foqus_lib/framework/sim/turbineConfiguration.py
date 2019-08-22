@@ -1360,7 +1360,7 @@ class TurbineConfiguration():
         elif not exists:
             args = [name, app, self.getFile()]
             if guid:
-                args = ["-s", guid, name, app, self.getFile()]
+                args = ["-s", name, guid, app, self.getFile()]
             try:
                 turbine.commands.turbine_simulation_script.\
                     main_create(args)

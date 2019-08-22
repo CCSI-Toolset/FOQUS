@@ -122,13 +122,13 @@ class TurbineLiteDB:
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
-        _log.debug('hi0: %s' %obj)
+        _log.debug('_sns_notification obj: %s' %obj)
         resource = obj.get('resource', 'unknown')
         status = obj.get('status', 'unknown')
         if resource == 'consumer':
             status = obj.get('event', 'unknown')
         event = '%s.%s' %(resource,status)
-        _log.debug('hi1: %s' %event)
+        _log.debug('_sns_notification event: %s' %event)
         attrs = dict(event=dict(DataType='String', StringValue=event),
                      username=dict(DataType='String', StringValue=self._user_name))
         _log.debug('MessageAttributes: %s' %attrs)
@@ -288,7 +288,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             ret = None
             _log.debug("pop job")
             try:
-                ret = self.pop_job(VisibilityTimeout=VisibilityTimeout)
+                ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
                 _log.exception("verify foqus exception: %s", str(ex))
@@ -345,7 +345,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             ReceiptHandle=self._receipt_handle
         )
 
-    def pop_job(self, VisibilityTimeout=300):
+    def pop_job(self, db, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
 
         SQS Job Body Contain Job description, for example:
@@ -379,6 +379,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
         user_name = body['MessageAttributes'].get('username').get('Value')
         _log.info('username: ' + user_name)
+        db.set_user_name(user_name)
         job_desc = json.loads(body['Message'])
         _log.info('Job Description: ' + body['Message'])
         for key in ['Id', 'Input', 'Simulation']:

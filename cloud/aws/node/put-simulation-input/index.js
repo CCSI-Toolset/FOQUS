@@ -137,6 +137,17 @@ exports.handler = function(event, context, callback) {
           return;
         }
       }
+      else if (obj.filetype == "sinterconfig" && obj["filetype-version"] == "0.3") {
+        if (obj.model.file.endsWith('.acmf') && obj.application.name == "Aspen Custom Modeler")
+          params.Key = user_name + "/" + name + "/acm_sinter.json";
+        else if (obj.model.file.endsWith('.bkp'))
+          params.Key = user_name + "/" + name + "/aspenplus_sinter.json";
+        else {
+          log(event.body);
+          done(new Error(`Inspection sinter config v0.3 failed to identify configuration file type`));
+          return;
+        }
+      }
       else if (obj.filetype == "FOQUS_Session" || obj.Type == "FOQUS_Session") {
         params.Key = user_name + "/" + name + "/session.foqus";
       }

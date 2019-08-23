@@ -3,6 +3,7 @@ from datetime import datetime
 import configparser
 
 from foqus_lib.framework.sdoe import sdoe
+from foqus_lib.framework.sdoe import order
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
@@ -212,6 +213,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.type == 'USF':
             combo.model().item(2).setEnabled(False)
             combo.model().item(3).setEnabled(False)
+        else:
+            combo.model().item(2).setEnabled(False)
         combo.currentTextChanged.connect(self.on_combobox_changed)
 
         # Min column
@@ -410,8 +413,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         numIter = (max_size + 1) - min_size
         for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
-            mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, nd)
-            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
+            mode, design_size, num_restarts, elapsed_time, outfiles, best_val = sdoe.run(config_file, nd)
+            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfiles, config_file, best_val])
             self.analysisTableGroup.setEnabled(True)
             self.loadAnalysisButton.setEnabled(False)
             self.orderAnalysisButton.setEnabled(False)
@@ -614,12 +617,17 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def editSdoe(self):
         sender = self.sender()
         row = sender.property('row')
-        fullName = self.analysis[row][4]
+        fullName = self.analysis[row][4]['cand']
         dirname, filename = os.path.split(fullName)
-        if self.historyData is None:
+        config_file = self.analysis[row][5]
+        config = configparser.ConfigParser(allow_no_value=True)
+        config.read(config_file)
+        hfile = config['INPUT']['history_file']
+
+        if hfile == '':
             hname = None
         else:
-            hname = os.path.join(self.dname, self.historyData.getModelName())
+            hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         dialog = sdoePreview(sdoeData, hname, dirname, self)
         dialog.show()
@@ -720,9 +728,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 ##TO DO: THIS IS A PLACEHOLDER, ADD TOWFIQ'S REORDERING CODE TO SDOE.PY AND FIND OUT HOW THEY WANT THE NEW DESIGN (ANALYSIS TABLE OR SAVED AS A .CSV FILE)
     def orderDesign(self):
         row = self.analysisTable.selectedIndexes()[0].row()
-        outfile = self.analysis[row][4]
-        newDesign = sdoe.order(outfile)
-        return newDesign
+        outfiles = self.analysis[row][4]
+        order.rank(outfiles)
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

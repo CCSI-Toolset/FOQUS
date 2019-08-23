@@ -48,20 +48,22 @@ def run(config_file, nd, test=False):
     # do a quick test to get an idea of runtime
     if test:
         nr = 200 # number of random starts for testing, set to a small number
-        best_val, cand_rand, rand_index = criterion(cand, include, scl, nr, nd, mode=mode, hist=hist)
+        best_cand, best_index, best_val, best_dmat = criterion(cand, include, scl, nr, nd, mode=mode, hist=hist)
         elapsed_time = time.time() - t0
         return elapsed_time
 
     # if not testing, run sdoe for real...
-    best_val, cand_rand, rand_index = criterion(cand, include, scl, nr, nd, mode=mode, hist=hist)
+    best_cand, best_index, best_val, best_dmat = criterion(cand, include, scl, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output
-    fname = os.path.join(outdir, 'candidates_d{}_n{}_{}.csv'.format(nd, nr, '+'.join(include)))
-    write(fname, cand_rand)
+    fnames = {'cand': os.path.join(outdir, 'candidates_d{}_n{}_{}.csv'.format(nd, nr, '+'.join(include))),
+             'dmat': os.path.join(outdir, 'distmat_d{}_n{}_{}.npy'.format(nd, nr, '+'.join(include)))}
+    write(fnames['cand'], best_cand)
+    np.save(fnames['dmat'], best_dmat)
     print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, best_val, elapsed_time)))
 
-    return mode, nd, nr, elapsed_time, fname, best_val
+    return mode, nd, nr, elapsed_time, fnames, best_val
 
 
 def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
@@ -118,7 +120,6 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
         A = axes.flat
 
         for i in range(nshow):
-
             for j in range(i):
                 # ... delete the unused (lower-triangular) axes
                 k = sb_indices[i][j]

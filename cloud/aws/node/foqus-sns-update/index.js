@@ -199,11 +199,11 @@ var process_consumer_event = function(ts, message, callback) {
     var consumer = message['consumer'];
     var msecs = Date.parse(ts);
     var instance_id = message['instanceid'];
-    var update_expr = "set " + e + " = :s";
-    var expr_attr_vals = {":s":ts};
+    var update_expr = "set " + e + " = :s, #t=:t";;
+    var expr_attr_vals = {":s":ts, ":t":Math.floor(Date.now()/1000 + 60*60*1)};
     if (instance_id != NaN) {
-      update_expr = "set " + e + " =:s, instance=:i";
-      expr_attr_vals = {":s":ts, ":i":instance_id};
+      update_expr = "set " + e + " =:s, instance=:i, #t=:t";
+      expr_attr_vals[":i"] = instance_id;
     } else {
       instance_id = "None";
     }
@@ -218,6 +218,9 @@ var process_consumer_event = function(ts, message, callback) {
         //ExpressionAttributeNames:{
         //    "#t":"Type"
         //},
+        ExpressionAttributeNames:{
+            "#t":"TTL"
+        },
         ReturnValues:"UPDATED_NEW"
     };
     log("consumer(msecs=" + msecs + ") event=" + e);

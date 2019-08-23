@@ -590,29 +590,29 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         estimateTime = int(delta * (10 ** int(self.sampleSize_spin.value())) * \
                        int(self.maxDesignSize_spin.value()-self.minDesignSize_spin.value()+1))
         if estimateTime < 60:
-            self.time_dynamic.setText(f"{estimateTime:02d} seconds")
+            self.time_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:
-            self.time_dynamic.setText(f"{int(estimateTime/60):02d}:{estimateTime%60:02d}")
+            self.time_dynamic.setText(f"{int(estimateTime/60):2d}:{estimateTime%60:02d}")
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
             timeMin = int((estimateTime - (timeHr*3600))/60)
             timeSec = (estimateTime - (timeHr*3600))%60
-            self.time_dynamic.setText(f"{timeHr:02d}:{timeMin:02d}:{timeSec:02d}")
+            self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def updateRunTimeNUSF(self, runtime):
         delta = runtime/200
         estimateTime = int(delta * (int(self.sampleSizeNUSF_spin.value())))
         if estimateTime < 60:
-            self.timeNUSF_dynamic.setText(f"{estimateTime:02d} seconds")
+            self.timeNUSF_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:
-            self.timeNUSF_dynamic.setText(f"{int(estimateTime/60):02d}:{estimateTime%60:02d}")
+            self.timeNUSF_dynamic.setText(f"{int(estimateTime/60):2d}:{estimateTime%60:02d}")
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
             timeMin = int((estimateTime - (timeHr*3600))/60)
             timeSec = (estimateTime - (timeHr*3600))%60
-            self.timeNUSF_dynamic.setText(f"{timeHr:02d}:{timeMin:02d}:{timeSec:02d}")
+            self.timeNUSF_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def editSdoe(self):
         sender = self.sender()

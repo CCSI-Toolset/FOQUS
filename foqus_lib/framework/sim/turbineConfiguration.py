@@ -9,6 +9,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
+import os.path
 import configparser
 import json
 import re
@@ -319,7 +320,7 @@ class TurbineConfiguration():
             _log.error("no consumer for app = {0}".format(app))
             return None
             _log.debug("  Exe: {0}".format(f))
-            
+
         sinter_process_log = open('%s_sinter_log.txt' %app, 'a')
         sinter_process_log.write('starting consumer\n')
         proc = subprocess.Popen([f], stdout=sinter_process_log, stderr=subprocess.STDOUT, stdin=None,
@@ -334,7 +335,7 @@ class TurbineConfiguration():
             time.sleep(2)
             cid = db.consumer_id(proc.pid)
             if cid is not None:
-                
+
                 break
         if cid is not None:
             self.consumers[nodeName] = ConsumerInfo(cid, 0, proc)
@@ -1313,7 +1314,7 @@ class TurbineConfiguration():
             If update is false and model exist return a model already
             exists error.
 
-            guid -- optional value to set Simulation.Id 
+            guid -- optional value to set Simulation.Id
         '''
         # Check that the simulation name only contains:
         # letters, numbers, and _
@@ -1384,7 +1385,7 @@ class TurbineConfiguration():
         try:
             if modelFile != None:
                 if resourceType == 'aspenfile':
-                    resourceType = modelFile.split('/')[-1]
+                    resourceType = os.path.split(modelFile)[-1]
                     _log.debug('resourceType aspenfile specified as %s' %resourceType)
                 turbine.commands.turbine_simulation_script.main_update(
                     ["-r", resourceType, name, modelFile, self.getFile()])

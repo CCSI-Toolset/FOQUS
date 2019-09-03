@@ -54,7 +54,7 @@ step is to define the objective function and constraints using the form
 under the **Objective/Constraints** tab as shown in Figure
 :ref:`tut.opt.problem.obj`.
 
-.. figure:: ../figs/optProblemObj.svg
+.. figure:: ../figs/Tutorial_Optimization_Objective.jpg
    :alt: Optimization Problem Objective
    :name: tut.opt.problem.obj
 

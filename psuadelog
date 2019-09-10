@@ -1,0 +1,32 @@
+**********************************************************************
+*      Welcome to PSUADE (version 1.7.12)
+**********************************************************************
+PSUADE - A Problem Solving environment for 
+         Uncertainty Analysis and Design Exploration (1.7.12a)
+(for help, enter <help>)
+======================================================================
+psuade> load complete : nSamples = 500
+                nInputs  = 4
+                nOutputs = 2
+psuade> Enter output number (1 - 2) : No transformation (e.g. log) on sample inputs nor outputs.
+
+**********************************************************************
+*             Basic Output Statistics
+======================================================================
+* nSamples =        500
+* nGroups  =          1
+* nInputs  =          4
+* nOutputs =          2
+----------------------------------------------------------------------
+* outputID =          2
+*       Sample mean          =   8.0416e+05
+*       Sample std dev       =   5.3374e+05
+*       Sample skewness      =   7.2897e-01
+*       Sample kurtosis      =   2.9824e+00
+----------------------------------------------------------------------
+**********************************************************************
+Output distribution plot is now in matlabua.m.
+**********************************************************************
+*       std error of mean       =   2.38693652e+04
+**********************************************************************
+psuade> psuade terminates ...

@@ -638,11 +638,10 @@ class SampleData(object):
         maxs = self.getInputMaxs()
         defaults = self.getInputDefaults()
         distributions = self.getInputDistributions()
-        if not distributions or len(distributions) == 0:
+        if distributions is None:
             self.setInputDistributions([Distribution.UNIFORM] * self.getNumInputs())
             distributions = self.getInputDistributions()
             self.setInputDistributions([])
-
         fixedIndex = 1;
         variableIndex = 1;
         for name, minimum, maximum, inType, dist, default in zip(names, mins, maxs, types, distributions, defaults):

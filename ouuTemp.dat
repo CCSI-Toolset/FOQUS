@@ -1,0 +1,40 @@
+PSUADE_IO (Note : inputs not true inputs if pdf ~=U)
+5 1 0
+PSUADE_IO
+PSUADE
+INPUT
+   num_fixed 1
+   dimension = 5
+   variable 1 Rosenbrock.x1  =  -1.0000000000000000e+01   1.0000000000000000e+01
+   variable 2 Rosenbrock.x2  =  -1.0000000000000000e+01   1.0000000000000000e+01
+   variable 3 Rosenbrock.x3  =  -1.0000000000000000e+01   1.0000000000000000e+01
+   variable 4 Rosenbrock.x4  =  -1.0000000000000000e+01   1.0000000000000000e+01
+   variable 5 Rosenbrock.x5  =  -1.0000000000000000e+01   1.0000000000000000e+01
+   fixed 1 Rosenbrock.x6 =   4.0000000000000000e+00
+END
+OUTPUT
+   dimension = 1
+   variable 1 Rosenbrock.f
+END
+METHOD
+   num_samples = 0
+   num_replications = 1
+   num_refinements = 0
+   refinement_size = 10000000
+   reference_num_refinements = 0
+END
+APPLICATION
+   driver = NONE
+   opt_driver = NONE
+   ensemble_opt_driver = NONE
+   aux_opt_driver = NONE
+   max_job_wait_time = 1000000
+   save_frequency = 1
+END
+ANALYSIS
+   analyzer output_id  = 1
+   analyzer rstype = MARS
+   analyzer threshold = 1.000000e+00
+   diagnostics 1
+END
+END

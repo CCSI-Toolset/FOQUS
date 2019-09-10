@@ -1,0 +1,27 @@
+""" version.py
+
+* This just contains some version and legal info for FOQUS
+
+"""
+import argparse, sys
+
+version = "2.6.0.rc2.dev41+g141cde8"
+copyright =  \
+"""Foqus was produced under the DOE Carbon Capture Simulation Initiative (CCSI),
+and is copyright (c) 2012 - 2019 by the software owners: Oak Ridge Institute for
+Science and Education (ORISE), TRIAD National Security, LLC., Lawrence Livermore
+National Security, LLC., The Regents of the University of California, through
+Lawrence Berkeley National Laboratory, Battelle Memorial Institute, Pacific
+Northwest Division through Pacific Northwest National Laboratory, Carnegie
+Mellon University, West Virginia University, Boston University, the Trustees of
+Princeton University, The University of Texas at Austin, URS Energy &
+Construction, Inc., et al..  All rights reserved."""
+license =  "BSD 3-Clause Variant (See LICENSE.md details)"
+author = "CCSI FOQUS Team"
+support = "ccsi-support@acceleratecarboncapture.org"
+webpage = "http://www.acceleratecarboncapture.org/"
+maintainer = "CCSI FOQUS Team"
+maintainer_email = "ccsi-support@acceleratecarboncapture.org"
+description = ("FOQUS tool for simulation based optimization,"
+              " uncertainty quantification, and surrogate modeling")
+name = "foqus"

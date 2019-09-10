@@ -1,0 +1,26 @@
+PSUADE
+INPUT
+   dimension = 4
+   variable 1 Rosenbrock.x2 = -1.000000e+01 1.000000e+01
+   variable 2 Rosenbrock.x3 = -1.000000e+01 1.000000e+01
+   variable 3 Rosenbrock.x4 = -1.000000e+01 1.000000e+01
+   variable 4 Rosenbrock.x5 = -1.000000e+01 1.000000e+01
+END
+OUTPUT
+   dimension = 2
+   variable 1 graph.error
+   variable 2 Rosenbrock.f
+END
+METHOD
+   sampling = MC
+   num_samples = 500
+   randomize
+END
+APPLICATION
+   driver = NONE
+   save_frequency = 1
+END
+ANALYSIS
+   diagnostics 2
+END
+END

@@ -41,8 +41,6 @@ exports.handler = function(event, context, callback) {
     return;
   }
   const user_name = event.requestContext.authorizer.principalId;
-
-
   if (event.httpMethod == "PUT" ) {
     var array = event.path.split('/');
     var item = array.pop();
@@ -78,12 +76,28 @@ exports.handler = function(event, context, callback) {
       Bucket: s3_bucket_name,
     };
 
-    if (event.body == null) {
-      params.Expires = 300;
-      params.Key = user_name + "/" + name + "/" + key;
+    if (event.queryStringParameters && event.queryStringParameters.SignedUrl) {
+      if (key == "configuration") {
+        log("queryStringParameters SignedUrl: unsupported for configuration files");
+        callback(null, {statusCode:'406', body:'SignedUrl unsupported for configuration files',
+              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+            });
+        return;
+      }
+      if (key == 'aspenfile') {
+        log("aspenfile resource unsupported, PUT as filename directly");
+        callback(null, {statusCode:'406', body:'aspenfile resource unsupported, PUT as filename directly',
+              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+            });
+        return;
+      }
+      params.Expires = 120;
+      params.Key = `${user_name}/${name}/${key}`;
+      //params.ContentType = 'application/json';
       log("Body is null, return HTTP 302 with S3 Signed URL for Large Files");
       var s3 = new AWS.S3();
       var url = s3.getSignedUrl('putObject', params);
+      log("S3 SignedURL: " + url);
       //var obj = {"SignedUrl":url};
       callback(null, {statusCode:'302',
             headers: {'Access-Control-Allow-Origin': '*',
@@ -123,7 +137,18 @@ exports.handler = function(event, context, callback) {
           return;
         }
       }
-      else if (obj.filetype == "FOQUS_Session") {
+      else if (obj.filetype == "sinterconfig" && obj["filetype-version"] == "0.3") {
+        if (obj.model.file.endsWith('.acmf') && obj.application.name == "Aspen Custom Modeler")
+          params.Key = user_name + "/" + name + "/acm_sinter.json";
+        else if (obj.model.file.endsWith('.bkp'))
+          params.Key = user_name + "/" + name + "/aspenplus_sinter.json";
+        else {
+          log(event.body);
+          done(new Error(`Inspection sinter config v0.3 failed to identify configuration file type`));
+          return;
+        }
+      }
+      else if (obj.filetype == "FOQUS_Session" || obj.Type == "FOQUS_Session") {
         params.Key = user_name + "/" + name + "/session.foqus";
       }
       else {

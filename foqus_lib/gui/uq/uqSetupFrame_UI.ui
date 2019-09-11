@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>617</height>
+    <width>2011</width>
+    <height>1589</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -46,6 +46,65 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout" name="gridLayout_14">
+      <item row="0" column="1" rowspan="2">
+       <widget class="QGroupBox" name="infoGroupBox">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="title">
+         <string>Ensemble Info</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_7">
+         <item row="0" column="0">
+          <widget class="QTableWidget" name="infoTable">
+           <property name="minimumSize">
+            <size>
+             <width>1000</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <attribute name="horizontalHeaderVisible">
+            <bool>false</bool>
+           </attribute>
+           <row>
+            <property name="text">
+             <string># Inputs</string>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string># Outputs</string>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string>Sample Design</string>
+            </property>
+           </row>
+           <row>
+            <property name="text">
+             <string>Sample Size</string>
+            </property>
+           </row>
+           <column>
+            <property name="text">
+             <string>Info</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
       <item row="0" column="0">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
@@ -126,59 +185,6 @@ saved as a PSUADE file.</string>
         </item>
        </layout>
       </item>
-      <item row="0" column="1" rowspan="2">
-       <widget class="QGroupBox" name="infoGroupBox">
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="title">
-         <string>Ensemble Info</string>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_7">
-         <item row="0" column="0">
-          <widget class="QTableWidget" name="infoTable">
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <attribute name="horizontalHeaderVisible">
-            <bool>false</bool>
-           </attribute>
-           <row>
-            <property name="text">
-             <string># Inputs</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string># Outputs</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>Sample Design</string>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>Sample Size</string>
-            </property>
-           </row>
-           <column>
-            <property name="text">
-             <string>Info</string>
-            </property>
-           </column>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
       <item row="2" column="0" colspan="2">
        <widget class="QDockWidget" name="dockWidget">
         <property name="features">
@@ -190,8 +196,8 @@ saved as a PSUADE file.</string>
            <widget class="QTabWidget" name="dataTabs">
             <property name="sizeHint" stdset="0">
              <size>
-              <width>745</width>
-              <height>282</height>
+              <width>1801</width>
+              <height>392</height>
              </size>
             </property>
             <property name="currentIndex">
@@ -259,6 +265,12 @@ Changes Permanent</string>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="1" column="0">
                <widget class="QFrame" name="filterFrame">
+                <property name="minimumSize">
+                 <size>
+                  <width>1000</width>
+                  <height>0</height>
+                 </size>
+                </property>
                 <property name="frameShape">
                  <enum>QFrame::StyledPanel</enum>
                 </property>

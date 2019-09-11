@@ -53,7 +53,8 @@ exports.handler = function(event, context, callback) {
     var app = body.Application;
     if (app != null) app = app.toLowerCase();
     if (app == "foqus") {
-      config_filename = name + ".foqus";
+      //config_filename = name + ".foqus";
+      config_filename = "session.foqus";
     } else if (app == "acm") {
       config_filename = "acm_sinter.json";
     } else if (app == "aspenplus") {

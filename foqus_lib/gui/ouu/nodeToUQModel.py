@@ -15,6 +15,7 @@ def nodeToUQModel(name, node):
     val     = []  # Current value of inputs in the node
     min     = []  # minimums for inputs
     max     = []  # maximums for inputs
+    dist    = []  # distributions for inputs
     default = []  # defaults for inputs
     for key in keys:  # key is input variable name, make lists
         #if node.inVars[key].uqVar:
@@ -24,12 +25,14 @@ def nodeToUQModel(name, node):
         val.append( node.inVars[key].value )
         min.append( node.inVars[key].min )
         max.append( node.inVars[key].max )
+        dist.append( node.inVars[key].dist )
         default.append( node.inVars[key].default )
     # Set input values
     uqModel.setInputNames( ['%s.%s' % (name, key) for key in keys] )
     uqModel.setInputTypes( typ )
     uqModel.setInputMins( min )
     uqModel.setInputMaxs( max )
+    uqModel.setInputDistributions( dist )
     uqModel.setInputDefaults( default )
     # Set output names and set all outputs as selected
     keys = list(node.outVars.keys())

@@ -57,7 +57,7 @@ exports.handler = function(event, context, callback) {
   if (event.httpMethod == "POST") {
     log("PATH: " + event.path)
     //var body = JSON.parse(event);
-    var session_id = event.path.split('/')[2];
+    const session_id = event.path.split('/')[2];
     log("SESSIONID: " + session_id);
     log("SESSION BUCKET_NAME: " + s3_bucket_name);
     var params = {
@@ -130,6 +130,7 @@ exports.handler = function(event, context, callback) {
                         obj[index].resource = 'job'
                         obj[index].status = 'submit'
                         obj[index].jobid = obj[index].Id
+                        obj[index].sessionid = session_id
                         obj[index].consumer = '00000000-0000-0000-0000-000000000000';
                         var payload = JSON.stringify(obj[index]);
                         log("Payload: " + payload);
@@ -140,6 +141,10 @@ exports.handler = function(event, context, callback) {
                                 DataType: 'String',
                                 StringValue: 'job.submit'
                               },
+                              'username': {
+                                DataType: 'String',
+                                StringValue: user_name
+                              }
                             },
                             TopicArn: topicArn
                         };

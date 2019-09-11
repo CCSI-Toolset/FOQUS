@@ -1,0 +1,17 @@
+{
+"body":"{\"Description\":\"Test\"}",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "path": "/simulation/test_simulation/input/test1.json",
+  "queryStringParameters": {
+    "verbose": true,
+    "method": "putObject"
+  },
+  "requestContext": {
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
+}

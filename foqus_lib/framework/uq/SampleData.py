@@ -638,7 +638,7 @@ class SampleData(object):
         maxs = self.getInputMaxs()
         defaults = self.getInputDefaults()
         distributions = self.getInputDistributions()
-        if not distributions or len(distributions) == 0:
+        if distributions is None:
             self.setInputDistributions([Distribution.UNIFORM] * self.getNumInputs())
             distributions = self.getInputDistributions()
             self.setInputDistributions([])

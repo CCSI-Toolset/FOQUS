@@ -40,22 +40,22 @@ jobs:
           key: v1-dependencies-{{ checksum "requirements.txt" }}
       
       - run:
-        name: Install FOQUS
-        command: |
-          python3 setup.py -q install
+          name: Install FOQUS
+          command: |
+            python3 setup.py -q install
 
       - run:
-        name: Setup testing env
-        command: |
-          pip install -q pytest
-          pip install -q coverage
+          name: Setup testing env
+          command: |
+            pip install -q pytest
+            pip install -q coverage
 
       - run:
-        name: Run Tests
-        command: |
-          coverage run -m pytest
-          coverage report
-          coverage html  # Generate html report
+          name: Run Tests
+          command: |
+            coverage run -m pytest
+            coverage report
+            coverage html  # Generate html report
 
       - store_artifacts:
           path: htmlcov

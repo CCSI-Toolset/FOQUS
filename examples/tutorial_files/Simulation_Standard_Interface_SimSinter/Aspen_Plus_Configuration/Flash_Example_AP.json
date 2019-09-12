@@ -1,0 +1,155 @@
+{
+  "title": "Flash_Example_AP",
+  "config-version": "0.1",
+  "description": "Simple ethanol/water flash calculation",
+  "model": {
+    "file": "Flash_Example.bkp",
+    "DigestValue": "86616c9999ea0504e3d937e5c9dfa0f8e037aab0",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "John Eslick",
+  "date": "Aug 2012",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Plus",
+    "version": "30.0",
+    "constraint": "AT-LEAST"
+  },
+  "inputs": {
+    "feed.T": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Feed temperature (F)",
+      "units": "degF",
+      "min": 80.0,
+      "max": 120.0
+    },
+    "feed.P": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\PRES\\MIXED"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "Feed pressure (psia)",
+      "units": "psia",
+      "min": 40.0,
+      "max": 60.0
+    },
+    "feed.F": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 48.7488,
+      "description": "Feed flow rate (lbmol/hr)",
+      "units": "lbmol/hr",
+      "min": 39.0,
+      "max": 58.68
+    },
+    "feed.etOH.molefrac": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\FLOW\\MIXED\\ETHANOL"
+      ],
+      "type": "double",
+      "default": 0.08905,
+      "description": "Feed ethanol mole fraction (lbmol/lbmol)",
+      "units": null,
+      "min": 0.07124,
+      "max": 0.10686
+    },
+    "feed.H2O.molefrac": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\FLOW\\MIXED\\WATER"
+      ],
+      "type": "double",
+      "default": 0.91095,
+      "description": "Feed water mole fraction (lbmol/lbmol)",
+      "units": null,
+      "min": 0.72876,
+      "max": 1.09314
+    },
+    "flash.T": {
+      "path": [
+        "\\Data\\Blocks\\FLASH\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 150.0,
+      "description": "Flash block temperature (F)",
+      "units": "degF",
+      "min": 120.0,
+      "max": 180.0
+    },
+    "flash.P": {
+      "path": [
+        "\\Data\\Blocks\\FLASH\\Input\\PRES"
+      ],
+      "type": "double",
+      "default": 20.0,
+      "description": "Flash block pressure (psia)",
+      "units": "psia",
+      "min": 16.0,
+      "max": 24.0
+    }
+  },
+  "outputs": {
+    "vapor.F": {
+      "path": [
+        "\\Data\\Streams\\VAPOR\\Output\\STR_MAIN\\MOLEFLMX\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor stream flow (lbmol/hr)",
+      "units": "lbmol/hr"
+    },
+    "vapor.etOH.molefrac": {
+      "path": [
+        "\\Data\\Streams\\VAPOR\\Output\\STR_MAIN\\MOLEFRAC\\MIXED\\ETHANOL"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor ethanol mass fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "vapor.H2O.molefrac": {
+      "path": [
+        "\\Data\\Streams\\VAPOR\\Output\\STR_MAIN\\MOLEFRAC\\MIXED\\WATER"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Vapor water mass fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "liquid.F": {
+      "path": [
+        "\\Data\\Streams\\LIQUID\\Output\\STR_MAIN\\MOLEFLMX\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid stream flow (lbmol/hr)",
+      "units": "lbmol/hr"
+    },
+    "liquid.etOH.molefrac": {
+      "path": [
+        "\\Data\\Streams\\LIQUID\\Output\\STR_MAIN\\MOLEFRAC\\MIXED\\ETHANOL"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid ethanol mass fraction (lbmol/lbmol)",
+      "units": null
+    },
+    "liquid.CO2.molefrac": {
+      "path": [
+        "\\Data\\Streams\\LIQUID\\Output\\STR_MAIN\\MOLEFRAC\\MIXED\\WATER"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Liquid water mass fraction (lbmol/lbmol)",
+      "units": null
+    }
+  }
+}

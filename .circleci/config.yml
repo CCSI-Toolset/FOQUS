@@ -56,7 +56,7 @@ jobs:
           name: Run Tests
           command: |
             . venv/bin/activate
-            coverage run -m pytest
+            coverage run -m pytest foqus_lib
             coverage report
             coverage html  # Generate html report
 

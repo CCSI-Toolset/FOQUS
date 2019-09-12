@@ -42,17 +42,20 @@ jobs:
       - run:
           name: Install FOQUS
           command: |
+            . venv/bin/activate
             python3 setup.py -q install
 
       - run:
           name: Setup testing env
           command: |
+            . venv/bin/activate
             pip install -q pytest
             pip install -q coverage
 
       - run:
           name: Run Tests
           command: |
+            . venv/bin/activate
             coverage run -m pytest
             coverage report
             coverage html  # Generate html report

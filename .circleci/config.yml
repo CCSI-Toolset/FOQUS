@@ -57,7 +57,7 @@ jobs:
           command: |
             . venv/bin/activate
             coverage run -m pytest
-            coverage report --include=foqus_lib/*
+            coverage report --omit=*site-packages*
             coverage html  # Generate html report
 
       - store_artifacts:

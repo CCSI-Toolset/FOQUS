@@ -51,6 +51,8 @@ jobs:
           command: |
             . venv/bin/activate
             pytest
+            mkdir gui_testing
+            foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
 
       - store_artifacts:
           path: test-reports

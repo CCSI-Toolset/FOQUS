@@ -1,0 +1,125 @@
+{
+  "title": "exceltest",
+  "config-version": "0.5",
+  "description": "A simple test for Excel Sinter.  It calculates BMI.",
+  "model": {
+    "file": "exceltest.xlsm",
+    "DigestValue": "b559ffb87d9a122578a550e45de5e06e13e59c3a",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "Jim Leek",
+  "date": "2012-05-04",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Excel",
+    "version": "14.0",
+    "constraint": "ANY"
+  },
+  "settings": {
+    "macro": {
+      "type": "string",
+      "default": "RunSinter",
+      "description": "The name of the macro to run"
+    }
+  },
+  "inputs": {
+    "height.jim": {
+      "path": [
+        "height$C$2"
+      ],
+      "type": "double",
+      "default": 74.0,
+      "description": "Jim's Height in inches",
+      "units": null,
+      "min": 70.0,
+      "max": 78.0
+    },
+    "weight.jim": {
+      "path": [
+        "weight$C$2",
+        "weight$F$6"
+      ],
+      "type": "double",
+      "default": 167.0,
+      "description": "Jim's Weight in pounds",
+      "units": null,
+      "min": 160.0,
+      "max": 170.0
+    },
+    "height.joe": {
+      "path": [
+        "height$C$3"
+      ],
+      "type": "double",
+      "default": 24.0,
+      "description": "Joe's Height in inches",
+      "units": null,
+      "min": 20.0,
+      "max": 30.0
+    },
+    "weight.joe": {
+      "path": [
+        "weight$C$3"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Joe's Weight in pounds",
+      "units": null,
+      "min": 80.0,
+      "max": 200.0
+    },
+    "height.mama": {
+      "path": [
+        "height$C$4"
+      ],
+      "type": "double",
+      "default": 63.0,
+      "description": "Yo Mama's Height in inches",
+      "units": null,
+      "min": 60.0,
+      "max": 70.0
+    },
+    "weight.mama": {
+      "path": [
+        "weight$C$4"
+      ],
+      "type": "double",
+      "default": 200.0,
+      "description": "Yo Mama's Weight in pounds",
+      "units": null,
+      "min": 160.0,
+      "max": 240.0
+    }
+  },
+  "outputs": {
+    "BMI.jim": {
+      "path": [
+        "BMI$C$2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Jim's BMI",
+      "units": null
+    },
+    "BMI.joe": {
+      "path": [
+        "BMI$C$3"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Joe's BMI",
+      "units": null
+    },
+    "BMI.mama": {
+      "path": [
+        "BMI$C$4"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Yo Mama's BMI",
+      "units": null
+    }
+  }
+}

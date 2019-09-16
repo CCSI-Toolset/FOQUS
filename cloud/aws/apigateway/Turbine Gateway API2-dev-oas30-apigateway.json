@@ -1289,6 +1289,7 @@
         "in": "header",
         "x-amazon-apigateway-authtype": "custom",
         "x-amazon-apigateway-authorizer": {
+          "authorizerCredentials": "AWS_IAM_ROLE_CREDENTIALS",
           "authorizerUri": "arn:aws:apigateway:us-east-1:lambda:path/2015-03-31/functions/arn:aws:lambda:us-east-1:AWS_ACCOUNT_ID:function:http-basic-authorizer-development/invocations",
           "authorizerResultTtlInSeconds": 3000,
           "identitySource": "method.request.header.Authorization",

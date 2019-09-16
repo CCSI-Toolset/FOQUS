@@ -44,13 +44,13 @@ Open an Anaconda-5.0.* terminal and install base packages.
 % pip install git+https://github.com/CCSI-Toolset/foqus@master
 ```
 #### Install TurbineLite and dependencies
-1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876) 
-2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi) 
+1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876)
+2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi)
 3. Install [TurbineLite.msi](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2.0.0/TurbineLite.msi)
 4. Install AspenTech v8.4
 ```
 After installing Aspen you will need to configure the license server
-Next run AspenTech/ACM and decline to register the product (otherwise it will hang indefinitely). 
+Next run AspenTech/ACM and decline to register the product (otherwise it will hang indefinitely).
 ```
 
 #### Install FOQUS Windows Service
@@ -82,6 +82,11 @@ Service installed
 ```
 PS C:\Users\Administrator> setx /M PATH "$($env:path);C:\ProgramData\Anaconda2\python27.zip;C:\ProgramData\Anaconda2\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda2\lib\plat-win;C:\ProgramData\Anaconda2\lib\lib-tk;C:\ProgramData\Anaconda2;C:\ProgramData\Anaconda2\lib\site-packages;C:\ProgramData\Anaconda2\lib\site-packages\Babel-2.5.0-py2.7.egg;C:\ProgramData\Anaconda2\lib\site-packages\win32;C:\ProgramData\Anaconda2\lib\site-packages\win32\lib;C:\ProgramData\Anaconda2\lib\site-packages\Pythonwin"
 
+Anaconda3/python3
+## NOTE WORK IN PROGRESS: get all the way to a TurbineLiteDB.__init__ boto3.sns.create_topic call which dies from IAM permissions
+C:\ProgramData\Anaconda3\Library\bin;C:\ProgramData\Anaconda3\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\lib\site-packages;C:\ProgramData\Anaconda3\lib\site-packages\win32;C:\ProgramData\Anaconda3\lib\site-packages\win32\lib;C:\ProgramData\Anaconda3\lib\site-packages\Pythonwin
+
+
 WARNING: The data being saved is truncated to 1024 characters.
 
 SUCCESS: Specified value was saved.
@@ -93,7 +98,7 @@ control panel/system and security/system/advanced system settings/environment va
 ```
 ## Testing
 
-## Reference: AWS Resources 
+## Reference: AWS Resources
 ### SQS
 ```
 FOQUS-Job-Queue
@@ -133,4 +138,3 @@ foqus-simulations
 TurbineUsers
 FOQUS_Resources
 ```
-

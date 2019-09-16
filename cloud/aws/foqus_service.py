@@ -10,11 +10,12 @@ import win32service
 import win32event
 import servicemanager
 import socket
+import os
 import time
 import boto3,optparse
 import sys,json,signal,os,errno,uuid,threading,time,traceback
 from os.path import expanduser
-import urllib2
+import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
 from turbine.commands import turbine_simulation_script
 import logging
@@ -22,16 +23,54 @@ import logging.config
 
 _instanceid = None
 WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
-#WORKING_DIRECTORY = os.path.join("\\Users\\Administrator\\Desktop\\FOQUS_SERVER")
 
 DEBUG = False
 CURRENT_JOB_DIR = None
 #try: os.makedirs(WORKING_DIRECTORY)
 #except OSError as e:
 #    if e.errno != errno.EEXIST: raise
-#logging.basicConfig(filename='C:\Users\Administrator\FOQUS-Cloud-Service.log',level=logging.INFO)
+#logging.basicConfig(filename="C:\\Users\\Administrator\\FOQUS-Cloud-Service.log",level=logging.DEBUG)
 _log = None
+"""
+$($env:path);C:\ProgramData\Anaconda3\python27.zip;
+C:\ProgramData\Anaconda3\lib\plat-win;
+C:\ProgramData\Anaconda3\lib\lib-tk;
+C:\ProgramData\Anaconda3\Library\bin;C:\ProgramData\Anaconda3\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\lib\site-packages;C:\ProgramData\Anaconda3\lib\site-packages\win32;C:\ProgramData\Anaconda3\lib\site-packages\win32\lib;C:\ProgramData\Anaconda3\lib\site-packages\Pythonwin
+"""
 
+
+class FOQUSJobException(Exception):
+    """ Custom Exception for holding onto the job description and user name """
+    def __init__(self, message, job_desc, user_name):
+        super().__init__(message)
+        self.job_desc = job_desc
+        self.user_name = user_name
+
+
+class FOQUSAWSConfig:
+    """
+    {"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
+     "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
+     "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
+     "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460"
+    }
+    """
+    _inst = None
+    @classmethod
+    def get_instance(cls):
+        if cls._inst is not None: return cls._inst
+        request = urllib.request.urlopen('http://169.254.169.254/latest/user-data')
+        cls.inst = cls()
+        cls.inst._d = json.load(request)
+        return cls.inst
+    def get_update_topic_arn(self):
+        return self._d.get("FOQUS-Update-Topic-Arn")
+    def get_message_topic_arn(self):
+        return self._d.get("FOQUS-Message-Topic-Arn")
+    def get_job_queue_url(self):
+        return self._d.get("FOQUS-Job-Queue-Url")
+    def get_simulation_bucket_name(self):
+        return self._d.get("FOQUS-Simulation-Bucket-Name")
 
 def _set_working_dir():
     global _log
@@ -42,11 +81,12 @@ def _set_working_dir():
             raise
     os.chdir(WORKING_DIRECTORY)
     logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
-    _log = logging.getLogger()
+    _log = logging.getLogger('foqus_service')
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
 
     logging.getLogger('boto3').setLevel(logging.ERROR)
-
+    logging.getLogger('botocore').setLevel(logging.ERROR)
+    logging.getLogger('urllib3').setLevel(logging.ERROR)
 _set_working_dir()
 _log.debug('Loading')
 
@@ -76,17 +116,30 @@ class TurbineLiteDB:
     """
     def __init__(self, close_after=True):
         self._sns = boto3.client('sns', region_name='us-east-1')
-        topic = self._sns.create_topic(Name='FOQUS-Update-Topic')
-        topic_messages = self._sns.create_topic(Name='FOQUS-Message-Topic')
-        self._topic_arn = topic['TopicArn']
-        self._topic_msg_arn = topic_messages['TopicArn']
+        self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
+        self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
+        self._user_name = 'unknown'
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
-        self._sns.publish(Message=json.dumps([obj]), TopicArn=self._topic_arn)
+        _log.debug('_sns_notification obj: %s' %obj)
+        resource = obj.get('resource', 'unknown')
+        status = obj.get('status', 'unknown')
+        if resource == 'consumer':
+            status = obj.get('event', 'unknown')
+        event = '%s.%s' %(resource,status)
+        _log.debug('_sns_notification event: %s' %event)
+        attrs = dict(event=dict(DataType='String', StringValue=event),
+                     username=dict(DataType='String', StringValue=self._user_name))
+        _log.debug('MessageAttributes: %s' %attrs)
+        self._sns.publish(Message=json.dumps([obj]),
+                          MessageAttributes=attrs,
+                          TopicArn=self._topic_arn)
 
     def __del__(self):
         _log.info("%s.delete", self.__class__)
+    def set_user_name(self, name):
+        self._user_name = name
     def connectionString(self):
         _log.info("%s.connectionString", self.__class__)
     def getConnection(self, rc=0):
@@ -95,8 +148,8 @@ class TurbineLiteDB:
         _log.info("%s.closeConnection", self.__class__)
     def add_new_application(self, applicationName, rc=0):
         _log.info("%s.add_new_application", self.__class__)
-    def add_message(self, msg, jobid, **kw):
-        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid)
+    def add_message(self, msg, jobid="", **kw):
+        d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid, resource="job")
         d.update(kw)
         obj = json.dumps(d)
         _log.debug("%s.add_message: %s", self.__class__, obj)
@@ -104,7 +157,7 @@ class TurbineLiteDB:
 
     def consumer_keepalive(self, rc=0):
         _log.info("%s.consumer_keepalive", self.__class__)
-        self._sns_notification(dict(resource='consumer', event='running', rc=rc, 
+        self._sns_notification(dict(resource='consumer', event='running', rc=rc,
             consumer=self.consumer_id, instanceid=_instanceid))
 
     def consumer_status(self):
@@ -116,11 +169,12 @@ class TurbineLiteDB:
         _log.info("%s.consumer_id", self.__class__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__)
-        self._sns_notification(dict(resource='consumer', instanceid=_instanceid,
-                                    event='running', rc=rc, consumer=self.consumer_id))
-    def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
-        _log.info("%s.get_job_id", self.__class__)
-        return guid, jid, simId, reset
+        d = dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id)
+        self._sns_notification(d)
+        _log.info("%s.consumer_register: %s", self.__class__, str(d))
+    #def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
+    #    _log.info("%s.get_job_id", self.__class__)
+    #    return guid, jid, simId, reset
 
     def jobConsumerID(self, jid, cid=None, rc=0):
         _log.info("%s.jobConsumerID", self.__class__)
@@ -128,18 +182,25 @@ class TurbineLiteDB:
         _log.info("%s.get_configuration_file", self.__class__)
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
         _log.info("%s.job_prepare", self.__class__)
-    def job_change_status(self, jobGuid, status, rc=0):
-        _log.info("%s.job_change_status %s", self.__class__, status)
-        self._sns_notification(dict(resource='job', event='status',
-            rc=rc, status=status, jobid=jobGuid, instanceid=_instanceid, consumer=self.consumer_id))
-    def job_save_output(self, jobGuid, workingDir, rc=0):
+    def job_change_status(self, job_d, status, rc=0, message=None):
+        assert type(job_d) is dict
+        _log.info("%s.job_change_status %s", self.__class__, job_d)
+        d = dict(resource='job', event='status',
+            rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid,
+            consumer=self.consumer_id,
+            sessionid=job_d.get('sessionid','unknown'))
+        if message: d['message'] = message
+        self._sns_notification(d)
+    def job_save_output(self, job_d, workingDir, rc=0):
+        assert type(job_d) is dict
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
         scrub_empty_string_values_for_dynamo(output)
         _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
         self._sns_notification(dict(resource='job',
-            event='output', jobid=jobGuid, value=output, rc=rc))
+            event='output', jobid=job_d['Id'], username=self._user_name, value=output, rc=rc,
+            sessionid=job_d.get('sessionid','unknown')))
 
 def scrub_empty_string_values_for_dynamo(db):
     """ DynamoDB throws expection if there is an empty string in dict
@@ -147,8 +208,8 @@ def scrub_empty_string_values_for_dynamo(db):
     One or more parameter values were invalid: An AttributeValue may not contain an empty string for key :o
     """
     if type(db) is not dict: return
-    for k,v in db.items():
-        if v in  ("",u""): db[k] = "NULL"
+    for k,v in list(db.items()):
+        if v in  ("",""): db[k] = "NULL"
         else: scrub_empty_string_values_for_dynamo(v)
 
 class _KeepAliveTimer(threading.Thread):
@@ -171,36 +232,30 @@ class _KeepAliveTimer(threading.Thread):
                 self.db.consumer_keepalive()
                 i = 0
 
-
-
-
-
 class AppServerSvc (win32serviceutil.ServiceFramework):
     _svc_name_ = "FOQUS-Cloud-Service"
     _svc_display_name_ = "FOQUS Cloud Service"
 
     def __init__(self,args):
+        _log.debug('AppServerSvc init')
         win32serviceutil.ServiceFramework.__init__(self,args)
+        _log.debug('AppServerSvc init2')
         self.hWaitStop = win32event.CreateEvent(None,0,0,None)
+        _log.debug('AppServerSvc init3')
         socket.setdefaulttimeout(60)
-        self.stop = False
-        self._receipt_handle= None
+        _log.debug('AppServerSvc init4')
+        self._stop = False
+        self._receipt_handle = None
+        _log.debug('AppServerSvc init5')
         self._sqs = boto3.client('sqs', region_name='us-east-1')
-        self._queue_url = 'https://sqs.us-east-1.amazonaws.com/754323349409/FOQUS-Job-Queue'
-
-    @property
-    def stop(self):
-        return self._stop
-
-    @stop.setter
-    def set_stop(self, value):
-        self._stop = value
+        self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
+        _log.debug('AppServerSvc init finished')
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
         _log.debug("stop called")
-        self.stop = True
+        self._stop = True
 
     def SvcDoRun(self):
         """ Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
@@ -214,35 +269,64 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         self._receipt_handle= None
         VisibilityTimeout = 60*10
         try:
-            _instanceid = urllib2.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = urllib.request.urlopen('http://169.254.169.254/latest/meta-data/instance-id').read()
+            _instanceid = _instanceid.decode('ascii')
         except:
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
+        _log.debug("kat starta")
         db.consumer_register()
+        _log.debug("kat startb")
+        db.add_message("Consumer Registered")
+        _log.debug("kat start1")
         kat = _KeepAliveTimer(db, freq=60)
+        _log.debug("kat start2")
         kat.start()
-        while not self.stop:
-            job_desc = self.pop_job(VisibilityTimeout=VisibilityTimeout)
-            if not job_desc: continue
+        _log.debug("kat start3")
+        while not self._stop:
+            ret = None
+            _log.debug("pop job")
             try:
-                dat = self.setup_foqus(db, job_desc)
-            except NotImplementedError, ex:
-                _log.exception("setup foqus NotImplementedError: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=traceback.format_exc())
+                ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
+            except FOQUSJobException as ex:
+                job_desc = ex.job_desc
+                _log.exception("verify foqus exception: %s", str(ex))
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in verify: %r" %(ex), job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
-                raise
-            except urllib2.URLError, ex:
-                _log.exception("setup foqus URLError: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job failed in setup URLError", job_desc['Id'], exception=traceback.format_exc())
-                self._delete_sqs_job()
-                raise
-            except Exception, ex:
+                continue
+            except Exception as ex:
                 _log.exception("setup foqus exception: %s", str(ex))
-                db.job_change_status(job_desc['Id'], "error")
-                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=traceback.format_exc())
+                raise
+
+            if not ret: continue
+            assert type(ret) is tuple and len(ret) == 2
+            user_name,job_desc = ret
+            db.set_user_name(user_name)
+            try:
+                dat = AppServerSvc.setup_foqus(db, user_name, job_desc)
+            except NotImplementedError as ex:
+                _log.exception("setup foqus NotImplementedError: %s", str(ex))
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=msg)
+                self._delete_sqs_job()
+                raise
+            except urllib.error.URLError as ex:
+                _log.exception("setup foqus URLError: %s", str(ex))
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup URLError", job_desc['Id'], exception=msg)
+                self._delete_sqs_job()
+                raise
+            except Exception as ex:
+                # TODO:
+                _log.exception("setup foqus exception: %s", str(ex))
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
             else:
@@ -261,7 +345,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             ReceiptHandle=self._receipt_handle
         )
 
-    def pop_job(self, VisibilityTimeout=300):
+    def pop_job(self, db, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
 
         SQS Job Body Contain Job description, for example:
@@ -292,173 +376,225 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         message = response['Messages'][0]
         self._receipt_handle = message['ReceiptHandle']
         body = json.loads(message['Body'])
+        _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
+        user_name = body['MessageAttributes'].get('username').get('Value')
+        _log.info('username: ' + user_name)
+        db.set_user_name(user_name)
         job_desc = json.loads(body['Message'])
-        _log.info('Job Desription: ' + body['Message'])
+        _log.info('Job Description: ' + body['Message'])
+        for key in ['Id', 'Input', 'Simulation']:
+            if job_desc.get(key) is None:
+                raise FOQUSJobException("Job Description Missing Key %s" %key, job_desc, user_name)
 
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         with open(vfile,'w') as fd:
             json.dump(dict(input=job_desc['Input']), fd)
 
+        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
+        _log.info('Simulation Bucket: ' + bucket_name)
         s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = 'foqus-simulations'
-        l = s3.list_objects(Bucket=bucket_name, Prefix='anonymous/%s' %job_desc['Simulation'])
+        simulation_name = job_desc['Simulation']
+        flowsheet_key = '%s/%s/session.foqus' %(user_name, simulation_name)
+
+        l = s3.list_objects(Bucket=bucket_name, Prefix='%s/%s/' %(user_name, simulation_name))
         # BFB_OUU_MultVar_04.09.2018.foqus
-        if not l.has_key('Contents'):
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s' %job_desc['Simulation'])
-            return
+        if 'Contents' not in l:
+            _log.error("S3 Simulation:  No keys match %s/%s" %(user_name, simulation_name))
+            raise FOQUSJobException("S3 Bucket %s missing key username/simulation %s/%s" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
 
-        foqus_keys = filter(lambda i: i['Key'].endswith('.foqus'), l['Contents'])
-        if len(foqus_keys) == 0:
-            _log.info("S3 Simulation:  No keys match %s" %'anonymous/%s/*.foqus' %job_desc['Simulation'])
-            return
-        if len(foqus_keys) > 1:
+        foqus_keys = [i['Key'] for i in l['Contents'] if i['Key'].endswith('.foqus')]
+        if len(foqus_keys) < 2:
+            _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,simulation_name))
+            raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+        if len(foqus_keys) > 2:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-            return
+            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
 
-        _log.info("S3: Download Key %s", foqus_keys[0])
-        s3.download_file(bucket_name, foqus_keys[0]['Key'], sfile)
+        if flowsheet_key not in foqus_keys:
+            _log.error("S3 Simulations:  Missing flowsheet key  %s" %str(foqus_keys))
+            raise FOQUSJobException("S3 Bucket Missing flowsheet key : %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+
+        if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
+            _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
+            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+                user_name, simulation_name), job_desc, user_name)
+
+        idx = foqus_keys.index(flowsheet_key)
+        _log.info("S3: Download Key %s", flowsheet_key)
+        s3.download_file(bucket_name, flowsheet_key, sfile)
 
         # WRITE CURRENT JOB TO FILE
         with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
             json.dump(job_desc, fd)
 
-        return job_desc
+        return user_name,job_desc
 
-
-    def setup_foqus(self, db, job_desc):
+    @staticmethod
+    def setup_foqus(db, user_name, job_desc):
         """
         Move job to state setup
         Pull FOQUS nodes' simulation files from AWS S3
         ACM simulations store in TurbineLite
         """
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
-
         guid = job_desc['Id']
         jid = None
-        simId = job_desc['Simulation']
-
+        simulation_name = job_desc['Simulation']
         # Run the job
         db.add_message("consumer={0}, starting job {1}"\
             .format(db.consumer_id, jid), guid)
-
         _log.debug("setup foqus")
-        db.job_change_status(guid, "setup")
-
-        configContent = db.get_configuration_file(simId)
-
+        db.job_change_status(job_desc, "setup")
+        configContent = db.get_configuration_file(simulation_name)
         logging.getLogger("foqus." + __name__)\
             .info("Job {0} is submitted".format(jid))
-
-        #db.jobConsumerID(guid, consumer_uuid)
-        #db.job_prepare(guid, jid, configContent)
-
-        # Load the session file
         dat = Session(useCurrentWorkingDir=True)
         dat.load(sfile, stopConsumers=True)
         dat.loadFlowsheetValues(vfile)
-
-        # dat.flowsheet.nodes.
-        s3 = boto3.client('s3', region_name='us-east-1')
-        bucket_name = 'foqus-simulations'
-        flowsheet_name = job_desc['Simulation']
-        username = 'anonymous'
-        prefix = '%s/%s' %(username,flowsheet_name)
-        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
-        assert l.has_key('Contents'), "S3 Simulation:  No keys match %s" %prefix
         _log.debug("Process Flowsheet nodes")
         for nkey in dat.flowsheet.nodes:
-            if dat.flowsheet.nodes[nkey].turbApp is None:
-                continue
-            assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
-                'DAT Flowsheet nodes turbApp is %s' %dat.flowsheet.nodes[nkey].turbApp
-
-            node = dat.flowsheet.nodes[nkey]
-            turb_app = node.turbApp[0]
-            model_name = node.modelName
-            #sinter_filename = 'anonymous/%s/%s/%s.json' %(job_desc['Simulation'],nkey, model_name)
-            sinter_filename = '/'.join((username, flowsheet_name, nkey, '%s.json' %model_name))
-
-            s3_key_list = map(lambda i: i['Key'] , l['Contents'])
-            assert sinter_filename in s3_key_list, 'missing sinter configuration "%s" not in %s' %(sinter_filename, str(s3_key_list))
-            simulation_name = job_desc.get('Simulation')
-            #sim_list = node.gr.turbConfig.getSimulationList()
-            sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
-
-            _log.info("Node Turbine Simulation Requested: (%s, %s)", turb_app, simulation_name)
-
-            if turb_app == 'ACM':
-                model_filename = 'anonymous/%s/%s/%s.acmf' %(simulation_name,nkey, model_name)
-                assert model_filename in s3_key_list, 'missing sinter configuration "%s"' %sinter_filename
-            else:
-                _log.info("Turbine Application Not Implemented: '%s'", turb_app)
-                raise NotImplementedError, 'Flowsheet Node model type: "%s"' %(str(dat.flowsheet.nodes[nkey].turbApp))
-
-            sim_d = filter(lambda i: i['Name'] == model_name, sim_list)
-            assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %simulation_name
-            if len(sim_d) == 0:
-                sim_d = None
-            else:
-                sim_d = sim_d[0]
-
-            prefix = 'anonymous/%s/%s/' %(job_desc['Simulation'],nkey)
-            entry_list = filter(lambda i: i['Key'] != prefix and i['Key'].startswith(prefix), l['Contents'])
-            sinter_local_filename = None
-            update_required = False
-            for entry in entry_list:
-                _log.debug("ENTRY: %s", entry)
-                key = entry['Key']
-                etag = entry.get('ETag', "").strip('"')
-                file_name = key.split('/')[-1]
-                file_path = os.path.join(CURRENT_JOB_DIR, file_name)
-                # Upload to TurbineLite
-                # if ends with json or acmf
-                si_metadata = []
-                if key.endswith('.json'):
-                    _log.debug('CONFIGURATION FILE')
-                    sinter_local_filename = file_path
-                    if sim_d:
-                        si_metadata = filter(lambda i: i['Name'] == 'configuration', sim_d["StagedInputs"])
-                elif key.endswith('.acmf'):
-                    _log.debug('ACMF FILE')
-                    if sim_d:
-                        si_metadata = filter(lambda i: i['Name'] == 'aspenfile', sim_d["StagedInputs"])
-                else:
-                    raise NotImplementedError, 'Not allowing File "%s" to be staged in' %key
-
-                assert len(si_metadata) < 2, 'Turbine Error:  Too many entries for "%s", "%s"' %(simulation_name, file_name)
-
-                # NOTE: Multipart uploads have different ETags ( end with -2  or something )
-                #     THus the has comparison will fail
-                #     FOr now ignore it, but fixing this check is performance optimization.
-                #
-                if len(si_metadata) == 1:
-                    file_hash = si_metadata[0]['MD5Sum']
-                    if file_hash.lower() != etag.lower():
-                        _log.debug("Compare %s:  %s != %s" %(file_name, etag, file_hash))
-                        _log.debug('s3 download(%s): %s' %(CURRENT_JOB_DIR, key))
-                        s3.download_file(bucket_name, key, file_path)
-                        update_required = True
-                    else:
-                        _log.debug("MATCH")
-                        s3.download_file(bucket_name, key, file_path)
-                else:
-                    _log.debug("Add to Turbine Simulation(%s) File: %s" %(simulation_name, file_name))
-                    s3.download_file(bucket_name, key, file_path)
-                    update_required = True
-
-            assert sinter_local_filename is not None, 'missing sinter configuration file'
-
-            if model_name not in map(lambda i: i['Name'], sim_list):
-                _log.debug('Adding Simulation "%s"' %model_name)
-                node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=False)
-            elif update_required:
-                # NOTE: Requires the configuration file on update, so must download_file it above...
-                _log.debug('Updating Simulation "%s"' %model_name)
-                node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
-            else:
-                _log.debug('No Update Required for Simulation "%s"' %model_name)
-
+            if dat.flowsheet.nodes[nkey].turbApp is not None:
+                AppServerSvc._setup_flowsheet_turbine_node(dat, nkey,
+                    user_name=user_name)
         return dat
+
+    @staticmethod
+    def _setup_flowsheet_turbine_node(dat, nkey, user_name):
+        """ From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
+        Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
+
+        The a new simulation_guid is created for all file updates to TurbineWS, so this is sidestepping that process.
+
+        TODO: Provide a simulation_id via S3 ( eg.  {simulation_name}/Id )
+
+        """
+        assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, \
+            'DAT Flowsheet nodes turbApp is %s' %dat.flowsheet.nodes[nkey].turbApp
+
+        node = dat.flowsheet.nodes[nkey]
+        turb_app = node.turbApp[0]
+        model_name = node.modelName
+        assert turb_app is not None
+        turb_app = turb_app.lower()
+        assert turb_app in ['acm', 'aspenplus'], 'unknown turbine application "%s"' %turb_app
+
+        """ Search S3 Bucket for node simulation
+        """
+        s3 = boto3.client('s3', region_name='us-east-1')
+        bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
+        prefix = '%s/%s/' %(user_name,model_name)
+        l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
+        assert 'Contents' in l, 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' %(nkey, bucket_name, prefix)
+        key_sinter_filename = None
+        key_model_filename = None
+        s3_key_list = [i['Key'] for i in l['Contents']]
+        _log.debug('Node model %s staged-input files %s' %(model_name, s3_key_list))
+        for k in s3_key_list:
+            if k.endswith('/%s_sinter.json' %turb_app):
+                key_sinter_filename = k
+            elif turb_app == 'acm' and k.endswith('.acmf'):
+                assert key_model_filename is None, 'detected multiple model files'
+                key_model_filename = k
+            elif turb_app == 'aspenplus' and k.endswith('.bkp'):
+                assert key_model_filename is None, 'detected multiple model files'
+                key_model_filename = k
+
+        assert key_sinter_filename is not None, 'Flowsheet node=%s simulation=%s sinter configuration not in %s' %(nkey, model_name, str(s3_key_list))
+        assert key_model_filename is not None, 'Flowsheet node=%s simulation=%s model file not in %s' %(nkey, model_name, str(s3_key_list))
+
+        """ search TurbineLite WS for node simulation
+        """
+        sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
+        sim_d = [i for i in sim_list if i['Name'] == model_name]
+        cache_sim_guid = None
+        assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %model_name
+        if len(sim_d) == 0:
+            _log.debug('No simulation="%s" in TurbineLite' %model_name)
+            sim_d = None
+            cache_sim_guid = str(uuid.uuid4())
+        else:
+            _log.debug('Found simulation="%s" in TurbineLite' %model_name)
+            sim_d = sim_d[0]
+            cache_sim_guid = sim_d['Id']
+
+        """ upload all staged-inputs to TurbineLite if new or updated in
+        s3://{bucketname}/{username}/{simulation}
+        """
+        entry_list = [i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)]
+        update_required = False
+        #target_dir = os.path.join(CURRENT_JOB_DIR, model_name)
+        target_dir = os.path.join(WORKING_DIRECTORY, 'test', cache_sim_guid)
+        os.makedirs(target_dir, exist_ok=True)
+        sinter_local_filename = None
+        for entry in entry_list:
+            _log.debug("s3 staged input: %s", entry)
+            key = entry['Key']
+            etag = entry.get('ETag', "").strip('"')
+            # Upload to TurbineLite
+            # if ends with json or acmf
+            si_metadata = []
+            target_file_path = None
+            assert key.startswith(prefix)
+            if key == key_sinter_filename:
+                #assert key_sinter_filename == '/'.join(prefix, key_sinter_filename.split('/')[-1]), \
+                #    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                target_file_path = os.path.join(target_dir, "sinter_configuration.txt")
+                sinter_local_filename = target_file_path
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration']
+                s3.download_file(bucket_name, key, target_file_path)
+            elif key == key_model_filename:
+                #assert key_model_filename == '/'.join(prefix, key_model_filename.split('/')[-1]), \
+                #    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
+                target_file_path = os.path.join(target_dir, key.split('/')[-1])
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile']
+                s3.download_file(bucket_name, key, target_file_path)
+            else:
+                args = [ i for i in key[len(prefix):].split('/') if i ]
+                args.insert(0, target_dir)
+                target_file_path = os.path.join(*args)
+                if sim_d: si_metadata = [i for i in sim_d["StagedInputs"] if i['Name'] == key.split('/')[-1]]
+                s3.download_file(bucket_name, key, target_file_path)
+
+            _log.debug('model="%s" key="%s" staged-in file="%s"' %(model_name, key, target_file_path))
+            assert len(si_metadata) < 2, 'Turbine Error:  Duplicate entries for "%s", "%s"' %(model_name, key)
+            """NOTE: Multipart uploads have different ETags ( end with -2  or something )
+            Thus the has comparison will fail.  For now ignore it, but fixing this check is performance optimization.
+
+            if len(si_metadata) == 1:
+                file_hash = si_metadata[0]['MD5Sum']
+                if file_hash.lower() != etag.lower():
+                    _log.debug('Updated detected(hash "%s" != "%s"):  s3.getObject "%s"' %(etag,file_hash,key))
+                    s3.download_file(bucket_name, key, target_file_path)
+                    update_required = True
+                else:
+                    _log.debug('md5 matches for staged-in file "%s"' %key)
+            else:
+                _log.debug('Add to Turbine Simulation(%s) s3.getObject: "%s"' %(model_name, key))
+                s3.download_file(bucket_name, key, target_file_path)
+                update_required = True
+            """
+
+
+        assert sinter_local_filename is not None, 'missing sinter configuration file'
+
+        if sim_d is None:
+            _log.debug('Adding Simulation "%s" "%s"' %(model_name,cache_sim_guid))
+            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, guid=cache_sim_guid, update=False)
+        """
+        elif update_required:
+            # NOTE: Requires the configuration file on update, so must download_file it above...
+            _log.debug('Updating Simulation "%s"' %model_name)
+            node.gr.turbConfig.uploadSimulation(model_name, sinter_local_filename, update=True)
+            _log.debug(
+        else:
+            _log.debug('No Update Required for Simulation "%s"' %model_name)
+
+        """
+
 
     def run_foqus(self, db, dat, job_desc):
         """ Run FOQUS Flowsheet in thread
@@ -472,15 +608,15 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         sfile,rfile,vfile,ofile = getfilenames(job_desc['Id'])
         guid = job_desc['Id']
         jid = guid # NOTE: like to use actual increment job id but hard to find.
-        db.job_change_status(guid, "running")
+        db.job_change_status(job_desc, "running")
         gt = dat.flowsheet.runAsThread()
         terminate = False
         while gt.isAlive():
             gt.join(10)
             status = db.consumer_status()
-            if status == 'terminate' or self.stop:
+            if status == 'terminate' or self._stop:
                 terminate = True
-                db.job_change_status(guid, "error")
+                db.job_change_status(job_desc, "error", message="terminate flowsheet: status=%s stop=%s" %(status, self._stop))
                 gt.terminate()
                 break
 
@@ -488,7 +624,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             db.add_message("job %s: terminate" %guid, guid)
             return
 
-        if self.stop:
+        if self._stop:
             db.add_message("job %s: windows service stopped" %guid, guid)
             return
 
@@ -498,7 +634,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             dat.flowsheet.errorStat = 19
 
         dat.saveFlowsheetValues(ofile)
-        db.job_save_output(guid, CURRENT_JOB_DIR)
+        db.job_save_output(job_desc, CURRENT_JOB_DIR)
         dat.save(
             filename = rfile,
             updateCurrentFile = False,
@@ -507,12 +643,13 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             indent = 0)
 
         if dat.flowsheet.errorStat == 0:
-            db.job_change_status(guid, "success")
+            db.job_change_status(job_desc, "success")
             db.add_message(
                 "consumer={0}, job {1} finished, success"\
                     .format(db.consumer_id, jid), guid)
         else:
-            db.job_change_status(guid, "error")
+            db.job_change_status(job_desc, "error",
+                message="Flowsheet errorStat: %s" %dat.flowsheet.errorStat)
             db.add_message(
                 "consumer={0}, job {1} finished, error"\
                     .format(db.consumer_id, jid), guid)

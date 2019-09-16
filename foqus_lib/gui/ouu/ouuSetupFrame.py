@@ -743,12 +743,18 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
 
     def setupPSUADEClient(self):
         curDir = os.getcwd()
-        #Copy needed files
-        dest = os.path.join(curDir, 'foqusPSUADEClient.py')
         mydir = os.path.dirname(__file__)
-        src = os.path.join(mydir, 'foqusPSUADEClient.py')
-        shutil.copyfile(src, dest)
-        os.chmod(dest, 0o700)
+        #Copy needed files
+        if os.name == 'nt':
+            dest = os.path.join(curDir, 'foqusPSUADEClient.bat')
+            src = os.path.join(mydir, 'foqusPSUADEClient.bat')
+            shutil.copyfile(src, dest)
+            os.chmod(dest, 0o700)
+        else:
+            dest = os.path.join(curDir, 'foqusPSUADEClient.py')
+            src = os.path.join(mydir, 'foqusPSUADEClient.py')
+            shutil.copyfile(src, dest)
+            os.chmod(dest, 0o700)
         return dest
 
     def analyze(self):

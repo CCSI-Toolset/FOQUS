@@ -49,15 +49,20 @@ jobs:
           name: Setup Testing Environment
           command: |
             . venv/bin/activate
-            pip install -q pytest
-            pip install -q coverage
+            pip install -q pytest coverage pylint
+
+      - run:
+          name: Run PyLint
+          command: |
+            . venv/bin/activate
+            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
 
       - run:
           name: Run Tests
           command: |
             . venv/bin/activate
             coverage run -m pytest
-            coverage report --omit=*site-packages*
+            coverage report --omit=*site-packages* --fail-under=22
             coverage html --omit=*site-packages*  # Generate html report
 
       - store_artifacts:

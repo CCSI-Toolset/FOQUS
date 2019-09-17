@@ -64,30 +64,23 @@ exports.handler = function(event, context, callback) {
                     SessionId: item.SessionId,
                     Initialize: item.Initialize,
                     Input:item.Input,
-                    State:"create",
+                    State:item.state,
                     Reset:item.Reset,
                     Simulation: item.Simulation,
                     Create: item.Create,
-                    Output:item.Output}
+                    Output:item.Output};
+
                   if (item.submit) {
                     obj.Submit = item.submit;
-                    obj.State = "submit";
                   }
                   if (item.setup) {
                     obj.Setup = item.setup;
-                    obj.State = "setup";
                   }
                   if (item.running) {
                     obj.Running = item.running;
-                    obj.State = "running";
                   }
-                  if (item.success) {
-                    obj.Finished = item.success;
-                    obj.State = "success";
-                  }
-                  if (item.error) {
-                    obj.Finished = item.error;
-                    obj.State = "error";
+                  if (item.Finished) {
+                    obj.Running = item.finished;
                   }
                   body.push(obj);
                 }

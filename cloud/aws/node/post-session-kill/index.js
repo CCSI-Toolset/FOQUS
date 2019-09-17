@@ -59,28 +59,49 @@ exports.handler = function(event, context, callback) {
     log("SESSIONID: " + session_id);
     const state = event.path.split('/')[3];
     var sns = new AWS.SNS();
-
-    var params = {
-        Message: payload,
-        MessageAttributes: {
-          'event': {
-            DataType: 'String',
-            StringValue: `"session.${state}.${session_id}"`
-          },
-          'username': {
-            DataType: 'String',
-            StringValue: user_name
-          }
-        },
-        TopicArn: topicArn
-    };
-    sns.publish(params, function(err, data) {
-        if (err) {
-          log("ERROR: Failed to SNS Publish Job Start");
-          log(err, err.stack); // an error occurred
-          done(new Error(`"${err.stack}"`));
-          return;
-        }
+    log("foqus_update_topic: " + foqus_update_topic);
+    var request_topic = sns.createTopic({
+        Name: foqus_update_topic,
+      }, function(err, data) {
+            if (err) {
+              log("ERROR: Failed to SNS CREATE TOPIC");
+              log(err.stack);
+              done(new Error(`"${err.stack}"`));
+              return;
+            }
+    });
+    request_topic.on('success', function(response_topic) {
+        var topicArn = response_topic.data.TopicArn;
+        log("SUCCESS: " + JSON.stringify(response_topic.data));
+        var obj = {};
+        obj.id = session_id;
+        obj.status = "terminate";
+        obj.resource = "session";
+        obj.message = "user initiated kill session";
+        var payload = JSON.stringify(obj);
+        var params = {
+            Message : payload,
+            MessageAttributes: {
+              'event': {
+                DataType: 'String',
+                StringValue: `"session.${state}.${session_id}"`
+              },
+              'username': {
+                DataType: 'String',
+                StringValue: user_name
+              }
+            },
+            TopicArn: topicArn
+        };
+        sns.publish(params, function(err, data) {
+            if (err) {
+              log("ERROR: Failed to SNS Publish Job Start");
+              log(err, err.stack); // an error occurred
+              done(new Error(`"${err.stack}"`));
+              return;
+            }
+            done(null, session_id);
+        });
     });
   }
   else {

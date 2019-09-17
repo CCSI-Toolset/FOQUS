@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1035</height>
+    <width>1280</width>
+    <height>951</height>
    </rect>
   </property>
   <property name="font">
@@ -302,37 +302,26 @@ and max for efficient computation.</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="0" column="8">
-             <widget class="QSpinBox" name="MWR5_spin">
-              <property name="minimum">
-               <number>2</number>
+             <widget class="QLineEdit" name="MWR5_edit"/>
+            </item>
+            <item row="0" column="4">
+             <widget class="QLineEdit" name="MWR1_edit">
+              <property name="text">
+               <string>1</string>
               </property>
-              <property name="maximum">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>5</number>
+              <property name="placeholderText">
+               <string/>
               </property>
              </widget>
             </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="MWR_static">
-              <property name="text">
-               <string>MWR:</string>
-              </property>
-             </widget>
+            <item row="0" column="5">
+             <widget class="QLineEdit" name="MWR2_edit"/>
+            </item>
+            <item row="0" column="6">
+             <widget class="QLineEdit" name="MWR3_edit"/>
             </item>
             <item row="0" column="7">
-             <widget class="QSpinBox" name="MWR4_spin">
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>5</number>
-              </property>
-             </widget>
+             <widget class="QLineEdit" name="MWR4_edit"/>
             </item>
             <item row="0" column="1">
              <widget class="QSpinBox" name="designSize_spin">
@@ -347,6 +336,13 @@ and max for efficient computation.</string>
               </property>
              </widget>
             </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="MWR_static">
+              <property name="text">
+               <string>MWR:</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="designSize_static">
               <property name="text">
@@ -354,47 +350,21 @@ and max for efficient computation.</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="5">
-             <widget class="QSpinBox" name="MWR2_spin">
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="4">
-             <widget class="QSpinBox" name="MWR1_spin">
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="6">
-             <widget class="QSpinBox" name="MWR3_spin">
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>60</number>
-              </property>
-              <property name="value">
-               <number>5</number>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="2">
              <spacer name="horizontalSpacer_15">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item row="0" column="9">
+             <spacer name="horizontalSpacer_2">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>

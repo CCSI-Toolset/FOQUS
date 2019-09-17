@@ -393,7 +393,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 f.write('scale_method = direct_mwr\n')
             elif self.Ranked_radioButton.isChecked():
                 f.write('scale_method = ranked_mwr\n')
-            mwr_list = [str(self.MWR1_spin.value()), str(self.MWR2_spin.value()), str(self.MWR3_spin.value()), str(self.MWR4_spin.value()), str(self.MWR5_spin.value())]
+            mwr_list = []
+            for item in [str(self.MWR1_edit.text()), str(self.MWR2_edit.text()), str(self.MWR3_edit.text()), str(self.MWR4_edit.text()), str(self.MWR5_edit.text())]:
+                if item != "":
+                    mwr_list.append(item)
             f.write('mwr_values = %s\n' % ','.join(mwr_list))
             f.write('\n')
 

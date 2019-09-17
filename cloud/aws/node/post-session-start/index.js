@@ -131,7 +131,7 @@ exports.handler = function(event, context, callback) {
                         obj[index].status = 'submit'
                         obj[index].jobid = obj[index].Id
                         obj[index].sessionid = session_id
-                        obj[index].consumer = '00000000-0000-0000-0000-000000000000';
+                        obj[index].consumer = obj[index].consumer;
                         var payload = JSON.stringify(obj[index]);
                         log("Payload: " + payload);
                         var params = {

@@ -1,5 +1,16 @@
 # FOQUS Cloud
 
+## Worker
+### AWS SQS, SNS, DynamoDB, S3
+The python module `foqus_service.py` is runnable as a Windows Service.  The service will
+periodically check an AWS SQS job submission queue for job requests.  Once one is available
+the item is temporarily `locked` while the job is setup.  If the job is successfully setup or
+an error occurs, the item is deleted from the queue.  So if the worker is unexpectedly
+shutdown the job will automatically appear back on the queue after a VisibilityTimeout.
+
+All state transitions are published to the SNS Update Topic and foqus_update_topic lambda function performs the actual updates and writes.  DynamoDB and S3 access is READ-Only for the worker.
+
+Kill requests are communicated through the DynamoDB table entry for the job request.
 
 ## Web Resources and Lambda Functions
 There are two main web resources the `Session` and the `Simulation`.  `Session` is a logical grouping of job requests, and the `Simulation` is a logical grouping of staged files and an execution engine (ACM, AspenPlus, etc).

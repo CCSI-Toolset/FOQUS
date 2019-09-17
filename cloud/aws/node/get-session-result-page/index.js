@@ -37,10 +37,10 @@ exports.handler = function(event, context, callback) {
         return;
       }
       var session_id = path.pop();
-
+      var key = `${user_name}/session/${session_id}/page/number/${page}.json`;
       var params = {
         Bucket: s3_bucket_name,
-        Key: user_name + '/' + session_id + "/" + gen_id + "/" + page + '.json',
+        Key: key,
       };
       log("PARAMS: " + JSON.stringify(params));
       var client = new AWS.S3();

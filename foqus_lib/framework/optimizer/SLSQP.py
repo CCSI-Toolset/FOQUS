@@ -64,7 +64,9 @@ class opt(optimization):
              "}\n"
              "</head>\n"
              "<p class=\"hangingindent\">"
-             "<p><b>SciPy BFGS</b></p>"
+             "<p>Developer: Dieter Kraft</p>"
+             "<p>Algorithm Type: Han–Powell quasi–Newton method</p>"
+             "<p>Optimization Problems handling Capability: Nonlinear Optimization Problems with general equality & inequality constraints, and variable bounds.</p>"
              "</html>")
         self.options.add(
             name='upper',

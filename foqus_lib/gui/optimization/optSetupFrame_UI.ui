@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1063</width>
-    <height>777</height>
+    <width>1568</width>
+    <height>1415</height>
    </rect>
   </property>
   <property name="cursor">
@@ -29,7 +29,7 @@
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -704,7 +704,14 @@ def objfunc(x, f, fail):
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QTextBrowser" name="methodDescriptionBox"/>
+              <widget class="QTextBrowser" name="methodDescriptionBox">
+               <property name="minimumSize">
+                <size>
+                 <width>1380</width>
+                 <height>100</height>
+                </size>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>

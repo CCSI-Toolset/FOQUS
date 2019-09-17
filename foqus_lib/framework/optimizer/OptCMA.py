@@ -78,17 +78,13 @@ class opt(optimization):
              "}\n"
              "</head>\n"
              "<p class=\"hangingindent\">"
-             "<p><b>Covariacne Matrix Adaptation Evolutionary Strategy"
+             "<p><b>Covariance Matrix Adaptation Evolutionary Strategy"
              " (CMA-ES)</b></p>"
-             " Hansen, N. (2006). The CMA Evolution Strategy: A "
-             "Comparing Review. In J.A. Lozano, P. Larranga, I. Inza "
-             "and E. Bengoetxea (eds.). Towards a new evolutionary "
-             "computation. Advances in estimation of distribution "
-             "algorithms. pp. 75-102, Springer.<\p>"
-             "<p>This plugin makes use of the CMA-ES Python module "
-             "https://www.lri.fr/~hansen/cmaes_inmatlab.html#python. "
-             "This plugin provides a wrapper for the CMA-ES code "
-             "allowing it to work with FOQUS.</p></html>")
+             "<p>Developer: Nikolaus Hansen</p>"
+             "<p>Algorithm Type: Genetic/Evolutionary</p>"
+             "<p>Optimization Problems handling Capability: Nonlinear, Non Convex, Unconstrained Optimization problems, with optional bounds on variables. Variable limit: 3-100</p>"
+             "<p>More Details found here: http://cma.gforge.inria.fr/"
+             "</html>")
         self.available = cma_available
         self.description = "CMA-ES from ..."
         self.mp = True

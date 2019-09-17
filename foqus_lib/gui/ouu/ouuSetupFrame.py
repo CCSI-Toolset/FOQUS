@@ -746,9 +746,14 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         mydir = os.path.dirname(__file__)
         #Copy needed files
         if os.name == 'nt':
+            dest1 = os.path.join(curDir, 'foqusPSUADEClient.py')
+            src1 = os.path.join(mydir, 'foqusPSUADEClient.py')
+            shutil.copyfile(src1, dest1)
+            os.chmod(dest1, 0o700)
+
             dest = os.path.join(curDir, 'foqusPSUADEClient.bat')
-            src = os.path.join(mydir, 'foqusPSUADEClient.bat')
-            shutil.copyfile(src, dest)
+            src2 = os.path.join(mydir, 'foqusPSUADEClient.bat')
+            shutil.copyfile(src2, dest)
             os.chmod(dest, 0o700)
         else:
             dest = os.path.join(curDir, 'foqusPSUADEClient.py')

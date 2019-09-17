@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1568</width>
-    <height>1415</height>
+    <width>2012</width>
+    <height>1360</height>
    </rect>
   </property>
   <property name="cursor">
@@ -29,7 +29,7 @@
       <cursorShape>PointingHandCursor</cursorShape>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tab">
       <attribute name="title">
@@ -241,7 +241,7 @@
        <item>
         <widget class="QStackedWidget" name="stackedWidget">
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="page">
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -604,7 +604,7 @@
                 <property name="plainText">
                  <string>Enter Python below to define an objective function.  The function should return three things the first is the objective function list.  This is a list to support multi-objective problems.  The other two items are only diagnostic, they are not use in any calulation.  The second item is a list of constraint violations.  The lst item is the constraint penalty.  In custom mode it is up to the user to apply constraint penalties.
 
-The arguments to the function are x, f, and fail.  The inputs and outputs of a flowsheet run are stored in x and f.  If sampling is used the first index is the sample index, and the second key is the node name.  If there is one sample only, the first key is the node a name.  The next key is the variables name, and the last index is the time step index.  The timestep index would usually be 0.  Fail is a boolean list.  It indicates if any flowsheet sample failed.
+The arguments to the function are x, f, and fail.  The inputs and outputs of a flowsheet run are stored in x and f.  If sampling is used the first index is the sample index, and the second key is the node name.  If there is one sample only, the first key is the node a name.  The next key is the variables name. Fail is a boolean list.It indicates if any flowsheet sample failed.
 
 Example:
 
@@ -613,7 +613,7 @@ def objfunc(x, f, fail):
     if any(fail): #simulation failed to converge
         obj = [100000]
     else: #simulation successful
-        obj = [f['Node']['x'][0]]
+        obj = [f['Node']['x']]
     return obj, [0], 0</string>
                 </property>
                </widget>
@@ -704,14 +704,7 @@ def objfunc(x, f, fail):
             </property>
             <layout class="QVBoxLayout" name="verticalLayout_4">
              <item>
-              <widget class="QTextBrowser" name="methodDescriptionBox">
-               <property name="minimumSize">
-                <size>
-                 <width>1380</width>
-                 <height>100</height>
-                </size>
-               </property>
-              </widget>
+              <widget class="QTextBrowser" name="methodDescriptionBox"/>
              </item>
             </layout>
            </widget>

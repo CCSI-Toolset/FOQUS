@@ -238,7 +238,8 @@ var process_job_event_status = function(ts, user_name, message, callback) {
             TableName:tablename,
             Key:{
                 "Id": job,
-                "Type":"Job"
+                "Type":"Job",
+                "State":status
             },
             UpdateExpression: "set #w=:s, ConsumerId=:c, #u=:u",
             ExpressionAttributeValues:{
@@ -247,7 +248,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 ":u":user_name
             },
             ExpressionAttributeNames:{
-                "#w":status,
+                "#w":"Finished",
                 "#u":"User"
             },
             ReturnValues:"UPDATED_NEW"

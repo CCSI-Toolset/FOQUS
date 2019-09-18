@@ -20,6 +20,7 @@ from foqus_lib.framework.session.session import session as Session
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
+import botocore.exceptions
 
 _instanceid = None
 WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
@@ -192,7 +193,7 @@ class TurbineLiteDB:
         _log.info("%s.job_prepare", self.__class__)
     def job_change_status(self, job_d, status, rc=0, message=None):
         assert type(job_d) is dict
-        assert status in ['setup', 'running', 'error', 'terminate', 'expired'], \
+        assert status in ['success', 'setup', 'running', 'error', 'terminate', 'expired'], \
             "Incorrect Job Status %s" %status
         _log.info("%s.job_change_status %s", self.__class__, job_d)
         d = dict(resource='job', event='status',
@@ -323,7 +324,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             """
             try:
                 table = self._dynamodb.describe_table(TableName=self._dynamodb_table_name)
-            except botocore.errorfactory.ResourceNotFoundException as ex:
+            except botocore.exceptions.ClientError as ex:
                 _log.exception("UserData Configuration Error No DynamoDB Table %s" %self._dynamodb_table_name)
                 raise
 

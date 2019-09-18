@@ -15,38 +15,42 @@ import copy
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.uq.Distribution import Distribution
 
-ivarScales = [ # list of scaling options for input variables
-    'None',
-    'Linear',
-    'Log',
-    'Power',
-    'Log 2',
-    'Power 2']
+ivarScales = [  # list of scaling options for input variables
+    "None",
+    "Linear",
+    "Log",
+    "Power",
+    "Log 2",
+    "Power 2",
+]
+
 
 class NodeVarEx(foqusException):
     def setCodeStrings(self):
-        self.codeString[0] = 'Other exception'
-        self.codeString[3] = 'Not a valid variable attribute'
-        self.codeString[8] = 'Error unscaling'
-        self.codeString[9] = 'Error scaling'
-        self.codeString[11] = 'Invalid data type'
-        self.codeString[22] = 'Time step index out of range'
+        self.codeString[0] = "Other exception"
+        self.codeString[3] = "Not a valid variable attribute"
+        self.codeString[8] = "Error unscaling"
+        self.codeString[9] = "Error scaling"
+        self.codeString[11] = "Invalid data type"
+        self.codeString[22] = "Time step index out of range"
+
 
 class NodeVarListEx(foqusException):
     def setCodeStrings(self):
-        self.codeString[0] = 'Other exception'
-        self.codeString[2] = 'Node does not exist'
-        self.codeString[3] = 'Variable does not exist'
-        self.codeString[5] = 'Node name already in use, cannont add'
-        self.codeString[6] = ('graph is reserved and cannot be used'
-                              ' as a node name')
-        self.codeString[7] = 'Var name already in use, cannont add'
+        self.codeString[0] = "Other exception"
+        self.codeString[2] = "Node does not exist"
+        self.codeString[3] = "Variable does not exist"
+        self.codeString[5] = "Node name already in use, cannont add"
+        self.codeString[6] = "graph is reserved and cannot be used" " as a node name"
+        self.codeString[7] = "Var name already in use, cannont add"
+
 
 class NodeVarList(OrderedDict):
     """
     This class contains a dictionary of dictionaries the first key is the node
     name, the second key is the variable name.
     """
+
     def __init__(self):
         """
         Initialize the variable list dictionary
@@ -92,16 +96,16 @@ class NodeVarList(OrderedDict):
         return var
 
     def get(self, name, varName=None):
-        '''
+        """
         This returns a variable looked up by a name string where the node name
         is separated from the variable name by a period or if two arguments are
         given they are the node name and variable name.  For one argument, the
         first period in the name is assumed to be the separator.  This means
         the node names should not contain periods, but it okay for the variable
         name to contain a period.
-        '''
+        """
         if varName == None:
-            n = name.split('.', 1) #n[0] = node name, n[1] = var name
+            n = name.split(".", 1)  # n[0] = node name, n[1] = var name
             name = n[0]
             varName = n[1]
         try:
@@ -112,7 +116,6 @@ class NodeVarList(OrderedDict):
             else:
                 raise NodeVarListEx(2, msg=n[0])
 
-
     def createOldStyleDict(self):
         """
         This can be used to create the f and x dictionaries for a graph. I'm
@@ -122,9 +125,8 @@ class NodeVarList(OrderedDict):
         self.odict = OrderedDict()
         for node in sorted(list(self.keys()), key=lambda s: s.lower()):
             for var in sorted(list(self[node].keys()), key=lambda s: s.lower()):
-                self.odict['.'.join([node, var])] = self[node][var]
+                self.odict[".".join([node, var])] = self[node][var]
         return self.odict
-
 
     def compoundNames(self, sort=True):
         """
@@ -136,9 +138,9 @@ class NodeVarList(OrderedDict):
         l = []
         for node in list(self.keys()):
             for var in list(self[node].keys()):
-                l.append('.'.join([node, var]))
+                l.append(".".join([node, var]))
         if sort:
-            return sorted(l, key = lambda s: s.lower())
+            return sorted(l, key=lambda s: s.lower())
         else:
             return l
 
@@ -146,7 +148,7 @@ class NodeVarList(OrderedDict):
         """
         Split the name at the first '.'' to get a node and variable name
         """
-        return name.split('.',1)
+        return name.split(".", 1)
 
     def saveValues(self):
         """
@@ -169,7 +171,8 @@ class NodeVarList(OrderedDict):
             if node not in self:
                 logging.getLogger("foqus." + __name__).debug(
                     "Cannot load variable node not in flowsheet, node:"
-                    " {0} not in {1}".format(node, list(self.keys())))
+                    " {0} not in {1}".format(node, list(self.keys()))
+                )
                 raise NodeVarListEx(2, msg=node)
             for var in sd[node]:
                 self[node][var].value = sd[node][var]
@@ -255,15 +258,16 @@ class NodeVarList(OrderedDict):
         sd = {}
         pos = 0
         for i, name in enumerate(nameList):
-            if not isinstance(name, (list,tuple)):
+            if not isinstance(name, (list, tuple)):
                 name = self.splitName(name)
             if not name[0] in sd:
                 sd[name[0]] = {}
             sd[name[0]][name[1]] = valueList[pos]
-            pos+=1
+            pos += 1
             if unScale:
-                sd[name[0]][name[1]] = \
-                    self[name[0]][name[1]].unscale2(sd[name[0]][name[1]])
+                sd[name[0]][name[1]] = self[name[0]][name[1]].unscale2(
+                    sd[name[0]][name[1]]
+                )
         return sd
 
 
@@ -271,6 +275,7 @@ class NodeVars(object):
     """
     Class for variable attributes, variable scaling, and saving/loading.
     """
+
     def __init__(
         self,
         value=0.0,
@@ -282,7 +287,7 @@ class NodeVars(object):
         vdesc="",
         tags=[],
         dtype=float,
-        dist=Distribution(Distribution.UNIFORM)
+        dist=Distribution(Distribution.UNIFORM),
     ):
         """
         Initialize the variable list
@@ -299,7 +304,7 @@ class NodeVars(object):
             dtype: type of data {float, int, str}
             dist: distribution type for UQ
         """
-        self.dtype = dtype # type of data
+        self.dtype = dtype  # type of data
         value = value
         if vmin is None:
             vmin = value
@@ -307,21 +312,21 @@ class NodeVars(object):
             vmax = value
         if vdflt is None:
             vdflt = value
-        self.min = vmin # maximum value
-        self.max = vmax # minimum value
-        self.default = vdflt # default value
-        self.unit = unit # units of measure
-        self.set = vst # variable set name user or sinter so I know if
-                       # user added it or from sinter configuration file
-        self.desc = vdesc # variable description
-        self.scaled = 0.0 # scaled value for the variable
-        self.scaling = 'None' # type of variable scaling
-        self.minScaled = 0.0 # scaled minimum
-        self.maxScaled = 0.0 # scaled maximum
-        self.tags = tags # set of tags for use in heat integration or
-                         # other searching and sorting
-        self.con = False # true if the input is set through connection
-        self.setValue(value) # value of the variable
+        self.min = vmin  # maximum value
+        self.max = vmax  # minimum value
+        self.default = vdflt  # default value
+        self.unit = unit  # units of measure
+        self.set = vst  # variable set name user or sinter so I know if
+        # user added it or from sinter configuration file
+        self.desc = vdesc  # variable description
+        self.scaled = 0.0  # scaled value for the variable
+        self.scaling = "None"  # type of variable scaling
+        self.minScaled = 0.0  # scaled minimum
+        self.maxScaled = 0.0  # scaled maximum
+        self.tags = tags  # set of tags for use in heat integration or
+        # other searching and sorting
+        self.con = False  # true if the input is set through connection
+        self.setValue(value)  # value of the variable
         self.setType(dtype)
         self.dist = copy.copy(dist)
 
@@ -330,11 +335,11 @@ class NodeVars(object):
         Convert the data type to a string for saving the variable to json
         """
         if self.dtype == float:
-            return 'float'
+            return "float"
         elif self.dtype == int:
-            return 'int'
+            return "int"
         elif self.dtype == str:
-            return 'str'
+            return "str"
         else:
             raise NodeVarEx(11, msg=str(dtype))
 
@@ -342,7 +347,7 @@ class NodeVars(object):
         """
         Set the value to NaN
         """
-        self.value = float('nan')
+        self.value = float("nan")
 
     def setType(self, dtype=float):
         """
@@ -390,13 +395,13 @@ class NodeVars(object):
         """
         This should only be called if a variable doesn't have the attribute name.
         """
-        if name == 'value':
+        if name == "value":
             return self.__value
-        elif name == 'min':
+        elif name == "min":
             return self.__min
-        elif name == 'max':
+        elif name == "max":
             return self.__max
-        elif name == 'default':
+        elif name == "default":
             return self.__default
         else:
             raise AttributeError
@@ -406,13 +411,13 @@ class NodeVars(object):
         This is called when setting an attribute, if the attribute is value,
         min, max, default, convert data type, otherwise do normal stuff
         """
-        if name == 'value':
+        if name == "value":
             self.setValue(val)
-        elif name == 'min':
+        elif name == "min":
             self.setMin(val)
-        elif name == 'max':
+        elif name == "max":
             self.setMax(val)
-        elif name == 'default':
+        elif name == "default":
             self.setDefault(val)
         else:
             super(NodeVars, self).__setattr__(name, val)
@@ -446,28 +451,37 @@ class NodeVars(object):
         nothing.
         """
         try:
-            if self.scaling == 'None':
+            if self.scaling == "None":
                 out = val
-            elif self.scaling == 'Linear':
-                out = 10*(val - self.min)/(self.max - self.min)
-            elif self.scaling == 'Log':
-                out = 10*(log10(val) - log10(self.min))/ \
-                    (log10(self.max) - log10(self.min))
-            elif self.scaling == 'Power':
-                out = 10*(power(10, val) - power(10,self.min))/ \
-                    (power(10, self.max) - power(10, self.min))
-            elif self.scaling == 'Log 2':
-                out = 10*log10(9*(val - self.min)/ \
-                    (self.max - self.min)+1)
-            elif self.scaling == 'Power 2':
-                out = 10.0/9.0*(power(10,(val - self.min)/ \
-                    (self.max - self.min))-1)
+            elif self.scaling == "Linear":
+                out = 10 * (val - self.min) / (self.max - self.min)
+            elif self.scaling == "Log":
+                out = (
+                    10
+                    * (log10(val) - log10(self.min))
+                    / (log10(self.max) - log10(self.min))
+                )
+            elif self.scaling == "Power":
+                out = (
+                    10
+                    * (power(10, val) - power(10, self.min))
+                    / (power(10, self.max) - power(10, self.min))
+                )
+            elif self.scaling == "Log 2":
+                out = 10 * log10(9 * (val - self.min) / (self.max - self.min) + 1)
+            elif self.scaling == "Power 2":
+                out = (
+                    10.0
+                    / 9.0
+                    * (power(10, (val - self.min) / (self.max - self.min)) - 1)
+                )
             else:
                 raise
         except:
             raise NodeVarEx(
-                code = 9,
-                msg = "value = {0}, scaling method = {1}".format(val, self.scaling))
+                code=9,
+                msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+            )
         return out
 
     def unscale2(self, val):
@@ -475,28 +489,30 @@ class NodeVars(object):
         Convert value to an unscaled value using the variables settings.
         """
         try:
-            if self.scaling == 'None':
+            if self.scaling == "None":
                 out = val
-            elif self.scaling == 'Linear':
-                out = val*(self.max - self.min)/10.0 + self.min
-            elif self.scaling == 'Log':
-                out = power(self.min*(self.max/self.min),(val/10.0))
-            elif self.scaling == 'Power':
-                out = log10((val/10.0)*(power(10,self.max) - \
-                    power(10,self.min))+power(10, self.min))
-            elif self.scaling == 'Log 2':
-                out = (power(10, val/10.0)-1)*(self.max-self.min)/ \
-                    9.0 + self.min
-            elif self.scaling == 'Power 2':
-                out = log10(9.0*val/10.0 + 1)*(self.max-self.min) + \
-                    self.min
+            elif self.scaling == "Linear":
+                out = val * (self.max - self.min) / 10.0 + self.min
+            elif self.scaling == "Log":
+                out = power(self.min * (self.max / self.min), (val / 10.0))
+            elif self.scaling == "Power":
+                out = log10(
+                    (val / 10.0) * (power(10, self.max) - power(10, self.min))
+                    + power(10, self.min)
+                )
+            elif self.scaling == "Log 2":
+                out = (power(10, val / 10.0) - 1) * (
+                    self.max - self.min
+                ) / 9.0 + self.min
+            elif self.scaling == "Power 2":
+                out = log10(9.0 * val / 10.0 + 1) * (self.max - self.min) + self.min
             else:
                 raise
         except:
             raise NodeVarEx(
-                code = 9,
-                msg = "value = {0}, scaling method = {1}".\
-                    format(val, self.scaling))
+                code=9,
+                msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+            )
         return out
 
     def saveDict(self):
@@ -511,13 +527,13 @@ class NodeVars(object):
         vdefault = self.default
         value = self.value
         if self.dtype == float:
-            sd["dtype"] = 'float'
+            sd["dtype"] = "float"
         elif self.dtype == int:
-            sd["dtype"] = 'int'
+            sd["dtype"] = "int"
         elif self.dtype == str:
-            sd["dtype"] = 'str'
+            sd["dtype"] = "str"
         else:
-            raise NodeVarEx(11, msg = str(dtype))
+            raise NodeVarEx(11, msg=str(dtype))
         sd["value"] = value
         sd["min"] = vmin
         sd["max"] = vmax
@@ -539,12 +555,12 @@ class NodeVars(object):
             sd: dict of data
         """
         assert isinstance(sd, dict)
-        dtype = sd.get('dtype', 'float')
-        if dtype == 'float':
+        dtype = sd.get("dtype", "float")
+        if dtype == "float":
             self.dtype = float
-        elif dtype == 'int':
+        elif dtype == "int":
             self.dtype = int
-        elif dtype == 'str':
+        elif dtype == "str":
             self.dtype = str
         else:
             raise NodeVarEx(11, msg=str(dtype))
@@ -561,7 +577,7 @@ class NodeVars(object):
         self.unit = sd.get("unit", "")
         self.set = sd.get("set", "user")
         self.desc = sd.get("desc", "")
-        self.scaling = sd.get("scaling", 'None')
+        self.scaling = sd.get("scaling", "None")
         self.tags = sd.get("tags", [])
         dist = sd.get("dist", None)
         if dist is not None:

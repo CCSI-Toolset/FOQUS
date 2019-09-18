@@ -83,7 +83,7 @@ exports.handler = function(event, context, callback) {
             }
             var params = {
               Bucket: s3_bucket_name,
-              Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
+              Key: user_name + '/session/create/' + session_id + '/' + milliseconds + '.json',
               Body: content
             };
             log(`putS3(${params.Bucket}):  ${params.Key}`);

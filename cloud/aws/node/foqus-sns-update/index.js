@@ -21,6 +21,7 @@ const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const log_topic_name = process.env.FOQUS_LOG_TOPIC_NAME;
 
+// TODO: Check Table and skip any items where Finished is already set
 var process_session_event_terminate = function(ts, session_id, callback) {
     log(`"process_session_event_terminate(${session_id})"`);
     function dynamoUpdateItems(obj) {
@@ -32,7 +33,7 @@ var process_session_event_terminate = function(ts, session_id, callback) {
         }
         var params = {
           TableName: tablename,
-          UpdateExpression: 'SET #f = :f,  #t=:t, #s = :s',
+          UpdateExpression: 'SET #f=:f,  #t=:t, #s=:s',
           ExpressionAttributeNames: {"#s": 'state', '#f' : 'finished', '#t':'TTL'},
           ExpressionAttributeValues: {':s': 'terminate', ':f': ts, ':t':Math.floor(Date.now()/1000 + 60*60*12)}
         };
@@ -91,12 +92,14 @@ var process_job_event_output = function(ts, user_name, message, callback) {
             "Id": job,
             "Type":"Job"
         },
-        UpdateExpression: "set #w = :o",
+        UpdateExpression: "set #w = :o, #t = :t",
         ExpressionAttributeValues:{
-            ":o":output
+            ":o":output,
+            ":t":Math.floor(Date.now()/1000 + 60*60*24)
         },
         ExpressionAttributeNames:{
-            "#w":"output"
+            "#w":"output",
+            "#t":"TTL"
         },
         ReturnValues:"UPDATED_NEW"
     };
@@ -104,7 +107,7 @@ var process_job_event_output = function(ts, user_name, message, callback) {
     publish_to_log_topic(e);
     function getDynamoJob() {
         // Job is success, put in S3
-        log("Get Job Description from dynamodb");
+        log("Output: Get Job Description from dynamodb");
         //const milliseconds = (new Date).getTime();
         var request = dynamodb.get({ TableName: tablename,
               Key: {"Id": job, "Type": "Job" }
@@ -181,7 +184,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     publish_to_log_topic(e);
     function getDynamoJob() {
         // Job is success, put in S3
-        log("Get Job Description from dynamodb");
+        log("Status: Get Job Description from dynamodb");
         var request = dynamodb.get({ TableName: tablename,
               Key: {"Id": job, "Type": "Job" }
           });
@@ -189,6 +192,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     };
     function putS3(response) {
         // Job is success, put in S3
+        log("Status: Put Job Description");
         const milliseconds = (new Date).getTime();
         var promise = new Promise(function(resolve, reject){
             if (status == 'success' || status == 'error') {
@@ -226,30 +230,33 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         return promise;
     };
     function handleError(error) {
-      log(`handleError ${error.name}`);
+      log(`Status handleError ${error.name}`);
       callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
       log("handleDone");
       callback(null, "Success");
     };
-    if (status == 'success' || status == 'error' || status == 'terminate') {
+    if (status == 'success' || status == 'error' || status == 'terminate' ) {
         var params = {
             TableName:tablename,
             Key:{
                 "Id": job,
-                "Type":"Job",
-                "State":status
+                "Type":"Job"
             },
-            UpdateExpression: "set #w=:s, ConsumerId=:c, #u=:u",
+            UpdateExpression: "set #w=:w, #s=:s, ConsumerId=:c, #u=:u, #t=:t",
             ExpressionAttributeValues:{
-                ":s":ts,
+                ":w":ts,
                 ":c":consumer,
-                ":u":user_name
+                ":u":user_name,
+                ":s":status,
+                ":t":Math.floor(Date.now()/1000 + 60*60*24)
             },
             ExpressionAttributeNames:{
                 "#w":"Finished",
-                "#u":"User"
+                "#u":"User",
+                "#s":"State",
+                "#t":"TTL"
             },
             ReturnValues:"UPDATED_NEW"
         };
@@ -285,9 +292,31 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           .catch(handleError);
         return;
     }
-    if (status == 'submit') {
-        log(`Ignoring Job.Submit ${job}`)
-        return;
+    if (status == 'submit' | status == 'setup' | status == 'running') {
+      var params = {
+          TableName:tablename,
+          Key:{
+              "Id": job,
+              "Type":"Job",
+          },
+          UpdateExpression: "set #w=:s, #t=:t",
+          ExpressionAttributeValues:{
+              ":s":ts,
+              ":t":Math.floor(Date.now()/1000 + 60*60*1)
+          },
+          ExpressionAttributeNames:{
+              "#w":status,
+              "#t":'TTL'
+          },
+          ReturnValues:"UPDATED_NEW"
+      };
+      log(JSON.stringify(params));
+      var response = dynamodb.update(params);
+      response.promise()
+        .then(getDynamoJob)
+        .then(handleDone)
+        .catch(handleError);
+      return;
     }
     assert.fail(`"process_job_event_status, unexpected status ${status}"`);
 }
@@ -355,7 +384,9 @@ var process_consumer_event = function(ts, message, callback) {
       }
     });
 }
-
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 /*
  * exports.handler
  * Listens to SNS Update Topic, event parameter specifies type of
@@ -365,45 +396,49 @@ var process_consumer_event = function(ts, message, callback) {
  *  consumer --
  *
  */
-exports.handler = function(event, context, callback) {
-    //log('Received event:', JSON.stringify(event, null, 4));
-    var message = JSON.parse(event.Records[0].Sns.Message);
-    const attrs = event.Records[0].Sns.MessageAttributes;
-    const ts = event.Records[0].Sns.Timestamp;
-    log('Received event:', event.Records[0].Sns.Message);
-    if (util.isArray(message) == false) {
-        message.resource = "job";
-        message.event = "submit"
-        message = [message];
-    }
-    for (var i = 0; i < message.length; i++) {
-      var resource = message[i]['resource'];
-      var e = message[i]['event'];
-      if (resource == "job") {
-          var user_name = attrs.username.Value;
-          if (e == "output") {
-              process_job_event_output(ts, user_name, message[i], callback);
-              return;
-          }
-          if (e == "status") {
-              process_job_event_status(ts, user_name, message[i], callback);
-              return;
-          }
-          assert.fail(`"Job with unknown event ${e}"`);
-      } else if (resource == "consumer") {
-          process_consumer_event(ts, message[i], callback);
-      } else if (attrs.event && attrs.event.Value.startsWith('session.')) {
-          const a = attrs.event.Value.split('.');
-          const session_id = a[2];
-          const state = a[1];
-          log(`"session ${session_id}:  event ${state}"`)
-          if (state == "terminate")
-            process_session_event_terminate(ts, session_id, callback);
-          else
-            log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
+exports.handler = async function(event, context, callback) {
+    for (var j = 0; j < event.Records.length; j++) {
+      var message = JSON.parse(event.Records[j].Sns.Message);
+      var attrs = event.Records[j].Sns.MessageAttributes;
+      var ts = event.Records[j].Sns.Timestamp;
+      log('Received event:', event.Records[j].Sns.Message);
+
+      if (util.isArray(message) == false) {
+          message = [message];
       }
-      else {
-        log("WARNING: NotImplemented skip update resource=" + resource);
+
+      for (var i = 0; i < message.length; i++) {
+          log(`MESSAGE ${j}.${i}: ${JSON.stringify(message[i])}`);
+          //await sleep(2000);
+          var resource = message[i]['resource'];
+          var e = message[i]['event'];
+          if (resource == "job") {
+              var user_name = attrs.username.Value;
+              if (e == "output") {
+                  process_job_event_output(ts, user_name, message[i], callback);
+              } else if (e == "status") {
+                  process_job_event_status(ts, user_name, message[i], callback);
+              } else if (e == "submit") {
+                  log(`skipping submit message for job ${message[i].jobid}`)
+                  process_job_event_status(ts, user_name, message[i], callback);
+              } else {
+                assert.fail(`"Job with unknown event ${e}"`);
+              }
+          } else if (resource == "consumer") {
+              process_consumer_event(ts, message[i], callback);
+          } else if (attrs.event && attrs.event.Value.startsWith('session.')) {
+              const a = attrs.event.Value.split('.');
+              const session_id = a[2];
+              const state = a[1];
+              log(`"session ${session_id}:  event ${state}"`)
+              if (state == "terminate")
+                process_session_event_terminate(ts, session_id, callback);
+              else
+                log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
+          }
+          else {
+            log("WARNING: NotImplemented skip update resource=" + resource);
+          }
       }
     }
 };

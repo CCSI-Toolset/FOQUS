@@ -22,7 +22,7 @@ Query for all Job's with session_id, expired jobs (TTL) will not be present.
 
 #### get-session-list
 ##### AWS S3
-List all keys in bucket under prefix `s3://{bucket_name}/{user_name}/{session_id}/``
+List all keys in bucket under prefix `s3://{bucket_name}/{user_name}/session/create/`
 
 #### get-session-result
 ##### AWS S3
@@ -32,7 +32,7 @@ Get the object `s3://{bucket_name}/{user_name}/session/{session_id}/page/number/
 ##### AWS DynamoDB and S3
 Write job items to DynamoDB Table, put job array in S3 key
 
-`s3://{bucket_name}/{user_name}/{session_id}/{milliseconds_since_epoch}.json`
+`s3://{bucket_name}/{user_name}/session/create/{session_id}/{milliseconds_since_epoch}.json`
 
 ### post-session-create
 Return a new UUID that can be used for a new session.
@@ -58,7 +58,7 @@ Next iterate through all finished jobs and select only those whose `finish` time
 
 ### post-session-start
 ##### AWS S3 and SNS
-Lists all keys with prefix `s3://{bucket_name}/{user_name}/{session_id}/`, gets each JSON array and publishes each as event `job.submit` to SNS FOQUS_UPDATE_TOPIC. This topic is configured to publish to both the lambda function `foqus_update_topic` and the SQS job queue.
+Lists all keys with prefix `s3://{bucket_name}/{user_name}/session/create/{session_id}/`, gets each JSON array and publishes each as event `job.submit` to SNS FOQUS_UPDATE_TOPIC. This topic is configured to publish to both the lambda function `foqus_update_topic` and the SQS job queue.
 
 ### Simulation Resource
 #### get-simulation-input-file

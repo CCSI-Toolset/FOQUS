@@ -62,8 +62,8 @@ exports.handler = function(event, context, callback) {
     log("SESSION BUCKET_NAME: " + s3_bucket_name);
     var params = {
       Bucket: s3_bucket_name,
-      Prefix: user_name + '/' + session_id + '/',
-      StartAfter: user_name + '/' + session_id + '/'
+      Prefix: user_name + '/session/create/' + session_id + '/',
+      StartAfter: user_name + '/session/create/' + session_id + '/'
     };
     var s3 = new AWS.S3();
     var request_list = s3.listObjectsV2(params, function(err, data) {
@@ -132,6 +132,7 @@ exports.handler = function(event, context, callback) {
                         obj[index].jobid = obj[index].Id
                         obj[index].sessionid = session_id
                         obj[index].consumer = obj[index].consumer;
+                        obj[index].event = 'status';
                         var payload = JSON.stringify(obj[index]);
                         log("Payload: " + payload);
                         var params = {

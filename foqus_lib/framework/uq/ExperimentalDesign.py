@@ -57,11 +57,19 @@ class ExperimentalDesign:
 
         #Write outputs
         outf.write('OUTPUT\n')
-        outf.write('   dimension = %d\n' % data.getNumOutputs())
-        names = data.getOutputNames()
-        indices = list(range(data.getNumOutputs()))
-        for i, name in zip(indices, names):
-            outf.write('   variable %d %s\n' % (i + 1, name))
+        if data.getNumOutputs() == 0:
+            outf.write('   dimension = 1\n')
+            names = ['ghostOuput']
+            indices = list(range(1))
+            for i, name in zip(indices, names):
+                outf.write('   variable %d %s\n' % (i + 1, name))
+        else:
+            outf.write('   dimension = %d\n' % data.getNumOutputs())
+            names = data.getOutputNames()
+            indices = list(range(data.getNumOutputs()))
+            for i, name in zip(indices, names):
+                outf.write('   variable %d %s\n' % (i + 1, name))
+
         outf.write('END\n')
 
         #Write Method

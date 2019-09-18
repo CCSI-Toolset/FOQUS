@@ -19,6 +19,7 @@ def run(config_file, nd, test=False):
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
+    type = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
     # create outdir as needed
@@ -56,17 +57,44 @@ def run(config_file, nd, test=False):
     elapsed_time = time.time() - t0
 
     # save the output
-    fname = os.path.join(outdir, 'candidates_d{}_n{}_{}'.format(nd, nr, '+'.join(include)))
+    fname = os.path.join(outdir, 'candidates_d{}_n{}_{}.csv'.format(nd, nr, '+'.join(include)))
     write(fname, cand_rand)
     print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, best_val, elapsed_time)))
 
-    return mode, nd, nr, elapsed_time, fname
+    return mode, nd, nr, elapsed_time, fname, best_val
 
 
-def plot(fname, show=None, nbins=20, area=10):
+def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
+
+    alpha = {'hist': 1.0, 'cand': 0.25}
+    area = {'hist': 40, 'cand': 25}
+
+    def plot_hist(ax, xs, xname):
+        ns, bins = np.histogram(xs, nbins)
+        xmin = bins[0]
+        xmax = bins[-1]
+        width = bins[1] - bins[0]
+        center = (bins[1:] + bins[:-1]) / 2
+        if hbars:
+            ax.barh(center, ns, align='center', height=width, alpha=alpha['cand'])
+            ax.set_ylabel(xname)
+            ax.set_xlabel('Frequency')
+        else:
+            ax.bar(center, ns, align='center', width=width, alpha=alpha['cand'])
+            ax.set_xlabel(xname)
+            ax.set_ylabel('Frequency')
+
+        ax.grid(True, axis='both')
+        return ax
+
     # load results
     df = load(fname)
     names = list(df)
+    # load history
+    if hname:
+        hf = load(hname)
+        # make sure headers match
+        assert (names == list(hf))
 
     # process inputs to be shown
     if show is None:
@@ -77,23 +105,18 @@ def plot(fname, show=None, nbins=20, area=10):
     if nshow == 1:
         fig = plt.figure()
         ax = fig.add_subplot(111)
-        xname = names[0]
-        n, bins, patches = ax.hist(df[xname], nbins)
-        xmin = bins[0]
-        xmax = bins[-1]
-        ax.set_xlabel(xname)
-        ax.set_ylabel('Frequency')
-        ax.grid(True, axis='both')
+        xname = show[0]
+        ax = plot_hist(ax, df[xname], xname)
 
-    else: # multiple inputs
-        
+    else:  # multiple inputs
+
         # subplot indices
         sb_indices = np.reshape(range(nshow ** 2), [nshow, nshow])
 
         # generate subplots
         fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
         A = axes.flat
-    
+
         for i in range(nshow):
 
             for j in range(i):
@@ -103,28 +126,29 @@ def plot(fname, show=None, nbins=20, area=10):
 
             k = sb_indices[i][i]
             ax = A[k]
-            xname = names[i]
+            xname = show[i]
             # ... plot histogram for diagonal subplot
-            n, bins, patches = ax.hist(df[xname], nbins)
-            xmin = bins[0]
-            xmax = bins[-1]
-            ax.set_xlabel(xname)
-            ax.set_ylabel('Frequency')
-            ax.grid(True, axis='both')
+            ax = plot_hist(ax, df[xname], xname)
 
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
                 ax = A[k]
-                yname = names[j]
+                yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[xname], df[yname], s=area, alpha=0.5)
-                ax.set_xlabel(xname)
-                ax.set_ylabel(yname)
+                ax.scatter(df[yname], df[xname], s=area['cand'], alpha=alpha['cand'], color='b')
+                if hname:
+                    ax.scatter(hf[yname], hf[xname], s=area['hist'], alpha=alpha['hist'], color='red', marker="*")
+                ax.set_ylabel(xname)
+                ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
 
     title = 'SDOE candidates from {}'.format(fname)
     fig.canvas.set_window_title(title)
     plt.tight_layout()
-    plt.show()
+    if hname:
+        fig.legend(labels=['cand', 'cand', 'hist'], loc='lower left', fontsize='xx-large')
+    else:
+        fig.legend(labels=['cand', 'cand'], loc='lower left', fontsize='xx-large')
 
+    plt.show()

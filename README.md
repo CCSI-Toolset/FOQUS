@@ -1,5 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/foqus/badge/?version=latest)](https://foqus.readthedocs.io/en/latest/?badge=latest)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/0tol930ch5k887fg?svg=true)](https://ci.appveyor.com/project/perrenyang/foqus-37w98)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/g0gvhmlwsv4a4y63?svg=true)](https://ci.appveyor.com/project/ksbeattie/foqus)
+[![CircleCI Build Status](https://circleci.com/gh/CCSI-Toolset/FOQUS.svg?style=svg)](https://circleci.com/gh/CCSI-Toolset/FOQUS)
 
 # FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
@@ -7,12 +8,17 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 ## Getting Started
 
 ### Install
-See the [installation](https://foqus.readthedocs.io/en/latest/chapt_install/index.html) instructions for details.
+To get started right away, start with the [installation](https://foqus.readthedocs.io/en/stable/chapt_install/index.html) instructions for the most recent stable release.
 
-The videos on how to install FOQUS can be found by clicking these links:
+We also have several videos playlists on how to install FOQUS:
 * [Python 3 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXl-H9Wp3X6SIpVWg3Ua1Y2X)
 * [Optional software for FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXn24WEhFMyrtA-0_4Rvlesw)
 * [Python 2 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd) 
+
+### Documentation and User's Manual
+Read the full [documentation for FOQUS](https://foqus.readthedocs.io/en/stable/) (including the installation manual).  Documentation for [past releases or the latest](https://readthedocs.org/projects/foqus/) (unreleased) development version are available.
+
+The complete set of usage and installation instruction videos for FOQUS on our [YouTube channel](https://www.youtube.com/channel/UCBVjFnxrsWpNlcnDvh0_GzQ/).
 
 ### FAQ
 See our [FAQ](FAQs.md) for frequently asked questions and answers
@@ -41,16 +47,5 @@ If you are using FOQUS for your work, please reference the following paper:
 
 Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J., Leek, J., Ma, J., Mahapatra, P., Ng, B., Sahinidis, N.V., Tong, C., Zitney, S.E., 2017. Innovative computational tools and models for the design, optimization and control of carbon capture processes, in: Papadopoulos, A.I., Seferlis, P. (Eds.), Process Systems and Materials for CO2 Capture: Modelling, Design, Control and Integration. John Wiley & Sons Ltd, Chichester, UK, pp. 311–342.
 
-## Documentation and User's Manual
-Usage instruction videos for FOQUS can be viewed by clicking [here](https://www.youtube.com/playlist?list=PLmBxveOxgaXln5vYXkGCASitBK6bTS-0E).
-
-The documentation for FOQUS (including the user's manual) can be accessed by clicking [here](https://foqus.readthedocs.io/en/latest/).
-
-Alternately, the html version of the documentation can be generated from following these steps:
-
-1. Use the Anaconda prompt to go to the "docs" folder in the folder that is generated when FOQUS is downloaded.
-2. For Windows and Linux, type "make html".
-3. The html version of the documentation will be created, and located in the "docs\build\html" folder.
-
 ## Technical Support
-If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org
+If you require assistance, or have questions regarding FOQUS, please send an e-mail to: ccsi-support@acceleratecarboncapture.org or [open an issue in GitHub](https://github.com/CCSI-Toolset/FOQUS/issues)

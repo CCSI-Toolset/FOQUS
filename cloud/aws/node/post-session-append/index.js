@@ -1,6 +1,7 @@
 /**
- * Lambda Function, Add an Array of jobs to a Session.
- * Uploads JSON Array of jobs to S3 Session bucket with
+ * Name:  post-session-append
+ * Description: Add Array of jobs to a Session.  Uploads JSON Array of jobs
+ * to S3 Session bucket with
  * key "s3://{SESSION_BUCKET_NAME}/user_name/milliseconds_since_epoch.json".
  * Next for each item in array a DynamoDB entry is made in FOQUS_Resources.
  *

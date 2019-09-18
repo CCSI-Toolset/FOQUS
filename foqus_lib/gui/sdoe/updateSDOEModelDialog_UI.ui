@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>updateSDOEModelDialog</class>
+ <widget class="QDialog" name="updateSDOEModelDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>534</width>
+    <height>487</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Add New Ensemble - Model Selection</string>
+  </property>
+  <property name="modal">
+   <bool>true</bool>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QRadioButton" name="historyRadioButton">
+     <property name="toolTip">
+      <string>Choose this option if you want to
+use a historical file to generate
+your samples</string>
+     </property>
+     <property name="text">
+      <string>Use history file</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="historyFileLabel">
+       <property name="text">
+        <string>History File:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="historyFileEdit">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseHistoryButton">
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QRadioButton" name="templateRadioButton">
+     <property name="toolTip">
+      <string>Choose this option if you want to use a 
+template file to generate your samples.
+The example below shows the format
+required to make this work.</string>
+     </property>
+     <property name="text">
+      <string>Use template file (see example)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="exampleGroupBox">
+     <property name="title">
+      <string>Example:</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLabel" name="exampleLabel">
+        <property name="text">
+         <string>w, G, lldg, L
+0.1, 1000, 0, 3000
+0.2, 3000, 0.2, 12000
+*0.15, 2000, 0.1, 7500</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="instructionsLabel">
+        <property name="text">
+         <string>The template file should be a simple 
+comma separated values (.csv) 
+file with at least three rows:
+- header with input names
+- minimum values
+- maximum values
+
+*Optional fourth row with default value.
+If fourth row is not provided, the middle
+point between min and max would be
+the default value.</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QLabel" name="templateFileLabel">
+       <property name="text">
+        <string>Template File:</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="templateFileEdit"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="browseTemplateButton">
+       <property name="text">
+        <string>Browse...</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>accepted()</signal>
+   <receiver>updateSDOEModelDialog</receiver>
+   <slot>accept()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>248</x>
+     <y>254</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>157</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>buttonBox</sender>
+   <signal>rejected()</signal>
+   <receiver>updateSDOEModelDialog</receiver>
+   <slot>reject()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>316</x>
+     <y>260</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>286</x>
+     <y>274</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

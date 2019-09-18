@@ -78,14 +78,13 @@ class opt(optimization):
              "}\n"
              "</head>\n"
              "<p class=\"hangingindent\">"
-             "<p><b>NLopt</b></p>"
              "<p>Steven G. Johnson, The NLopt nonlinear-optimization"
              " package, http://ab-initio.mit.edu/nlopt <\p>"
-             "<p>This plugin makes use of the NLopt Python module "
-             "This plugin provides a wrapper for the NLopt code "
-             "allowing it to work with FOQUS.</p>"
+             "<p>Algorithm Type: Both derivative free & gradient based</p>"
+             "<p>Optimization Problems handling Capability: Nonlinear Optimization Problems with Nonlinear inequality constraints.</p>" 
+             "<p>AUGLAG, COBYLA, and ISRES algorithms support nonlinear equality constraints as well.</p>"
              "<p>NLopt contains several solvers by various authors"
-             "see the NLopt docunentation for more information</p>"
+             "see the NLopt documentation for more information</p>"
              "</html>")
         self.available = nlopt_available # If plugin is available
         self.description = "NLopt" #Short description

@@ -287,15 +287,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
-        _log.debug("kat starta")
+        _log.debug("Consumer Register")
         db.consumer_register()
-        _log.debug("kat startb")
         db.add_message("Consumer Registered")
-        _log.debug("kat start1")
         kat = _KeepAliveTimer(db, freq=60)
-        _log.debug("kat start2")
         kat.start()
-        _log.debug("kat start3")
         while not self._stop:
             ret = None
             _log.debug("pop job")

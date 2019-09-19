@@ -8,15 +8,13 @@
  */
 'use strict';
 'use AWS.DynamoDB'
-console.log('Loading function');
 const AWS = require('aws-sdk');
 const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
+const log = require("debug")("get-session")
 
 // For development/testing purposes
 exports.handler = function(event, context, callback) {
-  console.log(`Running index.handler: "${event.httpMethod}"`);
-  console.log("request: " + JSON.stringify(event));
-  console.log('==================================');
+  log(`Running index.handler: "${event.httpMethod}"`);
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',
       body: err ? err.message : JSON.stringify(res),
@@ -44,7 +42,7 @@ exports.handler = function(event, context, callback) {
         function(err,data) {
           var body = []
           if(err) {
-            console.log("Error: ", err);
+            log("Error: ", err);
             callback(null, {statusCode:'400', body: JSON.stringify(data), headers: {'Content-Type': 'application/json',}});
           } else {
             // [{"Initialize":false,"Input":{},"Reset":false,
@@ -54,33 +52,41 @@ exports.handler = function(event, context, callback) {
             /* states = set(['submit', 'create', 'setup', 'running', 'success', 'warning',
               'error', 'expired', 'cancel', 'terminate', 'pause'])
              */
-            console.log('Data: ', data.Items.length);
+            log('Data: ', data.Items.length);
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
                 if (item.SessionId == session_id) {
-                  console.log('item: ', item);
+                  log('item: ', item);
                   var obj =  {Id: item.Id,
                     Application: item.Application,
                     SessionId: item.SessionId,
                     Initialize: item.Initialize,
                     Input:item.Input,
-                    State:item.state,
+                    State:item.State,
                     Reset:item.Reset,
                     Simulation: item.Simulation,
                     Create: item.Create,
                     Output:item.Output};
 
                   if (item.submit) {
+                    log('add submit: ', item.submit);
                     obj.Submit = item.submit;
+                    obj.State = "submit";
                   }
                   if (item.setup) {
+                    log('add setup: ', item.setup);
                     obj.Setup = item.setup;
+                    obj.State = "setup";
                   }
                   if (item.running) {
+                    log('add running: ', item.running);
                     obj.Running = item.running;
+                    obj.State = "running"
                   }
                   if (item.Finished) {
-                    obj.Running = item.finished;
+                    log('add finished: ', item.State);
+                    obj.Finished = item.Finished;
+                    obj.State = item.State;
                   }
                   body.push(obj);
                 }
@@ -89,7 +95,5 @@ exports.handler = function(event, context, callback) {
            }
       });
   }
-
-  console.log('==================================');
-  console.log('Stopping index.handler');
+  log('Stopping index.handler');
 };

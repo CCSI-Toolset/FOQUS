@@ -114,7 +114,9 @@ exports.handler = function(event, context, callback) {
               }
               log(`pagelen: ${page.length}`);
               if (page.length == 0) {
-                next_page_number = 0;
+                // There were no new Finished jobs, return latest result page
+                // number
+                next_page_number = next_page_number - 1;
                 handleDone();
                 return;
               }

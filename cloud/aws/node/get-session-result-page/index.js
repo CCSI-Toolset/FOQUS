@@ -45,12 +45,15 @@ exports.handler = function(event, context, callback) {
       log("PARAMS: " + JSON.stringify(params));
       var client = new AWS.S3();
       client.getObject(params, function(err, data) {
-         if (err)
-           log(err, err.stack); // an error occurred
-         else
+         if (err) {
+           log(err, err.stack);
+           callback(null, {statusCode:'404', body: `{"Message":"no result page number ${page}"}`,
+               headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}});
+         } else {
            callback(null, {statusCode:'200', body: data.Body.toString('utf-8'),
-             headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/octet-stream'}
+             headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
            });
+         }
       });
   }
   else {

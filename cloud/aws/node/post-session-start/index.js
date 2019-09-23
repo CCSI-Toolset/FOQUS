@@ -1,8 +1,8 @@
 /**
- * Lambda Function, lists all files with S3 Prefix s3://bucket/{session_id}/,
+ * Lambda Function, lists all files with S3 Prefix s3://bucket/{session_id}/create,
  *   get each file which contains a JSON array of job descriptions and Publish
  *   each job to the FOQUS Update Notification topic where the lambda function
- *   foqus-sns-update is listening.
+ *   foqus-sns-update is listening.  Delete all S3 Objects processed.
  *
  * @module post-session-start
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
@@ -13,6 +13,7 @@
 'use strict';
 'use AWS.S3'
 'use uuid'
+const assert = require('assert');
 const log = require("debug")("post-session-start")
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
@@ -23,6 +24,7 @@ const abspath = path.resolve(dirPath);
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
 const foqus_update_topic = process.env.FOQUS_UPDATE_TOPIC;
+const s3 = new AWS.S3();
 
 // post-session-start:
 //  1.  Grab oldest S3 File in bucket foqus-sessions/{username}/{session_uuid}/*.json
@@ -53,6 +55,7 @@ exports.handler = function(event, context, callback) {
     });
     return;
   }
+
   const user_name = event.requestContext.authorizer.principalId;
   if (event.httpMethod == "POST") {
     log("PATH: " + event.path)
@@ -65,7 +68,6 @@ exports.handler = function(event, context, callback) {
       Prefix: user_name + '/session/create/' + session_id + '/',
       StartAfter: user_name + '/session/create/' + session_id + '/'
     };
-    var s3 = new AWS.S3();
     var request_list = s3.listObjectsV2(params, function(err, data) {
         if (err) {
           log(err, err.stack); // an error occurred
@@ -100,12 +102,14 @@ exports.handler = function(event, context, callback) {
 
             // TAKE S3 LIST OBJECTS
             // Could have multiple S3 objects ( each representing single start )
+            var params_delete = {Bucket: s3_bucket_name, Delete:{Objects:[]}};
             var promises = [];
             for (var index = 0; index < response_list.data.Contents.length; index++) {
                 var params = {
                   Bucket: s3_bucket_name,
                   Key: response_list.data.Contents[index].Key,
                 };
+                params_delete.Delete.Objects.push({Key:params.Key});
                 if (params.Key.endsWith('.json') == false) {
                   log("SKIP: %s", JSON.stringify(params));
                   continue;
@@ -116,11 +120,12 @@ exports.handler = function(event, context, callback) {
                 // and call done with the number sent.
                 // currently this goes file by file.
                 let promise = s3.getObject(params).promise();
+                //promise.then(handleDelete);
                 promises.push(promise);
-              }
-              Promise.all(promises).then(function(values) {
-                  // return the result to the caller of the Lambda function
-                  for (var i=0 ; i < values.length; i++ ) {
+            }
+            Promise.all(promises).then(function(values) {
+                // return the result to the caller of the Lambda function
+                for (var i=0 ; i < values.length; i++ ) {
                     var data = values[i];
                     var obj = JSON.parse(data.Body.toString('ascii'));
                     log("SESSION(" + session_id + "):  Notify Starting " + obj.length);
@@ -158,9 +163,26 @@ exports.handler = function(event, context, callback) {
                             }
                         });
                     }
-                  }
-                  done(null, id_list);
-              });
+                }
+                if (params_delete.Delete.Objects.length == 0) {
+                    log("No items to be submitted")
+                    assert.strictEqual(id_list.length, 0);
+                    done(null, id_list);
+                    return;
+                }
+
+                log(`Delete : ${params_delete.Delete.Objects}`)
+                s3.deleteObjects(params_delete, function(err, data) {
+                    if (err) {
+                        log(`handleDelete(${params_delete.Objects}), ERROR: ${err}`);
+                        log(`handleDelete ERROR Stack: ${err.stack}`);
+                        done(new Error(`"${err.stack}"`));
+                    } else {
+                        log(`handleDelete: DELETED ${params_delete.Objects}`);
+                        done(null, id_list);
+                    }
+                });
+            });
         });
     });
   }

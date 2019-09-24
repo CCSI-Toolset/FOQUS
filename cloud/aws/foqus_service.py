@@ -397,8 +397,9 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         """ Job is Finished it is in state (terminate,stop,success,error)
         """
         if item.get('Finished',None):
-            _log.info("Job %s in Finished State=%s", str(job_id), item.get('State'))
-            return True
+            state = item.get('State')
+            _log.info("Job %s in Finished State=%s", str(job_id), state)
+            return state == 'terminate'
         return False
 
     def pop_job(self, db, VisibilityTimeout=300):

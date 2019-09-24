@@ -12,7 +12,6 @@
     chapt_ouu/index
     chapt_surrogates/index
     chapt_sdoe/index
-    chapt_solventfit/index
     chapt_sinter/index
     chapt_debug/index
     chapt_HI/index
@@ -38,8 +37,7 @@ Modules
 5. The Derivative-Free Optimization (DFO) module enables derivative-free (or simulation-based) optimization directly on the process models linked together on a FOQUS Flowsheet. It utilizes Excel to calculate complex objective functions, such as the cost of electricity.
 6. The UQ module enables the effects of uncertainty to be propagated through the complete system model, sensitivity of the model to be assessed, and the most significant sources of uncertainty identified to enable prioritizing of experimental resources to obtain additional data.
 7. The Optimization Under Uncertainty (OUU) module combines the capabilities of the DFO and the UQ modules to enable scenario-based optimization, such as optimization over a range of operating scenarios.
-8. The SolventFit module is an uncertainty quantification tool for the calibration of an Aspen Plus® solvent process model. The current state of the art is a regression that yields single best fit point estimates of some parameters. This shows neither the level of uncertainty in each parameter, nor the level of uncertainty in model output, such as equivalent work. SolventFit allows for predictions with uncertainty bounds by accounting for uncertainty in model parameters and deficiencies in the model form. This yields an improved understanding of the model parameters and results in more complete predictions with uncertainty bounds. This distribution of parameters allows for predictions with uncertainty.
-9. The Sequential Design of Experiments (SDOE) module currently provides a way to construct flexible space-filling designs based on a user-provided candidate set of input points. The method allows for new designs to be constructed as well as augmenting existing data to strategically select input combintions that minimizes the distance between points. Development of this module is continuing and will soon include other options for design construction.
+8. The Sequential Design of Experiments (SDOE) module currently provides a way to construct flexible space-filling designs based on a user-provided candidate set of input points. The method allows for new designs to be constructed as well as augmenting existing data to strategically select input combintions that minimizes the distance between points. Development of this module is continuing and will soon include other options for design construction.
 
 Application Based Examples
 --------------------------

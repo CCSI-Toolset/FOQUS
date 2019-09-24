@@ -40,3 +40,20 @@ Modules
 7. The Optimization Under Uncertainty (OUU) module combines the capabilities of the DFO and the UQ modules to enable scenario-based optimization, such as optimization over a range of operating scenarios.
 8. The SolventFit module is an uncertainty quantification tool for the calibration of an Aspen Plus® solvent process model. The current state of the art is a regression that yields single best fit point estimates of some parameters. This shows neither the level of uncertainty in each parameter, nor the level of uncertainty in model output, such as equivalent work. SolventFit allows for predictions with uncertainty bounds by accounting for uncertainty in model parameters and deficiencies in the model form. This yields an improved understanding of the model parameters and results in more complete predictions with uncertainty bounds. This distribution of parameters allows for predictions with uncertainty.
 9. The Sequential Design of Experiments (SDOE) module currently provides a way to construct flexible space-filling designs based on a user-provided candidate set of input points. The method allows for new designs to be constructed as well as augmenting existing data to strategically select input combintions that minimizes the distance between points. Development of this module is continuing and will soon include other options for design construction.
+
+Application Based Examples
+--------------------------
+
+FOQUS has been used to solve problems based on comprehensive analysis and optimization of carbon capture systems. Some relevant research work that includes FOQUS can be found in the following publications:
+
+Chen, Y., Eslick, J.C., Grossmann, I.E., Miller, D.C., 2015. Simultaneous process optimization and heat integration based on rigorous process simulations. Computers and Chemical Engineering 81, 180–199.
+
+Gao, Q., Miller, D.C., 2015. Optimization of amine-based solid sorbent chemistry for post-combustion carbon capture. Paper presented at: 2015 International Pittsburgh Coal Conference; 5–8 October 2015; Pittsburgh, PA, USA.
+
+Ma, J., Mahapatra, P., Zitney, S.E., Biegler, L.T., Miller, D.C., 2016. D-RM Builder: A software tool for generating fast and accurate nonlinear dynamic reduced models from high-fidelity models. Computers and Chemical Engineering 94, 60–74.
+
+Miller, D.C., Agarwal, D., Bhattacharyya, D., Boverhof, J., Chen, Y., Eslick, J., Leek, J., Ma, J., Mahapatra, P., Ng, B., Sahinidis, N.V., Tong, C., Zitney, S.E., 2017. Innovative computational tools and models for the design, optimization and control of carbon capture processes, in: Papadopoulos, A.I., Seferlis, P. (Eds.), Process Systems and Materials for CO2 Capture: Modelling, Design, Control and Integration. John Wiley & Sons Ltd, Chichester, UK, pp. 311–342.
+
+Soepyan, F.B., Anderson-Cook, C.M., Morgan, J.C., Tong, C.H., Bhattacharyya, D., Omell, B.P., Matuszewski, M.S., Bhat, K.S., Zamarripa, M.A., Eslick, J.C., Kress, J.D., Gattiker, J.R., Russell, C.S., Ng, B., Ou, J.C., Miller, D.C., 2018. Sequential Design of Experiments to Maximize Learning from Carbon Capture Pilot Plant Testing. In: Eden, M.R., Ierapetritou, M.G., Towler, G.P. (Editors), 13th International Symposium on Process Systems Engineering (PSE 2018). Elsevier, Amsterdam, pp. 283-288.
+
+Additional research work can be found on https://www.acceleratecarboncapture.org/publications 

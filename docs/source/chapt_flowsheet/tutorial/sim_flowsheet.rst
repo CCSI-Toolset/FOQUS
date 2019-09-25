@@ -17,7 +17,7 @@ Before starting the tutorial, see Section
 :ref:`tutorial.example.files` to locate and
 copy the example files to a convenient location.
 
-The files for the tutorial is located in: examples/tutorial_files/Flowsheets/Tutorial_2
+The files for this tutorial is located in: examples/tutorial_files/Flowsheets/Tutorial_2
 
 #. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 

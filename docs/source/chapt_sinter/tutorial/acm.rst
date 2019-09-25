@@ -30,7 +30,7 @@ are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
      for the file. For this tutorial, the ACM model (BFBv6.2.acmf) for a
      bubbling fluidized bed adsorber (located in the
      examples/tutorial_files/SimSinter/Tutorial_1 folder)
-     is selected (BFB_OUU_COE.acmf). Once the file is selected,
+     is selected. Once the file is selected,
      click **Open File and Configure Variables**. The user can open a
      fresh ACM simulation (.acmf file) or an existing SimSinter
      configuration file. For this example, open a fresh simulation.

@@ -15,24 +15,7 @@ converge in Aspen, thus the simulation samples corresponding to these
 failed runs should be excluded from analysis. Follow the steps below to
 filter out the samples due to failed runs:
 
-#. Click Load from File on the UQ window
-   (Figure\ `[fig:uqt_data_filter] <#fig:uqt_data_filter>`__\ ).
-
-   .. raw:: latex
-
-      \centering
-
-   .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_1.png
-      :alt: Data Manipulation, Filtering Tab
-
-      Data Manipulation, Filtering Tab
-      
-      [fig:uqt_data_filter]
-      
-   .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_2.png
-      :alt: Data Manipulation, Filtering Dialog Box
-
-      Data Manipulation, Filtering Dialog Box
+#. Click Load from File on the UQ window (Figure :ref:`fig:uqt_data_filter`).
 
 #. Select the file “gmoat5012_9levels.res” in the examples\UQ folder.
    This file is an actual simulation ensemble that has already been run
@@ -41,22 +24,40 @@ filter out the samples due to failed runs:
 
 #. Select the Filtering tab.
 
+   .. raw:: latex
+
+      \centering
+
+   .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_1.png
+      :alt: Data Manipulation, Filtering Tab
+      :name: fig:uqt_data_filter
+
+      Data Manipulation, Filtering Tab
+      
 #.  Filtering the loaded simulation ensemble based on output values is performed.
 
     #. Click on "New Filter", and create a filter named "f1"
-    #. Add the Filter Expression c("output.status") == 0, since the user should keep only the samples in which the output      parameter status is “0.”
+    #. Add the Filter Expression c("output.status") == 0, since the user should
+       keep only the samples in which the output parameter status is “0.”
     #. Click "Done"
-    #. Select 'f1' as the " Current Filter" in the Flowsheet Result window within "Filtering Tab"
-    #. Once the Filtering is complete, click on "Save as New Ensemble" and a new row should be added to the simulation table
 
- .. figure:: ../figs/tutorial/Data_ManipulationFiltering_Results.png
-    :alt: Data Manipulation, Applying the filter
- Data Manipulation, Applying the filter
+       .. figure:: ../figs/tutorial/Data_Manipulation_Filtering_Tab_2.png
+          :alt: Data Manipulation, Filtering Dialog Box
 
+          Data Manipulation, Filtering Dialog Box
+       
+    #. Select 'f1' as the " Current Filter" in the Flowsheet Result window
+       within "Filtering Tab"
+    #. Once the Filtering is complete, click on "Save as New Ensemble" and a new
+       row should be added to the simulation table      
+
+       .. figure:: ../figs/tutorial/Data_ManipulationFiltering_Results.png
+          :alt: Data Manipulation, Applying the filter
+
+          Data Manipulation, Applying the filter
 
 #. Once filtering is complete, a new row should be added to the
-   simulation table (Figure
-   `[fig:uqt_data_filter_results] <#fig:uqt_data_filter_results>`__).
+   simulation table (Figure :ref:`fig:uqt_data_filter_results`).
    This ensemble contains only those samples that have a status value of
    “0.” Analysis can now be performed on this new ensemble because this
    ensemble contains only the valid simulations (i.e., those with output
@@ -65,9 +66,9 @@ filter out the samples due to failed runs:
 
    .. figure:: ../figs/tutorial/12_FilterResults2.png
       :alt: Data Manipulation, Filtering Results
-      Data Manipulation, Filtering Results
+      :name: fig:uqt_data_filter_results
 
-   [fig:uqt_data_filter_results]
+      Data Manipulation, Filtering Results
 
 .. _subsubsec:uqt_vardel:
 
@@ -92,20 +93,18 @@ as it is no longer needed for further analysis.
 
 #. Click Perform Deletion then Save as New Ensemble.
 
-The results are illustrated in Figure
-`[fig:uqt_data_mod] <#fig:uqt_data_mod>`__. Note: The output count has
-decreased by one for the new ensemble. The user can verify that the
+The results are illustrated in Figure :ref:`fig:uqt_data_mod`. Note: The output
+count has decreased by one for the new ensemble. The user can verify that the
 “status” output was removed in the new ensemble by viewing this in the
-**Inspection/Deletion/Output Value Modification** tab again. Deletion of
-an input can be performed similarly by selecting its checkbox and
-clicking the **Perform Deletion then Save as New Ensemble** button.
+**Inspection/Deletion/Output Value Modification** tab again. Deletion of an
+input can be performed similarly by selecting its checkbox and clicking the
+**Perform Deletion then Save as New Ensemble** button.
 
 .. figure:: ../figs/tutorial/13_DataManipulation2.png
    :alt: Data Manipulation, Inspection/Deletion
+   :name: fig:uqt_data_mod
 
    Data Manipulation, Inspection/Deletion
-
-[fig:uqt_data_mod]
 
 Output Value Modification
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,10 +129,9 @@ steps below:
 
 .. figure:: ../figs/tutorial/14_DataManipulation_OutputModification2.png
    :alt: Data Manipulation, Value Modification
+   :name: fig:uqt_data_mod_output
 
    Data Manipulation, Value Modification
-
-[fig:uqt_data_mod_output]
 
 .. raw:: latex
 

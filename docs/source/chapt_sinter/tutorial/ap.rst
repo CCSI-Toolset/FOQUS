@@ -1,8 +1,8 @@
-Tutorial 1: Aspen Plus Configuration
+Tutorial 2: Aspen Plus Configuration
 ====================================
 
 The files (both the Aspen Plus file and the JSON file)
-for this tutorial are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
+for this tutorial are located in: **examples/tutorial_files/SimSinter/Tutorial_2**
 
 #. The initial steps for opening a simulation and entering metadata for
    an Aspen Plus simulation are similar to ACM. Refer to the SimSinter

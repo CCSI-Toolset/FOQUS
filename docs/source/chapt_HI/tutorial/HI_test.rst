@@ -1,7 +1,7 @@
 _tutorial.heat.integration:
 
-Heat Integration within FOQUS Tutorial
-=======================================
+Tutorial: Heat Integration with FOQUS
+=====================================
 
 The files for this tutorial are located in:
 **examples/tutorial_files/Heat_Integration**

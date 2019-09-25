@@ -10,7 +10,7 @@ ensemble. This tutorial provide information about sorting, filtering,
 and exporting data.
 
 The FOQUS file for this tutorial is **Simple_flow.foqus**, and
-this file is located in: **examples\tutorial_files\Flowsheets\Tutorial_4**
+this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_4**
 
 Copy the Simple_flow.foqus file to a
 convenient location (see section :ref:`tutorial.example.files`). This file is

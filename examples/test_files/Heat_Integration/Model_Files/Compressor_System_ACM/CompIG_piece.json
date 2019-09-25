@@ -1,0 +1,1781 @@
+{
+  "title": "Multi-stage compression process with heat integration (with piecewise FCps)",
+  "description": "Entire compression system including multi-stage compressors, adsorber, and regenerator.",
+  "aspenfile": "CompIG_piece.acmf",
+  "author": "Yang Chen",
+  "date": "October 2014",
+  "filetype": "sinterconfig",
+  "version": 0.2,
+  "settings": {
+    "homotopy": {
+      "type": "int",
+      "default": 1,
+      "description": ""
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    }
+  },
+  "inputs": {
+    "BFB_Comp_F": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").F"
+      ],
+      "type": "double",
+      "default": 8537.8080986961049,
+      "description": "Input stream",
+      "units": "kmol/hr"
+    },
+    "BFB_Comp_T": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").T"
+      ],
+      "type": "double",
+      "default": 50.0,
+      "description": "Input stream",
+      "units": "C"
+    },
+    "BFB_Comp_P": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").P"
+      ],
+      "type": "double",
+      "default": 1.0122468982422,
+      "description": "Input stream",
+      "units": "bar"
+    },
+    "BFB_Comp_z_CO2": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").z(\"CO2\")"
+      ],
+      "type": "double",
+      "default": 0.89092741234505934,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "BFB_Comp_z_H2O": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").z(\"H2O\")"
+      ],
+      "type": "double",
+      "default": 0.1090725876549406,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "BFB_Comp_z_TEG": {
+      "path": [
+        "B6.i_port.Connection(\"CO2_From_Cap\").z(\"TEG\")"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Input stream",
+      "units": "kmol/kmol"
+    },
+    "Comp_before_dry_Intercooler_1_Out_T": {
+      "path": [
+        "Comp_before_dry.intercooler(1).o_port_vap.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    },
+    "Comp_before_dry_Intercooler_2_Out_T": {
+      "path": [
+        "Comp_before_dry.intercooler(2).o_port_vap.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    },
+    "Comp_before_dry_Intercooler_3_Out_T": {
+      "path": [
+        "Comp_before_dry.intercooler(3).o_port_vap.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    },
+    "Comp_before_dry_Intercooler_4_Out_T": {
+      "path": [
+        "Comp_before_dry.intercooler(4).o_port_vap.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    },
+    "Comp_before_dry_Intercooler_5_Out_T": {
+      "path": [
+        "Comp_before_dry.intercooler(5).o_port_vap.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "",
+      "units": "C",
+      "min": 30.0,
+      "max": 70.0
+    }
+  },
+  "outputs": {
+    "Comp_CO2_F": {
+      "path": [
+        "CO2_F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/hr"
+    },
+    "Comp_CO2_T": {
+      "path": [
+        "CO2_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "C"
+    },
+    "Comp_CO2_P": {
+      "path": [
+        "CO2_P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "bar"
+    },
+    "Comp_CO2_z_CO2": {
+      "path": [
+        "CO2_z_CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "Comp_CO2_z_H2O": {
+      "path": [
+        "CO2_z_H2O"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "Comp_CO2_z_TEG": {
+      "path": [
+        "CO2_z_TEG"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Output stream",
+      "units": "kmol/kmol"
+    },
+    "Electricity.Consumption.Comp": {
+      "path": [
+        "Ele_tot"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Total consumption",
+      "units": "MW"
+    },
+    "MP_Steam.Consumption.Comp": {
+      "path": [
+        "Q_tot"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Total consumption",
+      "units": "GJ/hr"
+    },
+    "Trim_Cooler_1_In_T": {
+      "path": [
+        "Trim_Cooler_1_In_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Trim_Cooler_1_Out_T": {
+      "path": [
+        "Trim_Cooler_1_Out_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Trim_Cooler_1_Q": {
+      "path": [
+        "Trim_Cooler_1_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Mix_MU_In_T": {
+      "path": [
+        "Mix_MU_In_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Mix_MU_Out_T": {
+      "path": [
+        "Mix_MU_Out_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Mix_MU_Q": {
+      "path": [
+        "Mix_MU_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Absorber_T": {
+      "path": [
+        "Absorber_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Absorber_Q": {
+      "path": [
+        "Absorber_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Regen_T": {
+      "path": [
+        "Regen_T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "C"
+    },
+    "Regen_Q": {
+      "path": [
+        "Regen_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_1_1_In_T": {
+      "path": [
+        "Comp_before_1_1_In_T"
+      ],
+      "type": "double",
+      "default": 115.783927717271,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_1_Out_T": {
+      "path": [
+        "Comp_before_1_1_Out_T"
+      ],
+      "type": "double",
+      "default": 100.62714217381679,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_1_Q": {
+      "path": [
+        "Comp_before_1_1_Q"
+      ],
+      "type": "double",
+      "default": -5.3667164456792307,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_1_2_In_T": {
+      "path": [
+        "Comp_before_1_2_In_T"
+      ],
+      "type": "double",
+      "default": 100.62714217381679,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_2_Out_T": {
+      "path": [
+        "Comp_before_1_2_Out_T"
+      ],
+      "type": "double",
+      "default": 85.4703566303626,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_2_Q": {
+      "path": [
+        "Comp_before_1_2_Q"
+      ],
+      "type": "double",
+      "default": -5.3016413397728739,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_1_3_In_T": {
+      "path": [
+        "Comp_before_1_3_In_T"
+      ],
+      "type": "double",
+      "default": 85.4703566303626,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_3_Out_T": {
+      "path": [
+        "Comp_before_1_3_Out_T"
+      ],
+      "type": "double",
+      "default": 70.3135710869084,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_3_Q": {
+      "path": [
+        "Comp_before_1_3_Q"
+      ],
+      "type": "double",
+      "default": -5.2338794698765341,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_1_4_In_T": {
+      "path": [
+        "Comp_before_1_4_In_T"
+      ],
+      "type": "double",
+      "default": 70.3135710869084,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_4_Out_T": {
+      "path": [
+        "Comp_before_1_4_Out_T"
+      ],
+      "type": "double",
+      "default": 55.1567855434542,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_4_Q": {
+      "path": [
+        "Comp_before_1_4_Q"
+      ],
+      "type": "double",
+      "default": -25.70076388152895,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_1_5_In_T": {
+      "path": [
+        "Comp_before_1_5_In_T"
+      ],
+      "type": "double",
+      "default": 55.1567855434542,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_5_Out_T": {
+      "path": [
+        "Comp_before_1_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_1_5_Q": {
+      "path": [
+        "Comp_before_1_5_Q"
+      ],
+      "type": "double",
+      "default": -18.411655102941921,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_2_1_In_T": {
+      "path": [
+        "Comp_before_2_1_In_T"
+      ],
+      "type": "double",
+      "default": 115.9556078919141,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_1_Out_T": {
+      "path": [
+        "Comp_before_2_1_Out_T"
+      ],
+      "type": "double",
+      "default": 100.76448631353129,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_1_Q": {
+      "path": [
+        "Comp_before_2_1_Q"
+      ],
+      "type": "double",
+      "default": -5.046253849983259,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_2_2_In_T": {
+      "path": [
+        "Comp_before_2_2_In_T"
+      ],
+      "type": "double",
+      "default": 100.76448631353129,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_2_Out_T": {
+      "path": [
+        "Comp_before_2_2_Out_T"
+      ],
+      "type": "double",
+      "default": 85.573364735148459,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_2_Q": {
+      "path": [
+        "Comp_before_2_2_Q"
+      ],
+      "type": "double",
+      "default": -4.988842909066185,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_2_3_In_T": {
+      "path": [
+        "Comp_before_2_3_In_T"
+      ],
+      "type": "double",
+      "default": 85.573364735148459,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_3_Out_T": {
+      "path": [
+        "Comp_before_2_3_Out_T"
+      ],
+      "type": "double",
+      "default": 70.382243156765639,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_3_Q": {
+      "path": [
+        "Comp_before_2_3_Q"
+      ],
+      "type": "double",
+      "default": -4.9300773424109323,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_2_4_In_T": {
+      "path": [
+        "Comp_before_2_4_In_T"
+      ],
+      "type": "double",
+      "default": 70.382243156765639,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_4_Out_T": {
+      "path": [
+        "Comp_before_2_4_Out_T"
+      ],
+      "type": "double",
+      "default": 55.19112157838282,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_4_Q": {
+      "path": [
+        "Comp_before_2_4_Q"
+      ],
+      "type": "double",
+      "default": -4.8705149475256038,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_2_5_In_T": {
+      "path": [
+        "Comp_before_2_5_In_T"
+      ],
+      "type": "double",
+      "default": 55.19112157838282,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_5_Out_T": {
+      "path": [
+        "Comp_before_2_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_2_5_Q": {
+      "path": [
+        "Comp_before_2_5_Q"
+      ],
+      "type": "double",
+      "default": -10.219450926212859,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_3_1_In_T": {
+      "path": [
+        "Comp_before_3_1_In_T"
+      ],
+      "type": "double",
+      "default": 102.1934137727026,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_1_Out_T": {
+      "path": [
+        "Comp_before_3_1_Out_T"
+      ],
+      "type": "double",
+      "default": 89.754731018162033,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_1_Q": {
+      "path": [
+        "Comp_before_3_1_Q"
+      ],
+      "type": "double",
+      "default": -4.1343695068017041,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_3_2_In_T": {
+      "path": [
+        "Comp_before_3_2_In_T"
+      ],
+      "type": "double",
+      "default": 89.754731018162033,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_2_Out_T": {
+      "path": [
+        "Comp_before_3_2_Out_T"
+      ],
+      "type": "double",
+      "default": 77.316048263621525,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_2_Q": {
+      "path": [
+        "Comp_before_3_2_Q"
+      ],
+      "type": "double",
+      "default": -4.1070780703522543,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_3_3_In_T": {
+      "path": [
+        "Comp_before_3_3_In_T"
+      ],
+      "type": "double",
+      "default": 77.316048263621525,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_3_Out_T": {
+      "path": [
+        "Comp_before_3_3_Out_T"
+      ],
+      "type": "double",
+      "default": 64.877365509081017,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_3_Q": {
+      "path": [
+        "Comp_before_3_3_Q"
+      ],
+      "type": "double",
+      "default": -4.0815460361574853,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_3_4_In_T": {
+      "path": [
+        "Comp_before_3_4_In_T"
+      ],
+      "type": "double",
+      "default": 64.877365509081017,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_4_Out_T": {
+      "path": [
+        "Comp_before_3_4_Out_T"
+      ],
+      "type": "double",
+      "default": 52.438682754540508,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_4_Q": {
+      "path": [
+        "Comp_before_3_4_Q"
+      ],
+      "type": "double",
+      "default": -4.0587744855237151,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_3_5_In_T": {
+      "path": [
+        "Comp_before_3_5_In_T"
+      ],
+      "type": "double",
+      "default": 52.438682754540508,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_5_Out_T": {
+      "path": [
+        "Comp_before_3_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_3_5_Q": {
+      "path": [
+        "Comp_before_3_5_Q"
+      ],
+      "type": "double",
+      "default": -6.1128010897666432,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_4_1_In_T": {
+      "path": [
+        "Comp_before_4_1_In_T"
+      ],
+      "type": "double",
+      "default": 97.932019522203746,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_1_Out_T": {
+      "path": [
+        "Comp_before_4_1_Out_T"
+      ],
+      "type": "double",
+      "default": 86.345615617762988,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_1_Q": {
+      "path": [
+        "Comp_before_4_1_Q"
+      ],
+      "type": "double",
+      "default": -4.0004882428970632,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_4_2_In_T": {
+      "path": [
+        "Comp_before_4_2_In_T"
+      ],
+      "type": "double",
+      "default": 86.345615617762988,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_2_Out_T": {
+      "path": [
+        "Comp_before_4_2_Out_T"
+      ],
+      "type": "double",
+      "default": 74.759211713322244,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_2_Q": {
+      "path": [
+        "Comp_before_4_2_Q"
+      ],
+      "type": "double",
+      "default": -4.0013563394056222,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_4_3_In_T": {
+      "path": [
+        "Comp_before_4_3_In_T"
+      ],
+      "type": "double",
+      "default": 74.759211713322244,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_3_Out_T": {
+      "path": [
+        "Comp_before_4_3_Out_T"
+      ],
+      "type": "double",
+      "default": 63.1728078088815,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_3_Q": {
+      "path": [
+        "Comp_before_4_3_Q"
+      ],
+      "type": "double",
+      "default": -4.0091870430640917,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_4_4_In_T": {
+      "path": [
+        "Comp_before_4_4_In_T"
+      ],
+      "type": "double",
+      "default": 63.1728078088815,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_4_Out_T": {
+      "path": [
+        "Comp_before_4_4_Out_T"
+      ],
+      "type": "double",
+      "default": 51.586403904440751,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_4_Q": {
+      "path": [
+        "Comp_before_4_4_Q"
+      ],
+      "type": "double",
+      "default": -4.0265816302965334,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_4_5_In_T": {
+      "path": [
+        "Comp_before_4_5_In_T"
+      ],
+      "type": "double",
+      "default": 51.586403904440751,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_5_Out_T": {
+      "path": [
+        "Comp_before_4_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_4_5_Q": {
+      "path": [
+        "Comp_before_4_5_Q"
+      ],
+      "type": "double",
+      "default": -4.9596200402730224,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_5_1_In_T": {
+      "path": [
+        "Comp_before_5_1_In_T"
+      ],
+      "type": "double",
+      "default": 87.0014977265317,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_1_Out_T": {
+      "path": [
+        "Comp_before_5_1_Out_T"
+      ],
+      "type": "double",
+      "default": 77.601198181225357,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_1_Q": {
+      "path": [
+        "Comp_before_5_1_Q"
+      ],
+      "type": "double",
+      "default": -3.52088501225262,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_5_2_In_T": {
+      "path": [
+        "Comp_before_5_2_In_T"
+      ],
+      "type": "double",
+      "default": 77.601198181225357,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_2_Out_T": {
+      "path": [
+        "Comp_before_5_2_Out_T"
+      ],
+      "type": "double",
+      "default": 68.200898635919017,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_2_Q": {
+      "path": [
+        "Comp_before_5_2_Q"
+      ],
+      "type": "double",
+      "default": -3.5654402978229829,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_5_3_In_T": {
+      "path": [
+        "Comp_before_5_3_In_T"
+      ],
+      "type": "double",
+      "default": 68.200898635919017,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_3_Out_T": {
+      "path": [
+        "Comp_before_5_3_Out_T"
+      ],
+      "type": "double",
+      "default": 58.800599090612678,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_3_Q": {
+      "path": [
+        "Comp_before_5_3_Q"
+      ],
+      "type": "double",
+      "default": -3.624859943994414,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_5_4_In_T": {
+      "path": [
+        "Comp_before_5_4_In_T"
+      ],
+      "type": "double",
+      "default": 58.800599090612678,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_4_Out_T": {
+      "path": [
+        "Comp_before_5_4_Out_T"
+      ],
+      "type": "double",
+      "default": 49.400299545306339,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_4_Q": {
+      "path": [
+        "Comp_before_5_4_Q"
+      ],
+      "type": "double",
+      "default": -3.7047011414118258,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_5_5_In_T": {
+      "path": [
+        "Comp_before_5_5_In_T"
+      ],
+      "type": "double",
+      "default": 49.400299545306339,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_5_Out_T": {
+      "path": [
+        "Comp_before_5_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_5_5_Q": {
+      "path": [
+        "Comp_before_5_5_Q"
+      ],
+      "type": "double",
+      "default": -4.16407614095884,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_6_1_In_T": {
+      "path": [
+        "Comp_before_6_1_In_T"
+      ],
+      "type": "double",
+      "default": 84.779882124784407,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_1_Out_T": {
+      "path": [
+        "Comp_before_6_1_Out_T"
+      ],
+      "type": "double",
+      "default": 75.823905699827534,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_1_Q": {
+      "path": [
+        "Comp_before_6_1_Q"
+      ],
+      "type": "double",
+      "default": -3.958471390048544,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_6_2_In_T": {
+      "path": [
+        "Comp_before_6_2_In_T"
+      ],
+      "type": "double",
+      "default": 75.823905699827534,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_2_Out_T": {
+      "path": [
+        "Comp_before_6_2_Out_T"
+      ],
+      "type": "double",
+      "default": 66.867929274870647,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_2_Q": {
+      "path": [
+        "Comp_before_6_2_Q"
+      ],
+      "type": "double",
+      "default": -4.124569790594105,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_6_3_In_T": {
+      "path": [
+        "Comp_before_6_3_In_T"
+      ],
+      "type": "double",
+      "default": 66.867929274870647,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_3_Out_T": {
+      "path": [
+        "Comp_before_6_3_Out_T"
+      ],
+      "type": "double",
+      "default": 57.91195284991376,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_3_Q": {
+      "path": [
+        "Comp_before_6_3_Q"
+      ],
+      "type": "double",
+      "default": -4.3549621375877754,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_6_4_In_T": {
+      "path": [
+        "Comp_before_6_4_In_T"
+      ],
+      "type": "double",
+      "default": 57.91195284991376,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_4_Out_T": {
+      "path": [
+        "Comp_before_6_4_Out_T"
+      ],
+      "type": "double",
+      "default": 48.95597642495688,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_4_Q": {
+      "path": [
+        "Comp_before_6_4_Q"
+      ],
+      "type": "double",
+      "default": -4.6921630738410354,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_before_6_5_In_T": {
+      "path": [
+        "Comp_before_6_5_In_T"
+      ],
+      "type": "double",
+      "default": 48.95597642495688,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_5_Out_T": {
+      "path": [
+        "Comp_before_6_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_before_6_5_Q": {
+      "path": [
+        "Comp_before_6_5_Q"
+      ],
+      "type": "double",
+      "default": -5.3153097883098877,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_1_1_In_T": {
+      "path": [
+        "Comp_after_1_1_In_T"
+      ],
+      "type": "double",
+      "default": 86.1882226517212,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_1_Out_T": {
+      "path": [
+        "Comp_after_1_1_Out_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721347,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_1_Q": {
+      "path": [
+        "Comp_after_1_1_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_1_2_In_T": {
+      "path": [
+        "Comp_after_1_2_In_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721347,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_2_Out_T": {
+      "path": [
+        "Comp_after_1_2_Out_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721517,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_2_Q": {
+      "path": [
+        "Comp_after_1_2_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_1_3_In_T": {
+      "path": [
+        "Comp_after_1_3_In_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721517,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_3_Out_T": {
+      "path": [
+        "Comp_after_1_3_Out_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721688,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_3_Q": {
+      "path": [
+        "Comp_after_1_3_Q"
+      ],
+      "type": "double",
+      "default": 4.2230796857486E-13,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_1_4_In_T": {
+      "path": [
+        "Comp_after_1_4_In_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721688,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_4_Out_T": {
+      "path": [
+        "Comp_after_1_4_Out_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721858,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_4_Q": {
+      "path": [
+        "Comp_after_1_4_Q"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_1_5_In_T": {
+      "path": [
+        "Comp_after_1_5_In_T"
+      ],
+      "type": "double",
+      "default": 86.188222651721858,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_5_Out_T": {
+      "path": [
+        "Comp_after_1_5_Out_T"
+      ],
+      "type": "double",
+      "default": 86.188222651722029,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_1_5_Q": {
+      "path": [
+        "Comp_after_1_5_Q"
+      ],
+      "type": "double",
+      "default": -4.2230796857486E-13,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_2_1_In_T": {
+      "path": [
+        "Comp_after_2_1_In_T"
+      ],
+      "type": "double",
+      "default": 131.09245123347381,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_1_Out_T": {
+      "path": [
+        "Comp_after_2_1_Out_T"
+      ],
+      "type": "double",
+      "default": 112.873960986779,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_1_Q": {
+      "path": [
+        "Comp_after_2_1_Q"
+      ],
+      "type": "double",
+      "default": -10.78503017547928,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_2_2_In_T": {
+      "path": [
+        "Comp_after_2_2_In_T"
+      ],
+      "type": "double",
+      "default": 112.873960986779,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_2_Out_T": {
+      "path": [
+        "Comp_after_2_2_Out_T"
+      ],
+      "type": "double",
+      "default": 94.655470740084269,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_2_Q": {
+      "path": [
+        "Comp_after_2_2_Q"
+      ],
+      "type": "double",
+      "default": -12.71485994965045,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_2_3_In_T": {
+      "path": [
+        "Comp_after_2_3_In_T"
+      ],
+      "type": "double",
+      "default": 94.655470740084269,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_3_Out_T": {
+      "path": [
+        "Comp_after_2_3_Out_T"
+      ],
+      "type": "double",
+      "default": 76.436980493389512,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_3_Q": {
+      "path": [
+        "Comp_after_2_3_Q"
+      ],
+      "type": "double",
+      "default": -15.961757754111771,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_2_4_In_T": {
+      "path": [
+        "Comp_after_2_4_In_T"
+      ],
+      "type": "double",
+      "default": 76.436980493389512,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_4_Out_T": {
+      "path": [
+        "Comp_after_2_4_Out_T"
+      ],
+      "type": "double",
+      "default": 58.218490246694763,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_4_Q": {
+      "path": [
+        "Comp_after_2_4_Q"
+      ],
+      "type": "double",
+      "default": -20.027876001895631,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Comp_after_2_5_In_T": {
+      "path": [
+        "Comp_after_2_5_In_T"
+      ],
+      "type": "double",
+      "default": 58.218490246694763,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_5_Out_T": {
+      "path": [
+        "Comp_after_2_5_Out_T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Comp_after_2_5_Q": {
+      "path": [
+        "Comp_after_2_5_Q"
+      ],
+      "type": "double",
+      "default": -18.91250242505394,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Gas_Cooler_2_1_In_T": {
+      "path": [
+        "Gas_Cooler_2_1_In_T"
+      ],
+      "type": "double",
+      "default": 121.1111099162236,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_1_Out_T": {
+      "path": [
+        "Gas_Cooler_2_1_Out_T"
+      ],
+      "type": "double",
+      "default": 104.8888875809789,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_1_Q": {
+      "path": [
+        "Gas_Cooler_2_1_Q"
+      ],
+      "type": "double",
+      "default": -0.1443302181239545,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Gas_Cooler_2_2_In_T": {
+      "path": [
+        "Gas_Cooler_2_2_In_T"
+      ],
+      "type": "double",
+      "default": 104.8888875809789,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_2_Out_T": {
+      "path": [
+        "Gas_Cooler_2_2_Out_T"
+      ],
+      "type": "double",
+      "default": 88.666665245734151,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_2_Q": {
+      "path": [
+        "Gas_Cooler_2_2_Q"
+      ],
+      "type": "double",
+      "default": -0.13412848007442851,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Gas_Cooler_2_3_In_T": {
+      "path": [
+        "Gas_Cooler_2_3_In_T"
+      ],
+      "type": "double",
+      "default": 88.666665245734151,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_3_Out_T": {
+      "path": [
+        "Gas_Cooler_2_3_Out_T"
+      ],
+      "type": "double",
+      "default": 72.444442910489428,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_3_Q": {
+      "path": [
+        "Gas_Cooler_2_3_Q"
+      ],
+      "type": "double",
+      "default": -0.1306525033628094,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Gas_Cooler_2_4_In_T": {
+      "path": [
+        "Gas_Cooler_2_4_In_T"
+      ],
+      "type": "double",
+      "default": 72.444442910489428,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_4_Out_T": {
+      "path": [
+        "Gas_Cooler_2_4_Out_T"
+      ],
+      "type": "double",
+      "default": 56.222220575244712,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_4_Q": {
+      "path": [
+        "Gas_Cooler_2_4_Q"
+      ],
+      "type": "double",
+      "default": -0.1378337888681638,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "Gas_Cooler_2_5_In_T": {
+      "path": [
+        "Gas_Cooler_2_5_In_T"
+      ],
+      "type": "double",
+      "default": 56.222220575244712,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_5_Out_T": {
+      "path": [
+        "Gas_Cooler_2_5_Out_T"
+      ],
+      "type": "double",
+      "default": 39.99999824,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "Gas_Cooler_2_5_Q": {
+      "path": [
+        "Gas_Cooler_2_5_Q"
+      ],
+      "type": "double",
+      "default": -0.29072507019272542,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_1_Hot_In_T": {
+      "path": [
+        "HeatEx_1_1_Hot_In_T"
+      ],
+      "type": "double",
+      "default": 121.11111000000001,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_1_Hot_Out_T": {
+      "path": [
+        "HeatEx_1_1_Hot_Out_T"
+      ],
+      "type": "double",
+      "default": 105.2959279740991,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_1_Hot_Q": {
+      "path": [
+        "HeatEx_1_1_Hot_Q"
+      ],
+      "type": "double",
+      "default": 0.00018013944457258169,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_2_Hot_In_T": {
+      "path": [
+        "HeatEx_1_2_Hot_In_T"
+      ],
+      "type": "double",
+      "default": 105.2959279740991,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_2_Hot_Out_T": {
+      "path": [
+        "HeatEx_1_2_Hot_Out_T"
+      ],
+      "type": "double",
+      "default": 89.480745948198233,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_2_Hot_Q": {
+      "path": [
+        "HeatEx_1_2_Hot_Q"
+      ],
+      "type": "double",
+      "default": -2.2858136566215719,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_3_Hot_In_T": {
+      "path": [
+        "HeatEx_1_3_Hot_In_T"
+      ],
+      "type": "double",
+      "default": 89.480745948198233,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_3_Hot_Out_T": {
+      "path": [
+        "HeatEx_1_3_Hot_Out_T"
+      ],
+      "type": "double",
+      "default": 73.665563922297352,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_3_Hot_Q": {
+      "path": [
+        "HeatEx_1_3_Hot_Q"
+      ],
+      "type": "double",
+      "default": -2.3088306802369329,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_4_Hot_In_T": {
+      "path": [
+        "HeatEx_1_4_Hot_In_T"
+      ],
+      "type": "double",
+      "default": 73.665563922297352,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_4_Hot_Out_T": {
+      "path": [
+        "HeatEx_1_4_Hot_Out_T"
+      ],
+      "type": "double",
+      "default": 57.85038189639647,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_4_Hot_Q": {
+      "path": [
+        "HeatEx_1_4_Hot_Q"
+      ],
+      "type": "double",
+      "default": -2.3382773044765188,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_5_Hot_In_T": {
+      "path": [
+        "HeatEx_1_5_Hot_In_T"
+      ],
+      "type": "double",
+      "default": 57.85038189639647,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_5_Hot_Out_T": {
+      "path": [
+        "HeatEx_1_5_Hot_Out_T"
+      ],
+      "type": "double",
+      "default": 42.0351998704956,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_5_Hot_Q": {
+      "path": [
+        "HeatEx_1_5_Hot_Q"
+      ],
+      "type": "double",
+      "default": -4.7949312984401393,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_1_Cold_In_T": {
+      "path": [
+        "HeatEx_1_1_Cold_In_T"
+      ],
+      "type": "double",
+      "default": 33.498279477951641,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_1_Cold_Out_T": {
+      "path": [
+        "HeatEx_1_1_Cold_Out_T"
+      ],
+      "type": "double",
+      "default": 45.476516245293,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_1_Cold_Q": {
+      "path": [
+        "HeatEx_1_1_Cold_Q"
+      ],
+      "type": "double",
+      "default": 0.30495791573031411,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_2_Cold_In_T": {
+      "path": [
+        "HeatEx_1_2_Cold_In_T"
+      ],
+      "type": "double",
+      "default": 45.476516245293,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_2_Cold_Out_T": {
+      "path": [
+        "HeatEx_1_2_Cold_Out_T"
+      ],
+      "type": "double",
+      "default": 57.454753012634349,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_2_Cold_Q": {
+      "path": [
+        "HeatEx_1_2_Cold_Q"
+      ],
+      "type": "double",
+      "default": 2.637312075181613,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_3_Cold_In_T": {
+      "path": [
+        "HeatEx_1_3_Cold_In_T"
+      ],
+      "type": "double",
+      "default": 57.454753012634349,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_3_Cold_Out_T": {
+      "path": [
+        "HeatEx_1_3_Cold_Out_T"
+      ],
+      "type": "double",
+      "default": 69.4329897799757,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_3_Cold_Q": {
+      "path": [
+        "HeatEx_1_3_Cold_Q"
+      ],
+      "type": "double",
+      "default": 2.3916585579062528,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_4_Cold_In_T": {
+      "path": [
+        "HeatEx_1_4_Cold_In_T"
+      ],
+      "type": "double",
+      "default": 69.4329897799757,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_4_Cold_Out_T": {
+      "path": [
+        "HeatEx_1_4_Cold_Out_T"
+      ],
+      "type": "double",
+      "default": 81.411226547317042,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_4_Cold_Q": {
+      "path": [
+        "HeatEx_1_4_Cold_Q"
+      ],
+      "type": "double",
+      "default": 2.2324847828681249,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    },
+    "HeatEx_1_5_Cold_In_T": {
+      "path": [
+        "HeatEx_1_5_Cold_In_T"
+      ],
+      "type": "double",
+      "default": 81.411226547317042,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_5_Cold_Out_T": {
+      "path": [
+        "HeatEx_1_5_Cold_Out_T"
+      ],
+      "type": "double",
+      "default": 93.389463314658386,
+      "description": "Heat integration",
+      "units": "degC"
+    },
+    "HeatEx_1_5_Cold_Q": {
+      "path": [
+        "HeatEx_1_5_Cold_Q"
+      ],
+      "type": "double",
+      "default": 4.1612594933638629,
+      "description": "Heat integration",
+      "units": "GJ/hr"
+    }
+  }
+}

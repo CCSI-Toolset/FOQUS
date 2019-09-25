@@ -1,0 +1,557 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "post_solve_nodes": [], 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": 0, 
+    "pre_solve_nodes": [], 
+    "no_solve_nodes": [], 
+    "tearTolType": "abs", 
+    "edges": [], 
+    "results": {
+      "_currentFilter": null, 
+      "results": [], 
+      "filters": {
+        "all": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": null, 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }, 
+        "none": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": [], 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }
+      }
+    }, 
+    "tearTol": 0.001, 
+    "output": {
+      "test": {
+        "z": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            0.0, 
+            0.0
+          ], 
+          "default": [
+            0.0, 
+            0.0
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              3.9999998959814347, 
+              -32.79999989598143
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            0.0, 
+            0.0
+          ], 
+          "unit": "", 
+          "desc": "Objective function value"
+        }
+      }, 
+      "graph": {}
+    }, 
+    "input": {
+      "test": {
+        "x1": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            2.0, 
+            2.0
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              -2.000000018008194, 
+              -6.000000035819923
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Operating Variable 1 for senerios"
+        }, 
+        "x2": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            2.0, 
+            2.0
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              -1.9999999814898928, 
+              -4.399999992604165
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Operating Variable 2 for senerios"
+        }, 
+        "weight": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            0.0, 
+            0.4
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              0.5, 
+              0.5
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Weight for senerios"
+        }, 
+        "w1": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            0.0, 
+            0.4
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              0.0, 
+              2.0
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Uncertain Paramter 1 for senerios"
+        }, 
+        "w2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            0.0, 
+            0.4
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              0.0, 
+              2.0
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Uncertain Paramter 2 for senerios"
+        }, 
+        "w3": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": [
+            -100.0, 
+            -100.0
+          ], 
+          "default": [
+            0.0, 
+            0.4
+          ], 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            [
+              0.0, 
+              2.0
+            ]
+          ], 
+          "uqVar": false, 
+          "shape": [
+            2
+          ], 
+          "max": [
+            100.0, 
+            100.0
+          ], 
+          "unit": "", 
+          "desc": "Uncertain Paramter 2 for senerios"
+        }, 
+        "d": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "user", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": -100.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            -1.999999973995358
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 100.0, 
+          "unit": "", 
+          "desc": "Design Variable"
+        }
+      }, 
+      "graph": {}
+    }, 
+    "nodes": {
+      "test": {
+        "modelName": "", 
+        "pythonCode": "x1 = x[\"x1\"]\nx2 = x[\"x2\"]\nw1 = x[\"w1\"]\nw2 = x[\"w2\"]\nw3 = x[\"w3\"]\nd = x[\"d\"]\n\nf[\"z\"] = (x1-d+w1)**2 + (1+w1**2)*(x2-d+w2)**2 + \\\n    (w1+w3)*x1 + (w2+w3)*x2 + d**2\n\n", 
+        "calcError": 0, 
+        "modelType": 0, 
+        "turbApp": null, 
+        "y": -200.0, 
+        "x": -200.0, 
+        "z": 0.0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup interval": 0, 
+        "popsize": 6, 
+        "Save results": true, 
+        "itmax": 0, 
+        "seed": 0, 
+        "Restart out": "", 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "Max time": 48
+      }
+    }, 
+    "solver": "OptCMA", 
+    "obj": [
+      {
+        "pycode": "np.sum(f[\"test\"][\"z\"]*x[\"test\"][\"weight\"])", 
+        "fail": 10000.0, 
+        "penScale": 1.0
+      }
+    ], 
+    "g": [], 
+    "v": [
+      "test.d", 
+      "test.x1", 
+      "test.x2"
+    ]
+  }, 
+  "CCSIFileMetaData": {
+    "MIMEType": "application/ccsi+foqus", 
+    "Confidence": "experimental", 
+    "DisplayName": "Opt_Uncertain_Test_01", 
+    "CreationTime": "2014-12-10T09:37:05", 
+    "Application": "foqus", 
+    "UpdateMetadata": true, 
+    "Version": "00.00", 
+    "Parents": [], 
+    "ID": "ac4be0e0485741c381ef92614fc16d49", 
+    "OriginalFilename": "Opt_Uncertain_Test_01.json", 
+    "Description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt;\">Minimize z with respect to design variable d and operating variables x</span><span style=\" font-size:14pt; vertical-align:sub;\">1</span><span style=\" font-size:14pt;\">  and x</span><span style=\" font-size:14pt; vertical-align:sub;\">2</span><span style=\" font-size:14pt;\">.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt;\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt;\">z = sum</span><span style=\" font-size:14pt; vertical-align:sub;\">i </span><span style=\" font-size:14pt;\">weight</span><span style=\" font-size:14pt; vertical-align:sub;\">i</span><span style=\" font-size:14pt;\">[(x</span><span style=\" font-size:14pt; vertical-align:sub;\">1,i</span><span style=\" font-size:14pt;\"> - d + w</span><span style=\" font-size:14pt; vertical-align:sub;\">1,i</span><span style=\" font-size:14pt;\">)</span><span style=\" font-size:14pt; vertical-align:super;\">2</span><span style=\" font-size:14pt;\"> + (1 + w</span><span style=\" font-size:14pt; vertical-align:sub;\">1,i</span><span style=\" font-size:14pt; vertical-align:super;\">2</span><span style=\" font-size:14pt;\">)(x</span><span style=\" font-size:14pt; vertical-align:sub;\">2,i</span><span style=\" font-size:14pt;\"> - d + w</span><span style=\" font-size:14pt; vertical-align:sub;\">2,i</span><span style=\" font-size:14pt;\">)</span><span style=\" font-size:14pt; vertical-align:super;\">2</span><span style=\" font-size:14pt;\"> + (w</span><span style=\" font-size:14pt; vertical-align:sub;\">1,i</span><span style=\" font-size:14pt;\"> + w</span><span style=\" font-size:14pt; vertical-align:sub;\">2,i</span><span style=\" font-size:14pt;\">)x</span><span style=\" font-size:14pt; vertical-align:sub;\">1,i</span><span style=\" font-size:14pt;\"> + (w</span><span style=\" font-size:14pt; vertical-align:sub;\">2,i</span><span style=\" font-size:14pt;\"> + w</span><span style=\" font-size:14pt; vertical-align:sub;\">3,i</span><span style=\" font-size:14pt;\">)x</span><span style=\" font-size:14pt; vertical-align:sub;\">2,i</span><span style=\" font-size:14pt;\"> + d</span><span style=\" font-size:14pt; vertical-align:super;\">2</span><span style=\" font-size:14pt;\">]</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:14pt;\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:14pt;\">w</span><span style=\" font-size:14pt; vertical-align:sub;\">1</span><span style=\" font-size:14pt;\">, w</span><span style=\" font-size:14pt; vertical-align:sub;\">2</span><span style=\" font-size:14pt;\">, and w</span><span style=\" font-size:14pt; vertical-align:sub;\">3</span><span style=\" font-size:14pt;\"> are random parameters with a nominal value of zero.  The x varaibles and w paramters each have one element for each senerio and the should each have the same number of elements as number of senerios.  i is the senerio index.  The weight paramter provides the weight assigned to each senario in the objective function.</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><br /></p></body></html>", 
+    "ChangeLog": {
+      "2014-12-10T09:37:05": [
+        "00.00", 
+        "f1096ce86f384b78834e762458637802", 
+        "Opt_Uncertain_Test_01", 
+        "Entered session description and name."
+      ], 
+      "2014-12-10T09:59:13": [
+        "00.00", 
+        "64f0967bf94e4e768faa8b80e4a53aad", 
+        "Opt_Uncertain_Test_01", 
+        "Added node and variables"
+      ], 
+      "2014-12-10T10:05:08": [
+        "00.00", 
+        "e562313053d04fe09d977966aee2b20e", 
+        "Opt_Uncertain_Test_01", 
+        "Fixed description"
+      ], 
+      "2014-12-10T10:21:22": [
+        "00.00", 
+        "6a8c0b300c17407b9fe844dc4d47cef9", 
+        "Opt_Uncertain_Test_01", 
+        "Setup objective function calculation in node post-processing."
+      ], 
+      "2014-12-10T10:23:27": [
+        "00.00", 
+        "bc09bb173bfb41b6aa28e81c0aa069e1", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:23:44": [
+        "00.00", 
+        "f059a7e4d3e54836a683a61c3dd2a763", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:29:17": [
+        "00.00", 
+        "6096a285415743e2bce014f451ccb229", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:29:32": [
+        "00.00", 
+        "78630fec19ec4154aac28eb2fd3c3faa", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:30:18": [
+        "00.00", 
+        "0aa3f2f20a684e3c81f76e2cf127f53f", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:30:36": [
+        "00.00", 
+        "0dd3c3a80e524e5b99f6baef75a01041", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:43:48": [
+        "00.00", 
+        "b8e41cc7ac934a10a87da6e6f20f734a", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:44:02": [
+        "00.00", 
+        "8a2497dca01142f584c2cc57e2c89aa8", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:46:38": [
+        "00.00", 
+        "a3130812ccb942b695dcfd9fa42e6bea", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:46:55": [
+        "00.00", 
+        "8ca0bd3f17fd4b0094c91ed09329b95b", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:48:23": [
+        "00.00", 
+        "a66e59c504884e3e9884bb2a2930940a", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:48:41": [
+        "00.00", 
+        "3831389f9f554e0bb265a7c2843122e6", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:58:09": [
+        "00.00", 
+        "a009c9851658476e8e6d2caf54f37c09", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T10:58:31": [
+        "00.00", 
+        "bf5925777d9546d9b93dc916a9b8a27a", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T11:06:51": [
+        "00.00", 
+        "5de9e3d554564bf087afaa66e0a5b735", 
+        "Opt_Uncertain_Test_01", 
+        "Tested node calculation and oprimization.  Next need to add objective that is the weighted sum on zi"
+      ], 
+      "2014-12-10T11:14:51": [
+        "00.00", 
+        "4a4f3a1777e645b286a0ad931e248e0e", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T11:15:06": [
+        "00.00", 
+        "b68c7f8ff88941fbb72b4b9e788fcac7", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T11:16:14": [
+        "00.00", 
+        "cb557b94f65e4451b3b7b2b54d2bc4d3", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T11:16:30": [
+        "00.00", 
+        "f4c382d8267643eda6f213dc5eff6163", 
+        "Opt_Uncertain_Test_01", 
+        ""
+      ], 
+      "2014-12-10T11:18:41": [
+        "00.00", 
+        "ac4be0e0485741c381ef92614fc16d49", 
+        "Opt_Uncertain_Test_01", 
+        "Setup objective function to be the weighted sum of senarios."
+      ]
+    }, 
+    "ModificationTime": "2014-12-10T11:18:41", 
+    "Role": "Input"
+  }, 
+  "surrogateProblem": null, 
+  "uqSimList": [], 
+  "Type": "FOQUS_Session", 
+  "ID": "Opt_Uncertain_Test_01_141210093705"
+}

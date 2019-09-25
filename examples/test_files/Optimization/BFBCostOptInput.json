@@ -1,0 +1,310 @@
+{
+  "input": {
+    "graph": {}, 
+    "Cost": {
+      "removalH2O": [
+        4526.0
+      ], 
+      "removalCO2": [
+        2701.0
+      ], 
+      "rgndx": [
+        0.02
+      ], 
+      "BFBadsT.Lb": [
+        4.0
+      ], 
+      "LR_SHXlean.A_exch": [
+        285.0
+      ], 
+      "GHXfg.GasIn.P": [
+        1.01325
+      ], 
+      "CMPrgn.GasOut.P": [
+        1.2292790272885457
+      ], 
+      "BFBadsM.HXIn.F": [
+        1000.4230012865833
+      ], 
+      "steam.F": [
+        700.0
+      ], 
+      "GHXfg.GasOut.T": [
+        40.0
+      ], 
+      "BFBrgnB.Lb": [
+        4.0
+      ], 
+      "BFBadsT.Nx": [
+        641.141357875468
+      ], 
+      "BFBadsT.HXIn.F": [
+        76659.00441173252
+      ], 
+      "BFBrgnT.HXIn.F": [
+        0.28891601582444915
+      ], 
+      "BFBadsB.HXIn.F": [
+        389.2655090327005
+      ], 
+      "rgnDt": [
+        12.0
+      ], 
+      "GHXcmp.HXIn.F": [
+        40274.233752907145
+      ], 
+      "CW_SHXlean.HXIn.F": [
+        18208.898928963426
+      ], 
+      "BFBrgnB.HXIn.F": [
+        0.6648504050666837
+      ], 
+      "BFBadsM.Lb": [
+        4.0
+      ], 
+      "rgnSF": [
+        0.3
+      ], 
+      "GHXfg.a_exch": [
+        5749.664948764189
+      ], 
+      "adsN": [
+        15.0
+      ], 
+      "CMPads.J": [
+        1704.4043432763453
+      ], 
+      "rgnN": [
+        15.0
+      ], 
+      "adsdx": [
+        0.025
+      ], 
+      "BFBrgnT.Nx": [
+        7853.98163397448
+      ], 
+      "rhos": [
+        442.0
+      ], 
+      "GHXcmp.GasIn.P": [
+        1.01325
+      ], 
+      "BFBadsM.Nx": [
+        641.141357875468
+      ], 
+      "BFBadsB.Nx": [
+        641.141357875468
+      ], 
+      "BFBrgnT.Lb": [
+        4.0
+      ], 
+      "adsDt": [
+        15.0
+      ], 
+      "rgnlhx": [
+        0.1
+      ], 
+      "CW_SHXlean.A_exch": [
+        242.194
+      ], 
+      "GHXcmp.a_exch": [
+        1401.4708703119102
+      ], 
+      "CMPads.GasOut.P": [
+        1.335419245228242
+      ], 
+      "SolidIn.Fm": [
+        600000.0
+      ], 
+      "adslhx": [
+        0.5
+      ], 
+      "GasOut.T": [
+        85.21264217155624
+      ], 
+      "BFBadsB.Lb": [
+        4.0
+      ], 
+      "GasOut.F": [
+        5466.067671135571
+      ], 
+      "BFBrgnB.Nx": [
+        7853.98163397448
+      ], 
+      "LR_SHXrich.A_exch": [
+        19143.3
+      ], 
+      "GHXfg.HXIn.F": [
+        28737.646294112128
+      ], 
+      "CMPrgn.J": [
+        159.86442220711848
+      ]
+    }, 
+    "BFB": {
+      "rgndx": [
+        0.0225
+      ], 
+      "BFBadsT.Lb": [
+        4.2
+      ], 
+      "BFBrgnT.Lb": [
+        4.2
+      ], 
+      "adslhx": [
+        0.4
+      ], 
+      "GHXfg.GasOut.T": [
+        40.0
+      ], 
+      "SolidIn.Fm": [
+        600000.0
+      ], 
+      "steam.F": [
+        800.0
+      ], 
+      "BFBadsM.Lb": [
+        4.2
+      ], 
+      "rgnSF": [
+        0.3
+      ], 
+      "rgnDt": [
+        12.0
+      ], 
+      "adsDt": [
+        15.0
+      ], 
+      "BFBadsB.Lb": [
+        4.2
+      ], 
+      "rgnlhx": [
+        0.08
+      ], 
+      "BFBrgnB.Lb": [
+        4.2
+      ], 
+      "adsN": [
+        15.0
+      ], 
+      "rgnN": [
+        15.0
+      ], 
+      "adsdx": [
+        0.0275
+      ]
+    }
+  }, 
+  "nodeError": {
+    "BFB": 0, 
+    "Cost": 0
+  }, 
+  "graphError": 19, 
+  "solTime": 0, 
+  "output": {
+    "graph": {}, 
+    "Cost": {
+      "COE": [
+        0.0
+      ], 
+      "COAC": [
+        0.0
+      ], 
+      "status": [
+        0.0
+      ]
+    }, 
+    "BFB": {
+      "removalCO2": [
+        0.0
+      ], 
+      "LR_SHXlean.A_exch": [
+        0.0
+      ], 
+      "GHXfg.GasIn.P": [
+        0.0
+      ], 
+      "CMPrgn.GasOut.P": [
+        0.0
+      ], 
+      "BFBadsM.HXIn.F": [
+        0.0
+      ], 
+      "GHXfg.HXIn.F": [
+        0.0
+      ], 
+      "BFBadsT.Nx": [
+        0.0
+      ], 
+      "BFBadsT.HXIn.F": [
+        0.0
+      ], 
+      "BFBrgnT.HXIn.F": [
+        0.0
+      ], 
+      "removalH2O": [
+        0.0
+      ], 
+      "GHXcmp.HXIn.F": [
+        0.0
+      ], 
+      "CW_SHXlean.HXIn.F": [
+        0.0
+      ], 
+      "BFBrgnB.HXIn.F": [
+        0.0
+      ], 
+      "GHXfg.a_exch": [
+        0.0
+      ], 
+      "CMPads.J": [
+        0.0
+      ], 
+      "BFBrgnT.Nx": [
+        0.0
+      ], 
+      "rhos": [
+        0.0
+      ], 
+      "GHXcmp.GasIn.P": [
+        0.0
+      ], 
+      "BFBadsM.Nx": [
+        0.0
+      ], 
+      "BFBadsB.Nx": [
+        0.0
+      ], 
+      "BFBadsB.HXIn.F": [
+        0.0
+      ], 
+      "CW_SHXlean.A_exch": [
+        0.0
+      ], 
+      "GHXcmp.a_exch": [
+        0.0
+      ], 
+      "CMPads.GasOut.P": [
+        0.0
+      ], 
+      "GasOut.T": [
+        0.0
+      ], 
+      "GasOut.F": [
+        0.0
+      ], 
+      "BFBrgnB.Nx": [
+        0.0
+      ], 
+      "LR_SHXrich.A_exch": [
+        0.0
+      ], 
+      "CMPrgn.J": [
+        0.0
+      ], 
+      "status": [
+        0.0
+      ]
+    }
+  }
+}

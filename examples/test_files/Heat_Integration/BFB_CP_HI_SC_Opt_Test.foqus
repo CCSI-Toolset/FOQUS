@@ -1,0 +1,3834 @@
+{
+  "flowsheet": {
+    "opt": {
+      "obj": [
+        {
+          "pycode": "-f[\"Objective.NetPowerCCS\"].value", 
+          "fail": -650, 
+          "penScale": 1.0
+        }
+      ], 
+      "g": [
+        {
+          "pycode": "0.60 - f[\"BFB.removalCO2\"].value", 
+          "penalty": 1000.0, 
+          "penForm": "Linear"
+        }
+      ], 
+      "v": [
+        "BFB.rgndx", 
+        "BFB.BFBadsT.Lb", 
+        "BFB.BFBrgnT.Lb", 
+        "BFB.adslhx", 
+        "BFB.SolidIn.Fm", 
+        "BFB.steam.F", 
+        "BFB.rgnDt", 
+        "BFB.adsDt", 
+        "BFB.BFBadsB.Lb", 
+        "BFB.rgnlhx", 
+        "BFB.BFBrgnB.Lb", 
+        "BFB.adsN", 
+        "BFB.rgnN", 
+        "BFB.adsdx"
+      ]
+    }, 
+    "simList": {
+      "BFB": {
+        "inVars": {
+          "Flue_Gas_z_H2O": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.142, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.z(\"H2O\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "rgndx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.02, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "rgndx"
+            ], 
+            "unit": "m"
+          }, 
+          "BFBadsT.Lb": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.Lb"
+            ], 
+            "unit": "m"
+          }, 
+          "BFBrgnT.Lb": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnT.Lb"
+            ], 
+            "unit": "m"
+          }, 
+          "adslhx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.5, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "adslhx"
+            ], 
+            "unit": "m"
+          }, 
+          "Flue_Gas_T": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 54.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.T"
+            ], 
+            "unit": "C"
+          }, 
+          "GHXfg.GasOut.T": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasOut.T"
+            ], 
+            "unit": "C"
+          }, 
+          "SolidIn.Fm": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 600000.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.SolidIn.Fm"
+            ], 
+            "unit": "kg/hr"
+          }, 
+          "steam.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 700.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "SINJ.steam.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "Flue_Gas_P": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 1.01325, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.P"
+            ], 
+            "unit": "bar"
+          }, 
+          "Flue_Gas_z_N2": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.74, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.z(\"N2\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "rgnDt": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 12.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "rgnDt"
+            ], 
+            "unit": "m"
+          }, 
+          "adsDt": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "adsDt"
+            ], 
+            "unit": "m"
+          }, 
+          "BFBadsB.Lb": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsB.Lb"
+            ], 
+            "unit": "m"
+          }, 
+          "rgnlhx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.1, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "rgnlhx"
+            ], 
+            "unit": "m"
+          }, 
+          "Flue_Gas_z_CO2": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.118, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.z(\"CO2\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "BFBrgnB.Lb": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnB.Lb"
+            ], 
+            "unit": "m"
+          }, 
+          "adsN": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "adsN"
+            ], 
+            "unit": ""
+          }, 
+          "Flue_Gas_F": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 100377.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "FGIn"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "rgnN": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "rgnN"
+            ], 
+            "unit": ""
+          }, 
+          "adsdx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.025, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "adsdx"
+            ], 
+            "unit": "m"
+          }
+        }, 
+        "outTables": {}, 
+        "runFileName": null, 
+        "description": "Entire Carbon Capture System including BFB adsorber, MB regenerator and auxiliary equipments.", 
+        "author": "Yang Chen", 
+        "turbName": "BFB_2ads_2rgn", 
+        "inTables": {}, 
+        "title": "Hybrid carbon capture process (2-stage adsorbers and 2-stage regenerators) with heat integration", 
+        "outVars": {
+          "removalCO2": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.6061393757018498, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "removalCO2"
+            ], 
+            "unit": ""
+          }, 
+          "GHXfg_GasOut_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg_GasOut_T"
+            ], 
+            "unit": "C"
+          }, 
+          "GHXfg.GasIn.P": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1.01325, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.GasIn.P"
+            ], 
+            "unit": "bar"
+          }, 
+          "GHXcmp_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -586.4876229202088, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "CMPrgn.GasOut.P": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1.226593107680868, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CMPrgn.GasOut.P"
+            ], 
+            "unit": "bar"
+          }, 
+          "BFBadsB_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 164.6330858831427, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsB_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "GHXfg.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 28737.646294112128, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "CW_SHXlean_SolidOut_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 65.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CW_SHXlean_SolidOut_T"
+            ], 
+            "unit": "C"
+          }, 
+          "LR_SHXlean_SolidIn_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 160.449415739661, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXlean_SolidIn_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Electricity.Consumption.Cap": {
+            "optVar": false, 
+            "description": "Total consumption", 
+            "min": 0.0, 
+            "default": 22.44926111690159, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Ele_tot"
+            ], 
+            "unit": "MW"
+          }, 
+          "BFBadsT.Nx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 641.141357875468, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.Nx"
+            ], 
+            "unit": ""
+          }, 
+          "BFBadsT.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 76659.05019675122, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "BFBrgnT.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 868.3815730009544, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnT.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "CW_SHXlean_SolidIn_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 93.35278520743084, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CW_SHXlean_SolidIn_T"
+            ], 
+            "unit": "C"
+          }, 
+          "GHXcmp_GasIn_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 146.50540745011924, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp_GasIn_T"
+            ], 
+            "unit": "C"
+          }, 
+          "removalH2O": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 0.3133535563007487, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "removalH2O"
+            ], 
+            "unit": ""
+          }, 
+          "BFBadsB_Tse": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 83.35278520743084, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsB_Tse"
+            ], 
+            "unit": "C"
+          }, 
+          "GHXcmp.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 40124.742152534134, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "CW_SHXlean.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 20540.969701406124, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CW_SHXlean.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "BFB_Comp_T": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 50.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_T"
+            ], 
+            "unit": "C"
+          }, 
+          "BFBrgnB.HXIn.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 329.9194153121876, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnB.HXIn.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "BFB_Comp_P": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 1.01225, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_P"
+            ], 
+            "unit": "bar"
+          }, 
+          "BFBadsT_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 166.60067161760253, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "GHXfg_GasIn_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 54.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg_GasIn_T"
+            ], 
+            "unit": "C"
+          }, 
+          "LR_SHXlean_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -711.5247492441122, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXlean_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "BFBrgnB_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -191.5807913620006, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnB_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "GHXfg.a_exch": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 5749.664948764189, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg.a_exch"
+            ], 
+            "unit": "m2"
+          }, 
+          "BFB_Comp_z_N2": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_z_N2"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "BFB_Comp_F": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 8537.808098696103, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "CMPads.J": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1170.8088716910136, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CMPads.J"
+            ], 
+            "unit": "kW"
+          }, 
+          "BFBrgnT.Nx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 7853.981633974481, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnT.Nx"
+            ], 
+            "unit": ""
+          }, 
+          "LR_SHXrich_SolidIn_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 83.35278520743084, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXrich_SolidIn_T"
+            ], 
+            "unit": "C"
+          }, 
+          "MP_Steam.Injection.Cap": {
+            "optVar": false, 
+            "description": "Total consumption", 
+            "min": 0.0, 
+            "default": 10500.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Inj_MP"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "rhos": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 442.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.rhos"
+            ], 
+            "unit": "kg/m3"
+          }, 
+          "GHXcmp.GasIn.P": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1.01325, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp.GasIn.P"
+            ], 
+            "unit": "bar"
+          }, 
+          "CW_SHXlean_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -300.23929990271256, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CW_SHXlean_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "BFBadsT_Tse": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 81.69584438194786, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT_Tse"
+            ], 
+            "unit": "C"
+          }, 
+          "BFBadsB.Nx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 641.141357875468, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsB.Nx"
+            ], 
+            "unit": ""
+          }, 
+          "GHXcmp_GasOut_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 50.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp_GasOut_T"
+            ], 
+            "unit": "C"
+          }, 
+          "BFBrgnT_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -504.2566973184611, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnT_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "BFB_Comp_z_H2O": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 0.10907258765494063, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_z_H2O"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "GHXcmp.a_exch": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1350.9261542342979, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXcmp.a_exch"
+            ], 
+            "unit": "m2"
+          }, 
+          "CMPads.GasOut.P": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 1.22797255331319, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CMPads.GasOut.P"
+            ], 
+            "unit": "bar"
+          }, 
+          "BFBrgnT_Tse": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 145.3061287944271, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnT_Tse"
+            ], 
+            "unit": "C"
+          }, 
+          "BFBrgnB_Tse": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 156.1079990483825, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnB_Tse"
+            ], 
+            "unit": "C"
+          }, 
+          "LR_SHXlean_SolidOut_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 93.35278520743084, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXlean_SolidOut_T"
+            ], 
+            "unit": "C"
+          }, 
+          "LR_SHXrich_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 711.5247492441122, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXrich_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "GasOut.T": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 82.37081882302547, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.GasOut.T"
+            ], 
+            "unit": "C"
+          }, 
+          "MP_Steam.Consumption.Cap": {
+            "optVar": false, 
+            "description": "Total consumption", 
+            "min": 0.0, 
+            "default": 695.8374886804617, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Q_tot"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "BFB_Comp_z_CO2": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 0.8909274123450593, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "To_Comp_z_CO2"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "GHXfg_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -420.04690769810003, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "GHXfg_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "GasOut.F": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 5532.142418277029, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBadsT.GasOut.F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "BFBrgnB.Nx": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 7853.981633974481, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "BFBrgnB.Nx"
+            ], 
+            "unit": ""
+          }, 
+          "LR_SHXrich_SolidOut_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 148.2257370495058, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "LR_SHXrich_SolidOut_T"
+            ], 
+            "unit": "C"
+          }, 
+          "CMPrgn.J": {
+            "optVar": false, 
+            "description": "", 
+            "min": 0.0, 
+            "default": 325.80853610242565, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CMPrgn.J"
+            ], 
+            "unit": "kW"
+          }
+        }, 
+        "turbConf": "C:/Research/Sim_Opt_GUI/foqus/config.txt", 
+        "runType": "turbine", 
+        "version": "0.2", 
+        "date": "September 2013"
+      }, 
+      "Compressor": {
+        "inVars": {
+          "BFB_Comp_z_TEG": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").z(\"TEG\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "BFB_Comp_T": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 50.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").T"
+            ], 
+            "unit": "C"
+          }, 
+          "BFB_Comp_z_CO2": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.890927412345, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").z(\"CO2\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "BFB_Comp_P": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 1.01224689824, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").P"
+            ], 
+            "unit": "bar"
+          }, 
+          "BFB_Comp_z_H2O": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 0.109072587655, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").z(\"H2O\")"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "BFB_Comp_F": {
+            "optVar": false, 
+            "description": "Input stream", 
+            "min": 0.0, 
+            "default": 8537.8080987, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "B6.i_port.Connection(\"CO2_From_Cap\").F"
+            ], 
+            "unit": "kmol/hr"
+          }
+        }, 
+        "outTables": {}, 
+        "runFileName": null, 
+        "description": "Entire compression system including multi-stage compressors, adsorber, and regenerator.", 
+        "author": "Yang Chen", 
+        "turbName": "CompIG", 
+        "inTables": {}, 
+        "title": "Multi-stage compression process with heat integration", 
+        "outVars": {
+          "Comp_before_3_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_3_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_5_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_5_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_4_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -20.99723393667307, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_4_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_CO2_P": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 152.787821768, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_P"
+            ], 
+            "unit": "bar"
+          }, 
+          "Comp_before_5_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -18.57996306264406, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_5_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Trim_Cooler_1_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 39.99999824, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Trim_Cooler_1_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_after_2_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -78.40202643544018, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_2_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_CO2_z_TEG": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 2.126574589153956e-06, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_z_TEG"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "Comp_after_1_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 86.18822271607094, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_1_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_6_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -22.445476828338, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_6_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_before_1_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_1_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_after_1_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_1_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Gas_Cooler_2_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -0.8311021194159056, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Gas_Cooler_2_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_before_5_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 87.00149772444642, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_5_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_3_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 102.1934139079112, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_3_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Trim_Cooler_1_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 38.23000015238429, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Trim_Cooler_1_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_2_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 115.9556076231117, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_2_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Regen_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 121.11111, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Regen_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Regen_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 4.4227506454864525, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Regen_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "HeatEx_1_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 11.65372383201034, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "HeatEx_1_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "MP_Steam.Consumption.Comp": {
+            "optVar": false, 
+            "description": "Total consumption", 
+            "min": 0.0, 
+            "default": 4.4227506454864525, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Q_tot"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Gas_Cooler_2_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 121.11110980436028, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Gas_Cooler_2_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Mix_MU_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 37.777776, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Mix_MU_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_6_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 84.77988217453172, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_6_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_1_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 115.7839283992834, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_1_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_after_2_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_2_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "HeatEx_1_Cold_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 95.3287941645812, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "HeatEx_1_Cold_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_after_1_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 86.18822271607131, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_1_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Trim_Cooler_1_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 0.2743509198807529, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Trim_Cooler_1_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Mix_MU_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 42.82790080060541, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Mix_MU_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_3_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -22.4945698940762, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_3_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_before_6_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_6_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Electricity.Consumption.Comp": {
+            "optVar": false, 
+            "description": "Total consumption", 
+            "min": 0.0, 
+            "default": 36.274068096297356, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Ele_tot"
+            ], 
+            "unit": "MW"
+          }, 
+          "HeatEx_1_Cold_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 33.49827947795164, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "HeatEx_1_Cold_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_CO2_z_H2O": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 0.00015, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_z_H2O"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "Mix_MU_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -0.78495731691239, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Mix_MU_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "HeatEx_1_Hot_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 121.11111, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "HeatEx_1_Hot_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_after_2_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 131.0924514635857, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_after_2_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Absorber_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -0.5949746775342244, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Absorber_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Absorber_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 33.49827947795164, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Absorber_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_CO2_F": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 7607.624039774568, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_F"
+            ], 
+            "unit": "kmol/hr"
+          }, 
+          "Comp_before_1_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -60.01465745524023, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_1_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "HeatEx_1_Hot_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 42.82790080060541, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "HeatEx_1_Hot_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_2_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_2_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Gas_Cooler_2_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 39.99999824, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Gas_Cooler_2_Out_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_2_Q": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": -30.0551407663677, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_2_Q"
+            ], 
+            "unit": "GJ/hr"
+          }, 
+          "Comp_CO2_T": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_CO2_z_CO2": {
+            "optVar": false, 
+            "description": "Output stream", 
+            "min": 0.0, 
+            "default": 0.9998478734254109, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "CO2_z_CO2"
+            ], 
+            "unit": "kmol/kmol"
+          }, 
+          "Comp_before_4_In_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 97.93201957936746, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_4_In_T"
+            ], 
+            "unit": "C"
+          }, 
+          "Comp_before_4_Out_T": {
+            "optVar": false, 
+            "description": "Heat integration", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "uqVar": false, 
+            "active": true, 
+            "path": [
+              "Comp_before_4_Out_T"
+            ], 
+            "unit": "C"
+          }
+        }, 
+        "turbConf": "C:/Research/Sim_Opt_GUI/foqus/config.txt", 
+        "runType": "turbine", 
+        "version": "0.2", 
+        "date": "September 2013"
+      }
+    }, 
+    "turbSess": "", 
+    "turbConf": null, 
+    "edges": [
+      {
+        "end": "Compressor", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "BFB", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "BFB_Comp_F", 
+            "fromName": "BFB_Comp_F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFB_Comp_P", 
+            "fromName": "BFB_Comp_P", 
+            "active": true
+          }, 
+          {
+            "toName": "BFB_Comp_T", 
+            "fromName": "BFB_Comp_T", 
+            "active": true
+          }, 
+          {
+            "toName": "BFB_Comp_z_CO2", 
+            "fromName": "BFB_Comp_z_CO2", 
+            "active": true
+          }, 
+          {
+            "toName": "BFB_Comp_z_H2O", 
+            "fromName": "BFB_Comp_z_H2O", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Heat Integration", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "BFB", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "Heat Integration", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Compressor", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "Total Consumption", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "BFB", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "Electricity.Consumption.Cap", 
+            "fromName": "Electricity.Consumption.Cap", 
+            "active": true
+          }, 
+          {
+            "toName": "MP_Steam.Injection.Cap", 
+            "fromName": "MP_Steam.Injection.Cap", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Total Consumption", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Compressor", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "Electricity.Consumption.Comp", 
+            "fromName": "Electricity.Consumption.Comp", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Steam Cycle", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Heat Integration", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "FH.Heat.Addition", 
+            "fromName": "FH.Heat.Addition", 
+            "active": true
+          }, 
+          {
+            "toName": "HP_Steam.Consumption", 
+            "fromName": "HP_Steam.Consumption", 
+            "active": true
+          }, 
+          {
+            "toName": "MP_Steam.Consumption", 
+            "fromName": "MP_Steam.Consumption", 
+            "active": true
+          }, 
+          {
+            "toName": "Net.Power", 
+            "fromName": "Net.Power", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Steam Cycle", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Total Consumption", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "Electricity.Consumption", 
+            "fromName": "Electricity.Consumption", 
+            "active": true
+          }, 
+          {
+            "toName": "MP_Steam.Injection", 
+            "fromName": "MP_Steam.Injection", 
+            "active": true
+          }
+        ]
+      }, 
+      {
+        "end": "Objective", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "Steam Cycle", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "Net.Power.CCS", 
+            "fromName": "Net.Power.CCS", 
+            "active": true
+          }
+        ]
+      }
+    ], 
+    "np": 1, 
+    "nodes": {
+      "BFB": {
+        "inVars": {
+          "Flue_Gas_z_H2O": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.142, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.142, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }, 
+          "rgndx": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.02, 
+            "max": 0.1, 
+            "tags": [], 
+            "value": 0.02, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "BFBadsT.Lb": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 10, 
+            "tags": [], 
+            "value": 4.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "BFBrgnT.Lb": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 10, 
+            "tags": [], 
+            "value": 4.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "adslhx": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.5, 
+            "max": 2, 
+            "tags": [], 
+            "value": 0.5, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "Flue_Gas_T": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 54.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 54.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Input stream"
+          }, 
+          "GHXfg.GasOut.T": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 40.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 40.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": ""
+          }, 
+          "SolidIn.Fm": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 600000.0, 
+            "max": 2000000, 
+            "tags": [], 
+            "value": 600000.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "kg/hr", 
+            "desc": ""
+          }, 
+          "steam.F": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 700.0, 
+            "max": 2000, 
+            "tags": [], 
+            "value": 700.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": ""
+          }, 
+          "Flue_Gas_P": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.01325, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 1.01325, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "bar", 
+            "desc": "Input stream"
+          }, 
+          "Flue_Gas_z_N2": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.74, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.74, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }, 
+          "rgnDt": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 12.0, 
+            "max": 50, 
+            "tags": [], 
+            "value": 12.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "adsDt": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 50, 
+            "tags": [], 
+            "value": 15.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "BFBadsB.Lb": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 10, 
+            "tags": [], 
+            "value": 4.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "rgnlhx": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.1, 
+            "max": 1, 
+            "tags": [], 
+            "value": 0.1, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "Flue_Gas_z_CO2": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.118, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.118, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }, 
+          "BFBrgnB.Lb": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 10, 
+            "tags": [], 
+            "value": 4.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }, 
+          "adsN": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 50, 
+            "tags": [], 
+            "value": 15.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "Flue_Gas_F": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 100377.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 100377.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "Input stream"
+          }, 
+          "rgnN": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 15.0, 
+            "max": 50, 
+            "tags": [], 
+            "value": 15.0, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "adsdx": {
+            "optVar": true, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.025, 
+            "max": 0.1, 
+            "tags": [], 
+            "value": 0.025, 
+            "scaling": "Linear", 
+            "uqVar": false, 
+            "unit": "m", 
+            "desc": ""
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "496217f2-7960-43e3-b3e0-1f6868352438", 
+        "outVars": {
+          "removalCO2": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 0.6061393757018498, 
+            "desc": ""
+          }, 
+          "GHXfg_GasOut_T": {
+            "tags": [
+              "Block GHXfg", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "GHXfg.GasIn.P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 1.01325, 
+            "desc": ""
+          }, 
+          "GHXcmp_Q": {
+            "tags": [
+              "Block GHXcmp", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -586.4876229202088, 
+            "desc": "Heat integration"
+          }, 
+          "CMPrgn.GasOut.P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 1.226593107680868, 
+            "desc": ""
+          }, 
+          "BFBadsB_Q": {
+            "tags": [
+              "Block BFBadsB", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 164.6330858831427, 
+            "desc": "Heat integration"
+          }, 
+          "GHXfg.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 28737.646294112128, 
+            "desc": ""
+          }, 
+          "CW_SHXlean_SolidOut_T": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 65.0, 
+            "desc": "Heat integration"
+          }, 
+          "LR_SHXlean_SolidIn_T": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 160.449415739661, 
+            "desc": "Heat integration"
+          }, 
+          "Electricity.Consumption.Cap": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": 22.44926111690159, 
+            "desc": "Total consumption"
+          }, 
+          "BFBadsT.Nx": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 641.141357875468, 
+            "desc": ""
+          }, 
+          "BFBadsT.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 76659.05019675122, 
+            "desc": ""
+          }, 
+          "BFBrgnT.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 868.3815730009544, 
+            "desc": ""
+          }, 
+          "CW_SHXlean_SolidIn_T": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 93.35278520743084, 
+            "desc": "Heat integration"
+          }, 
+          "GHXcmp_GasIn_T": {
+            "tags": [
+              "Block GHXcmp", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 146.50540745011924, 
+            "desc": "Heat integration"
+          }, 
+          "removalH2O": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 0.3133535563007487, 
+            "desc": ""
+          }, 
+          "BFBadsB_Tse": {
+            "tags": [
+              "Block BFBadsB", 
+              "Blk_Var", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 83.35278520743084, 
+            "desc": "Heat integration"
+          }, 
+          "GHXcmp.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 40124.742152534134, 
+            "desc": ""
+          }, 
+          "CW_SHXlean.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 20540.969701406124, 
+            "desc": ""
+          }, 
+          "BFB_Comp_T": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 50.0, 
+            "desc": "Output stream"
+          }, 
+          "BFBrgnB.HXIn.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 329.9194153121876, 
+            "desc": ""
+          }, 
+          "BFB_Comp_P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 1.01225, 
+            "desc": "Output stream"
+          }, 
+          "BFBadsT_Q": {
+            "tags": [
+              "Block BFBadsT", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 166.60067161760253, 
+            "desc": "Heat integration"
+          }, 
+          "GHXfg_GasIn_T": {
+            "tags": [
+              "Block GHXfg", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 54.0, 
+            "desc": "Heat integration"
+          }, 
+          "LR_SHXlean_Q": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -711.5247492441122, 
+            "desc": "Heat integration"
+          }, 
+          "BFBrgnB_Q": {
+            "tags": [
+              "Block BFBrgnB", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -191.5807913620006, 
+            "desc": "Heat integration"
+          }, 
+          "GHXfg.a_exch": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "m2", 
+            "value": 5749.664948764189, 
+            "desc": ""
+          }, 
+          "BFB_Comp_z_N2": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 0.0, 
+            "desc": "Output stream"
+          }, 
+          "BFB_Comp_F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 8537.808098696103, 
+            "desc": "Output stream"
+          }, 
+          "CMPads.J": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kW", 
+            "value": 1170.8088716910136, 
+            "desc": ""
+          }, 
+          "BFBrgnT.Nx": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 7853.981633974481, 
+            "desc": ""
+          }, 
+          "LR_SHXrich_SolidIn_T": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 83.35278520743084, 
+            "desc": "Heat integration"
+          }, 
+          "MP_Steam.Injection.Cap": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 10500.0, 
+            "desc": "Total consumption"
+          }, 
+          "rhos": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kg/m3", 
+            "value": 442.0, 
+            "desc": ""
+          }, 
+          "GHXcmp.GasIn.P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 1.01325, 
+            "desc": ""
+          }, 
+          "CW_SHXlean_Q": {
+            "tags": [
+              "Block CW_SHXlean", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -300.23929990271256, 
+            "desc": "Heat integration"
+          }, 
+          "BFBadsT_Tse": {
+            "tags": [
+              "Block BFBadsT", 
+              "Blk_Var", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 81.69584438194786, 
+            "desc": "Heat integration"
+          }, 
+          "BFBadsB.Nx": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 641.141357875468, 
+            "desc": ""
+          }, 
+          "GHXcmp_GasOut_T": {
+            "tags": [
+              "Block GHXcmp", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 50.0, 
+            "desc": "Heat integration"
+          }, 
+          "BFBrgnT_Q": {
+            "tags": [
+              "Block BFBrgnT", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -504.2566973184611, 
+            "desc": "Heat integration"
+          }, 
+          "BFB_Comp_z_H2O": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 0.10907258765494063, 
+            "desc": "Output stream"
+          }, 
+          "GHXcmp.a_exch": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "m2", 
+            "value": 1350.9261542342979, 
+            "desc": ""
+          }, 
+          "CMPads.GasOut.P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 1.22797255331319, 
+            "desc": ""
+          }, 
+          "BFBrgnT_Tse": {
+            "tags": [
+              "Block BFBrgnT", 
+              "Blk_Var", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 145.3061287944271, 
+            "desc": "Heat integration"
+          }, 
+          "BFBrgnB_Tse": {
+            "tags": [
+              "Block BFBrgnB", 
+              "Blk_Var", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 156.1079990483825, 
+            "desc": "Heat integration"
+          }, 
+          "LR_SHXlean_SolidOut_T": {
+            "tags": [
+              "Block LR_SHXlean", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 93.35278520743084, 
+            "desc": "Heat integration"
+          }, 
+          "LR_SHXrich_Q": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 711.5247492441122, 
+            "desc": "Heat integration"
+          }, 
+          "GasOut.T": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 82.37081882302547, 
+            "desc": ""
+          }, 
+          "MP_Steam.Consumption.Cap": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 695.8374886804617, 
+            "desc": "Total consumption"
+          }, 
+          "BFB_Comp_z_CO2": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 0.8909274123450593, 
+            "desc": "Output stream"
+          }, 
+          "GHXfg_Q": {
+            "tags": [
+              "Block GHXfg", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -420.04690769810003, 
+            "desc": "Heat integration"
+          }, 
+          "GasOut.F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 5532.142418277029, 
+            "desc": ""
+          }, 
+          "BFBrgnB.Nx": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "", 
+            "value": 7853.981633974481, 
+            "desc": ""
+          }, 
+          "LR_SHXrich_SolidOut_T": {
+            "tags": [
+              "Block LR_SHXrich", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 148.2257370495058, 
+            "desc": "Heat integration"
+          }, 
+          "CMPrgn.J": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kW", 
+            "value": 325.80853610242565, 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -100.0, 
+        "x": -600.0, 
+        "z": 0.0, 
+        "sim": "BFB"
+      }, 
+      "Total Consumption": {
+        "inVars": {
+          "Electricity.Consumption.Cap": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 22.44926111690159, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "Electricity.Consumption.Comp": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 36.27405972703276, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }, 
+          "MP_Steam.Injection.Cap": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 10500.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "pythonCode": "f[\"Electricity.Consumption\"] = x[\"Electricity.Consumption.Cap\"] + x[\"Electricity.Consumption.Comp\"]\n\nf[\"MP_Steam.Injection\"] = x[\"MP_Steam.Injection.Cap\"]", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "Electricity.Consumption": {
+            "tags": [], 
+            "set": "user", 
+            "unit": "", 
+            "value": 58.723320843934346, 
+            "desc": ""
+          }, 
+          "MP_Steam.Injection": {
+            "tags": [], 
+            "set": "user", 
+            "unit": "", 
+            "value": 10500.0, 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": 0.0, 
+        "x": -300.0, 
+        "z": 0.0, 
+        "sim": ""
+      }, 
+      "Heat Integration": {
+        "inVars": {
+          "Hrat": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 10.0, 
+            "max": 500.0, 
+            "tags": [], 
+            "value": 5, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "K", 
+            "desc": "Minimum approach temperature"
+          }, 
+          "Max.Time": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 60.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": 60.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "second", 
+            "desc": "Maximum allowable time for heat integration"
+          }, 
+          "Net.Power": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": 650.33, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Net power output without CCS"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "Utility.Cost": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "$/hr", 
+            "value": 4145.3724, 
+            "desc": "Total utility cost"
+          }, 
+          "HP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 0.0, 
+            "desc": "High-pressure steam (230 C) consumption (Cost: $8.04/GJ)"
+          }, 
+          "MP_Steam.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 621.6769, 
+            "desc": "Medium-pressure steam (164 C) consumption (Cost: $6.25/GJ)"
+          }, 
+          "Cooling_Water.Consumption": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 1237.5786, 
+            "desc": "Cooling water (20 C) consumption (Cost: $0.21/GJ)"
+          }, 
+          "FH.Heat.Addition": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": [
+              138.4294, 
+              177.709, 
+              182.5095, 
+              78.1235, 
+              0.0
+            ], 
+            "desc": "Heat addition to feed water heaters"
+          }, 
+          "Min.No.HX": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 31, 
+            "desc": "Minimum number of heat exchangers"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -0.0, 
+        "x": -500.0, 
+        "z": 0.0, 
+        "sim": "Heat Integration"
+      }, 
+      "Compressor": {
+        "inVars": {
+          "BFB_Comp_z_TEG": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }, 
+          "BFB_Comp_T": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 50.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 50.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "C", 
+            "desc": "Input stream"
+          }, 
+          "BFB_Comp_z_CO2": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.890927412345, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.8909274123450593, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }, 
+          "BFB_Comp_P": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.01224689824, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 1.01225, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "bar", 
+            "desc": "Input stream"
+          }, 
+          "BFB_Comp_F": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 8537.8080987, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 8537.808098696103, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "Input stream"
+          }, 
+          "BFB_Comp_z_H2O": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.109072587655, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.10907258765494063, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/kmol", 
+            "desc": "Input stream"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "839f88ca-bf16-49ad-8338-46c86b6082d5", 
+        "outVars": {
+          "Comp_before_3_Out_T": {
+            "tags": [
+              "Block Comp_before_3", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_5_Out_T": {
+            "tags": [
+              "Block Comp_before_5", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_4_Q": {
+            "tags": [
+              "Block Comp_before_4", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -20.997230186360753, 
+            "desc": "Heat integration"
+          }, 
+          "Gas_Cooler_2_In_T": {
+            "tags": [
+              "Block Gas_Cooler_2", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 121.11110989180233, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_5_Q": {
+            "tags": [
+              "Block Comp_before_5", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -18.57996084019917, 
+            "desc": "Heat integration"
+          }, 
+          "Trim_Cooler_1_Out_T": {
+            "tags": [
+              "Block Trim_Cooler_1", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 39.99999824, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_after_2_Q": {
+            "tags": [
+              "Block Comp_after_2", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -78.40201629359655, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_CO2_z_TEG": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 2.1265759458647177e-06, 
+            "desc": "Output stream"
+          }, 
+          "Comp_after_1_Out_T": {
+            "tags": [
+              "Block Comp_after_1", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 86.18821411366532, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_6_Q": {
+            "tags": [
+              "Block Comp_before_6", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -22.445475761647597, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_1_Out_T": {
+            "tags": [
+              "Block Comp_before_1", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_after_1_Q": {
+            "tags": [
+              "Block Comp_after_1", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 0.0, 
+            "desc": "Heat integration"
+          }, 
+          "Gas_Cooler_2_Q": {
+            "tags": [
+              "Block Gas_Cooler_2", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -0.8311021406972858, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_5_In_T": {
+            "tags": [
+              "Block Comp_before_5", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 87.0014886214597, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_3_In_T": {
+            "tags": [
+              "Block Comp_before_3", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 102.19340150916057, 
+            "desc": "Heat integration"
+          }, 
+          "Trim_Cooler_1_In_T": {
+            "tags": [
+              "Block Trim_Cooler_1", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 38.23000015238429, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_2_In_T": {
+            "tags": [
+              "Block Comp_before_2", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 115.95559530966561, 
+            "desc": "Heat integration"
+          }, 
+          "Regen_T": {
+            "tags": [
+              "Block Regen", 
+              "Blk_Var", 
+              "T", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 121.11111, 
+            "desc": "Heat integration"
+          }, 
+          "Regen_Q": {
+            "tags": [
+              "Block Regen", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 4.422750140197898, 
+            "desc": "Heat integration"
+          }, 
+          "HeatEx_1_Q": {
+            "tags": [
+              "Block HeatEx_1", 
+              "Blk_Var", 
+              "Q", 
+              "HX_Hot", 
+              "HX_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 11.65372383201034, 
+            "desc": "Heat integration"
+          }, 
+          "Mix_MU_Out_T": {
+            "tags": [
+              "Block Mix_MU", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 37.777776, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_6_In_T": {
+            "tags": [
+              "Block Comp_before_6", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 84.7798732380727, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_1_In_T": {
+            "tags": [
+              "Block Comp_before_1", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 115.78353508333316, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_after_2_Out_T": {
+            "tags": [
+              "Block Comp_after_2", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "HeatEx_1_Cold_Out_T": {
+            "tags": [
+              "Block HeatEx_1", 
+              "Port_Material_Out", 
+              "T", 
+              "HX_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 95.3287941645812, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_after_1_In_T": {
+            "tags": [
+              "Block Comp_after_1", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 86.18821411366511, 
+            "desc": "Heat integration"
+          }, 
+          "Trim_Cooler_1_Q": {
+            "tags": [
+              "Block Trim_Cooler_1", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 0.2743508824594797, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_2_Out_T": {
+            "tags": [
+              "Block Comp_before_2", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_3_Q": {
+            "tags": [
+              "Block Comp_before_3", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -22.49456464337775, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_6_Out_T": {
+            "tags": [
+              "Block Comp_before_6", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Electricity.Consumption.Comp": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": 36.27405972703276, 
+            "desc": "Total consumption"
+          }, 
+          "Mix_MU_Q": {
+            "tags": [
+              "Block Mix_MU", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -0.784957209515504, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_CO2_z_H2O": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 0.00015, 
+            "desc": "Output stream"
+          }, 
+          "HeatEx_1_Cold_In_T": {
+            "tags": [
+              "Block HeatEx_1", 
+              "Port_Material_In", 
+              "T", 
+              "HX_Cold"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 33.49827947795164, 
+            "desc": "Heat integration"
+          }, 
+          "MP_Steam.Consumption.Comp": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": 4.422750140197898, 
+            "desc": "Total consumption"
+          }, 
+          "HeatEx_1_Hot_In_T": {
+            "tags": [
+              "Block HeatEx_1", 
+              "Port_Material_In", 
+              "T", 
+              "HX_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 121.11111, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_after_2_In_T": {
+            "tags": [
+              "Block Comp_after_2", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 131.09243320818243, 
+            "desc": "Heat integration"
+          }, 
+          "Absorber_Q": {
+            "tags": [
+              "Block Absorber", 
+              "Blk_Var", 
+              "Q", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -0.5949738240330187, 
+            "desc": "Heat integration"
+          }, 
+          "Absorber_T": {
+            "tags": [
+              "Block Absorber", 
+              "Blk_Var", 
+              "T", 
+              "Point_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 33.49827947795164, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_CO2_F": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/hr", 
+            "value": 7607.624039747598, 
+            "desc": "Output stream"
+          }, 
+          "Comp_before_1_Q": {
+            "tags": [
+              "Block Comp_before_1", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -60.01452502726601, 
+            "desc": "Heat integration"
+          }, 
+          "HeatEx_1_Hot_Out_T": {
+            "tags": [
+              "Block HeatEx_1", 
+              "Port_Material_Out", 
+              "T", 
+              "HX_Hot"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 42.82790080060541, 
+            "desc": "Heat integration"
+          }, 
+          "Mix_MU_In_T": {
+            "tags": [
+              "Block Mix_MU", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 42.82790080060541, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_4_Out_T": {
+            "tags": [
+              "Block Comp_before_4", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Heat integration"
+          }, 
+          "Gas_Cooler_2_Out_T": {
+            "tags": [
+              "Block Gas_Cooler_2", 
+              "Port_Material_Out", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 39.99999824, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_before_2_Q": {
+            "tags": [
+              "Block Comp_before_2", 
+              "Blk_Var", 
+              "Q", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "GJ/hr", 
+            "value": -30.05513156895519, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_CO2_T": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 40.0, 
+            "desc": "Output stream"
+          }, 
+          "Comp_CO2_z_CO2": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "kmol/kmol", 
+            "value": 0.9998478734240542, 
+            "desc": "Output stream"
+          }, 
+          "Comp_before_4_In_T": {
+            "tags": [
+              "Block Comp_before_4", 
+              "Port_Material_In", 
+              "T", 
+              "heater"
+            ], 
+            "set": "sinter", 
+            "unit": "C", 
+            "value": 97.93200778132748, 
+            "desc": "Heat integration"
+          }, 
+          "Comp_CO2_P": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "bar", 
+            "value": 152.787821768, 
+            "desc": "Output stream"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": -100.0, 
+        "x": -200.0, 
+        "z": 0.0, 
+        "sim": "Compressor"
+      }, 
+      "Objective": {
+        "inVars": {
+          "Net.Power.CCS": {
+            "optVar": false, 
+            "set": "user", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "", 
+            "desc": ""
+          }
+        }, 
+        "pythonCode": "f[\"NetPowerCCS\"] = x[\"Net.Power.CCS\"]", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "NetPowerCCS": {
+            "tags": [], 
+            "set": "user", 
+            "unit": "", 
+            "value": null, 
+            "desc": ""
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": 200.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "sim": ""
+      }, 
+      "Steam Cycle": {
+        "inVars": {
+          "Net.Power": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": 650.33, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Net power output without CCS"
+          }, 
+          "Net.Efficiency": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 42.06, 
+            "max": 100.0, 
+            "tags": [], 
+            "value": 42.06, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "%", 
+            "desc": "Net efficiency without CCS"
+          }, 
+          "HP_Steam.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": 0.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "High-pressure steam consumption for heating"
+          }, 
+          "MP_Steam.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 10000.0, 
+            "tags": [], 
+            "value": 621.6769, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "Medium-pressure steam consumption for heating"
+          }, 
+          "HP_Steam.Injection": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 50000.0, 
+            "tags": [], 
+            "value": null, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "High-pressure steam injection"
+          }, 
+          "MP_Steam.Injection": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 50000.0, 
+            "tags": [], 
+            "value": 10500.0, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "kmol/hr", 
+            "desc": "Medium-pressure steam injection"
+          }, 
+          "FH.Heat.Addition": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": [
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0
+            ], 
+            "default": [
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0, 
+              0.0
+            ], 
+            "max": [
+              10000.0, 
+              10000.0, 
+              10000.0, 
+              10000.0, 
+              10000.0
+            ], 
+            "tags": [], 
+            "value": [
+              138.4294, 
+              177.709, 
+              182.5095, 
+              78.1235, 
+              0.0
+            ], 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "GJ/hr", 
+            "desc": "Heat addition into feed water heaters"
+          }, 
+          "Electricity.Consumption": {
+            "optVar": false, 
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 1000.0, 
+            "tags": [], 
+            "value": 58.723320843934346, 
+            "scaling": "None", 
+            "uqVar": false, 
+            "unit": "MW", 
+            "desc": "Electricity consumption"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "0", 
+        "outVars": {
+          "Net.Power.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": 519.5677701249656, 
+            "desc": "Net power output with CCS"
+          }, 
+          "Net.Efficiency.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": 33.602971432128385, 
+            "desc": "Net efficiency with CCS"
+          }, 
+          "Delta.Power.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": -154.63237503803435, 
+            "desc": "Change of net power output due to CCS"
+          }, 
+          "Delta.Efficiency.CCS": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": -10.000826801930904, 
+            "desc": "Change of net efficiency due to CCS"
+          }, 
+          "Delta.Power.HI": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "MW", 
+            "value": 23.870145163, 
+            "desc": "Change of net power output due to heat integration"
+          }, 
+          "Delta.Efficiency.HI": {
+            "tags": [], 
+            "set": "sinter", 
+            "unit": "%", 
+            "value": 1.5437982340592928, 
+            "desc": "Change of net efficiency due to heat integration"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "inValHist": {}, 
+        "turbInitSim": false, 
+        "y": 100.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "sim": "Steam Cycle"
+      }
+    }, 
+    "sampleCSV": null
+  }, 
+  "description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:12pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">A full power plant model, including BFB capture process, compression process, steam cycle and heat integration. The net power output and net efficiency with CCS and heat integration are returned.</p></body></html>", 
+  "FileType": "Session", 
+  "optOptions": {
+    "current": "CMA-ES", 
+    "options": {
+      "CMA-ES": {
+        "Flush Modulus": 1, 
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Max Time": 48, 
+        "Output File": "cma-out.txt", 
+        "Pickle Modulus": 0, 
+        "popsize": 100, 
+        "Pickle In": "", 
+        "Pickle Out": "", 
+        "seed": 1, 
+        "NP": 1, 
+        "itmax": 100
+      }, 
+      "SNOBFIT-NIST": {
+        "Output File": "snobfit-out.txt", 
+        "upper": [
+          10, 
+          10
+        ], 
+        "lower": [
+          0, 
+          0
+        ], 
+        "Flush Modulus": 1, 
+        "itmax": 0
+      }
+    }
+  }, 
+  "uqSimList": [], 
+  "date": "Mon, 30 Sep 2013 17:11:53"
+}

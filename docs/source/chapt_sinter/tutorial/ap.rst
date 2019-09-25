@@ -1,11 +1,14 @@
-Aspen Plus Configuration
-========================
+Tutorial 1: Aspen Plus Configuration
+====================================
+
+The files (both the Aspen Plus file and the JSON file)
+for this tutorial are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
 
 #. The initial steps for opening a simulation and entering metadata for
    an Aspen Plus simulation are similar to ACM. Refer to the SimSinter
    ACM tutorial :ref:`sec.tut.simsinter.acm`. In
-   this tutorial, a flash model “Flash_Example.bkp” installed in the
-   “C:\SimSinterFiles\Aspen_Plus_Install_Test” is used as an example.
+   this tutorial, a flash model “Flash_Example.bkp” (located in the
+   above-mentioned folder) is used as an example.
    Open the Aspen Plus file and enter the metadata as shown in Figure
    :ref:`fig.sinter.ap.metadata`.
 

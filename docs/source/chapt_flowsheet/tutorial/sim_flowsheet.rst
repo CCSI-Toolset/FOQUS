@@ -1,7 +1,7 @@
 .. _tutorial.sim.flowsheet:
 
-Creating a Flowsheet with Linked Simulations
-============================================
+Tutorial 2: Creating a Flowsheet with Linked Simulations
+========================================================
 
 This tutorial is referenced by other tutorials. **Save the flowsheet in
 a convenient location for future use.**
@@ -16,6 +16,8 @@ solid sorbent post combustion CO\ :math:`_2` capture process added.
 Before starting the tutorial, see Section
 :ref:`tutorial.example.files` to locate and
 copy the example files to a convenient location.
+
+The files for the tutorial is located in: examples/tutorial_files/Flowsheets/Tutorial_2
 
 #. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 

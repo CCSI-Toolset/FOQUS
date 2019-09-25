@@ -1,0 +1,2933 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "post_solve_nodes": [], 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": 19, 
+    "pre_solve_nodes": [], 
+    "no_solve_nodes": [], 
+    "tearTolType": "abs", 
+    "edges": [
+      {
+        "end": "Cost", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "BFB", 
+        "active": true, 
+        "con": [
+          {
+            "toName": "BFBadsB.HXIn.F", 
+            "fromName": "BFBadsB.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsB.Nx", 
+            "fromName": "BFBadsB.Nx", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsM.HXIn.F", 
+            "fromName": "BFBadsM.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsM.Nx", 
+            "fromName": "BFBadsM.Nx", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsT.HXIn.F", 
+            "fromName": "BFBadsT.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsT.Nx", 
+            "fromName": "BFBadsT.Nx", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnB.HXIn.F", 
+            "fromName": "BFBrgnB.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnB.Nx", 
+            "fromName": "BFBrgnB.Nx", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnT.HXIn.F", 
+            "fromName": "BFBrgnT.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnT.Nx", 
+            "fromName": "BFBrgnT.Nx", 
+            "active": true
+          }, 
+          {
+            "toName": "CMPads.GasOut.P", 
+            "fromName": "CMPads.GasOut.P", 
+            "active": true
+          }, 
+          {
+            "toName": "CMPads.J", 
+            "fromName": "CMPads.J", 
+            "active": true
+          }, 
+          {
+            "toName": "CMPrgn.GasOut.P", 
+            "fromName": "CMPrgn.GasOut.P", 
+            "active": true
+          }, 
+          {
+            "toName": "CMPrgn.J", 
+            "fromName": "CMPrgn.J", 
+            "active": true
+          }, 
+          {
+            "toName": "CW_SHXlean.A_exch", 
+            "fromName": "CW_SHXlean.A_exch", 
+            "active": true
+          }, 
+          {
+            "toName": "CW_SHXlean.HXIn.F", 
+            "fromName": "CW_SHXlean.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXcmp.GasIn.P", 
+            "fromName": "GHXcmp.GasIn.P", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXcmp.HXIn.F", 
+            "fromName": "GHXcmp.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXcmp.a_exch", 
+            "fromName": "GHXcmp.a_exch", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXfg.GasIn.P", 
+            "fromName": "GHXfg.GasIn.P", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXfg.HXIn.F", 
+            "fromName": "GHXfg.HXIn.F", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXfg.a_exch", 
+            "fromName": "GHXfg.a_exch", 
+            "active": true
+          }, 
+          {
+            "toName": "GasOut.F", 
+            "fromName": "GasOut.F", 
+            "active": true
+          }, 
+          {
+            "toName": "GasOut.T", 
+            "fromName": "GasOut.T", 
+            "active": true
+          }, 
+          {
+            "toName": "LR_SHXlean.A_exch", 
+            "fromName": "LR_SHXlean.A_exch", 
+            "active": true
+          }, 
+          {
+            "toName": "LR_SHXrich.A_exch", 
+            "fromName": "LR_SHXrich.A_exch", 
+            "active": true
+          }, 
+          {
+            "toName": "removalCO2", 
+            "fromName": "removalCO2", 
+            "active": true
+          }, 
+          {
+            "toName": "removalH2O", 
+            "fromName": "removalH2O", 
+            "active": true
+          }, 
+          {
+            "toName": "rhos", 
+            "fromName": "rhos", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsB.Lb", 
+            "fromName": "BFBadsB.Lb", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsM.Lb", 
+            "fromName": "BFBadsM.Lb", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBadsT.Lb", 
+            "fromName": "BFBadsT.Lb", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnB.Lb", 
+            "fromName": "BFBrgnB.Lb", 
+            "active": true
+          }, 
+          {
+            "toName": "BFBrgnT.Lb", 
+            "fromName": "BFBrgnT.Lb", 
+            "active": true
+          }, 
+          {
+            "toName": "GHXfg.GasOut.T", 
+            "fromName": "GHXfg.GasOut.T", 
+            "active": true
+          }, 
+          {
+            "toName": "SolidIn.Fm", 
+            "fromName": "SolidIn.Fm", 
+            "active": true
+          }, 
+          {
+            "toName": "adsDt", 
+            "fromName": "adsDt", 
+            "active": true
+          }, 
+          {
+            "toName": "adsN", 
+            "fromName": "adsN", 
+            "active": true
+          }, 
+          {
+            "toName": "adsdx", 
+            "fromName": "adsdx", 
+            "active": true
+          }, 
+          {
+            "toName": "adslhx", 
+            "fromName": "adslhx", 
+            "active": true
+          }, 
+          {
+            "toName": "rgnDt", 
+            "fromName": "rgnDt", 
+            "active": true
+          }, 
+          {
+            "toName": "rgnN", 
+            "fromName": "rgnN", 
+            "active": true
+          }, 
+          {
+            "toName": "rgnSF", 
+            "fromName": "rgnSF", 
+            "active": true
+          }, 
+          {
+            "toName": "rgndx", 
+            "fromName": "rgndx", 
+            "active": true
+          }, 
+          {
+            "toName": "rgnlhx", 
+            "fromName": "rgnlhx", 
+            "active": true
+          }, 
+          {
+            "toName": "steam.F", 
+            "fromName": "steam.F", 
+            "active": true
+          }
+        ]
+      }
+    ], 
+    "results": {
+      "_currentFilter": null, 
+      "results": [], 
+      "filters": {
+        "all": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": null, 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }, 
+        "none": {
+          "errors": null, 
+          "tags": null, 
+          "indexes": [], 
+          "names": null, 
+          "filters": [], 
+          "sets": null, 
+          "pyfunc": null
+        }
+      }
+    }, 
+    "tearTol": 0.001, 
+    "output": {
+      "graph": {}, 
+      "Cost": {
+        "COE": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "COAC": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "status": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Simulation Status Code"
+        }
+      }, 
+      "BFB": {
+        "removalCO2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Fraction of CO2 removed from the flue gas"
+        }, 
+        "LR_SHXlean.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "m2", 
+          "desc": "Required area (m^2)"
+        }, 
+        "GHXfg.GasIn.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "bar", 
+          "desc": "Flue gas inlet pressure"
+        }, 
+        "CMPrgn.GasOut.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "bar", 
+          "desc": "Regenerator inlet compressor discharge pressure"
+        }, 
+        "BFBadsM.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Molar flow rate"
+        }, 
+        "GHXfg.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of flue gas into the process"
+        }, 
+        "BFBadsT.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Heat Exchanger Number of Tubes in top absorber bed"
+        }, 
+        "BFBadsT.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Cooling water flow to top adsorber bed"
+        }, 
+        "BFBrgnT.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Cooling water flow to top regenerator bed"
+        }, 
+        "removalH2O": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Fraction of water removed form the flue gas"
+        }, 
+        "GHXcmp.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate"
+        }, 
+        "CW_SHXlean.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate"
+        }, 
+        "BFBrgnB.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Cooling water flow to bottom regenerator bed"
+        }, 
+        "GHXfg.a_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "m2", 
+          "desc": "Heat exchange area for flue gas cooler"
+        }, 
+        "CMPads.J": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kW", 
+          "desc": "Electrical power requirement for flue gas blower"
+        }, 
+        "BFBrgnT.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Heat Exchanger Number of Tubes in top regenerator bed"
+        }, 
+        "rhos": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kg/m3", 
+          "desc": "Particle Density"
+        }, 
+        "GHXcmp.GasIn.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "bar", 
+          "desc": "Flue gas pressure at blower inlet"
+        }, 
+        "BFBadsM.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Heat Exchanger Number of Tubes in middle absorber bed"
+        }, 
+        "BFBadsB.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Heat Exchanger Number of Tubes in bottom absorber bed"
+        }, 
+        "BFBadsB.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Molar flow rate"
+        }, 
+        "CW_SHXlean.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "m2", 
+          "desc": "Required area (m^2)"
+        }, 
+        "GHXcmp.a_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "m2", 
+          "desc": "Heat exchange area for CO2 cooler"
+        }, 
+        "CMPads.GasOut.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "bar", 
+          "desc": "Flue gas pressure at blower outlet"
+        }, 
+        "GasOut.T": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "degC", 
+          "desc": "Temperature of the gas out of the adsorber"
+        }, 
+        "GasOut.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kmol/hr", 
+          "desc": "Flow rate of gas out of the adsorber"
+        }, 
+        "BFBrgnB.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Heat Exchanger Number of Tubes in bottom regenerator bed"
+        }, 
+        "LR_SHXrich.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "m2", 
+          "desc": "Required area (m^2)"
+        }, 
+        "CMPrgn.J": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "kW", 
+          "desc": "Electrical power requirement of compressor for gas into the regenerator"
+        }, 
+        "status": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "", 
+          "desc": "Simulation Status Code"
+        }
+      }
+    }, 
+    "input": {
+      "graph": {}, 
+      "Cost": {
+        "removalH2O": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4526.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4526.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "removalCO2": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 2701.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            2701.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rgndx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.02, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.02
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsT.Lb": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "LR_SHXlean.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 285.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            285.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXfg.GasIn.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1.01325, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.01325
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CMPrgn.GasOut.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1.2292790272885457, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.2292790272885457
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsM.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1000.4230012865833, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1000.4230012865833
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "steam.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 700.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            700.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXfg.GasOut.T": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 40.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            40.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnB.Lb": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsT.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 641.141357875468, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            641.141357875468
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsT.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 76659.00441173252, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            76659.00441173252
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnT.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.28891601582444915, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.28891601582444915
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsB.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 389.2655090327005, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            389.2655090327005
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rgnDt": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 12.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            12.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXcmp.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 40274.233752907145, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            40274.233752907145
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CW_SHXlean.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 18208.898928963426, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            18208.898928963426
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnB.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.6648504050666837, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.6648504050666837
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsM.Lb": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rgnSF": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.3, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.3
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXfg.a_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 5749.664948764189, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5749.664948764189
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "adsN": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CMPads.J": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1704.4043432763453, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1704.4043432763453
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rgnN": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "adsdx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.025, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.025
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnT.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 7853.98163397448, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            7853.98163397448
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rhos": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 442.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            442.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXcmp.GasIn.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1.01325, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.01325
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsM.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 641.141357875468, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            641.141357875468
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsB.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 641.141357875468, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            641.141357875468
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnT.Lb": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "adsDt": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "rgnlhx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.1, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.1
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CW_SHXlean.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 242.194, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            242.194
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXcmp.a_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1401.4708703119102, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1401.4708703119102
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CMPads.GasOut.P": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 1.335419245228242, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            1.335419245228242
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "SolidIn.Fm": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 600000.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            600000.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "adslhx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 0.5, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.5
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GasOut.T": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 85.21264217155624, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            85.21264217155624
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBadsB.Lb": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 4.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GasOut.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 5466.067671135571, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            5466.067671135571
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "BFBrgnB.Nx": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 7853.98163397448, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            7853.98163397448
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "LR_SHXrich.A_exch": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 19143.3, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            19143.3
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "GHXfg.HXIn.F": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 28737.646294112128, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            28737.646294112128
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }, 
+        "CMPrgn.J": {
+          "optVar": false, 
+          "scaling": "None", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0, 
+          "default": 159.86442220711848, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            159.86442220711848
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.0, 
+          "unit": "None", 
+          "desc": "None"
+        }
+      }, 
+      "BFB": {
+        "rgndx": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.014, 
+          "default": 0.0225, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0225
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.026, 
+          "unit": "m", 
+          "desc": "Regeneration units HX tubes diameter"
+        }, 
+        "BFBadsT.Lb": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 2.8, 
+          "default": 4.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 4.2, 
+          "unit": "m", 
+          "desc": "Top adsorber bed depth"
+        }, 
+        "BFBrgnT.Lb": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 2.8, 
+          "default": 4.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 4.2, 
+          "unit": "m", 
+          "desc": "Top regenerator bed depth"
+        }, 
+        "adslhx": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0075, 
+          "default": 0.4, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.4
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.55, 
+          "unit": "m", 
+          "desc": "Adsorption units HX tubes spacing"
+        }, 
+        "GHXfg.GasOut.T": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 25.0, 
+          "default": 40.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            40.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 40.0, 
+          "unit": "degC", 
+          "desc": "Flue gas cooler outlet temperature"
+        }, 
+        "SolidIn.Fm": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 400000.0, 
+          "default": 600000.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            600000.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 900000.0, 
+          "unit": "kg/hr", 
+          "desc": "Mass flow rate of solid into top adsorber"
+        }, 
+        "steam.F": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 500.0, 
+          "default": 800.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            800.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 1000.0, 
+          "unit": "kmol/hr", 
+          "desc": "Regenerator steam injection flow rate"
+        }, 
+        "BFBadsM.Lb": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 2.8, 
+          "default": 4.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 4.2, 
+          "unit": "m", 
+          "desc": "Middle adsorber bed Depth"
+        }, 
+        "rgnSF": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.05, 
+          "default": 0.3, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.3
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.3, 
+          "unit": "", 
+          "desc": "Regeneration section recirculation gas split fraction"
+        }, 
+        "rgnDt": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 9.0, 
+          "default": 12.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            12.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 12.0, 
+          "unit": "m", 
+          "desc": "Regeneration units diameter"
+        }, 
+        "adsDt": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 9.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 15.0, 
+          "unit": "m", 
+          "desc": "Adsorption units diameter"
+        }, 
+        "BFBadsB.Lb": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 2.8, 
+          "default": 4.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 4.2, 
+          "unit": "m", 
+          "desc": "Bottom adsorber bed depth"
+        }, 
+        "rgnlhx": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.05, 
+          "default": 0.08, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.08
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.1, 
+          "unit": "m", 
+          "desc": "Regeneration units HX tubes spacing"
+        }, 
+        "BFBrgnB.Lb": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 2.8, 
+          "default": 4.2, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            4.2
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 4.2, 
+          "unit": "m", 
+          "desc": "Bottom regenerator bed depth"
+        }, 
+        "adsN": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 4.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 15.0, 
+          "unit": "", 
+          "desc": "Number of parallel adsorption trains"
+        }, 
+        "rgnN": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 4.0, 
+          "default": 15.0, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            15.0
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 15.0, 
+          "unit": "", 
+          "desc": "Number of parallel regeneration trains"
+        }, 
+        "adsdx": {
+          "optVar": true, 
+          "scaling": "Linear", 
+          "set": "sinter", 
+          "dist": {
+            "firstParamValue": null, 
+            "type": "N", 
+            "secondParamValue": null
+          }, 
+          "scaleFact": 1.0, 
+          "min": 0.0175, 
+          "default": 0.0275, 
+          "dtype": "float", 
+          "tags": [], 
+          "ts": 0, 
+          "hist": [
+            0.0275
+          ], 
+          "uqVar": false, 
+          "shape": [], 
+          "max": 0.03, 
+          "unit": "m", 
+          "desc": "Adsorption units HX tubes diameter"
+        }
+      }
+    }, 
+    "nodes": {
+      "BFB": {
+        "modelName": "BFB", 
+        "pythonCode": "", 
+        "calcError": 0, 
+        "modelType": 2, 
+        "turbApp": "ACM", 
+        "y": -200.0, 
+        "x": -300.0, 
+        "z": 0.0, 
+        "options": {
+          "order": [
+            "Initialize Model", 
+            "Reset", 
+            "Maximum Wait Time (s)", 
+            "Maximum Run Time (s)", 
+            "Min Status Check Interval", 
+            "Max Status Check Interval", 
+            "homotopy", 
+            "printlevel"
+          ], 
+          "options": {
+            "Reset": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": false, 
+              "dtype": "bool", 
+              "optSet": 2, 
+              "value": false, 
+              "desc": "This options will cause a simulation to be reset to after each run."
+            }, 
+            "Min Status Check Interval": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 4.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 4.0, 
+              "desc": "This is the minimum amount of time between job status checks."
+            }, 
+            "Maximum Run Time (s)": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 600.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 600.0, 
+              "desc": "This is the ammount of time in seconds that FOQUS should wait for results to come back from Turbine once the simulation starts running."
+            }, 
+            "Initialize Model": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": false, 
+              "dtype": "bool", 
+              "optSet": 2, 
+              "value": false, 
+              "desc": "If this is ture, the simulation is run with default values to initialize it before running the  model inputs. This is often useful with Aspen Plus"
+            }, 
+            "Max Status Check Interval": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 5.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 5.0, 
+              "desc": "This is the maximum ammount of time between job status"
+            }, 
+            "printlevel": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 0, 
+              "dtype": "int", 
+              "optSet": 3, 
+              "value": 0, 
+              "desc": "Simulation specific setting: printlevel"
+            }, 
+            "Maximum Wait Time (s)": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 72000.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 72000.0, 
+              "desc": "This is the ammount of time in seconds that FOQUS should wait for results to come back from Turbine."
+            }, 
+            "homotopy": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 1, 
+              "dtype": "int", 
+              "optSet": 3, 
+              "value": 1, 
+              "desc": "Simulation specific setting: homotopy"
+            }
+          }
+        }
+      }, 
+      "Cost": {
+        "modelName": "BFBCost", 
+        "pythonCode": "", 
+        "calcError": 0, 
+        "modelType": 2, 
+        "turbApp": "Excel", 
+        "y": -200.0, 
+        "x": -100.0, 
+        "z": 0.0, 
+        "options": {
+          "order": [
+            "Initialize Model", 
+            "Reset", 
+            "Maximum Wait Time (s)", 
+            "Maximum Run Time (s)", 
+            "Min Status Check Interval", 
+            "Max Status Check Interval", 
+            "macro"
+          ], 
+          "options": {
+            "Reset": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": true, 
+              "vmin": null, 
+              "default": true, 
+              "dtype": "bool", 
+              "optSet": 2, 
+              "value": true, 
+              "desc": "This options will cause a simulation to be reset to after each run."
+            }, 
+            "macro": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": "", 
+              "dtype": null, 
+              "optSet": 3, 
+              "value": "", 
+              "desc": "Simulation specific setting: macro"
+            }, 
+            "Min Status Check Interval": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 4.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 4.0, 
+              "desc": "This is the minimum amount of time between job status checks."
+            }, 
+            "Maximum Run Time (s)": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 600.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 600.0, 
+              "desc": "This is the ammount of time in seconds that FOQUS should wait for results to come back from Turbine once the simulation starts running."
+            }, 
+            "Initialize Model": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": false, 
+              "dtype": "bool", 
+              "optSet": 2, 
+              "value": false, 
+              "desc": "If this is ture, the simulation is run with default values to initialize it before running the  model inputs. This is often useful with Aspen Plus"
+            }, 
+            "Max Status Check Interval": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 5.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 5.0, 
+              "desc": "This is the maximum ammount of time between job status"
+            }, 
+            "Maximum Wait Time (s)": {
+              "vmax": null, 
+              "validValues": [], 
+              "disable": false, 
+              "vmin": null, 
+              "default": 72000.0, 
+              "dtype": "float", 
+              "optSet": 2, 
+              "value": 72000.0, 
+              "desc": "This is the ammount of time in seconds that FOQUS should wait for results to come back from Turbine."
+            }
+          }
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup interval": 10, 
+        "popsize": 20, 
+        "Save results": true, 
+        "itmax": 0, 
+        "seed": 0, 
+        "Restart out": "restart{n}.pkl", 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "Max time": 48
+      }
+    }, 
+    "solver": "OptCMA", 
+    "obj": [
+      {
+        "pycode": "f[\"Cost\"][\"COE\"]", 
+        "fail": 1000.0, 
+        "penScale": 1.0
+      }
+    ], 
+    "g": [
+      {
+        "pycode": "0.9 - f[\"BFB\"][\"removalCO2\"]", 
+        "penalty": 1000.0, 
+        "penForm": "Linear"
+      }
+    ], 
+    "v": [
+      "BFB.adsDt", 
+      "BFB.adsdx", 
+      "BFB.adslhx", 
+      "BFB.adsN", 
+      "BFB.BFBadsB.Lb", 
+      "BFB.BFBadsM.Lb", 
+      "BFB.BFBadsT.Lb", 
+      "BFB.BFBrgnB.Lb", 
+      "BFB.BFBrgnT.Lb", 
+      "BFB.GHXfg.GasOut.T", 
+      "BFB.rgnDt", 
+      "BFB.rgndx", 
+      "BFB.rgnlhx", 
+      "BFB.rgnN", 
+      "BFB.rgnSF", 
+      "BFB.SolidIn.Fm", 
+      "BFB.steam.F"
+    ]
+  }, 
+  "CCSIFileMetaData": {
+    "MIMEType": "application/ccsi+foqus", 
+    "Confidence": "experimental", 
+    "DisplayName": "BFBCostOpt", 
+    "CreationTime": "2014-10-09T15:28:06", 
+    "Application": "foqus", 
+    "UpdateMetadata": true, 
+    "Version": "00.00", 
+    "Parents": [], 
+    "ID": "ea1482b747eb4bb588d71fde6cb6d3fa", 
+    "OriginalFilename": "BFBCostOpt.json", 
+    "Description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">None</p></body></html>", 
+    "ChangeLog": {
+      "2014-10-09T15:28:06": [
+        "00.00", 
+        "cb326b8539ea4d1f99f2d1731fd3daf9", 
+        "BFBCostOpt", 
+        "Updated simulation"
+      ], 
+      "2014-10-15T08:29:32": [
+        "00.00", 
+        "aba684c4e057476e9751a0e93b756b90", 
+        "BFBCostOpt", 
+        "Added descision variables to opt problem."
+      ], 
+      "2014-10-15T08:32:45": [
+        "00.00", 
+        "ea1482b747eb4bb588d71fde6cb6d3fa", 
+        "BFBCostOpt", 
+        "Fixed cost variable name."
+      ]
+    }, 
+    "ModificationTime": "2014-10-15T08:32:45", 
+    "Role": "Input"
+  }, 
+  "surrogateProblem": {
+    "input": [], 
+    "inputScaleFact": {}, 
+    "options": {
+      "Adaptive Sampling": false, 
+      "Include Exp": false, 
+      "Single Variable Term Powers": [
+        1
+      ], 
+      "Input File": "alamo.alm", 
+      "Two Variable Term Powers": [], 
+      "Validation Data Filter": "all", 
+      "Ratio Term Powers": [], 
+      "Initial Data Filter": "all", 
+      "PSUADE Driver Export File": "surrogate_ps.py", 
+      "Include Cos": false, 
+      "Failure Value": -111111, 
+      "Maximum Run Time": 2000, 
+      "Include Tan": false, 
+      "Three Variable Term Powers": [], 
+      "Include Sin": false, 
+      "Include Log": false, 
+      "FOQUS Model Export File": "surrogate_pg.py", 
+      "Keep Temporary Files": false
+    }, 
+    "output": []
+  }, 
+  "uqSimList": [], 
+  "Type": "FOQUS_Session", 
+  "ID": "BFBCostOpt_140728091905"
+}

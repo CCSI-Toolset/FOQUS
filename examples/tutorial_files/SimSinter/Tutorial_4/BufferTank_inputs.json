@@ -1,0 +1,30 @@
+[
+  {
+    "inputs": {
+      "ProcessName": "SimulateTank_sinter",
+      "password": "BufferTank_FO",
+      "AlphaFO": 0.8,
+      "SingleReal": 0.0,
+      "SingleInt": 11,
+      "ArrayInt": [
+        12,
+        12
+      ],
+      "FlowInFO": 14.0,
+      "Mass": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "HeightFO": 7.5,
+      "singleSelector": "apple",
+      "arraySelector": [
+        "red",
+        "red",
+        "red"
+      ]
+    }
+  }
+]

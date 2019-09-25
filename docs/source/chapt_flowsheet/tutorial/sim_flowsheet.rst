@@ -116,7 +116,7 @@ the steps to draw the flowsheet.
 
 18. Click **Toggle Node Editor**. The Node Editor displays as
     illustrated in Figure
-    :ref:`fig.tut.opt.nodeEditor`.
+    :ref:`fig.tut.opt.nodeEditor_upd`.
 
 .. figure:: ../figs/flowsheetDraw.svg
    :alt: Flowsheet Editor
@@ -127,7 +127,7 @@ the steps to draw the flowsheet.
 Each node must be assigned the appropriate simulation. Use the Node
 Editor to set the simulation type and the simulation name from
 simulation uploaded to Turbine. The Node Editor is illustrated in Figure
-:ref:`fig.tut.opt.nodeEditor`
+:ref:`fig.tut.opt.nodeEditor_upd`
 
 19. Under **Model** and **Type**, set the simulation **Type** to
     Turbine. This indicates that the simulation is to be run with

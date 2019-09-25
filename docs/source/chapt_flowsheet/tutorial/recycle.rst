@@ -10,7 +10,7 @@ used.
 The file for this tutorial is **Mass_Bal_Test_02.foqus**, and
 this file is located: **examples/tutorial_files/Flowsheets/Tutorial_3**
 
-#. From the example files, copy the Recycle/Mass_Bal_Test_02.foqus
+#. Copy the Mass_Bal_Test_02.foqus
    example file to a convenient location (see Section
    :ref:`tutorial.example.files`.
 

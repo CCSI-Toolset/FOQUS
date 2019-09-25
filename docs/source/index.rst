@@ -12,10 +12,10 @@
     chapt_ouu/index
     chapt_surrogates/index
     chapt_sdoe/index
-    chapt_sinter/index
-    chapt_debug/index
     chapt_HI/index
     chapt_pyomo/index
+    chapt_sinter/index
+    chapt_debug/index
     references
     copyright
 

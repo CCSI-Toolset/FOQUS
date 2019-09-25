@@ -181,7 +181,7 @@ single test run from the UQ samples.
 
    Surrogate Data
 
-27. Figure :ref:`fig.tut.sur.dataFilter`
+27. Figure :ref:`fig.tut.sur.dataFilter_surrogate_upd`
     displays the Data Filter Editor.
 
 28. Add the filter for initial data.

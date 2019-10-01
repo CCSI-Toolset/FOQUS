@@ -1,0 +1,1 @@
+python foqusPSUADEClient.py %*

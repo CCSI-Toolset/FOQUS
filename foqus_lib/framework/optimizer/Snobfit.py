@@ -79,7 +79,17 @@ class opt(optimization):
                             # (with a *.py).
         # Next is the description of the optimization
         self.methodDescription = \
-            ("This solver provides robust and fast solution of noisy optimization problems with continuous variables varying within box bounds, possibly subject to additional soft constraints. Discrete variables are not supported")
+            ("<html>\n<head>"
+             ".hangingindent {\n"
+             "    margin-left: 22px ;\n"
+             "    text-indent: -22px ;\n"
+             "}\n"
+             "</head>\n"
+             "<p class=\"hangingindent\">"
+             "<p>Developer: WALTRAUD HUYER and ARNOLD NEUMAIER</p>"
+             "<p>Algorithm Type: Branch & Local Fit</p>"
+             "<p>Optimization Problems handling Capability: Unconstrained Noisy Optimization problems with box bounds, and optional soft constraints</p>"
+             "</html>")
         self.available = snobfit_available # If plugin is available
         self.description = "Optimization Solver" #Short description
         self.mp = False    #Can evaluate objectives in parallel?

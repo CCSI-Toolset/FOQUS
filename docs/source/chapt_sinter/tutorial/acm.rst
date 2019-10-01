@@ -1,7 +1,10 @@
 .. _sec.tut.simsinter.acm:
 
-Aspen Custom Modeler Configuration
-==================================
+Tutorial 1: Aspen Custom Modeler (ACM) Configuration
+====================================================
+
+The files (both the ACM and the JSON files) for this tutorial
+are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
 
 #. The “SinterConfigGUI” can be launched from FOQUS, via the
    **Create/Edit** button found in **File**\ :math:`\rightarrow`
@@ -24,9 +27,10 @@ Aspen Custom Modeler Configuration
      “SinterConfigGUI” was opened from FOQUS, the filename text box
      already contains the correct file. To proceed immediately click
      **Open File and Configure Variables** or click **Browse** to search
-     for the file. For this tutorial, the ACM model for bubbling
-     fluidized bed adsorber installed in the FOQUS examples\OUU\BFB_Cap
-     folder is selected (BFB_OUU_COE.acmf). Once the file is selected,
+     for the file. For this tutorial, the ACM model (BFBv6.2.acmf) for a
+     bubbling fluidized bed adsorber (located in the
+     examples/tutorial_files/SimSinter/Tutorial_1 folder)
+     is selected. Once the file is selected,
      click **Open File and Configure Variables**. The user can open a
      fresh ACM simulation (.acmf file) or an existing SimSinter
      configuration file. For this example, open a fresh simulation.

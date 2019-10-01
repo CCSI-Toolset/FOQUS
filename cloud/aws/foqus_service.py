@@ -384,6 +384,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             ReceiptHandle=self._receipt_handle
         )
 
+    def _check_job_terminate(self, job_id):
+        response = self._dynamodb.get_item(
+                   TableName=self._dynamodb_table_name,
+                   Key={'Id':{'S':str(job_id)}, 'Type':{'S':'Job'}})
+
+        item = response.get('Item')
+        if not item:
+            _log.warn("Job %s expired:  Not in DynamoDB table %s" %(job_id, self._dynamodb_table_name))
+            return
+
+        """ Job is Finished it is in state (terminate,stop,success,error)
+        """
+        if item.get('Finished',None):
+            state = item.get('State')
+            _log.info("Job %s in Finished State=%s", str(job_id), state)
+            return state == 'terminate'
+        return False
+
     def pop_job(self, db, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
 
@@ -653,7 +671,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         while gt.isAlive():
             gt.join(10)
             status = db.consumer_status()
-            if status == 'terminate' or self._stop:
+            if status == 'terminate' or self._stop or self._check_job_terminate(jid):
                 terminate = True
                 db.job_change_status(job_desc, "error", message="terminate flowsheet: status=%s stop=%s" %(status, self._stop))
                 gt.terminate()

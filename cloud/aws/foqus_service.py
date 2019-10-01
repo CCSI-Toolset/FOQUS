@@ -443,11 +443,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 user_name, simulation_name), job_desc, user_name)
 
         foqus_keys = [i['Key'] for i in l['Contents'] if i['Key'].endswith('.foqus')]
-        if len(foqus_keys) < 2:
+        if len(foqus_keys) < 1:
             _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,simulation_name))
             raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
-        if len(foqus_keys) > 2:
+        if len(foqus_keys) > 1:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
             raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
@@ -457,10 +457,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             raise FOQUSJobException("S3 Bucket Missing flowsheet key : %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
 
-        if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
-            _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
-                user_name, simulation_name), job_desc, user_name)
+        #if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
+        #    _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
+        #    raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+        #        user_name, simulation_name), job_desc, user_name)
 
         idx = foqus_keys.index(flowsheet_key)
         _log.info("S3: Download Key %s", flowsheet_key)

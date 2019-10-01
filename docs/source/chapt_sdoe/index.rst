@@ -62,7 +62,7 @@ Hence, for a variety of criteria, a space-filling design can serve as good choic
 Using the SDoE Module - The Basics
 ----------------------------------
 
-In this section, we descibe the basic steps in for creating a design with this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on **Analyze**. 
+In this section, we will describe the basic steps in for creating a design with this module. When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on **Analyze**. 
 
   
 We now consider some details for each of these steps:
@@ -184,11 +184,13 @@ When one of the design files is opened it contains the details of each of the ru
    SDOE file containing a created design
    
    
-Examples: 
----------
+Tutorials: 
+----------
 
 Next, we illustrate the use of the SDOE capability for several different scenarios. Example 1 constructs several designs of size 8 to 10 runs for a 2-dimensional input space based on a regular square region with a candidate set that is a regularly spaced grid. Both minimax and maximin designs are constructed to illustrate the difference in the criteria.
 Example 2 takes one of the designs created in Example 1, and considers how it might be used for sequential updating with additional experimentation. In this case the Example 1 design is considered as historical data, and the goal is to augment the design with several additional runs.
+
+The files for these tutorials are located in: **examples/tutorial_files/SDOE**
 
 Example 1: Constructing minimax and maximin designs for a 2-D input space
 -------------------------------------------------------------------------

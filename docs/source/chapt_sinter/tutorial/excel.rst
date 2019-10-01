@@ -1,7 +1,10 @@
 .. _sec.tut.simsinter.excel:
 
-Microsoft Excel Configuration
-=============================
+Tutorial 3: Microsoft Excel Configuration
+=========================================
+
+The files (both the Excel and the JSON files) for this tutorial are
+located in: **examples/tutorial_files/SimSinter/Tutorial_3**
 
 #. The “SinterConfigGUI” can be launched from FOQUS, via the
    **Create/Edit** button found in **File**\ :math:`\rightarrow`
@@ -25,10 +28,10 @@ Microsoft Excel Configuration
    “SinterConfigGUI” was opened from FOQUS, the filename text box
    already contains the correct file. To proceed immediately click
    **Open File and Configure Variables** or click **Browse** to search
-   for the file. For this tutorial, a fresh copy of the BMI test is
-   opened. It can be found at:
+   for the file. For this tutorial, a fresh copy of the BMI (body
+   mass index) test is opened (exceltest.xlsm). It is located in:
 
-   C:\SimSinterFiles\\ Excel_Install_Test\exceltest.xlsm.
+   examples/tutorial_files/SimSinter/Tutorial_3
 
    .. figure:: ../figs/ap/02_FileOpenScreen.png
       :alt: SinterConfigGUI Open Simulation Screen

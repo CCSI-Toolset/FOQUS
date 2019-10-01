@@ -1,7 +1,7 @@
 .. _sec.surrogate.alamo:
 
-ALAMO
-=====
+Tutorial 1: ALAMO
+=================
 
 This tutorial focuses on the use of the ALAMO tool for building
 algebraic surrogate models. ALAMO builds simplified algebraic models,
@@ -15,6 +15,10 @@ Note: Before starting this tutorial the ALAMO product must be downloaded
 from the products page on the CCSI website. The path for the ALAMO
 executable file must be set in FOQUS settings (see Section
 :ref:`section.settings`).
+
+The FOQUS file (**Surrogate_Tutorial_1.foqus**),
+where Steps 1 to 42 of this tutorial have been completed
+is located in: **examples/tutorial_files/Surrogates**
 
 Flowsheet Setup
 ---------------

@@ -1,7 +1,7 @@
 .. _tutorial.fs.remote.turbine:
 
-Using a Remote Turbine Instance
-===============================
+Tutorial 5: Using a Remote Turbine Instance
+===========================================
 
 A remote Turbine instance may be used instead of TurbineLite.
 TurbineLite, used by default, runs simulations (e.g., Aspen Plus) on the
@@ -21,6 +21,9 @@ remote Turbine instance are:
 
 Running Remote Turbine on Your Own Computer
 -------------------------------------------
+
+For this tutorial, the FOQUS file is **Simple_flow.foqus**, and 
+this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_5**
 
 To run remote turbine on you own computer (e.g., if your
 computer has multiple processors):
@@ -97,9 +100,7 @@ computer has multiple processors):
 
 13. Run the flowsheet. The run should be successful
     (Figure :ref:`fig.Remote_Flowsheet`).
-    For this example, we used the "Simple_flow" example
-    from "examples\Smoke Tests".
-
+    
 .. figure:: ../figs/Remote_Flowsheet.jpg
    :alt: Example of Running the Flowsheet with Remote Turbine
    :name: fig.Remote_Flowsheet

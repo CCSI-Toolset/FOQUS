@@ -1,7 +1,9 @@
-Tutorial
-========
+Tutorials
+=========
 
 This section walks through a few examples of running OUU.
+
+The files for these tutorials are located in: **examples/tutorial_files/OUU**
 
 Example 1: OUU with Discrete Uncertain Parameters Only
 ------------------------------------------------------

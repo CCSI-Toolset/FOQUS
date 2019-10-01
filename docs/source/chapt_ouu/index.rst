@@ -1,5 +1,5 @@
-Optimization Under Uncertainty
-==============================
+Optimization Under Uncertainty (OUU)
+====================================
 
 Contents
 --------

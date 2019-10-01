@@ -1,7 +1,7 @@
 .. _(sec.surrogate.bssanova):
 
-BSS-ANOVA
-=========
+Tutorial 3: BSS-ANOVA
+=====================
 
 This tutorial covers the BSS-ANOVA surrogate modeling method. The
 Bayesian Smoothing Spline ANOVA (BSS-ANOVA) is essentially a Bayesian
@@ -20,6 +20,10 @@ ACOSSO, so ACOSSO is preferred for faster surrogate generation.
 
 This tutorial uses the same flowsheet and sample setup as the ALAMO
 tutorial in Section :ref:`sec.surrogate.alamo`.
+
+The FOQUS file for this tutorial is **Surrogate_Tutorial_1.foqus**, and 
+this file is located in: **examples/tutorial_files/Surrogates**
+
 The statistics software “R” is also required to use ACOSSO and
 BSS-ANOVA. Before starting this tutorial, you will need to install R
 version 3.1 or later (see
@@ -33,8 +37,10 @@ version 3.1 or later (see
       a file browser that can be used to set the path.
 
 #. Complete the ALAMO tutorial in Section
-   :ref:`sec.surrogate.alamo` through Step 32, or
-   load the FOQUS session saved after completing the ALAMO tutorial.
+   :ref:`sec.surrogate.alamo` through Step 32,
+   load the FOQUS session saved after completing the ALAMO tutorial,
+   or load the "Surrogate_Tutorial_1.foqus" file from the
+   examples/tutorial_files/Surrogates folder.
 
 #. Click the **Surrogates** button from the Home window (Figure
    :ref:`fig.bssanova.settings`).

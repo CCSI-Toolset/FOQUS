@@ -66,7 +66,9 @@ class opt(optimization):
              "}\n"
              "</head>\n"
              "<p class=\"hangingindent\">"
-             "<p><b>SciPy BFGS</b></p>"
+             "<p>Developer: Charles George Broyden, Roger Fletcher, Donald Goldfarb and David Shanno</p>"
+             "<p>Algorithm Type: Quasi Newton</p>"
+             "<p>Optimization Problems handled: Unconstrained Nonlinear Optimization, with variables > 1000 (L-BFGS)</p>"
              "</html>")
         self.options.add(
             name='upper',

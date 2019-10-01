@@ -1,13 +1,20 @@
 .. _tutorial.pyomo.test:
 
-Running PYOMO Optimization Model in FOQUS
-=========================================
+Tutorial: Running PYOMO Optimization Model in FOQUS
+===================================================
 
-Consider the following optimization model to be solved within FOQUS using PYOMO.
+Consider the following optimization problem to be solved with FOQUS using PYOMO.
 
 min y
-St: y = x1  + x2
-ax1 + bx2 ≥ c.
+
+Subject to:
+
+y = x1  + x2
+
+a * x1 + b * x2 ≥ c.
+
+The complete FOQUS file (**Pyomo_Test_Example.foqus**), with the code written,
+is located in: **examples/tutorial_files/PYOMO**
 
 Instructions
 ~~~~~~~~~~~~

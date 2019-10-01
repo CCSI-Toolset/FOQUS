@@ -1,7 +1,7 @@
 .. _tutorial.surrogate.uq:
 
-Surrogates with UQ Tools
-========================
+Tutorial 4: Surrogates with UQ Tools
+====================================
 
 For the purpose of this tutorial, we will use ACOSSO to demonstrate the
 use of a surrogate within the UQ module. The steps are the same
@@ -14,9 +14,12 @@ https://www.python.org/downloads/). In addition, if \*.py files have
 been re-associated with other executables (e.g. editors), please change
 the association back to python.exe.
 
+The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
+this file is located in: **examples/tutorial_files/Surrogates**
+
 #. Load a fresh session by clicking the Session button from the Home
-   window. Select Open Session and then navigate to the “examples/UQ”
-   directory. Select “Rosenbrock_no_vectors.foqus.” This will load a
+   window. Select Open Session and then navigate to the above-mentioned folder,
+   and select “Rosenbrock_no_vectors.foqus.” This will load a
    session with a simple flowsheet containing a single node.
 
 #. Click Settings and ensure that (1) FOQUS Flowsheet Run Method is set

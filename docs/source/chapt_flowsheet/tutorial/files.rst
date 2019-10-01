@@ -1,7 +1,7 @@
 .. _tutorial.example.files:
 
 Tutorial Files
-=============
+==============
 
 Many of the tutorials in this manual make use of example files provided
 in the FOQUS examples. This tutorial helps the user find and copy

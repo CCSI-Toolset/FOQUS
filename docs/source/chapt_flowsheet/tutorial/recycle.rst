@@ -1,5 +1,5 @@
-Flowsheets with Recycle
-=======================
+Tutorial 3: Flowsheets with Recycle
+===================================
 
 This section provides a tutorial on working with flowsheets containing
 recycle. Sections :ref:`tutorial.simple.flow` and
@@ -7,7 +7,10 @@ recycle. Sections :ref:`tutorial.simple.flow` and
 for creating flowsheets, in this section a pre-constructed flowsheet is
 used.
 
-#. From the example files, copy the Recycle/Mass_Bal_Test_02.foqus
+The file for this tutorial is **Mass_Bal_Test_02.foqus**, and
+this file is located: **examples/tutorial_files/Flowsheets/Tutorial_3**
+
+#. Copy the Mass_Bal_Test_02.foqus
    example file to a convenient location (see Section
    :ref:`tutorial.example.files`.
 

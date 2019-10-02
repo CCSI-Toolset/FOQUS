@@ -1,5 +1,5 @@
-Implementing PYOMO Models within FOQUS-Short Tutorial
-=====================================================
+Tutorial
+========
 
 .. toctree::
     :maxdepth: 2

@@ -1,14 +1,13 @@
 .. _sec.tut.simsinter.gproms:
 
-gPROMS Configuration
-====================
+Tutorial 4: gPROMS Configuration
+================================
 
 gPROMS is significantly different from the other simulators SimSinter
 supports, and the workflow is also significantly different. If you plan
 to use gPROMS simulations with FOQUS, the CCSI team strongly encourages
-you to read the “SimSinter gPROMS Technical Manual,” which is included
-in the FOQUS distribution. The default location is at C:\Program Files
-(x86)\foqus \\foqus \\doc. It is also available on the CCSI website.
+you to read the
+[SimSinter gPROMS Technical Manual](https://github.com/CCSI-Toolset/SimSinter/blob/master/docs/SimSinter%20gPROMS%20Technical%20Manual.pdf).
 
 Unlike Aspen, changes must be made to the gPROMS simulation process in
 order to work with SimSinter. Therefore, this section consists of a
@@ -16,6 +15,9 @@ series of tutorials for every step of configuring gPROMS and SimSinter
 to work together. All the tutorials are required in order to have a
 gPROMS simulation be runnable with SimSinter. They are divided up to
 make later reference easier.
+
+The files for this tutorial are located in:
+**examples/tutorial_files/SimSinter/Tutorial_4**
 
 .. _gPROMSConfigSubSection:
 
@@ -39,7 +41,7 @@ variable where gPROMS will use the data.
    newer. For this example, use the gPROMS install test file
    “BufferTank_FO.gPJ”, found in:
 
-   C:\\ SimSinterFiles\gPROMS_Test\\ BufferTank_FO.gPJ
+   examples/tutorial_files/SimSinter/Tutorial_4
 
    Double-click on the .gPJ file to open ModelBuilder, as shown in
    Figure :ref:`fig.sinter.gproms.openbuffertank`.

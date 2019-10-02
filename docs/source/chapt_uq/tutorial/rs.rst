@@ -1,7 +1,7 @@
 .. _tutorial.uq.rs:
 
-Response Surface Based Analysis
--------------------------------
+Tutorial 4: Response Surface Based Analysis
+===========================================
 
 For simulation models that are expensive to run, response surface
 analysis can be a resourceful option. To construct a response surface, a
@@ -13,6 +13,9 @@ Gaussian process (if installed as part of PSUADE) is preferred.
 Alternatively, if the sample size is large enough (one hundred or more),
 cubic splines (if installed) may also be feasible.
 
+The file for this tutorial is **lptau100_10inputs_4outputs.dat**, and
+this file is located in: **examples/tutorial_files/UQ/Tutorial_4**
+
 Response Surface Model Validation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -21,7 +24,7 @@ a suitable response surface with which to approximate the
 input-to-output mapping. Validation is performed to see how well a
 particular response surface can predict a subset of the withheld data.
 
-#. Load “lptau100_10inputs_4outputs.dat” from the examples\UQ folder.
+#. Load the “lptau100_10inputs_4outputs.dat” file.
    Note: This is an extremely small simulation ensemble, as this is used
    to highlight the differences (in validation results) between a good
    response surface and a bad one.

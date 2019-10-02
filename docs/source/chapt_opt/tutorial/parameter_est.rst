@@ -1,5 +1,5 @@
-Parameter Estimation
-====================
+Tutorial 2: Parameter Estimation
+================================
 
 **Note:** The NLopt solvers are used for the tutorial, but are an
 optional to the installation. See the install instructions for more

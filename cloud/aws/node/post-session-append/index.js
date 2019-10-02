@@ -83,7 +83,7 @@ exports.handler = function(event, context, callback) {
             }
             var params = {
               Bucket: s3_bucket_name,
-              Key: user_name + '/' + session_id + '/' + milliseconds + '.json',
+              Key: user_name + '/session/create/' + session_id + '/' + milliseconds + '.json',
               Body: content
             };
             log(`putS3(${params.Bucket}):  ${params.Key}`);
@@ -106,12 +106,14 @@ exports.handler = function(event, context, callback) {
           id_list.push(obj[i].Id);
           item = {Id: obj[i].Id,
                   Type: "Job",
+                  State: "create",
                   Create: d.toISOString(),
                   SessionId: session_id,
                   User: user_name,
                   Initialize: obj[i].Initialize,
                   Input: obj[i].Input,
                   Reset:obj[i].Reset,
+                  TTL: Math.floor(Date.now()/1000 + 60*60*12),
                   Simulation: obj[i].Simulation,
                   Application: "foqus"};
 

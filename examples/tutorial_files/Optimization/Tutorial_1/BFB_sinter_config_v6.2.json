@@ -1,0 +1,516 @@
+{
+  "title": "BFB_sinter_config_v62",
+  "config-version": "0.2",
+  "description": "3x ads, 2x rgn; updated solid heat exchanger",
+  "model": {
+    "file": "BFBv6.2.acmf",
+    "DigestValue": "2b84c81491489b7a5066e443c6ff08de1001bec8",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "Qianwen Gao",
+  "date": "7/22/2014",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Custom Modeler",
+    "version": "30.0",
+    "constraint": "AT-LEAST"
+  },
+  "settings": {
+    "RunMode": {
+      "type": "string",
+      "default": "Steady State",
+      "description": "Simulation specific setting: RunMode"
+    },
+    "Snapshot": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Snapshot"
+    },
+    "TimeSeries": {
+      "type": "double[1]",
+      "default": [
+        0.0
+      ],
+      "description": "Simulation specific setting: TimeSeries"
+    },
+    "Script": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Script"
+    },
+    "homotopy": {
+      "type": "int",
+      "default": 1,
+      "description": "Simulation specific setting: homotopy"
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    },
+    "MinStepSize": {
+      "type": "double",
+      "default": 0.001,
+      "description": "Simulation specific setting: MinStepSize"
+    },
+    "TimeUnits": {
+      "type": "string",
+      "default": "Hours",
+      "description": "Simulation specific setting: TimeUnits"
+    }
+  },
+  "inputs": {
+    "rgnSF": {
+      "path": [
+        "rgnSF"
+      ],
+      "type": "double",
+      "default": 0.3,
+      "description": "Regeneration section recirculation gas split fraction",
+      "units": "",
+      "min": 0.05,
+      "max": 0.3
+    },
+    "adsDt": {
+      "path": [
+        "adsDt"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "Adsorption units diameter",
+      "units": "m",
+      "min": 9.0,
+      "max": 15.0
+    },
+    "adslhx": {
+      "path": [
+        "adslhx"
+      ],
+      "type": "double",
+      "default": 0.4,
+      "description": "Adsorption units HX tubes spacing",
+      "units": "m",
+      "min": 0.0075,
+      "max": 0.55
+    },
+    "adsdx": {
+      "path": [
+        "adsdx"
+      ],
+      "type": "double",
+      "default": 0.0275,
+      "description": "Adsorption units HX tubes diameter",
+      "units": "m",
+      "min": 0.0175,
+      "max": 0.03
+    },
+    "adsN": {
+      "path": [
+        "adsN"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "Number of parallel adsorption trains",
+      "units": "",
+      "min": 4.0,
+      "max": 15.0
+    },
+    "rgnDt": {
+      "path": [
+        "rgnDt"
+      ],
+      "type": "double",
+      "default": 12.0,
+      "description": "Regeneration units diameter",
+      "units": "m",
+      "min": 9.0,
+      "max": 12.0
+    },
+    "rgnlhx": {
+      "path": [
+        "rgnlhx"
+      ],
+      "type": "double",
+      "default": 0.08,
+      "description": "Regeneration units HX tubes spacing",
+      "units": "m",
+      "min": 0.05,
+      "max": 0.1
+    },
+    "rgndx": {
+      "path": [
+        "rgndx"
+      ],
+      "type": "double",
+      "default": 0.0225,
+      "description": "Regeneration units HX tubes diameter",
+      "units": "m",
+      "min": 0.014,
+      "max": 0.026
+    },
+    "rgnN": {
+      "path": [
+        "rgnN"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "Number of parallel regeneration trains",
+      "units": "",
+      "min": 4.0,
+      "max": 15.0
+    },
+    "BFBadsT.Lb": {
+      "path": [
+        "BFBadsT.Lb"
+      ],
+      "type": "double",
+      "default": 4.2,
+      "description": "Top adsorber bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsM.Lb": {
+      "path": [
+        "BFBadsM.Lb"
+      ],
+      "type": "double",
+      "default": 4.2,
+      "description": "Middle adsorber bed Depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBadsB.Lb": {
+      "path": [
+        "BFBadsB.Lb"
+      ],
+      "type": "double",
+      "default": 4.2,
+      "description": "Bottom adsorber bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnT.Lb": {
+      "path": [
+        "BFBrgnT.Lb"
+      ],
+      "type": "double",
+      "default": 4.2,
+      "description": "Top regenerator bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "BFBrgnB.Lb": {
+      "path": [
+        "BFBrgnB.Lb"
+      ],
+      "type": "double",
+      "default": 4.2,
+      "description": "Bottom regenerator bed depth",
+      "units": "m",
+      "min": 2.8,
+      "max": 4.2
+    },
+    "steam.F": {
+      "path": [
+        "SINJ.steam.F"
+      ],
+      "type": "double",
+      "default": 800.0,
+      "description": "Regenerator steam injection flow rate",
+      "units": "kmol/hr",
+      "min": 500.0,
+      "max": 1000.0
+    },
+    "SolidIn.Fm": {
+      "path": [
+        "BFBadsT.SolidIn.Fm"
+      ],
+      "type": "double",
+      "default": 600000.0,
+      "description": "Mass flow rate of solid into top adsorber",
+      "units": "kg/hr",
+      "min": 400000.0,
+      "max": 900000.0
+    },
+    "GHXfg.GasOut.T": {
+      "path": [
+        "GHXfg.GasOut.T"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": "Flue gas cooler outlet temperature",
+      "units": "degC",
+      "min": 25.0,
+      "max": 40.0
+    }
+  },
+  "outputs": {
+    "BFBadsT.Nx": {
+      "path": [
+        "BFBadsT.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Exchanger Number of Tubes in top absorber bed",
+      "units": ""
+    },
+    "BFBadsM.Nx": {
+      "path": [
+        "BFBadsM.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Exchanger Number of Tubes in middle absorber bed",
+      "units": ""
+    },
+    "BFBadsB.Nx": {
+      "path": [
+        "BFBadsB.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Exchanger Number of Tubes in bottom absorber bed",
+      "units": ""
+    },
+    "BFBrgnT.Nx": {
+      "path": [
+        "BFBrgnT.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Exchanger Number of Tubes in top regenerator bed",
+      "units": ""
+    },
+    "BFBrgnB.Nx": {
+      "path": [
+        "BFBrgnB.Nx"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Exchanger Number of Tubes in bottom regenerator bed",
+      "units": ""
+    },
+    "CMPads.J": {
+      "path": [
+        "CMPads.J"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Electrical power requirement for flue gas blower",
+      "units": "kW"
+    },
+    "CMPrgn.J": {
+      "path": [
+        "CMPrgn.J"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Electrical power requirement of compressor for gas into the regenerator",
+      "units": "kW"
+    },
+    "GHXfg.GasIn.P": {
+      "path": [
+        "GHXfg.GasIn.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flue gas inlet pressure",
+      "units": "bar"
+    },
+    "GHXcmp.GasIn.P": {
+      "path": [
+        "GHXcmp.GasIn.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flue gas pressure at blower inlet",
+      "units": "bar"
+    },
+    "CMPads.GasOut.P": {
+      "path": [
+        "CMPads.GasOut.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flue gas pressure at blower outlet",
+      "units": "bar"
+    },
+    "CMPrgn.GasOut.P": {
+      "path": [
+        "CMPrgn.GasOut.P"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Regenerator inlet compressor discharge pressure",
+      "units": "bar"
+    },
+    "GasOut.T": {
+      "path": [
+        "BFBadsT.GasOut.T"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of the gas out of the adsorber",
+      "units": "degC"
+    },
+    "GasOut.F": {
+      "path": [
+        "BFBadsT.GasOut.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flow rate of gas out of the adsorber",
+      "units": "kmol/hr"
+    },
+    "rhos": {
+      "path": [
+        "BFBadsT.rhos"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Particle Density",
+      "units": "kg/m3"
+    },
+    "GHXfg.a_exch": {
+      "path": [
+        "GHXfg.a_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat exchange area for flue gas cooler",
+      "units": "m2"
+    },
+    "GHXcmp.a_exch": {
+      "path": [
+        "GHXcmp.a_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat exchange area for CO2 cooler",
+      "units": "m2"
+    },
+    "GHXfg.HXIn.F": {
+      "path": [
+        "GHXfg.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flow rate of flue gas into the process",
+      "units": "kmol/hr"
+    },
+    "GHXcmp.HXIn.F": {
+      "path": [
+        "GHXcmp.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flow rate",
+      "units": "kmol/hr"
+    },
+    "CW_SHXlean.HXIn.F": {
+      "path": [
+        "CW_SHXlean.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Flow rate",
+      "units": "kmol/hr"
+    },
+    "BFBadsT.HXIn.F": {
+      "path": [
+        "BFBadsT.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Cooling water flow to top adsorber bed",
+      "units": "kmol/hr"
+    },
+    "BFBrgnT.HXIn.F": {
+      "path": [
+        "BFBrgnT.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Cooling water flow to top regenerator bed",
+      "units": "kmol/hr"
+    },
+    "BFBrgnB.HXIn.F": {
+      "path": [
+        "BFBrgnB.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Cooling water flow to bottom regenerator bed",
+      "units": "kmol/hr"
+    },
+    "removalH2O": {
+      "path": [
+        "removalH2O"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Fraction of water removed form the flue gas",
+      "units": ""
+    },
+    "removalCO2": {
+      "path": [
+        "removalCO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Fraction of CO2 removed from the flue gas",
+      "units": ""
+    },
+    "LR_SHXlean.A_exch": {
+      "path": [
+        "LR_SHXlean.A_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Required area (m^2)",
+      "units": "m2"
+    },
+    "LR_SHXrich.A_exch": {
+      "path": [
+        "LR_SHXrich.A_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Required area (m^2)",
+      "units": "m2"
+    },
+    "CW_SHXlean.A_exch": {
+      "path": [
+        "CW_SHXlean.A_exch"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Required area (m^2)",
+      "units": "m2"
+    },
+    "BFBadsM.HXIn.F": {
+      "path": [
+        "BFBadsM.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Molar flow rate",
+      "units": "kmol/hr"
+    },
+    "BFBadsB.HXIn.F": {
+      "path": [
+        "BFBadsB.HXIn.F"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Molar flow rate",
+      "units": "kmol/hr"
+    }
+  }
+}

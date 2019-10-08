@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<gMB:GpromsProject xmlns:gMB="http://www.psenterprise.com/gMB" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.psenterprise.com/gMB http://www.psenterprise.com/gPJ.xsd" version="9" gMB_Version="4.0.0" gMB_Build="54901">
+    <Properties>
+        <BooleanProperty name="LibraryProject">false</BooleanProperty>
+        <BooleanProperty name="DisplayEmptyGroups">true</BooleanProperty>
+        <StringProperty name="CreatedBy">unknown</StringProperty>
+        <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+        <StringProperty name="ModifiedBy">leek2</StringProperty>
+        <DateProperty name="ModifiedDate">2015-07-30T23:37:12Z</DateProperty>
+    </Properties>
+    <ImageCache>
+        <Image res="defaultModelIcon"/>
+    </ImageCache>
+    <ModelReferenceCache>
+    </ModelReferenceCache>
+    <Group name="Variable Types">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+        <VariableTypeEntity name="Length" version="2">
+            <Properties>
+                <StringProperty name="CreatedBy">unknown</StringProperty>
+                <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+                <StringProperty name="ModifiedBy">leek2</StringProperty>
+                <DateProperty name="ModifiedDate">2015-07-30T21:27:23Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+            </Properties>
+            <DefaultValue>7.5</DefaultValue>
+            <MinValue>-100000.0</MinValue>
+            <MaxValue>100000.0</MaxValue>
+            <Units>m</Units>
+        </VariableTypeEntity>
+        <VariableTypeEntity name="Mass" version="2">
+            <Properties>
+                <StringProperty name="CreatedBy">unknown</StringProperty>
+                <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+                <StringProperty name="ModifiedBy">unknown</StringProperty>
+                <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+            </Properties>
+            <DefaultValue>1.0</DefaultValue>
+            <MinValue>-100000.0</MinValue>
+            <MaxValue>100000.0</MaxValue>
+            <Units>kg</Units>
+        </VariableTypeEntity>
+        <VariableTypeEntity name="MassFlowrate" version="2">
+            <Properties>
+                <StringProperty name="CreatedBy">unknown</StringProperty>
+                <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+                <StringProperty name="ModifiedBy">leek2</StringProperty>
+                <DateProperty name="ModifiedDate">2015-07-30T21:27:29Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+            </Properties>
+            <DefaultValue>14.0</DefaultValue>
+            <MinValue>-100000.0</MinValue>
+            <MaxValue>100000.0</MaxValue>
+            <Units>kg/s</Units>
+        </VariableTypeEntity>
+    </Group>
+    <Group name="Stream Types">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Connection Types">
+        <Properties>
+            <StringProperty name="CreatedBy">simonl</StringProperty>
+            <DateProperty name="CreatedDate">2007-08-21T19:39:59Z</DateProperty>
+            <StringProperty name="ModifiedBy">simonl</StringProperty>
+            <DateProperty name="ModifiedDate">2007-08-21T19:39:59Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Models">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+        <ModelEntity name="BufferTank" type="psenterprise.gpromskit.models.ModelEntity" version="8" UnitNameShown="true" UnitModelShown="true">
+            <Properties>
+                <StringProperty name="CreatedBy">unknown</StringProperty>
+                <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+                <StringProperty name="ModifiedBy">leek2</StringProperty>
+                <DateProperty name="ModifiedDate">2015-07-17T22:41:06Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+                <StringProperty name="DefaultTab">topology</StringProperty>
+                <StringProperty name="DefaultCaseTab">reports</StringProperty>
+                <BooleanProperty name="DisplayedInPalette">true</BooleanProperty>
+                <BooleanProperty name="IncludeInitialisationProcedure">true</BooleanProperty>
+            </Properties>
+            <Icon>-199773695</Icon>
+            <FlowsheetLayers DefaultLayer="Default">
+                <Layer name="Default" visible="true" printed="true"/>
+            </FlowsheetLayers>
+            <UMS><![CDATA[]]></UMS>
+            <Body><![CDATA[  PARAMETER
+    Density             AS REAL 
+    CrossSectionalArea  AS REAL DEFAULT 2.7
+    Alpha               AS REAL DEFAULT 0.8
+
+    SingleInt           AS INTEGER DEFAULT 11
+    ArrayInt            As ARRAY(2) OF INTEGER DEFAULT 12  #testing case-insensitivity
+
+   
+
+  SELECTOR
+    singleSelector AS ( apple, pear, banana ) DEFAULT apple
+    arraySelector AS ARRAY (3) OF ( red, yellow, blue ) DEFAULT red
+
+  VARIABLE
+    HoldUp              AS Mass
+    FlowIn, FlowOut     AS MassFlowrate
+    Height              AS Length
+    ArrayMass           aS ARRAY(5) OF Mass
+    OutMass             AS array(5) OF Mass
+    OutSingleInt        AS Mass
+    OutArrayInt         AS ARRAY(2) OF Mass
+
+    OutSingleSel        AS Mass
+    OutArraySel         AS ARRAY(3) OF Mass
+
+  EQUATION
+    CASE singleSelector OF
+    WHEN apple:  OutSingleSel = 1.0;
+    WHEN pear:   OutSingleSel = 2.0;
+    WHEN banana: OutSingleSel = 3.0;
+    END
+
+    FOR ii := 1 TO 3 DO
+      CASE arraySelector(ii) OF
+      WHEN red:    OutArraySel(ii) = 1.0;
+      WHEN yellow: OutArraySel(ii) = 2.0;
+      WHEN blue:   OutArraySel(ii) = 3.0;
+    END
+
+    END
+
+    OutSingleInt = SingleInt;
+    OutArrayInt = ArrayInt;
+
+    OutMass = ArrayMass;
+
+    # Mass balance
+    $HoldUp = FlowIn - FlowOut ;
+
+    # Relation between liquid level and holdup
+    Holdup = CrossSectionalArea * Height * Density ;
+
+    # Relation between pressure drop and flow 
+    FlowOut = Alpha * SQRT ( Height ) ;
+]]></Body>
+        </ModelEntity>
+    </Group>
+    <Group name="Tasks">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Processes">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">leek2</StringProperty>
+            <DateProperty name="ModifiedDate">2015-07-30T23:37:12Z</DateProperty>
+        </Properties>
+        <ProcessEntity name="SimulateTank" type="psenterprise.gpromskit.models.ProcessEntity" version="1">
+            <Properties>
+                <StringProperty name="CreatedBy">unknown</StringProperty>
+                <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+                <StringProperty name="ModifiedBy">leek2</StringProperty>
+                <DateProperty name="ModifiedDate">2015-07-17T23:47:08Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+                <BooleanProperty name="IncludeUnitSpecifications">true</BooleanProperty>
+                <BooleanProperty name="IncludeInitialisationProcedure">false</BooleanProperty>
+            </Properties>
+            <Body><![CDATA[#-----------------------------------------------------------------------------
+# Process Description
+#-----------------------------------------------------------------------------
+
+  UNIT # Equipment items
+    T101 AS BufferTank
+
+  PARAMETER
+     SingleReal          as REAL
+     
+  SET # Parameter values
+    SingleReal              := 1.234; 
+    T101.CrossSectionalArea := 1    ; # m2
+    T101.Density            := 1000 ; # kg/m3
+    T101.Alpha              := 0.8;
+    T101.SingleInt          := 10;
+    FOR ii := 1 TO 2 DO
+         T101.ArrayInt(ii)     := ii;
+    end 
+
+
+  ASSIGN # Degrees of freedom
+    T101.FlowIn := 14;
+
+    FOR ii := 1 TO 5 DO
+         T101.ArrayMass(ii)     := 1.2345;
+    end 
+
+  INITIALSELECTOR
+    T101.singleSelector := T101.apple ;
+    FOR ii := 1 TO 3 DO
+      T101.arraySelector(ii) := T101.red ;
+    END
+
+  INITIAL # Initial conditions
+    T101.Height = 7.5 ;
+    
+  SOLUTIONPARAMETERS
+    gPLOT := ON
+    ReportingInterval := 60.0
+    IdentityElimination := OFF
+    
+
+  SCHEDULE # Operating procedure
+    CONTINUE FOR 600
+]]></Body>
+        </ProcessEntity>
+        <ProcessEntity name="SimulateTank_sinter" type="psenterprise.gpromskit.models.ProcessEntity" version="1">
+            <Properties>
+                <StringProperty name="CreatedBy">leek2</StringProperty>
+                <DateProperty name="CreatedDate">2015-07-29T00:08:57Z</DateProperty>
+                <StringProperty name="ModifiedBy">leek2</StringProperty>
+                <DateProperty name="ModifiedDate">2015-07-30T23:31:58Z</DateProperty>
+                <BooleanProperty name="Win32LineSeparation">false</BooleanProperty>
+                <BooleanProperty name="IncludeUnitSpecifications">true</BooleanProperty>
+                <BooleanProperty name="IncludeInitialisationProcedure">false</BooleanProperty>
+            </Properties>
+            <Body><![CDATA[#-----------------------------------------------------------------------------
+# Process Description
+#-----------------------------------------------------------------------------
+
+  UNIT # Equipment items
+    T101 AS BufferTank
+
+  PARAMETER
+     FO                  as FOREIGN_OBJECT 
+     SingleReal          as REAL
+     
+
+  SET # Parameter values
+    FO                      := "SimpleEventFOI::dummy";
+    T101.CrossSectionalArea := 1    ; # m2
+    T101.Density            := 1000 ; # kg/m3
+    T101.Alpha              := FO.Real__AlphaFO();
+    SingleReal              := FO.Real__SingleReal();
+    T101.SingleInt          := FO.Integer__SingleInt();
+    FOR ii := 1 TO 2 DO
+         T101.ArrayInt(ii)     := FO.Integer1__ArrayInt(ii);
+    end 
+
+  ASSIGN # Degrees of freedom
+    T101.FlowIn := FO.Real__FlowInFO();
+    FOR ii := 1 TO 5 DO
+         T101.ArrayMass(ii)     := FO.Real1__Mass(ii);
+    end 
+
+  INITIALSELECTOR
+    T101.singleSelector := FO.String__singleSelector();
+    FOR ii := 1 TO 3 DO
+      T101.arraySelector(ii) := FO.String1__arraySelector(ii);
+    END
+
+  INITIAL # Initial conditions
+    T101.Height = FO.Real__HeightFO() ;
+    
+  SOLUTIONPARAMETERS
+    gPLOT := ON
+    ReportingInterval := 60.0
+    IdentityElimination := OFF
+    
+
+  SCHEDULE # Operating procedure
+    CONTINUE FOR 600
+]]></Body>
+        </ProcessEntity>
+    </Group>
+    <Group name="Experiments">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+        <Group name="... performed">
+            <Properties>
+                <StringProperty name="CreatedBy">simonl</StringProperty>
+                <DateProperty name="CreatedDate">2007-08-21T19:39:59Z</DateProperty>
+                <StringProperty name="ModifiedBy">simonl</StringProperty>
+                <DateProperty name="ModifiedDate">2007-08-21T19:39:59Z</DateProperty>
+            </Properties>
+        </Group>
+        <Group name="... to be designed">
+            <Properties>
+                <StringProperty name="CreatedBy">simonl</StringProperty>
+                <DateProperty name="CreatedDate">2007-08-21T19:39:59Z</DateProperty>
+                <StringProperty name="ModifiedBy">simonl</StringProperty>
+                <DateProperty name="ModifiedDate">2007-08-21T19:39:59Z</DateProperty>
+            </Properties>
+        </Group>
+    </Group>
+    <Group name="Experiment Designs">
+        <Properties>
+            <StringProperty name="CreatedBy">simonl</StringProperty>
+            <DateProperty name="CreatedDate">2007-08-21T19:39:59Z</DateProperty>
+            <StringProperty name="ModifiedBy">simonl</StringProperty>
+            <DateProperty name="ModifiedDate">2007-08-21T19:39:59Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Parameter Estimations">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Optimisations">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">pieters</StringProperty>
+            <DateProperty name="ModifiedDate">2012-06-01T17:07:54Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Saved Variable Sets">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+    </Group>
+    <Group name="Miscellaneous Files">
+        <Properties>
+            <StringProperty name="CreatedBy">unknown</StringProperty>
+            <DateProperty name="CreatedDate">1970-01-01T00:00:00Z</DateProperty>
+            <StringProperty name="ModifiedBy">unknown</StringProperty>
+            <DateProperty name="ModifiedDate">1970-01-01T00:00:00Z</DateProperty>
+        </Properties>
+    </Group>
+</gMB:GpromsProject>

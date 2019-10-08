@@ -1,0 +1,111 @@
+[
+  {
+    "title": "Outputs from SimulateTank Example gPROMS simulation",
+    "description": "Outputs from SimulateTank Example gPROMS simulation",
+    "model": "BufferTank_FO.gENCRYPT",
+    "author": "Jim Leek",
+    "date": "2016-03-09",
+    "filetype": "sinteroutputs",
+    "version": 0.2,
+    "inputs": {
+      "ProcessName": {
+        "value": "SimulateTank_sinter",
+        "units": null
+      },
+      "password": {
+        "value": "BufferTank_FO",
+        "units": null
+      },
+      "AlphaFO": {
+        "value": 0.8,
+        "units": null
+      },
+      "SingleReal": {
+        "value": 0.0,
+        "units": null
+      },
+      "SingleInt": {
+        "value": 11,
+        "units": null
+      },
+      "ArrayInt": {
+        "value": [
+          12,
+          12
+        ],
+        "units": null
+      },
+      "FlowInFO": {
+        "value": 14.0,
+        "units": null
+      },
+      "Mass": {
+        "value": [
+          1.0,
+          2.0,
+          3.0,
+          4.0,
+          5.0
+        ],
+        "units": null
+      },
+      "HeightFO": {
+        "value": 7.5,
+        "units": null
+      },
+      "singleSelector": {
+        "value": "apple",
+        "units": null
+      },
+      "arraySelector": {
+        "value": [
+          "red",
+          "red",
+          "red"
+        ],
+        "units": null
+      }
+    },
+    "outputs": {
+      "FlowOut": {
+        "value": 3.02714,
+        "units": "kg/s"
+      },
+      "HoldUp": {
+        "value": 14318.1,
+        "units": "kg"
+      },
+      "Height": {
+        "value": 14.3181,
+        "units": "m"
+      },
+      "OutSingleInt": {
+        "value": 11.0,
+        "units": "kg"
+      },
+      "OutArrayInt": {
+        "value": [
+          12.0,
+          12.0
+        ],
+        "units": "kg"
+      },
+      "OutSingleSel": {
+        "value": 1.0,
+        "units": "kg"
+      },
+      "OutArraySel": {
+        "value": [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "units": "kg"
+      },
+      "status": {
+        "units": "",
+        "value": 0
+      }
+    }
+  }
+]

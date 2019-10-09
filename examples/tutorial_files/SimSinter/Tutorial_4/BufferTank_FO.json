@@ -1,0 +1,223 @@
+{
+  "title": "SimulateTank Example gPROMS simulation",
+  "config-version": "0.1",
+  "description": "An example of running gPROMS from SimSinter",
+  "model": {
+    "file": "BufferTank_FO.gENCRYPT",
+    "DigestValue": "cb774a1d917bede7189f7e1b3c845f79ba91b4d3",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "simulationDescriptionFile": {
+    "file": "BufferTank_FO.gPJ",
+    "DigestValue": "421b1cf73e338eee7a8035ffa56813baba009ec7",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "author": "Jim Leek",
+  "date": "7/28/2015",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "gPROMS",
+    "version": "4.0.0",
+    "constraint": "AT-LEAST"
+  },
+  "settings": {
+    "ProcessName": {
+      "type": "string",
+      "default": "SimulateTank_sinter",
+      "description": "Simulation specific setting: ProcessName"
+    },
+    "password": {
+      "type": "string",
+      "default": "BufferTank_FO",
+      "description": "Simulation specific setting: password"
+    }
+  },
+  "inputs": {
+    "AlphaFO": {
+      "path": [
+        "AlphaFO"
+      ],
+      "type": "double",
+      "default": 0.8,
+      "description": "SimulateTank_sinter.T101.Alpha",
+      "units": null
+    },
+    "SingleReal": {
+      "path": [
+        "SingleReal"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "SimulateTank_sinter.SingleReal",
+      "units": null
+    },
+    "SingleInt": {
+      "path": [
+        "SingleInt"
+      ],
+      "type": "int",
+      "default": 11,
+      "description": "SimulateTank_sinter.T101.SingleInt",
+      "units": null
+    },
+    "ArrayInt": {
+      "path": [
+        "ArrayInt"
+      ],
+      "type": "int[2]",
+      "default": [
+        12,
+        12
+      ],
+      "description": "SimulateTank_sinter.T101.ArrayInt",
+      "units": null
+    },
+    "FlowInFO": {
+      "path": [
+        "FlowInFO"
+      ],
+      "type": "double",
+      "default": 14.0,
+      "description": "SimulateTank_sinter.T101.FlowIn",
+      "units": null,
+      "min": -100000.0,
+      "max": -100000.0
+    },
+    "Mass": {
+      "path": [
+        "Mass"
+      ],
+      "type": "double[5]",
+      "default": [
+        1.0,
+        2.0,
+        3.0,
+        4.0,
+        5.0
+      ],
+      "description": "SimulateTank_sinter.T101.ArrayMass",
+      "units": null,
+      "min": [
+        -100000.0,
+        -100000.0,
+        -100000.0,
+        -100000.0,
+        -100000.0
+      ],
+      "max": [
+        100000.0,
+        100000.0,
+        100000.0,
+        100000.0,
+        100000.0
+      ]
+    },
+    "HeightFO": {
+      "path": [
+        "HeightFO"
+      ],
+      "type": "double",
+      "default": 7.5,
+      "description": "SimulateTank_sinter.T101.Height",
+      "units": null,
+      "min": -100000.0,
+      "max": -100000.0
+    },
+    "singleSelector": {
+      "path": [
+        "singleSelector"
+      ],
+      "type": "string",
+      "default": "apple",
+      "description": "SimulateTank_sinter.T101.singleSelector",
+      "units": null
+    },
+    "arraySelector": {
+      "path": [
+        "arraySelector"
+      ],
+      "type": "string[3]",
+      "default": [
+        "red",
+        "red",
+        "red"
+      ],
+      "description": "SimulateTank_sinter.T101.arraySelector",
+      "units": null
+    }
+  },
+  "outputs": {
+    "FlowOut": {
+      "path": [
+        "SimulateTank_sinter.T101.FlowOut"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "FlowOut in kg/s",
+      "units": "kg/s"
+    },
+    "HoldUp": {
+      "path": [
+        "SimulateTank_sinter.T101.HoldUp"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "HoldUp in kg",
+      "units": "kg"
+    },
+    "Height": {
+      "path": [
+        "SimulateTank_sinter.T101.Height"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Height in m",
+      "units": "m"
+    },
+    "OutSingleInt": {
+      "path": [
+        "SimulateTank_sinter.T101.OutSingleInt"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "OutSingleInt in kg",
+      "units": "kg"
+    },
+    "OutArrayInt": {
+      "path": [
+        "SimulateTank_sinter.T101.OutArrayInt"
+      ],
+      "type": "double[2]",
+      "default": [
+        0.0,
+        0.0
+      ],
+      "description": "OutArrayInt in kg",
+      "units": "kg"
+    },
+    "OutSingleSel": {
+      "path": [
+        "SimulateTank_sinter.T101.OutSingleSel"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "OutSingleSel in kg",
+      "units": "kg"
+    },
+    "OutArraySel": {
+      "path": [
+        "SimulateTank_sinter.T101.OutArraySel"
+      ],
+      "type": "double[3]",
+      "default": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "OutArraySel in kg",
+      "units": "kg"
+    }
+  }
+}

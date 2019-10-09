@@ -4,7 +4,7 @@ Tutorial
 .. toctree::
     :maxdepth: 2
 
-    ap
     acm
+    ap
     excel
     gproms

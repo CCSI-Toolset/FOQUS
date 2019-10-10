@@ -1,4 +1,4 @@
-from foqus_lib.framework.graph.nodeVars import *
+from foqus_lib.framework.graph.nodeVars import nodeVarList
 import traceback
 import unittest
 import copy

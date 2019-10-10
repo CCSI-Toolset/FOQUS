@@ -28,21 +28,19 @@ into an objective function calculation.
 Problem Set Up
 --------------
 
-See Chapter `[chpt.flowsheet] <#chpt.flowsheet>`__ for information about
-setting up a flowsheet in FOQUS. Once the flowsheet has been set up and
-tested, an optimization problem can be added. FOQUS allows multiple
-flowsheet evaluations to be used to calculate a single objective
-function value. This allows FOQUS to do parameter estimation and
-scenario based optimization under uncertainty. There are three types of
-variables used in the optimization problem: (1) fixed variables do not
-change during the optimization, (2) decision variables are modified by
-the optimization algorithm to find the best value of the objective
-function, and (3) sample variables, which are used to construct the
-multiple flowsheet evaluations that can go into an objective
-calculation. If no sample variables are defined, each objective function
-value will be based on a single flowsheet evaluation. Figure
-:ref:`fig.opt.problem.variables` shows the
-**Variables** tab selection form.
+See Chapter :ref:`flowsheet_main` for information about setting up a flowsheet
+in FOQUS. Once the flowsheet has been set up and tested, an optimization problem
+can be added. FOQUS allows multiple flowsheet evaluations to be used to
+calculate a single objective function value. This allows FOQUS to do parameter
+estimation and scenario based optimization under uncertainty. There are three
+types of variables used in the optimization problem: (1) fixed variables do not
+change during the optimization, (2) decision variables are modified by the
+optimization algorithm to find the best value of the objective function, and (3)
+sample variables, which are used to construct the multiple flowsheet evaluations
+that can go into an objective calculation. If no sample variables are defined,
+each objective function value will be based on a single flowsheet
+evaluation. Figure :ref:`fig.opt.problem.variables` shows the **Variables** tab
+selection form.
 
 .. figure:: ../figs/opt_problem_variables.svg
    :alt: Optimization Variable Selection

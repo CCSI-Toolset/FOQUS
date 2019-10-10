@@ -362,20 +362,18 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
    input parameter space that activates a particular range in the output
    parameter.
 
-   Finally, the **Bayesian Inference of Ensemble** dialog (shown in
-   Figure `[fig:uq_inf] <#fig:uq_inf>`__) is used to calculate the
-   posterior distributions (prior distributions integrated with data) of
-   the uncertain input parameters. Inference utilizes Markov Chain Monte
-   Carlo (MCMC) to compute the posterior distributions, using response
-   surfaces that serve as fast approximations to the actual simulation
-   model.
+   Finally, the **Bayesian Inference of Ensemble** dialog (shown in Figure
+   :ref:`fig:uq_inf`) is used to calculate the posterior distributions (prior
+   distributions integrated with data) of the uncertain input
+   parameters. Inference utilizes Markov Chain Monte Carlo (MCMC) to compute the
+   posterior distributions, using response surfaces that serve as fast
+   approximations to the actual simulation model.
 
    .. figure:: figs/overview/5_InferenceWizard2.png
       :alt: Bayesian Inference Dialog
+      :name: fig:uq_inf
 
       Bayesian Inference Dialog
-
-   [fig:uq_inf]
 
    .. raw:: latex
 
@@ -443,18 +441,16 @@ Simulation Ensemble Setup Dialog
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The **Simulation Ensemble Setup** dialog (shown in Figure
-`[fig:uq_sim_dist] <#fig:uq_sim_dist>`__) is used to create a new
-simulation ensemble. This is done by: (1) setting up distribution
-parameters and generating samples, or (2) loading samples from a file.
-This dialog is displayed when selecting **Add New** on the UQ window
-(Figure `[fig:uq_screen] <#fig:uq_screen>`__).
+:ref:`fig:uq_sim_dist`) is used to create a new simulation ensemble. This is
+done by: (1) setting up distribution parameters and generating samples, or (2)
+loading samples from a file.  This dialog is displayed when selecting **Add
+New** on the UQ window (Figure :ref:`fig:uq_screen`).
 
 .. figure:: figs/overview/6_SimSetupDist2.png
    :alt: Simulation Ensemble Setup Dialog, Distributions Tab
+   :name: fig:uq_sim_dist
 
    Simulation Ensemble Setup Dialog, Distributions Tab
-
-[fig:uq_sim_dist]
 
 #. Choose how to generate samples. There are three options: (1) **Choose
    sampling scheme** (default), (2) **Load flowsheet samples**, or (3)
@@ -490,16 +486,14 @@ This dialog is displayed when selecting **Add New** on the UQ window
    `[ap:psuadefiles] <#ap:psuadefiles>`__); (2) the output index that
    designates which output is to be used.
 
-#. In the **Sampling scheme** tab (Figure
-   `[fig:uq_sim_samplescheme] <#fig:uq_sim_samplescheme>`__), specify
-   the sampling scheme, the sample size, and perform sample generation.
+#. In the **Sampling scheme** tab (Figure :ref:`fig:uq_sim_samplescheme`),
+   specify the sampling scheme, the sample size, and perform sample generation.
 
    .. figure:: figs/overview/7_SimSetupSchemes2.png
       :alt: Simulation Ensemble Setup Dialog, Sampling Scheme Tab
+      :name: fig:uq_sim_samplescheme
 
       Simulation Ensemble Setup Dialog, Sampling Scheme Tab
-
-   [fig:uq_sim_samplescheme]
 
 #. Each radio button displays a different list of sampling schemes on
    the right. The radio buttons serve as a guide to help in the

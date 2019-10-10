@@ -171,10 +171,9 @@ Python expressions.
    :math:`g(\mathbf{x}) \leq 0`. The **Expression** column contains the
    Python expression for :math:`g(\mathbf{x})`.
 
-#. The **Penalty Factor** contains the coefficient :math:`a` used in
-   calculating the penalty for a constraint violation, see Equations
-   `[eq.linear.constriant] <#eq.linear.constriant>`__ to
-   `[eq.step.constriant] <#eq.step.constriant>`__.
+#. The **Penalty Factor** contains the coefficient :math:`a` used in calculating
+   the penalty for a constraint violation, see Equations
+   :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
 
 #. The **Form** column contains a selection of different methods to
    calculate a constraint penalty.
@@ -187,21 +186,20 @@ Python expressions.
    The variables are provided without the sample index.
 
 The calculations for each type of constraint penalty are given in
-Equations `[eq.linear.constriant] <#eq.linear.constriant>`__ to
-`[eq.step.constriant] <#eq.step.constriant>`__.
+Equations :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
 
 .. math::
+   :label: eq.linear.constriant
 
-   \label{eq.linear.constriant}
-       \text{Linear penalty form:  }p_i =
-       \begin{cases}
-           0 & \text{if } g_i(\mathbf{x}) \leq 0\\
-           a \times g_i(\mathbf{x}) & \text{if } g_i(\mathbf{x}) > 0
-       \end{cases}
+   \text{Linear penalty form:  }p_i =
+   \begin{cases}
+       0 & \text{if } g_i(\mathbf{x}) \leq 0\\
+       a \times g_i(\mathbf{x}) & \text{if } g_i(\mathbf{x}) > 0
+   \end{cases}
 
 .. math::
+   :label: eq.quadratic.constriant
 
-   \label{eq.quadratic.constriant}
    \text{Quadratic penalty form:  }p_i =
    \begin{cases}
    0 & \text{if } g_i(\mathbf{x}) \leq 0\\
@@ -209,8 +207,8 @@ Equations `[eq.linear.constriant] <#eq.linear.constriant>`__ to
    \end{cases}
 
 .. math::
+   :label: eq.step.constriant
 
-   \label{eq.step.constriant}
    \text{Step penalty form:  }p_i =
    \begin{cases}
    0 & \text{if } g_i(\mathbf{x}) \leq 0\\

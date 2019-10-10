@@ -1,0 +1,463 @@
+{
+  "title": "BFB_Cost",
+  "config-version": "0.1",
+  "description": "- added solid heat exchanger cost\r\n- added cost of CO2 avoided ",
+  "model": {
+    "file": "BFBv6.2.3.xlsm",
+    "DigestValue": "9c1a671e14919a6332eb6fdabb81b30495ee6cbb",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "Qianwen Gao",
+  "date": "8/5/2014",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Excel",
+    "version": "14.0",
+    "constraint": "AT-LEAST"
+  },
+  "settings": {
+    "macro": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: macro"
+    }
+  },
+  "inputs": {
+    "rgnSF": {
+      "path": [
+        "Interface$C$12"
+      ],
+      "type": "double",
+      "default": 0.3,
+      "description": null,
+      "units": null
+    },
+    "adsDt": {
+      "path": [
+        "Interface$C$13"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": null,
+      "units": null
+    },
+    "adslhx": {
+      "path": [
+        "Interface$C$14"
+      ],
+      "type": "double",
+      "default": 0.5,
+      "description": null,
+      "units": null
+    },
+    "adsdx": {
+      "path": [
+        "Interface$C$15"
+      ],
+      "type": "double",
+      "default": 0.025,
+      "description": null,
+      "units": null
+    },
+    "adsN": {
+      "path": [
+        "Interface$C$16"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": null,
+      "units": null
+    },
+    "rgnDt": {
+      "path": [
+        "Interface$C$17"
+      ],
+      "type": "double",
+      "default": 12.0,
+      "description": null,
+      "units": null
+    },
+    "rgnlhx": {
+      "path": [
+        "Interface$C$18"
+      ],
+      "type": "double",
+      "default": 0.1,
+      "description": null,
+      "units": null
+    },
+    "rgndx": {
+      "path": [
+        "Interface$C$19"
+      ],
+      "type": "double",
+      "default": 0.02,
+      "description": null,
+      "units": null
+    },
+    "rgnN": {
+      "path": [
+        "Interface$C$20"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": null,
+      "units": null
+    },
+    "BFBadsT.Lb": {
+      "path": [
+        "Interface$C$21"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": null,
+      "units": null
+    },
+    "BFBadsM.Lb": {
+      "path": [
+        "Interface$C$22"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": null,
+      "units": null
+    },
+    "BFBadsB.Lb": {
+      "path": [
+        "Interface$C$23"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnT.Lb": {
+      "path": [
+        "Interface$C$24"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnB.Lb": {
+      "path": [
+        "Interface$C$25"
+      ],
+      "type": "double",
+      "default": 4.0,
+      "description": null,
+      "units": null
+    },
+    "steam.F": {
+      "path": [
+        "Interface$C$26"
+      ],
+      "type": "double",
+      "default": 700.0,
+      "description": null,
+      "units": null
+    },
+    "SolidIn.Fm": {
+      "path": [
+        "Interface$C$27"
+      ],
+      "type": "double",
+      "default": 600000.0,
+      "description": null,
+      "units": null
+    },
+    "GHXfg.GasOut.T": {
+      "path": [
+        "Interface$C$28"
+      ],
+      "type": "double",
+      "default": 40.0,
+      "description": null,
+      "units": null
+    },
+    "BFBadsT.Nx": {
+      "path": [
+        "Interface$G$10"
+      ],
+      "type": "double",
+      "default": 641.141357875468,
+      "description": null,
+      "units": null
+    },
+    "BFBadsM.Nx": {
+      "path": [
+        "Interface$G$11"
+      ],
+      "type": "double",
+      "default": 641.141357875468,
+      "description": null,
+      "units": null
+    },
+    "BFBadsB.Nx": {
+      "path": [
+        "Interface$G$12"
+      ],
+      "type": "double",
+      "default": 641.141357875468,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnT.Nx": {
+      "path": [
+        "Interface$G$13"
+      ],
+      "type": "double",
+      "default": 7853.98163397448,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnB.Nx": {
+      "path": [
+        "Interface$G$14"
+      ],
+      "type": "double",
+      "default": 7853.98163397448,
+      "description": null,
+      "units": null
+    },
+    "CMPads.J": {
+      "path": [
+        "Interface$G$15"
+      ],
+      "type": "double",
+      "default": 1704.4043432763453,
+      "description": null,
+      "units": null
+    },
+    "CMPrgn.J": {
+      "path": [
+        "Interface$G$16"
+      ],
+      "type": "double",
+      "default": 159.86442220711848,
+      "description": null,
+      "units": null
+    },
+    "GHXfg.GasIn.P": {
+      "path": [
+        "Interface$G$17"
+      ],
+      "type": "double",
+      "default": 1.01325,
+      "description": null,
+      "units": null
+    },
+    "GHXcmp.GasIn.P": {
+      "path": [
+        "Interface$G$18"
+      ],
+      "type": "double",
+      "default": 1.01325,
+      "description": null,
+      "units": null
+    },
+    "CMPads.GasOut.P": {
+      "path": [
+        "Interface$G$19"
+      ],
+      "type": "double",
+      "default": 1.3354192452282421,
+      "description": null,
+      "units": null
+    },
+    "CMPrgn.GasOut.P": {
+      "path": [
+        "Interface$G$20"
+      ],
+      "type": "double",
+      "default": 1.2292790272885457,
+      "description": null,
+      "units": null
+    },
+    "GasOut.T": {
+      "path": [
+        "Interface$G$21"
+      ],
+      "type": "double",
+      "default": 85.21264217155624,
+      "description": null,
+      "units": null
+    },
+    "GasOut.F": {
+      "path": [
+        "Interface$G$22"
+      ],
+      "type": "double",
+      "default": 5466.0676711355709,
+      "description": null,
+      "units": null
+    },
+    "rhos": {
+      "path": [
+        "Interface$G$23"
+      ],
+      "type": "double",
+      "default": 442.0,
+      "description": null,
+      "units": null
+    },
+    "GHXfg.a_exch": {
+      "path": [
+        "Interface$G$24"
+      ],
+      "type": "double",
+      "default": 5749.6649487641889,
+      "description": null,
+      "units": null
+    },
+    "GHXcmp.a_exch": {
+      "path": [
+        "Interface$G$25"
+      ],
+      "type": "double",
+      "default": 1401.4708703119102,
+      "description": null,
+      "units": null
+    },
+    "GHXfg.HXIn.F": {
+      "path": [
+        "Interface$G$26"
+      ],
+      "type": "double",
+      "default": 28737.646294112128,
+      "description": null,
+      "units": null
+    },
+    "GHXcmp.HXIn.F": {
+      "path": [
+        "Interface$G$27"
+      ],
+      "type": "double",
+      "default": 40274.233752907145,
+      "description": null,
+      "units": null
+    },
+    "CW_SHXlean.HXIn.F": {
+      "path": [
+        "Interface$G$28"
+      ],
+      "type": "double",
+      "default": 18208.898928963426,
+      "description": null,
+      "units": null
+    },
+    "BFBadsT.HXIn.F": {
+      "path": [
+        "Interface$G$29"
+      ],
+      "type": "double",
+      "default": 76659.004411732516,
+      "description": null,
+      "units": null
+    },
+    "BFBadsM.HXIn.F": {
+      "path": [
+        "Interface$G$30"
+      ],
+      "type": "double",
+      "default": 1000.4230012865833,
+      "description": null,
+      "units": null
+    },
+    "BFBadsB.HXIn.F": {
+      "path": [
+        "Interface$G$31"
+      ],
+      "type": "double",
+      "default": 389.26550903270049,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnT.HXIn.F": {
+      "path": [
+        "Interface$G$32"
+      ],
+      "type": "double",
+      "default": 0.28891601582444915,
+      "description": null,
+      "units": null
+    },
+    "BFBrgnB.HXIn.F": {
+      "path": [
+        "Interface$G$33"
+      ],
+      "type": "double",
+      "default": 0.66485040506668369,
+      "description": null,
+      "units": null
+    },
+    "removalH2O": {
+      "path": [
+        "Interface$G$34"
+      ],
+      "type": "double",
+      "default": 4526.0,
+      "description": null,
+      "units": null
+    },
+    "removalCO2": {
+      "path": [
+        "Interface$G$35"
+      ],
+      "type": "double",
+      "default": 2701.0,
+      "description": null,
+      "units": null
+    },
+    "LR_SHXlean.A_exch": {
+      "path": [
+        "Interface$G$36"
+      ],
+      "type": "double",
+      "default": 285.0,
+      "description": null,
+      "units": null
+    },
+    "LR_SHXrich.A_exch": {
+      "path": [
+        "Interface$G$37"
+      ],
+      "type": "double",
+      "default": 19143.3,
+      "description": null,
+      "units": null
+    },
+    "CW_SHXlean.A_exch": {
+      "path": [
+        "Interface$G$38"
+      ],
+      "type": "double",
+      "default": 242.194,
+      "description": null,
+      "units": null
+    }
+  },
+  "outputs": {
+    "COE": {
+      "path": [
+        "COE$B$50"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": null,
+      "units": null
+    },
+    "COAC": {
+      "path": [
+        "COE$B$54"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": null,
+      "units": null
+    }
+  }
+}

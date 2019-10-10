@@ -20,6 +20,7 @@ from foqus_lib.framework.session.session import session as Session
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
+import botocore.exceptions
 
 _instanceid = None
 WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
@@ -63,14 +64,22 @@ class FOQUSAWSConfig:
         cls.inst = cls()
         cls.inst._d = json.load(request)
         return cls.inst
+    def _get(self, key):
+        v = self._d.get(key)
+        assert v, "UserData Missing Key: %s" %key
+        _log.debug('FOQUSAWSConfig._get: %s = %s' %(key,v))
+        return v
     def get_update_topic_arn(self):
-        return self._d.get("FOQUS-Update-Topic-Arn")
+        return self._get("FOQUS-Update-Topic-Arn")
     def get_message_topic_arn(self):
-        return self._d.get("FOQUS-Message-Topic-Arn")
+        return self._get("FOQUS-Message-Topic-Arn")
     def get_job_queue_url(self):
-        return self._d.get("FOQUS-Job-Queue-Url")
+        return self._get("FOQUS-Job-Queue-Url")
     def get_simulation_bucket_name(self):
-        return self._d.get("FOQUS-Simulation-Bucket-Name")
+        return self._get("FOQUS-Simulation-Bucket-Name")
+    def get_dynamo_table_name(self):
+        return self._get("FOQUS-DynamoDB-Table")
+
 
 def _set_working_dir():
     global _log
@@ -184,6 +193,8 @@ class TurbineLiteDB:
         _log.info("%s.job_prepare", self.__class__)
     def job_change_status(self, job_d, status, rc=0, message=None):
         assert type(job_d) is dict
+        assert status in ['success', 'setup', 'running', 'error', 'terminate', 'expired'], \
+            "Incorrect Job Status %s" %status
         _log.info("%s.job_change_status %s", self.__class__, job_d)
         d = dict(resource='job', event='status',
             rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid,
@@ -249,7 +260,8 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         _log.debug('AppServerSvc init5')
         self._sqs = boto3.client('sqs', region_name='us-east-1')
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
-        _log.debug('AppServerSvc init finished')
+        self._dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+        self._dynamodb_table_name = FOQUSAWSConfig.get_instance().get_dynamo_table_name()
 
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
@@ -275,15 +287,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
-        _log.debug("kat starta")
+        _log.debug("Consumer Register")
         db.consumer_register()
-        _log.debug("kat startb")
         db.add_message("Consumer Registered")
-        _log.debug("kat start1")
         kat = _KeepAliveTimer(db, freq=60)
-        _log.debug("kat start2")
         kat.start()
-        _log.debug("kat start3")
         while not self._stop:
             ret = None
             _log.debug("pop job")
@@ -304,7 +312,38 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             if not ret: continue
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
+            job_id = uuid.UUID(job_desc.get('Id'))
             db.set_user_name(user_name)
+            """
+            TODO: check dynamodb table if job has been stopped or killed
+            cannot stop a running job.  If entry is missing job is ignored.
+            """
+            try:
+                table = self._dynamodb.describe_table(TableName=self._dynamodb_table_name)
+            except botocore.exceptions.ClientError as ex:
+                _log.exception("UserData Configuration Error No DynamoDB Table %s" %self._dynamodb_table_name)
+                raise
+
+            response = self._dynamodb.get_item(
+                       TableName=self._dynamodb_table_name,
+                       Key={'Id':{'S':str(job_id)}, 'Type':{'S':'Job'}})
+
+            item = response.get('Item')
+            if not item:
+                msg = "Job %s expired:  Not in DynamoDB table %s" %(job_id, self._dynamodb_table_name)
+                _log.info(msg)
+                self._delete_sqs_job()
+                db.job_change_status(job_desc, "expired", message=msg)
+                db.add_message("Job has Expired", jobid=str(job_id))
+                continue
+
+            """ Job is Finished it is in state (terminate,stop,success,error)
+            """
+            if item.get('Finished',None):
+                _log.info("Job %s will be dequeued and ignored", str(job_id))
+                self._delete_sqs_job()
+                db.add_message("Job State %s" %item['Finished'], jobid=str(job_id))
+                continue
             try:
                 dat = AppServerSvc.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
@@ -344,6 +383,24 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             QueueUrl=self._queue_url,
             ReceiptHandle=self._receipt_handle
         )
+
+    def _check_job_terminate(self, job_id):
+        response = self._dynamodb.get_item(
+                   TableName=self._dynamodb_table_name,
+                   Key={'Id':{'S':str(job_id)}, 'Type':{'S':'Job'}})
+
+        item = response.get('Item')
+        if not item:
+            _log.warn("Job %s expired:  Not in DynamoDB table %s" %(job_id, self._dynamodb_table_name))
+            return
+
+        """ Job is Finished it is in state (terminate,stop,success,error)
+        """
+        if item.get('Finished',None):
+            state = item.get('State')
+            _log.info("Job %s in Finished State=%s", str(job_id), state)
+            return state == 'terminate'
+        return False
 
     def pop_job(self, db, VisibilityTimeout=300):
         """ Pop job from AWS SQS, Download FOQUS Flowsheet from AWS S3
@@ -404,11 +461,11 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                 user_name, simulation_name), job_desc, user_name)
 
         foqus_keys = [i['Key'] for i in l['Contents'] if i['Key'].endswith('.foqus')]
-        if len(foqus_keys) < 2:
+        if len(foqus_keys) < 1:
             _log.error("S3 Simulation:  No keys match %s" %'%s/%s/*.foqus' %(user_name,simulation_name))
             raise FOQUSJobException("S3 Bucket No FOQUS File: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
-        if len(foqus_keys) > 2:
+        if len(foqus_keys) > 1:
             _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
             raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
@@ -418,10 +475,10 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             raise FOQUSJobException("S3 Bucket Missing flowsheet key : %s/%s/%s/*.foqus" %(bucket_name,
                 user_name, simulation_name), job_desc, user_name)
 
-        if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
-            _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-            raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
-                user_name, simulation_name), job_desc, user_name)
+        #if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
+        #    _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
+        #    raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
+        #        user_name, simulation_name), job_desc, user_name)
 
         idx = foqus_keys.index(flowsheet_key)
         _log.info("S3: Download Key %s", flowsheet_key)
@@ -614,7 +671,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         while gt.isAlive():
             gt.join(10)
             status = db.consumer_status()
-            if status == 'terminate' or self._stop:
+            if status == 'terminate' or self._stop or self._check_job_terminate(jid):
                 terminate = True
                 db.job_change_status(job_desc, "error", message="terminate flowsheet: status=%s stop=%s" %(status, self._stop))
                 gt.terminate()

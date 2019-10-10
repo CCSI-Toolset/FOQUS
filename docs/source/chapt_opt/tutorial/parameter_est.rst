@@ -199,9 +199,9 @@ optimization solver changes the a, b, and c to minimize the objective.
     sum of squared errors.
     
     The keys for x (the inputs) and f (the outputs) are:
-    - Dummy variable name for index (i.e., ff for outputs and xx for inputs)
-    - Node name (i.e., model)
-    - Variable name (i.e., y and ydata)
+   -  Dummy variable name for index (i.e., ff for outputs and xx for inputs)
+   -  Node name (i.e., model)
+   -  Variable name (i.e., y and ydata)
     
     Then, the user will need to specify which of the dummy index corresponds to
     outputs, and which of the dummy index corresponds to inputs. In this case,

@@ -267,7 +267,7 @@ returned as a list with only one element. The last two return values are
 debugging information for constraints. In this case, the “zeros” are
 just place holders and have no real utility.
 
-.. code-block::
+.. code-block:: python
   :name: fig.opt.problem.objective2_code
   :caption: Objective Function Code
 

@@ -1,4 +1,4 @@
-[sec:uq_overview]
+.. _section_uq
 
 Reference
 =========
@@ -43,14 +43,13 @@ The UQ module enables the user to perform UQ studies on a flowsheet.
 From the Uncertainty button on the Home window, the user can configure
 different simulation ensembles (different sets of samples generated
 using different sampling schemes), run them, and perform analyses. This
-screen is illustrated in Figure `[fig:uq_screen] <#fig:uq_screen>`__.
+screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 .. figure:: figs/overview/1_UQScreen2.png
    :alt: Uncertainty Quantification Screen
+   :name: fig:uq_screen
 
    Uncertainty Quantification Screen
-
-[fig:uq_screen]
 
 #. **Simulation Ensemble Table** displays all of the simulation
    ensembles: each ensemble being a row in the table. A simulation
@@ -83,7 +82,7 @@ screen is illustrated in Figure `[fig:uq_screen] <#fig:uq_screen>`__.
      setting up the distributions of input variables and the sampling
      scheme to generate samples of the uncertain input variables. This
      **Simulation Ensemble Setup** dialog is explained in further detail
-     in Section `1.1 <#subsec:uq_simsetup>`__.
+     in Section :ref:`subsec:uq_simsetup`.
 
 #. **Load from File** loads a simulation ensemble from a sample file
    that conforms to the PSUADE full file format. (See Section

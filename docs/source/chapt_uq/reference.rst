@@ -1,4 +1,4 @@
-.. _section_uq
+.. _section_uq:
 
 Reference
 =========
@@ -177,16 +177,14 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
       \suspend{enumerate}
 
-   The **Filtering** tab is illustrated in Figure
-   `[fig:uq_deltab] <#fig:uq_deltab>`__ and enables the user to filter
-   samples based on the values of an input or output.
+   The **Filtering** tab is illustrated in Figure :ref:`fig:uq_deltab` and
+   enables the user to filter samples based on the values of an input or output.
 
    .. figure:: figs/overview/2_FilteringTab_upd1.png
       :alt: Filtering Tab
+      :name: fig:uq_deltab
 
       Filtering Tab
-
-   [fig:uq_deltab]
 
    .. raw:: latex
 
@@ -201,24 +199,25 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
       \resume{enumerate}
 
-#. Click on Add/Edit Filters, in the Flowsheet Results window within the "Filtering Tab"
+#. Click on Add/Edit Filters, in the Flowsheet Results window within the
+   "Filtering Tab"
 
 #. 1. Within the Filter Dialog Box, Click on "New Filter" to add a filter
-   2. Enter a filter expression in python format. Variables can be dragged into the expression, from the "Columns", click Done.
+   2. Enter a filter expression in python format. Variables can be dragged into
+      the expression, from the "Columns", click Done.
 
-#. Select a "Current Filter" after which the the filtered ensemble can be saved by clicking on " Save as New Ensemble"
+#. Select a "Current Filter" after which the the filtered ensemble can be saved
+   by clicking on " Save as New Ensemble"
 
-   The single-output **Analysis of Ensemble** dialog, which is displayed
-   when **Analyze** is clicked for the selected ensemble, has two modes,
-   as shown in Figure `[fig:uq_analysisW] <#fig:uq_analysisW>`__ and
-   Figure `[fig:uqt_rsaeua] <#fig:uqt_rsaeua>`__.
+   The single-output **Analysis of Ensemble** dialog, which is displayed when
+   **Analyze** is clicked for the selected ensemble, has two modes, as shown in
+   Figure :ref:`fig:uq_analysisW` and Figure :ref:`fig:uqt_rsaeua`.
 
    .. figure:: figs/overview/3_AnalysisSection2.png
       :alt: Analysis Dialog, Ensemble Data Analysis, Wizard Mode
+      :name: fig:uq_analysisW
 
       Analysis Dialog, Ensemble Data Analysis, Wizard Mode
-
-   [fig:uq_analysisW]
 
    .. raw:: latex
 

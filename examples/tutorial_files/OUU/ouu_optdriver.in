@@ -1,0 +1,51 @@
+PSUADE
+INPUT
+   dimension = 12
+   variable   1 D1  = -5     5.0
+   variable   2 D2  = -5     5.0
+   variable   3 D3  = -5     5.0
+   variable   4 D4  = -5     5.0
+   variable   5 X1  = -10    10
+   variable   6 X2  = -10    10
+   variable   7 X3  = -10    10
+   variable   8 X4  = -10    10
+   variable   9 W1  = -5    5
+   variable  10 W2  = -5    5
+   variable  11 W3  = -5    5
+   variable  12 W4  = -5    5
+#  PDF 10 N 0 1
+#  PDF 11 N 0 1
+#  PDF 12 N 0 1
+END
+OUTPUT
+   dimension = 1
+   variable 1 Y
+END
+METHOD
+   sampling = LPTAU
+   num_samples = 10
+#  randomize
+   random_seed = 41491431
+END
+APPLICATION
+#  driver = /g/g0/chtong/FOQUS/FOQUS/examples/OUU/test_suite/optdriver
+#  opt_driver = /g/g0/chtong/FOQUS/FOQUS/examples/OUU/test_suite/optdriver
+   driver = PSUADE_LOCAL
+   opt_driver = PSUADE_LOCAL
+   launch_interval = 0
+END
+ANALYSIS
+   optimization method = ouu
+   optimization num_local_minima = 1
+   optimization max_feval = 1000000
+   optimization fmin = 0.0
+   optimization tolerance = 1.000000e-06
+   optimization num_fmin = 1
+   optimization print_level = 3
+#  optimization save_history
+#  optimization use_history
+   analyzer output_id  = 1
+   opt_expert
+   printlevel 2
+END
+END

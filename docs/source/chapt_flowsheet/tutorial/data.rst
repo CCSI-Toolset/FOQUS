@@ -16,7 +16,7 @@ Copy the Simple_flow.foqus file to a
 convenient location (see section :ref:`tutorial.example.files`). This file is
 similar to the one created in the tutorial Section
 :ref:`tutorial.sim.flowsheet`, but it has been run
-an additional 100 times using a UQ ensemble (see :ref:`chapt_uq/index:Uncertainty Quantification`).
+an additional 100 times using a UQ ensemble (see :ref:`subsec:uqt_sim`).
 
 #. Open FOQUS.
 

@@ -1,0 +1,1697 @@
+
+ *** CALCULATION TRACE ***
+
+ HCL, BENZENE, AND MCB SEPARATION                                
+
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO DESIGN-SPEC  H1-4-T   10/15/2014   18:13:41:05 
+ DESIGN-SPEC H1-4-T
+     DEFINE H14DT BLOCK-VAR BLOCK=H1-4 VARIABLE=DELT  &
+         SENTENCE=PARAM UOM="C"
+     DEFINE S01T STREAM-VAR STREAM=S01 SUBSTREAM=MIXED  &
+         VARIABLE=TEMP UOM="C"
+     DEFINE H15T BLOCK-VAR BLOCK=H1-5 VARIABLE=TEMP  &
+         SENTENCE=PARAM UOM="C"
+     SPEC "5*H14DT - (H15T - S01T)" TO "0"
+     TOL-SPEC "1e-6"
+     VARY BLOCK-VAR BLOCK=H1-4 VARIABLE=DELT SENTENCE=PARAM UOM= &
+         "C"
+     LIMITS "0" "40"
+
+ CHANGES WERE MADE TO RENAME       10/15/2014   18:13:41:05 
+ RENAME
+     BLOCK "H2" "H2-5"
+     STREAM "S1" "S12-1" / "S2" "S12-2" / "S3" "S12-3" / "S4"  &
+         "S12-4"
+
+ BLOCK        H2-1     IS NEW 10/15/2014   18:13:41:05 
+ BLOCK H2-1 HEATER
+     PARAM PRES=-0.0275790292 DELT=-20.
+
+ BLOCK        H2-2     IS NEW 10/15/2014   18:13:41:05 
+ BLOCK H2-2 HEATER
+     PARAM PRES=-0.0275790292 DELT=-20.
+
+ BLOCK        H2-3     IS NEW 10/15/2014   18:13:41:05 
+ BLOCK H2-3 HEATER
+     PARAM PRES=-0.0275790292 DELT=-20.
+
+ BLOCK        H2-4     IS NEW 10/15/2014   18:13:41:05 
+ BLOCK H2-4 HEATER
+     PARAM PRES=-0.0275790292 DELT=-20.
+
+ BLOCK        H2-5     IS NEW 10/15/2014   18:13:41:05 
+ BLOCK H2-5 HEATER
+     PARAM TEMP=48.88888890 PRES=-0.0275790292
+
+ FLOWSHEET    IS  NEW 10/15/2014   18:13:41:05 
+ FLOWSHEET
+     BLOCK F1 IN=S02 OUT=S04 SO3
+     BLOCK A1 IN=S04 S05 OUT=S06 S07
+     BLOCK T1 IN=S08 OUT=S10 S09
+     BLOCK H2-5 IN=S12-4 OUT=S13
+     BLOCK H1-1 IN=S01 OUT=S01-1
+     BLOCK P1 IN=S15 OUT=S05
+     BLOCK D1 IN=S10 OUT=S11 S12
+     BLOCK B1 IN=S07 SO3 OUT=S08
+     BLOCK B2 IN=S13 OUT=S14 S15
+     BLOCK H1-2 IN=S01-1 OUT=S01-2
+     BLOCK H1-3 IN=S01-2 OUT=S01-3
+     BLOCK H1-4 IN=S01-3 OUT=S01-4
+     BLOCK H1-5 IN=S01-4 OUT=S02
+     BLOCK H2-1 IN=S12 OUT=S12-1
+     BLOCK H2-2 IN=S12-1 OUT=S12-2
+     BLOCK H2-3 IN=S12-2 OUT=S12-3
+     BLOCK H2-4 IN=S12-3 OUT=S12-4
+
+ PDF updated                                                                      TIME =      0.26
+ THIS COPY OF ASPEN PLUS LICENSED TO                                 
+ 
+ DESIGN SPEC: H1-4-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-2-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-3-T WILL BE INTERPRETED 
+ 
+ *** FLOWSHEET ANALYSIS MESSAGES ***
+ CONVERGENCE BLOCK $OLVER15 FOR DESIGN SPEC H1-4-T   IS DELETED
+ CONVERGENCE BLOCK $OLVER16 FOR DESIGN SPEC H1-2-T   IS DELETED
+ CONVERGENCE BLOCK $OLVER17 FOR DESIGN SPEC H1-3-T   IS DELETED
+
+ FLOWSHEET CONNECTIVITY BY STREAMS       
+
+   STREAM     SOURCE     DEST           STREAM     SOURCE     DEST
+   S01        ----       H1-1           S04        F1         A1      
+   SO3        F1         B1             S06        A1         ----    
+   S07        A1         B1             S10        T1         D1      
+   S09        T1         ----           S13        H2-5       B2      
+   S01-1      H1-1       H1-2           S05        P1         A1      
+   S11        D1         ----           S12        D1         H2-1    
+   S08        B1         T1             S14        B2         ----    
+   S15        B2         P1             S01-2      H1-2       H1-3    
+   S01-3      H1-3       H1-4           S01-4      H1-4       H1-5    
+   S02        H1-5       F1             S12-1      H2-1       H2-2    
+   S12-2      H2-2       H2-3           S12-3      H2-3       H2-4    
+   S12-4      H2-4       H2-5                                         
+
+ FLOWSHEET CONNECTIVITY BY BLOCKS        
+
+   BLOCK        INLETS                         OUTLETS
+   F1           S02                            S04 SO3                     
+   A1           S04 S05                        S06 S07                     
+   T1           S08                            S10 S09                     
+   H2-5         S12-4                          S13                         
+   H1-1         S01                            S01-1                       
+   P1           S15                            S05                         
+   D1           S10                            S11 S12                     
+   B1           S07 SO3                        S08                         
+   B2           S13                            S14 S15                     
+   H1-2         S01-1                          S01-2                       
+   H1-3         S01-2                          S01-3                       
+   H1-4         S01-3                          S01-4                       
+   H1-5         S01-4                          S02                         
+   H2-1         S12                            S12-1                       
+   H2-2         S12-1                          S12-2                       
+   H2-3         S12-2                          S12-3                       
+   H2-4         S12-3                          S12-4                       
+
+      BLOCK $OLVER01 (METHOD: WEGSTEIN) HAS BEEN DEFINED TO CONVERGE
+               STREAMS: S07
+
+      BLOCK $OLVER19 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-4-T
+
+      BLOCK $OLVER16 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-2-T
+
+      BLOCK $OLVER17 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-3-T
+
+      COMPUTATION ORDER FOR THE FLOWSHEET IS:
+      H1-1 
+      $OLVER16 H1-2 
+      |  $OLVER17 H1-3 
+      |  |  $OLVER19 H1-4 H1-5 
+      |  |  (RETURN $OLVER19) 
+      |  (RETURN $OLVER17) 
+      (RETURN $OLVER16) 
+      F1 
+      $OLVER01 B1 T1 D1 H2-1 H2-2 H2-3 H2-4 H2-5 B2 P1 A1 
+      (RETURN $OLVER01) 
+
+Calculations begin                                                              time      0.32
+
+
+      CONVERGENCE BLOCK $OLVER19  METHOD: SECANT                                  TIME =      0.32
+      ITER   0 For Specs:        H1-4-T
+
+      CONVERGENCE BLOCK $OLVER19  METHOD: SECANT                                  TIME =      0.32
+      ITER   1 For Specs:        H1-4-T
+      SPEC   1 ERROR =   6.4444     OLD X =   22.400     NEW X =   22.800    
+
+  LOOP $OLVER19 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.64444E+07    TIME =      0.32
+
+      UOS BLOCK H1-4     MODEL: HEATER                                            TIME =      0.32
+      KODE = 2  NTRIAL =   3  T = 385.9500  P =  244074.      V = 0.211362      Q =  72955.7    
+
+      UOS BLOCK H1-5     MODEL: HEATER                                            TIME =      0.32
+      KODE = 2  NTRIAL =   1  T = 405.3722  P =  241317.      V = 0.462966      Q =  133258.    
+
+      CONVERGENCE BLOCK $OLVER19  METHOD: SECANT                                  TIME =      0.32
+      ITER   2 For Specs:        H1-4-T
+      SPEC   1 ERROR =   8.4444     OLD X =   22.800     NEW X =   21.111    
+
+  LOOP $OLVER19 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.84444E+07    TIME =      0.32
+
+      UOS BLOCK H1-4     MODEL: HEATER                                            TIME =      0.32
+      KODE = 2  NTRIAL =   3  T = 384.2611  P =  244074.      V = 0.201427      Q =  66025.4    
+
+      UOS BLOCK H1-5     MODEL: HEATER                                            TIME =      0.32
+      KODE = 2  NTRIAL =   1  T = 405.3722  P =  241317.      V = 0.462966      Q =  140188.    
+
+      CONVERGENCE BLOCK $OLVER19  METHOD: SECANT                                  TIME =      0.32
+      ITER   3 For Specs:        H1-4-T
+      SPEC   1 ERROR =  0.42633E-13                          X =   21.111    
+
+  LOOP $OLVER19 ITER    3:     *** CONVERGED *** , MAX ERR/TOL     0.42633E-07    TIME =      0.32
+
+      CONVERGENCE BLOCK $OLVER17  METHOD: SECANT                                  TIME =      0.32
+      ITER   0 For Specs:        H1-3-T
+
+      CONVERGENCE BLOCK $OLVER17  METHOD: SECANT                                  TIME =      0.32
+      ITER   1 For Specs:        H1-3-T
+      SPEC   1 ERROR = -0.14211E-13                          X =   21.111    
+
+  LOOP $OLVER17 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.14211E-07    TIME =      0.32
+
+      CONVERGENCE BLOCK $OLVER16  METHOD: SECANT                                  TIME =      0.32
+      ITER   0 For Specs:        H1-2-T
+
+      CONVERGENCE BLOCK $OLVER16  METHOD: SECANT                                  TIME =      0.32
+      ITER   1 For Specs:        H1-2-T
+      SPEC   1 ERROR = -0.14211E-13                          X =   21.111    
+
+  LOOP $OLVER16 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.14211E-07    TIME =      0.32
+
+      UOS BLOCK F1       MODEL: FLASH2                                            TIME =      0.32
+      KODE = 1  NTRIAL =   1  T = 405.3722  P =  241317.      V = 0.462966      Q =  0.00000    
+
+      CONVERGENCE BLOCK $OLVER01  METHOD: WEGSTEIN                                TIME =      0.32
+      ITER   0 For Tear Streams: S07
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.32
+      KODE = 1  NTRIAL =   1  T = 397.6585  P =  220632.      V = 5.321152E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.32
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6585  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6585  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.32
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      UOS BLOCK H2-1     MODEL: HEATER                                            TIME =      0.32
+      KODE = 2  NTRIAL =   1  T = 406.7406  P =  169611.      V =  0.00000      Q = -68265.7    
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 386.7406  P =  166853.      V =  0.00000      Q = -66296.7    
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 366.7406  P =  164095.      V =  0.00000      Q = -64333.9    
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 346.7406  P =  161337.      V =  0.00000      Q = -62362.9    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -74271.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.33
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.33
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.33
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.53927E-04
+
+      CONVERGENCE BLOCK $OLVER01  METHOD: WEGSTEIN                                TIME =      0.33
+      ITER   1 For Tear Streams: S07
+
+  LOOP $OLVER01 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.56385        TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H2-5     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK P1       MODEL: PUMP                       TIME =      0.33
+      KODE = 5  NTRIAL =   3  T = 322.0389  P =  7485.99      V =  0.00000      Q = -129.623    
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+      NPSH AVAIL =   140.7    
+
+      GENERATING RESULTS FOR UOS BLOCK H1-4     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H1-5     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H2-1     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H2-2     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H2-3     MODEL: HEATER                     TIME =      0.33
+
+      GENERATING RESULTS FOR UOS BLOCK H2-4     MODEL: HEATER                     TIME =      0.33
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ STREAM S12-1   
+        SUBSTREAM MIXED     F =  0.188450948625286E-01  T =   406.740622185081      P =   169611.029480000    
+                            H =   27855477.5065452      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -1926.12068544289      DENSITY =   977.281609622124      MW =   112.350614673733    
+        HCL        0.00000000000000      C6H6      0.113681605208242E-03  MCB       0.187314201069984E-01
+        H2O        0.00000000000000    
+
+ STREAM S12-2   
+        SUBSTREAM MIXED     F =  0.188450948625286E-01  T =   386.740622185081      P =   166853.126560000    
+                            H =   24337489.3217898      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -2011.41757062601      DENSITY =   1001.31571002128      MW =   112.350614673733    
+        HCL        0.00000000000000      C6H6      0.113681605208242E-03  MCB       0.187314201069984E-01
+        H2O        0.00000000000000    
+
+ STREAM S12-3   
+        SUBSTREAM MIXED     F =  0.188450948625286E-01  T =   366.740622185081      P =   164095.223640000    
+                            H =   20923653.3109094      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -2100.04880192937      DENSITY =   1024.52928819982      MW =   112.350614673733    
+        HCL        0.00000000000000      C6H6      0.113681605208242E-03  MCB       0.187314201069984E-01
+        H2O        0.00000000000000    
+
+ STREAM S12-4   
+        SUBSTREAM MIXED     F =  0.188450948625286E-01  T =   346.740622185081      P =   161337.320720000    
+                            H =   17614406.6560359      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -2192.83253427919      DENSITY =   1047.02045039413      MW =   112.350614673733    
+        HCL        0.00000000000000      C6H6      0.113681605208242E-03  MCB       0.187314201069984E-01
+        H2O        0.00000000000000    
+
+ STREAM S13     
+        SUBSTREAM MIXED     F =  0.188450948625286E-01  T =   322.038888900000      P =   158579.417800000    
+                            H =   13673246.5440042      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -2314.73902287586      DENSITY =   1073.92042010384      MW =   112.350614673733    
+        HCL        0.00000000000000      C6H6      0.113681605208242E-03  MCB       0.187314201069984E-01
+        H2O        0.00000000000000    
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Report Writer entered                                                            Time =     42.32
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Results generated                                                                Time =     42.35
+
+ Report Writer entered                                                            Time =     42.47
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Results generated                                                                Time =     42.50
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED
+
+ Report Writer entered                                                            Time =     45.36
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Results generated                                                                Time =     45.39
+
+ Report Writer entered                                                            Time =     45.52
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Results generated                                                                Time =     45.55
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED
+
+ Report Writer entered                                                            Time =    135.19
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q = 7.889085E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7406  P =  172369.      V =  0.00000      Q =-8.151438E-02
+
+ Results generated                                                                Time =    135.22
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED
+
+ *** CALCULATION TRACE ***
+
+ HCL, BENZENE, AND MCB SEPARATION                                
+
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ DESIGN-SPEC  H2-1-T   IS NEW 10/15/2014   18:20:39:28 
+ DESIGN-SPEC H2-1-T
+     DEFINE H21DT BLOCK-VAR BLOCK=H2-1 VARIABLE=DELT  &
+         SENTENCE=PARAM UOM="C"
+     DEFINE S12T STREAM-VAR STREAM=S12 SUBSTREAM=MIXED  &
+         VARIABLE=TEMP UOM="C"
+     DEFINE H25T BLOCK-VAR BLOCK=H2-5 VARIABLE=TEMP  &
+         SENTENCE=PARAM UOM="C"
+     SPEC "5*H21DT - (H25T - S12T)" TO "0"
+     TOL-SPEC "1e-6"
+     VARY BLOCK-VAR BLOCK=H2-1 VARIABLE=DELT SENTENCE=PARAM UOM= &
+         "C"
+     LIMITS "-40" "0"
+
+ DESIGN-SPEC  H2-2-T   IS NEW 10/15/2014   18:20:39:28 
+ DESIGN-SPEC H2-2-T
+     DEFINE H22DT BLOCK-VAR BLOCK=H2-2 VARIABLE=DELT  &
+         SENTENCE=PARAM UOM="C"
+     DEFINE S12T STREAM-VAR STREAM=S12 SUBSTREAM=MIXED  &
+         VARIABLE=TEMP UOM="C"
+     DEFINE H25T BLOCK-VAR BLOCK=H2-5 VARIABLE=TEMP  &
+         SENTENCE=PARAM UOM="C"
+     SPEC "5*H22DT - (H25T - S12T)" TO "0"
+     TOL-SPEC "1e-6"
+     VARY BLOCK-VAR BLOCK=H2-2 VARIABLE=DELT SENTENCE=PARAM UOM= &
+         "C"
+     LIMITS "-40" "0"
+
+ DESIGN-SPEC  H2-3-T   IS NEW 10/15/2014   18:20:39:28 
+ DESIGN-SPEC H2-3-T
+     DEFINE H23DT BLOCK-VAR BLOCK=H2-3 VARIABLE=DELT  &
+         SENTENCE=PARAM UOM="C"
+     DEFINE S12T STREAM-VAR STREAM=S12 SUBSTREAM=MIXED  &
+         VARIABLE=TEMP UOM="C"
+     DEFINE H25T BLOCK-VAR BLOCK=H2-5 VARIABLE=TEMP  &
+         SENTENCE=PARAM UOM="C"
+     SPEC "5*H23DT - (H25T - S12T)" TO "0"
+     TOL-SPEC "1e-6"
+     VARY BLOCK-VAR BLOCK=H2-3 VARIABLE=DELT SENTENCE=PARAM UOM= &
+         "C"
+     LIMITS "-40" "0"
+
+ DESIGN-SPEC  H2-4-T   IS NEW 10/15/2014   18:20:39:28 
+ DESIGN-SPEC H2-4-T
+     DEFINE H24DT BLOCK-VAR BLOCK=H2-4 VARIABLE=DELT  &
+         SENTENCE=PARAM UOM="C"
+     DEFINE S12T STREAM-VAR STREAM=S12 SUBSTREAM=MIXED  &
+         VARIABLE=TEMP UOM="C"
+     DEFINE H25T BLOCK-VAR BLOCK=H2-5 VARIABLE=TEMP  &
+         SENTENCE=PARAM UOM="C"
+     SPEC "5*H24DT - (H25T - S12T)" TO "0"
+     TOL-SPEC "1e-6"
+     VARY BLOCK-VAR BLOCK=H2-4 VARIABLE=DELT SENTENCE=PARAM UOM= &
+         "C"
+     LIMITS "-40" "0"
+
+ PDF updated                                                                      TIME =      0.29
+ THIS COPY OF ASPEN PLUS LICENSED TO                                 
+ 
+ DESIGN SPEC: H1-4-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-2-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-3-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-1-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-2-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-3-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-4-T WILL BE INTERPRETED 
+ 
+ *** FLOWSHEET ANALYSIS MESSAGES ***
+ CONVERGENCE BLOCK $OLVER19 FOR DESIGN SPEC H1-4-T   IS DELETED
+ CONVERGENCE BLOCK $OLVER16 FOR DESIGN SPEC H1-2-T   IS DELETED
+ CONVERGENCE BLOCK $OLVER17 FOR DESIGN SPEC H1-3-T   IS DELETED
+
+ FLOWSHEET CONNECTIVITY BY STREAMS       
+
+   STREAM     SOURCE     DEST           STREAM     SOURCE     DEST
+   S01        ----       H1-1           S04        F1         A1      
+   SO3        F1         B1             S06        A1         ----    
+   S07        A1         B1             S10        T1         D1      
+   S09        T1         ----           S13        H2-5       B2      
+   S01-1      H1-1       H1-2           S05        P1         A1      
+   S11        D1         ----           S12        D1         H2-1    
+   S08        B1         T1             S14        B2         ----    
+   S15        B2         P1             S01-2      H1-2       H1-3    
+   S01-3      H1-3       H1-4           S01-4      H1-4       H1-5    
+   S02        H1-5       F1             S12-1      H2-1       H2-2    
+   S12-2      H2-2       H2-3           S12-3      H2-3       H2-4    
+   S12-4      H2-4       H2-5                                         
+
+ FLOWSHEET CONNECTIVITY BY BLOCKS        
+
+   BLOCK        INLETS                         OUTLETS
+   F1           S02                            S04 SO3                     
+   A1           S04 S05                        S06 S07                     
+   T1           S08                            S10 S09                     
+   H2-5         S12-4                          S13                         
+   H1-1         S01                            S01-1                       
+   P1           S15                            S05                         
+   D1           S10                            S11 S12                     
+   B1           S07 SO3                        S08                         
+   B2           S13                            S14 S15                     
+   H1-2         S01-1                          S01-2                       
+   H1-3         S01-2                          S01-3                       
+   H1-4         S01-3                          S01-4                       
+   H1-5         S01-4                          S02                         
+   H2-1         S12                            S12-1                       
+   H2-2         S12-1                          S12-2                       
+   H2-3         S12-2                          S12-3                       
+   H2-4         S12-3                          S12-4                       
+
+      BLOCK $OLVER22 (METHOD: WEGSTEIN) HAS BEEN DEFINED TO CONVERGE
+               STREAMS: S12
+
+      BLOCK $OLVER19 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-4-T
+
+      BLOCK $OLVER16 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-2-T
+
+      BLOCK $OLVER17 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H1-3-T
+
+      BLOCK $OLVER26 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H2-1-T
+
+      BLOCK $OLVER27 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H2-2-T
+
+      BLOCK $OLVER28 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H2-3-T
+
+      BLOCK $OLVER29 (METHOD: SECANT  ) HAS BEEN DEFINED TO CONVERGE
+                SPECS : H2-4-T
+
+      INFORMATION DURING FLOWSHEET ANALYSIS                    (AFLSPC.24)      
+      Convergence loop $OLVER26 extended to cover                               
+      tear S12 from D1 to H2-1                                                  
+
+      COMPUTATION ORDER FOR THE FLOWSHEET IS:
+      H1-1 
+      $OLVER16 H1-2 
+      |  $OLVER17 H1-3 
+      |  |  $OLVER19 H1-4 H1-5 
+      |  |  (RETURN $OLVER19) 
+      |  (RETURN $OLVER17) 
+      (RETURN $OLVER16) 
+      F1 
+      $OLVER26 
+      |  $OLVER22 H2-1 
+      |  |  $OLVER27 H2-2 
+      |  |  |  $OLVER28 H2-3 
+      |  |  |  |  $OLVER29 H2-4 H2-5 B2 P1 A1 B1 T1 D1 
+      |  |  |  |  (RETURN $OLVER29) 
+      |  |  |  (RETURN $OLVER28) 
+      |  |  (RETURN $OLVER27) 
+      |  (RETURN $OLVER22) 
+      (RETURN $OLVER26) 
+
+Calculations begin                                                              time      0.33
+
+
+      CONVERGENCE BLOCK $OLVER26  METHOD: SECANT                                  TIME =      0.33
+      ITER   0 For Specs:        H2-1-T
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.33
+      ITER   0 For Tear Streams: S12
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.33
+      ITER   0 For Specs:        H2-2-T
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.33
+      ITER   0 For Specs:        H2-3-T
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.33
+      ITER   0 For Specs:        H2-4-T
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.33
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =   4.7017     OLD X =  -20.000     NEW X =  -19.600    
+
+  LOOP $OLVER29 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.47017E+07    TIME =      0.33
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 347.1406  P =  161337.      V =  0.00000      Q = -61135.2    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -75499.2    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.33
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.33
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.33
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.27430E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.33
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.297808E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.33
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.33
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.33
+      ITER   2 For Specs:        H2-4-T
+      SPEC   1 ERROR =   6.7019     OLD X =  -19.600     NEW X =  -20.940    
+
+  LOOP $OLVER29 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.67019E+07    TIME =      0.33
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 345.8003  P =  161337.      V =  0.00000      Q = -65245.9    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.33
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -71388.5    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.33
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.33
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.33
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.10078E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.34
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298256E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.34
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.34
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.34
+      ITER   3 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.45917E-03 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER29 ITER    3:   1 VARS NOT CONVERGED, MAX ERR/TOL      459.17        TIME =      0.34
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.34
+      KODE = 2  NTRIAL =   1  T = 345.8003  P =  161337.      V =  0.00000      Q = -65246.2    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.34
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -71388.2    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.34
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.34
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.34
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.15436E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.34
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298245E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.34
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.34
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.34
+      ITER   4 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.35893E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    4:     *** CONVERGED *** , MAX ERR/TOL     0.35893        TIME =      0.34
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.34
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR =   4.7018     OLD X =  -20.000     NEW X =  -19.600    
+
+  LOOP $OLVER28 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.47018E+07    TIME =      0.34
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.34
+      KODE = 2  NTRIAL =   1  T = 367.1406  P =  164095.      V =  0.00000      Q = -63066.6    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.34
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.34
+      KODE = 2  NTRIAL =   1  T = 346.2003  P =  161337.      V =  0.00000      Q = -65287.7    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.34
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -72614.1    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.34
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.34
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.34
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.27311E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.34
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298239E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.35
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.35
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.35
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.37759E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.37759        TIME =      0.35
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.35
+      ITER   2 For Specs:        H2-3-T
+      SPEC   1 ERROR =   6.7018     OLD X =  -19.600     NEW X =  -20.940    
+
+  LOOP $OLVER28 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.67018E+07    TIME =      0.35
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 365.8003  P =  164095.      V =  0.00000      Q = -67310.3    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.35
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 344.8599  P =  161337.      V =  0.00000      Q = -65148.7    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -68509.3    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.35
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.35
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.35
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.31754E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.35
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298239E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.35
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.35
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.35
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.37837E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.37837        TIME =      0.35
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.35
+      ITER   3 For Specs:        H2-3-T
+      SPEC   1 ERROR =  0.63295E-07                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    3:     *** CONVERGED *** , MAX ERR/TOL     0.63295E-01    TIME =      0.35
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.35
+      ITER   1 For Specs:        H2-2-T
+      SPEC   1 ERROR =   4.7018     OLD X =  -20.000     NEW X =  -19.600    
+
+  LOOP $OLVER27 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.47018E+07    TIME =      0.35
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 387.1406  P =  166853.      V =  0.00000      Q = -64990.0    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.35
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 366.2003  P =  164095.      V =  0.00000      Q = -67351.4    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.35
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 345.2599  P =  161337.      V =  0.00000      Q = -65190.2    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.35
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -69733.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.36
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.36
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.36
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.24637E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.36
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298239E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.36
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.36
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.36
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.37852E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.37852        TIME =      0.36
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.36
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR =  0.63447E-07                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.63447E-01    TIME =      0.36
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.36
+      ITER   2 For Specs:        H2-2-T
+      SPEC   1 ERROR =   6.7018     OLD X =  -19.600     NEW X =  -20.940    
+
+  LOOP $OLVER27 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.67018E+07    TIME =      0.36
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.36
+      KODE = 2  NTRIAL =   1  T = 385.8003  P =  166853.      V =  0.00000      Q = -69365.4    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.36
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.36
+      KODE = 2  NTRIAL =   1  T = 364.8599  P =  164095.      V =  0.00000      Q = -67213.5    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.37
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 343.9195  P =  161337.      V =  0.00000      Q = -65051.2    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65634.9    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.37
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.37
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.37
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.15194E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.37
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298239E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.37
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.37
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.37
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.37860E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.37860        TIME =      0.37
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.37
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR =  0.63532E-07                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL     0.63532E-01    TIME =      0.37
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.37
+      ITER   3 For Specs:        H2-2-T
+      SPEC   1 ERROR =  0.59488E-09                          X =  -20.940    
+
+  LOOP $OLVER27 ITER    3:     *** CONVERGED *** , MAX ERR/TOL     0.59488E-03    TIME =      0.37
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.37
+      ITER   1 For Tear Streams: S12
+
+      --FLASH TEAR STREAM S12     
+      KODE = 1  NTRIAL =   4  T = 426.7408  P =  172369.      V = 8.903582E-08  Q =  0.00000    
+
+  LOOP $OLVER22 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     -1.9062        TIME =      0.37
+
+      UOS BLOCK H2-1     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 406.7408  P =  169611.      V =  0.00000      Q = -68265.9    
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.37
+      ITER   0 For Specs:        H2-2-T
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 385.8004  P =  166853.      V =  0.00000      Q = -69365.6    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.37
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 364.8600  P =  164095.      V =  0.00000      Q = -67213.7    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.37
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.3    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.5    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.37
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.37
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.37
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.66832E-03
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.37
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.37
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.37
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.37
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.63360E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      63.360        TIME =      0.37
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 343.9196  P =  161337.      V =  0.00000      Q = -65051.4    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.37
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.37
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.37
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.37
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.52050E-03
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.38
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298231E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.38
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.38
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   2 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.15306E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    2:     *** CONVERGED *** , MAX ERR/TOL    -0.15306        TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.38
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR =  0.62892E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      62.892        TIME =      0.38
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 364.8600  P =  164095.      V =  0.00000      Q = -67213.7    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 343.9196  P =  161337.      V =  0.00000      Q = -65051.4    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.38
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.38
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.38
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.12680E-03
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.38
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298226E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.38
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.38
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.17589E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.17589        TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.38
+      ITER   2 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.22833E-07                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    2:     *** CONVERGED *** , MAX ERR/TOL    -0.22833E-01    TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.38
+      ITER   1 For Specs:        H2-2-T
+      SPEC   1 ERROR =  0.62806E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER27 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      62.806        TIME =      0.38
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 385.8004  P =  166853.      V =  0.00000      Q = -69365.6    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 364.8600  P =  164095.      V =  0.00000      Q = -67213.7    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 343.9196  P =  161337.      V =  0.00000      Q = -65051.4    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.38
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.38
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.38
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.75538E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.38
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298226E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.38
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.38
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.17406E-06                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.17406        TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.38
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.21005E-07                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.21005E-01    TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.38
+      ITER   2 For Specs:        H2-2-T
+      SPEC   1 ERROR =  0.18277E-08                          X =  -20.940    
+
+  LOOP $OLVER27 ITER    2:     *** CONVERGED *** , MAX ERR/TOL     0.18277E-02    TIME =      0.38
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.38
+      ITER   2 For Tear Streams: S12
+
+      --FLASH TEAR STREAM S12     
+      KODE = 1  NTRIAL =   1  T = 426.7409  P =  172369.      V = 4.628969E-07  Q =  0.00000    
+
+  LOOP $OLVER22 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     -1.0274        TIME =      0.38
+
+      UOS BLOCK H2-1     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 406.7409  P =  169611.      V =  0.00000      Q = -68266.0    
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-2-T
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 385.8005  P =  166853.      V =  0.00000      Q = -69365.7    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.38
+      KODE = 2  NTRIAL =   1  T = 364.8601  P =  164095.      V =  0.00000      Q = -67213.7    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.38
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.4    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.7    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.39
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.39
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.39
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.12953E-02
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.39
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298174E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.39
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.39
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.39
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR =  0.74077E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      74.077        TIME =      0.39
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.5    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.6    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.39
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.39
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.39
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.18792E-03
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.39
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298208E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.39
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.39
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.39
+      ITER   2 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.12003E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER29 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     -12.003        TIME =      0.39
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.5    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.39
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.7    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.39
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.39
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.39
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.11005E-03
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.40
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.40
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.40
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.40
+      ITER   3 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.38447E-07                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    3:     *** CONVERGED *** , MAX ERR/TOL    -0.38447E-01    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.40
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR =  0.74073E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      74.073        TIME =      0.40
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 364.8601  P =  164095.      V =  0.00000      Q = -67213.8    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.40
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.5    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.6    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.40
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.40
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.40
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.50008E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.40
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.40
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.40
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.40
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.40618E-07                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.40618E-01    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.40
+      ITER   2 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.28650E-08                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    2:     *** CONVERGED *** , MAX ERR/TOL    -0.28650E-02    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.40
+      ITER   1 For Specs:        H2-2-T
+      SPEC   1 ERROR =  0.74094E-04 OLD X =  -20.940     NEW X =  -20.940    
+
+  LOOP $OLVER27 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL      74.094        TIME =      0.40
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 385.8005  P =  166853.      V =  0.00000      Q = -69365.7    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.40
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 364.8601  P =  164095.      V =  0.00000      Q = -67213.8    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.40
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 343.9197  P =  161337.      V =  0.00000      Q = -65051.5    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.40
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -65635.6    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.40
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.40
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.40
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.23593E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.40
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.40
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.40
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.40
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.41979E-07                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.41979E-01    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.40
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.42266E-08                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.42266E-02    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.40
+      ITER   2 For Specs:        H2-2-T
+      SPEC   1 ERROR = -0.20560E-08                          X =  -20.940    
+
+  LOOP $OLVER27 ITER    2:     *** CONVERGED *** , MAX ERR/TOL    -0.20560E-02    TIME =      0.40
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.40
+      ITER   3 For Tear Streams: S12
+
+  LOOP $OLVER22 ITER    3:     *** CONVERGED *** , MAX ERR/TOL    -0.11156E-01    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER26  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-1-T
+      SPEC   1 ERROR =   4.7020     OLD X =  -20.000     NEW X =  -19.600    
+
+  LOOP $OLVER26 ITER    1:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.47020E+07    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.41
+      ITER   0 For Tear Streams: S12
+
+      UOS BLOCK H2-1     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 407.1409  P =  169611.      V =  0.00000      Q = -66920.1    
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-2-T
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 386.2005  P =  166853.      V =  0.00000      Q = -69406.8    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 365.2601  P =  164095.      V =  0.00000      Q = -67255.0    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 344.3197  P =  161337.      V =  0.00000      Q = -65092.9    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -66857.7    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.41
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.41
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.41
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.12675E-04
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.41
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.41
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.41
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.42723E-07                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.42723E-01    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.49700E-08                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.49700E-02    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-2-T
+      SPEC   1 ERROR = -0.27994E-08                          X =  -20.940    
+
+  LOOP $OLVER27 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.27994E-02    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.41
+      ITER   1 For Tear Streams: S12
+
+  LOOP $OLVER22 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.11145E-01    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER26  METHOD: SECANT                                  TIME =      0.41
+      ITER   2 For Specs:        H2-1-T
+      SPEC   1 ERROR =   6.7020     OLD X =  -19.600     NEW X =  -20.940    
+
+  LOOP $OLVER26 ITER    2:   1 VARS NOT CONVERGED, MAX ERR/TOL     0.67020E+07    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.41
+      ITER   0 For Tear Streams: S12
+
+      UOS BLOCK H2-1     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 405.8005  P =  169611.      V =  0.00000      Q = -71427.1    
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-2-T
+
+      UOS BLOCK H2-2     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 384.8601  P =  166853.      V =  0.00000      Q = -69269.1    
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-3-T
+
+      UOS BLOCK H2-3     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 363.9197  P =  164095.      V =  0.00000      Q = -67117.0    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.41
+      ITER   0 For Specs:        H2-4-T
+
+      UOS BLOCK H2-4     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 342.9793  P =  161337.      V =  0.00000      Q = -64953.9    
+
+      UOS BLOCK H2-5     MODEL: HEATER                                            TIME =      0.41
+      KODE = 2  NTRIAL =   1  T = 322.0389  P =  158579.      V =  0.00000      Q = -62765.4    
+
+      UOS BLOCK B2       MODEL: FSPLIT                                            TIME =      0.41
+      SPLIT FRACTIONS:  0.33300D+00    0.66700D+00
+
+      UOS BLOCK P1       MODEL: PUMP                                              TIME =      0.41
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+
+      UOS BLOCK A1       MODEL: RADFRAC                                           TIME =      0.41
+
+       Convergence iterations:
+         OL   ML   IL     Err/Tol
+          1    1    1     0.52793E-05
+
+      UOS BLOCK B1       MODEL: MIXER                                             TIME =      0.41
+      KODE = 1  NTRIAL =   1  T = 397.6555  P =  220632.      V = 5.298203E-04  Q =  0.00000    
+
+      UOS BLOCK T1       MODEL: SEP2                                              TIME =      0.41
+      ---FLASH OF TOP OUTLET STREAM:      
+      KODE = 2  NTRIAL =   2  T = 397.6555  P =  220632.      V =  0.00000      Q =  0.00000    
+      ---FLASH OF BOTTOM OUTLET STREAM:   
+      KODE = 2  NTRIAL =   1  T = 397.6555  P =  220632.      V =  1.00000      Q =  0.00000    
+
+      UOS BLOCK D1       MODEL: DISTL                                             TIME =      0.41
+      COND TEMP=   369.23     FEED TRAY TEMP=   414.93     BTM TEMP=   426.74    
+
+      CONVERGENCE BLOCK $OLVER29  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-4-T
+      SPEC   1 ERROR = -0.43036E-07                          X =  -20.940    
+
+  LOOP $OLVER29 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.43036E-01    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER28  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-3-T
+      SPEC   1 ERROR = -0.52835E-08                          X =  -20.940    
+
+  LOOP $OLVER28 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.52835E-02    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER27  METHOD: SECANT                                  TIME =      0.41
+      ITER   1 For Specs:        H2-2-T
+      SPEC   1 ERROR = -0.31129E-08                          X =  -20.940    
+
+  LOOP $OLVER27 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.31129E-02    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER22  METHOD: WEGSTEIN                                TIME =      0.41
+      ITER   1 For Tear Streams: S12
+
+  LOOP $OLVER22 ITER    1:     *** CONVERGED *** , MAX ERR/TOL    -0.11140E-01    TIME =      0.41
+
+      CONVERGENCE BLOCK $OLVER26  METHOD: SECANT                                  TIME =      0.41
+      ITER   3 For Specs:        H2-1-T
+      SPEC   1 ERROR = -0.28045E-08                          X =  -20.940    
+
+  LOOP $OLVER26 ITER    3:     *** CONVERGED *** , MAX ERR/TOL    -0.28045E-02    TIME =      0.41
+
+      GENERATING RESULTS FOR UOS BLOCK H2-5     MODEL: HEATER                     TIME =      0.41
+
+      GENERATING RESULTS FOR UOS BLOCK P1       MODEL: PUMP                       TIME =      0.41
+      KODE = 5  NTRIAL =   3  T = 322.0389  P =  7485.91      V =  0.00000      Q = -129.685    
+      VOL-FLOW   =  0.1315E-02 , DELTA P    =  0.1862E+06 , PUMP EFF   =  0.3026    
+      FLUID PWR  =   244.8     , BRAKE PWR  =   809.0     , ELEC PWR   =   809.0    
+      NPSH AVAIL =   140.7    
+
+      GENERATING RESULTS FOR UOS BLOCK H2-1     MODEL: HEATER                     TIME =      0.42
+
+      GENERATING RESULTS FOR UOS BLOCK H2-2     MODEL: HEATER                     TIME =      0.42
+
+      GENERATING RESULTS FOR UOS BLOCK H2-3     MODEL: HEATER                     TIME =      0.42
+
+      GENERATING RESULTS FOR UOS BLOCK H2-4     MODEL: HEATER                     TIME =      0.42
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+<reset scope>
+<reset scope>
+<reset scope>
+<reset scope>
+
+ STREAM S11     
+        SUBSTREAM MIXED     F =  0.500945580012853E-02  T =   369.234674477012      P =   158579.417800000    
+                            H =   59374205.6528020      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -2900.09638645357      DENSITY =   797.075001714823      MW =   78.1807485509918    
+        HCL        0.00000000000000      C6H6      0.499968898378939E-02  MCB       0.975988378989436E-05
+        H2O        0.00000000000000    
+
+ STREAM S12     
+        SUBSTREAM MIXED     F =  0.188451024585869E-01  T =   426.740875628182      P =   172368.932400000    
+                            H =   31477908.6885736      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -1843.49916389317      DENSITY =   952.305584295655      MW =   112.350700571524    
+        HCL        0.00000000000000      C6H6      0.113634614095935E-03  MCB       0.187314678444910E-01
+        H2O        0.00000000000000    
+<reset scope>
+
+ STREAM S12-1   
+        SUBSTREAM MIXED     F =  0.188451024585869E-01  T =   405.800478282298      P =   169611.029480000    
+                            H =   27687686.0385858      V =   0.00000000000000      L =   1.00000000000000    
+                            ENTROPY =  -1930.06563343319      DENSITY =   978.431927996118      MW =   112.350700571524    
+        HCL        0.00000000000000      C6H6      0.113634614095935E-03  MCB       0.187314678444910E-01
+        H2O        0.00000000000000    
+
+ Report Writer entered                                                            Time =     44.21
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =     44.25
+
+ Report Writer entered                                                            Time =     44.37
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =     44.40
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED
+
+ Report Writer entered                                                            Time =    123.01
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =    123.05
+
+ Report Writer entered                                                            Time =    123.18
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =    123.21
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED
+
+ *** CALCULATION TRACE ***
+
+ HCL, BENZENE, AND MCB SEPARATION                                
+
+<set objective = None>
+<reset scope>
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO STREAM-REPOR 10/20/2014   15:53:04:56 
+ STREAM-REPOR MOLEFLOW MOLEFRAC
+
+ PDF updated                                                                      TIME =     39.61
+ THIS COPY OF ASPEN PLUS LICENSED TO                                 
+ 
+ DESIGN SPEC: H1-4-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-2-T WILL BE INTERPRETED 
+ DESIGN SPEC: H1-3-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-1-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-2-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-3-T WILL BE INTERPRETED 
+ DESIGN SPEC: H2-4-T WILL BE INTERPRETED 
+ 
+
+Calculations begin                                                              time     39.65
+
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Report Writer entered                                                            Time =     44.89
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =     44.92
+
+ Report Writer entered                                                            Time =     45.05
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2347  P =  158579.      V =  0.00000      Q = 7.984533E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7409  P =  172369.      V =  0.00000      Q =-0.298975    
+
+ Results generated                                                                Time =     45.08
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED

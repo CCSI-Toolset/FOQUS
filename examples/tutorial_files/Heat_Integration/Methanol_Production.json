@@ -1,0 +1,181 @@
+{
+  "title": "Methanol_Production",
+  "config-version": "1.5",
+  "description": "HI for Methanol Production Process",
+  "model": {
+    "file": "Methanol_Production.bkp",
+    "DigestValue": "04fa8c7b5a2770b49875cd3c6a0d514aa4827a2a",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "AD",
+  "date": "7/19/2019",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Plus",
+    "version": "36.0",
+    "constraint": "AT-LEAST"
+  },
+  "inputs": {
+    "MIXED": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Total feed flow",
+      "units": "kmol/hr",
+      "min": 50.0,
+      "max": 100.0
+    },
+    "MIXED1": {
+      "path": [
+        "\\Data\\Streams\\FEED\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 25.0,
+      "description": "Feed Temperature",
+      "units": "degC",
+      "min": 25.0,
+      "max": 27.0
+    }
+  },
+  "outputs": {
+    "TF2": {
+      "path": [
+        "\\Data\\Streams\\F2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of F2",
+      "units": "degC"
+    },
+    "TF3": {
+      "path": [
+        "\\Data\\Streams\\F3\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of F3",
+      "units": "degC"
+    },
+    "TRF2": {
+      "path": [
+        "\\Data\\Streams\\RF2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of RF2",
+      "units": "degC"
+    },
+    "TRF1": {
+      "path": [
+        "\\Data\\Streams\\RF1\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of RF1",
+      "units": "degC"
+    },
+    "TRP2": {
+      "path": [
+        "\\Data\\Streams\\RP2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of RP2",
+      "units": "degC"
+    },
+    "TRP3": {
+      "path": [
+        "\\Data\\Streams\\RP3\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of RP3",
+      "units": "degC"
+    },
+    "TPROD": {
+      "path": [
+        "\\Data\\Streams\\PROD\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of PROD",
+      "units": "degC"
+    },
+    "TP1": {
+      "path": [
+        "\\Data\\Streams\\P1\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of TP1",
+      "units": "degC"
+    },
+    "TBYPROD": {
+      "path": [
+        "\\Data\\Streams\\BY-PROD\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of TBYPROD",
+      "units": "degC"
+    },
+    "TB2": {
+      "path": [
+        "\\Data\\Streams\\B2\\Output\\TEMP_OUT\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Temperature of B2",
+      "units": "degC"
+    },
+    "QC1": {
+      "path": [
+        "\\Data\\Blocks\\C1\\Output\\QCALC"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Duty required for C1",
+      "units": "GJ/hr"
+    },
+    "QH1": {
+      "path": [
+        "\\Data\\Blocks\\H1\\Output\\QCALC"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Duty required for H1",
+      "units": "GJ/hr"
+    },
+    "QC2": {
+      "path": [
+        "\\Data\\Blocks\\C2\\Output\\QCALC"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Duty required for C2",
+      "units": "GJ/hr"
+    },
+    "QH2": {
+      "path": [
+        "\\Data\\Blocks\\H2\\Output\\QCALC"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Duty required for H2",
+      "units": "GJ/hr"
+    },
+    "QH3": {
+      "path": [
+        "\\Data\\Blocks\\H3\\Output\\QCALC"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Heat Duty required for H3",
+      "units": "GJ/hr"
+    }
+  }
+}

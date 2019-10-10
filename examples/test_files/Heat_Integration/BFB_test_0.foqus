@@ -1,0 +1,2285 @@
+{
+  "flowsheet": {
+    "opt": {
+      "h": [], 
+      "obj": [
+        {
+          "pycode": "f[\"BFB.Q\"].value", 
+          "fail": 1000.0, 
+          "penScale": 1.0
+        }
+      ], 
+      "g": [], 
+      "v": [
+        "BFB.E1"
+      ]
+    }, 
+    "sampleCSV": "default.txt", 
+    "edges": [], 
+    "np": 1, 
+    "nodes": {
+      "BFB": {
+        "inVars": {
+          "HXIn.T": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 170.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 170.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger temperature at inlet"
+          }, 
+          "Lb": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 4.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 4.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "bed depth"
+          }, 
+          "HXIn.P": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 6.9, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 6.9, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger pressure at inlet"
+          }, 
+          "ah": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.8, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.8, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "empirical factor in heat transfer model"
+          }, 
+          "GasIn.z(\"H2O\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.49, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.49, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas H2O mole fraction"
+          }, 
+          "dS3": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -175.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -175.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "reaction entropy carbamate formation"
+          }, 
+          "dS1": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -78.5, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -78.5, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "reaction entropy water physisorption"
+          }, 
+          "HXIn.F": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 5000.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 5000.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger flow at inlet"
+          }, 
+          "SolidIn.w(\"Car\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 2.5, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 2.5, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "sorbent carbamate mole fraction at inlet"
+          }, 
+          "SolidIn.T": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 90.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 90.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "sorbent temperature at inlet"
+          }, 
+          "dH3": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -64700.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -64700.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat of reaction carbamate formation"
+          }, 
+          "dH2": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -36300.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -36300.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat of reaction bicarbonate formation"
+          }, 
+          "dH1": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -52100.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -52100.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat of reaction water physisorption"
+          }, 
+          "HXIn.z(\"CO2\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger CO2 mole fraction at inlet"
+          }, 
+          "HXIn.z(\"N2\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger N2 mole fraction at inlet"
+          }, 
+          "Kd": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 100.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 100.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "gas phase bulk flow coefficient"
+          }, 
+          "wthx": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.003, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.003, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger tube wall thickness"
+          }, 
+          "A1": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 55900.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 55900.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "arrhenius constant water physisorpton"
+          }, 
+          "A3": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 98.9, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 98.9, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "arrhenius constant carbamate formation"
+          }, 
+          "A2": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 2.62, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 2.62, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "arrhenius constant bicarbonate formation"
+          }, 
+          "m1": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.17, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.17, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "non-ideality exponent carbamate formation"
+          }, 
+          "dp": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.00015, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.00015, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "particle diameter"
+          }, 
+          "Dt": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 7.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 7.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "BFB unit diamter"
+          }, 
+          "E1": {
+            "set": "sinter", 
+            "min": 26000, 
+            "default": 28200.0, 
+            "max": 30000, 
+            "tags": 0.0, 
+            "value": 28200.0, 
+            "scaling": "Linear", 
+            "unit": "None", 
+            "desc": "activation energy water physisorption"
+          }, 
+          "E3": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 57700.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 57700.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "activation energy carbamate formation"
+          }, 
+          "E2": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 58200.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 58200.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "activation energy bicarbonate formation"
+          }, 
+          "GasIn.T": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 110.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 110.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas temperature"
+          }, 
+          "F": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "fines fraction"
+          }, 
+          "rhos": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 442.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 442.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "particle density"
+          }, 
+          "dS2": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": -88.1, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": -88.1, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "reaction entropy bicarbonate formation"
+          }, 
+          "SolidIn.w(\"H2O\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "sorbent H2O mole fraction at inlet"
+          }, 
+          "hw": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.5, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.5, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger tube wall heat transfer coeff."
+          }, 
+          "HXIn.z(\"H2O\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger H2O mole fraction at inlet"
+          }, 
+          "GasIn.P": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.3, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.3, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas pressure"
+          }, 
+          "SolidIn.w(\"Bic\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.5, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.5, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "sorbent bicarbonate mole fraction at inlet"
+          }, 
+          "dx": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.03, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.03, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger tube diameter"
+          }, 
+          "GasIn.z(\"N2\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.01, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.01, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas N2 mole fraction"
+          }, 
+          "GasIn.F": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 10000.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 10000.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas flow"
+          }, 
+          "Tref": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "thermodynamic reference temperature"
+          }, 
+          "nor": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 2500.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 2500.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "num of orifices in distributor plate"
+          }, 
+          "emf": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.5, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.5, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "bed voidage at min fluidization"
+          }, 
+          "fw": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.2, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.2, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "wake:bubble region volume ratio"
+          }, 
+          "SolidIn.Fm": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 600000.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 600000.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "sorbent flow at inlet"
+          }, 
+          "GasIn.z(\"CO2\")": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.49, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.49, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "input gas CO2 mole fraction"
+          }, 
+          "dPhx": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.01, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.01, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchanger tube pressure drop"
+          }, 
+          "kp": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.36, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.36, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "particle conductivity"
+          }, 
+          "phis": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "particle sphericity"
+          }, 
+          "nv": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 2350.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1800, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "amine loading of sorbent"
+          }, 
+          "Cr": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.0, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.0, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "correction factor for heat exchanger"
+          }, 
+          "cps": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 1.13, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 1.13, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "particle heat capacity"
+          }, 
+          "lhx": {
+            "set": "sinter", 
+            "min": 0.0, 
+            "default": 0.12, 
+            "max": 0.0, 
+            "tags": 0.0, 
+            "value": 0.12, 
+            "scaling": "None", 
+            "unit": "None", 
+            "desc": "heat exchange tube spacing"
+          }
+        }, 
+        "pythonCode": "", 
+        "outValHist": {}, 
+        "turbSession": "92dc9794-42a4-48a4-a3c7-38a2978ec9c2", 
+        "outVars": {
+          "GasOut.z(\"N2\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.010101010101010121, 
+            "desc": "output gas N2 mole fraction"
+          }, 
+          "SolidOut.w(\"H2O\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 2.7707049535099024, 
+            "desc": "sorbent H2O mole fraction at outlet"
+          }, 
+          "removalCO2": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 5.551115123125783e-16, 
+            "desc": "CO2 removal fraction"
+          }, 
+          "HXOut.z(\"CO2\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.4949494949494953, 
+            "desc": "heat exchanger CO2 mole fraction at outlet"
+          }, 
+          "Nx": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 1710.4226669544423, 
+            "desc": "heat exchanger number of tubes"
+          }, 
+          "removalH2O": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 1.6653345369377348e-15, 
+            "desc": "H2O removal fraction"
+          }, 
+          "SolidOut.w(\"Car\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 1.6101907914171387, 
+            "desc": "sorbent carbamate mole fraction at outlet"
+          }, 
+          "GasOut.z(\"CO2\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.4949494949494953, 
+            "desc": "output gas CO2 mole fraction"
+          }, 
+          "SolidOut.w(\"Bic\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.501625128090465, 
+            "desc": "sorbent bicarbonate mole fraction at outlet"
+          }, 
+          "lp": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.15000000000000002, 
+            "desc": "heat exchanger tube pitch"
+          }, 
+          "HXOut.z(\"H2O\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.49494949494949475, 
+            "desc": "heat exchanger H2O mole fraction at outlet"
+          }, 
+          "Dte": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "hydraulic diameter"
+          }, 
+          "HXOut.F": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 5000.0, 
+            "desc": "heat exchanger flow at outlet"
+          }, 
+          "Q": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": -100.49882966583212, 
+            "desc": "total heat duty of heat exchanger tubes"
+          }, 
+          "HXOut.P": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 6.852708249332051, 
+            "desc": "heat exchanger pressure at outlet"
+          }, 
+          "SolidOut.T": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 90.0, 
+            "desc": "sorbent temperature at outlet"
+          }, 
+          "HXOut.z(\"N2\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.010101010101010121, 
+            "desc": "heat exchanger N2 mole fraction at outlet"
+          }, 
+          "HXOut.T": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 164.47340298727204, 
+            "desc": "heat exchanger temperature at outlet"
+          }, 
+          "vgi": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 1.8645272496715029, 
+            "desc": "superficial gas velocity at inlet point"
+          }, 
+          "GasOut.P": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 1.1964589112399986, 
+            "desc": "output gas pressure"
+          }, 
+          "GasOut.z(\"H2O\")": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.49494949494949475, 
+            "desc": "output gas H2O mole fraction"
+          }, 
+          "vhx": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 8.481775123628356, 
+            "desc": "heat exchanger fluid velocity at inlet"
+          }, 
+          "GasOut.T": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 110.0, 
+            "desc": "output gas temperature"
+          }, 
+          "Ao": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "area of distributor plate per orifice"
+          }, 
+          "SolidOut.Fm": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 600000.0000000126, 
+            "desc": "sorbent flow at outlet"
+          }, 
+          "taus": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 160.14442309173165, 
+            "desc": "solids residence time"
+          }, 
+          "GasOut.F": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "output gas flow"
+          }, 
+          "eavg": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0.5949999999999992, 
+            "desc": "overall average bed voidage"
+          }, 
+          "Ahx": {
+            "tags": 0.0, 
+            "set": "sinter", 
+            "unit": "None", 
+            "value": 0, 
+            "desc": "surface area of heat exchanger tubes"
+          }
+        }, 
+        "server": [
+          "", 
+          0
+        ], 
+        "turbSimName": "BFB01", 
+        "inValHist": {}, 
+        "turbConfig": "..\\tconfig.txt", 
+        "y": -300.0, 
+        "x": -400.0, 
+        "z": 0.0, 
+        "turbInitSim": false, 
+        "sim": "BFB"
+      }
+    }, 
+    "sampleSet": {
+      "BFB.E1": [
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0, 
+        28200.0
+      ], 
+      "BFB.hw": [
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5, 
+        1.5
+      ], 
+      "BFB.E3": [
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0, 
+        57700.0
+      ], 
+      "BFB.E2": [
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0, 
+        58200.0
+      ], 
+      "BFB.Dt": [
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0, 
+        7.0
+      ], 
+      "BFB.SolidIn.w(\"Car\")": [
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5, 
+        2.5
+      ], 
+      "BFB.SolidIn.Fm": [
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0, 
+        600000.0
+      ], 
+      "BFB.SolidIn.w(\"Bic\")": [
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5
+      ], 
+      "BFB.GasIn.z(\"CO2\")": [
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49
+      ], 
+      "BFB.F": [
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "BFB.fw": [
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2, 
+        0.2
+      ], 
+      "BFB.GasIn.z(\"H2O\")": [
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49, 
+        0.49
+      ], 
+      "BFB.A1": [
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0, 
+        55900.0
+      ], 
+      "BFB.A3": [
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9, 
+        98.9
+      ], 
+      "BFB.A2": [
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62, 
+        2.62
+      ], 
+      "BFB.dH3": [
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0, 
+        -64700.0
+      ], 
+      "BFB.dH2": [
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0, 
+        -36300.0
+      ], 
+      "BFB.dH1": [
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0, 
+        -52100.0
+      ], 
+      "BFB.dS1": [
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5, 
+        -78.5
+      ], 
+      "BFB.ah": [
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8, 
+        0.8
+      ], 
+      "BFB.dPhx": [
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01
+      ], 
+      "BFB.HXIn.z(\"N2\")": [
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "BFB.GasIn.F": [
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0, 
+        10000.0
+      ], 
+      "BFB.m1": [
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17, 
+        1.17
+      ], 
+      "BFB.Lb": [
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0, 
+        4.0
+      ], 
+      "BFB.GasIn.P": [
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3, 
+        1.3
+      ], 
+      "BFB.GasIn.T": [
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0, 
+        110.0
+      ], 
+      "BFB.dS2": [
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1, 
+        -88.1
+      ], 
+      "BFB.lhx": [
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12, 
+        0.12
+      ], 
+      "BFB.Cr": [
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0
+      ], 
+      "BFB.dS3": [
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0, 
+        -175.0
+      ], 
+      "BFB.SolidIn.w(\"H2O\")": [
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0
+      ], 
+      "BFB.emf": [
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5, 
+        0.5
+      ], 
+      "BFB.phis": [
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0
+      ], 
+      "BFB.GasIn.z(\"N2\")": [
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01, 
+        0.01
+      ], 
+      "BFB.cps": [
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13, 
+        1.13
+      ], 
+      "BFB.wthx": [
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003, 
+        0.003
+      ], 
+      "BFB.kp": [
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36, 
+        1.36
+      ], 
+      "BFB.rhos": [
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0, 
+        442.0
+      ], 
+      "BFB.dp": [
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015, 
+        0.00015
+      ], 
+      "BFB.Kd": [
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0, 
+        100.0
+      ], 
+      "BFB.HXIn.F": [
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0, 
+        5000.0
+      ], 
+      "BFB.HXIn.z(\"H2O\")": [
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0, 
+        1.0
+      ], 
+      "BFB.HXIn.z(\"CO2\")": [
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "BFB.HXIn.P": [
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9, 
+        6.9
+      ], 
+      "BFB.nv": [
+        2350.0, 
+        2250, 
+        2150, 
+        2050, 
+        1950, 
+        1850, 
+        1750, 
+        1650, 
+        1550, 
+        1450
+      ], 
+      "BFB.nor": [
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0, 
+        2500.0
+      ], 
+      "BFB.HXIn.T": [
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0, 
+        170.0
+      ], 
+      "BFB.SolidIn.T": [
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0, 
+        90.0
+      ], 
+      "BFB.Tref": [
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0, 
+        0.0
+      ], 
+      "BFB.dx": [
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03, 
+        0.03
+      ]
+    }
+  }, 
+  "optOptions": {
+    "current": "CMA-ES", 
+    "options": {
+      "CMA-ES": {
+        "Flush Modulus": 1, 
+        "upper": 10, 
+        "lower": 0, 
+        "sd0": 2, 
+        "Max Time": 48, 
+        "Output File": "cma-out.txt", 
+        "Pickle Modulus": 0, 
+        "popsize": 6, 
+        "Pickle In": "", 
+        "Pickle Out": "", 
+        "seed": 0, 
+        "itmax": 0
+      }, 
+      "SNOBFIT-NIST": {
+        "Output File": "snobfit-out.txt", 
+        "upper": [
+          10, 
+          10
+        ], 
+        "lower": [
+          0, 
+          0
+        ], 
+        "Flush Modulus": 1, 
+        "itmax": 0
+      }
+    }
+  }, 
+  "simList": {
+    "BFB": {
+      "conf": {
+        "inputs": {
+          "HXIn.T": {
+            "default": 170.0, 
+            "path": [
+              "BFBrgn.HXIn.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger temperature at inlet"
+          }, 
+          "Lb": {
+            "default": 4.0, 
+            "path": [
+              "BFBrgn.Lb"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "bed depth"
+          }, 
+          "HXIn.P": {
+            "default": 6.9, 
+            "path": [
+              "BFBrgn.HXIn.P"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger pressure at inlet"
+          }, 
+          "ah": {
+            "default": 0.8, 
+            "path": [
+              "BFBrgn.ah"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "empirical factor in heat transfer model"
+          }, 
+          "dS2": {
+            "default": -88.1, 
+            "path": [
+              "BFBrgn.dS2"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "reaction entropy bicarbonate formation"
+          }, 
+          "dS3": {
+            "default": -175.0, 
+            "path": [
+              "BFBrgn.dS3"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "reaction entropy carbamate formation"
+          }, 
+          "dS1": {
+            "default": -78.5, 
+            "path": [
+              "BFBrgn.dS1"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "reaction entropy water physisorption"
+          }, 
+          "HXIn.F": {
+            "default": 5000.0, 
+            "path": [
+              "BFBrgn.HXIn.F"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger flow at inlet"
+          }, 
+          "SolidIn.w(\"Car\")": {
+            "default": 2.5, 
+            "path": [
+              "BFBrgn.SolidIn.w(\"Car\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent carbamate mole fraction at inlet"
+          }, 
+          "SolidIn.T": {
+            "default": 90.0, 
+            "path": [
+              "BFBrgn.SolidIn.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent temperature at inlet"
+          }, 
+          "dH3": {
+            "default": -64700.0, 
+            "path": [
+              "BFBrgn.dH3"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat of reaction carbamate formation"
+          }, 
+          "dH2": {
+            "default": -36300.0, 
+            "path": [
+              "BFBrgn.dH2"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat of reaction bicarbonate formation"
+          }, 
+          "dH1": {
+            "default": -52100.0, 
+            "path": [
+              "BFBrgn.dH1"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat of reaction water physisorption"
+          }, 
+          "HXIn.z(\"CO2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.HXIn.z(\"CO2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger CO2 mole fraction at inlet"
+          }, 
+          "dPhx": {
+            "default": 0.01, 
+            "path": [
+              "BFBrgn.dPhx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger tube pressure drop"
+          }, 
+          "F": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.F"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "fines fraction"
+          }, 
+          "wthx": {
+            "default": 0.003, 
+            "path": [
+              "BFBrgn.wthx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger tube wall thickness"
+          }, 
+          "A1": {
+            "default": 55900.0, 
+            "path": [
+              "BFBrgn.A1"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "arrhenius constant water physisorpton"
+          }, 
+          "A3": {
+            "default": 98.9, 
+            "path": [
+              "BFBrgn.A3"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "arrhenius constant carbamate formation"
+          }, 
+          "A2": {
+            "default": 2.62, 
+            "path": [
+              "BFBrgn.A2"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "arrhenius constant bicarbonate formation"
+          }, 
+          "m1": {
+            "default": 1.17, 
+            "path": [
+              "BFBrgn.m1"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "non-ideality exponent carbamate formation"
+          }, 
+          "dp": {
+            "default": 0.00015, 
+            "path": [
+              "BFBrgn.dp"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "particle diameter"
+          }, 
+          "Dt": {
+            "default": 7.0, 
+            "path": [
+              "BFBrgn.Dt"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "BFB unit diamter"
+          }, 
+          "E1": {
+            "default": 28200.0, 
+            "path": [
+              "BFBrgn.E1"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "activation energy water physisorption"
+          }, 
+          "E3": {
+            "default": 57700.0, 
+            "path": [
+              "BFBrgn.E3"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "activation energy carbamate formation"
+          }, 
+          "E2": {
+            "default": 58200.0, 
+            "path": [
+              "BFBrgn.E2"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "activation energy bicarbonate formation"
+          }, 
+          "SolidIn.w(\"H2O\")": {
+            "default": 1.0, 
+            "path": [
+              "BFBrgn.SolidIn.w(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent H2O mole fraction at inlet"
+          }, 
+          "Kd": {
+            "default": 100.0, 
+            "path": [
+              "BFBrgn.K_d"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "gas phase bulk flow coefficient"
+          }, 
+          "rhos": {
+            "default": 442.0, 
+            "path": [
+              "BFBrgn.rhos"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "particle density"
+          }, 
+          "GasIn.z(\"H2O\")": {
+            "default": 0.49, 
+            "path": [
+              "BFBrgn.GasIn.z(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas H2O mole fraction"
+          }, 
+          "GasIn.T": {
+            "default": 110.0, 
+            "path": [
+              "BFBrgn.GasIn.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas temperature"
+          }, 
+          "hw": {
+            "default": 1.5, 
+            "path": [
+              "BFBrgn.hw"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger tube wall heat transfer coeff."
+          }, 
+          "HXIn.z(\"H2O\")": {
+            "default": 1.0, 
+            "path": [
+              "BFBrgn.HXIn.z(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger H2O mole fraction at inlet"
+          }, 
+          "Tref": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Tref"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "thermodynamic reference temperature"
+          }, 
+          "SolidIn.w(\"Bic\")": {
+            "default": 0.5, 
+            "path": [
+              "BFBrgn.SolidIn.w(\"Bic\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent bicarbonate mole fraction at inlet"
+          }, 
+          "dx": {
+            "default": 0.03, 
+            "path": [
+              "BFBrgn.dx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger tube diameter"
+          }, 
+          "GasIn.z(\"N2\")": {
+            "default": 0.01, 
+            "path": [
+              "BFBrgn.GasIn.z(\"N2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas N2 mole fraction"
+          }, 
+          "GasIn.F": {
+            "default": 10000.0, 
+            "path": [
+              "BFBrgn.GasIn.F"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas flow"
+          }, 
+          "GasIn.P": {
+            "default": 1.3, 
+            "path": [
+              "BFBrgn.GasIn.P"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas pressure"
+          }, 
+          "nor": {
+            "default": 2500.0, 
+            "path": [
+              "BFBrgn.nor"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "num of orifices in distributor plate"
+          }, 
+          "emf": {
+            "default": 0.5, 
+            "path": [
+              "BFBrgn.emf"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "bed voidage at min fluidization"
+          }, 
+          "fw": {
+            "default": 0.2, 
+            "path": [
+              "BFBrgn.fw"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "wake:bubble region volume ratio"
+          }, 
+          "SolidIn.Fm": {
+            "default": 600000.0, 
+            "path": [
+              "BFBrgn.SolidIn.Fm"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent flow at inlet"
+          }, 
+          "GasIn.z(\"CO2\")": {
+            "default": 0.49, 
+            "path": [
+              "BFBrgn.GasIn.z(\"CO2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "input gas CO2 mole fraction"
+          }, 
+          "HXIn.z(\"N2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.HXIn.z(\"N2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger N2 mole fraction at inlet"
+          }, 
+          "kp": {
+            "default": 1.36, 
+            "path": [
+              "BFBrgn.kp"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "particle conductivity"
+          }, 
+          "phis": {
+            "default": 1.0, 
+            "path": [
+              "BFBrgn.phis"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "particle sphericity"
+          }, 
+          "nv": {
+            "default": 2350.0, 
+            "path": [
+              "BFBrgn.nv"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "amine loading of sorbent"
+          }, 
+          "Cr": {
+            "default": 1.0, 
+            "path": [
+              "BFBrgn.Cr"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "correction factor for heat exchanger"
+          }, 
+          "cps": {
+            "default": 1.13, 
+            "path": [
+              "BFBrgn.cps"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "particle heat capacity"
+          }, 
+          "lhx": {
+            "default": 0.12, 
+            "path": [
+              "BFBrgn.lhx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchange tube spacing"
+          }
+        }, 
+        "description": "trying to simulate BFB system with BFBv5.2.3", 
+        "author": "Melissa Daly", 
+        "outputs": {
+          "removalCO2": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.removalCO2"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "CO2 removal fraction"
+          }, 
+          "SolidOut.w(\"H2O\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.SolidOut.w(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent H2O mole fraction at outlet"
+          }, 
+          "GasOut.z(\"N2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"N2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas N2 mole fraction"
+          }, 
+          "HXOut.z(\"CO2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"CO2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger CO2 mole fraction at outlet"
+          }, 
+          "Nx": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Nx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger number of tubes"
+          }, 
+          "removalH2O": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.removalH2O"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "H2O removal fraction"
+          }, 
+          "SolidOut.w(\"Car\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.SolidOut.w(\"Car\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent carbamate mole fraction at outlet"
+          }, 
+          "vgi": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.vgi"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "superficial gas velocity at inlet point"
+          }, 
+          "SolidOut.w(\"Bic\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.SolidOut.w(\"Bic\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent bicarbonate mole fraction at outlet"
+          }, 
+          "lp": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.lp"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger tube pitch"
+          }, 
+          "HXOut.z(\"H2O\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger H2O mole fraction at outlet"
+          }, 
+          "Dte": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Dte"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "hydraulic diameter"
+          }, 
+          "HXOut.F": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.HXOut.F"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger flow at outlet"
+          }, 
+          "Q": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Q"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "total heat duty of heat exchanger tubes"
+          }, 
+          "HXOut.P": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.HXOut.P"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger pressure at outlet"
+          }, 
+          "SolidOut.T": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.SolidOut.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent temperature at outlet"
+          }, 
+          "HXOut.z(\"N2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"N2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger N2 mole fraction at outlet"
+          }, 
+          "HXOut.T": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.HXOut.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger temperature at outlet"
+          }, 
+          "GasOut.z(\"CO2\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"CO2\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas CO2 mole fraction"
+          }, 
+          "GasOut.P": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.P"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas pressure"
+          }, 
+          "GasOut.z(\"H2O\")": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.z(\"H2O\")"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas H2O mole fraction"
+          }, 
+          "vhx": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.vhx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "heat exchanger fluid velocity at inlet"
+          }, 
+          "GasOut.T": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.T"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas temperature"
+          }, 
+          "Ao": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Ao"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "area of distributor plate per orifice"
+          }, 
+          "SolidOut.Fm": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.SolidOut.Fm"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "sorbent flow at outlet"
+          }, 
+          "taus": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.taus"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "solids residence time"
+          }, 
+          "GasOut.F": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.GasOut.F"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "output gas flow"
+          }, 
+          "eavg": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.eavg"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "overall average bed voidage"
+          }, 
+          "Ahx": {
+            "default": 0.0, 
+            "path": [
+              "BFBrgn.Ahx"
+            ], 
+            "units": null, 
+            "type": "double", 
+            "description": "surface area of heat exchanger tubes"
+          }
+        }, 
+        "filetype": "sinterconfig", 
+        "title": "Single BFB reactor test", 
+        "version": 0.2, 
+        "aspenfile": "BFBrgn.acmf", 
+        "date": "June 2013", 
+        "settings": {
+          "homotopy": {
+            "default": 0, 
+            "type": "int", 
+            "description": "Simulation specific setting: homotopy"
+          }, 
+          "printlevel": {
+            "default": 0, 
+            "type": "int", 
+            "description": "Simulation specific setting: printlevel"
+          }
+        }
+      }, 
+      "activeVars": [
+        "HXIn.T", 
+        "removalCO2", 
+        "SolidOut.w(\"H2O\")", 
+        "Lb", 
+        "HXIn.P", 
+        "ah", 
+        "GasOut.F", 
+        "dS2", 
+        "dS3", 
+        "dS1", 
+        "Nx", 
+        "HXIn.F", 
+        "HXOut.P", 
+        "SolidIn.w(\"Car\")", 
+        "SolidIn.T", 
+        "dH3", 
+        "dH2", 
+        "dH1", 
+        "HXIn.z(\"CO2\")", 
+        "GasOut.T", 
+        "removalH2O", 
+        "SolidOut.w(\"Car\")", 
+        "vgi", 
+        "taus", 
+        "dPhx", 
+        "Kd", 
+        "wthx", 
+        "GasOut.z(\"N2\")", 
+        "A1", 
+        "A3", 
+        "A2", 
+        "m1", 
+        "nor", 
+        "lp", 
+        "Dt", 
+        "SolidOut.w(\"Bic\")", 
+        "E1", 
+        "E3", 
+        "E2", 
+        "GasIn.T", 
+        "HXOut.z(\"CO2\")", 
+        "HXOut.z(\"H2O\")", 
+        "F", 
+        "rhos", 
+        "GasIn.z(\"H2O\")", 
+        "SolidIn.w(\"H2O\")", 
+        "hw", 
+        "HXIn.z(\"H2O\")", 
+        "Tref", 
+        "SolidIn.w(\"Bic\")", 
+        "GasOut.P", 
+        "Dte", 
+        "dx", 
+        "GasIn.z(\"N2\")", 
+        "GasIn.F", 
+        "GasIn.P", 
+        "HXOut.z(\"N2\")", 
+        "HXOut.T", 
+        "dp", 
+        "GasOut.z(\"CO2\")", 
+        "Q", 
+        "emf", 
+        "GasOut.z(\"H2O\")", 
+        "vhx", 
+        "fw", 
+        "SolidIn.Fm", 
+        "GasIn.z(\"CO2\")", 
+        "HXOut.F", 
+        "Ao", 
+        "SolidOut.Fm", 
+        "HXIn.z(\"N2\")", 
+        "kp", 
+        "phis", 
+        "nv", 
+        "eavg", 
+        "Cr", 
+        "Ahx", 
+        "cps", 
+        "SolidOut.T", 
+        "lhx"
+      ]
+    }
+  }
+}

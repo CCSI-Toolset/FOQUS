@@ -1,0 +1,10 @@
+INPUT: MCB_piece.inm
+MODNAME: apmain
+RUNID: MCB_piece
+NEW_RUNID: MCB_piece
+OLD_RUNID: MCB_piece
+PDF: MCB_piece.appdf
+USERNAME: ychen
+XMOD: C:\Program Files (x86)\AspenTech\Aspen Plus V8.4\Engine\xeq\apmain
+SPONLY:
+DBCONN: C:\FOQUS\examples\Heat_Integration\Model_Files\MCB_System_AP\MCB_piece.ads

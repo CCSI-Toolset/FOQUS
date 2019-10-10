@@ -1,0 +1,462 @@
+{
+  "flowsheet": {
+    "simList": {}, 
+    "wegAccMin": -9.0, 
+    "post_solve_nodes": [], 
+    "singleCount": 0, 
+    "tearSolver": "Wegstein", 
+    "onlySingleNode": null, 
+    "errorStat": -1, 
+    "pre_solve_nodes": [], 
+    "no_solve_nodes": [], 
+    "tearTolType": "abs", 
+    "edges": [
+      {
+        "end": "N1", 
+        "tear": false, 
+        "curve": -100.0, 
+        "start": "N5", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N4", 
+        "tear": false, 
+        "curve": 60.0, 
+        "start": "N1", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N6", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N1", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N2", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N1", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N3", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N2", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N8", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N3", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N4", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N3", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N5", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N4", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N10", 
+        "tear": false, 
+        "curve": 300.0, 
+        "start": "N5", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N7", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N6", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N4", 
+        "tear": false, 
+        "curve": 250.0, 
+        "start": "N6", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N2", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N7", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N8", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N7", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N9", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N8", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N4", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N9", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N11", 
+        "tear": false, 
+        "curve": 20, 
+        "start": "N9", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N6", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N10", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N12", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N11", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N10", 
+        "tear": false, 
+        "curve": 20.0, 
+        "start": "N12", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N4", 
+        "tear": false, 
+        "curve": -100.0, 
+        "start": "N12", 
+        "active": true, 
+        "con": []
+      }, 
+      {
+        "end": "N11", 
+        "tear": false, 
+        "curve": 0.0, 
+        "start": "N7", 
+        "active": true, 
+        "con": []
+      }
+    ], 
+    "results": {
+      "_currentFilter": null, 
+      "results": [], 
+      "filters": {}
+    }, 
+    "tearTol": 0.001, 
+    "output": {
+      "N12": {}, 
+      "N10": {}, 
+      "N11": {}, 
+      "N8": {}, 
+      "N9": {}, 
+      "N1": {}, 
+      "N2": {}, 
+      "N3": {}, 
+      "N4": {}, 
+      "N5": {}, 
+      "N6": {}, 
+      "N7": {}
+    }, 
+    "input": {
+      "N12": {}, 
+      "N10": {}, 
+      "N11": {}, 
+      "N8": {}, 
+      "N9": {}, 
+      "N1": {}, 
+      "N2": {}, 
+      "N3": {}, 
+      "N4": {}, 
+      "N5": {}, 
+      "N6": {}, 
+      "N7": {}
+    }, 
+    "nodes": {
+      "N12": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": 100.0, 
+        "x": -400.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N10": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": 150.0, 
+        "x": -600.0, 
+        "z": 0.0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N11": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": 100.0, 
+        "x": -500.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N8": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -100.0, 
+        "x": -400.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N9": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -100.0, 
+        "x": -300.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N1": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -300.0, 
+        "x": -600.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N2": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -300.0, 
+        "x": -500.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N3": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -300.0, 
+        "x": -400.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N4": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -300.0, 
+        "x": -300.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N5": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -300.0, 
+        "x": -200.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N6": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -100.0, 
+        "x": -600.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }, 
+      "N7": {
+        "modelName": "", 
+        "pythonCode": "", 
+        "calcError": -1, 
+        "modelType": 0, 
+        "y": -100.0, 
+        "x": -500.0, 
+        "z": 0, 
+        "options": {
+          "order": [], 
+          "options": {}
+        }
+      }
+    }, 
+    "tearMaxIt": 40, 
+    "wegAccMax": 9.0
+  }, 
+  "optProblem": {
+    "solverOptions": {
+      "OptCMA": {
+        "upper": 10.0, 
+        "lower": 0.0, 
+        "sd0": 2, 
+        "Restart modulus": 1, 
+        "Results name": "CMA_Results", 
+        "Backup interval": 10, 
+        "popsize": 6, 
+        "Save results": true, 
+        "itmax": 0, 
+        "seed": 0, 
+        "Restart out": "", 
+        "It timeout": 3600, 
+        "Restart in": "", 
+        "Max time": 48
+      }
+    }, 
+    "solver": "OptCMA", 
+    "obj": [], 
+    "g": [], 
+    "v": []
+  }, 
+  "CCSIFileMetaData": {
+    "MIMEType": "application/ccsi+foqus", 
+    "Confidence": "testing", 
+    "DisplayName": "Tear_Test_01", 
+    "CreationTime": "2014-08-12T10:07:33", 
+    "Application": "foqus", 
+    "UpdateMetadata": true, 
+    "Version": "01.00", 
+    "Parents": [], 
+    "ID": "aba35f35564f445bb53501b0a38ec002", 
+    "OriginalFilename": "place holder", 
+    "Description": "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\np, li { white-space: pre-wrap; }\n</style></head><body style=\" font-family:'Arial'; font-size:10pt; font-weight:400; font-style:normal;\">\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt; font-weight:600; text-decoration: underline;\">Tear Test 01</span></p>\n<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:12pt;\"><br /></p>\n<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-size:12pt;\">This example contains a flowsheet, and the nodes contain no calcualtions.  This is used only for testing tear steam identification, and calculation order.</span></p></body></html>", 
+    "ChangeLog": {
+      "2014-10-01T15:06:35": [
+        "01.00", 
+        "9a80f5ec4dcb4cba8d1e34a669196337", 
+        "Tear Test 01", 
+        "Changed version and marked testing.  Just use this for testing to make sure tear streams are found correctly."
+      ], 
+      "2014-10-01T15:07:20": [
+        "01.00", 
+        "aba35f35564f445bb53501b0a38ec002", 
+        "Tear_Test_01", 
+        "Changed session name to use underscores instead of spaces.  I don't like spaces in file names."
+      ]
+    }, 
+    "ModificationTime": "2014-10-01T15:07:20", 
+    "Role": "Input"
+  }, 
+  "surrogateProblem": {
+    "input": [], 
+    "inputScaleFact": {}, 
+    "options": {
+      "Adaptive Sampling": false, 
+      "Include Exp": false, 
+      "Single Variable Term Powers": [
+        1
+      ], 
+      "Input File": "alamo.alm", 
+      "Two Variable Term Powers": [], 
+      "Validation Data Filter": "Validation", 
+      "Ratio Term Powers": [], 
+      "Initial Data Filter": "Initial", 
+      "PSUADE Driver Export File": "surrogate_ps.py", 
+      "Include Cos": false, 
+      "Failure Value": -111111, 
+      "Maximum Run Time": 2000, 
+      "Include Tan": false, 
+      "Three Variable Term Powers": [], 
+      "Include Sin": false, 
+      "Include Log": false, 
+      "Exec Path": "alamo.exe", 
+      "FOQUS Model Export File": "surrogate_pg.py", 
+      "Keep Temporary Files": false
+    }, 
+    "output": []
+  }, 
+  "uqSimList": [], 
+  "Type": "FOQUS_Session", 
+  "ID": "Tear_Test_01_140812100440"
+}

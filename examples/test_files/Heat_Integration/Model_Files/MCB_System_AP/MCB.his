@@ -1,0 +1,90 @@
+
+ *** CALCULATION TRACE ***
+
+ HCL, BENZENE, AND MCB SEPARATION                                
+
+<set objective = None>
+<reset scope>
+<reset scope>
+<reset scope>
+
+
+*** INPUT SPECIFICATION MESSAGES ***
+
+ CHANGES WERE MADE TO STREAM-REPOR 10/20/2014   15:22:19:65 
+ STREAM-REPOR MOLEFLOW MOLEFRAC
+
+ PDF updated                                                                      TIME =    118.86
+ THIS COPY OF ASPEN PLUS LICENSED TO                                 
+ 
+ 
+
+Calculations begin                                                              time    118.93
+
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+<reset scope>
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+
+ Report Writer entered                                                            Time =    681.57
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+
+ Results generated                                                                Time =    681.59
+
+ Report Writer entered                                                            Time =    681.67
+      STREAM S11 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   4  T = 369.2346  P =  158579.      V =  0.00000      Q =-2.830489E-02
+      STREAM S12 WILL BE FLASHED FOR PROPERTY CALCULATIONS.
+      KODE = 3  NTRIAL =   5  T = 426.7407  P =  172369.      V =  0.00000      Q = 3.149017E-02
+
+ Results generated                                                                Time =    681.69
+
+RUN SAVED
+
+
+
+ NO ERRORS OR WARNINGS GENERATED

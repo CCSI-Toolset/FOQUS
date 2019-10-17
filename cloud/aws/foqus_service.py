@@ -356,7 +356,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
             job_id = uuid.UUID(job_desc.get('Id'))
-            getJobStatus._flowsheet_job_id = job_id
+            getJobStatus._flowsheet_job_id = str(job_id)
             db.set_user_name(user_name)
             """
             TODO: check dynamodb table if job has been stopped or killed

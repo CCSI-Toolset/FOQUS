@@ -1074,7 +1074,7 @@ class TurbineConfiguration():
             if checkConsumer:
                 proc = self.checkConsumer(nodeName)
                 if proc == None:
-                    _log.error("Appearently the consumer died, job failed")
+                    _log.error("Apparently the consumer died, job failed")
                     try:
                         self.killJob(jobID, state)
                     except Exception as e:

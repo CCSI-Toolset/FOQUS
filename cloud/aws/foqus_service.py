@@ -40,6 +40,44 @@ C:\ProgramData\Anaconda3\Library\bin;C:\ProgramData\Anaconda3\DLLs;C:\ProgramDat
 """
 
 
+"""
+## GORILLA PATCH
+Keep track of all messages created for a JOB ID, send unseen messages out to SNS
+"""
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+def getJobStatus(self, jobID, verbose=False, suppressLog=False):
+    ret = TurbineConfiguration._getJobStatus(self, jobID, verbose=True, suppressLog=suppressLog)
+    if getJobStatus._db is not None:
+        if getJobStatus._jobid != jobID:
+            getJobStatus._messages = []
+            getJobStatus._jobid = jobID
+
+        for msg in ret.get('Messages', []):
+            if msg not in getJobStatus._messages:
+                getJobStatus._messages.append(msg)
+                # DEEP COPY so above works...
+                msg['flowsheet_job_id'] = getJobStatus._flowsheet_job_id
+                getJobStatus._db.add_message(msg)
+    return ret
+
+getJobStatus._db = None
+getJobStatus._jobid = None
+getJobStatus._flowsheet_job_id = None
+getJobStatus._messages = []
+TurbineConfiguration._getJobStatus = TurbineConfiguration.getJobStatus
+TurbineConfiguration.getJobStatus = getJobStatus
+
+
+def wait_sleep(func):
+    """ decorator for 'synchronizing' some of the SNS publish operations
+    that are triggering backend lambda functions to update dynamodb.
+    """
+    def _wait_sync_dynamo_job_output(*args, **kw):
+        ret = func(*args, **kw)
+        time.sleep(2)
+        return ret
+    return wait_sleep
+
 class FOQUSJobException(Exception):
     """ Custom Exception for holding onto the job description and user name """
     def __init__(self, message, job_desc, user_name):
@@ -202,7 +240,13 @@ class TurbineLiteDB:
             sessionid=job_d.get('sessionid','unknown'))
         if message: d['message'] = message
         self._sns_notification(d)
+
+    @wait_sleep
     def job_save_output(self, job_d, workingDir, rc=0):
+        """ Save simulation output.  This is published to SNS, need to wait
+        for tables to update before changing status to "success" or "error"
+        otherwise "output" is occasionally not available yet.
+        """
         assert type(job_d) is dict
         _log.info("%s.job_save_output", self.__class__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
@@ -287,6 +331,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
+        getJobStatus._db  = db
         _log.debug("Consumer Register")
         db.consumer_register()
         db.add_message("Consumer Registered")
@@ -313,6 +358,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
             job_id = uuid.UUID(job_desc.get('Id'))
+            getJobStatus._flowsheet_job_id = job_id
             db.set_user_name(user_name)
             """
             TODO: check dynamodb table if job has been stopped or killed
@@ -502,8 +548,8 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         jid = None
         simulation_name = job_desc['Simulation']
         # Run the job
-        db.add_message("consumer={0}, starting job {1}"\
-            .format(db.consumer_id, jid), guid)
+        db.add_message("consumer={0}, setup foqus job"\
+            .format(db.consumer_id), guid)
         _log.debug("setup foqus")
         db.job_change_status(job_desc, "setup")
         configContent = db.get_configuration_file(simulation_name)

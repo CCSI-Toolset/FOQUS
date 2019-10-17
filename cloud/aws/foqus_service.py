@@ -55,9 +55,7 @@ def getJobStatus(self, jobID, verbose=False, suppressLog=False):
         for msg in ret.get('Messages', []):
             if msg not in getJobStatus._messages:
                 getJobStatus._messages.append(msg)
-                # DEEP COPY so above works...
-                msg['flowsheet_job_id'] = getJobStatus._flowsheet_job_id
-                getJobStatus._db.add_message(msg)
+                getJobStatus._db.add_message(msg, jobid=jobID, flowsheet_jobid=getJobStatus._flowsheet_job_id)
     return ret
 
 getJobStatus._db = None

@@ -17,6 +17,7 @@ import sys,json,signal,os,errno,uuid,threading,time,traceback
 from os.path import expanduser
 import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
+from foqus_lib.framework.graph.graph import Graph
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
@@ -74,7 +75,7 @@ def wait_sleep(func):
         ret = func(*args, **kw)
         time.sleep(2)
         return ret
-    return wait_sleep
+    return _wait_sync_dynamo_job_output
 
 class FOQUSJobException(Exception):
     """ Custom Exception for holding onto the job description and user name """
@@ -711,6 +712,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
         jid = guid # NOTE: like to use actual increment job id but hard to find.
         db.job_change_status(job_desc, "running")
         gt = dat.flowsheet.runAsThread()
+        assert isinstance(gt, Graph)
         terminate = False
         while gt.isAlive():
             gt.join(10)

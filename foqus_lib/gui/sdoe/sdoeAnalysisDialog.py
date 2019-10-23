@@ -117,6 +117,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # spin box bounds
         self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
 
+        # MWR combo boxes
+        self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR2_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR3_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR4_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR5_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         if self.type == 'USF':
@@ -394,7 +401,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             elif self.Ranked_radioButton.isChecked():
                 f.write('scale_method = ranked_mwr\n')
             mwr_list = []
-            for item in [str(self.MWR1_edit.text()), str(self.MWR2_edit.text()), str(self.MWR3_edit.text()), str(self.MWR4_edit.text()), str(self.MWR5_edit.text())]:
+            for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(), self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(), self.MWR5_comboBox.currentText()]:
                 if item != "":
                     mwr_list.append(item)
             f.write('mwr_values = %s\n' % ','.join(mwr_list))

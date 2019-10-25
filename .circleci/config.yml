@@ -53,18 +53,18 @@ jobs:
           name: Run Tests
           command: |
             . venv/bin/activate
-            coverage run -m pytest
+            coverage run -m pytest --junit-xml=test-results/junit.xml
 
       - run:
           name: Test Reports
           command: |
             . venv/bin/activate
             coverage report --omit=*site-packages* --fail-under=22
-            coverage html --omit=*site-packages*  # Generate html report
+            coverage html --omit=*site-packages*  -d test-results # Generate html report
             coverage xml --omit=*site-packages* -o test-results/coverage.xml
 
       - store_artifacts:
-          path: htmlcov
+          path: test-results
 
       - store_test_results:
           path: test-results

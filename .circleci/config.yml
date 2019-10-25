@@ -47,7 +47,7 @@ jobs:
           name: Run PyLint
           command: |
             . venv/bin/activate
-            # pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
+            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
 
       - run:
           name: Run Tests
@@ -60,8 +60,8 @@ jobs:
           command: |
             . venv/bin/activate
             coverage report --omit=*site-packages* --fail-under=22
-            coverage html --omit=*site-packages*  -d test-results # Generate html report
-            coverage xml --omit=*site-packages* -o test-results/coverage.xml
+            coverage html --omit=*site-packages*  -d test-results/coverage # Generate html report
+            coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
 
       - store_artifacts:
           path: test-results

@@ -53,7 +53,7 @@ jobs:
           name: Run Tests
           command: |
             . venv/bin/activate
-            coverage run -m pytest --junit-xml=test-results/junit.xml
+            coverage run -m pytest --junit-xml=test-results/junit/report.xml
 
       - run:
           name: Test Reports

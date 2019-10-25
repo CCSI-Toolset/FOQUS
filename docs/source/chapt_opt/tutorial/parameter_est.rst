@@ -15,14 +15,12 @@ tutorial will focus on parameter estimation.
 At any point in this tutorial, the FOQUS session can be saved and the
 tutorial can be started again from that point.
 
-The model is given by Equation `[eq.pe.tut] <#eq.pe.tut>`__. The unknown
-parameters are :math:`a`, :math:`b`, and :math:`c`. The x and y data are
-given in Table :ref:`table.pe.data`.
+The model is given by Equation :eq:`eq.pe.tut`. The unknown parameters are
+:math:`a`, :math:`b`, and :math:`c`. The x and y data are given in Table
+:ref:`table.pe.data`.
 
-.. math::
-
-   \label{eq.pe.tut}
-   y = ax^2 + bx + c
+.. math:: y = ax^2 + bx + c
+   :label: eq.pe.tut
 
 .. _table.pe.data:
 .. table:: x-y Data
@@ -267,7 +265,7 @@ stored in the flowsheet results table.
     toolbar.
 
 36. Open the **Node Editor** and look at the **Input Variables** table.
-    The approximate result should be a = 2, b = -3, and c = 1 (see
+    The approximate result should be :math:`a = 2`, :math:`b = -3`, and :math:`c = 1` (see
     Figure :ref:`fig.pe.tut10`).
 
 .. figure:: ../figs/par_est_tut10.svg

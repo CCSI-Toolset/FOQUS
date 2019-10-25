@@ -69,7 +69,6 @@ jobs:
       - store_test_results:
           path: test-results
 
-
 workflows:
   version: 2
   setup_and_test:

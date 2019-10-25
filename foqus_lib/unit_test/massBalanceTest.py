@@ -8,7 +8,7 @@ import os
 
 class testMassBalance(unittest.TestCase):
     def loadGraph(self, fname):
-        gr = graph()
+        gr = Graph()
         testfile = os.path.join(
             os.path.dirname(__file__), 
             fname)

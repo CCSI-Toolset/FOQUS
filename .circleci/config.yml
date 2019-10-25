@@ -3,10 +3,8 @@ version: 2
 jobs:
 
   setup:
-
     docker:
       - image: circleci/python:3.7
-
     working_directory: ~/repo
 
     steps:
@@ -33,7 +31,6 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.7
-
     working_directory: ~/repo
 
     steps:
@@ -59,6 +56,10 @@ jobs:
             coverage run -m pytest
             coverage report --omit=*site-packages* --fail-under=22
             coverage html --omit=*site-packages*  # Generate html report
+
+      - store_test_results:
+          path: htmlcov
+
 
 workflows:
   version: 2

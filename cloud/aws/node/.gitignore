@@ -1,6 +1,6 @@
 logs
 *.log
-build/Release
+build
 node_modules
 .lock-wscript
 deploy.env

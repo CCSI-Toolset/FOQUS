@@ -353,7 +353,6 @@ class TurbineLiteDB:
         if message: d['message'] = message
         self._sns_notification(d)
 
-    @wait_sleep
     def job_save_output(self, job_d, workingDir, rc=0):
         """ Save simulation output.  This is published to SNS, need to wait
         for tables to update before changing status to "success" or "error"
@@ -680,6 +679,15 @@ class FlowsheetControl:
             changeLogMsg = "Saved Turbine Run",
             bkp = False,
             indent = 0)
+
+        # NOTE: Attempt to allow output to
+        #    reach DynamoDB table before triggering
+        #    reading the final job result from
+        #    DynamoDB to S3.
+        #  Also should be handled by lambda retry
+        #  if output not available yet, 500 error from FaaS
+        #  occurs, and update function will be tried again.
+        time.sleep(2)
 
         if dat.flowsheet.errorStat == 0:
             db.job_change_status(job_desc, "success")

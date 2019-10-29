@@ -13,6 +13,7 @@ import sys,json,signal,os,errno,uuid,threading,time,traceback
 from os.path import expanduser
 import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
+from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 from foqus_lib.framework.graph.graph import Graph
 from turbine.commands import turbine_simulation_script
 import logging
@@ -20,7 +21,9 @@ import logging.config
 import botocore.exceptions
 
 _instanceid = None
-WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
+#WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
+WORKING_DIRECTORY = os.path.abspath(os.path.curdir)
+
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = None
@@ -33,7 +36,9 @@ def _set_working_dir():
         if e.errno != errno.EEXIST:
             raise
     os.chdir(WORKING_DIRECTORY)
-    logging.basicConfig(filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
+    #logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    #                    filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
+    logging.config.fileConfig('logging.conf')
     _log = logging.getLogger('foqus_service')
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
 
@@ -42,6 +47,12 @@ def _set_working_dir():
     logging.getLogger('urllib3').setLevel(logging.ERROR)
 _set_working_dir()
 _log.debug('Loading')
+
+
+def _get_user_config_location(*args, **kw):
+    _log.debug("USER CONFIG: %s", str(args))
+    return os.path.join(WORKING_DIRECTORY, 'foqus.cfg')
+FoqusSettings.getUserConfigLocation = _get_user_config_location
 
 
 def getfilenames(jid):
@@ -120,7 +131,11 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
 
     """ search TurbineLite WS for node simulation
     """
-    sim_list = turbine_simulation_script.main_list([node.gr.turbConfig.getFile()])
+    print(turbine_simulation_script.__file__)
+    turbine_cfg = node.gr.turbConfig.getFile()
+    _log.debug('Turbine Configuration File: %s', turbine_cfg)
+    sim_list = turbine_simulation_script.main_list(['--json', turbine_cfg])
+    print('Simulation List %s' %sim_list)
     sim_d = [i for i in sim_list if i['Name'] == model_name]
     cache_sim_guid = None
     assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' %model_name
@@ -131,6 +146,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     else:
         _log.debug('Found simulation="%s" in TurbineLite' %model_name)
         sim_d = sim_d[0]
+        assert 'Id' in sim_d, 'Missing keys in Simulation %s' %sim_d
         cache_sim_guid = sim_d['Id']
 
     """ upload all staged-inputs to TurbineLite if new or updated in
@@ -399,7 +415,7 @@ class FlowsheetControl:
             _log.error("Failed to discover instance-id")
 
         db = TurbineLiteDB()
-        getJobStatus._db  = db
+        #getJobStatus._db  = db
         _log.debug("Consumer Register")
         db.consumer_register()
         db.add_message("Consumer Registered")
@@ -426,7 +442,7 @@ class FlowsheetControl:
             assert type(ret) is tuple and len(ret) == 2
             user_name,job_desc = ret
             job_id = uuid.UUID(job_desc.get('Id'))
-            getJobStatus._flowsheet_job_id = str(job_id)
+            #getJobStatus._flowsheet_job_id = str(job_id)
             db.set_user_name(user_name)
             """
             TODO: check dynamodb table if job has been stopped or killed

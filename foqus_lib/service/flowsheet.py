@@ -22,7 +22,7 @@ import botocore.exceptions
 
 _instanceid = None
 #WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
-WORKING_DIRECTORY = os.path.abspath(os.path.curdir)
+WORKING_DIRECTORY = os.path.abspath(os.environ.get('FOQUS_SERVICE_WORKING_DIR', "\\ProgramData\\foqus_service"))
 
 DEBUG = False
 CURRENT_JOB_DIR = None

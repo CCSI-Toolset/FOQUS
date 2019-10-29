@@ -123,6 +123,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.MWR3_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
         self.MWR4_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
         self.MWR5_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR1_comboBox.setCurrentIndex(4)
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()

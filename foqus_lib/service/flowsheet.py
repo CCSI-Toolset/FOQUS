@@ -28,25 +28,27 @@ DEBUG = False
 CURRENT_JOB_DIR = None
 _log = None
 
-def _set_working_dir():
-    global _log
-    log_dir = os.path.join(WORKING_DIRECTORY, "logs")
+def _set_working_dir(wdir):
+    global _log, WORKING_DIRECTORY
+    WORKING_DIRECTORY = wdir
+    log_dir = os.path.join(wdir, "logs")
     try: os.makedirs(log_dir)
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-    os.chdir(WORKING_DIRECTORY)
-    #logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    #                    filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),level=logging.DEBUG)
-    logging.config.fileConfig('logging.conf')
+    os.chdir(wdir)
+    try:
+        logging.config.fileConfig('logging.conf')
+    except Exception as ex:
+        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+                            filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),
+                            level=logging.DEBUG)
+
     _log = logging.getLogger('foqus_service')
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
-
     logging.getLogger('boto3').setLevel(logging.ERROR)
     logging.getLogger('botocore').setLevel(logging.ERROR)
     logging.getLogger('urllib3').setLevel(logging.ERROR)
-_set_working_dir()
-_log.debug('Loading')
 
 
 def _get_user_config_location(*args, **kw):
@@ -387,22 +389,36 @@ class TurbineLiteDB:
 
 class FlowsheetControl:
     """ API for controlling Flowsheet process
+    from foqus_lib.service.flowsheet import FlowsheetControl;
+    fc = FlowsheetControl();
+    fc.run()"
     """
+    _is_set_working_directory = False
 
     def __init__(self):
+        self._set_working_directory()
         socket.setdefaulttimeout(60)
         self._stop = False
+        self._cache_simulation_name = None
         self._receipt_handle = None
         self._sqs = boto3.client('sqs', region_name='us-east-1')
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
         self._dynamodb = boto3.client('dynamodb', region_name='us-east-1')
         self._dynamodb_table_name = FOQUSAWSConfig.get_instance().get_dynamo_table_name()
 
+    @classmethod
+    def _set_working_directory(cls, working_dir=WORKING_DIRECTORY):
+        if cls._is_set_working_directory:
+            return
+        _set_working_dir(working_dir)
+        cls._is_set_working_directory = True
+
     def stop(self):
         self._stop = True
 
     def run(self):
-        """ Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
+        """ main loop for running foqus
+        Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
         global _instanceid
         _log.debug("run")
@@ -421,6 +437,7 @@ class FlowsheetControl:
         db.add_message("Consumer Registered")
         #kat = _KeepAliveTimer(db, freq=60)
         #kat.start()
+        dat = None
         while not self._stop:
             ret = None
             _log.debug("pop job")
@@ -435,7 +452,7 @@ class FlowsheetControl:
                 self._delete_sqs_job()
                 continue
             except Exception as ex:
-                _log.exception("setup foqus exception: %s", str(ex))
+                _log.exception("pop_job exception: %s", str(ex))
                 raise
 
             if not ret: continue
@@ -498,12 +515,33 @@ class FlowsheetControl:
                 db.add_message("job failed in setup: %r" %(ex), job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
-            else:
-                _log.debug("BEFORE run_foqus")
-                self._delete_sqs_job()
+
+            _log.debug("BEFORE run_foqus")
+            self._delete_sqs_job()
+            try:
                 self.run_foqus(db, dat, job_desc)
+            except Exception as ex:
+                _log.exception("run_foqus: %s", str(ex))
+                self.close(dat)
+                raise
 
         _log.debug("STOP CALLED")
+        self.close(dat)
+
+    def close(self, dat):
+        if not dat:
+            _log.debug("close: session dat is None")
+            return
+        try:
+            dat.flowsheet.turbConfig.stopAllConsumers()
+        except Exception as ex:
+            _log.exception("reset stop all consumers: %s", str(ex))
+            raise
+        try:
+            dat.flowsheet.turbConfig.closeTurbineLiteDB()
+        except Exception as ex:
+            _log.exception("reset close turbineLite DB %s", str(ex))
+            raise
 
     def _delete_sqs_job(self):
         """ Delete the job after setup completes or there is an error.
@@ -639,14 +677,40 @@ class FlowsheetControl:
         configContent = db.get_configuration_file(simulation_name)
         logging.getLogger("foqus." + __name__)\
             .info("Job {0} is submitted".format(jid))
-        dat = Session(useCurrentWorkingDir=True)
-        dat.load(sfile, stopConsumers=True)
+
+        reset = job_desc.get('Reset', False)
+        assert type(reset) is bool, 'Bad type for reset %s' % type(reset)
+        if self._dat != None:
+            assert type(self._dat) is Session
+        else:
+            reset = True
+
+        if self._simulation_name != simulation_name:
+            reset = True
+
+        dat = self._dat
+        if reset == True:
+            _log.debug("Reset Flowsheet")
+            self.close()
+            self._dat = dat = Session(useCurrentWorkingDir=True)
+            dat.load(sfile, stopConsumers=True)
+            self._simulation_name = simulation_name
+        else:
+            _log.debug("No Reset Flowsheet")
+
+        # Load next job inputs
         dat.loadFlowsheetValues(vfile)
         _log.debug("Process Flowsheet nodes")
+        count_turb_apps = 0
+        nkey = None
         for nkey in dat.flowsheet.nodes:
             if dat.flowsheet.nodes[nkey].turbApp is not None:
-                _setup_flowsheet_turbine_node(dat, nkey,
-                    user_name=user_name)
+                count_turb_apps += 1
+        if count_turb_apps > 1:
+            self.close()
+            raise RuntimeError('setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes')
+
+        _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
         return dat
 
     def run_foqus(self, db, dat, job_desc):
@@ -671,15 +735,19 @@ class FlowsheetControl:
             if status == 'terminate' or self._stop or self._check_job_terminate(jid):
                 terminate = True
                 db.job_change_status(job_desc, "error", message="terminate flowsheet: status=%s stop=%s" %(status, self._stop))
-                gt.terminate()
+                #gt.terminate()
                 break
 
         if terminate:
-            db.add_message("job %s: terminate" %guid, guid)
-            return
-
-        if self._stop:
-            db.add_message("job %s: windows service stopped" %guid, guid)
+            _log.debug("terminate job %s", jid)
+            try:
+                gt.terminate()
+            except Exception as ex:
+                msg = "terminating job %s exception %s" %(jid,str(ex))
+                _log.debug(msg)
+                db.add_message("job %s: terminated" %guid, guid)
+            else:
+                db.add_message("job %s: terminated" %guid, guid)
             return
 
         if gt.res[0]:
@@ -718,7 +786,3 @@ class FlowsheetControl:
                     .format(db.consumer_id, jid), guid)
 
         _log.info("Job {0} finished".format(jid))
-
-        #stop all Turbine consumers
-        dat.flowsheet.turbConfig.stopAllConsumers()
-        dat.flowsheet.turbConfig.closeTurbineLiteDB()

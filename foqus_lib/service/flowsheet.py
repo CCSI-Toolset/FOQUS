@@ -398,9 +398,10 @@ class FlowsheetControl:
     def __init__(self):
         self._set_working_directory()
         socket.setdefaulttimeout(60)
+        self._dat = None
         self._stop = False
-        self._cache_simulation_name = None
         self._receipt_handle = None
+        self._simulation_name = None
         self._sqs = boto3.client('sqs', region_name='us-east-1')
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
         self._dynamodb = boto3.client('dynamodb', region_name='us-east-1')
@@ -519,16 +520,17 @@ class FlowsheetControl:
             _log.debug("BEFORE run_foqus")
             self._delete_sqs_job()
             try:
-                self.run_foqus(db, dat, job_desc)
+                self.run_foqus(db, job_desc)
             except Exception as ex:
                 _log.exception("run_foqus: %s", str(ex))
-                self.close(dat)
+                self.close()
                 raise
 
         _log.debug("STOP CALLED")
-        self.close(dat)
+        self.close()
 
-    def close(self, dat):
+    def close(self):
+        dat = self._dat
         if not dat:
             _log.debug("close: session dat is None")
             return
@@ -713,12 +715,13 @@ class FlowsheetControl:
         _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
         return dat
 
-    def run_foqus(self, db, dat, job_desc):
+    def run_foqus(self, db, job_desc):
         """ Run FOQUS Flowsheet in thread
-        db -- TurbineLiteDB instance
-        dat -- foqus.framework.session.session
-        dat.flowsheet -- foqus.framework.graph.graph
+        paramseters:
+            db -- TurbineLiteDB instance
+            dat.flowsheet -- foqus.framework.graph.graph
         """
+        dat = self._dat
         assert isinstance(db, TurbineLiteDB)
         assert isinstance(dat, Session)
         exit_code = 0

@@ -1,7 +1,7 @@
 .. _tutorial.simple.flow:
 
-Creating a Flowsheet
-====================
+Tutorial 1: Creating a Flowsheet
+================================
 
 The Basics
 ~~~~~~~~~~
@@ -11,6 +11,9 @@ setting up a very simple flowsheet. A single node flowsheet will be
 created that performs a simple calculation using a square root so that
 simulation errors can be observed when a negative input value is
 provided.
+
+This tutorial will show the user the procedure for creating a flowsheet in FOQUS.
+However, if the user is interested, the finished flowsheet is available in: **examples/tutorial_files/Flowsheets/Tutorial_1**
 
 #. Start FOQUS (see Section :ref:`sec.flowsheet.starting.foqus`).
 

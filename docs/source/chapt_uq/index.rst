@@ -1,5 +1,5 @@
-Uncertainty Quantification
-==========================
+Uncertainty Quantification (UQ)
+===============================
 
 Contents
 --------

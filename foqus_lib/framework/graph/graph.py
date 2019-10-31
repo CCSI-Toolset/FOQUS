@@ -20,38 +20,38 @@ import threading
 import logging
 import sys
 from collections import OrderedDict
-from foqus_lib.framework.graph.node import *   # Node, input var and output var classes
+from foqus_lib.framework.graph.node import *  # Node, input var and output var classes
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
-from foqus_lib.framework.graph.edge import *   # Edge and variable connection classes
+from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
 from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.graph.nodeVars import *
 import pandas
 
+_log = logging.getLogger("foqus." + __name__)
+
+
 class GraphEx(foqusException):
     def setCodeStrings(self):
         self.codeString[0] = "Finished Normally"
-        self.codeString[1] = ("Failure in node calculation, "
-                              "check node status")
-        self.codeString[3] = ("Failure to create worker node "
-                              "(most likely could not talk to Turbine)")
+        self.codeString[1] = "Failure in node calculation, " "check node status"
+        self.codeString[3] = (
+            "Failure to create worker node " "(most likely could not talk to Turbine)"
+        )
         self.codeString[5] = "Specified unknown tear solver"
         self.codeString[11] = "Wegstein solver failed to converge"
         self.codeString[12] = "Direct solver failed to converge"
         self.codeString[16] = "Error in presolve node"
         self.codeString[17] = "Error in postsolve node"
-        self.codeString[19] = \
-            "Exception during graph execution (see foqus.log)"
+        self.codeString[19] = "Exception during graph execution (see foqus.log)"
         self.codeString[20] = "Flowsheet thread terminated"
-        self.codeString[21] = \
-            "Session name required to run a flowsheet in Turbine"
-        self.codeString[40] = \
-            "Error connecting to Trubine"
+        self.codeString[21] = "Session name required to run a flowsheet in Turbine"
+        self.codeString[40] = "Error connecting to Trubine"
         self.codeString[50] = "Error loading session or inputs"
         self.codeString[100] = "Single Node Calculation Success"
-        self.codeString[201] = \
-            "Found cycle in tree while finding calculation order"
+        self.codeString[201] = "Found cycle in tree while finding calculation order"
         self.codeString[1001] = "Missing/Incomplete result dictionary"
+
 
 class Graph(threading.Thread):
     """
@@ -61,7 +61,8 @@ class Graph(threading.Thread):
     and calculations, and solving when the nodes are interdependent
     (recycle loops).
     """
-    def __init__(self, statusVar=True):  #graph constructor function
+
+    def __init__(self, statusVar=True):  # graph constructor function
         """
         Graph constructor
 
@@ -71,59 +72,59 @@ class Graph(threading.Thread):
         # Thread stuff
         threading.Thread.__init__(self)
         self.ex = None
-        self.stop = threading.Event() #flag to say you want to stop
-        self.rtDisconnect = threading.Event() #flag to disconnect
-            #from remote turbine but leave the session running
-        self.resLock = threading.Lock() #lock for read/write results
-        self.statLock = threading.Lock() #run status read/write lock
+        self.stop = threading.Event()  # flag to say you want to stop
+        self.rtDisconnect = threading.Event()  # flag to disconnect
+        # from remote turbine but leave the session running
+        self.resLock = threading.Lock()  # lock for read/write results
+        self.statLock = threading.Lock()  # run status read/write lock
         self.daemon = True
-        self.nodes = dict()# nodes of graph representing simulations
-        self.edges = [] # connections between simulations
-        self.x = OrderedDict() # dictionary of inputs
-        self.f = OrderedDict() # dictionary of outputs
+        self.nodes = dict()  # nodes of graph representing simulations
+        self.edges = []  # connections between simulations
+        self.x = OrderedDict()  # dictionary of inputs
+        self.f = OrderedDict()  # dictionary of outputs
         self.input = NodeVarList()
         self.output = NodeVarList()
-        self.input.addNode('graph') #global variables
-        self.output.addNode('graph') #global variables
+        self.input.addNode("graph")  # global variables
+        self.output.addNode("graph")  # global variables
         if statusVar:
-            self.output.addVariable('graph', 'error')
-            self.output['graph']['error'].desc = "Flowsheet error code"
+            self.output.addVariable("graph", "error")
+            self.output["graph"]["error"].desc = "Flowsheet error code"
         self.includeStatusOutput = statusVar
-        self.xnames = [] # list of input names  (sorted alphabetically)
-        self.fnames = [] # list of output names (sorted alphabetically)
+        self.xnames = []  # list of input names  (sorted alphabetically)
+        self.fnames = []  # list of output names (sorted alphabetically)
         #
-        self.solTime   = 0 # Amount of time used to solve graph outputs
-        self.errorStat = -1 # Solve error code
+        self.solTime = 0  # Amount of time used to solve graph outputs
+        self.errorStat = -1  # Solve error code
         self.setErrorCode(-1)
         #
-        self.turbConfig = TurbineConfiguration() #turbine config
-        self.simList   = dict() #list of simulations
-        self.turbSession = None #Turbine session for remote turbine
-        self.turbineJobIds = [] #Job list for remote turbine
+        self.turbConfig = TurbineConfiguration()  # turbine config
+        self.simList = dict()  # list of simulations
+        self.turbSession = None  # Turbine session for remote turbine
+        self.turbineJobIds = []  # Job list for remote turbine
         # SCC = strongly connected components
-        self.sccNodes = [] #list of lists of SCC nodes
-        self.sccEdges = [] #list of lists of SCC edges
-        self.sccLink = [] #list of lists SCC ordering
+        self.sccNodes = []  # list of lists of SCC nodes
+        self.sccEdges = []  # list of lists of SCC edges
+        self.sccLink = []  # list of lists SCC ordering
         #
-        self.turbineSim = None # If a string use that simuation name in
-            # Turbine if none don't submit flowsheet runs to turbine
-        self.sessionFile = None #session file to upload to turbine
+        self.turbineSim = None  # If a string use that simuation name in
+        # Turbine if none don't submit flowsheet runs to turbine
+        self.sessionFile = None  # session file to upload to turbine
         self.useTurbine = False
         self.turbchkfreq = 10
         #
-        self.onlySingleNode = None #If single node is set to a node name
+        self.onlySingleNode = None  # If single node is set to a node name
         # the graph calculations are only done on a single node
         #
         # Default solver settings
-        self.tearSolver  = "Wegstein"
-        self.tearMaxIt   = 40
-        self.tearTol     = 0.001
+        self.tearSolver = "Wegstein"
+        self.tearMaxIt = 40
+        self.tearTol = 0.001
         self.tearTolType = "abs"
-        self.tearLog     = False
+        self.tearLog = False
         self.tearLogStub = "tear_log"
-        self.tearBound   = False
-        self.wegAccMax   = 9.0
-        self.wegAccMin   = -9.0
+        self.tearBound = False
+        self.wegAccMax = 9.0
+        self.wegAccMin = -9.0
         self.staggerStart = 0.0
         self.threadName = ""
         self.runIndex = 0
@@ -136,26 +137,27 @@ class Graph(threading.Thread):
     def setErrorCode(self, e):
         self.errorStat = e
         if self.includeStatusOutput:
-            self.output['graph']['error'].value = e
+            self.output["graph"]["error"].value = e
 
     def turbineSimList(self):
-        '''
+        """
             Return a list of turbine simultaion names used in this
             flowsheet.
-        '''
+        """
         names = set()
         for nkey, node in self.nodes.items():
             if node.modelType in [
                 nodeModelTypes.MODEL_TURBINE,
                 nodeModelTypes.MODEL_DMF_LITE,
-                nodeModelTypes.MODEL_DMF_SERV]:
+                nodeModelTypes.MODEL_DMF_SERV,
+            ]:
                 names.add(node.modelName)
         return names
 
     def terminate(self):
-        '''
+        """
         This will tell a graph thread to stop running.
-        '''
+        """
         self.stop.set()
 
     def remoteDisconnect(self):
@@ -166,24 +168,25 @@ class Graph(threading.Thread):
         self.rtDisconnect.set()
 
     def errorLookup(self, i):
-        '''
+        """
             Give a descriptive error message to go with an
             integer error code.
-        '''
+        """
         e = GraphEx()
-        if i == -1: return "Graph calculations did not finish"
+        if i == -1:
+            return "Graph calculations did not finish"
         try:
             return e.codeString[i]
         except:
             return "Unknown error"
 
     def copyGraph(self):
-        '''
+        """
             Make a copy of a graph by saving it to a dictionary and
             reloading it using the  loadDict() and saveDict() functions.
             The does not make an exact copy some things like generate
             global variables may need redone
-        '''
+        """
         sd = self.saveDict(results=False)
         gr = Graph(self.includeStatusOutput)
         gr.pymodels = self.pymodels
@@ -194,37 +197,37 @@ class Graph(threading.Thread):
         gr.resubMax = self.resubMax
         gr.turbConfig = self.turbConfig
         gr.loadDict(sd)
-        return(gr)
+        return gr
 
     def saveDict(self, results=True):
-        '''
+        """
             This is mostly used to save a graph as json, but
             it could also be used to make a copy of the graph.
             The information can be loaded back in with loadDict()
-        '''
+        """
         sd = {
-            'errorStat': self.errorStat,
-            'includeStatusOutput':self.includeStatusOutput,
-            'nodes': self.saveNodeDict(),
-            'edges': self.saveEdgeList(),
-            'input': self.input.saveDict(),
-            'output': self.output.saveDict(),
-            'tearSolver': self.tearSolver,
-            'tearMaxIt': self.tearMaxIt,
-            'tearTol': self.tearTol,
-            'tearTolType': self.tearTolType,
-            'tearLog': self.tearLog,
-            'tearLogStub': self.tearLogStub,
-            'tearBound': self.tearBound,
-            'wegAccMax': self.wegAccMax,
-            'wegAccMin': self.wegAccMin,
-            'singleCount': self.singleCount,
-            'onlySingleNode': self.onlySingleNode,
-            'simList': self.saveSimDict(),
-            'pre_solve_nodes': self.pre_solve_nodes,
-            'post_solve_nodes': self.post_solve_nodes,
-            'no_solve_nodes': self.no_solve_nodes,
-            'turbineSim':self.turbineSim # name of FOQUS sim for remote
+            "errorStat": self.errorStat,
+            "includeStatusOutput": self.includeStatusOutput,
+            "nodes": self.saveNodeDict(),
+            "edges": self.saveEdgeList(),
+            "input": self.input.saveDict(),
+            "output": self.output.saveDict(),
+            "tearSolver": self.tearSolver,
+            "tearMaxIt": self.tearMaxIt,
+            "tearTol": self.tearTol,
+            "tearTolType": self.tearTolType,
+            "tearLog": self.tearLog,
+            "tearLogStub": self.tearLogStub,
+            "tearBound": self.tearBound,
+            "wegAccMax": self.wegAccMax,
+            "wegAccMin": self.wegAccMin,
+            "singleCount": self.singleCount,
+            "onlySingleNode": self.onlySingleNode,
+            "simList": self.saveSimDict(),
+            "pre_solve_nodes": self.pre_solve_nodes,
+            "post_solve_nodes": self.post_solve_nodes,
+            "no_solve_nodes": self.no_solve_nodes,
+            "turbineSim": self.turbineSim,  # name of FOQUS sim for remote
         }
         if results:
             sd["results"] = self.results.saveDict()
@@ -247,88 +250,88 @@ class Graph(threading.Thread):
         sd = {}
         # Save simulation (model) list
         for key, sim in self.simList.items():
-            sd[key]  = sim.saveDict()
+            sd[key] = sim.saveDict()
         return sd
 
     def loadDict(self, sd):
-        '''
+        """
             Loads a dictionary created by saveDict() or read from json
-        '''
-        self.errorStat = sd.get('errorStat', self.errorStat)
-        self.includeStatusOutput = sd.get('includeStatusOutput', True)
-        self.tearSolver = sd.get('tearSolver', self.tearSolver)
-        self.tearMaxIt = sd.get('tearMaxIt', self.tearMaxIt)
-        self.tearTol = sd.get('tearTol', self.tearTol)
-        self.tearLog = sd.get('tearLog', False)
-        self.tearLogStub = sd.get('tearLogStub', "tear_log")
-        self.tearBound = sd.get('tearBound', False)
-        self.tearTolType = sd.get('tearTolType', self.tearTolType)
-        self.wegAccMax = sd.get('wegAccMax', self.wegAccMax)
-        self.wegAccMin = sd.get('wegAccMin', self.wegAccMin)
-        self.singleCount = sd.get('singleCount', self.singleCount)
-        self.pre_solve_nodes = sd.get('pre_solve_nodes', [])
-        self.post_solve_nodes = sd.get('post_solve_nodes', [])
-        self.no_solve_nodes = sd.get('no_sovle_nodes', [])
-        self.turbineSim = sd.get('turbineSim', None)
-        temp = sd.get('results', None)
+        """
+        self.errorStat = sd.get("errorStat", self.errorStat)
+        self.includeStatusOutput = sd.get("includeStatusOutput", True)
+        self.tearSolver = sd.get("tearSolver", self.tearSolver)
+        self.tearMaxIt = sd.get("tearMaxIt", self.tearMaxIt)
+        self.tearTol = sd.get("tearTol", self.tearTol)
+        self.tearLog = sd.get("tearLog", False)
+        self.tearLogStub = sd.get("tearLogStub", "tear_log")
+        self.tearBound = sd.get("tearBound", False)
+        self.tearTolType = sd.get("tearTolType", self.tearTolType)
+        self.wegAccMax = sd.get("wegAccMax", self.wegAccMax)
+        self.wegAccMin = sd.get("wegAccMin", self.wegAccMin)
+        self.singleCount = sd.get("singleCount", self.singleCount)
+        self.pre_solve_nodes = sd.get("pre_solve_nodes", [])
+        self.post_solve_nodes = sd.get("post_solve_nodes", [])
+        self.no_solve_nodes = sd.get("no_sovle_nodes", [])
+        self.turbineSim = sd.get("turbineSim", None)
+        temp = sd.get("results", None)
         if temp:
             self.results.loadDict(temp)
-        temp = sd.get('input', None)
+        temp = sd.get("input", None)
         if temp:
             self.input.loadDict(temp)
         else:
             self.input.clear()
-            self.input.addNode('graph')
-        temp = sd.get('output', None)
+            self.input.addNode("graph")
+        temp = sd.get("output", None)
         if temp:
             self.output.loadDict(temp)
         else:
             self.output.clear()
-            self.input.addNode('graph')
-        self.nodes       = dict()
-        self.edges       = []
-        self.simList     = dict()
-        self.onlySingleNode = sd.get('onlySingleNode', None)
-        #load nodes
+            self.input.addNode("graph")
+        self.nodes = dict()
+        self.edges = []
+        self.simList = dict()
+        self.onlySingleNode = sd.get("onlySingleNode", None)
+        # load nodes
         for nkey, nd in sd["nodes"].items():
             n = self.addNode(nkey)
             n.loadDict(nd)
-        #load edges
+        # load edges
         for ed in sd["edges"]:
             edg = edge("", "")
             edg.loadDict(ed)
             self.edges.append(edg)
-        if 'graph' not in self.input:
-            self.input.addNode('graph')
-        if 'graph' not in self.output:
-            self.output.addNode('graph')
+        if "graph" not in self.input:
+            self.input.addNode("graph")
+        if "graph" not in self.output:
+            self.output.addNode("graph")
         if self.includeStatusOutput:
-            if 'error' not in self.output['graph']:
-                self.output.addVariable('graph', 'error')
-                self.output['graph']['error'].desc = "Flowsheet error code"
+            if "error" not in self.output["graph"]:
+                self.output.addVariable("graph", "error")
+                self.output["graph"]["error"].desc = "Flowsheet error code"
                 self.setErrorCode(self.errorStat)
 
     def saveValues(self):
-        '''
+        """
             This function saves the variable values and run status codes
             to a dictionary.  The dictionary can be written to a json
             string.
-        '''
+        """
         sd = {
-            'solTime':self.solTime,
-            'input':self.input.saveValues(),
-            'output':self.output.saveValues(),
-            'graphError':self.errorStat,
-            'nodeError':{},
-            'nodeSettings':{},
-            'turbineMessages':{}
+            "solTime": self.solTime,
+            "input": self.input.saveValues(),
+            "output": self.output.saveValues(),
+            "graphError": self.errorStat,
+            "nodeError": {},
+            "nodeSettings": {},
+            "turbineMessages": {},
         }
         for nkey, node in self.nodes.items():
-            sd['nodeError'][nkey] = node.calcError
-            sd['turbineMessages'][nkey] = node.turbineMessages
-            sd['nodeSettings'][nkey] = {}
+            sd["nodeError"][nkey] = node.calcError
+            sd["turbineMessages"][nkey] = node.turbineMessages
+            sd["nodeSettings"][nkey] = {}
             for okey, opt in node.options.items():
-                sd['nodeSettings'][nkey][okey] = opt.value
+                sd["nodeSettings"][nkey][okey] = opt.value
         return sd
 
     def loadValues(self, sd):
@@ -336,29 +339,28 @@ class Graph(threading.Thread):
         status codes if they are present.  If no status codes are in the
         dictionary, error codes are set to -1 (not run yet).
         """
-        self.solTime = sd.get('solTime', 0)
-        o = sd.get('input', None)
+        self.solTime = sd.get("solTime", 0)
+        o = sd.get("input", None)
         if o is not None:
             self.input.loadValues(o)
         else:
-            logging.getLogger("foqus." + __name__).error(
-                "Failed to get 'input' from results: sd={}".format(sd))
-        o = sd.get('output', None)
+            _log.error("Failed to get 'input' from results: sd={}".format(sd))
+        o = sd.get("output", None)
         if o is not None:
             self.output.loadValues(o)
-        self.setErrorCode(sd.get('graphError', -1))
-        ne = sd.get('nodeError', {})
-        tm = sd.get('turbineMessages', {})
+        self.setErrorCode(sd.get("graphError", -1))
+        ne = sd.get("nodeError", {})
+        tm = sd.get("turbineMessages", {})
         for nkey in self.nodes:
             self.nodes[nkey].calcError = ne.get(nkey, -1)
             self.nodes[nkey].turbineMessages = tm.get(nkey, "")
         return sd
 
     def getCenter(self):
-        '''
+        """
             returns the center of the graph if you draw it you will know
             where to center the view
-        '''
+        """
         ave_x = 0
         ave_y = 0
         ave_z = 0
@@ -367,48 +369,48 @@ class Graph(threading.Thread):
             ave_y += node.y
             ave_z += node.z
         if len(self.nodes) > 0:
-            ave_x = float(ave_x)/float(len(self.nodes))
-            ave_y = float(ave_y)/float(len(self.nodes))
-            ave_z = float(ave_z)/float(len(self.nodes))
+            ave_x = float(ave_x) / float(len(self.nodes))
+            ave_y = float(ave_y) / float(len(self.nodes))
+            ave_z = float(ave_z) / float(len(self.nodes))
         return [ave_x, ave_y, ave_z]
 
-    def	setAsNotRun(self):
-        '''
+    def setAsNotRun(self):
+        """
             This sets all the error codes in the nodes and the graph to
             -1, which I am using to mean not executed.
-        '''
+        """
         for key, node in self.nodes.items():
             node.calcError = -1
         self.setErrorCode(-1)
 
     def killTurbineJobs(self):
-        '''
+        """
             Go through all the nodes and if they are turbine runs with a
             session id, kill all the jobs in that session.
-        '''
+        """
         for key, node in self.nodes.items():
             node.killTurbineSession()
 
     def generateGlobalVariables(self):
-        '''
+        """
             This function creates a dictionary of input variable
             (self.x) and a dictionary of output variables (self.f) and
             stores pointers to the input and output variables contained
             in the nodes.  The dictionary keys are:
             <node name>.<variable name>
-        '''
+        """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
-        self.xnames = list(self.x.keys()) # get a list of input names
-        self.fnames = list(self.f.keys()) # get a list of output names
-        self.markConnectedInputs() #mark which inputs are set by con.
+        self.xnames = list(self.x.keys())  # get a list of input names
+        self.fnames = list(self.f.keys())  # get a list of output names
+        self.markConnectedInputs()  # mark which inputs are set by con.
 
     def markConnectedInputs(self):
-        '''
+        """
             Mark inputs that are connected to outputs these shouldn't be
             considered inputs for optimization or UQ purposes.
-        '''
+        """
         # clear all the connected flags
         for [name, node] in self.nodes.items():
             for [vname, var] in node.inVars.items():
@@ -425,9 +427,9 @@ class Graph(threading.Thread):
                     node.inVars[con.toName].con = 2
 
     def loadDefaults(self):
-        '''
+        """
             Return all input variables to there default value
-        '''
+        """
         for key, n in self.nodes.items():
             n.loadDefaultValues()
 
@@ -437,86 +439,81 @@ class Graph(threading.Thread):
             # may want to raise an exception if sid
             # comes back as 0.  That would probably
             # be a problem contacting the gateway
-            sid = node.createTurbineSession(forceNew = forceNew)
+            sid = node.createTurbineSession(forceNew=forceNew)
             if sid == 0:
-                logging.getLogger("foqus." + __name__).warning(
-                    "Problem getting session id for node " + key)
+                _log.warning("Problem getting session id for node: {}".format(key))
                 err = True
         return err
 
     def uploadFlowseetToTurbine(self, dat, reset=False):
-        '''
+        """
         Save a session and upload it to turbine
-        '''
+        """
         simname = dat.name
         sessionFile = "tmp_to_turbine"
         dat.save(
-            filename = sessionFile,
-            updateCurrentFile = False,
-            changeLogMsg = "Save for turbine submission",
-            indent = 0,
-            keepData = False)
+            filename=sessionFile,
+            updateCurrentFile=False,
+            changeLogMsg="Save for turbine submission",
+            indent=0,
+            keepData=False,
+        )
         self.turbineSim = "zzfoqus_{0}".format(simname.replace(" ", "_"))
         self.turbineReset = reset
         self.sessionFile = sessionFile
         self.turbConfig.uploadSimulation(
-            simName=self.turbineSim,
-            sinterConfigPath=self.sessionFile,
-            update=True)
+            simName=self.turbineSim, sinterConfigPath=self.sessionFile, update=True
+        )
 
     def solveListValTurbineCreateSession(self):
-        '''
+        """
             Create a session in Turbine to run FOQUS flowsheet samples
             (split up solveListValTurbine() to help maintanabiliy)
-        '''
+        """
         try:
             turbSession = self.turbConfig.retryFunction(
-                5, 20, 2,
-                self.turbConfig.createSession)
+                5, 20, 2, self.turbConfig.createSession
+            )
         except:
             self.setErrorCode(40)
             return None
         self.turbSession = turbSession
-        logging.getLogger("foqus." + __name__).info(
-            "Running FOQUS jobs in Turbine session: \n{0}".format(
-            turbSession))
+        _log.info("Running FOQUS jobs in Turbine session: \n{0}".format(turbSession))
         return turbSession
 
     def solveListValTurbineCreateJobs(self, valueList, maxSend):
-        '''
+        """
             Make jobs to send to turbine split into smaller sets to
             submit large numbers of jobs to avoid send too much
             information a once.  Submit and start each set.
-        '''
+        """
         turbSession = self.turbSession
         njobs = len(valueList)
-        njsets = int(math.ceil(float(njobs)/float(maxSend)))
-        logging.getLogger("foqus." + __name__).debug(
-            "Sending jobs to Turbine in {0} sets".format(njsets))
-        setIndex = [0]*(njsets+1)
+        njsets = int(math.ceil(float(njobs) / float(maxSend)))
+        _log.debug("Sending jobs to Turbine in {0} sets".format(njsets))
+        setIndex = [0] * (njsets + 1)
         for i in range(njsets + 1):
-            setIndex[i] = maxSend*i
+            setIndex[i] = maxSend * i
             if setIndex[i] > njobs:
                 setIndex[i] = njobs
         jobIds = []
-        for j in range(len(setIndex)-1):
+        for j in range(len(setIndex) - 1):
             j1 = setIndex[j]
-            j2 = setIndex[j+1]
-            jobList = [None]*(j2-j1)
+            j2 = setIndex[j + 1]
+            jobList = [None] * (j2 - j1)
             for i, jobVal in enumerate(valueList[j1:j2]):
                 jobList[i] = {
-                    'Simulation':self.turbineSim,
-                    'Input':jobVal,
-                    'Reset':False}
+                    "Simulation": self.turbineSim,
+                    "Input": jobVal,
+                    "Reset": False,
+                }
             # add job list to turbine
-            #with open("jobs{0}.json".format(j), 'w') as fp:
+            # with open("jobs{0}.json".format(j), 'w') as fp:
             #    json.dump(jobList, fp)
             jids = self.turbConfig.retryFunction(
-                5, 20, 2,
-                self.turbConfig.createJobsInSession,
-                turbSession, jobList)
-            logging.getLogger("foqus." + __name__).debug(
-                "Created Jobs: \n{0}".format(jids))
+                5, 20, 2, self.turbConfig.createJobsInSession, turbSession, jobList
+            )
+            _log.debug("Created Jobs: \n{0}".format(jids))
             jobIds.extend(jids)
             # Start the Turbine session before all jobs have been
             # submitted this will allow jobs to start running.
@@ -524,100 +521,88 @@ class Graph(threading.Thread):
             # may as well start running jobs, while doing it.
             try:
                 self.turbConfig.retryFunction(
-                    5, 20, 2,
-                    self.turbConfig.startSession,
-                    turbSession)
+                    5, 20, 2, self.turbConfig.startSession, turbSession
+                )
             except:
-                logging.getLogger("foqus." + __name__).exception(
-                    "Failed to start session")
+                _log.exception("Failed to start session")
                 self.setErrorCode(40)
                 return None
         return jobIds
 
     def solveListValTurbineGetGenerator(self):
-        '''
+        """
             Get a results genrator from Turbine, if fail return None
-        '''
+        """
         try:
             gid = self.turbConfig.retryFunction(
-                5, 20, 2,
-                self.turbConfig.getCompletedJobGen,
-                self.turbSession)
+                5, 20, 2, self.turbConfig.getCompletedJobGen, self.turbSession
+            )
         except:
-            logging.getLogger("foqus." + __name__).exception(
-                "Failed to get generator")
+            _log.exception("Failed to get generator")
             self.setErrorCode(40)
             return None
-        logging.getLogger("foqus." + __name__).debug(
-            "Results generator: {0}".format(gid))
+        _log.debug("Results generator: {0}".format(gid))
         return gid
 
     def solveListValTurbineGetGeneratorPage(self, gid):
         try:
             page = self.turbConfig.retryFunction(
-                5, 20, 2, self.turbConfig.getCompletedJobPage,
-                self.turbSession, gid)
+                5, 20, 2, self.turbConfig.getCompletedJobPage, self.turbSession, gid
+            )
         except:
-            logging.getLogger("foqus." + __name__).exception(
-                "Could not get results page")
+            _log.exception("Could not get results page")
             return None
         return page
 
     def solveListValTurbineGeneratorReadPage(self, gid, page, maxRes):
-        '''
+        """
             Get the Turbine results from a generator page.
-        '''
-        logging.getLogger("foqus." + __name__).debug(
-            "New results page {0} from {1}"\
-            .format(page, gid))
+        """
+        _log.debug("New results page {0} from {1}".format(page, gid))
         try:
             jres = self.turbConfig.retryFunction(
-                5, 20, 2, self.turbConfig.getCompletedJobs,
-                self.turbSession, gid, page, maxRes)
+                5,
+                20,
+                2,
+                self.turbConfig.getCompletedJobs,
+                self.turbSession,
+                gid,
+                page,
+                maxRes,
+            )
         except:
-            logging.getLogger("foqus." + __name__).exception(
-            "Error reading results page {0} from {1}"\
-                .format(page, gid))
+            _log.exception("Error reading results page {0} from {1}".format(page, gid))
             return None
         return jres
 
     def solveListValTurbineDelGenerator(self, gid):
         try:
             self.turbConfig.retryFunction(
-                5, 20, 2,
-                self.turbConfig.deleteCompletedJobsGen,
-                self.turbSession,
-                gid)
+                5, 20, 2, self.turbConfig.deleteCompletedJobsGen, self.turbSession, gid
+            )
         except:
-            logging.getLogger("foqus." + __name__).exception(
-                "Error deleting result generator")
+            _log.exception("Error deleting result generator")
 
     def solveListValTurbineReSub(self, inp, oi):
-        '''
+        """
             Resubmit a failed job for another try
-        '''
-        job = {
-            'Simulation':self.turbineSim,
-            'Input':inp,
-            'Reset':False}
-        #Create new job to rerun failed job
+        """
+        job = {"Simulation": self.turbineSim, "Input": inp, "Reset": False}
+        # Create new job to rerun failed job
         jid = self.turbConfig.retryFunction(
-            5, 20, 2,
-            self.turbConfig.createJobsInSession,
-            self.turbSession, [job])[0]
-        #Start the job
+            5, 20, 2, self.turbConfig.createJobsInSession, self.turbSession, [job]
+        )[0]
+        # Start the job
         self.turbConfig.retryFunction(
-            5, 20, 2,
-            self.turbConfig.startSession,
-            self.turbSession)
-        #Log the retry
-        logging.getLogger("foqus." + __name__).debug(
-            "Resubmitted Job {0} as {1}".format(oi,jid))
-        #return new job number
+            5, 20, 2, self.turbConfig.startSession, self.turbSession
+        )
+        # Log the retry
+        _log.debug("Resubmitted Job {0} as {1}".format(oi, jid))
+        # return new job number
         return jid
 
     def solveListValTurbine(self, valueList=None, maxSend=20, sid=None, jobIds=[]):
-        '''
+        """
             Send a list of flowsheet runs to Turbine, this allows the
             flowsheets to be solved in parallel.
 
@@ -628,17 +613,15 @@ class Graph(threading.Thread):
             sid = A turbine session ID to reconnect to.  If a previous
                 run was disconnected this will hook back up and contiune
                 to receive results until the session is done.
-        '''
+        """
         ######
         # Create a session and submit jobs
         ######
-        maxRes = 2000 # maximum number of results to get at once
-        chk_sleep = self.turbchkfreq #delay between checking for results
-        resubMax = self.resubMax #max times to resubmit failed sim.
-        logging.getLogger("foqus." + __name__).debug(
-            "Turbine remote check interval: {0}".format(chk_sleep))
-        logging.getLogger("foqus." + __name__).debug(
-            "Max. times to resubmit failed jobs {0}".format(resubMax))
+        maxRes = 2000  # maximum number of results to get at once
+        chk_sleep = self.turbchkfreq  # delay between checking for results
+        resubMax = self.resubMax  # max times to resubmit failed sim.
+        _log.debug("Turbine remote check interval: {0}".format(chk_sleep))
+        _log.debug("Max. times to resubmit failed jobs {0}".format(resubMax))
         if sid is not None:
             # in this case reconnecting to a partly finished job set
             turbSession = sid
@@ -647,50 +630,44 @@ class Graph(threading.Thread):
         else:
             # in this case submitting a new set of jobs
             njobs = len(valueList)
-            #create turbine session
+            # create turbine session
             turbSession = self.solveListValTurbineCreateSession()
             if turbSession is None:
                 return
-            #submit jobs, jobIds is a list of job ids
-            jobIds = self.solveListValTurbineCreateJobs(
-                valueList, maxSend)
+            # submit jobs, jobIds is a list of job ids
+            jobIds = self.solveListValTurbineCreateJobs(valueList, maxSend)
             self.jobIds = jobIds
             if jobIds is None:
                 return
-        self.allSubmitted = True # Flag to say job sumbmission is done
-        #get results genrator
+        self.allSubmitted = True  # Flag to say job sumbmission is done
+        # get results genrator
         gid = self.solveListValTurbineGetGenerator()
         if gid is None:
             return
-
-        logging.getLogger("foqus." + __name__).debug(
-            "Turbine Result Generator: {0}".format(gid))
-
+        _log.debug("Turbine Result Generator: {0}".format(gid))
         ######
         # monitor the turbine session.
         ######
-        rp = 0 #pages already read
-        skipWait = False #skip the wait between checking for results
-        self.status['error'] = 0
+        rp = 0  # pages already read
+        skipWait = False  # skip the wait between checking for results
+        self.status["error"] = 0
         while self.status["unfinished"] > 0:
             # pause in between checking status, don't want to overwhelm
             # turbine with status requests.
             if not skipWait:
                 time.sleep(float(chk_sleep))
             skipWait = False
-            jres = None #job results from Turbine
+            jres = None  # job results from Turbine
             # Get results page index
             page = self.solveListValTurbineGetGeneratorPage(gid)
             if page is None:
-                #this means some exception getting page, no results
-                #should either get previously read page of negative page
+                # this means some exception getting page, no results
+                # should either get previously read page of negative page
                 break
-            logging.getLogger("foqus." + __name__).debug(
-                "Turbine Result Generator Page: {0} {1}".format(page, rp))
+            _log.debug("Turbine Result Generator Page: {0} {1}".format(page, rp))
             if page is not None and page > rp:
-                jres = self.solveListValTurbineGeneratorReadPage(
-                    gid, page, maxRes)
-                logging.getLogger("foqus." + __name__).debug("JRES: %d" %len(jres))
+                jres = self.solveListValTurbineGeneratorReadPage(gid, page, maxRes)
+                _log.debug("JRES: %d" % len(jres))
                 if len(jres) == maxRes:
                     skipWait = True
                 if jres is None:
@@ -700,67 +677,71 @@ class Graph(threading.Thread):
                 # some jobs may be paused.  For now just end loop
                 with self.statLock:
                     self.status["finished"] = njobs
-                    self.status['unfinished'] = 0
-                    self.status['error'] = njobs - self.status['success']
+                    self.status["unfinished"] = 0
+                    self.status["error"] = njobs - self.status["success"]
                 break
-            else: #page == 0, page already read, or page = -1
+            else:  # page == 0, page already read, or page = -1
                 pass
             if jres is not None:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Turbine Result Generator Results LEN: {0}".format(len(jres)))
+                _log.debug(
+                    "Turbine Result Generator Results LEN: {0}".format(len(jres))
+                )
                 rp += 1
                 for job in jres:
                     try:
-                        i = jobIds.index(job['Id'])
+                        i = jobIds.index(job["Id"])
                     except ValueError:
-                        logging.getLogger("foqus." + __name__).debug(
-                            "Job {0} ignore it must be a failed job that got resubmitted".format(job['Id']))
+                        _log.debug(
+                            "Job {0} ignore it must be a failed job that got resubmitted".format(
+                                job["Id"]
+                            )
+                        )
                         continue
-
                     assert 'State' in job, 'Missing State Field in Job %s Record' %i
                     if job['State'] == 'error':
                         logging.getLogger("foqus." + __name__).error(
                             "Job(%s) Error: %s", job['Id'],
                             job.get('Message', 'No Error Message Provided'))
-
                     jobRes = job.get('Output', None)
                     if jobRes is None:
                         jobErr = -3
                     else:
-                        jobErr = jobRes.get('graphError', -2)
+                        jobErr = jobRes.get("graphError", -2)
                     record = True
                     if self.res_re[i] < resubMax and jobErr != 0:
-                        #if job error and resubmit option and first error
-                        #then resubmit the job
+                        # if job error and resubmit option and first error
+                        # then resubmit the job
                         self.res_re[i] += 1
-                        jobInput = job.get('Input', None)
+                        jobInput = job.get("Input", None)
                         if jobInput is not None:
                             jobIds[i] = self.solveListValTurbineReSub(
-                                jobInput, jobIds[i])
-                            record = False # retying so don't count
+                                jobInput, jobIds[i]
+                            )
+                            record = False  # retying so don't count
                     if record:
                         with self.resLock:
                             # record results
-                            self.res[i] = job.get('Output', None)
+                            self.res[i] = job.get("Output", None)
                             if self.res[i] == None:
                                 self.res_fin[i] = jobErr
                                 self.res[i] = {
-                                    'Id':job['Id'],
-                                    'session':turbSession,
-                                    'graphError':self.res_fin[i]}
+                                    "Id": job["Id"],
+                                    "session": turbSession,
+                                    "graphError": self.res_fin[i],
+                                }
                             else:
-                                self.res[i]['session'] = turbSession
-                                self.res[i]['Id'] = job['Id']
+                                self.res[i]["session"] = turbSession
+                                self.res[i]["Id"] = job["Id"]
                                 self.res_fin[i] = jobErr
                             # Add information to see if was resubmitted
-                            self.res[i]['resub'] = self.res_re[i]
+                            self.res[i]["resub"] = self.res_re[i]
                         with self.statLock:
                             self.status["finished"] += 1
-                            self.status['unfinished'] -= 1
+                            self.status["unfinished"] -= 1
                             if jobErr != 0:
-                                self.status['error'] += 1
+                                self.status["error"] += 1
                             else:
-                                self.status['success'] += 1
+                                self.status["success"] += 1
             if self.stop.isSet():
                 # if the thread terminate function has been called,
                 # stop the thread by breaking out of the loop, any
@@ -768,32 +749,29 @@ class Graph(threading.Thread):
                 try:
                     self.turbConfig.killSession(turbSession)
                 except:
-                    logging.getLogger("foqus." + __name__).exception(
-                        "Error terminating session {0}"\
-                        .format(turbSession))
+                    _log.exception("Error terminating session {0}".format(turbSession))
                 break
             elif self.rtDisconnect.isSet():
-                #Just drop out of the monitoring loop
+                # Just drop out of the monitoring loop
                 break
         self.jobIds = jobIds
-        #try to delete the results generator.
+        # try to delete the results generator.
         self.solveListValTurbineDelGenerator(gid)
 
     def solveListVal(self, valueList):
         for key, node in self.nodes.items():
             if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
-                logging.getLogger("foqus." + __name__).debug(
-                        "DMF will sync node {}".format(key))
+                _log.debug("DMF will sync node {}".format(key))
                 node.synced = False
             elif node.modelType == nodeModelTypes.MODEL_DMF_SERV:
                 node.synced = False
             else:
-                pass # Doesn't matter synced is a DMF thing
-        #originalValues = self.saveValues()
-        assert(isinstance(valueList, (list,tuple)))
+                pass  # Doesn't matter synced is a DMF thing
+        # originalValues = self.saveValues()
+        assert isinstance(valueList, (list, tuple))
         for i, vals in enumerate(valueList):
-            #self.loadValues(originalValues)
-            self.loadValues({'input':vals})
+            # self.loadValues(originalValues)
+            self.loadValues({"input": vals})
             self.setErrorCode(-1)
             if not self.stop.isSet():
                 # run solve if thread has not been stopped
@@ -809,31 +787,29 @@ class Graph(threading.Thread):
                         self.res[i] = None
                         self.res_fin[i] = -2
                         self.setErrorCode(-1)
-                    logging.getLogger("foqus." + __name__).exception(
-                        "Error executing a flowsheet sample")
+                    _log.exception("Error executing a flowsheet sample")
             with self.statLock:
-                self.status['finished'] += 1
-                self.status['unfinished'] -= 1
+                self.status["finished"] += 1
+                self.status["unfinished"] -= 1
                 if self.errorStat != 0:
-                    self.status['error'] += 1
+                    self.status["error"] += 1
                 else:
-                    self.status['success'] += 1
+                    self.status["success"] += 1
 
     def run(self):
-        '''
+        """
             This function should not be called directly
             it is called by the thread start() function
 
             If self.runList is set assume there are a set
             of runs specified by self.runList, otherwise
             assume it is a single run with current values
-        '''
+        """
         if not self.useTurbine:
-            logging.getLogger("foqus." + __name__).debug(
-                "Running flowsheet(s) locally")
+            _log.debug("Running flowsheet(s) locally")
             # In this case the runs are done serially locally
             try:
-                #run a single simulation or a list of simulations
+                # run a single simulation or a list of simulations
                 if not self.runList:
                     self.solve()
                     with self.resLock:
@@ -844,11 +820,9 @@ class Graph(threading.Thread):
             except Exception as e:
                 self.setErrorCode(19)
                 self.ex = sys.exc_info()
-                logging.getLogger("foqus." + __name__).exception(
-                    "Exception in graph thread")
+                _log.exception("Exception in graph thread")
         else:
-            logging.getLogger("foqus." + __name__).debug(
-                "Running flowsheet(s) through turbine")
+            _log.debug("Running flowsheet(s) through turbine")
             # in this case run should produce the same results but
             # the runs are submitted in a batch to Turbine
             #
@@ -859,23 +833,22 @@ class Graph(threading.Thread):
                 # going to batch for single run or batch to turbine
                 # need to make a runList for single run
                 sd = self.saveValues()
-                self.runList = [sd['input']]
-            #make sure there are no numpy arrays in runList
+                self.runList = [sd["input"]]
+            # make sure there are no numpy arrays in runList
             for job in self.runList:
                 for nkey in job:
                     for vkey in job[nkey]:
-                        if type(job[nkey][vkey]).\
-                            __module__ == numpy.__name__:
+                        if type(job[nkey][vkey]).__module__ == numpy.__name__:
                             job[nkey][vkey] = job[nkey][vkey]
             if self.turbineSession is None:
                 self.solveListValTurbine(self.runList)
             else:
-                self.solveListValTurbine(
-                    sid=self.turbineSession, jobIds=self.jobIds)
+                self.solveListValTurbine(sid=self.turbineSession, jobIds=self.jobIds)
 
-    def runListAsThread(self, runList=None, useTurbine=False,
-        sid=None, jobIds=[], resubs=None, dat=None):
-        '''
+    def runListAsThread(
+        self, runList=None, useTurbine=False, sid=None, jobIds=[], resubs=None, dat=None
+    ):
+        """
             Open a new thread and run a list of simulations
             with the inputs specified in runList.  runList is
             a list of dictionaries with the format:
@@ -885,29 +858,30 @@ class Graph(threading.Thread):
             are stored in a list in the res attribute of the new
             graph thread.  The results are in list where each results
             is the output of the saveValues function.
-        '''
+        """
         self.useTurbine = useTurbine
         if not useTurbine:
             self.createNodeTurbineSessions(forceNew=False)
         newGr = self.copyGraph()
         if runList is not None and len(runList) > 0:
-            newGr.res = [None]*len(runList)
-            newGr.res_fin = [-1]*len(runList)
-            newGr.res_re = [0]*len(runList)
+            newGr.res = [None] * len(runList)
+            newGr.res_fin = [-1] * len(runList)
+            newGr.res_re = [0] * len(runList)
         elif jobIds is not None:
-            newGr.res = [None]*len(jobIds)
-            newGr.res_fin = [-1]*len(jobIds)
+            newGr.res = [None] * len(jobIds)
+            newGr.res_fin = [-1] * len(jobIds)
             if resubs is None:
-                newGr.res_re = [0]*len(jobIds)
+                newGr.res_re = [0] * len(jobIds)
             else:
                 newGr.res_re = resubs
         else:
-            raise("Must supply runList or jobIds")
+            raise ("Must supply runList or jobIds")
         newGr.status = {
-            'unfinished':len(newGr.res),
-            'finished':0,
-            'error':0,
-            'success':0}
+            "unfinished": len(newGr.res),
+            "finished": 0,
+            "error": 0,
+            "success": 0,
+        }
         newGr.runList = runList
         newGr.allSubmitted = False
         newGr.turbineSession = sid
@@ -916,7 +890,7 @@ class Graph(threading.Thread):
         return newGr
 
     def runAsThread(self, useTurbine=False, sid=None, dat=None):
-        '''
+        """
             Run current graph setting in a separate thread the
             results are stored in the res attribute of the returned
             graph.  The format of the results are a dictionary that
@@ -924,16 +898,12 @@ class Graph(threading.Thread):
             function.
 
             This returns a new running graph thread.
-        '''
+        """
         self.useTurbine = useTurbine
         if not useTurbine:
             self.createNodeTurbineSessions(forceNew=False)
         newGr = self.copyGraph()
-        newGr.status = {
-            'unfinished':1,
-            'finished':0,
-            'error':0,
-            'success':0}
+        newGr.status = {"unfinished": 1, "finished": 0, "error": 0, "success": 0}
         newGr.turbineSession = sid
         newGr.runList = None
         newGr.res = [None]
@@ -943,21 +913,20 @@ class Graph(threading.Thread):
         return newGr
 
     def solve(self):
-        '''
+        """
             This function solves each strongly connected component
             following the SCC calculation ordering.  If an SCC has
             more than one tear they are converged simultaneously.
             I know that is probably not best but it is easy for now
-        '''
+        """
         for key, node in self.nodes.items():
             if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
-                logging.getLogger("foqus." + __name__).debug(
-                        "DMF will sync node {}".format(key))
+                _log.debug("DMF will sync node {}".format(key))
                 node.synced = False
             elif node.modelType == nodeModelTypes.MODEL_DMF_SERV:
                 node.synced = False
             else:
-                pass # Doesn't matter synced is a DMF thing
+                pass  # Doesn't matter synced is a DMF thing
         tstart = time.time()
         self.setAsNotRun()
         self.setErrorCode(0)
@@ -981,7 +950,7 @@ class Graph(threading.Thread):
         elif self.onlySingleNode != None:
             self.setErrorCode(4)
             return
-        #Take the pre and post solve nodes out of the calculation order
+        # Take the pre and post solve nodes out of the calculation order
         fs_sub = []
         for nkey, node in self.nodes.items():
             if nkey in self.pre_solve_nodes:
@@ -993,7 +962,7 @@ class Graph(threading.Thread):
             else:
                 node.seq = True
                 fs_sub.append(nkey)
-        #Run presove nodes in order
+        # Run presove nodes in order
         for nkey in self.pre_solve_nodes:
             node = self.nodes[nkey]
             node.runCalc()
@@ -1001,10 +970,10 @@ class Graph(threading.Thread):
                 self.setErrorCode(16)
                 self.solTime = time.time() - tstart
                 return self.solTime
-        #Run graph, order is based on tree with tears removed
-        order = self.calculationOrder(subNodes = fs_sub)
+        # Run graph, order is based on tree with tears removed
+        order = self.calculationOrder(subNodes=fs_sub)
         self.runGraph(order)
-        #Check if there are any tears if no tears we are done
+        # Check if there are any tears if no tears we are done
         solveTear = False
         for edge in self.edges:
             if edge.tear:
@@ -1019,13 +988,18 @@ class Graph(threading.Thread):
                     self.setErrorCode(17)
                     self.solTime = time.time() - tstart
                     return self.solTime
-            #All done return
+            # All done return
             self.solTime = time.time() - tstart
             return self.solTime
         # Now solve tears if there are any...
         # first identify the strongly connected components
-        [sccNodes, sccEdges, outEdges, inEdges, sccOrder] \
-            = self.stronglyConnectedSubGraphs(True)
+        [
+            sccNodes,
+            sccEdges,
+            outEdges,
+            inEdges,
+            sccOrder,
+        ] = self.stronglyConnectedSubGraphs(True)
         # sccOrder is the order in which to solve the SCCs there is a
         # possibility depending of the topology that some could be
         # solved at the same time so the ordering has two levels and
@@ -1044,11 +1018,12 @@ class Graph(threading.Thread):
                     [errCode, hist] = self.solveSubGraphWeg(
                         order,
                         tears,
-                        itLimit = self.tearMaxIt,
-                        tol = self.tearTol,
-                        thetaMin = self.wegAccMin,
-                        thetaMax = self.wegAccMax,
-                        direct=self.tearSolver == "Direct")
+                        itLimit=self.tearMaxIt,
+                        tol=self.tearTol,
+                        thetaMin=self.wegAccMin,
+                        thetaMax=self.wegAccMax,
+                        direct=self.tearSolver == "Direct",
+                    )
                 else:
                     errCode = 5
                 if errCode != 0:
@@ -1069,34 +1044,46 @@ class Graph(threading.Thread):
         return self.solTime
 
     def checkTearStatus(self):
-        '''
+        """
             Check whether the specified tear streams are sufficient.
             If the graph minus the tear edges is not a tree then the
             tear set is not sufficient to solve the graph.
-        '''
-        [sccNodes, sccEdges, outEdges, inEdges, sccOrder] =\
-            self.stronglyConnectedSubGraphs(False)
+        """
+        [
+            sccNodes,
+            sccEdges,
+            outEdges,
+            inEdges,
+            sccOrder,
+        ] = self.stronglyConnectedSubGraphs(False)
         for ns in sccNodes:
             if len(ns) > 1:
                 return False
         return True
 
     def setTearX(self, tears, x):
-        '''
+        """
             Transfer the value of the two side of a set of tear streams
             to the value x, x is a list of values for each connection in
             each tear
-        '''
+        """
         i = 0
         for tear in tears:
             for con in self.edges[tear].con:
-                self.nodes[self.edges[tear].end].\
-                    inVars[con.toName].value = x[i]
+                self.nodes[self.edges[tear].end].inVars[con.toName].value = x[i]
                 i += 1
 
-    def solveSubGraphWeg(self, nodeOrder, tears, itLimit=40, tol=1.0e-5,
-        thetaMin=-5, thetaMax=0, direct=False):
-        '''
+    def solveSubGraphWeg(
+        self,
+        nodeOrder,
+        tears,
+        itLimit=40,
+        tol=1.0e-5,
+        thetaMin=-5,
+        thetaMax=0,
+        direct=False,
+    ):
+        """
         Use Wegstein to solve tears.  If multiple tears are given
         they are solved simultaneously.
 
@@ -1113,25 +1100,24 @@ class Graph(threading.Thread):
             1 - error history list of lists of differences between input
                 and output that are supposed to be equal.  Each list is
                 one iteration.
-        '''
+        """
         if self.tearLog:
             log_file = self.tearLogStub
             for j in range(100):
                 # dont want to pick up too many of these files
                 # but if there are multiple loops want to produce seperate
                 # files for them
-                if not os.path.isfile("{}{}.csv".format(log_file, j+1)) or j==99:
-                    log_file = "{}{}.csv".format(log_file, j+1)
+                if not os.path.isfile("{}{}.csv".format(log_file, j + 1)) or j == 99:
+                    log_file = "{}{}.csv".format(log_file, j + 1)
                     break
         else:
             log_file = None
-        numpy.seterr(divide='ignore', invalid='ignore')
-        i = 0      # iteration counter
+        numpy.seterr(divide="ignore", invalid="ignore")
+        i = 0  # iteration counter
         if tears == []:  # no tears nothing to solve.
-            #no need to iterate just run the calculations
+            # no need to iterate just run the calculations
             self.runGraph(nodeOrder)
-            if self.errorStat != 0:
-                return [1, None]
+            return [self.errorStat, None]
         else:  # start the solving
             gofx = []
             x = []
@@ -1143,14 +1129,22 @@ class Graph(threading.Thread):
                 from_node = self.edges[tear].start
                 to_node = self.edges[tear].end
                 names += [con.toName for con in self.edges[tear].con]
-                gofx += [self.nodes[from_node].outVars[con.fromName].value \
-                        for con in self.edges[tear].con]
-                x += [self.nodes[to_node].inVars[con.toName].value \
-                    for con in self.edges[tear].con]
-                xmax += [self.nodes[to_node].inVars[con.toName].max \
-                    for con in self.edges[tear].con]
-                xmin += [self.nodes[to_node].inVars[con.toName].min \
-                    for con in self.edges[tear].con]
+                gofx += [
+                    self.nodes[from_node].outVars[con.fromName].value
+                    for con in self.edges[tear].con
+                ]
+                x += [
+                    self.nodes[to_node].inVars[con.toName].value
+                    for con in self.edges[tear].con
+                ]
+                xmax += [
+                    self.nodes[to_node].inVars[con.toName].max
+                    for con in self.edges[tear].con
+                ]
+                xmin += [
+                    self.nodes[to_node].inVars[con.toName].min
+                    for con in self.edges[tear].con
+                ]
             hist = pandas.DataFrame(index=names)
             gofx = numpy.array(gofx)
             x = numpy.array(x)
@@ -1160,7 +1154,7 @@ class Graph(threading.Thread):
             if self.tearTolType == "abs":
                 err = gofx - x
             elif self.tearTolType == "rng":
-                err = (gofx - x)/xrng
+                err = (gofx - x) / xrng
             hist["xmin"] = xmin
             hist["xmax"] = xmax
             hist["err_{}".format(i)] = err
@@ -1170,32 +1164,45 @@ class Graph(threading.Thread):
                 hist.to_csv(log_file)
             if numpy.max(numpy.abs(err)) < tol:
                 return [0, hist]  # already solved.
-            #if not solved yet do one direct step
+            # if not solved yet do one direct step
             x_prev = x
             gofx_prev = gofx
             x = gofx
             if self.tearBound:
+                if numpy.any(x > xmax) or numpy.any(x < xmin):
+                    _log.warning(
+                        "Bound clipping while solving tear: {}".format(
+                            numpy.array(names)[x > xmax]
+                        )
+                    )
                 hist["next_x_{}_unbound".format(i)] = x
                 x[x > xmax] = xmax[x > xmax]
                 x[x < xmin] = xmin[x < xmin]
+            else:
+                if numpy.any(x > xmax) or numpy.any(x < xmin):
+                    _log.warning(
+                        "Out of bounds while solving tear: {}".format(
+                            numpy.array(names)[x > xmax]
+                        )
+                    )
             hist["next_x_{}".format(i)] = x
             self.setTearX(tears, gofx)
             while True:
                 self.runGraph(nodeOrder)
                 if self.errorStat != 0:
-                    logging.getLogger("foqus." + __name__).warning(
-                        "Simulation failed in tear solve")
-                    return [2, hist] #2, simulation failure
+                    _log.warning("Simulation failed in tear solve")
+                    return [2, hist]  # 2, simulation failure
                 gofx = []
                 for tear in tears:
                     gofx += [
-                        self.nodes[self.edges[tear].start].outVars[con.fromName].value \
-                        for con in self.edges[tear].con]
+                        self.nodes[self.edges[tear].start].outVars[con.fromName].value
+                        for con in self.edges[tear].con
+                    ]
                 gofx = numpy.array(gofx)
                 if self.tearTolType == "abs":
                     err = gofx - x
                 elif self.tearTolType == "rng":
-                    err = (gofx - x)/xrng
+                    err = (gofx - x) / xrng
                 hist["err_{}".format(i)] = err
                 hist["x_{}".format(i)] = x
                 hist["g(x_{})".format(i)] = gofx
@@ -1204,45 +1211,64 @@ class Graph(threading.Thread):
                 if numpy.max(numpy.abs(err)) < tol:
                     break
                 if i > itLimit - 1:
-                    logging.getLogger("foqus." + __name__).warning(
-                        "tear failed to converge in {0} iterations"\
-                        .format(itLimit))
+                    _log.warning(
+                        "tear failed to converge in {0} iterations".format(itLimit)
+                    )
                     err_code = 12 if direct else 11
                     return [11, hist]
                 if not direct:
                     denom = x - x_prev
                     slope = numpy.divide((gofx - gofx_prev), denom)
-                    #if x and previous x are same just do direct sub
-                    #for those elements
+                    # if x and previous x are same just do direct sub
+                    # for those elements
                     slope[numpy.absolute(denom) < 1e-10] = 0.0
-                    theta = 1.0/(1.0 - slope)
+                    theta = 1.0 / (1.0 - slope)
                     theta[theta < thetaMin] = thetaMin
                     theta[theta > thetaMax] = thetaMax
                     hist["theta_{}".format(i)] = theta
                 x_prev = x
                 gofx_prev = gofx
-                x = gofx if direct else (1.0-theta)*x + (theta)*gofx
+                x = gofx if direct else (1.0 - theta) * x + (theta) * gofx
                 if self.tearBound:
+                    if numpy.any(x > xmax) or numpy.any(x < xmin):
+                        _log.warning(
+                            "Bound clipping while solving tear: {}".format(
+                                numpy.array(names)[x > xmax]
+                            )
+                        )
                     hist["next_x_{}_unbound".format(i)] = x
                     x[x > xmax] = xmax[x > xmax]
                     x[x < xmin] = xmin[x < xmin]
+                else:
+                    if numpy.any(x > xmax) or numpy.any(x < xmin):
+                        _log.warning(
+                            "Out-of-bounds while solving tear: {}".format(
+                                numpy.array(names)[x > xmax]
+                            )
+                        )
                 hist["next_x_{}".format(i)] = x
                 self.setTearX(tears, x)
                 i += 1
-        return [0, hist] # 0, everything is fine
+        return [0, hist]  # 0, everything is fine
 
     def tearErr(self, tears):
         x0 = []
         x1 = []
         for tear in tears:
-            x0 += [self.nodes[self.edges[tear].start].outVars[con.fromName].value for con in self.edges[tear].con]
-            x1 += [self.nodes[self.edges[tear].end].inVars[con.toName].value for con in self.edges[tear].con]
+            x0 += [
+                self.nodes[self.edges[tear].start].outVars[con.fromName].value
+                for con in self.edges[tear].con
+            ]
+            x1 += [
+                self.nodes[self.edges[tear].end].inVars[con.toName].value
+                for con in self.edges[tear].con
+            ]
         x0 = numpy.array(x0)
         x1 = numpy.array(x1)
         return (x0 - x1, x1)
 
     def runGraph(self, order):
-        '''
+        """
             This runs calculations for nodes in a specific order.  The
             order argument in a list of lists of node names.  The nodes
             are run in the order given in the first list followed by the
@@ -1251,7 +1277,7 @@ class Graph(threading.Thread):
             after the completion of each node calculation.  If there
             is an error in any node this returns immediatly and sets the
             graph error status to indicate error.
-        '''
+        """
         for namelst in order:
             for name in namelst:
                 if self.stop.isSet():
@@ -1265,9 +1291,9 @@ class Graph(threading.Thread):
                         e.transferInformation(self)
 
     def runNode(self, name):
-        '''
+        """
             Run the calculations for the node named name
-        '''
+        """
         node = self.nodes[name]
         node.runCalc()
         return node.calcError
@@ -1295,12 +1321,14 @@ class Graph(threading.Thread):
         self.edges.pop(i)
 
     def deleteEdges(self, el):
-        el = sorted(list(set(el)), reverse = True)
-        for i in el: self.deleteEdge(i)
+        el = sorted(list(set(el)), reverse=True)
+        for i in el:
+            self.deleteEdge(i)
 
     def deleteNodes(self, nl):
         nl = list(set(nl))
-        for n in nl: self.deleteNode(n)
+        for n in nl:
+            self.deleteNode(n)
 
     def deleteNode(self, i):
         self.nodes.pop(i)
@@ -1314,38 +1342,50 @@ class Graph(threading.Thread):
                 j += 1
 
     def renameNode(self, oldName, newName):
-        if newName == oldName: return
+        if newName == oldName:
+            return
         # Check if new name is in use
         # if it is don't rename
-        if newName in list(self.nodes.keys()): raise
+        if newName in list(self.nodes.keys()):
+            raise
         # search edges and change names
         for edge in self.edges:
-            if edge.start == oldName: edge.start = newName
-            if edge.end == oldName: edge.end = newName
+            if edge.start == oldName:
+                edge.start = newName
+            if edge.end == oldName:
+                edge.end = newName
         # move node in dict
         self.nodes[newName] = self.nodes.pop(oldName)
         self.input[newName] = self.input.pop(oldName)
         self.output[newName] = self.output.pop(oldName)
 
-    def nEdges(self, includeTear = True, includeInactive = False):
+    def nEdges(self, includeTear=True, includeInactive=False):
         # returns the number of edges in the graph
         # options for excluding tear edges and inactive edges
         ntear = 0
         ninactive = 0
         if not includeTear and not includeInactive:
             for e in self.edges:
-                if e.tear and not includeTear: ntear += 1
-                if not e.acitve and not includeInactive: ninactive +=1
+                if e.tear and not includeTear:
+                    ntear += 1
+                if not e.acitve and not includeInactive:
+                    ninactive += 1
         return len(self.edges) - ntear - ninactive
 
     def nNodes(self):
-        '''
+        """
             returns the number of nodes in a graph
-        '''
+        """
         return len(self.nodes)
 
-    def adjMatrix(self, includeTear = False, includeInactive = False, subGraphNodes = None, subGraphEdges = None):
-        '''
+    def adjMatrix(
+        self,
+        includeTear=False,
+        includeInactive=False,
+        subGraphNodes=None,
+        subGraphEdges=None,
+    ):
+        """
             This function returns the common graph data structures:
                 adjacency matrix
                 reverse adjacency matrix
@@ -1365,14 +1405,14 @@ class Graph(threading.Thread):
 
             nn - dictionary to look up node index in adj matrix
 
-        '''
-        nn       = dict()  # matrix index lookup from node names
-        ni       = []      # node name lookup from matrix index
-        mat      = []      # adjacency matrix
-        adj      = []      # adjacency lists
-        adjR     = []      # reverse adjacency lists
-        adjEdge  = []      # edge adj lists (edges that are adj to node)
-        adjEdgeR = []      # edge reverse adj lists
+        """
+        nn = dict()  # matrix index lookup from node names
+        ni = []  # node name lookup from matrix index
+        mat = []  # adjacency matrix
+        adj = []  # adjacency lists
+        adjR = []  # reverse adjacency lists
+        adjEdge = []  # edge adj lists (edges that are adj to node)
+        adjEdgeR = []  # edge reverse adj lists
         # if no subgraph nodes where specified use the whole graph
         if subGraphNodes == None:
             subGraphNodes = list(self.nodes.keys())
@@ -1380,7 +1420,7 @@ class Graph(threading.Thread):
         if subGraphEdges == None:
             subGraphEdges = list(range(len(self.edges)))
         # find edges to nodes not in the sub graph, also tear and inactive edges depending on options
-        delSet = [] # set of edges to delete
+        delSet = []  # set of edges to delete
         for i in range(len(subGraphEdges)):
             edge = self.edges[subGraphEdges[i]]
             if edge.tear and not includeTear:
@@ -1401,20 +1441,20 @@ class Graph(threading.Thread):
         # Create lookup tables for
         # node name -> node index and node index -> node name
         i = 0
-        ni = [""]*len(self.nodes)
+        ni = [""] * len(self.nodes)
         for key in self.nodes:
             if key in subGraphNodes:
                 nn[key] = i
                 ni[i] = key
                 i += 1
-        #Initialize empty adj matrix and lists
+        # Initialize empty adj matrix and lists
         for i in range(len(nn)):
-            mat.append([False]*len(nn))
+            mat.append([False] * len(nn))
             adj.append([])
             adjR.append([])
             adjEdge.append([])
             adjEdgeR.append([])
-        #Create adjacency matrix and adjacency lists
+        # Create adjacency matrix and adjacency lists
         for ei in range(len(self.edges)):
             if ei in subGraphEdges:
                 edge = self.edges[ei]
@@ -1423,9 +1463,9 @@ class Graph(threading.Thread):
                 mat[i][j] = True
                 adj[i].append(j)
                 adjR[j].append(i)
-                adjEdge[i]  = ei
+                adjEdge[i] = ei
                 adjEdgeR[j] = ei
-        return(nn, ni, mat, adj, adjR, adjEdge, adjEdgeR, subGraphEdges)
+        return (nn, ni, mat, adj, adjR, adjEdge, adjEdgeR, subGraphEdges)
 
     def adjLists(self):
         # adds a list of adjacent node to each node
@@ -1455,7 +1495,7 @@ class Graph(threading.Thread):
         # get index of edge from v to w returns None if no edge from v to w
         # multiple edges are not allowed
         indx = None
-        for i in range(0,len(self.edges)):
+        for i in range(0, len(self.edges)):
             if self.edges[i].start == vkey:
                 if self.edges[i].end == wkey:
                     indx = i
@@ -1475,21 +1515,22 @@ class Graph(threading.Thread):
         # The first list is a list of lists of all nodes in all cycles
         # The second list is a list of lists of all edges in all cycles
         [cycles, cycEdges] = self.allCycles()  # call cycle finding algorithm
-        #Create empty incidence matrix
+        # Create empty incidence matrix
         ceMat = numpy.zeros((len(cycles), self.nEdges()), dtype=numpy.dtype(int))
-        #Fill out incidence matrix
+        # Fill out incidence matrix
         for i in range(0, len(cycEdges)):
             for e in cycEdges[i]:
                 ceMat[i, e] = 1
         return [ceMat, cycles, cycEdges]
 
     def allCycles(
-            self,
-            includeTear = True,
-            includeInactive = False,
-            subGraphNodes = None,
-            subGraphEdges = None):
-        '''
+        self,
+        includeTear=True,
+        includeInactive=False,
+        subGraphNodes=None,
+        subGraphEdges=None,
+    ):
+        """
             This function find all the cycles in a directed graph.
             The algorithm is based on Tarjan 1973 Enumeration of the
             elementary circuits of a directed graph,
@@ -1508,7 +1549,8 @@ class Graph(threading.Thread):
             ---Return Value---
             return[0] = a list of lists of nodes in each cycle
             return[1] = a list of lists of edges in each cycle
-        '''
+        """
+
         def backtrack(v):
             # sub-function recursive part
             f = False
@@ -1533,6 +1575,7 @@ class Graph(threading.Thread):
                 mark[v] = False
             pointStack.pop()
             return f
+
         # main part (and first call to above recursive function)
         # make adj lists
         [
@@ -1543,16 +1586,12 @@ class Graph(threading.Thread):
             adjR,
             adjEdges,
             adjEdgesR,
-            subGraphEdges
-        ] = self.adjMatrix(
-            includeTear,
-            includeInactive,
-            subGraphNodes,
-            subGraphEdges)
-        pointStack  = [] # node stack
-        markStack = [] # nodes that have been marked
-        cycles = [] # list of cycles found
-        mark = [False]*len(nodeNameLookup)  # if a node is marked
+            subGraphEdges,
+        ] = self.adjMatrix(includeTear, includeInactive, subGraphNodes, subGraphEdges)
+        pointStack = []  # node stack
+        markStack = []  # nodes that have been marked
+        cycles = []  # list of cycles found
+        mark = [False] * len(nodeNameLookup)  # if a node is marked
         for s in range(len(nodeNameLookup)):
             backtrack(s)
             while len(markStack) > 0:
@@ -1567,13 +1606,21 @@ class Graph(threading.Thread):
         for cyc in cycles:
             ecyc = []
             for i in range(0, len(cyc) - 1):
-                ecyc.append(self.getEdgeIndex(cyc[i], cyc[i+1]))
-            ecyc.append(self.getEdgeIndex(cyc[-1], cyc[0])) # edge from last index to cycle start
+                ecyc.append(self.getEdgeIndex(cyc[i], cyc[i + 1]))
+            ecyc.append(
+                self.getEdgeIndex(cyc[-1], cyc[0])
+            )  # edge from last index to cycle start
             edgeCycles.append(ecyc)
         return [cycles, edgeCycles]
 
-    def stronglyConnectedSubGraphs(self, includeTear = True, includeInactive = False, subGraphNodes = None, subGraphEdges = None):
-        '''
+    def stronglyConnectedSubGraphs(
+        self,
+        includeTear=True,
+        includeInactive=False,
+        subGraphNodes=None,
+        subGraphEdges=None,
+    ):
+        """
             This is an algorithm for finding strongly connected components in a graph. It is based on
             Tarjan. 1972 Depth-First Search and Linear Graph Algorithms, SIAM J. Comput. v1 no. 2 1972
 
@@ -1594,7 +1641,8 @@ class Graph(threading.Thread):
             result[2] = list of lists of out edges in each SCC. (edges that start in a SCC but end outside)
             result[3] = list of lists of in edges in each SCC. (edges that end in a SCC but start outside)
             result[4] = list of order in which to calculate SCCs (the way the information flows, the SCC are a tree)
-        '''
+        """
+
         def sc(v, stk, depth, strngComps):
             # recursive sub-function for backtracking
             ndepth[v] = depth
@@ -1616,13 +1664,23 @@ class Graph(threading.Thread):
                         break
                 strngComps.append(scomp)
             return depth
+
         # Generate the adjacency matrix for the graph or subgraph
-        [nodeIndexLookup, nodeNameLookup, adjMat, adj, adjR, adjEdges, adjEdgesR, subGraphEdges] = self.adjMatrix(includeTear, includeInactive, subGraphNodes, subGraphEdges)
-        #depth      = 0   #depth index for depth first search
-        stk        = []  #node stack
-        strngComps = []  #list of strongly connected components
-        ndepth     = [None]*len(nodeNameLookup)
-        back       = [None]*len(nodeNameLookup)
+        [
+            nodeIndexLookup,
+            nodeNameLookup,
+            adjMat,
+            adj,
+            adjR,
+            adjEdges,
+            adjEdgesR,
+            subGraphEdges,
+        ] = self.adjMatrix(includeTear, includeInactive, subGraphNodes, subGraphEdges)
+        # depth      = 0   #depth index for depth first search
+        stk = []  # node stack
+        strngComps = []  # list of strongly connected components
+        ndepth = [None] * len(nodeNameLookup)
+        back = [None] * len(nodeNameLookup)
         # find the SCCs
         for v in range(len(nodeNameLookup)):
             if ndepth[v] == None:
@@ -1638,19 +1696,16 @@ class Graph(threading.Thread):
             inEdges.append(ie)
             outEdges.append(oe)
         sccOrder = self.sccOrderCalc(sccNodes, inEdges, outEdges)
-        return(sccNodes, sccEdges, outEdges, inEdges, sccOrder)
+        return (sccNodes, sccEdges, outEdges, inEdges, sccOrder)
 
-    def calculationOrder(
-        self,
-        roots = [],
-        subNodes = None,
-        subEdges = None):
+    def calculationOrder(self, roots=[], subNodes=None, subEdges=None):
         # Make adjacency lists
         if not self.checkTearStatus():
             [tearSets, ub1, ub2] = self.selectTear()
             self.setTearSet(tearSets[0])
-        [nn, ni, mat, adj, adjR, adjEdge, adjEdgeR, subGraphEdges] =\
-            self.adjMatrix(False, False, subNodes, subEdges)
+        [nn, ni, mat, adj, adjR, adjEdge, adjEdgeR, subGraphEdges] = self.adjMatrix(
+            False, False, subNodes, subEdges
+        )
         rootsIndex = None
         order = []
         if len(roots) > 0:
@@ -1667,7 +1722,7 @@ class Graph(threading.Thread):
         return order
 
     def selectTear(self):
-        '''
+        """
             This finds optimal sets of tear edges based on two criteria.
             The primary objective is to minimize the maximum number of
             times any cycle is broken.  The seconday criteria is to
@@ -1697,7 +1752,8 @@ class Graph(threading.Thread):
                may not really be nessicary.  For very large flowsheets
                There could be an extreemly large number of optimial tear
                edge sets.
-        '''
+        """
+
         def sear(depth, prevY):
             # This is a recursive function for generating tear sets
             # it selects one edge from a cycle, then calls itself
@@ -1709,72 +1765,74 @@ class Graph(threading.Thread):
             # cycles contain common edges.
             for i in range(0, len(cycleEdges[depth])):
                 # Loop through all the edges in cycle with index depth
-                y = list(prevY) # get list of already selected tear stream
+                y = list(prevY)  # get list of already selected tear stream
                 y[cycleEdges[depth][i]] = 1
-                Ay = numpy.dot(A,y) #calculate the number of times each cycle is torn
+                Ay = numpy.dot(A, y)  # calculate the number of times each cycle is torn
                 maxAy = max(Ay)
                 sumY = sum(y)
                 if maxAy > upperBound[0]:
                     # breaking a cycle to many times
-                    continue #done looking here branch is no good
+                    continue  # done looking here branch is no good
                 elif maxAy == upperBound[0] and sumY > upperBound[1]:
                     # too many tears
-                    continue #done looking here branch is no good
+                    continue  # done looking here branch is no good
                 # call self at next depth where a cycle is not broken
                 if min(Ay) > 0:
                     if maxAy < upperBound[0]:
-                        upperBound[0] = maxAy  #Most important factor
-                        upperBound[1] = sumY   #Second most important
+                        upperBound[0] = maxAy  # Most important factor
+                        upperBound[1] = sumY  # Second most important
                     elif sumY < upperBound[1]:
                         upperBound[1] = sumY
                     # record solution
                     ySet.append([list(y), maxAy, sumY])
                 else:
-                    for j in range(depth+1, nr):
+                    for j in range(depth + 1, nr):
                         if Ay[j] == 0:
                             sear(j, y)
+
         # ---END sear FUNCTION---
-        #Get a quick and I think pretty good tear set for upper bound
+        # Get a quick and I think pretty good tear set for upper bound
         tearUB = self.tearUpperBound()
         # Find all the cycles in a graph and make cycle-edge matrix A
         # rows of A are cycles and columns of A are edges
         # 1 if a edge is in a cycle 0 otherwise
-        [A, cycles, cycleEdges] = self.cycleEdgeMatrix() #
-        (nr,nc) = A.shape
-        if nr == 0: #no cycles no tear edges and we are done
-            return [[[]], 0 , 0]
+        [A, cycles, cycleEdges] = self.cycleEdgeMatrix()  #
+        (nr, nc) = A.shape
+        if nr == 0:  # no cycles no tear edges and we are done
+            return [[[]], 0, 0]
         # There are cycles so find tear edges.
-        y_init = [False]*self.nEdges() # edge j in tear set?
-        for jj in tearUB: y_init[jj] = 1 # y for initial u.b. solution
-        Ay_init = numpy.dot(A, y_init) # number of times each loop torn
-        upperBound = [max(Ay_init), sum(y_init)] #set two upper bounds
-        #The fist upper bound is on number of times a loop is broken
-        #Second upper bound is on number of tears
-        y_init = [False]*self.nEdges() #clear y vector to start search
-        ySet = []  #a list of tear sets
+        y_init = [False] * self.nEdges()  # edge j in tear set?
+        for jj in tearUB:
+            y_init[jj] = 1  # y for initial u.b. solution
+        Ay_init = numpy.dot(A, y_init)  # number of times each loop torn
+        upperBound = [max(Ay_init), sum(y_init)]  # set two upper bounds
+        # The fist upper bound is on number of times a loop is broken
+        # Second upper bound is on number of tears
+        y_init = [False] * self.nEdges()  # clear y vector to start search
+        ySet = []  # a list of tear sets
         # in ySet the fist index is the tear set
         # three element are stored in each tear set:
         # 0 = y vector, 1 = max(Ay), 2 = sum(y)
         # Call recursive function to find tear sets
         st = time.time()
-        sear(0,y_init)
+        sear(0, y_init)
         # screen found tear sets found
         # A set can be recorded before a change in upper bound so can
         # just trhow out sets with objectives higher than u.b.
         deleteSet = []  # vector of tear set indexes to delete
-        for i in range(0,len(ySet)):
+        for i in range(0, len(ySet)):
             if ySet[i][1] > upperBound[0]:
                 deleteSet.append(i)
-            elif ySet[i][1]==upperBound[0] and ySet[i][2]>upperBound[1]:
+            elif ySet[i][1] == upperBound[0] and ySet[i][2] > upperBound[1]:
                 deleteSet.append(i)
         for i in reversed(deleteSet):
             del ySet[i]
         # Check for duplicates and delete them
         deleteSet = []
-        for i in range(0,len(ySet)-1):
+        for i in range(0, len(ySet) - 1):
             if i in deleteSet:
                 continue
-            for j in range(i+1, len(ySet)):
+            for j in range(i + 1, len(ySet)):
                 if j in deleteSet:
                     continue
                 for k in range(0, len(y_init)):
@@ -1795,12 +1853,11 @@ class Graph(threading.Thread):
                     edges.append(i)
             es.append(edges)
         # Log ammount of time required to find tear sets
-        logging.getLogger("foqus." + __name__).info(
-            "Teat steam search, elapsed time: " + str(time.time()-st))
+        _log.info("Teat steam search, elapsed time: " + str(time.time() - st))
         return [es, upperBound[0], upperBound[1]]
 
     def tearUpperBound(self):
-        '''
+        """
             This function quickly finds a sub-optimal set of tear
             edges.  This serves as an inital upperbound when looking
             for an optimal tear set.  Having an inital upper bound
@@ -1808,7 +1865,8 @@ class Graph(threading.Thread):
 
             This works by constructing a search tree and just makes a
             tear set out of all the back edges.
-        '''
+        """
+
         def cyc(vkey, vnode, depth):
             # this is a recursive function
             vnode.depth = depth
@@ -1821,13 +1879,14 @@ class Graph(threading.Thread):
                 elif wnode.depth < vnode.depth:
                     # found a back edge add to tear set
                     tearSet.append(self.getEdgeIndex(vkey, wkey))
-        #End recursive part
-        #main part
+
+        # End recursive part
+        # main part
         self.adjLists()
         depth = 0
         tearSet = []  # list of back/tear edges
         for key, node in self.nodes.items():
-            node.depth  = None
+            node.depth = None
             node.parent = None
         for vkey, vnode in self.nodes.items():
             if vnode.depth == None:
@@ -1835,7 +1894,7 @@ class Graph(threading.Thread):
         return tearSet
 
     def subGraphEdges(self, nodes):
-        '''
+        """
             This function returns a list of edges that are included in
             a subgraph given by a list of node names.  The function
             returns a list of three lists:
@@ -1848,27 +1907,31 @@ class Graph(threading.Thread):
 
             Arguments:
             nodes -- list of subgraph node names
-        '''
+        """
         # Given a subgraph defined by a set of nodes
         # find the edges in the subgraph
-        e = []   # edges that connect two nodes in the subgraph
-        ie = []  # in edges end at a node in the subgraph but end at a node not in the subgraph
-        oe = []  # out edges start at a node in the subgraph but end at a node not in the subgraph
+        e = []  # edges that connect two nodes in the subgraph
+        ie = (
+            []
+        )  # in edges end at a node in the subgraph but end at a node not in the subgraph
+        oe = (
+            []
+        )  # out edges start at a node in the subgraph but end at a node not in the subgraph
         for i in range(len(self.edges)):
             if self.edges[i].start in nodes:
                 if self.edges[i].end in nodes:
                     # its in the sub graph
                     e.append(i)
                 else:
-                    #its an out edge of the subgraph
+                    # its an out edge of the subgraph
                     oe.append(i)
             elif self.edges[i].end in nodes:
-                #its a in edge of the subgraph
+                # its a in edge of the subgraph
                 ie.append(i)
         return [e, ie, oe]
 
     def sccOrderCalc(self, sccNodes, ie, oe):
-        '''
+        """
             This determines the order in witch to do calculations
             for strongly connected components, it is used to help
             determine the most efficient order to solve tear streams
@@ -1889,10 +1952,10 @@ class Graph(threading.Thread):
             ie: list of lists of in edges to SCCs
             oe: list of lists of out edged to SCCs
 
-        '''
+        """
         # initialize empty adjacency lists
-        adjlist = [] # SCC adjacency list
-        adjlistR = [] # SCC reverse adjacency list
+        adjlist = []  # SCC adjacency list
+        adjlistR = []  # SCC reverse adjacency list
         for i in range(len(sccNodes)):
             adjlist.append([])
             adjlistR.append([])
@@ -1902,18 +1965,20 @@ class Graph(threading.Thread):
             for j in range(len(sccNodes)):
                 for ine in ie[i]:
                     for oute in oe[j]:
-                        if ine==oute:
+                        if ine == oute:
                             adjlist[j].append(i)
                             adjlistR[i].append(j)
                             done = True
-                    if done: break
-                if done: break
+                    if done:
+                        break
+                if done:
+                    break
             done = False
         # The calculation order starts with root SCCs first
         return self.treeOrder(adjlist, adjlistR)
 
     def treeOrder(self, adj, adjR, roots=None):
-        '''
+        """
             This function determines the ordering of nodes in a directed
             tree.  This is a generic function that can opertate on any
             given tree represented the the adjaceny and reverse
@@ -1940,32 +2005,33 @@ class Graph(threading.Thread):
                 the case that roots are supplied not all the nodes in
                 the tree may appear in the ordering.  If no roots are
                 supplied, the roots of the tree are used.
-        '''
+        """
         adjR = copy.deepcopy(adjR)
         for i, l in enumerate(adjR):
             adjR[i] = set(l)
         if roots == None:
             roots = []
-            mark = [True]*len(adj) #mark all nodes if no roots specified
-            r = [True]*len(adj)
+            mark = [True] * len(adj)  # mark all nodes if no roots specified
+            r = [True] * len(adj)
             # no root specified so find roots of tree
-            for i in adj:  #the roots are not adjacent to anything
+            for i in adj:  # the roots are not adjacent to anything
                 for j in i:  # remember this is directed graph
                     r[j] = False
-            for i in range(len(r)):  #make list of roots
-                if r[i]: roots.append(i)
-        else:  #if roots are specified mark descendants
-            mark = [False]*len(adj)
+            for i in range(len(r)):  # make list of roots
+                if r[i]:
+                    roots.append(i)
+        else:  # if roots are specified mark descendants
+            mark = [False] * len(adj)
             lst = roots
             while len(lst) > 0:
                 lst2 = []
                 for i in lst:
                     mark[i] = True
                     lst2 += adj[i]
-                lst = set(lst2) # remove dupes
+                lst = set(lst2)  # remove dupes
         # Now we have list of roots, and roots and their desendants are
         # marked
-        ndepth = [None]*len(adj)
+        ndepth = [None] * len(adj)
         lst = copy.deepcopy(roots)
         order = []
         checknodes = set()  # list of candidate nodes for next depth
@@ -1976,9 +2042,9 @@ class Graph(threading.Thread):
         while len(lst) > 0:
             order.append(lst)
             depth += 1
-            lst = []     # nodes to add to the next depth in order
+            lst = []  # nodes to add to the next depth in order
             delSet = set()  # nodes to delete from checknodes
-            checkUpdate = set() # nodes to add to checkNodes
+            checkUpdate = set()  # nodes to add to checkNodes
             for i in checknodes:
                 if ndepth[i] != None:
                     # This means there is a cycle in the graph
@@ -1986,7 +2052,7 @@ class Graph(threading.Thread):
                     raise GraphEx(code=201)
                 remSet = set()  # to remove from a nodes rev adj list
                 for j in adjR[i]:
-                    if j in order[depth-1]:
+                    if j in order[depth - 1]:
                         # ancestor already placed
                         remSet.add(j)
                     elif mark[j] == False:
@@ -1997,7 +2063,7 @@ class Graph(threading.Thread):
                 adjR[i] = adjR[i].difference(remSet)
                 # if rev adj list is empty, all ancestors
                 # have been placed so add node
-                if len(adjR[i])==0:
+                if len(adjR[i]) == 0:
                     ndepth[i] = depth
                     lst.append(i)
                     delSet.add(i)

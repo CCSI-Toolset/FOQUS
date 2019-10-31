@@ -1,0 +1,80 @@
+version: 2
+
+jobs:
+
+  setup:
+    docker:
+      - image: circleci/python:3.7
+    working_directory: ~/repo
+
+    steps:
+      - checkout
+
+      - run:
+          name: Install Requirements
+          command: |
+            python3 -m venv venv
+            . venv/bin/activate
+            pip install -qr requirements.txt
+
+      - run:
+          name: Install FOQUS
+          command: |
+            . venv/bin/activate
+            python3 setup.py -q install
+
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - '*'
+
+  test:
+    docker:
+      - image: circleci/python:3.7
+    working_directory: ~/repo
+
+    steps:
+      - attach_workspace:
+          at: ~/repo
+
+      - run:
+          name: Setup Testing Environment
+          command: |
+            . venv/bin/activate
+            pip install -q pytest coverage pylint
+
+      - run:
+          name: Run PyLint
+          command: |
+            . venv/bin/activate
+            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
+
+      - run:
+          name: Run Tests
+          command: |
+            . venv/bin/activate
+            coverage run -m pytest --junit-xml=test-results/junit/report.xml
+
+      - run:
+          name: Test Reports
+          command: |
+            . venv/bin/activate
+            coverage report --omit=*site-packages* --fail-under=22
+            coverage html --omit=*site-packages*  -d test-results/coverage # Generate html report
+            coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
+
+      - store_artifacts:
+          path: test-results
+
+      - store_test_results:
+          path: test-results
+
+
+workflows:
+  version: 2
+  setup_and_test:
+    jobs:
+      - setup
+      - test:
+          requires:
+            - setup

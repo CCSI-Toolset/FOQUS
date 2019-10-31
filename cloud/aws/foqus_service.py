@@ -14,13 +14,7 @@ import os
 import time
 import sys,json,signal,os,errno,uuid,threading,traceback
 from foqus_lib.service.flowsheet import FlowsheetControl
-import logging
-import logging.config
-
-
-_instanceid = None
 WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
-_log = None
 
 
 """
@@ -62,7 +56,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
     def SvcStop(self):
         self.ReportServiceStatus(win32service.SERVICE_STOP_PENDING)
         win32event.SetEvent(self.hWaitStop)
-        _log.debug("stop called")
+        servicemanager.LogInfoMsg("%s stop called" %(self._svc_name_))
         self._flowsheet_ctrl.stop()
 
     def SvcDoRun(self):
@@ -73,7 +67,7 @@ class AppServerSvc (win32serviceutil.ServiceFramework):
                               (self._svc_name_,''))
         self._flowsheet_ctrl = FlowsheetControl()
         self._flowsheet_ctrl.run()
-        _log.debug("exit run loop")
+        servicemanager.LogInfoMsg("%s exit run loop" %(self._svc_name_))
 
 
 if __name__ == '__main__':

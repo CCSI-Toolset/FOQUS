@@ -135,8 +135,10 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     """
     print(turbine_simulation_script.__file__)
     turbine_cfg = node.gr.turbConfig.getFile()
+    _log.debug('CWD: %s', os.path.abspath(os.path.curdir))
+    turbine_cfg = os.path.abspath(turbine_cfg)
     _log.debug('Turbine Configuration File: %s', turbine_cfg)
-    sim_list = turbine_simulation_script.main_list(['--json', turbine_cfg])
+    sim_list = turbine_simulation_script.main_list([turbine_cfg], func=None)
     print('Simulation List %s' %sim_list)
     sim_d = [i for i in sim_list if i['Name'] == model_name]
     cache_sim_guid = None

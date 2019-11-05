@@ -7,48 +7,48 @@ def makeHeatIntegrationNode(node):
     #should only need to be called once after that everything gets saved
     #
     # Input variables
-    node.inVars["Hrat"] = gn.nodeVars(
+    node.inVars["Hrat"] = gn.NodeVars(
             value = 10.0,
             vmax  = 500.0,
             vdflt = 10.0,
             unit  = "K",
             vdesc = "Minimum approach temperature",
             vst   = "sinter")
-    node.inVars["Max.Time"] = gn.nodeVars(
+    node.inVars["Max.Time"] = gn.NodeVars(
             value = 60.0,
             vmax  = 10000.0,
             vdflt = 60.0,
             unit  = "second",
             vdesc = "Maximum allowable time for heat integration",
             vst   = "sinter")
-    node.inVars["Net.Power"] = gn.nodeVars(
+    node.inVars["Net.Power"] = gn.NodeVars(
             value = None,
             vmax  = 1000.0,
             unit  = "MW",
             vdesc = "Net power output without CCS",
             vst   = "sinter")
     # Output variables
-    node.outVars["Utility.Cost"] = gn.nodeVars(
+    node.outVars["Utility.Cost"] = gn.NodeVars(
             unit  = "$/hr",
             vdesc = "Total utility cost",
             vst   = "sinter")
-    node.outVars["HP_Steam.Consumption"] = gn.nodeVars(
+    node.outVars["HP_Steam.Consumption"] = gn.NodeVars(
             unit  = "GJ/hr",
             vdesc = "High-pressure steam (230 C) consumption (Cost: $8.04/GJ)",
             vst   = "sinter")
-    node.outVars["MP_Steam.Consumption"] = gn.nodeVars(
+    node.outVars["MP_Steam.Consumption"] = gn.NodeVars(
             unit  = "GJ/hr",
             vdesc = "Medium-pressure steam (164 C) consumption (Cost: $6.25/GJ)",
             vst   = "sinter")
-    node.outVars["Cooling_Water.Consumption"] = gn.nodeVars(
+    node.outVars["Cooling_Water.Consumption"] = gn.NodeVars(
             unit = "GJ/hr",
             vdesc = "Cooling water (20 C) consumption (Cost: $0.21/GJ)",
             vst   = "sinter")
-    node.outVars["FH.Heat.Addition"] = gn.nodeVars(
+    node.outVars["FH.Heat.Addition"] = gn.NodeVars(
             unit = "GJ/hr",
             vdesc = "Heat addition to feed water heaters",
             vst   = "sinter")
-    node.outVars["Min.No.HX"] = gn.nodeVars(
+    node.outVars["Min.No.HX"] = gn.NodeVars(
             unit = "None",
             vdesc = "Minimum number of heat exchangers",
             vst   = "sinter")

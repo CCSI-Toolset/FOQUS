@@ -28,21 +28,19 @@ into an objective function calculation.
 Problem Set Up
 --------------
 
-See Chapter `[chpt.flowsheet] <#chpt.flowsheet>`__ for information about
-setting up a flowsheet in FOQUS. Once the flowsheet has been set up and
-tested, an optimization problem can be added. FOQUS allows multiple
-flowsheet evaluations to be used to calculate a single objective
-function value. This allows FOQUS to do parameter estimation and
-scenario based optimization under uncertainty. There are three types of
-variables used in the optimization problem: (1) fixed variables do not
-change during the optimization, (2) decision variables are modified by
-the optimization algorithm to find the best value of the objective
-function, and (3) sample variables, which are used to construct the
-multiple flowsheet evaluations that can go into an objective
-calculation. If no sample variables are defined, each objective function
-value will be based on a single flowsheet evaluation. Figure
-:ref:`fig.opt.problem.variables` shows the
-**Variables** tab selection form.
+See Chapter :ref:`flowsheet_main` for information about setting up a flowsheet
+in FOQUS. Once the flowsheet has been set up and tested, an optimization problem
+can be added. FOQUS allows multiple flowsheet evaluations to be used to
+calculate a single objective function value. This allows FOQUS to do parameter
+estimation and scenario based optimization under uncertainty. There are three
+types of variables used in the optimization problem: (1) fixed variables do not
+change during the optimization, (2) decision variables are modified by the
+optimization algorithm to find the best value of the objective function, and (3)
+sample variables, which are used to construct the multiple flowsheet evaluations
+that can go into an objective calculation. If no sample variables are defined,
+each objective function value will be based on a single flowsheet
+evaluation. Figure :ref:`fig.opt.problem.variables` shows the **Variables** tab
+selection form.
 
 .. figure:: ../figs/opt_problem_variables.svg
    :alt: Optimization Variable Selection
@@ -173,10 +171,9 @@ Python expressions.
    :math:`g(\mathbf{x}) \leq 0`. The **Expression** column contains the
    Python expression for :math:`g(\mathbf{x})`.
 
-#. The **Penalty Factor** contains the coefficient :math:`a` used in
-   calculating the penalty for a constraint violation, see Equations
-   `[eq.linear.constriant] <#eq.linear.constriant>`__ to
-   `[eq.step.constriant] <#eq.step.constriant>`__.
+#. The **Penalty Factor** contains the coefficient :math:`a` used in calculating
+   the penalty for a constraint violation, see Equations
+   :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
 
 #. The **Form** column contains a selection of different methods to
    calculate a constraint penalty.
@@ -189,21 +186,20 @@ Python expressions.
    The variables are provided without the sample index.
 
 The calculations for each type of constraint penalty are given in
-Equations `[eq.linear.constriant] <#eq.linear.constriant>`__ to
-`[eq.step.constriant] <#eq.step.constriant>`__.
+Equations :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
 
 .. math::
+   :label: eq.linear.constriant
 
-   \label{eq.linear.constriant}
-       \text{Linear penalty form:  }p_i =
-       \begin{cases}
-           0 & \text{if } g_i(\mathbf{x}) \leq 0\\
-           a \times g_i(\mathbf{x}) & \text{if } g_i(\mathbf{x}) > 0
-       \end{cases}
+   \text{Linear penalty form:  }p_i =
+   \begin{cases}
+       0 & \text{if } g_i(\mathbf{x}) \leq 0\\
+       a \times g_i(\mathbf{x}) & \text{if } g_i(\mathbf{x}) > 0
+   \end{cases}
 
 .. math::
+   :label: eq.quadratic.constriant
 
-   \label{eq.quadratic.constriant}
    \text{Quadratic penalty form:  }p_i =
    \begin{cases}
    0 & \text{if } g_i(\mathbf{x}) \leq 0\\
@@ -211,8 +207,8 @@ Equations `[eq.linear.constriant] <#eq.linear.constriant>`__ to
    \end{cases}
 
 .. math::
+   :label: eq.step.constriant
 
-   \label{eq.step.constriant}
    \text{Step penalty form:  }p_i =
    \begin{cases}
    0 & \text{if } g_i(\mathbf{x}) \leq 0\\
@@ -271,7 +267,7 @@ returned as a list with only one element. The last two return values are
 debugging information for constraints. In this case, the “zeros” are
 just place holders and have no real utility.
 
-.. code-block::
+.. code-block:: python
   :name: fig.opt.problem.objective2_code
   :caption: Objective Function Code
 

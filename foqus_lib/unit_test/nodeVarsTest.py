@@ -56,7 +56,7 @@ class testNodeVarsSteady(unittest.TestCase):
 
     def testSetTimeStepOutOfBounds(self):
         var = self.makeVar()
-        with self.assertRaises(nodeVarEx) as cm:
+        with self.assertRaises(NodeVarEx) as cm:
             var.setTimeStep(2)
         e = cm.exception
         self.assertEqual(e.code, 22)
@@ -72,7 +72,7 @@ class testNodeVarsSteady(unittest.TestCase):
         # time step, and there is no second to last time step in
         # this case
         var = self.makeVar()
-        with self.assertRaises(nodeVarEx) as cm:
+        with self.assertRaises(NodeVarEx) as cm:
             var.setTimeStep(-2)
         e = cm.exception
         self.assertEqual(e.code, 22)
@@ -129,7 +129,7 @@ class testNodeVarsSteady(unittest.TestCase):
         # shape, should raise an exception
         var = self.makeVar()
         var.setShape((2,2))
-        with self.assertRaises(nodeVarEx) as cm:
+        with self.assertRaises(NodeVarEx) as cm:
             var.value = [[2.1, 2.2], [2.3]]
         e = cm.exception
         self.assertEqual(e.code, 0)

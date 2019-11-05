@@ -1,5 +1,6 @@
 PyQt5==5.9
 sip==4.19.8
+boto3
 sphinx
 sphinx_rtd_theme
 matplotlib

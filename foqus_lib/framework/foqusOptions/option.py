@@ -136,7 +136,7 @@ class option():
         return \
             self.validateType() and \
             self.validateRange() and \
-            validateList()
+            self.validateList()
 
     def validateType(self):
         '''

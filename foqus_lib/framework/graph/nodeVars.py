@@ -341,7 +341,7 @@ class NodeVars(object):
         elif self.dtype == str:
             return "str"
         else:
-            raise NodeVarEx(11, msg=str(dtype))
+            raise NodeVarEx(11, msg=str(self.dtype))
 
     def makeNaN(self):
         """
@@ -476,7 +476,7 @@ class NodeVars(object):
                     * (power(10, (val - self.min) / (self.max - self.min)) - 1)
                 )
             else:
-                raise
+                raise (f"Unknown scaling: {self.scaling}")
         except:
             raise NodeVarEx(
                 code=9,
@@ -507,7 +507,7 @@ class NodeVars(object):
             elif self.scaling == "Power 2":
                 out = log10(9.0 * val / 10.0 + 1) * (self.max - self.min) + self.min
             else:
-                raise
+                raise (f"Unknown scaling: {self.scaling}")
         except:
             raise NodeVarEx(
                 code=9,
@@ -533,7 +533,7 @@ class NodeVars(object):
         elif self.dtype == str:
             sd["dtype"] = "str"
         else:
-            raise NodeVarEx(11, msg=str(dtype))
+            raise NodeVarEx(11, msg=str(self.dtype))
         sd["value"] = value
         sd["min"] = vmin
         sd["max"] = vmax

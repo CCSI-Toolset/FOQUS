@@ -23,7 +23,7 @@ import botocore.exceptions
 _instanceid = None
 #WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
 WORKING_DIRECTORY = os.path.abspath(os.environ.get('FOQUS_SERVICE_WORKING_DIR', "\\ProgramData\\foqus_service"))
-
+AWS_REGION = 'us-east-1'
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = None
@@ -109,7 +109,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
 
     """ Search S3 Bucket for node simulation
     """
-    s3 = boto3.client('s3', region_name='us-east-1')
+    s3 = boto3.client('s3', region_name=AWS_REGION)
     bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
     prefix = '%s/%s/' %(user_name,model_name)
     l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
@@ -294,7 +294,7 @@ class TurbineLiteDB:
     """
     """
     def __init__(self, close_after=True):
-        self._sns = boto3.client('sns', region_name='us-east-1')
+        self._sns = boto3.client('sns', region_name=AWS_REGION)
         self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
         self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
         self._user_name = 'unknown'
@@ -398,15 +398,20 @@ class FlowsheetControl:
     _is_set_working_directory = False
 
     def __init__(self):
+        """
+        _dat -- Session
+        _kat -- keepAliveTimer
+        """
         self._set_working_directory()
         socket.setdefaulttimeout(60)
         self._dat = None
+        self._kat = None
         self._stop = False
         self._receipt_handle = None
         self._simulation_name = None
-        self._sqs = boto3.client('sqs', region_name='us-east-1')
+        self._sqs = boto3.client('sqs', region_name=AWS_REGION)
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
-        self._dynamodb = boto3.client('dynamodb', region_name='us-east-1')
+        self._dynamodb = boto3.client('dynamodb', region_name=AWS_REGION)
         self._dynamodb_table_name = FOQUSAWSConfig.get_instance().get_dynamo_table_name()
 
     @classmethod
@@ -438,8 +443,8 @@ class FlowsheetControl:
         _log.debug("Consumer Register")
         db.consumer_register()
         db.add_message("Consumer Registered")
-        #kat = _KeepAliveTimer(db, freq=60)
-        #kat.start()
+        self._kat = _KeepAliveTimer(db, freq=60)
+        self._kat.start()
         dat = None
         while not self._stop:
             ret = None
@@ -526,15 +531,18 @@ class FlowsheetControl:
                 _log.exception("run_foqus: %s", str(ex))
                 self.close()
                 raise
-                
+
         _log.debug("STOP CALLED")
         self.close()
 
     def close(self):
         dat = self._dat
+        kat = self._kat
         if not dat:
             _log.debug("close: session dat is None")
             return
+        if kat is not None:
+            kat.terminate()
         try:
             dat.flowsheet.turbConfig.stopAllConsumers()
         except Exception as ex:
@@ -620,7 +628,7 @@ class FlowsheetControl:
 
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         _log.info('Simulation Bucket: ' + bucket_name)
-        s3 = boto3.client('s3', region_name='us-east-1')
+        s3 = boto3.client('s3', region_name=AWS_REGION)
         simulation_name = job_desc['Simulation']
         flowsheet_key = '%s/%s/session.foqus' %(user_name, simulation_name)
 

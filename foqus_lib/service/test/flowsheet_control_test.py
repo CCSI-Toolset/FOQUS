@@ -50,6 +50,7 @@ def test_flowsheet_control_run():
     flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+    flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
     # pop_job:  downloads simulation file into working dir
     tp = ('testuser', dict(Id=str(uuid.uuid4()), Simulation='test'))
     flowsheet.FlowsheetControl.pop_job = MagicMock(return_value=tp)

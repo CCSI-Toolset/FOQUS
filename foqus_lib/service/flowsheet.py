@@ -526,7 +526,7 @@ class FlowsheetControl:
                 _log.exception("run_foqus: %s", str(ex))
                 self.close()
                 raise
-            break
+                
         _log.debug("STOP CALLED")
         self.close()
 
@@ -714,7 +714,7 @@ class FlowsheetControl:
             raise RuntimeError('setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes')
         if count_turb_apps:
             _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
-            
+
         return dat
 
     def run_foqus(self, db, job_desc):

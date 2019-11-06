@@ -249,9 +249,9 @@ class FOQUSAWSConfig:
     def get_instance(cls):
         if cls._inst is not None: return cls._inst
         request = urllib.request.urlopen('http://169.254.169.254/latest/user-data')
-        cls.inst = cls()
-        cls.inst._d = json.load(request)
-        return cls.inst
+        cls._inst = cls()
+        cls._inst._d = json.load(request)
+        return cls._inst
     def _get(self, key):
         v = self._d.get(key)
         assert v, "UserData Missing Key: %s" %key

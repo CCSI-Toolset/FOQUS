@@ -1,5 +1,4 @@
-PyQt5==5.9
-sip==4.19.8
+PyQt5==5.13.*
 sphinx
 sphinx_rtd_theme
 matplotlib

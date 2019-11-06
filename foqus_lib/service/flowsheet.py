@@ -503,7 +503,6 @@ class FlowsheetControl:
                 db.add_message("job failed in setup NotImplementedError", job_desc['Id'], exception=msg)
                 self._delete_sqs_job()
                 raise
-            except urllib.error.URLError as ex:
                 _log.exception("setup foqus URLError: %s", str(ex))
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
@@ -527,7 +526,7 @@ class FlowsheetControl:
                 _log.exception("run_foqus: %s", str(ex))
                 self.close()
                 raise
-
+            break
         _log.debug("STOP CALLED")
         self.close()
 
@@ -713,8 +712,9 @@ class FlowsheetControl:
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError('setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes')
-
-        _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+        if count_turb_apps:
+            _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+            
         return dat
 
     def run_foqus(self, db, job_desc):

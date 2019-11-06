@@ -11,9 +11,13 @@ import json
 import logging
 import time
 import uuid
-from .. import flowsheet
 import urllib.request
+from shutil import copyfile
 from botocore.stub import Stubber
+import os
+TOP_LEVEL_DIR = os.path.abspath(os.curdir)
+os.environ['FOQUS_SERVICE_WORKING_DIR'] = '/tmp/foqus_test'
+from .. import flowsheet
 try:
     from unittest.mock import MagicMock,PropertyMock,patch
 except ImportError:
@@ -46,7 +50,20 @@ def test_flowsheet_control_run():
     flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
-    flowsheet.FlowsheetControl.pop_job = MagicMock(return_value=('testuser', dict(Id=str(uuid.uuid4()))))
+    # pop_job:  downloads simulation file into working dir
+    tp = ('testuser', dict(Id=str(uuid.uuid4()), Simulation='test'))
+    flowsheet.FlowsheetControl.pop_job = MagicMock(return_value=tp)
+    orig_simulation_file_path = os.path.abspath(
+        os.path.join(TOP_LEVEL_DIR,
+            'examples/tutorial_files/Flowsheets/Tutorial_1/Simple_flow.foqus'
+        )
+    )
+    sfile,rfile,vfile,ofile = flowsheet.getfilenames(tp[1]['Id'])
+
+    copyfile(orig_simulation_file_path, sfile)
+    with open(vfile, 'w') as fd:
+        fd.write("{}")
+
     flowsheet.FlowsheetControl._delete_sqs_job = MagicMock(return_value=None)
 
     fc = flowsheet.FlowsheetControl()
@@ -58,8 +75,11 @@ def test_flowsheet_control_run():
     #stubber.activate()
     # stubber doesn't WORK.
     stubber.describe_table = MagicMock(return_value=None)
-    stubber.get_item = MagicMock(return_value=dict(Item={}))
+    stubber.get_item = MagicMock(return_value=dict(
+        Item={'Id':'hi', 'Simulation':'test'}))
 
-    fc._stop = True
+    def _run_foqus(self, db, job_desc):
+        fc.stop()
 
+    flowsheet.FlowsheetControl.run_foqus = _run_foqus
     fc.run()

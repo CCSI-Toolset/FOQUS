@@ -1347,7 +1347,7 @@ class Graph(threading.Thread):
         # Check if new name is in use
         # if it is don't rename
         if newName in list(self.nodes.keys()):
-            raise
+            raise (f"Can't rename to {newName}, name already in use.")
         # search edges and change names
         for edge in self.edges:
             if edge.start == oldName:

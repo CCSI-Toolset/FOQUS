@@ -82,7 +82,6 @@ class optim:
         res = []
         const = []
         x = self.x
-        f = self.f
         for o in self.g:
             vi = eval(o.pycode)
             const.append(vi)
@@ -128,7 +127,6 @@ class optim:
             return [1, "Optimization method requires at least " + str(minVars)]
         # Check Objective expressions
         x = self.x
-        f = self.f
         if len(self.obj) < 1:
             return [
                 1,

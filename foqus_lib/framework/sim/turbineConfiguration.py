@@ -437,7 +437,7 @@ class TurbineConfiguration():
         for name in names:
             self.stopConsumer(name)
         _log.debug("Stopped all running consumers")
-        _pm.clean(['AspenProperties'])
+        _pm.clean()
 
     def reloadTurbine(self):
         '''

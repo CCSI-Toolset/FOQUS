@@ -23,7 +23,7 @@ import traceback
 import subprocess
 import socket
 import imp
-
+import foqus_lib.framework.sim.process_management as _pm
 _log = logging.getLogger("foqus." + __name__)
 
 if os.name == 'nt':
@@ -437,6 +437,7 @@ class TurbineConfiguration():
         for name in names:
             self.stopConsumer(name)
         _log.debug("Stopped all running consumers")
+        _pm.clean(['AspenProperties'])
 
     def reloadTurbine(self):
         '''

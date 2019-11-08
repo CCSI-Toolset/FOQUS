@@ -24,7 +24,7 @@ def clean(names=['AspenProperties']):
         _log.debug("Terminate process PID=%s Name=%s Username=%s", process.info.pid, process.info.name, process.info.username)
         process.terminate()
 
-    gone, alive = psutil.wait_procs(process, timeout=3, callback=_on_terminate)
+    gone, alive = psutil.wait_procs(p_list, timeout=10, callback=_on_terminate)
     for p in alive:
         _log.debug("Kill process PID=%s Name=%s Username=%s", process.info.pid, process.info.name, process.info.username)
         p.kill()

@@ -15,7 +15,7 @@ def _on_terminate(proc):
     _log.debug("process {} terminated with exit code {}".format(proc, proc.returncode))
 
 
-def clean(names=['AspenProperties.exe', 'am_task_server.exe']):
+def clean(names=['AspenProperties.exe', 'am_task_server.exe', 'sim_server.exe']):
     """ Scans Process Table for processes that should have exited,
     kills them if found.
     """

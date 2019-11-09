@@ -424,6 +424,7 @@ class TurbineConfiguration():
                 raise TurbineInterfaceEx(code = 0,
                     msg = "Failed to stop consumer: {0}".format(ci.cid),
                     e = e, tb=traceback.format_exc())
+            _pm.clean()
         try:
             del self.consumers[name]
         except:

@@ -1,4 +1,6 @@
 PyQt5==5.13.*
+boto3
+psutil
 sphinx
 sphinx_rtd_theme
 matplotlib

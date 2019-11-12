@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1003</width>
-    <height>835</height>
+    <width>1280</width>
+    <height>755</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -319,7 +319,7 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
    <item row="2" column="0">
     <widget class="QTabWidget" name="tabs">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_3">
       <attribute name="title">
@@ -614,12 +614,12 @@ Choose the one that fits your analysis.</string>
         <widget class="QTableWidget" name="outputs_table">
          <column>
           <property name="text">
-           <string>Name</string>
+           <string>Type</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Type</string>
+           <string>Name</string>
           </property>
          </column>
         </widget>
@@ -969,8 +969,8 @@ Progress will be shown below. </string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>414</width>
-               <height>341</height>
+               <width>514</width>
+               <height>170</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_16"/>

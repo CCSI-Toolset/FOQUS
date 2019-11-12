@@ -1,3 +1,5 @@
+.. _flowsheet_main:
+
 Flowsheets and Settings
 =======================
 

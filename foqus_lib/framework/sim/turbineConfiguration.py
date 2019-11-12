@@ -23,7 +23,7 @@ import traceback
 import subprocess
 import socket
 import imp
-
+import foqus_lib.framework.sim.process_management as _pm
 _log = logging.getLogger("foqus." + __name__)
 
 if os.name == 'nt':
@@ -424,6 +424,7 @@ class TurbineConfiguration():
                 raise TurbineInterfaceEx(code = 0,
                     msg = "Failed to stop consumer: {0}".format(ci.cid),
                     e = e, tb=traceback.format_exc())
+            _pm.clean()
         try:
             del self.consumers[name]
         except:
@@ -437,6 +438,7 @@ class TurbineConfiguration():
         for name in names:
             self.stopConsumer(name)
         _log.debug("Stopped all running consumers")
+        _pm.clean()
 
     def reloadTurbine(self):
         '''
@@ -1074,7 +1076,7 @@ class TurbineConfiguration():
             if checkConsumer:
                 proc = self.checkConsumer(nodeName)
                 if proc == None:
-                    _log.error("Appearently the consumer died, job failed")
+                    _log.error("Apparently the consumer died, job failed")
                     try:
                         self.killJob(jobID, state)
                     except Exception as e:

@@ -15,14 +15,12 @@ tutorial will focus on parameter estimation.
 At any point in this tutorial, the FOQUS session can be saved and the
 tutorial can be started again from that point.
 
-The model is given by Equation `[eq.pe.tut] <#eq.pe.tut>`__. The unknown
-parameters are :math:`a`, :math:`b`, and :math:`c`. The x and y data are
-given in Table :ref:`table.pe.data`.
+The model is given by Equation :eq:`eq.pe.tut`. The unknown parameters are
+:math:`a`, :math:`b`, and :math:`c`. The x and y data are given in Table
+:ref:`table.pe.data`.
 
-.. math::
-
-   \label{eq.pe.tut}
-   y = ax^2 + bx + c
+.. math:: y = ax^2 + bx + c
+   :label: eq.pe.tut
 
 .. _table.pe.data:
 .. table:: x-y Data
@@ -188,18 +186,25 @@ optimization solver changes the a, b, and c to minimize the objective.
 22. Click the **Add Objective** icon on the right side of the Objective
     Function table (see Figure :ref:`fig.pe.tut7`).
 
-23. In the **Expression** column, enter the following (without the line
+23. In the **Expression** column, enter the following (without any line
     break):
 
     ::
 
-       sum([(f[i]['model']['y'] - x[i]['model']['ydata'])**2
-        for i in range(len(x))])
-
+       sum([(ff.model.y - xx.model.ydata)**2 for (ff,xx) in zip(f,x)])
 
     The above expression uses Python list comprehension to calculate the
-    sum of squared errors. The keys for x and f are: sample index, node
-    name, variable name, time step.
+    sum of squared errors.
+    
+    The keys for x (the inputs) and f (the outputs) are:
+       -  Dummy variable name for index (i.e., ff for outputs and xx for inputs)
+       -  Node name (i.e., model)
+       -  Variable name (i.e., y and ydata)
+    
+    Then, the user will need to specify which of the dummy index corresponds to
+    outputs, and which of the dummy index corresponds to inputs. In this case,
+    ff is for the outputs, and xx is for the inputs. Hence, we have
+    "for (ff,xx) in zip(f,x)" (without the quotes).
 
 24. Enter 1 for the **Penalty Scale**.
 
@@ -207,7 +212,7 @@ optimization solver changes the a, b, and c to minimize the objective.
 
 26. No constraints are required.
 
-.. figure:: ../figs/par_est_tut7.svg
+.. figure:: ../figs/par_est_tut7.jpg
    :alt: Objective Function
    :name: fig.pe.tut7
 
@@ -260,7 +265,7 @@ stored in the flowsheet results table.
     toolbar.
 
 36. Open the **Node Editor** and look at the **Input Variables** table.
-    The approximate result should be a = 2, b = -3, and c = 1 (see
+    The approximate result should be :math:`a = 2`, :math:`b = -3`, and :math:`c = 1` (see
     Figure :ref:`fig.pe.tut10`).
 
 .. figure:: ../figs/par_est_tut10.svg

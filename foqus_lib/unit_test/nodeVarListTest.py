@@ -7,7 +7,7 @@ import json
 
 class testNodeVarListSteady(unittest.TestCase):
     def makeTestList1(self):
-        l = nodeVarList()
+        l = NodeVarList()
         l.addNode("N1")
         l.addNode("N2")
         l.addVariable(
@@ -37,7 +37,7 @@ class testNodeVarListSteady(unittest.TestCase):
         return l
 
     def makeTestList2(self):
-        l = nodeVarList()
+        l = NodeVarList()
         l.addNode("N1")
         l.addVariable(
             "N1",

@@ -155,16 +155,15 @@ aleatory input. (In FOQUS, with the exception of mixed
 epistemic-aleatory uncertainty analysis, all uncertain inputs are
 treated as aleatory inputs.)
 
-To perform mixed epistemic-aleatory uncertainty (Figure
-`[fig:uqt_rsaeua] <#fig:uqt_rsaeua>`__), switch to “Expert Mode” by
-clicking the **Mode** button that toggles between the analysis modes.
-After response surface validation, select “Uncertainty Analysis” in the
-first **Choose UQ Analysis** drop-down list, then “Epistemic-Aleatory”
-in the secondary drop-down list, for the UQ analysis. In the input
-table, designate the parameter **Type** (“Epistemic”, “Aleatory” or
-“Fixed”) and the corresponding information for each input. Once
-complete, click **Analyze**. In this tutorial we consider dH1 & dH2 as 
-epistemic uncertain parameters, and rest of them are aleatory.
+To perform mixed epistemic-aleatory uncertainty (Figure :ref:`fig:uqt_rsaeua`),
+switch to “Expert Mode” by clicking the **Mode** button that toggles between the
+analysis modes.  After response surface validation, select “Uncertainty
+Analysis” in the first **Choose UQ Analysis** drop-down list, then
+“Epistemic-Aleatory” in the secondary drop-down list, for the UQ analysis. In
+the input table, designate the parameter **Type** (“Epistemic”, “Aleatory” or
+“Fixed”) and the corresponding information for each input. Once complete, click
+**Analyze**. In this tutorial we consider dH1 & dH2 as epistemic uncertain
+parameters, and rest of them are aleatory.
 
 .. raw:: latex
 
@@ -172,28 +171,25 @@ epistemic uncertain parameters, and rest of them are aleatory.
 
 .. figure:: ../figs/tutorial/24a_RSAEUA_upd.png
    :alt: Response Surface Based Mixed Epistemic-Aleatory Uncertainty
+   :name: fig:uqt_rsaeua
 
    Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis
 
-[fig:uqt_rsaeua]
-
-The results of mixed epistemic-aleatory uncertainty analysis is a plot
-(Figure `[fig:uqt_rsaeua_results] <#fig:uqt_rsaeua_results>`__)
-containing multiple CDFs. In the mixed analysis, the epistemic inputs
-are sampled according to their lower and upper bounds. Each sample point
-spawns a response surface based uncertainty analysis, in which the
+The results of mixed epistemic-aleatory uncertainty analysis is a plot (Figure
+:ref:`fig:uqt_rsaeua_results`) containing multiple CDFs. In the mixed analysis,
+the epistemic inputs are sampled according to their lower and upper bounds. Each
+sample point spawns a response surface based uncertainty analysis, in which the
 epistemic inputs are fixed at their sampled value and the aleatory input
-uncertainties are propagated to generate a CDF that represents the
-output uncertainty. A slider is provided for the user to extract the
-probability range corresponding to a particular value of the output.
+uncertainties are propagated to generate a CDF that represents the output
+uncertainty. A slider is provided for the user to extract the probability range
+corresponding to a particular value of the output.
 
 .. figure:: ../figs/tutorial/24b_RSAEUAResults_upd.png
    :alt: Response Surface Based Mixed Epistemic-Aleatory Uncertainty
+   :name: fig:uqt_rsaeua_results
 
    Response Surface Based Mixed Epistemic-Aleatory Uncertainty Analysis
    Results
-
-[fig:uqt_rsaeua_results]
 
 Response Surface Based Sensitivity Analysis
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -6,11 +6,11 @@ Installation
 Install Python
 --------------
 
-Python version 3.6 up through 3.7.3 is required to run FOQUS.
+Python version 3.6 up through 3.7.5 is required to run FOQUS.
 
 We recommend using either the `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ or `Anaconda <https://www.anaconda.com/download/>`_ Python distribution and package management system. The choice of Miniconda or Anaconda is up to the user, with Miniconda being smaller and quicker to download while Anaconda is larger but more self-contained. For Windows users, Anaconda is likely a better choice as it also comes with the "Anaconda Prompt" which is a command terminal already set up for working with Anaconda. The primary advantage of using Miniconda or Anaconda is being able to isolate and customize a python environment specifically for FOQUS without having to modify your existing system python environment. It does this by allowing the ordinary user the ability to create self-contained python environments without any need for administrator privileges. These separate environments can have different set of packages, isolating version dependencies when working with multiple python projects.
 
-If you have a working version of Python 3.6 through 3.7.3, which you prefer over Anaconda, you can skip the following steps 1-4.
+If you have a working version of Python 3.6 through 3.7.5, which you prefer over Anaconda, you can skip the following steps 1-4.
 
 Anaconda or Miniconda Install and Setup
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -21,7 +21,7 @@ Anaconda or Miniconda Install and Setup
 
 3. Create a foqus conda environment; this environment will be referred to as "foqus" in the installation documentation, but you can use any name you like.  If you would like to install multiple version of FOQUS (for example a stable version and the latest development version), this can be done by running the following command multiple times with different environment names after the `-n` flag in the below command.  In a terminal (or on Windows in the Anaconda Prompt) type::
 
-    conda create -n foqus python=3.7.3 pip
+    conda create -n foqus python=3.7.5 pip
 
    Then follow the prompts.  This will create a new conda environment with a minimal set of packages.  To use a different version of python, change the version specified after `python=` in the command.
 

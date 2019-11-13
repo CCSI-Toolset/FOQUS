@@ -46,8 +46,8 @@ Open an Anaconda3 terminal and install base packages.
 ##### (OPTIONAL) Run FOQUS tests
 ```
 (foqus) C:\Users\Administrator\Desktop> git clone https://github.com/CCSI-Toolset/foqus; cd FOQUS
-(foqus) C:\Users\Administrator\Desktop> pip install -r requirements.txt
-(foqus) C:\Users\Administrator\Desktop\FOQUS>pytest
+(foqus) C:\Users\Administrator\Desktop\FOQUS> pip install -r requirements.txt
+(foqus) C:\Users\Administrator\Desktop\FOQUS> pytest
 ================================================= test session starts =================================================
 platform win32 -- Python 3.7.3, pytest-5.1.2, py-1.8.0, pluggy-0.13.0
 rootdir: C:\Users\Administrator\Desktop\FOQUS, inifile: pytest.ini, testpaths: foqus_lib

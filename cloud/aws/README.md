@@ -113,6 +113,43 @@ PS C:\Users\Administrator\Desktop> [Environment]::SetEnvironmentVariable('path',
 Append the path above in method1 ( $P2 ) by navigating to the control panel:
 control panel/system and security/system/advanced system settings/environment variables/PATH
 ```
+#### Windows 2012/2016 NoInteractiveServices Registry 
+##### EventViewer Errors
+In newer versions of Windows the `Service Control Manager` will error when starting because by default this Registry property is turned-on by default.
+```
+The FOQUS Cloud Service service is marked as an interactive service.  However, the system is configured to not allow interactive services.  This service may not function properly.
+```
+##### Registry get NoInteractiveServices
+```
+PS C:\Users\Administrator> Get-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Windows\ -Name NoInteractiveSer
+vices
+
+NoInteractiveServices : 1
+PSPath                : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows
+                        \
+PSParentPath          : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control
+PSChildName           : Windows
+PSDrive               : HKLM
+PSProvider            : Microsoft.PowerShell.Core\Registry
+PS C:\Users\Administrator> Set-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Windows\ -Name NoInteractiveSer
+vices -Value 0
+```
+##### Registry set NoInteractiveServices
+```
+PS C:\Users\Administrator> Get-ItemProperty -path HKLM:\SYSTEM\CurrentControlSet\Control\Windows\ -Name NoInteractiveSer
+vices
+
+
+NoInteractiveServices : 0
+PSPath                : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Windows
+                        \
+PSParentPath          : Microsoft.PowerShell.Core\Registry::HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control
+PSChildName           : Windows
+PSDrive               : HKLM
+PSProvider            : Microsoft.PowerShell.Core\Registry
+```
+
+
 ## Testing
 
 ## Reference: AWS Resources

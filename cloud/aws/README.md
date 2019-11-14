@@ -40,6 +40,7 @@ Open an Anaconda3 terminal and install base packages.
 ```
 (base) C:\Users\Administrator\Desktop> conda activate foqus
 (foqus) C:\Users\Administrator\Desktop> conda install git
+(foqus) C:\Users\Administrator\Desktop> conda install -c conda-forge nlopt
 (foqus) C:\Users\Administrator\Desktop> python -m pip install --upgrade pip
 (foqus) C:\Users\Administrator\Desktop> pip install git+https://github.com/CCSI-Toolset/foqus@master
 ```

@@ -334,7 +334,6 @@ class problem():
         self.gt = gt
         if gt.errorStat == 40:
             raise Exception("Error connecting to Turbine")
-        print(gt.res)
         return self.calculateObj(gt.res, nsamples = snum)
 
     def prep(self, slv):

@@ -334,6 +334,7 @@ class problem():
         self.gt = gt
         if gt.errorStat == 40:
             raise Exception("Error connecting to Turbine")
+        print(gt.res)
         return self.calculateObj(gt.res, nsamples = snum)
 
     def prep(self, slv):
@@ -433,7 +434,7 @@ class problem():
             if fail:
                 vi = 0
             else:
-                vi = eval(o.pycode)
+                vi = eval(o.pycode,locals())
             if vi <= 0:
                 #if vi is negitive no constraint violation so set
                 #vi to 0 for zero penalty
@@ -454,7 +455,7 @@ class problem():
                 objfunc = o.fail
             else:
                 try:
-                    objfunc = eval(o.pycode)
+                    objfunc = eval(o.pycode,locals())
                     objfunc += penTotal*o.penScale
                 except Exception as e:
                     logging.getLogger("foqus." + __name__).error(
@@ -504,28 +505,28 @@ class problem():
                  "a single objective method is used the first objective"
                  " will be be evaluated, and the rest will be ignored")]
         # Check code for objectives
-        #sv = graph.saveValues()
-        #x = sv['input']
-        #f = sv['output']
-        #x = graph.input.valueDict(x)
-        #f = graph.output.valueDict(f)
-        #for o in self.obj:
-            #try:
-                #exec(o.pycode)
-                #objfunc + 1.0
-            #except Exception, e:
-                #return [
-                    #1,
-                    #"Error evaluating an objective function:"
-                    #" {0} error: {1} ".format(o.pycode ,str(e))]
-        ## check Constraint expressions
-        #for o in self.g:
-            #try:
-                #exec(o.pycode)
-                #violoation + 1.0
-            #except Exception, e:
-                #return [
-                    #1,
-                    #"Error evaluating a constraint function:"
-                    #" {0} error: {1} ".format(o.pycode ,str(e))]
+#        sv = graph.saveValues()
+#        x = sv['input']
+#        f = sv['output']
+#        x = graph.input.valueDict(x)
+#        f = graph.output.valueDict(f)
+#        for o in self.obj:
+#            try:
+#                exec(o.pycode)
+#                objfunc + 1.0
+#            except Exception, e:
+#                return [
+#                    1,
+#                    "Error evaluating an objective function:"
+#                    " {0} error: {1} ".format(o.pycode ,str(e))]
+#        # check Constraint expressions
+#        for o in self.g:
+#            try:
+#                exec(o.pycode)
+#                violoation + 1.0
+#            except Exception, e:
+#                return [
+#                    1,
+#                    "Error evaluating a constraint function:"
+#                    " {0} error: {1} ".format(o.pycode ,str(e))]
         return [0, ""]

@@ -40,10 +40,16 @@ def rank(fnames, save=True):
                                                   max_attempts=100,
                                                   random_state=2)
 
+    # retrieve ranked list
+    cand = load(fnames['cand'])
+    ranked_cand = cand.loc[best_state]
+    
     # save the output
+    fname_ranked = None
     if save:
         fname, ext = os.path.splitext(fnames['cand'])
         fname_ranked = fname + '_ranked' + ext
-        write(fname_ranked, best_fitness)
-
-    return best_state, best_fitness
+        write(fname_ranked, ranked_cand)
+        print('Ordered candidates saved to {}'.format(fname_ranked))
+        
+    return fname_ranked

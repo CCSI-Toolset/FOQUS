@@ -46,5 +46,4 @@ def rank(fnames, save=True):
         fname_ranked = fname + '_ranked' + ext
         write(fname_ranked, best_fitness)
 
-
     return best_state, best_fitness

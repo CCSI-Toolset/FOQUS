@@ -8,7 +8,7 @@ https://mlrose.readthedocs.io/en/stable/source/tutorial2.html
 import os
 import numpy as np
 import mlrose
-from .df_utils import write
+from .df_utils import load, write
 
 def mat2tuples(mat):
     # assumes mat as dense matrix
@@ -31,6 +31,7 @@ def rank(fnames, save=True):
     fitness_dists = mlrose.TravellingSales(distances=dist_list)
 
     # define optimization problem object
+    n = dist_mat.shape[0]
     problem_fit = mlrose.TSPOpt(length=n, fitness_fn=fitness_dists,
                                 maximize=False)
 

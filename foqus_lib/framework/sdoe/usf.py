@@ -1,5 +1,6 @@
 from operator import lt, gt
 import numpy as np
+from .distance import compute_dist
 
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
@@ -30,14 +31,14 @@ def criterion(cand,    # candidates
 
         rand_index = np.random.choice(len(cand), nd, replace=False)
         rand_cand = cand.iloc[rand_index]
-        dist_mat = compute_dist(rand_cand[include].values, scl, hist=hist)
-        min_dist = np.min(dist_mat, axis=0)
+        dmat = compute_dist(rand_cand[include].values, scl=scl, hist=hist)
+        min_dist = np.min(dmat, axis=0)
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
             best_cand = rand_cand    
             best_index = rand_index  # for debugging
             best_val = dist          # for debugging
-            best_dmat = dist_mat     # used for ranking candidates
+            best_dmat = dmat         # used for ranking candidates
 
     return best_cand, best_index, best_val, best_dmat

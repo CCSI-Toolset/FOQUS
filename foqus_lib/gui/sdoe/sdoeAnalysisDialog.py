@@ -459,14 +459,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.runSdoeNUSFButton.setText('Stop SDOE')
         size = self.designSize_spin.value()
         config_file = self.writeConfigFile()
-        mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, size)
-        self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
+        fnames, results, elapsed_time = sdoe.run(config_file, size)
+        self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
+                              config_file, results['best_val']])
         self.analysisTableGroup.setEnabled(True)
         self.loadAnalysisButton.setEnabled(False)
         self.orderAnalysisButton.setEnabled(False)
         self.deleteAnalysisButton.setEnabled(False)
         self.updateAnalysisTable()
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, num_restarts))
+        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, results['num_restarts']))
         self.SDOE_progressBar.setValue(100)
         QApplication.processEvents()
 

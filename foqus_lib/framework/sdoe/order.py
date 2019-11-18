@@ -8,7 +8,7 @@ https://mlrose.readthedocs.io/en/stable/source/tutorial2.html
 import os
 import numpy as np
 import mlrose
-from .df_utils import write
+from .df_utils import load, write
 
 def mat2tuples(mat):
     # assumes mat as dense matrix
@@ -31,6 +31,7 @@ def rank(fnames, save=True):
     fitness_dists = mlrose.TravellingSales(distances=dist_list)
 
     # define optimization problem object
+    n = dist_mat.shape[0]
     problem_fit = mlrose.TSPOpt(length=n, fitness_fn=fitness_dists,
                                 maximize=False)
 
@@ -40,10 +41,16 @@ def rank(fnames, save=True):
                                                   max_attempts=100,
                                                   random_state=2)
 
+    # retrieve ranked list
+    cand = load(fnames['cand'])
+    ranked_cand = cand.loc[best_state]
+    
     # save the output
+    fname_ranked = None
     if save:
         fname, ext = os.path.splitext(fnames['cand'])
         fname_ranked = fname + '_ranked' + ext
-        write(fname_ranked, best_fitness)
-
-    return best_state, best_fitness
+        write(fname_ranked, ranked_cand)
+        print('Ordered candidates saved to {}'.format(fname_ranked))
+        
+    return fname_ranked

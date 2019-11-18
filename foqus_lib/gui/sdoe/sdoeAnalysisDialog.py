@@ -736,12 +736,23 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designInfoNUSF_dynamic.setText('d = %d, n = %d' %(int(self.designSize_spin.value()),
                                                            10 ** int(self.sampleSizeNUSF_spin.value())))
 
-##TO DO: THIS IS A PLACEHOLDER, ADD TOWFIQ'S REORDERING CODE TO SDOE.PY AND FIND OUT HOW THEY WANT THE NEW DESIGN (ANALYSIS TABLE OR SAVED AS A .CSV FILE)
+    def showOrderFileLoc(self, fname):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Order design completed.')
+        msg.setText('Ordered candidates saved to \n{}'.format(fname))
+        msg.setInformativeText('Continue?')
+        msg.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
+        reply = msg.exec_()
+        return reply
+
     def orderDesign(self):
         row = self.analysisTable.selectedIndexes()[0].row()
         outfiles = self.analysis[row][4]
-        order.rank(outfiles)
-
+        fname = order.rank(outfiles)
+        if fname:
+            self.showOrderFileLoc(fname)
+        
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
 

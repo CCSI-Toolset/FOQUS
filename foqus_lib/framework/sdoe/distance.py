@@ -1,62 +1,28 @@
-from operator import lt, gt
 import numpy as np
 
-
-def compute_dist(mat,   # numpy array of shape (N, ncols) and type 'float'
-                 scl,   # numpy array of shape (ncols,) and type 'float'
+def compute_dist(mat,      # numpy array of shape (N, nx) and type 'float'
+                 scl=None, # [usf] numpy array of shape (nx,) and type 'float'
+                 wt=None,  # [nusf] numpy array of shape (N,) and type 'float'
                  hist=[]):
     if hist:
         mat = np.concatenate((mat, hist), axis=0)
 
     N, ncols = mat.shape
-    dist_mat = np.full((N, N), np.nan)
-    assert scl.shape[0] == ncols, 'SCL should be of dim %d.' % ncols
+    dmat = np.full((N, N), np.nan)
 
-    norm_mat = mat / np.repeat(np.reshape(scl, (ncols, 1)), N, axis=1).T
+    if scl is not None:
+        assert scl.shape[0] == ncols, 'SCL should be of dim %d.' % ncols
+        mat = mat / np.repeat(np.reshape(scl, (1, ncols)), N, axis=0)
+        val = 10
+        
     for i in range(N):
-        x = np.repeat(np.reshape(norm_mat[i, :], (ncols, 1)), N, axis=1).T - norm_mat
-        dist_mat[:, i] = np.sum(np.square(x), axis=1)
-        dist_mat[i, i] = 10  ### TO DO: ask Towfiq
+        x = np.repeat(np.reshape(mat[i,:], (1, ncols)), N, axis=0) - mat
+        dmat[:,i] = np.sum(np.square(x), axis=1)
 
-    return dist_mat
+    if wt is not None:
+        dmat = np.multiply(dmat, np.outer(wt, wt))
+        val = 9999 
 
-def criterion(cand,    # candidates
-              include, # columns to include in distance computation
-              scl,     # scaling factors for included columns
-              nr,      # number of restarts (e.g., random combinations of <nd> points)
-              nd,      # design size <= len(candidates)
-              mode='maximin', hist=[]):
-
-    best_cand = []
-    best_rand_sample = []
-    mode = mode.lower()
-    assert mode in ['maximin', 'minimax'], 'MODE %s not recognized.' % mode
-    if mode == 'maximin':
-        best_val = -1
-        fcn = np.mean
-        cond = gt
-    elif mode == 'minimax':
-        best_val = 99999
-        fcn = np.max
-        cond = lt
-
-    if hist:
-        hist = hist[include].values
-
-    assert(nd <= len(cand))  # this should have been checked in GUI
-
-    for i in range(nr):
-
-        rand_index = np.random.choice(len(cand), nd, replace=False)
-        rand_cand = cand.iloc[rand_index]
-        dist_mat = compute_dist(rand_cand[include].values, scl, hist=hist)
-        min_dist = np.min(dist_mat, axis=0)
-        dist = fcn(min_dist)
-
-        if cond(dist, best_val):
-            best_cand = rand_cand    
-            best_index = rand_index  # for debugging
-            best_val = dist          # for debugging
-            best_dmat = dist_mat     # used for ranking candidates
-
-    return best_cand, best_index, best_val, best_dmat
+    np.fill_diagonal(dmat, val)
+        
+    return dmat

@@ -124,54 +124,81 @@ def inv_scale_cand(mat, xmin, xmax):
 # -----------------------------------
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
-              T,       # maximum number of iterations
+              args,    # maximum number of iterations & mwr values
               nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 
     assert(nd <= len(cand))  # this should have been checked in GUI
+
+    T = args['max_iterations']
+    mwr_vals = args['mwr_values']
+    scale_mode = args['scale_mode']
+    xmin = args['xmin']
+    xmax = args['xmax']
     
     mode = mode.lower()
     assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
     
     if hist:
         hist = hist[include].values
-    
-    best_cand = []
-    best_md = 0
-    best_mties = 0
-    for i in range(nr):
+
+    def step(mwr):
+
+        cand = scale_y(scale_mode, mwr, cand)
+                
+        best_cand = []
+        best_md = 0
+        best_mties = 0
+        for i in range(nr):
         
-        print('Random start {}'.format(i))
-        rand_index = np.random.choice(len(cand), nd, replace=False)
-        rand_cand = cand.iloc[rand_index]
-        des = rand_cand[include].values
-        cand = cand[include].values
-        dmat = compute_dmat(des, hist=hist)
-        md, mdpts, mties = compute_min_params(dmat)
+            print('Random start {}'.format(i))
+            rand_index = np.random.choice(len(cand), nd, replace=False)
+            rand_cand = cand.iloc[rand_index]
+            des = rand_cand[include].values
+            cand = cand[include].values
+            dmat = compute_dmat(des, hist=hist)
+            md, mdpts, mties = compute_min_params(dmat)
 
-        update = True
-        t = 0
-        while update and (t<T):
-            update = False
-            des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, cand)
-            t = t+1
+            update = True
+            t = 0
+            while update and (t<T):
+                update = False
+                des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, cand)
+                t = t+1
 
-            if update_:
-                des = des_
-                md = md_
-                mdpts = mdpts_
-                mties = mties_
-                dmat = dmat_
-                update = update_
+                if update_:
+                    des = des_
+                    md = md_
+                    mdpts = mdpts_
+                    mties = mties_
+                    dmat = dmat_
+                    update = update_
 
-        if (md > best_md) or ((md == best_md) and (mties < best_mties))):
-            best_cand = rand_cand
-            best_md = md
-            best_mdpts = mdpts
-            best_mties = mties
-            best_dmat = dmat
+            if (md > best_md) or ((md == best_md) and (mties < best_mties))):
+                best_cand = rand_cand
+                best_md = md
+                best_mdpts = mdpts
+                best_mties = mties
+                best_dmat = dmat
 
-        print('Best minimum distance for this random start: {}'.format(best_md))
+            print('Best minimum distance for this random start: {}'.format(best_md))
 
-    return best_cand, best_md, best_mdpts, best_mties, best_dmat
+        results = {'best_cand': best_cand,
+                   'best_val': best_md,
+                   'best_mdpts': best_mdpts,
+                   'best_mties': best_mties,
+                   'best_dmat': best_dmat}
+        
+        return results
+
+    results = {}
+    for mwr in mwr_vals:
+        res = step(mwr)
+        print('Best value in Normalized Scale:', res['best_val'])
+        print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
+        res['best_cand'] = inv_scale_cand(res['best_cand_scaled'], xmin, xmax)
+        print('Best NUSF Design in Original Coordinates:', res['best_cand'])
+        results[mwr] = res
+
+    return results

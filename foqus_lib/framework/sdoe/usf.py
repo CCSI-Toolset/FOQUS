@@ -10,12 +10,14 @@ def compute_min_dist(mat, scl, hist=[]):
 
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
-              scl,     # scaling factors for included columns
+              args,    # scaling factors for included columns
               nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 
     assert(nd <= len(cand))  # this should have been checked in GUI
+
+    scl = args['scale_factors']
     
     mode = mode.lower()
     assert mode in ['maximin', 'minimax'], 'MODE {} not recognized.'.format(mode)
@@ -47,4 +49,9 @@ def criterion(cand,    # candidates
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates
 
-    return best_cand, best_index, best_val, best_dmat
+    results = {'best_cand': best_cand,
+               'best_index': best_index,
+               'best_val': best_val,
+               'best_dmat': best_dmat}
+         
+    return results

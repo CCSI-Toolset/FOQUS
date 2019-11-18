@@ -1,14 +1,15 @@
-from .usf import criterion
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
 
-def save(fnames, results):
+def save(fnames, results, elapsed_time):
     write(fnames['cand'], results['best_cand'])
     print('Candidates saved to {}'.format(fnames['cand']))
     np.save(fnames['dmat'], results['best_dmat'])
-    print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(nd, nr, results['best_val'], elapsed_time)))
+    print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
+                                                              results['best_val'], elapsed_time)))
     print('Candidate distances saved to {}'.format(fnames['dmat']))
 
 def run(config_file, nd, test=False):
@@ -28,26 +29,26 @@ def run(config_file, nd, test=False):
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
-    nusf = 'NUSF' in config.sections()
+    nusf = 'SF' in config.sections()
     if nusf:
-        weight_mode = config['NUSF']['weighting']
+        weight_mode = config['WEIGHT']['weight_mode']
         assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
             
-        scale_mode = config['NUSF']['scaling']
-        assert(scale_mode in ['direct_mwr', 'ranked_mwr'])
-        mwr_vals = [float(s) for s in config['NUSF']['mwr_vals'].split(',')]
+        scale_method = config['SF']['scale_method']
+        assert(scale_method in ['direct_mwr', 'ranked_mwr'])
+        mwr_values = [float(s) for s in config['SF']['mwr_values'].split(',')]
 
         args = {'max_iterations': 100,
-                'mwr_values': mwr_vals,
-                'scale_mode': scale_mode}
+                'mwr_values': mwr_values,
+                'scale_method': scale_method}
         nr = 5
-        from nusf import criterion
+        from .nusf import criterion
         
     else:
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'scale_factors': scl}
-        nr = 100
-        from usf import criterion
+        nr = 200
+        from .usf import criterion
         
     # create outdir as needed
     if not os.path.exists(outdir):
@@ -59,6 +60,7 @@ def run(config_file, nd, test=False):
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
         if nusf and weight_mode == 'by_user':
+            from .nusf import scale_cand
             sc, xmin, xmax = scale_cand(cand.values)
             cand = pd.DataFrame(sc, columns=cand.columns)
             args['xmin'] = xmin
@@ -85,7 +87,7 @@ def run(config_file, nd, test=False):
 
     # save the output
     if nusf:
-        for mwr in mwr_vals:
+        for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
             fnames = {'cand': os.path.join(outdir, 'nusf_cands_{}.csv'.format(suffix)),
                       'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
@@ -94,9 +96,9 @@ def run(config_file, nd, test=False):
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_cands_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
-        save(fnames, results)
+        save(fnames, results, elapsed_time)
         
-    return fnames, results
+    return fnames, results, elapsed_time
 
 
 ### TO DO: modify plots for NUSF

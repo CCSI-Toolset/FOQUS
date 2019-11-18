@@ -5,7 +5,7 @@ from .distance import compute_dist
 def compute_min_dist(mat, scl, hist=[]):
     dmat = compute_dist(mat, scl=scl, hist=hist)
     min_dist = np.min(dmat, axis=0)
-    return min_dist
+    return dmat, min_dist
 
 
 def criterion(cand,    # candidates
@@ -40,7 +40,7 @@ def criterion(cand,    # candidates
 
         rand_index = np.random.choice(len(cand), nd, replace=False)
         rand_cand = cand.iloc[rand_index]
-        dmat = compute_min_dist(rand_cand[include].values, scl, hist=hist)
+        dmat, min_dist = compute_min_dist(rand_cand[include].values, scl, hist=hist)
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
@@ -49,7 +49,10 @@ def criterion(cand,    # candidates
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates
 
-    results = {'best_cand': best_cand,
+    results = {'mode': mode,
+               'design_size': nd,
+               'num_restarts': nr,
+               'best_cand': best_cand,
                'best_index': best_index,
                'best_val': best_val,
                'best_dmat': best_dmat}

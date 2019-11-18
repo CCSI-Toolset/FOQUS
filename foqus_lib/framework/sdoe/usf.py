@@ -5,7 +5,7 @@ from .distance import compute_dist
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
               scl,     # scaling factors for included columns
-              nr,      # number of restarts (e.g., random combinations of <nd> points)
+              nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 

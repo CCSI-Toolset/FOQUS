@@ -344,7 +344,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def writeConfigFile(self, test=False):
         timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
         outdir = os.path.join(self.dname, timestamp)
-        os.makedirs(outdir, exist_ok=False)
+        os.makedirs(outdir, exist_ok=True)
         configFile = os.path.join(outdir, 'config.ini')
         f = open(configFile, 'w')
 
@@ -424,14 +424,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         numIter = (max_size + 1) - min_size
         for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
-            mode, design_size, num_restarts, elapsed_time, outfiles, best_val = sdoe.run(config_file, nd)
-            self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfiles, config_file, best_val])
+            fnames, results, elapsed_time = sdoe.run(config_file, nd)
+            self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
+                                                                                   config_file, results['best_val']])
             self.analysisTableGroup.setEnabled(True)
             self.loadAnalysisButton.setEnabled(False)
             self.orderAnalysisButton.setEnabled(False)
             self.deleteAnalysisButton.setEnabled(False)
             self.updateAnalysisTable()
-            self.designInfo_dynamic.setText('d = %d, n = %d' % (nd, num_restarts))
+            self.designInfo_dynamic.setText('d = %d, n = %d' % (nd, results['num_restarts']))
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
             QApplication.processEvents()
 
@@ -458,14 +459,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.runSdoeNUSFButton.setText('Stop SDOE')
         size = self.designSize_spin.value()
         config_file = self.writeConfigFile()
-        mode, design_size, num_restarts, elapsed_time, outfile, best_val = sdoe.run(config_file, size)
-        self.analysis.append([mode, design_size, num_restarts, elapsed_time, outfile, config_file, best_val])
+        fnames, results, elapsed_time = sdoe.run(config_file, size)
+        self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
+                              config_file, results['best_val']])
         self.analysisTableGroup.setEnabled(True)
         self.loadAnalysisButton.setEnabled(False)
         self.orderAnalysisButton.setEnabled(False)
         self.deleteAnalysisButton.setEnabled(False)
         self.updateAnalysisTable()
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, num_restarts))
+        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, results['num_restarts']))
         self.SDOE_progressBar.setValue(100)
         QApplication.processEvents()
 

@@ -25,7 +25,7 @@ def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
                     cand):
 
     ncand = np.shape(cand)[0]
-    assert(nd <= ncand)
+    assert(md <= ncand)
 
     nd, nx = des.shape 
     nx = nx-1
@@ -50,12 +50,12 @@ def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
         return des, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
-    d0 = np.zeros((mties, ncand))
-    mt0 = np.zeros((mties, ncand))
+    d0 = np.zeros((int(mties), int(ncand)))
+    mt0 = np.zeros((int(mties), int(ncand)))
     for i in range(len(mdpts)):
         for j in range(ncand):
             pt = (i,j)
-            _, _, d0[i,j], mdpts, mt0[i,j] = step(pt, cand, mdpts, des, dmat, mt0)
+            _, _, d0[i,j], mdpts, mt0[i,j] = step(pt, cand, mdpts, des, dmat, mt0=mt0)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -63,7 +63,7 @@ def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
     if d0_max > md:
         md = d0_max
         pt = pts[np.random.randint(pts.shape[0])]
-        des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0)
+        des, dmat, md, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0=mt0)
     elif d0_max == md:
         nselect = []
         for k, pt in enumerate(pts):
@@ -72,7 +72,7 @@ def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
                 nselect.append(k)            
         if nselect:
             pt = pts[np.random.choice(nselect)]
-            des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0)
+            des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0=mt0)
     else:
         update = False
             
@@ -94,23 +94,22 @@ def scale_cand(mat):
     return mat, xmin, xmax
 
 
-def scale_y(scale_mode, mwr, mat):
+def scale_y(scale_method, mwr, mat):
     # Takes np array as input
     # Assumes last column contains weights
-    
     def direct_mwr(mwr, mat):
-        mat[:,-1] = 1 + (mwr-1)*((mat[:,-1]-np.min(mat[:,-1]))/(np.max(mat[:,-1])-np.min(mat[:,-1])))
+        mat.iloc[:,-1] = 1 + (mwr-1)*((mat.iloc[:,-1]-np.min(mat.iloc[:,-1]))/(np.max(mat.iloc[:,-1])-np.min(mat.iloc[:,-1])))
         return mat
 
     def ranked_mwr(mwr, mat):
-        mat[:,-1] = rankdata(mat[:,-1], method='dense')
+        mat.iloc[:,-1] = rankdata(mat.iloc[:,-1], method='dense')
         return direct_mwr(mwr, mat)
 
     # equivalent to if-else statements, but easier to maintain
     methods = {'direct_mwr': direct_mwr,
                'ranked_mwr': ranked_mwr}
 
-    return methods[scale_mode](mwr, mat)
+    return methods[scale_method](mwr, mat)
 
 
 def inv_scale_cand(mat, xmin, xmax):
@@ -133,7 +132,7 @@ def criterion(cand,    # candidates
 
     T = args['max_iterations']
     mwr_vals = args['mwr_values']
-    scale_mode = args['scale_mode']
+    scale_method = args['scale_method']
     xmin = args['xmin']
     xmax = args['xmax']
     
@@ -143,9 +142,9 @@ def criterion(cand,    # candidates
     if hist:
         hist = hist[include].values
 
-    def step(mwr):
+    def step(mwr, cand):
 
-        cand = scale_y(scale_mode, mwr, cand)
+        cand = scale_y(scale_method, mwr, cand)
                 
         best_cand = []
         best_md = 0
@@ -175,7 +174,7 @@ def criterion(cand,    # candidates
                     dmat = dmat_
                     update = update_
 
-            if (md > best_md) or ((md == best_md) and (mties < best_mties))):
+            if (md > best_md) or ((md == best_md) and (mties < best_mties)):
                 best_cand = rand_cand
                 best_md = md
                 best_mdpts = mdpts
@@ -194,7 +193,7 @@ def criterion(cand,    # candidates
 
     results = {}
     for mwr in mwr_vals:
-        res = step(mwr)
+        res = step(mwr, cand)
         print('Best value in Normalized Scale:', res['best_val'])
         print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
         res['best_cand'] = inv_scale_cand(res['best_cand_scaled'], xmin, xmax)

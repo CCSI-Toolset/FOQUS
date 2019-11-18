@@ -1,7 +1,7 @@
 import numpy as np
 
-def compute_dist(mat,      # numpy array of shape (N, ncols) and type 'float'
-                 scl=None, # [usf] numpy array of shape (ncols,) and type 'float'
+def compute_dist(mat,      # numpy array of shape (N, nx) and type 'float'
+                 scl=None, # [usf] numpy array of shape (nx,) and type 'float'
                  wt=None,  # [nusf] numpy array of shape (N,) and type 'float'
                  hist=[]):
     if hist:

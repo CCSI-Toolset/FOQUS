@@ -2,6 +2,12 @@ from operator import lt, gt
 import numpy as np
 from .distance import compute_dist
 
+def compute_min_dist(mat, scl, hist=[]):
+    dmat = compute_dist(mat, scl=scl, hist=hist)
+    min_dist = np.min(dmat, axis=0)
+    return min_dist
+
+
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
               scl,     # scaling factors for included columns
@@ -31,8 +37,7 @@ def criterion(cand,    # candidates
 
         rand_index = np.random.choice(len(cand), nd, replace=False)
         rand_cand = cand.iloc[rand_index]
-        dmat = compute_dist(rand_cand[include].values, scl=scl, hist=hist)
-        min_dist = np.min(dmat, axis=0)
+        dmat = compute_min_dist(rand_cand[include].values, scl, hist=hist)
         dist = fcn(min_dist)
 
         if cond(dist, best_val):

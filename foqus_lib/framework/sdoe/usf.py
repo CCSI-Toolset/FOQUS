@@ -15,10 +15,10 @@ def criterion(cand,    # candidates
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 
-    best_cand = []
-    best_rand_sample = []
+    assert(nd <= len(cand))  # this should have been checked in GUI
+    
     mode = mode.lower()
-    assert mode in ['maximin', 'minimax'], 'MODE %s not recognized.' % mode
+    assert mode in ['maximin', 'minimax'], 'MODE {} not recognized.'.format(mode)
     if mode == 'maximin':
         best_val = -1
         fcn = np.mean
@@ -31,8 +31,9 @@ def criterion(cand,    # candidates
     if hist:
         hist = hist[include].values
 
-    assert(nd <= len(cand))  # this should have been checked in GUI
-
+    best_cand = []
+    best_rand_sample = []
+ 
     for i in range(nr):
 
         rand_index = np.random.choice(len(cand), nd, replace=False)

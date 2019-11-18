@@ -1,0 +1,177 @@
+import pandas as pd
+import numpy as np
+from scipy.stats import rankdata
+from .distance import compute_dist
+
+# -----------------------------------
+def compute_dmat(mat,  # numpy array of shape (N, nx+1) and type 'float'
+                 hist=[]):
+    xs = mat[:,:-1]
+    wt = mat[:,-1]
+    dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
+    return dmat
+
+def compute_min_params(dmat):
+    md = np.min(dmat)
+    mdpts = np.argwhere(np.triu(dmat) == md)   # check upper triangular matrix
+    mties = mdpts.shape[0]                     # number of points returned
+    return md, mdpts, mties
+
+def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
+                    md,
+                    mdpts,
+                    mties,
+                    dmat,
+                    cand):
+
+    ncand = np.shape(cand)[0]
+    assert(nd <= ncand)
+
+    nd, nx = des.shape 
+    nx = nx-1
+    
+    def replace_design(arr, mat, dmat, k, val=9999):
+        x = np.repeat(np.reshape(arr[:-1], (1, nx)), nd, axis=0) - mat[:,:-1]
+        row = np.multiply(np.sum(np.square(x), axis=1)*arr[-1], mat[:,-1])
+        dmat[k,:] = row
+        dmat[:,k] = row.T
+        np.fill_diagonal(dmat, val)
+        return dmat
+
+    def step(pt, cand, mdpts, des, dmat, mt0=None):
+        i, j = pt
+        row = cand[j]
+        s, t = mdpts[i]
+        des[s, :] = row
+        dmat = replace_design(row, des, dmat, s)
+        md, mdpts, mties = compute_min_params(dmat)
+        if mties:
+            mties = mt0[i,j]
+        return des, dmat, md, mdpts, mties
+
+    # initialize d0 and mt0
+    d0 = np.zeros((mties, ncand))
+    mt0 = np.zeros((mties, ncand))
+    for i in range(len(mdpts)):
+        for j in range(ncand):
+            pt = (i,j)
+            _, _, d0[i,j], mdpts, mt0[i,j] = step(pt, cand, mdpts, des, dmat, mt0)
+
+    d0_max = np.max(d0)
+    pts = np.argwhere(d0 == d0_max)
+    update = True
+    if d0_max > md:
+        md = d0_max
+        pt = pts[np.random.randint(pts.shape[0])]
+        des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0)
+    elif d0_max == md:
+        nselect = []
+        for k, pt in enumerate(pts):
+            i, j = pt
+            if (mt0[i,j] < mties):
+                nselect.append(k)            
+        if nselect:
+            pt = pts[np.random.choice(nselect)]
+            des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0)
+    else:
+        update = False
+            
+    return des, md, mdpts, mties, dmat, update
+
+# -----------------------------------
+def scale_cand(mat):
+    # Takes np array as input
+    # Assumes last column contains weights
+
+    # last column contains weights
+    xs = mat[:,:-1]  
+
+    # scale the inputs
+    # save xmin, xmax for inverse scaling later
+    xmin = np.min(xs, axis=0)
+    xmax = np.max(xs, axis=0)
+    mat[:,:-1] = (xs-xmin)/(xmax-xmin)*2-1
+    return mat, xmin, xmax
+
+
+def scale_y(scale_mode, mwr, mat):
+    # Takes np array as input
+    # Assumes last column contains weights
+    
+    def direct_mwr(mwr, mat):
+        mat[:,-1] = 1 + (mwr-1)*((mat[:,-1]-np.min(mat[:,-1]))/(np.max(mat[:,-1])-np.min(mat[:,-1])))
+        return mat
+
+    def ranked_mwr(mwr, mat):
+        mat[:,-1] = rankdata(mat[:,-1], method='dense')
+        return direct_mwr(mwr, mat)
+
+    # equivalent to if-else statements, but easier to maintain
+    methods = {'direct_mwr': direct_mwr,
+               'ranked_mwr': ranked_mwr}
+
+    return methods[scale_mode](mwr, mat)
+
+
+def inv_scale_cand(mat, xmin, xmax):
+    # Takes np array as input
+    # Assumes last column contains weights
+  
+    # inverse-scale the inputs
+    mat[:,:-1] = (mat[:,:-1]+1)/2*(xmax-xmin)+xmin
+    return mat
+
+# -----------------------------------
+def criterion(cand,    # candidates
+              include, # columns to include in distance computation
+              T,       # maximum number of iterations
+              nr,      # number of restarts (each restart uses a random set of <nd> points)
+              nd,      # design size <= len(candidates)
+              mode='maximin', hist=[]):
+
+    assert(nd <= len(cand))  # this should have been checked in GUI
+    
+    mode = mode.lower()
+    assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
+    
+    if hist:
+        hist = hist[include].values
+    
+    best_cand = []
+    best_md = 0
+    best_mties = 0
+    for i in range(nr):
+        
+        print('Random start {}'.format(i))
+        rand_index = np.random.choice(len(cand), nd, replace=False)
+        rand_cand = cand.iloc[rand_index]
+        des = rand_cand[include].values
+        cand = cand[include].values
+        dmat = compute_dmat(des, hist=hist)
+        md, mdpts, mties = compute_min_params(dmat)
+
+        update = True
+        t = 0
+        while update and (t<T):
+            update = False
+            des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, cand)
+            t = t+1
+
+            if update_:
+                des = des_
+                md = md_
+                mdpts = mdpts_
+                mties = mties_
+                dmat = dmat_
+                update = update_
+
+        if (md > best_md) or ((md == best_md) and (mties < best_mties))):
+            best_cand = rand_cand
+            best_md = md
+            best_mdpts = mdpts
+            best_mties = mties
+            best_dmat = dmat
+
+        print('Best minimum distance for this random start: {}'.format(best_md))
+
+    return best_cand, best_md, best_mdpts, best_mties, best_dmat

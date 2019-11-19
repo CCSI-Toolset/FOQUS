@@ -17,12 +17,13 @@ def compute_min_params(dmat):
     mties = mdpts.shape[0]                     # number of points returned
     return md, mdpts, mties
 
-def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
+def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
                     md,
                     mdpts,
                     mties,
                     dmat,
-                    cand):
+                    cand # numpy array of shape (N, nx+1) and type 'float'
+                    ):
 
     ncand = np.shape(cand)[0]
     assert(md <= ncand)
@@ -45,17 +46,17 @@ def update_min_dist(des,  # numpy array of shape (N, nx+1) and type 'float'
         des[s, :] = row
         dmat = replace_design(row, des, dmat, s)
         md, mdpts, mties = compute_min_params(dmat)
-        if mties:
+        if mt0 is not None:
             mties = mt0[i,j]
         return des, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
-    d0 = np.zeros((int(mties), int(ncand)))
-    mt0 = np.zeros((int(mties), int(ncand)))
+    d0 = np.zeros((int(mties), ncand))
+    mt0 = np.zeros((int(mties), ncand))
     for i in range(len(mdpts)):
         for j in range(ncand):
             pt = (i,j)
-            _, _, d0[i,j], mdpts, mt0[i,j] = step(pt, cand, mdpts, des, dmat, mt0=mt0)
+            _, _, d0[i,j], _, mt0[i,j] = step(pt, cand, mdpts, des, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -94,31 +95,31 @@ def scale_cand(mat):
     return mat, xmin, xmax
 
 
-def scale_y(scale_method, mwr, mat):
-    # Takes np array as input
+def scale_y(scale_method, mwr, df):
+    # Takes pandas df as input
     # Assumes last column contains weights
-    def direct_mwr(mwr, mat):
-        mat.iloc[:,-1] = 1 + (mwr-1)*((mat.iloc[:,-1]-np.min(mat.iloc[:,-1]))/(np.max(mat.iloc[:,-1])-np.min(mat.iloc[:,-1])))
-        return mat
+    def direct_mwr(mwr, df):
+        df.iloc[:,-1] = 1 + (mwr-1)*((df.iloc[:,-1]-np.min(df.iloc[:,-1]))/(np.max(df.iloc[:,-1])-np.min(df.iloc[:,-1])))
+        return df
 
-    def ranked_mwr(mwr, mat):
-        mat.iloc[:,-1] = rankdata(mat.iloc[:,-1], method='dense')
-        return direct_mwr(mwr, mat)
+    def ranked_mwr(mwr, df):
+        df.iloc[:,-1] = rankdata(df.iloc[:,-1], method='dense')
+        return direct_mwr(mwr, df)
 
     # equivalent to if-else statements, but easier to maintain
     methods = {'direct_mwr': direct_mwr,
                'ranked_mwr': ranked_mwr}
 
-    return methods[scale_method](mwr, mat)
+    return methods[scale_method](mwr, df)
 
 
-def inv_scale_cand(mat, xmin, xmax):
-    # Takes np array as input
+def inv_scale_cand(df, xmin, xmax):
+    # Takes pandas df as input
     # Assumes last column contains weights
   
     # inverse-scale the inputs
-    mat[:,:-1] = (mat[:,:-1]+1)/2*(xmax-xmin)+xmin
-    return mat
+    df.iloc[:,:-1] = (df.iloc[:,:-1]+1)/2*(xmax-xmin)+xmin
+    return df
 
 # -----------------------------------
 def criterion(cand,    # candidates
@@ -155,7 +156,7 @@ def criterion(cand,    # candidates
             rand_index = np.random.choice(len(cand), nd, replace=False)
             rand_cand = cand.iloc[rand_index]
             des = rand_cand[include].values
-            cand = cand[include].values
+            mat = cand[include].values
             dmat = compute_dmat(des, hist=hist)
             md, mdpts, mties = compute_min_params(dmat)
 
@@ -163,7 +164,7 @@ def criterion(cand,    # candidates
             t = 0
             while update and (t<T):
                 update = False
-                des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, cand)
+                des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, mat)
                 t = t+1
 
                 if update_:
@@ -183,11 +184,15 @@ def criterion(cand,    # candidates
 
             print('Best minimum distance for this random start: {}'.format(best_md))
 
-        results = {'best_cand': best_cand,
+        results = {'best_cand_scaled': best_cand,
+                   'best_cand': inv_scale_cand(best_cand, xmin, xmax),
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
                    'best_mties': best_mties,
-                   'best_dmat': best_dmat}
+                   'best_dmat': best_dmat,
+                   'mode': mode,
+                   'design_size': nd,
+                   'num_restarts': nr}
         
         return results
 
@@ -196,8 +201,6 @@ def criterion(cand,    # candidates
         res = step(mwr, cand)
         print('Best value in Normalized Scale:', res['best_val'])
         print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
-        res['best_cand'] = inv_scale_cand(res['best_cand_scaled'], xmin, xmax)
         print('Best NUSF Design in Original Coordinates:', res['best_cand'])
         results[mwr] = res
-
     return results

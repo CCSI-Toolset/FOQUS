@@ -49,12 +49,12 @@ def criterion(cand,    # candidates
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates
 
-    results = {'mode': mode,
-               'design_size': nd,
-               'num_restarts': nr,
-               'best_cand': best_cand,
+    results = {'best_cand': best_cand,
                'best_index': best_index,
                'best_val': best_val,
-               'best_dmat': best_dmat}
+               'best_dmat': best_dmat,
+               'mode': mode,
+               'design_size': nd,
+               'num_restarts': nr}
          
     return results

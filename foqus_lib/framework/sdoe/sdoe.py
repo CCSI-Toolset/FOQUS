@@ -36,18 +36,16 @@ def run(config_file, nd, test=False):
             
         scale_method = config['SF']['scale_method']
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])
-        mwr_values = [float(s) for s in config['SF']['mwr_values'].split(',')]
+        mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
         args = {'max_iterations': 100,
                 'mwr_values': mwr_values,
                 'scale_method': scale_method}
-        nr = 5
         from .nusf import criterion
         
     else:
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'scale_factors': scl}
-        nr = 200
         from .usf import criterion
         
     # create outdir as needed
@@ -89,12 +87,12 @@ def run(config_file, nd, test=False):
     if nusf:
         for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
-            fnames = {'cand': os.path.join(outdir, 'nusf_cands_{}.csv'.format(suffix)),
+            fnames = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                       'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
-            save(fnames, results)
+            save(fnames, results[mwr], elapsed_time)
     else:
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
-        fnames = {'cand': os.path.join(outdir, 'usf_cands_{}.csv'.format(suffix)),
+        fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)
         

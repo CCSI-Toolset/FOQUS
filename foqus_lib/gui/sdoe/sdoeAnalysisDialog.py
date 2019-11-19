@@ -109,6 +109,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.Maximin_radioButton.setChecked(True)
             self.range_groupBox.setHidden(True)
             self.progress_groupBox.setHidden(True)
+            self.analysisTable.setHorizontalHeaderLabels(['MWR Value', 'Design Size, d', '# of Random Starts, n', 'Runtime (in sec)', 'Criterion Value', 'Plot SDOE'])
         else:
             self.scalingGroup.setHidden(True)
             self.rangeNUSF_groupBox.setHidden(True)
@@ -260,13 +261,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def updateAnalysisTableRow(self, row):
 
-        # Optimality Method
+        # Optimality Method or MWR Value (it depends if USF or NUSF)
         item = self.analysisTable.item(row, self.methodCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.methodCol, item)
-        optMethod = self.analysis[row][0]
-        item.setText(str(optMethod))
+        value = self.analysis[row][0]
+        item.setText(str(value))
+
 
         # Design Size
         item = self.analysisTable.item(row, self.designCol)
@@ -458,18 +460,25 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def runSdoeNUSF(self):
         self.runSdoeNUSFButton.setText('Stop SDOE')
         size = self.designSize_spin.value()
-        config_file = self.writeConfigFile()
-        fnames, results, elapsed_time = sdoe.run(config_file, size)
-        self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
-                              config_file, results['best_val']])
-        self.analysisTableGroup.setEnabled(True)
-        self.loadAnalysisButton.setEnabled(False)
-        self.orderAnalysisButton.setEnabled(False)
-        self.deleteAnalysisButton.setEnabled(False)
-        self.updateAnalysisTable()
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, results['num_restarts']))
-        self.SDOE_progressBar.setValue(100)
-        QApplication.processEvents()
+        mwr_list = []
+        for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(),
+                     self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(),
+                     self.MWR5_comboBox.currentText()]:
+            if item != "":
+                mwr_list.append(int(item))
+        for mwr in mwr_list:
+            config_file = self.writeConfigFile()
+            fnames, results, elapsed_time = sdoe.run(config_file, size)
+            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], elapsed_time, fnames,
+                                  config_file, results[mwr]['best_val']])
+            self.analysisTableGroup.setEnabled(True)
+            self.loadAnalysisButton.setEnabled(False)
+            self.orderAnalysisButton.setEnabled(False)
+            self.deleteAnalysisButton.setEnabled(False)
+            self.updateAnalysisTable()
+            self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, results[mwr]['num_restarts']))
+            self.SDOE_progressBar.setValue(100)
+            QApplication.processEvents()
 
         self.SDOE_progressBar.setValue(0)
         self.runSdoeButton.setText('Run SDOE')

@@ -334,6 +334,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def populateAnalysis(self):
         self.analysisGroup.setEnabled(True)
+        self.testSdoeButton.setEnabled(True)
         row = self.analysisTable.selectedIndexes()[0].row()
         config_file = self.analysis[row][5]
         if self.type == 'USF':

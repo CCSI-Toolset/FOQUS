@@ -78,6 +78,3 @@ class optimization(threading.Thread):
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
                 "Exception in optimization thread")
-#            self.ex = sys.exc_info()
-#            self.msgQueue.put(traceback.format_exception(
-#                self.ex[0], self.ex[1], self.ex[2]))

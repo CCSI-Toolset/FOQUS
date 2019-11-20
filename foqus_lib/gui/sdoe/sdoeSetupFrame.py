@@ -541,16 +541,18 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         candidateData, historyData = self.createAggData()
         dname = self.dname
         type = 'USF'
+        analysis = None
 
-        dialog = sdoeAnalysisDialog(candidateData, dname, historyData, type, self)
+        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
 
     def launchNUSFSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
         type = 'NUSF'
+        analysis = None
 
-        dialog = sdoeAnalysisDialog(candidateData, dname, historyData, type, self)
+        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
 
     def initUQToolBox(self):

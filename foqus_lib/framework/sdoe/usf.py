@@ -15,8 +15,6 @@ def criterion(cand,    # candidates
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 
-    assert(nd <= len(cand))  # this should have been checked in GUI
-
     scl = args['scale_factors']
     
     mode = mode.lower()

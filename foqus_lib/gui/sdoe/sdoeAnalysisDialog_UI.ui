@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1035</height>
+    <width>1339</width>
+    <height>861</height>
    </rect>
   </property>
   <property name="font">
@@ -681,20 +681,7 @@ it should be part of the design.
             </widget>
            </item>
            <item>
-            <widget class="QSpinBox" name="sampleSizeNUSF_spin">
-             <property name="minimum">
-              <number>5</number>
-             </property>
-             <property name="maximum">
-              <number>200</number>
-             </property>
-             <property name="singleStep">
-              <number>5</number>
-             </property>
-             <property name="value">
-              <number>30</number>
-             </property>
-            </widget>
+            <widget class="QComboBox" name="sampleSizeNUSF_comboBox"/>
            </item>
            <item>
             <spacer name="horizontalSpacer_12">
@@ -710,34 +697,6 @@ it should be part of the design.
             </spacer>
            </item>
           </layout>
-         </item>
-         <item>
-          <widget class="QSlider" name="sampleSizeRuntimeNUSF_slider">
-           <property name="mouseTracking">
-            <bool>false</bool>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>100</number>
-           </property>
-           <property name="singleStep">
-            <number>1</number>
-           </property>
-           <property name="pageStep">
-            <number>1</number>
-           </property>
-           <property name="value">
-            <number>10</number>
-           </property>
-           <property name="tracking">
-            <bool>true</bool>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-          </widget>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_8">
@@ -791,7 +750,7 @@ it should be part of the design.
            <item>
             <widget class="QLabel" name="designInfoNUSF_dynamic">
              <property name="text">
-              <string>d = 6, n = 30</string>
+              <string>mwr = 5, n = 30</string>
              </property>
             </widget>
            </item>
@@ -983,54 +942,6 @@ it should be part of the design.
     <hint type="destinationlabel">
      <x>1063</x>
      <y>538</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sampleSizeNUSF_spin</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>timeNUSF_dynamic</receiver>
-   <slot>setNum(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1060</x>
-     <y>589</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1028</x>
-     <y>659</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sampleSizeNUSF_spin</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sampleSizeRuntimeNUSF_slider</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>1060</x>
-     <y>589</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>964</x>
-     <y>625</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>sampleSizeRuntimeNUSF_slider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>sampleSizeNUSF_spin</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>964</x>
-     <y>625</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>1060</x>
-     <y>589</y>
     </hint>
    </hints>
   </connection>

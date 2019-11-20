@@ -85,11 +85,13 @@ def run(config_file, nd, test=False):
 
     # save the output
     if nusf:
+        fnames = {}
         for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
-            fnames = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
+            fnamesTemp = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                       'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
-            save(fnames, results[mwr], elapsed_time)
+            fnames[mwr] = fnamesTemp
+            save(fnames[mwr], results[mwr], elapsed_time)
     else:
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),

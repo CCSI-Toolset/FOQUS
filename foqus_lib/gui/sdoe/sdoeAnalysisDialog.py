@@ -42,12 +42,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     plotCol = 5
 
     testRuntime = []
-    analysis = []
 
-    def __init__(self, candidateData, dname, historyData=None, type = None, parent=None):
+    def __init__(self, candidateData, dname, analysis = None, historyData=None, type = None, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.candidateData = candidateData
+        self.analysis = []
         self.historyData = historyData
         self.dname = dname
         self.type = type
@@ -126,18 +126,27 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.MWR5_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
         self.MWR1_comboBox.setCurrentIndex(4)
 
+        comboList = [self.MWR1_comboBox, self.MWR2_comboBox, self.MWR3_comboBox, self.MWR4_comboBox, self.MWR5_comboBox]
+        for combo in comboList:
+            combo.currentTextChanged.connect(self.on_MWR_combobox_changed)
+
+        # Sample Size NUSF Combo Box
+        self.sampleSizeNUSF_comboBox.addItems(['10', '20', '30', '40', '50', '60', '75', '100', '150', '200', '500', '1000'])
+        self.sampleSizeNUSF_comboBox.setCurrentIndex(2)
+        self.sampleSizeNUSF_comboBox.currentTextChanged.connect(self.on_size_combobox_changed)
+
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
         if self.type == 'USF':
             self.testSdoeButton.clicked.connect(self.testSdoe)
         else:
             self.testSdoeButton.clicked.connect(self.testSdoeNUSF)
+
         self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         self.minDesignSize_spin.valueChanged.connect(self.on_min_design_spinbox_changed)
         self.maxDesignSize_spin.valueChanged.connect(self.on_max_design_spinbox_changed)
         self.designSize_spin.valueChanged.connect(self.on_design_spinbox_changed)
         self.sampleSize_spin.valueChanged.connect(self.on_sample_size_spinbox_changed)
-        self.sampleSizeNUSF_spin.valueChanged.connect(self.on_sample_size_NUSF_spinbox_changed)
         self.runSdoeButton.clicked.connect(self.runSdoe)
         self.runSdoeNUSFButton.clicked.connect(self.runSdoeNUSF)
 
@@ -327,7 +336,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisGroup.setEnabled(True)
         row = self.analysisTable.selectedIndexes()[0].row()
         config_file = self.analysis[row][5]
-        self.loadFromConfigFile(config_file)
+        if self.type == 'USF':
+            self.loadFromConfigFile(config_file)
+        elif self.type =='NUSF':
+            self.loadFromConfigFileNUSF(config_file)
 
     def checkInclude(self):
         numInputs = self.candidateData.getNumInputs()
@@ -366,12 +378,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write('max_design_size = %d\n' % self.designSize_spin.value())
 
         if test:
-            f.write('number_random_starts = 200\n')
+            if self.type == 'USF':
+                f.write('number_random_starts = 200\n')
+            else:
+                f.write('number_random_starts = 2\n')
         else:
             if self.type == 'USF':
                 f.write('number_random_starts = %d\n' % 10**(self.sampleSize_spin.value()))
             else:
-                f.write('number_random_starts = %d\n' % self.sampleSizeNUSF_spin.value())
+                f.write('number_random_starts = %d\n' % int(self.sampleSizeNUSF_comboBox.currentText()))
 
         f.write('\n')
 
@@ -407,8 +422,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(), self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(), self.MWR5_comboBox.currentText()]:
                 if item != "":
                     mwr_list.append(item)
-            f.write('mwr_values = %s\n' % ','.join(mwr_list))
-            f.write('\n')
+            if test:
+                f.write('mwr_values = %s\n' %mwr_list[0])
+                f.write('\n')
+            else:
+                f.write('mwr_values = %s\n' % ','.join(mwr_list))
+                f.write('\n')
 
         ## OUTPUT
         f.write('[OUTPUT]\n')
@@ -466,22 +485,27 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                      self.MWR5_comboBox.currentText()]:
             if item != "":
                 mwr_list.append(int(item))
+
+        config_file = self.writeConfigFile()
+        fnames, results, elapsed_time = sdoe.run(config_file, size)
+        self.analysisTableGroup.setEnabled(True)
+        self.loadAnalysisButton.setEnabled(False)
+        self.orderAnalysisButton.setEnabled(False)
+        self.deleteAnalysisButton.setEnabled(False)
+
+        count = 0
         for mwr in mwr_list:
-            config_file = self.writeConfigFile()
-            fnames, results, elapsed_time = sdoe.run(config_file, size)
-            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], elapsed_time, fnames,
+            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], elapsed_time/len(mwr_list), fnames[mwr],
                                   config_file, results[mwr]['best_val']])
-            self.analysisTableGroup.setEnabled(True)
-            self.loadAnalysisButton.setEnabled(False)
-            self.orderAnalysisButton.setEnabled(False)
-            self.deleteAnalysisButton.setEnabled(False)
+
             self.updateAnalysisTable()
-            self.designInfoNUSF_dynamic.setText('d = %d, n = %d' % (size, results[mwr]['num_restarts']))
-            self.SDOE_progressBar.setValue(100)
+            self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (mwr, results[mwr]['num_restarts']))
+            count += 1
+            self.SDOENUSF_progressBar.setValue((100/len(mwr_list)) * count)
             QApplication.processEvents()
 
-        self.SDOE_progressBar.setValue(0)
-        self.runSdoeButton.setText('Run SDOE')
+        self.SDOENUSF_progressBar.setValue(0)
+        self.runSdoeNUSFButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
 
     def testSdoeNUSF(self):
@@ -491,7 +515,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 pass
             else:
                 return
-        #test using max design size and nd=200
+        #test using nd=2
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.designSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
@@ -508,23 +532,30 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
     def on_design_spinbox_changed(self):
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' %(int(self.designSize_spin.value()),
-                                                           int(self.sampleSizeNUSF_spin.value())))
+        if len(self.testRuntime) > 0:
+            self.updateRunTimeNUSF(self.testRuntime[0])
+        self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' %(int(self.MWR1_comboBox.currentText()),
+                                                           int(self.sampleSizeNUSF_comboBox.currentText())))
 
     def on_sample_size_spinbox_changed(self):
         self.updateRunTime(self.testRuntime[0])
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
-    def on_sample_size_NUSF_spinbox_changed(self):
-        self.updateRunTimeNUSF(self.testRuntime[0])
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' %(int(self.designSize_spin.value()),
-                                                           int(self.sampleSizeNUSF_spin.value())))
-
     def on_combobox_changed(self):
         self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         if self.hasIndex():
             self.showIndexBlock()
         self.checkType()
+
+    def on_size_combobox_changed(self):
+        self.updateRunTimeNUSF(self.testRuntime[0])
+        self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
+                                                                int(self.sampleSizeNUSF_comboBox.currentText())))
+    def on_MWR_combobox_changed(self):
+        if len(self.testRuntime) > 0:
+            self.updateRunTimeNUSF(self.testRuntime[0])
+        self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
+                                                                  int(self.sampleSizeNUSF_comboBox.currentText())))
 
     def checkType(self):
         numInputs = self.candidateData.getNumInputs()
@@ -623,8 +654,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def updateRunTimeNUSF(self, runtime):
-        delta = runtime/200
-        estimateTime = int(delta * (int(self.sampleSizeNUSF_spin.value())))
+        delta = runtime/2
+        mwr_list = []
+        for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(),
+                     self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(),
+                     self.MWR5_comboBox.currentText()]:
+            if item != "":
+                mwr_list.append(int(item))
+        estimateTime = int(delta * (int(self.sampleSizeNUSF_comboBox.currentText())) * len(mwr_list))
         if estimateTime < 60:
             self.timeNUSF_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:
@@ -666,9 +703,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
         type = [s.strip() for s in config['INPUT']['type'].split(',')]
-        max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
-        min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
-        outdir = config['OUTPUT']['results_dir']
 
         ## Populate gui fields with config file info
         if mode == 'minimax':
@@ -712,19 +746,21 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
         type = [s.strip() for s in config['INPUT']['type'].split(',')]
-        max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
-        min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
-        weight_mode = config['WEIGHT']['weight_mode']
-        sf_method = config['SF']['sf_method']
         scale_method = config['SF']['scale_method']
-        mwr_vals = config['SF']['mwr_values']
-        outdir = config['OUTPUT']['results_dir']
+        mwr_vals = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
         ## Populate gui fields with config file info
         self.Minimax_radioButton.setEnabled(False)
         self.Maximin_radioButton.setChecked(True)
-
+        if scale_method == 'direct_mwr':
+            self.Direct_radioButton.setChecked(True)
+        elif scale_method == 'ranked_mwr':
+            self.Ranked_radioButton.setChecked(True)
         self.designSize_spin.setValue(min_size)
+        MWRcomboList = [self.MWR1_comboBox, self.MWR2_comboBox, self.MWR3_comboBox, self.MWR4_comboBox, self.MWR5_comboBox]
+        for i in range(len(mwr_vals)):
+            combo = MWRcomboList[i]
+            combo.setCurrentText(str(mwr_vals[i]))
 
         if hfile == '':
             self.historyData = None
@@ -742,10 +778,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         for i in range(len(type)):
             self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
 
-        self.sampleSizeNUSF_spin.setValue(int(nr))
+        self.sampleSizeNUSF_comboBox.setCurrentText(str(nr))
         self.updateRunTimeNUSF(self.testRuntime[0])
-        self.designInfoNUSF_dynamic.setText('d = %d, n = %d' %(int(self.designSize_spin.value()),
-                                                           10 ** int(self.sampleSizeNUSF_spin.value())))
+        self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' %(int(self.MWR1_comboBox.currentText()),
+                                                           int(self.sampleSizeNUSF_comboBox.currentText())))
 
     def showOrderFileLoc(self, fname):
         msg = QMessageBox()

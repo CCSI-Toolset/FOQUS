@@ -22,10 +22,10 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
                     mdpts,
                     mties,
                     dmat,
-                    cand # numpy array of shape (N, nx+1) and type 'float'
+                    mat # numpy array of shape (N, nx+1) and type 'float'
                     ):
 
-    ncand = np.shape(cand)[0]
+    ncand = np.shape(mat)[0]
     assert(md <= ncand)
 
     nd, nx = des.shape 
@@ -56,7 +56,7 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
     for i in range(len(mdpts)):
         for j in range(ncand):
             pt = (i,j)
-            _, _, d0[i,j], _, mt0[i,j] = step(pt, cand, mdpts, des, dmat)
+            _, _, d0[i,j], _, mt0[i,j] = step(pt, mat, mdpts, des, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -64,7 +64,7 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
     if d0_max > md:
         md = d0_max
         pt = pts[np.random.randint(pts.shape[0])]
-        des, dmat, md, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0=mt0)
+        des, dmat, md, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
     elif d0_max == md:
         nselect = []
         for k, pt in enumerate(pts):
@@ -73,7 +73,7 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
                 nselect.append(k)            
         if nselect:
             pt = pts[np.random.choice(nselect)]
-            des, dmat, mdpts, mties = step(pt, cand, mdpts, des, dmat, mt0=mt0)
+            des, dmat, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
     else:
         update = False
             

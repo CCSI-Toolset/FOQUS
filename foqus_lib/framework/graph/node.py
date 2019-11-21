@@ -806,7 +806,7 @@ class Node:
                     # doesn't match the outputs in the node that's
                     # okay may have deleted a variable.  Simulation may
                     # also have failed before producing any output.
-                    pass
+                    logging.getLogger("foqus." + __name__).exception()
             logging.getLogger("foqus." + __name__).debug(
                 "Outputs: {0}\n".format("\n".join(outputlog))
             )

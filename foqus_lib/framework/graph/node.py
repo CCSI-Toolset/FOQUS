@@ -801,7 +801,7 @@ class Node:
                     outputlog.append(
                         "{0} = {1}".format(vname, res["Output"][vname]["value"])
                     )
-                except:
+                except KeyError:
                     # if there is an output of the simulation that
                     # doesn't match the outputs in the node that's
                     # okay may have deleted a variable.  Simulation may

@@ -496,7 +496,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         count = 0
         for mwr in mwr_list:
-            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], elapsed_time/len(mwr_list), fnames[mwr],
+            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], results[mwr]['elapsed_time'], fnames[mwr],
                                   config_file, results[mwr]['best_val']])
 
             self.updateAnalysisTable()

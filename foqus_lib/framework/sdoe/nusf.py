@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist
+import time
 
 # -----------------------------------
 def compute_dmat(mat,  # numpy array of shape (N, nx+1) and type 'float'
@@ -144,7 +145,7 @@ def criterion(cand,    # candidates
         hist = hist[include].values
 
     def step(mwr, cand):
-
+        t0 = time.time()
         cand = scale_y(scale_method, mwr, cand)
                 
         best_cand = []
@@ -182,6 +183,7 @@ def criterion(cand,    # candidates
                 best_mties = mties
                 best_dmat = dmat
 
+            elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
 
         results = {'best_cand_scaled': best_cand,
@@ -192,7 +194,8 @@ def criterion(cand,    # candidates
                    'best_dmat': best_dmat,
                    'mode': mode,
                    'design_size': nd,
-                   'num_restarts': nr}
+                   'num_restarts': nr,
+                   'elapsed_time': elapsed_time}
         
         return results
 

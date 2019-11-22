@@ -440,6 +440,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return configFile
 
     def runSdoe(self):
+        if self.hasNoIndex():
+            reply = self.showIndexWarning()
+            if reply == QMessageBox.Yes:
+                pass
+            else:
+                return
+        if self.hasIndex():
+            self.showIndexBlock()
+            return
         self.runSdoeButton.setText('Stop SDOE')
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
@@ -481,6 +490,21 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testRuntime.append(runtime)
 
     def runSdoeNUSF(self):
+        if self.hasNoIndex():
+            reply = self.showIndexWarning()
+            if reply == QMessageBox.Yes:
+                pass
+            else:
+                return
+        if self.hasNoWeight():
+            self.showWeightWarning()
+            return
+        if self.hasWeight():
+            self.showWeightBlock()
+            return
+        if self.hasIndex():
+            self.showIndexBlock()
+            return
         self.runSdoeNUSFButton.setText('Stop SDOE')
         size = self.designSize_spin.value()
         mwr_list = []

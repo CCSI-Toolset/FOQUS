@@ -73,7 +73,7 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
                 nselect.append(k)            
         if nselect:
             pt = pts[np.random.choice(nselect)]
-            des, dmat, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
+            des, dmat, md, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
     else:
         update = False
             
@@ -82,7 +82,7 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
 # -----------------------------------
 def scale_cand(mat):
     # Takes np array as input
-    # Assumes last column contains weights
+    # Last column contains weights because we moved it to the end
 
     # last column contains weights
     xs = mat[:,:-1]  
@@ -97,7 +97,7 @@ def scale_cand(mat):
 
 def scale_y(scale_method, mwr, df):
     # Takes pandas df as input
-    # Assumes last column contains weights
+    # Last column contains weights because we moved it to the end
     def direct_mwr(mwr, df):
         df.iloc[:,-1] = 1 + (mwr-1)*((df.iloc[:,-1]-np.min(df.iloc[:,-1]))/(np.max(df.iloc[:,-1])-np.min(df.iloc[:,-1])))
         return df
@@ -115,7 +115,7 @@ def scale_y(scale_method, mwr, df):
 
 def inv_scale_cand(df, xmin, xmax):
     # Takes pandas df as input
-    # Assumes last column contains weights
+    # Last column contains weights because we moved it to the end
   
     # inverse-scale the inputs
     df.iloc[:,:-1] = (df.iloc[:,:-1]+1)/2*(xmax-xmin)+xmin

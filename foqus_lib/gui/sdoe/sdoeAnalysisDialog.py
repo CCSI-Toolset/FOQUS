@@ -516,6 +516,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 pass
             else:
                 return
+        if self.hasNoWeight():
+            self.showWeightWarning()
+            return
         #test using nd=2
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.designSize_spin.value(), test=True)
@@ -546,6 +549,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.testSdoeButton.setEnabled(self.hasSpaceFilling())
         if self.hasIndex():
             self.showIndexBlock()
+        if self.hasWeight():
+            self.showWeightBlock()
         self.checkType()
 
     def on_size_combobox_changed(self):
@@ -620,6 +625,22 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 index += 1
         return index > 1
 
+    def hasNoWeight(self):
+        numInputs = self.candidateData.getNumInputs()
+        weight = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Weight':
+                weight += 1
+        return weight == 0
+
+    def hasWeight(self):
+        numInputs = self.candidateData.getNumInputs()
+        weight = 0
+        for i in range(numInputs):
+            if str(self.inputSdoeTable.cellWidget(i, self.typeCol).currentText()) == 'Weight':
+                weight += 1
+        return weight > 1
+
     def showIndexWarning(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
@@ -635,6 +656,24 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle('Index already selected.')
         msg.setText('You have already set an index. The index is a unique identifier for the input combination. It is not required, but encouraged. Please select only one index for your design.')
+        msg.setStandardButtons(QMessageBox.Ok)
+        reply = msg.exec_()
+        return reply
+
+    def showWeightWarning(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Weight not selected.')
+        msg.setText('You have not set a weight. Please select a weight to continue.')
+        msg.setStandardButtons(QMessageBox.Ok)
+        reply = msg.exec_()
+        return reply
+
+    def showWeightBlock(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Weight already selected.')
+        msg.setText('You have already set a weight. Please select only one weight for your design.')
         msg.setStandardButtons(QMessageBox.Ok)
         reply = msg.exec_()
         return reply

@@ -27,6 +27,7 @@ def run(config_file, nd, test=False):
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
+    type = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
     nusf = 'SF' in config.sections()
@@ -59,6 +60,11 @@ def run(config_file, nd, test=False):
             include = list(cand)
         if nusf and weight_mode == 'by_user':
             from .nusf import scale_cand
+            weightName = ''
+            for i in range(len(include)):
+                if type[i] == 'Weight':
+                    weightName = include[i]
+            cand = cand[[col for col in cand.columns if col != weightName] + [weightName]] #move column with weights to the back of df
             sc, xmin, xmax = scale_cand(cand.values)
             cand = pd.DataFrame(sc, columns=cand.columns)
             args['xmin'] = xmin

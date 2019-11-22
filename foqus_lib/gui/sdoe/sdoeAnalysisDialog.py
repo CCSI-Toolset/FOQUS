@@ -469,6 +469,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 pass
             else:
                 return
+        if self.hasIndex():
+            self.showIndexBlock()
+            return
         #test using max design size and nd=200
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
@@ -518,6 +521,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 return
         if self.hasNoWeight():
             self.showWeightWarning()
+            return
+        if self.hasWeight():
+            self.showWeightBlock()
+            return
+        if self.hasIndex():
+            self.showIndexBlock()
             return
         #test using nd=2
         self.testRuntime = []

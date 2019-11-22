@@ -1,7 +1,7 @@
 import os
 
 from foqus_lib.framework.uq.Model import Model
-from foqus_lib.framework.sdoe import sdoe
+from foqus_lib.framework.sdoe import plot_utils
 
 #from Preview_UI import Ui_Dialog
 
@@ -109,5 +109,5 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         show = self.checkItemSelected(QListWidgetItem())
         fname = os.path.join(self.dirname, self.data.getModelName())
         hname = self.hname
-        sdoe.plot(fname, hname=hname, show=show)
+        plot_utils.plot(fname, hname=hname, show=show)
         self.setModal(True)

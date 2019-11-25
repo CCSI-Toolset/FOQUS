@@ -249,10 +249,10 @@ class opt(optimization):
             self.updateGraph = True #this flag is for GUI if true the
                                     #flowsheet display needs updated
             self.resQueue.put(["BEST", [self.bestSoFar], x])
-        else:    
-            # Spit out objective for objective plot coresponding to each function evaluation/iteration
-            self.resQueue.put([
-                "IT", self.prob.iterationNumber, obj])
+#        else:    
+        # Spit out objective for objective plot coresponding to each function evaluation/iteration
+        self.resQueue.put([
+            "IT", self.prob.iterationNumber, obj])
         # Spit out message to messages window after exery 10 evaluations
         if not self.prob.iterationNumber % 10:
             self.msgQueue.put("{0} obj: {1}".format(

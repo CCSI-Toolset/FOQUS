@@ -36,26 +36,40 @@ Currently store user/password information in DynamoDB FOQUSUsers table.  To crea
 ## Deployment
 ### FOQUS Worker
 #### Install FOQUS
-Open an Anaconda-5.0.* terminal and install base packages.
+Open an Anaconda3 terminal and install base packages.
 ```
-% conda install git
-% python -m pip install --upgrade pip
-% pip install git+https://github.com/CCSI-Toolset/turb_client@master
-% pip install git+https://github.com/CCSI-Toolset/foqus@master
+(base) C:\Users\Administrator\Desktop> conda activate foqus
+(foqus) C:\Users\Administrator\Desktop> conda install git
+(foqus) C:\Users\Administrator\Desktop> python -m pip install --upgrade pip
+(foqus) C:\Users\Administrator\Desktop> pip install boto3
+(foqus) C:\Users\Administrator\Desktop> pip install git+https://github.com/CCSI-Toolset/turb_client@master
+(foqus) C:\Users\Administrator\Desktop> pip install git+https://github.com/CCSI-Toolset/foqus@master
+```
+##### (OPTIONAL) Run FOQUS tests
+```
+(foqus) C:\Users\Administrator\Desktop>git clone https://github.com/CCSI-Toolset/foqus; cd FOQUS
+(foqus) C:\Users\Administrator\Desktop\FOQUS>pytest
+================================================= test session starts =================================================
+platform win32 -- Python 3.7.3, pytest-5.1.2, py-1.8.0, pluggy-0.13.0
+rootdir: C:\Users\Administrator\Desktop\FOQUS, inifile: pytest.ini, testpaths: foqus_lib
+collected 5 items
+
+foqus_lib\framework\sampleResults\test\results_s3_test.py .....                                                  [100%]
+
+================================================== 5 passed in 2.44s ==================================================
 ```
 #### Install TurbineLite and dependencies
-1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876) 
-2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi) 
+1. Install [SQL Compact 4.0 x64](https://www.microsoft.com/en-us/download/details.aspx?id=17876)
+2. Install [SimSinterInstaller.msi](https://github.com/CCSI-Toolset/SimSinter/releases/download/2.0.0/SimSinterInstaller.msi)
 3. Install [TurbineLite.msi](https://github.com/CCSI-Toolset/turb_sci_gate/releases/download/2.0.0/TurbineLite.msi)
-4. Install AspenTech v8.4
+4. Install AspenTech v10
 ```
 After installing Aspen you will need to configure the license server
-Next run AspenTech/ACM and decline to register the product (otherwise it will hang indefinitely). 
+Next run AspenTech/ACM and decline to register the product (otherwise it will hang indefinitely).
 ```
-
 #### Install FOQUS Windows Service
 ```
-(base) C:\Users\Administrator>python \ProgramData\Anaconda2\Scripts\foqus_service.py
+(foqus) C:\Users\Administrator>foqus_service.py
 Usage: 'foqus_service.py [options] install|update|remove|start [...]|stop|restart [...]|debug [...]'
 Options for 'install' and 'update' commands only:
  --username domain\username : The Username the service is to run under
@@ -71,29 +85,37 @@ Options for 'start' and 'stop' commands only:
                  and all dependent services will be stopped, each waiting
                  the specified period.
 
-(base) C:\Users\Administrator>python \ProgramData\Anaconda2\Scripts\foqus_service.py  --startup delayed --interactive install
+(foqus) C:\Users\Administrator> foqus_service.py  --startup delayed --interactive install
 Installing service FOQUS-Cloud-Service
 Service installed
 
 (base) C:\Users\Administrator>
 ```
 #### Update Windows PATH with Anaconda dependencies
-1.  Powershell Method1: Unfortunately this doesn't work because 'setx' will truncate the value to 1024 characters!
+#### Print Current PATH
 ```
-PS C:\Users\Administrator> setx /M PATH "$($env:path);C:\ProgramData\Anaconda2\python27.zip;C:\ProgramData\Anaconda2\DLLs;C:\ProgramData\Anaconda2\lib;C:\ProgramData\Anaconda2\lib\plat-win;C:\ProgramData\Anaconda2\lib\lib-tk;C:\ProgramData\Anaconda2;C:\ProgramData\Anaconda2\lib\site-packages;C:\ProgramData\Anaconda2\lib\site-packages\Babel-2.5.0-py2.7.egg;C:\ProgramData\Anaconda2\lib\site-packages\win32;C:\ProgramData\Anaconda2\lib\site-packages\win32\lib;C:\ProgramData\Anaconda2\lib\site-packages\Pythonwin"
+(foqus) C:\Users\Administrator\Desktop>echo %PATH%
+C:\ProgramData\Anaconda3\envs\foqus;C:\ProgramData\Anaconda3\envs\foqus\Library\mingw-w64\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\usr\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\bin;C:\ProgramData\Anaconda3\envs\foqus\Scripts;C:\ProgramData\Anaconda3\envs\foqus\bin;C:\ProgramData\Anaconda3\condabin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Amazon\cfn-bootstrap;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\DTS\Binn;C:\Program Files (x86)\Common Files\AspenTech Shared
+```
+1.  Powershell Method
+Open a powershell terminal and copy the path from above to set the machine system PATH environment variable to allow the `foqus_service.py` to run as a Windows Service.
+```
+PS C:\Users\Administrator\Desktop> $P1 = "C:\ProgramData\Anaconda3\envs\foqus;C:\ProgramData\Anaconda3\envs\foqus\Library\mingw-w64\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\usr\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\bin;C:\ProgramData\Anaconda3\envs\foqus\Scripts;C:\ProgramData\Anaconda3\envs\foqus\bin;C:\ProgramData\Anaconda3\condabin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Amazon\cfn-bootstrap;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\DTS\Binn;C:\Program Files (x86)\Common Files\AspenTech Shared"
+```
+Second, add several Anaconda3 Library paths.
+```
+PS C:\Users\Administrator\Desktop> $P2 = "$P1;C:\ProgramData\Anaconda3\Library\bin;C:\ProgramData\Anaconda3\DLLs;C:\ProgramData\Anaconda3\lib;C:\ProgramData\Anaconda3;C:\ProgramData\Anaconda3\lib\site-packages;C:\ProgramData\Anaconda3\lib\site-packages\win32;C:\ProgramData\Anaconda3\lib\site-packages\win32\lib;C:\ProgramData\Anaconda3\lib\site-packages\Pythonwin"
 
-WARNING: The data being saved is truncated to 1024 characters.
-
-SUCCESS: Specified value was saved.
+PS C:\Users\Administrator\Desktop> [Environment]::SetEnvironmentVariable('path', "$P2", 'Machine');
 ```
 2.  Control Panel Method
 ```
-Append the path above in method1 by navigating to the control panel:
+Append the path above in method1 ( $P2 ) by navigating to the control panel:
 control panel/system and security/system/advanced system settings/environment variables/PATH
 ```
 ## Testing
 
-## Reference: AWS Resources 
+## Reference: AWS Resources
 ### SQS
 ```
 FOQUS-Job-Queue
@@ -133,4 +155,3 @@ foqus-simulations
 TurbineUsers
 FOQUS_Resources
 ```
-

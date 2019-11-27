@@ -1,0 +1,602 @@
+{
+  "title": "BFB_v11_FBS_01_26_2018",
+  "config-version": "1.0",
+  "description": "This is the SimSinter file for the OUU of the BFB reactor system.",
+  "model": {
+    "file": "BFB_v11_FBS_01_26_2018.acmf",
+    "DigestValue": "05a5c9ee0693739adc29b73e5e21339355176fe7",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "Byron Soepyan",
+  "date": "1/26/2018",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Custom Modeler",
+    "version": "30.0",
+    "constraint": "AT-LEAST"
+  },
+  "settings": {
+    "RunMode": {
+      "type": "string",
+      "default": "Steady State",
+      "description": "Simulation specific setting: RunMode"
+    },
+    "printlevel": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: printlevel"
+    },
+    "homotopy": {
+      "type": "int",
+      "default": 0,
+      "description": "Simulation specific setting: homotopy"
+    },
+    "Snapshot": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Snapshot"
+    },
+    "TimeSeries": {
+      "type": "double[1]",
+      "default": [
+        0.0
+      ],
+      "description": "Simulation specific setting: TimeSeries"
+    },
+    "Script": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: Script"
+    },
+    "MinStepSize": {
+      "type": "double",
+      "default": 0.001,
+      "description": "Simulation specific setting: MinStepSize"
+    },
+    "TimeUnits": {
+      "type": "string",
+      "default": "Hours",
+      "description": "Simulation specific setting: TimeUnits"
+    }
+  },
+  "inputs": {
+    "BFBadsB.Dt": {
+      "path": [
+        "BFBadsB.Dt"
+      ],
+      "type": "double",
+      "default": 11.897,
+      "description": "Single Unit Diameter (m)",
+      "units": "m",
+      "min": 10.0,
+      "max": 15.0
+    },
+    "BFBadsB.dx": {
+      "path": [
+        "BFBadsB.dx"
+      ],
+      "type": "double",
+      "default": 0.0127,
+      "description": "Heat Exchanger Tube Diameter (m)",
+      "units": "m",
+      "min": 0.0127,
+      "max": 0.075
+    },
+    "BFBadsB.Lb": {
+      "path": [
+        "BFBadsB.Lb"
+      ],
+      "type": "double",
+      "default": 2.085,
+      "description": "Bed Depth (m)",
+      "units": "m",
+      "min": 0.75,
+      "max": 2.5
+    },
+    "BFBadsM.Dt": {
+      "path": [
+        "BFBadsM.Dt"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "Single Unit Diameter (m)",
+      "units": "m",
+      "min": 10.0,
+      "max": 15.0
+    },
+    "BFBadsM.dx": {
+      "path": [
+        "BFBadsM.dx"
+      ],
+      "type": "double",
+      "default": 0.06695,
+      "description": "Heat Exchanger Tube Diameter (m)",
+      "units": "m",
+      "min": 0.0127,
+      "max": 0.075
+    },
+    "BFBadsM.Lb": {
+      "path": [
+        "BFBadsM.Lb"
+      ],
+      "type": "double",
+      "default": 1.972,
+      "description": "Bed Depth (m)",
+      "units": "m",
+      "min": 0.75,
+      "max": 2.5
+    },
+    "BFBadsT.Dt": {
+      "path": [
+        "BFBadsT.Dt"
+      ],
+      "type": "double",
+      "default": 15.0,
+      "description": "Single Unit Diameter (m)",
+      "units": "m",
+      "min": 10.0,
+      "max": 15.0
+    },
+    "BFBadsT.dx": {
+      "path": [
+        "BFBadsT.dx"
+      ],
+      "type": "double",
+      "default": 0.062397,
+      "description": "Heat Exchanger Tube Diameter (m)",
+      "units": "m",
+      "min": 0.0127,
+      "max": 0.075
+    },
+    "BFBadsT.Lb": {
+      "path": [
+        "BFBadsT.Lb"
+      ],
+      "type": "double",
+      "default": 2.203,
+      "description": "Bed Depth (m)",
+      "units": "m",
+      "min": 0.75,
+      "max": 2.5
+    },
+    "BFBRGN.Dt": {
+      "path": [
+        "BFBRGN.Dt"
+      ],
+      "type": "double",
+      "default": 9.041,
+      "description": "Single Unit Diameter (m)",
+      "units": "m",
+      "min": 8.0,
+      "max": 12.0
+    },
+    "BFBRGN.Lb": {
+      "path": [
+        "BFBRGN.Lb"
+      ],
+      "type": "double",
+      "default": 8.886,
+      "description": "Bed Depth (m)",
+      "units": "m",
+      "min": 2.0,
+      "max": 9.0
+    },
+    "BFBRGNTop.Dt": {
+      "path": [
+        "BFBRGNTop.Dt"
+      ],
+      "type": "double",
+      "default": 9.195,
+      "description": "Single Unit Diameter (m)",
+      "units": "m",
+      "min": 8.0,
+      "max": 12.0
+    },
+    "BFBRGNTop.Lb": {
+      "path": [
+        "BFBRGNTop.Lb"
+      ],
+      "type": "double",
+      "default": 7.1926,
+      "description": "Bed Depth (m)",
+      "units": "m",
+      "min": 2.0,
+      "max": 9.0
+    },
+    "GHXfg.A_exch": {
+      "path": [
+        "GHXfg.A_exch"
+      ],
+      "type": "double",
+      "default": 16358.0,
+      "description": "Required area (m^2)",
+      "units": "m2",
+      "min": 10000.0,
+      "max": 17000.0
+    },
+    "Kd": {
+      "path": [
+        "Kd"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Gas Phase Bulk Flow Coefficient (m^3/s)",
+      "units": "",
+      "min": 75.0,
+      "max": 125.0
+    },
+    "BFBadsB.Cr": {
+      "path": [
+        "BFBadsB.Cr"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Average Correction Factor for Heat Exchanger Tubes",
+      "units": "",
+      "min": 0.75,
+      "max": 1.25
+    },
+    "BFBadsM.Cr": {
+      "path": [
+        "BFBadsM.Cr"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Average Correction Factor for Heat Exchanger Tubes",
+      "units": "",
+      "min": 0.75,
+      "max": 1.25
+    },
+    "BFBadsT.Cr": {
+      "path": [
+        "BFBadsT.Cr"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Average Correction Factor for Heat Exchanger Tubes",
+      "units": "",
+      "min": 0.75,
+      "max": 1.25
+    },
+    "BFBRGN.Cr": {
+      "path": [
+        "BFBRGN.Cr"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Average Correction Factor for Heat Exchanger Tubes",
+      "units": "",
+      "min": 0.75,
+      "max": 1.25
+    },
+    "BFBRGNTop.Cr": {
+      "path": [
+        "BFBRGNTop.Cr"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Average Correction Factor for Heat Exchanger Tubes",
+      "units": "",
+      "min": 0.75,
+      "max": 1.25
+    },
+    "dp": {
+      "path": [
+        "dp"
+      ],
+      "type": "double",
+      "default": 0.00015,
+      "description": "Particle Diameter (m)",
+      "units": "m",
+      "min": 0.0001125,
+      "max": 0.0001875
+    },
+    "GHXfg.GasIn.P": {
+      "path": [
+        "GHXfg.GasIn.P"
+      ],
+      "type": "double",
+      "default": 1.01325,
+      "description": "Pressure",
+      "units": "bar",
+      "min": 0.9,
+      "max": 1.1
+    },
+    "GHXfg.GasIn.T": {
+      "path": [
+        "GHXfg.GasIn.T"
+      ],
+      "type": "double",
+      "default": 54.0,
+      "description": "Temperature",
+      "units": "C",
+      "min": 50.0,
+      "max": 60.0
+    },
+    "fg_flow": {
+      "path": [
+        "fg_flow"
+      ],
+      "type": "double",
+      "default": 100377.0,
+      "description": "Nominal flue gas flowrate",
+      "units": "kmol/hr",
+      "min": 70263.9,
+      "max": 110414.7
+    }
+  },
+  "outputs": {
+    "Cost_coe": {
+      "path": [
+        "Cost_coe"
+      ],
+      "type": "double",
+      "default": 138.8242573988463,
+      "description": "Cost of electricity $/MWhr",
+      "units": ""
+    },
+    "Cost_coe_obj": {
+      "path": [
+        "Cost_coe_obj"
+      ],
+      "type": "double",
+      "default": 138.8242573988463,
+      "description": "Cost of electricity $/MWhr + slack penalty",
+      "units": ""
+    },
+    "Cost_ads": {
+      "path": [
+        "Cost_ads"
+      ],
+      "type": "double",
+      "default": 34832226.206399351,
+      "description": "Total adsorber cost all trains fob (CE=500)",
+      "units": ""
+    },
+    "Cost_aux_power": {
+      "path": [
+        "Cost_aux_power"
+      ],
+      "type": "double",
+      "default": 23385.503427224274,
+      "description": "Power consumed by capture equipment",
+      "units": "kW"
+    },
+    "Cost_op_cooling_water": {
+      "path": [
+        "Cost_op_cooling_water"
+      ],
+      "type": "double",
+      "default": 12562503.664959071,
+      "description": "Cooling water cost cost $/yr",
+      "units": ""
+    },
+    "Cost_op_cooling_water_flow": {
+      "path": [
+        "Cost_op_cooling_water_flow"
+      ],
+      "type": "double",
+      "default": 2923843.78423705,
+      "description": "Cooling water useage",
+      "units": "kmol/hr"
+    },
+    "Cost_op_fixed": {
+      "path": [
+        "Cost_op_fixed"
+      ],
+      "type": "double",
+      "default": 54527170.105071969,
+      "description": "Total fixed operating cost $/yr",
+      "units": ""
+    },
+    "Cost_op_var": {
+      "path": [
+        "Cost_op_var"
+      ],
+      "type": "double",
+      "default": 172522109.68218017,
+      "description": "Total variable operating costs $/yr",
+      "units": ""
+    },
+    "Cost_rgn": {
+      "path": [
+        "Cost_rgn"
+      ],
+      "type": "double",
+      "default": 16323489.589995965,
+      "description": "Total regenrator cost all trains fob (CE=500)",
+      "units": ""
+    },
+    "Cost_shx": {
+      "path": [
+        "Cost_shx"
+      ],
+      "type": "double",
+      "default": 39020395.75661277,
+      "description": "Cost of solids heatexchanger all trains fob (CE=500)",
+      "units": ""
+    },
+    "Cost_steam_power": {
+      "path": [
+        "Cost_steam_power"
+      ],
+      "type": "double",
+      "default": 178992.84008439549,
+      "description": "Power not produced due to steam extraction",
+      "units": "kW"
+    },
+    "Cost_steam_tot": {
+      "path": [
+        "Cost_steam_tot"
+      ],
+      "type": "double",
+      "default": 695217.11962934432,
+      "description": "Total steam used utility + power plant",
+      "units": "kg/hr"
+    },
+    "Cost_toc": {
+      "path": [
+        "Cost_toc"
+      ],
+      "type": "double",
+      "default": 2111605826.9713409,
+      "description": "Total overnight cost everything $",
+      "units": ""
+    },
+    "Cost_toc_sorb": {
+      "path": [
+        "Cost_toc_sorb"
+      ],
+      "type": "double",
+      "default": 84011457.368697584,
+      "description": "Total overnight sorbent cost 2010",
+      "units": ""
+    },
+    "removalCO2": {
+      "path": [
+        "removalCO2"
+      ],
+      "type": "double",
+      "default": 0.89968010780922092,
+      "description": "Adsorption CO2 removal fraction",
+      "units": ""
+    },
+    "SHX.CWFR": {
+      "path": [
+        "SHX.CWFR"
+      ],
+      "type": "double",
+      "default": 26470.78926712216,
+      "description": "Cooling water mass flow rate (kg/hr)",
+      "units": "kg/hr"
+    },
+    "SHX.LeanIn.T": {
+      "path": [
+        "SHX.LeanIn.T"
+      ],
+      "type": "double",
+      "default": 146.39765291638011,
+      "description": "",
+      "units": "C"
+    },
+    "SHX.RichIn.T": {
+      "path": [
+        "SHX.RichIn.T"
+      ],
+      "type": "double",
+      "default": 84.064647875576156,
+      "description": "",
+      "units": "C"
+    },
+    "SHX.SteamFR": {
+      "path": [
+        "SHX.SteamFR"
+      ],
+      "type": "double",
+      "default": 37652.63814666192,
+      "description": "Steam mass flow rate (kg/hr)",
+      "units": "kg/hr"
+    },
+    "removalCO2_slack": {
+      "path": [
+        "removalCO2_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation of 90% CO2 capture constriant",
+      "units": ""
+    },
+    "slugab_slack": {
+      "path": [
+        "slugab_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation slugflow in ads bottom",
+      "units": ""
+    },
+    "slugam_slack": {
+      "path": [
+        "slugam_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation slugflow in ads middle",
+      "units": ""
+    },
+    "slugat_slack": {
+      "path": [
+        "slugat_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation slugflow in ads top",
+      "units": ""
+    },
+    "slugrb_slack": {
+      "path": [
+        "slugrb_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation slugflow in rng bottom",
+      "units": ""
+    },
+    "slugrt_slack": {
+      "path": [
+        "slugrt_slack"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Slack variable that allows violation slugflow in rng top",
+      "units": ""
+    },
+    "BFBRGN.GasIn.F": {
+      "path": [
+        "BFBRGN.GasIn.F"
+      ],
+      "type": "double",
+      "default": 1357.089941010187,
+      "description": "Molar flow rate",
+      "units": "kmol/hr"
+    },
+    "F_solids": {
+      "path": [
+        "F_solids"
+      ],
+      "type": "double",
+      "default": 12702449.026081551,
+      "description": "Total Solids Circulation Rate, kg/hr",
+      "units": "kg/hr"
+    },
+    "GHXfg.HXIn.F": {
+      "path": [
+        "GHXfg.HXIn.F"
+      ],
+      "type": "double",
+      "default": 135603.66048146249,
+      "description": "Molar flow rate",
+      "units": "kmol/hr"
+    },
+    "SHX.LeanOut.T": {
+      "path": [
+        "SHX.LeanOut.T"
+      ],
+      "type": "double",
+      "default": 71.01606811426312,
+      "description": "",
+      "units": "C"
+    },
+    "SHX.RichOut.T": {
+      "path": [
+        "SHX.RichOut.T"
+      ],
+      "type": "double",
+      "default": 170.0,
+      "description": "",
+      "units": "C"
+    }
+  }
+}

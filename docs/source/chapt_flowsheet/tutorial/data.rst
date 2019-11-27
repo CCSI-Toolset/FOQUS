@@ -1,7 +1,7 @@
 .. _tutorials.fs.data:
 
-Flowsheet Result Data
-=====================
+Tutorial 4: Flowsheet Result Data
+=================================
 
 Flowsheet evaluation results are stored in a table in the FOQUS session.
 This data can be used for many purposes. The flowsheet evaluations may
@@ -9,11 +9,14 @@ be single runs, part of an optimization problem, or part of a UQ
 ensemble. This tutorial provide information about sorting, filtering,
 and exporting data.
 
-Copy the Data/Simple_flow.foqus file from the example files to a
+The FOQUS file for this tutorial is **Simple_flow.foqus**, and
+this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_4**
+
+Copy the Simple_flow.foqus file to a
 convenient location (see section :ref:`tutorial.example.files`). This file is
 similar to the one created in the tutorial Section
 :ref:`tutorial.sim.flowsheet`, but it has been run
-an additional 100 times using a UQ ensemble (see :ref:`chapt_uq/index:Uncertainty Quantification`).
+an additional 100 times using a UQ ensemble (see :ref:`subsec:uqt_sim`).
 
 #. Open FOQUS.
 

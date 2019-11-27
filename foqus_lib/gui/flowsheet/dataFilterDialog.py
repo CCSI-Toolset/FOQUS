@@ -18,7 +18,7 @@ from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QObject, QEvent, QDataStream, Qt
+from PyQt5.QtCore import QObject, QEvent, QDataStream, QSize, Qt
 from PyQt5.QtWidgets import QApplication, QMessageBox, QSplitter, QInputDialog,\
     QLineEdit, QAbstractItemView
 mypath = os.path.dirname(__file__)
@@ -145,6 +145,34 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             "Filter Name",
             "New filter name:",
             QLineEdit.Normal)
+        msgBox = QMessageBox(self)
+        msgBox.setIcon(QMessageBox.Information)
+        msgBox.setWindowTitle("Data Filter Instructions")
+        msgBox.setText("""Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
+        Single Filter Criteria Syntax: c(“column name”) ==,!=,<= or >= “ string_value” or numeric_value
+        String value can be a simulation set or result name, or time.
+        Numeric values are for simulation graph error, input and output variable values.
+        Multiple Filter Criteria Syntax: NumPy Logical Operators.
+        For 2 conditions: np.logical_and(condition_1, condition_2), np.logical_or(condition_1, condition_2)
+        For more than 2 conditions: np.logical_and.reduce((condition_1, condition_2…)), np.logical_or.reduce((condition_1, condition_2…))
+        Each ‘condition’ has the same syntax as that for single filter criteria""")
+#        msgBox.setInformativeText(text)
+        msgBox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
+        msgBox.setDefaultButton(QMessageBox.Ok)
+        msgBox.setFixedSize(500, 500)
+#        msgBox.resize(800, 200)
+        msgBox.exec()
+#        QMessageBox.setBaseSize(QSize(550, 275))
+#        QMessageBox.information(
+#                    self, "Data Filter Instructions", """Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
+#                    Single Filter Criteria Syntax: c(“column name”) ==,!=,<= or >= “ string_value” or numeric_value
+#                    String value can be a simulation set or result name, or time.
+#                    Numeric values are for simulation graph error, input and output variable values.
+#                    Multiple Filter Criteria Syntax: NumPy Logical Operators.
+#                    For 2 conditions: np.logical_and(condition_1, condition_2), np.logical_or(condition_1, condition_2)
+#                    For more than 2 conditions: np.logical_and.reduce((condition_1, condition_2…)), np.logical_or.reduce((condition_1, condition_2…))
+#                    Each ‘condition’ has the same syntax as that for single filter criteria""")
+#        QMessageBox.setBaseSize(QSize(550, 275))
         # if name supplied and not canceled
         if ok and newName != '':
             # check if the name is in use

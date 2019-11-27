@@ -27,11 +27,11 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
                     ):
 
     ncand = np.shape(mat)[0]
-    assert(md <= ncand)
 
     nd, nx = des.shape 
     nx = nx-1
-    
+    assert (nd <= ncand)
+
     def replace_design(arr, mat, dmat, k, val=9999):
         x = np.repeat(np.reshape(arr[:-1], (1, nx)), nd, axis=0) - mat[:,:-1]
         row = np.multiply(np.sum(np.square(x), axis=1)*arr[-1], mat[:,-1])
@@ -52,8 +52,8 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
         return des, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
-    d0 = np.zeros((int(mties), ncand))
-    mt0 = np.zeros((int(mties), ncand))
+    d0 = np.zeros((mties, ncand), dtype=int)
+    mt0 = np.zeros((mties, ncand), dtype=int)
     for i in range(len(mdpts)):
         for j in range(ncand):
             pt = (i,j)

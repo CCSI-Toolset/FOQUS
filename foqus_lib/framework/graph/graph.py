@@ -806,7 +806,7 @@ class Graph(threading.Thread):
             assume it is a single run with current values
         """
         if not self.useTurbine:
-            _log.debug("Running flowsheet(s) locally")
+            _log.debug("run: Running flowsheet(s) locally")
             # In this case the runs are done serially locally
             try:
                 # run a single simulation or a list of simulations
@@ -822,7 +822,7 @@ class Graph(threading.Thread):
                 self.ex = sys.exc_info()
                 _log.exception("Exception in graph thread")
         else:
-            _log.debug("Running flowsheet(s) through turbine")
+            _log.debug("run: Running flowsheet(s) through turbine")
             # in this case run should produce the same results but
             # the runs are submitted in a batch to Turbine
             #
@@ -1347,7 +1347,7 @@ class Graph(threading.Thread):
         # Check if new name is in use
         # if it is don't rename
         if newName in list(self.nodes.keys()):
-            raise
+            raise (f"Can't rename to {newName}, name already in use.")
         # search edges and change names
         for edge in self.edges:
             if edge.start == oldName:

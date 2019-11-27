@@ -62,6 +62,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.updateDelay = 500
         self.runButton.setEnabled(True)
         self.stopButton.setEnabled(False)
+        self.stopButton.clicked.connect(self.stop)
         self.addAllInButton.clicked.connect(self.selectAllInputs)
         self.addAllOutButton.clicked.connect(self.selectAllOutputs)
         self.delAllInButton.clicked.connect(self.selectNoInputs)

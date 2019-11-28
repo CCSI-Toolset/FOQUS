@@ -458,22 +458,22 @@ class NodeVars(object):
             elif self.scaling == "Log":
                 out = (
                     10
-                    * (log10(val) - log10(self.min))
-                    / (log10(self.max) - log10(self.min))
+                    * (math.log10(val) - math.log10(self.min))
+                    / (math.log10(self.max) - math.log10(self.min))
                 )
             elif self.scaling == "Power":
                 out = (
                     10
-                    * (power(10, val) - power(10, self.min))
-                    / (power(10, self.max) - power(10, self.min))
+                    * (math.pow(10, val) - math.pow(10, self.min))
+                    / (math.pow(10, self.max) - math.pow(10, self.min))
                 )
             elif self.scaling == "Log 2":
-                out = 10 * log10(9 * (val - self.min) / (self.max - self.min) + 1)
+                out = 10 * math.log10(9 * (val - self.min) / (self.max - self.min) + 1)
             elif self.scaling == "Power 2":
                 out = (
                     10.0
                     / 9.0
-                    * (power(10, (val - self.min) / (self.max - self.min)) - 1)
+                    * (math.pow(10, (val - self.min) / (self.max - self.min)) - 1)
                 )
             else:
                 raise (f"Unknown scaling: {self.scaling}")
@@ -494,18 +494,18 @@ class NodeVars(object):
             elif self.scaling == "Linear":
                 out = val * (self.max - self.min) / 10.0 + self.min
             elif self.scaling == "Log":
-                out = power(self.min * (self.max / self.min), (val / 10.0))
+                out = math.pow(self.min * (self.max / self.min), (val / 10.0))
             elif self.scaling == "Power":
-                out = log10(
-                    (val / 10.0) * (power(10, self.max) - power(10, self.min))
-                    + power(10, self.min)
+                out = math.log10(
+                    (val / 10.0) * (math.pow(10, self.max) - math.pow(10, self.min))
+                    + math.pow(10, self.min)
                 )
             elif self.scaling == "Log 2":
-                out = (power(10, val / 10.0) - 1) * (
+                out = (math.pow(10, val / 10.0) - 1) * (
                     self.max - self.min
                 ) / 9.0 + self.min
             elif self.scaling == "Power 2":
-                out = log10(9.0 * val / 10.0 + 1) * (self.max - self.min) + self.min
+                out = math.log10(9.0 * val / 10.0 + 1) * (self.max - self.min) + self.min
             else:
                 raise (f"Unknown scaling: {self.scaling}")
         except:
@@ -544,6 +544,8 @@ class NodeVars(object):
         sd["scaling"] = self.scaling
         sd["tags"] = self.tags
         sd["dist"] = self.dist.saveDict()
+        sd["hist"] = []
+        sd["hist"].append(value)
         return sd
 
     def loadDict(self, sd):

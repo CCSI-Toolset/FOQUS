@@ -211,6 +211,7 @@ class session:
         '''
             Initialize the session by calling the new function.
         '''
+        self.flowsheet = None
         # Get to the general foqus settings through the FOQUS session,
         # but the setting are stored in a seperate file not in the
         # FOQUS session file.  Its just here to make things easier,

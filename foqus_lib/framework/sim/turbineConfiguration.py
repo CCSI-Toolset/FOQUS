@@ -9,6 +9,7 @@ John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
 import os
+import os.path
 import configparser
 import json
 import re
@@ -22,7 +23,7 @@ import traceback
 import subprocess
 import socket
 import imp
-
+import foqus_lib.framework.sim.process_management as _pm
 _log = logging.getLogger("foqus." + __name__)
 
 if os.name == 'nt':
@@ -319,7 +320,10 @@ class TurbineConfiguration():
             _log.error("no consumer for app = {0}".format(app))
             return None
             _log.debug("  Exe: {0}".format(f))
-        proc = subprocess.Popen([f], stdout=None, stderr=None, stdin=None,
+
+        sinter_process_log = open('%s_sinter_log.txt' %app, 'a')
+        sinter_process_log.write('starting consumer\n')
+        proc = subprocess.Popen([f], stdout=sinter_process_log, stderr=subprocess.STDOUT, stdin=None,
                                 creationflags=win32process.CREATE_NO_WINDOW)
         if proc is None:
             raise TurbineInterfaceEx(code = 151)
@@ -331,6 +335,7 @@ class TurbineConfiguration():
             time.sleep(2)
             cid = db.consumer_id(proc.pid)
             if cid is not None:
+
                 break
         if cid is not None:
             self.consumers[nodeName] = ConsumerInfo(cid, 0, proc)
@@ -419,6 +424,7 @@ class TurbineConfiguration():
                 raise TurbineInterfaceEx(code = 0,
                     msg = "Failed to stop consumer: {0}".format(ci.cid),
                     e = e, tb=traceback.format_exc())
+            _pm.clean()
         try:
             del self.consumers[name]
         except:
@@ -432,6 +438,7 @@ class TurbineConfiguration():
         for name in names:
             self.stopConsumer(name)
         _log.debug("Stopped all running consumers")
+        _pm.clean()
 
     def reloadTurbine(self):
         '''
@@ -534,8 +541,18 @@ class TurbineConfiguration():
             self.user = config.get("Authentication", "username")
             self.pwd = config.get("Authentication", "password")
             if address:
-                self.address = config.get("Job",  "url")
-                self.address = self.address[:-5]
+                #args = config.get("Job",  "url")
+                args = config.get("Application",  "url")
+                _log.debug('turbine configuration application url="%s"', args)
+                assert args != '', 'Missing Application URL'
+                args = args.split('/')
+                self.address = None
+                while self.address is None:
+                    item = args.pop()
+                    if item.lower() == 'application':
+                        self.address = '/'.join(args)
+                        break
+                _log.debug('turbine configuration url="%s"', self.address)
             self.checkAddress()
             if self.address[-4:] in ['Lite', 'lite', 'LITE']:
                 self.turbVer = "Lite"
@@ -1059,7 +1076,7 @@ class TurbineConfiguration():
             if checkConsumer:
                 proc = self.checkConsumer(nodeName)
                 if proc == None:
-                    _log.error("Appearently the consumer died, job failed")
+                    _log.error("Apparently the consumer died, job failed")
                     try:
                         self.killJob(jobID, state)
                     except Exception as e:
@@ -1288,6 +1305,7 @@ class TurbineConfiguration():
         simName,
         sinterConfigPath,
         update=True,
+        guid=None,
         otherResources = []):
         '''
             This function uploads a new simulation to Turbine.  The name
@@ -1297,6 +1315,8 @@ class TurbineConfiguration():
             update == True files for an existing model will be updated.
             If update is false and model exist return a model already
             exists error.
+
+            guid -- optional value to set Simulation.Id
         '''
         # Check that the simulation name only contains:
         # letters, numbers, and _
@@ -1341,9 +1361,12 @@ class TurbineConfiguration():
                 " already exists and the update flag is not set to true"]
         # Create a new model if needed
         elif not exists:
+            args = [name, app, self.getFile()]
+            if guid:
+                args = ["-s", name, guid, app, self.getFile()]
             try:
                 turbine.commands.turbine_simulation_script.\
-                    main_create([name, app, self.getFile()])
+                    main_create(args)
             except Exception as e:
                 raise TurbineInterfaceEx(
                     code = 0,
@@ -1363,6 +1386,9 @@ class TurbineConfiguration():
         # upload model file
         try:
             if modelFile != None:
+                if resourceType == 'aspenfile':
+                    resourceType = os.path.split(modelFile)[-1]
+                    _log.debug('resourceType aspenfile specified as %s' %resourceType)
                 turbine.commands.turbine_simulation_script.main_update(
                     ["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:

@@ -41,7 +41,7 @@ class foqusException(Exception):
         return self.codeString.get(self.code,
                                 "Error code: {0}".format(self.code))
 
-    def setCodeStrings():
+    def setCodeStrings(self):
         '''
             This is a function that should be overloaded to add to the
             error code strings to the codeString dictionary, use integer

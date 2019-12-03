@@ -858,10 +858,10 @@ class SurrogateParser:
                        '      nSamp   = int(float(nCols[0]))',
                        '      nInputs = int(float(nCols[1]))',
                        '      inData  = (nSamp * nInputs) * [0]',
-                       '      for cnt in xrange(nSamp):',
+                       '      for cnt in range(nSamp):',
                        '         lineIn = inFile.readline()',
                        '         nCols  = lineIn.split()',
-                       '         for ind in xrange(nInputs):',
+                       '         for ind in range(nInputs):',
                        '            inData[cnt*nInputs+ind] = float(nCols[ind+1])',
                        '   return nSamp, inData, nInputs',
                        '###################################################',
@@ -870,7 +870,7 @@ class SurrogateParser:
                        'def genOutputFile(outFileName, outData):',
                        '   nLeng = len(outData)',
                        '   outfile = open(outFileName, \'w\')',
-                       '   for ind in xrange(nLeng):',
+                       '   for ind in range(nLeng):',
                        '      outfile.write("%d " % (ind+1))',
                        '      outfile.write("%e\\n" % outData[ind])',
                        '   outfile.close()',
@@ -894,9 +894,9 @@ class SurrogateParser:
                 f.write('   if oid == %d:\n' % iy)
                 f.write('      %s\n' % eqns_new[iy])
             f.write('   Ys = npts * [0.0]\n')
-            f.write('   for ss in xrange(npts):\n')
+            f.write('   for ss in range(npts):\n')
             f.write('      Xt = nInputs * [0.0]\n')
-            f.write('      for ii in xrange(nInputs):\n')
+            f.write('      for ii in range(nInputs):\n')
             f.write('         Xt[ii] = XX[ss*nInputs+ii]\n')
             f.write('      Ys[ss] = g(Xt)\n')
             f.write('   return Ys\n')
@@ -905,8 +905,6 @@ class SurrogateParser:
                           '#==================================================',
                           'infileName  = sys.argv[1]',
                           'if infileName=="__labels__":',
-                          '   print json.dumps(in_labels)',
-                          '   print json.dumps(labels)',
                           '   sys.exit(0)',
                           'outfileName = sys.argv[2]',
                           'index = 0',
@@ -914,7 +912,7 @@ class SurrogateParser:
                           '   y = sys.argv[3]',
                           '   if y.isdigit():',
                           '      y = int(y)',
-                          '      if y in xrange(1, nOutputs+1):',
+                          '      if y in range(1, nOutputs+1):',
                           '         index = y - 1',
                           '   else:',
                           '      if y in labels:',

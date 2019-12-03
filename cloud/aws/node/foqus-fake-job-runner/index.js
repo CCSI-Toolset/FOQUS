@@ -1,5 +1,5 @@
 /**
- * Pops job off SQS Job queue and sends canned notifications to SNS Publish Topic
+ * Pops job off SQS Job queue and sends canned notifications to SNS Update Topic
  * which will cause foqus-sns-update to create job updates.
  *
  * @module foqus-fake-job-runner
@@ -9,7 +9,6 @@
  * @see https://github.com/motdotla/node-lambda-template
  */
 'use strict';
-'use AWS.S3'
 'use uuid'
 const AWS = require('aws-sdk');
 const sqs = new AWS.SQS();
@@ -20,16 +19,6 @@ const log = require("debug")("foqus-fake-job-runner")
 
 
 exports.handler = function(event, context, callback) {
-  /*
-    "Message": "[{"status\": \"setup\",
-    \"resource\": \"job\",
-    \"rc\": 0,
-    \"consumer\": \"79cc3b73-97d0-4f5e-b7da-29e011501146\",
-    \"event\": \"status\",
-    \"job\": \"71d054c2-ca79-4c30-a96b-9078eacd901d\"}]",
-  */
-    //console.log('Received event:', JSON.stringify(event, null, 4));
-
     var request = sns.createTopic({Name: update_topic_name,});
     var promise = request.promise();
     promise.then(handleGetQueueURL)
@@ -95,21 +84,15 @@ exports.handler = function(event, context, callback) {
       });
       return promise;
     };
-    /*
-     * handleParseSQSMessage: {"Initialize":false,
-     *    "Input":{},"Reset":false,
-     *    "Simulation":"OUU","Visible":false,
-     *    "Id":"4c797185-16a9-4b70-aea8-07d810475334"}
-     */
     function handleParseSQSMessage(msg) {
       var promise = new Promise(function(resolve, reject){
           log('handleParseSQSMessage: ' + JSON.stringify(msg));
           if (msg.Simulation == 'OUU' || msg.Simulation == "zzfoqus_BFB") {
               var updates = [
-                "[{\"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-                "[{\"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-                "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": \"DUMMY\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
-                "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\"}]",
+                "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"status\": \"setup\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
+                "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"status\": \"running\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
+                "[{\"resource\": \"job\", \"event\": \"output\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"rc\": 0, \"value\": \"DUMMY\"}]",
+                "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\", \"status\": \"success\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
               ]
               var promises = [];
               for (var i in updates) {

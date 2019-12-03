@@ -1,17 +1,20 @@
 .. _subsec:uqt_sim:
 
-Simulation Ensemble Creation and Execution
-------------------------------------------
+Tutorial 1: Simulation Ensemble Creation and Execution
+======================================================
 
 Creating a simulation ensemble using the variables' distributions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In this tutorial, a simulation ensemble is created (using FOQUS) and run.
 
+The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
+this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
+
 #. From the FOQUS main screen, click the **Session** button and then
-   select **Open Session** to open a session. Browse to the examples
-   folder, go into the UQ subfolder, and then select the
-   “Rosenbrock_novectors.foqus" problem (Figure
+   select **Open Session** to open a session. Browse to the
+   folder shown above, and select the
+   “Rosenbrock_no_vectors.foqus" file (Figure
    :ref:`fig.uqt_home`).
 
    .. figure:: ../figs/tutorial/1_home2.png

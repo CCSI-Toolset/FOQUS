@@ -21,7 +21,7 @@ class UncertaintyAnalysis(UQAnalysis):
         data = self.ensemble.getValidSamples()
         Common.initFolder(RawDataAnalyzer.dname)
         fname = Common.getLocalFileName(RawDataAnalyzer.dname, data.getModelName().split()[0], '.dat')
-        data.writeToPsuade(fname)
+        data.writeToPsuade(fname, fixedAsVariables=True)
 
         #perform UA
         mfile, self.moments = RawDataAnalyzer.performUA(fname, self.outputs[0])

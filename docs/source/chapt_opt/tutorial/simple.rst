@@ -1,11 +1,13 @@
 .. _sec.opt.tutorial:
 
-Optimization
-============
+Tutorial 1: Optimization
+========================
 
 This tutorial is a step-by-step walk through of simulation-based
 optimization. This tutorial builds on the tutorial in Section
 :ref:`tutorial.sim.flowsheet`.
+
+The files for this tutorial are located in: **examples/tutorial_files/Optimization/Tutorial_1**
 
 #. Open FOQUS.
 
@@ -54,7 +56,7 @@ step is to define the objective function and constraints using the form
 under the **Objective/Constraints** tab as shown in Figure
 :ref:`tut.opt.problem.obj`.
 
-.. figure:: ../figs/optProblemObj.svg
+.. figure:: ../figs/Tutorial_Optimization_Objective.jpg
    :alt: Optimization Problem Objective
    :name: tut.opt.problem.obj
 

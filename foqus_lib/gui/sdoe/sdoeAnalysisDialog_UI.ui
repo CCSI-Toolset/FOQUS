@@ -278,7 +278,7 @@ Minimize difference between min
 and max for efficient computation.</string>
               </property>
               <property name="minimum">
-               <number>1</number>
+               <number>2</number>
               </property>
               <property name="value">
                <number>8</number>
@@ -301,22 +301,6 @@ and max for efficient computation.</string>
             <string>Design Specification</string>
            </property>
            <layout class="QGridLayout" name="gridLayout_5">
-            <item row="0" column="7">
-             <widget class="QComboBox" name="MWR4_comboBox"/>
-            </item>
-            <item row="0" column="6">
-             <widget class="QComboBox" name="MWR3_comboBox"/>
-            </item>
-            <item row="0" column="5">
-             <widget class="QComboBox" name="MWR2_comboBox"/>
-            </item>
-            <item row="0" column="4">
-             <widget class="QComboBox" name="MWR1_comboBox">
-              <property name="currentIndex">
-               <number>-1</number>
-              </property>
-             </widget>
-            </item>
             <item row="0" column="0">
              <widget class="QLabel" name="designSize_static">
               <property name="text">
@@ -324,36 +308,22 @@ and max for efficient computation.</string>
               </property>
              </widget>
             </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_15">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
             <item row="0" column="1">
              <widget class="QSpinBox" name="designSize_spin">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
               <property name="minimum">
                <number>2</number>
               </property>
               <property name="maximum">
-               <number>40</number>
+               <number>99</number>
               </property>
               <property name="value">
                <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="MWR_static">
-              <property name="text">
-               <string>MWR:</string>
               </property>
              </widget>
             </item>
@@ -370,8 +340,44 @@ and max for efficient computation.</string>
               </property>
              </spacer>
             </item>
+            <item row="0" column="3">
+             <widget class="QLabel" name="MWR_static">
+              <property name="text">
+               <string>MWR:</string>
+              </property>
+             </widget>
+            </item>
             <item row="0" column="8">
              <widget class="QComboBox" name="MWR5_comboBox"/>
+            </item>
+            <item row="0" column="6">
+             <widget class="QComboBox" name="MWR3_comboBox"/>
+            </item>
+            <item row="0" column="7">
+             <widget class="QComboBox" name="MWR4_comboBox"/>
+            </item>
+            <item row="0" column="4">
+             <widget class="QComboBox" name="MWR1_comboBox">
+              <property name="currentIndex">
+               <number>-1</number>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="5">
+             <widget class="QComboBox" name="MWR2_comboBox"/>
+            </item>
+            <item row="0" column="2">
+             <spacer name="horizontalSpacer_9">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
             </item>
            </layout>
           </widget>

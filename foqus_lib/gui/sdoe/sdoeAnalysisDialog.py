@@ -115,7 +115,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.progressNUSF_groupBox.setHidden(True)
 
         # spin box bounds
+        self.minDesignSize_spin.setMaximum(len(candidateData.getInputData()))
         self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
+        self.designSize_spin.setMaximum(len(candidateData.getInputData()))
+
 
         # MWR combo boxes
         self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])

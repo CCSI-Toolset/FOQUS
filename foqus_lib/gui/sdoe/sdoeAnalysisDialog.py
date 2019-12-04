@@ -355,7 +355,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 type_list.append(str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText()))
         return min_vals, max_vals, include_list, type_list
 
-    def writeConfigFile(self, test=False):
+    def writeConfigFile(self, design_size, test=False):
         timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
         outdir = os.path.join(self.dname, timestamp)
         os.makedirs(outdir, exist_ok=True)
@@ -370,12 +370,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         elif self.Maximin_radioButton.isChecked():
             f.write('mode = maximin\n')
 
-        if self.type == 'USF':
-            f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
-            f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
-        else:
-            f.write('min_design_size = %d\n' % self.designSize_spin.value())
-            f.write('max_design_size = %d\n' % self.designSize_spin.value())
+        f.write('design_size = %d\n' % design_size)
 
         if test:
             if self.type == 'USF':
@@ -452,9 +447,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
-        for nd in range(min_size, max_size+1):
-            config_file = self.writeConfigFile()
-            fnames, results, elapsed_time = sdoe.run(config_file, nd)
+        for design_size in range(min_size, max_size+1):
+            config_file = self.writeConfigFile(design_size)
+            fnames, results, elapsed_time = sdoe.run(config_file)
             self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
                                                                                    config_file, results['best_val']])
             self.analysisTableGroup.setEnabled(True)

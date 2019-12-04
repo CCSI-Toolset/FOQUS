@@ -377,8 +377,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
             f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
         else:
-            f.write('min_design_size = %d\n' % self.designSize_spin.value())
-            f.write('max_design_size = %d\n' % self.designSize_spin.value())
+            f.write('design_size = %d\n' % self.designSize_spin.value())
 
         if test:
             if self.type == 'USF':
@@ -554,7 +553,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.hasIndex():
             self.showIndexBlock()
             return
-        #test using nd=2
+        #test using nr=2
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.designSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)

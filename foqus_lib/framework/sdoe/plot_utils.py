@@ -2,39 +2,49 @@ import matplotlib.pyplot as plt
 import numpy as np
 from .df_utils import load
 
+# plot parameters
+fc = {'hist': (1, 0, 0, 0.5), 'cand': (0, 0, 1, 0.5)}
+area = {'hist': 40, 'cand': 25}
 
-### TO DO: modify plots for NUSF
-def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
 
-    alpha = {'hist': 1.0, 'cand': 0.25}
-    area = {'hist': 40, 'cand': 25}
+def plot_hist(ax, xs, xname,
+              nbins=20,
+              show_grids=True,  # set to True to show grid lines
+              linewidth=0,      # set to nonzero to show border around bars 
+              hbars=False       # set to True for horizontal bars 
+):
+    ns, bins = np.histogram(xs, nbins)
+    xmin = bins[0]
+    xmax = bins[-1]
+    width = bins[1] - bins[0]
+    center = (bins[1:] + bins[:-1]) / 2
+    if hbars:
+        ax.barh(center, ns, align='center', height=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
+        ax.set_ylabel(xname)
+        ax.set_xlabel('Frequency')
+    else:
+        ax.bar(center, ns, align='center', width=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
+        ax.set_xlabel(xname)
+        ax.set_ylabel('Frequency')
 
-    def plot_hist(ax, xs, xname):
-        ns, bins = np.histogram(xs, nbins)
-        xmin = bins[0]
-        xmax = bins[-1]
-        width = bins[1] - bins[0]
-        center = (bins[1:] + bins[:-1]) / 2
-        if hbars:
-            ax.barh(center, ns, align='center', height=width, alpha=alpha['cand'])
-            ax.set_ylabel(xname)
-            ax.set_xlabel('Frequency')
-        else:
-            ax.bar(center, ns, align='center', width=width, alpha=alpha['cand'])
-            ax.set_xlabel(xname)
-            ax.set_ylabel('Frequency')
+    ax.grid(show_grids, axis='both')
+    return ax
 
-        ax.grid(True, axis='both')
-        return ax
 
+def load(fname, hname):
     # load results
     df = load(fname)
     names = list(df)
     # load history
+    hf = None
     if hname:
         hf = load(hname)
         # make sure headers match
         assert (names == list(hf))
+    return df, hf
+        
+
+def plot_candidates(df, hf, show):
 
     # process inputs to be shown
     if show is None:
@@ -46,7 +56,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         xname = show[0]
-        ax = plot_hist(ax, df[xname], xname)
+        ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0)
 
     else:  # multiple inputs
 
@@ -67,7 +77,7 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
             ax = A[k]
             xname = show[i]
             # ... plot histogram for diagonal subplot
-            ax = plot_hist(ax, df[xname], xname)
+            ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0)
 
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
@@ -75,19 +85,60 @@ def plot(fname, hname=None, show=None, nbins=20, area=10, hbars=False):
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[yname], df[xname], s=area['cand'], alpha=alpha['cand'], color='b')
-                if hname:
-                    ax.scatter(hf[yname], hf[xname], s=area['hist'], alpha=alpha['hist'], color='red', marker="*")
+                ax.scatter(df[yname], df[xname], s=area['cand'], fc=fc['cand'], color='b')
+                if hf:
+                    ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
                 ax.set_ylabel(xname)
                 ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
 
-    title = 'SDOE candidates from {}'.format(fname)
-    fig.canvas.set_window_title(title)
-    plt.tight_layout()
-    if hname:
+    if hf:
         fig.legend(labels=['cand', 'cand', 'hist'], loc='lower left', fontsize='xx-large')
     else:
         fig.legend(labels=['cand', 'cand'], loc='lower left', fontsize='xx-large')
 
+    return fig
+
+
+def plot_weights(wts, dmat):
+    
+    # generate subplots
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+    # plot histogram of weights
+    ax2 = plot_hist(ax2, wts, 'Weight', show_grids=False, linewidth=1) 
+    
+    # plot min distances
+    for w, d in zip(wts, np.min(dmat, axis=0)):
+        ax1.plot([w,w],[0,d], color='b')
+        ax1.set_ylabel('Min distance')
+
+    title = 'SDOE (NUSF) Weights from {}'.format(fname)
+    fig.canvas.set_window_title(title)
+        
+    return fig
+
+
+def plot(fname, hname=None, show=None, nusf=None):
+    df, hf = load(fname, hname)
+    fig1 = plot_candidates(df, hf, show)
+    title = 'SDOE candidates from {}'.format(fname)
+    fig1.canvas.set_window_title(title)
+    if nusf:
+        wts = df[nusf['wt']]
+        dmat = np.load(nusf['dmat'])
+        fig2 = plot_weights(wts, dmat)
+        title = 'SDOE (NUSF) weights from {}'.format(fname)
+        fig2.canvas.set_window_title(title)
+        
     plt.show()
+
+
+# ------------
+'''
+Example:
+
+fname = '/Users/ng30/Downloads/nusf_results/nusf_d20_n50_m5_Label+X1+X2+Values.csv'
+dname = '/Users/ng30/Downloads/nusf_results/nusf_dmat_d20_n50_m5_Label+X1+X2+Values.npy'
+plot(fname, nusf={'dmat': dname, 'wt': 'Values'})
+'''

@@ -816,9 +816,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
-        mode = config['METHOD']['mode']
-        min_size = int(config['METHOD']['min_design_size'])
-        max_size = int(config['METHOD']['max_design_size'])
+        design_size = int(config['METHOD']['mdesign_size'])
         nr = int(config['METHOD']['number_random_starts'])
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
@@ -834,7 +832,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.Direct_radioButton.setChecked(True)
         elif scale_method == 'ranked_mwr':
             self.Ranked_radioButton.setChecked(True)
-        self.designSize_spin.setValue(min_size)
+        self.designSize_spin.setValue(design_size)
         MWRcomboList = [self.MWR1_comboBox, self.MWR2_comboBox, self.MWR3_comboBox, self.MWR4_comboBox, self.MWR5_comboBox]
         for i in range(len(mwr_vals)):
             combo = MWRcomboList[i]

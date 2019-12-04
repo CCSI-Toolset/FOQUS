@@ -544,8 +544,6 @@ class NodeVars(object):
         sd["scaling"] = self.scaling
         sd["tags"] = self.tags
         sd["dist"] = self.dist.saveDict()
-        sd["hist"] = []
-        sd["hist"].append(value)
         return sd
 
     def loadDict(self, sd):

@@ -404,7 +404,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         previewData = self.dat.sdoeSimList[row]
         hname = None
-        dialog = sdoePreview(previewData, hname, self.dname, self)
+        nusf = None
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, self)
         dialog.show()
 
     def editAgg(self):
@@ -417,7 +418,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             hname = os.path.join(self.dname, historyData.getModelName())
         else:
             hname = None
-        dialog = sdoePreview(previewData, hname, self.dname, self)
+        nusf = None
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, self)
         dialog.show()
 
     def hasCandidates(self):

@@ -31,7 +31,7 @@ def plot_hist(ax, xs, xname,
     return ax
 
 
-def load(fname, hname):
+def load_data(fname, hname):
     # load results
     df = load(fname)
     names = list(df)
@@ -100,7 +100,7 @@ def plot_candidates(df, hf, show):
     return fig
 
 
-def plot_weights(wts, dmat):
+def plot_weights(wts, dmat, fname):
     
     # generate subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
@@ -120,14 +120,14 @@ def plot_weights(wts, dmat):
 
 
 def plot(fname, hname=None, show=None, nusf=None):
-    df, hf = load(fname, hname)
+    df, hf = load_data(fname, hname)
     fig1 = plot_candidates(df, hf, show)
     title = 'SDOE candidates from {}'.format(fname)
     fig1.canvas.set_window_title(title)
     if nusf:
-        wts = df[nusf['wt']]
+        wts = df.iloc[:,-1]
         dmat = np.load(nusf['dmat'])
-        fig2 = plot_weights(wts, dmat)
+        fig2 = plot_weights(wts, dmat, fname)
         title = 'SDOE (NUSF) weights from {}'.format(fname)
         fig2.canvas.set_window_title(title)
         

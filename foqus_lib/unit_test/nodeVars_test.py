@@ -55,7 +55,6 @@ class testNodeVarsSteady(unittest.TestCase):
         d = var.saveDict()
         self.assertAlmostEqual(d['max'], 10.0)
         self.assertAlmostEqual(d['min'], 1.0)
-        self.assertAlmostEqual(d['hist'][0], 2.5)
         self.assertEqual(d['dtype'], 'float')
 
     def testSaveJSON(self):

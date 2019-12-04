@@ -816,7 +816,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
-        design_size = int(config['METHOD']['mdesign_size'])
+        design_size = int(config['METHOD']['design_size'])
         nr = int(config['METHOD']['number_random_starts'])
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']

@@ -17,8 +17,6 @@ def run(config_file, nd, test=False):
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
     mode = config['METHOD']['mode']
-    min_size = int(config['METHOD']['min_design_size'])
-    max_size = int(config['METHOD']['max_design_size'])
     nr = int(config['METHOD']['number_random_starts'])
 
     hfile = config['INPUT']['history_file']

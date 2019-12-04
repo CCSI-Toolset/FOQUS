@@ -2,8 +2,7 @@ import os
 from datetime import datetime
 import configparser
 
-from foqus_lib.framework.sdoe import sdoe
-from foqus_lib.framework.sdoe import order
+from foqus_lib.framework.sdoe import order, sdoe
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
@@ -761,7 +760,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
-        dialog = sdoePreview(sdoeData, hname, dirname, self)
+        if self.type == 'NUSF':
+            nusf = {'dmat':self.analysis[row][4]['dmat']}
+        else:
+            nusf = None
+        dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):

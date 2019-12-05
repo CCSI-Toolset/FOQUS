@@ -11,13 +11,12 @@ def save(fnames, results, elapsed_time):
                                                               results['best_val'], elapsed_time)))
     print('Candidate distances saved to {}'.format(fnames['dmat']))
 
-def run(config_file, test=False):
+def run(config_file, nd, test=False):
 
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
     mode = config['METHOD']['mode']
-    nd = int(config['METHOD']['design_size'])
     nr = int(config['METHOD']['number_random_starts'])
 
     hfile = config['INPUT']['history_file']

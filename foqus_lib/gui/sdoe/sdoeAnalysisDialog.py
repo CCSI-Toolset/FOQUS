@@ -115,7 +115,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.progressNUSF_groupBox.setHidden(True)
 
         # spin box bounds
+        self.minDesignSize_spin.setMaximum(len(candidateData.getInputData()))
         self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
+        self.designSize_spin.setMaximum(len(candidateData.getInputData()))
+
 
         # MWR combo boxes
         self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
@@ -355,7 +358,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 type_list.append(str(self.inputSdoeTable.cellWidget(row, self.typeCol).currentText()))
         return min_vals, max_vals, include_list, type_list
 
-    def writeConfigFile(self, design_size, test=False):
+    def writeConfigFile(self, test=False):
         timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
         outdir = os.path.join(self.dname, timestamp)
         os.makedirs(outdir, exist_ok=True)
@@ -370,7 +373,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         elif self.Maximin_radioButton.isChecked():
             f.write('mode = maximin\n')
 
-        f.write('design_size = %d\n' % design_size)
+        if self.type == 'USF':
+            f.write('min_design_size = %d\n' % self.minDesignSize_spin.value())
+            f.write('max_design_size = %d\n' % self.maxDesignSize_spin.value())
+        else:
+            f.write('design_size = %d\n' % self.designSize_spin.value())
 
         if test:
             if self.type == 'USF':
@@ -447,9 +454,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
-        for design_size in range(min_size, max_size+1):
-            config_file = self.writeConfigFile(design_size)
-            fnames, results, elapsed_time = sdoe.run(config_file)
+        for nd in range(min_size, max_size+1):
+            config_file = self.writeConfigFile()
+            fnames, results, elapsed_time = sdoe.run(config_file, nd)
             self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
                                                                                    config_file, results['best_val']])
             self.analysisTableGroup.setEnabled(True)
@@ -546,7 +553,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.hasIndex():
             self.showIndexBlock()
             return
-        #test using nd=2
+        #test using nr=2
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.designSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
@@ -809,9 +816,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         ## Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
-        mode = config['METHOD']['mode']
-        min_size = int(config['METHOD']['min_design_size'])
-        max_size = int(config['METHOD']['max_design_size'])
+        design_size = int(config['METHOD']['design_size'])
         nr = int(config['METHOD']['number_random_starts'])
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
@@ -827,7 +832,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.Direct_radioButton.setChecked(True)
         elif scale_method == 'ranked_mwr':
             self.Ranked_radioButton.setChecked(True)
-        self.designSize_spin.setValue(min_size)
+        self.designSize_spin.setValue(design_size)
         MWRcomboList = [self.MWR1_comboBox, self.MWR2_comboBox, self.MWR3_comboBox, self.MWR4_comboBox, self.MWR5_comboBox]
         for i in range(len(mwr_vals)):
             combo = MWRcomboList[i]

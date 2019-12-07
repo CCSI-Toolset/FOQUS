@@ -44,7 +44,10 @@ class ParameterScreening(UQAnalysis):
 
         #perform screening
         cmd = ParameterScreening.getSubTypePsuadeName(self.subType)
+        print(cmd)
+        print(self.outputs)
         mfile = RawDataAnalyzer.screenInputs(fname, self.outputs[0], cmd)
+        print(mfile)
 
         if mfile is not None:
             #archive file

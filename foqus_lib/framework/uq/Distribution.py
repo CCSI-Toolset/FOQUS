@@ -92,13 +92,14 @@ class Distribution:
 
     def saveDict(self):
         sd = dict()
-        sd['type'] = self.getPsuadeName(self.type)
+        sd['type'] = self.getFullName(self.type)
+        print(sd['type'])
         sd['firstParamValue'] = self.firstParamValue
         sd['secondParamValue'] = self.secondParamValue
         return sd
 
     def loadDict(self, sd):
-        self.setDistributionType(sd.get('type', 'Uniform'))
+        self.setDistributionType(sd.get('type','Uniform'))
         self.firstParamValue = sd.get('firstParamValue', None)
         self.secondParamValue = sd.get('secondParamValue', None)
 
@@ -106,6 +107,7 @@ class Distribution:
         if isinstance(distType, numbers.Number):
             self.type = distType
         else:
+            print(distType)
             self.type = self.getEnumValue(distType)
         
     def getDistributionType(self):

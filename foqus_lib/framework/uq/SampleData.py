@@ -214,12 +214,14 @@ class SampleData(object):
         self.turbineSession = sd.get("turbineSession", None)
         self.turbineResub = sd.get("turbineResub", [])
         inputDists = []
-        if 'inputDists' in sd:
-            for distDict in sd['inputDists']:
+        if 'inputDists' in sd['model']:
+            print('yes')
+            for distDict in sd['model']['inputDists']:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 inputDists.append(distr)
         self.setInputDistributions(inputDists)
+#        self.model.setInputDistributions([dist for i,dist in enumerate(self.getInputDistributions())])
         self.analyses = []
         if 'analyses' in sd:
             for analDict in sd['analyses']:
@@ -634,14 +636,19 @@ class SampleData(object):
         #outf.write('   dimension = %d\n' % self.getNumInputs())
         outf.write('   dimension = %d\n' % numInputs)
         names = self.getInputNames()
+        print(names)
         mins = self.getInputMins()
+        print(mins)
         maxs = self.getInputMaxs()
+        print(maxs)
         defaults = self.getInputDefaults()
+        print(defaults)
         distributions = self.getInputDistributions()
+        print(distributions)
         if distributions is None:
             self.setInputDistributions([Distribution.UNIFORM] * self.getNumInputs())
             distributions = self.getInputDistributions()
-            self.setInputDistributions([])
+#            self.setInputDistributions([])
 
         fixedIndex = 1;
         variableIndex = 1;
@@ -650,6 +657,7 @@ class SampleData(object):
                 outf.write('   fixed %d %s =  % .16e\n' % (fixedIndex, name, default))
                 fixedIndex = fixedIndex + 1
             else:
+                print('working')
                 outf.write('   variable %d %s  =  % .16e  % .16e\n' % (variableIndex,
                                                                        name,
                                                                        minimum, maximum))

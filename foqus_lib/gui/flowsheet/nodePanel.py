@@ -14,7 +14,7 @@ from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
 from foqus_lib.framework.graph.node import *
 import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.gui.pysyntax_hl import PythonHighlighter
+from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
 from foqus_lib.framework.uq.Distribution import Distribution
 
 from PyQt5 import QtCore, uic

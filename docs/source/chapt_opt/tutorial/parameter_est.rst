@@ -169,7 +169,13 @@ objective function calculation.
     the Samples table.
 
 20. For larger sample sets, **Generate Samples** has an option to load
-    from a CSV file.
+    from a CSV file. The CSV file must be saved in Comma delimited format, as follows:
+
+.. figure:: ../figs/optim_samplevars_csv.png
+   :alt: Sample Variable data (csv file)
+   :name: fig.pe.csv
+
+   Sample Variable data (csv file)
 
 .. figure:: ../figs/par_est_tut6.svg
    :alt: Optimization Samples
@@ -195,12 +201,12 @@ optimization solver changes the a, b, and c to minimize the objective.
 
     The above expression uses Python list comprehension to calculate the
     sum of squared errors.
-    
+
     The keys for x (the inputs) and f (the outputs) are:
        -  Dummy variable name for index (i.e., ff for outputs and xx for inputs)
        -  Node name (i.e., model)
        -  Variable name (i.e., y and ydata)
-    
+
     Then, the user will need to specify which of the dummy index corresponds to
     outputs, and which of the dummy index corresponds to inputs. In this case,
     ff is for the outputs, and xx is for the inputs. Hence, we have

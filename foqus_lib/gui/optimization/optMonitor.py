@@ -73,7 +73,8 @@ class optMonitor(_optMonitor, _optMonitorUI):
             facecolor=(1,1,1),
             edgecolor=(0,0,0),
             tight_layout = True)
-        self.objFigAx = self.objFig.add_subplot(111)
+        self.objFigAx = self.objFig.add_subplot(211)
+        self.objbestFigAx = self.objFig.add_subplot(212)
         self.coordFigAx = self.coordFig.add_subplot(111)
         self.objCanvas = FigureCanvas(self.objFig)
         self.coordCanvas = FigureCanvas(self.coordFig)
@@ -122,9 +123,12 @@ class optMonitor(_optMonitor, _optMonitorUI):
 
     def clearPlots(self):
         self.objFigAx.clear()
+        self.objbestFigAx.clear()
         self.coordFigAx.clear()
         self.objFigAx.set_xlabel("Iteration")
-        self.objFigAx.set_ylabel("Objective")
+        self.objFigAx.set_ylabel("Objective Value Solver Progression")
+        self.objbestFigAx.set_xlabel("Iteration")
+        self.objbestFigAx.set_ylabel("Best Objective Function Values")
         #self.objCanvas.draw()
         #self.coordCanvas.draw()
 
@@ -206,7 +210,10 @@ class optMonitor(_optMonitor, _optMonitorUI):
         objPoints = [[],[]]
         while not self.opt.resQueue.empty():
             msg = self.opt.resQueue.get(False)
+#            print(msg)
             if msg[0] == "BEST":
+                self.iteration+=1
+                self.bestiter = self.iteration 
                 self.bestObj = msg[1][0]
                 self.bestX = msg[2]
                 bestChange = True
@@ -238,8 +245,10 @@ class optMonitor(_optMonitor, _optMonitorUI):
             self.coorFigLine2[0].set_data( self.coordXCoord, self.sampLim[0])
             self.coorFigLine3[0].set_data( self.coordXCoord, self.sampLim[1])
             self.coordCanvas.draw()
+            self.objbestFigAx.plot(self.bestiter, self.bestObj, '-bo')
+            self.objCanvas.draw()
         if itChange:
-            self.objFigAx.plot(objPoints[0], objPoints[1], 'bo')
+            self.objFigAx.plot(objPoints[0], objPoints[1], 'ro')
             self.objCanvas.draw()
         if updateStatusLine:
             self.msgSubwindow.statusLine.setText("".join([

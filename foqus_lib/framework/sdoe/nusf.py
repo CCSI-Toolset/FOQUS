@@ -7,6 +7,7 @@ import time
 # -----------------------------------
 def compute_dmat(mat,  # numpy array of shape (N, nx+1) and type 'float'
                  hist=[]):
+    # Assumes last column contains weights
     xs = mat[:,:-1]
     wt = mat[:,-1]
     dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
@@ -81,45 +82,45 @@ def update_min_dist(des,  # numpy array of shape (nd, nx+1) and type 'float'
     return des, md, mdpts, mties, dmat, update
 
 # -----------------------------------
-def scale_cand(mat):
-    # Takes np array as input
-    # Last column contains weights because we moved it to the end
+def scale_xs(df, xcols):
+    # Takes pandas df as input
 
-    # last column contains weights
-    xs = mat[:,:-1]  
+    xs = df[xcols]
 
     # scale the inputs
     # save xmin, xmax for inverse scaling later
     xmin = np.min(xs, axis=0)
     xmax = np.max(xs, axis=0)
-    mat[:,:-1] = (xs-xmin)/(xmax-xmin)*2-1
+    df[xcols] = (xs-xmin)/(xmax-xmin)*2-1
+
     return mat, xmin, xmax
 
 
-def scale_y(scale_method, mwr, df):
+def scale_y(scale_method, mwr, df, wcol):
     # Takes pandas df as input
-    # Last column contains weights because we moved it to the end
-    def direct_mwr(mwr, df):
-        df.iloc[:,-1] = 1 + (mwr-1)*((df.iloc[:,-1]-np.min(df.iloc[:,-1]))/(np.max(df.iloc[:,-1])-np.min(df.iloc[:,-1])))
+    def direct_mwr(mwr, df, wcol):
+        wts = df[wcol]
+        wmin = np.min(wts)
+        wmax = np.max(wts)
+        df[wcol] = 1 + (mwr-1)*(wts-wmin)/(wmax-wmin)
         return df
 
-    def ranked_mwr(mwr, df):
-        df.iloc[:,-1] = rankdata(df.iloc[:,-1], method='dense')
-        return direct_mwr(mwr, df)
+    def ranked_mwr(mwr, df, wcol):
+        df[wcol] = rankdata(df[wcol], method='dense')
+        return direct_mwr(mwr, df, wcol)
 
     # equivalent to if-else statements, but easier to maintain
     methods = {'direct_mwr': direct_mwr,
                'ranked_mwr': ranked_mwr}
 
-    return methods[scale_method](mwr, df)
+    return methods[scale_method](mwr, df, wcol)
 
 
-def inv_scale_cand(df, xmin, xmax):
+def inv_scale_xs(df, xmin, xmax, xcols):
     # Takes pandas df as input
-    # Last column contains weights because we moved it to the end
   
     # inverse-scale the inputs
-    df.iloc[:,:-1] = (df.iloc[:,:-1]+1)/2*(xmax-xmin)+xmin
+    df[xcols] = (df[xcols]+1)/2*(xmax-xmin)+xmin
     return df
 
 # -----------------------------------
@@ -137,7 +138,8 @@ def criterion(cand,    # candidates
     scale_method = args['scale_method']
     xmin = args['xmin']
     xmax = args['xmax']
-    
+    wcol = args['wcol']
+    xcols = args['xcols']
     mode = mode.lower()
     assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
     
@@ -146,7 +148,7 @@ def criterion(cand,    # candidates
 
     def step(mwr, cand):
         t0 = time.time()
-        cand = scale_y(scale_method, mwr, cand)
+        cand = scale_y(scale_method, mwr, cand, wcol)
                 
         best_cand = []
         best_md = 0
@@ -187,7 +189,7 @@ def criterion(cand,    # candidates
             print('Best minimum distance for this random start: {}'.format(best_md))
 
         results = {'best_cand_scaled': best_cand,
-                   'best_cand': inv_scale_cand(best_cand, xmin, xmax),
+                   'best_cand': inv_scale_xs(best_cand, xmin, xmax, xcols),
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
                    'best_mties': best_mties,

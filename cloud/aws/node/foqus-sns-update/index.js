@@ -207,17 +207,25 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 log("error: " + error_message);
                 response.Item.Message = error_message;
               }
+              if (status == 'success' && response.Item.Output == undefined) {
+                /* Amazon SNS attempts a retry only after a failed delivery attempt.
+                 * Amazon SNS considers the following situations to indicate failed delivery attempts:
+                 * HTTP status codes 100 to 101 and 500 to 599 (inclusive).
+                 */
+                log("Reject Invocation and Retry via HTTP 500: Missing Output");
+                throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
+              }
               var content = JSON.stringify(response.Item)
               log("put3s: " + content);
               if(content == undefined) {
-                  throw new Error("s3 object is undefined")
+                throw new Error("s3 object is undefined")
               }
               if(content.length == undefined) {
-                  throw new Error("s3 object is empty")
+                throw new Error("s3 object is empty")
               }
               var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
               if (status=='submit' || status=='setup' || status=='running') {
-                  key = `${user_name}/session/${session}/job/${job}/${status}.json`;
+                key = `${user_name}/session/${session}/job/${job}/${status}.json`;
               }
               var params = {
                 Bucket: s3_bucket_name,
@@ -235,8 +243,10 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         return promise;
     };
     function handleError(error) {
-      log(`Status handleError ${error.name}`);
-      callback(new Error(`"${error.stack}"`), "Error")
+      log(`handleError  ${error.name}:  Trigger retry`);
+      //callback(new Error(`"${error.stack}"`), "Error")
+      callback(null, {statusCode:'500', body: `{"Message":"${error.message}"}`,
+            headers: {'Content-Type': 'application/json',}});
     };
     function handleDone() {
       log("handleDone");
@@ -309,11 +319,13 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           UpdateExpression: "set #w=:s, #t=:t",
           ExpressionAttributeValues:{
               ":s":ts,
-              ":t":Math.floor(Date.now()/1000 + 60*60*1)
+              ":t":Math.floor(Date.now()/1000 + 60*60*1),
+              ":c":consumer
           },
           ExpressionAttributeNames:{
               "#w":status,
-              "#t":'TTL'
+              "#t":'TTL',
+              "#c":"ConsumerId"
           },
           ReturnValues:"UPDATED_NEW"
       };

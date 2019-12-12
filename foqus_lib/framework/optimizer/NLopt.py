@@ -242,15 +242,17 @@ class opt(optimization):
         obj = float(objValues[0][0]) #get objective
         # See is objective is better and update best solution found if
         # so this is used to update the flowsheet, plots, and messages
-        if obj < self.bestSoFar and self.prob.gt.res[0] is not None:
+        if obj < self.bestSoFar  and self.prob.gt.res[0] is not None:
             self.bestSoFar = obj
+            self.bestSoFarList.append((self.prob.iterationNumber,self.bestSoFar))
             self.graph.loadValues(self.prob.gt.res[0])
             self.updateGraph = True #this flag is for GUI if true the
                                     #flowsheet display needs updated
             self.resQueue.put(["BEST", [self.bestSoFar], x])
-        # Spit out objective for objective plot
+#        else:    
+        # Spit out objective for objective plot coresponding to each function evaluation/iteration
         self.resQueue.put([
-            "IT", self.prob.iterationNumber, self.bestSoFar])
+            "IT", self.prob.iterationNumber, obj])
         # Spit out message to messages window after exery 10 evaluations
         if not self.prob.iterationNumber % 10:
             self.msgQueue.put("{0} obj: {1}".format(
@@ -352,6 +354,8 @@ class opt(optimization):
         start = time.time()        # get start time
         self.userInterupt = False  #
         self.bestSoFar = float('inf') #set inital best values
+        self.bestSoFarList = [] #List of all previous best so far values
+#        self.bestSoFarList.append(self.bestSoFar)
 
         # self.prob is the optimzation problem. get it ready
         self.prob.iterationNumber = 0
@@ -378,4 +382,7 @@ class opt(optimization):
         self.resQueue.put(
             ["IT", self.prob.iterationNumber, self.bestSoFar])
         self.resQueue.put(["BEST", [self.bestSoFar], x])
+#        print(self.bestSoFarList)
+        min_obj_value = min(self.bestSoFarList, key = lambda t: t[1])
         self.msgQueue.put("Best result found stored in graph")
+        self.msgQueue.put("The best value for objective function was obtained at iteration number {}".format(min_obj_value[0]))

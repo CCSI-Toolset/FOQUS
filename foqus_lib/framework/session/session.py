@@ -459,7 +459,6 @@ class session:
         # Save UQ sim list
         sd["uqSimList"] = []
         for sim in self.uqSimList:
-            print(sim.saveDict())
             sd['uqSimList'].append(sim.saveDict())
         sd["uqFilterResultsList"] = []
         for filter in self.uqFilterResultsList:
@@ -467,7 +466,6 @@ class session:
         # Save SDOE sim list
         sd["sdoeSimList"] = []
         for sim in self.sdoeSimList:
-#            sim.saveDict()
             sd['sdoeSimList'].append(sim.saveDict())
         sd["sdoeFilterResultsList"] = []
         for filter in self.sdoeFilterResultsList:
@@ -563,14 +561,11 @@ class session:
         p = sd.get('optProblem', None)
         if p: self.optProblem.loadDict(p)
         # Load UQ Stuff
-        self.loadmodel= []
         self.uqSimList = []
         if 'uqSimList' in sd:
             for simDict in sd['uqSimList']:
-#                print(simDict)
                 model = Model()
                 model.loadDict(simDict['model'])
-                self.loadmodel.append(model)
                 sim = SampleData(model)
                 sim.setSession(self)
                 sim.loadDict(simDict)

@@ -146,17 +146,12 @@ class Model:
         sd["inputTypes"] = self.inputTypes
         sd["inputMins"] = self.inputMins.tolist()
         sd["inputMaxs"] = self.inputMaxs.tolist()
-        self.ipdists = self.getInputDistributions()
         sd['inputDists'] = []
-#        if self.inputDists:
-#            for dist in self.inputDists:
-##                print(dist)
-#                sd['inputDists'].append(dist.saveDict())
-                
-        if self.ipdists:
-            for dist in self.ipdists:
-#                print(dist)
+        
+        if self.inputDists:
+            for dist in self.inputDists:
                 sd['inputDists'].append(dist.saveDict())
+                
         sd["inputDefaults"] = self.inputDefaults.tolist()
         sd["outputSelections"] = self.outputSelections
         sd["emulatorOutputStats"] = self.emulatorOutputStatus
@@ -190,8 +185,7 @@ class Model:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 self.inputDists.append(distr)
-#        print(self.inputDists)
-#        self.setInputDistributions(sd.get('inputDists', None))
+
         if not self.inputDists:
             self.inputDists = None
         self.setInputDefaults( sd.get("inputDefaults", None) )
@@ -348,12 +342,10 @@ class Model:
 
     def setInputDistributions(self, distTypes, param1Vals = None, param2Vals = None):
         if len(distTypes) == 0 or distTypes == None:
-            print('no')
             self.inputDists = []
         # Check if distTypes is a collection of Distribution objects
         elif all([isinstance(dist, Distribution) for dist in distTypes]):
             self.inputDists = distTypes
-            print(self.inputDists)
         else:
             inputDists = []
             if not param1Vals:
@@ -369,8 +361,6 @@ class Model:
                     distribObj.setParameterValues(val1, val2)
                 inputDists = inputDists + [distribObj]
             self.inputDists = tuple(inputDists)
-            print('last\n')
-            print(self.inputDists)
 
     def setInputDefaults(self, defaults):
         if len(defaults) != self.numInputs:

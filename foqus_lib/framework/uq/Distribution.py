@@ -92,8 +92,7 @@ class Distribution:
 
     def saveDict(self):
         sd = dict()
-        sd['type'] = self.getFullName(self.type)
-        print(sd['type'])
+        sd['type'] = self.getPsuadeName(self.type)
         sd['firstParamValue'] = self.firstParamValue
         sd['secondParamValue'] = self.secondParamValue
         return sd
@@ -107,7 +106,6 @@ class Distribution:
         if isinstance(distType, numbers.Number):
             self.type = distType
         else:
-            print(distType)
             self.type = self.getEnumValue(distType)
         
     def getDistributionType(self):

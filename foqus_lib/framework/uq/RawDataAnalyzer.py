@@ -43,7 +43,6 @@ class RawDataAnalyzer:
 
         # process error
         if error:
-            print('error')
             return None
 
         # check output file

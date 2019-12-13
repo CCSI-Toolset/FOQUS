@@ -342,13 +342,13 @@ For this first example, the goal is to construct a simple space-filling design w
    
 3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and the click on **Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optiimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, change the column called **Label** to be **Index**. This will mean that the design is not constructed using this as an input, but rather that the identifiers in this column will help identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
 
-.. figure:: figs/Ex1_3_mM_choices.png
+.. figure:: figs/Ex1U_3_mM_choices.png
    :alt: Home Screen
-   :name: fig.Ex1_3_mM_choices
+   :name: fig.Ex1U_3_mM_choices
    
    Ex 1 Minimax design choices
    
-4. Once the choices for the design have been specified, click on the **Test SDOE** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran the minimum number of random starts (10^3=1000), it is estimated that the code would take 4 seconds to create the three designs (of size 8, 9 and 10). If we chose 10^4=10000 runs, then the code is estimated to take 49 seconds. It is estimated that 10^5=100000 random starts would take 8 minutes and 13 seconds, while 10^6=1 million random starts would take approximately 1 hour, 22 minutes. In this case, we selected to create designs based on 100000 random starts, since this was a suitable balance between timeliness and giving the algorithm a chance to find the best possible designs. Hence, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**.  
+4. Once the choices for the design have been specified, click on the **Test SDOE** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran the minimum number of random starts (10^3=1000), it is estimated that the code would take 4 seconds to create the three designs (of size 8, 9 and 10). If we chose 10^4=10000 runs, then the code is estimated to take 44 seconds. It is estimated that 10^5=100000 random starts would take 7 minutes and 11 seconds, while 10^6=1 million random starts would take approximately 1 hour, 12 minutes. In this case, we selected to create designs based on 100000 random starts, since this was a suitable balance between timeliness and giving the algorithm a chance to find the best possible designs. Hence, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**.  
 
 5. Since we are also interested in examining maximin designs for the same scenario, we click on the **Reload Design Specifications** button in the **Created Design** window to repopulate the right window with the same choices that we made for all of the design options.
 

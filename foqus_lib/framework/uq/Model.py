@@ -147,9 +147,11 @@ class Model:
         sd["inputMins"] = self.inputMins.tolist()
         sd["inputMaxs"] = self.inputMaxs.tolist()
         sd['inputDists'] = []
+        
         if self.inputDists:
             for dist in self.inputDists:
                 sd['inputDists'].append(dist.saveDict())
+                
         sd["inputDefaults"] = self.inputDefaults.tolist()
         sd["outputSelections"] = self.outputSelections
         sd["emulatorOutputStats"] = self.emulatorOutputStatus
@@ -183,6 +185,7 @@ class Model:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 self.inputDists.append(distr)
+
         if not self.inputDists:
             self.inputDists = None
         self.setInputDefaults( sd.get("inputDefaults", None) )

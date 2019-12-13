@@ -15,124 +15,19 @@ class testNodeVarsSteady(unittest.TestCase):
             vmax = 10.0,
             vdflt = 3.0)
 
-    def makeVarVec(self):
-        return NodeVars(
-            value = [1.0, 2.0, 3.0, 4.0, 5.0],
-            vmin = [1.0, 1.0, 1.0, 1.0, 1.0],
-            vmax = [25.0, 25.0, 25.0, 25.0, 25.0],
-            vdflt = [11.0, 12.0, 13.0, 14.0, 15.0])
-
     def testValue(self):
         var = self.makeVar()
         self.assertAlmostEqual(var.value, 2.5)
 
-    def testValue2(self):
-        var = self.makeVarVec()
-        v = var.value
-        self.assertAlmostEqual(v[0], 1.0)
-        self.assertAlmostEqual(v[1], 2.0)
-        self.assertAlmostEqual(v[2], 3.0)
-        self.assertAlmostEqual(v[3], 4.0)
-        self.assertAlmostEqual(v[4], 5.0)
-
     def testDefault(self):
         var = self.makeVar()
         self.assertAlmostEqual(var.default, 3.0)
-
-    def testDefault2(self):
-        var = self.makeVarVec()
-        v = var.default
-        self.assertAlmostEqual(v[0], 11.0)
-        self.assertAlmostEqual(v[1], 12.0)
-        self.assertAlmostEqual(v[2], 13.0)
-        self.assertAlmostEqual(v[3], 14.0)
-        self.assertAlmostEqual(v[4], 15.0)
 
     def testSetValue(self):
         var = self.makeVar()
         x = 4.27
         var.value = x
         self.assertAlmostEqual(var.value, x)
-
-    def testSetTimeStepOutOfBounds(self):
-        var = self.makeVar()
-        with self.assertRaises(NodeVarEx) as cm:
-            var.setTimeStep(2)
-        e = cm.exception
-        self.assertEqual(e.code, 22)
-
-    def testSetTimeStepNegative(self):
-        # This should not be an error it is the last
-        # and only time step
-        var = self.makeVar()
-        var.setTimeStep(-1)
-
-    def testSetTimeStepNegative2(self):
-        # This should be an error it is the second to last
-        # time step, and there is no second to last time step in
-        # this case
-        var = self.makeVar()
-        with self.assertRaises(NodeVarEx) as cm:
-            var.setTimeStep(-2)
-        e = cm.exception
-        self.assertEqual(e.code, 22)
-
-    def testSetShape0(self):
-        # set a scalar shape
-        var = self.makeVar()
-        var.setShape(())
-        self.assertAlmostEqual(var.value, 2.5)
-
-    def testSetShape1(self):
-        # set a scalar shape
-        var = self.makeVar()
-        var.setShape((1,))
-        self.assertAlmostEqual(var.value, 2.5)
-
-    def testSetShape2(self):
-        # set a shape
-        var = self.makeVar()
-        var.setShape((2,))
-        self.assertAlmostEqual(var.value[0], 2.5)
-
-    def testSetShape3(self):
-        # set a shape and set the value, this should not cause an
-        # error
-        var = self.makeVar()
-        var.setShape((2,))
-        var.value = [2,2]
-
-    def testSetShape4(self):
-        # set a scalar shape and value
-        var = self.makeVar()
-        var.setShape(())
-        var.value = 2.0
-
-    def testSetShape5(self):
-        # set a one element vector shape and value
-        var = self.makeVar()
-        var.setShape((1,))
-        var.value = [2.0]
-
-    def testSetShape6(self):
-        # set am array shape and values
-        var = self.makeVar()
-        var.setShape((2,2))
-        var.value = [[2.1, 2.2], [2.3, 2.4]]
-        self.assertAlmostEqual(var.value[0][0], 2.1)
-        self.assertAlmostEqual(var.value[0][1], 2.2)
-        self.assertAlmostEqual(var.value[1][0], 2.3)
-        self.assertAlmostEqual(var.value[1][1], 2.4)
-
-    def testSetShape7(self):
-        # set an array shape and try to set with something with wrong
-        # shape, should raise an exception
-        var = self.makeVar()
-        var.setShape((2,2))
-        with self.assertRaises(NodeVarEx) as cm:
-            var.value = [[2.1, 2.2], [2.3]]
-        e = cm.exception
-        self.assertEqual(e.code, 0)
 
     def testConvertInt(self):
         var = self.makeVar()
@@ -142,14 +37,8 @@ class testNodeVarsSteady(unittest.TestCase):
     def testConvertInt2(self):
         var = self.makeVar()
         var.value = 2.55
-        var.toIntRound()
-        self.assertEqual(var.value, 3)
-
-    def testRoundValueInt(self):
-        var = self.makeVar()
-        var.value = 2.55
-        var.roundValueInt()
-        self.assertAlmostEqual(var.value, 3.0)
+        r= round(var.value)
+        self.assertEqual(r, 3)
 
     def testCopy(self):
        var = self.makeVar()
@@ -166,9 +55,6 @@ class testNodeVarsSteady(unittest.TestCase):
         d = var.saveDict()
         self.assertAlmostEqual(d['max'], 10.0)
         self.assertAlmostEqual(d['min'], 1.0)
-        self.assertEqual(d['ts'], 0)
-        self.assertAlmostEqual(d['hist'][0], 2.5)
-        self.assertEqual(d['shape'], ())
         self.assertEqual(d['dtype'], 'float')
 
     def testSaveJSON(self):

@@ -75,22 +75,24 @@ In this section, we will describe the basic steps in for creating a design with 
 When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on which type of design do you want to construct **Uniform Space Filling** or **Non Uniform Space Filling**. 
 
 Basic Steps for a Uniform Space Design
---------------------------------------
+======================================
   
 We now consider some details for each of these steps:
 
 1. In the **Ensemble Selection** box, click on the **Load from File..** button to select the file(s) for the construction of the design. Several files can be selected and added to the box listing the chosen files.
 
-.. figure:: figs/1_starting_screen.png
+.. figure:: figs/1U_starting_screen.png
    :alt: Home Screen
    :name: fig.sdoe_home
    
    SDOE Home Screen
    
 2. For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **History** file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed. The columns of the file should contain the different input factors that define the dimensions of the input space. The rows of the file each identify one combination of input values that could be selected as a run in the final design. Typically, a good candidate file will have many different candidate runs listed, and they should fill the available ranges of the inputs to be considered. Leaving gaps or holes in the input space is possible, but generally should correspond to a region where it is not possible (or desirable) to collect data.
+
 **History** .csv files should have the same number of columns for the input space as the candidate file (with matching column names), and represent data that have already been collected. The algorithm for creating the design aims to place points in different locations from where data have already been obtained, while filling the input space around those locations.
 
-Both the **Candidate** and **History** files should be .csv files that has the first row as the Column heading. The Input columns should be numeric.
+Both the **Candidate** and **History** files should be .csv files that has the first row as the Column heading. The Input columns should be numeric. Additional columns are allowed and can be identified as not necessary to the design creation at a later stage.
+
 
 3. Click on the **View** button to open the **Preview Inputs** pop-up widow, to see the list of columns contained in each file. The left hand side displays the first few rows of input combinations from the file. Select the columns that you wish to see graphically in the right hand box , and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
 
@@ -110,7 +112,7 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
 4. Once the data have been verified for both the **Candidate** and **History** files, click on the **Confirm** button to make the **Ensemble Aggregation** window active.
 
-.. figure:: figs/4_ensemble_aggregate.png
+.. figure:: figs/4U_ensemble_aggregate.png
    :alt: Home Screen
    :name: fig.4_ensemble_aggregate
    
@@ -196,4 +198,22 @@ When one of the design files is opened it contains the details of each of the ru
    SDOE file containing a created design
    
 
+Basic Steps for a Non-Uniform Space Design
+==========================================
+  
+We now consider some details for each of these steps for the second type of design, where we want to have different densities of design points throughout the input region:
+
+1. In the **Ensemble Selection** box, click on the **Load from File..** button to select the file(s) for the construction of the design. Several files can be selected and added to the box listing the chosen files.
+
+.. figure:: figs/1N_starting_screen.png
+   :alt: Home Screen
+   :name: fig.sdoeN_home
+   
+   SDOE Home Screen
+   
+2. For each of the files selected using the pull-down menu, identify them as either a **Candidate** file or a **History** file. **Candidate** .csv files are comprised of possible input combinations from which the design can be constructed. The columns of the file should contain the different input factors that define the dimensions of the input space, as well as a column that will be used to specify the weights associated with each of the design points. 
+
+**History** .csv files should have the same number of columns for the input space as the candidate file (with matching column names), and represent data that have already been collected. Note that a weight column is also needed for the history file, as the calculation of how close each of the points are to each other requires this. The algorithm for creating the design aims to place points in different locations from where data have already been obtained, while filling the input space around those locations.
+
+Both the **Candidate** and **History** files should be .csv files that has the first row as the Column heading. The Input and Weight columns should be numeric. Additional columns are allowed and can be identified as not necessary to the design creation at a later stage.
 

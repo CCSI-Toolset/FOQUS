@@ -32,6 +32,6 @@ test_script:
 
     mkdir gui_testing
 
-    python foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
+    python foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing -W ignore::FutureWarning
 
     # python foqus.py -s "examples/Smoke Tests/fs_smoke_test.py"

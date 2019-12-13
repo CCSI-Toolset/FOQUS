@@ -125,9 +125,9 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 
 6. Once the data have been verified as the desired set to be used for the design construction, then click on the **Uniform Space Filling** button at the bottom right corner of the **Ensemble Aggregation** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
-.. figure:: figs/5_second_window.png
+.. figure:: figs/5U_second_window.png
    :alt: SDOE second window
-   :name: fig.5_second_window
+   :name: fig.5U_second_window
 
    SDOE second window
 
@@ -148,9 +148,9 @@ Hint: the default values for **Min** and **Max** can generally be left at their 
 
 10. Once the design choices have been made, click on the **TestSDOE** button. This generates a small number of iterations of the search algorithm to calibrate the timing for constructing and evaluating the designs. The time taken to generate a design is a function of the size of the candidate set, the size of the design, as well as the dimension of the input space. The slider below **TestSDOE** now indicates an estimate of the time to construct the designs across the range of the **Min Design Size** and **Max Design Size** specified. The smallest **Number of Random Starts** is 10^3 = 1000 is generally too small to produce a good design, but this will run very quickly. Powers of 10 can be chosen with an **Estimated Runtime** provided below the slider. 
 
-.. figure:: figs/6_after_test_SDOE.png
+.. figure:: figs/6U_after_test_SDOE.png
    :alt: SDOE second window
-   :name: fig.6_after_test_SDOE
+   :name: fig.6U_after_test_SDOE
 
    SDOE second window after clicking Test SDOE
 
@@ -161,9 +161,9 @@ Hint: The choice of **Number of Random Starts** involves a trade-off between the
 12. When the SDOE module has completed the design creation process, the left window **Created Designs** will be populated with files containing the results. The column entries summarize the key features of each of the designs, including **Optimality Method** (whether minimax or maximin was used), **Design Size** (d, the number of runs in the created design),
 **# of Random Starts**, **Runtime** (number of seconds needed to create the design), **Criterion Value** (the value obtained for the minimax or maximin criterion for the saved design).
 
-.. figure:: figs/7_completed_designs.png
+.. figure:: figs/7U_completed_designs.png
    :alt: SDOE second window
-   :name: fig.7_completed_designs
+   :name: fig.7U_completed_designs
 
    SDOE Created Designs
 

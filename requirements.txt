@@ -9,6 +9,7 @@ scipy
 numpy
 cma
 tqdm
+mlrose
 pandas>0.20
 pywin32; sys_platform == 'win32'
 adodbapi>=2.6.0.7; sys_platform == 'win32'

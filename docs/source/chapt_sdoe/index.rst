@@ -75,7 +75,7 @@ In this section, we will describe the basic steps in for creating a design with 
 When you first click on the  **SDOE** button from the main FOQUS homepage, a first window appears. To create a design, the progression of steps takes you through the **Ensemble Selection** box (top left), then a transition triggered by the **Confirm** button to the **Ensemble Aggregation** box, and finally there are optional changes that can be made in the box at the bottom of the window. The final step in this window is to click on which type of design do you want to construct **Uniform Space Filling** or **Non Uniform Space Filling**. 
 
 Basic Steps for a Uniform Space Design
-======================================
+--------------------------------------
   
 We now consider some details for each of these steps:
 
@@ -199,7 +199,7 @@ When one of the design files is opened it contains the details of each of the ru
    
 
 Basic Steps for a Non-Uniform Space Design
-==========================================
+------------------------------------------
   
 We now consider some details for each of these steps for the second type of design, where we want to have different densities of design points throughout the input region:
 
@@ -221,7 +221,7 @@ Both the **Candidate** and **History** files should be .csv files that has the f
 
 .. figure:: figs/3N_plot_candidates.png
    :alt: SDOE plot of inputs
-   :name: fig.3_scatterplot_inputs
+   :name: fig.3N_scatterplot_inputs
 
    SDOE plot of candidate set inputs
    
@@ -301,15 +301,15 @@ Note that the number of random starts looks very different from what was done wi
 
    SDOE Created Designs
 
-13. As with the Uniform Space Filling designs, to see details of the design, the **View** button at the right hand side of each design row can be selected to show a table of the design, as well as a pairwise scatterplot of the inputs for the chosen design. The table and plot of the design are similar in characteristics to their counterparts for the candidate set. If multiple designs were created with different **MWR** values (or using the different **Scaling Method* choices), it is helpful to examine the plots to compare their properties to those sought by the experimenter. A final choice should be made based on what is needed for the goals of the study.
+13. As with the Uniform Space Filling designs, to see details of the design, the **View** button at the right hand side of each design row can be selected to show a table of the design, as well as a pairwise scatterplot of the inputs for the chosen design. The table and plot of the design are similar in characteristics to their counterparts for the candidate set. If multiple designs were created with different **MWR** values (or using the different **Scaling Method** choices), it is helpful to examine the plots to compare their properties to those sought by the experimenter. A final choice should be made based on what is needed for the goals of the study.
 
    
 14. As with the Uniform Space Filling designs, to access the file with the generated design, go to the **SDOE_files** folder, and a separate folder will have been created for each of the designs. In the example shown, 5 folders were created for the designs of size 4, 5, 6, 7 and 8, respectively. In each folder, there is a file containing the design, with a name that summarizes some of the key information about the design. For example, **candidates_d6_n10000_w+G+lldg+L** contains the design created using the candidate set called candidates.csv, with d=6 runs, based on n=10000 random starts, and based on the 4 inputs W, G, lldg and L.
 
 When one of the design files is opened it contains the details of each of the runs in the design, with the input factor levels that should be selected for that run.
    
-Examples: 
-=========
+Examples
+--------
 
 Next, we illustrate the use of the SDOE capability for several different scenarios. Example 1 constructs several uniform space filling designs of size 8 to 10 runs for a 2-dimensional input space based on a regular square region with a candidate set that is a regularly spaced grid. Both minimax and maximin designs are constructed to illustrate the difference in the criteria.
 Example 2 takes one of the designs created in Example 1, and considers how it might be used for sequential updating with additional experimentation. In this case the Example 1 design is considered as historical data, and the goal is to augment the design with several additional runs.

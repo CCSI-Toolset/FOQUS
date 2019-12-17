@@ -442,7 +442,6 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         # get screening method
         method = screen_combo.currentText()
         method = ParameterScreening.getEnumValue(method)
-
         # perform screening
         self.setModal(False)
         ps = ParameterScreening(self.data, outputNum, method)

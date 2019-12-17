@@ -98,7 +98,7 @@ class Distribution:
         return sd
 
     def loadDict(self, sd):
-        self.setDistributionType(sd.get('type', 'Uniform'))
+        self.setDistributionType(sd.get('type','Uniform'))
         self.firstParamValue = sd.get('firstParamValue', None)
         self.secondParamValue = sd.get('secondParamValue', None)
 

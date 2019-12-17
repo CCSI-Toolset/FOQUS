@@ -214,8 +214,8 @@ class SampleData(object):
         self.turbineSession = sd.get("turbineSession", None)
         self.turbineResub = sd.get("turbineResub", [])
         inputDists = []
-        if 'inputDists' in sd:
-            for distDict in sd['inputDists']:
+        if 'inputDists' in sd['model']:
+            for distDict in sd['model']['inputDists']:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 inputDists.append(distr)

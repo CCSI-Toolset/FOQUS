@@ -10,7 +10,7 @@ Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires acce
 ### Install
 To get started right away, start with the [installation](https://foqus.readthedocs.io/en/stable/chapt_install/index.html) instructions for the most recent stable release.
 
-We also have several videos playlists on how to install FOQUS:
+We have several videos playlists on how to install FOQUS:
 * [Python 3 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXl-H9Wp3X6SIpVWg3Ua1Y2X)
 * [Optional software for FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXn24WEhFMyrtA-0_4Rvlesw)
 * [Python 2 version of FOQUS](https://www.youtube.com/playlist?list=PLmBxveOxgaXkyrQP9CAgUu_ZPYsS4qCvd) 
@@ -18,7 +18,7 @@ We also have several videos playlists on how to install FOQUS:
 ### Documentation and User's Manual
 Read the full [documentation for FOQUS](https://foqus.readthedocs.io/en/stable/) (including the installation manual).  Documentation for [past releases or the latest](https://readthedocs.org/projects/foqus/) (unreleased) development version are available.
 
-The complete set of usage and installation instruction videos for FOQUS on our [YouTube channel](https://www.youtube.com/channel/UCBVjFnxrsWpNlcnDvh0_GzQ/).
+A complete set of usage and installation instruction videos for FOQUS are available on our [YouTube channel](https://www.youtube.com/channel/UCBVjFnxrsWpNlcnDvh0_GzQ/).
 
 ### FAQ
 See our [FAQ](FAQs.md) for frequently asked questions and answers
@@ -40,7 +40,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available,
 [releases](../../releases) or [tags](../../tags) on this repository.
 
 ## License & Copyright
-See [LICENSE.md](LICENSE.md) file for details
+See [LICENSE.md](LICENSE.md) file for details.
 
 ## Reference
 If you are using FOQUS for your work, please reference the following paper:

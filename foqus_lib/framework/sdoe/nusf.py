@@ -161,26 +161,20 @@ def scale_y(scale_method, mwr, df_, wcol):
     return methods[scale_method](mwr, df, wcol)
 
 
-def inv_scale_xs(xs_, xmin, xmax, xcols=None):
+def inv_scale_xs(df_, xmin, xmax, xcols):
     # Inputs:
-    #      xs - numpy array or pandas dataframe of size (nd, nx+1) containing scaled inputs
+    #      df - pandas dataframe of size (nd, nx+1) containing scaled inputs
     #    xmin - numpy array of shape (1, nx) from before scaling
     #    xmax - numpy array of shape (1, nx) from before scaling
     #   xcols - list of strings corresponding to column names for inputs
     # Output:
-    #  mat/df - numpy array or pandas dataframe of size (nd, nx+1) containing the original inputs
+    #      df - pandas dataframe of size (nd, nx+1) containing the original inputs
 
     # inverse-scale the inputs
-    if isinstance(xs_, pd.DataFrame) and xcols is not None: 
-        df = xs_.copy()
-        xs = df[xcols]
-        df[xcols] = (xs+1)/2*(xmax-xmin)+xmin
-        return df
-
-    mat = np.copy(xs_)
-    xs = mat[:,:-1]
-    mat[:,:-1] = (xs+1)/2*(xmax-xmin)+xmin
-    return mat
+    df = df_.copy()
+    xs = df[xcols]
+    df[xcols] = (xs+1)/2*(xmax-xmin)+xmin
+    return df
 
 # -----------------------------------
 def criterion(cand,    # candidates
@@ -201,17 +195,20 @@ def criterion(cand,    # candidates
     xcols = args['xcols']
     mode = mode.lower()
     assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
+
+    cols = list(cand)
     
     if hist:
         hist = hist[include].values
 
     def step(mwr, cand):
-        t0 = time.time()
+
         cand = scale_y(scale_method, mwr, cand, wcol)
-                
         best_cand = []
         best_md = 0
         best_mties = 0
+
+        t0 = time.time()
         for i in range(nr):
         
             print('Random start {}'.format(i))
@@ -246,9 +243,15 @@ def criterion(cand,    # candidates
 
             elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
-
-        results = {'best_cand_scaled': best_cand,
-                   'best_cand': inv_scale_xs(best_cand, xmin, xmax),
+        
+        print(best_cand)
+        print(best_md)
+        df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
+        df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
+        print(df_best_cand_scaled)
+        print(df_best_cand)
+        results = {'best_cand_scaled': df_best_cand,
+                   'best_cand': df_best_cand,
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
                    'best_mties': best_mties,
@@ -263,10 +266,12 @@ def criterion(cand,    # candidates
 
     results = {}
     for mwr in mwr_vals:
+        print('>>>>>> mwr={} <<<<<<'.format(mwr))
         res = step(mwr, cand)
         print('Best value in Normalized Scale:', res['best_val'])
         print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
         print('Best NUSF Design in Original Coordinates:', res['best_cand'])
+        print('Elapsed time:', res['elapsed_time'])
         results[mwr] = res
         
     return results

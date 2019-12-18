@@ -1,4 +1,4 @@
-from .df_utils import load, write
+from sdoe.df_utils import load, write
 import configparser, time, os
 import numpy as np
 import pandas as pd
@@ -24,7 +24,7 @@ def run(config_file, nd, test=False):
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
-    type = [s.strip() for s in config['INPUT']['type'].split(',')]
+    types = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
     nusf = 'SF' in config.sections()
@@ -56,16 +56,26 @@ def run(config_file, nd, test=False):
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
         if nusf and weight_mode == 'by_user':
-            from .nusf import scale_cand
-            weightName = ''
-            for i in range(len(include)):
-                if type[i] == 'Weight':
-                    weightName = include[i]
-            cand = cand[[col for col in cand.columns if col != weightName] + [weightName]] #move column with weights to the back of df
-            sc, xmin, xmax = scale_cand(cand.values)
-            cand = pd.DataFrame(sc, columns=cand.columns)
+
+            # move the weight column to the last column
+            # if nusf, one of the columns is expected to be the weight vector
+            i = types.index('Weight')  
+            wcol = include[i]
+            wts = cand[wcol]    # weight column name
+            cand = cand.drop(columns=[wcol])
+            xcols = list(cand)  # input column names
+            cand[wcol] = wts
+            print('Before scale_cand')
+            print(cand)
+            
+            from .nusf import scale_xs
+            cand, xmin, xmax = scale_xs(cand, xcols)
+            print('After scale_xs')
+            print(xmin, xmax, cand)
             args['xmin'] = xmin
             args['xmax'] = xmax
+            args['wcol'] = wcol
+            args['xcols'] = xcols
             
     # load history
     hist = None
@@ -91,9 +101,8 @@ def run(config_file, nd, test=False):
         fnames = {}
         for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
-            fnamesTemp = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
-                      'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
-            fnames[mwr] = fnamesTemp
+            fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
+                           'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
     else:
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))

@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from sdoe.df_utils import load
+from .df_utils import load
 
 # plot parameters
 fc = {'hist': (1, 0, 0, 0.5), 'cand': (0, 0, 1, 0.5)}

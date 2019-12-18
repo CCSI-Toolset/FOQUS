@@ -302,7 +302,7 @@ class SurrogateParser:
                       '   y = sys.argv[3]',
                       '   if y.isdigit():',
                       '      y = int(y)',
-                      '      if y in xrange(1, nOutputs+1):',
+                      '      if y in range(1, nOutputs+1):',
                       '         index = y - 1',
                       '   else:',
                       '      if y in labels:',
@@ -313,9 +313,9 @@ class SurrogateParser:
         f.write('                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n')
         f.write('stdout, stderr = p.communicate()\n')
         f.write('if stdout:\n')
-        f.write('   print stdout\n')
+        f.write('   print(stdout)\n')
         f.write('if stderr:\n') 
-        f.write('   print stderr\n') 
+        f.write('   print(stderr)\n') 
         #f.write("os.remove('%s')\n" % rfile)  # os required only to remove R script
         f.close()
 
@@ -505,7 +505,7 @@ class SurrogateParser:
                       '   y = sys.argv[3]',
                       '   if y.isdigit():',
                       '      y = int(y)',
-                      '      if y in xrange(1, nOutputs+1):',
+                      '      if y in range(1, nOutputs+1):',
                       '         index = y - 1',
                       '   else:',
                       '      if y in labels:',
@@ -516,9 +516,9 @@ class SurrogateParser:
         f.write('                     stdout=subprocess.PIPE, stderr=subprocess.PIPE)\n')
         f.write('stdout, stderr = p.communicate()\n')
         f.write('if stdout:\n')
-        f.write('   print stdout\n')
+        f.write('   print(stdout)\n')
         f.write('if stderr:\n') 
-        f.write('   print stderr\n') 
+        f.write('   print(stderr)\n') 
         #f.write("os.remove('%s')\n" % rfile)  # os required only to remove R script
         f.close()
 
@@ -559,10 +559,10 @@ class SurrogateParser:
                        '   nSamp   = eval(nCols[0])',
                        '   nInputs = eval(nCols[1])',
                        '   inData  = (nSamp * nInputs) * [0]',
-                       '   for cnt in xrange(nSamp):',
+                       '   for cnt in range(nSamp):',
                        '      lineIn = inFile.readline()',
                        '      nCols  = lineIn.split()',
-                       '      for ind in xrange(nInputs):',
+                       '      for ind in range(nInputs):',
                        '         inData[cnt*nInputs+ind] = eval(nCols[ind+1])',
                        '   inFile.close()',
                        '   return nSamp, inData',
@@ -572,7 +572,7 @@ class SurrogateParser:
                        'def genOutputFile(outFileName, outData):',
                        '   nLeng = len(outData)',
                        '   outfile = open(outFileName, \'w\')',
-                       '   for ind in xrange(nLeng):',
+                       '   for ind in range(nLeng):',
                        '      outfile.write("%d " % (ind+1))',
                        '      outfile.write("%e\\n" % outData[ind])',
                        '   outfile.close()',
@@ -602,25 +602,25 @@ class SurrogateParser:
                       '#==================================================',
                       'def interpolate(npts, XX, oid):',
                       '   Ys = npts * [0.0]',
-                      '   for ss in xrange(npts) :',
+                      '   for ss in range(npts) :',
                       '      Xt = nInputs * [0.0]',
-                      '      for ii in xrange(nInputs):',
+                      '      for ii in range(nInputs):',
                       '         Xt[ii] = (XX[ss*nInputs+ii]-XStats[0][ii])/XStats[1][ii]',
                       '      ## compute the regression contributions ==> accum',
                       '      accum = Betas[0][oid];',
                       '      if (iregression >= 1):',
-                      '         for ii in xrange(nInputs):',
+                      '         for ii in range(nInputs):',
                       '            accum = accum + Betas[ii+1][oid] * Xt[ii]',
                       '      if (iregression == 2):',
                       '         kk = nInputs + 1',
-                      '         for ii in xrange(nInputs):',
-                      '            for ii2 in xrange(nInputs-ii):',
+                      '         for ii in range(nInputs):',
+                      '            for ii2 in range(nInputs-ii):',
                       '               accum = accum + Betas[kk][oid]*Xt[ii]*Xt[ii2+ii]',
                       '               kk = kk + 1',
                       '      ## compute the correlation contributions',
-                      '      for jj in xrange(nTrains) :',
+                      '      for jj in range(nTrains) :',
                       '         sig = 1',
-                      '         for ii in xrange(nInputs):',
+                      '         for ii in range(nInputs):',
                       '            dx = Xt[ii] - TrainInputs[jj][ii]', 
                       '            if (dx < 0):',
                       '               dx  = - dx',
@@ -670,7 +670,7 @@ class SurrogateParser:
                       '   y = sys.argv[3]',
                       '   if y.isdigit():',
                       '      y = int(y)',
-                      '      if y in xrange(1, nOutputs+1):',
+                      '      if y in range(1, nOutputs+1):',
                       '         index = y - 1',
                       '   else:',
                       '      if y in labels:',

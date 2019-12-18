@@ -21,8 +21,8 @@ def compute_dist(mat,      # numpy array of shape (N, nx) and type 'float'
 
     if wt is not None:
         dmat = np.multiply(dmat, np.outer(wt, wt))
-        val = 9999 
-
-    np.fill_diagonal(dmat, val)
+        val = 9999
         
+    np.fill_diagonal(dmat, val)
+            
     return dmat

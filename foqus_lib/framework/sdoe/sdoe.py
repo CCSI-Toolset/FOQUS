@@ -69,10 +69,9 @@ def run(config_file, nd, test=False):
             print(cand)
             
             from .nusf import scale_xs
-            sc, xmin, xmax = scale_xs(cand, xcols)
-            cand = pd.DataFrame(sc, columns=cand.columns)
+            cand, xmin, xmax = scale_xs(cand, xcols)
             print('After scale_xs')
-            print(sc, xmin, xmax, cand)
+            print(xmin, xmax, cand)
             args['xmin'] = xmin
             args['xmax'] = xmax
             args['wcol'] = wcol
@@ -103,7 +102,7 @@ def run(config_file, nd, test=False):
         for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
             fnamesTemp = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
-                      'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
+                          'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             fnames[mwr] = fnamesTemp
             save(fnames[mwr], results[mwr], elapsed_time)
     else:

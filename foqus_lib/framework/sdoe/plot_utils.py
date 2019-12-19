@@ -137,9 +137,12 @@ def plot(fname, hname=None, show=None, nusf=None):
     title = 'SDOE candidates from {}'.format(fname)
     fig1.canvas.set_window_title(title)
     if nusf:
-        wts = df.iloc[:,-1]
-        dmat = np.load(nusf['dmat'])
-        fig2 = plot_weights(wts, dmat, fname)
+        des = nusf['des'].values
+        xs = des[:, :-1]
+        wt = des[:, -1]
+        wts = nusf['wts']
+        cfile = nusf['cfile']
+        fig2 = plot_weights(xs, wt, wts, cfile)
         title = 'SDOE (NUSF) weights from {}'.format(fname)
         fig2.canvas.set_window_title(title)
         

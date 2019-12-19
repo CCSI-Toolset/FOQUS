@@ -21,11 +21,11 @@ def plot_hist(ax, xs, xname,
     if hbars:
         ax.barh(center, ns, align='center', height=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_ylabel(xname)
-        ax.set_xlabel('Frequency')
+        #ax.set_xlabel('Frequency')
     else:
         ax.bar(center, ns, align='center', width=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_xlabel(xname)
-        ax.set_ylabel('Frequency')
+        #ax.set_ylabel('Frequency')
 
     ax.grid(show_grids, axis='both')
     return ax
@@ -91,14 +91,24 @@ def plot_candidates(df, hf, show):
                 # ax.set_ylabel(xname)
                 # ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
+                ax = remove_ticklabels(ax)
 
-    labels = ['design points'] * 2
+                
+    labels = ['Design points'] * 2
     if hf:
         labels.append('history points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
     return fig
 
+def remove_ticklabels(ax):
+    labels = [item.get_text() for item in ax.get_xticklabels()]
+    no_labels = ['']*len(labels)
+    ax.set_xticklabels(no_labels)
+    labels = [item.get_text() for item in ax.get_yticklabels()]
+    no_labels = ['']*len(labels)
+    ax.set_yticklabels(no_labels)
+    return ax
 
 def plot_weights(xs, wt, wts, title):
     # Inputs:

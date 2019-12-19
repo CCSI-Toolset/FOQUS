@@ -193,23 +193,25 @@ def criterion(cand,    # candidates
     mode = mode.lower()
     assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
 
+    N = cand.shape[0]
     cols = list(cand)
     
     if hist:
         hist = hist[include].values
 
-    def step(mwr, cand):
+    def step(mwr):
 
         cand = scale_y(scale_method, mwr, cand, wcol)
         best_cand = []
         best_md = 0
         best_mties = 0
-
+        best_index = []
+        
         t0 = time.time()
         for i in range(nr):
         
             print('Random start {}'.format(i))
-            rand_index = np.random.choice(len(cand), nd, replace=False)
+            rand_index = np.random.choice(N, nd, replace=False)
             rand_cand = cand.iloc[rand_index]
             des = rand_cand[include].values
             mat = cand[include].values
@@ -232,6 +234,7 @@ def criterion(cand,    # candidates
                     update = update_
 
             if (md > best_md) or ((md == best_md) and (mties < best_mties)):
+                best_index = rand_index
                 best_cand = des
                 best_md = md
                 best_mdpts = mdpts
@@ -245,6 +248,7 @@ def criterion(cand,    # candidates
         df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
         results = {'best_cand_scaled': df_best_cand,
                    'best_cand': df_best_cand,
+                   'best_index': best_index,
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
                    'best_mties': best_mties,

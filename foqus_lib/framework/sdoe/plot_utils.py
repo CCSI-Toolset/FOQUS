@@ -44,6 +44,16 @@ def load_data(fname, hname):
     return df, hf
         
 
+def remove_ticklabels(ax):
+    labels = [item.get_text() for item in ax.get_xticklabels()]
+    no_labels = ['']*len(labels)
+    ax.set_xticklabels(no_labels)
+    labels = [item.get_text() for item in ax.get_yticklabels()]
+    no_labels = ['']*len(labels)
+    ax.set_yticklabels(no_labels)
+    return ax
+
+
 def plot_candidates(df, hf, show):
 
     # process inputs to be shown
@@ -92,7 +102,6 @@ def plot_candidates(df, hf, show):
                 # ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
                 ax = remove_ticklabels(ax)
-
                 
     labels = ['Design points'] * 2
     if hf:
@@ -101,14 +110,6 @@ def plot_candidates(df, hf, show):
 
     return fig
 
-def remove_ticklabels(ax):
-    labels = [item.get_text() for item in ax.get_xticklabels()]
-    no_labels = ['']*len(labels)
-    ax.set_xticklabels(no_labels)
-    labels = [item.get_text() for item in ax.get_yticklabels()]
-    no_labels = ['']*len(labels)
-    ax.set_yticklabels(no_labels)
-    return ax
 
 def plot_weights(xs, wt, wts, title):
     # Inputs:

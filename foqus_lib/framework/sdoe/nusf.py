@@ -246,13 +246,13 @@ def criterion(cand,    # candidates
         
         df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
 
-        # inverse-scale best candidates and replace with original weights
+        # inverse-scale the inputs and replace with original weights
         df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
-        wts = cand[wcol].values
-        df_best_cand[wcol] = wts[best_index]
+        wts = cand[wcol].values               # array of (N,)
+        df_best_cand[wcol] = wts[best_index]  # array of (nd,) 
         
         results = {'best_cand_scaled': df_best_cand_scaled,
-                   'best_cand': df_best_cand,
+                   'best_cand': df_best_cand,  # both inputs & wt are in original scales
                    'best_index': best_index,
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,

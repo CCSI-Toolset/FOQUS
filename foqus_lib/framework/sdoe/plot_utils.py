@@ -91,17 +91,16 @@ def plot_candidates(df, hf, show):
                 # ax.set_ylabel(xname)
                 # ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
+
     labels = ['design points'] * 2
     if hf:
         labels.append('history points')
-        fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
-    else:
-        fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
+    fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
     return fig
 
 
-def plot_weights(xs, wt, wts, fname):
+def plot_weights(xs, wt, wts, title):
     # Inputs:
     #    xs - numpy array of shape (nd, nx) containing inputs from best designs
     #    wt - numpy array of shape (nd, 1) containing weights from best designs
@@ -126,7 +125,6 @@ def plot_weights(xs, wt, wts, fname):
     ax2.set_title('Histogram of weights from the candidate set (N={})'.format(N))
     ax2.set_xlabel('Candidate weight')
 
-    title = 'SDOE (NUSF) Weights from {}'.format(fname)
     fig.canvas.set_window_title(title)
         
     return fig
@@ -139,13 +137,12 @@ def plot(fname, hname=None, show=None, nusf=None):
     fig1.canvas.set_window_title(title)
     if nusf:
         des = nusf['results']['best_cand'].values
-        xs = des[:, :-1]
-        wt = des[:, -1]
-        wts = nusf['wts']
-        cfile = nusf['cfile']
-        fig2 = plot_weights(xs, wt, wts, cfile)
-        title = 'SDOE (NUSF) weights from {}'.format(fname)
-        fig2.canvas.set_window_title(title)
+        xs = des[:,:-1]    # original scales from best candidate
+        wt = des[:,-1]     # original weights from best candidate
+        wts = nusf['wts']  # weights from all candidates
+        mwr = nusf['results']['mwr']
+        title = 'Weight visualization for MWR={}'.format(mwr)
+        fig2 = plot_weights(xs, wt, wts, title)
         
     plt.show()
 

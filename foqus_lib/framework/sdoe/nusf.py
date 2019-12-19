@@ -199,7 +199,7 @@ def criterion(cand,    # candidates
     if hist:
         hist = hist[include].values
 
-    def step(mwr):
+    def step(mwr, cand):
 
         cand = scale_y(scale_method, mwr, cand, wcol)
         best_cand = []

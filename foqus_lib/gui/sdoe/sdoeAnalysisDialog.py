@@ -526,7 +526,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         count = 0
         for mwr in mwr_list:
             self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], results[mwr]['elapsed_time'], fnames[mwr],
-                                  config_file, results[mwr]['best_val'], results[mwr]['best_cand']])
+                                  config_file, results[mwr]['best_val'], results[mwr]])
 
             self.updateAnalysisTable()
             self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (mwr, results[mwr]['num_restarts']))
@@ -771,7 +771,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             i = types.index('Weight')
             wcol = include[i]  # weight column name
             wts = cand[wcol]
-            nusf = {'cfile': cfile, 'wts': wts, 'des':self.analysis[row][7]}
+            nusf = {'cfile': cfile, 'wts': wts, 'results': self.analysis[row][7]}
         else:
             nusf = None
         dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)

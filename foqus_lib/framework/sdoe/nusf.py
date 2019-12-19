@@ -245,8 +245,13 @@ def criterion(cand,    # candidates
             print('Best minimum distance for this random start: {}'.format(best_md))
         
         df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
+
+        # inverse-scale best candidates and replace with original weights
         df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
-        results = {'best_cand_scaled': df_best_cand,
+        wts = cand[wcol].values
+        df_best_cand[wcol] = wts[best_index]
+        
+        results = {'best_cand_scaled': df_best_cand_scaled,
                    'best_cand': df_best_cand,
                    'best_index': best_index,
                    'best_val': best_md,

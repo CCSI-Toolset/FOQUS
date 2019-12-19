@@ -11,7 +11,7 @@ def plot_hist(ax, xs, xname,
               nbins=20,
               show_grids=True,  # set to True to show grid lines
               linewidth=0,      # set to nonzero to show border around bars 
-              hbars=False       # set to True for horizontal bars 
+              hbars=False       # set to True for horizontal bars
 ):
     ns, bins = np.histogram(xs, nbins)
     xmin = bins[0]
@@ -56,7 +56,7 @@ def plot_candidates(df, hf, show):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         xname = show[0]
-        ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0)
+        ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True)
 
     else:  # multiple inputs
 
@@ -77,7 +77,7 @@ def plot_candidates(df, hf, show):
             ax = A[k]
             xname = show[i]
             # ... plot histogram for diagonal subplot
-            ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0)
+            ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True)
 
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
@@ -88,14 +88,15 @@ def plot_candidates(df, hf, show):
                 ax.scatter(df[yname], df[xname], s=area['cand'], fc=fc['cand'], color='b')
                 if hf:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
-                ax.set_ylabel(xname)
-                ax.set_xlabel(yname)
+                # ax.set_ylabel(xname)
+                # ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
-
+    labels = ['design points'] * 2
     if hf:
-        fig.legend(labels=['cand', 'cand', 'hist'], loc='lower left', fontsize='xx-large')
+        labels.append('history points')
+        fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
     else:
-        fig.legend(labels=['cand', 'cand'], loc='lower left', fontsize='xx-large')
+        fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
     return fig
 
@@ -137,7 +138,7 @@ def plot(fname, hname=None, show=None, nusf=None):
     title = 'SDOE candidates from {}'.format(fname)
     fig1.canvas.set_window_title(title)
     if nusf:
-        des = nusf['des'].values
+        des = nusf['results']['best_cand'].values
         xs = des[:, :-1]
         wt = des[:, -1]
         wts = nusf['wts']

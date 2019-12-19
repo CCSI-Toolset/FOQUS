@@ -54,7 +54,7 @@ def remove_ticklabels(ax):
     return ax
 
 
-def plot_candidates(df, hf, show):
+def plot_candidates(df, hf, show, title):
 
     # process inputs to be shown
     if show is None:
@@ -108,6 +108,8 @@ def plot_candidates(df, hf, show):
         labels.append('History points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
+    fig.canvas.set_window_title(title)
+    
     return fig
 
 
@@ -143,16 +145,15 @@ def plot_weights(xs, wt, wts, title):
 
 def plot(fname, hname=None, show=None, nusf=None):
     df, hf = load_data(fname, hname)
-    fig1 = plot_candidates(df, hf, show)
-    title = 'SDOE candidates from {}'.format(fname)
-    fig1.canvas.set_window_title(title)
+    title = 'SDOE Candidates Visualization'
+    fig1 = plot_candidates(df, hf, show, title)
     if nusf:
         des = nusf['results']['best_cand'].values
         xs = des[:,:-1]    # original scales from best candidate
         wt = des[:,-1]     # original weights from best candidate
         wts = nusf['wts']  # weights from all candidates
         mwr = nusf['results']['mwr']
-        title = 'Weight visualization for MWR={}'.format(mwr)
+        title = 'SDOE (NUSF) Weight Visualization for MWR={}'.format(mwr)
         fig2 = plot_weights(xs, wt, wts, title)
         
     plt.show()

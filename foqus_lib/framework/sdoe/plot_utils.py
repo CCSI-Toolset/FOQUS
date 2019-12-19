@@ -103,9 +103,9 @@ def plot_candidates(df, hf, show):
                 ax.grid(True, axis='both')
                 ax = remove_ticklabels(ax)
                 
-    labels = ['Design points'] * 2
+    labels = ['Frequency', 'Design points']
     if hf:
-        labels.append('history points')
+        labels.append('History points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
     return fig

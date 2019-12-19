@@ -771,7 +771,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             i = types.index('Weight')
             wcol = include[i]  # weight column name
             wts = cand[wcol]
-            nusf = {'cfile': cfile, 'wts': wts, 'results': self.analysis[row][7]}
+            nusf = {'wts': wts, 'results': self.analysis[row][7]}
         else:
             nusf = None
         dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)

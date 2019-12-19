@@ -100,18 +100,30 @@ def plot_candidates(df, hf, show):
     return fig
 
 
-def plot_weights(wts, dmat, fname):
+def plot_weights(xs, wt, wts, fname):
+    # Inputs:
+    #    xs - numpy array of shape (nd, nx) containing inputs from best designs
+    #    wt - numpy array of shape (nd, 1) containing weights from best designs
+    #    wts - numpy array of shape (N,) containing weights from all candidates
     
     # generate subplots
     fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
-    # plot histogram of weights
-    ax2 = plot_hist(ax2, wts, 'Weight', show_grids=False, linewidth=1) 
-    
-    # plot min distances
-    for w, d in zip(wts, np.min(dmat, axis=0)):
+    # the top subplot shows the min distance for only best designs
+    from .distance import compute_dist
+    dmat = compute_dist(xs)
+    dist = np.sqrt(np.min(dmat, axis=1))   # Euclidean distance
+    nd = dist.shape[0]
+    for w, d in zip(wt, dist):
         ax1.plot([w,w],[0,d], color='b')
-        ax1.set_ylabel('Min distance')
+    ax1.set_title('Distance to closest neighbor within the design set (N={})'.format(nd))
+    ax1.set_ylabel('Min distance')
+    
+    # the bottom subplot shows a histogram of ALL the weights from the candidate set
+    ax2 = plot_hist(ax2, wts, 'Weight', show_grids=False, linewidth=1)
+    N = wts.shape[0]
+    ax2.set_title('Histogram of weights from the candidate set (N={})'.format(N))
+    ax2.set_xlabel('Candidate weight')
 
     title = 'SDOE (NUSF) Weights from {}'.format(fname)
     fig.canvas.set_window_title(title)

@@ -32,32 +32,6 @@ def compute_min_params(dmat):
     mdpts = np.unique(mdpts.flatten())
     return md, mdpts, mties
 
-def replace_design(row, des, dmat_, k, val=9999):
-    nd, nx = des.shape
-    nx = nx-1
-    
-    x = np.repeat(np.reshape(row[:-1], (nx, 1)), nd, axis=1).T - des[:,:-1]
-    row = np.multiply(np.sum(np.square(x), axis=1)*row[-1], des[:,-1])
-    dmat = np.copy(dmat_)
-    dmat[k,:] = row
-    dmat[:,k] = row.T
-    np.fill_diagonal(dmat, val)
-    return dmat
-
-def step(pt, cand, mdpts, des_, dmat_, mt0=None):
-    i, j = pt
-    des = np.copy(des_)
-    dmat = np.copy(dmat_)
-    row = cand[j]
-    k = mdpts[i]
-    des[k, :] = row
-    dmat = replace_design(row, des, dmat, k)
-    md, mdpts, mties = compute_min_params(dmat)
-    
-    if mt0 is not None:
-        mties = mt0[i,j]
-    return des, dmat, md, mdpts, mties
-
 def update_min_dist(des, md, mdpts, mties, dmat, mat):
     # Inputs:
     #     des - numpy array of shape (nd, nx+1)
@@ -74,11 +48,34 @@ def update_min_dist(des, md, mdpts, mties, dmat, mat):
     #    dmat - numpy array of shape (M, M) where M = nx+nh
     #  update - boolean representing whether an update should occur
 
-    ncand = mat.shape[0]
-
-    nd, nx = des.shape 
+    # <ncand> is the number of candidates from which you will choose
+    # <nd> designs as the best ones for your experiment
+    nd, nx = des.shape
     nx = nx-1
+    ncand = mat.shape[0]
     assert (nd <= ncand)
+    
+    def update_dmat(row, des, dmat_, k, val=9999):
+        x = np.repeat(np.reshape(row[:-1], (nx, 1)), nd, axis=1).T - des[:,:-1]
+        row = np.multiply(np.sum(np.square(x), axis=1)*row[-1], des[:,-1])
+        dmat = np.copy(dmat_)
+        dmat[k,:] = row
+        dmat[:,k] = row.T
+        np.fill_diagonal(dmat, val)
+        return dmat
+
+    def step(pt, cand, mdpts, des_, dmat_, mt0=None):
+        i, j = pt
+        des = np.copy(des_)
+        dmat = np.copy(dmat_)
+        row = cand[j]
+        k = mdpts[i]
+        des[k, :] = row
+        dmat = update_dmat(row, des, dmat, k)
+        md, mdpts, mties = compute_min_params(dmat)
+        if mt0 is not None:
+            mties = mt0[i,j]
+        return des, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
     d0 = np.empty((int(2*mties), ncand))
@@ -244,12 +241,8 @@ def criterion(cand,    # candidates
             elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
         
-        print(best_cand)
-        print(best_md)
         df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
         df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
-        print(df_best_cand_scaled)
-        print(df_best_cand)
         results = {'best_cand_scaled': df_best_cand,
                    'best_cand': df_best_cand,
                    'best_val': best_md,

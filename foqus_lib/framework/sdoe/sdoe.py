@@ -59,18 +59,14 @@ def run(config_file, nd, test=False):
             # move the weight column to the last column
             # if nusf, one of the columns is expected to be the weight vector
             i = types.index('Weight')  
-            wcol = include[i]
-            wts = cand[wcol]    # weight column name
+            wcol = include[i]   # weight column name
+            wts = cand[wcol]    
             cand = cand.drop(columns=[wcol])
             xcols = list(cand)  # input column names
             cand[wcol] = wts
-            print('Before scale_cand')
-            print(cand)
             
             from .nusf import scale_xs
             cand, xmin, xmax = scale_xs(cand, xcols)
-            print('After scale_xs')
-            print(xmin, xmax, cand)
             args['xmin'] = xmin
             args['xmax'] = xmax
             args['wcol'] = wcol

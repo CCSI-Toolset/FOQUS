@@ -10,6 +10,8 @@ def compute_dist(mat,      # numpy array of shape (N, nx) and type 'float'
     N, ncols = mat.shape
     dmat = np.full((N, N), np.nan)
 
+    val = np.inf
+    
     if scl is not None:
         assert scl.shape[0] == ncols, 'SCL should be of dim %d.' % ncols
         mat = mat / np.repeat(np.reshape(scl, (1, ncols)), N, axis=0)

@@ -55,7 +55,7 @@ def update_min_dist(des, md, mdpts, mties, dmat, mat):
     ncand = mat.shape[0]
     assert (nd <= ncand)
     
-    def replace_design(row, des, dmat_, k, val=9999):
+    def update_dmat(row, des, dmat_, k, val=9999):
         x = np.repeat(np.reshape(row[:-1], (nx, 1)), nd, axis=1).T - des[:,:-1]
         row = np.multiply(np.sum(np.square(x), axis=1)*row[-1], des[:,-1])
         dmat = np.copy(dmat_)
@@ -71,7 +71,7 @@ def update_min_dist(des, md, mdpts, mties, dmat, mat):
         row = cand[j]
         k = mdpts[i]
         des[k, :] = row
-        dmat = replace_design(row, des, dmat, k)
+        dmat = update_dmat(row, des, dmat, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
             mties = mt0[i,j]
@@ -241,12 +241,8 @@ def criterion(cand,    # candidates
             elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
         
-        print(best_cand)
-        print(best_md)
         df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
         df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
-        print(df_best_cand_scaled)
-        print(df_best_cand)
         results = {'best_cand_scaled': df_best_cand,
                    'best_cand': df_best_cand,
                    'best_val': best_md,

@@ -22,11 +22,9 @@ def plot_hist(ax, xs, xname,
     if hbars:
         ax.barh(center, ns, align='center', height=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_ylabel(xname)
-        #ax.set_xlabel('Frequency')
     else:
         ax.bar(center, ns, align='center', width=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_xlabel(xname)
-        #ax.set_ylabel('Frequency')
 
     ax.grid(show_grids, axis='both')
     return ax
@@ -55,7 +53,7 @@ def remove_ticklabels(ax):
     return ax
 
 
-def plot_candidates(df, hf, show, title):
+def plot_candidates(df, hf, show, title, firstWindow):
 
     # process inputs to be shown
     if show is None:
@@ -99,12 +97,13 @@ def plot_candidates(df, hf, show, title):
                 ax.scatter(df[yname], df[xname], s=area['cand'], fc=fc['cand'], color='b')
                 if hf:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
-                # ax.set_ylabel(xname)
-                # ax.set_xlabel(yname)
                 ax.grid(True, axis='both')
                 ax = remove_ticklabels(ax)
                 
-    labels = ['Frequency', 'Design points']
+    if firstWindow:
+        labels = ['Frequency', 'Candidates']
+    else:
+        labels = ['Frequency', 'Design points']
     if hf:
         labels.append('History points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
@@ -144,10 +143,10 @@ def plot_weights(xs, wt, wts, title):
     return fig
 
 
-def plot(fname, hname=None, show=None, nusf=None):
+def plot(fname, firstWindow, hname=None, show=None, nusf=None):
     df, hf = load_data(fname, hname)
     title = 'SDOE Candidates Visualization'
-    fig1 = plot_candidates(df, hf, show, title)
+    fig1 = plot_candidates(df, hf, show, title, firstWindow)
     if nusf:
         des = nusf['results']['best_cand_scaled'].values
         xs = des[:,:-1]    # scaled coordinates from best candidate

@@ -146,10 +146,10 @@ def plot_weights(xs, wt, wts, title):
     return fig
 
 
-def plot(fname, firstWindow, hname=None, show=None, nusf=None):
+def plot(fname, scatter_label, hname=None, show=None, nusf=None):
     df, hf = load_data(fname, hname)
     title = 'SDOE Candidates Visualization'
-    fig1 = plot_candidates(df, hf, show, title, firstWindow)
+    fig1 = plot_candidates(df, hf, show, title, scatter_label)
     if nusf:
         des = nusf['results']['best_cand_scaled'].values
         xs = des[:,:-1]    # scaled coordinates from best candidate

@@ -3,7 +3,6 @@ from datetime import datetime
 import configparser
 
 from foqus_lib.framework.sdoe import order, sdoe
-from foqus_lib.framework.sdoe.nusf import scale_y
 from foqus_lib.framework.sdoe.df_utils import load
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
@@ -775,7 +774,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row][7]}
         else:
             nusf = None
-        dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)
+        scatterLabel = 'Design Points'
+        dialog = sdoePreview(sdoeData, hname, dirname, nusf, scatterLabel, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):

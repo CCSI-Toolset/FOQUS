@@ -761,7 +761,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
         types = [s.strip() for s in config['INPUT']['type'].split(',')]
-        scale_method = config['SF']['scale_method']
 
         if hfile == '':
             hname = None
@@ -769,6 +768,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         if self.type == 'NUSF':
+            scale_method = config['SF']['scale_method']
             cand = load(cfile)
             i = types.index('Weight')
             wcol = include[i]  # weight column name

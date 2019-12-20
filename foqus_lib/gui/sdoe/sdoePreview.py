@@ -16,13 +16,14 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, hname, dirname, nusf, parent=None):
+    def __init__(self, data, hname, dirname, nusf, parent=None, firstWindow=False):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
         self.dirname = dirname
         self.hname = hname
         self.nusf = nusf
+        self.firstWindow = firstWindow
 
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
@@ -111,5 +112,6 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         fname = os.path.join(self.dirname, self.data.getModelName())
         hname = self.hname
         nusf = self.nusf
-        plot_utils.plot(fname, hname=hname, show=show, nusf=nusf)
+        firstWindow = self.firstWindow
+        plot_utils.plot(fname, hname=hname, show=show, nusf=nusf, firstWindow=firstWindow)
         self.setModal(True)

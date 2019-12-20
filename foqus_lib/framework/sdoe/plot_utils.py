@@ -101,7 +101,7 @@ def plot_candidates(df, hf, show, title, scatter_label):
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
-                if j == i+1:
+                if i == 0:
                     ax.xaxis.set_label_position('top')
                 else:
                     ax = remove_xticklabels(ax)

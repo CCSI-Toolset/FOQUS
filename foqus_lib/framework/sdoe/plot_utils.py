@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from .df_utils import load
+from .nusf import scale_y
 
 # plot parameters
 fc = {'hist': (1, 0, 0, 0.5), 'cand': (0, 0, 1, 0.5)}
@@ -148,11 +149,15 @@ def plot(fname, hname=None, show=None, nusf=None):
     title = 'SDOE Candidates Visualization'
     fig1 = plot_candidates(df, hf, show, title)
     if nusf:
-        des = nusf['results']['best_cand'].values
-        xs = des[:,:-1]    # original scales from best candidate
-        wt = des[:,-1]     # original weights from best candidate
-        wts = nusf['wts']  # weights from all candidates
+        des = nusf['results']['best_cand_scaled'].values
+        xs = des[:,:-1]    # scaled coordinates from best candidate
+        wt = des[:,-1]     # scaled weights from best candidate
+        scale_method = nusf['scale_method']
+        cand = nusf['cand']
+        wcol = nusf['wcol']
         mwr = nusf['results']['mwr']
+        cand_ = scale_y(scale_method, mwr, cand, wcol)
+        wts = cand_[wcol]  # weights from all candidates
         title = 'SDOE (NUSF) Weight Visualization for MWR={}'.format(mwr)
         fig2 = plot_weights(xs, wt, wts, title)
         

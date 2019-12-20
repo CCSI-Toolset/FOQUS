@@ -264,7 +264,7 @@ def criterion(cand,    # candidates
                    'num_restarts': nr,
                    'mwr': mwr,
                    'elapsed_time': elapsed_time}
-        
+
         return results
 
     results = {}
@@ -278,6 +278,6 @@ def criterion(cand,    # candidates
         results[mwr] = res
 
     # delete this after debugging
-    pickle.dump(results, open('debug.p', 'wb'))
+    pkl.dump(results, open('debug.p', 'wb'))
 
     return results

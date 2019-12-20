@@ -3,6 +3,7 @@ from datetime import datetime
 import configparser
 
 from foqus_lib.framework.sdoe import order, sdoe
+from foqus_lib.framework.sdoe.nusf import scale_y
 from foqus_lib.framework.sdoe.df_utils import load
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
@@ -760,6 +761,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
         types = [s.strip() for s in config['INPUT']['type'].split(',')]
+        scale_method = config['SF']['scale_method']
 
         if hfile == '':
             hname = None
@@ -770,8 +772,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             cand = load(cfile)
             i = types.index('Weight')
             wcol = include[i]  # weight column name
-            wts = cand[wcol]
-            nusf = {'wts': wts, 'results': self.analysis[row][7]}
+            nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row][7]}
         else:
             nusf = None
         dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)

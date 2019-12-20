@@ -43,17 +43,19 @@ def load_data(fname, hname):
     return df, hf
         
 
-def remove_ticklabels(ax):
+def remove_xticklabels(ax):
     labels = [item.get_text() for item in ax.get_xticklabels()]
     no_labels = ['']*len(labels)
     ax.set_xticklabels(no_labels)
+    return ax
+
+def remove_yticklabels(ax):    
     labels = [item.get_text() for item in ax.get_yticklabels()]
     no_labels = ['']*len(labels)
     ax.set_yticklabels(no_labels)
     return ax
 
-
-def plot_candidates(df, hf, show, title, firstWindow):
+def plot_candidates(df, hf, show, title, scatter_label):
 
     # process inputs to be shown
     if show is None:
@@ -98,12 +100,13 @@ def plot_candidates(df, hf, show, title, firstWindow):
                 if hf:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
                 ax.grid(True, axis='both')
-                ax = remove_ticklabels(ax)
-                
-    if firstWindow:
-        labels = ['Frequency', 'Candidates']
-    else:
-        labels = ['Frequency', 'Design points']
+                ax = remove_yticklabels(ax)
+                if j == i+1:
+                    ax.xaxis.set_label_position('top')
+                else:
+                    ax = remove_xticklabels(ax)
+                    
+    labels = ['Frequency', scatter_label]
     if hf:
         labels.append('History points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
@@ -156,18 +159,8 @@ def plot(fname, firstWindow, hname=None, show=None, nusf=None):
         wcol = nusf['wcol']
         mwr = nusf['results']['mwr']
         cand_ = scale_y(scale_method, mwr, cand, wcol)
-        wts = cand_[wcol]  # weights from all candidates
+        wts = cand_[wcol]  # scaled weights from all candidates
         title = 'SDOE (NUSF) Weight Visualization for MWR={}'.format(mwr)
         fig2 = plot_weights(xs, wt, wts, title)
         
     plt.show()
-
-
-# ------------
-'''
-Example:
-
-fname = '/Users/ng30/Downloads/nusf_results/nusf_d20_n50_m5_Label+X1+X2+Values.csv'
-dname = '/Users/ng30/Downloads/nusf_results/nusf_dmat_d20_n50_m5_Label+X1+X2+Values.npy'
-plot(fname, nusf={'dmat': dname, 'wt': 'Values'})
-'''

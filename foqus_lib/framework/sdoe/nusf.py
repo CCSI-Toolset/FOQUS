@@ -3,7 +3,6 @@ import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist
 import time
-import pickle as pkl      # delete this after debugging
 
 # -----------------------------------
 def compute_dmat(mat, hist=[]):
@@ -277,7 +276,5 @@ def criterion(cand,    # candidates
         print('Elapsed time:', res['elapsed_time'])
         results[mwr] = res
 
-    # delete this after debugging
-    pkl.dump(results, open('debug.p', 'wb'))
 
     return results

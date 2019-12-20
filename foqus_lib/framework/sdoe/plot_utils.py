@@ -102,10 +102,11 @@ def plot_candidates(df, hf, show, title, scatter_label):
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
                 if i == 0:
+                    ax.xaxis.set_ticks_position('top')
                     ax.xaxis.set_label_position('top')
                 else:
                     ax = remove_xticklabels(ax)
-                    
+
     labels = ['Frequency', scatter_label]
     if hf:
         labels.append('History points')

@@ -405,7 +405,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         previewData = self.dat.sdoeSimList[row]
         hname = None
         nusf = None
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, self)
+        scatterLabel = 'Candidates'
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
         dialog.show()
 
     def editAgg(self):
@@ -419,7 +420,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         else:
             hname = None
         nusf = None
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, self)
+        scatterLabel = 'Candidates'
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
         dialog.show()
 
     def hasCandidates(self):
@@ -484,7 +486,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
 
         # Resize table
-        #print 'resize'
         self.resizeColumns()
         minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
                    self.filesTable.columnWidth(2) + self.filesTable.columnWidth(3)
@@ -531,7 +532,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
 
         # Resize table
-        #print 'resize'
         self.resizeColumns()
         minWidth = 2 + self.aggFilesTable.columnWidth(0) + self.aggFilesTable.columnWidth(1) + \
                    self.aggFilesTable.columnWidth(2)

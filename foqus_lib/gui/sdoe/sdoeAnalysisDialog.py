@@ -3,6 +3,7 @@ from datetime import datetime
 import configparser
 
 from foqus_lib.framework.sdoe import order, sdoe
+from foqus_lib.framework.sdoe.df_utils import load
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
@@ -525,7 +526,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         count = 0
         for mwr in mwr_list:
             self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], results[mwr]['elapsed_time'], fnames[mwr],
-                                  config_file, results[mwr]['best_val']])
+                                  config_file, results[mwr]['best_val'], results[mwr]])
 
             self.updateAnalysisTable()
             self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (mwr, results[mwr]['num_restarts']))
@@ -756,6 +757,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
         hfile = config['INPUT']['history_file']
+        cfile = config['INPUT']['candidate_file']
+        include = [s.strip() for s in config['INPUT']['include'].split(',')]
+        types = [s.strip() for s in config['INPUT']['type'].split(',')]
 
         if hfile == '':
             hname = None
@@ -763,10 +767,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         if self.type == 'NUSF':
-            nusf = {'dmat':self.analysis[row][4]['dmat']}
+            scale_method = config['SF']['scale_method']
+            cand = load(cfile)
+            i = types.index('Weight')
+            wcol = include[i]  # weight column name
+            nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row][7]}
         else:
             nusf = None
-        dialog = sdoePreview(sdoeData, hname, dirname, nusf, self)
+        scatterLabel = 'Design Points'
+        dialog = sdoePreview(sdoeData, hname, dirname, nusf, scatterLabel, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):

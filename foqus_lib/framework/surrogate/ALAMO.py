@@ -35,6 +35,7 @@ try:
     import win32process
 except:
     pass
+#from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 from foqus_lib.framework.listen import listen
@@ -427,6 +428,20 @@ class surrogateMethod(surrogate):
             dtype=str,
             desc=".py file flowsheet plugin, saved to user_plugins"\
                 " in the working directory.")
+        self.options.add(
+            name="FOQUS Model (for Pyomo Optimization)",
+            section="Advanced Settings",
+            default="alamo_surrogate_pyomo_optim.py",
+            dtype=str,
+            desc=".py file, meant for surrogate based optimization to be used within FOQUS optimizer plugin, saved to user_plugins"\
+                " in the working directory.")
+        self.options.add(
+            name="Standalone Model (for Pyomo Optimization)",
+            section="Advanced Settings",
+            default="alamo_surrogate_pyomo_optim_standalone.py",
+            dtype=str,
+            desc=".py file, meant for surrogate based optimization to be used standalone, saved to user_plugins"\
+                " in the working directory.")
 
         self.inputVarButtons = (
             ('Set XFACTOR from range', self.autoXFact),)
@@ -540,8 +555,10 @@ class surrogateMethod(surrogate):
                 if line != b'':
                     self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
-                if self.stop.isSet():
+                if self.stop.set():
                     self.msgQueue.put("**terminated by user**")
+#                    self.killTurbineJobs()
+#                    self.stopAllConsumers()
                     process.kill()
                     break
             if adaptive:
@@ -558,6 +575,9 @@ class surrogateMethod(surrogate):
             self.result = res
             #self.msgQueue.put(str(res))
             self.writePlugin()
+            self.writepyomofile()
+            self.writepyomostandalonefile()
+            print(self.dat.flowsheet.output)
             SurrogateParser.writeAlamoDriver(
                 self.result,
                 uq_file,
@@ -878,4 +898,224 @@ class surrogateMethod(surrogate):
             f.write("    def run(self):\n")
             for eq in eq_list:
                 f.write("        {0}\n".format(eq))
+        self.dat.reloadPlugins()
+        
+    def writepyomofile(self):
+        excludeBefore = '[a-zA-Z0-9_\'\".]'
+        excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+        file_name3 = self.options[
+            "FOQUS Model (for Pyomo Optimization)"].value
+
+        minval=[]
+        maxval=[]
+        initvals=[]
+        initvals_output = []
+        
+        gin = self.dat.flowsheet.input
+        gout = self.dat.flowsheet.output
+        
+        for i, v in enumerate(self.input):
+            #get the basic variable information
+            minVal = gin.get(v).min
+            maxVal = gin.get(v).max
+            initval= gin.get(v).value
+            minval.append(minVal)
+            maxval.append(maxVal)
+            initvals.append(initval)
+            
+        for i, v in enumerate(self.output):
+            initvalout= gout.get(v).value
+            initvals_output.append(initvalout)
+        
+        with open(os.path.join("user_plugins", file_name3), 'w') as f:
+            f.write("from pyomo.environ import *\n")
+            f.write("from pyomo.opt import SolverFactory\n")
+            f.write("from pyomo.core.kernel.component_set import ComponentSet\n")
+            f.write("import pyutilib.subprocess.GlobalData\n")
+            f.write("pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False\n")
+            f.write("def main():\n")
+            f.write("    surrvarin_names = []\n")
+            f.write("    surrvarout_names = []\n")
+            f.write("    m=ConcreteModel()\n")
+            f.write("    surrvarin_names_original = {0}\n".format(self.xList))
+            f.write("    surrvarout_names_original = {0}\n".format(self.zList))
+
+            v1list=[]
+
+            for v in self.xList:
+                v1=v.replace('.','_')
+                v1list.append(v1)
+                
+            f.write("    for v1 in {0}:\n".format(v1list))                
+            f.write("        m.add_component('{0}'.format(v1),Var())\n")
+            f.write("        surrvarin_names.append(v1)\n")
+            f.write("    vlist1 = [v for v in m.component_objects(Var)]\n")
+            
+            f.write("    minval={0}\n".format(minval))
+            f.write("    maxval={0}\n".format(maxval))
+            f.write("    initvals={0}\n".format(initvals))
+            f.write("    for i,v in enumerate({0}):\n".format(v1list))
+            f.write("        vlist1[i].setlb(minval[i])\n")
+            f.write("        vlist1[i].setub(maxval[i])\n")
+            f.write("        vlist1[i].value = initvals[i]\n")
+            
+            v2list=[]
+
+            for v in self.zList:
+                v2=v.replace('.','_')
+                v2list.append(v2)
+            f.write("    initvals_output = {0}\n".format(initvals_output))    
+            f.write("    for v2 in {0}:\n".format(v2list))                
+            f.write("        m.add_component('{0}'.format(v2),Var())\n")
+            f.write("        surrvarout_names.append(v2)\n")
+            f.write("    vlist2 = [v for v in m.component_objects(Var)]\n")
+            f.write("    vlist2 = list(ComponentSet(vlist2) - ComponentSet(vlist1))\n")
+            
+            f.write("    for i,v in enumerate({0}):\n".format(v2list))
+            f.write("        vlist2[i].value = initvals_output[i]\n")
+                        
+            eq_list1 = []
+            for eq_str1 in self.result['outputEqns']:
+                for i, v in enumerate(self.xList):
+                    vo1 = self.xListNP[i]
+                    pat1 = "(?<!{0}){1}(?!{2})".format(
+                        excludeBefore, vo1.replace('.', '\\.'), excludeAfter)
+                    newForm1 = 'm.{0}'.format(v1list[i])
+                    eq_str1 = re.sub(pat1, newForm1, eq_str1)
+                    
+                p1=re.compile('(=)')
+                eq_str1=p1.sub('==',eq_str1)
+                
+                for i, v in enumerate(self.zList):
+                    vo2 = self.zListNP[i]
+                    pat2 = "(?<!{0}){1}(?!{2})".format(
+                        excludeBefore, vo2.replace('.', '\\.'), excludeAfter)
+                    newForm2 = 'm.{0}'.format(v2list[i])
+                    eq_str1 = re.sub(pat2, newForm2, eq_str1)
+                eq_list1.append(eq_str1.strip())
+            
+            f.write("    m.c=ConstraintList()\n")
+            for e in eq_list1:
+                f.write("    m.c.add({0})\n".format(e))
+                
+            f.write("    for i,vr in enumerate(vlist2):\n")
+            f.write("        vr.value = -value(m.c[i+1].body - vr)\n")
+            
+            f.write("    surrvarin_names_pyomo = vlist1\n")
+            f.write("    surrvarout_names_pyomo = []\n")
+            f.write("    for v in m.component_objects(Var):\n")
+            f.write("        if v not in vlist1:\n")
+            f.write("            surrvarout_names_pyomo.append(v)\n")
+            f.write("    return surrvarin_names_pyomo, surrvarout_names_pyomo, surrvarin_names_original, surrvarout_names_original, surrvarin_names, surrvarout_names,m\n")
+
+        self.dat.reloadPlugins()
+        
+    def writepyomostandalonefile(self):
+        excludeBefore = '[a-zA-Z0-9_\'\".]'
+        excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+        file_name3 = self.options[
+            "Standalone Model (for Pyomo Optimization)"].value
+
+        minval=[]
+        maxval=[]
+        initvals=[]
+        
+        gin = self.dat.flowsheet.input
+        for i, v in enumerate(self.input):
+            #get the basic variable information
+            minVal = gin.get(v).min
+            maxVal = gin.get(v).max
+            initval= gin.get(v).value
+            minval.append(minVal)
+            maxval.append(maxVal)
+            initvals.append(initval)
+        
+        with open(os.path.join("user_plugins", file_name3), 'w') as f:
+            f.write("# This file is meant for standalone use.\n")
+            f.write("# Surrogate Model based Optimizaton.\n")        
+            f.write("from pyomo.environ import *\n")
+            f.write("from pyomo.opt import SolverFactory\n")
+            f.write("from pyomo.core.kernel.component_set import ComponentSet\n")
+            f.write("import pyutilib.subprocess.GlobalData\n")
+            f.write("pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False\n")
+            f.write("m=ConcreteModel()\n")
+
+            v1list=[]
+
+            for v in self.xList:
+                v1=v.replace('.','_')
+                v1list.append(v1)
+                
+            f.write("for v1 in {0}:\n".format(v1list))                
+            f.write("    m.add_component('{0}'.format(v1),Var())\n")
+            f.write("vlist1 = [v for v in m.component_objects(Var)]\n")
+            
+            f.write("minval={0}\n".format(minval))
+            f.write("maxval={0}\n".format(maxval))
+            f.write("initvals={0}\n".format(initvals))
+            f.write("for i,v in enumerate({0}):\n".format(v1list))
+            f.write("    vlist1[i].setlb(minval[i])\n")
+            f.write("    vlist1[i].setub(maxval[i])\n")
+            f.write("    vlist1[i].value = initvals[i]\n")
+            
+            v2list=[]
+
+            for v in self.zList:
+                v2=v.replace('.','_')
+                v2list.append(v2)
+                
+            f.write("for v2 in {0}:\n".format(v2list))                
+            f.write("    m.add_component('{0}'.format(v2),Var(initialize = 0.0001))\n")
+            f.write("vlist2 = [v for v in m.component_objects(Var)]\n")
+            f.write("vlist2 = list(ComponentSet(vlist2) - ComponentSet(vlist1))\n")
+            
+            f.write(" # ****Add more variables in pyomo format, if necessary, here****\n")
+                    
+                    
+            f.write(" # ********\n")        
+                        
+            eq_list1 = []
+            for eq_str1 in self.result['outputEqns']:
+                for i, v in enumerate(self.xList):
+                    vo1 = self.xListNP[i]
+                    pat1 = "(?<!{0}){1}(?!{2})".format(
+                        excludeBefore, vo1.replace('.', '\\.'), excludeAfter)
+                    newForm1 = 'm.{0}'.format(v1list[i])
+                    eq_str1 = re.sub(pat1, newForm1, eq_str1)
+                    
+                p1=re.compile('(=)')
+                eq_str1=p1.sub('==',eq_str1)
+                
+                for i, v in enumerate(self.zList):
+                    vo2 = self.zListNP[i]
+                    pat2 = "(?<!{0}){1}(?!{2})".format(
+                        excludeBefore, vo2.replace('.', '\\.'), excludeAfter)
+                    newForm2 = 'm.{0}'.format(v2list[i])
+                    eq_str1 = re.sub(pat2, newForm2, eq_str1)
+                eq_list1.append(eq_str1.strip())
+            
+            f.write("m.c=ConstraintList()\n")
+            for e in eq_list1:
+                f.write("m.c.add({0})\n".format(e))
+                
+            f.write("for i,vr in enumerate(vlist2):\n")
+            f.write("    vr.value = -value(m.c[i+1].body - vr)\n")
+            
+            f.write(" # ****Add more constraints in pyomo format, if necessary, here****\n")
+                    
+                    
+            f.write(" # ********\n") 
+            
+            f.write(" # Write the objective function below\n")
+                    
+            f.write("m.obj=Objective(expr=1)\n")
+            
+            f.write(" # Enter the solver, and appropriate options below\n")
+                    
+            f.write("opt = SolverFactory('gams')\n")
+            f.write("io_options = dict()\n")
+            f.write("io_options['solver'] = 'ipopt'\n")
+            f.write("io_options['mtype'] = 'nlp'\n")
+            f.write("opt.solve(m,io_options=io_options)\n")
+
         self.dat.reloadPlugins()

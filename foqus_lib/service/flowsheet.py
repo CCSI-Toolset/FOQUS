@@ -21,7 +21,6 @@ import logging.config
 import botocore.exceptions
 
 _instanceid = None
-#WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
 WORKING_DIRECTORY = os.path.abspath(os.environ.get('FOQUS_SERVICE_WORKING_DIR', "\\ProgramData\\foqus_service"))
 AWS_REGION = 'us-east-1'
 DEBUG = False
@@ -37,14 +36,7 @@ def _set_working_dir(wdir):
         if e.errno != errno.EEXIST:
             raise
     os.chdir(wdir)
-    try:
-        logging.config.fileConfig('logging.conf')
-    except Exception as ex:
-        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                            filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),
-                            level=logging.DEBUG)
-
-    _log = logging.getLogger('foqus_service')
+    _log = logging.getLogger('foqus.foqus_lib.service.flowsheet')
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
     logging.getLogger('boto3').setLevel(logging.ERROR)
     logging.getLogger('botocore').setLevel(logging.ERROR)

@@ -22,9 +22,6 @@ import math
 import numpy
 import os
 import traceback
-import SQSnobFit
-import SQCommon
-from SQCommon import Result, ObjectiveFunction
 
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.graph.OptGraphOptim import optim,optimObj

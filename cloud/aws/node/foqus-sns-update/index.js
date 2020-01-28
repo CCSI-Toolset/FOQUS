@@ -180,6 +180,8 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     const consumer = message['consumer'];
     const session = message['sessionid']
     const error_message = message['message'];
+    const milliseconds = (new Date).getTime();
+
     assert.strictEqual(e, "status");
 
     log(`status=${status} username=${user_name},  job=${job}, session=${session}`);
@@ -195,7 +197,6 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     function putS3(response) {
         // Job is success, put in S3
         log("putS3: Put Job Description");
-        const milliseconds = (new Date).getTime();
         var promise = new Promise(function(resolve, reject){
             if (status=='success' || status=='error' || status=='submit' || status=='setup' || status=='running') {
               response.Item.Output = response.Item.output;
@@ -302,7 +303,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           Body: content
         };
         log(`expired job: job=${job}, status=${status}`);
-        var request = s3.putObject(params);
+        var response = s3.putObject(params);
         response.promise()
           .then(putS3)
           .then(handleDone)

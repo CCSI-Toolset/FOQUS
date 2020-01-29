@@ -37,7 +37,7 @@ def _set_working_dir(wdir):
             raise
     os.chdir(wdir)
     FoqusSettings().applyLogSettings()
-    
+
     _log = logging.getLogger('foqus.foqus_lib.service.flowsheet')
     _log.setLevel(logging.DEBUG)
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
@@ -716,8 +716,11 @@ class FlowsheetControl:
             self.close()
             raise RuntimeError('setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes')
         if count_turb_apps:
-            _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
-
+            try:
+                _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+            except AssertionError as ex:
+                db.job_change_status(job_desc, "error",
+                    message="Error in job setup: %s" %ex)
         return dat
 
     def run_foqus(self, db, job_desc):

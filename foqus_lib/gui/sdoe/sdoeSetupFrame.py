@@ -129,6 +129,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
+        self.analyzeNUSFButton.setEnabled(False)
 
         ##### Set up UQ toolbox
         self.dataTabs.setEnabled(False)
@@ -157,7 +158,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
         self.analyzeButton.clicked.connect(self.launchSdoe)
+        self.analyzeNUSFButton.clicked.connect(self.launchNUSFSdoe)
         self.analyzeButton.setEnabled(True)
+        self.analyzeNUSFButton.setEnabled(True)
         self.filesTable.setEnabled(False)
         self.addSimulationButton.setEnabled(False)
         self.loadFileButton.setEnabled(False)
@@ -221,6 +224,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
+        self.analyzeNUSFButton.setEnabled(False)
         self.filesTable.setEnabled(True)
         self.addSimulationButton.setEnabled(True)
         self.loadFileButton.setEnabled(True)
@@ -400,7 +404,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         previewData = self.dat.sdoeSimList[row]
         hname = None
-        dialog = sdoePreview(previewData, hname, self.dname, self)
+        nusf = None
+        scatterLabel = 'Candidates'
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
         dialog.show()
 
     def editAgg(self):
@@ -413,7 +419,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             hname = os.path.join(self.dname, historyData.getModelName())
         else:
             hname = None
-        dialog = sdoePreview(previewData, hname, self.dname, self)
+        nusf = None
+        scatterLabel = 'Candidates'
+        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
         dialog.show()
 
     def hasCandidates(self):
@@ -478,7 +486,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
 
         # Resize table
-        #print 'resize'
         self.resizeColumns()
         minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
                    self.filesTable.columnWidth(2) + self.filesTable.columnWidth(3)
@@ -525,7 +532,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
 
         # Resize table
-        #print 'resize'
         self.resizeColumns()
         minWidth = 2 + self.aggFilesTable.columnWidth(0) + self.aggFilesTable.columnWidth(1) + \
                    self.aggFilesTable.columnWidth(2)
@@ -536,8 +542,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
+        type = 'USF'
+        analysis = None
 
-        dialog = sdoeAnalysisDialog(candidateData, dname, historyData, self)
+        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
+        dialog.exec_()
+
+    def launchNUSFSdoe(self):
+        candidateData, historyData = self.createAggData()
+        dname = self.dname
+        type = 'NUSF'
+        analysis = None
+
+        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
 
     def initUQToolBox(self):

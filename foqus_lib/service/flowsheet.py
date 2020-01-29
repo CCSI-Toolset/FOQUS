@@ -719,6 +719,7 @@ class FlowsheetControl:
             try:
                 _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
             except AssertionError as ex:
+                _log.error("Job Setup Failure: %s", str(ex))
                 db.job_change_status(job_desc, "error",
                     message="Error in job setup: %s" %ex)
         return dat

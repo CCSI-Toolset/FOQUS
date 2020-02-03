@@ -64,15 +64,15 @@ located in: **examples/tutorial_files/SimSinter/Tutorial_3**
    notice that the Excel setting variable **macro** is already included
    in the **Selected Input Variables.** If the Excel spreadsheet has a
    macro that should be run after SimSinter sets the inputs, but before
-   SimSinter gets the outputs, enter the macros name in the **Name**
-   text box. If the default is left blank, no macro is run (unless a
+   SimSinter gets the outputs, enter the macros name in the **Default**
+   text box. If the Default box is left blank, no macro is run (unless a
    name is supplied in the input variables when running the simulation).
    If the user needs to run multiple macros (e.g., Macro1 and Macro2),
    we recommend that the user create a "Master" macro in the Excel file
    that automatically runs Macro1 and Macro2 using the Call statement.
    Let's suppose that the "Master" macro is named MasterMacro.
    Then, in SimSinter, the user will need to type in MasterMacro in
-   the **Name** text box under the Excel setting variable **macro**.
+   the **Default** text box under the Excel setting variable **macro**.
 
    .. figure:: ../figs/Excel/06_VariablesEmpty.png
       :alt: SinterConfigGUI Variable Configuration Page before Input

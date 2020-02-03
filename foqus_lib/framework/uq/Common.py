@@ -336,9 +336,8 @@ class Common(obj):
         useNodeNames = False
         if labelsLine: # labels line found. Check them
             exec(labelsLine)
-            print("labels", labels)
             newName = outName.replace('.','_') # Input name that includes node name in the variable name
-            if newName in labels:
+            if newName in labelsLine:
                 useNodeNames = True
                 outName = newName
         if not useNodeNames and data.getNamesIncludeNodes():

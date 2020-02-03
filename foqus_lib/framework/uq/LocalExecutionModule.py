@@ -844,7 +844,7 @@ class LocalExecutionModule(object):
         LocalExecutionModule.runStarted = False
         LocalExecutionModule.numSamples = data.getNumSamples()
 
-        #Remove old files
+#        Remove old files
         psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
         if os.path.exists(psuadeDataFile):
             os.remove(psuadeDataFile)

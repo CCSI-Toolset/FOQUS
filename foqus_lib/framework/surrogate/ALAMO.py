@@ -1112,10 +1112,8 @@ class surrogateMethod(surrogate):
             
             f.write(" # Enter the solver, and appropriate options below\n")
                     
-            f.write("opt = SolverFactory('gams')\n")
-            f.write("io_options = dict()\n")
-            f.write("io_options['solver'] = 'ipopt'\n")
-            f.write("io_options['mtype'] = 'nlp'\n")
-            f.write("opt.solve(m,io_options=io_options)\n")
+            f.write("opt = SolverFactory('ipopt')\n")
+
+            f.write("opt.solve(m,tee=True)\n")
 
         self.dat.reloadPlugins()

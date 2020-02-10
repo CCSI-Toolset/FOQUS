@@ -465,68 +465,84 @@ class opt(optimization):
             initvals = []
             objvals = []
             decvars = [getattr(self.m,v) for v in dvar_names]
-            simoutvarlist = [str(v) for v in self.surrout_names_pyomo + self.nonsurrout_names_pyomo]
-            simoutvars = [getattr(self.m,v) for v in simoutvarlist]
+            surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
+            surroutvars = [getattr(self.m,v) for v in surroutvarlist]
             #Obtain the combination of all initialization points
             for var in decvars:
-                initvals.append([var.lb,(var.lb + var.ub)/2,var.ub])
+                initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
             initvals_prod = list(product(*initvals))
-            model_clones = []
-            decvar_clones = []
-            simoutvars_clones = []
-            for c in range(len(initvals_prod)):
-                model_clones.append(self.m.clone())
-            for c in range(len(initvals_prod)):
-                decvar_clones.append([getattr(model_clones[c],v) for v in dvar_names])
-            for c in range(len(initvals_prod)):
-                simoutvars_clones.append([getattr(model_clones[c],v) for v in simoutvarlist])
+            
+            # model_clones = []
+            # decvar_clones = []
+            # simoutvars_clones = []
+            # constr_clones = []
+            
+            # for c in range(len(initvals_prod)):
+            #     model_clones.append(self.m.clone())
+            # for c in range(len(initvals_prod)):
+            #     decvar_clones.append([getattr(model_clones[c],v) for v in dvar_names])
+            # for c in range(len(initvals_prod)):
+            #     simoutvars_clones.append([getattr(model_clones[c],v) for v in simoutvarlist])
                 
              # Solve the optimization model for all initialization points
-            for i1,initvallist in enumerate(initvals_prod):
-                for i,initv in enumerate(initvallist):
-                    decvar_clones[i1][i].value = initv
-                dvarclonescaled = []
-                for i,val in enumerate(decvar_clones[i1]):                    
-                    dvar_min_bound = simin.get(self.prob.v[i]).min
-                    dvar_max_bound = simin.get(self.prob.v[i]).max
-                    dvarclonescaled.append(10*(val.value - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
-                xf1 = np.array(dvarclonescaled)
-                instance1,cv1,pv1=self.f(xf1)
-    #           Obtaining and assigning the output values corresponding to the each initialization point
-                for nodeName in [k for k in simout.keys() if k != 'graph']:
-                    for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
-                        simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
-                        nodevar = str(nodeName) + '_' + str(outVarName)
-                        indx = simoutvarlist.index(nodevar)
-                        simoutvars_clones[i1][indx].value = simout_value
-                r=optimizer.solve(model_clones[i1],**kwds)
-                objvals.append(model_clones[i1].obj())
+            # for i1,initvallist in enumerate(initvals_prod):
+            #     for i,initv in enumerate(initvallist):
+            #         decvar_clones[i1][i].value = initv
+            #     for i,vr in enumerate(simoutvars_clones[i1]):
+            #         vr.value = -value(m.c[i+1].body - vr)
+    #             dvarclonescaled = []
+    #             for i,val in enumerate(decvar_clones[i1]):                    
+    #                 dvar_min_bound = simin.get(self.prob.v[i]).min
+    #                 dvar_max_bound = simin.get(self.prob.v[i]).max
+    #                 dvarclonescaled.append(10*(val.value - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
+    #             xf1 = np.array(dvarclonescaled)
+    #             instance1,cv1,pv1=self.f(xf1)
+    # #           Obtaining and assigning the output values corresponding to the each initialization point
+    #             for nodeName in [k for k in simout.keys() if k != 'graph']:
+    #                 for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
+    #                     simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
+    #                     nodevar = str(nodeName) + '_' + str(outVarName)
+    #                     indx = simoutvarlist.index(nodevar)
+    #                     simoutvars_clones[i1][indx].value = simout_value
             
+            # Solve the optimization model for all initialization points
+            for i1,initvallist in enumerate(initvals_prod):
+                    for i,initv in enumerate(initvallist): 
+                        decvars[i].value = initv
+                    for i,initout in enumerate(surroutvars):
+                        initout.value = -value(self.m.c[i+1].body - initout)
+                    r=optimizer.solve(self.m,**kwds)
+                    if str(r.solver.termination_condition) == 'optimal':
+                        objvals.append(self.m.obj())
+            print(objvals)
             # Assign the best initialization value
             minobjval_idx = objvals.index(min(objvals))
-            dvar_init = []
+            # dvar_init = []
             for i,var in enumerate(decvars):
                 var.value = initvals_prod[minobjval_idx][i]
-                dvar_init.append(var.value)
-                print(var.value)
+                # dvar_init.append(var.value)
+                # print(var.value)
                 
-            #*** Running Simulation for the best initialization point
-            #simoutput_init=[None]*len(self.sim_output_vars_pyomo)
-            dvarscaled = []
-            for i,val in enumerate(dvar_init):                    
-                dvar_min_bound = simin.get(self.prob.v[i]).min
-                dvar_max_bound = simin.get(self.prob.v[i]).max
-                dvarscaled.append(10*(val - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
-            xf1 = np.array(dvarscaled)
-            instance1,cv1,pv1=self.f(xf1)
+            for i,initout in enumerate(surroutvars):
+                initout.value = -value(self.m.c[i+1].body - initout)
                 
-#           Obtaining and assigning the output values corresponding to the best initialization point
-            for nodeName in [k for k in simout.keys() if k != 'graph']:
-                for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
-                    simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
-                    nodevar = str(nodeName) + '_' + str(outVarName)
-                    indx = simoutvarlist.index(nodevar)
-                    simoutvars[indx].value = simout_value                 
+#             #*** Running Simulation for the best initialization point
+#             #simoutput_init=[None]*len(self.sim_output_vars_pyomo)
+#             dvarscaled = []
+#             for i,val in enumerate(dvar_init):                    
+#                 dvar_min_bound = simin.get(self.prob.v[i]).min
+#                 dvar_max_bound = simin.get(self.prob.v[i]).max
+#                 dvarscaled.append(10*(val - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
+#             xf1 = np.array(dvarscaled)
+#             instance1,cv1,pv1=self.f(xf1)
+                
+# #           Obtaining and assigning the output values corresponding to the best initialization point
+#             for nodeName in [k for k in simout.keys() if k != 'graph']:
+#                 for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
+#                     simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
+#                     nodevar = str(nodeName) + '_' + str(outVarName)
+#                     indx = simoutvarlist.index(nodevar)
+#                     simoutvars[indx].value = simout_value                 
             #**************************        
             self.msgQueue.put("****ITERATION 1****\n")
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
@@ -541,9 +557,9 @@ class opt(optimization):
             rf=optimizer.solve(self.m,**kwds) 
                 
         self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
-        self.msgQueue.put("Solver Status: {0}".format(str(r.solver.status)))
-        self.msgQueue.put("Solver Termination Condition: {0}".format(str(r.solver.termination_condition)))
-        self.msgQueue.put("Solver Solution Time: {0} s".format(str(r.solver.time)))
+        self.msgQueue.put("Solver Status: {0}".format(str(rf.solver.status)))
+        self.msgQueue.put("Solver Termination Condition: {0}".format(str(rf.solver.termination_condition)))
+        self.msgQueue.put("Solver Solution Time: {0} s".format(str(rf.solver.time)))
         self.msgQueue.put("The optimum variable values are:")
         self.msgQueue.put("-----------------------------------------")
         for var in self.m.component_data_objects(Var):
@@ -1064,7 +1080,7 @@ class opt(optimization):
             f.write("fig.suptitle('Algorithm Convergence')\n")
             f.write("plt.xticks(iterations)\n")
             f.write("plt.xlabel('Iterations')\n")
-            f.write("ax4.set_ylim(0,0.5)")
+            f.write("ax4.set_ylim(0,0.5)\n")
             f.write("ax1.plot(iterations,obj_func_vals,'--bo',label='Objective Value Improvement with algorithm')\n")
             f.write("ax2.plot(iterations,obj_fracdif_vals,'--go',label='Fractional difference in objective values wrt rigorous model:abs((f*-f)/f*)')\n")
             f.write("ax3.plot(iterations,y_fracdif_vals,'--ro',label='Mean value of fractional difference in surrogate output variable values wrt rigorous model:abs((y* - y) /y*)')\n")

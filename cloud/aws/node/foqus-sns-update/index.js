@@ -84,8 +84,12 @@ var process_job_event_output = function(ts, user_name, message, callback) {
     const consumer = message['consumer'];
     const session = message['sessionid']
     const error_message = message['message'];
-    var output = message['value'];
+    const output_obj = message['value'];
     assert.strictEqual(e, "output");
+    // NOTE: ValidationException occurring if leave stringify operation
+    // to AWS lib json layer.
+    const output = JSON.stringify(output_obj);
+    log(output);
     var params = {
         TableName:tablename,
         Key:{
@@ -103,60 +107,12 @@ var process_job_event_output = function(ts, user_name, message, callback) {
         },
         ReturnValues:"UPDATED_NEW"
     };
-    log(JSON.stringify(params));
     publish_to_log_topic(e);
-    function getDynamoJob() {
-        // Job is success, put in S3
-        log("Output: Get Job Description from dynamodb");
-        //const milliseconds = (new Date).getTime();
-        var request = dynamodb.get({ TableName: tablename,
-              Key: {"Id": job, "Type": "Job" }
-              //KeyConditionExpression: '#T = :job',
-              //ExpressionAttributeNames: {"#T":"Type", "#I":"Id"},
-              //ExpressionAttributeValues: { ":job":"Job", ":Id":job}
-          });
-        return request.promise().then(putS3);
-    };
-    function putS3(response) {
-        // Job is success, put in S3
-        const milliseconds = (new Date).getTime();
-        var promise = new Promise(function(resolve, reject){
-            if (status == 'success' || status == 'error') {
-              response.Item.Output = response.Item.output;
-              response.Item.Session = response.Item.SessionId;
-              delete response.Item.output;
-              delete response.Item.SessionId;
-              response.Item.State = status;
-              if (status == 'error') {
-                log("error: " + error_message);
-                response.Item.Message = error_message;
-              }
-              var content = JSON.stringify(response.Item)
-              log("put3s: " + content);
-              if(content == undefined) {
-                  throw new Error("s3 object is undefined")
-              }
-              if(content.length == undefined) {
-                  throw new Error("s3 object is empty")
-              }
-              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
-              var params = {
-                Bucket: s3_bucket_name,
-                Key: key,
-                Body: content
-              };
-              log(`putS3(${params.Bucket}):  ${params.Key}`);
-              var request = s3.putObject(params);
-              resolve(request.promise());
-            } else {
-              log(`putS3 ignore`);
-              resolve();
-            }
-        });
-        return promise;
-    };
     function handleError(error) {
       log(`handleError ${error.name}`);
+      if ( error instanceof Error ) {
+        callback(new Error(`"${typeof(error)}"`), "ValidationException")
+      }
       callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
@@ -216,6 +172,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 log("Reject Invocation and Retry via HTTP 500: Missing Output");
                 throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
               }
+
+              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
+              if (status=='submit' || status=='setup' || status=='running') {
+                key = `${user_name}/session/${session}/job/${job}/${status}.json`;
+              } else if (response.Item.Output != undefined && typeof response.Item.Output == 'string'){
+                /* NOTE: DynamoDB's JSON parser can't handle small floats so
+                 * decided to store Output column as String in DynamoDB and
+                 * parse it to JSON before Stringify and store in S3.
+                 */
+                response.Item.Output = JSON.parse(response.Item.Output);
+              }
+
               var content = JSON.stringify(response.Item)
               log("put3s: " + content);
               if(content == undefined) {
@@ -224,10 +192,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
               if(content.length == undefined) {
                 throw new Error("s3 object is empty")
               }
-              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
-              if (status=='submit' || status=='setup' || status=='running') {
-                key = `${user_name}/session/${session}/job/${job}/${status}.json`;
-              }
+
               var params = {
                 Bucket: s3_bucket_name,
                 Key: key,
@@ -420,14 +385,14 @@ exports.handler = function(event, context, callback) {
       var message = JSON.parse(event.Records[j].Sns.Message);
       var attrs = event.Records[j].Sns.MessageAttributes;
       var ts = event.Records[j].Sns.Timestamp;
-      log('Received event:', event.Records[j].Sns.Message);
+      //log('Received event:', event.Records[j].Sns.Message);
 
       if (util.isArray(message) == false) {
           message = [message];
       }
 
       for (var i = 0; i < message.length; i++) {
-          log(`MESSAGE ${j}.${i}: ${JSON.stringify(message[i])}`);
+          log(`Received event: ${j}.${i}: ${JSON.stringify(message[i])}`);
           //await sleep(2000);
           var resource = message[i]['resource'];
           var e = message[i]['event'];

@@ -208,11 +208,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         });
         return promise;
     };
-    function handleError(error) {
-      log(`handleError  ${error.name}:  Trigger retry`);
-      //callback(new Error(`"${error.stack}"`), "Error")
-      callback(null, {statusCode:'500', body: `{"Message":"${error.message}"}`,
-            headers: {'Content-Type': 'application/json',}});
+    // function handleError(error) {
+    //   log(`handleError  ${error.name}:  Trigger retry`);
+    //   //callback(new Error(`"${error.stack}"`), "Error")
+    //   callback(null, {statusCode:'500', body: `{"Message":"${error.message}"}`,
+    //         headers: {'Content-Type': 'application/json',}});
+    // };
+    function handleStatusError(error) {
+      log(`handleStatusError ${error.name} ${error.stack}`);
+      if ( error instanceof Error ) {
+        callback(new Error(`"${typeof(error)}"`), "ValidationException")
+      }
+      callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
       log("handleDone");
@@ -248,7 +255,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         response.promise()
           .then(getDynamoJob)
           .then(handleDone)
-          .catch(handleError);
+          .catch(handleStatusError);
         return;
     }
     if (status == 'expired') {
@@ -272,7 +279,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         response.promise()
           .then(putS3)
           .then(handleDone)
-          .catch(handleError);
+          .catch(handleStatusError);
         return;
     }
     if (status == 'submit' | status == 'setup' | status == 'running') {
@@ -285,22 +292,29 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           UpdateExpression: "set #w=:s, #t=:t",
           ExpressionAttributeValues:{
               ":s":ts,
-              ":t":Math.floor(Date.now()/1000 + 60*60*1),
-              ":c":consumer
+              ":t":Math.floor(Date.now()/1000 + 60*60*1)
           },
           ExpressionAttributeNames:{
               "#w":status,
-              "#t":'TTL',
-              "#c":"ConsumerId"
+              "#t":'TTL'
           },
           ReturnValues:"UPDATED_NEW"
       };
+      if (consumer != undefined ) {
+          params.ExpressionAttributeValues[":c"] = consumer;
+          params.ExpressionAttributeNames["#c"] = "ConsumerId";
+          params.UpdateExpression = "set #w=:s, #t=:t, #c=:c";
+      } else {
+          log(`status: ${status} consumer: ${consumer}`)
+          assert.strictEqual(status, "submit");
+      }
+
       log(`active job: job=${job}, status=${status}`);
       var response = dynamodb.update(params);
       response.promise()
         .then(getDynamoJob)
         .then(handleDone)
-        .catch(handleError);
+        .catch(handleStatusError);
       return;
     }
     assert.fail(`"process_job_event_status, unexpected status ${status}"`);

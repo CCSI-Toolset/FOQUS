@@ -167,10 +167,15 @@ var process_job_event_status = function(ts, user_name, message, callback) {
             ExpressionAttributeNames:{
                 "#u":"User",
                 "#s":"State",
-                "#j":"Job"
+                "#j":"Job",
             },
             ReturnValues:"UPDATED_NEW"
         };
+        if (session != undefined) {
+            params.ExpressionAttributeValues[":n"] = session;
+            params.ExpressionAttributeNames["#n"] = "Session";
+            params.UpdateExpression = "set #s=:s, #u=:u, #j=:j, #n=:n";
+        }
         log(JSON.stringify(params));
         return dynamodb.update(params).promise();
     }

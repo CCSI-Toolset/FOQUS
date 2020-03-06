@@ -150,6 +150,30 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           });
         return request.promise().then(putS3);
     };
+    function updateDynamoConsumer() {
+        log(`updateDynamoConsumer: Update DynamoDB Consumer=${consumer} with Job=${job}.${status}`);
+        var params = {
+            TableName:tablename,
+            Key:{
+                "Id": consumer,
+                "Type":"Consumer"
+            },
+            UpdateExpression: "set #s=:s, #u=:u, #j=:j",
+            ExpressionAttributeValues:{
+                ":u":user_name,
+                ":s":status,
+                ":j":job
+            },
+            ExpressionAttributeNames:{
+                "#u":"User",
+                "#s":"State",
+                "#j":"Job"
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        log(JSON.stringify(params));
+        return dynamodb.update(params).promise();
+    }
     function putS3(response) {
         // Job is success, put in S3
         log("putS3: Put Job Description");
@@ -254,6 +278,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         var response = dynamodb.update(params);
         response.promise()
           .then(getDynamoJob)
+          .then(updateDynamoConsumer)
           .then(handleDone)
           .catch(handleStatusError);
         return;
@@ -308,11 +333,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           log(`status: ${status} consumer: ${consumer}`)
           assert.strictEqual(status, "submit");
       }
-
       log(`active job: job=${job}, status=${status}`);
       var response = dynamodb.update(params);
+      if (status == 'submit') {
+          response.promise()
+            .then(getDynamoJob)
+            .then(handleDone)
+            .catch(handleStatusError);
+          return;
+      }
       response.promise()
         .then(getDynamoJob)
+        .then(updateDynamoConsumer)
         .then(handleDone)
         .catch(handleStatusError);
       return;

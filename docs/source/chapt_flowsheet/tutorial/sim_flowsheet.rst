@@ -17,7 +17,9 @@ Before starting the tutorial, see Section
 :ref:`tutorial.example.files` to locate and
 copy the example files to a convenient location.
 
-The files for this tutorial is located in: **examples/tutorial_files/Flowsheets/Tutorial_2**
+The files for this tutorial is located in:
+**examples/tutorial_files/Flowsheets/Tutorial_2/** and
+**examples/test_files/Optimization/Model_Files/**
 
 #. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 
@@ -53,13 +55,13 @@ The files for this tutorial is located in: **examples/tutorial_files/Flowsheets/
 
 There are two models needed for this optimization problem: (1) the ACM model for
 the BFB capture system and (2) the Excel cost estimating spreadsheet. These
-models are provided in the example files directory, under optimization/models
-(see Section :ref:`tutorial.example.files`). There are two SimSinter
-configuration files: (1) BFB_sinter_config_v6.2.json for the process model
-and (2) BFB_cost_v6.2.3.json for the cost model. The next step is to upload the
-models to Turbine.
+models are provided in the ``example/Optimization/Model_Files/`` directory (see
+Section :ref:`tutorial.example.files`).  There are two SimSinter configuration
+files: (1) ``BFB_sinter_config_v6.2.json`` for the process model and (2)
+``BFB_cost_v6.2.3.json`` for the cost model. The next step is to upload the models
+to Turbine.
 
-6.  Open the **Add\Update Model to Turbine** dialog box (Figure
+6.  Open the **Add/Update Model to Turbine** dialog box (Figure
     :ref:`fig.tut.opt.menu.upload`).
 
 7.  In this case, the SimSinter configuration files have already been

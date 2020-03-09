@@ -263,6 +263,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 "Type":"Job"
             },
             UpdateExpression: "set #w=:w, #s=:s, ConsumerId=:c, #u=:u, #t=:t",
+            ConditionExpressions: 'State NOT IN ("success", "error", "terminate")',
             ExpressionAttributeValues:{
                 ":w":ts,
                 ":c":consumer,

@@ -21,7 +21,6 @@ import logging.config
 import botocore.exceptions
 
 _instanceid = None
-#WORKING_DIRECTORY = os.path.join("\\ProgramData\\foqus_service")
 WORKING_DIRECTORY = os.path.abspath(os.environ.get('FOQUS_SERVICE_WORKING_DIR', "\\ProgramData\\foqus_service"))
 AWS_REGION = 'us-east-1'
 DEBUG = False
@@ -37,14 +36,10 @@ def _set_working_dir(wdir):
         if e.errno != errno.EEXIST:
             raise
     os.chdir(wdir)
-    try:
-        logging.config.fileConfig('logging.conf')
-    except Exception as ex:
-        logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-                            filename=os.path.join(log_dir, 'FOQUS-Cloud-Service.log'),
-                            level=logging.DEBUG)
+    FoqusSettings().applyLogSettings()
 
-    _log = logging.getLogger('foqus_service')
+    _log = logging.getLogger('foqus.foqus_lib.service.flowsheet')
+    _log.setLevel(logging.DEBUG)
     _log.info('Working Directory: %s', WORKING_DIRECTORY)
     logging.getLogger('boto3').setLevel(logging.ERROR)
     logging.getLogger('botocore').setLevel(logging.ERROR)
@@ -316,56 +311,56 @@ class TurbineLiteDB:
                           TopicArn=self._topic_arn)
 
     def __del__(self):
-        _log.info("%s.delete", self.__class__)
+        _log.info("%s.delete", self.__class__.__name__)
     def set_user_name(self, name):
         self._user_name = name
     def connectionString(self):
-        _log.info("%s.connectionString", self.__class__)
+        _log.info("%s.connectionString", self.__class__.__name__)
     def getConnection(self, rc=0):
-        _log.info("%s.getConnection", self.__class__)
+        _log.info("%s.getConnection", self.__class__.__name__)
     def closeConnection(self):
-        _log.info("%s.closeConnection", self.__class__)
+        _log.info("%s.closeConnection", self.__class__.__name__)
     def add_new_application(self, applicationName, rc=0):
-        _log.info("%s.add_new_application", self.__class__)
+        _log.info("%s.add_new_application", self.__class__.__name__)
     def add_message(self, msg, jobid="", **kw):
         d = dict(job=jobid, message=msg, consumer=self.consumer_id, instanceid=_instanceid, resource="job")
         d.update(kw)
         obj = json.dumps(d)
-        _log.debug("%s.add_message: %s", self.__class__, obj)
+        _log.debug("%s.add_message: %s", self.__class__.__name__, obj)
         self._sns.publish(Message=obj, TopicArn=self._topic_msg_arn)
 
     def consumer_keepalive(self, rc=0):
-        _log.info("%s.consumer_keepalive", self.__class__)
+        _log.info("%s.consumer_keepalive", self.__class__.__name__)
         self._sns_notification(dict(resource='consumer', event='running', rc=rc,
             consumer=self.consumer_id, instanceid=_instanceid))
 
     def consumer_status(self):
-        _log.info("%s.consumer_status", self.__class__)
+        _log.info("%s.consumer_status", self.__class__.__name__)
         #assert status in ['up','down','terminate'], ''
         #self._sns_notification(dict(resource='consumer', event=status, rc=rc, consumer=self.consumer_id))
         return 'up'
     def consumer_id(self, pid, rc=0):
-        _log.info("%s.consumer_id", self.__class__)
+        _log.info("%s.consumer_id", self.__class__.__name__)
     def consumer_register(self, rc=0):
-        _log.info("%s.consumer_register", self.__class__)
+        _log.info("%s.consumer_register", self.__class__.__name__)
         d = dict(resource='consumer', instanceid=_instanceid, event='running', rc=rc, consumer=self.consumer_id)
         self._sns_notification(d)
-        _log.info("%s.consumer_register: %s", self.__class__, str(d))
+        _log.info("%s.consumer_register: %s", self.__class__.__name__, str(d))
     #def get_job_id(self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0):
     #    _log.info("%s.get_job_id", self.__class__)
     #    return guid, jid, simId, reset
 
     def jobConsumerID(self, jid, cid=None, rc=0):
-        _log.info("%s.jobConsumerID", self.__class__)
+        _log.info("%s.jobConsumerID", self.__class__.__name__)
     def get_configuration_file(self, simulationId, rc=0):
-        _log.info("%s.get_configuration_file", self.__class__)
+        _log.info("%s.get_configuration_file", self.__class__.__name__)
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
-        _log.info("%s.job_prepare", self.__class__)
+        _log.info("%s.job_prepare", self.__class__.__name__)
     def job_change_status(self, job_d, status, rc=0, message=None):
         assert type(job_d) is dict
         assert status in ['success', 'setup', 'running', 'error', 'terminate', 'expired'], \
             "Incorrect Job Status %s" %status
-        _log.info("%s.job_change_status %s", self.__class__, job_d)
+        _log.info("%s.job_change_status %s", self.__class__.__name__, job_d)
         d = dict(resource='job', event='status',
             rc=rc, status=status, jobid=job_d['Id'], instanceid=_instanceid,
             consumer=self.consumer_id,
@@ -379,11 +374,11 @@ class TurbineLiteDB:
         otherwise "output" is occasionally not available yet.
         """
         assert type(job_d) is dict
-        _log.info("%s.job_save_output", self.__class__)
+        _log.info("%s.job_save_output", self.__class__.__name__)
         with open(os.path.join(workingDir, "output.json")) as outfile:
             output = json.load(outfile)
         scrub_empty_string_values_for_dynamo(output)
-        _log.debug("%s.job_save_output:  %s", self.__class__, json.dumps(output))
+        _log.debug("%s.job_save_output:  %s", self.__class__.__name__, json.dumps(output))
         self._sns_notification(dict(resource='job',
             event='output', jobid=job_d['Id'], username=self._user_name, value=output, rc=rc,
             sessionid=job_d.get('sessionid','unknown')))
@@ -429,7 +424,7 @@ class FlowsheetControl:
         Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
         global _instanceid
-        _log.debug("run")
+        _log.debug("main loop flowsheet service")
         self._receipt_handle= None
         VisibilityTimeout = 60*10
         try:
@@ -721,8 +716,12 @@ class FlowsheetControl:
             self.close()
             raise RuntimeError('setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes')
         if count_turb_apps:
-            _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
-
+            try:
+                _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+            except AssertionError as ex:
+                _log.error("Job Setup Failure: %s", str(ex))
+                db.job_change_status(job_desc, "error",
+                    message="Error in job setup: %s" %ex)
         return dat
 
     def run_foqus(self, db, job_desc):

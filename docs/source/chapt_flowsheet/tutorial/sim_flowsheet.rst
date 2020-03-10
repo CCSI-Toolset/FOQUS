@@ -18,8 +18,7 @@ Before starting the tutorial, see Section
 copy the example files to a convenient location.
 
 The files for this tutorial is located in:
-**examples/tutorial_files/Flowsheets/Tutorial_2/** and
-**examples/test_files/Optimization/Model_Files/**
+**examples/test_files/Optimization/Model_Files/**.
 
 #. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 

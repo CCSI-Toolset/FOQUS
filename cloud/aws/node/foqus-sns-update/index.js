@@ -84,8 +84,12 @@ var process_job_event_output = function(ts, user_name, message, callback) {
     const consumer = message['consumer'];
     const session = message['sessionid']
     const error_message = message['message'];
-    var output = message['value'];
+    const output_obj = message['value'];
     assert.strictEqual(e, "output");
+    // NOTE: ValidationException occurring if leave stringify operation
+    // to AWS lib json layer.
+    const output = JSON.stringify(output_obj);
+    log(output);
     var params = {
         TableName:tablename,
         Key:{
@@ -103,60 +107,12 @@ var process_job_event_output = function(ts, user_name, message, callback) {
         },
         ReturnValues:"UPDATED_NEW"
     };
-    log(JSON.stringify(params));
     publish_to_log_topic(e);
-    function getDynamoJob() {
-        // Job is success, put in S3
-        log("Output: Get Job Description from dynamodb");
-        //const milliseconds = (new Date).getTime();
-        var request = dynamodb.get({ TableName: tablename,
-              Key: {"Id": job, "Type": "Job" }
-              //KeyConditionExpression: '#T = :job',
-              //ExpressionAttributeNames: {"#T":"Type", "#I":"Id"},
-              //ExpressionAttributeValues: { ":job":"Job", ":Id":job}
-          });
-        return request.promise().then(putS3);
-    };
-    function putS3(response) {
-        // Job is success, put in S3
-        const milliseconds = (new Date).getTime();
-        var promise = new Promise(function(resolve, reject){
-            if (status == 'success' || status == 'error') {
-              response.Item.Output = response.Item.output;
-              response.Item.Session = response.Item.SessionId;
-              delete response.Item.output;
-              delete response.Item.SessionId;
-              response.Item.State = status;
-              if (status == 'error') {
-                log("error: " + error_message);
-                response.Item.Message = error_message;
-              }
-              var content = JSON.stringify(response.Item)
-              log("put3s: " + content);
-              if(content == undefined) {
-                  throw new Error("s3 object is undefined")
-              }
-              if(content.length == undefined) {
-                  throw new Error("s3 object is empty")
-              }
-              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
-              var params = {
-                Bucket: s3_bucket_name,
-                Key: key,
-                Body: content
-              };
-              log(`putS3(${params.Bucket}):  ${params.Key}`);
-              var request = s3.putObject(params);
-              resolve(request.promise());
-            } else {
-              log(`putS3 ignore`);
-              resolve();
-            }
-        });
-        return promise;
-    };
     function handleError(error) {
       log(`handleError ${error.name}`);
+      if ( error instanceof Error ) {
+        callback(new Error(`"${typeof(error)}"`), "ValidationException")
+      }
       callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
@@ -180,6 +136,8 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     const consumer = message['consumer'];
     const session = message['sessionid']
     const error_message = message['message'];
+    const milliseconds = (new Date).getTime();
+
     assert.strictEqual(e, "status");
 
     log(`status=${status} username=${user_name},  job=${job}, session=${session}`);
@@ -192,10 +150,38 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           });
         return request.promise().then(putS3);
     };
+    function updateDynamoConsumer() {
+        log(`updateDynamoConsumer: Update DynamoDB Consumer=${consumer} with Job=${job}.${status}`);
+        var params = {
+            TableName:tablename,
+            Key:{
+                "Id": consumer,
+                "Type":"Consumer"
+            },
+            UpdateExpression: "set #s=:s, #u=:u, #j=:j",
+            ExpressionAttributeValues:{
+                ":u":user_name,
+                ":s":status,
+                ":j":job
+            },
+            ExpressionAttributeNames:{
+                "#u":"User",
+                "#s":"State",
+                "#j":"Job",
+            },
+            ReturnValues:"UPDATED_NEW"
+        };
+        if (session != undefined) {
+            params.ExpressionAttributeValues[":n"] = session;
+            params.ExpressionAttributeNames["#n"] = "Session";
+            params.UpdateExpression = "set #s=:s, #u=:u, #j=:j, #n=:n";
+        }
+        log(JSON.stringify(params));
+        return dynamodb.update(params).promise();
+    }
     function putS3(response) {
         // Job is success, put in S3
         log("putS3: Put Job Description");
-        const milliseconds = (new Date).getTime();
         var promise = new Promise(function(resolve, reject){
             if (status=='success' || status=='error' || status=='submit' || status=='setup' || status=='running') {
               response.Item.Output = response.Item.output;
@@ -215,6 +201,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 log("Reject Invocation and Retry via HTTP 500: Missing Output");
                 throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
               }
+
+              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
+              if (status=='submit' || status=='setup' || status=='running') {
+                key = `${user_name}/session/${session}/job/${job}/${status}.json`;
+              } else if (response.Item.Output != undefined && typeof response.Item.Output == 'string'){
+                /* NOTE: DynamoDB's JSON parser can't handle small floats so
+                 * decided to store Output column as String in DynamoDB and
+                 * parse it to JSON before Stringify and store in S3.
+                 */
+                response.Item.Output = JSON.parse(response.Item.Output);
+              }
+
               var content = JSON.stringify(response.Item)
               log("put3s: " + content);
               if(content == undefined) {
@@ -223,10 +221,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
               if(content.length == undefined) {
                 throw new Error("s3 object is empty")
               }
-              var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
-              if (status=='submit' || status=='setup' || status=='running') {
-                key = `${user_name}/session/${session}/job/${job}/${status}.json`;
-              }
+
               var params = {
                 Bucket: s3_bucket_name,
                 Key: key,
@@ -242,11 +237,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         });
         return promise;
     };
-    function handleError(error) {
-      log(`handleError  ${error.name}:  Trigger retry`);
-      //callback(new Error(`"${error.stack}"`), "Error")
-      callback(null, {statusCode:'500', body: `{"Message":"${error.message}"}`,
-            headers: {'Content-Type': 'application/json',}});
+    // function handleError(error) {
+    //   log(`handleError  ${error.name}:  Trigger retry`);
+    //   //callback(new Error(`"${error.stack}"`), "Error")
+    //   callback(null, {statusCode:'500', body: `{"Message":"${error.message}"}`,
+    //         headers: {'Content-Type': 'application/json',}});
+    // };
+    function handleStatusError(error) {
+      log(`handleStatusError ${error.name} ${error.stack}`);
+      if ( error instanceof Error ) {
+        callback(new Error(`"${typeof(error)}"`), "ValidationException")
+      }
+      callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
       log("handleDone");
@@ -261,6 +263,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 "Type":"Job"
             },
             UpdateExpression: "set #w=:w, #s=:s, ConsumerId=:c, #u=:u, #t=:t",
+            ConditionExpressions: 'State NOT IN ("success", "error", "terminate")',
             ExpressionAttributeValues:{
                 ":w":ts,
                 ":c":consumer,
@@ -281,8 +284,9 @@ var process_job_event_status = function(ts, user_name, message, callback) {
         var response = dynamodb.update(params);
         response.promise()
           .then(getDynamoJob)
+          .then(updateDynamoConsumer)
           .then(handleDone)
-          .catch(handleError);
+          .catch(handleStatusError);
         return;
     }
     if (status == 'expired') {
@@ -302,11 +306,11 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           Body: content
         };
         log(`expired job: job=${job}, status=${status}`);
-        var request = s3.putObject(params);
+        var response = s3.putObject(params);
         response.promise()
           .then(putS3)
           .then(handleDone)
-          .catch(handleError);
+          .catch(handleStatusError);
         return;
     }
     if (status == 'submit' | status == 'setup' | status == 'running') {
@@ -319,22 +323,36 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           UpdateExpression: "set #w=:s, #t=:t",
           ExpressionAttributeValues:{
               ":s":ts,
-              ":t":Math.floor(Date.now()/1000 + 60*60*1),
-              ":c":consumer
+              ":t":Math.floor(Date.now()/1000 + 60*60*1)
           },
           ExpressionAttributeNames:{
               "#w":status,
-              "#t":'TTL',
-              "#c":"ConsumerId"
+              "#t":'TTL'
           },
           ReturnValues:"UPDATED_NEW"
       };
+      if (consumer != undefined ) {
+          params.ExpressionAttributeValues[":c"] = consumer;
+          params.ExpressionAttributeNames["#c"] = "ConsumerId";
+          params.UpdateExpression = "set #w=:s, #t=:t, #c=:c";
+      } else {
+          log(`status: ${status} consumer: ${consumer}`)
+          assert.strictEqual(status, "submit");
+      }
       log(`active job: job=${job}, status=${status}`);
       var response = dynamodb.update(params);
+      if (status == 'submit') {
+          response.promise()
+            .then(getDynamoJob)
+            .then(handleDone)
+            .catch(handleStatusError);
+          return;
+      }
       response.promise()
         .then(getDynamoJob)
+        .then(updateDynamoConsumer)
         .then(handleDone)
-        .catch(handleError);
+        .catch(handleStatusError);
       return;
     }
     assert.fail(`"process_job_event_status, unexpected status ${status}"`);
@@ -419,14 +437,14 @@ exports.handler = function(event, context, callback) {
       var message = JSON.parse(event.Records[j].Sns.Message);
       var attrs = event.Records[j].Sns.MessageAttributes;
       var ts = event.Records[j].Sns.Timestamp;
-      log('Received event:', event.Records[j].Sns.Message);
+      //log('Received event:', event.Records[j].Sns.Message);
 
       if (util.isArray(message) == false) {
           message = [message];
       }
 
       for (var i = 0; i < message.length; i++) {
-          log(`MESSAGE ${j}.${i}: ${JSON.stringify(message[i])}`);
+          log(`Received event: ${j}.${i}: ${JSON.stringify(message[i])}`);
           //await sleep(2000);
           var resource = message[i]['resource'];
           var e = message[i]['event'];

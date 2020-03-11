@@ -4,7 +4,7 @@
   "description": "Adds a job array to a Turbine Session in S3 bucket under user",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.224.1",
+    "aws-sdk": "^2.606.0",
     "uuid": "^3.2.1",
     "debug": ">=4.1.1"
   },

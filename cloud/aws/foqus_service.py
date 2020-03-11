@@ -5,6 +5,9 @@ Joshua Boverhof, Lawrence Berkeley National Lab
 
 See LICENSE.md for license and copyright details.
 """
+import os,sys
+import traceback
+import win32api
 import win32serviceutil
 import win32service
 import win32event

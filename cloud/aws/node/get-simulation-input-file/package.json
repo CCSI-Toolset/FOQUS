@@ -4,7 +4,7 @@
   "description": "Returns Simulation Flowsheet",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.224.1",
+    "aws-sdk": "^2.606.0",
     "debug": ">=4.1.1"
   },
   "scripts": {

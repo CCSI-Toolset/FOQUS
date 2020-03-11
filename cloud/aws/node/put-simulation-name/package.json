@@ -4,7 +4,7 @@
   "description": "Create new simulation",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.224.1"
+    "aws-sdk": "^2.606.0"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

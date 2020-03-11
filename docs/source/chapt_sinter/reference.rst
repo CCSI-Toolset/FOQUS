@@ -2,8 +2,14 @@ SimSinter Configuration
 =======================
 
 SimSinter is the standard interface library that FOQUS and Turbine use
-to drive the target simulation software. SimSinter currently supports
-AspenPlus, Aspen Custom Modeler (ACM), gPROMS, and Microsoft Excel.
+to drive the target simulation software.
+
+SimSinter currently supports
+- AspenPlus (versions 8, 9, and 10)
+- Aspen Custom Modeler (ACM) (versions 8, 9, and 10)
+- gPROMS
+- Microsoft Excel
+
 SimSinter is used to: (1) open the simulator, (2) initialize the
 simulation, (3) set variables in the simulation, (4) run the simulation,
 and (5) get resulting output variables from the simulation.

@@ -5,7 +5,7 @@ From the Single-Output Analysis Screen, the user can perform analyses
 that are specific to a particular output of interest. Here, the
 “removalCO2” output parameter is discussed.
 
-The files for this tutorial are located in: **examples/tutorial_files/UQ/Tutorial_2** and **examples/tutorial_files/UQ/Tutorial_3** 
+The files for this tutorial are located in: **examples/tutorial_files/UQ/Tutorial_3** 
 
 Parameter Selection
 ~~~~~~~~~~~~~~~~~~~
@@ -18,7 +18,7 @@ more efficiently. By using a smaller set of inputs, a smaller set of
 samples may be needed.
 
 #. From the UQ window, load the file “gmoat5012_9levels.filtered” in
-   examples\tutorial_files\UQ\Tutorial_2. (This file contains the same set of samples that
+   examples\tutorial_files\UQ\Tutorial_3. (This file contains the same set of samples that
    resulted from data filtering. They are included here to make each
    demo self-inclusive.)
 

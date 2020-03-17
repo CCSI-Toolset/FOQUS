@@ -422,8 +422,7 @@ class LocalExecutionModule(object):
         numSamples = nlines - 1
         numInputs = len(nums)
         numOutputs = 0
-        if len(nums) == 3:
-            numOutputs = int(nums[2])
+
         # process samples
         data = [None]*numSamples
         for i in range(nlines-k-1):

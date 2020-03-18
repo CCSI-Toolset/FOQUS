@@ -68,12 +68,7 @@ jobs:
           command: |
             . venv/bin/activate
             cd docs
-            make clean html
-            if [ -s sphinx-build.log ]; then
-               echo "Error building documentation"
-               cat sphinx-build.log
-               false
-            fi
+            make CLOPTS="-qW --keep-going" clean dummy
 
       - store_artifacts:
           path: test-results

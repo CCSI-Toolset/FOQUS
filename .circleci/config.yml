@@ -63,6 +63,18 @@ jobs:
             coverage html --omit=*site-packages*  -d test-results/coverage # Generate html report
             coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
 
+      - run:
+          name: Build Docs
+          command: |
+            . venv/bin/activate
+            cd docs
+            make clean html
+            if [ -s sphinx-build.log ]; then
+               echo "Error building documentation"
+               cat sphinx-build.log
+               false
+            fi
+
       - store_artifacts:
           path: test-results
 

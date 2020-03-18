@@ -44,12 +44,6 @@ jobs:
             pip install -q pytest coverage pylint
 
       - run:
-          name: Run PyLint
-          command: |
-            . venv/bin/activate
-            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
-
-      - run:
           name: Run Tests
           command: |
             . venv/bin/activate
@@ -64,11 +58,17 @@ jobs:
             coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
 
       - run:
-          name: Build Docs
+          name: Test Docs
           command: |
             . venv/bin/activate
             cd docs
             make CLOPTS="-qW --keep-going" clean dummy
+
+      - run:
+          name: PyLint
+          command: |
+            . venv/bin/activate
+            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,adodbapi || true
 
       - store_artifacts:
           path: test-results

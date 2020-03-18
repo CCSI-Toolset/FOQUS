@@ -8,11 +8,10 @@ Consider the following optimization problem to be solved with FOQUS using PYOMO.
 min y
 
 Subject to:
-
 .. math::
-   y = x_1 + x_2
-
-   ax_1 + bx_2 \geq c
+y=x_1+x_2
+.. math::
+ax_1 + bx_2 \geq c
 
 The complete FOQUS file (**Pyomo_Test_Example.foqus**), with the code written,
 is located in: **examples/tutorial_files/PYOMO**
@@ -24,55 +23,48 @@ Instructions
 
 2. Open the Node Editor, and let the Model Type be “None”.
 
-3. Add the model parameters ``a``, ``b``, ``c`` as “Input Variables” within the Node Editor, with values ``1``, ``2``, ``3`` respectively.
+3. Add the model parameters a, b, c as “Input Variables” within the Node Editor, with values 1, 2, 3 respectively.
 
-4. Add ``x1``, ``x2``, & ``y`` as “Output Variables” within the Node Editor (They are meant to correspond to the decision variable values of the optimization model).
+4. Add x1, x2, & y as “Output Variables” within the Node Editor (They are meant to correspond to the decision variable values of the optimization model).
 
 5. Under Node Script, set Script Mode to “Post”. This will ensure that the node script runs after the node simulation.
    Enter the following PYOMO code for the optimization model:
+   code:: python
 
-   .. code-block:: python
-      :linenos:
+   * ``1. from pyomo.environ import (Var,``
+   *``                         Constraint,``
+   *``                         ConcreteModel,``
+   *``                         PositiveReals,``
+   *``                         Objective)``
+   * ``2. from pyomo.opt import SolverFactory``
+   * ``3. import pyutilib.subprocess.GlobalData ``
+   * ``4. pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False ``
+   * ``5. m = ConcreteModel() ``
+   * ``6. m.x1 = Var(within=PositiveReals) ``
+   * ``7. m.x2 = Var(within=PositiveReals) ``
+   * ``8. m.y = Var() ``
+   * ``9. m.c1 = Constraint(expr=x["a"]*m.x1+x["b"]*m.x2 >= x["c"]) ``
+   * ``10.m.c2 = Constraint(expr=m.x1+m.x2 == m.y) ``
+   * ``11.m.o = Objective(expr=m.y)``
+   * ``12.opt = SolverFactory("ipopt") ``
+   * ``13.opt.solve(m) ``
+   * ``14.f["x1"] = m.x1.value ``
+   * ``15.f["x2"] = m.x2.value ``
+   * ``16.f["y"] = m.y.value ``
 
-      from pyomo.environ import (Var,
-                                 Constraint,
-                                 ConcreteModel,
-                                 PositiveReals,
-                                 Objective)
-      from pyomo.opt import SolverFactory
-      import pyutilib.subprocess.GlobalData
+In the above code, lines (1), (2) are used to import the PYOMO package and SolverFactory function to develop the model and solve it by accessing an appropriate solver.
 
-      pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
-      m = ConcreteModel()
-      m.x1 = Var(within=PositiveReals)
-      m.x2 = Var(within=PositiveReals)
-      m.y = Var()
-      m.c1 = Constraint(expr=x["a"]*m.x1+x["b"]*m.x2 >= x["c"])
-      m.c2 = Constraint(expr=m.x1+m.x2 == m.y)
-      m.o = Objective(expr=m.y)
-      opt = SolverFactory("ipopt")
-      opt.solve(m)
-      f["x1"] = m.x1.value
-      f["x2"] = m.x2.value
-      f["y"] = m.y.value
+A PYOMO Concrete Model is declared, defining the variables, declaring the constraints using the parameters defined within “Input Variables” of the Node, and defining the objective function. (Lines (5) to (11)).
 
-   In the above code, lines 1-6 are used to import the PYOMO package and SolverFactory function to develop the model and solve it by accessing an appropriate solver.
+Line 12 sets the solver to ipopt and line 13 sends the problem to be solved to the solver. Ipopt is a nonlinear optimization solver.
 
-   A PYOMO Concrete Model is declared, defining the variables, declaring the constraints using the parameters defined within “Input Variables” of the Node, and defining the objective function with
-   lines 10 to 16.
+Note: ipopt can be installed using : conda install -c conda-forge ipopt or pip install ipopt
 
-   Line 17 sets the solver to ipopt and line 18 sends the problem to be solved to the solver. Ipopt is a nonlinear optimization solver.
-
-   .. note::
-      ipopt will need to be available in your environment.  To install it into your conda or pip environment you could use: ``conda install -c conda-forge ipopt`` or ``pip install ipopt``
-
-
-   Once the model is solved, the values of decision variables ``x1``, ``x2``, ``y`` are assigned to the Node Output Variables in lines 19 to 21.
+Once the model is solved, the values of decision variables "x1", "x2", "y" are assigned to the Node Output Variables in lines (14) to (16).
 
 6. Click the Run button to run the python script and check the Node Output Variables section.
 
-It should be noted that the parameter values within Node Input Variables can be changed as per user’s requirement, to run different cases.
+It is to be noted that the parameter values within Node Input Variables can be changed as per user’s requirement, to run different cases.
 
-.. note::
-   For more information on building and solving pyomo models, refer to the pyomo documentation:
-   https://pyomo.readthedocs.io/en/stable/solving_pyomo_models.html
+Note: For more information on building and solving pyomo models, refer to the pyomo documentation:
+https://pyomo.readthedocs.io/en/stable/solving_pyomo_models.html

@@ -12,11 +12,11 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.5.0dev"
+default_version = "3.5.0dev2"
 
 try:
     version=subprocess.check_output(
-        ["git", "describe", "--tags"]).decode('utf-8').strip()
+        ["ngit", "describe", "--tags", "--abbrev=0"]).decode('utf-8').strip()
     version = version.replace("-", ".dev", 1)
     version = version.replace("-", "+", 1)
 except:
@@ -52,7 +52,26 @@ dist = setup(
         'foqus.py',
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
-        'icons_rc.py']
+        'icons_rc.py'],
+    # Put abstract (non-versioned) deps here.
+    # Concrete dependencies go in requirements[-dev].txt
+    install_requires=[
+        "PyQt5==5.13.*",
+        "boto3",
+        "psutil",
+        "sphinx",
+        "sphinx_rtd_theme",
+        "matplotlib",
+        "scipy",
+        "numpy",
+        "cma",
+        "tqdm",
+        "mlrose",
+        "pandas",
+        "pywin32; sys_platform == 'win32'",
+        "adodbapi>=2.6.0.7; sys_platform == 'win32'",
+        "TurbineClient",
+        ]
 )
 
 def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):

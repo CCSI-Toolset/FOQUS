@@ -15,7 +15,7 @@ jobs:
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -qr requirements-dev.txt
+            pip install --progress-bar=off -r requirements-dev.txt
 
       - persist_to_workspace:
           root: ~/repo

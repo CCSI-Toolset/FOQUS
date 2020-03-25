@@ -10,9 +10,7 @@ install:
 
     activate foqus
 
-    pip install -e .
-
-    pip install -q pytest pylint coverage
+    pip install --progress-bar=off -r requirements-dev.txt
 
     curl -fsSL -o psuade_project-1.7.12-win32.exe https://github.com/LLNL/psuade/releases/download/1.7.12/psuade_project-1.7.12-win32.exe
 

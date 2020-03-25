@@ -6,11 +6,11 @@ install:
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
 
-    conda create -qy -n foqus python=3.7.5 pip
+    conda create -qy -n foqus python=3.7 pip
 
     activate foqus
 
-    pip install --progress-bar=off -r requirements-dev.txt
+    pip install -r requirements-dev.txt
 
     curl -fsSL -o psuade_project-1.7.12-win32.exe https://github.com/LLNL/psuade/releases/download/1.7.12/psuade_project-1.7.12-win32.exe
 

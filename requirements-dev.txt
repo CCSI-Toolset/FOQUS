@@ -1,8 +1,9 @@
 --index-url https://pypi.python.org/simple/
 
 # These will override requirements picked up from setup.py below:
-coverage==4.5.4
+coverage
 pylint
+pytest
 pytest-cov
 sphinx
 sphinx_rtd_theme

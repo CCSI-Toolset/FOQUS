@@ -53,25 +53,23 @@ dist = setup(
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
         'icons_rc.py'],
-    # Put abstract (non-versioned) deps here.
-    # Concrete dependencies go in requirements[-dev].txt
+    # Required packages needed in the users env go here (non-versioned strongly preferred).
+    # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
-        "PyQt5==5.13.*",
-        "boto3",
-        "psutil",
-        "sphinx",
-        "sphinx_rtd_theme",
-        "matplotlib",
-        "scipy",
-        "numpy",
-        "cma",
-        "tqdm",
-        "mlrose",
-        "pandas",
-        "pywin32; sys_platform == 'win32'",
         "adodbapi>=2.6.0.7; sys_platform == 'win32'",
+        "cma",
+        "matplotlib",
+        "mlrose",
+        "numpy",
+        "pandas",
+        "psutil",
+        "PyQt5==5.13.*",
+        "pywin32; sys_platform == 'win32'",
+        "requests",
+        "scipy",
+        "tqdm",
         "TurbineClient",
-        ]
+        ],
 )
 
 def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):

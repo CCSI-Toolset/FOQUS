@@ -12,10 +12,11 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.5.0dev2"
+default_version = "3.5.0dev3"
 
 try:
     version=subprocess.check_output(
+        ## Undo the 'n' here, this is just testing without having to put in a real tag ##
         ["ngit", "describe", "--tags", "--abbrev=0"]).decode('utf-8').strip()
     version = version.replace("-", ".dev", 1)
     version = version.replace("-", "+", 1)

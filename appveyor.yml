@@ -6,7 +6,7 @@ install:
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
 
-    conda create -qy -n foqus python=3.7 pip
+    conda create -qy -n foqus python=3.7.5 pip
 
     activate foqus
 

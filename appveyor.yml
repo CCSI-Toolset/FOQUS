@@ -3,12 +3,12 @@ image: Visual Studio 2019
 environment:
   MINICONDA: C:\Miniconda3
 install:
-- cmd: >-
+- sh: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
     conda create -qy --name foqus 'python>=3.7.5, <3.8' pip
 
-    CALL conda.bat activate foqus
+    conda activate foqus
 
     pip install -r requirements-dev.txt
 
@@ -17,10 +17,10 @@ install:
     psuade_project-1.7.12-win32.exe /S
 build: off
 test_script:
-- cmd: >-
+- sh: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
-    CALL conda.bat activate foqus
+    conda activate foqus
 
     pylint -E foqus_lib --extension-pkg-whitelist=PyQt5
 

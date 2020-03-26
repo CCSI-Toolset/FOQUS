@@ -3,12 +3,12 @@ image: Visual Studio 2019
 environment:
   MINICONDA: C:\Miniconda3
 install:
-- sh: >-
+- cmd: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
     conda create -qy --name foqus 'python>=3.7.5, <3.8' pip
 
-    conda activate foqus
+    activate foqus
 
     pip install -r requirements-dev.txt
 
@@ -17,10 +17,10 @@ install:
     psuade_project-1.7.12-win32.exe /S
 build: off
 test_script:
-- sh: >-
+- cmd: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
-    conda activate foqus
+    activate foqus
 
     pylint -E foqus_lib --extension-pkg-whitelist=PyQt5
 
@@ -28,6 +28,6 @@ test_script:
 
     mkdir gui_testing
 
-    python foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
+    python -W ignore::FutureWarning foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
 
     # python foqus.py -s "examples/Smoke Tests/fs_smoke_test.py"

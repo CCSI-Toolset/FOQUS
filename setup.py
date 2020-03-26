@@ -85,11 +85,8 @@ def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
 
 if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     #first see if this is a conda env
-    print("  Writing batch files for Windows")
-    co = subprocess.check_output(["where", "foqus.py"])
-    print(f"  co: {co}")
-    foqus_path = co.decode('utf-8').split(os.linesep)[0].strip()
-    print(f"  foqus_path: {foqus_path}")
+    foqus_path = subprocess.check_output(
+        ["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
     if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
         conda_env = os.environ["CONDA_DEFAULT_ENV"]
         conda_path = shutil.which("conda") # unless conda is not found

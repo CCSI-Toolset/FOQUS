@@ -1,16 +1,12 @@
 version: 1.0.{build}
 image: Visual Studio 2019
-init:
-- cmd: >-
-    set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
-
-
-    conda create -qy --name foqus 'python>=3.7.5, <3.8' pip
 environment:
   MINICONDA: C:\Miniconda3
 install:
 - cmd: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
+
+    conda create -qy --name foqus 'python>=3.7.5, <3.8' pip
 
     conda activate foqus
 
@@ -21,7 +17,7 @@ install:
     psuade_project-1.7.12-win32.exe /S
 build: off
 test_script:
-- ps: >-
+- cmd: >-
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
     conda activate foqus

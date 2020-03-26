@@ -85,8 +85,9 @@ The following are known unresolved issues:
 Reporting Issues
 ----------------
 
-| To report an issue, please send an email to:
-| 
+To report an issue or ask a question, send an email to:
+ccsi-support@acceleratecarboncapture.org or open an issue at:
+https://github.com/CCSI-Toolset/FOQUS
 
-Please include detailed steps on how to reproduce the error, including
-screenshots and log files.
+Please include detailed steps on how to reproduce the error, including if
+possible, screenshots and log files.

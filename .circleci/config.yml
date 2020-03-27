@@ -11,17 +11,11 @@ jobs:
       - checkout
 
       - run:
-          name: Install Requirements
+          name: Install FOQUS
           command: |
             python3 -m venv venv
             . venv/bin/activate
-            pip install -qr requirements.txt
-
-      - run:
-          name: Install FOQUS
-          command: |
-            . venv/bin/activate
-            python3 setup.py -q install
+            pip install --progress-bar=off -r requirements-dev.txt
 
       - persist_to_workspace:
           root: ~/repo
@@ -36,12 +30,6 @@ jobs:
     steps:
       - attach_workspace:
           at: ~/repo
-
-      - run:
-          name: Setup Testing Environment
-          command: |
-            . venv/bin/activate
-            pip install -q pytest coverage pylint
 
       - run:
           name: Run Tests

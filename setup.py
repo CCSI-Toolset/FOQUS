@@ -51,6 +51,8 @@ dist = setup(
     include_package_data=True,
     scripts = [
         'foqus.py',
+        'foqus.bat',
+        'foqus_debug.bat',
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
         'icons_rc.py'],
@@ -77,35 +79,34 @@ dist = setup(
 def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
     with open(bat_file, 'w') as f:
         if conda_env is not None and conda_path is not None:
-            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
-                switch, conda_path, conda_env, python_path, foqus_path))
+            f.write(f'cmd {switch} ""{conda_path}" activate {conda_env} && "{python_path}" "{foqus_path}" %*"')
         else:
-            f.write('cmd {} ""{}" "{}" %*"'.format(
-                switch, python_path, foqus_path))
+            f.write(f'cmd {switch} ""{python_path}" "{foqus_path}" %*"')
 
-if os.name == 'nt': # Write a batch file on windows to make it easier to launch
-    #first see if this is a conda env
-    foqus_path = subprocess.check_output(
-        ["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
-    if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
-        conda_env = os.environ["CONDA_DEFAULT_ENV"]
-        conda_path = shutil.which("conda") # unless conda is not found
-    else:
-        conda_path = None
-        conda_env = None
-    python_path = shutil.which("python")
-    if conda_path is None:
-        print("** conda not found bat file will not activate conda environment")
-    if python_path is None:
-        print("** python not found, no bat file written")
-    else:
-        write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
-        write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
+# Write batch files for windows to make it easier to launch
+try:
+    foqus_path = subprocess.check_output(["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
+except FileNotFoundError:
+    foqus_path = "foqus.py"
+if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
+    conda_env = os.environ["CONDA_DEFAULT_ENV"]
+    conda_path = shutil.which("conda") # unless conda is not found
+else:
+    conda_path = None
+    conda_env = None
+python_path = shutil.which("python")
+if conda_path is None:
+    print("** conda not found: bat file will not activate conda environment")
+if python_path is None:
+    python_path = "python"
+    print("** python not found: using bare 'python' command in bat file")
+write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
+write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
 
-print("""
+print(f"""
 
 ==============================================================================
-**Installed FOQUS {}**
+**Installed FOQUS {ver.version}**
 
 **Optional addtional sotfware**
 
@@ -153,4 +154,4 @@ Windows:
         - foqus.bat: run FOQUS and close cmd window when FOQUS exits
         - foqus_debug.bat: run FOQUS and leave cmd window open  
 ==============================================================================
-""".format(ver.version))
+"""

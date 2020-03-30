@@ -154,4 +154,4 @@ Windows:
         - foqus.bat: run FOQUS and close cmd window when FOQUS exits
         - foqus_debug.bat: run FOQUS and leave cmd window open  
 ==============================================================================
-"""
+""")

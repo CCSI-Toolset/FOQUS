@@ -39,6 +39,7 @@ from pyDOE import *
 from smt.sampling_methods import LHS
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.graph.nodeVars import NodeVars
+from foqus_lib.framework.graph.edge import edge
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 from itertools import product
@@ -208,7 +209,13 @@ class opt(optimization):
         name='Algorithm Convergence Plots File',
         default="",
         dtype=str,
-        desc="Name of text file storing surrogate model from each algorithm iteration")
+        desc="Name of python file with algorithm convergence plots")
+        
+        self.options.add(
+        name='Parity Plot File',
+        default="",
+        dtype=str,
+        desc="Name of python file with the parity plot for the final surrogate model")
            
     def f(self, x):
 #        '''
@@ -248,7 +255,6 @@ class opt(optimization):
         # Display a little information to check that things are working
         self.msgQueue.put("Starting Surrogate based Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
-        
 #        self.msgQueue.put("\nDecision Variables\n---------------------")
 #        for xn in self.prob.v:
 #            print(self.graph.x)
@@ -291,6 +297,8 @@ class opt(optimization):
         file_name_SM_stored = self.options['Surrogate Model Storing File'].value
         
         file_name_plots = self.options['Algorithm Convergence Plots File'].value
+        
+        uq_file = self.options['Parity Plot File'].value
 
         # The set name to use when saving evaluations in flowsheet results (to get unique set names in flowsheet results section)
         if Saveresults:
@@ -345,39 +353,52 @@ class opt(optimization):
 #        Calling the pyomo based surrogate model from the user provided file, using main function
         self.surrin_names_pyomo, self.surrout_names_pyomo, self.surrin_names_original, self.surrout_names_original, self.surrin_names,self.surrout_names,self.m=mod.main()
         
-#       Obtaining the non surrogate input and output variable names in "node_var" format
-        self.nonsurrin_names = []
-        self.nonsurrout_names = []
-        for simvar in self.simin_nam:
-            if simvar not in self.surrin_names:
-                self.nonsurrin_names.append(simvar)
-                
-        for simvar in self.simout_nam:
-            if simvar not in self.surrout_names:
-                if 'status' not in simvar:
-                    if 'graph_error' not in simvar:
-                        self.nonsurrout_names.append(simvar)
-                        
-#        Retreiving the original names for non surrogate variables in "node.var" format 
-#        Creating Pyomo variables corresponding to non surrogate vars                
+#       Obtaining the non surrogate input and output variable names in "node_var" format and the original names for non surrogate variables in "node.var" format
+        
         self.nonsurrin_names_original = []
         self.nonsurrout_names_original = []
+        self.nonsurrin_names = []
+        self.nonsurrout_names = []
         
+        for i,simvar in enumerate(self.simin_nam):
+            if simvar not in self.surrin_names:
+                if not self.graph.x[self.simin_names[i]].con:
+                    self.nonsurrin_names_original.append(self.simin_names[i])
+                    self.nonsurrin_names.append(simvar)
+                    
+        idxlist = range(len(self.graph.edges))
+        
+        for i,simvar in enumerate(self.simout_nam):
+            if simvar not in self.surrout_names:
+                # print(self.graph.edges[0].con)
+                # **Ask John **
+                # if self.simout_names[i] not in all([k for k in [self.graph.edges[e].con[v].fromName for v in range(len(self.graph.edges[e].con))]] for e in idxlist):
+                # ***
+                if 'status' not in simvar:
+                    if 'graph_error' not in simvar:
+                        self.nonsurrout_names_original.append(self.simout_names[i])
+                        self.nonsurrout_names.append(simvar)
+
+#        Creating Pyomo variables corresponding to non surrogate vars                       
         self.nonsurrin_names_pyomo = []
         self.nonsurrout_names_pyomo = []
         
-        for nonsurrin in self.nonsurrin_names:
-            nonsurrin_original = nonsurrin.replace('_','.')
-            self.nonsurrin_names_original.append(nonsurrin_original)
+        for i,nonsurrin in enumerate(self.nonsurrin_names):
+            # nonsurrin_original = nonsurrin.replace('_','.')
+            nonsurrin_original = self.nonsurrin_names_original[i]
+            # if not self.graph.x[nonsurrin_original].con:
+                # self.nonsurrin_names_original.append(nonsurrin_original)
             minv = simin.get(nonsurrin_original).min
             maxv = simin.get(nonsurrin_original).max
             initv = simin.get(nonsurrin_original).value
             self.m.add_component('{0}'.format(nonsurrin),Var(bounds=(minv,maxv), initialize = initv))
             self.nonsurrin_names_pyomo.append(getattr(self.m,nonsurrin))
             
-        for nonsurrout in self.nonsurrout_names:
-            nonsurrout_original = nonsurrout.replace('_','.')
-            self.nonsurrout_names_original.append(nonsurrout_original)
+        for i,nonsurrout in enumerate(self.nonsurrout_names):
+            # nonsurrout_original = nonsurrout.replace('_','.')
+            nonsurrout_original = self.nonsurrout_names_original[i]
+            # if not self.graph.x[nonsurrin_original].con:
+            # self.nonsurrout_names_original.append(nonsurrout_original)
             self.m.add_component('{0}'.format(nonsurrout),Var(initialize = 0.01))
             self.nonsurrout_names_pyomo.append(getattr(self.m,nonsurrout))
         
@@ -405,20 +426,22 @@ class opt(optimization):
                 o = re.sub(r'(?<![a-z]){0}(?![a-z])'.format(k),str(self.var_map_dict[k]),o)
                                 
         self.m.obj = Objective(expr = eval(o))
-        self.m.con=ConstraintList()
-        for k in constrexprs:
-            g = k.pycode
-            for k in self.var_map_dict.keys():
-                if k in g[:]:
-                    g = re.sub(r'(?<![a-z]){0}(?![a-z])'.format(k),str(self.var_map_dict[k]),g)
-            self.m.con.add(eval(g) <= 0)
+        if len(constrexprs)!=0:
+            self.m.con=ConstraintList()
+            for k in constrexprs:
+                g = k.pycode
+                for k in self.var_map_dict.keys():
+                    if k in g[:]:
+                        g = re.sub(r'(?<![a-z]){0}(?![a-z])'.format(k),str(self.var_map_dict[k]),g)
+                self.m.con.add(eval(g) <= 0)
             
 #        Checking decision variables & fixing other variables 
         for i,fv in enumerate(self.graph.xnames):
-            if fv not in self.prob.v:
-                fv_pyomo_name = self.simin_nam[i]
-                fv_pyomo = getattr(self.m,fv_pyomo_name)
-                fv_pyomo.fix(fv_pyomo.value)
+            if not self.graph.x[self.simin_names[i]].con:
+                if fv not in self.prob.v:
+                    fv_pyomo_name = self.simin_nam[i]
+                    fv_pyomo = getattr(self.m,fv_pyomo_name)
+                    fv_pyomo.fix(fv_pyomo.value)
         self.m.pprint()
         
         #        Obtaining decision variable names in "node_var" format
@@ -517,6 +540,7 @@ class opt(optimization):
             print(objvals)
             # Assign the best initialization value
             minobjval_idx = objvals.index(min(objvals))
+            print(minobjval_idx)
             # dvar_init = []
             for i,var in enumerate(decvars):
                 var.value = initvals_prod[minobjval_idx][i]
@@ -552,6 +576,9 @@ class opt(optimization):
                 if var in [getattr(self.m,v) for v in dvar_names]:
                     self.msgQueue.put("Variable Type: Decision")
                     self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
+                elif var.fixed:
+                    self.msgQueue.put("Variable Type: Fixed")
+                    self.msgQueue.put("Value: {0}\n".format(var.value))
                 else:
                     self.msgQueue.put("Variable Type: State\n")
             rf=optimizer.solve(self.m,**kwds) 
@@ -646,24 +673,30 @@ class opt(optimization):
         y_fracdif_vals = [sum(outvar_val_fracdiff)/len(outvar_val_fracdiff)]
 #        y_fracdif_vals.append(sum(outvar_val_fracdiff)/len(outvar_val_fracdiff))
         
-        constr_viol_vals = [sum(viol[0] for viol in cv)/len(cv)]
+        if len(constrexprs)!=0:
+            constr_viol_vals = [sum(viol[0] for viol in cv)/len(cv)]
 #        constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
+            
 #        Applying Termination Condition
 #       1. abs(f* - f)/f* <= eps ; 2. abs(y* - y)/y* <= eps ; 3. constraint_violation <= tolerance         
         if abs((f_str - f)/f_str) <= obj_tolerance:
             print('y')
             if all(item <= outputvar_tolerance for item in outvar_val_fracdiff):
                 print('y')
-                if all(viol[0] <= inequality_tolerance for viol in cv):
+                if len(constrexprs)!=0:
+                    if all(viol[0] <= inequality_tolerance for viol in cv):
+                        flag = 0
+                        self.msgQueue.put("Optimization Successful")
+    #                    self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
+                    else:
+                        flag = 1
+    #                    self.msgQueue.put('{0}'.format(cv))
+                        self.msgQueue.put("Inequality constraints 'g' not satisfied corresponding to rigorous simulation values")
+                        self.msgQueue.put("Surrogate Model Improvement Required")
+                        self.msgQueue.put("****Proceed to next iteration****\n")
+                else:
                     flag = 0
                     self.msgQueue.put("Optimization Successful")
-#                    self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
-                else:
-                    flag = 1
-#                    self.msgQueue.put('{0}'.format(cv))
-                    self.msgQueue.put("Inequality constraints 'g' not satisfied corresponding to rigorous simulation values")
-                    self.msgQueue.put("Surrogate Model Improvement Required")
-                    self.msgQueue.put("****Proceed to next iteration****\n")
             else:
                 flag = 2
 #                self.msgQueue.put('{0}'.format(outvar_val_fracdiff))
@@ -859,12 +892,54 @@ class opt(optimization):
             while process.poll() == None:
                 time.sleep(0.2)
                 line = process.stdout.readline()
+                
         #   alamo.lst gets automatically created after running alamo and this code below accesses the path in which this file gets created
             alamoOutput = alamoInput.rsplit('.', 1)[0] + '.lst'
             alamoOutput = os.path.join(alamoDir, alamoOutput)
-            res = SurrogateParser.parseAlamo(alamoOutput)
-                
+            res = SurrogateParser.parseAlamo(alamoOutput)  
             self.result = res
+            # ***Generate UQ Plugin for Parity Plot***
+            self.xi = {}
+            self.zi = {}
+            cn = self.graph.input.compoundNames(sort=True)
+            for v in self.surrin_names_original:
+                self.xi[v] = cn.index(v)
+            cn = self.graph.output.compoundNames(sort=False)
+            for v in self.surrout_names_original:
+                self.zi[v] = cn.index(v)
+            self.ii = {}
+            self.oi = {}
+            for i, v in enumerate(self.surrin_names):
+                self.ii[self.surrin_names[i]] = self.xi[self.surrin_names_original[i]]
+            for i, v in enumerate(self.surrout_names):
+                self.oi[self.surrout_names[i]] = self.zi[self.surrout_names_original[i]]
+            SurrogateParser.writeAlamoDriver(
+                self.result,
+                uq_file,
+                ii=self.ii,
+                oi=self.oi,
+                inputNames=self.surrin_names_original,
+                outputNames=self.surrout_names_original)
+            #**********
+            # ***Generate python file for Parity Plot***
+            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
+            #     f.write('Input_Data = {0}'.format(latin_hypercube_samples))
+            #     f.write('Simulator_Output_Data = {0}'.format(latin_hypercube_samples_values))
+            #     SM_outdata = []
+            #     surrvarinpyomo = []
+            #     for v in self.surrin_names_pyomo:
+            #         surrvarin = getattr(self.m,str(v))
+            #         surrvarinpyomo.append(surrvarin)
+            #     for s in latin_hypercube_samples:
+            #         out = []
+            #         for i,vin in enumerate(surrvarinpyomo):
+            #             vin.value = s[i]
+            #         for i,vout in enumerate(surroutvars):
+            #             vout = -value(self.m.c[i+1].body - initout)
+            #             out.append(vout)
+            #         SM_outdata.append(out)
+            #     f.write('SM_Output_Data = {0}'.format(SM_outdata.append))
+                # *******            
             print(self.result['outputEqns'])
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
@@ -922,6 +997,9 @@ class opt(optimization):
                 if var in [getattr(self.m,v) for v in dvar_names]:
                     self.msgQueue.put("Variable Type: Decision")
                     self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
+                elif var.fixed:
+                    self.msgQueue.put("Variable Type: Fixed")
+                    self.msgQueue.put("Value: {0}\n".format(var.value))
                 else:
                     self.msgQueue.put("Variable Type: State\n")
                 
@@ -1019,7 +1097,8 @@ class opt(optimization):
             obj_func_vals.append(f)
             obj_fracdif_vals.append(abs((f_str - f)/f_str))
             y_fracdif_vals.append(sum(outvar_val_fracdiff)/len(outvar_val_fracdiff))
-            constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
+            if len(constrexprs)!=0:
+                constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
             
             #  Printing Termination Condition Values
             self.msgQueue.put("**Termination Condition Values**")
@@ -1032,16 +1111,20 @@ class opt(optimization):
                 print('y')
                 if all(item <= outputvar_tolerance for item in outvar_val_fracdiff):
                     print('y')
-                    if all(viol[0] <= inequality_tolerance for viol in cv):
+                    if len(constrexprs)!=0:
+                        if all(viol[0] <= inequality_tolerance for viol in cv):
+                            flag = 0
+                            self.msgQueue.put("Optimization Successful")
+    #                        self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
+                        else:
+                            flag = 1
+                            self.msgQueue.put('{0}'.format(cv))
+                            self.msgQueue.put("Inequality constraints 'g' not satisfied")
+                            self.msgQueue.put("Surrogate Model Improvement Required")
+                            self.msgQueue.put("****Proceed to next iteration****\n")
+                    else:
                         flag = 0
                         self.msgQueue.put("Optimization Successful")
-#                        self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
-                    else:
-                        flag = 1
-                        self.msgQueue.put('{0}'.format(cv))
-                        self.msgQueue.put("Inequality constraints 'g' not satisfied")
-                        self.msgQueue.put("Surrogate Model Improvement Required")
-                        self.msgQueue.put("****Proceed to next iteration****\n")
                 else:
                     flag = 2
                     self.msgQueue.put('{0}'.format(outvar_val_fracdiff))
@@ -1074,7 +1157,8 @@ class opt(optimization):
             f.write('obj_func_vals = {0}\n'.format(obj_func_vals))
             f.write('obj_fracdif_vals = {0}\n'.format(obj_fracdif_vals))
             f.write('y_fracdif_vals = {0}\n'.format(y_fracdif_vals))
-            f.write('constr_viol_vals = {0}\n'.format(constr_viol_vals))           
+            if len(constrexprs)!=0:
+                f.write('constr_viol_vals = {0}\n'.format(constr_viol_vals))           
             f.write('fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,figsize=(5,15),sharex=True)\n')
             f.write('fig.tight_layout()\n')
             f.write("fig.suptitle('Algorithm Convergence')\n")
@@ -1084,8 +1168,11 @@ class opt(optimization):
             f.write("ax1.plot(iterations,obj_func_vals,'--bo',label='Objective Value Improvement with algorithm')\n")
             f.write("ax2.plot(iterations,obj_fracdif_vals,'--go',label='Fractional difference in objective values wrt rigorous model:abs((f*-f)/f*)')\n")
             f.write("ax3.plot(iterations,y_fracdif_vals,'--ro',label='Mean value of fractional difference in surrogate output variable values wrt rigorous model:abs((y* - y) /y*)')\n")
-            f.write("ax4.plot(iterations,constr_viol_vals,'--ko',label='Mean value of constraint violation')\n")
+            if len(constrexprs)!=0:
+                f.write("ax4.plot(iterations,constr_viol_vals,'--ko',label='Mean value of constraint violation')\n")
             f.write("ax1.legend(bbox_to_anchor=(2,1))\n")
             f.write("ax2.legend(bbox_to_anchor=(1.1,1))\n")
             f.write("ax3.legend(bbox_to_anchor=(1.1,1))\n")
-            f.write("ax4.legend(bbox_to_anchor=(2,1))\n")
+            if len(constrexprs)!=0:
+                f.write("ax4.legend(bbox_to_anchor=(2,1))\n")
+            f.write("#Parity plot for final surrogate model")

@@ -6,7 +6,7 @@ Install FOQUS
 .. note::
    In previous releases we instructed you to download the FOQUS code and install it in place.  As
    of version 1.5.0, this is no longer required.  The below ``pip install`` method is now the
-   prefferd method to install FOQUS.
+   preferred method to install FOQUS.
 
 To install FOQUS, open the Anaconda prompt (or appropriate terminal or shell depending on operating
 system and choice of Python), and run the following commands::

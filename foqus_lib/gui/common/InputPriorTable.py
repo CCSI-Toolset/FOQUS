@@ -99,13 +99,13 @@ class InputPriorTable(QTableWidget):
 
             # change SAMPLE to UNIFORM
             if dtype == Distribution.SAMPLE:
-                dtype = Distribution.UNIFORM
-                d = Distribution(dtype)
+#                dtype = Distribution.UNIFORM
+#                d = Distribution(dtype)
                 sampleFile, sampleIndex = d.getParameterValues()
                 data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
                 sampleData = data[0]
                 # compute min/max from sample file
-                sdata = sampleData[:,sampleIndex]
+                sdata = sampleData[:,sampleIndex-1]
                 # TO DO: insert error handling for if sampleData file does not exist or if incorrect # of columns
                 xmin = np.min(sdata)
                 xmax = np.max(sdata)

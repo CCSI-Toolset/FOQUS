@@ -40,15 +40,15 @@ Open an Anaconda3 terminal and install base packages.
 ```
 (base) C:\Users\Administrator\Desktop> conda activate foqus
 (foqus) C:\Users\Administrator\Desktop> conda install git
+(foqus) C:\Users\Administrator\Desktop> conda install -c conda-forge nlopt
 (foqus) C:\Users\Administrator\Desktop> python -m pip install --upgrade pip
-(foqus) C:\Users\Administrator\Desktop> pip install boto3
-(foqus) C:\Users\Administrator\Desktop> pip install git+https://github.com/CCSI-Toolset/turb_client@master
 (foqus) C:\Users\Administrator\Desktop> pip install git+https://github.com/CCSI-Toolset/foqus@master
 ```
 ##### (OPTIONAL) Run FOQUS tests
 ```
-(foqus) C:\Users\Administrator\Desktop>git clone https://github.com/CCSI-Toolset/foqus; cd FOQUS
-(foqus) C:\Users\Administrator\Desktop\FOQUS>pytest
+(foqus) C:\Users\Administrator\Desktop> git clone https://github.com/CCSI-Toolset/foqus; cd FOQUS
+(foqus) C:\Users\Administrator\Desktop\FOQUS> pip install -r requirements.txt
+(foqus) C:\Users\Administrator\Desktop\FOQUS> pytest
 ================================================= test session starts =================================================
 platform win32 -- Python 3.7.3, pytest-5.1.2, py-1.8.0, pluggy-0.13.0
 rootdir: C:\Users\Administrator\Desktop\FOQUS, inifile: pytest.ini, testpaths: foqus_lib

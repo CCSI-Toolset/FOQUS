@@ -1,0 +1,31 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:dummy:subscription",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "5513b8b1-34c1-40a5-98a9-13f5b6ac371d",
+        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
+        "Subject": "",
+        "Message":"{\"Simulation\":\"zzfoqus_BFB\",\"Input\":{\"graph\":{},\"BFB\":{\"BFBadsB.Dt\":11.89286292001983,\"BFBadsB.dx\":0.0127,\"BFBadsB.Lb\":2.0851517017356476,\"BFBadsM.Dt\":15,\"BFBadsM.dx\":0.06685903722891832,\"BFBadsM.Lb\":1.9739825608135484,\"BFBadsT.Dt\":15,\"BFBadsT.dx\":0.05290146940394774,\"BFBadsT.Lb\":2.204472530448875,\"BFBRGN.Dt\":9.027874772897324,\"BFBRGN.Lb\":8.888762230394914,\"BFBRGNTop.Dt\":9.199673642915357,\"BFBRGNTop.Lb\":7.216528421796692,\"GHXfg.A_exch\":16371.202308779422,\"Kd\":100,\"BFBadsB.Cr\":1,\"BFBadsM.Cr\":1,\"BFBadsT.Cr\":1,\"BFBRGN.Cr\":1,\"BFBRGNTop.Cr\":1,\"dp\":0.0001598,\"GHXfg.GasIn.P\":1.01325,\"GHXfg.GasIn.T\":54,\"fg_flow\":70263.9}},\"Reset\":false,\"Id\":\"e054c952-013d-4609-b213-b3d9a09fb08c\",\"resource\":\"job\",\"status\":\"submit\",\"jobid\":\"e054c952-013d-4609-b213-b3d9a09fb08c\",\"sessionid\":\"747919db-bf9c-4e83-b4ef-b0b033ad985c\",\"event\":\"status\"}",
+        "Timestamp": "2019-09-18T21:15:53.378014",
+        "SignatureVersion": "1",
+        "Signature": "",
+        "SigningCertUrl": "",
+        "UnsubscribeUrl": "",
+        "MessageAttributes": {
+          "event": {
+            "Type": "String",
+            "Value": "job.status"
+          },
+          "username": {
+            "Type": "String",
+            "Value": "test"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "name": "dynamo-stream-trigger",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.606.0",
+    "debug": ">=4.1.1",
+    "node-lambda": "^0.16.0",
+    "uuid": "^3.2.1"
+  },
+  "scripts": {
+    "setup": "./node_modules/.bin/node-lambda setup",
+    "test": "./node_modules/.bin/node-lambda run --configFile=test.env -j events/event.json",
+    "package": "./node_modules/.bin/node-lambda package --configFile=deploy.env",
+    "deploy": "./node_modules/.bin/node-lambda deploy --configFile=deploy.env",
+    "deploytest": "./node_modules/.bin/node-lambda deploy -e test --configFile=test.env"
+  },
+  "author": "Joshua Boverhof",
+  "license": "MIT"
+}

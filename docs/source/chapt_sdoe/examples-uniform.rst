@@ -1,4 +1,4 @@
-Example 1: Constructing Uniform Space Filling minimax and maximin designs for a 2-D input space
+Example USF-1: Constructing Uniform Space Filling minimax and maximin designs for a 2-D input space
 -----------------------------------------------------------------------------------------------
 
 For this first example, the goal is to construct a simple space-filling design with between 8 and 10 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. 
@@ -49,7 +49,7 @@ For this first example, the goal is to construct a simple space-filling design w
 
 8. The file for the selected design can be found in the **SDOE_files** folder. The design can then be used to guide the implementation of the experiment with the input factor levels for each run.
 
-Example 2: Augmenting the Example 1 design in a 2-D input space with a Uniform Space Filling Design
+Example USF-2: Augmenting the Example USF-1 design in a 2-D input space with a Uniform Space Filling Design
 ---------------------------------------------------------------------------------------------------
 
 In this example, we consider the sequential aspect of design, by building on the first example results. Consider the scenario where based on the results of Example 1, the experimenter selected to actually implement and run the 8 run minimax design.
@@ -76,9 +76,9 @@ To load in the experimental runs that were already collected, click on **Load fr
 
 10. To access the file that contains the created designs, go to the **SDOE_files** folder. As before, a separate folder will have been created for each design.
 
-11. If there is a desire to do another set in the sequential design, then the proceedure outlined above for Example 2 can be followed again. The only change will be that this time there will be 3 files that need to be imported: A **Candidate** file from which new runs can be selected, and two **History** files. The first of these files will be the selected design from Example 1, and the second the newly created design that was run as a result of Example 2. When the user clicks on **Confirm** in the **Ensemble Selection** window, the two **History** files will be aggregated into a single **Aggregated History** file.
+11. If there is a desire to do another set in the sequential design, then the proceedure outlined above for Example 2 can be followed again. The only change will be that this time there will be 3 files that need to be imported: A **Candidate** file from which new runs can be selected, and two **History** files. The first of these files will be the selected design from Example USF-1, and the second the newly created design that was run as a result of Example USF-2. When the user clicks on **Confirm** in the **Ensemble Selection** window, the two **History** files will be aggregated into a single **Aggregated History** file.
 
-Example 3: A Uniform Space Filling Design for a Carbon Capture example in a 5-D input space
+Example USF-3: A Uniform Space Filling Design for a Carbon Capture example in a 5-D input space
 -------------------------------------------------------------------------------------------
 
 In this example, we consider a more realistic scenario of a sequential design of experiment. Here we explore a 5-dimensional input space with G, lldg, CapturePerc, L and SteamFlow denoting the space that we wish to explore with a space-filling design. the candidate set, **Candidate Points 8perc**, contains 93 combinations of inputs that have been validated using an ASPEN model as possible combinations for this scenario. The goal is to collect 18 runs in two stages that fill the input space. There are some constraints on the inputs, that make the viable region irregular, and hence the candidate set is useful to avoid regions where it would be problematic to collect useful data.

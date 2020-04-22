@@ -76,8 +76,8 @@ The user can specify up to 5 **MWR** values, where for each of the **MWR** boxes
 
    Choice of MWR Value and Columns
 
-.. hint::
-Here are some recommendations about the role of the MWR value and the choice of scaling:
+.. note::
+    Here are some recommendations about the role of the MWR value and the choice of scaling:
 a. Think about changes to the MWR as multiplicative or exponential (e.g. 1 - 2 - 4 - 8 - 16), not linear (e.g. 1 - 2 - 3 - 4 - 5).
 b. If there are many candidate points that should be weighted approximately equally, the direct weight scaling might be more appropriate. The ranked weighting tends to spread out the final weights for similar values.
 c. If the original candidate set weight distribution is close to uniformly distributed, then the **Ranked MWR** and **Direct MWR** scalings will produce very similar designs.
@@ -90,7 +90,7 @@ Next select the **Type** for each column. Typically most of the columns will be 
 
 Finally, the **Min** and **Max** columns in the box allow the range of values for each input column to be specified. The default is to extract the smallest and largest values from the candidate and history data files, and use these. This approach generally works well, as it scales the inputs to be in a uniform hypercube for comparing distances between the design points. 
 
-.. hint::
+.. note::
    The default values for **Min** and **Max** can generally be left at their defaults unless: (1) the range of some inputs represent very different amounts of change in the process. For example, if temperature is held nearly constant, while a flow rate changes substantially, then it may be desirable to extend the range of the temperature beyond its nominal values to make the amount of change in temperature more commensurate with the amount of change in the flow rate. (2) if changes are made in the candidate or history data files. For example, if one set of designs are created from one candidate set, and then another set of designs are created from a different candidate set. These designs and the achieved criterion value will not be comparable unless the range of each input has been fixed at matching values.
 
 10.

@@ -97,7 +97,7 @@ With the updated model based on the additional data, a region where good respons
    :alt: Home Screen
    :name: fig.0-optimizing
    
-   The optimal region for the responses (oval) with additional runs
+   The optimal region for the responses (oval) with additional runs (green dots)
    
 The final data collection involves two **confirmation** runs (black dots( at the identified optimal location to verify that results are observed to match what the model predicts.
 

@@ -141,3 +141,15 @@ When one of the design files is opened it contains the details of each of the ru
 
    SDOE file containing a created design
    
+To evaluate the designs that have been created, it is helpful to look at a number of summaries, including the criteria values and visualizing the spread of the design points throughout the region.
+
+In the **Created Designs** table, it is possible to see the criterion values for each of the designs. For **minimax** designs, the goal is to minimize how far away any point in the candidate set is away from a design point. Hence, smaller values of this criterion are better. It should be the case, that a larger design size will result in smaller values, as there are more design points to distribute throughout the input space, and hence any location should have a design point closer to it. When evaluating between different sizes of design, it is helpful to think whether the improvmenet in the design criterion justifies the additional budget from a larger design. 
+
+For **maximin** designs, the goal is to maximize the distance between nearest neighbors for all design points. So for designs of the same size, we want the distance between neighboring points to be as large as possible, as this means that we have achieved near equal spacing of the design points. However, when we are comparing designs of different sizes, then the maximin criterion can be a bit confusing. Adding more runs to the design will mean that nearest neighbors will need to get closer together, and hence we would expect that on averge the criterion value would get smaller for larger experiments. As with the minimax designs, we want to evaluate whether the closer packing of the design points from a larger experiment with worth the increase in cost for the additional runs.
+
+.. hint::
+   Note that the criterion values for **minimax** and **maximin** should not be compared - one is comparing distances between design points and the candidate points, while the other is comparing distnances between different design points. 
+   
+For all of the designs, it is important to us the **View** option to look at scatterplots of the chosen design. When **History** points have been incorporated into the design, the plots will show how the overall collection of points fill the input space. When examining the scatterplots, it is important to assess how close the design points have been placed to the edges of the region?, are there holes in the design space that are unacceptably large?, and does a larger design show a worthwhile improvement in the density of points to justify the additional expense? 
+
+Based on the comparison of the criterion values and the visualization of the spread of the points, the best design can be chosen that balances design performance with an appropriate use of the available budget. Recall, that with sequential design of experiments, runs that are not used in the early stages, might provide the opportunity for more runs at later stages. So the entire sequence of experimental runs should be considered when making choices about each stage.

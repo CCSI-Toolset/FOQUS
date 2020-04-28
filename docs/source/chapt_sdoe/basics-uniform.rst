@@ -141,7 +141,7 @@ When one of the design files is opened it contains the details of each of the ru
 
    SDOE file containing a created design
    
-To evaluate the designs that have been created, it is helpful to look at a number of summaries, including the criteria values and visualizing the spread of the design points throughout the region. 
+To evaluate the designs that have been created, it is helpful to look at a number of summaries, including the criteria values and visualizing the spread of the design points throughout the region. Recall that at the beginning of the design creation process we recommended constructing multiple designs, with different design sizes. By examining multiple designs, it is easier to determine which design is best suited to the requirements of the experiment.
 
 In the **Created Designs** table, it is possible to see the criterion values for each of the designs. For **minimax** designs, the goal is to minimize how far away any point in the candidate set is away from a design point. Hence, smaller values of this criterion are better. It should be the case, that a larger design size will result in smaller values, as there are more design points to distribute throughout the input space, and hence any location should have a design point closer to it. When evaluating between different sizes of design, it is helpful to think whether the improvmenet in the design criterion justifies the additional budget from a larger design. 
 

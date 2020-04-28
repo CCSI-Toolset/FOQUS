@@ -559,6 +559,9 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         nusf=None
         scatterLabel = 'Candidates'
 
+        filename = os.path.join(dirname, self.getData().getModelName())
+        self.getData().writeToCsv(filename, inputsOnly=True)
+
         dialog = sdoePreview(previewData, hname, dirname, nusf, scatterLabel, self)
         dialog.show()
 

@@ -128,6 +128,8 @@ When the SDOE module has completed the design creation process, the left window 
 As with the Uniform Space Filling designs, to see details of the design, the **View** button at the right hand side of each design row can be selected to show a table of the design, as well as a pairwise scatterplot of the input and weight columns for the chosen design. The table and plot of the design are similar in characteristics to their counterparts for the candidate set. If multiple designs were created with different **MWR** values (or using the different **Scaling Method** choices), it is helpful to examine the plots to compare their properties to those sought by the experimenter. A final choice should be made based on what is needed for the goals of the study.
 
 14.
-As with the Uniform Space Filling designs, to access the file with the generated design, go to the **SDOE_files** folder, and a separate folder will have been created for each of the designs. The structure of the folder and files corresponds to the same step in the Uniform Space filling design instructions.
+Similar to the Uniform Space Filling designs, to access the file with the generated design, go to the **SDOE_files** folder, and a separate folder will have been created for each of the designs. The structure of the folder and files corresponds to what was done in the Uniform Space filling design instructions. The labeling of the files is a bit different to reflect the choices that the user made in creating the design. For example, the file **nusf_d10_n1000_m30_Label+w+G+lldg+L+VAlues.csv** contains the design of size 10 (d10), generated from 1000 random starts (n1000), with the maximum weight ratio (MWR) set to 30 (m30). The columns from the file that were used include "Label", "w", "G", "lldg", "L" and "Values". 
 
-When one of the design files is opened it contains the details of each of the runs in the design, with the input factor levels that should be selected for that run.
+When one of the design files is opened it contains the details of each of the runs in the design, with the input factor levels that should be set for that run.
+
+To interpret the results

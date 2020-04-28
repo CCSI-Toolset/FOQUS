@@ -60,7 +60,8 @@ def run(config_file, nd, test=False):
             # if nusf, one of the columns is expected to be the weight vector
             i = types.index('Weight')  
             wcol = include[i]   # weight column name
-            wts = cand[wcol]    
+            include.sort(key=wcol.__eq__)
+            wts = cand[wcol]
             cand = cand.drop(columns=[wcol])
             xcols = list(cand)  # input column names
             cand[wcol] = wts

@@ -8,5 +8,4 @@ Contents
     :maxdepth: 2
 
     reference
-    file_formats
     tutorial/index

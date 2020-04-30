@@ -1,9 +1,11 @@
+.. _file_formats:
+
 File Formats
 ============
 
 Most UQ capabilities within FOQUS rely on PSUADE. As such, different UQ components require input files in PSUADE
 formats. CSV (comma-separated values) files are also compatible. The specific requirements are explained in the
-UQ section  :ref:`sec:_uq_tutorials` and section :ref:`sec:_ouu`.
+UQ section  :ref:`_uq_tutorials` and section :ref:`_ouu`.
 
 
 PSUADE Full File Format

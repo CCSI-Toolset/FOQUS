@@ -86,7 +86,7 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 #. **Load from File** loads a simulation ensemble from a sample file
    that conforms to the PSUADE full file format. (See Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__ for details on the PSUADE full
+   :ref:`_file_formats`for details on the PSUADE full
    file format.) The user can click **Save Selected** to save an
    existing ensemble as a PSUADE full file, and load it by clicking
    **Load from File** to perform further analyses.
@@ -415,7 +415,7 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 #. **Save Posterior Input Samples to File** checkbox, when selected,
    saves the posterior input samples as a PSUADE sample file (format
-   described in Section `[ap:psuadefiles] <#ap:psuadefiles>`__). This
+   described in Section :ref:`_file_formats`). This
    file characterizes the input uncertainty as a set of samples, which
    can be re-used in the **Simulation Ensemble Setup** dialog, to
    evaluate the outputs corresponding to these posterior input samples.
@@ -483,7 +483,7 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
    file). If the selected distribution for any input is “Sample”, then
    the following parameters are required: (1) the path of the sample
    file (which must conform to the sample format specified in Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__); (2) the output index that
+   :ref:`_file_formats`); (2) the output index that
    designates which output is to be used.
 
 #. In the **Sampling scheme** tab (Figure :ref:`fig:uq_sim_samplescheme`),
@@ -518,7 +518,7 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
    `[fig:uq_sim_loadsample] <#fig:uq_sim_loadsample>`__). This file must
    conform to the PSUADE full file format, the PSUADE sample format, or
    CSV file (all formats described in Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__). Note: This is the only place
+   :ref:`_file_formats`). Note: This is the only place
    where all the formats are supported. Once the file is loaded, the
    file name displays in the text box. These samples can now be used in
    the same way as an ensemble that was newly generated (as described

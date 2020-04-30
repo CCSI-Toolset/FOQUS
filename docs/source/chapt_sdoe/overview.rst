@@ -11,9 +11,9 @@ Uniform Space Filling  (USF) designs space design points evenly, or uniformly, t
 
 Non-Uniform Space Filling (NUSF) designs maintain the goal of having design points spread throughout the desired input space, but add a feature of being able to emphasize some regions more than others. This adds flexibility to the experimentation, when the user is able to tune the design to have as close to uniform as desired or as strongly concentrated in one or more regions as desired. This is newly  developed capability, which has just been introduced into the statistical and design of experiments literature, and has been added to the SDoE module. It provides the experimenter with the ability to tailor the design to what is needed. To use the Non-Uniform Space Filling design capability in the SDoE module, the requirements are that the candidate set contains (a) one column for each of the inputs to be used to construct the design, and (b) one column for the weights to be assigned to each candidate point, where larger values are weighted more heavily and will result in a higher density of points close to those locations. The Index column is again recommended, but not required.
 
-.. figure:: figs/0_design_overview.png
+.. figure:: figs/0_design_overview2.png
    :alt: Home Screen
-   :name: fig.design_overview
+   :name: fig.design_overview2
    
    Comparison of USF and NUSF designs
 

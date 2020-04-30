@@ -1,3 +1,5 @@
+.. _uq_tutorials:
+
 Tutorial
 ========
 

@@ -526,9 +526,6 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
 
    .. figure:: figs/overview/8_SimSetupLoad2.png
       :alt: Simulation Ensemble Setup Dialog, Load Samples Option
+      :name: fig:uq_sim_loadsample
 
       Simulation Ensemble Setup Dialog, Load Samples Option
-
-   [fig:uq_sim_loadsample]
-
-   [itm:uq_sim_last]

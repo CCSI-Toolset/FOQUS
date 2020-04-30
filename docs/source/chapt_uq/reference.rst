@@ -43,11 +43,11 @@ The UQ module enables the user to perform UQ studies on a flowsheet.
 From the Uncertainty button on the Home window, the user can configure
 different simulation ensembles (different sets of samples generated
 using different sampling schemes), run them, and perform analyses. This
-screen is illustrated in Figure :ref:`fig.uq_screen`.
+screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 .. figure:: figs/overview/1_UQScreen2.png
    :alt: Uncertainty Quantification Screen
-   :name: fig.uq_screen
+   :name: fig:uq_screen
 
    Uncertainty Quantification Screen
 

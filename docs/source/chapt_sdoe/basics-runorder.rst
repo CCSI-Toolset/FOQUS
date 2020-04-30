@@ -15,21 +15,27 @@ randomized experiment versus a larger non-randomized experiment.
 In this section we describe how to generate an efficient run order for a design created using the Uniform Space Filling or 
 Non-Uniform Space Filling design options.
 
-Once we created a design (USF or NUSF), it appears on the left panel. We click on the design we want to order (it turns highlighted with blue color as shown below). Then we find the button below named "Order Design". Clicking this button will order the design points and a pop up window will confirm the location of the newly ordered file (see below).Clock 'Yes' to continue. 
+Once we created a design (USF or NUSF), it appears on the left panel in the **Created Designs** table. Click on the design that we want to order (it is highlighted in blue as shown below). Then click on the button below named **Order Design**, to order the design points in an efficient run order that sequences the runs to favor having nearby points adjacent to each other in the run order. 
 
 .. figure:: figs/order_of_expt_2.png
    :alt: Home Screen
    :name: fig.order_of_expt_2
    
+   How to create an ordered design
+   
+A pop up window confirms the location of the newly ordered file (see below). Click 'Yes' to continue. 
+   
 .. figure:: figs/order_of_expt_3.png
    :alt: Home Screen
-   :name: fig.order_of_expt_3   
+   :name: fig.order_of_expt_3  
+   
+   Message window for new design created
    
 
-Both design files (located in the designated folder) will be in csv format which can be opened with your preferred application (e.g. Microsoft Excel). You can scatter plot the ordered design file either using FOQUS or any other external application. 
+Both design files (located in the designated folder) are saved in the csv format, which can be opened with your preferred application (e.g. Microsoft Excel). You can produce a scatterplot of the ordered design file either using FOQUS or any other external application. 
 
-The ordering scheme we created here is keeping the fact in mind that the user might want to design the experiment following the minimal path logic to traverse from one design point to another, i.e., minimal change of the experimental knobs. Often this would be a preferred operational logic to maintain the stability and efficiency of the experiment.
+The ordering scheme we created here is provides a method for the user to design the experimental run order that follows the minimal path distance to traverse from one design point to another, i.e., minimal changes the the experimental processes. Often this would be a preferred operational implementation to increase the efficiency of the experiment, by reducing the time for the process to reach equilibrium. The implementation provided uses the TSP (travelling sales person) algorithm as implemented in the 'mlrose' library in scikit-learn package for ordering/ranking the design points. 
 
-However, simple sequential ordering (ascending or descending) of one parameter at a time, if preferred for some reason, can be trivially done by the user from our SDoE generated design points, hence not given here.
+An alternative to this approach is a simple sequential ordering (ascending or descending) of the most expensive input factor. This is easily implemented by the user, and can be efficient for the running of the experiment, but should be used cautiously because the run order might confound other changes in the system during the implementation of the experiment.  
 
-For a more curious mind, we have used TSP (travelling sales person) algorithm as implemented in the 'mlrose' library in scikit-learn package for ordering/ranking our design points. 
+

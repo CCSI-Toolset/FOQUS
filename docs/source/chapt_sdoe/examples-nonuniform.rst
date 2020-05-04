@@ -1,7 +1,7 @@
 Example NUSF-1: Constructing Non-Uniform Space Filling maximin designs for a 2-D input space
 -----------------------------------------------------------------------------------------------
 
-For this first Non-Uniform Space Filling design example, the goal is to construct a non-uniform space-filling design with 15 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. The choice of how to construct the candidate set should be based on: a) what is the precision with which each of the inputs can be set in the experiment, and b) timing for generating the designs. Note that the finer the grid that is provided in the candidate set, the longer the search algorithm will take to run for a given number of random starts. In general a finer grid will give better options for the best design, but with diminishing returns after a large number of candidates have already been provided
+For this first Non-Uniform Space Filling design example, the goal is to construct a non-uniform space-filling design with 20 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. The choice of how to construct the candidate set should be based on: a) what is the precision with which each of the inputs can be set in the experiment, and b) timing for generating the designs. Note that the finer the grid that is provided in the candidate set, the longer the search algorithm will take to run for a given number of random starts. In general a finer grid will give better options for the best design, but with diminishing returns after a large number of candidates have already been provided
 
 As noted previously in the Basics section, in addition to specifying the candidate point input combinations, it is also required to supply an additional column of weights. This column will provide the necessary information about which regions of the input space should be emphasized more, and which should be emphasized less. The figure below shows some of the characteristics of the candidate set.
 
@@ -14,8 +14,35 @@ As noted previously in the Basics section, in addition to specifying the candida
 The candidates are laid out in a regular grid with equal spacing between levels of each of X1 and X2. A contour plot of the weight function that was used to generate the weights is shown on the left side of the plot. The weights range from -14.48 to 50, with the  largest values of the weights near the bottom right corner of the input space. The smallest values lie in the top left corner. On the right hand side, we can see a plot where the relative size of the points is proportionate to the size of the weight assigned to that candidate point. This second representation is helpful when the candidate points do not fall on a regular grid, or if the relationship for determining the weights is not smooth.
 
 Here is the process for generating NUSF designs for this problem:
+
 1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the "NUSFex1.csv" file from examples folder.
 
+.. figure:: figs/NUSFex1-loadfile.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-loadfile
+   
+   Ex NUSF1 choice of file for candidate set
+   
 2. Next, by selecting **View** and then **Plot** it is possible to see the grid of points that will be used as the candidate points. In this case, the range for each of the inputs, X1 and X2, has been chosen to be between -1 and 1.
 
-3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and the click on **Non-Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made.
+3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and the click on **Non-Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, the first choice for **Optimality Method Selection** is automatic, since the non-uniform space filling designs only use the **Maximin** criterion.
+The next choice is to choose the **Scaling Method**, where the choices are **Direct** and **Ranked**. The default is to use the Direct scaling which translates the weights provided with a linear transformation so that they lie in the range 1 to whatever **MWR** value is selected below. For this example, we are going to explore generating designs for both types of scaling as well as several MWR values. So initially we will begin with the Direct scaling.
+
+.. figure:: figs/NUSFex1-choices1.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-choices1
+   
+   Ex NUSF1 Choice of settings for generating NUSF designs
+   
+Next select the **Design size**, where here we have decided to construct a design with 20 runs.
+The choice of the **Maximum Weight Ratio** or **MWR** is one of the more difficult choices that the experimenter will need to make, since it is often one that they do not have much experience with. It is for this reason that we recommend constructing several designs with different MWR values and then comparing the results to see which value is best suited for the experiment to be run. Recall that a value of 1 corresponds to a uniform space filling design, while larger values will place increasing concentration of points near the regions with larger weight values. 
+In this case, we select to generate 3 designs, with **MWR** values of 5, 10 and 20. This should give a good variety of designs to choose from after they have been constructed.
+
+4. Once the choices for the design have been specified, click on the **Test SDOE** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran 30 random starts, it is estimated that the algorithm would take 17:38 minutes to generate the 3 designs with MWR values of 5, 10, 20. Note that the timing changes linearly, so using 40 random starts would take twice as long as using 20 random starts. Recall that the choice of the number of random starts involves a trade-off between getting the designs created quickly and the quality of the designs. For many applications, we would expect that using at lest 30 random starts would produce designs that are of good quality.
+
+.. figure:: figs/NUSFex1-timing.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-timing
+   
+   Ex NUSF1 specification of timing to generate the requested designs.
+   

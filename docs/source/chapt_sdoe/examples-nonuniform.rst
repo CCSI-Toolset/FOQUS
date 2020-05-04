@@ -89,7 +89,7 @@ The second plot is the more familiar scatterplot of the design points. It is cle
    :name: fig.NUSFex1-graph3
    
    Ex NUSF1 pairwise scatterplot for the constructed designs with MWR values of 10 and 20   
-   
+    
 When we compare the three designs, we can see that increasing the **MWR** produces a design that moves more of the points closer to the higher weight regions of the input space. This gives the user the control that is needed to create a customized design that matches the desired concentration of points in the regions where they are desired. After examinig the different summary plots for the three designs, the user can choose the plot that is the best match to their experimental needs
 
 Example NUSF-2: Constructing Non-Uniform Space Filling for a Carbon Capture example

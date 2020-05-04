@@ -76,9 +76,9 @@ The second plot is the more familiar scatterplot of the design points. It is cle
    
 7. The next step is to repeat the process for the other two designs created. In this case we can see that the NUSF designs for MWR values of 10 and 20 create even more concentrated designs in the region with higher weights. The figure below shows the collection of the CDBW plot for MWR values of 10 and 20. 
 
-.. figure:: figs/NUSFex1-CDBWplot.png
+.. figure:: figs/NUSFex1-CDBW.png
    :alt: Home Screen
-   :name: fig.NUSFex1-CDBWplot
+   :name: fig.NUSFex1-CDBW
    
    Ex NUSF1 Closest Distance by Weight (CDBW) plot for the constructed designs with MWR values of 10 and 20
    

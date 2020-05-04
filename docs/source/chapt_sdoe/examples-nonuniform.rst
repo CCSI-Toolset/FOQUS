@@ -60,7 +60,7 @@ There are also choices for which columns to include in the analysis. Here we use
 
 First, we describe the information that is contained in the CDBW plot. There are two portions to the plot. The lower section shows a histogram of the weights in the candidate set. Note that the range of values goes from 1 to the MWR value selected. For the figure below, we are looking at a design created with a MWR value of 5. The shape of the histogram shows what values were available to be selected from. The top portion of the plot, has a vertical line for each of the design points selected (in this case 15 vertical lines for 15 design points). The location of each vertical line shows the weight for the selected design point. In this case, the smallest weight selected had weight a bit below a value of 2, while there are several design points chosen that have weight close to the maximum possible (the MWR value). This allows the user to see how much emphasis was placed on getting the larger weight values into the design.
 
-.. figure:: figs/NUSFex1-NUSFex1-graph1.png
+.. figure:: figs/NUSFex1-graph1.png
    :alt: Home Screen
    :name: fig.NUSFex1-NUSFex1-graph1
    
@@ -68,9 +68,31 @@ First, we describe the information that is contained in the CDBW plot. There are
    
 The second plot is the more familiar scatterplot of the design points. It is clear that the non-uniform space filling approach has lived up to its name and has generated a design that has a greater emphasis of points for the larger weights. The design still provides space filling throughout the region, but with very different densities of points for the various regions.
 
-.. figure:: figs/NUSFex1-NUSFex1-graph2.png
+.. figure:: figs/NUSFex1-graph2.png
    :alt: Home Screen
    :name: fig.NUSFex1-NUSFex1-graph2
    
    Ex NUSF1 pairwise scatterplot for the constructed design with MWR values of 5
    
+7. The next step is to repeat the process for the other two designs created. In this case we can see that the NUSF designs for MWR values of 10 and 20 create even more concentrated designs in the region with higher weights. The figure below shows the collection of the CDBW plot for MWR values of 10 and 20. 
+
+.. figure:: figs/NUSFex1-CDBWplot.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-NUSFex1-CDBWplot
+   
+   Ex NUSF1 Closest Distance by Weight (CDBW) plot for the constructed designs with MWR values of 10 and 20
+   
+ When we compare the three CDBW plots for the designs with MWR of 5, 10 and 20, we see that more of the points are shifted to the right closer to the maximum weight value as we increase the MWR value. This gives control to the user to adjust the relative density of points for different weights.
+   
+.. figure:: figs/NUSFex1-graph3.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-NUSFex1-graph3
+   
+   Ex NUSF1 pairwise scatterplot for the constructed designs with MWR values of 10 and 20   
+   
+When we compare the three designs, we can see that increasing the **MWR** produces a design that moves more of the points closer to the higher weight regions of the input space. This gives the user the control that is needed to create a customized design that matches the desired concentration of points in the regions where they are desired. After examinig the different summary plots for the three designs, the user can choose the plot that is the best match to their experimental needs
+
+Example NUSF-2: Constructing Non-Uniform Space Filling for a Carbon Capture example
+-----------------------------------------------------------------------------------------------
+
+For this second Non-Uniform Space Filling design example,

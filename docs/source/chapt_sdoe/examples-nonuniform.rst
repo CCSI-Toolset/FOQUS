@@ -50,9 +50,9 @@ There are also choices for which columns to include in the analysis. Here we use
    
 5. Once the algorithm has generated the designs, the left box called **Created Designs** populates with the 3 designs that we have created. Some of the key choices of the designs are summarized in the columns. The size of the design, the MWR value and the number of random starts are all noted. In addition, the time to create the design is also included. The criterion value is provided. Recall from the discussion in the Basics section, that the criterion value can be compared for designs of the same size and with the same MWR value, but should not be compared across design sizes or across different MWR values.
 
-.. figure:: figs/NUSFex1-NUSFex1-createddesign.png
+.. figure:: figs/NUSFex1-createddesign.png
    :alt: Home Screen
-   :name: fig.NUSFex1-NUSFex1-createddesign
+   :name: fig.NUSFex1-createddesign
    
    Ex NUSF1 created designs for three MWR values of 5, 10 and 20
    

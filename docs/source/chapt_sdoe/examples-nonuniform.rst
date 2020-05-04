@@ -78,7 +78,7 @@ The second plot is the more familiar scatterplot of the design points. It is cle
 
 .. figure:: figs/NUSFex1-CDBWplot.png
    :alt: Home Screen
-   :name: fig.NUSFex1-NUSFex1-CDBWplot
+   :name: fig.NUSFex1-CDBWplot
    
    Ex NUSF1 Closest Distance by Weight (CDBW) plot for the constructed designs with MWR values of 10 and 20
    
@@ -86,7 +86,7 @@ The second plot is the more familiar scatterplot of the design points. It is cle
    
 .. figure:: figs/NUSFex1-graph3.png
    :alt: Home Screen
-   :name: fig.NUSFex1-NUSFex1-graph3
+   :name: fig.NUSFex1-graph3
    
    Ex NUSF1 pairwise scatterplot for the constructed designs with MWR values of 10 and 20   
    

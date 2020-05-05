@@ -138,7 +138,25 @@ In the **Created Designs** table, it is possible to see the criterion values for
 
 Making comparisons for designs with different **MWR** values based on the design criterion is not recommended, because the distance metric that is embedded in the non-uniform space filling design approach adjusts based on the selected MWR value. Hence, it is not possilbe to make a direct comparison or easy interpretation of the values from the criterion for this approach. 
    
-Hence for the NUSF designs, it is critical to use the **View** option to look at scatterplots of the chosen design. When **History** points have been incorporated into the design, the plots will show how the overall collection of points fill the input space. When examining the scatterplots, it is important to assess whether the increase in concentration of pints is located in the desired region?, is the degree of non-uniformity what was desired?, how close the design points have been placed to the edges of the region?, are there holes in the design space that are unacceptably large?, and does a larger design show a worthwhile improvement in the density of points to justify the additional expense? 
+Hence for the NUSF designs, it is critical to use the **View** option to look at graphical summaries of the designs. Two plots are produced: The first is the **Closest Distance by Weight (CDBW) plot**, and the second is the more familiar **pairwise scatterplot** of the created design.
+
+First, we describe the information that is contained in the CDBW plot. There are two portions to the plot. The lower section shows a histogram of the weights in the candidate set. Note that the range of values goes from 1 to the MWR value selected. For the figure below, we are looking at a design created with a MWR value of 5. The shape of the histogram shows what values were available to be selected from the candidate set. The top portion of the plot, has a vertical line for each of the design points selected (in this case 15 vertical lines for 15 design points). The location of each vertical line shows the weight for the selected design point.  
+
+.. figure:: figs/NUSFex1-graph1.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-NUSFex1-graph1
+   
+   A sample Closest Distance by Weight (CDBW) plot for a 15-run design with MWR value of 5
+   
+Second, a pairwise scatter plot of the design is provided to see how the design points fill the input space. Since the spread of the points throughout the design space is intentionally non-uniform, it is helpful to see how the distribution matches up with the specfied weights provided in the candidate set. Recall that larger values of MWR lead to designs that are less evenly distributed, while MWR values that approach 1 will become closer to uniform.
+
+.. figure:: figs/NUSFex1-graph2.png
+   :alt: Home Screen
+   :name: fig.NUSFex1-NUSFex1-graph2
+   
+   A sample pairwise scatterplot for the constructed design with 15 runs and a MWR value of 5
+   
+When **History** points have been incorporated into the design, the plots will show how the overall collection of points fill the input space. When examining the scatterplots, it is important to assess whether the increase in concentration of pints is located in the desired region?, is the degree of non-uniformity what was desired?, how close the design points have been placed to the edges of the region?, are there holes in the design space that are unacceptably large?, and does a larger design show a worthwhile improvement in the density of points to justify the additional expense? 
 
 Recall that the effect of different MWR values depends on the size of the design, the spread of weights provided across the candidate points and the shape of the input region of interest. Hence, constructing several designs and comparing them can be an effective approach for obtaining the right design.
 

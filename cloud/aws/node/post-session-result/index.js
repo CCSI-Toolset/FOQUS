@@ -17,6 +17,7 @@ const uuidv4 = require('uuid/v4');
 const AWS = require('aws-sdk');
 const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
+const Set = require("collections/set");
 
 // Returns page number
 // session/{name}/result/{generator}
@@ -66,6 +67,8 @@ exports.handler = function(event, context, callback) {
             var job_ms = 0;
             var max_job_ms = 0;
             var page_ms = 0;
+            var job_id = "";
+            const job_paged_set = new Set();
             log("getS3Objects: " + JSON.stringify(response));
 
             if (response.IsTruncated) {
@@ -77,11 +80,20 @@ exports.handler = function(event, context, callback) {
             for (var index = 0; index < response.Contents.length; ++index) {
               var key = response.Contents[index].Key;
               if (key.includes('/page/')) {
-                if (key.includes('/page/milliseconds/')) {
-                  page_ms = Math.max(page_ms, parseInt(key.split('/')[5]));
-                  log(`key: ${key}`);
-                  log(`page_ms: ${page_ms} ${parseInt(key.split('/')[5])}`)
+                //byron/session/21c0971a-b25b-40ac-ba07-bd1b487a2d6b/page/milliseconds/1588077775166.json
+                if (key.includes('/page/number/')) {
+                  //page_ms = Math.max(page_ms, parseInt(key.split('/')[5]));
+                  //log(`key: ${key}`);
+                  //log(`page_ms: ${page_ms} ${parseInt(key.split('/')[5])}`)
                   next_page_number +=1
+                }
+                continue;
+              }
+              if (key.includes('/paged/')) {
+                if (key.includes('/paged/job/')) {
+                  job_id = key.split('/')[5];
+                  log(`paged job: ${job_id}`);
+                  job_paged_set.add(job_id);
                 }
                 continue;
               }
@@ -93,14 +105,21 @@ exports.handler = function(event, context, callback) {
                 Bucket: s3_bucket_name,
                 Key: key,
               };
+              // byron/session/{session_id}/finished/{milliseconds}/success/{job_id}.json
               if (key.includes('/finished/')) {
-                job_ms = parseInt(key.split('/')[4]);
-                log(`job_ms ${job_ms}`);
-                if (job_ms > page_ms) {
-                  log(`promise: get ${key}`)
-                  max_job_ms = Math.max(max_job_ms, job_ms);
+                //job_ms = parseInt(key.split('/')[4]);
+                //log(`job_ms ${job_ms}`);
+                //if (job_ms > page_ms) {
+                  //log(`promise: get ${key}`)
+                  //max_job_ms = Math.max(max_job_ms, job_ms);
+
+                job_id = key.split('/')[6].split('.')[0];
+                if (!job_paged_set.has(job_id)) {
+                  log(`page job: ${job_id}`)
                   let promise = s3.getObject(params).promise();
                   promises.push(promise);
+                } else {
+                  log(`job already paged: ${job_id}`)
                 }
               }
             }
@@ -111,6 +130,10 @@ exports.handler = function(event, context, callback) {
                 var data = values[i];
                 var obj = JSON.parse(data.Body.toString('ascii'));
                 page.push(obj);
+                // ledger of paged jobs
+                var key = `${user_name}/session/${session_id}/paged/job/${obj.Id}`;
+                var requestx = s3.putObject({Bucket: s3_bucket_name, Key: key, Body: JSON.stringify(obj)});
+                requestx.promise();
               }
               log(`pagelen: ${page.length}`);
               if (page.length == 0) {
@@ -120,11 +143,12 @@ exports.handler = function(event, context, callback) {
                 handleDone();
                 return;
               }
-              var key = `${user_name}/session/${session_id}/page/milliseconds/${max_job_ms}.json`;
+              //var key = `${user_name}/session/${session_id}/page/milliseconds/${max_job_ms}.json`;
               var content = JSON.stringify(page);
               var request = s3.putObject({Bucket: s3_bucket_name, Key: key, Body: content});
               var key = `${user_name}/session/${session_id}/page/number/${next_page_number}.json`;
               var request2 = s3.putObject({Bucket: s3_bucket_name, Key: key, Body: content});
+
               request2.promise();
               request.promise().then(handleDone).catch(handleError);
             });

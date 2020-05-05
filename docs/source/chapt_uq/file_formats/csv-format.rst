@@ -1,3 +1,5 @@
+:orphan:
+
 .. _csv-format:
 
 Comma Separated Values Format

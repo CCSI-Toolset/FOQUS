@@ -1,3 +1,5 @@
+:orphan:
+
 .. _sample-format:
 
 PSUADE Sample Format

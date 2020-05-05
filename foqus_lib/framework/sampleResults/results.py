@@ -145,6 +145,15 @@ def search_term_list(st):
 
 
 class Results(pd.DataFrame):
+
+    @property
+    def _constructor(self):
+        return Results
+
+    @property
+    def _constructor_sliced(self):
+        return pd.Series
+
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
         if "set" not in self.columns:

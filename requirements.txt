@@ -1,16 +1,16 @@
-sip==4.19.8
-boto3
-PyQt5==5.13.*
-boto3
-psutil
-sphinx
-sphinx_rtd_theme
-matplotlib
-scipy
-numpy
-cma
-tqdm
-pandas>0.20
-pywin32; sys_platform == 'win32'
-adodbapi>=2.6.0.7; sys_platform == 'win32'
-TurbineClient
+--index-url https://pypi.python.org/simple/
+
+# The end-user requirements list has moved into setup.py in the install_requires
+# list.
+
+# This file should stay empty of new requirements (other than the "-e ." below)
+
+# Developers should now use "pip install -r requirements.txt" (or "pip install -e .")
+# to setup their development environments (don't use "python setup.py [install|develop]").
+
+# Developer needed requirements (sphinx, pytest, etc.) should go in
+# requirement-dev.txt and can be installed with "pip install -r requirement-dev.txt"
+# (which is a superset of what "pip install -r requirements.txt" will install.
+
+# Pick up requirements from setup.py
+-e .

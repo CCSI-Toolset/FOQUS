@@ -62,8 +62,8 @@
           <property name="title">
            <string>Ensemble Selection</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="0" column="0">
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
             <layout class="QGridLayout" name="gridLayout_3">
              <property name="sizeConstraint">
               <enum>QLayout::SetNoConstraint</enum>
@@ -151,20 +151,7 @@ saved as a .csv file.</string>
              </item>
             </layout>
            </item>
-           <item row="0" column="1">
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="1" column="0" colspan="2">
+           <item>
             <widget class="QTableWidget" name="filesTable">
              <property name="baseSize">
               <size>
@@ -210,38 +197,42 @@ selection-color: rgb(0, 0, 0);</string>
              </column>
             </widget>
            </item>
-           <item row="2" column="1">
-            <widget class="QPushButton" name="confirmButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to confim aggregation of
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="confirmButton">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Click to confim aggregation of
 candidate and history files.</string>
-             </property>
-             <property name="text">
-              <string>Confirm</string>
-             </property>
-             <property name="autoRepeatDelay">
-              <number>300</number>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
+               </property>
+               <property name="text">
+                <string>Confirm</string>
+               </property>
+               <property name="autoRepeatDelay">
+                <number>300</number>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
@@ -264,25 +255,8 @@ candidate and history files.</string>
           <property name="title">
            <string>Ensemble Aggregation</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_5">
-           <item row="1" column="2">
-            <widget class="QPushButton" name="analyzeButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to create a uniform 
-space filling design</string>
-             </property>
-             <property name="text">
-              <string>Uniform Space Filling</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="1" column="0">
             <widget class="QPushButton" name="backSelectionButton">
              <property name="font">
               <font>
@@ -298,18 +272,33 @@ space filling design</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <spacer name="horizontalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+           <item row="1" column="2">
+            <widget class="QPushButton" name="analyzeNUSFButton">
+             <property name="toolTip">
+              <string>Click to create a non-uniform 
+space filling design</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
+             <property name="text">
+              <string>Non-Uniform Space Filling</string>
              </property>
-            </spacer>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QPushButton" name="analyzeButton">
+             <property name="font">
+              <font>
+               <weight>50</weight>
+               <bold>false</bold>
+              </font>
+             </property>
+             <property name="toolTip">
+              <string>Click to create a uniform 
+space filling design</string>
+             </property>
+             <property name="text">
+              <string>Uniform Space Filling</string>
+             </property>
+            </widget>
            </item>
            <item row="0" column="0" colspan="3">
             <widget class="QTableWidget" name="aggFilesTable">

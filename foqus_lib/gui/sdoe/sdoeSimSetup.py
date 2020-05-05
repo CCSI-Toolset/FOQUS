@@ -161,11 +161,9 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         self.doneButton.setEnabled(self.samplesGenerated)
 
     def makeAllFixed(self):
-#        self.setAllTypeButtons(Model.FIXED)
         self.distTable.makeAllFixed()
 
     def makeAllVariable(self):
-#        self.setAllTypeButtons(Model.VARIABLE)
         self.distTable.makeAllVariable()
 
 
@@ -345,10 +343,8 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         # Gather all info into SampleData object
         if isinstance(self.model, Model):
             model = copy.deepcopy(self.model)
-#            runData = SampleData(self.model)
         else:
             model = copy.deepcopy(self.model.model)
-#            runData = copy.deepcopy(self.model)
 
         # Gather distributions from distribution table
         types = []
@@ -524,7 +520,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         selectedInputData = selectedRunData.getInputData()
 
         # Add fixed inputs back in
-##        print runData.getNumSamples()
         fullInputData = [0] * runData.getNumSamples()
         for row in range(runData.getNumSamples()):
             rowData = []
@@ -543,10 +538,8 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         #Handle archive of METIS file
         if self.runData.getSampleMethod() == SamplingMethods.METIS:
             if self.currentArchiveData is not None:
-                #Common.removeArchive(self.currentArchive)
                 self.currentArchiveData.removeArchiveFolder()
                 pass
-            #Common.archiveFile('psuadeMetisInfo', self.runData.getID())
             self.runData.archiveFile('psuadeMetisInfo')
             self.currentArchiveData = self.runData
 
@@ -563,8 +556,10 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         previewData = self.runData
         hname = None
         dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+        nusf=None
+        scatterLabel = 'Candidates'
 
-        dialog = sdoePreview(previewData, hname, dirname, self)
+        dialog = sdoePreview(previewData, hname, dirname, nusf, scatterLabel, self)
         dialog.show()
 
     ### Return data

@@ -416,24 +416,24 @@ class LocalExecutionModule(object):
         # process header
         k = 0
         header = lines[k]
-        nums = header.split()
-        numSamples = int(nums[0])
-        numInputs = int(nums[1])
+        nums = header.split(",")
+#        numSamples = int(nums[0])
+#        numInputs = int(nums[1])
+        numSamples = nlines - 1
+        numInputs = len(nums)
         numOutputs = 0
-        if len(nums) == 3:
-            numOutputs = int(nums[2])
 
         # process samples
         data = [None]*numSamples
         for i in range(nlines-k-1):
             line = lines[i+k+1]
-            nums = line.split()
+            nums = line.split(",")
             data[i] = [float(x) for x in nums]
 
         # split samples
         data = numpy.array(data)
         if hasColumnNumbers:
-            inputData = data[:,1:numInputs+1]
+            inputData = data[:,0:numInputs+1]
         else:
             inputData = data[:,:numInputs]
         inputArray = numpy.array(inputData, dtype = float, ndmin = 2)

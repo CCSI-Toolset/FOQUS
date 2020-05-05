@@ -3,16 +3,17 @@
 
 # You can set these variables from the command line.
 # DATE          = $(shell date +%Y-%m-%d_%H%M%S)
-SPHINXOPTS    = -w sphinx-build.log -T 
+SPHINXOPTS    = -w sphinx-build.log
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
 SCRIPTDIR     = scripts
+CLOPTS        =
 
 # Internal variables.
 PAPEROPT_a4     = -D latex_paper_size=a4
 PAPEROPT_letter = -D latex_paper_size=letter
-ALLSPHINXOPTS   = -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
+ALLSPHINXOPTS   = $(CLOPTS) -d $(BUILDDIR)/doctrees $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 # the i18n builder cannot share the environment and doctrees with the others
 I18NSPHINXOPTS  = $(PAPEROPT_$(PAPER)) $(SPHINXOPTS) source
 
@@ -56,7 +57,7 @@ clean:
 
 .PHONY: apidoc
 apidoc:
-	sphinx-apidoc -fM --separate -o source/apidoc ../idaes ../idaes/tests "../idaes/*/tests"
+	sphinx-apidoc -fM --separate -o source/apidoc ../foqus_lib ../foqus_lib/tests "../foqus_lib/*/tests"
 
 .PHONY: dep
 dep: apidoc

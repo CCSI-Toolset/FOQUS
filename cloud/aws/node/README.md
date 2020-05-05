@@ -74,6 +74,11 @@ HTTP BASIC Authorization using DynamoDB table for user accounts
 Listens on the `FOQUS_UPDATE_TOPIC` for notifications concerning jobs, workers, sessions.  These notifications are state changes.  Most of the `post-session*` lambda functions send processing requests to this TOPIC.
 ### foqus-fake-job-runner
 Listens on a SQS queue for job submissions and moves them to a 'success' state by publishing updates to the `FOQUS_UPDATE_TOPIC` .
+#### dynamo-stream-trigger
+##### AWS DynamoDB
+Set to trigger on a `DynamoDB` table, will receive updates including expired/deleted entries.
+This function will perform cleanup for expired `Consumers` who may have exited
+while running a `Job`, the job should be moved to `error`.
 
 ### Deployment Notes
 #### https://stackoverflow.com/questions/40149788/aws-api-gateway-cors-ok-for-options-fail-for-post

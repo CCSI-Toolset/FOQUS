@@ -82,7 +82,7 @@ The second plot is the more familiar scatterplot of the design points. It is cle
    
    Ex NUSF1 Closest Distance by Weight (CDBW) plot for the constructed designs with MWR values of 10 and 20
    
- When we compare the three CDBW plots for the designs with MWR of 5, 10 and 20, we see that more of the points are shifted to the right closer to the maximum weight value as we increase the MWR value. This gives control to the user to adjust the relative density of points for different weights.
+When we compare the three CDBW plots for the designs with MWR of 5, 10 and 20, we see that more of the points are shifted to the right closer to the maximum weight value as we increase the MWR value. This gives control to the user to adjust the relative density of points for different weights.
    
 .. figure:: figs/NUSFex1-graph3.png
    :alt: Home Screen

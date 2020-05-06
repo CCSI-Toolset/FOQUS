@@ -78,6 +78,7 @@ The user can specify up to 5 **MWR** values, where for each of the **MWR** boxes
 
 .. note::
     Here are some recommendations about the role of the MWR value and the choice of scaling:
+
 a. Think about changes to the MWR as multiplicative or exponential (e.g. 1 - 2 - 4 - 8 - 16), not linear (e.g. 1 - 2 - 3 - 4 - 5).
 b. If there are many candidate points that should be weighted approximately equally, the direct weight scaling might be more appropriate. The ranked weighting tends to spread out the final weights for similar values.
 c. If the original candidate set weight distribution is close to uniformly distributed, then the **Ranked MWR** and **Direct MWR** scalings will produce very similar designs.
@@ -144,7 +145,7 @@ First, we describe the information that is contained in the CDBW plot. There are
 
 .. figure:: figs/NUSFex1-graph1.png
    :alt: Home Screen
-   :name: fig.NUSFex1-NUSFex1-graph1
+   :name: fig.basics-NUSFex1-graph1
    
    A sample Closest Distance by Weight (CDBW) plot for a 15-run design with MWR value of 5
    
@@ -152,7 +153,7 @@ Second, a pairwise scatter plot of the design is provided to see how the design 
 
 .. figure:: figs/NUSFex1-graph2.png
    :alt: Home Screen
-   :name: fig.NUSFex1-NUSFex1-graph2
+   :name: fig.basics-NUSFex1-graph2
    
    A sample pairwise scatterplot for the constructed design with 15 runs and a MWR value of 5
    

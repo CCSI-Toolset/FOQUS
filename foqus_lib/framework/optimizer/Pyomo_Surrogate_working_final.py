@@ -160,6 +160,12 @@ class opt(optimization):
         desc="Fractional Reduction in Surrogate Modeling Space")
         
         self.options.add(
+        name='nLHS', 
+        default=10,
+        dtype=float,
+        desc="Number of latin hypercube samples for generating modified surrogate model")
+        
+        self.options.add(
         name='tee', 
         default=True,
         desc="Display of solver iterations in terminal/anaconda prompt")
@@ -279,6 +285,8 @@ class opt(optimization):
         Maxiter_Algo = self.options['Maxiter_Algo'].value
         
         alpha = self.options['Alpha'].value
+        
+        num_lhs = self.options['nLHS'].value
         
         tee = self.options['tee'].value
         
@@ -806,7 +814,7 @@ class opt(optimization):
 
 #            Creating Latin Hypercube Samples within the shrunk bounds
             sampling = LHS(xlimits=surrin_bounds_arr)
-            num = 10
+            num = num_lhs
             # samples * variables value array
             latin_hypercube_samples = sampling(num)
             print(latin_hypercube_samples)

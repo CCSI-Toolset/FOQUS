@@ -19,7 +19,7 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Candidate Grid
    
-3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and the click on **Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optiimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, change the column called **Label** to be **Index**. This will mean that the design is not constructed using this as an input, but rather that the identifiers in this column will help identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
+3. Next, click on **Confirm** to advance to the **Ensemble Aggregation** Window, and then click on **Uniform Space Filling** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, change the column called **Label** to be **Index**. This will mean that the design is not constructed using this as an input, but rather that the unique identifiers in this column will help identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
 
 .. figure:: figs/Ex1U_3_mM_choices.png
    :alt: Home Screen
@@ -66,7 +66,7 @@ To load in the experimental runs that were already collected, click on **Load fr
 
 2. Click on the **Confirm** button at the bottom right of the **Ensemble Selection** box. This will activate the **Ensemble Aggregation** box.
 
-3. After examining that the desired files have been selected, click on the the **Uniform Space Filling** button at the bottom right corner of the **Ensemble Aggregation** window. This will open the second SDOE window that shows the **Sequential Design of Experiments Set-Up** window on the right hand side.
+3. After examining that the desired files have been selected, click on the **Uniform Space Filling** button at the bottom right corner of the **Ensemble Aggregation** window. This will open the second SDOE window that shows the **Sequential Design of Experiments Set-Up** window on the right hand side.
 
 4. Select **Minimax** or **Maximin** for the type of design to create.
 
@@ -78,16 +78,16 @@ To load in the experimental runs that were already collected, click on **Load fr
 
 8. Select the number of random starts to use, based on available time. Recall that using more random starts is likely to produce a design that is closer to the overall best optimum.
 
-9. When the SDOE module has created the design(s) and the left window **Created Designs** is populated with the new design(s). These can be viewed with the **View** option, where the plot now shows the **History Data** with one symbol, and the newly added possible design with another symbol. This allows better assessment of the appropriateness of the new design subject to the data that have already been collected.
+9. After the SDOE module has created the design(s), the left window **Created Designs** is populated with the new design(s). These can be viewed with the **View** option, where the plot now shows the **History Data** with one symbol, and the newly added possible design with another symbol. This allows better assessment of the appropriateness of the new design subject to the data that have already been collected.
 
 10. To access the file that contains the created designs, go to the **SDOE_files** folder. As before, a separate folder will have been created for each design.
 
-11. If there is a desire to do another set in the sequential design, then the proceedure outlined above for Example 2 can be followed again. The only change will be that this time there will be 3 files that need to be imported: A **Candidate** file from which new runs can be selected, and two **History** files. The first of these files will be the selected design from Example USF-1, and the second the newly created design that was run as a result of Example USF-2. When the user clicks on **Confirm** in the **Ensemble Selection** window, the two **History** files will be aggregated into a single **Aggregated History** file.
+11. If there is a desire to do another set in the sequential design, then the procedure outlined above for Example 2 can be followed again. The only change will be that this time there will be 3 files that need to be imported: A **Candidate** file from which new runs can be selected, and two **History** files. The first of these files will be the selected design from Example USF-1, and the second the newly created design that was run as a result of Example USF-2. When the user clicks on **Confirm** in the **Ensemble Selection** window, the two **History** files will be aggregated into a single **Aggregated History** file.
 
 Example USF-3: A Uniform Space Filling Design for a Carbon Capture example in a 5-D input space
 -----------------------------------------------------------------------------------------------
 
-In this example, we consider a more realistic scenario of a sequential design of experiment. Here we explore a 5-dimensional input space with G, lldg, CapturePerc, L and SteamFlow denoting the space that we wish to explore with a space-filling design. the candidate set, **Candidate Points 8perc**, contains 93 combinations of inputs that have been validated using an ASPEN model as possible combinations for this scenario. The goal is to collect 18 runs in two stages that fill the input space. There are some constraints on the inputs, that make the viable region irregular, and hence the candidate set is useful to avoid regions where it would be problematic to collect useful data.
+In this example, we consider a more realistic scenario of a sequential design of experiment. Here we explore a 5-dimensional input space with G, lldg, CapturePerc, L and SteamFlow denoting the space that we wish to explore with a space-filling design. The candidate set, **Candidate Points 8perc**, contains 93 combinations of inputs that have been validated using an ASPEN model as possible combinations for this scenario. The goal is to collect 18 runs in two stages that fill the input space. There are some constraints on the inputs, that make the viable region irregular, and hence the candidate set is useful to avoid regions where it would be problematic to collect data.
 
 1. After selecting the **SDOE** tab in FOQUS, click on **Load from File** and select the candidate file, **Candidate Points 8perc**. 
 
@@ -129,7 +129,7 @@ In this example, we consider a more realistic scenario of a sequential design of
    
    Ex 3 chosen experiment for first stage
    
-6. After these runs have been collected, the experimenter wants to collect additional runs. In this case, return to the first SDOE module window, and load in the candidate set (which can be change to reflect any knowledge gained during the first phase, such as undesirable regions or new combinations to include). The completed experiment should also be included as a **Hitory** file, by going to the **SDOE_files** folder and selecting the file containing the appropriate design.
+6. After these runs have been collected, the experimenter wants to collect additional runs. In this case, return to the first SDOE module window, and load in the candidate set (which can be changed to reflect any knowledge gained during the first phase, such as undesirable regions or new combinations to include). The completed experiment should also be included as a **History** file, by going to the **SDOE_files** folder and selecting the file containing the appropriate design.
 
 .. figure:: figs/Ex3_ensemble_w_history.png
    :alt: Home Screen
@@ -137,7 +137,7 @@ In this example, we consider a more realistic scenario of a sequential design of
    
    Ex 3 ensemble selection box for second stage
    
-7. After clicking **Confirm** in the **Ensemble Selection** box, and then **Uniform Space Filling** from the **Ensemble Aggregation** box, the **SDOE Set-up** box will appear on the right side of the second window. Here, select the options desired for the experiment to be run. For the illustrated figure, we selected a **Minimax** design with a design sizes of 6 (to use the remaining available budget). We again specified that the column **Test No.** will be used as the Index, **G, lldg, CapturePerc, L, SteamFlow** will define the same 5 factors to be used as inputs. 
+7. After clicking **Confirm** in the **Ensemble Selection** box, and then **Uniform Space Filling** from the **Ensemble Aggregation** box, the **SDOE Set-up** box will appear on the right side of the second window. Here, select the options desired for the experiment to be run. For the illustrated figure, we selected a **Minimax** design with a design size of 6 (to use the remaining available budget). We again specified that the column **Test No.** will be used as the Index, **G, lldg, CapturePerc, L, SteamFlow** will define the same 5 factors to be used as inputs. 
 
 .. figure:: figs/Ex3_setup_round2.png
    :alt: Home Screen

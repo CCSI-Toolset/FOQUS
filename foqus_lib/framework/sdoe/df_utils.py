@@ -9,7 +9,7 @@ def write(fname, df):
 def load(fname):
     # load file as data frame
     df = pd.read_csv(fname)
-    df.rename(columns=lambda x: x.strip())
+    df.rename(columns=lambda x: x.strip(), inplace=True)
     return df
 
 

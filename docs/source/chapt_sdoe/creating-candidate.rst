@@ -59,7 +59,8 @@ Once the user has decided on which file to use, click on the OK button and the f
 
 Decide on the type of input (variable or fixed) and the probability distribution function desired. If the input is set
 to variable, the user can modify minimum and maximum values to define the range over which sampling should be drawn. If
-input is set to fixed, then click on the **Sampling Scheme** tab and you’ll see the following menu:
+input is set to fixed, then user selects the default value that will be used for all samples. Then click on the
+**Sampling Scheme** tab and you’ll see the following menu:
 
 .. figure:: figs/samplingScheme.png
    :alt: Sampling Scheme Tab

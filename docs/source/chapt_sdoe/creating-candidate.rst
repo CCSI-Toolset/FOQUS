@@ -40,7 +40,7 @@ candidate set. The following menu will appear:
 The user can select between two options: using a history file or a template file.
 
 #. **History File.** An existing .csv file with historical data is required. If this option is selected, then the inputs
-to be used in the candidate set are extracted from the columns of the file.
+   to be used in the candidate set are extracted from the columns of the file.
 
 #. **Template File.** The template file should be a simple comma separated values (.csv) file with at least three rows:
 

@@ -280,14 +280,19 @@ class surrogateMethod(surrogate):
                 "term penalizing model size is used for model building. "
                 "In this case, the size of the model is weighted "
                 "by CONPEN.")
+        self.screener = {
+            "No Screening":1,
+            "Screening with Lasso":2,
+            "Screening with sure independence screener":3
+            }
         self.options.add(
-            name="REGULARIZER",
+            name="SCREENER",
             section="Model Settings",
-            default=False,
+            default="No Screening",
             desc="Regularization method is used to reduce the number of "
                 "potential basis functions before optimization.",
-            hint="If true, "
-                "regularization with the LASSO is used.")
+            hint="",
+            validValues = sorted(list(self.screener.keys()), key=lambda k: self.screener[k]))
         self.options.add(
             name="SCALEZ",
             section="Model Settings",
@@ -622,7 +627,7 @@ class surrogateMethod(surrogate):
         cosfcns = int(self.options['COSFCNS'].value)
         custombas = list(map(str, self.options['CUSTOMBAS'].value))
         convpen = self.options['CONVPEN'].value
-        regularizer = int(self.options['REGULARIZER'].value)
+        screener = int(self.options['SCREENER'].value)
         mipoptca = self.options['MIPOPTCA'].value
         mipoptcr = self.options['MIPOPTCR'].value
         linearerror = int(self.options['LINEARERROR'].value)
@@ -689,7 +694,7 @@ class surrogateMethod(surrogate):
             af.write("maxtime {0}\n".format(maxtime))
             af.write("modeler {0}\n".format(modeler))
             af.write("convpen {0}\n".format(convpen))
-            af.write("regularizer {0}\n".format(regularizer))
+            af.write("screener {0}\n".format(screener))
             af.write("mipoptca {0}\n".format(mipoptca))
             af.write("mipoptcr {0}\n".format(mipoptcr))
             af.write("linearerror {0}\n".format(linearerror))

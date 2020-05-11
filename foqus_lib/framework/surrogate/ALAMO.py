@@ -238,6 +238,18 @@ class surrogateMethod(surrogate):
             desc="Cosine functions are considered as basis functions if "
                 "true; otherwise, they are not considered.")
         self.options.add(
+            name="LINFCNS",
+            section="Model Settings",
+            default=False,
+            desc=" Linear functions are considered as basis functions if true;"
+            "otherwise, they are not considered.")
+        self.options.add(
+            name="CONSTANT",
+            section="Model Settings",
+            default=False,
+            desc=" A constant will be considered as a basis function if true;"
+            "otherwise, its not considered.")
+        self.options.add(
             name="CUSTOMBAS",
             section="Model Settings",
             default = [],
@@ -281,9 +293,9 @@ class surrogateMethod(surrogate):
                 "In this case, the size of the model is weighted "
                 "by CONPEN.")
         self.screener = {
-            "No Screening":1,
-            "Screening with Lasso":2,
-            "Screening with sure independence screener":3
+            "No Screening":0,
+            "Screening with Lasso":1,
+            "Screening with sure independence screener":2
             }
         self.options.add(
             name="SCREENER",
@@ -625,9 +637,11 @@ class surrogateMethod(surrogate):
         logfcns = int(self.options['LOGFCNS'].value)
         sinfcns = int(self.options['SINFCNS'].value)
         cosfcns = int(self.options['COSFCNS'].value)
+        linfcns = int(self.options['LINFCNS'].value)
+        constant = int(self.options['CONSTANT'].value)
         custombas = list(map(str, self.options['CUSTOMBAS'].value))
         convpen = self.options['CONVPEN'].value
-        screener = int(self.options['SCREENER'].value)
+        screener = self.screener[self.options['SCREENER'].value]
         mipoptca = self.options['MIPOPTCA'].value
         mipoptcr = self.options['MIPOPTCR'].value
         linearerror = int(self.options['LINEARERROR'].value)
@@ -775,6 +789,8 @@ class surrogateMethod(surrogate):
             af.write("logfcns {0}\n".format(logfcns))
             af.write("sinfcns {0}\n".format(sinfcns))
             af.write("cosfcns {0}\n".format(cosfcns))
+            af.write("linfcns {0}\n".format(linfcns))
+            af.write("constant {0}\n".format(constant))
             #Custom basis functions
             if len(custombas) > 0:
                 af.write("ncustombas {0}\n".format(len(custombas)))

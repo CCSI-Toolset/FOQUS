@@ -9,3 +9,4 @@ Contents
 
     reference
     tutorial/index
+    file_formats/file-formats

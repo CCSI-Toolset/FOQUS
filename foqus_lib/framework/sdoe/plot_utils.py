@@ -20,10 +20,10 @@ def plot_hist(ax, xs, xname,
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
     if hbars:
-        ax.barh(center, ns, align='center', height=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
+        ax.barh(center, ns, align='center', height=width, facecolor=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_ylabel(xname)
     else:
-        ax.bar(center, ns, align='center', width=width, fc=fc['cand'], linewidth=linewidth, edgecolor='k')
+        ax.bar(center, ns, align='center', width=width, facecolor=fc['cand'], linewidth=linewidth, edgecolor='k')
         ax.set_xlabel(xname)
 
     ax.grid(show_grids, axis='both')
@@ -96,9 +96,9 @@ def plot_candidates(df, hf, show, title, scatter_label):
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[yname], df[xname], s=area['cand'], fc=fc['cand'], color='b')
+                ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'], color='b')
                 if hf:
-                    ax.scatter(hf[yname], hf[xname], s=area['hist'], fc=fc['hist'], color='r', marker="*")
+                    ax.scatter(hf[yname], hf[xname], s=area['hist'], facecolor=fc['hist'], color='r', marker="*")
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
                 if i == 0:

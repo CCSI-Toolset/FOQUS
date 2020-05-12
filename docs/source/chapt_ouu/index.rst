@@ -1,3 +1,5 @@
+.. _ouu:
+
 Optimization Under Uncertainty (OUU)
 ====================================
 

@@ -1,5 +1,7 @@
-Tutorial
-========
+.. _uq-tutorials:
+
+Tutorials
+=========
 
 This section contains five tutorials that illustrate the use of FOQUS UQ to
 facilitate the UQ workflow discussed above.

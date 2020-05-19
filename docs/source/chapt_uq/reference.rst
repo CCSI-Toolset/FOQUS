@@ -86,7 +86,7 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 #. **Load from File** loads a simulation ensemble from a sample file
    that conforms to the PSUADE full file format. (See Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__ for details on the PSUADE full
+   :ref:`file-formats` for details on the PSUADE full
    file format.) The user can click **Save Selected** to save an
    existing ensemble as a PSUADE full file, and load it by clicking
    **Load from File** to perform further analyses.
@@ -309,12 +309,11 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
    .. figure:: figs/overview/4_Analyze2.png
       :alt: Analysis Dialog, Response Surface Analysis, Wizard Mode
+      :name: fig:uq_analysisW2
 
       Analysis Dialog, Response Surface Analysis, Wizard Mode
 
-   [fig:uq_analysisW2]
 
-   [itm:uq_analysis]
 
 #. **Response Surface** enables the user to perform all analyses related
    to response surfaces. A response surface is an approximation of the
@@ -331,7 +330,6 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
    is chosen in the first drop-down list and “Legendre” is chosen in the
    second drop-down list, the user needs to specify a number for the
    **Legendre polynomial order** before analysis can proceed.
-   [itm:uq_rs]
 
 #. The response surface selected must be validated before further
    analyses can be performed. The user can specify the error envelope
@@ -345,11 +343,10 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
    select the desired type of sensitivity analysis in the second
    drop-down list and then click **Analyze**. **Uncertainty Analysis**
    and **Sensitivity Analysis** compute and display the same quantities
-   as in item #\ `[itm:uq_analysis] <#itm:uq_analysis>`__. However, the
-   results displayed are based on samples drawn from the trained
-   response surface, not the simulation ensemble itself. Moreover, if
-   the selected response surface has uncertainty, the resulting plots
-   also reflect this uncertainty information.
+   as in item 30. However, the results displayed are based on samples drawn
+   from the trained response surface, not the simulation ensemble itself.
+   Moreover, if the selected response surface has uncertainty, the resulting
+   plots also reflect this uncertainty information.
 
 #. FOQUS also provides visualization capabilities, enabling the user to
    view the response surface as a function of one or multiple inputs. Up
@@ -382,7 +379,7 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 #. Inference uses a response surface to approximate the input-to-output
    mapping. In **Output Settings**, select the observed outputs and
    select the response surface type that works best with each observed
-   output. As in item (`[itm:uq_rs] <#itm:uq_rs>`__), further selections
+   output. As in item 32, further selections
    may be required based on the response surface chosen. The simulation
    ensemble is used as the training data for generating the response
    surfaces.
@@ -415,7 +412,7 @@ screen is illustrated in Figure :ref:`fig:uq_screen`.
 
 #. **Save Posterior Input Samples to File** checkbox, when selected,
    saves the posterior input samples as a PSUADE sample file (format
-   described in Section `[ap:psuadefiles] <#ap:psuadefiles>`__). This
+   described in Section :ref:`file-formats`). This
    file characterizes the input uncertainty as a set of samples, which
    can be re-used in the **Simulation Ensemble Setup** dialog, to
    evaluate the outputs corresponding to these posterior input samples.
@@ -455,7 +452,7 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
 #. Choose how to generate samples. There are three options: (1) **Choose
    sampling scheme** (default), (2) **Load flowsheet samples**, or (3)
    **Load all samples from a single file**. The option 3 is explained in
-   item (`[itm:uq_sim_last] <#itm:uq_sim_last>`__). [itm:uq_sim_first]
+   item 11.
 
 #. If **Choose Sampling Scheme** is selected, the **Distributions** tab
    is displayed. The user specifies the input uncertainty information.
@@ -483,7 +480,7 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
    file). If the selected distribution for any input is “Sample”, then
    the following parameters are required: (1) the path of the sample
    file (which must conform to the sample format specified in Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__); (2) the output index that
+   :ref:`file-formats`); (2) the output index that
    designates which output is to be used.
 
 #. In the **Sampling scheme** tab (Figure :ref:`fig:uq_sim_samplescheme`),
@@ -512,13 +509,12 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
    the samples that were generated. This displays the sample values in
    table form, as well as graphically as a scatter plot.
 
-#. From item (`[itm:uq_sim_first] <#itm:uq_sim_first>`__), if the user
-   elects to load all samples from a single file, click **Browse** to
-   select the file containing the samples (Figure
-   `[fig:uq_sim_loadsample] <#fig:uq_sim_loadsample>`__). This file must
+#. From item 1, if the user elects to load all samples from a single file,
+   click **Browse** to select the file containing the samples (Figure
+   :ref:`fig:uq_sim_loadsample`. This file must
    conform to the PSUADE full file format, the PSUADE sample format, or
    CSV file (all formats described in Section
-   `[ap:psuadefiles] <#ap:psuadefiles>`__). Note: This is the only place
+   :ref:`file-formats`). Note: This is the only place
    where all the formats are supported. Once the file is loaded, the
    file name displays in the text box. These samples can now be used in
    the same way as an ensemble that was newly generated (as described
@@ -526,9 +522,6 @@ New** on the UQ window (Figure :ref:`fig:uq_screen`).
 
    .. figure:: figs/overview/8_SimSetupLoad2.png
       :alt: Simulation Ensemble Setup Dialog, Load Samples Option
+      :name: fig:uq_sim_loadsample
 
       Simulation Ensemble Setup Dialog, Load Samples Option
-
-   [fig:uq_sim_loadsample]
-
-   [itm:uq_sim_last]

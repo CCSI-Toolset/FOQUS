@@ -1,0 +1,60 @@
+{
+  "Records": [
+    {
+      "eventID": "24fe4d360b8e1f6d797e272df4b93417",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1583476138,
+        "Keys": {
+          "Type": {
+            "S": "Consumer"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          }
+        },
+        "NewImage": {
+          "running": {
+            "S": "2020-03-06T06:28:57.820Z"
+          },
+          "Type": {
+            "S": "Consumer"
+          },
+          "instance": {
+            "S": "i-09de0216543aaab6b"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          },
+          "TTL": {
+            "N": "1583479737"
+          }
+        },
+        "OldImage": {
+          "running": {
+            "S": "2020-03-06T06:27:56.801Z"
+          },
+          "Type": {
+            "S": "Consumer"
+          },
+          "instance": {
+            "S": "i-09de0216543aaab6b"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          },
+          "TTL": {
+            "N": "1583479677"
+          }
+        },
+        "SequenceNumber": "1013017200000000019563728218",
+        "SizeBytes": 284,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:387057575688:table/FOQUS_Resources/stream/2020-03-06T04:49:06.641"
+    }
+  ]
+}

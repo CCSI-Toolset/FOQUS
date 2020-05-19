@@ -1,0 +1,13 @@
+{
+  "body": "{}",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "path": "/session/21c0971a-b25b-40ac-ba07-bd1b487a2d6b/result/00000000-0000-0000-0000-000000000000",
+  "requestContext": {
+    "authorizer": {
+      "principalId": "post-session-result-test"
+    }
+  }
+}

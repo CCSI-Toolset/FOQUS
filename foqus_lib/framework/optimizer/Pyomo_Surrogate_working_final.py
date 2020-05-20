@@ -166,6 +166,12 @@ class opt(optimization):
         desc="Number of latin hypercube samples for generating modified surrogate model")
         
         self.options.add(
+        name='Bound_Ratio', 
+        default=1,
+        dtype=float,
+        desc="Ratio of upper and lower bounds of decision variables")
+        
+        self.options.add(
         name='tee', 
         default=True,
         desc="Display of solver iterations in terminal/anaconda prompt")
@@ -287,6 +293,8 @@ class opt(optimization):
         alpha = self.options['Alpha'].value
         
         num_lhs = self.options['nLHS'].value
+        
+        bound_ratio = self.options['Bound_Ratio'].value
         
         tee = self.options['tee'].value
         
@@ -807,7 +815,7 @@ class opt(optimization):
             surrin_bounds_arr = np.array(surrin_bounds)
 
 #            Checking the distance between the bounds and terminating the algorithm if too less
-            if any(b[1]/(b[0] + 0.0001) <= 1.2 for b in surrin_bounds):
+            if any(b[1]/(b[0] + 0.0001) <= bound_ratio for b in surrin_bounds):
                 self.msgQueue.put("The decision variable bounds are too close for optimization to run successfully")
                 self.msgQueue.put("Iteration {0} corresponds to the best solution that can be obtained".format(algo_iter - 1))
                 break
@@ -1038,6 +1046,78 @@ class opt(optimization):
                 self.m.c.add(eq)
             
             self.m.pprint()
+            
+            #*******Implementing multi-start approach*******
+            
+            initvals = []
+            #decvars = [getattr(self.m,v) for v in dvar_names]
+            #surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
+            #surroutvars = [getattr(self.m,v) for v in surroutvarlist]
+            #Obtain the combination of all initialization points
+            for var in decvars:
+                initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
+            initvals_prod = list(product(*initvals))
+            
+            input_initvals = np.zeros(len(initvals_prod),dtype=object)
+            output_initvals = np.zeros(len(initvals_prod),dtype=object)
+            input_optim = np.zeros(len(initvals_prod),dtype=object)
+            output_optim = np.zeros(len(initvals_prod),dtype=object)
+            objvals = np.zeros(len(initvals_prod),dtype=object)
+            solver_status = np.zeros(len(initvals_prod),dtype=object)
+            solver_termination_condition = np.zeros(len(initvals_prod),dtype=object)
+            solver_time = np.zeros(len(initvals_prod),dtype=object)
+            
+            
+            # Solve the optimization model for all initialization points & save solver details
+            for i1,initvallist in enumerate(initvals_prod):
+                i_initvals=[]
+                o_initvals=[]
+                i_optim=[]
+                o_optim=[]
+                for i,initv in enumerate(initvallist): 
+                    decvars[i].value = initv
+                    i_initvals.append(decvars[i].value)
+                for i,initout in enumerate(surroutvars):
+                    initout.value = -value(self.m.c[i+1].body - initout)
+                    o_initvals.append(initout.value)
+                input_initvals[i1] = i_initvals
+                output_initvals[i1] = o_initvals
+                r=optimizer.solve(self.m,**kwds)
+                for dvar in decvars:
+                    i_optim.append(dvar.value)
+                for sout in surroutvars:
+                    o_optim.append(sout.value)
+                if str(r.solver.termination_condition) == 'optimal':
+                    # input_initvals[i1] = i_initvals
+                    # output_initvals[i1] = o_initvals
+                    input_optim[i1] = i_optim
+                    output_optim[i1] = o_optim
+                    # if str(r.solver.termination_condition) == 'optimal':
+                    objvals[i1] = self.m.obj()
+                    solver_status[i1] = str(r.solver.status)
+                    solver_termination_condition[i1] = str(r.solver.termination_condition)
+                    solver_time[i1] = str(r.solver.time)
+                else:
+                    input_optim[i1] = 1e10
+                    output_optim[i1] = 1e10
+                    objvals[i1] = 1e10
+                    solver_status[i1] = 1e10
+                    solver_termination_condition[i1] = 1e10
+                    solver_time[i1] = 1e10
+                    
+            print(objvals)
+            # Assign the best initialization value
+            # minobjval_idx = objvals.index(min(objvals))
+            minobjval_idx = np.argmin(objvals)
+            print(minobjval_idx)
+            # dvar_init = []
+            for i,var in enumerate(decvars):
+                var.value = initvals_prod[minobjval_idx][i]
+                # var.value = input_optim[minobjval_idx][i]
+                
+            for i,initout in enumerate(surroutvars):
+                initout.value = -value(self.m.c[i+1].body - initout)
+            #*********************************************************************
             self.msgQueue.put("****ITERATION {0}****\n".format(algo_iter))
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
             for var in self.m.component_data_objects(Var):
@@ -1074,6 +1154,7 @@ class opt(optimization):
         #            kwds['tolerance'] = Tolerance
         #            kwds['maxiter'] = Maxiter
                 r=optimizer.solve(self.m,**kwds)
+                     
                 
             self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
             self.msgQueue.put("Solver Status: {0}\n".format(str(r.solver.status)))

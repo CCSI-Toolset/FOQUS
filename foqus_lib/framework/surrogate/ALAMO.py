@@ -99,8 +99,8 @@ class surrogateMethod(surrogate):
         self.outputCols = [
             ('MAXTERMS', int, -1),
             ('IGNORE', int, 0),
-            ('TOLMEANERROR', float, 0.001),
-            ('TOLRELMETRIC', float, 0.0001),
+            ('TOLMEANERROR', float, 0.000001),
+            ('TOLRELMETRIC', float, 0.000001),
             ('ZMIN', float, 0.0),
             ('ZMAX', float, 1.0),
             ('CUSTOMCON', list, [])]
@@ -310,6 +310,7 @@ class surrogateMethod(surrogate):
             name="SCALEZ",
             section="Model Settings",
             default=False,
+            dtype = bool,
             desc="If used, the variables are scaled prior to the optimization problem is solved.",
             hint="The problem is solved using a mathematical programming solver. Usually, scaling"
             " the variables may help the optimization.")
@@ -645,6 +646,7 @@ class surrogateMethod(surrogate):
         modeler = self.modelers.get(self.options['MODELER'].value, 1)
         preset = self.options['PRESET'].value
         maxtime = self.options['MAXTIME'].value
+        scalez = int(self.options['SCALEZ'].value)
         mono = list(map(str, self.options['MONOMIALPOWER'].value))
         multi2 = list(map(str, self.options['MULTI2POWER'].value))
         multi3 = list(map(str, self.options['MULTI3POWER'].value))
@@ -757,6 +759,7 @@ class surrogateMethod(surrogate):
                 val = self.getInputVarOption('XFACTOR', x)
                 xfact.append(val)
             af.write("xfactor {0}\n".format(" ".join(map(str, xfact))))
+            af.write("scalez {0}\n".format(scalez))
             # MAXTERMS
             maxterms = []
             for x in self.output:

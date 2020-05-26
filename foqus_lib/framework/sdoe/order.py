@@ -11,28 +11,27 @@ import mlrose_hiive as mlrose
 from .df_utils import load, write
 
 def mat2tuples(mat):
-    # assumes mat as dense matrix
-    # extracts lower-triangular elements
-    L = []
-    nrows, ncols = mat.shape
+    ''' assumes mat as dense matrix, extracts lower-triangular elements '''
+    lte = []
+    nrows, _ = mat.shape
     for i in range(nrows):
         for j in range(i):
-            v = mat[i,j]
-            if v:
-                L.append((i,j,v))
-    return L
+            val = mat[i, j]
+            if val:
+                lte.append((i, j, val))
+    return lte
 
 def rank(fnames, save=True):
-
+    ''' return fnames ranked '''
     dist_mat = np.load(fnames['dmat'])
     dist_list = mat2tuples(dist_mat)
-    
+
     # define fitness function object
     fitness_dists = mlrose.TravellingSales(distances=dist_list)
 
     # define optimization problem object
-    n = dist_mat.shape[0]
-    problem_fit = mlrose.TSPOpt(length=n, fitness_fn=fitness_dists,
+    n_len = dist_mat.shape[0]
+    problem_fit = mlrose.TSPOpt(length=n_len, fitness_fn=fitness_dists,
                                 maximize=False)
 
     # solve problem using the genetic algorithm
@@ -44,7 +43,7 @@ def rank(fnames, save=True):
     # retrieve ranked list
     cand = load(fnames['cand'])
     ranked_cand = cand.loc[best_state]
-    
+
     # save the output
     fname_ranked = None
     if save:
@@ -52,5 +51,5 @@ def rank(fnames, save=True):
         fname_ranked = fname + '_ranked' + ext
         write(fname_ranked, ranked_cand)
         print('Ordered candidates saved to {}'.format(fname_ranked))
-        
+
     return fname_ranked

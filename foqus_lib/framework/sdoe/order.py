@@ -7,7 +7,7 @@ https://mlrose.readthedocs.io/en/stable/source/tutorial2.html
 '''
 import os
 import numpy as np
-import mlrose
+import mlrose_hiive as mlrose
 from .df_utils import load, write
 
 def mat2tuples(mat):

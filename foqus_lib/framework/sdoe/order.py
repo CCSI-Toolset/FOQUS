@@ -35,10 +35,10 @@ def rank(fnames, save=True):
                                 maximize=False)
 
     # solve problem using the genetic algorithm
-    best_state, best_fitness = mlrose.genetic_alg(problem_fit,
-                                                  mutation_prob=0.2,
-                                                  max_attempts=100,
-                                                  random_state=2)
+    best_state, best_fitness, fitness_curve = mlrose.genetic_alg(problem_fit,
+                                                                 mutation_prob=0.2,
+                                                                 max_attempts=100,
+                                                                 random_state=2)
 
     # retrieve ranked list
     cand = load(fnames['cand'])

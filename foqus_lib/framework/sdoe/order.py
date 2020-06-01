@@ -5,10 +5,12 @@ Code adopted from:
 https://mlrose.readthedocs.io/en/stable/source/tutorial2.html
 
 '''
+import logging
 import os
 import numpy as np
 import mlrose_hiive as mlrose
 from .df_utils import load, write
+_log = logging.getLogger("foqus." + __name__)
 
 def mat2tuples(mat):
     ''' assumes mat as dense matrix, extracts lower-triangular elements '''
@@ -21,7 +23,7 @@ def mat2tuples(mat):
                 lte.append((i, j, val))
     return lte
 
-def rank(fnames, save=True):
+def rank(fnames, save=True, ga_max_attempts=100):
     ''' return fnames ranked '''
     dist_mat = np.load(fnames['dmat'])
     dist_list = mat2tuples(dist_mat)
@@ -37,7 +39,7 @@ def rank(fnames, save=True):
     # solve problem using the genetic algorithm
     best_state, best_fitness, fitness_curve = mlrose.genetic_alg(problem_fit,
                                                                  mutation_prob=0.2,
-                                                                 max_attempts=100,
+                                                                 max_attempts=ga_max_attempts,
                                                                  random_state=2)
 
     # retrieve ranked list
@@ -50,6 +52,6 @@ def rank(fnames, save=True):
         fname, ext = os.path.splitext(fnames['cand'])
         fname_ranked = fname + '_ranked' + ext
         write(fname_ranked, ranked_cand)
-        print('Ordered candidates saved to {}'.format(fname_ranked))
+        _log.info('Ordered candidates saved to {}'.format(fname_ranked))
 
     return fname_ranked

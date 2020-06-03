@@ -37,20 +37,18 @@ def rank(fnames, ga_max_attempts=25):
                                 maximize=False)
 
     # solve problem using the genetic algorithm
-    best_state, best_fitness, _fitness_curve = mlrose.genetic_alg(problem_fit,
-                                                                 mutation_prob=0.2,
-                                                                 max_attempts=ga_max_attempts,
-                                                                 random_state=2)
+    best_state = mlrose.genetic_alg(problem_fit, mutation_prob=0.2,
+                                    max_attempts=ga_max_attempts,
+                                    random_state=2)[0]
 
     # retrieve ranked list
     cand = load(fnames['cand'])
     ranked_cand = cand.loc[best_state]
 
     # save the output
-    fname_ranked = None
     fname, ext = os.path.splitext(fnames['cand'])
     fname_ranked = fname + '_ranked' + ext
     write(fname_ranked, ranked_cand)
-    _log.info('Ordered candidates saved to {}'.format(fname_ranked))
+    _log.info('Ordered candidates saved to %s', fname_ranked)
 
     return fname_ranked

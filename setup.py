@@ -60,7 +60,7 @@ dist = setup(
         "boto3",
         "cma",
         "matplotlib",
-        "mlrose",
+        "mlrose_hiive",
         "numpy",
         "pandas",
         "psutil",

@@ -709,8 +709,9 @@ class FlowsheetControl:
         _log.debug("Process Flowsheet nodes")
         count_turb_apps = 0
         nkey = None
-        for nkey in dat.flowsheet.nodes:
-            if dat.flowsheet.nodes[nkey].turbApp is not None:
+        for i in dat.flowsheet.nodes:
+            if dat.flowsheet.nodes[i].turbApp is not None:
+                nkey = i
                 count_turb_apps += 1
         if count_turb_apps > 1:
             self.close()

@@ -238,6 +238,18 @@ class surrogateMethod(surrogate):
             desc="Cosine functions are considered as basis functions if "
                 "true; otherwise, they are not considered.")
         self.options.add(
+            name="LINFCNS",
+            section="Model Settings",
+            default=False,
+            desc=" Linear functions are considered as basis functions if true;"
+            "otherwise, they are not considered.")
+        self.options.add(
+            name="CONSTANT",
+            section="Model Settings",
+            default=False,
+            desc=" A constant will be considered as a basis function if true;"
+            "otherwise, its not considered.")
+        self.options.add(
             name="CUSTOMBAS",
             section="Model Settings",
             default = [],
@@ -280,14 +292,19 @@ class surrogateMethod(surrogate):
                 "term penalizing model size is used for model building. "
                 "In this case, the size of the model is weighted "
                 "by CONPEN.")
+        self.screener = {
+            "No Screening":0,
+            "Screening with Lasso":1,
+            "Screening with sure independence screener":2
+            }
         self.options.add(
-            name="REGULARIZER",
+            name="SCREENER",
             section="Model Settings",
-            default=False,
+            default="No Screening",
             desc="Regularization method is used to reduce the number of "
                 "potential basis functions before optimization.",
-            hint="If true, "
-                "regularization with the LASSO is used.")
+            hint="",
+            validValues = sorted(list(self.screener.keys()), key=lambda k: self.screener[k]))
         self.options.add(
             name="SCALEZ",
             section="Model Settings",
@@ -492,6 +509,10 @@ class surrogateMethod(surrogate):
             self.xi = {}
             self.zi = {}
             cn = self.graph.input.compoundNames(sort=True)
+            # Remove the edge connected simulation input variables from the flowsheet
+            for invars in self.graph.xnames:
+                if self.graph.x[invars].con:
+                    cn.remove(invars)
             for v in self.xList:
                 self.xi[v] = cn.index(v)
             cn = self.graph.output.compoundNames(sort=False)
@@ -616,9 +637,11 @@ class surrogateMethod(surrogate):
         logfcns = int(self.options['LOGFCNS'].value)
         sinfcns = int(self.options['SINFCNS'].value)
         cosfcns = int(self.options['COSFCNS'].value)
+        linfcns = int(self.options['LINFCNS'].value)
+        constant = int(self.options['CONSTANT'].value)
         custombas = list(map(str, self.options['CUSTOMBAS'].value))
         convpen = self.options['CONVPEN'].value
-        regularizer = int(self.options['REGULARIZER'].value)
+        screener = self.screener[self.options['SCREENER'].value]
         mipoptca = self.options['MIPOPTCA'].value
         mipoptcr = self.options['MIPOPTCR'].value
         linearerror = int(self.options['LINEARERROR'].value)
@@ -685,7 +708,7 @@ class surrogateMethod(surrogate):
             af.write("maxtime {0}\n".format(maxtime))
             af.write("modeler {0}\n".format(modeler))
             af.write("convpen {0}\n".format(convpen))
-            af.write("regularizer {0}\n".format(regularizer))
+            af.write("screener {0}\n".format(screener))
             af.write("mipoptca {0}\n".format(mipoptca))
             af.write("mipoptcr {0}\n".format(mipoptcr))
             af.write("linearerror {0}\n".format(linearerror))
@@ -766,6 +789,8 @@ class surrogateMethod(surrogate):
             af.write("logfcns {0}\n".format(logfcns))
             af.write("sinfcns {0}\n".format(sinfcns))
             af.write("cosfcns {0}\n".format(cosfcns))
+            af.write("linfcns {0}\n".format(linfcns))
+            af.write("constant {0}\n".format(constant))
             #Custom basis functions
             if len(custombas) > 0:
                 af.write("ncustombas {0}\n".format(len(custombas)))

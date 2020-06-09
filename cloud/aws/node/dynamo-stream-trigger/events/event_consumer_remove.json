@@ -1,0 +1,59 @@
+{
+  "Records": [
+    {
+      "eventID": "f96d9463428d1489bfdd8e08eca6b701",
+      "eventName": "REMOVE",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1583478559,
+        "Keys": {
+          "Type": {
+            "S": "Consumer"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          }
+        },
+        "OldImage": {
+          "running": {
+            "S": "2020-03-06T06:12:02.160Z"
+          },
+          "Type": {
+            "S": "Consumer"
+          },
+          "instance": {
+            "S": "i-09de0216543aaab6b"
+          },
+          "Id": {
+            "S": "19a22f40-f648-4554-ab4f-1a06e58cefc7"
+          },
+          "Job": {
+            "S": "19a22f40-f648-4554-ab4f-1a06e58cefc7"
+          },
+          "User": {
+            "S": "testuser"
+          },
+          "State": {
+            "S": "running"
+          },
+          "Session": {
+            "S": "19a22f40-f648-4554-ab4f-1a06e58cefc7"
+          },
+          "TTL": {
+            "N": "1583477400"
+          }
+        },
+        "SequenceNumber": "1013021400000000019565149821",
+        "SizeBytes": 166,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "userIdentity": {
+        "principalId": "dynamodb.amazonaws.com",
+        "type": "Service"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:387057575688:table/FOQUS_Resources/stream/2020-03-06T04:49:06.641"
+    }
+  ]
+}

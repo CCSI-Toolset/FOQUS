@@ -12,11 +12,12 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.5.0dev"
+default_version = "3.5.0dev3"
 
 try:
     version=subprocess.check_output(
-        ["git", "describe", "--tags"]).decode('utf-8').strip()
+        ## Undo the 'n' here, this is just testing without having to put in a real tag ##
+        ["ngit", "describe", "--tags", "--abbrev=0"]).decode('utf-8').strip()
     version = version.replace("-", ".dev", 1)
     version = version.replace("-", "+", 1)
 except:
@@ -52,7 +53,25 @@ dist = setup(
         'foqus.py',
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
-        'icons_rc.py']
+        'icons_rc.py'],
+    # Required packages needed in the users env go here (non-versioned strongly preferred).
+    # requirements.txt should stay empty (other than the "-e .")
+    install_requires=[
+        "adodbapi>=2.6.0.7; sys_platform == 'win32'",
+        "boto3",
+        "cma",
+        "matplotlib",
+        "mlrose_hiive",
+        "numpy",
+        "pandas",
+        "psutil",
+        "PyQt5==5.13.*",
+        "pywin32; sys_platform == 'win32'",
+        "requests",
+        "scipy",
+        "tqdm",
+        "TurbineClient",
+        ],
 )
 
 def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
@@ -67,7 +86,7 @@ def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
 if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     #first see if this is a conda env
     foqus_path = subprocess.check_output(
-        ["where", "$PATH:foqus.py"]).decode('utf-8').split("\n")[0].strip()
+        ["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
     if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
         conda_env = os.environ["CONDA_DEFAULT_ENV"]
         conda_path = shutil.which("conda") # unless conda is not found

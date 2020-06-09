@@ -129,7 +129,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
-        self.analyzeNUSFButton.setEnabled(False)
 
         ##### Set up UQ toolbox
         self.dataTabs.setEnabled(False)
@@ -158,9 +157,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
         self.analyzeButton.clicked.connect(self.launchSdoe)
-        self.analyzeNUSFButton.clicked.connect(self.launchNUSFSdoe)
         self.analyzeButton.setEnabled(True)
-        self.analyzeNUSFButton.setEnabled(True)
         self.filesTable.setEnabled(False)
         self.addSimulationButton.setEnabled(False)
         self.loadFileButton.setEnabled(False)
@@ -224,7 +221,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
-        self.analyzeNUSFButton.setEnabled(False)
         self.filesTable.setEnabled(True)
         self.addSimulationButton.setEnabled(True)
         self.loadFileButton.setEnabled(True)
@@ -530,6 +526,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setText(self.dname)
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
+        combo = QComboBox()
+        combo.addItems(['Uniform Space Filling', 'Non-Uniform Space Filling', 'Input-Response Space Filling'])
+        self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
+        combo.setEnabled(True)
+        combo.model().item(2).setEnabled(False)
 
         # Resize table
         self.resizeColumns()
@@ -542,16 +543,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        type = 'USF'
-        analysis = None
-
-        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
-        dialog.exec_()
-
-    def launchNUSFSdoe(self):
-        candidateData, historyData = self.createAggData()
-        dname = self.dname
-        type = 'NUSF'
+        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling':
+            type = 'USF'
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling':
+            type = 'NUSF'
         analysis = None
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)

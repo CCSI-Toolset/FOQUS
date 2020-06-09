@@ -22,6 +22,6 @@ support = "ccsi-support@acceleratecarboncapture.org"
 webpage = "http://www.acceleratecarboncapture.org/"
 maintainer = "CCSI FOQUS Team"
 maintainer_email = "ccsi-support@acceleratecarboncapture.org"
-description = ("FOQUS tool for simulation based optimization,"
-              " uncertainty quantification, and surrogate modeling")
-name = "foqus"
+description = ("FOQUS tool for Simulation based Optimization,"
+              " Uncertainty Quantification, and Surrogate modeling")
+name = "ccsi-foqus"

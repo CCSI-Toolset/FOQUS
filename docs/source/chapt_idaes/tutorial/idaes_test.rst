@@ -189,5 +189,7 @@ It should be noted that the values within Node Input Variables can be changed as
    For more information on installing IDAES, along with building and solving IDAES models, refer to the IDAES documentation:
    https://idaes-pse.readthedocs.io/en/stable/index.html
 
+   It is recommended that FOQUS and IDAES must be installed in the same conda environment for this example to run successfully.
+
    The complete FOQUS file (**FOQUS_IDAES.foqus**), that includes the IDAES model,
    is located in: **examples/tutorial_files/IDAES**

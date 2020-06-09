@@ -26,8 +26,8 @@ def run(config_file, nd, test=False):
     types = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
-    nusf = 'SF' in config.sections()
-    if nusf:
+    sf_method = config['SF']
+    if sf_method == 'nusf':
         weight_mode = config['WEIGHT']['weight_mode']
         assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
             
@@ -40,10 +40,13 @@ def run(config_file, nd, test=False):
                 'scale_method': scale_method}
         from .nusf import criterion
         
-    else:
+    elif sf_method == 'usf':
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'scale_factors': scl}
         from .usf import criterion
+
+    elif sf_method == 'irsf':
+        from .irsf import criterion_irsf, CombPF, criterion_X, unitscale_cand, Inv_scale_cand
         
     # create outdir as needed
     if not os.path.exists(outdir):
@@ -54,7 +57,7 @@ def run(config_file, nd, test=False):
         cand = load(cfile)
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
-        if nusf and weight_mode == 'by_user':
+        if sf_method == 'nusf' and weight_mode == 'by_user':
 
             # move the weight column to the last column
             # if nusf, one of the columns is expected to be the weight vector
@@ -92,14 +95,14 @@ def run(config_file, nd, test=False):
     elapsed_time = time.time() - t0
 
     # save the output
-    if nusf:
+    if sf_method == 'nusf':
         fnames = {}
         for mwr in mwr_values:
             suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
             fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
-    else:
+    elif sf_method == 'usf':
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}

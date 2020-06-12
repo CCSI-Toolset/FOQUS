@@ -14,6 +14,8 @@ Consider the following process flowsheet that has been developed in FOQUS, using
    :alt: Figure 1: Heater Flash Flowsheet
    :name: fig.flowsheet
 
+   Figure 1: Heater Flash Flowsheet
+
 **Feed Conditions:**
 
 Flowrate = 0.277778 mol/s
@@ -199,9 +201,9 @@ It should be noted that the values within Node Input Variables can be changed as
    https://idaes-pse.readthedocs.io/en/stable/index.html
 
    This tutorial demonstrates the capability of simulating IDAES based process models in FOQUS. However, optimization problems can also be solved using IDAES in FOQUS,
-   by providing the required degrees of freedom. 
+   by providing the required degrees of freedom.
 
    It is recommended that FOQUS and IDAES must be installed in the same conda environment for this example to run successfully.
 
-   The complete FOQUS file (**FOQUS_IDAES.foqus**), that includes the IDAES model,
+   The complete FOQUS file (**FOQUS_IDAES_Example.foqus**), that includes the IDAES model,
    is located in: **examples/tutorial_files/IDAES**

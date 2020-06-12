@@ -3,15 +3,20 @@
 Tutorial: Running IDAES model in FOQUS
 ===================================================
 
-Consider the following process flowsheet that has been developed in IDAES:
+The NETL’s Institute for the Design of Advanced Energy Systems is developing an equation-oriented framework for simulation and optimization of energy systems.
+A library of unit models is available to create and solve process flowsheets, therefore, a tutorial has been developed in FOQUS to import IDAES unit models, build a flowsheet, and simulate it.
+
+The case study consists of the separation of Toluene-Benzene mixture (Figure 1).
+First the mixture is heated to 370K, and then separated in the Flash Tank.
+Consider the following process flowsheet that has been developed in FOQUS, using IDAES :
 
 .. figure:: ../figs/flowsheet.png
-   :alt: Heater Flash Flowsheet
+   :alt: Figure 1: Heater Flash Flowsheet
    :name: fig.flowsheet
 
 **Feed Conditions:**
 
-Flowrate = 1 kmol/hr
+Flowrate = 0.277778 mol/s
 
 Temperature = 353 K
 
@@ -34,17 +39,17 @@ Heat Duty = 0 W
 Pressure Drop = 0 Pa
 
 
-The IDAES model for this flowsheet can be accessed and simulated in FOQUS as follows:
+The following steps show how to import Python, Pyomo, and IDAES libraries and models, build the flowsheet, select input variables, and solve the simulation in FOQUS:
 
 Instructions
 ~~~~~~~~~~~~
 
-1. Open FOQUS, and under the Flowsheet Tab, create a Node named "IDAES_Model".
+1. Open FOQUS, and under the Flowsheet Tab, create a Node named "Flowsheet".
 
-2. Open the Node Editor, and let the Model Type be “None”.
+2. Open the Node Editor and let the Model Type be “None”.
 
 3. Add the following input variables with their corresponding values in the Node Editor:
-   ``heater_inlet_molflow``: 1 kmol/hr
+   ``heater_inlet_molflow``: 0.277778 mol/s
 
    ``heater_inlet_pressure``: 101325 Pa
 
@@ -60,31 +65,34 @@ Instructions
 
    ``flash_pressure_drop``: 0 Pa
 
-4. Add the following output variables with their corresponding values in the Node Editor:
-   ``heater_heat_duty``
+4. Add the following output variables in the Node Editor:
+   ``heater_heat_duty`` W
 
-   ``flash_liq_molflow``
+   ``flash_liq_molflow`` mol/s
 
-   ``flash_liq_pressure``
+   ``flash_liq_pressure`` Pa
 
-   ``flash_liq_temperature``
+   ``flash_liq_temperature`` K
 
    ``flash_liq_benzene_molfrac``
 
    ``flash_liq_toluene_molfrac``
 
-   ``flash_vap_molflow``
+   ``flash_vap_molflow`` mol/s
 
-   ``flash_vap_pressure``
+   ``flash_vap_pressure`` Pa
 
-   ``flash_vap_temperature``
+   ``flash_vap_temperature`` K
 
    ``flash_vap_benzene_molfrac``
 
    ``flash_vap_toluene_molfrac``
 
-5. Under Node Script, set Script Mode to “Post”. This will ensure that the node script runs after the node simulation.
-   Enter the following code for the IDAES model:
+5. As stated in previous tutorials, the FOQUS simulation node allows the user to type a python script under the Node Script option.
+   In this node script section, this tutorial shows how to import python libraries, Pyomo libraries, IDAES libraries and models, build and solve the flowsheet.
+   Note that in this example, process conditions are fixed in order to have 0 degrees of freedom. Hence, the optimization actually gets solved as a simulation problem.
+   A critical step is to link the FOQUS variables (input and output) to the IDAES mathematical model, thus, setting the inlet conditions of the process before solving the simulation problem.
+   Finally, under Node Script, set Script Mode to “Post”. This will ensure that the node script runs after the node simulation. Enter the following code:
 
    .. code-block:: python
       :linenos:
@@ -138,16 +146,16 @@ Instructions
       TransformationFactory("network.expand_arcs").apply_to(m)
 
       #Feed Specifications to heater
-      m.fs.heater.inlet.flow_mol.fix(x["heater_inlet_molflow"]*1000/3600) # converting to mol/s as unit basis is mol/s
+      m.fs.heater.inlet.flow_mol.fix(x["heater_inlet_molflow"]) # mol/s
       m.fs.heater.inlet.mole_frac_comp[0, "benzene"].fix(x["heater_inlet_benzene_molfrac"])
       m.fs.heater.inlet.mole_frac_comp[0, "toluene"].fix(x["heater_inlet_toluene_molfrac"])
       m.fs.heater.inlet.pressure.fix(x["heater_inlet_pressure"]) # Pa
       m.fs.heater.inlet.temperature.fix(x["heater_inlet_temperature"]) # K
 
       # Unit model specifications
-      m.fs.heater.outlet.temperature.fix(x["heater_outlet_temperature"])
-      m.fs.flash.heat_duty.fix(x["flash_heat_duty"])
-      m.fs.flash.deltaP.fix(x["flash_pressure_drop"])
+      m.fs.heater.outlet.temperature.fix(x["heater_outlet_temperature"]) # K
+      m.fs.flash.heat_duty.fix(x["flash_heat_duty"]) # W
+      m.fs.flash.deltaP.fix(x["flash_pressure_drop"]) # Pa
 
       #Flowsheet Initialization
       def function(unit):
@@ -162,7 +170,7 @@ Instructions
       opt = SolverFactory('ipopt')
       solve_status = opt.solve(m)
 
-      #Assign IDAES model output values to FOQUS output values
+      #Assign the simulation result from IDAES model to FOQUS output values
       f["flash_liq_molflow"] = value(m.fs.flash.liq_outlet.flow_mol[0])
       f["flash_liq_benzene_molfrac"] = value(m.fs.flash.liq_outlet.mole_frac_comp[0,"benzene"])
       f["flash_liq_toluene_molfrac"] = value(m.fs.flash.liq_outlet.mole_frac_comp[0,"toluene"])
@@ -176,18 +184,22 @@ Instructions
       f["heater_heat_duty"] = value(m.fs.heater.heat_duty[0])
 
    .. note::
-      ipopt will need to be available in your environment.  To install it into your conda or pip environment you could use: ``conda install -c conda-forge ipopt`` or ``pip install ipopt``
-
+      ipopt will need to be available in your environment.
+      This should be available through the following command during the generic install of IDAES in the environment:
+      ``idaes get-extensions``
 
    Once the model is solved, the values of flowsheet output variables are assigned to the node output variables.
 
-6. Click the Run button to run the python script and check the node output variables section.
+6. Click the Run button to run the python script and check the node output variables section, note that their values should have changed.
 
 It should be noted that the values within Node Input Variables can be changed as per user’s requirement, to run different cases.
 
 .. note::
    For more information on installing IDAES, along with building and solving IDAES models, refer to the IDAES documentation:
    https://idaes-pse.readthedocs.io/en/stable/index.html
+
+   This tutorial demonstrates the capability of simulating IDAES based process models in FOQUS. However, optimization problems can also be solved using IDAES in FOQUS,
+   by providing the required degrees of freedom. 
 
    It is recommended that FOQUS and IDAES must be installed in the same conda environment for this example to run successfully.
 

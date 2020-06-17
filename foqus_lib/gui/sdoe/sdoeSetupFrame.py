@@ -153,6 +153,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
+        QApplication.processEvents()
         self.updateAggTable()
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
@@ -166,6 +167,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
+        QApplication.processEvents()
 
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
@@ -218,6 +220,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         return candidateData, historyData
 
     def backToSelection(self):
+        QApplication.processEvents()
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
@@ -229,6 +232,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
         self.confirmButton.setEnabled(self.hasCandidates())
+        QApplication.processEvents()
 
     def refresh(self):
         numSims = len(self.dat.sdoeSimList)
@@ -355,6 +359,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
 
     def deleteSimulation(self):
+        QApplication.processEvents()
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
 
@@ -363,6 +368,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dat.sdoeFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
+        QApplication.processEvents()
         numSims = len(self.dat.sdoeSimList)
         if numSims > 0:
             if row >= numSims:
@@ -370,7 +376,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 row = numSims - 1
             sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
-
+        QApplication.processEvents()
 
     def saveSimulation(self):
         psuadeFilter = 'Psuade Files (*.dat)'
@@ -551,6 +557,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
+        dialog.deleteLater()
 
     def initUQToolBox(self):
 

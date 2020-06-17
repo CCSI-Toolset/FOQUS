@@ -168,7 +168,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
         QApplication.processEvents()
-
+        
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
         

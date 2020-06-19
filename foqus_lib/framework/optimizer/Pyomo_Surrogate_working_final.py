@@ -1,4 +1,3 @@
-
 """ #FOQUS_OPT_PLUGIN Pyomo_Surrogate.py
 
 Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
@@ -43,9 +42,6 @@ from foqus_lib.framework.graph.edge import edge
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 from itertools import product
-#import matplotlib
-#matplotlib.use('Agg')
-#import matplotlib.pyplot as plt
 
 # Check that the required pyomo packages are available for the surrogate based optimization plugin and import it.
 # If not the Surrogate Based Optimization Pyomo plug-in will not be available.
@@ -129,23 +125,6 @@ class opt(optimization):
         default='nlp',
         dtype=str,
         desc="Type of Math Optimization Model")
-        
-#        self.options.add(
-#        name='Warmstart', 
-#        default=True,
-#        desc="Initialization of model variables to their values")
-#        
-#        self.options.add(
-#        name='Tolerance', 
-#        default=1.0e-3,
-#        dtype=float,
-#        desc="Convergence tolerance of optimizer")
-#        
-#        self.options.add(
-#        name='Maxiter', 
-#        default=10000,
-#        dtype=float,
-#        desc="Maximum iterations for optimization model solver")
         
         self.options.add(
         name='Maxiter_Algo', 
@@ -267,26 +246,16 @@ class opt(optimization):
         # Display a little information to check that things are working
         self.msgQueue.put("Starting Surrogate based Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
-#        self.msgQueue.put("\nDecision Variables\n---------------------")
-#        for xn in self.prob.v:
-#            print(self.graph.x)
-#            self.msgQueue.put("{0}: {1} scaled: {2}".format(
-#                xn, self.graph.x[xn].value, self.graph.x[xn].scaled))
 
         self.msgQueue.put("----------------------")
         self.bestSoFarList = []
+        
         #Get user options
         solversource = self.options['Solver Source'].value
         
         mathoptsolver = self.options['mathoptsolver'].value
         
         mtype = self.options['mtype'].value
-        
-#        Warmstart = self.options['Warmstart'].value
-#        
-#        Tolerance = self.options['Tolerance'].value
-#        
-#        Maxiter = self.options['Maxiter'].value
         
         Maxiter_Algo = self.options['Maxiter_Algo'].value
         
@@ -329,7 +298,6 @@ class opt(optimization):
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters() #
         self.prob.solverStart = start
-#        self.prob.maxSolverTime = maxtime
         if Saveresults:
             self.prob.storeResults = setName
         else:
@@ -363,7 +331,7 @@ class opt(optimization):
 #        *******
 #       Importing the user defined surrogate model file 
         mod = importlib.import_module(pyomo_surrogate)
-#    ***********
+#        *******
         # ******Obtaining non surrogate input and output var names, and setting bounds, initializations******
         
 #        Calling the pyomo based surrogate model from the user provided file, using main function
@@ -400,10 +368,7 @@ class opt(optimization):
         self.nonsurrout_names_pyomo = []
         
         for i,nonsurrin in enumerate(self.nonsurrin_names):
-            # nonsurrin_original = nonsurrin.replace('_','.')
             nonsurrin_original = self.nonsurrin_names_original[i]
-            # if not self.graph.x[nonsurrin_original].con:
-                # self.nonsurrin_names_original.append(nonsurrin_original)
             minv = simin.get(nonsurrin_original).min
             maxv = simin.get(nonsurrin_original).max
             initv = simin.get(nonsurrin_original).value
@@ -411,10 +376,7 @@ class opt(optimization):
             self.nonsurrin_names_pyomo.append(getattr(self.m,nonsurrin))
             
         for i,nonsurrout in enumerate(self.nonsurrout_names):
-            # nonsurrout_original = nonsurrout.replace('_','.')
             nonsurrout_original = self.nonsurrout_names_original[i]
-            # if not self.graph.x[nonsurrin_original].con:
-            # self.nonsurrout_names_original.append(nonsurrout_original)
             self.m.add_component('{0}'.format(nonsurrout),Var(initialize = 0.01))
             self.nonsurrout_names_pyomo.append(getattr(self.m,nonsurrout))
         
@@ -460,22 +422,11 @@ class opt(optimization):
                     fv_pyomo.fix(fv_pyomo.value)
         self.m.pprint()
         
-        #        Obtaining decision variable names in "node_var" format
+        # Obtaining decision variable names in "node_var" format
         dvar_names=[]
         for v in self.prob.v[:]:
             v1 = v.replace('.','_')
             dvar_names.append(v1)
-            
-        #self.msgQueue.put("****ITERATION 1****\n")
-        #self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
-        #for var in self.m.component_data_objects(Var):
-        #    self.msgQueue.put("Variable: {0}".format(str(var)))
-        #    self.msgQueue.put("Initialization Value: {0}".format(str(var())))
-        #    if var in [getattr(self.m,v) for v in dvar_names]:
-        #        self.msgQueue.put("Variable Type: Decision")
-        #        self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
-        #    else:
-        #        self.msgQueue.put("Variable Type: State\n")
         
 #       Solving the optimization problem with user provided options       
         if solversource == "gams":
@@ -486,8 +437,6 @@ class opt(optimization):
             kwds=dict()
             kwds['io_options'] = io_options
             kwds['warmstart'] = Warmstart
-    #            kwds['tolerance'] = Tolerance
-    #            kwds['maxiter'] = Maxiter
             kwds['tee'] = tee
             r=optimizer.solve(self.m,**kwds)
     #            
@@ -495,16 +444,14 @@ class opt(optimization):
             optimizer = SolverFactory(mathoptsolver)
             kwds=dict()
             kwds['tee'] = tee
-    #            kwds['warmstart'] = Warmstart
-    #            kwds['tolerance'] = Tolerance
-    #            kwds['maxiter'] = Maxiter
-    #*************************
+
     #       Implementing multi-start approach
             
             initvals = []
             decvars = [getattr(self.m,v) for v in dvar_names]
             surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
             surroutvars = [getattr(self.m,v) for v in surroutvarlist]
+            
             #Obtain the combination of all initialization points
             for var in decvars:
                 initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
@@ -518,39 +465,6 @@ class opt(optimization):
             solver_status = np.zeros(len(initvals_prod),dtype=object)
             solver_termination_condition = np.zeros(len(initvals_prod),dtype=object)
             solver_time = np.zeros(len(initvals_prod),dtype=object)
-            
-            # model_clones = []
-            # decvar_clones = []
-            # simoutvars_clones = []
-            # constr_clones = []
-            
-            # for c in range(len(initvals_prod)):
-            #     model_clones.append(self.m.clone())
-            # for c in range(len(initvals_prod)):
-            #     decvar_clones.append([getattr(model_clones[c],v) for v in dvar_names])
-            # for c in range(len(initvals_prod)):
-            #     simoutvars_clones.append([getattr(model_clones[c],v) for v in simoutvarlist])
-                
-             # Solve the optimization model for all initialization points
-            # for i1,initvallist in enumerate(initvals_prod):
-            #     for i,initv in enumerate(initvallist):
-            #         decvar_clones[i1][i].value = initv
-            #     for i,vr in enumerate(simoutvars_clones[i1]):
-            #         vr.value = -value(m.c[i+1].body - vr)
-    #             dvarclonescaled = []
-    #             for i,val in enumerate(decvar_clones[i1]):                    
-    #                 dvar_min_bound = simin.get(self.prob.v[i]).min
-    #                 dvar_max_bound = simin.get(self.prob.v[i]).max
-    #                 dvarclonescaled.append(10*(val.value - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
-    #             xf1 = np.array(dvarclonescaled)
-    #             instance1,cv1,pv1=self.f(xf1)
-    # #           Obtaining and assigning the output values corresponding to the each initialization point
-    #             for nodeName in [k for k in simout.keys() if k != 'graph']:
-    #                 for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
-    #                     simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
-    #                     nodevar = str(nodeName) + '_' + str(outVarName)
-    #                     indx = simoutvarlist.index(nodevar)
-    #                     simoutvars_clones[i1][indx].value = simout_value
             
             # Solve the optimization model for all initialization points & save solver details
             for i1,initvallist in enumerate(initvals_prod):
@@ -589,37 +503,15 @@ class opt(optimization):
                     solver_termination_condition[i1] = 1e10
                     solver_time[i1] = 1e10
                     
-            print(objvals)
             # Assign the best initialization value
-            # minobjval_idx = objvals.index(min(objvals))
             minobjval_idx = np.argmin(objvals)
-            print(minobjval_idx)
-            # dvar_init = []
+
             for i,var in enumerate(decvars):
                 var.value = initvals_prod[minobjval_idx][i]
-                # var.value = input_optim[minobjval_idx][i]
                 
             for i,initout in enumerate(surroutvars):
                 initout.value = -value(self.m.c[i+1].body - initout)
-                
-#             #*** Running Simulation for the best initialization point
-#             #simoutput_init=[None]*len(self.sim_output_vars_pyomo)
-#             dvarscaled = []
-#             for i,val in enumerate(dvar_init):                    
-#                 dvar_min_bound = simin.get(self.prob.v[i]).min
-#                 dvar_max_bound = simin.get(self.prob.v[i]).max
-#                 dvarscaled.append(10*(val - dvar_min_bound)/(dvar_max_bound - dvar_min_bound))
-#             xf1 = np.array(dvarscaled)
-#             instance1,cv1,pv1=self.f(xf1)
-                
-# #           Obtaining and assigning the output values corresponding to the best initialization point
-#             for nodeName in [k for k in simout.keys() if k != 'graph']:
-#                 for outVarName in [k for k in self.prob.gt.res[0]['output'][nodeName] if k!= 'status']:
-#                     simout_value = self.prob.gt.res[0]['output'][nodeName][outVarName]
-#                     nodevar = str(nodeName) + '_' + str(outVarName)
-#                     indx = simoutvarlist.index(nodevar)
-#                     simoutvars[indx].value = simout_value                 
-            #**************************        
+                    
             self.msgQueue.put("****ITERATION 1****\n")
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
             for i,var in enumerate(self.m.component_data_objects(Var)):
@@ -633,7 +525,6 @@ class opt(optimization):
                     self.msgQueue.put("Value: {0}\n".format(var.value))
                 else:
                     self.msgQueue.put("Variable Type: State\n")
-            # rf=optimizer.solve(self.m,**kwds) 
             for i,var in enumerate(decvars):
                 var.value = input_optim[minobjval_idx][i]
                 
@@ -719,20 +610,15 @@ class opt(optimization):
             if str(d) in dvar_names:
                 surrinvar = getattr(self.m,str(self.surrin_names_pyomo[i]))
                 surrin_pyomo.append(surrinvar)
-#        print(abs((f_str - f)/f_str))
         obj_func_vals = [] 
         obj_func_vals.append(f) 
         
-#        print(abs((f_str - f)/f_str))
         obj_fracdif_vals = [abs((f_str - f)/f_str)]
-#        obj_fracdif_vals.append(abs((f_str - f)/f_str))
         
         y_fracdif_vals = [sum(outvar_val_fracdiff)/len(outvar_val_fracdiff)]
-#        y_fracdif_vals.append(sum(outvar_val_fracdiff)/len(outvar_val_fracdiff))
         
         if len(constrexprs)!=0:
             constr_viol_vals = [sum(viol[0] for viol in cv)/len(cv)]
-#        constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
             
 #        Applying Termination Condition
 #       1. abs(f* - f)/f* <= eps ; 2. abs(y* - y)/y* <= eps ; 3. constraint_violation <= tolerance         
@@ -744,10 +630,8 @@ class opt(optimization):
                     if all(viol[0] <= inequality_tolerance for viol in cv):
                         flag = 0
                         self.msgQueue.put("Optimization Successful")
-    #                    self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
                     else:
                         flag = 1
-    #                    self.msgQueue.put('{0}'.format(cv))
                         self.msgQueue.put("Inequality constraints 'g' not satisfied corresponding to rigorous simulation values")
                         self.msgQueue.put("Surrogate Model Improvement Required")
                         self.msgQueue.put("****Proceed to next iteration****\n")
@@ -756,8 +640,6 @@ class opt(optimization):
                     self.msgQueue.put("Optimization Successful")
             else:
                 flag = 2
-#                self.msgQueue.put('{0}'.format(outvar_val_fracdiff))
-#                self.msgQueue.put('{0}'.format(cv))
                 self.msgQueue.put("Difference between aspen simulation and surrogate model output var values at optimal solution, outside tolerance bound")
                 self.msgQueue.put("Surrogate Model Improvement Required")
                 self.msgQueue.put("****Proceed to next iteration****\n")
@@ -767,34 +649,27 @@ class opt(optimization):
             self.msgQueue.put("None of the termination conditions satisfied")
             self.msgQueue.put("Surrogate Model Improvement Required")
             self.msgQueue.put("****Proceed to next iteration****\n")
-       
-#        Store the current iteration surrogate model in a text file
+            
+        # Print final results
+        if flag == 0:
+            self.msgQueue.put("\n***OPTIMIZATION RESULT***\n")
+            self.msgQueue.put("\n**Optimum value of decision variables**\n")
+            for i,v in enumerate(decvars):
+                self.msgQueue.put("{0}:{1}\n".format(str(v),v()))
+            self.msgQueue.put("\n**Rigorous simulation output variable values**\n")
+            for outv in self.graph.fnames:
+                self.msgQueue.put("{0}:{1}\n".format(str(outv),self.graph.f[outv].value))
+            
+#       Store the current iteration surrogate model in a text file
         with open(os.path.join("user_plugins", file_name_SM_stored), 'w') as f:
             f.write("Iteration 1 Surrogate Model\n")
             for k in self.m.c.keys():
                 f.write("{0} = 0\n".format(self.m.c[k].body))
-                
-#        Plot the current iteration surrogate model
-#        for i,k in enumerate(list(self.m.c.keys())):
             
 #       ****Setting up iterations to improve the surrogate model and perform the optimization****      
         algo_iter = 1  
-#        delta1 = [0.8, 0.5]
-#        num = [30, 20]
-#        obj_func_vals = [] 
-#        obj_func_vals.append(f) 
-#        
-#        print(abs((f_str - f)/f_str))
-#        obj_fracdif_vals = [abs((f_str - f)/f_str)]
-##        obj_fracdif_vals.append(abs((f_str - f)/f_str))
-#        
-#        y_fracdif_vals = [sum(outvar_val_fracdiff)/len(outvar_val_fracdiff)]
-##        y_fracdif_vals.append(sum(outvar_val_fracdiff)/len(outvar_val_fracdiff))
-#        
-#        constr_viol_vals = [sum(viol[0] for viol in cv)/len(cv)]
-##        constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
         
-        while flag != 0 and algo_iter <= self.options['Maxiter_Algo'].value:
+        while flag != 0 and algo_iter <= Maxiter_Algo:
             algo_iter += 1
 #            Changing the value of alpha after iteration 5
             if algo_iter == 5:
@@ -977,27 +852,26 @@ class opt(optimization):
                 oi=self.oi,
                 inputNames=self.surrin_names_original,
                 outputNames=self.surrout_names_original)
-            #**********
+            
             # ***Generate python file for Parity Plot***
-            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
-            #     f.write('Input_Data = {0}'.format(latin_hypercube_samples))
-            #     f.write('Simulator_Output_Data = {0}'.format(latin_hypercube_samples_values))
-            #     SM_outdata = []
-            #     surrvarinpyomo = []
-            #     for v in self.surrin_names_pyomo:
-            #         surrvarin = getattr(self.m,str(v))
-            #         surrvarinpyomo.append(surrvarin)
-            #     for s in latin_hypercube_samples:
-            #         out = []
-            #         for i,vin in enumerate(surrvarinpyomo):
-            #             vin.value = s[i]
-            #         for i,vout in enumerate(surroutvars):
-            #             vout = -value(self.m.c[i+1].body - initout)
-            #             out.append(vout)
-            #         SM_outdata.append(out)
-            #     f.write('SM_Output_Data = {0}'.format(SM_outdata.append))
-                # *******            
-            print(self.result['outputEqns'])
+            with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                f.write('Input_Data = {0}'.format(latin_hypercube_samples))
+                f.write('Simulator_Output_Data = {0}'.format(latin_hypercube_samples_values))
+                SM_outdata = []
+                surrvarinpyomo = []
+                for v in self.surrin_names_pyomo:
+                    surrvarin = getattr(self.m,str(v))
+                    surrvarinpyomo.append(surrvarin)
+                for s in latin_hypercube_samples:
+                    out = []
+                    for i,vin in enumerate(surrvarinpyomo):
+                        vin.value = s[i]
+                    for i,vout in enumerate(surroutvars):
+                        vout = -value(self.m.c[i+1].body - initout)
+                        out.append(vout)
+                    SM_outdata.append(out)
+                f.write('SM_Output_Data = {0}'.format(SM_outdata.append))
+           
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
             #***Change Surrogate Input Variable Bounds in Pyomo Model
@@ -1034,7 +908,6 @@ class opt(optimization):
                 eq_list1.append(eq_str1.strip())
             #*****
             #**Deleting the previous surrogate model pyomo constraints
-            #del(self.m.c) 
             self.m.del_component(self.m.c)
             #Delete implicit pyomo set created
             self.m.del_component(self.m.c_index)
@@ -1050,9 +923,7 @@ class opt(optimization):
             #*******Implementing multi-start approach*******
             
             initvals = []
-            #decvars = [getattr(self.m,v) for v in dvar_names]
-            #surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
-            #surroutvars = [getattr(self.m,v) for v in surroutvarlist]
+
             #Obtain the combination of all initialization points
             for var in decvars:
                 initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
@@ -1104,16 +975,13 @@ class opt(optimization):
                     solver_status[i1] = 1e10
                     solver_termination_condition[i1] = 1e10
                     solver_time[i1] = 1e10
-                    
-            print(objvals)
+
             # Assign the best initialization value
-            # minobjval_idx = objvals.index(min(objvals))
             minobjval_idx = np.argmin(objvals)
             print(minobjval_idx)
-            # dvar_init = []
+
             for i,var in enumerate(decvars):
                 var.value = initvals_prod[minobjval_idx][i]
-                # var.value = input_optim[minobjval_idx][i]
                 
             for i,initout in enumerate(surroutvars):
                 initout.value = -value(self.m.c[i+1].body - initout)
@@ -1141,8 +1009,6 @@ class opt(optimization):
                 kwds=dict()
                 kwds['io_options'] = io_options
                 kwds['warmstart'] = Warmstart
-        #            kwds['tolerance'] = Tolerance
-        #            kwds['maxiter'] = Maxiter
                 kwds['tee'] = tee
                 r=optimizer.solve(self.m,**kwds)
         #            
@@ -1150,9 +1016,6 @@ class opt(optimization):
                 optimizer = SolverFactory(mathoptsolver)
                 kwds=dict()
                 kwds['tee'] = tee
-        #            kwds['warmstart'] = Warmstart
-        #            kwds['tolerance'] = Tolerance
-        #            kwds['maxiter'] = Maxiter
                 r=optimizer.solve(self.m,**kwds)
                      
                 
@@ -1183,7 +1046,6 @@ class opt(optimization):
             xf = np.array(dvar_scaled)
             instance,cv,pv=self.f(xf)
             
-#            self.msgQueue.put("****Evaluating Algorithm Improvement****")
             self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
             self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
             
@@ -1245,7 +1107,6 @@ class opt(optimization):
                         if all(viol[0] <= inequality_tolerance for viol in cv):
                             flag = 0
                             self.msgQueue.put("Optimization Successful")
-    #                        self.msgQueue.put("Total Solution Time: {0} s\n".format(self.surr_optim_sol_time))
                         else:
                             flag = 1
                             self.msgQueue.put('{0}'.format(cv))
@@ -1269,18 +1130,22 @@ class opt(optimization):
                 self.msgQueue.put("Surrogate Model Improvement Required")
                 self.msgQueue.put("****Proceed to next iteration****\n")
                 
-                #        Store the current iteration surrogate model in a text file
+            # Print final results
+            if flag == 0:
+                self.msgQueue.put("\n***OPTIMIZATION RESULT***\n")
+                self.msgQueue.put("\n**Optimum value of decision variables**\n")
+                for i,v in enumerate(decvars):
+                    self.msgQueue.put("{0}:{1}\n".format(str(v),v()))
+                self.msgQueue.put("\n**Rigorous simulation output variable values**\n")
+                for outv in self.graph.fnames:
+                    self.msgQueue.put("{0}:{1}\n".format(str(outv),self.graph.f[outv].value))
+                
+            # Store the current iteration surrogate model in a text file
             with open(os.path.join("user_plugins", file_name_SM_stored), 'a') as f:
                 f.write("\nIteration {0} Surrogate Model\n".format(algo_iter))
                 for k in self.m.c.keys():
                     f.write("{0} = 0\n".format(self.m.c[k].body))
         
-#        Plot Surrogate Model after each iteration
-#                    Plot Algorithm convergence after each iteration
-#            obj_func_vals.append(f)
-#            obj_fracdif_vals.append(abs((f_str - f)/f_str))
-#            y_fracdif_vals.append(sum(outvar_val_fracdiff)/len(outvar_val_fracdiff))
-#            constr_viol_vals.append(sum(viol[0] for viol in cv)/len(cv))
         with open(os.path.join("user_plugins", file_name_plots), 'w') as f:    
             f.write('import matplotlib.pyplot as plt\n')
             f.write('iterations = {0}\n'.format(list(range(1,algo_iter+1))))
@@ -1305,4 +1170,3 @@ class opt(optimization):
             f.write("ax3.legend(bbox_to_anchor=(1.1,1))\n")
             if len(constrexprs)!=0:
                 f.write("ax4.legend(bbox_to_anchor=(2,1))\n")
-            f.write("#Parity plot for final surrogate model")

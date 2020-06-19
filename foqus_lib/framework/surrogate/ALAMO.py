@@ -447,14 +447,14 @@ class surrogateMethod(surrogate):
             desc=".py file flowsheet plugin, saved to user_plugins"\
                 " in the working directory.")
         self.options.add(
-            name="FOQUS Model (for Pyomo Optimization)",
+            name="Pyomo Model for Optimization",
             section="Advanced Settings",
             default="alamo_surrogate_pyomo_optim.py",
             dtype=str,
             desc=".py file, meant for surrogate based optimization to be used within FOQUS optimizer plugin, saved to user_plugins"\
                 " in the working directory.")
         self.options.add(
-            name="Standalone Model (for Pyomo Optimization)",
+            name="Standalone Pyomo Model for Optimization",
             section="Advanced Settings",
             default="alamo_surrogate_pyomo_optim_standalone.py",
             dtype=str,
@@ -928,7 +928,7 @@ class surrogateMethod(surrogate):
         excludeBefore = '[a-zA-Z0-9_\'\".]'
         excludeAfter = '[0-9a-zA-Z_.(\'\"]'
         file_name3 = self.options[
-            "FOQUS Model (for Pyomo Optimization)"].value
+            "Pyomo Model for Optimization"].value
 
         minval=[]
         maxval=[]
@@ -1038,7 +1038,7 @@ class surrogateMethod(surrogate):
         excludeBefore = '[a-zA-Z0-9_\'\".]'
         excludeAfter = '[0-9a-zA-Z_.(\'\"]'
         file_name3 = self.options[
-            "Standalone Model (for Pyomo Optimization)"].value
+            "Standalone Pyomo Model for Optimization"].value
 
         minval=[]
         maxval=[]

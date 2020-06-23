@@ -107,12 +107,12 @@ computer has multiple processors):
 
    Example of Running the Flowsheet with Remote Turbine
 
-Running Remote Turbine on AWS (Amazon Web Service) or Multiple Computers
-------------------------------------------------------------------------
+Running Remote Turbine on AWS (Amazon Web Service)
+--------------------------------------------------
 
 The steps below demonstrate how to set up FOQUS to run flowsheets
 remotely if the user would like to run FOQUS in parallel in AWS
-or on multiple computers (see Figure :ref:`fig.remote.settings`).
+(see Figure :ref:`fig.remote.settings`).
 
 1. Obtain a user name, password, and URL from the site’s Turbine
    administrator.
@@ -142,20 +142,20 @@ or on multiple computers (see Figure :ref:`fig.remote.settings`).
    your own password, you choose one that is not used for any other
    purpose.
 
-   #. Click **New/Edit** next to the **Turbine Configuration (remote)**
+   a. Click **New/Edit** next to the **Turbine Configuration (remote)**
       field. The Turbine Configuration window displays (see Figure
       :ref:`fig.remote.settings`).
 
-   #. Select “Cluster/Cloud” from the **Turbine Gateway Version**
+   b. Select “Cluster/Cloud” from the **Turbine Gateway Version**
       drop-down list in the Turbine Configuration window.
 
-   #. Enter the Turbine URL in the **Address** field.
+   c. Enter the Turbine URL in the **Address** field.
 
-   #. Enter the **User** name and **Password**.
+   d. Enter the **User** name and **Password**.
 
-   #. Click **Save as** and enter a new file name.
+   e. Click **Save as** and enter a new file name.
 
-   #. Set the remote Turbine configuration file. Click **Browse** next
+   f. Set the remote Turbine configuration file. Click **Browse** next
       to the **Turbine Configuration (remote)** field. Select the file
       created in Step 6e.
 

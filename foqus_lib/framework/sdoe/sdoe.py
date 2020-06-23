@@ -1,6 +1,7 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
+import pandas as pd
 
 def save(fnames, results, elapsed_time):
     write(fnames['cand'], results['best_cand'])
@@ -12,21 +13,42 @@ def save(fnames, results, elapsed_time):
 
 def run(config_file, nd, test=False):
 
+    # check config file
+    config_file = config_file.strip()
+    assert(os.path.isfile(config_file))
+    
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
-    config.read(config_file)
+    config.read(config_file.strip())
+    
     mode = config['METHOD']['mode']
     nr = int(config['METHOD']['number_random_starts'])
 
     hfile = config['INPUT']['history_file']
     cfile = config['INPUT']['candidate_file']
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
-    max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
+
+    ### BN: what happens if index is a string, do you still get min and max vals?
+    max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')] 
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
-    types = [s.strip() for s in config['INPUT']['type'].split(',')]
+
+    ### BN: changed from 'type' to 'types'
+    types = [s.strip() for s in config['INPUT']['types'].split(',')]   
+    # indices of type 'Input'
+    idx = [x for x, t in zip(include, types) if t == 'Input']
+    # index of type 'Weight' (should only be one)
+    idw = [x for x, t in zip(include, types) if t == 'Weight']
+    assert len(idw) == 1, 'Multiple WEIGHT columns detected. There should only one one WEIGHT column.'
+    idw = idw[0]
+    # index of type 'Index' (should only be one)
+    id_ = [x for x, t in zip(include, types) if t == 'Index']
+    assert len(i) == 1, 'Multiple INDEX columns detected. There should only one one INDEX column.'
+    id_ = id_[0]
+    
     outdir = config['OUTPUT']['results_dir']
 
     nusf = 'SF' in config.sections()
+    
     if nusf:
         weight_mode = config['WEIGHT']['weight_mode']
         assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
@@ -35,14 +57,19 @@ def run(config_file, nd, test=False):
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])
         mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
-        args = {'max_iterations': 100,
+        args = {'icol:', id_,
+                'xcols': idx,
+                'wcol': idw,
+                'max_iterations': 100,
                 'mwr_values': mwr_values,
                 'scale_method': scale_method}
         from .nusf import criterion
         
     else:
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
-        args = {'scale_factors': scl}
+        args = {'icol:', id_,
+                'wcol': idw,
+                'scale_factors': pd.Series(scl, index=include)}
         from .usf import criterion
         
     # create outdir as needed
@@ -51,45 +78,28 @@ def run(config_file, nd, test=False):
 
     # load candidates
     if cfile:
-        cand = load(cfile)
+        cand = load(cfile, index=id_)
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
-        if nusf and weight_mode == 'by_user':
 
-            # move the weight column to the last column
-            # if nusf, one of the columns is expected to be the weight vector
-            i = types.index('Weight')  
-            wcol = include[i]   # weight column name
-            include.sort(key=wcol.__eq__)
-            wts = cand[wcol]
-            cand = cand.drop(columns=[wcol])
-            xcols = list(cand)  # input column names
-            cand[wcol] = wts
-            
-            from .nusf import scale_xs
-            cand, xmin, xmax = scale_xs(cand, xcols)
-            args['xmin'] = xmin
-            args['xmax'] = xmax
-            args['wcol'] = wcol
-            args['xcols'] = xcols
-            
     # load history
     hist = None
     if hist is None:
         pass
     else:
-        hist = load(hfile)
+        assert id_ in hfile, 'History file should have an INDEX column named "{}"'.format(id_)
+        hist = load(hfile, index=id_)
         
     # do a quick test to get an idea of runtime
     if test:
         t0 = time.time()
-        results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+        results = criterion(cand, include, types, args, nr, nd, mode=mode, hist=hist)
         elapsed_time = time.time() - t0
         return elapsed_time
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+    results = criterion(cand, include, types, args, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output

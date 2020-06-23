@@ -10,13 +10,12 @@ def compute_min_dist(mat, scl, hist=[]):
 
 def criterion(cand,    # candidates
               include, # columns to include in distance computation
+              types,   # column types: {Index, Input}
               args,    # scaling factors for included columns
               nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
               mode='maximin', hist=[]):
 
-    scl = args['scale_factors']
-    
     mode = mode.lower()
     assert mode in ['maximin', 'minimax'], 'MODE {} not recognized.'.format(mode)
     if mode == 'maximin':
@@ -28,17 +27,28 @@ def criterion(cand,    # candidates
         fcn = np.max
         cond = lt
 
+    # indices of type 'Input'
+    idx = [x for x, t in zip(include, types) if t == 'Input']
+    
+    # scaling factors
+    scl = args['scale_factors']
+    scl = scl[idx].values
+
+    # history, if provided
     if hist:
-        hist = hist[include].values
+        hist = hist[idx].values
 
     best_cand = []
     best_rand_sample = []
  
     for i in range(nr):
 
+        # sample without replacement <nd> indices
         rand_index = np.random.choice(len(cand), nd, replace=False)
+        # extract the <nd> rows
         rand_cand = cand.iloc[rand_index]
-        dmat, min_dist = compute_min_dist(rand_cand[include].values, scl, hist=hist)
+        # extract the relevant columns (of type 'Input' only) for dist computations
+        dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist=hist)
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
@@ -51,6 +61,7 @@ def criterion(cand,    # candidates
                'best_index': best_index,
                'best_val': best_val,
                'best_dmat': best_dmat,
+               'dmat_cols': idx,      
                'mode': mode,
                'design_size': nd,
                'num_restarts': nr}

@@ -277,7 +277,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             sim.setModelName(newName)
 
     def addSimulation(self):
-
         updateDialog = updateSDOEModelDialog(self.dat, self)
         result = updateDialog.exec_()
         if result == QDialog.Rejected:
@@ -345,18 +344,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.unfreeze()
 
     def updateSimTable(self):
+        QApplication.processEvents()
         # Update table
         numSims = len(self.dat.sdoeSimList)
         self.filesTable.setRowCount(numSims)
         self.updateSimTableRow(numSims - 1)
         self.filesTable.selectRow(numSims - 1)
         self.confirmButton.setEnabled(self.hasCandidates())
+        QApplication.processEvents()
 
     def updateAggTable(self):
         self.updateAggTableRow(0)
         self.updateAggTableRow(1)
         self.updateAggTableRow(2)
-
 
     def deleteSimulation(self):
         QApplication.processEvents()
@@ -368,7 +368,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dat.sdoeFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
-        QApplication.processEvents()
         numSims = len(self.dat.sdoeSimList)
         if numSims > 0:
             if row >= numSims:
@@ -376,6 +375,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 row = numSims - 1
             sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
+        # self.updateSimTable()
         QApplication.processEvents()
 
     def saveSimulation(self):

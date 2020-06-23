@@ -25,3 +25,23 @@ Linux or OSX::
 .. note::
    Files passed as command line arguments to FOQUS will be relative to where FOQUS is run. Once
    FOQUS starts, file paths will be relative to the FOQUS working directory.
+
+.. note::
+   If when running on a remote Linux server or Virtual Machine you encounter an
+   error when starting FOQUS similar to:
+
+   .. code-block:: none
+
+     PyQt5 or Qt not available
+
+   or:
+
+   .. code-block:: none
+
+     qt.qpa.plugin: Could not load the Qt platform plugin "xcb" in "" even though it was found.
+     This application failed to start because no Qt platform plugin could be initialized. Reinstalling the application may fix this problem.
+
+     Available platform plugins are: eglfs, linuxfb, minimal, minimalegl, offscreen, vnc, wayland-egl, wayland, wayland-xcomposite-egl, wayland-xcomposite-glx, webgl, xcb.
+
+   Try installing the :code:`libgl1-mesa-glx` and/or :code:`libxkbcommon-x11-0` packages using
+   the package manager appropriate for your Linux distrubution.  (i.e. :code:`apt-get install` on Ubuntu).

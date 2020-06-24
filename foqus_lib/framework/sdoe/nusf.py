@@ -1,4 +1,3 @@
-import pandas as pd
 import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist

@@ -50,7 +50,7 @@ def criterion(cand,    # candidates
         print('Random start {}'.format(i))
         
         # sample without replacement <nd> indices
-        rand_index = np.random.choice(id_, nd, replace=False)
+        rand_index = np.random.choice(cand.index, nd, replace=False)
         # extract the <nd> rows
         rand_cand = cand.loc[rand_index]
         # extract the relevant columns (of type 'Input' only) for dist computations
@@ -64,8 +64,7 @@ def criterion(cand,    # candidates
             best_dmat = dmat         # used for ranking candidates
 
         elapsed_time = time.time() - t0
-        print('Best minimum distance for this random start: {}'.format(best_md))
-    
+
     results = {'best_cand': best_cand,
                'best_index': best_index,
                'best_val': best_val,

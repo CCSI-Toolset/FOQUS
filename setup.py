@@ -71,6 +71,8 @@ dist = setup(
         "scipy",
         "tqdm",
         "TurbineClient",
+        "modin"
+        "modin[all]"
         ],
 )
 

@@ -1,7 +1,7 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
-import pandas as pd
+import modin.pandas as pd
 
 def save(fnames, results, elapsed_time):
     write(fnames['cand'], results['best_cand'])
@@ -28,12 +28,10 @@ def run(config_file, nd, test=False):
     cfile = config['INPUT']['candidate_file']
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
 
-    ### BN: what happens if index is a string, do you still get min and max vals?
-    max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')] 
+    max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
 
-    ### BN: changed from 'type' to 'types'
-    types = [s.strip() for s in config['INPUT']['types'].split(',')]   
+    types = [s.strip() for s in config['INPUT']['types'].split(',')]
     # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == 'Input']
     # 'Index' column (should only be one)
@@ -71,7 +69,8 @@ def run(config_file, nd, test=False):
     else:
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'icol': id_,
-                'wcol': idw,
+                'xcols': idx,
+                'wcol': None,
                 'scale_factors': pd.Series(scl, index=include)}
         from .usf import criterion
         

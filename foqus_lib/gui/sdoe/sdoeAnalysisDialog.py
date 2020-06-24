@@ -404,7 +404,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f.write('min_vals = %s\n' % ','.join(min_vals))
         f.write('max_vals = %s\n' % ','.join(max_vals))
         f.write('include = %s\n' % ','.join(include_list))
-        f.write('type = %s\n' % ','.join(type_list))
+        f.write('types = %s\n' % ','.join(type_list))
         f.write('\n')
 
         ###NUSF ONLY
@@ -759,7 +759,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        types = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         if hfile == '':
             hname = None
@@ -789,7 +789,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        type = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         ## Populate gui fields with config file info
         if mode == 'minimax':
@@ -813,8 +813,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
-        for i in range(len(type)):
-            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
+        for i in range(len(types)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(types[i])
 
         self.sampleSize_spin.setValue(int(np.log10(nr)))
         self.updateRunTime(self.testRuntime[0])
@@ -830,7 +830,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        type = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
         scale_method = config['SF']['scale_method']
         mwr_vals = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
@@ -860,8 +860,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
-        for i in range(len(type)):
-            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
+        for i in range(len(types)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(types[i])
 
         self.sampleSizeNUSF_comboBox.setCurrentText(str(nr))
         self.updateRunTimeNUSF(self.testRuntime[0])

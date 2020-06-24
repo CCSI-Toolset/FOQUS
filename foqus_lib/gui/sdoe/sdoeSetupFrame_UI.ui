@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1280</width>
-    <height>755</height>
+    <width>1920</width>
+    <height>1035</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -261,52 +261,8 @@ candidate and history files.</string>
           <property name="title">
            <string>Ensemble Aggregation</string>
           </property>
-          <layout class="QGridLayout" name="gridLayout_4">
-           <item row="1" column="0">
-            <widget class="QPushButton" name="backSelectionButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to go back to ensemble selection.</string>
-             </property>
-             <property name="text">
-              <string>Back to Selection</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="2">
-            <widget class="QPushButton" name="analyzeNUSFButton">
-             <property name="toolTip">
-              <string>Click to create a non-uniform 
-space filling design</string>
-             </property>
-             <property name="text">
-              <string>Non-Uniform Space Filling</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QPushButton" name="analyzeButton">
-             <property name="font">
-              <font>
-               <weight>50</weight>
-               <bold>false</bold>
-              </font>
-             </property>
-             <property name="toolTip">
-              <string>Click to create a uniform 
-space filling design</string>
-             </property>
-             <property name="text">
-              <string>Uniform Space Filling</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0" colspan="3">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
             <widget class="QTableWidget" name="aggFilesTable">
              <row>
               <property name="text">
@@ -321,6 +277,11 @@ space filling design</string>
              <row>
               <property name="text">
                <string>Output Directory</string>
+              </property>
+             </row>
+             <row>
+              <property name="text">
+               <string>SDOE Method</string>
               </property>
              </row>
              <column>
@@ -359,6 +320,56 @@ space filling design</string>
               </property>
              </item>
             </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="backSelectionButton">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Click to go back to ensemble selection.</string>
+               </property>
+               <property name="text">
+                <string>Back to Selection</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="analyzeButton">
+               <property name="font">
+                <font>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="toolTip">
+                <string>Click to create a uniform 
+space filling design</string>
+               </property>
+               <property name="text">
+                <string>Open SDOE Dialog</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>

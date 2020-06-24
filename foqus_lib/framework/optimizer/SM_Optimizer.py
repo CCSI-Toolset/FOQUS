@@ -350,7 +350,7 @@ class opt(optimization):
                     self.nonsurrin_names_original.append(self.simin_names[i])
                     self.nonsurrin_names.append(simvar)
                     
-        idxlist = range(len(self.graph.edges))
+        # idxlist = range(len(self.graph.edges))
         
         edge_list = self.graph.edges
         
@@ -1158,7 +1158,7 @@ class opt(optimization):
                 for k in self.m.c.keys():
                     f.write("{0} = 0\n".format(self.m.c[k].body))
                     
-            # Store iteration results in FOQUS Flowsheet
+             # Store iteration results in FOQUS Flowsheet
             if Saveresults:
                 setName = self.dat.flowsheet.results.incrimentSetName(SetName)
                 self.prob.storeResults = setName

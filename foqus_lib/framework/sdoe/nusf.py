@@ -157,7 +157,7 @@ def scale_y(scale_method, mwr, df_, wcol):
 
     return methods[scale_method](mwr, df, wcol)
 
-
+# Not needed because we are using the index to look up the original rows
 def inv_scale_xs(df_, xmin, xmax, xcols):
     # Inputs:
     #      df - pandas dataframe of size (nd, nx+1) containing scaled inputs
@@ -174,7 +174,7 @@ def inv_scale_xs(df_, xmin, xmax, xcols):
     return df
 
 # -----------------------------------
-def criterion(cand,   # candidates
+def criterion(cand,    # candidates
               include, # columns to include in distance computation
               types,   # column types: {Index, Input, Weight}
               args,    # maximum number of iterations & mwr values
@@ -192,13 +192,10 @@ def criterion(cand,   # candidates
     mwr_vals = args['mwr_values']
     scale_method = args['scale_method']
 
-    # indices of type 'Input'
-    idx = [x for x, t in zip(include, types) if t == 'Input']
-
-    # index of type 'Weight' (should only be one)
-    idw = [x for x, t in zip(include, types) if t == 'Weight']
-    assert len(idw) == 1, 'Multiple weight columns detected. There should only one one weight column.'
-    idw = idw[0]
+    # indices of type ...
+    id_ = args['icol']   # Index
+    idx = args['xcols']  # Input
+    idw = args['wcol']   # Weight
     
     # scale inputs
     cand, xmin, xmax = scale_xs(cand, idx)
@@ -207,7 +204,10 @@ def criterion(cand,   # candidates
         hist = hist[idx].values
 
     def step(mwr, cand):
-
+        
+        cand_ = cand.copy()
+        id_ = cand_.index
+        
         cand = scale_y(scale_method, mwr, cand, idw)
         best_cand = []
         best_md = 0
@@ -215,14 +215,15 @@ def criterion(cand,   # candidates
         best_index = []
         
         t0 = time.time()
+
         for i in range(nr):
         
             print('Random start {}'.format(i))
             
             # sample without replacement <nd> indices
-            rand_index = np.random.choice(ncand, nd, replace=False)
+            rand_index = np.random.choice(id_, nd, replace=False)
             # extract the <nd> rows
-            rcand = cand.iloc[rand_index]
+            rcand = cand.loc[rand_index]
             dmat = compute_dmat(rcand, idx, idw, hist=hist)
             md, mdpts, mties = compute_min_params(dmat)
 
@@ -254,23 +255,13 @@ def criterion(cand,   # candidates
             elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
 
-        ###
-        print('best_cand:\n', best_cand)
-        print('xcols:', xcols)
-
-        df_best_cand_scaled = pd.DataFrame(best_cand, columns=xcols)
-        print('df_best_cand_scaled:', df_best_cand_scaled)
-        print('cand:', cand)
-
-        ccols = list(df_best_cand_scaled.columns)
-        df_best_cand = pd.merge(df_best_cand_scaled, cand, how='left', left_on=ccols, right_on=ccols)
-        ###
+        # no need to inverse-scale; ccan just use the indices to look up original rows in cand_
+        index = best_cand.index
+        assert all(list(index) == best_index), 'Index mismatch in best candidates.'
+        best_cand_unscaled = cand_.loc[index]
         
-        # inverse-scale the inputs and replace with original weights
-        df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, idx)
-        print('df_best_cand:\n', df_best_cand)
-        results = {'best_cand_scaled': df_best_cand_scaled,
-                   'best_cand': df_best_cand,  # both inputs & wt are in original scales
+        results = {'best_cand_scaled': best_cand, 
+                   'best_cand': best_cand_unscaled,
                    'best_index': best_index,
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
@@ -288,9 +279,9 @@ def criterion(cand,   # candidates
     for mwr in mwr_vals:
         print('>>>>>> mwr={} <<<<<<'.format(mwr))
         res = step(mwr, cand)
+        print('Best NUSF Design in Scaled Coordinates:\n', res['best_cand_scaled'])
+        print('Best NUSF Design in Original Coordinates:\n', res['best_cand'])
         print('Best value in Normalized Scale:', res['best_val'])
-        print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
-        print('Best NUSF Design in Original Coordinates:', res['best_cand'])
         print('Elapsed time:', res['elapsed_time'])
         results[mwr] = res
 

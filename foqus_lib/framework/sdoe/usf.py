@@ -1,7 +1,9 @@
 from operator import lt, gt
 import numpy as np
 from .distance import compute_dist
+import time
 
+# -----------------------------------
 def compute_min_dist(mat, scl, hist=[]):
     dmat = compute_dist(mat, scl=scl, hist=hist)
     min_dist = np.min(dmat, axis=0)
@@ -27,8 +29,9 @@ def criterion(cand,    # candidates
         fcn = np.max
         cond = lt
 
-    # indices of type 'Input'
-    idx = [x for x, t in zip(include, types) if t == 'Input']
+    # indices of type ...
+    id_ = args['icol']   # Index
+    idx = args['xcols']  # Input
     
     # scaling factors
     scl = args['scale_factors']
@@ -40,13 +43,16 @@ def criterion(cand,    # candidates
 
     best_cand = []
     best_rand_sample = []
- 
+
+    t0 = time.time()
     for i in range(nr):
 
+        print('Random start {}'.format(i))
+        
         # sample without replacement <nd> indices
-        rand_index = np.random.choice(len(cand), nd, replace=False)
+        rand_index = np.random.choice(id_, nd, replace=False)
         # extract the <nd> rows
-        rand_cand = cand.iloc[rand_index]
+        rand_cand = cand.loc[rand_index]
         # extract the relevant columns (of type 'Input' only) for dist computations
         dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist=hist)
         dist = fcn(min_dist)
@@ -57,6 +63,9 @@ def criterion(cand,    # candidates
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates
 
+        elapsed_time = time.time() - t0
+        print('Best minimum distance for this random start: {}'.format(best_md))
+    
     results = {'best_cand': best_cand,
                'best_index': best_index,
                'best_val': best_val,
@@ -64,6 +73,7 @@ def criterion(cand,    # candidates
                'dmat_cols': idx,      
                'mode': mode,
                'design_size': nd,
-               'num_restarts': nr}
+               'num_restarts': nr,
+               'elapsed_time': elapsed_time}
          
     return results

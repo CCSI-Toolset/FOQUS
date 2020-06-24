@@ -34,22 +34,25 @@ def run(config_file, nd, test=False):
 
     ### BN: changed from 'type' to 'types'
     types = [s.strip() for s in config['INPUT']['types'].split(',')]   
-    # indices of type 'Input'
+    # 'Input' columns
     idx = [x for x, t in zip(include, types) if t == 'Input']
-    # index of type 'Weight' (should only be one)
-    idw = [x for x, t in zip(include, types) if t == 'Weight']
-    assert len(idw) == 1, 'Multiple WEIGHT columns detected. There should only one one WEIGHT column.'
-    idw = idw[0]
-    # index of type 'Index' (should only be one)
+    # 'Index' column (should only be one)
     id_ = [x for x, t in zip(include, types) if t == 'Index']
-    assert len(i) == 1, 'Multiple INDEX columns detected. There should only one one INDEX column.'
-    id_ = id_[0]
-    
+    if id_:
+        assert len(id_) == 1, 'Multiple INDEX columns detected. There should only be one INDEX column.'
+        id_ = id_[0]
+    else:
+        id_ = None
     outdir = config['OUTPUT']['results_dir']
 
     nusf = 'SF' in config.sections()
     
     if nusf:
+        # 'Weight' column (should only be one)
+        idw = [x for x, t in zip(include, types) if t == 'Weight']
+        assert len(idw) == 1, 'Multiple WEIGHT columns detected. There should only be one WEIGHT column.'
+        idw = idw[0]
+
         weight_mode = config['WEIGHT']['weight_mode']
         assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
             
@@ -57,7 +60,7 @@ def run(config_file, nd, test=False):
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])
         mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
-        args = {'icol:', id_,
+        args = {'icol': id_,
                 'xcols': idx,
                 'wcol': idw,
                 'max_iterations': 100,
@@ -67,7 +70,7 @@ def run(config_file, nd, test=False):
         
     else:
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
-        args = {'icol:', id_,
+        args = {'icol': id_,
                 'wcol': idw,
                 'scale_factors': pd.Series(scl, index=include)}
         from .usf import criterion
@@ -106,12 +109,12 @@ def run(config_file, nd, test=False):
     if nusf:
         fnames = {}
         for mwr in mwr_values:
-            suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
+            suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(idx+[idw]))
             fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
     else:
-        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
+        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(idx))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)

@@ -12,7 +12,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.5.0dev3"
+default_version = "3.6.0dev0"
 
 try:
     version=subprocess.check_output(
@@ -54,6 +54,11 @@ dist = setup(
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
         'icons_rc.py'],
+    entry_points={
+        "console_scripts": [
+            "foqus = foqus_lib.foqus:main",
+            ],
+        },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
@@ -61,7 +66,7 @@ dist = setup(
         "boto3",
         "cma",
         "matplotlib",
-        "mlrose",
+        "mlrose_hiive",
         "numpy",
         "pandas",
         "psutil",

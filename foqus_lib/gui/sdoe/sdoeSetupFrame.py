@@ -129,7 +129,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
-        self.analyzeNUSFButton.setEnabled(False)
 
         ##### Set up UQ toolbox
         self.dataTabs.setEnabled(False)
@@ -154,13 +153,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     ########################### Go through list of ensembles ##############################
 
     def confirmEnsembles(self):
+        QApplication.processEvents()
         self.updateAggTable()
         self.aggFilesTable.setEnabled(True)
         self.backSelectionButton.setEnabled(True)
         self.analyzeButton.clicked.connect(self.launchSdoe)
-        self.analyzeNUSFButton.clicked.connect(self.launchNUSFSdoe)
         self.analyzeButton.setEnabled(True)
-        self.analyzeNUSFButton.setEnabled(True)
         self.filesTable.setEnabled(False)
         self.addSimulationButton.setEnabled(False)
         self.loadFileButton.setEnabled(False)
@@ -169,7 +167,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(False)
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
-
+        QApplication.processEvents()
+        
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
         
@@ -221,10 +220,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         return candidateData, historyData
 
     def backToSelection(self):
+        QApplication.processEvents()
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
-        self.analyzeNUSFButton.setEnabled(False)
         self.filesTable.setEnabled(True)
         self.addSimulationButton.setEnabled(True)
         self.loadFileButton.setEnabled(True)
@@ -233,6 +232,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.saveButton.setEnabled(True)
         self.dataTabs.setEnabled(True)
         self.confirmButton.setEnabled(self.hasCandidates())
+        QApplication.processEvents()
 
     def refresh(self):
         numSims = len(self.dat.sdoeSimList)
@@ -277,7 +277,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             sim.setModelName(newName)
 
     def addSimulation(self):
-
         updateDialog = updateSDOEModelDialog(self.dat, self)
         result = updateDialog.exec_()
         if result == QDialog.Rejected:
@@ -345,20 +344,22 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.unfreeze()
 
     def updateSimTable(self):
+        QApplication.processEvents()
         # Update table
         numSims = len(self.dat.sdoeSimList)
         self.filesTable.setRowCount(numSims)
         self.updateSimTableRow(numSims - 1)
         self.filesTable.selectRow(numSims - 1)
         self.confirmButton.setEnabled(self.hasCandidates())
+        QApplication.processEvents()
 
     def updateAggTable(self):
         self.updateAggTableRow(0)
         self.updateAggTableRow(1)
         self.updateAggTableRow(2)
 
-
     def deleteSimulation(self):
+        QApplication.processEvents()
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
 
@@ -374,7 +375,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 row = numSims - 1
             sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
-
+        # self.updateSimTable()
+        QApplication.processEvents()
 
     def saveSimulation(self):
         psuadeFilter = 'Psuade Files (*.dat)'
@@ -530,6 +532,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setText(self.dname)
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
+        combo = QComboBox()
+        combo.addItems(['Uniform Space Filling', 'Non-Uniform Space Filling', 'Input-Response Space Filling'])
+        self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
+        combo.setEnabled(True)
+        combo.model().item(2).setEnabled(False)
 
         # Resize table
         self.resizeColumns()
@@ -542,20 +549,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        type = 'USF'
+        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling':
+            type = 'USF'
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling':
+            type = 'NUSF'
         analysis = None
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
-
-    def launchNUSFSdoe(self):
-        candidateData, historyData = self.createAggData()
-        dname = self.dname
-        type = 'NUSF'
-        analysis = None
-
-        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
-        dialog.exec_()
+        dialog.deleteLater()
 
     def initUQToolBox(self):
 

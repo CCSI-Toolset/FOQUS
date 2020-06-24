@@ -50,7 +50,6 @@ dist = setup(
             '*.html', '*.gms', '*.gpr', '*.ccs']},
     include_package_data=True,
     scripts = [
-        'foqus.py',
         'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py',
         'icons_rc.py'],
@@ -79,33 +78,29 @@ dist = setup(
         ],
 )
 
-def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
+def write_bat(bat_file, conda_path, conda_env, foqus_path, switch):
     with open(bat_file, 'w') as f:
         if conda_env is not None and conda_path is not None:
-            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
-                switch, conda_path, conda_env, python_path, foqus_path))
+            f.write('cmd {} ""{}" activate {} && "{}" %*"'.format(
+                switch, conda_path, conda_env, foqus_path))
         else:
-            f.write('cmd {} ""{}" "{}" %*"'.format(
-                switch, python_path, foqus_path))
+            f.write('cmd {} "{}" %*"'.format(switch, foqus_path))
 
 if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     #first see if this is a conda env
     foqus_path = subprocess.check_output(
-        ["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
+        ["where", "foqus.exe"]).decode('utf-8').split(os.linesep)[0].strip()
     if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
         conda_env = os.environ["CONDA_DEFAULT_ENV"]
         conda_path = shutil.which("conda") # unless conda is not found
     else:
         conda_path = None
         conda_env = None
-    python_path = shutil.which("python")
     if conda_path is None:
         print("** conda not found bat file will not activate conda environment")
-    if python_path is None:
-        print("** python not found, no bat file written")
     else:
-        write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
-        write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
+        write_bat("foqus.bat", conda_path, conda_env, foqus_path, "/C")
+        write_bat("foqus_debug.bat", conda_path, conda_env, foqus_path, "/K")
 
 print("""
 
@@ -156,6 +151,6 @@ Windows:
     On Windows, this script makes batch files to run FOQUS.  This batch files
     can be placed in any conveinient location.
         - foqus.bat: run FOQUS and close cmd window when FOQUS exits
-        - foqus_debug.bat: run FOQUS and leave cmd window open  
+        - foqus_debug.bat: run FOQUS and leave cmd window open
 ==============================================================================
 """.format(ver.version))

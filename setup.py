@@ -78,6 +78,7 @@ dist = setup(
         ],
 )
 
+"""
 def write_bat(bat_file, conda_path, conda_env, foqus_path, switch):
     with open(bat_file, 'w') as f:
         if conda_env is not None and conda_path is not None:
@@ -101,6 +102,7 @@ if os.name == 'nt': # Write a batch file on windows to make it easier to launch
     else:
         write_bat("foqus.bat", conda_path, conda_env, foqus_path, "/C")
         write_bat("foqus_debug.bat", conda_path, conda_env, foqus_path, "/K")
+"""
 
 print("""
 

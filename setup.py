@@ -68,7 +68,7 @@ dist = setup(
         "matplotlib",
         "mlrose_hiive",
         "numpy",
-        "pandas",
+        "pandas==1.0.3",
         "psutil",
         "PyQt5==5.13.*",
         "pywin32; sys_platform == 'win32'",

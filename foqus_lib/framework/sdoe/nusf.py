@@ -4,7 +4,7 @@ from .distance import compute_dist
 import time
 
 # -----------------------------------
-def compute_dmat(df, xcols, wcol, hist=[]):
+def compute_dmat(df, xcols, wcol, hist=None):
     # Inputs:
     #     df - pandas dataframe of size (nd, nx+1) containing scaled weights
     #  xcols - list of strings corresponding to column names for inputs
@@ -174,12 +174,10 @@ def inv_scale_xs(df_, xmin, xmax, xcols):
 
 # -----------------------------------
 def criterion(cand,    # candidates
-              include, # columns to include in distance computation
-              types,   # column types: {Index, Input, Weight}
               args,    # maximum number of iterations & mwr values
               nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
-              mode='maximin', hist=[]):
+              mode='maximin', hist=None):
 
     ncand = len(cand)
     assert nd <= ncand, 'Number of designs exceeds number of available candidates.'  
@@ -192,14 +190,14 @@ def criterion(cand,    # candidates
     scale_method = args['scale_method']
 
     # indices of type ...
-    id_ = args['icol']   # Index
+    _id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     idw = args['wcol']   # Weight
     
     # scale inputs
-    cand, xmin, xmax = scale_xs(cand, idx)
+    cand, _xmin, _xmax = scale_xs(cand, idx)
     
-    if hist:
+    if hist is not None:
         hist = hist[idx].values
 
     def step(mwr, cand):

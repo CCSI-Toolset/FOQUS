@@ -3,9 +3,9 @@ import numpy as np
 def compute_dist(mat,      # numpy array of shape (N, nx) and type 'float'
                  scl=None, # [usf] numpy array of shape (nx,) and type 'float'
                  wt=None,  # [nusf] numpy array of shape (N,) and type 'float'
-                 hist=[]):
+                 hist=None):
     
-    if hist:
+    if hist is not None:
         mat = np.concatenate((mat, hist), axis=0)
 
     N, ncols = mat.shape

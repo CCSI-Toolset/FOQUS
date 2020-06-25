@@ -95,13 +95,13 @@ def run(config_file, nd, test=False):
     # do a quick test to get an idea of runtime
     if test:
         t0 = time.time()
-        results = criterion(cand, include, types, args, nr, nd, mode=mode, hist=hist)
+        results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
         elapsed_time = time.time() - t0
         return elapsed_time
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, include, types, args, nr, nd, mode=mode, hist=hist)
+    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output

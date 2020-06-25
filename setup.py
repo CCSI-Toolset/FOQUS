@@ -68,15 +68,14 @@ dist = setup(
         "matplotlib",
         "mlrose_hiive",
         "numpy",
-        "pandas==1.0.3",
+        "pandas",
         "psutil",
         "PyQt5==5.13.*",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
-        "TurbineClient",
-        "modin[all]"
+        "TurbineClient"
         ],
 )
 

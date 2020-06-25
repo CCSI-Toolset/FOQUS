@@ -1,7 +1,7 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
-import modin.pandas as pd
+import pandas as pd
 
 def save(fnames, results, elapsed_time):
     write(fnames['cand'], results['best_cand'])

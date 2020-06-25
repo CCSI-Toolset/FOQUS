@@ -28,7 +28,6 @@ def criterion(cand,    # candidates
         cond = lt
 
     # indices of type ...
-    _id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     
     # scaling factors

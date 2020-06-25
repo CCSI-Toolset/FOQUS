@@ -190,7 +190,6 @@ def criterion(cand,    # candidates
     scale_method = args['scale_method']
 
     # indices of type ...
-    _id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     idw = args['wcol']   # Weight
     

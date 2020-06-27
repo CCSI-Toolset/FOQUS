@@ -1,0 +1,171 @@
+{
+  "title": "CCSIMEAModel2_Updated",
+  "config-version": "1.13",
+  "description": "Updated MEA based Carbon Capture System Model",
+  "model": {
+    "file": "CCSI_MEAModel2.bkp",
+    "DigestValue": "b2ca367e660b168c501e55d55b839b496dbcd010",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [
+    {
+      "file": "ccsi.opt",
+      "DigestValue": "18efecbd135fbbecb75bdcf145112bdf114d6e8f",
+      "SignatureMethodAlgorithm": "sha1"
+    },
+    {
+      "file": "ccsi10.dll",
+      "DigestValue": "7dbe80327279cc56c8b8edb120e2cb65a29967a5",
+      "SignatureMethodAlgorithm": "sha1"
+    }
+  ],
+  "author": "JMAD",
+  "date": "6/18/2019",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Plus",
+    "version": "36.0",
+    "constraint": "REQUIRED"
+  },
+  "inputs": {
+    "SOLVENTABSIN": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 6803.7,
+      "description": "Total mass flowrate of lean solvent entering the absorber",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 20000.0
+    },
+    "GASABSIN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 2266.099,
+      "description": "Total mass flowrate of flue gas entering the absorber",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 8000.0
+    },
+    "xH2O": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\H2O"
+      ],
+      "type": "double",
+      "default": 7.911461,
+      "description": "H2O mole fraction in lean solvent",
+      "units": null,
+      "min": 5.0,
+      "max": 14.0
+    },
+    "xCO2": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.25,
+      "description": "CO2 mole fraction in lean solvent",
+      "units": null,
+      "min": 0.01,
+      "max": 0.35
+    },
+    "xMEA": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\MEA"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "MEA mole fraction in lean solvent",
+      "units": null,
+      "min": 1.0,
+      "max": 1.0
+    },
+    "GASINCO2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.17314,
+      "description": "CO2 mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINH2OFRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\H2O"
+      ],
+      "type": "double",
+      "default": 0.04623,
+      "description": "H2O mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINN2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\N2"
+      ],
+      "type": "double",
+      "default": 0.71165,
+      "description": "N2 mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINO2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\O2"
+      ],
+      "type": "double",
+      "default": 0.06898,
+      "description": "O2 mass fraction in flue gas entering the absorber",
+      "units": null
+    }
+  },
+  "outputs": {
+    "CO2OUT2": {
+      "path": [
+        "\\Data\\Streams\\CO24\\Output\\MASSFLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 leaving the system from Flash Drum 2",
+      "units": "kg/hr"
+    },
+    "CO2OUT1": {
+      "path": [
+        "\\Data\\Streams\\CO21\\Output\\MASSFLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 leaving the system from Flash Drum 1",
+      "units": "kg/hr"
+    },
+    "CO2CAPTURE": {
+      "path": [
+        "\\Data\\Flowsheeting Options\\Calculator\\CAPP\\Output\\WRITE_VAL\\3"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Percent CO2 Capture in the System",
+      "units": null
+    },
+    "REB_DUTY": {
+      "path": [
+        "\\Data\\Blocks\\REGEN\\Output\\REB_DUTY"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": null,
+      "units": "Watt"
+    },
+    "SOLVENTABS": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Output\\MASSFLMX_LIQ"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Final Value of total mass flowrate of lean solvent entering the absorber",
+      "units": "kg/hr"
+    }
+  }
+}

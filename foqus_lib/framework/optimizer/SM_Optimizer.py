@@ -286,8 +286,8 @@ class opt(optimization):
         uq_file = self.options['Parity Plot File'].value
 
         # The set name to use when saving evaluations in flowsheet results (to get unique set names in flowsheet results section)
-        # if Saveresults:
-        #     setName = self.dat.flowsheet.results.incrimentSetName(SetName)
+        if Saveresults:
+            setName = self.dat.flowsheet.results.incrimentSetName(SetName)
         
         # The solver is all setup and ready to go
         start = time.time()        # get start time
@@ -298,10 +298,10 @@ class opt(optimization):
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters() #
         self.prob.solverStart = start
-        # if Saveresults:
-        #     self.prob.storeResults = setName
-        # else:
-        #     self.prob.storeResults = None
+        if Saveresults:
+            self.prob.storeResults = setName
+        else:
+            self.prob.storeResults = None
         
         self.prob.prep(self) #get problem ready for solving
         self.bkp_timer = time.time() #timer for flowseet backup
@@ -670,11 +670,11 @@ class opt(optimization):
                 f.write("{0} = 0\n".format(self.m.c[k].body))
                 
         # Store iteration results in FOQUS Flowsheet
-        if Saveresults:
-            setName = self.dat.flowsheet.results.incrimentSetName(SetName)
-            self.prob.storeResults = setName
-        else:
-            self.prob.storeResults = None
+        # if Saveresults:
+        #     setName = self.dat.flowsheet.results.incrimentSetName(SetName)
+        #     self.prob.storeResults = setName
+        # else:
+        #     self.prob.storeResults = None
             
 #       ****Setting up iterations to improve the surrogate model and perform the optimization****      
         algo_iter = 1  
@@ -1159,11 +1159,11 @@ class opt(optimization):
                     f.write("{0} = 0\n".format(self.m.c[k].body))
                     
              # Store iteration results in FOQUS Flowsheet
-            if Saveresults:
-                setName = self.dat.flowsheet.results.incrimentSetName(SetName)
-                self.prob.storeResults = setName
-            else:
-                self.prob.storeResults = None
+            # if Saveresults:
+            #     setName = self.dat.flowsheet.results.incrimentSetName(SetName)
+            #     self.prob.storeResults = setName
+            # else:
+            #     self.prob.storeResults = None
         
         with open(os.path.join("user_plugins", file_name_plots), 'w') as f:    
             f.write('import matplotlib.pyplot as plt\n')

@@ -32,51 +32,62 @@ Framework
 ----------
 
 .. figure:: ../figs/framework_sm_optimizer.png
-   :alt: Figure 1: Framework for surrogate model-based optimization algorithm
+   :alt: Figure 1 - Framework for surrogate model-based optimization algorithm
    :name: fig.framework.sm.optimizer
+
+   Figure 1 - Framework for surrogate model-based optimization algorithm
 
 .. figure:: ../figs/algorithm_steps.png
    :alt: Algorithm Steps
    :name: fig.algorithm.steps
 
+   Algorithm Steps
+
 As shown in figure 1, the framework consists of 6 main steps, in which the first 2 steps require the user interaction, while the rest of the algorithm will be performed automatically.
 The detailed description of each Step is provided here:
 
-Step 1 – Flowsheet set up: First, the user must provide a rigorous process simulation to the FOQUS flowsheet, then select the input and output variables of interest.
+**Step 1 –** Flowsheet set up: First, the user must provide a rigorous process simulation to the FOQUS flowsheet, then select the input and output variables of interest.
 Once, the simulation node has been tested and the user provided input variables with their default values, upper and lower bounds, the user needs to generate simulation samples using the
 UQ module in FOQUS for a given input space. At this point, the upper and lower variable bounds will be considered as the initial trust region, and the samples will be used to develop the initial surrogate model.
 
-Step 2 – Surrogate Model Development: This step is simple, but critical to minimize the number of iterations required in the algorithm. The user must select the number of samples, and alamo settings to generate
+**Step 2 –** Surrogate Model Development: This step is simple, but critical to minimize the number of iterations required in the algorithm. The user must select the number of samples, and alamo settings to generate
 the best surrogate possible. Finally, The user generates a surrogate model based on the simulation samples using FOQUS-ALAMO module.
 
-Step 3 – Mathematical Optimization: In the Optimization module, setup the problem by selecting the decision variables, providing the objective function, and additional constraints. Since, FOQUS Optimization module
+**Step 3 –** Mathematical Optimization: In the Optimization module, setup the problem by selecting the decision variables, providing the objective function, and additional constraints. Since, FOQUS Optimization module
 allows multiple derivative free optimizers (DFO), user must select the surrogate model-based optimizer as the solver, with appropriate settings for the algorithm (detailed description of the settings is provided in the tutorial).
 The SM-based optimizer formulates and solves the optimization problem by creating a Pyomo model (Concrete Model), adding the input and output variables (as Pyomo variables with bounds – trust region), adding the surrogate models as
 Pyomo constraints, and adding additional constraints provided by the user (g(x)>0 or h(x)=0). In this step, to avoid eliminating feasible solutions due to local optimums, a multi-start approach has been implemented, in which the
 optimization problem is solved for different initialization points. A combination of initial values is used based on the variable bounds, mid-point, and user provided values for the decision variables. The optimal solution chosen
 corresponds to that case which gives best value of objective function (minimum or maximum). Note, if a solution returns infeasible it will be eliminated. The solution is called x* and ysm, for optimum decision variables and output variables, respectively.
 
-Step 4 – Rigorous Process Simulation: In this step, the process simulation is run at the optimal point obtained in step 3 (x*), then evaluating the optimal solution using the rigorous model, we obtain the corresponding output variable values ysim.
+**Step 4 –** Rigorous Process Simulation: In this step, the process simulation is run at the optimal point obtained in step 3 (x*), then evaluating the optimal solution using the rigorous model, we obtain the corresponding output variable values ysim.
 
-Step 5 – Termination Condition Check: The algorithm includes three termination conditions to determine if the optimal solution has been obtained.
+**Step 5 –** Termination Condition Check: The algorithm includes three termination conditions to determine if the optimal solution has been obtained:
 
-\frac{|z_sim - z_sm|}{|z_sim|}  \leq  \epsilon  (1)
-\frac{|y_sim - y_sm|}{|y_sim|}  \leq  \epsilon  (2)
-g(x^*)  \geq 0  (3)
+:math:`\\frac{ |z_s_i_m - z_s_m| }{ |z_s_i_m|} \leq \epsilon` (1)
+
+:math:`\\frac{ |y_s_i_m - ys_m| }{ |y_s_i_m| } \leq \epsilon` (2)
+
+:math:`g(x^*) \geq 0` (3)
 
 First, Equation 1 checks if the objective function from the surrogate model (zsm) minus the one obtained evaluating the rigorous model (zsim) meet the tolerance. Secondly, the relative error between the output variables from the optimization problem (ysm)
 and the rigorous simulation (ysim) in Equation 2. Finally, Equation 3 checks that the additional constraint is satisfied at the optimum point.
 If the conditions in step 5 are satisfied, the algorithm is terminated, otherwise, step 6 is implemented.
 
-Step 6 – Update Trust Region: In this step, the input variable upper and lower bounds (xub and xlb) are adjusted to shrink the trust region. The extent to which the trust region shrinks (difk) depends on the fractional multiplier α.
-The updated upper and lower bounds (xub,k+1 and xlb,k+1) are calculated around x*, based on difk.
+**Step 6 –** Update Trust Region: In this step, the input variable upper and lower bounds (xub and xlb) are adjusted to shrink the trust region. The extent to which the trust region shrinks (difk) depends on the fractional multiplier α.
+The updated upper and lower bounds (xub,k+1 and xlb,k+1) are calculated around x*, based on difk:
 
-dif_k=(x_u_b_,_k - x_l_b_,_k)* \alpha … 0 \leq  \alpha  \leq 1
-x_l_b_,_k_+_1 = x^* -  \frac{dilf_k}{2} (x_l_b_,_k_+_1 = x_l_b_,_k_=_0   if   x_l_b_,_k_+_1 < x_l_b_,_k_=_0)
-x_u_b_,_k_+_1 = x^* +  \frac{dilf_k}{2} (x_u_b_,_k_+_1 = x_u_b_,_k_=_0   if   x_u_b_,_k_+_1 > x_u_b_,_k_=_0)
+:math:`0 \leq  \alpha  \leq 1`
+
+:math:`dif_k=(x_u_b_,_k - x_l_b_,_k)* \alpha`
+
+:math:`x_l_b_,_k_+_1 = x^* -  \\frac{dilf_k}{2} (x_l_b_,_k_+_1 = x_l_b_,_k_=_0   if   x_l_b_,_k_+_1 < x_l_b_,_k_=_0)`
+
+:math:`x_u_b_,_k_+_1 = x^* +  \\frac{dilf_k}{2} (x_u_b_,_k_+_1 = x_u_b_,_k_=_0   if   x_u_b_,_k_+_1 > x_u_b_,_k_=_0)`
 
 Note that if the ratio of upper and lower bounds is less than or equal to a set value of bound ratio, the trust region is not updated further, and the algorithm terminates.
-If  \frac{x_u_b_,_k_+_1}{x_l_b_,_k_+_1}  \leq bound ratio  STOP
+If:
+:math:`\\frac{x_u_b_,_k_+_1}{x_l_b_,_k_+_1}  \leq bound ratio` STOP
 
 Further, Latin hypercube samples are generated in the updated trust region. This sampling method ensures that the sample points are uniformly spaced out and cover the entire trust region without any skewness. Once the samples are generated,
 step 2 is repeated using this new data set and the original ALAMO settings.

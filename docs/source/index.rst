@@ -15,6 +15,7 @@
     chapt_HI/index
     chapt_pyomo/index
     chapt_sinter/index
+    chapt_sm_optimizer/index
     chapt_debug/index
     references
     copyright

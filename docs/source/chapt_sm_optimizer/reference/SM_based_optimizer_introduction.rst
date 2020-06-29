@@ -64,11 +64,11 @@ corresponds to that case which gives best value of objective function (minimum o
 
 **Step 5 –** Termination Condition Check: The algorithm includes three termination conditions to determine if the optimal solution has been obtained:
 
-:math:`\\frac{ |z_s_i_m - z_s_m| }{ |z_s_i_m|} \leq \epsilon` (1)
+.. math:: \frac{|z_{sim} - z_{sm}|}{|z_{sim}|}\leq \epsilon.... (1)
 
-:math:`\\frac{ |y_s_i_m - ys_m| }{ |y_s_i_m| } \leq \epsilon` (2)
+.. math:: \frac{|y_{sim} - y_{sm}|}{|y_{sim}|}\leq \epsilon.... (2)
 
-:math:`g(x^*) \geq 0` (3)
+.. math:: g(x^*) \geq 0.... (3)
 
 First, Equation 1 checks if the objective function from the surrogate model (zsm) minus the one obtained evaluating the rigorous model (zsim) meet the tolerance. Secondly, the relative error between the output variables from the optimization problem (ysm)
 and the rigorous simulation (ysim) in Equation 2. Finally, Equation 3 checks that the additional constraint is satisfied at the optimum point.
@@ -77,17 +77,21 @@ If the conditions in step 5 are satisfied, the algorithm is terminated, otherwis
 **Step 6 –** Update Trust Region: In this step, the input variable upper and lower bounds (xub and xlb) are adjusted to shrink the trust region. The extent to which the trust region shrinks (difk) depends on the fractional multiplier α.
 The updated upper and lower bounds (xub,k+1 and xlb,k+1) are calculated around x*, based on difk:
 
-:math:`0 \leq  \alpha  \leq 1`
+.. math:: 0 \leq  \alpha  \leq 1
 
-:math:`dif_k=(x_u_b_,_k - x_l_b_,_k)* \alpha`
+.. math:: dif_k=(x_{ub,k} - x_{lb,k})* \alpha
 
-:math:`x_l_b_,_k_+_1 = x^* -  \\frac{dilf_k}{2} (x_l_b_,_k_+_1 = x_l_b_,_k_=_0   if   x_l_b_,_k_+_1 < x_l_b_,_k_=_0)`
+.. math:: x_{lb,k+1} = x^* -  \frac{dif_k}{2}.... (x_{lb,k+1} = x_{lb,k=0}...if , x_{lb,k+1} < x_{lb,k=0})
 
-:math:`x_u_b_,_k_+_1 = x^* +  \\frac{dilf_k}{2} (x_u_b_,_k_+_1 = x_u_b_,_k_=_0   if   x_u_b_,_k_+_1 > x_u_b_,_k_=_0)`
+.. math:: x_{ub,k+1} = x^* +  \frac{dif_k}{2}.... (x_{ub,k+1} = x_{ub,k=0}...if , x_{ub,k+1} > x_{ub,k=0})
 
 Note that if the ratio of upper and lower bounds is less than or equal to a set value of bound ratio, the trust region is not updated further, and the algorithm terminates.
-If:
-:math:`\\frac{x_u_b_,_k_+_1}{x_l_b_,_k_+_1}  \leq bound ratio` STOP
+
+If
+
+.. math:: \frac{x_{ub,k+1}}{x_{lb,k+1}}\leq bound ratio
+
+Stop
 
 Further, Latin hypercube samples are generated in the updated trust region. This sampling method ensures that the sample points are uniformly spaced out and cover the entire trust region without any skewness. Once the samples are generated,
 step 2 is repeated using this new data set and the original ALAMO settings.

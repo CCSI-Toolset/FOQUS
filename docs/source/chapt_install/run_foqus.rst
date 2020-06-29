@@ -6,17 +6,16 @@ Run FOQUS
 The specific command to launch FOQUS depends on the operating system.
 
 To launch FOQUS, open the Anaconda prompt (or appropriate terminal or shell depending on operating
-system and choice of Python), and run the following commands:
-
-Windows::
+system and choice of Python), and run the following commands::
 
     conda activate ccsi-foqus
-    python %CONDA_PREFIX%/Scripts/foqus.py
+    foqus
 
-Linux or OSX::
+Alternatively on Windows you can start FOQUS by double-clicking on the "ccsi-foqus" Desktop
+shortcut created when FOQUS was first installed.  That shortcut can be recreated at any time by
+opening a terminal, as described above, and starting FOQUS with the "make shortcut" option::
 
-    conda activate ccsi-foqus
-    foqus.py
+    foqus --make-shortcut
 
 .. note::
    The first time FOQUS is run, it will ask for a working directory location.  This is the location

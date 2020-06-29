@@ -28,6 +28,50 @@ foqus_application = None # The Qt application so I can show dialogs
 # global variables
 dat = None
 
+def makeShortcut():
+    """ Create a windows shortcut on the desktop to start FOQUS """
+    import os
+    import pathlib as pl
+    import sys
+
+    log = logging.getLogger("foqus." + __name__)
+    if os.name != 'nt':
+        log.error(f"Shortcut currently only created on Windows, not yet on {os.name}")
+        return -1
+
+    import winshell
+
+    # Define all the file paths needed for the shortcut
+    desktop = pl.Path(winshell.desktop())
+    link_filepath = desktop / "ccsi-foqus.lnk"
+    conda_base = pl.Path(os.environ['CONDA_PREFIX_1'])
+    activate_bat = conda_base / 'Scripts' / 'activate.bat'
+    conda_env = pl.Path(os.environ['CONDA_PREFIX'])
+    foqus_exe = conda_env / 'Scripts' /'foqus.exe'
+    win32_cmd = pl.Path(winshell.folder('CSIDL_SYSTEM')) / 'cmd.exe'
+    this_dir = pl.Path(__file__).resolve().parent
+    icon = this_dir / "foqus.ico"
+    log.debug(f'icon file is {icon}')
+    working_dir = pl.Path(winshell.folder('PERSONAL'))  # "Documents"
+
+    # Build up all the arguments to cmd.exe
+    cmd_args = f"/K {activate_bat} {conda_env} & {foqus_exe} && exit"
+
+    if link_filepath.exists():
+        log.info(f'Overwriting shortcut: {link_filepath}')
+    else:
+        log.info(f'Creating shortcut: {link_filepath}')
+
+    # Create the shortcut on the desktop
+    with winshell.shortcut(str(link_filepath)) as link:
+        link.path = str(win32_cmd)
+        link.description = "CCSI FOQUS"
+        link.arguments = cmd_args
+        link.icon_location = (str(icon), 0)
+        link.working_directory = str(working_dir)
+    return 0
+
+
 def guiImport():
     """
     Only import the GUI classes if you want the GUI
@@ -212,6 +256,8 @@ def main():
     parser.add_argument("-w", "--working_dir", help="Set the working directory")
     parser.add_argument("--splash", help="Display splash", action="store_true")
     parser.add_argument("--nosplash", help = "No splash", action = "store_true")
+    parser.add_argument("--make-shortcut", help = "Make shortcut on Desktop to start "
+                        "FOQUS then exit (Windows only)", action = "store_true")
     parser.add_argument("--nogui", help="Do not start the graphical interface",
                         action="store_true")
     parser.add_argument("--noopt", help="Hide the optimization interface",
@@ -269,6 +315,8 @@ def main():
     if args.runUITestScript:
         args.runUITestScript = os.path.abspath(args.runUITestScript)
     ## Run any quick commands and exit before setting up a FOQUS session
+    if args.make_shortcut:
+        sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
             from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB

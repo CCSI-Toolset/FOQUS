@@ -75,18 +75,19 @@ dist = setup(
         "scipy",
         "tqdm",
         "TurbineClient",
+        "winshell; sys_platform == 'win32'",
         ],
 )
 
-print("""
+print(f"""
 
 ==============================================================================
-**Installed FOQUS {}**
+**Installed FOQUS {ver.version}**
 
-**Optional addtional sotfware**
+**Optional additional software**
 
 Optional software is not installed during the FOQUS installation, and is not
-strictly required to run FOQUS, however this software is highly recomended.
+strictly required to run FOQUS, however this software is highly recommended.
 Some FOQUS features will not be available without these packages.
 
 PSUADE (Required for UQ features):
@@ -106,10 +107,10 @@ TurbineLite (Windows only, run Aspen, Excel, and gPROMS):
 
 ALAMO (ALAMO Surogate models):
     http://archimedes.cheme.cmu.edu/?q=alamo
-    ALAMO is software to develop algebric surrogate models for complex
+    ALAMO is software to develop algebraic surrogate models for complex
     processes. Among other uses, these model can be used in algebraic modeling
-    laguages such as GAMS, AMPL, and Pyomo. FOQUS provides an interface to
-    ALAMO allowing surragtes to be easily created from complex process models.
+    languages such as GAMS, AMPL, and Pyomo. FOQUS provides an interface to
+    ALAMO allowing surrogates to be easily created from complex process models.
 
 NLOpt Python (Additional optimization solvers):
     https://nlopt.readthedocs.io/en/latest/NLopt_Installation/
@@ -117,4 +118,11 @@ NLOpt Python (Additional optimization solvers):
     installed.  NLOpt can be installed through conda using the conda-forge
     channel.
 ==============================================================================
-""".format(ver.version))
+
+To start FOQUS run (within this Anaconda env):
+  > foqus
+
+To create a Windows Desktop shortcut for easy start-up of FOQUS,
+run once (within this Anaconda env):
+  > foqus --make-shortcut
+""")

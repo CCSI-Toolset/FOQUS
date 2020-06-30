@@ -251,38 +251,22 @@ class opt(optimization):
         self.bestSoFarList = []
         
         #Get user options
-        solversource = self.options['Solver Source'].value
-        
-        mathoptsolver = self.options['mathoptsolver'].value
-        
-        mtype = self.options['mtype'].value
-        
-        Maxiter_Algo = self.options['Maxiter_Algo'].value
-        
+        solversource = self.options['Solver Source'].value        
+        mathoptsolver = self.options['mathoptsolver'].value        
+        mtype = self.options['mtype'].value        
+        Maxiter_Algo = self.options['Maxiter_Algo'].value        
         alpha = self.options['Alpha'].value
-        
         num_lhs = self.options['nLHS'].value
-        
         bound_ratio = self.options['Bound_Ratio'].value
-        
         tee = self.options['tee'].value
-        
         obj_tolerance = self.options['Objective Value Tolerance'].value
-        
         outputvar_tolerance = self.options['Inequality Constraint Tolerance'].value
-        
         inequality_tolerance = self.options['Output Variable Tolerance'].value
-        
         Saveresults = self.options['Save results'].value
-        
         SetName = self.options['Set Name'].value
-        
         pyomo_surrogate = self.options['Pyomo Surrogate File'].value
-        
         file_name_SM_stored = self.options['Surrogate Model Storing File'].value
-        
         file_name_plots = self.options['Algorithm Convergence Plots File'].value
-        
         uq_file = self.options['Parity Plot File'].value
 
         # The set name to use when saving evaluations in flowsheet results (to get unique set names in flowsheet results section)

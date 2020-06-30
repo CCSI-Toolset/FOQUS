@@ -61,14 +61,8 @@ Instructions
       f["x1"] = m.x1.value
       f["x2"] = m.x2.value
       f["y"] = m.y.value
-      if str(r.solver.status) == "ok":
-      	f["converged "] = 1
-      else:
-      	f["converged "] = 0
-      if str(r.solver.termination_condition) == "optimal":
-      	f["optimal"] = 1
-      else:
-      	f["optimal"] = 0
+      f["converged"] = (str(r.solver.status) == "ok")
+      f["optimal"] = (str(r.solver.termination_condition) == "optimal")
 
    In the above code, lines 1-6 are used to import the PYOMO package and SolverFactory function to develop the model and solve it by accessing an appropriate solver.
 
@@ -83,10 +77,10 @@ Instructions
 
    Once the model is solved, the values of decision variables ``x1``, ``x2``, ``y`` are assigned to the Node Output Variables in lines 19 to 21.
 
-   The code block from line 22 to 29 checks the solver status and termination condition. If the solver status is "ok", it means that the model has converged, and the 'converged' variable is assigned
+   The code lines 22 and 23 check the solver status and termination condition. If the solver status is "ok", it means that the model has converged, and the 'converged' variable is assigned
    the value 1. Else, it is assigned the value 0, which means that the model has not converged.
    If the solver termination condition is "optimal", it means that the solver has found an optimal solution for the optimization model. Else, the solution is either feasible if the solver status is "ok",
-   or infeasible altogether. 
+   or infeasible altogether.
 
 6. Click the Run button to run the python script and check the Node Output Variables section.
 

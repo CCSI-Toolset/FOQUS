@@ -47,17 +47,16 @@ dist = setup(
     packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
-            '*.html', '*.gms', '*.gpr', '*.ccs']},
+            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico']},
     include_package_data=True,
     scripts = [
         'cloud/aws/foqus_worker.py',
-        'cloud/aws/foqus_service.py',
-        'icons_rc.py'],
+        'cloud/aws/foqus_service.py'],
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",
-            ],
-        },
+        ],
+    },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
@@ -69,7 +68,7 @@ dist = setup(
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.13.*",
+        "PyQt5==5.13",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",

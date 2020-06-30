@@ -349,8 +349,6 @@ class opt(optimization):
                 if not self.graph.x[self.simin_names[i]].con:
                     self.nonsurrin_names_original.append(self.simin_names[i])
                     self.nonsurrin_names.append(simvar)
-                    
-        # idxlist = range(len(self.graph.edges))
         
         edge_list = self.graph.edges
         
@@ -487,22 +485,19 @@ class opt(optimization):
                 for sout in surroutvars:
                     o_optim.append(sout.value)
                 if str(r.solver.termination_condition) == 'optimal':
-                    # input_initvals[i1] = i_initvals
-                    # output_initvals[i1] = o_initvals
                     input_optim[i1] = i_optim
                     output_optim[i1] = o_optim
-                    # if str(r.solver.termination_condition) == 'optimal':
                     objvals[i1] = self.m.obj()
                     solver_status[i1] = str(r.solver.status)
                     solver_termination_condition[i1] = str(r.solver.termination_condition)
                     solver_time[i1] = str(r.solver.time)
                 else:
-                    input_optim[i1] = 1e10
-                    output_optim[i1] = 1e10
-                    objvals[i1] = 1e10
-                    solver_status[i1] = 1e10
-                    solver_termination_condition[i1] = 1e10
-                    solver_time[i1] = 1e10
+                    input_optim[i1] = math.inf
+                    output_optim[i1] = math.inf
+                    objvals[i1] = math.inf
+                    solver_status[i1] = math.inf
+                    solver_termination_condition[i1] = math.inf
+                    solver_time[i1] = math.inf
                     
             # Assign the best initialization value
             minobjval_idx = np.argmin(objvals)

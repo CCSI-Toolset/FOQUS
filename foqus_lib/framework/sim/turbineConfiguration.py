@@ -25,14 +25,15 @@ import socket
 import imp
 import foqus_lib.framework.sim.process_management as _pm
 _log = logging.getLogger("foqus." + __name__)
+from collections import OrderedDict
+
 
 if os.name == 'nt':
     import win32process
-from collections import OrderedDict
-try:
-    from . import turbineLiteDB
-except Exception:
-    _log.exception("Problem importing turbineLiteDB")
+    try:
+        from . import turbineLiteDB
+    except Exception:
+        _log.exception("Problem importing turbineLiteDB")
 
 from foqus_lib.framework.foqusException.foqusException import *
 import turbine.commands.turbine_application_script

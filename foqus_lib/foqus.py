@@ -51,7 +51,6 @@ def guiImport():
             QFileDialog
         from PyQt5.QtGui import QPixmap, QPainter
         from PyQt5 import QtSvg
-        import foqus_lib.gui.icons_rc
 
         import matplotlib
         matplotlib.use('Qt5Agg')

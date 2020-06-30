@@ -1,20 +1,21 @@
-import pandas as pd
 import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist
 import time
 
 # -----------------------------------
-def compute_dmat(mat, hist=[]):
+def compute_dmat(df, xcols, wcol, hist=None):
     # Inputs:
-    #    mat - numpy array of shape (nd, nx+1) 
+    #     df - pandas dataframe of size (nd, nx+1) containing scaled weights
+    #  xcols - list of strings corresponding to column names for inputs
+    #   wcol - string corresponding to the name of the weight column
     #   hist - numpy array of shape (nh, nx+1) 
     # Output:
     #   dmat - numpy array of shape (nd+nh, nd+nh)
     
     # Assumes last column contains weights
-    xs = mat[:,:-1]
-    wt = mat[:,-1]
+    xs = df[xcols].values
+    wt = df[wcol].values
     dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
     return dmat  # symmetric distance matrix
 
@@ -32,58 +33,56 @@ def compute_min_params(dmat):
     mdpts = np.unique(mdpts.flatten())
     return md, mdpts, mties
 
-def update_min_dist(des, md, mdpts, mties, dmat, mat):
+def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     # Inputs:
-    #     des - numpy array of shape (nd, nx+1)
+    #     rcand - pandas dataframe of size (nd, nx+1) containing scaled weights
+    #      cand - pandas dataframe of size (ncand, nx+1) containing scaled weights, nd < ncand
+    #     ncand - number of candidates to choose <nd> best design from, i.e., cand.shape[0]
+    #   xcols - list of strings corresponding to column names for inputs
+    #   wcol - string corresponding to the name of the weight column
     #      md - scalar representing min(dmat)
     #   mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
     #   mties - scalar representing number of 'mdpts'
     #    dmat - numpy array of shape (M, M) where M = nx+nh
-    #     mat - numpy array of shape (N, nx+1) containing the candidates
     # Output:
-    #     des - numpy array of shape (nd, nx+1)
+    #     rcand - pandas dataframe of size (nd, nx+1) containing scaled weights
     #      md - scalar representing min(dmat)
     #   mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
     #   mties - scalar representing number of 'mdpts'
     #    dmat - numpy array of shape (M, M) where M = nx+nh
     #  update - boolean representing whether an update should occur
 
-    # <ncand> is the number of candidates from which you will choose
-    # <nd> designs as the best ones for your experiment
-    nd, nx = des.shape
-    nx = nx-1
-    ncand = mat.shape[0]
-    assert (nd <= ncand)
-    
-    def update_dmat(row, des, dmat_, k, val=9999):
-        x = np.repeat(np.reshape(row[:-1], (nx, 1)), nd, axis=1).T - des[:,:-1]
-        row = np.multiply(np.sum(np.square(x), axis=1)*row[-1], des[:,-1])
+    def update_dmat(row, rcand, xcols, wcol, dmat_, k, val=9999):
+        rcand_norm = rcand.apply(lambda r: row[xcols] - r[xcols], axis=1)
+        m = rcand_norm.apply(lambda r: sum(r[xcols]**2), axis=1)
+        row = m*row[wcol]*rcand[wcol]
         dmat = np.copy(dmat_)
         dmat[k,:] = row
         dmat[:,k] = row.T
         np.fill_diagonal(dmat, val)
         return dmat
 
-    def step(pt, cand, mdpts, des_, dmat_, mt0=None):
+    def step(pt, rcand_, cand, xcols, wcol, mdpts, dmat_, mt0=None):
         i, j = pt
-        des = np.copy(des_)
+        rcand = rcand_.copy()
         dmat = np.copy(dmat_)
-        row = cand[j]
-        k = mdpts[i]
-        des[k, :] = row
-        dmat = update_dmat(row, des, dmat, k)
+        row = cand.iloc[j]            # series with all columns
+        k = mdpts[i]                  # k = {0, ..., nd}
+        index = list(rcand.index)[k]  # k-th row of rcand, which has its own df index
+        rcand.loc[index, xcols] = row[xcols]  # set values at <xcols> columns
+        dmat = update_dmat(row, rcand, xcols, wcol, dmat_, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
             mties = mt0[i,j]
-        return des, dmat, md, mdpts, mties
+        return rcand, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
     d0 = np.empty((int(2*mties), ncand))
     mt0 = np.empty((int(2*mties), ncand))
     tuples = [(i,j) for i in range(len(mdpts)) for j in range(ncand)]
-    for t in tuples:
-        i,j = t
-        _, _, d0[i,j], _, mt0[i,j] = step(t, mat, mdpts, des, dmat)
+    for pt in tuples:
+        i,j = pt
+        _, _, d0[i,j], _, mt0[i,j] = step(pt, rcand, cand, xcols, wcol, mdpts, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -92,7 +91,7 @@ def update_min_dist(des, md, mdpts, mties, dmat, mat):
         md = d0_max
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
-        des, dmat, md, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
+        rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0=mt0)
     elif d0_max == md:
         nselect = []
         for k, pt in enumerate(pts):
@@ -101,16 +100,16 @@ def update_min_dist(des, md, mdpts, mties, dmat, mat):
                 nselect.append(k)
         if nselect:
             pt = pts[np.random.choice(nselect)]
-            des, dmat, md, mdpts, mties = step(pt, mat, mdpts, des, dmat, mt0=mt0)
+            rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0=mt0)
     else:
         update = False
             
-    return des, md, mdpts, mties, dmat, update
+    return rcand, md, mdpts, mties, dmat, update
 
 # -----------------------------------
 def scale_xs(df_, xcols):
     # Inputs:
-    #      df - pandas dataframe of size (nd, nx+1) containing original inputs
+    #     df_ - pandas dataframe of size (nd, nx+1) containing original inputs
     #   xcols - list of strings corresponding to column names for inputs
     # Output:
     #      df - pandas dataframe of size (nd, nx+1) containing the scaled inputs
@@ -133,7 +132,7 @@ def scale_y(scale_method, mwr, df_, wcol):
     # Inputs:
     #  scale_method - string that denotes the scaling method
     #           mwr - scalar used in scaling
-    #            df - pandas dataframe of size (nd, nx+1) containing original weights
+    #           df_ - pandas dataframe of size (nd, nx+1) containing original weights
     #   wcol - string corresponding to the name of the weight column
     # Output:
     #      df - pandas dataframe of size (nd, nx+1) containing the scaled weights
@@ -157,7 +156,7 @@ def scale_y(scale_method, mwr, df_, wcol):
 
     return methods[scale_method](mwr, df, wcol)
 
-
+# Not needed because we are using the index to look up the original rows
 def inv_scale_xs(df_, xmin, xmax, xcols):
     # Inputs:
     #      df - pandas dataframe of size (nd, nx+1) containing scaled inputs
@@ -175,58 +174,66 @@ def inv_scale_xs(df_, xmin, xmax, xcols):
 
 # -----------------------------------
 def criterion(cand,    # candidates
-              include, # columns to include in distance computation
               args,    # maximum number of iterations & mwr values
               nr,      # number of restarts (each restart uses a random set of <nd> points)
               nd,      # design size <= len(candidates)
-              mode='maximin', hist=[]):
+              mode='maximin', hist=None):
 
-    assert(nd <= len(cand))  # this should have been checked in GUI
+    ncand = len(cand)
+    assert nd <= ncand, 'Number of designs exceeds number of available candidates.'  
+
+    mode = mode.lower()
+    assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
 
     T = args['max_iterations']
     mwr_vals = args['mwr_values']
     scale_method = args['scale_method']
-    xmin = args['xmin']
-    xmax = args['xmax']
-    wcol = args['wcol']
-    xcols = args['xcols']
-    mode = mode.lower()
-    assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
 
-    N = cand.shape[0]
-    cols = list(cand)
+    # indices of type ...
+    idx = args['xcols']  # Input
+    idw = args['wcol']   # Weight
     
-    if hist:
-        hist = hist[include].values
+    # scale inputs
+    cand, _xmin, _xmax = scale_xs(cand, idx)
+    
+    if hist is not None:
+        hist = hist[idx].values
 
     def step(mwr, cand):
-
-        cand = scale_y(scale_method, mwr, cand, wcol)
+        
+        cand_ = cand.copy()
+        id_ = cand_.index
+        
+        cand = scale_y(scale_method, mwr, cand, idw)
         best_cand = []
         best_md = 0
         best_mties = 0
         best_index = []
         
         t0 = time.time()
+
         for i in range(nr):
         
             print('Random start {}'.format(i))
-            rand_index = np.random.choice(N, nd, replace=False)
-            rand_cand = cand.iloc[rand_index]
-            des = rand_cand[include].values
-            mat = cand[include].values
-            dmat = compute_dmat(des, hist=hist)
+            
+            # sample without replacement <nd> indices
+            rand_index = np.random.choice(id_, nd, replace=False)
+            # extract the <nd> rows
+            rcand = cand.loc[rand_index]
+            dmat = compute_dmat(rcand, idx, idw, hist=hist)
             md, mdpts, mties = compute_min_params(dmat)
 
             update = True
             t = 0
+
             while update and (t<T):
                 update = False
-                des_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(des, md, mdpts, mties, dmat, mat)
+                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand, ncand, idx, idw, md, mdpts, mties, dmat)
+                                                                            
                 t = t+1
 
                 if update_:
-                    des = des_
+                    rcand = rcand_
                     md = md_
                     mdpts = mdpts_
                     mties = mties_
@@ -235,7 +242,7 @@ def criterion(cand,    # candidates
 
             if (md > best_md) or ((md == best_md) and (mties < best_mties)):
                 best_index = rand_index
-                best_cand = des
+                best_cand = rcand
                 best_md = md
                 best_mdpts = mdpts
                 best_mties = mties
@@ -243,16 +250,14 @@ def criterion(cand,    # candidates
 
             elapsed_time = time.time() - t0
             print('Best minimum distance for this random start: {}'.format(best_md))
-        
-        df_best_cand_scaled = pd.DataFrame(best_cand, columns=cols)
 
-        # inverse-scale the inputs and replace with original weights
-        df_best_cand = inv_scale_xs(df_best_cand_scaled, xmin, xmax, xcols)
-        wts = cand[wcol].values               # array of (N,)
-        df_best_cand[wcol] = wts[best_index]  # array of (nd,) 
+        # no need to inverse-scale; ccan just use the indices to look up original rows in cand_
+        index = best_cand.index
+        assert all(list(index) == best_index), 'Index mismatch in best candidates.'
+        best_cand_unscaled = cand_.loc[index]
         
-        results = {'best_cand_scaled': df_best_cand_scaled,
-                   'best_cand': df_best_cand,  # both inputs & wt are in original scales
+        results = {'best_cand_scaled': best_cand, 
+                   'best_cand': best_cand_unscaled,
                    'best_index': best_index,
                    'best_val': best_md,
                    'best_mdpts': best_mdpts,
@@ -270,11 +275,10 @@ def criterion(cand,    # candidates
     for mwr in mwr_vals:
         print('>>>>>> mwr={} <<<<<<'.format(mwr))
         res = step(mwr, cand)
+        print('Best NUSF Design in Scaled Coordinates:\n', res['best_cand_scaled'])
+        print('Best NUSF Design in Original Coordinates:\n', res['best_cand'])
         print('Best value in Normalized Scale:', res['best_val'])
-        print('Best NUSF Design in Scaled Coordinates:', res['best_cand_scaled'])
-        print('Best NUSF Design in Original Coordinates:', res['best_cand'])
         print('Elapsed time:', res['elapsed_time'])
         results[mwr] = res
-
 
     return results

@@ -34,8 +34,6 @@ except:
 
 if __name__ == '__main__':
     from user_plugins import *
-from pyDOE import *
-from smt.sampling_methods import LHS
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge,edgeConnect
@@ -43,8 +41,8 @@ from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 from itertools import product
 
-# Check that the required pyomo packages are available for the surrogate based optimization plugin and import it.
-# If not the Surrogate Based Optimization Pyomo plug-in will not be available.
+# Check that the required pyomo, pyDOE, and smt packages are available for the surrogate based optimization plugin and import it.
+# If not the Surrogate Based Optimization plug-in will not be available.
 
 try:
     from pyomo.environ import *
@@ -53,9 +51,11 @@ try:
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
     from pyomo.core.expr import current as EXPR
     from pyomo.core.expr.current import clone_expression
-    pyomo_available = True
+    from pyDOE import *
+    from smt.sampling_methods import LHS
+    packages_available = True
 except ImportError as e:
-    pyomo_available = False
+    packages_available = False
 
 
 def checkAvailable():
@@ -64,7 +64,7 @@ def checkAvailable():
         additional required software.  If requirements are not available
         plugin will not be available.
     '''
-    return pyomo_available
+    return packages_available
 
 
 class opt(optimization):
@@ -96,7 +96,7 @@ class opt(optimization):
         # Description of the optimization
         self.methodDescription = \
             ("This solver provides the option to perform mathematical optimization based on surrogate models developed for the FOQUS flowsheet")
-        self.available = pyomo_available # If plugin is available
+        self.available = packages_available # If plugin is available
         self.description = "Optimization Solver" #Short description
         self.mp = False    #Can evaluate objectives in parallel?
         self.mobj = False  #Can do multi-objective optimzation?

@@ -6,13 +6,11 @@ install:
     set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%PATH%
 
 
-    conda create -qy -n foqus python=3.7.5 pip
+    conda create -qy -n foqus python=3.7 pip
 
     activate foqus
 
-    pip install -qr requirements.txt
-
-    pip install -q pytest pylint coverage
+    pip install -r requirements-dev.txt
 
     curl -fsSL -o psuade_project-1.7.12-win32.exe https://github.com/LLNL/psuade/releases/download/1.7.12/psuade_project-1.7.12-win32.exe
 
@@ -32,6 +30,6 @@ test_script:
 
     mkdir gui_testing
 
-    python -W ignore::FutureWarning foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
+    foqus -s test/system_test/ui_test_01.py --working_dir gui_testing
 
-    # python foqus.py -s "examples/Smoke Tests/fs_smoke_test.py"
+    # foqus -s "examples/Smoke Tests/fs_smoke_test.py"

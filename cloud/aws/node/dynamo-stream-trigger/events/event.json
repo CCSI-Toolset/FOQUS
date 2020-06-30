@@ -1,0 +1,287 @@
+{  
+  "Records": [
+    {
+      "eventID": "9251c19af67ac5f0ebdfb36f79be6cea",
+      "eventName": "MODIFY",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1583474453,
+        "Keys": {
+          "Type": {
+            "S": "Job"
+          },
+          "Id": {
+            "S": "41e8d421-0276-41c6-b79f-c82845b239d1"
+          }
+        },
+        "NewImage": {
+          "User": {
+            "S": "boverhof"
+          },
+          "submit": {
+            "S": "2020-03-06T06:00:26.042Z"
+          },
+          "TTL": {
+            "N": "1583560853"
+          },
+          "output": {
+            "S": "{\"solTime\":26.875065803527832,\"input\":{\"graph\":{},\"BFB\":{\"BFBadsB.Dt\":11.940076634933547,\"BFBadsB.dx\":0.0127,\"BFBadsB.Lb\":2.0982591217969966,\"BFBadsM.Dt\":15,\"BFBadsM.dx\":0.06640048484667957,\"BFBadsM.Lb\":1.9890841029445752,\"BFBadsT.Dt\":14.999993213538932,\"BFBadsT.dx\":0.053561771901787236,\"BFBadsT.Lb\":2.208852148422908,\"BFBRGN.Dt\":9.1023032771751,\"BFBRGN.Lb\":8.878226913930499,\"BFBRGNTop.Dt\":9.154527050224694,\"BFBRGNTop.Lb\":7.10273294526103,\"GHXfg.A_exch\":16368.443196293287,\"Kd\":100,\"BFBadsB.Cr\":1,\"BFBadsM.Cr\":1,\"BFBadsT.Cr\":1,\"BFBRGN.Cr\":1,\"BFBRGNTop.Cr\":1,\"dp\":0.000126,\"GHXfg.GasIn.P\":1.01325,\"GHXfg.GasIn.T\":54,\"fg_flow\":70263.9}},\"output\":{\"graph\":{\"error\":0},\"BFB\":{\"Cost_coe\":115.02706897322936,\"Cost_coe_obj\":115.02706897322936,\"Cost_ads\":33059748.45453302,\"Cost_aux_power\":16397.98850709921,\"Cost_op_cooling_water\":12154411.533284193,\"Cost_op_cooling_water_flow\":2828862.9050734593,\"Cost_op_fixed\":54366922.371773526,\"Cost_op_var\":140974137.1362556,\"Cost_rgn\":16971507.684451826,\"Cost_shx\":39020395.75661277,\"Cost_steam_power\":132382.81906197933,\"Cost_steam_tot\":514181.47291973984,\"Cost_toc\":2059290438.2106402,\"Cost_toc_sorb\":41430537.684678525,\"removalCO2\":0.899041608654108,\"SHX.CWFR\":18548.896008052183,\"SHX.LeanIn.T\":151.2281039978396,\"SHX.RichIn.T\":71.26370682861284,\"SHX.SteamFR\":22733.12618760979,\"removalCO2_slack\":0,\"slugab_slack\":0,\"slugam_slack\":0,\"slugat_slack\":0,\"slugrb_slack\":0,\"slugrt_slack\":0,\"BFBRGN.GasIn.F\":1357.2923074990574,\"F_solids\":6264256.20440258,\"GHXfg.HXIn.F\":126547.09491715563,\"SHX.LeanOut.T\":60.49987257279909,\"SHX.RichOut.T\":170,\"status\":0}},\"graphError\":0,\"nodeError\":{\"BFB\":0},\"nodeSettings\":{\"BFB\":{\"Visible\":false,\"Initialize Model\":false,\"Reset\":false,\"Reset on Fail\":true,\"Retry\":false,\"Allow Simulation Warnings\":true,\"Max consumer reuse\":90,\"Maximum Wait Time (s)\":1440,\"Maximum Run Time (s)\":840,\"Min Status Check Interval\":4,\"Max Status Check Interval\":5,\"Override Turbine Configuration\":\"NULL\",\"RunMode\":\"Steady State\",\"printlevel\":0,\"homotopy\":0,\"Snapshot\":\"NULL\",\"TimeSeries\":[0],\"Script\":\"NULL\",\"MinStepSize\":0.001,\"TimeUnits\":\"Hours\"}},\"turbineMessages\":{\"BFB\":\"[\\\"event=setup,consumer=488d80d1-0864-4f8b-af1c-7c6ef86586cc\\\", \\\"Setup: Reusing Sinter ACM\\\", \\\"event=running,consumer=488d80d1-0864-4f8b-af1c-7c6ef86586cc\\\", \\\"sinter inputs sent, running simulation\\\", \\\"Real Run was complete and successful.\\\", \\\"event=sucess,consumer=488d80d1-0864-4f8b-af1c-7c6ef86586cc\\\"]\"}}"
+          },
+          "running": {
+            "S": "2020-03-06T06:00:26.858Z"
+          },
+          "Input": {
+            "M": {
+              "graph": {
+                "M": 
+{}
+
+              },
+              "BFB": {
+                "M": {
+                  "BFBadsM.Lb": {
+                    "N": "1.9890841029445752"
+                  },
+                  "fg_flow": {
+                    "N": "70263.9"
+                  },
+                  "BFBRGN.Lb": {
+                    "N": "8.878226913930499"
+                  },
+                  "BFBadsB.Dt": {
+                    "N": "11.940076634933547"
+                  },
+                  "GHXfg.GasIn.T": {
+                    "N": "54"
+                  },
+                  "BFBadsB.Cr": {
+                    "N": "1"
+                  },
+                  "BFBadsM.dx": {
+                    "N": "0.06640048484667957"
+                  },
+                  "GHXfg.A_exch": {
+                    "N": "16368.443196293287"
+                  },
+                  "dp": {
+                    "N": "0.000126"
+                  },
+                  "BFBadsT.Lb": {
+                    "N": "2.208852148422908"
+                  },
+                  "BFBadsM.Cr": {
+                    "N": "1"
+                  },
+                  "GHXfg.GasIn.P": {
+                    "N": "1.01325"
+                  },
+                  "BFBRGN.Cr": {
+                    "N": "1"
+                  },
+                  "BFBRGN.Dt": {
+                    "N": "9.1023032771751"
+                  },
+                  "BFBadsM.Dt": {
+                    "N": "15"
+                  },
+                  "BFBadsT.dx": {
+                    "N": "0.053561771901787236"
+                  },
+                  "BFBRGNTop.Cr": {
+                    "N": "1"
+                  },
+                  "BFBadsB.Lb": {
+                    "N": "2.0982591217969966"
+                  },
+                  "BFBadsT.Dt": {
+                    "N": "14.999993213538932"
+                  },
+                  "BFBadsT.Cr": {
+                    "N": "1"
+                  },
+                  "BFBRGNTop.Dt": {
+                    "N": "9.154527050224694"
+                  },
+                  "BFBadsB.dx": {
+                    "N": "0.0127"
+                  },
+                  "Kd": {
+                    "N": "100"
+                  },
+                  "BFBRGNTop.Lb": {
+                    "N": "7.10273294526103"
+                  }
+                }
+              }
+            }
+          },
+          "Type": {
+            "S": "Job"
+          },
+          "Simulation": {
+            "S": "zzfoqus_BFB"
+          },
+          "Create": {
+            "S": "2020-03-06T06:00:22.344Z"
+          },
+          "State": {
+            "S": "create"
+          },
+          "ConsumerId": {
+            "S": "19a22f40-f648-4554-ab4f-1a06e58cefc7"
+          },
+          "setup": {
+            "S": "2020-03-06T06:00:26.367Z"
+          },
+          "Id": {
+            "S": "41e8d421-0276-41c6-b79f-c82845b239d1"
+          },
+          "Reset": {
+            "BOOL": false
+          },
+          "Application": {
+            "S": "foqus"
+          },
+          "SessionId": {
+            "S": "95a2be98-2ebe-48b3-8aaa-65fdd3d7215d"
+          }
+        },
+        "OldImage": {
+          "User": {
+            "S": "boverhof"
+          },
+          "submit": {
+            "S": "2020-03-06T06:00:26.042Z"
+          },
+          "TTL": {
+            "N": "1583478028"
+          },
+          "running": {
+            "S": "2020-03-06T06:00:26.858Z"
+          },
+          "Input": {
+            "M": {
+              "graph": {
+                "M": 
+{}
+
+              },
+              "BFB": {
+                "M": {
+                  "BFBadsM.Lb": {
+                    "N": "1.9890841029445752"
+                  },
+                  "fg_flow": {
+                    "N": "70263.9"
+                  },
+                  "BFBRGN.Lb": {
+                    "N": "8.878226913930499"
+                  },
+                  "BFBadsB.Dt": {
+                    "N": "11.940076634933547"
+                  },
+                  "GHXfg.GasIn.T": {
+                    "N": "54"
+                  },
+                  "BFBadsB.Cr": {
+                    "N": "1"
+                  },
+                  "BFBadsM.dx": {
+                    "N": "0.06640048484667957"
+                  },
+                  "GHXfg.A_exch": {
+                    "N": "16368.443196293287"
+                  },
+                  "dp": {
+                    "N": "0.000126"
+                  },
+                  "BFBadsT.Lb": {
+                    "N": "2.208852148422908"
+                  },
+                  "BFBadsM.Cr": {
+                    "N": "1"
+                  },
+                  "GHXfg.GasIn.P": {
+                    "N": "1.01325"
+                  },
+                  "BFBRGN.Cr": {
+                    "N": "1"
+                  },
+                  "BFBRGN.Dt": {
+                    "N": "9.1023032771751"
+                  },
+                  "BFBadsM.Dt": {
+                    "N": "15"
+                  },
+                  "BFBadsT.dx": {
+                    "N": "0.053561771901787236"
+                  },
+                  "BFBRGNTop.Cr": {
+                    "N": "1"
+                  },
+                  "BFBadsB.Lb": {
+                    "N": "2.0982591217969966"
+                  },
+                  "BFBadsT.Dt": {
+                    "N": "14.999993213538932"
+                  },
+                  "BFBadsT.Cr": {
+                    "N": "1"
+                  },
+                  "BFBRGNTop.Dt": {
+                    "N": "9.154527050224694"
+                  },
+                  "BFBadsB.dx": {
+                    "N": "0.0127"
+                  },
+                  "Kd": {
+                    "N": "100"
+                  },
+                  "BFBRGNTop.Lb": {
+                    "N": "7.10273294526103"
+                  }
+                }
+              }
+            }
+          },
+          "Type": {
+            "S": "Job"
+          },
+          "Simulation": {
+            "S": "zzfoqus_BFB"
+          },
+          "Create": {
+            "S": "2020-03-06T06:00:22.344Z"
+          },
+          "State": {
+            "S": "create"
+          },
+          "ConsumerId": {
+            "S": "19a22f40-f648-4554-ab4f-1a06e58cefc7"
+          },
+          "setup": {
+            "S": "2020-03-06T06:00:26.367Z"
+          },
+          "Id": {
+            "S": "41e8d421-0276-41c6-b79f-c82845b239d1"
+          },
+          "Reset": {
+            "BOOL": false
+          },
+          "Application": {
+            "S": "foqus"
+          },
+          "SessionId": {
+            "S": "95a2be98-2ebe-48b3-8aaa-65fdd3d7215d"
+          }
+        },
+        "SequenceNumber": "1013014600000000019562709204",
+        "SizeBytes": 4010,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:387057575688:table/FOQUS_Resources/stream/2020-03-06T04:49:06.641"
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "Records": [
+    {
+      "EventSource": "aws:sns",
+      "EventVersion": "1.0",
+      "EventSubscriptionArn": "arn:dummy:subscription",
+      "Sns": {
+        "Type": "Notification",
+        "MessageId": "5513b8b1-34c1-40a5-98a9-13f5b6ac371d",
+        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
+        "Subject": "",
+        "Message": "{\"resource\": \"job\",\"event\": \"output\",\"jobid\": \"5378c71d-fdb5-4103-a513-1042cb128aaa\",\"username\": \"byron\",\"value\": {\"solTime\": 112.79755663871765,\"input\": {\"graph\": {},\"BFB\": {\"BFBadsB.Dt\": 11.897,\"BFBadsB.dx\": 0.0127,\"BFBadsB.Lb\": 2.085,\"BFBadsM.Dt\": 15,\"BFBadsM.dx\": 0.06695,\"BFBadsM.Lb\": 1.972,\"BFBadsT.Dt\": 13.75,\"BFBadsT.dx\": 0.06239700000000001,\"BFBadsT.Lb\": 2.2029999999999994,\"BFBRGN.Dt\": 9.041,\"BFBRGN.Lb\": 8.886,\"BFBRGNTop.Dt\": 9.195,\"BFBRGNTop.Lb\": 7.1926,\"GHXfg.A_exch\": 16358,\"Kd\": 100,\"BFBadsB.Cr\": 1,\"BFBadsM.Cr\": 1,\"BFBadsT.Cr\": 1,\"BFBRGN.Cr\": 1,\"BFBRGNTop.Cr\": 1,\"dp\": 0.000174,\"GHXfg.GasIn.P\": 1.01325,\"GHXfg.GasIn.T\": 54,\"fg_flow\": 70263.9}},\"output\": {\"graph\": {\"error\": 0},\"BFB\": {\"Cost_coe\": 115.02466939266573,\"Cost_coe_obj\": 121.97299547958038,\"Cost_ads\": 32295566.6652177,\"Cost_aux_power\": 16025.756702129353,\"Cost_op_cooling_water\": 11402226.772833958,\"Cost_op_cooling_water_flow\": 2653796.6288681244,\"Cost_op_fixed\": 54339501.44203057,\"Cost_op_var\": 141752091.7555163,\"Cost_rgn\": 17543276.585110396,\"Cost_shx\": 39020395.75661277,\"Cost_steam_power\": 131852.03506858938,\"Cost_steam_tot\": 512119.88141219167,\"Cost_toc\": 2060343728.472846,\"Cost_toc_sorb\": 43539700.9624757,\"removalCO2\": 0.8999986220160496,\"SHX.CWFR\": 15904.74387673277,\"SHX.LeanIn.T\": 149.24075572990031,\"SHX.RichIn.T\": 72.99786075455324,\"SHX.SteamFR\": 24029.463278855947,\"removalCO2_slack\": -2.7551843431561214e-145,\"slugab_slack\": 0,\"slugam_slack\": 0,\"slugat_slack\": 0,\"slugrb_slack\": 0.006948326086914647,\"slugrt_slack\": 0,\"BFBRGN.GasIn.F\": 1100,\"F_solids\": 6583159.599999235,\"GHXfg.HXIn.F\": 100000,\"SHX.LeanOut.T\": 67.03499198341756,\"SHX.RichOut.T\": 170,\"status\": 0}},\"graphError\": 0,\"nodeError\": {\"BFB\": 0},\"nodeSettings\": {\"BFB\": {\"Visible\": false,\"Initialize Model\": false,\"Reset\": false,\"Reset on Fail\": true,\"Retry\": false,\"Allow Simulation Warnings\": true,\"Max consumer reuse\": 90,\"Maximum Wait Time (s)\": 1440,\"Maximum Run Time (s)\": 840,\"Min Status Check Interval\": 4,\"Max Status Check Interval\": 5,\"Override Turbine Configuration\": \"NULL\",\"RunMode\": \"Steady State\",\"printlevel\": 0,\"homotopy\": 0,\"Snapshot\": \"NULL\",\"TimeSeries\": [0],\"Script\": \"NULL\",\"MinStepSize\": 0.001,\"TimeUnits\": \"Hours\"}},\"turbineMessages\": {\"BFB\": \"[\\\"event=setup,consumer=4d6ad48a-f451-4862-9df9-614d20b89193\\\", \\\"Setup: Reusing Sinter ACM\\\", \\\"event=running,consumer=4d6ad48a-f451-4862-9df9-614d20b89193\\\", \\\"sinter inputs sent, running simulation\\\", \\\"Real Run was complete and successful.\\\", \\\"event=sucess,consumer=4d6ad48a-f451-4862-9df9-614d20b89193\\\"]\"}},\"rc\": 0,\"sessionid\": \"9f5336b5-a4e5-4cf8-bd73-2522a1824728\"}",
+        "Timestamp": "2019-09-18T21:15:53.378014",
+        "SignatureVersion": "1",
+        "Signature": "",
+        "SigningCertUrl": "",
+        "UnsubscribeUrl": "",
+        "MessageAttributes": {
+          "event": {
+            "Type": "String",
+            "Value": "job.output"
+          },
+          "username": {
+            "Type": "String",
+            "Value": "test"
+          }
+        }
+      }
+    }
+  ]
+}

@@ -52,17 +52,15 @@ this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
 #. | *This item describes additional features and is provided for
      information only. It is not intended to be followed as part of the
      step-by-step tutorial.*
-   | An alternative is to use an emulator by selecting “Use emulator.”
-     This alternative is preferred if the actual simulation model is too
-     computationally expensive to be practical for a large number of
-     samples. This option enables the user to trade off accuracy for
-     speed by training a response surface to approximate the actual
-     simulation model. If this option is selected (Figure
-     :ref:`fig.uqt_addnew_emulator`), the user
-     needs to provide a training data file containing a small simulation
-     ensemble generated from the actual simulation model. This training
-     data file is be in the PSUADE full file format (Section
-     `[ap:psuadefiles] <#ap:psuadefiles>`__).
+   | An alternative is to use an emulator by selecting “Use emulator.” This
+     alternative is preferred if the actual simulation model is too
+     computationally expensive to be practical for a large number of samples.
+     This option enables the user to trade off accuracy for speed by training
+     a response surface to approximate the actual simulation model. If this
+     option is selected (Figure :ref:`fig.uqt_addnew_emulator`), the user needs
+     to provide a training data file containing a small simulation ensemble
+     generated from the actual simulation model. This training data file should
+     be in the PSUADE full file format (see section :ref:`file-formats`).
 
    -  Click Browse and select the training data file with which to train
       the response surface. The inputs, outputs and response surface
@@ -124,18 +122,15 @@ this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
    In this dialog, extra options that are available related to
    simulation ensemble setup are discussed.
 
-   -  Change the PDF of “x6” by exploring the drop-down list in the
-      **PDF** column of the **Distributions Table**. The drop-down list
-      is denoted by box (9c) in Figure
-      :ref:`fig.uqt_sim_pdfs`. If any of the
-      parametric distributions are selected (e.g., “Normal”,
-      “Lognormal”, “Weibull”), the user is prompted to enter the
-      appropriate parameters for the selected distribution. If
-      non-parametric distribution “Sample” is selected, the user needs
-      to specify the name of the sample file (a CSV or PSUADE sample
-      format is located in Section
-      `[ap:psuadefiles] <#ap:psuadefiles>`__) that contains samples for
-      the variable “x6.” The user also needs to specify the output index
+   -  Change the PDF of “x6” by exploring the drop-down list in the **PDF**
+      column of the **Distributions Table**. The drop-down list is denoted by
+      box (9c) in Figure :ref:`fig.uqt_sim_pdfs`. If any of the parametric
+      distributions are selected (e.g., “Normal”, “Lognormal”, “Weibull”), the
+      user is prompted to enter the appropriate parameters for the selected
+      distribution. If non-parametric distribution “Sample” is selected, the
+      user needs to specify the name of the sample file (a CSV or PSUADE sample
+      format is located in Section :ref:`file-formats`) that contains samples
+      for the variable “x6.” The user also needs to specify the output index
       to indicate which output in the sample file to use. The resulting
       simulation ensemble would contain “x6” samples that are randomly
       drawn (with replacement) from the samples in this file.
@@ -147,14 +142,12 @@ this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
          Simulation Ensemble Setup Dialog, Distributions Tab, PDF
          Selection
 
-   -  Alternatively, select Choose sampling scheme (box (8) of
-      Figure :ref:`fig.uqt_sim`), and try selecting
-      “Load all samples from a single file.” With this selection, a new
-      dialog box
-      prompts the user to browse to a PSUADE full file, a PSUADE sample
-      file, or CSV file (all formats are described in
-      Section\ `[ap:psuadefiles] <#ap:psuadefiles>`__) that contains
-      all the samples for all the input variables in the model.
+   -  Alternatively, select Choose sampling scheme (box (8) of Figure
+      :ref:`fig.uqt_sim`), and try selecting “Load all samples from a single
+      file.” With this selection, a new dialog box prompts the user to browse
+      to a PSUADE full file, a PSUADE sample file, or CSV file (all formats are
+      described in Section :ref:`file-formats`) that contains all the samples
+      for all the input variables in the model.
 
    Both of these options offer the user additional flexibility with
    respect to characterizing input uncertainty or generating the input

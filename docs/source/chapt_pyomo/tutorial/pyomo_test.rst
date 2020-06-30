@@ -9,9 +9,10 @@ min y
 
 Subject to:
 
-y = x1  + x2
+.. math::
+   y = x_1 + x_2
 
-a * x1 + b * x2 ≥ c.
+   ax_1 + bx_2 \geq c
 
 The complete FOQUS file (**Pyomo_Test_Example.foqus**), with the code written,
 is located in: **examples/tutorial_files/PYOMO**
@@ -23,51 +24,68 @@ Instructions
 
 2. Open the Node Editor, and let the Model Type be “None”.
 
-3. Add the model parameters a,b,c as “Input Variables” within the Node Editor, with values 1,2,3 respectively.
+3. Add the model parameters ``a``, ``b``, ``c`` as “Input Variables” within the Node Editor, with values ``1``, ``2``, ``3`` respectively.
 
-4. Add x1, x2, & y as “Output Variables” within the Node Editor (They are meant to correspond to the decision variable values of the optimization model).
+4. Add ``x1``, ``x2``, ``y``, ``converged``, and ``optimal`` as “Output Variables” within the Node Editor.
 
-5. Under Node Script, set Script Mode to “Post”, and enter the following PYOMO code for the optimization model:
+   Note that ``x1``, ``x2`` and ``y`` correspond to the optimization variable values.
 
-  * ``from pyomo.environ import * (1)``
-  * ``from pyomo.opt import SolverFactory (2)``
-  * ``import pyutilib.subprocess.GlobalData (3)``
-  * ``pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False (4)``
-  * ``m=ConcreteModel() (5)``
-  * ``m.x1=Var(within=PositiveReals) (6)``
-  * ``m.x2=Var(within=PositiveReals) (7)``
-  * ``m.y=Var() (8)``
-  * ``m.c1=Constraint(expr=x["a"]*m.x1+x["b"]*m.x2>=x["c"]) (9)``
-  * ``m.c2=Constraint(expr=m.x1+m.x2==m.y) (10)``
-  * ``m.o=Objective(expr=m.y) (11)``
-  * ``opt = SolverFactory("gams") (12)``
-  * ``io_options = dict() (13)``
-  * ``io_options['solver'] = 'cplex' (14)``
-  * ``io_options['mtype'] = 'mip' (15)``
-  * ``opt.solve(m,io_options=io_options) (16)``
-  * ``f["x1"]=m.x1.value (17)``
-  * ``f["x2"]=m.x2.value (18)``
-  * ``f["y"]=m.y.value (19)``
+   ``converged`` is meant to be a binary variable that would denote whether the optimization model has converged, by checking the solver status.
 
-In the above code, lines (1), (2) are used to import the PYOMO package and SolverFactory function to develop the model and solve it by accessing an appropriate solver.
+   ``optimal`` is meant to be a binary variable that would denote whether the solver returns an optimal solution.
 
-The solvers can be accessed in 2 ways:
-(i) PYOMO Solver Plugins: directly accessing the solvers available within Pyomo, like glpk, cplex, baron, etc.
+5. Under Node Script, set Script Mode to “Post”. This will ensure that the node script runs after the node simulation.
+   Enter the following PYOMO code for the optimization model:
 
-Eg: Opt = SolverFactory(“glpk”).
+   .. code-block:: python
+      :linenos:
 
-(ii) PYOMO GAMS Interface: In case some of the licensed solvers like BARON or CPLEX are not directly available to users, they can be accessed in PYOMO through GAMS.
+      from pyomo.environ import (Var,
+                                 Constraint,
+                                 ConcreteModel,
+                                 PositiveReals,
+                                 Objective)
+      from pyomo.opt import SolverFactory
+      import pyutilib.subprocess.GlobalData
 
-More information on the syntax can be found in the following link: https://pyomo.readthedocs.io/en/latest/library_reference/solvers/gams.html.
+      pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False
+      m = ConcreteModel()
+      m.x1 = Var(within=PositiveReals)
+      m.x2 = Var(within=PositiveReals)
+      m.y = Var()
+      m.c1 = Constraint(expr=x["a"]*m.x1+x["b"]*m.x2 >= x["c"])
+      m.c2 = Constraint(expr=m.x1+m.x2 == m.y)
+      m.o = Objective(expr=m.y)
+      opt = SolverFactory("ipopt")
+      r = opt.solve(m)
+      f["x1"] = m.x1.value
+      f["x2"] = m.x2.value
+      f["y"] = m.y.value
+      f["converged"] = (str(r.solver.status) == "ok")
+      f["optimal"] = (str(r.solver.termination_condition) == "optimal")
 
-In order to allow a subprocess to be created for solving the model on another thread apart from the main one, lines (3) & (4) are used to set the default signal handler within pyutilib package of PYOMO to “false” (ie: removing it).
+   In the above code, lines 1-6 are used to import the PYOMO package and SolverFactory function to develop the model and solve it by accessing an appropriate solver.
 
-This is followed by declaring a PYOMO Concrete Model, defining the variables, declaring the constraints using the parameters defined within “Input Variables” of the Node, and defining the objective function. (Lines (5) to (11)).
+   A PYOMO Concrete Model is declared, defining the variables, declaring the constraints using the parameters defined within “Input Variables” of the Node, and defining the objective function with
+   lines 10 to 16.
 
-Lines (12) to (16) are used to access the solver, and solve the model via GAMS executable.
+   Line 17 sets the solver to ipopt and line 18 sends the problem to be solved to the solver. Ipopt is a nonlinear optimization solver.
 
-Once the model is solved, the values of decision variables "x1", "x2", "y" are assigned to the Node Output Variables in lines (17) to (19).
+   .. note::
+      ipopt will need to be available in your environment.  To install it into your conda or pip environment you could use: ``conda install -c conda-forge ipopt`` or ``pip install ipopt``
 
-6. Run the Flowsheet and check the decision variable values at optimum in the Node Output Variables.
 
-It is to be noted that the parameter values within Node Input Variables can be changed as per user’s requirement, to run different cases.
+   Once the model is solved, the values of decision variables ``x1``, ``x2``, ``y`` are assigned to the Node Output Variables in lines 19 to 21.
+
+   The code lines 22 and 23 check the solver status and termination condition. If the solver status is "ok", it means that the model has converged, and the 'converged' variable is assigned
+   the value 1. Else, it is assigned the value 0, which means that the model has not converged.
+   If the solver termination condition is "optimal", it means that the solver has found an optimal solution for the optimization model. Else, the solution is either feasible if the solver status is "ok",
+   or infeasible altogether.
+
+6. Click the Run button to run the python script and check the Node Output Variables section.
+
+It should be noted that the parameter values within Node Input Variables can be changed as per user’s requirement, to run different cases.
+
+.. note::
+   For more information on building and solving pyomo models, refer to the pyomo documentation:
+   https://pyomo.readthedocs.io/en/stable/solving_pyomo_models.html

@@ -13,5 +13,8 @@ system and choice of Python), and run the following commands::
 
     conda activate ccsi-foqus
     pip install ccsi-foqus
+    foqus --make-shortcut  # Windows only
 
 This will install FOQUS and all the required packages into the ``ccsi-foqus`` conda environment.
+The last command there will create a Desktop shortcut for easier, non-terminal, startup of FOQUS
+(Windows only, for now).

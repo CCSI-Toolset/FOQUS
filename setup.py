@@ -68,7 +68,7 @@ dist = setup(
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5",
+        "PyQt5==5.13",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",

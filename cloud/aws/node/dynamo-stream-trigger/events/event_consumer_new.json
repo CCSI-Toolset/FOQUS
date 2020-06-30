@@ -1,0 +1,43 @@
+{
+  "Records": [
+    {
+      "eventID": "89f0e73e0b38afef125f0801d9f0f067",
+      "eventName": "INSERT",
+      "eventVersion": "1.1",
+      "eventSource": "aws:dynamodb",
+      "awsRegion": "us-east-1",
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1583475345,
+        "Keys": {
+          "Type": {
+            "S": "Consumer"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          }
+        },
+        "NewImage": {
+          "running": {
+            "S": "2020-03-06T06:15:44.839Z"
+          },
+          "Type": {
+            "S": "Consumer"
+          },
+          "instance": {
+            "S": "i-09de0216543aaab6b"
+          },
+          "Id": {
+            "S": "0940c221-b119-40ce-ab3e-bec94fd50aaf"
+          },
+          "TTL": {
+            "N": "1583478944"
+          }
+        },
+        "SequenceNumber": "1013015900000000019563213554",
+        "SizeBytes": 167,
+        "StreamViewType": "NEW_AND_OLD_IMAGES"
+      },
+      "eventSourceARN": "arn:aws:dynamodb:us-east-1:387057575688:table/FOQUS_Resources/stream/2020-03-06T04:49:06.641"
+    }
+  ]
+}

@@ -419,6 +419,12 @@ class fsScene(QGraphicsScene):
                         "Invalid Name",
                         "That node name is already being used.")
                     return
+                if ' ' in name:
+                    QMessageBox.warning(
+                        self.p,
+                        "Invalid Name",
+                        "Node name should not contain any spaces.")
+                    return
                 self.p.dat.flowsheet.addNode(name, xg, yg, 0)
                 self.p.updateEdgeEditEmit()
                 self.p.nodeSelectedEmit(name)

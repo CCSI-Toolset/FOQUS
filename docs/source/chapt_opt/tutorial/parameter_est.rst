@@ -169,9 +169,9 @@ objective function calculation.
     the Samples table.
 
 20. For larger sample sets, **Generate Samples** has an option to load
-    from a CSV file. The CSV file must be saved in Comma delimited format, as follows:
+    from a CSV file. The CSV file must be saved as "CSV (MS-DOS)" as the file type, as follows:
 
-.. figure:: ../figs/optim_samplevars_csv.png
+.. figure:: ../figs/optim_csv_samples_format.png
    :alt: Sample Variable data (csv file)
    :name: fig.pe.csv
 

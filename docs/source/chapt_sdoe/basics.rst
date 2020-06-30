@@ -9,5 +9,7 @@ When you first click on the  **SDOE** button from the main FOQUS homepage, a fir
 .. toctree::
     :maxdepth: 2
 
+    creating-candidate
     basics-uniform
     basics-nonuniform
+    basics-runorder

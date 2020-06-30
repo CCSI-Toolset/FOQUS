@@ -525,6 +525,10 @@ class surrogateMethod(surrogate):
             self.xi = {}
             self.zi = {}
             cn = self.graph.input.compoundNames(sort=True)
+            # Remove the edge connected simulation input variables from the flowsheet
+            for invars in self.graph.xnames:
+                if self.graph.x[invars].con:
+                    cn.remove(invars)
             for v in self.xList:
                 self.xi[v] = cn.index(v)
             cn = self.graph.output.compoundNames(sort=False)

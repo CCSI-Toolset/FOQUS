@@ -4,13 +4,13 @@ Tutorial 1: Aspen Custom Modeler (ACM) Configuration
 ====================================================
 
 The files (both the ACM and the JSON files) for this tutorial
-are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
+are located in: **examples/test_files/Optimization/Model_Files/**
 
 #. The “SinterConfigGUI” can be launched from FOQUS, via the
-   **Create/Edit** button found in **File**\ :math:`\rightarrow`
+   **Create/Edit** button found in **Session**\ :math:`\rightarrow`
    **Add/Update Model to Turbine** or “SinterConfigGUI” may be run on
    its own by selecting **SimSinter** :math:`\rightarrow`
-   **SinterConfigGUI** from the Start menu.
+   **SinterConfigGUI** from the Windows Start menu.
 
 #. The splash window displays, as shown in Figure :ref:`fig.sinter.acm.splash`. The user may
    click the splash screen to proceed, or wait ten seconds for it to
@@ -22,20 +22,19 @@ are located in: **examples/tutorial_files/SimSinter/Tutorial_1**
 
       SinterConfigGUI Splash Screen
 
-#. | The SinterConfigGUI Open Simulation window displays (Figure
-     :ref:`fig.sinter.acm.openpage`). If
-     “SinterConfigGUI” was opened from FOQUS, the filename text box
-     already contains the correct file. To proceed immediately click
-     **Open File and Configure Variables** or click **Browse** to search
-     for the file. For this tutorial, the ACM model (BFBv6.2.acmf) for a
-     bubbling fluidized bed adsorber (located in the
-     examples/tutorial_files/SimSinter/Tutorial_1 folder)
-     is selected. Once the file is selected,
-     click **Open File and Configure Variables**. The user can open a
-     fresh ACM simulation (.acmf file) or an existing SimSinter
-     configuration file. For this example, open a fresh simulation.
-   | Note: Opening the simulation may take a few minutes depending on
-     how quickly Aspen Custom Modeler can be opened.
+#. The SinterConfigGUI Open Simulation window displays (Figure
+   :ref:`fig.sinter.acm.openpage`). If “SinterConfigGUI” was opened from FOQUS,
+   the filename text box already contains the correct file. To proceed
+   immediately click **Open File and Configure Variables** or click **Browse**
+   to search for the file. For this tutorial, the ACM model (``BFBv6.2.acmf``)
+   for a bubbling fluidized bed adsorber (located in the
+   ``examples/test_files/Optimization/Model_Files`` folder) is selected. Once
+   the file is selected, click **Open File and Configure Variables**. The user
+   can open a fresh ACM simulation (.acmf file) or an existing SimSinter
+   configuration file. For this example, open a fresh simulation.
+
+   .. note:: Opening the simulation may take a few minutes depending on how
+             quickly Aspen Custom Modeler can be opened.
 
    .. figure:: ../figs/ap/02_FileOpenScreen.png
       :alt: SinterConfigGUI Open Simulation Window

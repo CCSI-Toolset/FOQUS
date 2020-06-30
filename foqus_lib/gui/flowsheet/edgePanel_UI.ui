@@ -310,7 +310,7 @@
   </widget>
  </widget>
  <resources>
-  <include location="../icons.qrc"/>
+  <include location="foqus_lib.gui.icons.qrc"/>
  </resources>
  <connections>
   <connection>

@@ -16,6 +16,7 @@
     chapt_pyomo/index
     chapt_idaes/index
     chapt_sinter/index
+    chapt_sm_optimizer/index
     chapt_debug/index
     chapt_dev/index
     references

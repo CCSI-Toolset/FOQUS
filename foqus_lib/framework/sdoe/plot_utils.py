@@ -15,8 +15,6 @@ def plot_hist(ax, xs, xname,
               hbars=False       # set to True for horizontal bars
 ):
     ns, bins = np.histogram(xs, nbins)
-    xmin = bins[0]
-    xmax = bins[-1]
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
     if hbars:
@@ -150,7 +148,7 @@ def plot_weights(xs, wt, wts, title):
 def plot(fname, scatter_label, hname=None, show=None, nusf=None):
     df, hf = load_data(fname, hname)
     title = 'SDOE Candidates Visualization'
-    fig1 = plot_candidates(df, hf, show, title, scatter_label)
+    _fig1 = plot_candidates(df, hf, show, title, scatter_label)
     if nusf:
         des = nusf['results']['best_cand_scaled'].values
         xs = des[:,:-1]    # scaled coordinates from best candidate
@@ -162,6 +160,6 @@ def plot(fname, scatter_label, hname=None, show=None, nusf=None):
         cand_ = scale_y(scale_method, mwr, cand, wcol)
         wts = cand_[wcol]  # scaled weights from all candidates
         title = 'SDOE (NUSF) Weight Visualization for MWR={}'.format(mwr)
-        fig2 = plot_weights(xs, wt, wts, title)
+        _fig2 = plot_weights(xs, wt, wts, title)
         
     plt.show()

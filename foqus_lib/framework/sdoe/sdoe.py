@@ -40,14 +40,18 @@ def run(config_file, nd, test=False):
                 'scale_method': scale_method}
         from .nusf import criterion
         
-    elif sf_method == 'usf':
+    if sf_method == 'usf':
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'scale_factors': scl}
         from .usf import criterion
 
-    elif sf_method == 'irsf':
-        from .irsf import criterion_irsf, CombPF, criterion_X, unitscale_cand, Inv_scale_cand
-        
+    if sf_method == 'irsf':
+        from .irsf import criterion
+        args = {'max_iterations': 1000,
+                'ws': np.linspace(0.1, 0.9, 5),
+                'idx': [x for x, t in zip(include, types) if t == 'Input'],
+                'idy': [x for x, t in zip(include, types) if t == 'Response']}
+
     # create outdir as needed
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -107,5 +111,10 @@ def run(config_file, nd, test=False):
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)
-        
+
+    elif sf_method == 'irsf':
+        from .irsf import write_output_FILES
+        PFcomb, header1, header2 = results
+        write_output_FILES(PFcomb, nd, nr, t0, config_file, outdir, header1, header2)
+
     return fnames, results, elapsed_time

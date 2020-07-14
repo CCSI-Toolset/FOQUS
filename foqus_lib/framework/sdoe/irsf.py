@@ -3,6 +3,46 @@ import random
 import numpy as np
 
 
+def criterion(cand, include, args, nr, nd, mode='maximin', hist=[]):
+    inp_x = cand[args['idx']]
+    header1 = list(inp_x.columns)
+    norm_x = unitscale_cand(inp_x)
+    inp_y = cand[args['idy']]
+    header2 = list(inp_y.columns)
+    norm_y = unitscale_cand(inp_y)
+
+    # Input only and output only optimization are here Using the same function call 'criterion_X'. These are essentially
+    # the boundary points for the Pareto Front.
+    design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(norm_x, args['max_iterations'], nd, nr, mode)
+    print("X space Best value in Normalized Scale: ", best_X)
+
+    design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(norm_y, args['max_iterations'], nd, nr, mode)
+    print("Y space Best value in Normalized Scale: ", best_Y)
+
+    # We are initializing the following dictionaries here
+    best_xdes, best_ydes, bestcrit, bestpoints, best_mdties, best_wdmat, best_wdxmat, best_wdymat, PFxdes, PFydes, PFmdvals = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
+
+    # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function and returning
+    for i in range(len(args['ws'])):
+        print("Weight: ", args['ws'][i])
+        best_xdes[i], best_ydes[i], bestcrit[i], bestpoints[i], best_mdties[i], best_wdmat[i], best_wdxmat[i], \
+        best_wdymat[i], PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(norm_x, norm_y, nd, best_X, best_Y,
+                                                                           args['ws'][i], args['max_iterations'],
+                                                                           nr,
+                                                                           mode)
+
+    # Pareto frong for each weight i is created here. For example if 3 Pareto solutions were found for ith weight, and
+    # the design size is 10, then PFxdes will contain all 3 designs (10 each) in an order, so the number of rows in PFxdes is 30.
+
+    # Following 4 lines are basically constructing a combined Pareto Front for all wight values (Here 0.1, 0.3, 0.5, 0.7 and 0.9) all togeter.
+
+    PFcomb = [PFxdes[0], PFydes[0], PFmdvals[0]]
+    for i in range(1, len(args['ws'])):
+        temp_new = [PFxdes[i], PFydes[i], PFmdvals[i]]
+        PFcomb = CombPF(temp_new, PFcomb, nd)
+
+    results = [PFcomb, header1, header2]
+
 def unitscale_cand(cand):
     cand_arr=np.asarray(cand)
     norm_cand=np.zeros((cand_arr.shape[0],cand_arr.shape[1]))
@@ -472,3 +512,112 @@ def criterion_X(cand,  # candidates
             best_w_dist_mat = Xdist_mat
 
     return best_cand_rand, best_md, best_mdpts, best_mties, best_w_dist_mat
+
+
+def write_output_FILES(PFcomb,d, num_rand_start,now,config_file,outdir_IRSF,header1,header2):
+
+    #  All the results output files in directory results_IRSF are being created from here on:
+    print("PFcomb[2]: ",PFcomb[2])
+    print("PFcomb[0]: ",PFcomb[0])
+
+    ParetoVal, ParetoX, ParetoY, PV, PX, PY = {},{},{},{},{},{}
+    N1 = len(PFcomb[2])
+    for i in range(N1):
+        ParetoVal[i] = PFcomb[2][i,:]
+        ParetoX[i] = []
+        ParetoY[i]=[]
+        for j in range(d):
+            ParetoX[i].append(np.array(PFcomb[0][(i*d)+j,:]).flatten())
+            ParetoY[i].append(np.array(PFcomb[1][(i*d)+j,:]).flatten())
+
+
+    indx1 = np.argsort(PFcomb[2],axis=0)[:,0]
+
+    for i in range(len(indx1)):
+        j = int(indx1[i])
+        PV[i] = np.array(ParetoVal[j])
+        PX[i] = ParetoX[j]
+        PY[i] = ParetoY[j]
+
+
+
+    irsf_fname = 'COMPLETE_irsf_pareto_designs_%d_%d_%d-%d-%d_%s.dat' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
+    PF_fname = 'Pareto_Summary_%d_%d_%d-%d-%d_%s.csv' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
+
+    irsf_fname = os.path.join(outdir_IRSF, irsf_fname)
+    PF_fname = os.path.join(outdir_IRSF, PF_fname)
+
+    header_str1 = ', '.join(header1)
+    header_str2 = ', '.join(header2)
+    file1 = open(irsf_fname,"w")
+    file2 = open(PF_fname,"w")
+
+    print("sorted Pareto Values: ", PV)
+    print("sorted Pareto X-design: ", PX)
+    print("sorted Pareto Y-design: ", PY)
+    print("")
+    str1="\n \n We have found %d Pareto-Front Solutions, each solution corresponding to a Space-Filling Design \n"%(int(len(indx1)))
+    print(str1)
+    str1a = 'PARETO VALUES:\n'
+    str1b = 'Design, Best Input, Best Response\n'
+    file1.write(str1)
+    file1.write(str1a)
+    file1.write(str1b)
+    file2.write(str1a)
+    file2.write(str1b)
+    for i in range(len(indx1)):
+        str1c = "%d,%f,%f\n"%(i+1,np.matrix(PV[i])[0,0],np.matrix(PV[i])[0,1])
+        file1.write(str1c)
+        file2.write(str1c)
+    print(" ")
+    for i in range(len(indx1)):
+
+        design_fname = 'Design'+str(i+1)+'__%d_%d_%d-%d-%d_%s.csv' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
+        design_fname = os.path.join(outdir_IRSF, design_fname)
+        file3 = open(design_fname,"w")
+
+        str2 = "\nDESIGN %d :\n"%(i+1)
+        str2a = "nDESIGN %d :\n" % (i + 1)
+        print(str2)
+        file1.write(str2)
+        file3.write(str2a)
+
+        str3 = "Pareto Values: Input X-space best critical value: %f \n "%(np.matrix(PV[i])[0,0])
+        str4 = "             : Response Y-space best critical value: %f \n " %(np.matrix(PV[i])[0,1])
+        print(str3)
+        print(str4)
+        file1.write(str3)
+        file1.write(str4)
+
+        file3.write(header_str1+", "+header_str2+'\n')
+        str5 = "\n Input(X) design: \n"
+        print(str5)
+        print(header_str1)
+        file1.write(str5)
+        file1.write(header_str1)
+        file1.write('\n')
+
+        for j in range(d):
+            file3.write(str(tuple(np.array(PX[i])[j,:])).strip("()")+', '+str(tuple(np.array(PY[i])[j, :])).strip("()")+'\n')
+
+
+        for j in range(d):
+            print(np.array(PX[i])[j,:])
+            file1.write(str(tuple(np.array(PX[i])[j,:])).strip("()"))
+            file1.write('\n')
+
+        str7="\n Response(Y) design: \n"
+        print(str7)
+        print(header_str2)
+        file1.write(str7)
+        file1.write(header_str2)
+        file1.write('\n')
+
+        for j in range(d):
+            print(np.array(PY[i])[j, :])
+            file1.write(str(tuple(np.array(PY[i])[j, :])).strip("()"))
+            file1.write('\n')
+        file3.close()
+
+    file1.close()
+    file2.close()

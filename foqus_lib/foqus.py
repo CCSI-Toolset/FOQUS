@@ -1,8 +1,9 @@
-#!/usr/bin/env python
-"""foqus.py
-* The main script to start FOQUS
+"""
+* FOQUS Commands:
+- foqus: to start FOQUS
 
 John Eslick, Carnegie Mellon University, 2014
+Keith Beattie, Lawrence Berkeley National Labs, 2020
 See LICENSE.md for license and copyright details.
 """
 
@@ -18,6 +19,7 @@ import logging
 import foqus_lib.version.version as ver # foqus version and other info
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.listen.listen import foqusListener2
+from foqus_lib.gui.make_shortcut import makeShortcut
 loadGUI = False
 guiAvail = False
 # Splash screen global variables
@@ -26,6 +28,7 @@ splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
 # global variables
 dat = None
+
 
 def guiImport():
     """
@@ -48,7 +51,6 @@ def guiImport():
             QFileDialog
         from PyQt5.QtGui import QPixmap, QPainter
         from PyQt5 import QtSvg
-        #import foqus_lib.gui.icons_rc
 
         import matplotlib
         matplotlib.use('Qt5Agg')
@@ -184,7 +186,8 @@ def signal_handler(signal, frame):
     """
     raise KeyboardInterrupt()
 
-if __name__ == '__main__':
+def main():
+    global dat
     exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working
     # directory is set a file handler can be added once a new foqus
@@ -210,6 +213,8 @@ if __name__ == '__main__':
     parser.add_argument("-w", "--working_dir", help="Set the working directory")
     parser.add_argument("--splash", help="Display splash", action="store_true")
     parser.add_argument("--nosplash", help = "No splash", action = "store_true")
+    parser.add_argument("--make-shortcut", help = "Make shortcut on Desktop to start "
+                        "FOQUS then exit (Windows only)", action = "store_true")
     parser.add_argument("--nogui", help="Do not start the graphical interface",
                         action="store_true")
     parser.add_argument("--noopt", help="Hide the optimization interface",
@@ -267,6 +272,8 @@ if __name__ == '__main__':
     if args.runUITestScript:
         args.runUITestScript = os.path.abspath(args.runUITestScript)
     ## Run any quick commands and exit before setting up a FOQUS session
+    if args.make_shortcut:
+        sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
             from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB

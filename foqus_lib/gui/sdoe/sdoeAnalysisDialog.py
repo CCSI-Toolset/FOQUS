@@ -119,7 +119,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.range_groupBox.setHidden(True)
             self.rangeNUSF_groupBox.setHidden(True)
             self.progress_groupBox.setHidden(True)
-            self.analysisTable.setHorizontalHeaderLabels(['Design Size, d', '# of Random Starts, n', 'Runtime (in sec)', '# of Designs', 'Plot SDOE'])
+            self.analysisTable.setHorizontalHeaderLabels(['', 'Design Size, d', '# of Random Starts, n', 'Runtime (in sec)', '# of Designs', 'Plot SDOE'])
 
         elif self.type == 'USF':
             self.scalingGroup.setHidden(True)
@@ -154,7 +154,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         if self.type == 'IRSF':
             self.sampleSize_comboBox.addItems(['5', '10', '20', '30', '50', '75', '100', '150', '200', '500'])
-            self.sampleSize_comboBox.setCurrentIndex(1)
+            self.sampleSize_comboBox.setCurrentIndex(2)
             self.sampleSize_comboBox.currentTextChanged.connect(self.on_size_IRSF_combobox_changed)
 
         # Initialize inputSdoeTable
@@ -193,7 +193,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             maxHeight += self.infoTable.rowHeight(i)
         self.infoTable.setMaximumHeight(maxHeight)
 
-        width = 2 + self.inputSdoeTable.verticalHeader().width()
+        width = 4 + self.inputSdoeTable.verticalHeader().width()
         for i in range(self.inputSdoeTable.columnCount()):
             width += self.inputSdoeTable.columnWidth(i)
         if self.inputSdoeTable.verticalScrollBar().isVisible():
@@ -301,14 +301,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def updateAnalysisTableRow(self, row):
 
-        # Optimality Method or MWR Value (it depends if USF or NUSF)
+        # Optimality Method for USF, MWR Value for NUSF
         item = self.analysisTable.item(row, self.methodCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.methodCol, item)
         value = self.analysis[row][0]
         item.setText(str(value))
-
 
         # Design Size
         item = self.analysisTable.item(row, self.designCol)
@@ -318,7 +317,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         designSize = self.analysis[row][1]
         item.setText(str(designSize))
 
-        # Sample Size
+        # Number of restarts
         item = self.analysisTable.item(row, self.sampleCol)
         if item is None:
             item = QTableWidgetItem()
@@ -626,7 +625,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         config_file = self.writeConfigFile()
         fnames, results, elapsed_time = sdoe.run(config_file, size)
-        self.analysis.append([results['design_size'], results['num_restarts'], results['elapsed_time'], fnames, config_file, results['best_val'], results])
+        self.analysis.append(['', results['design_size'], results['num_restarts'], elapsed_time, fnames, config_file, results['num_designs'], results])
 
         self.updateAnalysisTable()
 

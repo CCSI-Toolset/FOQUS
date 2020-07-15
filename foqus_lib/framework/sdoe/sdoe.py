@@ -1,6 +1,7 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
+import datetime
 
 def save(fnames, results, elapsed_time):
     write(fnames['cand'], results['best_cand'])
@@ -26,7 +27,7 @@ def run(config_file, nd, test=False):
     types = [s.strip() for s in config['INPUT']['type'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
-    sf_method = config['SF']
+    sf_method = config['SF']['sf_method']
     if sf_method == 'nusf':
         weight_mode = config['WEIGHT']['weight_mode']
         assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
@@ -46,11 +47,11 @@ def run(config_file, nd, test=False):
         from .usf import criterion
 
     if sf_method == 'irsf':
-        from .irsf import criterion
         args = {'max_iterations': 1000,
                 'ws': np.linspace(0.1, 0.9, 5),
                 'idx': [x for x, t in zip(include, types) if t == 'Input'],
                 'idy': [x for x, t in zip(include, types) if t == 'Response']}
+        from .irsf import criterion
 
     # create outdir as needed
     if not os.path.exists(outdir):
@@ -106,15 +107,19 @@ def run(config_file, nd, test=False):
             fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
-    elif sf_method == 'usf':
+    if sf_method == 'usf':
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)
 
-    elif sf_method == 'irsf':
-        from .irsf import write_output_FILES
-        PFcomb, header1, header2 = results
-        write_output_FILES(PFcomb, nd, nr, t0, config_file, outdir, header1, header2)
+    if sf_method == 'irsf':
+        fnames = {}
+        from .irsf import write_output_files
+        PFcomb = results['pareto_front']
+        header1 = results['inp_header']
+        header2 = results['res_header']
+        now = datetime.datetime.now()
+        write_output_files(PFcomb, nd, nr, now, outdir, header1, header2)
 
     return fnames, results, elapsed_time

@@ -1,6 +1,7 @@
 from operator import lt, gt, itemgetter
 import random
 import numpy as np
+import os
 
 
 def criterion(cand, include, args, nr, nd, mode='maximin', hist=[]):
@@ -41,7 +42,17 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[]):
         temp_new = [PFxdes[i], PFydes[i], PFmdvals[i]]
         PFcomb = CombPF(temp_new, PFcomb, nd)
 
-    results = [PFcomb, header1, header2]
+    indx1 = np.argsort(PFcomb[2], axis=0)[:, 0]
+
+    results = {'pareto_front': PFcomb,
+               'inp_header': header1,
+               'res_header': header2,
+               'mode': mode,
+               'design_size': nd,
+               'num_restarts': nr,
+               'num_designs': len(indx1)}
+
+    return results
 
 def unitscale_cand(cand):
     cand_arr=np.asarray(cand)
@@ -514,7 +525,7 @@ def criterion_X(cand,  # candidates
     return best_cand_rand, best_md, best_mdpts, best_mties, best_w_dist_mat
 
 
-def write_output_FILES(PFcomb,d, num_rand_start,now,config_file,outdir_IRSF,header1,header2):
+def write_output_files(PFcomb, d, num_rand_start, now, outdir_IRSF, header1, header2):
 
     #  All the results output files in directory results_IRSF are being created from here on:
     print("PFcomb[2]: ",PFcomb[2])
@@ -539,10 +550,9 @@ def write_output_FILES(PFcomb,d, num_rand_start,now,config_file,outdir_IRSF,head
         PX[i] = ParetoX[j]
         PY[i] = ParetoY[j]
 
-
-
-    irsf_fname = 'COMPLETE_irsf_pareto_designs_%d_%d_%d-%d-%d_%s.dat' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
-    PF_fname = 'Pareto_Summary_%d_%d_%d-%d-%d_%s.csv' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
+    irsf_fname = 'COMPLETE_irsf_pareto_designs_%d_%d_%d-%d-%d.dat' % (d, num_rand_start, now.hour, now.minute,
+                                                                         now.second)
+    PF_fname = 'Pareto_Summary_%d_%d_%d-%d-%d.csv' % (d, num_rand_start, now.hour, now.minute, now.second)
 
     irsf_fname = os.path.join(outdir_IRSF, irsf_fname)
     PF_fname = os.path.join(outdir_IRSF, PF_fname)
@@ -556,7 +566,8 @@ def write_output_FILES(PFcomb,d, num_rand_start,now,config_file,outdir_IRSF,head
     print("sorted Pareto X-design: ", PX)
     print("sorted Pareto Y-design: ", PY)
     print("")
-    str1="\n \n We have found %d Pareto-Front Solutions, each solution corresponding to a Space-Filling Design \n"%(int(len(indx1)))
+    str1="\n \n We have found %d Pareto-Front Solutions, each solution " \
+         "corresponding to a Space-Filling Design \n" % (int(len(indx1)))
     print(str1)
     str1a = 'PARETO VALUES:\n'
     str1b = 'Design, Best Input, Best Response\n'
@@ -572,7 +583,7 @@ def write_output_FILES(PFcomb,d, num_rand_start,now,config_file,outdir_IRSF,head
     print(" ")
     for i in range(len(indx1)):
 
-        design_fname = 'Design'+str(i+1)+'__%d_%d_%d-%d-%d_%s.csv' % (d,num_rand_start,now.hour,now.minute,now.second,config_file)
+        design_fname = 'Design'+str(i+1)+'__%d_%d_%d-%d-%d.csv' % (d,num_rand_start,now.hour,now.minute,now.second)
         design_fname = os.path.join(outdir_IRSF, design_fname)
         file3 = open(design_fname,"w")
 

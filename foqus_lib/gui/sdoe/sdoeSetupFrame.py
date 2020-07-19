@@ -533,7 +533,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
         combo = QComboBox()
-        combo.addItems(['Uniform Space Filling', 'Non-Uniform Space Filling', 'Input-Response Space Filling'])
+        combo.addItems(['Uniform Space Filling (USF)', 'Non-Uniform Space Filling (NUSF)',
+                        'Input-Response Space Filling (IRSF)'])
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
 
@@ -548,11 +549,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling':
+        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling (USF)':
             type = 'USF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling (NUSF)':
             type = 'NUSF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space Filling':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space Filling (IRSF)':
             type = 'IRSF'
         analysis = None
 

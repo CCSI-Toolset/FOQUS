@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1035</height>
+    <width>1356</width>
+    <height>932</height>
    </rect>
   </property>
   <property name="font">
@@ -454,11 +454,7 @@ and max for efficient computation.</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>For each column, specify the type, and whether
-it should be part of the design.
-* Input: inputs to be considered for SDOE
-* Index: unique identifier for the input combination. Not required, but encouraged.
-</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;For each column, specify the type, and whether it should be part of the design.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Input:&lt;/span&gt; inputs to be considered for space filling. Required for all.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Index:&lt;/span&gt; label to identify design run. Not required, but encouraged.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Weight:&lt;/span&gt; weight for relative emphasis of input location. Larger = more emphasis. Required for NUSF.&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;*&lt;/span&gt;&lt;span style=&quot; font-weight:600; text-decoration: underline;&quot;&gt;Response:&lt;/span&gt; response/output for space filling. Required for IRSF. &lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="sizeAdjustPolicy">
             <enum>QAbstractScrollArea::AdjustIgnored</enum>
@@ -537,6 +533,10 @@ it should be part of the design.
           </layout>
          </item>
         </layout>
+        <zorder>inputSdoeTable</zorder>
+        <zorder>range_groupBox</zorder>
+        <zorder>rangeNUSF_groupBox</zorder>
+        <zorder>rangeIRSF_groupBox</zorder>
        </widget>
       </item>
       <item>

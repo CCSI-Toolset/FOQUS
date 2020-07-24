@@ -538,11 +538,11 @@ class opt(optimization):
         xf = np.array(dvar_scaled)
         instance,cv,pv=self.f(xf)
         self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
-        self.msgQueue.put("{0}\n".format(xf))
+        # self.msgQueue.put("{0}\n".format(xf))
         self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
-        print("****\n")
-        print(self.prob.gt.res)
-        print("****\n")
+        # print("****\n")
+        # print(self.prob.gt.res)
+        # print("****\n")
 #       Loading the above simulation result in FOQUS flowsheet
         self.graph.loadValues(self.prob.gt.res[0])
         
@@ -605,9 +605,7 @@ class opt(optimization):
 #        Applying Termination Condition
 #       1. abs(f* - f)/f* <= eps ; 2. abs(y* - y)/y* <= eps ; 3. constraint_violation <= tolerance         
         if abs((f_str - f)/f_str) <= obj_tolerance:
-            print('y')
             if all(item <= outputvar_tolerance for item in outvar_val_fracdiff):
-                print('y')
                 if len(constrexprs)!=0:
                     if all(viol[0] <= inequality_tolerance for viol in cv):
                         flag = 0
@@ -689,7 +687,7 @@ class opt(optimization):
             num = num_lhs
             # samples * variables value array
             latin_hypercube_samples = sampling(num)
-            print(latin_hypercube_samples)
+            # print(latin_hypercube_samples)
             self.msgQueue.put("**Rebuilding Surrogate Model**")
             self.msgQueue.put("Trust Region: {0}".format(surrin_bounds))
             self.msgQueue.put("Latin Hypercube Sampling with {0} points".format(num))
@@ -736,15 +734,15 @@ class opt(optimization):
                         
                     if 'xmin' in line:
                         nummin = re.findall(r"\d+\.\d+", line)
-                        print(nummin)
-                        print(surrin_pyomo)
+                        # print(nummin)
+                        # print(surrin_pyomo)
                         for i,n in enumerate(nummin):
                             d = surrin_pyomo[i]
                             line = re.sub(nummin[i], "{0}".format(d_lb_upd), line)
         
                     if 'xmax' in line:
                         nummax = re.findall(r"\d+\.\d+", line)
-                        print(nummax)
+                        # print(nummax)
                         for i,n in enumerate(nummax):
                             d = surrin_pyomo[i]
                             line = re.sub(nummax[i], "{0}".format(d_ub_upd), line)
@@ -763,14 +761,14 @@ class opt(optimization):
                     if index in range(idx1+1,idx2):
                         sampl1 = index - idx1 - 1
                         if sampl1 <= len(latin_hypercube_samples)-1:
-                            print(sampl1)
+                            # print(sampl1)
                             vl1 = re.findall(r"\d+\.\d+", line)
                             for i,v in enumerate(vl1):
                                 if i <= len(surrin_pyomo)-1:
-                                    print(latin_hypercube_samples[sampl1][i])
+                                    # print(latin_hypercube_samples[sampl1][i])
                                     line = re.sub(v,"{0}".format(float(latin_hypercube_samples[sampl1][i])),line)
                                 else:
-                                    print(latin_hypercube_samples_values)
+                                    # print(latin_hypercube_samples_values)
                                     line = re.sub(v,"{0}".format(float(latin_hypercube_samples_values[sampl1][i-len(surrin_pyomo)])),line)
                         else:
                             line = re.sub(r"\d+\.\d+","",line)
@@ -967,7 +965,7 @@ class opt(optimization):
 
             # Assign the best initialization value
             minobjval_idx = np.argmin(objvals)
-            print(minobjval_idx)
+            # print(minobjval_idx)
 
             for i,var in enumerate(decvars):
                 var.value = initvals_prod[minobjval_idx][i]
@@ -1091,9 +1089,7 @@ class opt(optimization):
             
 #            Applying the termination conditions and deciding whether to continue improving the surrogate model through the while loop, depending on the value of 'flag' variable
             if abs((f_str - f)/f_str) <= obj_tolerance:
-                print('y')
                 if all(item <= outputvar_tolerance for item in outvar_val_fracdiff):
-                    print('y')
                     if len(constrexprs)!=0:
                         if all(viol[0] <= inequality_tolerance for viol in cv):
                             flag = 0

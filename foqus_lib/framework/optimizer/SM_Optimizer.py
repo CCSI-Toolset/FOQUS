@@ -818,46 +818,46 @@ class opt(optimization):
             res = SurrogateParser.parseAlamo(alamoOutput)  
             self.result = res
             # ***Generate UQ Plugin for Parity Plot***
-            self.xi = {}
-            self.zi = {}
-            cn = self.graph.input.compoundNames(sort=True)
-            for v in self.surrin_names_original:
-                self.xi[v] = cn.index(v)
-            cn = self.graph.output.compoundNames(sort=False)
-            for v in self.surrout_names_original:
-                self.zi[v] = cn.index(v)
-            self.ii = {}
-            self.oi = {}
-            for i, v in enumerate(self.surrin_names):
-                self.ii[self.surrin_names[i]] = self.xi[self.surrin_names_original[i]]
-            for i, v in enumerate(self.surrout_names):
-                self.oi[self.surrout_names[i]] = self.zi[self.surrout_names_original[i]]
-            SurrogateParser.writeAlamoDriver(
-                self.result,
-                uq_file,
-                ii=self.ii,
-                oi=self.oi,
-                inputNames=self.surrin_names_original,
-                outputNames=self.surrout_names_original)
+            # self.xi = {}
+            # self.zi = {}
+            # cn = self.graph.input.compoundNames(sort=True)
+            # for v in self.surrin_names_original:
+            #     self.xi[v] = cn.index(v)
+            # cn = self.graph.output.compoundNames(sort=False)
+            # for v in self.surrout_names_original:
+            #     self.zi[v] = cn.index(v)
+            # self.ii = {}
+            # self.oi = {}
+            # for i, v in enumerate(self.surrin_names):
+            #     self.ii[self.surrin_names[i]] = self.xi[self.surrin_names_original[i]]
+            # for i, v in enumerate(self.surrout_names):
+            #     self.oi[self.surrout_names[i]] = self.zi[self.surrout_names_original[i]]
+            # SurrogateParser.writeAlamoDriver(
+            #     self.result,
+            #     uq_file,
+            #     ii=self.ii,
+            #     oi=self.oi,
+            #     inputNames=self.surrin_names_original,
+            #     outputNames=self.surrout_names_original)
             
-            # ***Generate python file for Parity Plot***
-            with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                f.write('Input_Data = {0}'.format(latin_hypercube_samples))
-                f.write('Simulator_Output_Data = {0}'.format(latin_hypercube_samples_values))
-                SM_outdata = []
-                surrvarinpyomo = []
-                for v in self.surrin_names_pyomo:
-                    surrvarin = getattr(self.m,str(v))
-                    surrvarinpyomo.append(surrvarin)
-                for s in latin_hypercube_samples:
-                    out = []
-                    for i,vin in enumerate(surrvarinpyomo):
-                        vin.value = s[i]
-                    for i,vout in enumerate(surroutvars):
-                        vout = -value(self.m.c[i+1].body - initout)
-                        out.append(vout)
-                    SM_outdata.append(out)
-                f.write('SM_Output_Data = {0}'.format(SM_outdata.append))
+            # # ***Generate python file for Parity Plot***
+            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
+            #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
+            #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+            #     SM_outdata = []
+            #     surrvarinpyomo = []
+            #     for v in self.surrin_names_pyomo:
+            #         surrvarin = getattr(self.m,str(v))
+            #         surrvarinpyomo.append(surrvarin)
+            #     for s in latin_hypercube_samples:
+            #         out = []
+            #         for i,vin in enumerate(surrvarinpyomo):
+            #             vin.value = s[i]
+            #         for i,vout in enumerate(surroutvars):
+            #             vout = -value(self.m.c[i+1].body - initout)
+            #             out.append(vout)
+            #         SM_outdata.append(out)
+            #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata.append))
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
@@ -956,12 +956,12 @@ class opt(optimization):
                     solver_termination_condition[i1] = str(r.solver.termination_condition)
                     solver_time[i1] = str(r.solver.time)
                 else:
-                    input_optim[i1] = 1e10
-                    output_optim[i1] = 1e10
-                    objvals[i1] = 1e10
-                    solver_status[i1] = 1e10
-                    solver_termination_condition[i1] = 1e10
-                    solver_time[i1] = 1e10
+                    input_optim[i1] = math.inf
+                    output_optim[i1] = math.inf
+                    objvals[i1] = math.inf
+                    solver_status[i1] = math.inf
+                    solver_termination_condition[i1] = math.inf
+                    solver_time[i1] = math.inf
 
             # Assign the best initialization value
             minobjval_idx = np.argmin(objvals)
@@ -1117,7 +1117,7 @@ class opt(optimization):
                 self.msgQueue.put("Surrogate Model Improvement Required")
                 self.msgQueue.put("****Proceed to next iteration****\n")
                 
-            # Print final results
+            # Print final results, and generate parity plot python file if optimization successful
             if flag == 0:
                 self.msgQueue.put("\n***OPTIMIZATION RESULT***\n")
                 self.msgQueue.put("\n**Optimum value of decision variables**\n")
@@ -1126,6 +1126,25 @@ class opt(optimization):
                 self.msgQueue.put("\n**Rigorous simulation output variable values**\n")
                 for outv in self.graph.fnames:
                     self.msgQueue.put("{0}:{1}\n".format(str(outv),self.graph.f[outv].value))
+                    
+                # ***Generate python file for Parity Plot***
+                with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                    f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
+                    f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                    SM_outdata = []
+                    surrvarinpyomo = []
+                    for v in self.surrin_names_pyomo:
+                        surrvarin = getattr(self.m,str(v))
+                        surrvarinpyomo.append(surrvarin)
+                    for s in latin_hypercube_samples:
+                        out = []
+                        for i,vin in enumerate(surrvarinpyomo):
+                            vin.value = s[i]
+                        for i,vout in enumerate(surroutvars):
+                            vout = -value(self.m.c[i+1].body - initout)
+                            out.append(vout)
+                        SM_outdata.append(out)
+                    f.write('SM_Output_Data = {0}\n'.format(SM_outdata.append))
                 
             # Store the current iteration surrogate model in a text file
             with open(os.path.join("user_plugins", file_name_SM_stored), 'a') as f:

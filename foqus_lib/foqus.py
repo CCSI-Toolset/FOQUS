@@ -176,7 +176,6 @@ def signal_handler(signal, frame):
     raise KeyboardInterrupt()
 
 def main():
-    print("ksb")
     global dat
     exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working

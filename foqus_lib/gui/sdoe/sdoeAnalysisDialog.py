@@ -657,7 +657,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         #test using nr=2
         self.testRuntime = []
-        runtime = sdoe.run(self.writeConfigFile(test=True), self.designSizeIRSF_spin.value(), test=True)
+        t1, t2 = sdoe.run(self.writeConfigFile(test=True), self.designSizeIRSF_spin.value(), test=True)
+        runtime = t1 + (5 * (t2/2))
         self.testSdoeButton.setEnabled(False)
         self.progress2_groupBox.setEnabled(True)
         self.updateRunTimeIRSF(runtime)
@@ -889,9 +890,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.time2_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def updateRunTimeIRSF(self, runtime):
-        delta = runtime/2
 
-        estimateTime = int(delta * (int(self.sampleSize_comboBox.currentText())) * 5)
+        estimateTime = int(runtime * (int(self.sampleSize_comboBox.currentText())))
         if estimateTime < 60:
             self.time2_dynamic.setText(f"{estimateTime:2d} seconds")
         elif estimateTime < 3600:

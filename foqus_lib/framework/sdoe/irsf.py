@@ -2,9 +2,10 @@ from operator import lt, gt, itemgetter
 import random
 import numpy as np
 import os
+import time
 
 
-def criterion(cand, include, args, nr, nd, mode='maximin', hist=[]):
+def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
     inp_x = cand[args['idx']]
     header1 = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
@@ -12,6 +13,35 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[]):
     header2 = list(inp_y.columns)
     norm_y = unitscale_cand(inp_y)
 
+    # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
+    if test:
+        t0 = time.time()
+        design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(norm_x, args['max_iterations'], nd, nr, mode)
+        print("X space Best value in Normalized Scale: ", best_X)
+        t1 = time.time() - t0
+        design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(norm_y, args['max_iterations'], nd, nr, mode)
+        print("Y space Best value in Normalized Scale: ", best_Y)
+
+        # We are initializing the following dictionaries here
+        best_xdes, best_ydes, bestcrit, bestpoints, best_mdties, best_wdmat, best_wdxmat, best_wdymat, PFxdes, PFydes, PFmdvals = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
+
+        args['ws'] = [0.5]
+        for i in range(len(args['ws'])):
+            t0 = time.time()
+            print("Weight: ", args['ws'][i])
+            best_xdes[i], best_ydes[i], bestcrit[i], bestpoints[i], best_mdties[i], best_wdmat[i], best_wdxmat[i], \
+            best_wdymat[i], PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(norm_x, norm_y, nd, best_X, best_Y,
+                                                                               args['ws'][i], args['max_iterations'],
+                                                                               nr,
+                                                                               mode)
+            t2 = time.time() - t0
+
+        results = {'t1': t1,
+                   't2': t2}
+
+        return results
+
+    # Otherwise IRSF for real
     # Input only and output only optimization are here Using the same function call 'criterion_X'. These are essentially
     # the boundary points for the Pareto Front.
     design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(norm_x, args['max_iterations'], nd, nr, mode)

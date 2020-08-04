@@ -89,10 +89,14 @@ def run(config_file, nd, test=False):
         
     # do a quick test to get an idea of runtime
     if test:
-        t0 = time.time()
-        results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
-        elapsed_time = time.time() - t0
-        return elapsed_time
+        if sf_method == 'irsf':
+            results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist, test=True)
+            return results['t1'], results['t2']
+        else:
+            t0 = time.time()
+            _results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+            elapsed_time = time.time() - t0
+            return elapsed_time
 
     # otherwise, run sdoe for real
     t0 = time.time()

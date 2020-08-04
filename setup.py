@@ -12,7 +12,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.5.0dev3"
+default_version = "3.7.0dev0"
 
 try:
     version=subprocess.check_output(
@@ -47,13 +47,16 @@ dist = setup(
     packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
-            '*.html', '*.gms', '*.gpr', '*.ccs']},
+            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico']},
     include_package_data=True,
     scripts = [
-        'foqus.py',
         'cloud/aws/foqus_worker.py',
-        'cloud/aws/foqus_service.py',
-        'icons_rc.py'],
+        'cloud/aws/foqus_service.py'],
+    entry_points={
+        "console_scripts": [
+            "foqus = foqus_lib.foqus:main",
+        ],
+    },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
@@ -61,56 +64,29 @@ dist = setup(
         "boto3",
         "cma",
         "matplotlib",
-        "mlrose",
+        "mlrose_hiive",
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.13.*",
+        "PyQt5==5.13",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
         "TurbineClient",
+        "winshell; sys_platform == 'win32'",
         ],
 )
 
-def write_bat(bat_file, python_path, conda_path, conda_env, foqus_path, switch):
-    with open(bat_file, 'w') as f:
-        if conda_env is not None and conda_path is not None:
-            f.write('cmd {} ""{}" activate {} && "{}" "{}" %*"'.format(
-                switch, conda_path, conda_env, python_path, foqus_path))
-        else:
-            f.write('cmd {} ""{}" "{}" %*"'.format(
-                switch, python_path, foqus_path))
-
-if os.name == 'nt': # Write a batch file on windows to make it easier to launch
-    #first see if this is a conda env
-    foqus_path = subprocess.check_output(
-        ["where", "foqus.py"]).decode('utf-8').split(os.linesep)[0].strip()
-    if "CONDA_DEFAULT_ENV" in os.environ: # we're using conda probably
-        conda_env = os.environ["CONDA_DEFAULT_ENV"]
-        conda_path = shutil.which("conda") # unless conda is not found
-    else:
-        conda_path = None
-        conda_env = None
-    python_path = shutil.which("python")
-    if conda_path is None:
-        print("** conda not found bat file will not activate conda environment")
-    if python_path is None:
-        print("** python not found, no bat file written")
-    else:
-        write_bat("foqus.bat", python_path, conda_path, conda_env, foqus_path, "/C")
-        write_bat("foqus_debug.bat", python_path, conda_path, conda_env, foqus_path, "/K")
-
-print("""
+print(f"""
 
 ==============================================================================
-**Installed FOQUS {}**
+**Installed FOQUS {ver.version}**
 
-**Optional addtional sotfware**
+**Optional additional software**
 
 Optional software is not installed during the FOQUS installation, and is not
-strictly required to run FOQUS, however this software is highly recomended.
+strictly required to run FOQUS, however this software is highly recommended.
 Some FOQUS features will not be available without these packages.
 
 PSUADE (Required for UQ features):
@@ -130,27 +106,22 @@ TurbineLite (Windows only, run Aspen, Excel, and gPROMS):
 
 ALAMO (ALAMO Surogate models):
     http://archimedes.cheme.cmu.edu/?q=alamo
-    ALAMO is software to develop algebric surrogate models for complex
+    ALAMO is software to develop algebraic surrogate models for complex
     processes. Among other uses, these model can be used in algebraic modeling
-    laguages such as GAMS, AMPL, and Pyomo. FOQUS provides an interface to
-    ALAMO allowing surragtes to be easily created from complex process models.
+    languages such as GAMS, AMPL, and Pyomo. FOQUS provides an interface to
+    ALAMO allowing surrogates to be easily created from complex process models.
 
 NLOpt Python (Additional optimization solvers):
     https://nlopt.readthedocs.io/en/latest/NLopt_Installation/
     FOQUS will make the NLOpt routines available if the NLOpt Python module is
     installed.  NLOpt can be installed through conda using the conda-forge
     channel.
-
-**Batch file/Running FOQUS**
-
-Linux:
-    Run the command
-    > foqus.py
-
-Windows:
-    On Windows, this script makes batch files to run FOQUS.  This batch files
-    can be placed in any conveinient location.
-        - foqus.bat: run FOQUS and close cmd window when FOQUS exits
-        - foqus_debug.bat: run FOQUS and leave cmd window open  
 ==============================================================================
-""".format(ver.version))
+
+To start FOQUS run (within this Anaconda env):
+  > foqus
+
+To create a Windows Desktop shortcut for easy start-up of FOQUS,
+run once (within this Anaconda env):
+  > foqus --make-shortcut
+""")

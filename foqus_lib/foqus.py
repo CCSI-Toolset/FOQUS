@@ -1,8 +1,9 @@
-#!/usr/bin/env python
-"""foqus.py
-* The main script to start FOQUS
+"""
+* FOQUS Commands:
+- foqus: to start FOQUS
 
 John Eslick, Carnegie Mellon University, 2014
+Keith Beattie, Lawrence Berkeley National Labs, 2020
 See LICENSE.md for license and copyright details.
 """
 
@@ -18,6 +19,7 @@ import logging
 import foqus_lib.version.version as ver # foqus version and other info
 from foqus_lib.framework.session.session import *
 from foqus_lib.framework.listen.listen import foqusListener2
+from foqus_lib.gui.make_shortcut import makeShortcut
 loadGUI = False
 guiAvail = False
 # Splash screen global variables
@@ -26,6 +28,7 @@ splashScr = [None, None] # [0] splash timer, [1] splash screen
 foqus_application = None # The Qt application so I can show dialogs
 # global variables
 dat = None
+PyQt5 = None
 
 def guiImport():
     """
@@ -34,22 +37,10 @@ def guiImport():
     global loadGUI
     global guiAvail
     global dmf_lib
-    global QtCore
-    global QApplication
-    global QSplashScreen
-    global QMessageBox
-    global QFileDialog
-    global QPixmap
-    global QPainter
+    global PyQt5
     # GUI Imports
     try: # Check if the PySide libraries are available
-        from PyQt5 import QtCore
-        from PyQt5.QtWidgets import QApplication, QSplashScreen, QMessageBox, \
-            QFileDialog
-        from PyQt5.QtGui import QPixmap, QPainter
-        from PyQt5 import QtSvg
-        #import foqus_lib.gui.icons_rc
-
+        import PyQt5
         import matplotlib
         matplotlib.use('Qt5Agg')
         matplotlib.rcParams['backend']='Qt5Agg'
@@ -75,9 +66,9 @@ def makeSplash():
     information
     """
     # Load the splash screen background svg, gonna draw text over
-    pixmap = QPixmap(':/icons/icons/ccsiSplash2.svg')
+    pixmap = PyQt5.QtGui.QPixmap(':/icons/icons/ccsiSplash2.svg')
     # Make a painter to add text to
-    painter = QPainter(pixmap)
+    painter = PyQt5.QtGui.QPainter(pixmap)
     font = painter.font()  # current font for drawing text
     font.setPointSize(8)
     font.setBold(True)
@@ -86,16 +77,16 @@ def makeSplash():
     font.setBold(False)
     painter.setFont(font)
     painter.drawText(20, 200, 740, 50,
-        QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
+        PyQt5.QtCore.Qt.AlignTop|PyQt5.QtCore.Qt.AlignLeft|PyQt5.QtCore.Qt.TextWordWrap,
         "License: {}".format(ver.license))
     painter.drawText(20, 250, 740, 50,
-        QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
+        PyQt5.QtCore.Qt.AlignTop|PyQt5.QtCore.Qt.AlignLeft|PyQt5.QtCore.Qt.TextWordWrap,
         "Support: {}".format(ver.support))
     painter.drawText(20, 300, 740, 300,
-        QtCore.Qt.AlignTop|QtCore.Qt.AlignLeft|QtCore.Qt.TextWordWrap,
+        PyQt5.QtCore.Qt.AlignTop|PyQt5.QtCore.Qt.AlignLeft|PyQt5.QtCore.Qt.TextWordWrap,
         ver.copyright)
     painter.end()
-    splashScr[1] = QSplashScreen(pixmap=pixmap)
+    splashScr[1] = PyQt5.QtWidgets.QSplashScreen(pixmap=pixmap)
 
 def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
              showBasicData=True, showSDOE = True, ts = None):
@@ -112,19 +103,19 @@ def startGUI(showSplash=False, app=None, showUQ=True, showOpt=True,
     """
     import foqus_lib.gui.main.mainWindow as MW
     if app == None:
-        app = QApplication(sys.argv)
+        app = PyQt5.QtWidgets.QApplication(sys.argv)
     #create main window and start application loop
     makeSplash()
     if showSplash:
         #add timer to show splash
-        splashScr[0] = QtCore.QTimer()
+        splashScr[0] = PyQt5.QtCore.QTimer()
         splashScr[0].timeout.connect(hideSplash)
         # splash_timeout_ms is how long to show splash in ms
         # it is set in the first code line of this file
         splashScr[0].start(splash_timeout_ms)
         splashScr[1].setWindowFlags(
             splashScr[1].windowFlags()|
-            QtCore.Qt.WindowStaysOnTopHint)
+            PyQt5.QtCore.Qt.WindowStaysOnTopHint)
         splashScr[1].show()
 
     mainWin = MW.mainWindow(
@@ -161,7 +152,7 @@ def logException(etype, evalue, etrace):
             # cursor was set to waiting type set to normal
             foqus_application.restoreOverrideCursor()
             # Now show error in a message box
-            msgBox = QMessageBox()
+            msgBox = PyQt5.QtWidgets.QMessageBox()
             msgBox.setWindowTitle("Error")
             msgBox.setText("Unhandled Exception:")
             msgBox.setInformativeText(
@@ -184,7 +175,8 @@ def signal_handler(signal, frame):
     """
     raise KeyboardInterrupt()
 
-if __name__ == '__main__':
+def main():
+    global dat
     exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working
     # directory is set a file handler can be added once a new foqus
@@ -210,6 +202,8 @@ if __name__ == '__main__':
     parser.add_argument("-w", "--working_dir", help="Set the working directory")
     parser.add_argument("--splash", help="Display splash", action="store_true")
     parser.add_argument("--nosplash", help = "No splash", action = "store_true")
+    parser.add_argument("--make-shortcut", help = "Make shortcut on Desktop to start "
+                        "FOQUS then exit (Windows only)", action = "store_true")
     parser.add_argument("--nogui", help="Do not start the graphical interface",
                         action="store_true")
     parser.add_argument("--noopt", help="Hide the optimization interface",
@@ -267,6 +261,8 @@ if __name__ == '__main__':
     if args.runUITestScript:
         args.runUITestScript = os.path.abspath(args.runUITestScript)
     ## Run any quick commands and exit before setting up a FOQUS session
+    if args.make_shortcut:
+        sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
             from foqus_lib.framework.sim.turbineLiteDB import turbineLiteDB
@@ -314,7 +310,7 @@ if __name__ == '__main__':
     if guiAvail and not args.nogui and not nogui:
         # start up a Qt app so I can display GUI messages
         # instead of printing to console
-        app = QApplication(sys.argv)
+        app = PyQt5.QtWidgets.QApplication(sys.argv)
         foqus_application = app
     else: # if no gui, I'll fall back to print
         app = None
@@ -355,15 +351,15 @@ if __name__ == '__main__':
                     # gui is available ask about working dir
                     # and write config file
                     settings = {'working_dir': None}
-                    msg = QMessageBox()
+                    msg = PyQt5.QtWidgets.QMessageBox()
                     msg.setText(("The user working directory has not "
                         "been specified yet. \nPlease create a FOQUS "
                         "working directory and specify its location "
                         "after pressing okay."))
                     msg.exec_()
-                    msg = QFileDialog()
-                    msg.setFileMode(QFileDialog.Directory)
-                    msg.setOption(QFileDialog.ShowDirsOnly)
+                    msg = PyQt5.QtWidgets.QFileDialog()
+                    msg.setFileMode(PyQt5.QtWidgets.QFileDialog.Directory)
+                    msg.setOption(PyQt5.QtWidgets.QFileDialog.ShowDirsOnly)
                     if msg.exec_():
                         dirs = msg.selectedFiles()
                         settings["working_dir"] = dirs[0]
@@ -372,7 +368,7 @@ if __name__ == '__main__':
                         logging.getLogger("foqus." + __name__)\
                             .error(('No working directory'
                             ' specified. FOQUS will exit'))
-                        msg = QMessageBox()
+                        msg = PyQt5.QtWidgets.QMessageBox()
                         msg.setText(("No working directory"
                             " specified. FOQUS will exit."))
                         msg.exec_()

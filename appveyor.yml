@@ -22,7 +22,7 @@ test_script:
     activate foqus
 
 
-    pylint -E foqus_lib --extension-pkg-whitelist=PyQt5
+    pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=scipy.spatial
 
 
     coverage run -m pytest
@@ -30,6 +30,6 @@ test_script:
 
     mkdir gui_testing
 
-    python -W ignore::FutureWarning foqus.py -s test/system_test/ui_test_01.py --working_dir gui_testing
+    foqus -s test/system_test/ui_test_01.py --working_dir gui_testing
 
-    # python foqus.py -s "examples/Smoke Tests/fs_smoke_test.py"
+    # foqus -s "examples/Smoke Tests/fs_smoke_test.py"

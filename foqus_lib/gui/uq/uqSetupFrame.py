@@ -657,7 +657,6 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 row = numSims - 1
             sim = self.dat.uqSimList[row]
 
-
     def saveSimulation(self):
         psuadeFilter = 'Psuade Files (*.dat)'
         csvFilter = 'Comma-Separated Values (Excel) (*.csv)'

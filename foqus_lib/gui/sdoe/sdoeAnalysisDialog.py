@@ -336,6 +336,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.updateAnalysisTable()
 
     def populateAnalysis(self):
+        QApplication.processEvents()
         self.analysisGroup.setEnabled(True)
         self.testSdoeButton.setEnabled(True)
         row = self.analysisTable.selectedIndexes()[0].row()
@@ -344,6 +345,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.loadFromConfigFile(config_file)
         elif self.type =='NUSF':
             self.loadFromConfigFileNUSF(config_file)
+        QApplication.processEvents()
 
     def checkInclude(self):
         numInputs = self.candidateData.getNumInputs()
@@ -404,7 +406,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         f.write('min_vals = %s\n' % ','.join(min_vals))
         f.write('max_vals = %s\n' % ','.join(max_vals))
         f.write('include = %s\n' % ','.join(include_list))
-        f.write('type = %s\n' % ','.join(type_list))
+        f.write('types = %s\n' % ','.join(type_list))
         f.write('\n')
 
         ###NUSF ONLY
@@ -455,6 +457,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         min_size = self.minDesignSize_spin.value()
         max_size = self.maxDesignSize_spin.value()
         numIter = (max_size + 1) - min_size
+        QApplication.processEvents()
+        self.freeze()
         for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
             fnames, results, elapsed_time = sdoe.run(config_file, nd)
@@ -469,6 +473,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.SDOE_progressBar.setValue((100/numIter) * (nd-min_size+1))
             QApplication.processEvents()
 
+        self.unfreeze()
         self.SDOE_progressBar.setValue(0)
         self.runSdoeButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
@@ -483,6 +488,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if self.hasIndex():
             self.showIndexBlock()
             return
+        QApplication.processEvents()
         #test using max design size and nd=200
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
@@ -490,6 +496,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.progress_groupBox.setEnabled(True)
         self.updateRunTime(runtime)
         self.testRuntime.append(runtime)
+        QApplication.processEvents()
 
     def runSdoeNUSF(self):
         if self.hasNoIndex():
@@ -517,6 +524,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 mwr_list.append(int(item))
 
         config_file = self.writeConfigFile()
+        QApplication.processEvents()
+        self.freeze()
         fnames, results, elapsed_time = sdoe.run(config_file, size)
         self.analysisTableGroup.setEnabled(True)
         self.loadAnalysisButton.setEnabled(False)
@@ -524,6 +533,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.deleteAnalysisButton.setEnabled(False)
 
         count = 0
+        QApplication.processEvents()
         for mwr in mwr_list:
             self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], results[mwr]['elapsed_time'], fnames[mwr],
                                   config_file, results[mwr]['best_val'], results[mwr]])
@@ -532,11 +542,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' % (mwr, results[mwr]['num_restarts']))
             count += 1
             self.SDOENUSF_progressBar.setValue((100/len(mwr_list)) * count)
-            QApplication.processEvents()
+        QApplication.processEvents()
 
+        self.unfreeze()
         self.SDOENUSF_progressBar.setValue(0)
         self.runSdoeNUSFButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
+        QApplication.processEvents()
 
     def testSdoeNUSF(self):
         if self.hasNoIndex():
@@ -555,12 +567,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.showIndexBlock()
             return
         #test using nr=2
+        QApplication.processEvents()
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.designSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)
         self.progressNUSF_groupBox.setEnabled(True)
         self.updateRunTimeNUSF(runtime)
         self.testRuntime.append(runtime)
+        QApplication.processEvents()
 
     def on_min_design_spinbox_changed(self):
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
@@ -759,7 +773,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        types = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         if hfile == '':
             hname = None
@@ -779,6 +793,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         dialog.show()
 
     def loadFromConfigFile(self, config_file):
+        QApplication.processEvents()
         ## Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
@@ -789,7 +804,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        type = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         ## Populate gui fields with config file info
         if mode == 'minimax':
@@ -813,15 +828,18 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
-        for i in range(len(type)):
-            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
+        for i in range(len(types)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(types[i])
 
         self.sampleSize_spin.setValue(int(np.log10(nr)))
         self.updateRunTime(self.testRuntime[0])
         self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
                                                            10 ** int(self.sampleSize_spin.value())))
 
+        QApplication.processEvents()
+
     def loadFromConfigFileNUSF(self, config_file):
+        QApplication.processEvents()
         ## Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
@@ -830,7 +848,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        type = [s.strip() for s in config['INPUT']['type'].split(',')]
+        types = [s.strip() for s in config['INPUT']['types'].split(',')]
         scale_method = config['SF']['scale_method']
         mwr_vals = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
@@ -860,13 +878,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(True)
             else:
                 self.inputSdoeTable.cellWidget(row, self.includeCol).setChecked(False)
-        for i in range(len(type)):
-            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(type[i])
+        for i in range(len(types)):
+            self.inputSdoeTable.cellWidget(i, self.typeCol).setCurrentText(types[i])
 
         self.sampleSizeNUSF_comboBox.setCurrentText(str(nr))
         self.updateRunTimeNUSF(self.testRuntime[0])
         self.designInfoNUSF_dynamic.setText('mwr = %d, n = %d' %(int(self.MWR1_comboBox.currentText()),
                                                            int(self.sampleSizeNUSF_comboBox.currentText())))
+
+        QApplication.processEvents()
 
     def showOrderFileLoc(self, fname):
         msg = QMessageBox()
@@ -879,11 +899,14 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         return reply
 
     def orderDesign(self):
+        self.freeze()
         row = self.analysisTable.selectedIndexes()[0].row()
         outfiles = self.analysis[row][4]
         fname = order.rank(outfiles)
         if fname:
             self.showOrderFileLoc(fname)
+
+        self.unfreeze()
         
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))

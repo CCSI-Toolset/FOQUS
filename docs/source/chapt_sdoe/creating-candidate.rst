@@ -4,6 +4,9 @@ Creating a New Candidate Set
 To create a new candidate set the user can choose between two options: loading from an existing file or generating a new
 candidate set providing some ranges for each input.
 
+.. note::
+    To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_optional`
+
 Loading from File
 -----------------
 
@@ -23,7 +26,7 @@ column names) and represent data that have already been collected. The algorithm
 points in different locations from where data have already been obtained, while filling the input space around those
 locations.
 
-Both the **Candidate** and **History** files should be .csv files that has the first row as the Column heading. The
+Both the **Candidate** and **History** files should be .csv files that have the first row as the Column heading. The
 Input columns should be numeric. Additional columns are allowed and can be identified as not necessary to the design
 creation at a later stage.
 
@@ -40,7 +43,7 @@ candidate set. The following menu will appear:
 The user can select between two options: using a history file or a template file.
 
 #. **History File.** An existing .csv file with historical data is required. If this option is selected, then the inputs
-to be used in the candidate set are extracted from the columns of the file.
+   to be used in the candidate set are extracted from the columns of the file.
 
 #. **Template File.** The template file should be a simple comma separated values (.csv) file with at least three rows:
 
@@ -51,6 +54,9 @@ to be used in the candidate set are extracted from the columns of the file.
 An optional fourth row with default value can be added. If fourth row is not provided, the middle point between min and
 max becomes the default value.
 
+.. note::
+    Choosing History or Template file won't change the next steps.
+
 Once the user has decided on which file to use, click on the OK button and the following dialog will pop up:
 
 .. figure:: figs/simSetup.png
@@ -59,7 +65,8 @@ Once the user has decided on which file to use, click on the OK button and the f
 
 Decide on the type of input (variable or fixed) and the probability distribution function desired. If the input is set
 to variable, the user can modify minimum and maximum values to define the range over which sampling should be drawn. If
-input is set to fixed, then click on the **Sampling Scheme** tab and you’ll see the following menu:
+input is set to fixed, then user selects the default value that will be used for all samples. Then click on the
+**Sampling Scheme** tab and you’ll see the following menu:
 
 .. figure:: figs/samplingScheme.png
    :alt: Sampling Scheme Tab
@@ -68,14 +75,14 @@ input is set to fixed, then click on the **Sampling Scheme** tab and you’ll se
 Choose sampling scheme to be used. The Monte Carlo and Quasi Monte Carlo options provide candidates that are scattered
 arbitrarily throughout the input space, while Latin Hypercube, Orthogonal Array and METIS provide different approaches
 for structured distribution throughout the input space. Next, choose the number of samples you want to generate and
-click on **Generate Samples** button. User can preview the samples clicking on the **Preview Samples** button.
+click on **Generate Samples** button. The user can preview the samples by clicking on the **Preview Samples** button.
 
 .. figure:: figs/preview.png
    :alt: Preview inputs Dialog
    :name: fig.preview
 
 On the left-hand side table, you can explore the generated data for the different inputs and on the right-hand side list
-you can select what inputs you want to plot.
+you can select which inputs you want to plot.
 
 .. figure:: figs/visualize.png
    :alt: New Candidate Visualization

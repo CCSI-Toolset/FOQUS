@@ -28,7 +28,7 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
         args['ws'] = [0.5]
         for i in range(len(args['ws'])):
             t0 = time.time()
-            print("Weight: ", args['ws'][i])
+            print("Weight: ", round(args['ws'][i], 1))
             best_xdes[i], best_ydes[i], bestcrit[i], bestpoints[i], best_mdties[i], best_wdmat[i], best_wdxmat[i], \
             best_wdymat[i], PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(norm_x, norm_y, nd, best_X, best_Y,
                                                                                args['ws'][i], args['max_iterations'],
@@ -55,7 +55,7 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
 
     # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function and returning
     for i in range(len(args['ws'])):
-        print("Weight: ", args['ws'][i])
+        print("Weight: ", round(args['ws'][i], 1))
         best_xdes[i], best_ydes[i], bestcrit[i], bestpoints[i], best_mdties[i], best_wdmat[i], best_wdxmat[i], \
         best_wdymat[i], PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(norm_x, norm_y, nd, best_X, best_Y,
                                                                            args['ws'][i], args['max_iterations'],

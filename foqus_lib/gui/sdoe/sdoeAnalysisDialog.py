@@ -306,7 +306,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.methodCol, item)
-        value = self.analysis[row][0]
+        if self.analysis[row].sf_method == 'usf':
+            value = self.analysis[row].optimality
+        elif self.analysis[row].sf_method == 'nusf':
+            value = self.analysis[row].mwr
+        elif self.analysis[row].sf_method == 'irsf':
+            value = ''
         item.setText(str(value))
 
         # Design Size
@@ -314,7 +319,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.designCol, item)
-        designSize = self.analysis[row][1]
+        designSize = self.analysis[row].d
         item.setText(str(designSize))
 
         # Number of restarts
@@ -322,7 +327,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.sampleCol, item)
-        sampleSize = self.analysis[row][2]
+        sampleSize = self.analysis[row].nr
         item.setText(str(sampleSize))
 
         # Runtime
@@ -330,7 +335,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.runtimeCol, item)
-            runtime = round(self.analysis[row][3], 2)
+            runtime = round(self.analysis[row].runtime, 2)
             item.setText(str(runtime))
 
         # Criterion
@@ -338,8 +343,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.criterionCol, item)
-            criterion = round(self.analysis[row][6], 2)
-            item.setText(str(criterion))
+            if self.analysis[row].sf_method == 'irsf':
+                value = self.analysis[row].designs
+            else:
+                value = round(self.analysis[row].criterion, 2)
+            item.setText(str(value))
 
         # Plot SDOE
         viewButton = self.analysisTable.cellWidget(row, self.plotCol)
@@ -366,7 +374,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.analysisGroup.setEnabled(True)
         self.testSdoeButton.setEnabled(True)
         row = self.analysisTable.selectedIndexes()[0].row()
-        config_file = self.analysis[row][5]
+        config_file = self.analysis[row].config_file
         if self.type == 'USF':
             self.loadFromConfigFile(config_file)
         elif self.type =='NUSF':
@@ -501,8 +509,17 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         for nd in range(min_size, max_size+1):
             config_file = self.writeConfigFile()
             fnames, results, elapsed_time = sdoe.run(config_file, nd)
-            self.analysis.append([results['mode'], results['design_size'], results['num_restarts'], elapsed_time, fnames,
-                                                                                   config_file, results['best_val']])
+            new_analysis = SdoeAnalysisData()
+            new_analysis.sf_method = 'usf'
+            new_analysis.optimality = results['mode']
+            new_analysis.d = results['design_size']
+            new_analysis.nr = results['num_restarts']
+            new_analysis.runtime = elapsed_time
+            new_analysis.criterion = results['best_val']
+            new_analysis.config_file = config_file
+            new_analysis.fnames = fnames
+
+            self.analysis.append(new_analysis)
             self.analysisTableGroup.setEnabled(True)
             self.loadAnalysisButton.setEnabled(False)
             self.orderAnalysisButton.setEnabled(False)
@@ -568,8 +585,19 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         count = 0
         for mwr in mwr_list:
-            self.analysis.append([mwr, results[mwr]['design_size'], results[mwr]['num_restarts'], results[mwr]['elapsed_time'], fnames[mwr],
-                                  config_file, results[mwr]['best_val'], results[mwr]])
+            new_analysis = SdoeAnalysisData()
+            new_analysis.sf_method = 'nusf'
+            new_analysis.optimality = 'maximin'
+            new_analysis.mwr = mwr
+            new_analysis.d = results[mwr]['design_size']
+            new_analysis.nr = results[mwr]['num_restarts']
+            new_analysis.runtime = results[mwr]['elapsed_time']
+            new_analysis.criterion = results[mwr]['best_val']
+            new_analysis.config_file = config_file
+            new_analysis.fnames = fnames[mwr]
+            new_analysis.results = results[mwr]
+
+            self.analysis.append(new_analysis)
 
             self.updateAnalysisTable()
             self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (mwr, results[mwr]['num_restarts']))
@@ -625,7 +653,18 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         config_file = self.writeConfigFile()
         fnames, results, elapsed_time = sdoe.run(config_file, size)
-        self.analysis.append(['', results['design_size'], results['num_restarts'], elapsed_time, fnames, config_file, results['num_designs'], results])
+        new_analysis = SdoeAnalysisData()
+        new_analysis.sf_method = 'irsf'
+        new_analysis.optimality = 'maximin'
+        new_analysis.d = results['design_size']
+        new_analysis.nr = results['num_restarts']
+        new_analysis.runtime = elapsed_time
+        new_analysis.designs = results['num_designs']
+        new_analysis.config_file = config_file
+        new_analysis.fnames = fnames
+        new_analysis.results = results
+
+        self.analysis.append(new_analysis)
 
         self.updateAnalysisTable()
 
@@ -906,9 +945,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def editSdoe(self):
         sender = self.sender()
         row = sender.property('row')
-        fullName = self.analysis[row][4]['cand']
+        fullName = self.analysis[row].fnames['cand']
         dirname, filename = os.path.split(fullName)
-        config_file = self.analysis[row][5]
+        config_file = self.analysis[row].config_file
         config = configparser.ConfigParser(allow_no_value=True)
         config.read(config_file)
         hfile = config['INPUT']['history_file']
@@ -926,7 +965,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             cand = load(cfile)
             i = types.index('Weight')
             wcol = include[i]  # weight column name
-            nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row][7]}
+            nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row].results}
         else:
             nusf = None
         scatterLabel = 'Design Points'
@@ -1072,7 +1111,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def orderDesign(self):
         row = self.analysisTable.selectedIndexes()[0].row()
-        outfiles = self.analysis[row][4]
+        outfiles = self.analysis[row].fnames
         fname = order.rank(outfiles)
         if fname:
             self.showOrderFileLoc(fname)
@@ -1085,3 +1124,30 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     def unfreeze(self):
         QApplication.restoreOverrideCursor()
+
+
+class SdoeAnalysisData():
+    def __init__(self,
+                 sf_method = None,
+                 optimality = None,
+                 mwr = None,
+                 d = None,
+                 nr = None,
+                 runtime = None,
+                 criterion = None,
+                 designs = None,
+                 config_file = None,
+                 fnames = None,
+                 results = None):
+        self.sf_method = sf_method
+        self.optimality = optimality
+        self.mwr = mwr
+        self.d = d
+        self.nr = nr
+        self.runtime = runtime
+        self.criterion = criterion
+        self.designs = designs
+        self.config_file = config_file
+        self.fnames = fnames
+        self.results = results
+

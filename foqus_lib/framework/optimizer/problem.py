@@ -17,7 +17,7 @@ from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.at_dict.at_dict import AtDict
 from functools import reduce
 
-class objectiveFunction():
+class objectiveFunction(object):
     def __init__(self, pycode = "", ps = 1, failval = 1000):
         self.pycode    = pycode
         self.fail      = failval
@@ -35,7 +35,8 @@ class objectiveFunction():
         self.fail      = sd["fail"]
         self.penScale  = sd["penScale"]
 
-class inequalityConstraint():
+
+class inequalityConstraint(object):
     def __init__(self, pc="", ps=100, pf="Linear"):
         self.pycode    = pc
         self.penalty   = ps
@@ -53,7 +54,8 @@ class inequalityConstraint():
         self.penalty = sd["penalty"]
         self.penForm = sd["penForm"]
 
-class problem():
+
+class problem(object):
     OBJ_TYPE_EVAL = 0 # use eval to cal objective
     OBJ_TYPE_PARAM = 1 # parameter estimation type objective
     OBJ_TYPE_OUU = 2 # opt under uncertainty type onjective

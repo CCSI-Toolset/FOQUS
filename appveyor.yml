@@ -22,7 +22,7 @@ test_script:
     activate foqus
 
 
-    pylint -E foqus_lib --extension-pkg-whitelist=PyQt5
+    pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=scipy.spatial
 
 
     coverage run -m pytest

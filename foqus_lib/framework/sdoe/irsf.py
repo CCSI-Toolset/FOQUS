@@ -81,7 +81,7 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
     # the design size is 10, then PFxdes will contain all 3 designs (10 each) in an order, so the number of rows in
     # PFxdes is 30.
 
-    # The ollowing 4 lines are basically constructing a combined Pareto Front for all weight values
+    # The following 4 lines are basically constructing a combined Pareto Front for all weight values
     # (Here 0.1, 0.3, 0.5, 0.7 and 0.9) all together.
 
     PFcomb = [PFxdes[0], PFydes[0], PFmdvals[0]]
@@ -561,7 +561,7 @@ def criterion_X(cand,    # candidates
                 numdes,  # number of random start (startnum)
                 mode):
 
-    mode = mode.lower()
+    _mode = mode.lower()
     candid = np.asarray(cand)
 
     best_md = 0.0

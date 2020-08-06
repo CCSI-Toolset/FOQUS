@@ -53,6 +53,7 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
     # Otherwise IRSF for real
     # Input only and output only optimization are here Using the same function call 'criterion_X'. These are essentially
     # the boundary points for the Pareto Front.
+    # Possible to parallelize: search for X and Y at the same time
     design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(norm_x, args['max_iterations'], nd, nr, mode)
     print("X space Best value in Normalized Scale: ", best_X)
 
@@ -64,6 +65,7 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
     best_wdxmat, best_wdymat, PFxdes, PFydes, PFmdvals = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
 
     # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function and returning
+    # Possible to parallelize: one call to criterion_irsf for each weight (5 different values)
     for i in range(len(args['ws'])):
         print("Weight: ", round(args['ws'][i], 1))
         best_xdes[i], best_ydes[i], bestcrit[i], bestpoints[i], best_mdties[i], best_wdmat[i], \
@@ -119,6 +121,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     return inv_norm_cand
 
 
+##### BN: take a look at this function
 def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     # This is the main routine that constructs the ParetoFront
     curpf = np.matrix(curpf)
@@ -171,6 +174,7 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     return newpfdesX, newpfdesY, newpf
 
 
+##### BN: take a look at this function
 def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xmat,
                       dist_ymat, xmat, ymat, mpdx, mpdy, PFxdes, PFydes, PFmat):
     Nxx = int(np.shape(Dx)[0])
@@ -288,6 +292,7 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
            cur_dist_xmat, cur_dist_ymat, PFdesX, PFdesY, PFvals, update
 
 
+##### BN: take a look at this function
 def XY_min_dist(Dx, Dy, wt, mpdx, mpdy):  # numpy array of shape (N, ncols) and type 'float'
 
     Nx, ncolsx = Dx.shape
@@ -315,6 +320,7 @@ def XY_min_dist(Dx, Dy, wt, mpdx, mpdy):  # numpy array of shape (N, ncols) and 
     return dist_xymat, dist_xmat, dist_ymat, md_xy, mdpts, mties
 
 
+##### BN: take a look at this function
 def irsf_tex(cand,  # input space candidate
              resp,  # response space candidate
              numpt, # number of points (design size N)

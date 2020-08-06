@@ -443,6 +443,7 @@ def criterion_irsf(cand,    # input space candidate
                                                   PFydes,
                                                   PFmdvals)
 
+    _mode = mode
     return des_x, des_y, md_xy, mdpoints, mties_xy, dist_xymat, dist_xmat, dist_ymat, PFxdes, PFydes, PFmdvals
 
 

@@ -841,23 +841,23 @@ class opt(optimization):
             #     outputNames=self.surrout_names_original)
             
             # # ***Generate python file for Parity Plot***
-            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
-            #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-            #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
-            #     SM_outdata = []
-            #     surrvarinpyomo = []
-            #     for v in self.surrin_names_pyomo:
-            #         surrvarin = getattr(self.m,str(v))
-            #         surrvarinpyomo.append(surrvarin)
-            #     for s in latin_hypercube_samples:
-            #         out = []
-            #         for i,vin in enumerate(surrvarinpyomo):
-            #             vin.value = s[i]
-            #         for i,vout in enumerate(surroutvars):
-            #             vout = -value(self.m.c[i+1].body - initout)
-            #             out.append(vout)
-            #         SM_outdata.append(out)
-            #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata.append))
+            with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                f.write('Input_Data = {0}'.format(latin_hypercube_samples))
+                f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                SM_outdata = []
+                surrvarinpyomo = []
+                for v in self.surrin_names_pyomo:
+                    surrvarin = getattr(self.m,str(v))
+                    surrvarinpyomo.append(surrvarin)
+                for s in latin_hypercube_samples:
+                    out = []
+                    for i,vin in enumerate(surrvarinpyomo):
+                        vin.value = s[i]
+                    for i,vout in enumerate(surroutvars):
+                        vout = -value(self.m.c[i+1].body - vout)
+                        out.append(vout)
+                    SM_outdata.append(out)
+                f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
@@ -1127,24 +1127,25 @@ class opt(optimization):
                 for outv in self.graph.fnames:
                     self.msgQueue.put("{0}:{1}\n".format(str(outv),self.graph.f[outv].value))
                     
-                # ***Generate python file for Parity Plot***
-                with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                    f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-                    f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
-                    SM_outdata = []
-                    surrvarinpyomo = []
-                    for v in self.surrin_names_pyomo:
-                        surrvarin = getattr(self.m,str(v))
-                        surrvarinpyomo.append(surrvarin)
-                    for s in latin_hypercube_samples:
-                        out = []
-                        for i,vin in enumerate(surrvarinpyomo):
-                            vin.value = s[i]
-                        for i,vout in enumerate(surroutvars):
-                            vout = -value(self.m.c[i+1].body - initout)
-                            out.append(vout)
-                        SM_outdata.append(out)
-                    f.write('SM_Output_Data = {0}\n'.format(SM_outdata.append))
+                # # ***Generate python file for Parity Plot***
+                # with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                #     print('working')
+                #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
+                #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                #     SM_outdata = []
+                #     surrvarinpyomo = []
+                #     for v in self.surrin_names_pyomo:
+                #         surrvarin = getattr(self.m,str(v))
+                #         surrvarinpyomo.append(surrvarin)
+                #     for s in latin_hypercube_samples:
+                #         out = []
+                #         for i,vin in enumerate(surrvarinpyomo):
+                #             vin.value = s[i]
+                #         for i,vout in enumerate(surroutvars):
+                #             vout = -value(self.m.c[i+1].body - vout)
+                #             out.append(vout)
+                #         SM_outdata.append(out)
+                #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
                 
             # Store the current iteration surrogate model in a text file
             with open(os.path.join("user_plugins", file_name_SM_stored), 'a') as f:
@@ -1158,6 +1159,25 @@ class opt(optimization):
             #     self.prob.storeResults = setName
             # else:
             #     self.prob.storeResults = None
+                        # ***Generate python file for Parity Plot***
+        # with open(os.path.join("user_plugins", uq_file), 'w') as f:
+        #     print('working')
+        #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
+        #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+        #     SM_outdata = []
+        #     surrvarinpyomo = []
+        #     for v in self.surrin_names_pyomo:
+        #         surrvarin = getattr(self.m,str(v))
+        #         surrvarinpyomo.append(surrvarin)
+        #     for s in latin_hypercube_samples:
+        #         out = []
+        #         for i,vin in enumerate(surrvarinpyomo):
+        #             vin.value = s[i]
+        #         for i,vout in enumerate(surroutvars):
+        #             vout = -value(self.m.c[i+1].body - vout)
+        #             out.append(vout)
+        #         SM_outdata.append(out)
+        #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
         
         with open(os.path.join("user_plugins", file_name_plots), 'w') as f:    
             f.write('import matplotlib.pyplot as plt\n')

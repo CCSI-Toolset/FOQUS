@@ -842,8 +842,8 @@ class opt(optimization):
             
             # # ***Generate python file for Parity Plot***
             with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-                f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                f.write("Input_Data = {0}\n".format(latin_hypercube_samples))
+                f.write("Simulator_Output_Data = {0}\n".format(latin_hypercube_samples_values))
                 SM_outdata = []
                 surrvarinpyomo = []
                 for v in self.surrin_names_pyomo:
@@ -857,7 +857,8 @@ class opt(optimization):
                         vout = -value(self.m.c[i+1].body - vout)
                         out.append(vout)
                     SM_outdata.append(out)
-                f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
+                print(SM_outdata)
+                f.write("SM_Output_Data = {0}\n".format(SM_outdata))
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             

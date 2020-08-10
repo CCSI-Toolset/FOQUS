@@ -842,7 +842,7 @@ class opt(optimization):
             
             # # ***Generate python file for Parity Plot***
             with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                f.write('Input_Data = {0}'.format(latin_hypercube_samples))
+                f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
                 f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
                 SM_outdata = []
                 surrvarinpyomo = []

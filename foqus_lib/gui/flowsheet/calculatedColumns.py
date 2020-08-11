@@ -8,7 +8,7 @@ See LICENSE.md for license and copyright details.
 import os
 import logging
 from PyQt5 import uic
-from PyQt5.QtWidgets import QInputDialog, QAbstractItemView
+from PyQt5.QtWidgets import QInputDialog, QAbstractItemView, QMessageBox
 from PyQt5.QtCore import QObject, QEvent, QDataStream, Qt, pyqtSlot
 
 _log = logging.getLogger("foqus.{}".format(__name__))

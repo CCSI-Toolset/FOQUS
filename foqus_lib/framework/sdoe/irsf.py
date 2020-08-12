@@ -1,16 +1,16 @@
-from operator import lt, gt, itemgetter
+from operator import itemgetter
 import random
 import numpy as np
-import os
+import pandas as pd
 import time
 
 
 def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
     inp_x = cand[args['idx']]
-    header1 = list(inp_x.columns)
+    xcols = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
     inp_y = cand[args['idy']]
-    header2 = list(inp_y.columns)
+    ycols = list(inp_y.columns)
     norm_y = unitscale_cand(inp_y)
 
     if hist:
@@ -91,15 +91,48 @@ def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
         temp_new = [PFxdes[i], PFydes[i], PFmdvals[i]]
         PFcomb = CombPF(temp_new, PFcomb, nd)
 
+    ParetoVal, ParetoX, ParetoY, PV, PX, PY = {}, {}, {}, {}, {}, {}
+    N1 = len(PFcomb[2])
+    for i in range(N1):
+        ParetoVal[i] = PFcomb[2][i, :]
+        ParetoX[i] = []
+        ParetoY[i] = []
+        for j in range(nd):
+            ParetoX[i].append(np.array(PFcomb[0][(i*nd)+j, :]).flatten())
+            ParetoY[i].append(np.array(PFcomb[1][(i*nd)+j, :]).flatten())
+
     indx1 = np.argsort(PFcomb[2], axis=0)[:, 0]
 
-    results = {'pareto_front': PFcomb,
-               'inp_header': header1,
-               'res_header': header2,
-               'mode': mode,
-               'design_size': nd,
-               'num_restarts': nr,
-               'num_designs': len(indx1)}
+    for i in range(len(indx1)):
+        j = int(indx1[i])
+        PV[i] = np.array(ParetoVal[j])
+        PX[i] = ParetoX[j]
+        PY[i] = ParetoY[j]
+
+    PV_tuple = ()
+    for key in PV:
+        PV_tuple += (PV[key],)
+    PV_arr = np.concatenate(PV_tuple, axis=0)
+    PV_df = pd.DataFrame(data=PV_arr, columns=['Best Input', 'Best Response'])
+    PV_df.insert(0, 'Design', PV_df.index + 1)
+
+    design_dict = {}
+
+    xcols.extend(ycols)
+    for key in PX:
+        temp = np.concatenate((PX[key], PY[key]), axis=1)
+        df = pd.DataFrame(data=temp, columns=xcols)
+        design_dict[key+1] = df
+
+    results = {}
+    for design in design_dict:
+        results[design] = {'pareto_front': PV_df,
+                           'design': design,
+                           'des': design_dict[design],
+                           'mode': mode,
+                           'design_size': nd,
+                           'num_restarts': nr,
+                           'num_designs': len(PV_df)}
 
     return results
 
@@ -604,124 +637,3 @@ def criterion_X(cand,    # candidates
             best_w_dist_mat = Xdist_mat
 
     return best_cand_rand, best_md, best_mdpts, best_mties, best_w_dist_mat
-
-
-def write_output_files(PFcomb, d, num_rand_start, now, outdir_irsf, header1, header2):
-
-    # All the results output files in directory results_IRSF are being created from here on:
-    print("PFcomb[2]: ", PFcomb[2])
-    print("PFcomb[0]: ", PFcomb[0])
-
-    ParetoVal, ParetoX, ParetoY, PV, PX, PY = {}, {}, {}, {}, {}, {}
-    N1 = len(PFcomb[2])
-    for i in range(N1):
-        ParetoVal[i] = PFcomb[2][i, :]
-        ParetoX[i] = []
-        ParetoY[i] = []
-        for j in range(d):
-            ParetoX[i].append(np.array(PFcomb[0][(i*d)+j, :]).flatten())
-            ParetoY[i].append(np.array(PFcomb[1][(i*d)+j, :]).flatten())
-
-    indx1 = np.argsort(PFcomb[2], axis=0)[:, 0]
-
-    for i in range(len(indx1)):
-        j = int(indx1[i])
-        PV[i] = np.array(ParetoVal[j])
-        PX[i] = ParetoX[j]
-        PY[i] = ParetoY[j]
-
-    irsf_fname = 'COMPLETE_irsf_pareto_designs_%d_%d_%d-%d-%d.dat' % (d,
-                                                                      num_rand_start,
-                                                                      now.hour,
-                                                                      now.minute,
-                                                                      now.second)
-
-    PF_fname = 'Pareto_Summary_%d_%d_%d-%d-%d.csv' % (d,
-                                                      num_rand_start,
-                                                      now.hour,
-                                                      now.minute,
-                                                      now.second)
-
-    irsf_fname = os.path.join(outdir_irsf, irsf_fname)
-    PF_fname = os.path.join(outdir_irsf, PF_fname)
-
-    header_str1 = ', '.join(header1)
-    header_str2 = ', '.join(header2)
-    file1 = open(irsf_fname, "w")
-    file2 = open(PF_fname, "w")
-
-    print("sorted Pareto Values: ", PV)
-    print("sorted Pareto X-design: ", PX)
-    print("sorted Pareto Y-design: ", PY)
-    print("")
-    str1 = "\n \n We have found %d Pareto-Front Solutions, " \
-           "each solution corresponding to a Space-Filling Design \n" % (int(len(indx1)))
-    print(str1)
-    str1a = 'PARETO VALUES:\n'
-    str1b = 'Design, Best Input, Best Response\n'
-    file1.write(str1)
-    file1.write(str1a)
-    file1.write(str1b)
-    file2.write(str1a)
-    file2.write(str1b)
-
-    for i in range(len(indx1)):
-        str1c = "%d,%f,%f\n" % (i+1, np.matrix(PV[i])[0, 0], np.matrix(PV[i])[0, 1])
-        file1.write(str1c)
-        file2.write(str1c)
-    print(" ")
-
-    for i in range(len(indx1)):
-        design_fname = 'Design' + str(i + 1) + '__%d_%d_%d-%d-%d.csv' % (d,
-                                                                         num_rand_start,
-                                                                         now.hour,
-                                                                         now.minute,
-                                                                         now.second)
-        design_fname = os.path.join(outdir_irsf, design_fname)
-        file3 = open(design_fname, "w")
-
-        str2 = "\nDESIGN %d :\n" % (i + 1)
-        str2a = "nDESIGN %d :\n" % (i + 1)
-        print(str2)
-        file1.write(str2)
-        file3.write(str2a)
-
-        str3 = "Pareto Values: Input X-space best critical value: %f \n " % (np.matrix(PV[i])[0, 0])
-        str4 = "             : Response Y-space best critical value: %f \n " % (np.matrix(PV[i])[0, 1])
-        print(str3)
-        print(str4)
-        file1.write(str3)
-        file1.write(str4)
-
-        file3.write(header_str1 + ", " + header_str2 + '\n')
-        str5 = "\n Input(X) design: \n"
-        print(str5)
-        print(header_str1)
-        file1.write(str5)
-        file1.write(header_str1)
-        file1.write('\n')
-
-        for j in range(d):
-            file3.write(str(tuple(np.array(PX[i])[j, :])).strip("()") + ', ' +
-                        str(tuple(np.array(PY[i])[j, :])).strip("()") + '\n')
-
-        for j in range(d):
-            print(np.array(PX[i])[j, :])
-            file1.write(str(tuple(np.array(PX[i])[j, :])).strip("()"))
-            file1.write('\n')
-
-        str7 = "\n Response(Y) design: \n"
-        print(str7)
-        print(header_str2)
-        file1.write(str7)
-        file1.write(header_str2)
-        file1.write('\n')
-
-        for j in range(d):
-            print(np.array(PY[i])[j, :])
-            file1.write(str(tuple(np.array(PY[i])[j, :])).strip("()"))
-            file1.write('\n')
-        file3.close()
-
-    file1.close()
-    file2.close()

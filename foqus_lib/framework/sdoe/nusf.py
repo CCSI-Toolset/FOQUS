@@ -276,5 +276,4 @@ def criterion(cand,    # candidates
         print('Elapsed time:', res['elapsed_time'])
         results[mwr] = res
 
-
     return results

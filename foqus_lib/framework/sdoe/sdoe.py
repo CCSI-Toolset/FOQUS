@@ -1,15 +1,23 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
-import datetime
 
-def save(fnames, results, elapsed_time):
-    write(fnames['cand'], results['best_cand'])
-    print('Candidates saved to {}'.format(fnames['cand']))
-    np.save(fnames['dmat'], results['best_dmat'])
-    print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
+
+def save(fnames, results, elapsed_time, irsf=False):
+    if irsf:
+        write(fnames['des'], results['des'])
+        print('Designs saved to {}'.format(fnames['des']))
+        write(fnames['pf'], results['pareto_front'])
+        print('Pareto Front saved to {}'.format(fnames['pf']))
+
+    else:
+        write(fnames['cand'], results['best_cand'])
+        print('Candidates saved to {}'.format(fnames['cand']))
+        np.save(fnames['dmat'], results['best_dmat'])
+        print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
                                                               results['best_val'], elapsed_time)))
-    print('Candidate distances saved to {}'.format(fnames['dmat']))
+        print('Candidate distances saved to {}'.format(fnames['dmat']))
+
 
 def run(config_file, nd, test=False):
 
@@ -119,11 +127,11 @@ def run(config_file, nd, test=False):
 
     if sf_method == 'irsf':
         fnames = {}
-        from .irsf import write_output_files
-        PFcomb = results['pareto_front']
-        header1 = results['inp_header']
-        header2 = results['res_header']
-        now = datetime.datetime.now()
-        write_output_files(PFcomb, nd, nr, now, outdir, header1, header2)
+        for design in range(1, results[1]['num_designs'] + 1):
+            suffix = 'design{}_d{}_n{}_{}'.format(design, nd, nr, '+'.join(include))
+            suffix_pareto = 'paretoFront_d{}_n{}_{}'.format(nd, nr, '+'.join(include))
+            fnames[design] = {'des': os.path.join(outdir, 'irsf_{}.csv'.format(suffix)),
+                              'pf': os.path.join(outdir, 'irsf_{}.csv'.format(suffix_pareto))}
+            save(fnames[design], results[design], elapsed_time, irsf=True)
 
     return fnames, results, elapsed_time

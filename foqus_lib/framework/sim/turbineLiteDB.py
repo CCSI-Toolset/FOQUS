@@ -59,7 +59,7 @@ class turbineLiteDB():
         except Exception as e:
             if rc<=5:
                 time.sleep(10*rc**2)
-                conn, curs = getConnection(self, rc+1)
+                conn, curs = self.getConnection(rc+1)
             else:
                 raise(e)
         return conn, conn.cursor()

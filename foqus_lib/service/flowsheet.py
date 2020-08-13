@@ -247,6 +247,8 @@ class FOQUSAWSConfig:
         cls._inst = cls()
         cls._inst._d = json.load(request)
         return cls._inst
+    def __init__(self):
+        self._d = None
     def _get(self, key):
         v = self._d.get(key)
         assert v, "UserData Missing Key: %s" %key

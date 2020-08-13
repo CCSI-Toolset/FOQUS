@@ -133,11 +133,6 @@ class opt(optimization):
         desc="Maximum iterations for surrogate based optimization algorithm")
         
         self.options.add(
-        name='Multistart', 
-        default=False,
-        desc="Multistart approach for each iteration math optimization initialization")
-        
-        self.options.add(
         name='Alpha', 
         default=0.8,
         dtype=float,
@@ -154,6 +149,11 @@ class opt(optimization):
         default=1,
         dtype=float,
         desc="Ratio of upper and lower bounds of decision variables")
+        
+        self.options.add(
+        name='Multistart', 
+        default=True,
+        desc="Multistart approach for each iteration math optimization initialization")
         
         self.options.add(
         name='tee', 
@@ -260,10 +260,10 @@ class opt(optimization):
         mathoptsolver = self.options['mathoptsolver'].value        
         mtype = self.options['mtype'].value        
         Maxiter_Algo = self.options['Maxiter_Algo'].value 
-        multistart = self.options['multistart'].value
         alpha = self.options['Alpha'].value
         num_lhs = self.options['nLHS'].value
         bound_ratio = self.options['Bound_Ratio'].value
+        multistart = self.options['Multistart'].value
         tee = self.options['tee'].value
         obj_tolerance = self.options['Objective Value Tolerance'].value
         outputvar_tolerance = self.options['Inequality Constraint Tolerance'].value
@@ -436,7 +436,8 @@ class opt(optimization):
 
     #       Implementing multi-start approach
             
-            if multistart:
+            if multistart==True:
+                print('multistart working')
                 initvals = []
                 decvars = [getattr(self.m,v) for v in dvar_names]
                 surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
@@ -515,7 +516,7 @@ class opt(optimization):
                         self.msgQueue.put("Value: {0}\n".format(var.value))
                     else:
                         self.msgQueue.put("Variable Type: State\n")
-            if multistart:
+            if multistart==True:
                 for i,var in enumerate(decvars):
                     var.value = input_optim[minobjval_idx][i]
                 
@@ -919,7 +920,7 @@ class opt(optimization):
             self.m.pprint()
             
             #*******Implementing multi-start approach*******
-            if multistart:
+            if multistart==True:
                 initvals = []
     
                 #Obtain the combination of all initialization points

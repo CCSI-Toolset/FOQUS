@@ -435,14 +435,13 @@ class opt(optimization):
             kwds['tee'] = tee
 
     #       Implementing multi-start approach
+    
+            decvars = [getattr(self.m,v) for v in dvar_names]
+            surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
+            surroutvars = [getattr(self.m,v) for v in surroutvarlist]    
             
             if multistart==True:
-                print('multistart working')
-                initvals = []
-                decvars = [getattr(self.m,v) for v in dvar_names]
-                surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
-                surroutvars = [getattr(self.m,v) for v in surroutvarlist]
-                
+                initvals = []                
                 #Obtain the combination of all initialization points
                 for var in decvars:
                     initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
@@ -496,18 +495,35 @@ class opt(optimization):
     
                 for i,var in enumerate(decvars):
                     var.value = initvals_prod[minobjval_idx][i]
+                for i,initout in enumerate(surroutvars):
+                    initout.value = -value(self.m.c[i+1].body - initout)
                     
-                for i,initout in enumerate(surroutvars):
-                    initout.value = -value(self.m.c[i+1].body - initout)
             else:
+                inputinitvals=np.zeros(len(decvars))
+                outputinitvals=np.zeros(len(surroutvars))
+                for i,var in enumerate(decvars):
+                    inputinitvals[i] = var.value
                 for i,initout in enumerate(surroutvars):
-                    initout.value = -value(self.m.c[i+1].body - initout)
+                    initout.value = -value(self.m.c[i+1].body - initout)   
+                    outputinitvals[i] = initout.value
+                r=optimizer.solve(self.m,**kwds)
+
             self.msgQueue.put("****ITERATION 1****\n")
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
             for i,var in enumerate(self.m.component_data_objects(Var)):
                 if var not in self.nonsurrout_names_pyomo:
                     self.msgQueue.put("Variable: {0}".format(str(var)))
-                    self.msgQueue.put("Initialization Value: {0}".format(str(var())))
+                    if multistart==True:
+                        self.msgQueue.put("Initialization Value: {0}".format(str(var())))
+                    else:
+                        # Input decision variables
+                        if var in decvars:
+                            varindx = decvars.index(var)
+                            self.msgQueue.put("Initialization Value: {0}".format(str(inputinitvals[varindx])))
+                        # Output variables
+                        elif var in surroutvars:
+                            varindx = surroutvars.index(var)
+                            self.msgQueue.put("Initialization Value: {0}".format(str(outputinitvals[varindx])))
                     if var in [getattr(self.m,v) for v in dvar_names]:
                         self.msgQueue.put("Variable Type: Decision")
                         self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
@@ -520,20 +536,28 @@ class opt(optimization):
                 for i,var in enumerate(decvars):
                     var.value = input_optim[minobjval_idx][i]
                 
-            for i,initout in enumerate(surroutvars):
-                initout.value = -value(self.m.c[i+1].body - initout)
+                for i,initout in enumerate(surroutvars):
+                    initout.value = -value(self.m.c[i+1].body - initout)
                 
             self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
-            self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
-            self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
-            self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
+            if multistart==True:
+                self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
+                self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
+                self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
+            else:
+                self.msgQueue.put("Solver Status: {0}".format(r.solver.status))
+                self.msgQueue.put("Solver Termination Condition: {0}".format(r.solver.termination_condition))
+                self.msgQueue.put("Solver Solution Time: {0} s".format(r.solver.time))
             self.msgQueue.put("The optimum variable values are:")
             self.msgQueue.put("-----------------------------------------")
             for var in self.m.component_data_objects(Var):
                 if var not in self.nonsurrout_names_pyomo:
                     self.msgQueue.put("{0}   {1}".format(str(var),str(var())))
             self.msgQueue.put("-----------------------------------------")
-            self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
+            if multistart==True:
+                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
+            else:
+                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
 
         self.m.display()
             
@@ -851,25 +875,26 @@ class opt(optimization):
             #     inputNames=self.surrin_names_original,
             #     outputNames=self.surrout_names_original)
             
-            # # ***Generate python file for Parity Plot***
-            with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                f.write("Input_Data = {0}\n".format(latin_hypercube_samples))
-                f.write("Simulator_Output_Data = {0}\n".format(latin_hypercube_samples_values))
-                SM_outdata = []
-                surrvarinpyomo = []
-                for v in self.surrin_names_pyomo:
-                    surrvarin = getattr(self.m,str(v))
-                    surrvarinpyomo.append(surrvarin)
-                for s in latin_hypercube_samples:
-                    out = []
-                    for i,vin in enumerate(surrvarinpyomo):
-                        vin.value = s[i]
-                    for i,vout in enumerate(surroutvars):
-                        vout = -value(self.m.c[i+1].body - vout)
-                        out.append(vout)
-                    SM_outdata.append(out)
-                print(SM_outdata)
-                f.write("SM_Output_Data = {0}\n".format(SM_outdata))
+            # # ------------------***Generate python file for Parity Plot***------------------
+            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
+            #     f.write("Input_Data = {0}\n".format(latin_hypercube_samples))
+            #     f.write("Simulator_Output_Data = {0}\n".format(latin_hypercube_samples_values))
+            #     SM_outdata = []
+            #     surrvarinpyomo = []
+            #     for v in self.surrin_names_pyomo:
+            #         surrvarin = getattr(self.m,str(v))
+            #         surrvarinpyomo.append(surrvarin)
+            #     for s in latin_hypercube_samples:
+            #         out = []
+            #         for i,vin in enumerate(surrvarinpyomo):
+            #             vin.value = s[i]
+            #         for i,vout in enumerate(surroutvars):
+            #             vout = -value(self.m.c[i+1].body - vout)
+            #             out.append(vout)
+            #         SM_outdata.append(out)
+            #     print(SM_outdata)
+            #     f.write("SM_Output_Data = {0}\n".format(SM_outdata))
+            # ----------------------------------------------------------------------------------------
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
@@ -981,16 +1006,33 @@ class opt(optimization):
     
                 for i,var in enumerate(decvars):
                     var.value = initvals_prod[minobjval_idx][i]
-                    
-            for i,initout in enumerate(surroutvars):
-                initout.value = -value(self.m.c[i+1].body - initout)
+                for i,initout in enumerate(surroutvars):
+                    initout.value = -value(self.m.c[i+1].body - initout)
+            # else:        
+            #     inputinitvals=np.zeros(len(decvars))
+            #     outputinitvals=np.zeros(len(surroutvars))
+            #     for i,var in enumerate(decvars):
+            #         inputinitvals[i] = var.value
+            #     for i,initout in enumerate(surroutvars):
+            #         initout.value = -value(self.m.c[i+1].body - initout)   
+            #         outputinitvals[i] = initout.value
+            #     r=optimizer.solve(self.m,**kwds)
             #*********************************************************************
             self.msgQueue.put("****ITERATION {0}****\n".format(algo_iter))
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
             for var in self.m.component_data_objects(Var):
                 if var not in self.nonsurrout_names_pyomo:
                     self.msgQueue.put("Variable: {0}".format(str(var)))
-                    self.msgQueue.put("Initialization Value: {0}".format(str(var())))
+                    self.msgQueue.put("Initialization Value: {0}".format(str(var()))) 
+                    # else:
+                    #     # Input decision variables
+                    #     if var in decvars:
+                    #         varindx = decvars.index(var)
+                    #         self.msgQueue.put("Initialization Value: {0}".format(str(inputinitvals[varindx])))
+                    #     # Output variables
+                    #     elif var in surroutvars:
+                    #         varindx = surroutvars.index(var)
+                    #         self.msgQueue.put("Initialization Value: {0}".format(str(outputinitvals[varindx])))
                     if var in [getattr(self.m,v) for v in dvar_names]:
                         self.msgQueue.put("Variable Type: Decision")
                         self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
@@ -1017,17 +1059,35 @@ class opt(optimization):
         #         kwds=dict()
         #         kwds['tee'] = tee
         #         r=optimizer.solve(self.m,**kwds)
+
+            if multistart==True:
+                for i,var in enumerate(decvars):
+                    var.value = input_optim[minobjval_idx][i]
+                
+                for i,initout in enumerate(surroutvars):
+                    initout.value = -value(self.m.c[i+1].body - initout)
+            else:
+                r=optimizer.solve(self.m,**kwds)
+        
             self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
-            self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
-            self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
-            self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
+            if multistart==True:
+                self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
+                self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
+                self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
+            else:
+                self.msgQueue.put("Solver Status: {0}".format(r.solver.status))
+                self.msgQueue.put("Solver Termination Condition: {0}".format(r.solver.termination_condition))
+                self.msgQueue.put("Solver Solution Time: {0} s".format(r.solver.time))
             self.msgQueue.put("The optimum variable values are:")
             self.msgQueue.put("-----------------------------------------")
             for var in self.m.component_data_objects(Var):
                 if var not in self.nonsurrout_names_pyomo:
                     self.msgQueue.put("{0}   {1}".format(str(var),str(var())))
             self.msgQueue.put("-----------------------------------------")
-            self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
+            if multistart==True:
+                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
+            else:
+                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
                      
                 
             # self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
@@ -1151,24 +1211,23 @@ class opt(optimization):
                     self.msgQueue.put("{0}:{1}\n".format(str(outv),self.graph.f[outv].value))
                     
                 # # ***Generate python file for Parity Plot***
-                # with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                #     print('working')
-                #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-                #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
-                #     SM_outdata = []
-                #     surrvarinpyomo = []
-                #     for v in self.surrin_names_pyomo:
-                #         surrvarin = getattr(self.m,str(v))
-                #         surrvarinpyomo.append(surrvarin)
-                #     for s in latin_hypercube_samples:
-                #         out = []
-                #         for i,vin in enumerate(surrvarinpyomo):
-                #             vin.value = s[i]
-                #         for i,vout in enumerate(surroutvars):
-                #             vout = -value(self.m.c[i+1].body - vout)
-                #             out.append(vout)
-                #         SM_outdata.append(out)
-                #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
+                with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                    f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
+                    f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                    SM_outdata = []
+                    surrvarinpyomo = []
+                    for v in self.surrin_names_pyomo:
+                        surrvarin = getattr(self.m,str(v))
+                        surrvarinpyomo.append(surrvarin)
+                    for s in latin_hypercube_samples:
+                        out = []
+                        for i,vin in enumerate(surrvarinpyomo):
+                            vin.value = s[i]
+                        for i,vout in enumerate(surroutvars):
+                            vout = -value(self.m.c[i+1].body - vout)
+                            out.append(vout)
+                        SM_outdata.append(out)
+                    f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
                 
             # Store the current iteration surrogate model in a text file
             with open(os.path.join("user_plugins", file_name_SM_stored), 'a') as f:

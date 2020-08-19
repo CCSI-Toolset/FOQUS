@@ -573,11 +573,8 @@ class opt(optimization):
         xf = np.array(dvar_scaled)
         instance,cv,pv=self.f(xf)
         self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
-        # self.msgQueue.put("{0}\n".format(xf))
         self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
-        # print("****\n")
-        # print(self.prob.gt.res)
-        # print("****\n")
+        
 #       Loading the above simulation result in FOQUS flowsheet
         self.graph.loadValues(self.prob.gt.res[0])
         
@@ -680,13 +677,6 @@ class opt(optimization):
             f.write("Iteration 1 Surrogate Model\n")
             for k in self.m.c.keys():
                 f.write("{0} = 0\n".format(self.m.c[k].body))
-                
-        # Store iteration results in FOQUS Flowsheet
-        # if Saveresults:
-        #     setName = self.dat.flowsheet.results.incrimentSetName(SetName)
-        #     self.prob.storeResults = setName
-        # else:
-        #     self.prob.storeResults = None
             
 #       ****Setting up iterations to improve the surrogate model and perform the optimization****      
         algo_iter = 1  
@@ -722,7 +712,6 @@ class opt(optimization):
             num = num_lhs
             # samples * variables value array
             latin_hypercube_samples = sampling(num)
-            # print(latin_hypercube_samples)
             self.msgQueue.put("**Rebuilding Surrogate Model**")
             self.msgQueue.put("Trust Region: {0}".format(surrin_bounds))
             self.msgQueue.put("Latin Hypercube Sampling with {0} points".format(num))
@@ -769,15 +758,12 @@ class opt(optimization):
                         
                     if 'xmin' in line:
                         nummin = re.findall(r"\d+\.\d+", line)
-                        # print(nummin)
-                        # print(surrin_pyomo)
                         for i,n in enumerate(nummin):
                             d = surrin_pyomo[i]
                             line = re.sub(nummin[i], "{0}".format(d_lb_upd), line)
         
                     if 'xmax' in line:
                         nummax = re.findall(r"\d+\.\d+", line)
-                        # print(nummax)
                         for i,n in enumerate(nummax):
                             d = surrin_pyomo[i]
                             line = re.sub(nummax[i], "{0}".format(d_ub_upd), line)
@@ -796,18 +782,14 @@ class opt(optimization):
                     if index in range(idx1+1,idx2):
                         sampl1 = index - idx1 - 1
                         if sampl1 <= len(latin_hypercube_samples)-1:
-                            # print(sampl1)
                             vl1 = re.findall(r"\d+\.\d+", line)
                             for i,v in enumerate(vl1):
                                 if i <= len(surrin_pyomo)-1:
-                                    # print(latin_hypercube_samples[sampl1][i])
                                     line = re.sub(v,"{0}".format(float(latin_hypercube_samples[sampl1][i])),line)
                                 else:
-                                    # print(latin_hypercube_samples_values)
                                     line = re.sub(v,"{0}".format(float(latin_hypercube_samples_values[sampl1][i-len(surrin_pyomo)])),line)
                         else:
                             line = re.sub(r"\d+\.\d+","",line)
-#                            line.strip()
                             
                     if index in range(idx3+1,idx4):
                         sampl2 = index - idx3 - 1
@@ -821,7 +803,6 @@ class opt(optimization):
                                     
                         else:
                             line = re.sub(r"\d+\.\d+","",line)
-#                            line.strip()
                     if not line.strip():
                         continue
                     else:
@@ -830,8 +811,7 @@ class opt(optimization):
             alamoExe = self.dat.foqusSettings.alamo_path
             alamoInput = 'alamo.alm'
             
-            alamoDir = 'alamo'
-            #adaptive = "None"        
+            alamoDir = 'alamo'      
             alamoDirFull = os.path.abspath(alamoDir)
             process = subprocess.Popen([
                     alamoExe,
@@ -852,49 +832,6 @@ class opt(optimization):
             alamoOutput = os.path.join(alamoDir, alamoOutput)
             res = SurrogateParser.parseAlamo(alamoOutput)  
             self.result = res
-            # ***Generate UQ Plugin for Parity Plot***
-            # self.xi = {}
-            # self.zi = {}
-            # cn = self.graph.input.compoundNames(sort=True)
-            # for v in self.surrin_names_original:
-            #     self.xi[v] = cn.index(v)
-            # cn = self.graph.output.compoundNames(sort=False)
-            # for v in self.surrout_names_original:
-            #     self.zi[v] = cn.index(v)
-            # self.ii = {}
-            # self.oi = {}
-            # for i, v in enumerate(self.surrin_names):
-            #     self.ii[self.surrin_names[i]] = self.xi[self.surrin_names_original[i]]
-            # for i, v in enumerate(self.surrout_names):
-            #     self.oi[self.surrout_names[i]] = self.zi[self.surrout_names_original[i]]
-            # SurrogateParser.writeAlamoDriver(
-            #     self.result,
-            #     uq_file,
-            #     ii=self.ii,
-            #     oi=self.oi,
-            #     inputNames=self.surrin_names_original,
-            #     outputNames=self.surrout_names_original)
-            
-            # # ------------------***Generate python file for Parity Plot***------------------
-            # with open(os.path.join("user_plugins", uq_file), 'w') as f:
-            #     f.write("Input_Data = {0}\n".format(latin_hypercube_samples))
-            #     f.write("Simulator_Output_Data = {0}\n".format(latin_hypercube_samples_values))
-            #     SM_outdata = []
-            #     surrvarinpyomo = []
-            #     for v in self.surrin_names_pyomo:
-            #         surrvarin = getattr(self.m,str(v))
-            #         surrvarinpyomo.append(surrvarin)
-            #     for s in latin_hypercube_samples:
-            #         out = []
-            #         for i,vin in enumerate(surrvarinpyomo):
-            #             vin.value = s[i]
-            #         for i,vout in enumerate(surroutvars):
-            #             vout = -value(self.m.c[i+1].body - vout)
-            #             out.append(vout)
-            #         SM_outdata.append(out)
-            #     print(SM_outdata)
-            #     f.write("SM_Output_Data = {0}\n".format(SM_outdata))
-            # ----------------------------------------------------------------------------------------
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             
@@ -983,11 +920,8 @@ class opt(optimization):
                     for sout in surroutvars:
                         o_optim.append(sout.value)
                     if str(r.solver.termination_condition) == 'optimal':
-                        # input_initvals[i1] = i_initvals
-                        # output_initvals[i1] = o_initvals
                         input_optim[i1] = i_optim
                         output_optim[i1] = o_optim
-                        # if str(r.solver.termination_condition) == 'optimal':
                         objvals[i1] = self.m.obj()
                         solver_status[i1] = str(r.solver.status)
                         solver_termination_condition[i1] = str(r.solver.termination_condition)
@@ -1002,21 +936,12 @@ class opt(optimization):
     
                 # Assign the best initialization value
                 minobjval_idx = np.argmin(objvals)
-                # print(minobjval_idx)
     
                 for i,var in enumerate(decvars):
                     var.value = initvals_prod[minobjval_idx][i]
                 for i,initout in enumerate(surroutvars):
                     initout.value = -value(self.m.c[i+1].body - initout)
-            # else:        
-            #     inputinitvals=np.zeros(len(decvars))
-            #     outputinitvals=np.zeros(len(surroutvars))
-            #     for i,var in enumerate(decvars):
-            #         inputinitvals[i] = var.value
-            #     for i,initout in enumerate(surroutvars):
-            #         initout.value = -value(self.m.c[i+1].body - initout)   
-            #         outputinitvals[i] = initout.value
-            #     r=optimizer.solve(self.m,**kwds)
+
             #*********************************************************************
             self.msgQueue.put("****ITERATION {0}****\n".format(algo_iter))
             self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
@@ -1024,15 +949,7 @@ class opt(optimization):
                 if var not in self.nonsurrout_names_pyomo:
                     self.msgQueue.put("Variable: {0}".format(str(var)))
                     self.msgQueue.put("Initialization Value: {0}".format(str(var()))) 
-                    # else:
-                    #     # Input decision variables
-                    #     if var in decvars:
-                    #         varindx = decvars.index(var)
-                    #         self.msgQueue.put("Initialization Value: {0}".format(str(inputinitvals[varindx])))
-                    #     # Output variables
-                    #     elif var in surroutvars:
-                    #         varindx = surroutvars.index(var)
-                    #         self.msgQueue.put("Initialization Value: {0}".format(str(outputinitvals[varindx])))
+
                     if var in [getattr(self.m,v) for v in dvar_names]:
                         self.msgQueue.put("Variable Type: Decision")
                         self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
@@ -1041,24 +958,6 @@ class opt(optimization):
                         self.msgQueue.put("Value: {0}\n".format(var.value))
                     else:
                         self.msgQueue.put("Variable Type: State\n")
-                
-        #     #***Solving the new pyomo optimization model
-        #     if solversource == "gams":
-        #         optimizer = SolverFactory(solversource)   
-        #         io_options = dict()
-        #         io_options['solver'] = mathoptsolver
-        #         io_options['mtype'] = mtype
-        #         kwds=dict()
-        #         kwds['io_options'] = io_options
-        #         kwds['warmstart'] = Warmstart
-        #         kwds['tee'] = tee
-        #         r=optimizer.solve(self.m,**kwds)
-        # #            
-        #     else:
-        #         optimizer = SolverFactory(mathoptsolver)
-        #         kwds=dict()
-        #         kwds['tee'] = tee
-        #         r=optimizer.solve(self.m,**kwds)
 
             if multistart==True:
                 for i,var in enumerate(decvars):
@@ -1089,18 +988,6 @@ class opt(optimization):
             else:
                 self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
                      
-                
-            # self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
-            # self.msgQueue.put("Solver Status: {0}\n".format(str(r.solver.status)))
-            # self.msgQueue.put("Solver Termination Condition: {0}\n".format(str(r.solver.termination_condition)))
-            # self.msgQueue.put("Solver Solution Time: {0} s\n".format(str(r.solver.time)))
-            # self.msgQueue.put("The optimum variable values are:")
-            # self.msgQueue.put("-----------------------------------------")
-            # for var in self.m.component_data_objects(Var):
-            #     if var not in self.nonsurrout_names_pyomo:
-            #         self.msgQueue.put("{0}   {1}".format(str(var),str(var())))
-            # self.msgQueue.put("-----------------------------------------\n")
-            # self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(self.m.obj())))
                 
             self.m.display()
             
@@ -1212,8 +1099,8 @@ class opt(optimization):
                     
                 # # ***Generate python file for Parity Plot***
                 with open(os.path.join("user_plugins", uq_file), 'w') as f:
-                    f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-                    f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
+                    f.write('Input_Data = {0}\n'.format(latin_hypercube_samples.tolist()))
+                    f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values.tolist()))
                     SM_outdata = []
                     surrvarinpyomo = []
                     for v in self.surrin_names_pyomo:
@@ -1235,31 +1122,6 @@ class opt(optimization):
                 for k in self.m.c.keys():
                     f.write("{0} = 0\n".format(self.m.c[k].body))
                     
-             # Store iteration results in FOQUS Flowsheet
-            # if Saveresults:
-            #     setName = self.dat.flowsheet.results.incrimentSetName(SetName)
-            #     self.prob.storeResults = setName
-            # else:
-            #     self.prob.storeResults = None
-                        # ***Generate python file for Parity Plot***
-        # with open(os.path.join("user_plugins", uq_file), 'w') as f:
-        #     print('working')
-        #     f.write('Input_Data = {0}\n'.format(latin_hypercube_samples))
-        #     f.write('Simulator_Output_Data = {0}\n'.format(latin_hypercube_samples_values))
-        #     SM_outdata = []
-        #     surrvarinpyomo = []
-        #     for v in self.surrin_names_pyomo:
-        #         surrvarin = getattr(self.m,str(v))
-        #         surrvarinpyomo.append(surrvarin)
-        #     for s in latin_hypercube_samples:
-        #         out = []
-        #         for i,vin in enumerate(surrvarinpyomo):
-        #             vin.value = s[i]
-        #         for i,vout in enumerate(surroutvars):
-        #             vout = -value(self.m.c[i+1].body - vout)
-        #             out.append(vout)
-        #         SM_outdata.append(out)
-        #     f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
         
         with open(os.path.join("user_plugins", file_name_plots), 'w') as f:    
             f.write('import matplotlib.pyplot as plt\n')

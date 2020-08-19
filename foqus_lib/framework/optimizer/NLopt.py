@@ -81,7 +81,7 @@ class opt(optimization):
              "<p>Steven G. Johnson, The NLopt nonlinear-optimization"
              " package, http://ab-initio.mit.edu/nlopt <\p>"
              "<p>Algorithm Type: Both derivative free & gradient based</p>"
-             "<p>Optimization Problems handling Capability: Nonlinear Optimization Problems with Nonlinear inequality constraints.</p>" 
+             "<p>Optimization Problems handling Capability: Nonlinear Optimization Problems with Nonlinear inequality constraints.</p>"
              "<p>AUGLAG, COBYLA, and ISRES algorithms support nonlinear equality constraints as well.</p>"
              "<p>NLopt contains several solvers by various authors"
              "see the NLopt documentation for more information</p>"
@@ -249,7 +249,7 @@ class opt(optimization):
             self.updateGraph = True #this flag is for GUI if true the
                                     #flowsheet display needs updated
             self.resQueue.put(["BEST", [self.bestSoFar], x])
-#        else:    
+#        else:
         # Spit out objective for objective plot coresponding to each function evaluation/iteration
         self.resQueue.put([
             "IT", self.prob.iterationNumber, obj])
@@ -289,9 +289,9 @@ class opt(optimization):
         self.msgQueue.put("Starting NLopt Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         self.msgQueue.put("\nDecision Variables\n---------------------")
-        for xn in self.prob.v:
-            self.msgQueue.put("{0}: {1} scaled: {2}".format(
-                xn, self.graph.x[xn].value, self.graph.x[xn].scaled))
+        vals = self.graph.input.getFlat(self.prob.v, scaled=False)
+        for i, xn in enumerate(self.prob.v):
+            self.msgQueue.put("{0}: {1} scaled: {2}".format(xn, vals[i], xinit[i]))
         self.msgQueue.put("----------------------")
         n = len(xinit) # Get the number of inputs
         #self.msgQueue.put("n = {0}".format(n))

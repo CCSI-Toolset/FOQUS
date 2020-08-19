@@ -452,12 +452,9 @@ def main():
         load_gui = False  # not going to start gui for this
         print("Starting optimization, this may take some time...")
         print("(The GUI will not be started)")
-        opt = dat.optSolvers.optimizers[ dat.optSolvers.current ]
-        opt.setData(dat)
-        opt = opt.clone()
-        opt.start()
-        opt.join()
-        dat.save(args.out)
+        slvr = dat.optProblem.run(dat)
+        slvr.join() # Wait for optimization thread to finish
+        dat.save(args.out) # Save session as args.out
     elif args.run == "sim":
         load_gui = False
         print("Starting simulation, this may take some time...")

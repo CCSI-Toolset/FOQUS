@@ -141,9 +141,9 @@ class opt(optimization):
         self.msgQueue.put("Starting BFGS Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         self.msgQueue.put("\nDecision Variables\n---------------------")
-        for xn in self.prob.v:
-            self.msgQueue.put("{0}: {1} scaled: {2}".format(
-                xn, self.graph.x[xn].value, self.graph.x[xn].scaled))
+        vals = self.graph.input.getFlat(self.prob.v, scaled=False)
+        for i, xn in enumerate(self.prob.v):
+            self.msgQueue.put("{0}: {1} scaled: {2}".format(xn, vals[i], xinit[i]))
         self.msgQueue.put("----------------------")
         n = len(xinit)
         #self.msgQueue.put("n = {0}".format(n))

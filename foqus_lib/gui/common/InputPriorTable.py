@@ -99,10 +99,16 @@ class InputPriorTable(QTableWidget):
 
             # change SAMPLE to UNIFORM
             if dtype == Distribution.SAMPLE:
-#                dtype = Distribution.UNIFORM
-#                d = Distribution(dtype)
+                # dtype = Distribution.UNIFORM
+                # d = Distribution(dtype)
                 sampleFile, sampleIndex = d.getParameterValues()
-                data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
+                print(sampleFile)
+                print(sampleIndex)
+                if str(sampleFile).endswith(".csv"):
+                    data = LocalExecutionModule.readDataFromCsvFile(sampleFile, False)
+                    print(data)
+                else:
+                    data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
                 sampleData = data[0]
                 # compute min/max from sample file
                 sdata = sampleData[:,sampleIndex-1]

@@ -163,6 +163,7 @@ class SampleData(object):
     def saveDict(self):
         sd = dict()
         sd['ID'] = self.ID
+        sd['session'] = self.session
         sd['numSamples'] = self.numSamples
         sd['origNumSamples'] = self.origNumSamples
         sd['numSamplesAdded'] = self.numSamplesAdded
@@ -199,6 +200,7 @@ class SampleData(object):
             pass
 
         self.setID(sd.get('ID', ''))
+        self.setSession(sd.get('session',None))
         self.setNumSamples(sd.get('numSamples', 0))
         self.origNumSamples = sd.get('origNumSamples', self.getNumSamples())
         self.setNumSamplesAdded(sd.get('numSamplesAdded', 0))

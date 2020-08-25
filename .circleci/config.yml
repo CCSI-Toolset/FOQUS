@@ -46,6 +46,12 @@ jobs:
             coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
 
       - run:
+          name: Test CL run
+          command: |
+            . venv/bin/activate
+            foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
+
+      - run:
           name: Test Docs
           command: |
             . venv/bin/activate

@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import pytest
@@ -6,8 +7,13 @@ from foqus_lib import foqus
 
 
 @pytest.fixture
-def input_file():
-    return 'examples/test_files/Optimization/Opt_Test_01.foqus'
+def examples_dir_path():
+    return Path(__file__).parent.parent.parent / 'examples'
+
+
+@pytest.fixture
+def input_file(examples_dir_path):
+    return str(examples_dir_path / 'test_files/Optimization/Opt_Test_01.foqus')
 
 
 @pytest.fixture

@@ -271,24 +271,28 @@ simulation has been run.
 Node Script
 -----------
 
-There are three type of **Node Script** that can be used: (1) **Pre**
-runs before a node simulation, (2) **Post** runs after a node
-simulation, and (3) **Total** scripts how a node runs the simulation.
-
-Figure :ref:`fig.post.calc` illustrates the **Node
-Script** tab of the **Node Editor** with calculations for an
-optimization test problem.
-
-.. figure:: ../figs/postCalc.svg
-   :alt: Node Script Tab
-   :name: fig.post.calc
-
-   Node Script Tab
+There are three modes of **Node Script** that can be used: (1) **Pre**
+runs the script before a node simulation, (2) **Post** runs the script after a node
+simulation, and (3) **Total** scripts how a node runs the script and simulation.
 
 Node scripts can be any valid Python code. The input and output
 variables for node scripts are stored in dictionaries x and f. The
-dictionary keys are the variable names. The f dictionary is used to
-update the node variables after the calculations are executed.
+dictionary keys are the variable names. The x dictionary is used to access and/or
+update the node input variable values before and after the calculations are executed.
+The f dictionary is used to access and/or update the node output variable values
+before and after the calculations are executed.
+
+While 'pre' and 'post' node scripts are easy to implement, since they directly require the python code,
+the 'total' node script needs to be implemented in a particular format, as shown in the figure below.
+
+Figure :ref:`fig.total.calc` illustrates the **Node
+Script** tab of the **Node Editor** with node script code format for 'total' mode.
+
+.. figure:: ../figs/totalCalc.png
+   :alt: Node Script Tab - 'total' mode
+   :name: fig.total.calc
+
+   Node Script Tab - 'total' mode
 
 Edge Editor
 -----------

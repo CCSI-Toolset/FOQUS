@@ -42,7 +42,7 @@ class optimization(threading.Thread):
         self.ex = None
         self.updateGraph = False
 
-    def setData(self, dat = None):
+    def setData(self, dat=None):
         '''
             Set the session data so the optimization routine can get
             the flowsheet and whatever else it may need.

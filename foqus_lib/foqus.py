@@ -175,7 +175,7 @@ def signal_handler(signal, frame):
     """
     raise KeyboardInterrupt()
 
-def main():
+def main(args_to_parse=None):
     global dat
     exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working
@@ -250,7 +250,7 @@ def main():
                         help = "Terminate the consumer with the given UUID")
     parser.add_argument("-s", "--runUITestScript",
                         help="Load and run a user interface test script")
-    args = parser.parse_args()
+    args = parser.parse_args(args=args_to_parse)
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
     # or relative to the working dir
@@ -452,12 +452,9 @@ def main():
         load_gui = False  # not going to start gui for this
         print("Starting optimization, this may take some time...")
         print("(The GUI will not be started)")
-        opt = dat.optSolvers.optimizers[ dat.optSolvers.current ]
-        opt.setData(dat)
-        opt = opt.clone()
-        opt.start()
-        opt.join()
-        dat.save(args.out)
+        slvr = dat.optProblem.run(dat)
+        slvr.join() # Wait for optimization thread to finish
+        dat.save(args.out) # Save session as args.out
     elif args.run == "sim":
         load_gui = False
         print("Starting simulation, this may take some time...")

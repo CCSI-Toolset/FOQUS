@@ -27,7 +27,8 @@ test_script:
 
     coverage run -m pytest
 
-
+    foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
+    
     mkdir gui_testing
 
     foqus -s test/system_test/ui_test_01.py --working_dir gui_testing

@@ -175,7 +175,7 @@ def signal_handler(signal, frame):
     """
     raise KeyboardInterrupt()
 
-def main():
+def main(args_to_parse=None):
     global dat
     exit_code = 0 # Proc exit code
     # Set up the basic logging stuff here, later after the working
@@ -250,7 +250,7 @@ def main():
                         help = "Terminate the consumer with the given UUID")
     parser.add_argument("-s", "--runUITestScript",
                         help="Load and run a user interface test script")
-    args = parser.parse_args()
+    args = parser.parse_args(args=args_to_parse)
     # before changing the directory get absolute path for file to load
     # this way it will be relative to where you execute foqus instead
     # or relative to the working dir

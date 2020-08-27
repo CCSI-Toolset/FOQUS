@@ -41,7 +41,7 @@ jobs:
           name: Test Reports
           command: |
             . venv/bin/activate
-            coverage report --omit=*site-packages* --fail-under=26
+            coverage report --omit=*site-packages* --fail-under=34
             coverage html --omit=*site-packages*  -d test-results/coverage # Generate html report
             coverage xml --omit=*site-packages* -o test-results/coverage/report.xml
 

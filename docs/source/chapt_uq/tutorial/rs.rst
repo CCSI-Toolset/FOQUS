@@ -14,7 +14,9 @@ Alternatively, if the sample size is large enough (one hundred or more),
 cubic splines (if installed) may also be feasible.
 
 The file for this tutorial is **lptau100_10inputs_4outputs.dat**, and
-this file is located in: **examples/tutorial_files/UQ/Tutorial_4**, where **examples** refers to the directory where the FOQUS examples are saved as described in :ref:`install_examples`.
+this file is located in: **examples/tutorial_files/UQ/Tutorial_4**
+
+.. note:: |examples_reminder_text|
 
 Response Surface Model Validation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -4,6 +4,7 @@ import configparser
 
 from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load
+from foqus_lib.framework.sdoe.plot_utils import plot_pareto
 from .sdoeSetupFrame import *
 from .sdoePreview import sdoePreview
 
@@ -945,6 +946,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
     def editSdoe(self):
         sender = self.sender()
         row = sender.property('row')
+        if self.type == 'IRSF':
+            pf = self.analysis[row].results[1]['pareto_front']
+            results = self.analysis[row].results
+            plot_pareto(pf, results)
+            return
+
         fullName = self.analysis[row].fnames['cand']
         dirname, filename = os.path.split(fullName)
         config_file = self.analysis[row].config_file
@@ -966,6 +973,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             i = types.index('Weight')
             wcol = include[i]  # weight column name
             nusf = {'cand': cand, 'wcol': wcol, 'scale_method': scale_method, 'results': self.analysis[row].results}
+
         else:
             nusf = None
         scatterLabel = 'Design Points'
@@ -1128,17 +1136,17 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
 class SdoeAnalysisData():
     def __init__(self,
-                 sf_method = None,
-                 optimality = None,
-                 mwr = None,
-                 d = None,
-                 nr = None,
-                 runtime = None,
-                 criterion = None,
-                 designs = None,
-                 config_file = None,
-                 fnames = None,
-                 results = None):
+                 sf_method=None,
+                 optimality=None,
+                 mwr=None,
+                 d=None,
+                 nr=None,
+                 runtime=None,
+                 criterion=None,
+                 designs=None,
+                 config_file=None,
+                 fnames=None,
+                 results=None):
         self.sf_method = sf_method
         self.optimality = optimality
         self.mwr = mwr

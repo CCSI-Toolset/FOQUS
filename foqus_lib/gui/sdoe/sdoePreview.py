@@ -107,7 +107,10 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         QApplication.restoreOverrideCursor()
 
     def plotSdoe(self):
-        show = self.checkItemSelected(QListWidgetItem())
+        temp = self.checkItemSelected(QListWidgetItem())
+        show = []
+        for item in temp:
+            show.append(item.strip())
         fname = os.path.join(self.dirname, self.data.getModelName())
         hname = self.hname
         nusf = self.nusf

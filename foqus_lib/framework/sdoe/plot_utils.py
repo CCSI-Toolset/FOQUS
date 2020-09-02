@@ -21,8 +21,6 @@ def plot_hist(ax, xs, xname,
     if cand_rgba is not None:
         fc['cand'] = cand_rgba
     ns, bins = np.histogram(xs, nbins)
-    _xmin = bins[0]
-    _xmax = bins[-1]
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
     if hbars:

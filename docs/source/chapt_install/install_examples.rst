@@ -5,7 +5,7 @@ Install FOQUS Examples
 
 .. note::
    In previous releases the examples were packaged inside the main ``ccsi-foqus`` package.
-   Since version FIXME, they are no longer part of the ``ccsi-foqus`` package, but instead distributed as a separate archive.
+   Since version 3.5.0, they are no longer part of the ``ccsi-foqus`` package, but instead distributed as a separate archive.
    The steps described below are now the correct method to install the FOQUS examples.
 
 To obtain the FOQUS examples, go to the "Releases" section of the FOQUS code repository on GitHub at `<https://github.com/CCSI-Toolset/FOQUS/releases>`_,

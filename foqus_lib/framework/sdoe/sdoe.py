@@ -110,7 +110,7 @@ def run(config_file, nd, test=False):
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+    results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output

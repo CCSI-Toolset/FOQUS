@@ -1,6 +1,7 @@
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
+import pandas as pd
 
 
 def save(fnames, results, elapsed_time, irsf=False):
@@ -24,31 +25,31 @@ def run(config_file, nd, test=False):
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
     config.read(config_file)
+    
     mode = config['METHOD']['mode']
     nr = int(config['METHOD']['number_random_starts'])
-
     hfile = config['INPUT']['history_file']
     cfile = config['INPUT']['candidate_file']
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
-    types = [s.strip() for s in config['INPUT']['type'].split(',')]
+    types = [s.strip() for s in config['INPUT']['types'].split(',')]
     outdir = config['OUTPUT']['results_dir']
 
     sf_method = config['SF']['sf_method']
     if sf_method == 'nusf':
-        weight_mode = config['WEIGHT']['weight_mode']
-        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
-            
-        scale_method = config['SF']['scale_method']
-        assert(scale_method in ['direct_mwr', 'ranked_mwr'])
-        mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
+      weight_mode = config['WEIGHT']['weight_mode']
+      assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
+      
+      scale_method = config['SF']['scale_method']
+      assert(scale_method in ['direct_mwr', 'ranked_mwr'])
+      mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
-        args = {'max_iterations': 100,
-                'mwr_values': mwr_values,
-                'scale_method': scale_method}
-        from .nusf import criterion
-        
+      args = {'max_iterations': 100,
+              'mwr_values': mwr_values,
+              'scale_method': scale_method}
+      from .nusf import criterion
+    
     if sf_method == 'usf':
         scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
         args = {'scale_factors': scl}
@@ -71,7 +72,7 @@ def run(config_file, nd, test=False):
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
         if sf_method == 'nusf' and weight_mode == 'by_user':
-
+          
             # move the weight column to the last column
             # if nusf, one of the columns is expected to be the weight vector
             i = types.index('Weight')  
@@ -105,10 +106,11 @@ def run(config_file, nd, test=False):
             _results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
             elapsed_time = time.time() - t0
             return elapsed_time
+        t0 = time.time()
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output
@@ -119,6 +121,7 @@ def run(config_file, nd, test=False):
             fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
+
     if sf_method == 'usf':
         suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),

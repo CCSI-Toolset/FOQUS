@@ -8,5 +8,9 @@ pytest-cov
 sphinx
 sphinx_rtd_theme
 
+# Remove this when botocore (pulled in by boto3 in setup.py) relaxes their
+# docutils<0.16,>=0.10 constraint
+docutils<0.16
+
 # Pick up requirements from setup.py
 -e .

@@ -6,10 +6,12 @@ def write(fname, df):
     df.to_csv(fname, index=False)  # do not write row names
 
 
-def load(fname):
+def load(fname, index=None):
     # load file as data frame
     df = pd.read_csv(fname)
     df.rename(columns=lambda x: x.strip(), inplace=True)
+    if index:
+        df.set_index(index, inplace=True)
     return df
 
 

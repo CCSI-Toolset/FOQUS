@@ -1,4 +1,4 @@
-_tutorial.heat.integration:
+.. _tutorial.heat.integration:
 
 Tutorial: Heat Integration with FOQUS
 =====================================

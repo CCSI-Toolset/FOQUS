@@ -65,7 +65,7 @@ dist = setup(
         "cma",
         "matplotlib",
         "mlrose_hiive",
-        "mplcursors"
+        "mplcursors",
         "numpy",
         "pandas",
         "psutil",

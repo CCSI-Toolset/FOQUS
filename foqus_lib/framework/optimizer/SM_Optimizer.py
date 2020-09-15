@@ -54,7 +54,6 @@ try:
         Warmstart,
         value,
     )
-    from pyomo.environ import *
     from pyomo.opt import SolverFactory
     import pyutilib.subprocess.GlobalData
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False

@@ -8,6 +8,9 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
+
+
+import logging
 from multiprocessing.connection import Listener
 import threading
 import time

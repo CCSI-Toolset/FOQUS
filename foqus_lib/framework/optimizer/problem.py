@@ -345,7 +345,7 @@ class problem(object):
         '''
         if self.objtype == self.OBJ_TYPE_CUST:
             exec(self.custpy,globals())
-            self.custObjFunc = objfunc
+            self.custObjFunc = objfunc  # pylint: disable=undefined-variable
         self.inpDict = slv.graph.saveValues()['input']
 
     def calculateObj(self, svlist, nsamples = 1):

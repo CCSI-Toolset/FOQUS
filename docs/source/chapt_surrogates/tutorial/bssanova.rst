@@ -24,6 +24,8 @@ tutorial in Section :ref:`sec.surrogate.alamo`.
 The FOQUS file for this tutorial is **Surrogate_Tutorial_1.foqus**, and 
 this file is located in: **examples/tutorial_files/Surrogates**
 
+.. note:: |examples_reminder_text|
+
 The statistics software “R” is also required to use ACOSSO and
 BSS-ANOVA. Before starting this tutorial, you will need to install R
 version 3.1 or later (see

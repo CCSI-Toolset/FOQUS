@@ -272,9 +272,7 @@ class Model:
     def getNamesIncludeNodes(self):
         return self.namesIncludeNodes
 
-    def setInputNames(*arg):
-        self = arg[0] #Reference to self
-        names = arg[1:]
+    def setInputNames(self, *names):
         if len(names) == 1:
             #Remove single value from tuple. Needed if argument is a collection
             names = names[0]
@@ -293,9 +291,7 @@ class Model:
         self.inputNames = tuple([str(name) for name in self.inputNames])
         return self.inputNames
 
-    def setOutputNames(*arg):
-        self = arg[0] #Reference to self
-        names = arg[1:]
+    def setOutputNames(self, *names):
         if len(names) == 1:
             names = names[0]
         if isinstance(names, str): #Single string

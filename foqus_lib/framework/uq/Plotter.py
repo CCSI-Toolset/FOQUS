@@ -772,7 +772,7 @@ class Plotter:
 
                 # set up colorbar
                 self.cbax = self.fig.add_axes([left, bottom-height, width, height])
-                self.fig.colorbar = mpl.colorbar.ColorbarBase(self.cbax, cmap=self.cmap, norm=self.norm,
+                self.fig.colorbar = mpl.colorbar.ColorbarBase(self.cbax, cmap=cmx.get_cmap(self.cmap), norm=self.norm,
                                                               ticks=self.steps,       # optional
                                                               spacing='proportional', # discrete levels
                                                               orientation='horizontal')

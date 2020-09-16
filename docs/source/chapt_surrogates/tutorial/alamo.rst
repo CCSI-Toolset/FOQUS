@@ -20,6 +20,8 @@ The FOQUS file (**Surrogate_Tutorial_1.foqus**),
 where Steps 1 to 42 of this tutorial have been completed
 is located in: **examples/tutorial_files/Surrogates**
 
+.. note:: |examples_reminder_text|
+
 Flowsheet Setup
 ---------------
 

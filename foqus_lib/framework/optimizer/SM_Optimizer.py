@@ -54,7 +54,6 @@ try:
         ConstraintList,
         ConcreteModel,
         PositiveReals,
-        Warmstart,
         value,
     )
     from pyomo.opt import SolverFactory

@@ -22,7 +22,7 @@ if int(mplVersion[0]) > 1 or (int(mplVersion[0]) == 1 and int(mplVersion[1]) >= 
     useFrameAlpha = True
 
 if usePyQt:
-    class PlotDialog(QtWidgets.QDialog): #QtWidgets.QMainWindow):
+    class PlotDialog(QtWidgets.QDialog):
         def __init__(self, parent=None):
             super(PlotDialog, self).__init__(parent)
             self.figure = Figure(figsize=(600,400),
@@ -30,28 +30,22 @@ if usePyQt:
                 facecolor=(1,1,1),
                 edgecolor=(0,0,0),
                 tight_layout = True)
-            # self.canvas = FigureCanvas(self.figure)
             self.gridLayout = QtWidgets.QGridLayout(self)
-            #self.gridLayout.addWidget(self.canvas)
 
-            #self.setCentralWidget(self.canvas)
-            #self.canvas.setParent(self)
-            #self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
             self.setAttribute( QtCore.Qt.WA_DeleteOnClose )
             Plotter.currentDialogs.append(self) # Set a pointer to this dialog so it is not garbage collected
 
         def closeEvent(self, event):
             Plotter.currentDialogs.remove(self)
             if can_exit:
-                event.accept() # let the window close
+                event.accept()  # let the window close
             else:
                 event.ignore()
+
 
 class Plotter:
 
     currentDialogs = []
-
-
 
     @staticmethod
     def getdata(fname, datvar, grabline=False):
@@ -118,7 +112,6 @@ class Plotter:
     def plotscatter(xdat,ydat,figtitle,title,xlabel,ylabel,ylim,star=None):
 
         nseries, npts = xdat.shape  # number of data series
-        
 
         # check if there are multiple plots to generate
         if nseries > 1:
@@ -166,12 +159,7 @@ class Plotter:
         else:   
 
             # generate single plot
-            #if not usePyQt or QtWidgets.QApplication.instance() is None:
-            if True:
-                fig = plt.figure()
-            else:
-                dialog = PlotDialog()
-                fig = dialog.figure
+            fig = plt.figure()
 
             ax = fig.add_subplot(111)
             c = 'm'
@@ -189,16 +177,10 @@ class Plotter:
             ax.autoscale(enable=True, axis='both', tight=True)
             ax.set_title(title[0])
 
-        #if not usePyQt or QtWidgets.QApplication.instance() is None:
-        if True:
-            fig.canvas.set_window_title(figtitle)
-            plt.tight_layout()
-            plt.show()
-        else:
-            dialog.setWindowTitle(figtitle)
-            #dialog.resize(600, 400)
-            dialog.show()
-            dialog.raise_()
+        fig.canvas.set_window_title(figtitle)
+        plt.tight_layout()
+        plt.show()
+
 
     @staticmethod
     def plotscatter3d(xdat,ydat, zdat,figtitle,title,xlabel,ylabel,zlabel):
@@ -262,7 +244,6 @@ class Plotter:
             ax1.legend([dummy] * numValidStats, validStats,
                        loc=0, prop={'size':10})
 
-        #ax1.autoscale(enable=True, axis='both')
         xmin = min(xdat)
         xmax = max(xdat)
         ax1.set_xlim(xmin, xmax)
@@ -282,7 +263,6 @@ class Plotter:
             else:
                 title = 'Corresponding Cumulative Distribution'
             ax2.set_title(title)
-            #ax2.autoscale(enable=True, axis='both')
             ax2.set_xlim(xmin, xmax)
             ax2.xaxis.grid(True)
             ax2.yaxis.grid(True)
@@ -342,7 +322,6 @@ class Plotter:
         
         ax1.add_artist(pdflegend)
 
-#       ax1.autoscale(enable=True, axis='both')
         xmin = min(xdat)
         xmax = max(xdat)
         ax1.set_xlim(xmin, xmax)
@@ -374,7 +353,6 @@ class Plotter:
         else:
             title = 'Corresponding Cumulative Distribution'
         ax2.set_title(title)
-#       ax2.autoscale(enable=True, axis='both')
         ax2.set_xlim(xmin, xmax)
         ax2.set_ylim(0, 1)
         ax2.xaxis.grid(True)
@@ -396,7 +374,6 @@ class Plotter:
             def __init__(self):
 
                 # process data
-                #self.cdfs = cdfs
                 self.cdfs = np.array(cdfs)
                 xx = self.cdfs.flatten()
 
@@ -433,7 +410,8 @@ class Plotter:
                 k2, = np.where(self.cdfU < value)
                 y1 = self.ydat[min(len(k1),self.ylen-1)]
                 y2 = self.ydat[min(len(k2),self.ylen-1)]
-                slabel = 'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]' % (self.xlabel, value, y1, y2)
+                slabel = 'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]' \
+                         % (self.xlabel, value, y1, y2)
                 self.sliderax.set_title(slabel)
                 self.slider.on_changed(self.update)
 
@@ -444,7 +422,8 @@ class Plotter:
                 yl, = self.ax.plot(self.cdfL, self.ydat, linewidth=3, color='b', label='Lower CDF')
 
                 # draw new line
-                self.yrange, = self.ax.plot([value,value],[y1,y2], linewidth=6, color='g', label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2))
+                self.yrange, = self.ax.plot([value,value],[y1,y2], linewidth=6, color='g',
+                                            label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2))
                 if useFrameAlpha:
                     self.ax.legend(loc=0, framealpha = 0.8)
                 else:
@@ -471,12 +450,14 @@ class Plotter:
                 k2, = np.where(self.cdfU < value)
                 y1 = self.ydat[min(len(k1),self.ylen-1)]
                 y2 = self.ydat[min(len(k2),self.ylen-1)]
-                self.yrange, = self.ax.plot([value,value],[y1,y2], linewidth=6, color='g', label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2))
+                self.yrange, = self.ax.plot([value,value],[y1,y2], linewidth=6, color='g',
+                                            label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2))
                 if useFrameAlpha:
                     self.ax.legend(loc=0, framealpha = 0.8)
                 else:
                     self.ax.legend(loc=0)
-                slabel = 'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]' % (self.xlabel, value, y1, y2)
+                slabel = 'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]' \
+                         % (self.xlabel, value, y1, y2)
                 self.sliderax.set_title(slabel)
                 self.fig.canvas.draw()
 
@@ -548,7 +529,6 @@ class Plotter:
             for i in range(nplots):
                 dat_i = dat[i]
                 std_i = std[i]
-                #print dat_i, std_i
                 index = np.arange(len(dat_i))
                 rects = ax[i].bar(index, dat_i, color=colorVals[i], width=w, 
                                   yerr=std_i, error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
@@ -627,8 +607,7 @@ class Plotter:
         for i in range(n):
             ax.bar3d(xpos[i], ypos[i], zpos[i], dx[i], dy[i], dz[i],
                      color=colorVals[cc[i]], alpha=opacity, zsort='average', edgecolor='k')
-            ax.text(xpos[i], ypos[i], zpos[i],
-                        '%.3f' % dz[i], ha='center', va='bottom')
+            ax.text(xpos[i], ypos[i], zpos[i], '%.3f' % dz[i], ha='center', va='bottom')
 
         # plot errorbars
         if std is not None:
@@ -677,7 +656,8 @@ class Plotter:
         opacity = 1
         ax1 = fig.add_subplot(121, projection='3d')
         norm = colors.Normalize(vmin=np.min(zdat_notnan), vmax=np.max(zdat_notnan))
-        cs1 = ax1.plot_surface(xdat, ydat, zdat, rstride=step, cstride=step, linewidth=0, cmap=cmx.jet, norm=norm, alpha=opacity, antialiased=True)
+        cs1 = ax1.plot_surface(xdat, ydat, zdat, rstride=step, cstride=step, linewidth=0, cmap=cmx.jet, norm=norm,
+                               alpha=opacity, antialiased=True)
         fig.colorbar(cs1, ax=ax1) 
         ax1.set_xlabel(xlabel)
         ax1.set_ylabel(ylabel)
@@ -766,7 +746,8 @@ class Plotter:
                 self.slider = DiscreteSlider(self.sliderax, vlabel, self.vmin, self.vmax, 
                                              steps=self.steps, facecolor='k', valinit=self.steps[1], valfmt='')
                 self.slider.valtext.set_text('Min: %.4f\nMax: %.4f' % (self.steps[0], self.steps[1]))  # display slider range
-                slabel = 'Move BLACK slider to select output range.\nPoints shown represent the inputs responsible for the output response.\n'
+                slabel = 'Move BLACK slider to select output range.\n' \
+                         'Points shown represent the inputs responsible for the output response.\n'
                 self.sliderax.set_title(slabel)
                 self.slider.on_changed(self.update)
 
@@ -774,7 +755,7 @@ class Plotter:
                 self.cbax = self.fig.add_axes([left, bottom-height, width, height])
                 self.fig.colorbar = mpl.colorbar.ColorbarBase(self.cbax, cmap=self.cmap, norm=self.norm,
                                                               ticks=self.steps,       # optional
-                                                              spacing='proportional', # discrete levels
+                                                              spacing='proportional',  # discrete levels
                                                               orientation='horizontal')
                 for label in self.fig.colorbar.ax.get_xticklabels():
                     label.set_rotation(90)
@@ -898,7 +879,8 @@ class Plotter:
         err_sigma = np.std(err)
         dummy = Plotter.emptypatch()
         if useFrameAlpha:
-            ax1.legend([dummy, dummy], ['Error mean: %f' % err_mu, 'Error std dev: %f' % err_sigma], loc=0, framealpha = 0.8)
+            ax1.legend([dummy, dummy], ['Error mean: %f' % err_mu, 'Error std dev: %f' % err_sigma], loc=0,
+                       framealpha = 0.8)
         else:
             ax1.legend([dummy, dummy], ['Error mean: %f' % err_mu, 'Error std dev: %f' % err_sigma], loc=0)
 
@@ -962,7 +944,8 @@ class Plotter:
 
             # generate subplots
             sbi = subplot_indices[subplot_indices > 0]  # the upper-triangular elements are positive
-            fig, axes = plt.subplots(nrows=N, ncols=N) # This is the source of slow plots. Not sure if this can be sped up
+            fig, axes = plt.subplots(nrows=N, ncols=N)
+             # This is the source of slow plots. Not sure if this can be sped up
             A = axes.flat
 
             for i in range(1,N+1):

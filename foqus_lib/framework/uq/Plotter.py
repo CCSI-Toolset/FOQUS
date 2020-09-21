@@ -15,7 +15,7 @@ try:
 except:
     usePyQt = False
 
-plt.rcParams['figure.figsize'] = 10,10
+plt.rcParams['figure.figsize'] = 10, 10
 useFrameAlpha = False
 mplVersion = mpl.__version__.split('.')
 if int(mplVersion[0]) > 1 or (int(mplVersion[0]) == 1 and int(mplVersion[1]) >= 3):
@@ -25,22 +25,20 @@ if usePyQt:
     class PlotDialog(QtWidgets.QDialog):
         def __init__(self, parent=None):
             super(PlotDialog, self).__init__(parent)
-            self.figure = Figure(figsize=(600,400),
-                dpi=72,
-                facecolor=(1,1,1),
-                edgecolor=(0,0,0),
-                tight_layout = True)
+            self.figure = Figure(figsize=(600, 400), dpi=72, facecolor=(1, 1, 1), edgecolor=(0, 0, 0),
+                                 tight_layout=True)
             self.gridLayout = QtWidgets.QGridLayout(self)
 
-            self.setAttribute( QtCore.Qt.WA_DeleteOnClose )
-            Plotter.currentDialogs.append(self) # Set a pointer to this dialog so it is not garbage collected
+            self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            Plotter.currentDialogs.append(self)  # Set a pointer to this dialog so it is not garbage collected
+            print("INFO START HERE: ", Plotter.currentDialogs)
 
-        def closeEvent(self, event):
-            Plotter.currentDialogs.remove(self)
-            if can_exit:
-                event.accept()  # let the window close
-            else:
-                event.ignore()
+        # def closeEvent(self, event):
+        #     Plotter.currentDialogs.remove(self)
+        #     if can_exit:
+        #         event.accept()  # let the window close
+        #     else:
+        #         event.ignore()
 
 
 class Plotter:
@@ -945,7 +943,7 @@ class Plotter:
             # generate subplots
             sbi = subplot_indices[subplot_indices > 0]  # the upper-triangular elements are positive
             fig, axes = plt.subplots(nrows=N, ncols=N)
-             # This is the source of slow plots. Not sure if this can be sped up
+            # This is the source of slow plots. Not sure if this can be sped up
             A = axes.flat
 
             for i in range(1,N+1):

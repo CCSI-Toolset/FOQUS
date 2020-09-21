@@ -648,9 +648,8 @@ class LocalExecutionModule(object):
                 if not compatible:
                     if not usePyside or QtWidgets.QApplication.instance() is None:
                         if showErrorIfNotFound:
-                            raise IOError('Version of PSUADE must be %s or higher! ' +
-                                           'Please put the correct path into the file %s' % \
-                                           (LocalExecutionModule.psuadeVersion, fileName))
+                            raise IOError('Version of PSUADE must be %s or higher!\nPlease put the correct path into '
+                                          'the file %s' % (LocalExecutionModule.psuadeVersion, fileName))
                     else:
                         if showErrorIfNotFound:
                             location = LocalExecutionModule.setPsuadePath()
@@ -665,9 +664,8 @@ class LocalExecutionModule(object):
                 msgBox.setText('Location of PSUADE has not been set! You will need to set it to continue.')
                 msgBox.exec_()
             else:
-                raise IOError('Location of PSUADE has not been set! You will need to set it to continue. ' +
-                              'Please put the correct path into the file %s' % \
-                                           (LocalExecutionModule.psuadeVersion, fileName))
+                raise IOError('Location of PSUADE has not been set! You will need to set it to continue.\nPlease put '
+                              'the correct path into the file %s' % (LocalExecutionModule.psuadeVersion, fileName))
             return None
 
         if platform.system() == 'Windows':
@@ -939,7 +937,7 @@ class LocalExecutionModule(object):
 
         # runComplete = False does not necessarily mean run is still going.
         # Need to check.
-        LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
+        #LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
         return LocalExecutionModule.runComplete
 
     @staticmethod
@@ -950,7 +948,7 @@ class LocalExecutionModule(object):
         psuadeOutFile = os.getcwd() + os.path.sep + 'psuadeOutFile'
 
         import shutil
-        shutil.copyfile("psuadeData", psuadeOutFile);
+        shutil.copyfile("psuadeData", psuadeOutFile)
 
         data = LocalExecutionModule.readSampleFromPsuadeFile(psuadeOutFile)
         return data

@@ -654,7 +654,8 @@ class Plotter:
         opacity = 1
         ax1 = fig.add_subplot(121, projection='3d')
         norm = colors.Normalize(vmin=np.min(zdat_notnan), vmax=np.max(zdat_notnan))
-        cs1 = ax1.plot_surface(xdat, ydat, zdat, rstride=step, cstride=step, linewidth=0, cmap=cmx.jet, norm=norm,
+        cs1 = ax1.plot_surface(xdat, ydat, zdat, rstride=step, cstride=step, linewidth=0,
+                               cmap=cmx.get_cmap('jet'), norm=norm,
                                alpha=opacity, antialiased=True)
         fig.colorbar(cs1, ax=ax1) 
         ax1.set_xlabel(xlabel)
@@ -674,7 +675,7 @@ class Plotter:
         nc = 10  # number of contour lines
         ax2 = fig.add_subplot(122)
         cs2 = ax2.contour(xdat, ydat, zdatm, nc, colors='k', linewidths=1)
-        cs2f = ax2.contourf(xdat, ydat, zdatm, nc, cmap=cmx.jet)
+        cs2f = ax2.contourf(xdat, ydat, zdatm, nc, cmap=cmx.get_cmap('jet'))
         fig.colorbar(cs2f, ax=ax2)
         labels = ax2.get_xticklabels()
         for label in labels:             # rotate the xtick labels to avoid bunching 
@@ -751,7 +752,7 @@ class Plotter:
 
                 # set up colorbar
                 self.cbax = self.fig.add_axes([left, bottom-height, width, height])
-                self.fig.colorbar = mpl.colorbar.ColorbarBase(self.cbax, cmap=self.cmap, norm=self.norm,
+                self.fig.colorbar = mpl.colorbar.ColorbarBase(self.cbax, cmx.get_cmap(self.cmap), norm=self.norm,
                                                               ticks=self.steps,       # optional
                                                               spacing='proportional',  # discrete levels
                                                               orientation='horizontal')

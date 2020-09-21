@@ -6,6 +6,8 @@ Tutorial 1: Aspen Custom Modeler (ACM) Configuration
 The files (both the ACM and the JSON files) for this tutorial
 are located in: **examples/test_files/Optimization/Model_Files/**
 
+.. note:: |examples_reminder_text|
+
 #. The “SinterConfigGUI” can be launched from FOQUS, via the
    **Create/Edit** button found in **Session**\ :math:`\rightarrow`
    **Add/Update Model to Turbine** or “SinterConfigGUI” may be run on

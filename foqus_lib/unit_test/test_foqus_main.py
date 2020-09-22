@@ -65,4 +65,3 @@ def test_gui_imports():
     if foqus.PyQt5 is None:
         foqus.guiImport()
     assert foqus.PyQt5 is not None, "After running guiImport(), foqus.PyQt5 points to the actual module instead of the placeholder value None"
-    assert foqus.PyQt5.QtWidgets.QApplication([]) is not None, "Once the GUI imports have been set up, a QApplication can be created without errors"

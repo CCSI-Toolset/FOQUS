@@ -16,6 +16,10 @@ jobs:
             python3 -m venv venv
             . venv/bin/activate
             pip install --progress-bar=off -r requirements-dev.txt
+      - run:
+          name: Install system packages needed to run GUI-related PyQt tests
+          command: |
+            apt update && apt install -y libxkbcommon-x11-0 x11-utils
 
       - persist_to_workspace:
           root: ~/repo

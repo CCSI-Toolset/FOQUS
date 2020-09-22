@@ -937,7 +937,7 @@ class LocalExecutionModule(object):
 
         # runComplete = False does not necessarily mean run is still going.
         # Need to check.
-        #LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
+        LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
         return LocalExecutionModule.runComplete
 
     @staticmethod

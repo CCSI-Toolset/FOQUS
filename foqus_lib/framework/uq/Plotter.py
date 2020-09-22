@@ -33,12 +33,12 @@ if usePyQt:
             Plotter.currentDialogs.append(self)  # Set a pointer to this dialog so it is not garbage collected
             print("INFO START HERE: ", Plotter.currentDialogs)
 
-        # def closeEvent(self, event):
-        #     Plotter.currentDialogs.remove(self)
-        #     if can_exit:
-        #         event.accept()  # let the window close
-        #     else:
-        #         event.ignore()
+        def closeEvent(self, event):
+            Plotter.currentDialogs.remove(self)
+            if can_exit:
+                event.accept()  # let the window close
+            else:
+                event.ignore()
 
 
 class Plotter:

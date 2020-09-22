@@ -141,7 +141,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         newLoc = "{0}:{1}".format(netURL, port)
         #write modified config
         netLoc.text = newLoc
-        tcfgs = StringIO.StringIO()
+        tcfgs = StringIO()
         tree.write(tcfgs, encoding="utf-8", xml_declaration=True)
         tcfgs = tcfgs.getvalue().replace(
             "<unity>", '<unity xmlns="{0}">'.format(xmlns))

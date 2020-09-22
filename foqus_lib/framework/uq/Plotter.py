@@ -1,16 +1,13 @@
-import math
 import re
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.cm as cmx
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 
 try:
-    from PyQt5 import QtGui, QtCore, QtWidgets
+    from PyQt5 import QtCore, QtWidgets
     usePyQt = True
 except:
     usePyQt = False
@@ -96,7 +93,7 @@ class Plotter:
 
         fig = plt.figure()
         fig.canvas.set_window_title(figtitle)
-        ax = fig.add_subplot(111)
+        _ax = fig.add_subplot(111)
         plt.plot(xdat, ydat, color='b', linewidth=2)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
@@ -109,7 +106,7 @@ class Plotter:
     @staticmethod
     def plotscatter(xdat,ydat,figtitle,title,xlabel,ylabel,ylim,star=None):
 
-        nseries, npts = xdat.shape  # number of data series
+        nseries, _npts = xdat.shape  # number of data series
 
         # check if there are multiple plots to generate
         if nseries > 1:
@@ -416,8 +413,8 @@ class Plotter:
                 # assume particular order of CDFs
                 for i in range(P-2):   
                     self.ax.plot(self.cdfs[i], self.ydat, color='k')
-                yu, = self.ax.plot(self.cdfU, self.ydat, linewidth=3, color='r', label='Upper CDF')
-                yl, = self.ax.plot(self.cdfL, self.ydat, linewidth=3, color='b', label='Lower CDF')
+                _yu, = self.ax.plot(self.cdfU, self.ydat, linewidth=3, color='r', label='Upper CDF')
+                _yl, = self.ax.plot(self.cdfL, self.ydat, linewidth=3, color='b', label='Lower CDF')
 
                 # draw new line
                 self.yrange, = self.ax.plot([value,value],[y1,y2], linewidth=6, color='g',
@@ -485,7 +482,7 @@ class Plotter:
                 # the first step and not "slide"). Instead, we'll keep track of the
                 # the continuous value as self.val and pass in the discrete value to
                 # everything else.
-                w = discrete_val - discrete_val_
+                _w = discrete_val - discrete_val_
                 h = 1
                 bottomleft = [discrete_val_, 0]
                 topleft = [discrete_val_, h]
@@ -498,7 +495,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson: 
                     return
-                for cid, func in self.observers.items():
+                for _cid, func in self.observers.items():
                     func(discrete_val)
                     
         p = ChangingPlot()
@@ -572,6 +569,10 @@ class Plotter:
 
     @staticmethod
     def plotbar3d(dat,std,figtitle,title,xlabel,ylabel,xticklabels,yticklabels,barlabels=False):
+
+        _xlabel = xlabel
+        _ylabel = ylabel
+        _barlabels = barlabels
 
         lx = len(dat[0])
         ly = len(dat[:,0])
@@ -674,7 +675,7 @@ class Plotter:
         # ... generate 2D contour plot
         nc = 10  # number of contour lines
         ax2 = fig.add_subplot(122)
-        cs2 = ax2.contour(xdat, ydat, zdatm, nc, colors='k', linewidths=1)
+        _cs2 = ax2.contour(xdat, ydat, zdatm, nc, colors='k', linewidths=1)
         cs2f = ax2.contourf(xdat, ydat, zdatm, nc, cmap=cmx.get_cmap('jet'))
         fig.colorbar(cs2f, ax=ax2)
         labels = ax2.get_xticklabels()
@@ -827,7 +828,7 @@ class Plotter:
                 # the first step and not "slide"). Instead, we'll keep track of the
                 # the continuous value as self.val and pass in the discrete value to
                 # everything else.
-                w = discrete_val - discrete_val_
+                _w = discrete_val - discrete_val_
                 h = 1
                 bottomleft = [discrete_val_, 0]
                 topleft = [discrete_val_, h]
@@ -841,7 +842,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson: 
                     return
-                for cid, func in self.observers.items():
+                for _cid, func in self.observers.items():
                     func(discrete_val)
                     
         p = ChangingPlot()
@@ -899,7 +900,7 @@ class Plotter:
             under = [(1-error_tol)*t for t in sparseTruth]
             over = [(1+error_tol)*t for t in sparseTruth]
             under_plot, = ax2.plot(sparseTruth, under, color='g', linestyle=':', label=env_label)
-            over_plot, = ax2.plot(sparseTruth, over, color='g', linestyle=':', label=env_label)
+            _over_plot, = ax2.plot(sparseTruth, over, color='g', linestyle=':', label=env_label)
         errbar_label = 'Estimate +/- 1 std dev'
         errbar_plot = ax2.errorbar(truth, est, yerr=std, color='b',
                                    fmt = 'o', ecolor='r', capthick=2, label=errbar_label)

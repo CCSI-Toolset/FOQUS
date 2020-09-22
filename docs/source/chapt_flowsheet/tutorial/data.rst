@@ -12,8 +12,9 @@ and exporting data.
 The FOQUS file for this tutorial is **Simple_flow.foqus**, and
 this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_4**
 
-Copy the Simple_flow.foqus file to a
-convenient location (see section :ref:`tutorial.example.files`). This file is
+.. note:: |examples_reminder_text|
+
+The **Simple_flow.foqus** file is
 similar to the one created in the tutorial Section
 :ref:`tutorial.sim.flowsheet`, but it has been run
 an additional 100 times using a UQ ensemble (see :ref:`subsec:uqt_sim`).

@@ -62,7 +62,7 @@ jobs:
           name: PyLint
           command: |
             . venv/bin/activate
-            pylint -E foqus_lib --extension-pkg-whitelist=PyQt5 --ignored-modules=win32process,win32api,winshell,adodbapi,scipy.spatial || true
+            pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib || true
 
       - store_artifacts:
           path: test-results

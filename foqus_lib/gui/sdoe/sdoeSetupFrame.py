@@ -179,7 +179,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for i in range(numFiles):
             if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
                 cand_list.append(self.dat.sdoeSimList[i])
-            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'History':
+            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data':
                 hist_list.append(self.dat.sdoeSimList[i])
         return cand_list, hist_list   # returns sample data structures
 
@@ -210,7 +210,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         df_utils.write(cand_fname, cand_agg)
         candidateData = LocalExecutionModule.readSampleFromCsvFile(cand_fname, askForNumInputs=False)
 
-        hist_fname = os.path.join(self.dname, 'aggregate_history.csv')
+        hist_fname = os.path.join(self.dname, 'aggregate_previousData.csv')
         if len(hist_agg) == 0:
             historyData = None
         else:
@@ -289,7 +289,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def cloneSimulation(self):
         # Get selected row
         row = self.filesTable.selectedIndexes()[0].row()
-        sim = copy.deepcopy(self.dat.sdoeSimList[row]) # Create copy of sim
+        sim = copy.deepcopy(self.dat.sdoeSimList[row])  # Create copy of sim
         sim.clearRunState()
         sim.turbineSession = None
         sim.turbineJobIds = []
@@ -308,10 +308,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Get file name
         if platform.system() == 'Windows':
-            allFiles = '*.*'
+            _allFiles = '*.*'
         else:
-            allFiles = '*'
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Ensemble", '' , "CSV (Comma delimited) (*.csv)")
+            _allFiles = '*'
+        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Ensemble", '',
+                                                               "CSV (Comma delimited) (*.csv)")
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -470,7 +471,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setItem(row, self.nameCol, item)
 
         combo = QComboBox()
-        combo.addItems(['Candidate', 'History'])
+        combo.addItems(['Candidate', 'Previous Data'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
         combo.currentTextChanged.connect(self.on_combobox_changed)
 
@@ -480,6 +481,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             newViewButton = True
             viewButton = QPushButton()
             viewButton.setText('View')
+            viewButton.setToolTip('View and plot the candidate set or previous data.')
 
         viewButton.setProperty('row', row)
         if newViewButton:
@@ -537,6 +539,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
         combo.model().item(2).setEnabled(False)
+        combo.setToolTip("* <b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread out "
+                         "throughout the input space. Use when the goal is to collect information across the "
+                         "experimental region, without assumptions about which areas of the region are more "
+                         "important than others. This provides good precision for predicting new results at any new "
+                         "location in the input space, because data will have been collected close by."
+                         "<br>"
+                         "<br>"
+                         "* <b>Non-Uniform Space Filling Designs</b> maintain the goal of having design points spread "
+                         "throughout the input space but add a feature of being able to emphasize some regions "
+                         "more than others. Use for added flexibility when certain areas of the input space require "
+                         "more in-depth exploration than others.")
 
         # Resize table
         self.resizeColumns()

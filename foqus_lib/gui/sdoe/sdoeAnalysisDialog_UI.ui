@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1339</width>
-    <height>861</height>
+    <width>1440</width>
+    <height>855</height>
    </rect>
   </property>
   <property name="font">
@@ -37,7 +37,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Ensemble Summary</string>
+      <string>Input Summary</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
       <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
@@ -117,7 +117,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Sequential Design of Experiments (SDOE) Set-up</string>
+      <string>Generate Design</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -129,6 +129,9 @@
           <bold>true</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Minimax&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; selects design to minimize the maximum distance between design points (and previous data, if present) and any point in the input space&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Maximin&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; selects design to maximize the minimum distance between any two design points (and previous data, if present) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Recommendations&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Generate designs using both approaches and look at the FOQUS-provided summary plots to choose between them.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;If there is concern that any of the edge points in the candidate set are not viable options, minimax may be preferred.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;If the goal is to emphasize collecting data at the edges,  maximin may be preferred. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="title">
          <string>Optimality Method Selection</string>
         </property>
@@ -138,8 +141,7 @@
            <item row="0" column="1">
             <widget class="QRadioButton" name="Maximin_radioButton">
              <property name="toolTip">
-              <string>Maximize the distance
-between design points</string>
+              <string/>
              </property>
              <property name="text">
               <string>Maximin</string>
@@ -149,8 +151,7 @@ between design points</string>
            <item row="0" column="0">
             <widget class="QRadioButton" name="Minimax_radioButton">
              <property name="toolTip">
-              <string>Minimize how far design points
-are from any candidate point</string>
+              <string/>
              </property>
              <property name="text">
               <string>Minimax</string>
@@ -179,7 +180,7 @@ are from any candidate point</string>
          <item>
           <widget class="QRadioButton" name="Direct_radioButton">
            <property name="text">
-            <string>Direct MWR</string>
+            <string>Direct Maximum Weight Ratio</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -189,7 +190,7 @@ are from any candidate point</string>
          <item>
           <widget class="QRadioButton" name="Ranked_radioButton">
            <property name="text">
-            <string>Ranked MWR</string>
+            <string>Ranked Maximum Weight Ratio</string>
            </property>
           </widget>
          </item>
@@ -206,7 +207,7 @@ are from any candidate point</string>
          </font>
         </property>
         <property name="title">
-         <string>Inputs</string>
+         <string/>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
@@ -218,8 +219,11 @@ are from any candidate point</string>
              <bold>true</bold>
             </font>
            </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multiple designs will be created, with the number of experimental runs ranging in size from &lt;/p&gt;&lt;p&gt;selected Minimum Design Size to selected Maximum Design Size. &lt;/p&gt;&lt;p&gt;If only one design is desired, set the Minimum and Maximum Design Size to be equal&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="title">
-            <string>Design Specification</string>
+            <string>Desired Design Sizes</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="1" column="2">
@@ -251,22 +255,21 @@ are from any candidate point</string>
             <item row="0" column="0">
              <widget class="QLabel" name="minDesignSize_static">
               <property name="text">
-               <string>Min Design Size</string>
+               <string>Minimum Design Size</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="maxDesignSize_static">
               <property name="text">
-               <string>Max Design Size</string>
+               <string>Maximum Design Size</string>
               </property>
              </widget>
             </item>
             <item row="0" column="1">
              <widget class="QSpinBox" name="minDesignSize_spin">
               <property name="toolTip">
-               <string>Please select the
-smallest design size</string>
+               <string/>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -276,9 +279,7 @@ smallest design size</string>
             <item row="1" column="1">
              <widget class="QSpinBox" name="maxDesignSize_spin">
               <property name="toolTip">
-               <string>Select the largest design size.
-Minimize difference between min 
-and max for efficient computation.</string>
+               <string/>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -301,86 +302,106 @@ and max for efficient computation.</string>
             </font>
            </property>
            <property name="title">
-            <string>Design Specification</string>
+            <string>Desired Design Size and NUSF Weights</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_5">
-            <item row="0" column="0">
-             <widget class="QLabel" name="designSize_static">
+           <layout class="QVBoxLayout" name="verticalLayout_3">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_5">
+              <item>
+               <widget class="QLabel" name="designSize_static">
+                <property name="text">
+                 <string>Design Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="designSize_spin">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>Specifies the size of the design to be created.</string>
+                </property>
+                <property name="minimum">
+                 <number>2</number>
+                </property>
+                <property name="maximum">
+                 <number>99</number>
+                </property>
+                <property name="value">
+                 <number>6</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="MWR_static">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* MWR controls how much difference there is in the density of the design points&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;- Smaller values of MWR (close to 1) result in a nearly uniform design&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Recommendations&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Construct several designs, varying the &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;MWR values&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;, and the &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;scaling method&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;; compare the results&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>MWR:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR1_comboBox">
+                <property name="currentIndex">
+                 <number>-1</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR2_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR3_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR4_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR5_comboBox"/>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QLabel" name="mwr_static">
               <property name="text">
-               <string>Design Size</string>
+               <string>Create up to 5 different designs using different maximum weight ratios (MWRs).</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
-            </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="designSize_spin">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimum">
-               <number>2</number>
-              </property>
-              <property name="maximum">
-               <number>99</number>
-              </property>
-              <property name="value">
-               <number>6</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="9">
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="MWR_static">
-              <property name="text">
-               <string>MWR:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="8">
-             <widget class="QComboBox" name="MWR5_comboBox"/>
-            </item>
-            <item row="0" column="6">
-             <widget class="QComboBox" name="MWR3_comboBox"/>
-            </item>
-            <item row="0" column="7">
-             <widget class="QComboBox" name="MWR4_comboBox"/>
-            </item>
-            <item row="0" column="4">
-             <widget class="QComboBox" name="MWR1_comboBox">
-              <property name="currentIndex">
-               <number>-1</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="5">
-             <widget class="QComboBox" name="MWR2_comboBox"/>
-            </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_9">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
             </item>
            </layout>
           </widget>
@@ -394,11 +415,7 @@ and max for efficient computation.</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>For each column, specify the type, and whether
-it should be part of the design.
-* Input: inputs to be considered for SDOE
-* Index: unique identifier for the input combination. Not required, but encouraged.
-</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Input&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (at least 1 required): These columns are used for space filling designs as an input.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Index&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (Recommended): This column will be used as a unique label for the design points selected from the candidate set. Column 1 is preset as the Index; if you do not want to include an Index uncheck Column 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Weight&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (1 required for NUSF only): This column is used to identify regions with higher and lower density.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="sizeAdjustPolicy">
             <enum>QAbstractScrollArea::AdjustToContents</enum>
@@ -467,7 +484,7 @@ it should be part of the design.
               </font>
              </property>
              <property name="text">
-              <string>Test SDOE</string>
+              <string>Estimate Runtime</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -475,6 +492,16 @@ it should be part of the design.
             </widget>
            </item>
           </layout>
+         </item>
+         <item>
+          <widget class="QLabel" name="testSdoe_static">
+           <property name="text">
+            <string>This performs a small number of iterations of the search algorithm to estimate timing for constructing the designs.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -519,6 +546,9 @@ it should be part of the design.
            </item>
            <item>
             <widget class="QSpinBox" name="sampleSize_spin">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Select a suitable Number of Random Starts. Quality of designs created improve with more starts but will take longer to create. (Default value is n = 10&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000; vertical-align:super;&quot;&gt;5&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;.) Then Select “Run SDOE”&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="minimum">
               <number>3</number>
              </property>
@@ -526,7 +556,7 @@ it should be part of the design.
               <number>7</number>
              </property>
              <property name="value">
-              <number>3</number>
+              <number>5</number>
              </property>
             </widget>
            </item>
@@ -690,7 +720,11 @@ it should be part of the design.
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="sampleSizeNUSF_comboBox"/>
+            <widget class="QComboBox" name="sampleSizeNUSF_comboBox">
+             <property name="toolTip">
+              <string>Select a suitable Number of Random Starts. Quality of designs created improves with more starts but will take longer to create. (Default value is 50.) Then Select “Run SDOE”</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="horizontalSpacer_12">
@@ -821,6 +855,9 @@ it should be part of the design.
           <bold>false</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;First Column:&lt;/span&gt; Criterion used to create design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Second Column:&lt;/span&gt; Number of runs in the design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Third Column:&lt;/span&gt; Selected number of random starts used to create the design&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fourth Coumn:&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; color:#000000;&quot;&gt;Minimax or maximin criterion for each design (Larger is better for maximin, smaller is better for minimax&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>
         </property>
@@ -879,7 +916,7 @@ it should be part of the design.
          <enum>Qt::NoFocus</enum>
         </property>
         <property name="text">
-         <string>Reload Design Specification</string>
+         <string>Go Back to Generate Design</string>
         </property>
         <property name="autoDefault">
          <bool>false</bool>

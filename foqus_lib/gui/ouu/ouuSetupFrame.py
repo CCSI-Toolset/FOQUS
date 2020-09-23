@@ -606,6 +606,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     self.inputPlots[i - 1]['canvas'].draw()
 
     def scrollProgressPlots(self, value):
+        QApplication.processEvents()
         names, indices = self.input_table.getPrimaryVariables()
         numPlots = len(names) + 1
         firstPlotToUpdate = int(value/190)
@@ -619,6 +620,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                 self.updateObjPlot()
             else:
                 self.updateInputPlot(index)
+        QApplication.processEvents()
 
     def setFixed(self):
         self.input_table.setCheckedToType(0)

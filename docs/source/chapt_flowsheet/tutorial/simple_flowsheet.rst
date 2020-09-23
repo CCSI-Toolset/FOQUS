@@ -15,6 +15,8 @@ provided.
 This tutorial will show the user the procedure for creating a flowsheet in FOQUS.
 However, if the user is interested, the finished flowsheet is available in: **examples/tutorial_files/Flowsheets/Tutorial_1**
 
+.. note:: |examples_reminder_text|
+
 #. Start FOQUS (see Section :ref:`sec.flowsheet.starting.foqus`).
 
 #. In the session form enter the **Session Name** as “Simple_Flow”

@@ -10,6 +10,7 @@ Example NUSF-2 considers a CCSI example, with a non-regular region, and the weig
 
 The files for these tutorials are located in: **examples/tutorial_files/SDOE**
 
+.. note:: |examples_reminder_text|
 
 .. toctree::
     :maxdepth: 2

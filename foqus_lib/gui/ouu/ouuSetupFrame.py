@@ -620,7 +620,6 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             else:
                 self.updateInputPlot(index)
 
-
     def setFixed(self):
         self.input_table.setCheckedToType(0)
 
@@ -725,7 +724,6 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         else:
             self.z4SubsetSize_label.setEnabled(False)
             self.z4SubsetSize_spin.setEnabled(False)
-
 
     def setupPSUADEClient(self):
         curDir = os.getcwd()
@@ -949,7 +947,6 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.run_button.setEnabled(False)
             self.freeze()
 
-
     def finishOUU(self):
         if self.node_radio.isChecked():
             # stop the listener
@@ -976,6 +973,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
 
     def getResult(self):
         return self.result
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

@@ -188,6 +188,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.delete_button.clicked.connect(self.deleteAnalysis)
 
     def switchModes(self):
+        QApplication.processEvents()
         if self.modeButton.text() == self.wizardModeButtonText: #Wizard mode
             # Switch to Expert mode
             self.modeButton.setText(self.expertModeButtonText)
@@ -196,6 +197,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             # Switch to Wizard mode
             self.modeButton.setText(self.wizardModeButtonText)
             self.modePages.setCurrentIndex(0)
+        QApplication.processEvents()
 
     def analysisSelected(self):
         selectedIndexes = self.analysisTable.selectedIndexes()

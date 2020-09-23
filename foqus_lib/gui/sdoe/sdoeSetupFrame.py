@@ -539,17 +539,18 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
         combo.model().item(2).setEnabled(False)
-        combo.setToolTip("* <b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread out "
-                         "throughout the input space. Use when the goal is to collect information across the "
+        combo.setToolTip("<ul>"
+                         "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
+                         "out throughout the input space. Use when the goal is to collect information across the "
                          "experimental region, without assumptions about which areas of the region are more "
                          "important than others. This provides good precision for predicting new results at any new "
-                         "location in the input space, because data will have been collected close by."
+                         "location in the input space, because data will have been collected close by.</li>"
                          "<br>"
-                         "<br>"
-                         "* <b>Non-Uniform Space Filling Designs</b> maintain the goal of having design points spread "
-                         "throughout the input space but add a feature of being able to emphasize some regions "
+                         "<li><b>Non-Uniform Space Filling Designs</b> maintain the goal of having design points spread"
+                         " throughout the input space but add a feature of being able to emphasize some regions "
                          "more than others. Use for added flexibility when certain areas of the input space require "
-                         "more in-depth exploration than others.")
+                         "more in-depth exploration than others.</li>"
+                         "</ul>")
 
         # Resize table
         self.resizeColumns()

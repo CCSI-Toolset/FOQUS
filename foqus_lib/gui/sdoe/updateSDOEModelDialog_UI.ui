@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>797</width>
-    <height>630</height>
+    <width>724</width>
+    <height>788</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Design Setup – Enter input factors and ranges </string>
+   <string>Design Setup – Enter input factors and ranges </string>
   </property>
   <property name="modal">
    <bool>true</bool>

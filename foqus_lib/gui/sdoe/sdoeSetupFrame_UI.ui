@@ -83,8 +83,7 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to duplicate selected candidate set or previous data
-</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to duplicate selected candidate set or previous data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Clone 
@@ -118,8 +117,7 @@ Candidate Set</string>
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to save selected candidate set or previous data as a new .csv file
-</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to save selected candidate set or previous data as a new .csv file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Save 
@@ -136,8 +134,7 @@ Selected</string>
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to delete selected candidate set or previous data
-</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to delete selected candidate set or previous data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>Delete 
@@ -205,7 +202,7 @@ selection-color: rgb(0, 0, 0);</string>
              </column>
              <column>
               <property name="text">
-               <string>Descriptor</string>
+               <string>File Name</string>
               </property>
              </column>
             </widget>
@@ -213,7 +210,17 @@ selection-color: rgb(0, 0, 0);</string>
            <item>
             <widget class="QLabel" name="instructions_static">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* If you have a candidate set: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Arial'; font-size:12pt;&quot;&gt;	1. P&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;ress Load Existing Set and upload. Set File Type to Candidate. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;	2. If you also have previous data, press Load Existing Set and upload. Set File Type to Previous Data. &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* If you do not have a candidate set, press  “Generate New Candidate Set” &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* When finished identifying previous data and candidate sets, press Continue.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;ul&gt;
+&lt;li&gt;If you have a candidate set:&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ol&gt;
+&lt;li&gt;Press Load Existing Set and upload. Set File Type to Candidate.&lt;/li&gt;
+&lt;li&gt;If you also have previous data, press Load Existing Set and upload. Set File Type to Previous Data. 
+&lt;/ol&gt;
+&lt;ul&gt;
+&lt;li&gt;If you do not have a candidate set, press “Generate New Candidate Set”&lt;/li&gt;
+&lt;li&gt;When finished identifying previous data and candidate sets, press Continue.&lt;/li&gt;
+&lt;/ul&gt;</string>
              </property>
             </widget>
            </item>

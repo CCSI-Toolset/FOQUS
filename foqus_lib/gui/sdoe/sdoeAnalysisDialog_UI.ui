@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>1440</width>
-    <height>855</height>
+    <height>918</height>
    </rect>
   </property>
   <property name="font">
@@ -130,7 +130,19 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Minimax&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; selects design to minimize the maximum distance between design points (and previous data, if present) and any point in the input space&lt;/span&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Maximin&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; selects design to maximize the minimum distance between any two design points (and previous data, if present) &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt;&quot;&gt;&lt;br/&gt;&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;Recommendations&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;: &lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Generate designs using both approaches and look at the FOQUS-provided summary plots to choose between them.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;If there is concern that any of the edge points in the candidate set are not viable options, minimax may be preferred.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;If the goal is to emphasize collecting data at the edges,  maximin may be preferred. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Minimax&lt;/b&gt; selects design to minimize the maximum distance between design points (and previous data, if present) and any point in the input space.&lt;/li&gt;
+
+&lt;li&gt;&lt;b&gt;Maximin&lt;/b&gt; selects design to maximize the minimum distance between any two design points (and previous data, if present)&lt;/li&gt; 
+
+&lt;li&gt;&lt;b&gt;Recommendations:&lt;/b&gt; 
+&lt;br&gt;
+- Generate designs using both approaches and look at the FOQUS-provided summary plots to choose between them.
+&lt;br&gt;
+- If there is concern that any of the edge points in the candidate set are not viable options, minimax may be preferred.
+&lt;br&gt;
+- If the goal is to emphasize collecting data at the edges,  maximin may be preferred.&lt;/li&gt;
+&lt;/ul&gt;</string>
         </property>
         <property name="title">
          <string>Optimality Method Selection</string>
@@ -172,6 +184,13 @@
          <font>
           <pointsize>9</pointsize>
          </font>
+        </property>
+        <property name="toolTip">
+         <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Direct MWR&lt;/b&gt; uses rescaled original weights and preserves the shape of the original distribution.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Ranked MWR&lt;/b&gt; creates a uniformly spaced ordering of points from “least important” to “most important.” This results in an evenly spread flat histogram for the weights.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Recommendation:&lt;/b&gt; Generate designs using both choices and compare results to see which gives a better match for desired spacing throughout the input space.&lt;/li&gt;
+&lt;/ul&gt;</string>
         </property>
         <property name="title">
          <string>Scaling Method</string>
@@ -352,7 +371,19 @@
               <item>
                <widget class="QLabel" name="MWR_static">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;* MWR controls how much difference there is in the density of the design points&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;- Smaller values of MWR (close to 1) result in a nearly uniform design&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Recommendations&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'System Font Regular'; font-size:12pt;&quot;&gt;- &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Construct several designs, varying the &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;MWR values&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;, and the &lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;scaling method&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;; compare the results&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;ul&gt;
+&lt;li&gt;MWR controls how much difference there is in the density of the design points
+&lt;br&gt;
+- Smaller values of MWR (close to 1) result in a nearly uniform design
+&lt;br&gt;
+- Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/li&gt;
+
+
+&lt;li&gt;&lt;b&gt;Recommendations&lt;/b&gt;
+&lt;br&gt;
+- Construct several designs, varying the &lt;b&gt;MWR values&lt;/b&gt;, and the &lt;b&gt;scaling method&lt;/b&gt;; compare the results&lt;/li&gt;
+&lt;/ul&gt;
+See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling</string>
                 </property>
                 <property name="text">
                  <string>MWR:</string>
@@ -415,7 +446,11 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Input&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (at least 1 required): These columns are used for space filling designs as an input.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Index&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (Recommended): This column will be used as a unique label for the design points selected from the candidate set. Column 1 is preset as the Index; if you do not want to include an Index uncheck Column 1&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; font-weight:600; color:#000000;&quot;&gt;* Weight&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt; (1 required for NUSF only): This column is used to identify regions with higher and lower density.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Input&lt;/b&gt; (at least 1 required): These columns are used for space filling designs as an input.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Index&lt;/b&gt; (Recommended): This column will be used as a unique label for the design points selected from the candidate set. Column 1 is preset as the Index; if you do not want to include an Index uncheck Column 1&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Weight&lt;/b&gt; (1 required for NUSF only): This column is used to identify regions with higher and lower density.&lt;/li&gt;
+&lt;/ul&gt;</string>
            </property>
            <property name="sizeAdjustPolicy">
             <enum>QAbstractScrollArea::AdjustToContents</enum>
@@ -856,7 +891,7 @@
          </font>
         </property>
         <property name="toolTip">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;First Column:&lt;/span&gt; Criterion used to create design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Second Column:&lt;/span&gt; Number of runs in the design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Third Column:&lt;/span&gt; Selected number of random starts used to create the design&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fourth Coumn:&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; color:#000000;&quot;&gt;Minimax or maximin criterion for each design (Larger is better for maximin, smaller is better for minimax&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;First Column:&lt;/span&gt; Criterion used to create design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Second Column:&lt;/span&gt; Number of runs in the design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Third Column:&lt;/span&gt; Selected number of random starts used to create the design&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fourth Coumn:&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; color:#000000;&quot;&gt;Minimax or maximin criterion for each design (Larger is better for maximin, smaller is better for minimax)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QAbstractScrollArea::AdjustToContents</enum>

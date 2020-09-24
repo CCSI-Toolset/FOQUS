@@ -140,6 +140,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
+        self.inputSdoeTable.cellWidget(0, self.typeCol).setCurrentIndex(1)
         if self.type == 'USF':
             self.testSdoeButton.clicked.connect(self.testSdoe)
         else:
@@ -239,7 +240,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         combo.currentTextChanged.connect(self.on_combobox_changed)
 
         # Min column
-        minValue = round(min(self.candidateData.getInputData()[:,row]), 2)
+        minValue = round(min(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -247,7 +248,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = round(max(self.candidateData.getInputData()[:,row]), 2)
+        maxValue = round(max(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()

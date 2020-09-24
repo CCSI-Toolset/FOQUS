@@ -238,6 +238,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             combo.model().item(2).setEnabled(False)
         combo.currentTextChanged.connect(self.on_combobox_changed)
+        combo.setMinimumContentsLength(7)
 
         # Min column
         minValue = round(min(self.candidateData.getInputData()[:, row]), 2)

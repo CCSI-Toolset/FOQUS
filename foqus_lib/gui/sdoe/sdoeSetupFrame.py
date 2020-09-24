@@ -474,6 +474,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         combo.addItems(['Candidate', 'Previous Data'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
         combo.currentTextChanged.connect(self.on_combobox_changed)
+        combo.setMinimumContentsLength(13)
 
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False

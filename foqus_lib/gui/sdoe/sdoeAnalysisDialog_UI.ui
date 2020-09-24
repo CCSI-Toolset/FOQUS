@@ -239,7 +239,7 @@
             </font>
            </property>
            <property name="toolTip">
-            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multiple designs will be created, with the number of experimental runs ranging in size from &lt;/p&gt;&lt;p&gt;selected Minimum Design Size to selected Maximum Design Size. &lt;/p&gt;&lt;p&gt;If only one design is desired, set the Minimum and Maximum Design Size to be equal&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multiple designs will be created, with the number of experimental runs ranging in size from selected Minimum Design Size to selected Maximum Design Size. &lt;/p&gt;&lt;p&gt;If only one design is desired, set the Minimum and Maximum Design Size to be equal.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
            <property name="title">
             <string>Desired Design Sizes</string>
@@ -320,6 +320,21 @@
              <bold>true</bold>
             </font>
            </property>
+           <property name="toolTip">
+            <string>&lt;ul&gt;
+&lt;li&gt;MWR controls how much difference there is in the density of the design points
+&lt;br&gt;
+- Smaller values of MWR (close to 1) result in a nearly uniform design
+&lt;br&gt;
+- Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/li&gt;
+
+
+&lt;li&gt;&lt;b&gt;Recommendations&lt;/b&gt;
+&lt;br&gt;
+- Construct several designs, varying the &lt;b&gt;MWR values&lt;/b&gt;, and the &lt;b&gt;scaling method&lt;/b&gt;; compare the results&lt;/li&gt;
+&lt;/ul&gt;
+See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling</string>
+           </property>
            <property name="title">
             <string>Desired Design Size and NUSF Weights</string>
            </property>
@@ -371,19 +386,7 @@
               <item>
                <widget class="QLabel" name="MWR_static">
                 <property name="toolTip">
-                 <string>&lt;ul&gt;
-&lt;li&gt;MWR controls how much difference there is in the density of the design points
-&lt;br&gt;
-- Smaller values of MWR (close to 1) result in a nearly uniform design
-&lt;br&gt;
-- Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/li&gt;
-
-
-&lt;li&gt;&lt;b&gt;Recommendations&lt;/b&gt;
-&lt;br&gt;
-- Construct several designs, varying the &lt;b&gt;MWR values&lt;/b&gt;, and the &lt;b&gt;scaling method&lt;/b&gt;; compare the results&lt;/li&gt;
-&lt;/ul&gt;
-See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling</string>
+                 <string/>
                 </property>
                 <property name="text">
                  <string>MWR:</string>

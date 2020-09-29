@@ -7,9 +7,7 @@ See LICENSE.md for license and copyright details.
 """
 import os
 import logging
-from PyQt5 import uic
-from PyQt5.QtWidgets import QInputDialog, QAbstractItemView
-from PyQt5.QtCore import QObject, QEvent, QDataStream, Qt, pyqtSlot
+from PyQt5 import QtCore, QtWidgets, uic
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
@@ -23,12 +21,12 @@ def _list_item_mime_to_text(mime_data, c=False):
     data = mime_data.data('application/x-qabstractitemmodeldatalist')
     if not data:
         return
-    ds = QDataStream(data)
+    ds = QtCore.QDataStream(data)
     ds.readInt32() # read row (don't need)
     ds.readInt32() # read col (don't need)
     value = None
     for i in range(ds.readInt32()):
-        if Qt.ItemDataRole(ds.readInt32()) == Qt.DisplayRole:
+        if QtCore.Qt.ItemDataRole(ds.readInt32()) == QtCore.Qt.DisplayRole:
             value = ds.readQVariant()
             break
     if value is None:
@@ -63,7 +61,7 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self.delButton.clicked.connect(self.del_current)
         self.doneButton.clicked.connect(self.close)
         self.comboBox.currentIndexChanged.connect(self.select_calc)
-        self.colListWidget.setDragDropMode(QAbstractItemView.DragOnly)
+        self.colListWidget.setDragDropMode(QtWidgets.QAbstractItemView.DragOnly)
         self.expressionEdit.canInsertFromMimeData = _canInsertFromMimeData
         self._current = self.comboBox.currentText()
         if len(self._current) < 1:
@@ -79,7 +77,7 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self._current = None
         self.comboBox.removeItem(self.comboBox.currentIndex())
 
-    @pyqtSlot(int)
+    @QtCore.pyqtSlot(int)
     def select_calc(self, i):
         name = self.comboBox.currentText()
         self._current = name
@@ -103,11 +101,11 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self.comboBox.setCurrentText(self._current)
 
     def add_dialog(self):
-        newName, ok = QInputDialog.getText(
+        newName, ok = QtWidgets.QInputDialog.getText(
             self, "Column Name", "New column name:")
         if ok and newName != '': # if name supplied and not canceled
             if newName in self.dat.flowsheet.results.calculated_columns:
-                QMessageBox.information(
+                QtWidgets.QMessageBox.information(
                     self, "Error", "The column already exists.")
             else:
                 self.add_calc(newName)

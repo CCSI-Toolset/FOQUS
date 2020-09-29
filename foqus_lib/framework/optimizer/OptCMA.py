@@ -28,6 +28,7 @@ import logging
 import math
 import numpy
 import os
+import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the CMA-ES python script is available and import it if

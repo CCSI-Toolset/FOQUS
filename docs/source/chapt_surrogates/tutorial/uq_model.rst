@@ -17,6 +17,8 @@ the association back to python.exe.
 The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
 this file is located in: **examples/tutorial_files/Surrogates**
 
+.. note:: |examples_reminder_text|
+
 #. Load a fresh session by clicking the Session button from the Home
    window. Select Open Session and then navigate to the above-mentioned folder,
    and select “Rosenbrock_no_vectors.foqus.” This will load a

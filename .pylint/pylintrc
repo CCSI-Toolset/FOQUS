@@ -1,0 +1,8 @@
+
+[MASTER]
+init-hook="import sys; sys.path.append('.pylint')"
+load-plugins=foqus_transform
+extension-pkg-whitelist=PyQt5
+
+[TYPECHECK]
+ignored-modules=win32process,win32api,winshell,adodbapi,scipy.spatial

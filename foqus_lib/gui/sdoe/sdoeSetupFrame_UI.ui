@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1035</height>
+    <width>1440</width>
+    <height>855</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -48,7 +48,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Sequential Design of Experiments (SDOE) Simulation Ensembles</string>
+      <string>Sequential Design of Experiments (SDOE)</string>
      </property>
      <property name="flat">
       <bool>false</bool>
@@ -66,7 +66,7 @@
            </font>
           </property>
           <property name="title">
-           <string>Ensemble Selection</string>
+           <string>Design Setup</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_2">
            <item>
@@ -83,10 +83,11 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to clone ensemble.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to duplicate selected candidate set or previous data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>Clone Selected</string>
+                <string>Clone 
+Selected</string>
                </property>
               </widget>
              </item>
@@ -99,10 +100,11 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to generate a new ensemble.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Generate a set of candidate input combinations based on your input factors. The candidate set will be used to create your designed experiment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>Add New...</string>
+                <string>Generate New 
+Candidate Set</string>
                </property>
               </widget>
              </item>
@@ -115,10 +117,11 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to save ensemble as a .csv file.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to save selected candidate set or previous data as a new .csv file&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>Save Selected...</string>
+                <string>Save 
+Selected</string>
                </property>
               </widget>
              </item>
@@ -131,10 +134,11 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to delete ensemble.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click to delete selected candidate set or previous data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>Delete Selected</string>
+                <string>Delete 
+Selected</string>
                </property>
               </widget>
              </item>
@@ -147,11 +151,11 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Click to load an existing ensemble
-saved as a .csv file.</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Upload a candidate set file, which contains pre-generated input combinations based on your input factors. The candidate set will be used to create your designed experiment.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
-                <string>Load from File...</string>
+                <string>Load Existing
+ Set</string>
                </property>
               </widget>
              </item>
@@ -198,9 +202,16 @@ selection-color: rgb(0, 0, 0);</string>
              </column>
              <column>
               <property name="text">
-               <string>Descriptor</string>
+               <string>File Name</string>
               </property>
              </column>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="instructions_static">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If you have a candidate set: &lt;/li&gt;&lt;/ul&gt;&lt;ol style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 2;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Press Load Existing Set and upload. Set File Type to Candidate. &lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If you also have previous data, press Load Existing Set and upload. Set File Type to Previous Data. &lt;/li&gt;&lt;/ol&gt;&lt;ul style=&quot;margin-top: 0px; margin-bottom: 0px; margin-left: 0px; margin-right: 0px; -qt-list-indent: 1;&quot;&gt;&lt;li style=&quot; margin-top:12px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;If you do not have a candidate set, press “Generate New Candidate Set”&lt;/li&gt;&lt;li style=&quot; margin-top:0px; margin-bottom:12px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;When finished identifying previous data and candidate sets, press Continue.&lt;/li&gt;&lt;/ul&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
             </widget>
            </item>
            <item>
@@ -231,7 +242,7 @@ selection-color: rgb(0, 0, 0);</string>
 candidate and history files.</string>
                </property>
                <property name="text">
-                <string>Confirm</string>
+                <string>Continue</string>
                </property>
                <property name="autoRepeatDelay">
                 <number>300</number>
@@ -259,7 +270,7 @@ candidate and history files.</string>
            </font>
           </property>
           <property name="title">
-           <string>Ensemble Aggregation</string>
+           <string>Design Construction</string>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
@@ -271,7 +282,7 @@ candidate and history files.</string>
              </row>
              <row>
               <property name="text">
-               <string>History File</string>
+               <string>Previous Experiments/Data</string>
               </property>
              </row>
              <row>
@@ -281,7 +292,7 @@ candidate and history files.</string>
              </row>
              <row>
               <property name="text">
-               <string>SDOE Method</string>
+               <string>Design Method</string>
               </property>
              </row>
              <column>

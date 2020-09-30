@@ -45,7 +45,17 @@ from itertools import product
 # If not the Surrogate Based Optimization plug-in will not be available.
 
 try:
-    from pyomo.environ import *
+    # add direct imports (in addition to existing wildcard import)
+    # to make pylint happy without affecting the existing runtime behavior
+    from pyomo.environ import (
+        Var,
+        Objective,
+        Constraint,
+        ConstraintList,
+        ConcreteModel,
+        PositiveReals,
+        value,
+    )
     from pyomo.opt import SolverFactory
     import pyutilib.subprocess.GlobalData
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False

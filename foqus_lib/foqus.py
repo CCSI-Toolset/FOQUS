@@ -41,6 +41,14 @@ def guiImport():
     # GUI Imports
     try: # Check if the PySide libraries are available
         import PyQt5
+        # QtWidgets, QtGui, and QtCore are used in this module,
+        # but they might not be available in PyQt5 without importing them first
+        # in most circumstances, they will be already imported
+        # from the imports in foqus_lib.framework.session.session
+        # to be on the safe side, we run these imports explicitly here, too
+        import PyQt5.QtWidgets
+        import PyQt5.QtGui
+        import PyQt5.QtCore
         import matplotlib
         matplotlib.use('Qt5Agg')
         matplotlib.rcParams['backend']='Qt5Agg'

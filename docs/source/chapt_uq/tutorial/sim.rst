@@ -11,6 +11,8 @@ In this tutorial, a simulation ensemble is created (using FOQUS) and run.
 The FOQUS file for this tutorial is **Rosenbrock_no_vectors.foqus**, and
 this file is located in: **examples/tutorial_files/UQ/Tutorial_1**
 
+.. note:: |examples_reminder_text|
+
 #. From the FOQUS main screen, click the **Session** button and then
    select **Open Session** to open a session. Browse to the
    folder shown above, and select the

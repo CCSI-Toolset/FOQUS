@@ -135,11 +135,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Sample Size NUSF Combo Box
         self.sampleSizeNUSF_comboBox.addItems(['10', '20', '30', '40', '50', '60', '75', '100', '150', '200', '500', '1000'])
-        self.sampleSizeNUSF_comboBox.setCurrentIndex(2)
+        self.sampleSizeNUSF_comboBox.setCurrentIndex(4)
         self.sampleSizeNUSF_comboBox.currentTextChanged.connect(self.on_size_combobox_changed)
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
+        self.inputSdoeTable.cellWidget(0, self.typeCol).setCurrentIndex(1)
         if self.type == 'USF':
             self.testSdoeButton.clicked.connect(self.testSdoe)
         else:
@@ -237,9 +238,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         else:
             combo.model().item(2).setEnabled(False)
         combo.currentTextChanged.connect(self.on_combobox_changed)
+        combo.setMinimumContentsLength(7)
 
         # Min column
-        minValue = round(min(self.candidateData.getInputData()[:,row]), 2)
+        minValue = round(min(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -247,7 +249,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = round(max(self.candidateData.getInputData()[:,row]), 2)
+        maxValue = round(max(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()
@@ -321,6 +323,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             newViewButton = True
             viewButton = QPushButton()
             viewButton.setText('View')
+            viewButton.setToolTip("View table and plot the design.")
 
         viewButton.setProperty('row', row)
         if newViewButton:

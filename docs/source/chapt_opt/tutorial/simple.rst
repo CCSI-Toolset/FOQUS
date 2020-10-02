@@ -10,6 +10,8 @@ optimization. This tutorial builds on the tutorial in Section
 The files for this tutorial are located in:
 **examples/test_files/Optimization/Model_Files/**
 
+.. note:: |examples_reminder_text|
+
 #. Open FOQUS.
 
 #. Load the FOQUS session from the tutorial “Creating a Flowsheet with

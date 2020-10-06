@@ -19,6 +19,8 @@ make later reference easier.
 The files for this tutorial are located in:
 **examples/tutorial_files/SimSinter/Tutorial_4**
 
+.. note:: |examples_reminder_text|
+
 .. _gPROMSConfigSubSection:
 
 Configuring gPROMS to Work with SimSinter

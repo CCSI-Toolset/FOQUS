@@ -28,6 +28,7 @@ import logging
 import math
 import numpy
 import os
+import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the CMA-ES python script is available and import it if
@@ -195,10 +196,10 @@ class opt(optimization):
         self.msgQueue.put("Starting CMA-ES Optimization at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         self.msgQueue.put("\nDecision Variables\n---------------------")
-        for xn in self.prob.v:
-            self.msgQueue.put("{0}: {1} scaled: {2}".format(
-                xn, self.graph.x[xn].value, self.graph.x[xn].scaled))
-        self.msgQueue.put( "----------------------" )
+        vals = self.graph.input.getFlat(self.prob.v, scaled=False)
+        for i, xn in enumerate(self.prob.v):
+            self.msgQueue.put("{0}: {1} scaled: {2}".format(xn, vals[i], xinit[i]))
+        self.msgQueue.put("----------------------")
         #
         # Read solver options and handle any special cases of options
         #

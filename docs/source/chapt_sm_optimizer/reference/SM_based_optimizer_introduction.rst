@@ -25,6 +25,7 @@ Additional python packages required
 1.	Surrogate modeling toolbox - smt: pip install smt
 2.	Experimental design package for python - pyDOE: pip install pyDOE
 3.  Pyomo package for optimization: pip install pyomo
+4.  Mathematical optimization solver ipopt: pip install ipopt
 
 Note: smt package is required to access its Latin hypercube sampling method, which is required to generate samples and re-build surrogate models in each iteration of the algorithm.
 pyDOE package is a requirement within the smt package, which makes its installation necessary.

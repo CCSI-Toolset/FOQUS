@@ -1,5 +1,5 @@
 import os
-from PyQt5 import QtCore, uic
+from PyQt5 import QtCore, uic, QtGui
 from PyQt5 import uic
 mypath = os.path.dirname(__file__)
 _sessionDescriptionDialogUI, _sessionDescriptionDialog = \

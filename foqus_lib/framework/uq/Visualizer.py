@@ -475,7 +475,7 @@ class Visualizer:
                 error = 'Visualizer: In function showRS(), the output "%s" has no points within [%f, %f].' % (outVarName, vmin, vmax)
                 Common.showError(error)
                 return None
-            #xlabel = inVarNames[x[0]-1]
+            # xlabel = inVarNames[x[0] - 1]
             xlabel = x[0]
             ylabel = outVarName
             ftitle = '"1-Input to 1-Output" Visualization of %s Response Surface' % rsMethodName.upper()
@@ -494,8 +494,8 @@ class Visualizer:
             L = len(zdat)
             M = int(math.sqrt(L))
             zdatm = np.reshape(zdatm, [M,M], order='F')
-            #xlabel = inVarNames[x[0]-1]
-            #ylabel = inVarNames[x[1]-1]
+            # xlabel = inVarNames[x[0] - 1]
+            # ylabel = inVarNames[x[1] - 1]
             xlabel = x[0]
             ylabel = x[1]
             zlabel = outVarName
@@ -517,9 +517,9 @@ class Visualizer:
                 error = 'Visualizer: In function showRS(), the output "%s" has no points within [%f, %f].' % (outVarName, vmin, vmax)
                 Common.showError(error)
                 return None
-            # xlabel = inVarNames[x[0]-1]
-            # ylabel = inVarNames[x[1]-1]
-            # zlabel = inVarNames[x[2]-1]
+            # xlabel = inVarNames[x[0] - 1]
+            # ylabel = inVarNames[x[1] - 1]
+            # zlabel = inVarNames[x[2] - 1]
             xlabel = x[0]
             ylabel = x[1]
             zlabel = x[2]

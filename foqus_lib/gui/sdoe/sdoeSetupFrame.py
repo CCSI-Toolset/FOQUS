@@ -541,7 +541,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
 
-        combo.model().item(2).setEnabled(False)
         combo.setToolTip("<ul>"
                          "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
                          "out throughout the input space. Use when the goal is to collect information across the "

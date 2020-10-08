@@ -3,7 +3,7 @@ from scipy.stats import rankdata
 from .distance import compute_dist
 import time
 
-# -----------------------------------
+
 def compute_dmat(df, xcols, wcol, hist=None):
     # Inputs:
     #     df - pandas dataframe of size (nd, nx+1) containing scaled weights
@@ -19,6 +19,7 @@ def compute_dmat(df, xcols, wcol, hist=None):
     dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
     return dmat  # symmetric distance matrix
 
+
 def compute_min_params(dmat):
     # Input:
     #   dmat - numpy array of shape (M, M) where M = nx+nh
@@ -32,6 +33,7 @@ def compute_min_params(dmat):
     mties = mdpts.shape[0]                    # number of points returned
     mdpts = np.unique(mdpts.flatten())
     return md, mdpts, mties
+
 
 def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     # Inputs:
@@ -57,8 +59,8 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         m = rcand_norm.apply(lambda r: sum(r[xcols]**2), axis=1)
         row = m*row[wcol]*rcand[wcol]
         dmat = np.copy(dmat_)
-        dmat[k,:] = row
-        dmat[:,k] = row.T
+        dmat[k, :] = row
+        dmat[:, k] = row.T
         np.fill_diagonal(dmat, val)
         return dmat
 
@@ -73,16 +75,16 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         dmat = update_dmat(row, rcand, xcols, wcol, dmat_, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
-            mties = mt0[i,j]
+            mties = mt0[i, j]
         return rcand, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
     d0 = np.empty((int(2*mties), ncand))
     mt0 = np.empty((int(2*mties), ncand))
-    tuples = [(i,j) for i in range(len(mdpts)) for j in range(ncand)]
+    tuples = [(i, j) for i in range(len(mdpts)) for j in range(ncand)]
     for pt in tuples:
-        i,j = pt
-        _, _, d0[i,j], _, mt0[i,j] = step(pt, rcand, cand, xcols, wcol, mdpts, dmat)
+        i, j = pt
+        _, _, d0[i, j], _, mt0[i, j] = step(pt, rcand, cand, xcols, wcol, mdpts, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -96,7 +98,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         nselect = []
         for k, pt in enumerate(pts):
             i, j = pt
-            if (mt0[i,j] < mties):
+            if mt0[i, j] < mties:
                 nselect.append(k)
         if nselect:
             pt = pts[np.random.choice(nselect)]
@@ -106,7 +108,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
             
     return rcand, md, mdpts, mties, dmat, update
 
-# -----------------------------------
+
 def scale_xs(df_, xcols):
     # Inputs:
     #     df_ - pandas dataframe of size (nd, nx+1) containing original inputs
@@ -172,11 +174,11 @@ def inv_scale_xs(df_, xmin, xmax, xcols):
     df[xcols] = (xs+1)/2*(xmax-xmin)+xmin
     return df
 
-# -----------------------------------
-def criterion(cand,    # candidates
-              args,    # maximum number of iterations & mwr values
-              nr,      # number of restarts (each restart uses a random set of <nd> points)
-              nd,      # design size <= len(candidates)
+
+def criterion(cand,     # candidates
+              args,     # maximum number of iterations & mwr values
+              nr,       # number of restarts (each restart uses a random set of <nd> points)
+              nd,       # design size <= len(candidates)
               mode='maximin', hist=None):
 
     ncand = len(cand)
@@ -226,9 +228,10 @@ def criterion(cand,    # candidates
             update = True
             t = 0
 
-            while update and (t<T):
+            while update and (t < T):
                 update = False
-                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand, ncand, idx, idw, md, mdpts, mties, dmat)
+                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand, ncand, idx, idw,
+                                                                              md, mdpts, mties, dmat)
                                                                             
                 t = t+1
 

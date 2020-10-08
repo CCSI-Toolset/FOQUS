@@ -3,17 +3,17 @@ import numpy as np
 from .distance import compute_dist
 import time
 
-# -----------------------------------
+
 def compute_min_dist(mat, scl, hist=None):
     dmat = compute_dist(mat, scl=scl, hist=hist)
     min_dist = np.min(dmat, axis=0)
     return dmat, min_dist
 
 
-def criterion(cand,    # candidates
-              args,    # scaling factors for included columns
-              nr,      # number of restarts (each restart uses a random set of <nd> points)
-              nd,      # design size <= len(candidates)
+def criterion(cand,     # candidates
+              args,     # scaling factors for included columns
+              nr,       # number of restarts (each restart uses a random set of <nd> points)
+              nd,       # design size <= len(candidates)
               mode='maximin', hist=None):
 
     mode = mode.lower()
@@ -28,6 +28,7 @@ def criterion(cand,    # candidates
         cond = lt
 
     # indices of type ...
+    id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     
     # scaling factors
@@ -61,6 +62,7 @@ def criterion(cand,    # candidates
             best_dmat = dmat         # used for ranking candidates
 
         elapsed_time = time.time() - t0
+    best_cand.insert(loc=0, column=id_, value=best_cand.index)
 
     results = {'best_cand': best_cand,
                'best_index': best_index,

@@ -28,37 +28,62 @@ def run(config_file, nd, test=False):
     
     mode = config['METHOD']['mode']
     nr = int(config['METHOD']['number_random_starts'])
+
     hfile = config['INPUT']['history_file']
     cfile = config['INPUT']['candidate_file']
     include = [s.strip() for s in config['INPUT']['include'].split(',')]
+
     max_vals = [float(s) for s in config['INPUT']['max_vals'].split(',')]
     min_vals = [float(s) for s in config['INPUT']['min_vals'].split(',')]
+
     types = [s.strip() for s in config['INPUT']['types'].split(',')]
+    # 'Input' columns
+    idx = [x for x, t in zip(include, types) if t == 'Input']
+    # 'Index' column (should only be one)
+    id_ = [x for x, t in zip(include, types) if t == 'Index']
+    if id_:
+        assert len(id_) == 1, 'Multiple INDEX columns detected. There should only be one INDEX column.'
+        id_ = id_[0]
+    else:
+        id_ = None
+
     outdir = config['OUTPUT']['results_dir']
 
     sf_method = config['SF']['sf_method']
-    if sf_method == 'nusf':
-      weight_mode = config['WEIGHT']['weight_mode']
-      assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
-      
-      scale_method = config['SF']['scale_method']
-      assert(scale_method in ['direct_mwr', 'ranked_mwr'])
-      mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
 
-      args = {'max_iterations': 100,
-              'mwr_values': mwr_values,
-              'scale_method': scale_method}
-      from .nusf import criterion
+    if sf_method == 'nusf':
+        # 'Weight' column (should only be one)
+        idw = [x for x, t in zip(include, types) if t == 'Weight']
+        assert len(idw) == 1, 'Multiple WEIGHT columns detected. There should only be one WEIGHT column.'
+        idw = idw[0]
+
+        weight_mode = config['WEIGHT']['weight_mode']
+        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
+      
+        scale_method = config['SF']['scale_method']
+        assert(scale_method in ['direct_mwr', 'ranked_mwr'])
+        mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
+
+        args = {'icol': id_,
+                'xcols': idx,
+                'wcol': idw,
+                'max_iterations': 100,
+                'mwr_values': mwr_values,
+                'scale_method': scale_method}
+        from .nusf import criterion
     
     if sf_method == 'usf':
-        scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
-        args = {'scale_factors': scl}
+        scl = np.array([ub-lb for ub, lb in zip(max_vals, min_vals)])
+        args = {'icol': id_,
+                'xcols': idx,
+                'scale_factors': pd.Series(scl, index=include)}
         from .usf import criterion
 
     if sf_method == 'irsf':
         args = {'max_iterations': 1000,
                 'ws': np.linspace(0.1, 0.9, 5),
-                'idx': [x for x, t in zip(include, types) if t == 'Input'],
+                'icol': id_,
+                'idx': idx,
                 'idy': [x for x, t in zip(include, types) if t == 'Response']}
         from .irsf import criterion
 
@@ -68,49 +93,30 @@ def run(config_file, nd, test=False):
 
     # load candidates
     if cfile:
-        cand = load(cfile)
+        cand = load(cfile, index=id_)
         if len(include) == 1 and include[0] == 'all':
             include = list(cand)
-        if sf_method == 'nusf' and weight_mode == 'by_user':
-          
-            # move the weight column to the last column
-            # if nusf, one of the columns is expected to be the weight vector
-            i = types.index('Weight')  
-            wcol = include[i]   # weight column name
-            wts = cand[wcol]    
-            cand = cand.drop(columns=[wcol])
-            xcols = list(cand)  # input column names
-            cand[wcol] = wts
-            
-            from .nusf import scale_xs
-            cand, xmin, xmax = scale_xs(cand, xcols)
-            args['xmin'] = xmin
-            args['xmax'] = xmax
-            args['wcol'] = wcol
-            args['xcols'] = xcols
-            
+
     # load history
-    hist = None
-    if hist is None:
-        pass
+    if hfile != '':
+        hist = load(hfile, index=id_)
     else:
-        hist = load(hfile)
-        
+        hist = None
+
     # do a quick test to get an idea of runtime
     if test:
         if sf_method == 'irsf':
-            results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist, test=True)
+            results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)
             return results['t1'], results['t2']
         else:
             t0 = time.time()
-            _results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+            _results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
             elapsed_time = time.time() - t0
             return elapsed_time
-        t0 = time.time()
 
     # otherwise, run sdoe for real
     t0 = time.time()
-    results = criterion(cand, include, args, nr, nd, mode=mode, hist=hist)
+    results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
     elapsed_time = time.time() - t0
 
     # save the output

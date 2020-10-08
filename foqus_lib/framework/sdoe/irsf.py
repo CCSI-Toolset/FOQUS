@@ -5,16 +5,14 @@ import pandas as pd
 import time
 
 
-def criterion(cand, include, args, nr, nd, mode='maximin', hist=[], test=False):
+def criterion(cand, args, nr, nd, mode='maximin', hist=[], test=False):
+    _hist = hist
     inp_x = cand[args['idx']]
     xcols = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
     inp_y = cand[args['idy']]
     ycols = list(inp_y.columns)
     norm_y = unitscale_cand(inp_y)
-
-    if hist:
-        _hist = hist[include].values
 
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
     if test:

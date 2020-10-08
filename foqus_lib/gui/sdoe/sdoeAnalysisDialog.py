@@ -44,7 +44,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     testRuntime = []
 
-    def __init__(self, candidateData, dname, analysis = None, historyData=None, type = None, parent=None):
+    def __init__(self, candidateData, dname, analysis=None, historyData=None, type=None, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.candidateData = candidateData
@@ -76,7 +76,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.infoTable.setItem(self.candidateFileRow, 0, item)
 
         # History File
-        if historyData == None:
+        if historyData is None:
             item = QTableWidgetItem('None')
         else:
             item = QTableWidgetItem(historyData.getModelName())
@@ -95,7 +95,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.outputDirRow, 0, item)
 
-        ## Connections here
+        # Connections here
         self.loadAnalysisButton.clicked.connect(self.populateAnalysis)
         self.orderAnalysisButton.clicked.connect(self.orderDesign)
         self.deleteAnalysisButton.clicked.connect(self.deleteAnalysis)
@@ -104,14 +104,15 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.progress_groupBox.setEnabled(False)
         self.progress2_groupBox.setEnabled(False)
 
-        #USF, NUSF, IRSF conditions
+        # USF, NUSF, IRSF conditions
         if self.type == 'NUSF':
             self.Minimax_radioButton.setEnabled(False)
             self.Maximin_radioButton.setChecked(True)
             self.range_groupBox.setHidden(True)
             self.rangeIRSF_groupBox.setHidden(True)
             self.progress_groupBox.setHidden(True)
-            self.analysisTable.setHorizontalHeaderLabels(['MWR Value', 'Design Size, d', '# of Random Starts, n', 'Runtime (in sec)', 'Criterion Value', 'Plot SDOE'])
+            self.analysisTable.setHorizontalHeaderLabels(['MWR Value', 'Design Size, d', '# of Random Starts, n',
+                                                          'Runtime (in sec)', 'Criterion Value', 'Plot SDOE'])
 
         elif self.type == 'IRSF':
             self.Minimax_radioButton.setEnabled(False)
@@ -120,7 +121,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.range_groupBox.setHidden(True)
             self.rangeNUSF_groupBox.setHidden(True)
             self.progress_groupBox.setHidden(True)
-            self.analysisTable.setHorizontalHeaderLabels(['', 'Design Size, d', '# of Random Starts, n', 'Runtime (in sec)', '# of Designs', 'Plot SDOE'])
+            self.analysisTable.setHorizontalHeaderLabels(['', 'Design Size, d', '# of Random Starts, n',
+                                                          'Runtime (in sec)', '# of Designs', 'Plot SDOE'])
 
         elif self.type == 'USF':
             self.scalingGroup.setHidden(True)
@@ -136,11 +138,16 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
 
         # MWR combo boxes
-        self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
-        self.MWR2_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
-        self.MWR3_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
-        self.MWR4_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
-        self.MWR5_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30', '35', '40', '50', '60'])
+        self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
+                                     '35', '40', '50', '60'])
+        self.MWR2_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
+                                     '35', '40', '50', '60'])
+        self.MWR3_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
+                                     '35', '40', '50', '60'])
+        self.MWR4_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
+                                     '35', '40', '50', '60'])
+        self.MWR5_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
+                                     '35', '40', '50', '60'])
         self.MWR1_comboBox.setCurrentIndex(4)
 
         comboList = [self.MWR1_comboBox, self.MWR2_comboBox, self.MWR3_comboBox, self.MWR4_comboBox, self.MWR5_comboBox]
@@ -149,7 +156,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Sample Size NUSF and IRSF Combo Box
         if self.type == 'NUSF':
-            self.sampleSize_comboBox.addItems(['10', '20', '30', '40', '50', '60', '75', '100', '150', '200', '500', '1000'])
+            self.sampleSize_comboBox.addItems(['10', '20', '30', '40', '50', '60',
+                                               '75', '100', '150', '200', '500', '1000'])
             self.sampleSize_comboBox.setCurrentIndex(2)
             self.sampleSize_comboBox.currentTextChanged.connect(self.on_size_combobox_changed)
 
@@ -222,7 +230,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         item = QTableWidgetItem(candidateData.getModelName())
         self.infoTable.setItem(self.candidateFileRow, 0, item)
 
-        if historyData == None:
+        if historyData is None:
             item = QTableWidgetItem('None')
         else:
             item = QTableWidgetItem(historyData.getModelName())
@@ -268,7 +276,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         combo.currentTextChanged.connect(self.on_combobox_changed)
 
         # Min column
-        minValue = round(min(self.candidateData.getInputData()[:,row]), 2)
+        minValue = round(min(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.minCol)
         if item is None:
             item = QTableWidgetItem()
@@ -276,7 +284,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.inputSdoeTable.setItem(row, self.minCol, item)
 
         # Max column
-        maxValue = round(max(self.candidateData.getInputData()[:,row]), 2)
+        maxValue = round(max(self.candidateData.getInputData()[:, row]), 2)
         item = self.inputSdoeTable.item(row, self.maxCol)
         if item is None:
             item = QTableWidgetItem()
@@ -550,7 +558,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             self.showIndexBlock()
             return
         QApplication.processEvents()
-        #test using max design size and nd=200
+        # test using max design size and nd=200
         self.testRuntime = []
         runtime = sdoe.run(self.writeConfigFile(test=True), self.maxDesignSize_spin.value(), test=True)
         self.testSdoeButton.setEnabled(False)

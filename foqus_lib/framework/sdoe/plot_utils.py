@@ -107,6 +107,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
                 ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'])
                 if hf is not None:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], facecolor=fc['hist'])
+
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
                 if i == 0:

@@ -56,7 +56,7 @@ def criterion(cand,     # candidates
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
-            best_cand = rand_cand    
+            best_cand = rand_cand
             best_index = rand_index  # for debugging
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates

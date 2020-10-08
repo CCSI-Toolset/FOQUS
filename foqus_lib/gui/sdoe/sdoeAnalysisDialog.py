@@ -168,6 +168,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # Initialize inputSdoeTable
         self.updateInputSdoeTable()
+        self.inputSdoeTable.cellWidget(0, self.typeCol).setCurrentIndex(1)
         if self.type == 'USF':
             self.testSdoeButton.clicked.connect(self.testSdoe)
         elif self.type == 'NUSF':
@@ -274,6 +275,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             combo.model().item(3).setEnabled(False)
 
         combo.currentTextChanged.connect(self.on_combobox_changed)
+        combo.setMinimumContentsLength(7)
 
         # Min column
         minValue = round(min(self.candidateData.getInputData()[:, row]), 2)
@@ -365,6 +367,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             newViewButton = True
             viewButton = QPushButton()
             viewButton.setText('View')
+            viewButton.setToolTip("View table and plot the design.")
 
         viewButton.setProperty('row', row)
         if newViewButton:

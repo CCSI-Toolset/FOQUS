@@ -7,8 +7,7 @@ See LICENSE.md for license and copyright details.
 """
 import os
 
-from PyQt5 import QtCore, QtGui, uic
-from PyQt5.QtWidgets import QColorDialog, QFontDialog, QMessageBox
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 mypath = os.path.dirname(__file__)
 _dashFrameUI, _dashFrame = \
         uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))
@@ -66,12 +65,12 @@ class dashFrame(_dashFrame, _dashFrameUI):
             self.subscriptButton.setChecked( False )
 
     def color(self):
-        color = QColorDialog.getColor(self.textEdit.textColor(), self)
+        color = QtWidgets.QColorDialog.getColor(self.textEdit.textColor(), self)
         self.textEdit.setTextColor(color)
         self.textEdit.setFocus()
 
     def font(self):
-        font, ok = QFontDialog.getFont(self.format.font(), self)
+        font, ok = QtWidgets.QFontDialog.getFont(self.format.font(), self)
         if ok:
             self.format.setFont(font)
             self.textEdit.setCurrentCharFormat( self.format )

@@ -302,6 +302,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             return
         self.loadAnalysisButton.setEnabled(True)
         self.orderAnalysisButton.setEnabled(True)
+        if self.type == 'IRSF':
+            self.orderAnalysisButton.setEnabled(False)
         self.deleteAnalysisButton.setEnabled(True)
 
     def updateAnalysisTable(self):

@@ -109,6 +109,8 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=[], test=False):
 
     PV_tuple = ()
     for key in PV:
+        if len(PV[key].shape) == 1:
+            PV[key] = np.expand_dims(PV[key], axis=0)
         PV_tuple += (PV[key],)
     PV_arr = np.concatenate(PV_tuple, axis=0)
     PV_df = pd.DataFrame(data=PV_arr, columns=['Best Input', 'Best Response'])

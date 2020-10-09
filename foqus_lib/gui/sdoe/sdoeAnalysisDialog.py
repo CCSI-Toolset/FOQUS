@@ -1108,7 +1108,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         hfile = config['INPUT']['history_file']
         cfile = config['INPUT']['candidate_file']
         include = [s.strip() for s in config['INPUT']['include'].split(',')]
-        type = [s.strip() for s in config['INPUT']['type'].split(',')]
+        type = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         ## Populate gui fields with config file info
         self.Minimax_radioButton.setEnabled(False)

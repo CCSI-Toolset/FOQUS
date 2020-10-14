@@ -1,30 +1,40 @@
 import os
 import time
 import logging
+import _thread
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+import websocket
+from typing import Optional
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QTextBrowser
-
+from PyQt5.QtWidgets import QMainWindow
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
         uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))
-
+from foqus_lib.framework.session.session import session as _session
 
 class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
     #showHelpTopic = QtCore.pyqtSignal([types.StringType])
     showAbout = QtCore.pyqtSignal()
     hideHelp = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None, dat=None):
+    def __init__(self,
+            parent: Optional[QMainWindow] = None,
+            dat: Optional[_session] = None):
         """
         Node view/edit dock widget constructor
         """
+        assert isinstance(dat, _session) or dat is None, \
+            "parameter dat is %s, expecting %s" %(type(dat), _session)
+        assert isinstance(parent, QMainWindow) or parent is None, \
+            "parameter parent is %s" %(type(parent), QMainWindow)
         super(helpBrowserDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
+        self._cloud_notification = None
         self.aboutButton.clicked.connect(self.showAbout.emit)
         #self.contentsButton.clicked.connect(self.showContents)
         self.licenseButton.clicked.connect(self.showLicense)
@@ -231,3 +241,43 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             logging.getLogger("foqus." + __name__).exception(
                 "Error opening log file for log viewer, "
                 "stopping the update timer")
+
+        if self._cloud_notification is None and \
+            self.dat.foqusSettings.runFlowsheetMethod == 1:
+            # Cloud View
+            self.CloudLogView.append("== Beginning FOQUS Cloud Log")
+            url='wss://jyphn7ci0b.execute-api.us-east-1.amazonaws.com/Prod'
+            self._cloud_notification = WebSocketApp(url, self.CloudLogView,
+                self.dat.flowsheet.turbConfig)
+            _thread.start_new_thread(self._cloud_notification.run_forever, ())
+
+
+class WebSocketApp(object):
+    def __init__(self, url:str, widget:QTextBrowser, config:TurbineConfiguration):
+        assert type(widget) is QTextBrowser, type(widget)
+        assert type(config) is TurbineConfiguration, type(config)
+        websocket.enableTrace(True)
+        self.ws = websocket.WebSocketApp(url,
+                                on_message = self.on_message,
+                                on_open = self.on_open,
+                                on_error = self.on_error,
+                                on_close = self.on_close)
+        self.widget = widget
+        self.config = config
+
+    def on_message(self, message):
+        print("on_message: ", message)
+        self.widget.append(message)
+
+    def on_error(self, error):
+        self.widget.append("ERROR: %s" %(error))
+
+    def on_close(self):
+        pass
+
+    def on_open(self):
+        self.ws.send('{"action":"sendmessage", "data":"open user=%s"}' \
+            %(self.config.user))
+
+    def run_forever(self):
+        self.ws.run_forever()

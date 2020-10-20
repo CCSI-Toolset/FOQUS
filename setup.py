@@ -54,6 +54,7 @@ dist = setup(
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",
+            "foqusPSUADEClient = foqus_lib.gui.ouu.foqusPSUADEClient:main",
         ],
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).

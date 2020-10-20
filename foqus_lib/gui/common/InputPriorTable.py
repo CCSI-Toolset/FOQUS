@@ -1,6 +1,6 @@
 import os
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem, QComboBox,\
+from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QComboBox,\
     QCheckBox, QMessageBox, QAbstractItemView, QSpinBox, QFileDialog
 from PyQt5.QtGui import QColor
 import numpy as np
@@ -844,6 +844,7 @@ class InputPriorTable(QTableWidget):
             combobox.setCurrentIndex(value)
 
     def setCheckedToType(self, type):
+        QApplication.processEvents()
         col_index = self.col_index
         if isinstance(type, str): #String
             if type not in self.typeItems:
@@ -858,6 +859,7 @@ class InputPriorTable(QTableWidget):
                     combo.setCurrentIndex(type)
                 checkbox.setChecked(False)
                 checkbox.setEnabled(True)
+        QApplication.processEvents()
 
 
     def getNumDesignVariables(self):

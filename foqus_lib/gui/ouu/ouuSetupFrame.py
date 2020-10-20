@@ -34,6 +34,9 @@ _ouuSetupFrameUI, _ouuSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "ouuSetupFrame.ui"))
 
 
+PSUADE_CLIENT_EXECUTABLE_NAME = 'foqusPSUADEClient'
+
+
 class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
     plotSignal = QtCore.pyqtSignal(dict)
     NotUsedText = "Not used"
@@ -728,22 +731,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.z4SubsetSize_spin.setEnabled(False)
 
     def setupPSUADEClient(self):
-        curDir = os.getcwd()
-        mydir = os.path.dirname(__file__)
-        #Copy needed files
-        if os.name == 'nt':
-            dest1 = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src1 = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copy(src1, dest1)
-
-            dest = os.path.join(curDir, 'foqusPSUADEClient.bat')
-            src2 = os.path.join(mydir, 'foqusPSUADEClient.bat')
-            shutil.copy(src2, dest)
-        else:
-            dest = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copy(src, dest)
-        return dest
+        # TODO might need to check if using the name only (without the .exe) works correctly on Windows
+        return PSUADE_CLIENT_EXECUTABLE_NAME
 
     def analyze(self):
         dir = os.getcwd()

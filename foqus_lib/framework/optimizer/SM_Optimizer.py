@@ -55,6 +55,8 @@ try:
         ConcreteModel,
         PositiveReals,
         value,
+        log,
+        exp
     )
     from pyomo.opt import SolverFactory
     import pyutilib.subprocess.GlobalData

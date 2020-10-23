@@ -113,7 +113,7 @@ def run(config_file, nd, test=False):
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
     else:
-        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(idx))
+        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join([id_]+idx))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)

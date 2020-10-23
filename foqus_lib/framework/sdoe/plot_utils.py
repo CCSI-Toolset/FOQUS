@@ -95,7 +95,7 @@ def plot_candidates(df, hf, show, title, scatter_label):
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
                 ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'], color='b')
-                if hf:
+                if hf is not None:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], facecolor=fc['hist'], color='r', marker="*")
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
@@ -106,7 +106,7 @@ def plot_candidates(df, hf, show, title, scatter_label):
                     ax = remove_xticklabels(ax)
 
     labels = ['Frequency', scatter_label]
-    if hf:
+    if hf is not None:
         labels.append('History points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 

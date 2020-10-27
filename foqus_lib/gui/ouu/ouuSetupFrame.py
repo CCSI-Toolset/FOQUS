@@ -5,6 +5,7 @@ from .nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
+import shutil
 
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -32,9 +33,6 @@ from PyQt5.QtWidgets import QApplication, QFileDialog, QMessageBox,\
 mypath = os.path.dirname(__file__)
 _ouuSetupFrameUI, _ouuSetupFrame = \
         uic.loadUiType(os.path.join(mypath, "ouuSetupFrame.ui"))
-
-
-PSUADE_CLIENT_EXECUTABLE_NAME = 'foqusPSUADEClient'
 
 
 class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
@@ -730,9 +728,10 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.z4SubsetSize_label.setEnabled(False)
             self.z4SubsetSize_spin.setEnabled(False)
 
-    def setupPSUADEClient(self):
-        # TODO might need to check if using the name only (without the .exe) works correctly on Windows
-        return PSUADE_CLIENT_EXECUTABLE_NAME
+    def setupPSUADEClient(self, client_exe_name='foqusPSUADEClient'):
+        full_path_to_client_exe = shutil.which(client_exe_name)
+        assert full_path_to_client_exe is not None, 'The "foqusPSUADEClient" executable was not found'
+        return full_path_to_client_exe
 
     def analyze(self):
         dir = os.getcwd()

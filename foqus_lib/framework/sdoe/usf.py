@@ -28,6 +28,7 @@ def criterion(cand,    # candidates
         cond = lt
 
     # indices of type ...
+    id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     
     # scaling factors
@@ -55,12 +56,13 @@ def criterion(cand,    # candidates
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
-            best_cand = rand_cand    
+            best_cand = rand_cand
             best_index = rand_index  # for debugging
             best_val = dist          # for debugging
             best_dmat = dmat         # used for ranking candidates
 
         elapsed_time = time.time() - t0
+    best_cand.insert(loc=0, column=id_, value=best_cand.index)
 
     results = {'best_cand': best_cand,
                'best_index': best_index,

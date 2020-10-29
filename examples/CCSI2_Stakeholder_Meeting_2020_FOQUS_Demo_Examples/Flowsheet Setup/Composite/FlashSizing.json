@@ -1,0 +1,58 @@
+{
+  "title": "FlashSizing",
+  "config-version": "1.0",
+  "description": null,
+  "model": {
+    "file": "FlashSizing.xlsx",
+    "DigestValue": "3a365f76a3999d42c4fcfbfa7ff0bcc18b9d6cfe",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "AD",
+  "date": "10/20/2020",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Excel",
+    "version": "16.0",
+    "constraint": "AT-LEAST"
+  },
+  "settings": {
+    "macro": {
+      "type": "string",
+      "default": "",
+      "description": "Simulation specific setting: macro"
+    }
+  },
+  "inputs": {
+    "LIQVOLFLOW": {
+      "path": [
+        "Sheet1$B$1"
+      ],
+      "type": "double",
+      "default": 0.15,
+      "description": null,
+      "units": "m3/hr"
+    },
+    "RESIDENCETIME": {
+      "path": [
+        "Sheet1$B$2"
+      ],
+      "type": "double",
+      "default": 5.0,
+      "description": null,
+      "units": null
+    }
+  },
+  "outputs": {
+    "FLASHVESSELVOL": {
+      "path": [
+        "Sheet1$B$3"
+      ],
+      "type": "double",
+      "default": 0.025,
+      "description": null,
+      "units": null
+    }
+  }
+}

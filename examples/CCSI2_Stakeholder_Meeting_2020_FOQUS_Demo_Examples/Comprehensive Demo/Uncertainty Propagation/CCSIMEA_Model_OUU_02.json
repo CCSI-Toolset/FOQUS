@@ -1,0 +1,352 @@
+{
+  "title": "CCSIMEA_Model_OUU_02",
+  "config-version": "1.20",
+  "description": "Updated MEA based Carbon Capture System Model",
+  "model": {
+    "file": "CCSI_MEAModel_NCCC_Optimization.bkp",
+    "DigestValue": "b2ca367e660b168c501e55d55b839b496dbcd010",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [
+    {
+      "file": "ccsi10-corrected.dll",
+      "DigestValue": "5d49d4f8e4d033dfcd325254edbc12c314a42fdb",
+      "SignatureMethodAlgorithm": "sha1"
+    },
+    {
+      "file": "ccsi-corrected.opt",
+      "DigestValue": "a4cb56ced86fec9eb07a65c045e25584a149122b",
+      "SignatureMethodAlgorithm": "sha1"
+    },
+    {
+      "file": "CCSI_MEAModel_NCCC_Optimization.bkp",
+      "DigestValue": "bc1c44950e78eb6003e66f7f16ec8eb42a702658",
+      "SignatureMethodAlgorithm": "sha1"
+    }
+  ],
+  "author": "JMAD",
+  "date": "10/06/2020",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Plus",
+    "version": "36.0",
+    "constraint": "AT-LEAST"
+  },
+  "inputs": {
+    "SOLVENTABSIN": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 6803.7,
+      "description": "Total mass flowrate of lean solvent entering the absorber",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 20000.0
+    },
+    "GASABSIN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 2266.099,
+      "description": "Total mass flowrate of flue gas entering the absorber",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 8000.0
+    },
+    "xH2O": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\H2O"
+      ],
+      "type": "double",
+      "default": 7.91146,
+      "description": "H2O mole fraction in lean solvent",
+      "units": null
+    },
+    "xCO2": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.1,
+      "description": "CO2 mole fraction in lean solvent",
+      "units": null
+    },
+    "xMEA": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\FLOW\\MIXED\\MEA"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "MEA mole fraction in lean solvent",
+      "units": null
+    },
+    "GASINCO2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.17314,
+      "description": "CO2 mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINH2OFRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\H2O"
+      ],
+      "type": "double",
+      "default": 0.04623,
+      "description": "H2O mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINN2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\N2"
+      ],
+      "type": "double",
+      "default": 0.71165,
+      "description": "N2 mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "GASINO2FRXN": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\FLOW\\MIXED\\O2"
+      ],
+      "type": "double",
+      "default": 0.06898,
+      "description": "O2 mass fraction in flue gas entering the absorber",
+      "units": null
+    },
+    "LS_TEMP": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 40.97,
+      "description": "Lets you type the stream temperature.",
+      "units": "degC",
+      "min": 40.0,
+      "max": 50.0
+    },
+    "LS_PRES": {
+      "path": [
+        "\\Data\\Streams\\ABSLEAN\\Input\\PRES\\MIXED"
+      ],
+      "type": "double",
+      "default": 245.94,
+      "description": "Lets you type the stream pressure.",
+      "units": "kPa",
+      "min": 200.0,
+      "max": 500.0
+    },
+    "FG_TEMP": {
+      "path": [
+        "\\Data\\Streams\\GASIN\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 42.48,
+      "description": "Lets you type the stream temperature.",
+      "units": "degC",
+      "min": 40.0,
+      "max": 50.0
+    },
+    "ABS_PRES": {
+      "path": [
+        "\\Data\\Blocks\\ABSORBER\\Input\\PRES1"
+      ],
+      "type": "double",
+      "default": 108.82,
+      "description": "Top stage pressure.",
+      "units": "kPa",
+      "min": 100.0,
+      "max": 200.0
+    },
+    "P-1_FLOW": {
+      "path": [
+        "\\Data\\Blocks\\ABSORBER\\Subobjects\\Pumparounds\\P-1\\Input\\BASIS_CSFLOW\\P-1"
+      ],
+      "type": "double",
+      "default": 7364.83,
+      "description": "Pumparound flow rate specification.",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 15000.0
+    },
+    "P-2_FLOW": {
+      "path": [
+        "\\Data\\Blocks\\ABSORBER\\Subobjects\\Pumparounds\\P-2\\Input\\BASIS_CSFLOW\\P-2"
+      ],
+      "type": "double",
+      "default": 7421.57,
+      "description": "Pumparound flow rate specification.",
+      "units": "kg/hr",
+      "min": 1000.0,
+      "max": 15000.0
+    },
+    "FLASH_TEMP": {
+      "path": [
+        "\\Data\\Blocks\\FLASH\\Input\\TEMP"
+      ],
+      "type": "double",
+      "default": 104.81,
+      "description": "Lets you type the outlet temperature. See Help.",
+      "units": "degC",
+      "min": 90.0,
+      "max": 120.0
+    },
+    "P-1_TEMP": {
+      "path": [
+        "\\Data\\Blocks\\ABSORBER\\Subobjects\\Pumparounds\\P-1\\Input\\CS_TEMP\\P-1"
+      ],
+      "type": "double",
+      "default": 40.13,
+      "description": "Temperature of the pumparound stream at associated heater/cooler outlet.",
+      "units": "degC",
+      "min": 35.0,
+      "max": 45.0
+    },
+    "P-2_TEMP": {
+      "path": [
+        "\\Data\\Blocks\\ABSORBER\\Subobjects\\Pumparounds\\P-2\\Input\\CS_TEMP\\P-2"
+      ],
+      "type": "double",
+      "default": 43.32,
+      "description": "Temperature of the pumparound stream at associated heater/cooler outlet.",
+      "units": "degC",
+      "min": 35.0,
+      "max": 45.0
+    },
+    "VLE1": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Pure Components\\REVIEW-1\\Input\\UVALUE\\(#22,#4)"
+      ],
+      "type": "double",
+      "default": -189839800.0,
+      "description": "",
+      "units": null
+    },
+    "VLE2": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Pure Components\\REVIEW-1\\Input\\UVALUE\\(#22,#5)"
+      ],
+      "type": "double",
+      "default": -492281100.0,
+      "description": "",
+      "units": null
+    },
+    "VLE3": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Pure Components\\REVIEW-1\\Input\\UVALUE\\(#24,#4)"
+      ],
+      "type": "double",
+      "default": -330032200.0,
+      "description": "",
+      "units": null
+    },
+    "VLE4": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Pure Components\\REVIEW-1\\Input\\UVALUE\\(#24,#5)"
+      ],
+      "type": "double",
+      "default": -691107000.0,
+      "description": "",
+      "units": null
+    },
+    "VLE5": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Binary Interaction\\HENRY-1\\Input\\UVAL1\\HENRY\\(#2,#2)"
+      ],
+      "type": "double",
+      "default": 28.61651,
+      "description": "",
+      "units": null
+    },
+    "VLE6": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Binary Interaction\\HENRY-1\\Input\\UVAL2\\HENRY\\(#2,#2)"
+      ],
+      "type": "double",
+      "default": -7614.636,
+      "description": "",
+      "units": null
+    },
+    "VLE8": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Binary Interaction\\NRTL-1\\Input\\UVAL1\\NRTL\\(#0,#0)"
+      ],
+      "type": "double",
+      "default": 4.33838,
+      "description": "",
+      "units": null
+    },
+    "VLE7": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Binary Interaction\\NRTL-1\\Input\\UVAL2\\NRTL\\(#0,#0)"
+      ],
+      "type": "double",
+      "default": 3.25515,
+      "description": "",
+      "units": null
+    },
+    "VLE9": {
+      "path": [
+        "\\Data\\Properties\\Parameters\\Binary Interaction\\NRTL-1\\Input\\UVAL3\\NRTL\\(#0,#0)"
+      ],
+      "type": "double",
+      "default": -2197.532,
+      "description": "",
+      "units": null
+    },
+    "STRIP_PRES": {
+      "path": [
+        "\\Data\\Blocks\\PUMP2\\Input\\PRES"
+      ],
+      "type": "double",
+      "default": 183.87,
+      "description": "Outlet pressure.",
+      "units": "kPa",
+      "min": 180.0,
+      "max": 200.0
+    }
+  },
+  "outputs": {
+    "CO2OUT2": {
+      "path": [
+        "\\Data\\Streams\\CO24\\Output\\MASSFLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 leaving the system from Flash Drum 2",
+      "units": "kg/hr"
+    },
+    "CO2OUT1": {
+      "path": [
+        "\\Data\\Streams\\CO21\\Output\\MASSFLOW\\MIXED\\CO2"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 leaving the system from Flash Drum 1",
+      "units": "kg/hr"
+    },
+    "CO2CAPTURE": {
+      "path": [
+        "\\Data\\Flowsheeting Options\\Calculator\\CAPP\\Output\\WRITE_VAL\\3"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Percent CO2 Capture in the System",
+      "units": null
+    },
+    "REB_DUTY": {
+      "path": [
+        "\\Data\\Blocks\\REGEN\\Output\\REB_DUTY"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": null,
+      "units": "Watt"
+    }
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "title": "Aspen_Flash_Model_Edge_Con",
+  "config-version": "1.6",
+  "description": "",
+  "model": {
+    "file": "Eth_CO2_Flash.bkp",
+    "DigestValue": "ab16ee4e8ecea0b071a3d8111e5065b4375f97b8",
+    "SignatureMethodAlgorithm": "sha1"
+  },
+  "input-files": [],
+  "author": "AD",
+  "date": "7/21/2019",
+  "filetype": "sinterconfig",
+  "filetype-version": 0.3,
+  "application": {
+    "name": "Aspen Plus",
+    "version": "36.0",
+    "constraint": "AT-LEAST"
+  },
+  "inputs": {
+    "INLETFLOW": {
+      "path": [
+        "\\Data\\Streams\\ETH-CO2\\Input\\TOTFLOW\\MIXED"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Total inlet flow",
+      "units": "kg/hr",
+      "min": 50.0,
+      "max": 100.0
+    },
+    "INLETTEMP": {
+      "path": [
+        "\\Data\\Streams\\ETH-CO2\\Input\\TEMP\\MIXED"
+      ],
+      "type": "double",
+      "default": 25.0,
+      "description": "Inlet stream temperature",
+      "units": "degC",
+      "min": 25.0,
+      "max": 30.0
+    },
+    "PRES": {
+      "path": [
+        "\\Data\\Blocks\\FLASH\\Input\\PRES"
+      ],
+      "type": "double",
+      "default": 1.0,
+      "description": "Flash Pressure",
+      "units": "bar",
+      "min": 1.0,
+      "max": 10.0
+    },
+    "INLETPRES": {
+      "path": [
+        "\\Data\\Streams\\ETH-CO2\\Input\\PRES\\MIXED"
+      ],
+      "type": "double",
+      "default": 100.0,
+      "description": "Inlet stream pressure",
+      "units": "bar",
+      "min": 1.0,
+      "max": 100.0
+    },
+    "ETHFRACIN": {
+      "path": [
+        "\\Data\\Streams\\ETH-CO2\\Input\\FLOW\\MIXED\\ETHAN-01"
+      ],
+      "type": "double",
+      "default": 0.5,
+      "description": "Inlet stream ethanol mass fraction",
+      "units": null
+    },
+    "CO2FRACIN": {
+      "path": [
+        "\\Data\\Streams\\ETH-CO2\\Input\\FLOW\\MIXED\\CARBO-01"
+      ],
+      "type": "double",
+      "default": 0.5,
+      "description": "Inlet stream co2 mass fraction",
+      "units": null
+    }
+  },
+  "outputs": {
+    "ETHANVAP": {
+      "path": [
+        "\\Data\\Streams\\CO2\\Output\\MASSFLOW\\MIXED\\ETHAN-01"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of Ethanol in Vapor",
+      "units": "kg/hr"
+    },
+    "CARBOVAP": {
+      "path": [
+        "\\Data\\Streams\\CO2\\Output\\MASSFLOW\\MIXED\\CARBO-01"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 in Vapor",
+      "units": "kg/hr"
+    },
+    "ETHANLIQ": {
+      "path": [
+        "\\Data\\Streams\\ETH\\Output\\MASSFLOW\\MIXED\\ETHAN-01"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of Ethanol in Liquid",
+      "units": "kg/hr"
+    },
+    "CARBOLIQ": {
+      "path": [
+        "\\Data\\Streams\\ETH\\Output\\MASSFLOW\\MIXED\\CARBO-01"
+      ],
+      "type": "double",
+      "default": 0.0,
+      "description": "Mass Flowrate of CO2 in Liquid",
+      "units": "kg/hr"
+    },
+    "LIQVOLFLOW": {
+      "path": [
+        "\\Data\\Streams\\ETH\\Output\\VOLFLMX\\MIXED"
+      ],
+      "type": "double",
+      "default": 0.0593136646,
+      "description": null,
+      "units": "cum/hr"
+    }
+  }
+}

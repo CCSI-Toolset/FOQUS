@@ -630,7 +630,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             QApplication.processEvents()
 
         self.unfreeze()
-        self.SDOENUSF_progressBar.setValue(0)
+        self.SDOE2_progressBar.setValue(0)
         self.runSdoeNUSFButton.setText('Run SDOE')
         self.analysisGroup.setEnabled(False)
         QApplication.processEvents()

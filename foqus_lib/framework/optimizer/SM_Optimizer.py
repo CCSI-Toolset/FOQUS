@@ -178,6 +178,24 @@ class opt(optimization):
         desc="Asigning variables & evaluating model expressions at their initial values")
         
         self.options.add(
+        name='Solver Tolerance', 
+        default=1e-6,
+        dtype=float,
+        desc="Tolerance for convergence of math optimization solver")
+        
+        self.options.add(
+        name='Solver Iteration Limit', 
+        default=40,
+        dtype=float,
+        desc="Iteration limit for math optimization solver")
+        
+        self.options.add(
+        name='Linear Solver', 
+        default='mumps',
+        dtype=str,
+        desc="Linear solver used within ipopt solver")
+        
+        self.options.add(
         name='Objective Value Tolerance', 
         default=1e-03,
         dtype=float,
@@ -283,6 +301,9 @@ class opt(optimization):
         multistart = self.options['Multistart'].value
         tee = self.options['tee'].value
         Warmstart = self.options['Warmstart'].value
+        solver_tolerance = self.options['Solver Tolerance'].value
+        solver_iteration_limit = self.options['Solver Iteration Limit'].value
+        linear_solver = self.options['Linear Solver'].value
         obj_tolerance = self.options['Objective Value Tolerance'].value
         outputvar_tolerance = self.options['Inequality Constraint Tolerance'].value
         inequality_tolerance = self.options['Output Variable Tolerance'].value
@@ -440,20 +461,30 @@ class opt(optimization):
             optimizer = SolverFactory(solversource)   
             io_options = dict()
             io_options['solver'] = mathoptsolver
+            # io_options['solver']['optarg'] = {"tol":solver_tolerance,"linear_solver":linear_solver,"max_iter":solver_iteration_limit}
             io_options['mtype'] = mtype
             kwds=dict()
             kwds['io_options'] = io_options
             kwds['warmstart'] = Warmstart
             kwds['tee'] = tee
+            # optargs['tol'] = solver_tolerance
+            # optargs['linear_solver'] = linear_solver
+            # optargs['max_iter'] = solver_iteration_limit
+            # kwds['optarg'] = {"tol":solver_tolerance,"linear_solver":linear_solver,"max_iter":solver_iteration_limit}
+            
     #            
         else:
             optimizer = SolverFactory(mathoptsolver)
             kwds=dict()
             kwds['tee'] = tee
-            optimizer.options['warm_start_init_point'] = 'yes'
-            optimizer.options['tol'] = 1e-6
-            optimizer.options['linear_solver'] = "mumps"
-            optimizer.options['max_iter'] = 40
+            if Warmstart==True:
+                Warmstart_upd='yes'
+            else:
+                Warmstart_upd='no'
+            optimizer.options['warm_start_init_point'] = Warmstart_upd
+            optimizer.options['tol'] = solver_tolerance
+            optimizer.options['linear_solver'] = linear_solver
+            optimizer.options['max_iter'] = solver_iteration_limit
 
     #       Implementing multi-start approach
     

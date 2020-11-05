@@ -450,6 +450,10 @@ class opt(optimization):
             optimizer = SolverFactory(mathoptsolver)
             kwds=dict()
             kwds['tee'] = tee
+            optimizer.options['warm_start_init_point'] = 'yes'
+            optimizer.options['tol'] = 1e-6
+            optimizer.options['linear_solver'] = "mumps"
+            optimizer.options['max_iter'] = 40
 
     #       Implementing multi-start approach
     

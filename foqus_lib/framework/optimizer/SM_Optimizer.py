@@ -486,7 +486,8 @@ class opt(optimization):
             optimizer.options['linear_solver'] = linear_solver
             optimizer.options['max_iter'] = solver_iteration_limit
 
-    #       Implementing multi-start approach
+    #   Implementing multi-start approach
+        start_time_1 = time.time()
     
         decvars = [getattr(self.m,v) for v in dvar_names]
         surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
@@ -497,7 +498,7 @@ class opt(optimization):
             #Obtain the combination of all initialization points
             for var in decvars:
                 initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
-            initvals_prod = list(product(*initvals))
+            initvals_prod = list(zip(*initvals))
                 
             input_initvals = np.zeros(len(initvals_prod),dtype=object)
             output_initvals = np.zeros(len(initvals_prod),dtype=object)
@@ -567,6 +568,8 @@ class opt(optimization):
                 initout.value = -value(self.m.c[i+1].body - initout)   
                 outputinitvals[i] = initout.value
             r=optimizer.solve(self.m,**kwds)
+            
+        end_time_1 = time.time()
 
         self.msgQueue.put("****ITERATION 1****\n")
         self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
@@ -618,9 +621,10 @@ class opt(optimization):
             self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
         else:
             self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
-
+        self.msgQueue.put("Time taken to implement iteration 1 step 2 is {} s".format(end_time_1-start_time_1))
         self.m.display()
-            
+        
+        start_time_2 = time.time()
         dvar_scaled = []
 #        Linear scaling of decision variables
         for i,d in enumerate(self.prob.v):
@@ -632,13 +636,17 @@ class opt(optimization):
 #        Carrying out aspen simulation at optimum decision variable value
         xf = np.array(dvar_scaled)
         instance,cv,pv=self.f(xf)
+        end_time_2 = time.time()
+        
         self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
         self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
+        self.msgQueue.put("Time taken to implement iteration 1 step 3 is {} s".format(end_time_2-start_time_2))
         
 #       Loading the above simulation result in FOQUS flowsheet
         self.graph.loadValues(self.prob.gt.res[0])
         
 #        Termination Condition Prep
+        start_time_3 = time.time()
 #       Obtaining the values of FOQUS surrogate output variables corresponding to optimum decision variables
 #        Storing the values in a dictionary
         foqus_outvars = dict()
@@ -722,6 +730,9 @@ class opt(optimization):
             self.msgQueue.put("Surrogate Model Improvement Required")
             self.msgQueue.put("****Proceed to next iteration****\n")
             
+        end_time_3 = time.time()
+        self.msgQueue.put("Time taken to implement iteration 1 step 4 is {} s".format(end_time_3-start_time_3))
+            
         # Print final results
         if flag == 0:
             self.msgQueue.put("\n***OPTIMIZATION RESULT***\n")
@@ -742,6 +753,7 @@ class opt(optimization):
         algo_iter = 1  
         
         while flag != 0 and algo_iter <= Maxiter_Algo:
+            SM_rebuild_start = time.time()
             algo_iter += 1
 #            Changing the value of alpha after iteration 5
             if algo_iter == 5:
@@ -892,8 +904,11 @@ class opt(optimization):
             alamoOutput = os.path.join(alamoDir, alamoOutput)
             res = SurrogateParser.parseAlamo(alamoOutput)  
             self.result = res
+            
+            SM_rebuild_end = time.time()
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
+            self.msgQueue.put("Time taken to rebuild surrogate model is {} s".format(SM_rebuild_end-SM_rebuild_start))
             
             #***Change Surrogate Input Variable Bounds in Pyomo Model
             #.setlb and .setub methods for surrvarin_names_pyomo
@@ -942,13 +957,14 @@ class opt(optimization):
             self.m.pprint()
             
             #*******Implementing multi-start approach*******
+            start_time = time.time()
             if multistart==True:
                 initvals = []
     
                 #Obtain the combination of all initialization points
                 for var in decvars:
                     initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
-                initvals_prod = list(product(*initvals))
+                initvals_prod = list(zip(*initvals))
                 
                 input_initvals = np.zeros(len(initvals_prod),dtype=object)
                 output_initvals = np.zeros(len(initvals_prod),dtype=object)
@@ -1034,7 +1050,8 @@ class opt(optimization):
                     initout.value = -value(self.m.c[i+1].body - initout)
             else:
                 r=optimizer.solve(self.m,**kwds)
-        
+            end_time = time.time()
+            
             self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
             if multistart==True:
                 self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
@@ -1055,10 +1072,11 @@ class opt(optimization):
             else:
                 self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
                      
-                
+            self.msgQueue.put("Time taken to implement iteration {} step 2 is {} s".format(algo_iter,end_time-start_time))    
             self.m.display()
             
 #            ***Checking termination conditions to continue iterations*** 
+            start_time_1 = time.time()
             dvar_scaled = []
     #        Linear scaling of decision variables
             for i,d in enumerate(self.prob.v):
@@ -1071,14 +1089,17 @@ class opt(optimization):
     #        Carrying out aspen simulation at optimum decision variable value
             xf = np.array(dvar_scaled)
             instance,cv,pv=self.f(xf)
+            end_time_1 = time.time()
             
             self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
             self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
+            self.msgQueue.put("Time taken to implement iteration {} step 3 is {} s".format(algo_iter,end_time_1-start_time_1))
             
     #       Loading the above simulation result in FOQUS flowsheet
             self.graph.loadValues(self.prob.gt.res[0])
             
     #        Termination Condition Prep
+            start_time_2 = time.time()
     #       Obtaining the values of FOQUS surrogate output variables corresponding to optimum decision variables
     #        Storing the values in a dictionary
             foqus_outvars = dict()
@@ -1153,7 +1174,9 @@ class opt(optimization):
                 self.msgQueue.put("None of the termination conditions satisfied")
                 self.msgQueue.put("Surrogate Model Improvement Required")
                 self.msgQueue.put("****Proceed to next iteration****\n")
-                
+            end_time_2 = time.time()
+            self.msgQueue.put("Time taken to implement iteration {} step 4 is {} s".format(algo_iter,end_time_2-start_time_2))
+            
             # Print final results, and generate parity plot python file if optimization successful
             if flag == 0:
                 self.msgQueue.put("\n***OPTIMIZATION RESULT***\n")

@@ -43,8 +43,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     dname = os.path.join(os.getcwd(),'SDOE_files')
 
-
-    ## This delegate is used to make the checkboxes in the delete table centered
+    # This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
 
         def paint(self, painter, option, index):
@@ -61,7 +60,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         def editorEvent(self, event, model, option, index):
             # make sure that the item is checkable
-            flags = model.flags(index);
+            flags = model.flags(index)
             if not (flags & Qt.ItemIsUserCheckable) or not(flags & Qt.ItemIsEnabled):
                 return False
             # make sure that we have a check state
@@ -74,14 +73,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 checkRect = QStyle.alignedRect(option.direction, Qt.AlignCenter, option.decorationSize,
                                                QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
                                                      option.rect.width() - (2 * textMargin),
-                                                     option.rect.height()));
+                                                     option.rect.height()))
                 if not checkRect.contains(event.pos()):
                     return False
             elif event.type() == QEvent.KeyPress:
-                if (event.key() != Qt.Key_Space and event.key() != Qt.Key_Select):
+                if event.key() != Qt.Key_Space and event.key() != Qt.Key_Select:
                     return False
             else:
-                return False;
+                return False
 
             if int(value) == Qt.Checked:
                 state = Qt.Unchecked
@@ -89,7 +88,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 state = Qt.Checked
 
             return model.setData(index, state, Qt.CheckStateRole)
-
 
     def __init__(self, dat, parent=None):
         super(sdoeSetupFrame, self).__init__(parent=parent)
@@ -101,7 +99,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
         self.filterFrame.layout().addWidget(self.filterWidget)
 
-        ###### Set up simulation ensembles section
+        # Set up simulation ensembles section
         self.addSimulationButton.clicked.connect(self.addSimulation)
         self.addSimulationButton.setEnabled(True)
         self.addDataSignal.connect(self.addDataToSimTable)
@@ -123,17 +121,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
 
-
-        ##### Set up Ensemble Aggregation section
+        # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
 
-        ##### Set up UQ toolbox
+        # Set up UQ toolbox
         self.dataTabs.setEnabled(False)
 
-        ### Perform all connects here
+        # Perform all connects here
         # ........ DATA PAGE ..............
         self.dataTabs.setCurrentIndex(0)
         self.dataTabs.currentChanged[int].connect(self.getDataTab)
@@ -149,8 +146,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # Create SDOE directory
         Common.initFolder(self.dname)
 
-
-    ########################### Go through list of ensembles ##############################
+    # Go through list of ensembles
 
     def confirmEnsembles(self):
         QApplication.processEvents()
@@ -205,6 +201,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def createAggData(self):
         cand_agg, hist_agg = self.aggregateEnsembleList()  # these are dfs
+        cand_agg.insert(0, "__id", range(1, cand_agg.shape[0] + 1), True)
 
         cand_fname = os.path.join(self.dname, 'aggregate_candidates.csv')
         df_utils.write(cand_fname, cand_agg)
@@ -214,6 +211,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if len(hist_agg) == 0:
             historyData = None
         else:
+            hist_agg.insert(0, "__id",  range(cand_agg.shape[0]+1, cand_agg.shape[0]+hist_agg.shape[0]+1), True)
             df_utils.write(hist_fname, hist_agg)
             historyData = LocalExecutionModule.readSampleFromCsvFile(hist_fname, askForNumInputs=False)
 
@@ -255,13 +253,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             self.deleteTable.setRowCount(0)
             self.deleteTable.setColumnCount(0)
             return
-        self.dataTabs.setEnabled(False) #Prevent uq toolbox changes
+        self.dataTabs.setEnabled(False)  # Prevent uq toolbox changes
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
 
         row = selectedIndexes[0].row()
-        sim = self.dat.sdoeSimList[row]
+        _sim = self.dat.sdoeSimList[row]
 
         self.freeze()
         self.initUQToolBox()
@@ -282,9 +280,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if result == QDialog.Rejected:
             return
 
-        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addDataSignal, parent=self)
         simDialog.show()
-
 
     def cloneSimulation(self):
         # Get selected row
@@ -300,7 +297,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Update table
         self.updateSimTable()
-
 
     def loadSimulation(self):
 
@@ -326,7 +322,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 import traceback
                 traceback.print_exc()
                 QtGui.QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual about the format.')
+                                           'File does not have the correct format! Please consult the users manual '
+                                           'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
                 self.unfreeze()
@@ -407,14 +404,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         previewData = self.dat.sdoeSimList[row]
         hname = None
+        usf = None
         nusf = None
+        irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
     def editAgg(self):
         sender = self.sender()
-        row = sender.property('row')
+        _row = sender.property('row')
         candidateData, historyData = self.createAggData()
 
         previewData = candidateData
@@ -422,14 +421,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             hname = os.path.join(self.dname, historyData.getModelName())
         else:
             hname = None
+        usf = None
         nusf = None
+        irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
-        return (len(cand_list) > 0)
+        return len(cand_list) > 0
 
     def addDataToSimTable(self, data):
         if data is None:
@@ -450,7 +451,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dat.sdoeFilterResultsList[row] = res
 
         self.updateSimTableRow(row)
-
 
     def updateSimTableRow(self, row):
         data = self.dat.sdoeSimList[row]
@@ -489,7 +489,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewButton.clicked.connect(self.editSim)
             self.filesTable.setCellWidget(row, self.setupCol, viewButton)
 
-
         # Resize table
         self.resizeColumns()
         minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
@@ -498,14 +497,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             minWidth += self.filesTable.verticalScrollBar().width()
         self.filesTable.setMinimumWidth(minWidth)
 
-
     def resizeColumns(self):
         self.filesTable.resizeColumnsToContents()
         self.aggFilesTable.resizeColumnsToContents()
 
-
     def updateAggTableRow(self, row):
-
         viewButton = self.aggFilesTable.cellWidget(row, self.viewCol)
         newViewButton = False
         if viewButton is None:
@@ -525,7 +521,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(0, self.descriptorCol, item)
 
         item = self.aggFilesTable.item(1, self.descriptorCol)
-        if historyData == None:
+        if historyData is None:
             item.setText('None')
         else:
             item.setText(historyData.getModelName())
@@ -567,9 +563,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         dname = self.dname
         if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling (USF)':
             type = 'USF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling (NUSF)':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space ' \
+                                                                                        'Filling (NUSF)':
             type = 'NUSF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space Filling (IRSF)':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space ' \
+                                                                                        'Filling (IRSF)':
             type = 'IRSF'
         analysis = None
 

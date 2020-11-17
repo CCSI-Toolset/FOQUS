@@ -3,7 +3,7 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 import sys
 import os
 import subprocess
@@ -44,7 +44,7 @@ dist = setup(
     maintainer = ver.maintainer,
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
-    packages = find_namespace_packages(),
+    packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},

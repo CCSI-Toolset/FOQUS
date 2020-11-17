@@ -4,8 +4,6 @@ from .distance import compute_dist
 import time
 import pandas as pd #only used for the final output of criterion
 
-# -----------------------------------
-
 def compute_dmat(weight_mat, xcols, wcol, hist=None):
     # Inputs:
     #  weight_mat - numpy array of size (nd, nx+1) containing scaled weights 
@@ -21,6 +19,7 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
     dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
     return dmat  # symmetric distance matrix
 
+
 def compute_min_params(dmat):
     # Input:
     #   dmat - numpy array of shape (M, M) where M = nx+nh
@@ -34,6 +33,7 @@ def compute_min_params(dmat):
     mties = mdpts.shape[0]                    # number of points returned
     mdpts = np.unique(mdpts.flatten())
     return md, mdpts, mties
+
 
 def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     # Inputs:
@@ -59,8 +59,8 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         m = np.sum(rcand_norm**2, axis=1)     
         row = m*row[wcol]*rcand[:, wcol] 
         dmat = np.copy(dmat_)
-        dmat[k,:] = row
-        dmat[:,k] = row.T
+        dmat[k, :] = row
+        dmat[:, k] = row.T
         np.fill_diagonal(dmat, val)
         return dmat
 
@@ -80,6 +80,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     # initialize d0 and mt0
     d0 = np.empty((int(2*mties), ncand))
     mt0 = np.empty((int(2*mties), ncand))
+
     for pt in np.ndindex(len(mdpts), ncand):
         i, j = pt
         _, _, d0[i, j], _, mt0[i, j] = step(pt, rcand, cand, xcols, wcol, mdpts, dmat)
@@ -102,7 +103,6 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
             
     return rcand, md, mdpts, mties, dmat, update
 
-# -----------------------------------
 def scale_xs(mat_, xcols):
     # Inputs:
     #   mat_ - numpy array of size (nd, nx+1) containing original inputs
@@ -168,7 +168,6 @@ def inv_scale_xs(mat_, xmin, xmax, xcols):
     return mat
 
 
-# -----------------------------------
 def criterion(cand,    # candidates 
               args,    # maximum number of iterations & mwr values
               nr,      # number of restarts (each restart uses a random set of <nd> points)
@@ -227,8 +226,9 @@ def criterion(cand,    # candidates
             update = True
             t = 0
 
-            while update and (t<T):
+            while update and (t < T):
                 update = False
+
                 rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand_np, ncand, idx_np, idw_np, md, mdpts, mties, dmat) #bottleneck in old code
                                                      
                 t = t+1

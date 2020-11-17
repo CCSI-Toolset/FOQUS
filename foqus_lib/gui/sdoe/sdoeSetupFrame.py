@@ -168,7 +168,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
         QApplication.processEvents()
-        
+
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
         
@@ -369,6 +369,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dat.sdoeFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
+        QApplication.processEvents()
         numSims = len(self.dat.sdoeSimList)
         if numSims > 0:
             if row >= numSims:
@@ -376,7 +377,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 row = numSims - 1
             sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
-        # self.updateSimTable()
         QApplication.processEvents()
 
     def saveSimulation(self):
@@ -536,10 +536,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
         combo = QComboBox()
-        combo.addItems(['Uniform Space Filling', 'Non-Uniform Space Filling', 'Input-Response Space Filling'])
+        combo.addItems(['Uniform Space Filling (USF)', 'Non-Uniform Space Filling (NUSF)',
+                        'Input-Response Space Filling (IRSF)'])
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
-        combo.model().item(2).setEnabled(False)
+
         combo.setToolTip("<ul>"
                          "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
                          "out throughout the input space. Use when the goal is to collect information across the "
@@ -564,10 +565,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling':
+        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling (USF)':
             type = 'USF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling (NUSF)':
             type = 'NUSF'
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space Filling (IRSF)':
+            type = 'IRSF'
         analysis = None
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)

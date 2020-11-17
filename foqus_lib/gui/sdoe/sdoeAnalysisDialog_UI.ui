@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
-    <height>918</height>
+    <width>1920</width>
+    <height>1035</height>
    </rect>
   </property>
   <property name="font">
@@ -274,14 +274,14 @@
             <item row="0" column="0">
              <widget class="QLabel" name="minDesignSize_static">
               <property name="text">
-               <string>Minimum Design Size</string>
+               <string>Min Design Size</string>
               </property>
              </widget>
             </item>
             <item row="1" column="0">
              <widget class="QLabel" name="maxDesignSize_static">
               <property name="text">
-               <string>Maximum Design Size</string>
+               <string>Max Design Size</string>
               </property>
              </widget>
             </item>
@@ -338,9 +338,9 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
            <property name="title">
             <string>Desired Design Size and NUSF Weights</string>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_3">
+           <layout class="QVBoxLayout" name="verticalLayout_6">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
               <item>
                <widget class="QLabel" name="designSize_static">
                 <property name="text">
@@ -351,13 +351,10 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
               <item>
                <widget class="QSpinBox" name="designSize_spin">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>Specifies the size of the design to be created.</string>
                 </property>
                 <property name="minimum">
                  <number>2</number>
@@ -385,9 +382,6 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
               </item>
               <item>
                <widget class="QLabel" name="MWR_static">
-                <property name="toolTip">
-                 <string/>
-                </property>
                 <property name="text">
                  <string>MWR:</string>
                 </property>
@@ -441,7 +435,70 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
           </widget>
          </item>
          <item>
+          <widget class="QGroupBox" name="rangeIRSF_groupBox">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Desired Design Size</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="designSizeIRSF_static">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Desgin Size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="designSizeIRSF_spin">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimum">
+               <number>2</number>
+              </property>
+              <property name="value">
+               <number>11</number>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="horizontalSpacer_10">
+              <property name="orientation">
+               <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>40</width>
+                <height>20</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </widget>
+         </item>
+         <item>
           <widget class="QTableWidget" name="inputSdoeTable">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="font">
             <font>
              <weight>50</weight>
@@ -453,10 +510,15 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
 &lt;li&gt;&lt;b&gt;Input&lt;/b&gt; (at least 1 required): These columns are used for space filling designs as an input.&lt;/li&gt;
 &lt;li&gt;&lt;b&gt;Index&lt;/b&gt; (Recommended): This column will be used as a unique label for the design points selected from the candidate set. Column 1 is preset as the Index; if you do not want to include an Index uncheck Column 1&lt;/li&gt;
 &lt;li&gt;&lt;b&gt;Weight&lt;/b&gt; (1 required for NUSF only): This column is used to identify regions with higher and lower density.&lt;/li&gt;
-&lt;/ul&gt;</string>
+&lt;li&gt;&lt;b&gt;Response&lt;/b&gt; (IRSF only): response/output for space filling.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
+</string>
            </property>
            <property name="sizeAdjustPolicy">
-            <enum>QAbstractScrollArea::AdjustToContents</enum>
+            <enum>QAbstractScrollArea::AdjustIgnored</enum>
            </property>
            <column>
             <property name="text">
@@ -542,6 +604,11 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
           </widget>
          </item>
         </layout>
+        <zorder>inputSdoeTable</zorder>
+        <zorder>range_groupBox</zorder>
+        <zorder>rangeNUSF_groupBox</zorder>
+        <zorder>rangeIRSF_groupBox</zorder>
+        <zorder>testSdoe_static</zorder>
        </widget>
       </item>
       <item>
@@ -720,7 +787,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="progressNUSF_groupBox">
+       <widget class="QGroupBox" name="progress2_groupBox">
         <property name="font">
          <font>
           <pointsize>9</pointsize>
@@ -748,7 +815,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="sampleSizeNUSF_static">
+            <widget class="QLabel" name="sampleSize2_static">
              <property name="text">
               <string>Number of Random Starts: n =</string>
              </property>
@@ -758,9 +825,9 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="sampleSizeNUSF_comboBox">
+            <widget class="QComboBox" name="sampleSize_comboBox">
              <property name="toolTip">
-              <string>Select a suitable Number of Random Starts. Quality of designs created improves with more starts but will take longer to create. (Default value is 50.) Then Select “Run SDOE”</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a suitable Number of Random Starts. Quality of designs created improves with more starts but will take longer to create. (Default value is 50.) Then Select “Run SDOE”&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -795,7 +862,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="estimateNUSF_static">
+            <widget class="QLabel" name="estimate2_static">
              <property name="text">
               <string>Estimated Runtime:</string>
              </property>
@@ -805,7 +872,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="timeNUSF_dynamic">
+            <widget class="QLabel" name="time2_dynamic">
              <property name="text">
               <string>0 seconds</string>
              </property>
@@ -829,21 +896,21 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_infSave_5">
            <item>
-            <widget class="QLabel" name="designInfoNUSF_dynamic">
+            <widget class="QLabel" name="designInfo2_dynamic">
              <property name="text">
               <string>mwr = 5, n = 30</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QProgressBar" name="SDOENUSF_progressBar">
+            <widget class="QProgressBar" name="SDOE2_progressBar">
              <property name="value">
               <number>0</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="runSdoeNUSFButton">
+            <widget class="QPushButton" name="runSdoe2Button">
              <property name="text">
               <string>Run SDOE</string>
              </property>
@@ -871,22 +938,15 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
      <property name="title">
       <string>Created Designs</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="3" column="0">
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="0" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
        <widget class="QTableWidget" name="analysisTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <weight>50</weight>
@@ -897,7 +957,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;First Column:&lt;/span&gt; Criterion used to create design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Second Column:&lt;/span&gt; Number of runs in the design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Third Column:&lt;/span&gt; Selected number of random starts used to create the design&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fourth Coumn:&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; color:#000000;&quot;&gt;Minimax or maximin criterion for each design (Larger is better for maximin, smaller is better for minimax)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
         </property>
         <column>
          <property name="text">
@@ -931,45 +991,86 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
         </column>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="deleteAnalysisButton">
-        <property name="text">
-         <string>Delete Design</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="analysisInstructions_static">
-        <property name="text">
-         <string>* All design results saved in SDOE output directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="loadAnalysisButton">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>Go Back to Generate Design</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="orderAnalysisButton">
-        <property name="text">
-         <string>Order Design</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="2" column="2">
+         <widget class="QPushButton" name="deleteAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="analysisInstructions_static">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>* All design results saved in SDOE output directory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="loadAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>Go Back to Generate Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="orderAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Order Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

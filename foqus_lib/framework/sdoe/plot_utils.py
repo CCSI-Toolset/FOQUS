@@ -73,6 +73,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
         if hf is not None:
             vals_h = hf[wcol].values
             area['hist'] = 30 * abs((vals_h - np.mean(vals_h)) / np.std(vals_h)) + 10
+
     # process inputs to be shown
     if show is None:
         show = list(df)
@@ -84,6 +85,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
         ax = fig.add_subplot(111)
         xname = show[0]
         _ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
+
 
     else:  # multiple inputs
 
@@ -229,6 +231,7 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
                                                                               str(round(pf['Best Response'][dataind], 4)))
             scatter_label = 'Design Points'
             figi = plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=colors[dataind])
+            
         figi.show()
         return True
 

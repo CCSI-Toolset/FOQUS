@@ -774,19 +774,16 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.updateRunTimeNUSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
                                                                int(self.sampleSize_comboBox.currentText())))
-                                                               int(self.sampleSize_comboBox.currentText())))
 
     def on_size_IRSF_combobox_changed(self):
         self.updateRunTimeIRSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('d = %d, n = %d' % (int(self.designSizeIRSF_spin.value()),
-                                                             int(self.sampleSize_comboBox.currentText())))
                                                              int(self.sampleSize_comboBox.currentText())))
 
     def on_MWR_combobox_changed(self):
         if len(self.testRuntime) > 0:
             self.updateRunTimeNUSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
-                                                               int(self.sampleSize_comboBox.currentText())))
                                                                int(self.sampleSize_comboBox.currentText())))
 
     def checkType(self):

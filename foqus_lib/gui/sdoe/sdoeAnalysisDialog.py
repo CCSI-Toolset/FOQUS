@@ -135,6 +135,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
 
+
         # MWR combo boxes
         self.MWR1_comboBox.addItems(['', '2', '3', '4', '5', '6', '7', '8', '9', '10', '12', '15', '20', '25', '30',
                                      '35', '40', '50', '60'])
@@ -394,6 +395,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         #     self.loadFromConfigFileNUSF(config_file)
         # elif self.type == 'IRSF':
         #     self.loadFromConfigFileIRSF(config_file)
+
         QApplication.processEvents()
 
     def checkInclude(self):
@@ -588,6 +590,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         # if self.hasIndex():
         #     self.showIndexBlock()
         #     return
+
         self.runSdoe2Button.setText('Stop SDOE')
         size = self.designSize_spin.value()
         mwr_list = []
@@ -771,16 +774,19 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.updateRunTimeNUSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
                                                                int(self.sampleSize_comboBox.currentText())))
+                                                               int(self.sampleSize_comboBox.currentText())))
 
     def on_size_IRSF_combobox_changed(self):
         self.updateRunTimeIRSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('d = %d, n = %d' % (int(self.designSizeIRSF_spin.value()),
+                                                             int(self.sampleSize_comboBox.currentText())))
                                                              int(self.sampleSize_comboBox.currentText())))
 
     def on_MWR_combobox_changed(self):
         if len(self.testRuntime) > 0:
             self.updateRunTimeNUSF(self.testRuntime[0])
         self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
+                                                               int(self.sampleSize_comboBox.currentText())))
                                                                int(self.sampleSize_comboBox.currentText())))
 
     def checkType(self):
@@ -1115,6 +1121,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designInfo2_dynamic.setText('mwr = %d, n = %d' % (int(self.MWR1_comboBox.currentText()),
                                                                int(self.sampleSize_comboBox.currentText())))
 
+  
     def loadFromConfigFileIRSF(self, config_file):
         # Read from config file
         config = configparser.ConfigParser(allow_no_value=True)
@@ -1127,6 +1134,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         type = [s.strip() for s in config['INPUT']['types'].split(',')]
 
         # Populate gui fields with config file info
+
         self.Minimax_radioButton.setEnabled(False)
         self.Maximin_radioButton.setChecked(True)
         self.designSizeIRSF_spin.setValue(design_size)

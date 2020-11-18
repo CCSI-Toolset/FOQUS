@@ -6,6 +6,7 @@ import pandas as pd  # only used for the final output of criterion
 
 
 def compute_dmat(weight_mat, xcols, wcol, hist_xs=None, hist_wt=None):
+
     # Inputs:
     #  weight_mat - numpy array of size (nd, nx+1) containing scaled weights 
     #       xcols - list of integers corresponding to column indices for inputs 

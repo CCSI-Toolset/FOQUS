@@ -3,7 +3,7 @@ import os
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.sdoe import plot_utils
 
-#from Preview_UI import Ui_Dialog
+# from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt

@@ -16,7 +16,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print('Candidates saved to {}'.format(fnames['cand']))
         np.save(fnames['dmat'], results['best_dmat'])
         print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
-                                                              results['best_val'], elapsed_time)))
+                                                                  results['best_val'], elapsed_time)))
         print('Candidate distances saved to {}'.format(fnames['dmat']))
 
 
@@ -58,7 +58,8 @@ def run(config_file, nd, test=False):
         idw = idw[0]
 
         weight_mode = config['WEIGHT']['weight_mode']
-        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
+        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. ' \
+                                         'Only BY_USER is currently supported.'.format(weight_mode)
       
         scale_method = config['SF']['scale_method']
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])

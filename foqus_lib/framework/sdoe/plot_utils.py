@@ -41,7 +41,7 @@ def load_data(fname, hname):
     # load history
     hf = None
     if hname:
-        hf = load(hname)
+        hf = load(hname, index='__id')
         # make sure headers match
         assert (names == list(hf))
     return df, hf
@@ -224,9 +224,10 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
             df = results[dataind+1]['des']
             hf = None
             show = None
-            title = 'Design %s, Input Distance: %s, Response Distance: %s' % (dataind + 1,
-                                                                              str(round(pf['Best Input'][dataind], 4)),
-                                                                              str(round(pf['Best Response'][dataind], 4)))
+            title = 'Design %s, Input Distance: %s, ' \
+                    'Response Distance: %s' % (dataind + 1,
+                                               str(round(pf['Best Input'][dataind], 4)),
+                                               str(round(pf['Best Response'][dataind], 4)))
             scatter_label = 'Design Points'
             figi = plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=colors[dataind])
         figi.show()
@@ -240,9 +241,9 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
     for i, c in enumerate(colors):
         x = pf['Best Input'][i]
         y = pf['Best Response'][i]
-        l = pf['Design'][i]
+        lab = pf['Design'][i]
 
-        ax.scatter(x, y, label=l, c=c, marker='D', zorder=2)
+        ax.scatter(x, y, label=lab, c=c, marker='D', zorder=2)
 
     ax.legend(title='Designs', ncol=4)
 
@@ -256,5 +257,3 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
     fig.canvas.mpl_connect('pick_event', onpick)
 
     plt.show()
-
-

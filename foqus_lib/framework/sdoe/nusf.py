@@ -90,12 +90,12 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     pts = np.argwhere(d0 == d0_max)
     update = True
     if d0_max > md:
-        md = d0_max
+        _md = d0_max
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
         rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
     elif d0_max == md:
-        nselect = np.argwhere(mt0[pts[:,0], pts[:,1]] < mties).flatten()
+        nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
             rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
@@ -115,7 +115,7 @@ def scale_xs(mat_, xcols):
     #   xmax - numpy array of shape (1, nx) 
 
     mat = mat_.copy()
-    xs = mat[:,xcols]
+    xs = mat[:, xcols]
 
     # scale the inputs
     # save xmin, xmax for inverse scaling later
@@ -192,7 +192,7 @@ def criterion(cand,    # candidates
     idx = args['xcols']  # Input
     idw = args['wcol']   # Weight
 
-    #np indices
+    # np indices
     idx_np = [cand.columns.get_loc(i) for i in idx]
     idw_np = cand.columns.get_loc(idw)
 

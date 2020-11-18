@@ -44,11 +44,11 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
     testRuntime = []
 
-    def __init__(self, candidateData, dname, analysis=None, historyData=None, type=None, parent=None):
+    def __init__(self, candidateData, dname, analysis=[], historyData=None, type=None, parent=None):
         super(sdoeAnalysisDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.candidateData = candidateData
-        self.analysis = []
+        self.analysis = analysis
         self.historyData = historyData
         self.dname = dname
         self.type = type
@@ -481,11 +481,13 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             elif self.Ranked_radioButton.isChecked():
                 f.write('scale_method = ranked_mwr\n')
             mwr_list = []
-            for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(), self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(), self.MWR5_comboBox.currentText()]:
+            for item in [self.MWR1_comboBox.currentText(), self.MWR2_comboBox.currentText(),
+                         self.MWR3_comboBox.currentText(), self.MWR4_comboBox.currentText(),
+                         self.MWR5_comboBox.currentText()]:
                 if item != "":
                     mwr_list.append(item)
             if test:
-                f.write('mwr_values = %s\n' %mwr_list[0])
+                f.write('mwr_values = %s\n' % mwr_list[0])
                 f.write('\n')
             else:
                 f.write('mwr_values = %s\n' % ','.join(mwr_list))
@@ -499,7 +501,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         # OUTPUT
         f.write('[OUTPUT]\n')
-        f.write('results_dir = %s\n' %outdir)
+        f.write('results_dir = %s\n' % outdir)
         f.write('\n')
 
         f.close()
@@ -933,8 +935,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
-            timeMin = int((estimateTime - (timeHr*3600))/60)
-            timeSec = (estimateTime - (timeHr*3600))%60
+            timeMin = int((estimateTime - (timeHr * 3600))/60)
+            timeSec = (estimateTime - (timeHr * 3600)) % 60
             self.time_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def updateRunTimeNUSF(self, runtime):
@@ -953,8 +955,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
-            timeMin = int((estimateTime - (timeHr*3600))/60)
-            timeSec = (estimateTime - (timeHr*3600))%60
+            timeMin = int((estimateTime - (timeHr * 3600))/60)
+            timeSec = (estimateTime - (timeHr * 3600)) % 60
             self.time2_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def updateRunTimeIRSF(self, runtime):
@@ -967,8 +969,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         elif estimateTime > 3600:
             timeHr = int(estimateTime/3600)
-            timeMin = int((estimateTime - (timeHr*3600))/60)
-            timeSec = (estimateTime - (timeHr*3600))%60
+            timeMin = int((estimateTime - (timeHr * 3600))/60)
+            timeSec = (estimateTime - (timeHr * 3600)) % 60
             self.time2_dynamic.setText(f"{timeHr:2d}:{timeMin:02d}:{timeSec:02d}")
 
     def editSdoe(self):
@@ -1059,8 +1061,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
 
         self.sampleSize_spin.setValue(int(np.log10(nr)))
         self.updateRunTime(self.testRuntime[0])
-        self.designInfo_dynamic.setText('d = %d, n = %d' %(int(self.minDesignSize_spin.value()),
-                                                           10 ** int(self.sampleSize_spin.value())))
+        self.designInfo_dynamic.setText('d = %d, n = %d' % (int(self.minDesignSize_spin.value()),
+                                                            10 ** int(self.sampleSize_spin.value())))
 
         QApplication.processEvents()
 
@@ -1182,7 +1184,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         QApplication.restoreOverrideCursor()
 
 
-class SdoeAnalysisData():
+class SdoeAnalysisData:
     def __init__(self,
                  sf_method=None,
                  optimality=None,

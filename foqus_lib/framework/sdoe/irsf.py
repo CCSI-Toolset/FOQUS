@@ -5,7 +5,7 @@ import pandas as pd
 import time
 
 
-def criterion(cand, args, nr, nd, mode='maximin', hist=[], test=False):
+def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     _hist = hist
     inp_x = cand[args['idx']]
     xcols = list(inp_x.columns)
@@ -62,7 +62,8 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=[], test=False):
     best_xdes, best_ydes, bestcrit, bestpoints, best_mdties, best_wdmat, \
     best_wdxmat, best_wdymat, PFxdes, PFydes, PFmdvals = {}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {}
 
-    # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function and returning
+    # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function
+    # and returning
     # Possible to parallelize: one call to criterion_irsf for each weight (5 different values)
     for i in range(len(args['ws'])):
         print("Weight: ", round(args['ws'][i], 1))
@@ -154,7 +155,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     return inv_norm_cand
 
 
-##### BN: take a look at this function
+# BN: take a look at this function
 def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     # This is the main routine that constructs the ParetoFront
     curpf = np.matrix(curpf)
@@ -190,8 +191,8 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
 
     if len(cond3) == 0:
         newpf = np.empty((0, np.shape(newpt)[1]))
-        newpfdesX =  np.empty((0, np.shape(newdesX)[1]))
-        newpfdesY =  np.empty((0, np.shape(newdesY)[1]))
+        newpfdesX = np.empty((0, np.shape(newdesX)[1]))
+        newpfdesY = np.empty((0, np.shape(newdesY)[1]))
 
     else:
         newpf = np.asarray(curpf)[np.asarray(cond3).flatten()]
@@ -207,7 +208,7 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     return newpfdesX, newpfdesY, newpf
 
 
-##### BN: take a look at this function
+# BN: take a look at this function
 def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xmat,
                       dist_ymat, xmat, ymat, mpdx, mpdy, PFxdes, PFydes, PFmat):
     Nxx = int(np.shape(Dx)[0])
@@ -250,7 +251,8 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
             y = (np.repeat(np.reshape(ymat[j, :], (ncolsyy, 1)), Nyy, axis=1).T - new_ydes[:, :])
             new_dist_ymat[cur_mdpts[i], :] = np.sum(np.square(y), axis=1).T / mpdy
             new_dist_ymat[:, cur_mdpts[i]] = new_dist_ymat[cur_mdpts[i], :].T
-            new_dist_xymat[:, cur_mdpts[i]] = (wt) * new_dist_xmat[:, cur_mdpts[i]] + (1 - wt) * new_dist_ymat[:, cur_mdpts[i]]
+            new_dist_xymat[:, cur_mdpts[i]] = wt * new_dist_xmat[:, cur_mdpts[i]] + (1 - wt) * \
+                                              new_dist_ymat[:, cur_mdpts[i]]
             new_dist_xymat[cur_mdpts[i], :] = new_dist_xymat[:, cur_mdpts[i]].T
 
             np.fill_diagonal(new_dist_xmat, 9999)
@@ -258,7 +260,7 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
             np.fill_diagonal(new_dist_xymat, 9999)
             newvals = np.matrix([np.min(new_dist_xmat), np.min(new_dist_ymat)])
             d0[i, j] = np.min(new_dist_xymat)
-            mt0[i, j]=((new_dist_xymat == d0[i, j]).sum()) / 2
+            mt0[i, j] = ((new_dist_xymat == d0[i, j]).sum()) / 2
             temppf1, temppf2, temppf3 = checkon2xy(new_xdes, new_ydes, newvals.flatten(), PFdesX, PFdesY, PFvals)
             PFvals = temppf3
             PFdesX = temppf1
@@ -281,7 +283,8 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
         cur_dist_ymat[cur_mdpts[ni], :] = np.sum(np.square(y), axis=1).T / mpdy
         cur_dist_ymat[:, cur_mdpts[ni]] = cur_dist_ymat[cur_mdpts[ni], :].T
 
-        cur_dist_xymat[:, cur_mdpts[ni]] = wt * cur_dist_xmat[:, cur_mdpts[ni]] + (1 - wt) * cur_dist_ymat[:, cur_mdpts[ni]]
+        cur_dist_xymat[:, cur_mdpts[ni]] = wt * cur_dist_xmat[:, cur_mdpts[ni]] + (1 - wt) * \
+                                           cur_dist_ymat[:, cur_mdpts[ni]]
         cur_dist_xymat[cur_mdpts[ni], :] = cur_dist_xymat[:, cur_mdpts[ni]].T
         np.fill_diagonal(cur_dist_xmat, 9999)
         np.fill_diagonal(cur_dist_ymat, 9999)
@@ -296,7 +299,7 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
         nr = np.nonzero(d0 == np.max(d0))[0]
         nc = np.nonzero(d0 == np.max(d0))[1]
         nselect = []
-        for j in range(len(nr)) :
+        for j in range(len(nr)):
             if mt0[nr[j], nc[j]] < cur_mties:
                 nselect = np.append(nselect, j)
 
@@ -311,7 +314,8 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
 
             y = np.repeat(np.reshape(ymat[nj, :], (ncolsyy, 1)), Nyy, axis=1).T - cur_ydes[:, :]
             cur_dist_ymat[cur_mdpts[ni], :] = np.sum(np.square(y), axis=1).T / mpdy
-            cur_dist_xymat[:, cur_mdpts[ni]] = wt * cur_dist_xmat[:, cur_mdpts[ni]] + (1 - wt) * cur_dist_ymat[:, cur_mdpts[ni]]
+            cur_dist_xymat[:, cur_mdpts[ni]] = wt * cur_dist_xmat[:, cur_mdpts[ni]] + (1 - wt) * \
+                                               cur_dist_ymat[:, cur_mdpts[ni]]
 
             np.fill_diagonal(cur_dist_xmat, 9999)
             np.fill_diagonal(cur_dist_ymat, 9999)
@@ -325,7 +329,7 @@ def update_min_xydist(Dx, Dy, wt, md_xy, mdpoints, mties_xy, dist_xymat, dist_xm
            cur_dist_xmat, cur_dist_ymat, PFdesX, PFdesY, PFvals, update
 
 
-##### BN: take a look at this function
+# BN: take a look at this function
 def XY_min_dist(Dx, Dy, wt, mpdx, mpdy):  # numpy array of shape (N, ncols) and type 'float'
 
     Nx, ncolsx = Dx.shape
@@ -353,10 +357,10 @@ def XY_min_dist(Dx, Dy, wt, mpdx, mpdy):  # numpy array of shape (N, ncols) and 
     return dist_xymat, dist_xmat, dist_ymat, md_xy, mdpts, mties
 
 
-##### BN: take a look at this function
-def irsf_tex(cand,  # input space candidate
-             resp,  # response space candidate
-             numpt, # number of points (design size N)
+# BN: take a look at this function
+def irsf_tex(cand,   # input space candidate
+             resp,   # response space candidate
+             numpt,  # number of points (design size N)
              mpdx,
              mpdy,
              wt,
@@ -551,7 +555,7 @@ def update_min_dist(cand_rand, md, mdpts1, mties, Xdist_mat, cand):
             new_w_mat[:, cur_mdpts[i]] = new_w_mat[cur_mdpts[i], :].T
             np.fill_diagonal(new_w_mat, 9999)
             d0[i, j] = np.min(new_w_mat)
-            mt0[i, j]=((new_w_mat == d0[i, j]).sum()) / 2
+            mt0[i, j] = ((new_w_mat == d0[i, j]).sum()) / 2
     update = False
     if np.max(d0) > cur_md:
         cur_md = np.max(d0)
@@ -574,8 +578,8 @@ def update_min_dist(cand_rand, md, mdpts1, mties, Xdist_mat, cand):
         nr = np.nonzero(d0.T == np.max(d0))[1]
         nc = np.nonzero(d0.T == np.max(d0))[0]
         nselect = []
-        for j in range(len(nr)) :
-            if mt0[nr[j],nc[j]] < cur_mties:
+        for j in range(len(nr)):
+            if mt0[nr[j], nc[j]] < cur_mties:
                 nselect = np.append(nselect, j)
         if len(nselect) > 0:
             ns = int(np.random.choice(nselect, size=1))

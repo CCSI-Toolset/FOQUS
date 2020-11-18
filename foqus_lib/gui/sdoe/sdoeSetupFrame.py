@@ -41,7 +41,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
-    dname = os.path.join(os.getcwd(),'SDOE_files')
+    dname = os.path.join(os.getcwd(), 'SDOE_files')
 
     # This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
@@ -372,7 +372,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             if row >= numSims:
                 self.filesTable.selectRow(numSims - 1)
                 row = numSims - 1
-            sim = self.dat.sdoeSimList[row]
+            _sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
         QApplication.processEvents()
 
@@ -460,7 +460,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setText(str(row + 1))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         item.setFlags(flags & mask)
         self.filesTable.setItem(row, self.numberCol, item)
 
@@ -569,7 +569,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space ' \
                                                                                         'Filling (IRSF)':
             type = 'IRSF'
-        analysis = None
+        analysis = []
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
@@ -643,7 +643,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # reset components
         self.unfreeze()
 
-    def refreshFilterData(self, updateResult = False):
+    def refreshFilterData(self, updateResult=False):
         indexes = self.filesTable.selectedIndexes()
         if len(indexes) == 0:
             return
@@ -662,7 +662,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterWidget.init(self.dat)
         self.filterWidget.setResults(res)
         self.filterWidget.refreshContents()
-
 
     # ........ DATA PAGE: DELETE TAB ...................
     def initDelete(self):
@@ -698,7 +697,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteTable.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
         inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         end = self.nSamples
 
@@ -764,7 +763,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if check is not None:
             self.freeze()
             rows = set([i.row() for i in self.deleteTable.selectionModel().selection().indexes()])
-            nSamples = self.deleteTable.rowCount() - 1
+            _nSamples = self.deleteTable.rowCount() - 1
             for r in rows:
                 item = self.deleteTable.item(r, 0)
                 if item is None:
@@ -774,13 +773,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     item.setFlags(flags & mask)
                     item.setCheckState(check)
                     self.deleteTable.setItem(r, 0, item)
-                if (item is not None):
+                if item is not None:
                     item.setCheckState(check)
             self.activateDeleteButton(rows.pop(), 0)
             self.unfreeze()
 
     def scrollDeleteTable(self, first):
-        if first >= self.inputData.shape[0]: return
+        if first >= self.inputData.shape[0]:
+            return
         self.isDrawingDeleteTable = True
         if first == 0:
             first = 1
@@ -792,7 +792,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
         outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         numRows = self.deleteTable.rowCount()
         end = first + 15
@@ -835,7 +835,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.isDrawingDeleteTable = False
 
-
     def redrawDeleteTable(self):
         # Does not rewrite input values for speed purposes.  These never change
 
@@ -845,7 +844,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.sdoeSimList[row]
-        data = data.getValidSamples() # filter out samples that have no output results
+        _data = data.getValidSamples()  # filter out samples that have no output results
 
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
         outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
@@ -868,9 +867,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     else:
                         item.setText('')
                     if r < self.nSamples - self.nSamplesAdded:
-                        color = outputColor
+                        _color = outputColor
                     else:
-                        color = outputRefinedColor
+                        _color = outputRefinedColor
                     item.setBackground(outputColor)
 
         self.deleteTable.resizeRowsToContents()
@@ -883,7 +882,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.isDrawingDeleteTable = False
         self.unfreeze()
 
-
     def getDeleteSelections(self):
 
         nSamples = self.deleteTable.rowCount() - 1
@@ -892,7 +890,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.sdoeSimList[row]
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
 
         # get data info
         nInputs = data.getNumInputs()
@@ -901,11 +899,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selections
         samples = []
         vars = []
-        for i in range(1,nSamples+1):
+        for i in range(1, nSamples+1):
             item = self.deleteTable.item(i, 0)
             if (item is not None) and item.checkState() == Qt.Checked:
                 samples.append(i - 1)
-        for i in range(1,nVars+1):
+        for i in range(1, nVars+1):
             item = self.deleteTable.item(0, i)
             if (item is not None) and item.checkState() == Qt.Checked:
                 vars.append(i - 1)
@@ -923,7 +921,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             outVars = outVars.tolist()
             outVars = [x-nInputs for x in outVars]
 
-        return (samples, inVars, outVars, nSamples, nInputs, nOutputs)  # first 3 output args are 1-indexed
+        return samples, inVars, outVars, nSamples, nInputs, nOutputs  # first 3 output args are 1-indexed
 
     def activateDeleteButton(self, row, column):
 
@@ -991,7 +989,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = index.row()
         col = index.column()
 
-
         modifiedColor = QtGui.QColor(0, 250, 0, 100)      # translucent green
 
         # get selected row
@@ -1000,9 +997,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         nInputs = data.getNumInputs()
         outputData = data.getOutputData()
-        nOutputs = data.getNumOutputs()
-        nSamples = data.getNumSamples()
-
+        _nOutputs = data.getNumOutputs()
+        _nSamples = data.getNumSamples()
 
         if len(outputData) == 0:
             item.setBackground(modifiedColor)
@@ -1015,15 +1011,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.changeButton.setEnabled(True)
 
-
     def updateOutputValues(self):
         # Warn user
         button = QMessageBox.question(self, 'Change output values?',
-                                   'You are about to permanently change the output values.  This cannot be undone.  Do you want to proceed?',
-                                   QMessageBox.Yes, QMessageBox.No)
+                                      'You are about to permanently change the output values.  '
+                                      'This cannot be undone.  Do you want to proceed?',
+                                      QMessageBox.Yes, QMessageBox.No)
         if button != QMessageBox.Yes:
             return
-
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()

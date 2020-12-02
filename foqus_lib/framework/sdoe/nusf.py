@@ -2,9 +2,11 @@ import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist
 import time
-import pandas as pd #only used for the final output of criterion
+import pandas as pd  # only used for the final output of criterion
 
-def compute_dmat(weight_mat, xcols, wcol, hist=None):
+
+def compute_dmat(weight_mat, xcols, wcol, hist_xs=None, hist_wt=None):
+
     # Inputs:
     #  weight_mat - numpy array of size (nd, nx+1) containing scaled weights 
     #       xcols - list of integers corresponding to column indices for inputs 
@@ -12,11 +14,11 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
     #        hist - numpy array of shape (nh, nx+1) 
     # Output:
     #        dmat - numpy array of shape (nd+nh, nd+nh)
-    
-    # Assumes last column contains weights
+
     xs = weight_mat[:, xcols]
     wt = weight_mat[:, wcol]
-    dmat = compute_dist(xs, wt=wt, hist=hist)  # symmetric matrix
+
+    dmat = compute_dist(xs, wt=wt, hist_xs=hist_xs, hist_wt=hist_wt)  # symmetric matrix
     return dmat  # symmetric distance matrix
 
 
@@ -64,7 +66,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         np.fill_diagonal(dmat, val)
         return dmat
 
-    def step(pt, rcand_, cand, xcols, wcol, mdpts, dmat_, mt0=None): #
+    def step(pt, rcand_, cand, xcols, wcol, mdpts, dmat_, mt0=None):
         i, j = pt
         rcand = rcand_.copy() 
         dmat = np.copy(dmat_)
@@ -89,12 +91,12 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     pts = np.argwhere(d0 == d0_max)
     update = True
     if d0_max > md:
-        md = d0_max
+        _md = d0_max
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
         rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
     elif d0_max == md:
-        nselect = np.argwhere(mt0[pts[:,0], pts[:,1]] < mties).flatten()
+        nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
             rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
@@ -102,6 +104,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         update = False
             
     return rcand, md, mdpts, mties, dmat, update
+
 
 def scale_xs(mat_, xcols):
     # Inputs:
@@ -113,7 +116,7 @@ def scale_xs(mat_, xcols):
     #   xmax - numpy array of shape (1, nx) 
 
     mat = mat_.copy()
-    xs = mat[:,xcols]
+    xs = mat[:, xcols]
 
     # scale the inputs
     # save xmin, xmax for inverse scaling later
@@ -122,6 +125,7 @@ def scale_xs(mat_, xcols):
     mat[:, xcols] = (xs - xmin) / (xmax - xmin) * 2 - 1
 
     return mat, xmin, xmax
+
 
 def scale_y(scale_method, mwr, mat_, wcol):
     # Inputs:
@@ -150,6 +154,7 @@ def scale_y(scale_method, mwr, mat_, wcol):
                'ranked_mwr': ranked_mwr}
 
     return methods[scale_method](mwr, mat, wcol)
+
 
 # Not needed because we are using the index to look up the original rows
 def inv_scale_xs(mat_, xmin, xmax, xcols):
@@ -188,7 +193,7 @@ def criterion(cand,    # candidates
     idx = args['xcols']  # Input
     idw = args['wcol']   # Weight
 
-    #np indices
+    # np indices
     idx_np = [cand.columns.get_loc(i) for i in idx]
     idw_np = cand.columns.get_loc(idw)
 
@@ -198,7 +203,11 @@ def criterion(cand,    # candidates
     cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np) 
     
     if hist is not None:
-        hist = hist[idx].values
+        hist_xs = hist[idx].values
+        hist_wt = hist[idw].values
+    else:
+        hist_xs = None
+        hist_wt = None
 
     def step(mwr, cand_np):
 
@@ -220,7 +229,7 @@ def criterion(cand,    # candidates
             rand_index = np.random.choice(ncand, nd, replace=False)
             # extract the <nd> rows
             rcand = cand_np[rand_index]
-            dmat = compute_dmat(rcand, idx_np, idw_np, hist=hist)
+            dmat = compute_dmat(rcand, idx_np, idw_np, hist_xs=hist_xs, hist_wt=hist_wt)
             md, mdpts, mties = compute_min_params(dmat)
 
             update = True
@@ -229,7 +238,9 @@ def criterion(cand,    # candidates
             while update and (t < T):
                 update = False
 
-                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand_np, ncand, idx_np, idw_np, md, mdpts, mties, dmat) #bottleneck in old code
+                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand_np, ncand,
+                                                                              idx_np, idw_np, md, mdpts,
+                                                                              mties, dmat)  # bottleneck in old code
                                                      
                 t = t+1
 

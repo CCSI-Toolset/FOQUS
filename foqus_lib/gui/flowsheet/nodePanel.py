@@ -9,6 +9,7 @@ import types
 import platform
 from configparser import RawConfigParser
 from io import StringIO
+import ast
 
 from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
@@ -605,9 +606,32 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 "Input Name",
                 "New input variable name:",
                 QLineEdit.Normal)
+            size, ok = QInputDialog.getText(
+                self,
+                "Input Size",
+                "New input variable size:",
+                QLineEdit.Normal)
+            minval, ok = QInputDialog.getText(
+                self,
+                "Input min value",
+                "New input variable min value:",
+                QLineEdit.Normal)
+            maxval, ok = QInputDialog.getText(
+                self,
+                "Input max Value",
+                "New input variable max value:",
+                QLineEdit.Normal)
+            value, ok = QInputDialog.getText(
+                self,
+                "Input Value",
+                "New input variable value:",
+                QLineEdit.Normal)
         else:
             newName = name
             ok = True
+        minval = ast.literal_eval(minval)
+        maxval = ast.literal_eval(maxval)
+        value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.inVars:
                 QMessageBox.warning(
@@ -615,7 +639,35 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That input already exists")
                 return
-            self.node.gr.input.addVariable(self.node.name, newName)
+            # size condition
+            if int(size)>1:
+                self.node.gr.input.addVectorVariable(self.node.name, newName, size, minval, maxval, value)
+                nodevarvec=self.node.gr.input.get(self.node.name, newName)
+                
+            # else:
+            #     self.node.gr.input.addVariable(self.node.name, newName)
+            #     nodevar=self.node.gr.input.get(self.node.name, newName)
+            
+                # Insert bounds and values of the new vector and scalar variables
+                for i in range(int(size)):
+                    nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
+                    
+                    nodevar.min = float(minval[i])
+                    nodevarvec.min[i] = float(minval[i])
+                    
+                    nodevar.max = float(maxval[i])
+                    nodevarvec.max[i] = float(maxval[i])
+    
+                    nodevar.value = float(value[i])
+                    nodevarvec.value[i] = float(value[i])
+                   
+            else:
+                self.node.gr.input.addVariable(self.node.name, newName)
+                nodevar=self.node.gr.input.get(self.node.name, newName)
+                nodevar.min = float(minval)
+                nodevar.max = float(maxval)
+                nodevar.value = float(value)
+                
             self.applyChanges()
             self.updateInputVariables()
 
@@ -650,9 +702,15 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 "Output Name",
                 "New output variable name:",
                 QLineEdit.Normal)
+            index, ok = QInputDialog.getText(
+                self,
+                "Output Index",
+                "New output variable index:",
+                QLineEdit.Normal)
         else:
             newName = name
             ok = True
+        # value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.outVars:
                 QMessageBox.warning(
@@ -660,9 +718,13 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That output already exists")
                 return
-            self.applyChanges()
-            self.node.gr.output.addVariable(self.node.name, newName)
-            self.updateOutputVariables()
+            for i in range(int(index)):
+                self.applyChanges()
+                self.node.gr.output.addVariable(self.node.name, newName + '_{0}'.format(i))
+                nodevar = self.node.gr.output.get(self.node.name, newName + '_{0}'.format(i))
+                # if type(value) == list:
+                #     nodevar.value = int(value[i])
+                self.updateOutputVariables()
 
     def delOutput(self):
         '''

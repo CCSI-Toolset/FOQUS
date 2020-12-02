@@ -41,10 +41,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
-    dname = os.path.join(os.getcwd(),'SDOE_files')
+    dname = os.path.join(os.getcwd(), 'SDOE_files')
 
-
-    ## This delegate is used to make the checkboxes in the delete table centered
+    # This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
 
         def paint(self, painter, option, index):
@@ -61,7 +60,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         def editorEvent(self, event, model, option, index):
             # make sure that the item is checkable
-            flags = model.flags(index);
+            flags = model.flags(index)
             if not (flags & Qt.ItemIsUserCheckable) or not(flags & Qt.ItemIsEnabled):
                 return False
             # make sure that we have a check state
@@ -74,14 +73,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 checkRect = QStyle.alignedRect(option.direction, Qt.AlignCenter, option.decorationSize,
                                                QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
                                                      option.rect.width() - (2 * textMargin),
-                                                     option.rect.height()));
+                                                     option.rect.height()))
                 if not checkRect.contains(event.pos()):
                     return False
             elif event.type() == QEvent.KeyPress:
-                if (event.key() != Qt.Key_Space and event.key() != Qt.Key_Select):
+                if event.key() != Qt.Key_Space and event.key() != Qt.Key_Select:
                     return False
             else:
-                return False;
+                return False
 
             if int(value) == Qt.Checked:
                 state = Qt.Unchecked
@@ -89,7 +88,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 state = Qt.Checked
 
             return model.setData(index, state, Qt.CheckStateRole)
-
 
     def __init__(self, dat, parent=None):
         super(sdoeSetupFrame, self).__init__(parent=parent)
@@ -101,7 +99,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
         self.filterFrame.layout().addWidget(self.filterWidget)
 
-        ###### Set up simulation ensembles section
+        # Set up simulation ensembles section
         self.addSimulationButton.clicked.connect(self.addSimulation)
         self.addSimulationButton.setEnabled(True)
         self.addDataSignal.connect(self.addDataToSimTable)
@@ -123,17 +121,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
 
-
-        ##### Set up Ensemble Aggregation section
+        # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
         self.backSelectionButton.clicked.connect(self.backToSelection)
         self.backSelectionButton.setEnabled(False)
         self.analyzeButton.setEnabled(False)
 
-        ##### Set up UQ toolbox
+        # Set up UQ toolbox
         self.dataTabs.setEnabled(False)
 
-        ### Perform all connects here
+        # Perform all connects here
         # ........ DATA PAGE ..............
         self.dataTabs.setCurrentIndex(0)
         self.dataTabs.currentChanged[int].connect(self.getDataTab)
@@ -149,8 +146,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # Create SDOE directory
         Common.initFolder(self.dname)
 
-
-    ########################### Go through list of ensembles ##############################
+    # Go through list of ensembles
 
     def confirmEnsembles(self):
         QApplication.processEvents()
@@ -168,7 +164,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmButton.setEnabled(False)
         self.dataTabs.setEnabled(False)
         QApplication.processEvents()
-        
+
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
         
@@ -205,6 +201,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def createAggData(self):
         cand_agg, hist_agg = self.aggregateEnsembleList()  # these are dfs
+        cand_agg.insert(0, "__id", range(1, cand_agg.shape[0] + 1), True)
 
         cand_fname = os.path.join(self.dname, 'aggregate_candidates.csv')
         df_utils.write(cand_fname, cand_agg)
@@ -214,6 +211,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if len(hist_agg) == 0:
             historyData = None
         else:
+            hist_agg.insert(0, "__id",  range(cand_agg.shape[0]+1, cand_agg.shape[0]+hist_agg.shape[0]+1), True)
             df_utils.write(hist_fname, hist_agg)
             historyData = LocalExecutionModule.readSampleFromCsvFile(hist_fname, askForNumInputs=False)
 
@@ -255,13 +253,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             self.deleteTable.setRowCount(0)
             self.deleteTable.setColumnCount(0)
             return
-        self.dataTabs.setEnabled(False) #Prevent uq toolbox changes
+        self.dataTabs.setEnabled(False)  # Prevent uq toolbox changes
         self.cloneButton.setEnabled(True)
         self.deleteButton.setEnabled(True)
         self.saveButton.setEnabled(True)
 
         row = selectedIndexes[0].row()
-        sim = self.dat.sdoeSimList[row]
+        _sim = self.dat.sdoeSimList[row]
 
         self.freeze()
         self.initUQToolBox()
@@ -282,9 +280,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if result == QDialog.Rejected:
             return
 
-        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addDataSignal, parent=self)
         simDialog.show()
-
 
     def cloneSimulation(self):
         # Get selected row
@@ -300,7 +297,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Update table
         self.updateSimTable()
-
 
     def loadSimulation(self):
 
@@ -326,7 +322,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 import traceback
                 traceback.print_exc()
                 QtGui.QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual about the format.')
+                                           'File does not have the correct format! Please consult the users manual '
+                                           'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
                 self.unfreeze()
@@ -369,14 +366,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.dat.sdoeFilterResultsList.pop(row)
         self.dataTabs.setCurrentIndex(0)
         self.refresh()
+        QApplication.processEvents()
         numSims = len(self.dat.sdoeSimList)
         if numSims > 0:
             if row >= numSims:
                 self.filesTable.selectRow(numSims - 1)
                 row = numSims - 1
-            sim = self.dat.sdoeSimList[row]
+            _sim = self.dat.sdoeSimList[row]
         self.confirmButton.setEnabled(self.hasCandidates())
-        # self.updateSimTable()
         QApplication.processEvents()
 
     def saveSimulation(self):
@@ -407,14 +404,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         previewData = self.dat.sdoeSimList[row]
         hname = None
+        usf = None
         nusf = None
+        irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
     def editAgg(self):
         sender = self.sender()
-        row = sender.property('row')
+        _row = sender.property('row')
         candidateData, historyData = self.createAggData()
 
         previewData = candidateData
@@ -422,14 +421,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             hname = os.path.join(self.dname, historyData.getModelName())
         else:
             hname = None
+        usf = None
         nusf = None
+        irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, nusf, scatterLabel, self)
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
-        return (len(cand_list) > 0)
+        return len(cand_list) > 0
 
     def addDataToSimTable(self, data):
         if data is None:
@@ -451,7 +452,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.updateSimTableRow(row)
 
-
     def updateSimTableRow(self, row):
         data = self.dat.sdoeSimList[row]
         item = self.filesTable.item(row, self.numberCol)
@@ -460,7 +460,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setText(str(row + 1))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         item.setFlags(flags & mask)
         self.filesTable.setItem(row, self.numberCol, item)
 
@@ -489,7 +489,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             viewButton.clicked.connect(self.editSim)
             self.filesTable.setCellWidget(row, self.setupCol, viewButton)
 
-
         # Resize table
         self.resizeColumns()
         minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
@@ -498,14 +497,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             minWidth += self.filesTable.verticalScrollBar().width()
         self.filesTable.setMinimumWidth(minWidth)
 
-
     def resizeColumns(self):
         self.filesTable.resizeColumnsToContents()
         self.aggFilesTable.resizeColumnsToContents()
 
-
     def updateAggTableRow(self, row):
-
         viewButton = self.aggFilesTable.cellWidget(row, self.viewCol)
         newViewButton = False
         if viewButton is None:
@@ -525,7 +521,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(0, self.descriptorCol, item)
 
         item = self.aggFilesTable.item(1, self.descriptorCol)
-        if historyData == None:
+        if historyData is None:
             item.setText('None')
         else:
             item.setText(historyData.getModelName())
@@ -536,10 +532,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
         combo = QComboBox()
-        combo.addItems(['Uniform Space Filling', 'Non-Uniform Space Filling', 'Input-Response Space Filling'])
+        combo.addItems(['Uniform Space Filling (USF)', 'Non-Uniform Space Filling (NUSF)',
+                        'Input-Response Space Filling (IRSF)'])
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
-        combo.model().item(2).setEnabled(False)
+
         combo.setToolTip("<ul>"
                          "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
                          "out throughout the input space. Use when the goal is to collect information across the "
@@ -564,11 +561,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling':
+        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling (USF)':
             type = 'USF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space Filling':
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space ' \
+                                                                                        'Filling (NUSF)':
             type = 'NUSF'
-        analysis = None
+        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space ' \
+                                                                                        'Filling (IRSF)':
+            type = 'IRSF'
+        analysis = []
 
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
@@ -642,7 +643,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # reset components
         self.unfreeze()
 
-    def refreshFilterData(self, updateResult = False):
+    def refreshFilterData(self, updateResult=False):
         indexes = self.filesTable.selectedIndexes()
         if len(indexes) == 0:
             return
@@ -661,7 +662,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterWidget.init(self.dat)
         self.filterWidget.setResults(res)
         self.filterWidget.refreshContents()
-
 
     # ........ DATA PAGE: DELETE TAB ...................
     def initDelete(self):
@@ -697,7 +697,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteTable.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
         inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         end = self.nSamples
 
@@ -763,7 +763,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if check is not None:
             self.freeze()
             rows = set([i.row() for i in self.deleteTable.selectionModel().selection().indexes()])
-            nSamples = self.deleteTable.rowCount() - 1
+            _nSamples = self.deleteTable.rowCount() - 1
             for r in rows:
                 item = self.deleteTable.item(r, 0)
                 if item is None:
@@ -773,13 +773,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     item.setFlags(flags & mask)
                     item.setCheckState(check)
                     self.deleteTable.setItem(r, 0, item)
-                if (item is not None):
+                if item is not None:
                     item.setCheckState(check)
             self.activateDeleteButton(rows.pop(), 0)
             self.unfreeze()
 
     def scrollDeleteTable(self, first):
-        if first >= self.inputData.shape[0]: return
+        if first >= self.inputData.shape[0]:
+            return
         self.isDrawingDeleteTable = True
         if first == 0:
             first = 1
@@ -791,7 +792,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
         outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
-        mask = ~(Qt.ItemIsEditable)
+        mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         numRows = self.deleteTable.rowCount()
         end = first + 15
@@ -834,7 +835,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.isDrawingDeleteTable = False
 
-
     def redrawDeleteTable(self):
         # Does not rewrite input values for speed purposes.  These never change
 
@@ -844,7 +844,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.sdoeSimList[row]
-        data = data.getValidSamples() # filter out samples that have no output results
+        _data = data.getValidSamples()  # filter out samples that have no output results
 
         outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
         outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
@@ -867,9 +867,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     else:
                         item.setText('')
                     if r < self.nSamples - self.nSamplesAdded:
-                        color = outputColor
+                        _color = outputColor
                     else:
-                        color = outputRefinedColor
+                        _color = outputRefinedColor
                     item.setBackground(outputColor)
 
         self.deleteTable.resizeRowsToContents()
@@ -882,7 +882,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.isDrawingDeleteTable = False
         self.unfreeze()
 
-
     def getDeleteSelections(self):
 
         nSamples = self.deleteTable.rowCount() - 1
@@ -891,7 +890,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.sdoeSimList[row]
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
 
         # get data info
         nInputs = data.getNumInputs()
@@ -900,11 +899,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selections
         samples = []
         vars = []
-        for i in range(1,nSamples+1):
+        for i in range(1, nSamples+1):
             item = self.deleteTable.item(i, 0)
             if (item is not None) and item.checkState() == Qt.Checked:
                 samples.append(i - 1)
-        for i in range(1,nVars+1):
+        for i in range(1, nVars+1):
             item = self.deleteTable.item(0, i)
             if (item is not None) and item.checkState() == Qt.Checked:
                 vars.append(i - 1)
@@ -922,7 +921,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             outVars = outVars.tolist()
             outVars = [x-nInputs for x in outVars]
 
-        return (samples, inVars, outVars, nSamples, nInputs, nOutputs)  # first 3 output args are 1-indexed
+        return samples, inVars, outVars, nSamples, nInputs, nOutputs  # first 3 output args are 1-indexed
 
     def activateDeleteButton(self, row, column):
 
@@ -990,7 +989,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = index.row()
         col = index.column()
 
-
         modifiedColor = QtGui.QColor(0, 250, 0, 100)      # translucent green
 
         # get selected row
@@ -999,9 +997,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         nInputs = data.getNumInputs()
         outputData = data.getOutputData()
-        nOutputs = data.getNumOutputs()
-        nSamples = data.getNumSamples()
-
+        _nOutputs = data.getNumOutputs()
+        _nSamples = data.getNumSamples()
 
         if len(outputData) == 0:
             item.setBackground(modifiedColor)
@@ -1014,15 +1011,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.changeButton.setEnabled(True)
 
-
     def updateOutputValues(self):
         # Warn user
         button = QMessageBox.question(self, 'Change output values?',
-                                   'You are about to permanently change the output values.  This cannot be undone.  Do you want to proceed?',
-                                   QMessageBox.Yes, QMessageBox.No)
+                                      'You are about to permanently change the output values.  '
+                                      'This cannot be undone.  Do you want to proceed?',
+                                      QMessageBox.Yes, QMessageBox.No)
         if button != QMessageBox.Yes:
             return
-
 
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()

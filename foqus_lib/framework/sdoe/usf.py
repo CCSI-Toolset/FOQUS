@@ -3,17 +3,17 @@ import numpy as np
 from .distance import compute_dist
 import time
 
-# -----------------------------------
-def compute_min_dist(mat, scl, hist=None):
-    dmat = compute_dist(mat, scl=scl, hist=hist)
+
+def compute_min_dist(mat, scl, hist_xs=None):
+    dmat = compute_dist(mat, scl=scl, hist_xs=hist_xs)
     min_dist = np.min(dmat, axis=0)
     return dmat, min_dist
 
 
-def criterion(cand,    # candidates
-              args,    # scaling factors for included columns
-              nr,      # number of restarts (each restart uses a random set of <nd> points)
-              nd,      # design size <= len(candidates)
+def criterion(cand,     # candidates
+              args,     # scaling factors for included columns
+              nr,       # number of restarts (each restart uses a random set of <nd> points)
+              nd,       # design size <= len(candidates)
               mode='maximin', hist=None):
 
     mode = mode.lower()
@@ -28,7 +28,7 @@ def criterion(cand,    # candidates
         cond = lt
 
     # indices of type ...
-    id_ = args['icol']   # Index
+    _id_ = args['icol']   # Index
     idx = args['xcols']  # Input
     
     # scaling factors
@@ -37,7 +37,9 @@ def criterion(cand,    # candidates
 
     # history, if provided
     if hist is not None:
-        hist = hist[idx].values
+        hist_xs = hist[idx].values
+    else:
+        hist_xs = None
 
     best_cand = []
     _best_rand_sample = []
@@ -52,7 +54,7 @@ def criterion(cand,    # candidates
         # extract the <nd> rows
         rand_cand = cand.loc[rand_index]
         # extract the relevant columns (of type 'Input' only) for dist computations
-        dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist=hist)
+        dmat, min_dist = compute_min_dist(rand_cand[idx].values, scl, hist_xs=hist_xs)
         dist = fcn(min_dist)
 
         if cond(dist, best_val):
@@ -62,7 +64,7 @@ def criterion(cand,    # candidates
             best_dmat = dmat         # used for ranking candidates
 
         elapsed_time = time.time() - t0
-    best_cand.insert(loc=0, column=id_, value=best_cand.index)
+    # best_cand.insert(loc=0, column=id_, value=best_cand.index)
 
     results = {'best_cand': best_cand,
                'best_index': best_index,

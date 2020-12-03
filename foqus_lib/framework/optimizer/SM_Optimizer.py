@@ -461,11 +461,14 @@ class opt(optimization):
             optimizer = SolverFactory(solversource)   
             io_options = dict()
             io_options['solver'] = mathoptsolver
-            # io_options['solver']['optarg'] = {"tol":solver_tolerance,"linear_solver":linear_solver,"max_iter":solver_iteration_limit}
+            optargs=["option optCR={};".format(solver_tolerance),"option iterLim={};".format(solver_iteration_limit)]
+            io_options['add_options'] = optargs
+            #{"tol":solver_tolerance,"linear_solver":linear_solver,"max_iter":solver_iteration_limit}
             io_options['mtype'] = mtype
+            io_options['warmstart'] = Warmstart
             kwds=dict()
             kwds['io_options'] = io_options
-            kwds['warmstart'] = Warmstart
+            # kwds['warmstart'] = Warmstart
             kwds['tee'] = tee
             # optargs['tol'] = solver_tolerance
             # optargs['linear_solver'] = linear_solver
@@ -485,7 +488,9 @@ class opt(optimization):
             optimizer.options['tol'] = solver_tolerance
             optimizer.options['linear_solver'] = linear_solver
             optimizer.options['max_iter'] = solver_iteration_limit
-
+            
+        solution_time = []
+        
     #   Implementing multi-start approach
         start_time_1 = time.time()
     
@@ -570,6 +575,7 @@ class opt(optimization):
             r=optimizer.solve(self.m,**kwds)
             
         end_time_1 = time.time()
+        t1 = end_time_1-start_time_1
 
         self.msgQueue.put("****ITERATION 1****\n")
         self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
@@ -637,6 +643,7 @@ class opt(optimization):
         xf = np.array(dvar_scaled)
         instance,cv,pv=self.f(xf)
         end_time_2 = time.time()
+        t2 = end_time_2 - start_time_2
         
         self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
         self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
@@ -731,7 +738,11 @@ class opt(optimization):
             self.msgQueue.put("****Proceed to next iteration****\n")
             
         end_time_3 = time.time()
+        t3 = end_time_3 - start_time_3
+        
         self.msgQueue.put("Time taken to implement iteration 1 step 4 is {} s".format(end_time_3-start_time_3))
+        self.msgQueue.put("Total Time taken to implement iteration 1 is {} s".format(t1+t2+t3))
+        solution_time.append(t1+t2+t3)
             
         # Print final results
         if flag == 0:
@@ -909,6 +920,7 @@ class opt(optimization):
            
             self.msgQueue.put("Surrogate Model Built and Parsed\n")
             self.msgQueue.put("Time taken to rebuild surrogate model is {} s".format(SM_rebuild_end-SM_rebuild_start))
+            solution_time.append(SM_rebuild_end-SM_rebuild_start)
             
             #***Change Surrogate Input Variable Bounds in Pyomo Model
             #.setlb and .setub methods for surrvarin_names_pyomo
@@ -1051,6 +1063,7 @@ class opt(optimization):
             else:
                 r=optimizer.solve(self.m,**kwds)
             end_time = time.time()
+            t = end_time - start_time
             
             self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
             if multistart==True:
@@ -1090,6 +1103,7 @@ class opt(optimization):
             xf = np.array(dvar_scaled)
             instance,cv,pv=self.f(xf)
             end_time_1 = time.time()
+            t1 = end_time_1 - start_time_1
             
             self.msgQueue.put("**Rigorous Simulation Run at the Optimum**")
             self.msgQueue.put("The optimum objective function value based on rigorous simulation is {0}\n".format(instance))
@@ -1175,7 +1189,11 @@ class opt(optimization):
                 self.msgQueue.put("Surrogate Model Improvement Required")
                 self.msgQueue.put("****Proceed to next iteration****\n")
             end_time_2 = time.time()
+            t2 = end_time_2 - start_time_2
+            
             self.msgQueue.put("Time taken to implement iteration {} step 4 is {} s".format(algo_iter,end_time_2-start_time_2))
+            self.msgQueue.put("Total Time taken to implement iteration {} is {} s".format(algo_iter,t+t1+t2))
+            solution_time.append(t+t1+t2)
             
             # Print final results, and generate parity plot python file if optimization successful
             if flag == 0:
@@ -1212,7 +1230,7 @@ class opt(optimization):
                 for k in self.m.c.keys():
                     f.write("{0} = 0\n".format(self.m.c[k].body))
                     
-        
+        self.msgQueue.put("Total Solution Time for SM Optimizer is {} s".format(sum(solution_time)))
         with open(os.path.join("user_plugins", file_name_plots), 'w') as f:    
             f.write('import matplotlib.pyplot as plt\n')
             f.write('iterations = {0}\n'.format(list(range(1,algo_iter+1))))

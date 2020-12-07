@@ -473,7 +473,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 bgColor = bgColor)
             gh.setTableItem(table, row,
                 self.ivCols["Type"],
-                pullDown= ["float", "int", "str"],
+                pullDown= ["float", "int", "str", "object"],
                 text=var.typeStr(),
                 bgColor = bgColor)
             gh.setTableItem(table, row,
@@ -525,7 +525,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 var.unit)
             gh.setTableItem(table, row,
                 self.ovCols["Type"],
-                pullDown= ["float", "int", "str"],
+                pullDown= ["float", "int", "str", "object"],
                 text=var.typeStr())
             gh.setTableItem(table, row,
                 self.ovCols["Description"],
@@ -600,6 +600,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         Add a new input variable, is a name is given, don't ask user for name,
         just go ahead and add it.
         '''
+        ip=True
         if name is None:
             newName, ok = QInputDialog.getText(
                 self,
@@ -629,9 +630,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         else:
             newName = name
             ok = True
-        # minval = ast.literal_eval(minval)
-        # maxval = ast.literal_eval(maxval)
-        # value = ast.literal_eval(value)
+        minval = ast.literal_eval(minval)
+        maxval = ast.literal_eval(maxval)
+        value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.inVars:
                 QMessageBox.warning(
@@ -641,7 +642,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 return
             # size condition
             if int(size)>1:
-                self.node.gr.input.addVectorVariable(self.node.name, newName, size, minval, maxval, value)
+                self.node.gr.input.addVectorVariable(self.node.name, newName, ip, size, minval, maxval, value)
                 nodevarvec=self.node.gr.input.get(self.node.name, newName)
                 
             # else:
@@ -696,16 +697,17 @@ class nodeDock(_nodeDock, _nodeDockUI):
         '''
         Add an output variable
         '''
+        ip=False
         if name==None:
             newName, ok = QInputDialog.getText(
                 self,
                 "Output Name",
                 "New output variable name:",
                 QLineEdit.Normal)
-            index, ok = QInputDialog.getText(
+            size, ok = QInputDialog.getText(
                 self,
-                "Output Index",
-                "New output variable index:",
+                "Output Size",
+                "New output variable size:",
                 QLineEdit.Normal)
         else:
             newName = name
@@ -718,13 +720,14 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That output already exists")
                 return
-            for i in range(int(index)):
-                self.applyChanges()
-                self.node.gr.output.addVariable(self.node.name, newName + '_{0}'.format(i))
-                nodevar = self.node.gr.output.get(self.node.name, newName + '_{0}'.format(i))
-                # if type(value) == list:
-                #     nodevar.value = int(value[i])
-                self.updateOutputVariables()
+            # size condition
+            if int(size)>1:
+                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size)
+                   
+            else:
+                self.node.gr.output.addVariable(self.node.name, newName)
+                
+            self.updateOutputVariables()
 
     def delOutput(self):
         '''

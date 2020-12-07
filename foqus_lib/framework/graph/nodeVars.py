@@ -98,7 +98,7 @@ class NodeVarList(OrderedDict):
         #     var = NodeVarsVector(size)              
         return var
     
-    def addVectorVariable(self, nodeName, varName, size, minval, maxval, value, var=None):
+    def addVectorVariable(self, nodeName, varName, ip, size, minval=None, maxval=None, value=None, var=None):
         """
         Add a vector variable name to a node:
 
@@ -113,12 +113,16 @@ class NodeVarList(OrderedDict):
             raise NodeVarListEx(7, msg=varName)
         if not var:
             # if size==1:
-            var = NodeVarsVector()
-            var.setMin(minval)
-            var.setMax(maxval)
-            var.setDefault(value)
-            var.setValue(value)
-            self[nodeName][varName] = var
+            if ip==True:
+                var = NodeVarsVector()
+                var.setMin(minval)
+                var.setMax(maxval)
+                var.setDefault(value)
+                var.setValue(value)
+                self[nodeName][varName] = var
+            else:
+                var = NodeVarsVector()
+                self[nodeName][varName] = var
             for i in range(int(size)):
                 self.addVariable(nodeName, varName + '_{0}'.format(i))
         # else:
@@ -310,7 +314,7 @@ class NodeVarsVector(object):
         vmin=[0],
         vmax=[1],
         vdflt=[0],
-        size=1,
+        # index=0,
         unit="",
         vst="user",
         vdesc="",
@@ -330,7 +334,7 @@ class NodeVarsVector(object):
             vst: A sring description of a group for the variable {"user", "sinter"}
             vdesc: A sentence or so describing the variable
             tags: List of string tags for the variable
-            dtype: type of data {object}
+            dtype: type of data {float, int, str, object}
             dist: distribution type for UQ
         """
         # #dtype=type(value)
@@ -342,7 +346,7 @@ class NodeVarsVector(object):
         #     vdflt = ast.literal_eval(vdflt)
         # else:
         self.dtype = dtype
-        value = list(value)
+        value = value
             
         if vmin is None:
             vmin = list(value)
@@ -371,8 +375,8 @@ class NodeVarsVector(object):
         self.tags = tags  # set of tags for use in heat integration or
         # other searching and sorting
         self.con = False  # true if the input is set through connection
-        # self.setValue(value)  # value of the variable
-        # self.setType(dtype)
+        self.setValue(value)  # value of the variable
+        self.setType(dtype)
         self.dist = copy.copy(dist)
 
     def typeStr(self):
@@ -394,11 +398,17 @@ class NodeVarsVector(object):
         """
         Convert from the current dtype to a new one.
         """
-        if dtype == "object":
+        if dtype == "float":
+            dtype = float
+        elif dtype == "int":
+            dtype = int
+        elif dtype == "str":
+            dtype = str
+        elif dtype == "object":
             dtype = object
-        if not dtype in [object]:
+        if not dtype in [float, int, str, object]:
             raise NodeVarEx(11, msg=str(dtype))
-        return dtype
+        self.dtype = dtype
         # self.dtype = dtype
         # if dtype == list:
         #     self.value = ast.literal_eval(self.value)
@@ -476,8 +486,8 @@ class NodeVarsVector(object):
             self.setMax(val)
         elif name == "default":
             self.setDefault(val)
-        elif name == "dtype":
-            self.setType(val)
+        # elif name == "dtype":
+        #     self.setType(val)
         else:
             super(NodeVarsVector, self).__setattr__(name, val)
 
@@ -912,6 +922,8 @@ class NodeVars(object):
             sd["dtype"] = "int"
         elif self.dtype == str:
             sd["dtype"] = "str"
+        elif self.dtype == object:
+            sd["dtype"] = "object"
         else:
             raise NodeVarEx(11, msg=str(self.dtype))
         sd["value"] = value
@@ -942,6 +954,8 @@ class NodeVars(object):
             self.dtype = int
         elif dtype == "str":
             self.dtype = str
+        elif self.dtype == object:
+            sd["dtype"] = "object"
         else:
             raise NodeVarEx(11, msg=str(dtype))
         # Depending on how old the session file is, have history or value

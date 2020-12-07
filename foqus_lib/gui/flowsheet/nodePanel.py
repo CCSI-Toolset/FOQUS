@@ -629,9 +629,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         else:
             newName = name
             ok = True
-        minval = ast.literal_eval(minval)
-        maxval = ast.literal_eval(maxval)
-        value = ast.literal_eval(value)
+        # minval = ast.literal_eval(minval)
+        # maxval = ast.literal_eval(maxval)
+        # value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.inVars:
                 QMessageBox.warning(

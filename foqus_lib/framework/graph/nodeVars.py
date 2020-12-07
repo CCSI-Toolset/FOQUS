@@ -114,10 +114,10 @@ class NodeVarList(OrderedDict):
         if not var:
             # if size==1:
             var = NodeVarsVector()
-            var.setMin(minval,size)
-            var.setMax(maxval,size)
-            var.setDefault(value,size)
-            var.setValue(value,size)
+            var.setMin(minval)
+            var.setMax(maxval)
+            var.setDefault(value)
+            var.setValue(value)
             self[nodeName][varName] = var
             for i in range(int(size)):
                 self.addVariable(nodeName, varName + '_{0}'.format(i))
@@ -341,7 +341,7 @@ class NodeVarsVector(object):
         #     vmax = ast.literal_eval(vmax)
         #     vdflt = ast.literal_eval(vdflt)
         # else:
-        self.dtype = self.setType(dtype,size)
+        self.dtype = dtype
         value = list(value)
             
         if vmin is None:
@@ -390,14 +390,15 @@ class NodeVarsVector(object):
         """
         self.value = float("nan")
 
-    def setType(self, dtype, size):
+    def setType(self, dtype):
         """
         Convert from the current dtype to a new one.
         """
-        if dtype == "object" and size>=1:
+        if dtype == "object":
             dtype = object
         if not dtype in [object]:
             raise NodeVarEx(11, msg=str(dtype))
+        return dtype
         # self.dtype = dtype
         # if dtype == list:
         #     self.value = ast.literal_eval(self.value)
@@ -415,21 +416,21 @@ class NodeVarsVector(object):
         # self.max = [self.max]
         # self.default = [self.default]
 
-    def setMin(self, minval, size):
+    def setMin(self, minval):
         """
         Set the minimum value
         """
         # self.index = index
         # if self.index==0:
-        self.__min = list(minval)*size
+        self.__min = list(minval)
 
-    def setMax(self, maxval, size):
+    def setMax(self, maxval):
         """
         Set the maximum value
         """
-        self.__max = list(maxval)*size
+        self.__max = list(maxval)
 
-    def setDefault(self, value, size):
+    def setDefault(self, value):
         """
         Set the default value
         """
@@ -437,13 +438,13 @@ class NodeVarsVector(object):
         # if self.index==0:
         # vector_len = len(self.value)
         # self.__default = list([val])*vector_len
-        self.__default = list(value)*size
+        self.__default = list(value)
 
-    def setValue(self, value, size):
+    def setValue(self, value):
         """
         Set the variable value
         """
-        self.__value = list(value)*size
+        self.__value = list(value)
 
     def __getattr__(self, name):
         """
@@ -462,23 +463,23 @@ class NodeVarsVector(object):
         else:
             raise AttributeError
 
-    def __setattr__(self, name, val, size):
+    def __setattr__(self, name, val):
         """
         This is called when setting an attribute, if the attribute is value,
         min, max, default, convert data type, otherwise do normal stuff
         """
         if name == "value":
-            self.setValue(val, size)
+            self.setValue(val)
         elif name == "min":
-            self.setMin(val, size)
+            self.setMin(val)
         elif name == "max":
-            self.setMax(val, size)
+            self.setMax(val)
         elif name == "default":
-            self.setDefault(val, size)
+            self.setDefault(val)
         elif name == "dtype":
-            self.setType(val, size)
+            self.setType(val)
         else:
-            super(NodeVarsVector, self).__setattr__(name, val, size)
+            super(NodeVarsVector, self).__setattr__(name, val)
 
     def scale(self):
         """

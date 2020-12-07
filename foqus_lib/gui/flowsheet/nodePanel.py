@@ -709,10 +709,15 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 "Output Size",
                 "New output variable size:",
                 QLineEdit.Normal)
+            value, ok = QInputDialog.getText(
+                self,
+                "Output Value",
+                "New output variable value:",
+                QLineEdit.Normal)
         else:
             newName = name
             ok = True
-        # value = ast.literal_eval(value)
+        value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.outVars:
                 QMessageBox.warning(
@@ -722,7 +727,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 return
             # size condition
             if int(size)>1:
-                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size)
+                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size, value=value)
                    
             else:
                 self.node.gr.output.addVariable(self.node.name, newName)

@@ -366,7 +366,10 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                self.loc[row, col] = dat[i]
+                if type(dat[i])==list:
+                    self.loc[row, col] = str(dat[i])
+                else:
+                    self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
     def uq_add_result(self, data, set_name="default", result_name="res", time=None):

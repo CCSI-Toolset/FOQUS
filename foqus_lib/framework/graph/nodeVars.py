@@ -122,6 +122,7 @@ class NodeVarList(OrderedDict):
                 self[nodeName][varName] = var
             else:
                 var = NodeVarsVector()
+                var.setValue(value)
                 self[nodeName][varName] = var
             for i in range(int(size)):
                 self.addVariable(nodeName, varName + '_{0}'.format(i))
@@ -233,7 +234,14 @@ class NodeVarList(OrderedDict):
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
-                self.addVariable(node, var).loadDict(sd[node][var])
+                print(sd[node][var])
+                if sd[node][var]['dtype']!='object':
+                    print('scalar')
+                    self.addVariable(node, var).loadDict(sd[node][var])
+                else:
+                    pass
+                    # print('vector')
+                    # self.addVectorVariable(node, var).loadDict(sd[node][var])
 
     def scale(self):
         """
@@ -610,7 +618,13 @@ class NodeVarsVector(object):
         vmax = self.max
         vdefault = self.default
         value = self.value
-        if self.dtype == object:
+        if self.dtype == float:
+            sd["dtype"] = "float"
+        elif self.dtype == int:
+            sd["dtype"] = "int"
+        elif self.dtype == str:
+            sd["dtype"] = "str"
+        elif self.dtype == object:
             sd["dtype"] = "object"
         else:
             raise NodeVarEx(11, msg=str(self.dtype))
@@ -636,7 +650,13 @@ class NodeVarsVector(object):
         """
         assert isinstance(sd, dict)
         dtype = sd.get("dtype", "float")
-        if dtype == "object":
+        if dtype == "float":
+            self.dtype = float
+        elif dtype == "int":
+            self.dtype = int
+        elif dtype == "str":
+            self.dtype = str
+        elif dtype == "object":
             self.dtype = object
         else:
             raise NodeVarEx(11, msg=str(dtype))

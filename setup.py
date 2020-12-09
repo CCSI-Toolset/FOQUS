@@ -47,10 +47,9 @@ dist = setup(
     packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
-            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico']},
+            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
     include_package_data=True,
     scripts = [
-        'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py'],
     entry_points={
         "console_scripts": [
@@ -65,6 +64,7 @@ dist = setup(
         "cma",
         "matplotlib",
         "mlrose_hiive",
+        "mplcursors",
         "numpy",
         "pandas",
         "psutil",

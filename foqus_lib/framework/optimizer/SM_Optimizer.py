@@ -55,6 +55,8 @@ try:
         ConcreteModel,
         PositiveReals,
         value,
+        log,
+        exp
     )
     from pyomo.opt import SolverFactory
     import pyutilib.subprocess.GlobalData
@@ -171,6 +173,11 @@ class opt(optimization):
         desc="Display of solver iterations in terminal/anaconda prompt")
         
         self.options.add(
+        name='Warmstart', 
+        default=True,
+        desc="Asigning variables & evaluating model expressions at their initial values")
+        
+        self.options.add(
         name='Objective Value Tolerance', 
         default=1e-03,
         dtype=float,
@@ -275,6 +282,7 @@ class opt(optimization):
         bound_ratio = self.options['Bound_Ratio'].value
         multistart = self.options['Multistart'].value
         tee = self.options['tee'].value
+        Warmstart = self.options['Warmstart'].value
         obj_tolerance = self.options['Objective Value Tolerance'].value
         outputvar_tolerance = self.options['Inequality Constraint Tolerance'].value
         inequality_tolerance = self.options['Output Variable Tolerance'].value
@@ -437,7 +445,6 @@ class opt(optimization):
             kwds['io_options'] = io_options
             kwds['warmstart'] = Warmstart
             kwds['tee'] = tee
-            r=optimizer.solve(self.m,**kwds)
     #            
         else:
             optimizer = SolverFactory(mathoptsolver)
@@ -446,128 +453,136 @@ class opt(optimization):
 
     #       Implementing multi-start approach
     
-            decvars = [getattr(self.m,v) for v in dvar_names]
-            surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
-            surroutvars = [getattr(self.m,v) for v in surroutvarlist]    
+        decvars = [getattr(self.m,v) for v in dvar_names]
+        surroutvarlist = [str(v) for v in self.surrout_names_pyomo]
+        surroutvars = [getattr(self.m,v) for v in surroutvarlist]    
             
-            if multistart==True:
-                initvals = []                
-                #Obtain the combination of all initialization points
-                for var in decvars:
-                    initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
-                initvals_prod = list(product(*initvals))
+        if multistart==True:
+            initvals = []                
+            #Obtain the combination of all initialization points
+            for var in decvars:
+                initvals.append([var.value,var.lb,var.ub,(var.lb + var.ub)/2])
+            initvals_prod = list(product(*initvals))
                 
-                input_initvals = np.zeros(len(initvals_prod),dtype=object)
-                output_initvals = np.zeros(len(initvals_prod),dtype=object)
-                input_optim = np.zeros(len(initvals_prod),dtype=object)
-                output_optim = np.zeros(len(initvals_prod),dtype=object)
-                objvals = np.zeros(len(initvals_prod),dtype=object)
-                solver_status = np.zeros(len(initvals_prod),dtype=object)
-                solver_termination_condition = np.zeros(len(initvals_prod),dtype=object)
-                solver_time = np.zeros(len(initvals_prod),dtype=object)
+            input_initvals = np.zeros(len(initvals_prod),dtype=object)
+            output_initvals = np.zeros(len(initvals_prod),dtype=object)
+            input_optim = np.zeros(len(initvals_prod),dtype=object)
+            output_optim = np.zeros(len(initvals_prod),dtype=object)
+            objvals = np.zeros(len(initvals_prod),dtype=object)
+            solver_status = np.zeros(len(initvals_prod),dtype=object)
+            solver_termination_condition = np.zeros(len(initvals_prod),dtype=object)
+            solver_time = np.zeros(len(initvals_prod),dtype=object)
                 
-                # Solve the optimization model for all initialization points & save solver details
-                for i1,initvallist in enumerate(initvals_prod):
-                    i_initvals=[]
-                    o_initvals=[]
-                    i_optim=[]
-                    o_optim=[]
-                    for i,initv in enumerate(initvallist): 
-                        decvars[i].value = initv
-                        i_initvals.append(decvars[i].value)
-                    for i,initout in enumerate(surroutvars):
-                        initout.value = -value(self.m.c[i+1].body - initout)
-                        o_initvals.append(initout.value)
-                    input_initvals[i1] = i_initvals
-                    output_initvals[i1] = o_initvals
-                    r=optimizer.solve(self.m,**kwds)
-                    for dvar in decvars:
-                        i_optim.append(dvar.value)
-                    for sout in surroutvars:
-                        o_optim.append(sout.value)
-                    if str(r.solver.termination_condition) == 'optimal':
-                        input_optim[i1] = i_optim
-                        output_optim[i1] = o_optim
-                        objvals[i1] = self.m.obj()
-                        solver_status[i1] = str(r.solver.status)
-                        solver_termination_condition[i1] = str(r.solver.termination_condition)
-                        solver_time[i1] = str(r.solver.time)
-                    else:
-                        input_optim[i1] = math.inf
-                        output_optim[i1] = math.inf
-                        objvals[i1] = math.inf
-                        solver_status[i1] = math.inf
-                        solver_termination_condition[i1] = math.inf
-                        solver_time[i1] = math.inf
-                        
-                # Assign the best initialization value
-                minobjval_idx = np.argmin(objvals)
-    
-                for i,var in enumerate(decvars):
-                    var.value = initvals_prod[minobjval_idx][i]
+            # Solve the optimization model for all initialization points & save solver details
+            for i1,initvallist in enumerate(initvals_prod):
+                i_initvals=[]
+                o_initvals=[]
+                i_optim=[]
+                o_optim=[]
+                for i,initv in enumerate(initvallist): 
+                    decvars[i].value = initv
+                    i_initvals.append(decvars[i].value)
                 for i,initout in enumerate(surroutvars):
                     initout.value = -value(self.m.c[i+1].body - initout)
-                    
-            else:
-                inputinitvals=np.zeros(len(decvars))
-                outputinitvals=np.zeros(len(surroutvars))
-                for i,var in enumerate(decvars):
-                    inputinitvals[i] = var.value
-                for i,initout in enumerate(surroutvars):
-                    initout.value = -value(self.m.c[i+1].body - initout)   
-                    outputinitvals[i] = initout.value
+                    o_initvals.append(initout.value)
+                input_initvals[i1] = i_initvals
+                output_initvals[i1] = o_initvals
                 r=optimizer.solve(self.m,**kwds)
+                for dvar in decvars:
+                    i_optim.append(dvar.value)
+                for sout in surroutvars:
+                    o_optim.append(sout.value)
+                if str(r.solver.termination_condition) == 'optimal':
+                    input_optim[i1] = i_optim
+                    output_optim[i1] = o_optim
+                    objvals[i1] = self.m.obj()
+                    solver_status[i1] = str(r.solver.status)
+                    solver_termination_condition[i1] = str(r.solver.termination_condition)
+                    solver_time[i1] = str(r.solver.time)
+                elif str(r.solver.termination_condition) == 'locallyOptimal':
+                    input_optim[i1] = i_optim
+                    output_optim[i1] = o_optim
+                    objvals[i1] = self.m.obj()
+                    solver_status[i1] = str(r.solver.status)
+                    solver_termination_condition[i1] = str(r.solver.termination_condition)
+                    solver_time[i1] = str(r.solver.user_time)
+                    # solver_time[i1]='yes'
+                else:
+                    input_optim[i1] = math.inf
+                    output_optim[i1] = math.inf
+                    objvals[i1] = math.inf
+                    solver_status[i1] = math.inf
+                    solver_termination_condition[i1] = math.inf
+                    solver_time[i1] = math.inf
+                        
+            # Assign the best initialization value
+            minobjval_idx = np.argmin(objvals)
+    
+            for i,var in enumerate(decvars):
+                var.value = initvals_prod[minobjval_idx][i]
+            for i,initout in enumerate(surroutvars):
+                initout.value = -value(self.m.c[i+1].body - initout)
+                    
+        else:
+            inputinitvals=np.zeros(len(decvars))
+            outputinitvals=np.zeros(len(surroutvars))
+            for i,var in enumerate(decvars):
+                inputinitvals[i] = var.value
+            for i,initout in enumerate(surroutvars):
+                initout.value = -value(self.m.c[i+1].body - initout)   
+                outputinitvals[i] = initout.value
+            r=optimizer.solve(self.m,**kwds)
 
-            self.msgQueue.put("****ITERATION 1****\n")
-            self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
-            for i,var in enumerate(self.m.component_data_objects(Var)):
-                if var not in self.nonsurrout_names_pyomo:
-                    self.msgQueue.put("Variable: {0}".format(str(var)))
-                    if multistart==True:
-                        self.msgQueue.put("Initialization Value: {0}".format(str(var())))
-                    else:
-                        # Input decision variables
-                        if var in decvars:
-                            varindx = decvars.index(var)
-                            self.msgQueue.put("Initialization Value: {0}".format(str(inputinitvals[varindx])))
-                        # Output variables
-                        elif var in surroutvars:
-                            varindx = surroutvars.index(var)
-                            self.msgQueue.put("Initialization Value: {0}".format(str(outputinitvals[varindx])))
-                    if var in [getattr(self.m,v) for v in dvar_names]:
-                        self.msgQueue.put("Variable Type: Decision")
-                        self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
-                    elif var.fixed:
-                        self.msgQueue.put("Variable Type: Fixed")
-                        self.msgQueue.put("Value: {0}\n".format(var.value))
-                    else:
-                        self.msgQueue.put("Variable Type: State\n")
-            if multistart==True:
-                for i,var in enumerate(decvars):
-                    var.value = input_optim[minobjval_idx][i]
+        self.msgQueue.put("****ITERATION 1****\n")
+        self.msgQueue.put("**Bounds & Initializations for the Optimization Model**")
+        for i,var in enumerate(self.m.component_data_objects(Var)):
+            if var not in self.nonsurrout_names_pyomo:
+                self.msgQueue.put("Variable: {0}".format(str(var)))
+                if multistart==True:
+                    self.msgQueue.put("Initialization Value: {0}".format(str(var())))
+                else:
+                    # Input decision variables
+                    if var in decvars:
+                        varindx = decvars.index(var)
+                        self.msgQueue.put("Initialization Value: {0}".format(str(inputinitvals[varindx])))
+                    # Output variables
+                    elif var in surroutvars:
+                        varindx = surroutvars.index(var)
+                        self.msgQueue.put("Initialization Value: {0}".format(str(outputinitvals[varindx])))
+                if var in [getattr(self.m,v) for v in dvar_names]:
+                    self.msgQueue.put("Variable Type: Decision")
+                    self.msgQueue.put("Lower Bound: {0}  Upper Bound: {1}\n".format(str(var.lb),str(var.ub)))
+                elif var.fixed:
+                    self.msgQueue.put("Variable Type: Fixed")
+                    self.msgQueue.put("Value: {0}\n".format(var.value))
+                else:
+                    self.msgQueue.put("Variable Type: State\n")
+        if multistart==True:
+            for i,var in enumerate(decvars):
+                var.value = input_optim[minobjval_idx][i]
                 
-                for i,initout in enumerate(surroutvars):
-                    initout.value = -value(self.m.c[i+1].body - initout)
+            for i,initout in enumerate(surroutvars):
+                initout.value = -value(self.m.c[i+1].body - initout)
                 
-            self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
-            if multistart==True:
-                self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
-                self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
-                self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
-            else:
-                self.msgQueue.put("Solver Status: {0}".format(r.solver.status))
-                self.msgQueue.put("Solver Termination Condition: {0}".format(r.solver.termination_condition))
-                self.msgQueue.put("Solver Solution Time: {0} s".format(r.solver.time))
-            self.msgQueue.put("The optimum variable values are:")
-            self.msgQueue.put("-----------------------------------------")
-            for var in self.m.component_data_objects(Var):
-                if var not in self.nonsurrout_names_pyomo:
-                    self.msgQueue.put("{0}   {1}".format(str(var),str(var())))
-            self.msgQueue.put("-----------------------------------------")
-            if multistart==True:
-                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
-            else:
-                self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
+        self.msgQueue.put("**Pyomo Mathematical Optimization Solution**")
+        if multistart==True:
+            self.msgQueue.put("Solver Status: {0}".format(solver_status[minobjval_idx]))
+            self.msgQueue.put("Solver Termination Condition: {0}".format(solver_termination_condition[minobjval_idx]))
+            self.msgQueue.put("Solver Solution Time: {0} s".format(solver_time[minobjval_idx]))
+        else:
+            self.msgQueue.put("Solver Status: {0}".format(r.solver.status))
+            self.msgQueue.put("Solver Termination Condition: {0}".format(r.solver.termination_condition))
+            self.msgQueue.put("Solver Solution Time: {0} s".format(r.solver.time))
+        self.msgQueue.put("The optimum variable values are:")
+        self.msgQueue.put("-----------------------------------------")
+        for var in self.m.component_data_objects(Var):
+            if var not in self.nonsurrout_names_pyomo:
+                self.msgQueue.put("{0}   {1}".format(str(var),str(var())))
+        self.msgQueue.put("-----------------------------------------")
+        if multistart==True:
+            self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(str(objvals[minobjval_idx])))
+        else:
+            self.msgQueue.put("The optimum objective function value based on the surrogate model is {0}\n".format(self.m.obj()))
 
         self.m.display()
             
@@ -936,6 +951,13 @@ class opt(optimization):
                         solver_status[i1] = str(r.solver.status)
                         solver_termination_condition[i1] = str(r.solver.termination_condition)
                         solver_time[i1] = str(r.solver.time)
+                    elif str(r.solver.termination_condition) == 'locallyOptimal':
+                        input_optim[i1] = i_optim
+                        output_optim[i1] = o_optim
+                        objvals[i1] = self.m.obj()
+                        solver_status[i1] = str(r.solver.status)
+                        solver_termination_condition[i1] = str(r.solver.termination_condition)
+                        solver_time[i1] = str(r.solver.user_time)
                     else:
                         input_optim[i1] = math.inf
                         output_optim[i1] = math.inf

@@ -126,16 +126,33 @@ class opt(optimization):
         desc="Source of math optimization solver (pyomo or gams)")
         
         self.options.add(
+        name='Model type', 
+        default='nlp',
+        dtype=str,
+        desc="Type of math optimization model (used for gams)")
+        
+        self.options.add(
         name='Math optimization solver', 
         default='ipopt',
         dtype=str,
         desc="Solver to be used for math optimization at each iteration")
         
+        # self.options.add(
+        # name='Model type', 
+        # default='nlp',
+        # dtype=str,
+        # desc="Type of math optimization model (used for gams)")
+        
         self.options.add(
-        name='Model type', 
-        default='nlp',
-        dtype=str,
-        desc="Type of math optimization model (used for gams)")
+        name='Math optimizer working - display', 
+        default=True,
+        desc="Display of math optimization solver iterations in terminal/anaconda prompt")
+        
+        self.options.add(
+        name='Solver options',
+        default={'tol':1e-6,'max_iter': 40,'halt_on_ampl_error': 'yes','linear_solver': 'ma27','warm_start_init_point': 'yes'},
+        dtype=object,
+        desc="Math optimization solver options")
         
         self.options.add(
         name='Maximum algorithm iterations', 
@@ -166,16 +183,16 @@ class opt(optimization):
         default=True,
         desc="Multistart approach for each iteration's math optimization initialization")
         
-        self.options.add(
-        name='Math optimizer working - display', 
-        default=True,
-        desc="Display of math optimization solver iterations in terminal/anaconda prompt")
+        # self.options.add(
+        # name='Math optimizer working - display', 
+        # default=True,
+        # desc="Display of math optimization solver iterations in terminal/anaconda prompt")
         
-        self.options.add(
-        name='Solver options',
-        default={'tol':1e-6,'max_iter': 40,'halt_on_ampl_error': 'yes','linear_solver': 'ma27','warm_start_init_point': 'yes'},
-        dtype=object,
-        desc="Math optimization solver options")
+        # self.options.add(
+        # name='Solver options',
+        # default={'tol':1e-6,'max_iter': 40,'halt_on_ampl_error': 'yes','linear_solver': 'ma27','warm_start_init_point': 'yes'},
+        # dtype=object,
+        # desc="Math optimization solver options")
         
         self.options.add(
         name='Objective value tolerance', 
@@ -279,7 +296,7 @@ class opt(optimization):
         Maxiter_Algo = self.options['Maximum algorithm iterations'].value 
         alpha = self.options['Alpha'].value
         num_lhs = self.options['Number of surrogate modeling samples'].value
-        bound_ratio = self.options['Bound Ratio'].value
+        bound_ratio = self.options['Bound ratio'].value
         multistart = self.options['Multistart'].value
         tee = self.options['Math optimizer working - display'].value
         solver_options = self.options['Solver options'].value
@@ -289,7 +306,7 @@ class opt(optimization):
         Saveresults = self.options['Save results'].value
         SetName = self.options['Set name'].value
         pyomo_surrogate = self.options['Pyomo surrogate file'].value
-        file_name_SM_stored = self.options['Surrogate model storing File'].value
+        file_name_SM_stored = self.options['Surrogate model storing file'].value
         file_name_plots = self.options['Algorithm convergence plots file'].value
         uq_file = self.options['Parity plot file'].value
 

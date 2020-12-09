@@ -39,7 +39,6 @@ from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge,edgeConnect
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
-from itertools import product
 
 # Check that the required pyomo, pyDOE, and smt packages are available for the surrogate based optimization plugin and import it.
 # If not the Surrogate Based Optimization plug-in will not be available.
@@ -121,25 +120,25 @@ class opt(optimization):
         # creates a dropdown box.
         
         self.options.add(
-        name='Solver Source',
+        name='Solver source',
         default='pyomo',
         dtype=str,
-        desc="Source of math optimization solver")
+        desc="Source of math optimization solver (pyomo or gams)")
         
         self.options.add(
-        name='mathoptsolver', 
+        name='Math optimization solver', 
         default='ipopt',
         dtype=str,
-        desc="Math Optimization Solver")
+        desc="Solver to be used for math optimization at each iteration")
         
         self.options.add(
-        name='mtype', 
+        name='Model type', 
         default='nlp',
         dtype=str,
-        desc="Type of Math Optimization Model")
+        desc="Type of math optimization model (used for gams)")
         
         self.options.add(
-        name='Maxiter_Algo', 
+        name='Maximum algorithm iterations', 
         default=10,
         dtype=float,
         desc="Maximum iterations for surrogate based optimization algorithm")
@@ -148,16 +147,16 @@ class opt(optimization):
         name='Alpha', 
         default=0.8,
         dtype=float,
-        desc="Fractional Reduction in Surrogate Modeling Space")
+        desc="Fractional reduction in surrogate modeling space")
         
         self.options.add(
-        name='nLHS', 
+        name='Number of surrogate modeling samples', 
         default=10,
         dtype=float,
-        desc="Number of latin hypercube samples for generating modified surrogate model")
+        desc="Number of samples for generating modified surrogate model")
         
         self.options.add(
-        name='Bound_Ratio', 
+        name='Bound ratio', 
         default=1,
         dtype=float,
         desc="Ratio of upper and lower bounds of decision variables")
@@ -165,50 +164,33 @@ class opt(optimization):
         self.options.add(
         name='Multistart', 
         default=True,
-        desc="Multistart approach for each iteration math optimization initialization")
+        desc="Multistart approach for each iteration's math optimization initialization")
         
         self.options.add(
-        name='tee', 
+        name='Math optimizer working - display', 
         default=True,
-        desc="Display of solver iterations in terminal/anaconda prompt")
+        desc="Display of math optimization solver iterations in terminal/anaconda prompt")
         
         self.options.add(
-        name='Warmstart', 
-        default=True,
-        desc="Asigning variables & evaluating model expressions at their initial values")
+        name='Solver options',
+        default={'tol':1e-6,'max_iter': 40,'halt_on_ampl_error': 'yes','linear_solver': 'ma27','warm_start_init_point': 'yes'},
+        dtype=object,
+        desc="Math optimization solver options")
         
         self.options.add(
-        name='Solver Tolerance', 
-        default=1e-6,
-        dtype=float,
-        desc="Tolerance for convergence of math optimization solver")
-        
-        self.options.add(
-        name='Solver Iteration Limit', 
-        default=40,
-        dtype=float,
-        desc="Iteration limit for math optimization solver")
-        
-        self.options.add(
-        name='Linear Solver', 
-        default='mumps',
-        dtype=str,
-        desc="Linear solver used within ipopt solver")
-        
-        self.options.add(
-        name='Objective Value Tolerance', 
+        name='Objective value tolerance', 
         default=1e-03,
         dtype=float,
         desc="Tolerance for deviation from objective function evaluated at optimum, from Aspen Simulation")
         
         self.options.add(
-        name='Inequality Constraint Tolerance', 
+        name='Inequality constraint tolerance', 
         default=1e-03,
         dtype=float,
         desc="Tolerance for constraint satisfaction at optimum, from Aspen Simulation")
         
         self.options.add(
-        name='Output Variable Tolerance', 
+        name='Output variable tolerance', 
         default=1e-03,
         dtype=float,
         desc="Tolerance for deviation of output variable values at optimum decision variables, calculated from Aspen Simulation, and Surrogate Model")
@@ -219,31 +201,31 @@ class opt(optimization):
         desc="Save math optimization results")
         
         self.options.add(
-        name='Set Name',
+        name='Set name',
         default="PYOMO_SM",
         dtype=str,
         desc="Name of flowsheet result set to store data")
         
         self.options.add(
-        name='Pyomo Surrogate File',
+        name='Pyomo surrogate file',
         default="",
         dtype=str,
         desc="Name of python file containing surrogate based pyomo model ")
         
         self.options.add(
-        name='Surrogate Model Storing File',
+        name='Surrogate model storing file',
         default="",
         dtype=str,
         desc="Name of text file storing surrogate model from each algorithm iteration")
         
         self.options.add(
-        name='Algorithm Convergence Plots File',
+        name='Algorithm convergence plots file',
         default="",
         dtype=str,
         desc="Name of python file with algorithm convergence plots")
         
         self.options.add(
-        name='Parity Plot File',
+        name='Parity plot file',
         default="",
         dtype=str,
         desc="Name of python file with the parity plot for the final surrogate model")
@@ -291,28 +273,25 @@ class opt(optimization):
         self.bestSoFarList = []
         
         #Get user options
-        solversource = self.options['Solver Source'].value        
-        mathoptsolver = self.options['mathoptsolver'].value        
-        mtype = self.options['mtype'].value        
-        Maxiter_Algo = self.options['Maxiter_Algo'].value 
+        solversource = self.options['Solver source'].value        
+        mathoptsolver = self.options['Math optimization solver'].value        
+        mtype = self.options['Model type'].value        
+        Maxiter_Algo = self.options['Maximum algorithm iterations'].value 
         alpha = self.options['Alpha'].value
-        num_lhs = self.options['nLHS'].value
-        bound_ratio = self.options['Bound_Ratio'].value
+        num_lhs = self.options['Number of surrogate modeling samples'].value
+        bound_ratio = self.options['Bound Ratio'].value
         multistart = self.options['Multistart'].value
-        tee = self.options['tee'].value
-        Warmstart = self.options['Warmstart'].value
-        solver_tolerance = self.options['Solver Tolerance'].value
-        solver_iteration_limit = self.options['Solver Iteration Limit'].value
-        linear_solver = self.options['Linear Solver'].value
-        obj_tolerance = self.options['Objective Value Tolerance'].value
-        outputvar_tolerance = self.options['Inequality Constraint Tolerance'].value
-        inequality_tolerance = self.options['Output Variable Tolerance'].value
+        tee = self.options['Math optimizer working - display'].value
+        solver_options = self.options['Solver options'].value
+        obj_tolerance = self.options['Objective value tolerance'].value
+        outputvar_tolerance = self.options['Inequality constraint tolerance'].value
+        inequality_tolerance = self.options['Output variable tolerance'].value
         Saveresults = self.options['Save results'].value
-        SetName = self.options['Set Name'].value
-        pyomo_surrogate = self.options['Pyomo Surrogate File'].value
-        file_name_SM_stored = self.options['Surrogate Model Storing File'].value
-        file_name_plots = self.options['Algorithm Convergence Plots File'].value
-        uq_file = self.options['Parity Plot File'].value
+        SetName = self.options['Set name'].value
+        pyomo_surrogate = self.options['Pyomo surrogate file'].value
+        file_name_SM_stored = self.options['Surrogate model storing File'].value
+        file_name_plots = self.options['Algorithm convergence plots file'].value
+        uq_file = self.options['Parity plot file'].value
 
         # The set name to use when saving evaluations in flowsheet results (to get unique set names in flowsheet results section)
         if Saveresults:
@@ -461,15 +440,22 @@ class opt(optimization):
             optimizer = SolverFactory(solversource)   
             io_options = dict()
             io_options['solver'] = mathoptsolver
-            optargs=["option optCR={};".format(solver_tolerance),"option iterLim={};".format(solver_iteration_limit)]
-            io_options['add_options'] = optargs
+            # optargs=["option optCR={};".format(solver_tolerance),"option iterLim={};".format(solver_iteration_limit)]
+            if not os.path.exists('temp'):
+                os.makedirs('temp')
+            with open('temp/' + mathoptsolver + '.opt', "w") as f:
+                for k, v in solver_options.items():
+                    f.write(str(k) + ' ' + str(v) + '\n')
+            io_options['add_options'] = ['gams_model.optfile=1;']
             #{"tol":solver_tolerance,"linear_solver":linear_solver,"max_iter":solver_iteration_limit}
             io_options['mtype'] = mtype
-            io_options['warmstart'] = Warmstart
+            # io_options['warmstart'] = Warmstart
             kwds=dict()
             kwds['io_options'] = io_options
             # kwds['warmstart'] = Warmstart
             kwds['tee'] = tee
+            kwds['keepfiles'] = True
+            kwds['tmpdir'] = 'temp'
             # optargs['tol'] = solver_tolerance
             # optargs['linear_solver'] = linear_solver
             # optargs['max_iter'] = solver_iteration_limit
@@ -480,14 +466,15 @@ class opt(optimization):
             optimizer = SolverFactory(mathoptsolver)
             kwds=dict()
             kwds['tee'] = tee
-            if Warmstart==True:
-                Warmstart_upd='yes'
-            else:
-                Warmstart_upd='no'
-            optimizer.options['warm_start_init_point'] = Warmstart_upd
-            optimizer.options['tol'] = solver_tolerance
-            optimizer.options['linear_solver'] = linear_solver
-            optimizer.options['max_iter'] = solver_iteration_limit
+            # if Warmstart==True:
+            #     Warmstart_upd='yes'
+            # else:
+            #     Warmstart_upd='no'
+            # optimizer.options['warm_start_init_point'] = Warmstart_upd
+            # optimizer.options['tol'] = solver_tolerance
+            # optimizer.options['linear_solver'] = linear_solver
+            # optimizer.options['max_iter'] = solver_iteration_limit
+            optimizer.options = solver_options
             
         solution_time = []
         

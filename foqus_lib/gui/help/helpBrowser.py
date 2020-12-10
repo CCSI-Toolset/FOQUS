@@ -1,6 +1,19 @@
+""" turbineConfiguration.py
+
+* This class contains Turbine configuration profiles and  functions for
+  interacting with Turbine
+* trying to move turbine related stuff into one place so fixes and
+  improvements to the Turbine interaction are easier
+
+Joshua Boverhof, Lawrence Berkeley National Lab
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
+
 import os
 import time
 import logging
+import base64
 import _thread
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 import websocket
@@ -245,39 +258,57 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         if self._cloud_notification is None and \
             self.dat.foqusSettings.runFlowsheetMethod == 1:
             # Cloud View
-            self.CloudLogView.append("== Beginning FOQUS Cloud Log")
-            url='wss://jyphn7ci0b.execute-api.us-east-1.amazonaws.com/Prod'
-            self._cloud_notification = WebSocketApp(url, self.CloudLogView,
-                self.dat.flowsheet.turbConfig)
-            _thread.start_new_thread(self._cloud_notification.run_forever, ())
+            self._cloud_notification = False
+            if not self.dat.flowsheet.turbConfig.notification:
+                self.CloudLogView.append("==> Disabled")
+                return
+            self.CloudLogView.append("==> Start")
+            try:
+                self._cloud_notification = WebSocketApp(self.CloudLogView,
+                    self.dat.flowsheet.turbConfig)
+            except ValueError as e:
+                logging.getLogger("foqus." + __name__).info(str(e))
+                self.CloudLogView.append("Cloud Notifcations: OFF")
+                self.CloudLogView.append("turbine configuration section Application, key notification")
+            else:
+                _thread.start_new_thread(self._cloud_notification.run_forever, ())
 
 
 class WebSocketApp(object):
-    def __init__(self, url:str, widget:QTextBrowser, config:TurbineConfiguration):
+
+    def __init__(self, widget:QTextBrowser, config:TurbineConfiguration):
         assert type(widget) is QTextBrowser, type(widget)
         assert type(config) is TurbineConfiguration, type(config)
         websocket.enableTrace(True)
-        self.ws = websocket.WebSocketApp(url,
+        wss_url = config.notification
+        if not wss_url.startswith('wss://'):
+            raise ValueError("Require Web Sockets Secure (wss) protocol")
+        usertok = '%s:%s' %(config.user, config.pwd)
+        token = base64.b64encode(bytes(usertok, 'utf-8')).decode('ascii')
+        header = 'Authorization: Basic {0}'.format(token)
+        self.ws = websocket.WebSocketApp(wss_url,
+                                header=[header],
                                 on_message = self.on_message,
                                 on_open = self.on_open,
                                 on_error = self.on_error,
                                 on_close = self.on_close)
         self.widget = widget
         self.config = config
+        self.url = wss_url
 
     def on_message(self, message):
-        print("on_message: ", message)
-        self.widget.append(message)
+        self.widget.append("> %s" %message)
 
     def on_error(self, error):
-        self.widget.append("ERROR: %s" %(error))
+        logging.getLogger("foqus." + __name__).error(error)
+        self.widget.append("Notification error: %s" %(error))
 
     def on_close(self):
         pass
 
     def on_open(self):
-        self.ws.send('{"action":"sendmessage", "data":"open user=%s"}' \
-            %(self.config.user))
+        logging.getLogger("foqus." + __name__).debug("WSS open: %s" %self.url)
+        self.ws.send('{"action":"status"}')
 
     def run_forever(self):
         self.ws.run_forever()

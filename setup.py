@@ -68,13 +68,14 @@ dist = setup(
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.13",
+        "PyQt5==5.15",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
+        "websocket_client>=0.57"
         ],
 )
 

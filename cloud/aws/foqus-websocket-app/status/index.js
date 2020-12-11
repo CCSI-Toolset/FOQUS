@@ -17,6 +17,7 @@ const TABLE_NAME = process.env.FOQUS_WEBSOCKET_TABLE_NAME;
 const FOQUS_JOB_QUEUE = process.env.FOQUS_JOB_QUEUE;
 //const API_GATEWAY_ENDPOINT = process.env.FOQUS_WEBSOCKET_API_GATEWAY_ENDPOINT
 
+
 exports.handler = async event => {
   log("request: " + JSON.stringify(event));
   let connectionData;
@@ -26,16 +27,22 @@ exports.handler = async event => {
   let queueData;
   let statusData;
   let response;
-  let params;
-  const connectionId = event.requestContext.connectionId;
+  //const connectionId = event.requestContext.connectionId;
   // DynamoDB
-  params = {
+  //params = {
+  //    TableName: TABLE_NAME,
+  //    Key: {"Id": connectionId, "Type":"WebSocket"}
+  //};
+  var params = {
       TableName: TABLE_NAME,
-      Key: {"Id": connectionId, "Type":"WebSocket"}
+      KeyConditionExpression: '#T = :websocket',
+      ExpressionAttributeNames: {"#T":"Type"},
+      ExpressionAttributeValues: { ":websocket":"WebSocket"}
   };
   try {
-    connectionData = await dynamodb.get(params).promise();
+    connectionData = await dynamodb.query(params).promise();
   } catch (e) {
+    log("ERROR", e.stack);
     return { statusCode: 500, body: e.stack };
   }
   log("connectionData: " + JSON.stringify(connectionData));
@@ -53,7 +60,7 @@ exports.handler = async event => {
     //return { statusCode: 500, body: e.stack };
     autoscaleData = {}
   }
-  log("autoscaleData: " + JSON.stringify(autoscaleData));
+  //log("autoscaleData: " + JSON.stringify(autoscaleData));
 
   // EC2
   params = {
@@ -70,7 +77,7 @@ exports.handler = async event => {
     log("Failed to get instanceData: ", e.stack);
     instanceData = {};
   }
-  log("instanceData: " + JSON.stringify(instanceData));
+  //log("instanceData: " + JSON.stringify(instanceData));
 
   // SQS
   params = {
@@ -82,7 +89,7 @@ exports.handler = async event => {
     log("Failed to get queueUrl: ", e.stack);
     response = null;
   }
-  log("sqs.getQueueUrl: " + JSON.stringify(response));
+  //log("sqs.getQueueUrl: " + JSON.stringify(response));
   if (response != null ) {
     params = {
       QueueUrl: response.QueueUrl,
@@ -98,7 +105,7 @@ exports.handler = async event => {
       log("Failed to get queueData: ", e.stack);
       queueData = {};
     }
-    log("queueData: " + JSON.stringify(queueData));
+    //log("queueData: " + JSON.stringify(queueData));
   }
 
   statusData = JSON.stringify({ autoscale: autoscaleData, ec2: instanceData, sqs: queueData });
@@ -109,15 +116,28 @@ exports.handler = async event => {
     endpoint:  endpoint
   });
   log("api gateway endpoint: " + endpoint);
-  try {
-    await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: statusData }).promise();
-  } catch (e) {
-    if (e.statusCode === 410) {
-      log(`Found stale connection, deleting ${connectionId}`);
-      await dynamodb.delete({ TableName: TABLE_NAME, Key: { connectionId } }).promise();
-    } else {
-      throw e;
+  //const postData = JSON.parse(event.body).data;
+  const postCalls = connectionData.Items.map(async ({ Id }) => {
+    var connectionId = Id;
+    log("connectionId: " + connectionId);
+    //log("postData: " + Data);
+    try {
+      await apigwManagementApi.postToConnection({ ConnectionId: connectionId, Data: statusData }).promise();
+    } catch (e) {
+      if (e.statusCode === 410) {
+        log(`Found stale connection, deleting ${connectionId}`);
+        await dynamodb.delete({ TableName: TABLE_NAME,
+          Key: {"Id": connectionId, "Type":"WebSocket"} }).promise();
+      } else {
+        throw e;
+      }
     }
+  });
+
+  try {
+    await Promise.all(postCalls);
+  } catch (e) {
+    return { statusCode: 500, body: e.stack };
   }
 
   return { statusCode: 200, body: 'Data sent.' };

@@ -14,7 +14,9 @@ import os
 import time
 import logging
 import base64
-import _thread
+import json
+import threading
+from datetime import datetime
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 import websocket
 from typing import Optional
@@ -213,6 +215,12 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         '''
         self.logView.clear()
 
+    def clearNotificationView(self):
+        '''
+            Clear the Cloud log text
+        '''
+        self.CloudLogView.clear()
+
     def timerCB(self):
         '''
             Function called by the timer to ubdate log display.
@@ -271,12 +279,46 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
                 self.CloudLogView.append("Cloud Notifcations: OFF")
                 self.CloudLogView.append("turbine configuration section Application, key notification")
             else:
-                _thread.start_new_thread(self._cloud_notification.run_forever, ())
+                self._cloud_notification.signalUpdateStatus.connect(self.showStatus)
+                self._cloud_notification.start()
+
+    def showStatus(self):
+        logging.getLogger("foqus." + __name__).info("on_message")
+        self.widget = self.CloudLogView
+        self.widget.clear()
+        self.widget.append("%s>" %(datetime.now().isoformat()))
+        d = json.loads(self._cloud_notification.message)
+        if ("sqs" in d):
+            self.widget.append("Job Queue:")
+            for k,v in d['sqs'].get('Attributes',{}).items():
+                self.widget.append("\t%s: %s" %(k,v))
+        if ("autoscale" in d):
+            for group in d['autoscale'].get('AutoScalingGroups',[]):
+                self.widget.append("AutoScale: %s" %(group['AutoScalingGroupName']))
+                for key in ['MinSize','MaxSize','DesiredCapacity']:
+                    self.widget.append("\t%s: %s" %(key,group[key]))
+        if ("ec2" in d):
+            for reservation in d['ec2'].get('Reservations',[]):
+                for inst in reservation['Instances']:
+                    logging.getLogger("foqus." + __name__).info(inst)
+                    tag_name = 'NO NAME'
+                    for tag in filter(lambda a: a['Key'] == 'Name', inst['Tags']):
+                        tag_name = tag['Value']
+                    self.widget.append("EC2: %s" %(tag_name))
+                    for key in ['InstanceType','Platform','State']:
+                        self.widget.append("\t%s: %s" %(key,inst[key]))
 
 
-class WebSocketApp(object):
+
+#class WebSocketApp(threading.Thread):
+class WebSocketApp(QtCore.QThread):
+    signalUpdateStatus = QtCore.pyqtSignal()
 
     def __init__(self, widget:QTextBrowser, config:TurbineConfiguration):
+        #threading.Thread.__init__(self)
+        super(QtCore.QThread, self).__init__()
+        self.stop = threading.Event()
+        self.daemon = True
         assert type(widget) is QTextBrowser, type(widget)
         assert type(config) is TurbineConfiguration, type(config)
         websocket.enableTrace(True)
@@ -297,18 +339,20 @@ class WebSocketApp(object):
         self.url = wss_url
 
     def on_message(self, message):
-        self.widget.append("> %s" %message)
+        self.message = message
+        self.signalUpdateStatus.emit()
 
     def on_error(self, error):
         logging.getLogger("foqus." + __name__).error(error)
         self.widget.append("Notification error: %s" %(error))
 
     def on_close(self):
-        pass
+        logging.getLogger("foqus." + __name__).info("WSS closed")
 
     def on_open(self):
         logging.getLogger("foqus." + __name__).debug("WSS open: %s" %self.url)
         self.ws.send('{"action":"status"}')
 
-    def run_forever(self):
+    def run(self):
+        logging.getLogger("foqus." + __name__).info("run_forever")
         self.ws.run_forever()

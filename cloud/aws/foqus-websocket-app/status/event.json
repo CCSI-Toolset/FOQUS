@@ -7,7 +7,7 @@
   "requestContext": {
     "domainName": "du6p1udafi.execute-api.us-east-1.amazonaws.com",
     "stage": "Development",
-    "connectionId":"test1",
+    "connectionId":"XWt29cUYoAMCKYA=",
     "authorizer": {
       "principalId": "test"
     }

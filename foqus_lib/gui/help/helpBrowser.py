@@ -289,24 +289,26 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.widget.append("%s>" %(datetime.now().isoformat()))
         d = json.loads(self._cloud_notification.message)
         if ("sqs" in d):
-            self.widget.append("Job Queue:")
+            self.widget.append("== SQS Job Queue:")
             for k,v in d['sqs'].get('Attributes',{}).items():
-                self.widget.append("\t%s: %s" %(k,v))
+                self.widget.append("  %s: %s" %(k,v))
         if ("autoscale" in d):
+            self.widget.append("== AutoScale:")
             for group in d['autoscale'].get('AutoScalingGroups',[]):
-                self.widget.append("AutoScale: %s" %(group['AutoScalingGroupName']))
+                self.widget.append("  %s" %(group['AutoScalingGroupName']))
                 for key in ['MinSize','MaxSize','DesiredCapacity']:
-                    self.widget.append("\t%s: %s" %(key,group[key]))
+                    self.widget.append("    %s: %s" %(key,group[key]))
         if ("ec2" in d):
+            self.widget.append("== EC2:")
             for reservation in d['ec2'].get('Reservations',[]):
                 for inst in reservation['Instances']:
                     logging.getLogger("foqus." + __name__).info(inst)
                     tag_name = 'NO NAME'
                     for tag in filter(lambda a: a['Key'] == 'Name', inst['Tags']):
                         tag_name = tag['Value']
-                    self.widget.append("EC2: %s" %(tag_name))
+                    self.widget.append("  %s" %(tag_name))
                     for key in ['InstanceType','Platform','State']:
-                        self.widget.append("\t%s: %s" %(key,inst[key]))
+                        self.widget.append("    %s: %s" %(key,inst[key]))
 
 
 

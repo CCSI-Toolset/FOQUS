@@ -66,8 +66,8 @@ exports.handler = async event => {
   params = {
     Filters : [
       {
-        Name: "tag:Name",
-        Values: ["SLM License Server"]
+        Name: "tag:Deployment",
+        Values: ["FOQUS"]
       }
     ]
   };

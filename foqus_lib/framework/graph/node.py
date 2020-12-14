@@ -553,6 +553,7 @@ class Node:
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
+        print(self.inVars.items())
         # Now try to execute the post code
         try:
             exec(self.pythonCode)

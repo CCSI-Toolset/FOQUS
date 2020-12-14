@@ -107,12 +107,43 @@ class NodeVarList(OrderedDict):
             varName: the variable name to add
             var: a NodeVar object or None to create a new variable
         """
+        # if nodeName not in self:
+        #     raise NodeVarListEx(2, msg=nodeName)
+        # if varName in self[nodeName]:
+        #     raise NodeVarListEx(7, msg=varName)
+        # if not var:
+        #     # if size==1:
+        #     if ip==True:
+        #         var = NodeVarsVector()
+        #         var.setMin(minval)
+        #         var.setMax(maxval)
+        #         var.setDefault(value)
+        #         var.setValue(value)
+        #         self[nodeName][varName] = var
+        #     else:
+        #         var = NodeVarsVector()
+        #         var.setValue(value)
+        #         self[nodeName][varName] = var
+        #     for i in range(int(size)):
+        #         self.addVariable(nodeName, varName + '_{0}'.format(i))
+        # # else:
+        # #     var = NodeVarsVector(size)              
+        # return var
         if nodeName not in self:
             raise NodeVarListEx(2, msg=nodeName)
         if varName in self[nodeName]:
             raise NodeVarListEx(7, msg=varName)
         if not var:
-            # if size==1:
+            for i in range(int(size)):
+                self.addVariable(nodeName, varName + '_{0}'.format(i))
+                nodevar = self[nodeName][varName + '_{0}'.format(i)]
+                if ip==True:
+                    # nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))    
+                    nodevar.min = float(minval[i])                       
+                    nodevar.max = float(maxval[i])       
+                    nodevar.value = float(value[i])
+                else:
+                    nodevar.value = float(value[i])
             if ip==True:
                 var = NodeVarsVector()
                 var.setMin(minval)
@@ -124,10 +155,6 @@ class NodeVarList(OrderedDict):
                 var = NodeVarsVector()
                 var.setValue(value)
                 self[nodeName][varName] = var
-            for i in range(int(size)):
-                self.addVariable(nodeName, varName + '_{0}'.format(i))
-        # else:
-        #     var = NodeVarsVector(size)              
         return var
 
     def get(self, name, varName=None):

@@ -651,16 +651,21 @@ class nodeDock(_nodeDock, _nodeDockUI):
             
                 # Insert bounds and values of the new vector and scalar variables
                 for i in range(int(size)):
-                    nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
+                    # nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
                     
-                    nodevar.min = float(minval[i])
-                    nodevarvec.min[i] = float(minval[i])
+                    # nodevar.min = float(minval[i])
+                    # nodevarvec.min[i] = float(minval[i])
                     
-                    nodevar.max = float(maxval[i])
-                    nodevarvec.max[i] = float(maxval[i])
+                    # nodevar.max = float(maxval[i])
+                    # nodevarvec.max[i] = float(maxval[i])
     
-                    nodevar.value = float(value[i])
-                    nodevarvec.value[i] = float(value[i])
+                    # nodevar.value = float(value[i])
+                    # nodevarvec.value[i] = float(value[i])
+                    
+                    nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
+                    nodevarvec.min[i] = nodevar.min                   
+                    nodevarvec.max[i] = nodevar.max
+                    nodevarvec.value[i] = nodevar.value
                    
             else:
                 self.node.gr.input.addVariable(self.node.name, newName)

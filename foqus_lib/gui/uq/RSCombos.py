@@ -15,10 +15,11 @@ class RSCombo1(QComboBox):
         super(RSCombo1, self).__init__(parent)
         self.combo2 = None
 
-    def init(self, data, combo2, combo2SetFile = False, removeDisabled = False,
-             marsBasisSpin = None, marsBasisCaption = None,
-             marsDegreeSpin = None, marsDegreeCaption = None):
-            # Call this after combo2 init()
+    def init(self, data, combo2, combo2SetFile=False, removeDisabled=False,
+             marsBasisSpin=None, marsBasisCaption=None,
+             marsDegreeSpin=None, marsDegreeCaption=None,
+             odoe=False):
+        # Call this after combo2 init()
 
         self.setEnabled(True)
         self.combo2SetFile = combo2SetFile
@@ -54,7 +55,11 @@ class RSCombo1(QComboBox):
             index = model.index(i, 0)
             item = model.itemFromIndex(index)
             item.setEnabled(True)
-
+        if odoe:
+            for i in range(2, 8):
+                index = model.index(i, 0)
+                item = model.itemFromIndex(index)
+                item.setEnabled(False)
         i = poly
         if not RSAnalyzer.checkSampleSize(nSamples, nInputs, ResponseSurfaces.LINEAR):
             disable.append(i)
@@ -157,12 +162,16 @@ class RSCombo2(QComboBox):
         self.legendreCaption = None
         self.useShortNames = False
         self.fileMode = False
+        self.odoe = False
 
-    def init(self, data, legendreSpin, legendreCaption = None, useShortNames = False):
+    def init(self, data, legendreSpin,
+             legendreCaption=None, useShortNames=False,
+             odoe=False):
         self.data = data
         self.legendreSpin = legendreSpin
         self.legendreCaption = legendreCaption
         self.useShortNames = useShortNames
+        self.odoe = odoe
 
         self.currentIndexChanged[int].connect(self.change)
         self.isSetFileSignal = False
@@ -200,6 +209,9 @@ class RSCombo2(QComboBox):
         if RSAnalyzer.checkSampleSize(nSamples, nInputs, rs, legendreOrder=1):
             enable.append(rs)
 
+        if self.odoe:
+            enable = [ResponseSurfaces.LINEAR, ResponseSurfaces.QUADRATIC,
+                      ResponseSurfaces.CUBIC]
         return enable
 
     def showMars(self):
@@ -212,9 +224,10 @@ class RSCombo2(QComboBox):
         else:
             self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG))
         self.setEnabled(True)
+        if self.odoe:
+            self.removeItem(1)
         self.enableLegendre(False)
         self.fileMode = False
-
 
     def showFiles(self):
         self.fileMode = True

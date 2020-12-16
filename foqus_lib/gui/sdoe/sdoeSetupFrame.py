@@ -4,6 +4,8 @@ import logging
 import copy
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.sdoe.sdoeSimSetup import *
+from foqus_lib.gui.sdoe.odoeSimSetup import *
+from foqus_lib.gui.uq import RSCombos
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 from foqus_lib.framework.uq.DataProcessor import *
 from foqus_lib.framework.uq.RSAnalyzer import *
@@ -13,10 +15,11 @@ from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sdoe import df_utils
 from .sdoeAnalysisDialog import sdoeAnalysisDialog
 from .sdoePreview import sdoePreview
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from PyQt5 import QtCore, uic, QtGui
 from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QTableWidgetItem, \
-    QPushButton, QStyle, QDialog, QMessageBox, QMenu, QAbstractItemView
+    QPushButton, QStyle, QDialog, QMessageBox, QMenu, QAbstractItemView, QCheckBox
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor
 
@@ -30,6 +33,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     runsFinishedSignal = QtCore.pyqtSignal()
     addDataSignal = QtCore.pyqtSignal(SampleData)
     changeDataSignal = QtCore.pyqtSignal(SampleData)
+    addCandidateSignal = QtCore.pyqtSignal(SampleData)
+    changeCandidateSignal = QtCore.pyqtSignal(SampleData)
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
@@ -41,7 +46,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     descriptorCol = 0
     viewCol = 1
 
+    indexCol = 0
+    selectCol = 1
+    fileCol = 2
+    visualizeCol = 3
+
     dname = os.path.join(os.getcwd(), 'SDOE_files')
+    odoe_dname = os.path.join(os.getcwd(), 'ODOE_files')
 
     # This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
@@ -98,11 +109,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filterWidget.indicesSelectedSignal.connect(self.createFilteredEnsemble)
         self.filterFrame.setLayout(QStackedLayout(self.filterFrame))
         self.filterFrame.layout().addWidget(self.filterWidget)
+        self.sdoePages.setCurrentIndex(0)
 
         # Set up simulation ensembles section
+        self.sdoe_radioButton.clicked.connect(self.checkMode)
+        self.odoe_radioButton.clicked.connect(self.checkMode)
         self.addSimulationButton.clicked.connect(self.addSimulation)
         self.addSimulationButton.setEnabled(True)
         self.addDataSignal.connect(self.addDataToSimTable)
+        self.addCandidateSignal.connect(self.addDataToCandTable)
         self.loadFileButton.clicked.connect(self.loadSimulation)
         self.loadFileButton.setEnabled(True)
         self.cloneButton.clicked.connect(self.cloneSimulation)
@@ -120,6 +135,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+        self.changeCandidateSignal.connect(lambda data: self.changeDataInCandTable(data, row))
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -143,11 +159,42 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.delegate = sdoeSetupFrame.MyItemDelegate(self)
         self.deleteTable.setItemDelegate(self.delegate)
 
-        # Create SDOE directory
+        # Create SDOE & ODOE directories
         Common.initFolder(self.dname)
+        Common.initFolder(self.odoe_dname)
+
+        # Initialize ODoE Page
+        self.odoe_inputs_groupBox.setEnabled(False)
+        self.odoe_outputs_groupBox.setEnabled(False)
+        self.odoe_design_groupBox.setEnabled(False)
+        self.odoe_setup_groupBox.setEnabled(False)
+        self.odoe_data = None
+        self.loadtrainData_button.clicked.connect(self.loadRStrainData)
+        self.confirmInputs_button.clicked.connect(self.confirmInputs)
+        self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3, 'mars1': 4, 'mars2': 5}
+        self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in
+                                    range(self.output_table.columnCount())]
+        self.outputMeans = None
+        self.outputStdDevs = None
+        self.yesCand_radioButton.clicked.connect(self.checkCandFile)
+        self.noCand_radioButton.clicked.connect(self.checkCandFile)
+        self.generateCandidate_button.clicked.connect(self.generateCandidate)
+        self.loadCandidate_button.clicked.connect(self.loadCandidate)
+
+        self.odoe_cand_table.resizeColumnsToContents()
+        self.odoe_cand_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.odoe_cand_table.itemSelectionChanged.connect(self.candSelected)
+        self.deleteSelection_button.clicked.connect(self.deleteSelection)
+        self.confirmCandidates_button.clicked.connect(self.confirmCandidates)
+
+    # Check if SDoE or ODoE
+    def checkMode(self):
+        if self.sdoe_radioButton.isChecked():
+            self.sdoePages.setCurrentIndex(0)
+        else:
+            self.sdoePages.setCurrentIndex(1)
 
     # Go through list of ensembles
-
     def confirmEnsembles(self):
         QApplication.processEvents()
         self.updateAggTable()
@@ -1053,3 +1100,400 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.outputData = outputData
         self.redrawDeleteTable()
         self.updateSimTableRow(row)
+
+    # ODoE Page starts here
+    def loadRStrainData(self):
+        self.freeze()
+        # Get file name
+        if platform.system() == 'Windows':
+            _allFiles = '*.*'
+        else:
+            _allFiles = '*'
+        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Train Data", '',
+                                                               "CSV (Comma delimited) (*.csv)")
+        if len(fileName) == 0:
+            self.unfreeze()
+            return
+
+        if fileName.endswith('.csv'):
+            data = LocalExecutionModule.readSampleFromCsvFile(fileName, True)
+        else:
+            try:
+                data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
+            except:
+                import traceback
+                traceback.print_exc()
+                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                                           'File does not have the correct format! Please consult the users manual '
+                                           'about the format.')
+                logging.getLogger("foqus." + __name__).exception(
+                    "Error loading psuade file.")
+                self.unfreeze()
+                return
+        self.trainData_edit.setText(fileName)
+        self.odoe_data = data
+        self.odoe_inputs_groupBox.setEnabled(True)
+        self.odoe_outputs_groupBox.setEnabled(True)
+        self.validateRS_button.setEnabled(False)
+        self.confirmRS_button.setEnabled(False)
+        self.input_table.init(self.odoe_data, InputPriorTable.INFERENCE)
+        self.refreshOutputTable()
+
+        self.unfreeze()
+
+    def refreshOutputTable(self):
+        data = self.odoe_data
+        data = data.getValidSamples()  # filter out samples that have no output results
+        y = data.getOutputData()
+
+        # populate table
+        outVarNames = data.getOutputNames()
+        nOutputs = data.getNumOutputs()
+        self.outputMeans = [0] * nOutputs
+        self.outputStdDevs = [0] * nOutputs
+        self.output_table.setRowCount(nOutputs)
+        self.output_table.setColumnCount(len(self.outputCol_index))
+        self.output_table.setHorizontalHeaderLabels(self.outputColumnHeaders[:len(self.outputCol_index)])
+        for i in range(nOutputs):
+
+            # compute mean and standard deviation
+            yi = y[:, i]
+            mu = np.mean(yi)
+            self.outputMeans[i] = mu
+            sigma = np.std(yi)
+            self.outputStdDevs[i] = sigma
+
+            # add output name
+            item = QTableWidgetItem(outVarNames[i])
+            flags = item.flags()
+            mask = ~QtCore.Qt.ItemIsEnabled
+            item.setFlags(flags & mask)
+            item.setForeground(Qt.black)
+            self.output_table.setItem(i, self.outputCol_index['name'], item)
+            # if output takes on one value, then disable that output from inference
+            if sigma > 0:
+                # add checkbox
+                chkbox = self.output_table.cellWidget(i, self.outputCol_index['sel'])
+                if chkbox is None:
+                    chkbox = QCheckBox('', self)
+                    chkbox.setChecked(True)
+                    chkbox.setEnabled(True)
+                    self.output_table.setCellWidget(i, self.outputCol_index['sel'], chkbox)
+                    chkbox.toggled.connect(self.on_output_checkbox_changed)
+
+                # add combo boxes for RS1 and rs2 and Legendre spinbox
+                combo1 = RSCombos.RSCombo1(self)
+                combo2 = RSCombos.RSCombo2(self)
+                legendreSpin = RSCombos.LegendreSpinBox(self)
+                marsBasisSpin = None
+                marsInteractionSpin = None
+                if 'mars1' in self.outputCol_index:
+                    marsBasisSpin = RSCombos.MarsBasisSpinBox(self)
+                    marsBasisSpin.init(data)
+                if 'mars2' in self.outputCol_index:
+                    marsInteractionSpin = RSCombos.MarsDegreeSpinBox(self)
+                    marsInteractionSpin.init(data)
+
+                legendreSpin.init(data)
+                combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
+                combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
+                            marsDegreeSpin=marsInteractionSpin, odoe=True)
+
+                combo1.setProperty('row', i)
+                combo2.setProperty('row', i)
+
+                self.output_table.setCellWidget(i, self.outputCol_index['rs1'], combo1)
+                self.output_table.setCellWidget(i, self.outputCol_index['rs2'], combo2)
+                if 'mars1' in self.outputCol_index:
+                    self.output_table.setCellWidget(i, self.outputCol_index['mars1'], marsBasisSpin)
+                if 'mars2' in self.outputCol_index:
+                    self.output_table.setCellWidget(i, self.outputCol_index['mars2'], marsInteractionSpin)
+
+            else:
+                # add a disabled checkbox
+                chkbox = QCheckBox('')
+                chkbox.setChecked(False)
+                chkbox.setEnabled(False)
+                self.output_table.setCellWidget(i, self.outputCol_index['sel'], chkbox)
+                # add inactive field for RS1
+                item = QTableWidgetItem('')
+                flags = item.flags()
+                mask = ~QtCore.Qt.ItemIsEnabled
+                item.setFlags(flags & mask)
+                item.setForeground(Qt.black)
+                item.setBackground(Qt.lightGray)
+                item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                self.output_table.setItem(i, self.outputCol_index['rs1'], item)
+                # add inactive field for RS2
+                item = QTableWidgetItem('')
+                flags = item.flags()
+                mask = ~QtCore.Qt.ItemIsEnabled
+                item.setFlags(flags & mask)
+                item.setForeground(Qt.black)
+                item.setBackground(Qt.lightGray)
+                item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+                self.output_table.setItem(i, self.outputCol_index['rs2'], item)
+
+        self.output_table.resizeColumnsToContents()
+
+    def checkCandFile(self):
+        if self.yesCand_radioButton.isChecked():
+            self.loadCandidate_button.setEnabled(True)
+            self.generateCandidate_button.setEnabled(False)
+        else:
+            self.loadCandidate_button.setEnabled(False)
+            self.generateCandidate_button.setEnabled(True)
+
+    def confirmInputs(self):
+        QApplication.processEvents()
+        self.odoe_design_groupBox.setEnabled(True)
+        self.generateCandidate_button.setEnabled(False)
+        self.deleteSelection_button.setEnabled(False)
+        self.confirmCandidates_button.setEnabled(False)
+        QApplication.processEvents()
+
+    def loadCandidate(self):
+        self.freeze()
+        # Get file name
+        if platform.system() == 'Windows':
+            _allFiles = '*.*'
+        else:
+            _allFiles = '*'
+        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Candidate Set", '',
+                                                               "CSV (Comma delimited) (*.csv)")
+        if len(fileName) == 0:
+            self.unfreeze()
+            return
+
+        if fileName.endswith('.csv'):
+            data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
+        else:
+            try:
+                data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
+            except:
+                import traceback
+                traceback.print_exc()
+                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                                           'File does not have the correct format! Please consult the users manual '
+                                           'about the format.')
+                logging.getLogger("foqus." + __name__).exception(
+                    "Error loading psuade file.")
+                self.unfreeze()
+                return
+
+        data.setSession(self.dat)
+        self.dat.odoeCandList.append(data)
+
+        res = Results()
+        res.odoe_add_result(data)
+        shutil.copy(fileName, self.odoe_dname)
+
+        # Update table
+        self.updateCandTable()
+        self.unfreeze()
+
+    def generateCandidate(self):
+        data = self.odoe_data
+        mins = np.min(data.getInputData(), 0)
+        maxs = np.max(data.getInputData(), 0)
+        defaults = []
+        for i in range(len(mins)):
+            defaults.append((mins[i] + maxs[i]) / 2)
+
+        data.model.setInputMins(mins)
+        data.model.setInputMaxs(maxs)
+        data.model.setInputDefaults(defaults)
+        self.dat.model = data.model
+
+        simDialog = odoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addCandidateSignal, parent=self)
+        simDialog.show()
+
+    def addDataToCandTable(self, data):
+        if data is None:
+            return
+        self.dat.odoeCandList.append(data)
+        res = Results()
+        res.odoe_add_result(data)
+
+        self.updateCandTable()
+
+    def changeDataInCandTable(self, data, row):
+        if data is None:
+            return
+        self.dat.odoeCandList[row] = data
+        res = Results()
+        res.odoe_add_result(data)
+
+        self.updateCandTableRow(row)
+
+    def updateCandTable(self):
+        QApplication.processEvents()
+        # Update table
+        numCands = len(self.dat.odoeCandList)
+        self.odoe_cand_table.setRowCount(numCands)
+        self.updateCandTableRow(numCands - 1)
+        self.odoe_cand_table.selectRow(numCands - 1)
+        self.odoe_cand_table.resizeColumnsToContents()
+        self.confirmCandidates_button.setEnabled(self.checkCandidates())
+        QApplication.processEvents()
+
+    def updateCandTableRow(self, row):
+        data = self.dat.odoeCandList[row]
+        item = self.odoe_cand_table.item(row, self.indexCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(str(row + 1))
+        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        flags = item.flags()
+        mask = ~Qt.ItemIsEditable
+        item.setFlags(flags & mask)
+        self.odoe_cand_table.setItem(row, self.indexCol, item)
+
+        item = self.odoe_cand_table.item(row, self.fileCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(data.getModelName())
+        self.odoe_cand_table.setItem(row, self.fileCol, item)
+
+        # create checkboxes for select column
+        checkbox = QCheckBox()
+        checkbox.setChecked(True)
+        self.odoe_cand_table.setCellWidget(row, self.selectCol, checkbox)
+        checkbox.setProperty('row', row)
+        checkbox.toggled.connect(self.on_checkbox_changed)
+
+        viewButton = self.odoe_cand_table.cellWidget(row, self.visualizeCol)
+        newViewButton = False
+        if viewButton is None:
+            newViewButton = True
+            viewButton = QPushButton()
+            viewButton.setText('View')
+            viewButton.setToolTip('View and plot the candidate set.')
+
+        viewButton.setProperty('row', row)
+        if newViewButton:
+            viewButton.clicked.connect(self.viewCand)
+            self.odoe_cand_table.setCellWidget(row, self.visualizeCol, viewButton)
+
+        # Resize table
+        self.resizeColumns()
+        minWidth = 2 + self.odoe_cand_table.columnWidth(0) + self.odoe_cand_table.columnWidth(1) + \
+                   self.odoe_cand_table.columnWidth(2) + self.odoe_cand_table.columnWidth(3)
+        if self.odoe_cand_table.verticalScrollBar().isVisible():
+            minWidth += self.odoe_cand_table.verticalScrollBar().width()
+        self.odoe_cand_table.setMinimumWidth(minWidth)
+
+    def viewCand(self):
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeCandidateSignal.disconnect()
+        self.changeCandidateSignal.connect(lambda data: self.changeDataInCandTable(data, row))
+
+        previewData = self.dat.odoeCandList[row]
+        hname = None
+        usf = None
+        nusf = None
+        irsf = None
+        scatterLabel = 'Candidates'
+        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self)
+        dialog.show()
+
+    def candSelected(self):
+        selectedIndexes = self.odoe_cand_table.selectedIndexes()
+        if not selectedIndexes:
+            self.deleteSelection_button.setEnabled(False)
+            return
+        self.deleteSelection_button.setEnabled(True)
+
+        row = selectedIndexes[0].row()
+        _cand = self.dat.odoeCandList[row]
+
+    def deleteSelection(self):
+        QApplication.processEvents()
+        # Get selected row
+        row = self.odoe_cand_table.selectedIndexes()[0].row()
+
+        # Delete simulation
+        self.dat.odoeCandList.pop(row)
+        self.refreshCandTable()
+        QApplication.processEvents()
+        numCands = len(self.dat.odoeCandList)
+        if numCands > 0:
+            if row >= numCands:
+                self.odoe_cand_table.selectRow(numCands - 1)
+                row = numCands - 1
+            _cand = self.dat.odoeCandList[row]
+        QApplication.processEvents()
+
+    def refreshCandTable(self):
+        numCands = len(self.dat.odoeCandList)
+        self.odoe_cand_table.setRowCount(numCands)
+        for i in range(numCands):
+            self.updateCandTableRow(i)
+
+        if numCands == 0:
+            self.confirmCandidates_button.setEnabled(False)
+
+    def checkCandidates(self):
+        numCands = len(self.dat.odoeCandList)
+        count = 0
+        for row in range(numCands):
+            if self.odoe_cand_table.cellWidget(row, self.selectCol).isChecked():
+                count += 1
+
+        return count > 0
+
+    def on_checkbox_changed(self):
+        self.confirmCandidates_button.setEnabled(self.checkCandidates())
+
+    def getCandList(self):
+        cand_list = []
+        numFiles = len(self.dat.odoeCandList)
+        for i in range(numFiles):
+            if self.odoe_cand_table.cellWidget(i, self.selectCol).isChecked():
+                cand_list.append(self.dat.odoeCandList[i])
+
+        return cand_list   # returns sample data structures
+
+    def aggregateCandList(self):
+        cand_list = self.getCandList()
+
+        cand_csv_list = []
+        for cand in cand_list:
+            cand_path = os.path.join(self.odoe_dname, cand.getModelName())
+            if not os.path.exists(cand_path):
+                cand.writeToCsv(cand_path, inputsOnly=True)
+            cand_csv_list.append(cand_path)
+
+        hist_csv_list = []
+
+        cand_agg, hist_agg = df_utils.check(cand_csv_list, hist_csv_list)
+        return cand_agg
+
+    def createAggCandData(self):
+        cand_agg = self.aggregateCandList()  # this is a df
+
+        cand_fname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
+        df_utils.write(cand_fname, cand_agg)
+        candidateData = LocalExecutionModule.readSampleFromCsvFile(cand_fname, askForNumInputs=False)
+
+        return candidateData
+
+    def confirmCandidates(self):
+        QApplication.processEvents()
+        self.createAggCandData()
+        self.validateRS_button.setEnabled(self.checkOutputs())
+        QApplication.processEvents()
+
+    def checkOutputs(self):
+        numOutputs = self.output_table.rowCount()
+        count = 0
+        for row in range(numOutputs):
+            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
+                count += 1
+
+        return count > 0
+
+    def on_output_checkbox_changed(self):
+        self.validateRS_button.setEnabled(self.checkOutputs())

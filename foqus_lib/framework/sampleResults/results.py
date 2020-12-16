@@ -18,6 +18,7 @@ from collections import OrderedDict
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
+
 class dataFilter(object):
 
     def __init__(self, no_results=False):
@@ -37,8 +38,10 @@ class dataFilter(object):
         self.no_results = sd.get('no_results', False)
         return self
 
+
 def iso_time_str():
     return str(datetime.datetime.utcnow().isoformat())
+
 
 def sd_col_list(sd, time=None):
     """
@@ -58,7 +61,7 @@ def sd_col_list(sd, time=None):
     except AssertionError:
         columns = ["time", "err"]
         dat = [time, 1001]
-        return (columns, dat)
+        return columns, dat
 
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]
@@ -71,13 +74,14 @@ def sd_col_list(sd, time=None):
                 if s[1] == "setting":
                     el = repr(el)
                 dat.append(el)
-    #node error and turbine messages columns
+    # node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:
             columns.append("{}.{}".format(s[1], n))
             dat.append(sd[s[0]][n])
     # return the list of of columns and list of associated data.
-    return (columns, dat)
+    return columns, dat
+
 
 def uq_sd_col_list(sd):
 
@@ -92,6 +96,7 @@ def uq_sd_col_list(sd):
     else:
         return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
 
+
 def sdoe_sd_col_list(sd):
 
     xvals = sd.getInputData()
@@ -100,10 +105,25 @@ def sdoe_sd_col_list(sd):
     ynames = ['output.'+name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
-        return (xnames , xvals)
+        return xnames, xvals
 
     else:
-        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+
+
+def odoe_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return xnames, xvals
+
+    else:
+        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+
 
 def incriment_name(name, exnames):
     """
@@ -121,6 +141,7 @@ def incriment_name(name, exnames):
         else:
             "".join([name, "_", str(index).zfill(4)])
     return "".join([name, "_", str(index).zfill(4)])
+
 
 def search_term_list(st):
     st = st.strip()
@@ -396,6 +417,25 @@ class Results(pd.DataFrame):
             names = []
         result_name = incriment_name(result_name, names)
         columns, dat = sdoe_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in range(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
+        self.update_filter_indexes()
+
+    def odoe_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = odoe_sd_col_list(data)
 
         for c in columns:
             if c not in self.columns:

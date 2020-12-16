@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1920</width>
-    <height>1035</height>
+    <width>1440</width>
+    <height>989</height>
    </rect>
   </property>
   <property name="font">
@@ -69,7 +69,7 @@
         </row>
         <row>
          <property name="text">
-          <string>History File</string>
+          <string>Previous Data File</string>
          </property>
         </row>
         <row>
@@ -621,7 +621,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
          </font>
         </property>
         <property name="title">
-         <string>SDOE Progress</string>
+         <string>SDoE Progress</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -774,7 +774,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
            <item>
             <widget class="QPushButton" name="runSdoeButton">
              <property name="text">
-              <string>Run SDOE</string>
+              <string>Run SDoE</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -796,7 +796,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
          </font>
         </property>
         <property name="title">
-         <string>SDOE Progress</string>
+         <string>SDoE Progress</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
@@ -912,7 +912,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
            <item>
             <widget class="QPushButton" name="runSdoe2Button">
              <property name="text">
-              <string>Run SDOE</string>
+              <string>Run SDoE</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -986,7 +986,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
         </column>
         <column>
          <property name="text">
-          <string>Plot SDOE</string>
+          <string>Plot SDoE</string>
          </property>
         </column>
        </widget>
@@ -1018,7 +1018,7 @@ See FOQUS documentation for a more in-depth discussion about the role of the MWR
            </font>
           </property>
           <property name="text">
-           <string>* All design results saved in SDOE output directory</string>
+           <string>* All design results saved in SDoE output directory</string>
           </property>
          </widget>
         </item>

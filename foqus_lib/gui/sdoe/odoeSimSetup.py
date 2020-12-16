@@ -21,18 +21,18 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QStackedLayout, QComboBox, QApplication, QMessageBox
 from PyQt5.QtGui import QCursor
 mypath = os.path.dirname(__file__)
-_SimSetupUI, _sdoeSimSetup = \
+_SimSetupUI, _odoeSimSetup = \
         uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
 
 
-class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
+class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
 
     SCHEME_PAGE_INDEX = 0
     LOAD_PAGE_INDEX = 1
     FLOWSHEET_PAGE_INDEX = 2
 
     def __init__(self, model, session, viewOnly = False, returnDataSignal = None, parent=None):
-        super(sdoeSimSetup, self).__init__(parent)
+        super(odoeSimSetup, self).__init__(parent)
 
         self.setupUi(self)
         self.viewOnly = viewOnly
@@ -145,7 +145,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def doneClicked(self):
         if self.returnDataSignal:
             self.returnDataSignal.emit(self.getData())
-            dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+            dirname = os.path.join(os.getcwd(), 'ODOE_Files')
             filename = os.path.join(dirname, self.getData().getModelName())
             self.getData().writeToCsv(filename, inputsOnly=True)
 
@@ -415,15 +415,15 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         # Create SampleData object
         runData = SampleData(model, self.session)
         res = Results()
-        res.sdoe_add_result(runData)
+        res.odoe_add_result(runData)
         possibleNames = []
-        sdoeSimList = []
-        for i in range(len(self.session.sdoeSimList)):
-            sdoeSimList.append(self.session.sdoeSimList[i].getModelName())
+        odoeCandList = []
+        for i in range(len(self.session.odoeCandList)):
+            odoeCandList.append(self.session.odoeCandList[i].getModelName())
         for i in range(100):
-            possibleNames.append("SDoE_Ensemble_%s" % str(i+1))
+            possibleNames.append("ODoE_Candidate_%s" % str(i+1))
         for i in range(len(possibleNames)):
-            if possibleNames[i] not in sdoeSimList:
+            if possibleNames[i] not in odoeCandList:
                 newName = possibleNames[i]
                 break
             else:
@@ -555,9 +555,9 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def preview(self):
         previewData = self.runData
         hname = None
-        dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+        dirname = os.path.join(os.getcwd(), 'ODOE_Files')
         usf = None
-        nusf=None
+        nusf = None
         irsf = None
         scatterLabel = 'Candidates'
 

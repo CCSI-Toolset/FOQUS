@@ -316,12 +316,13 @@ class LocalExecutionModule(object):
 
             numInputs = None
             if askForNumInputs:
+                # TO DO: Cleaning PySide stuff
                 if not usePyside or QtWidgets.QApplication.instance() is None:
-                    numInputs = int(input('How many of the columns are inputs (Inputs must be on the left)?'))
+                    numInputs = int(input('How many of the columns are inputs? \nInputs must be on the left.'))
                 else:
                     numInputs, ok = QtWidgets.QInputDialog.getInt(None, 'Number of inputs',
-                                                          'How many of the columns are inputs (Inputs must be on the left)?',
-                                                          value = len(headers), min = 1, max = len(headers))
+                                                                  'How many of the columns are inputs? \nInputs must be on the left.',
+                                                                  value=len(headers), min=1, max=len(headers))
                     if not ok:
                         return None
 
@@ -545,8 +546,8 @@ class LocalExecutionModule(object):
                 compatible = LocalExecutionModule.getPsuadeExeCompatibility(psuadeLoc)
                 if not compatible:
                     msgBox = QtWidgets.QMessageBox()
-                    msgBox.setText('PSUADE version must be %s or later! Browse to its location on the next screen.' % \
-                                    LocalExecutionModule.psuadeVersion)
+                    msgBox.setText('PSUADE version must be %s or later! Browse to its location on the next screen.' %
+                                   LocalExecutionModule.psuadeVersion)
                     msgBox.exec_()
                     psuadeLoc, _filterName = QtWidgets.QFileDialog.getOpenFileName(
                         None, "Location of Psuade", psuadeLoc, "Executable File (psuade.exe)")
@@ -626,7 +627,7 @@ class LocalExecutionModule(object):
                 if not usePyside or QtWidgets.QApplication.instance() is None:
                     if showErrorIfNotFound:
                         raise IOError('Location of PSUADE incorrect! ' +
-                                       'Please put the correct path into the file %s' % fileName)
+                                      'Please put the correct path into the file %s' % fileName)
                 else:
                     if showErrorIfNotFound:
                         location = LocalExecutionModule.setPsuadePath()

@@ -308,6 +308,7 @@ class session:
         self.uqSimList = [] # list of UQ simulation ensembles
         self.uqFilterResultsList = [] # list of UQ filter results
         self.sdoeSimList = [] # list of SDOE simulation ensembles
+        self.odoeCandList = []  # list of ODOE candidate sets
         self.sdoeFilterResultsList = [] # list of SDOE filter results
         self.ID = time.strftime('Session_%y%m%d%H%M%S') #session id
         self.archiveFolder = \
@@ -471,6 +472,11 @@ class session:
         sd["sdoeFilterResultsList"] = []
         for filter in self.sdoeFilterResultsList:
             sd['sdoeFilterResultsList'].append(filter.saveDict())
+        # Save ODOE sim list
+        sd["odoeCandList"] = []
+        for sim in self.odoeCandList:
+            sd['odoeCandList'].append(sim.saveDict())
+
         if filename:
             #write two copies of the file one is backup you can keep
             #forever, one is the specified file name with most recent
@@ -593,6 +599,17 @@ class session:
                 filterResults = Results()
                 filterResults.loadDict(filterDict)
                 self.sdoeFilterResultsList.append(filterResults)
+        # Load ODOE Stuff
+        self.odoeCandList = []
+        if 'odoeCandList' in sd:
+            for simDict in sd['odoeCandList']:
+                model = Model()
+                model.loadDict(simDict['model'])
+                sim = SampleData(model)
+                sim.setSession(self)
+                sim.loadDict(simDict)
+                self.odoeCandList.append(sim)
+
         self.currentFile = None
 
     def removeArchive(self):

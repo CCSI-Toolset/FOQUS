@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-def write(fname, df):
+def write(fname, df, index=False):
     # write data frame as csv file
-    df.to_csv(fname, index=False)  # do not write row names
+    df.to_csv(fname, index=index)  # do not write row names
 
 
 def load(fname, index=None):

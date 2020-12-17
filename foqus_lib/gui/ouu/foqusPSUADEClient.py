@@ -76,7 +76,8 @@ def genOutputFile(outFileName, outData):
     outfile.close()
     return None
 
-if __name__ == '__main__':
+
+def main():
     f = open('foquspsuadeclient.log', 'w')
     f.write(' '.join(sys.argv))
     f.write('\n')
@@ -140,3 +141,7 @@ if __name__ == '__main__':
 
     # Write the output file that ALAMO can read
     genOutputFile(outputFile, results)
+
+
+if __name__ == "__main__":
+    main()

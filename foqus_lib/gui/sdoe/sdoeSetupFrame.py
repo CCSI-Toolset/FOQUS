@@ -1551,7 +1551,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         for row in y:
             self.rsValidate(y[row], rs[row], rsOptions[row], genRSCode)
-
+        QMessageBox.information(None, 'Response Surface Validation Plots',
+                                'Check the response surface validation plots for each one of your outputs.'
+                                'If the generated response surfaces satisfy your needs, please confirm.'
+                                'If not, please select a new response surface and validate again.')
         self.confirmRS_button.setEnabled(True)
         QApplication.processEvents()
 

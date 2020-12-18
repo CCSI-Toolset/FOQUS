@@ -8,6 +8,7 @@ from foqus_lib.gui.sdoe.odoeSimSetup import *
 from foqus_lib.gui.uq import RSCombos
 from foqus_lib.gui.uq.uqDataBrowserFrame import uqDataBrowserFrame
 from foqus_lib.framework.uq.DataProcessor import *
+from foqus_lib.framework.uq.RSValidation import *
 from foqus_lib.framework.uq.RSAnalyzer import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
@@ -186,6 +187,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_cand_table.itemSelectionChanged.connect(self.candSelected)
         self.deleteSelection_button.clicked.connect(self.deleteSelection)
         self.confirmCandidates_button.clicked.connect(self.confirmCandidates)
+        self.validateRS_button.clicked.connect(self.validateRS)
+        self.confirmRS_button.clicked.connect(self.confirmRS)
+        self.restarts_comboBox.setMinimumContentsLength(4)
+        self.runOdoe_button.clicked.connect(self.runOdoe)
 
     # Check if SDoE or ODoE
     def checkMode(self):
@@ -1196,6 +1201,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
                 legendreSpin.init(data)
                 combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
+                combo2.setMinimumContentsLength(10)
                 combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
                             marsDegreeSpin=marsInteractionSpin, odoe=True)
 
@@ -1497,3 +1503,76 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def on_output_checkbox_changed(self):
         self.validateRS_button.setEnabled(self.checkOutputs())
+
+    def validateRS(self):
+        QApplication.processEvents()
+        self.freeze()
+        y = {}
+        rs1 = {}
+        rs2 = {}
+        numOutputs = self.output_table.rowCount()
+        for row in range(numOutputs):
+            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
+                y[row] = row+1
+                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
+                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+
+        rs = {}
+        for row in y:
+            rs[row] = RSCombos.lookupRS(rs1[row], rs2[row])
+
+        rsOptions = {}
+        for row in y:
+            if rs[row].startswith('MARS'):
+                rsOptions[row] = {'marsBases': self.output_table.cellWidget(row, self.outputCol_index['mars1']).value(),
+                                  'marsInteractions': self.output_table.cellWidget(row, self.outputCol_index['mars2']).value()}
+            else:
+                rsOptions[row] = None
+
+        genRSCode = True
+
+        for row in y:
+            self.rsValidate(y[row], rs[row], rsOptions[row], genRSCode)
+
+        self.confirmRS_button.setEnabled(True)
+        QApplication.processEvents()
+
+    def rsValidate(self, y, rs, rsOptions, genRSCode, odoe=True):
+        self.freeze()
+
+        data = self.odoe_data
+        data = data.getValidSamples()  # filter out samples that have no output results
+
+        # validate RS
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe)
+        mfile = rsv.analyze()
+
+        self.unfreeze()
+        return mfile
+
+    def confirmRS(self):
+        QApplication.processEvents()
+        self.odoe_setup_groupBox.setEnabled(True)
+        QApplication.processEvents()
+
+    def runOdoe(self):
+        QApplication.processEvents()
+        if self.Gopt_radioButton.isChecked():
+            optCriterion = 'G'
+        elif self.Iopt_radioButton.isChecked():
+            optCriterion = 'I'
+        elif self.Dopt_radioButton.isChecked():
+            optCriterion = 'D'
+        elif self.Aopt_radioButton.isChecked():
+            optCriterion = 'A'
+
+        designSize = self.odoeDesignSize_spin.value()
+
+        numRestarts = int(self.restarts_comboBox.currentText())
+
+        print("Optimality Criterion: ", optCriterion, "(Type: ", type(optCriterion), ")")
+        print("Design Size: ", designSize, "(Type: ", type(designSize), ")")
+        print("Number of Restarts: ", numRestarts, "(Type: ", type(numRestarts), ")")
+
+        QApplication.processEvents()
+        return optCriterion, designSize, numRestarts

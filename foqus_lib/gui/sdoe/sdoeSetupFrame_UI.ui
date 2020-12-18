@@ -643,11 +643,6 @@ Design for control inputs that can vary from experiments</string>
                  </column>
                  <column>
                   <property name="text">
-                   <string>Display?</string>
-                  </property>
-                 </column>
-                 <column>
-                  <property name="text">
                    <string>Fixed Value</string>
                   </property>
                  </column>

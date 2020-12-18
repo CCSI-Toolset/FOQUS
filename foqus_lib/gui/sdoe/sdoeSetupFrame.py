@@ -1141,7 +1141,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_outputs_groupBox.setEnabled(True)
         self.validateRS_button.setEnabled(False)
         self.confirmRS_button.setEnabled(False)
-        self.input_table.init(self.odoe_data, InputPriorTable.INFERENCE)
+        self.input_table.init(self.odoe_data, InputPriorTable.ODOE)
         self.refreshOutputTable()
 
         self.unfreeze()
@@ -1255,7 +1255,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_design_groupBox.setEnabled(True)
         self.generateCandidate_button.setEnabled(False)
         self.deleteSelection_button.setEnabled(False)
-        self.confirmCandidates_button.setEnabled(False)
+        self.confirmCandidates_button.setEnabled(self.checkCandidates())
         QApplication.processEvents()
 
     def loadCandidate(self):
@@ -1488,9 +1488,27 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def confirmCandidates(self):
         QApplication.processEvents()
-        self.createAggCandData()
-        self.validateRS_button.setEnabled(self.checkOutputs())
+        candData = self.createAggCandData()
+        if self.checkCandCols(candData):
+            self.validateRS_button.setEnabled(self.checkOutputs())
+        else:
+            self.showColWarning()
         QApplication.processEvents()
+
+    def checkCandCols(self, candData):
+        designVarsNames, designVarsIndex = self.input_table.getDesignVariables()
+        candInputNames = list(candData.getInputNames())
+        return designVarsNames == candInputNames
+
+    def showColWarning(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Warning)
+        msg.setWindowTitle('Design inputs and candidates do not match!')
+        msg.setText('The design inputs selected in the input settings table do not match the candidate set inputs.'
+                    'Please make sure your candidate set inputs match the design inputs.')
+        msg.setStandardButtons(QMessageBox.Ok)
+        reply = msg.exec_()
+        return reply
 
     def checkOutputs(self):
         numOutputs = self.output_table.rowCount()

@@ -13,7 +13,7 @@ class InputPriorTable(QTableWidget):
     typeChanged = pyqtSignal()
     pdfChanged = pyqtSignal()
 
-    SIMSETUP, RSANALYSIS, INFERENCE, OUU = list(range(4))
+    SIMSETUP, RSANALYSIS, INFERENCE, OUU, ODOE = list(range(5))
 
     def __init__(self, parent=None):
         super(InputPriorTable, self).__init__(parent)
@@ -64,6 +64,8 @@ class InputPriorTable(QTableWidget):
             col_index = {'name': 0, 'type': 1, 'value': 2, 'min': 3, 'max': 4,
                          'pdf': 5, 'p1': 6, 'p2': 7}
         elif self.mode == InputPriorTable.RSANALYSIS:  # RS Analysis
+            col_index = {'name': 0, 'type': 1, 'value': 2, 'pdf': 3, 'p1': 4, 'p2': 5, 'min': 6, 'max': 7}
+        elif self.mode == InputPriorTable.ODOE:  # ODOE
             col_index = {'name': 0, 'type': 1, 'value': 2, 'pdf': 3, 'p1': 4, 'p2': 5, 'min': 6, 'max': 7}
         else:  # OUU
             col_index = {'check': 0, 'name': 1, 'type': 2, 'scale': 3, 'min': 4, 'max': 5, 'value': 6, 'pdf': 7, 'p1': 8, 'p2': 9}

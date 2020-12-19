@@ -520,6 +520,17 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 self.ovCols["Value"],
                 var.value,
                 jsonEnc = True)
+            # if var.dtype==object:
+            #     for i in range(len(var.value)):
+            #         var1=vars[name+'_{0}'.format(i)]
+            #         gh.setTableItem(table, row,
+            #         self.ovCols["Name"],
+            #         name+'_{0}'.format(i), editable=False)
+            #         var1.value=var.value[i]
+            #         gh.setTableItem(table, row,
+            #         self.ovCols["Value"],
+            #         var1.value,
+            #         jsonEnc = True)                    
             gh.setTableItem(table, row,
                 self.ovCols["Unit"],
                 var.unit)

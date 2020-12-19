@@ -344,7 +344,7 @@ class Results(pd.DataFrame):
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None,
-                   empty=False):
+                    empty=False):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001

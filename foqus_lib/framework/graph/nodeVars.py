@@ -93,7 +93,7 @@ class NodeVarList(OrderedDict):
         if not var:
             # if size==1:
             var = NodeVars()
-            self[nodeName][varName] = var
+        self[nodeName][varName] = var
         # else:
         #     var = NodeVarsVector(size)              
         return var
@@ -144,17 +144,24 @@ class NodeVarList(OrderedDict):
                     nodevar.value = float(value[i])
                 else:
                     nodevar.value = float(value[i])
-            if ip==True:
-                var = NodeVarsVector()
-                var.setMin(minval)
-                var.setMax(maxval)
-                var.setDefault(value)
-                var.setValue(value)
-                self[nodeName][varName] = var
-            else:
-                var = NodeVarsVector()
-                var.setValue(value)
-                self[nodeName][varName] = var
+            var = NodeVars()
+        self[nodeName][varName] = var
+        if ip==True:
+                # var = NodeVarsVector()
+                # var = NodeVars()
+            var.setType(dtype=object)
+            var.setMin(minval)
+            var.setMax(maxval)
+            var.setDefault(value)
+            var.setValue(value)
+                # self[nodeName][varName] = var
+        else:
+                # var = NodeVarsVector()
+                # var = NodeVars()
+            var.setType(dtype=object)
+            var.setValue(value)
+                # self[nodeName][varName] = var
+        # self[nodeName][varName] = var
         return var
 
     def get(self, name, varName=None):
@@ -261,12 +268,12 @@ class NodeVarList(OrderedDict):
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
-                print(sd[node][var])
-                if sd[node][var]['dtype']!='object':
-                    print('scalar')
-                    self.addVariable(node, var).loadDict(sd[node][var])
-                else:
-                    pass
+                # print(sd[node][var])
+                # if sd[node][var]['dtype']!='object':
+                #     print('scalar')
+                self.addVariable(node, var).loadDict(sd[node][var])
+                # else:
+                #     pass
                     # print('vector')
                     # self.addVectorVariable(node, var).loadDict(sd[node][var])
 
@@ -339,22 +346,710 @@ class NodeVarList(OrderedDict):
                 )
         return sd
 
-class NodeVarsVector(object):
+# class NodeVarsVector(object):
+#     """
+#     Class for defining vector variables
+#     """
+#     def __init__(
+#         self,
+#         value=[0],
+#         vmin=[0],
+#         vmax=[1],
+#         vdflt=[0],
+#         # index=0,
+#         unit="",
+#         vst="user",
+#         vdesc="",
+#         tags=[],
+#         dtype=object,
+#         dist=Distribution(Distribution.UNIFORM),
+#     ):
+#         """
+#         Initialize the variable list
+
+#         Args:
+#             value: variable value
+#             vmin: min value
+#             vmax: max value
+#             vdflt: default value
+#             unit: string description of units of measure
+#             vst: A sring description of a group for the variable {"user", "sinter"}
+#             vdesc: A sentence or so describing the variable
+#             tags: List of string tags for the variable
+#             dtype: type of data {float, int, str, object}
+#             dist: distribution type for UQ
+#         """
+#         # #dtype=type(value)
+#         # if dtype==list:
+#         #     #self.dtype = dtype  # type of data
+#         #     value = ast.literal_eval(value)
+#         #     vmin = ast.literal_eval(vmin)
+#         #     vmax = ast.literal_eval(vmax)
+#         #     vdflt = ast.literal_eval(vdflt)
+#         # else:
+#         self.dtype = dtype
+#         value = value
+            
+#         if vmin is None:
+#             vmin = list(value)
+#         if vmax is None:
+#             vmax = list(value)
+#         if vdflt is None:
+#             vdflt = list(value)
+#         # if self.dtype == list:
+#         #     print('yes')
+#         #     value = [value]
+#         #     vmin = [vmin]
+#         #     vmax = [vmax]
+#         #     vdflt = [vdflt]
+#         self.min = vmin  # maximum value
+#         self.max = vmax  # minimum value
+#         self.default = vdflt  # default value
+#         # self.index=index
+#         self.unit = unit  # units of measure
+#         self.set = vst  # variable set name user or sinter so I know if
+#         # user added it or from sinter configuration file
+#         self.desc = vdesc  # variable description
+#         self.scaled = [0.0]  # scaled value for the variable
+#         self.scaling = "None"  # type of variable scaling
+#         self.minScaled = [0.0]  # scaled minimum
+#         self.maxScaled = [0.0]  # scaled maximum
+#         self.tags = tags  # set of tags for use in heat integration or
+#         # other searching and sorting
+#         self.con = False  # true if the input is set through connection
+#         self.setValue(value)  # value of the variable
+#         self.setType(dtype)
+#         self.dist = copy.copy(dist)
+
+#     def typeStr(self):
+#         """
+#         Convert the data type to a string for saving the variable to json
+#         """
+#         if self.dtype == object:
+#             return "object"
+#         else:
+#             raise NodeVarEx(11, msg=str(self.dtype))
+
+#     def makeNaN(self):
+#         """
+#         Set the value to NaN
+#         """
+#         self.value = float("nan")
+
+#     def setType(self, dtype):
+#         """
+#         Convert from the current dtype to a new one.
+#         """
+#         if dtype == "float":
+#             dtype = float
+#         elif dtype == "int":
+#             dtype = int
+#         elif dtype == "str":
+#             dtype = str
+#         elif dtype == "object":
+#             dtype = object
+#         if not dtype in [float, int, str, object]:
+#             raise NodeVarEx(11, msg=str(dtype))
+#         self.dtype = dtype
+#         # self.dtype = dtype
+#         # if dtype == list:
+#         #     self.value = ast.literal_eval(self.value)
+#         # else:
+#         #     self.value = dtype(self.value)
+#         # if dtype == str:
+#         #     self.value = ast.literal_eval(self.value)
+#         #     self.min = ast.literal_eval(self.min)
+#         #     self.max = ast.literal_eval(self.max)
+#         #     self.default = ast.literal_eval(self.default)
+#         # else:
+            
+#         # self.value = [self.value]
+#         # self.min = [self.min]
+#         # self.max = [self.max]
+#         # self.default = [self.default]
+
+#     def setMin(self, minval):
+#         """
+#         Set the minimum value
+#         """
+#         # self.index = index
+#         # if self.index==0:
+#         self.__min = list(minval)
+
+#     def setMax(self, maxval):
+#         """
+#         Set the maximum value
+#         """
+#         self.__max = list(maxval)
+
+#     def setDefault(self, value):
+#         """
+#         Set the default value
+#         """
+#         # self.index = index
+#         # if self.index==0:
+#         # vector_len = len(self.value)
+#         # self.__default = list([val])*vector_len
+#         self.__default = list(value)
+
+#     def setValue(self, value):
+#         """
+#         Set the variable value
+#         """
+#         self.__value = list(value)
+
+#     def __getattr__(self, name):
+#         """
+#         This should only be called if a variable doesn't have the attribute name.
+#         """
+#         if name == "value":
+#             return self.__value
+#         elif name == "min":
+#             return self.__min
+#         elif name == "max":
+#             return self.__max
+#         elif name == "default":
+#             return self.__default
+#         # elif name == "index":
+#         #     return self.index
+#         else:
+#             raise AttributeError
+
+#     def __setattr__(self, name, val):
+#         """
+#         This is called when setting an attribute, if the attribute is value,
+#         min, max, default, convert data type, otherwise do normal stuff
+#         """
+#         if name == "value":
+#             self.setValue(val)
+#         elif name == "min":
+#             self.setMin(val)
+#         elif name == "max":
+#             self.setMax(val)
+#         elif name == "default":
+#             self.setDefault(val)
+#         # elif name == "dtype":
+#         #     self.setType(val)
+#         else:
+#             super(NodeVarsVector, self).__setattr__(name, val)
+
+#     def scale(self):
+#         """
+#         Scale the value stored in the value field and put the result in the
+#         scaled field.
+#         """
+#         self.scaled = self.scale2(self.value)
+
+#     def unscale(self):
+#         """
+#         Unscale the value stored in the scaled field and put the result in the
+#         value field.
+#         """
+#         self.value = self.unscale2(self.scaled)
+
+#     def scaleBounds(self):
+#         """
+#         Calculate the scaled bounds and store the results in the minScaled and
+#         maxScaled fields.
+#         """
+#         self.minScaled = self.scale2(self.min)
+#         self.maxScaled = self.scale2(self.max)
+
+#     def scale2(self, val):
+#         """
+#         Use the variable's bounds and scale type to scale.  The scales all run
+#         from 0 at the minimum to 10 at the maximum, except None which does
+#         nothing.
+#         """
+#         out=[]
+#         try:
+#             # out = []
+#             if self.scaling == "None":
+#                 for i in range(len(val)):
+#                     out.append(val[i])
+#             elif self.scaling == "Linear":
+#                 for i in range(len(val)):
+#                     out.append(10 * (val[i] - self.min[i]) / (self.max[i] - self.min[i]))
+#             elif self.scaling == "Log":
+#                 for i in range(len(val)):
+#                     out.append((
+#                         10
+#                         * (math.log10(val[i]) - math.log10(self.min[i]))
+#                         / (math.log10(self.max[i]) - math.log10(self.min[i]))
+#                     ))
+#             elif self.scaling == "Power":
+#                 for i in range(len(val)):
+#                     out.append((
+#                         10
+#                         * (math.pow(10, val[i]) - math.pow(10, self.min[i]))
+#                         / (math.pow(10, self.max[i]) - math.pow(10, self.min[i]))
+#                     ))
+#             elif self.scaling == "Log 2":
+#                 for i in range(len(val)):
+#                     out.append(10 * math.log10(9 * (val[i] - self.min[i]) / (self.max[i] - self.min[i]) + 1))
+#             elif self.scaling == "Power 2":
+#                 for i in range(len(val)):
+#                     out.append((
+#                         10.0
+#                         / 9.0
+#                         * (math.pow(10, (val[i] - self.min[i]) / (self.max[i] - self.min[i])) - 1)
+#                     ))
+#             else:
+#                 raise (f"Unknown scaling: {self.scaling}")
+#         except:
+#             raise NodeVarEx(
+#                 code=9,
+#                 msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+#             )
+#         return out
+
+#     def unscale2(self, val):
+#         """
+#         Convert value to an unscaled value using the variables settings.
+#         """
+#         out=[]
+#         try:
+#             if self.scaling == "None":
+#                 for i in range(len(val)):
+#                     out.append(val[i])
+#             elif self.scaling == "Linear":
+#                 for i in range(len(val)):
+#                     out.append(val[i] * (self.max[i] - self.min[i]) / 10.0 + self.min[i])
+#             elif self.scaling == "Log":
+#                 for i in range(len(val)):
+#                     out.append(math.pow(self.min[i] * (self.max[i] / self.min[i]), (val[i] / 10.0)))
+#             elif self.scaling == "Power":
+#                 for i in range(len(val)):
+#                     out.append(math.log10(
+#                         (val[i] / 10.0) * (math.pow(10, self.max[i]) - math.pow(10, self.min[i]))
+#                         + math.pow(10, self.min[i])
+#                     ))
+#             elif self.scaling == "Log 2":
+#                 for i in range(len(val)):
+#                     out.append((math.pow(10, val[i] / 10.0) - 1) * (
+#                         self.max[i] - self.min[i]
+#                     ) / 9.0 + self.min[i])
+#             elif self.scaling == "Power 2":
+#                 for i in range(len(val)):
+#                     out.append(math.log10(9.0 * val[i] / 10.0 + 1) * (self.max[i] - self.min[i]) + self.min[i])
+#             else:
+#                 raise (f"Unknown scaling: {self.scaling}")
+#         except:
+#             raise NodeVarEx(
+#                 code=9,
+#                 msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+#             )
+#         return out
+
+#     def saveDict(self):
+#         """
+#         Save a variable's content to a dictionary. This is mostly used to save
+#         to a file but can also be used as an ugly way to make a copy of a
+#         variable.
+#         """
+#         sd = dict()
+#         vmin = self.min
+#         vmax = self.max
+#         vdefault = self.default
+#         value = self.value
+#         if self.dtype == float:
+#             sd["dtype"] = "float"
+#         elif self.dtype == int:
+#             sd["dtype"] = "int"
+#         elif self.dtype == str:
+#             sd["dtype"] = "str"
+#         elif self.dtype == object:
+#             sd["dtype"] = "object"
+#         else:
+#             raise NodeVarEx(11, msg=str(self.dtype))
+#         sd["value"] = value
+#         sd["min"] = vmin
+#         sd["max"] = vmax
+#         sd["default"] = vdefault
+#         sd["unit"] = self.unit
+#         sd["set"] = self.set
+#         sd["desc"] = self.desc
+#         sd["scaling"] = self.scaling
+#         sd["tags"] = self.tags
+#         sd["dist"] = self.dist.saveDict()
+#         return sd
+
+#     def loadDict(self, sd):
+#         """
+#         Load the contents of a dictionary created by saveDict(), and possibly
+#         read back in as part of a json file.
+
+#         Args:
+#             sd: dict of data
+#         """
+#         assert isinstance(sd, dict)
+#         dtype = sd.get("dtype", "float")
+#         if dtype == "float":
+#             self.dtype = float
+#         elif dtype == "int":
+#             self.dtype = int
+#         elif dtype == "str":
+#             self.dtype = str
+#         elif dtype == "object":
+#             self.dtype = object
+#         else:
+#             raise NodeVarEx(11, msg=str(dtype))
+#         # Depending on how old the session file is, have history or value
+#         hist = sd.get("hist", None)
+#         value = sd.get("value", None)
+#         if hist is not None:
+#             self.value = hist[0]
+#         else:
+#             self.value = value
+#         self.min = sd.get("min", 0)
+#         self.max = sd.get("max", 0)
+#         self.default = sd.get("default", 0)
+#         self.unit = sd.get("unit", "")
+#         self.set = sd.get("set", "user")
+#         self.desc = sd.get("desc", "")
+#         self.scaling = sd.get("scaling", "None")
+#         self.tags = sd.get("tags", [])
+#         dist = sd.get("dist", None)
+#         if dist is not None:
+#             self.dist.loadDict(dist)
+#         self.scale()
+#         self.scaleBounds()
+        
+# class NodeVars(object):
+#     """
+#     Class for variable attributes, variable scaling, and saving/loading.
+#     """
+
+#     def __init__(
+#         self,
+#         value=0.0,
+#         vmin=None,
+#         vmax=None,
+#         vdflt=None,
+#         unit="",
+#         vst="user",
+#         vdesc="",
+#         tags=[],
+#         dtype=float,
+#         dist=Distribution(Distribution.UNIFORM),
+#     ):
+#         """
+#         Initialize the variable list
+
+#         Args:
+#             value: variable value
+#             vmin: min value
+#             vmax: max value
+#             vdflt: default value
+#             unit: string description of units of measure
+#             vst: A sring description of a group for the variable {"user", "sinter"}
+#             vdesc: A sentence or so describing the variable
+#             tags: List of string tags for the variable
+#             dtype: type of data {float, int, str}
+#             dist: distribution type for UQ
+#         """
+#         self.dtype = dtype  # type of data
+#         value = value
+#         if vmin is None:
+#             vmin = value
+#         if vmax is None:
+#             vmax = value
+#         if vdflt is None:
+#             vdflt = value
+#         self.min = vmin  # maximum value
+#         self.max = vmax  # minimum value
+#         self.default = vdflt  # default value
+#         self.unit = unit  # units of measure
+#         self.set = vst  # variable set name user or sinter so I know if
+#         # user added it or from sinter configuration file
+#         self.desc = vdesc  # variable description
+#         self.scaled = 0.0  # scaled value for the variable
+#         self.scaling = "None"  # type of variable scaling
+#         self.minScaled = 0.0  # scaled minimum
+#         self.maxScaled = 0.0  # scaled maximum
+#         self.tags = tags  # set of tags for use in heat integration or
+#         # other searching and sorting
+#         self.con = False  # true if the input is set through connection
+#         self.setValue(value)  # value of the variable
+#         self.setType(dtype)
+#         self.dist = copy.copy(dist)
+
+#     def typeStr(self):
+#         """
+#         Convert the data type to a string for saving the variable to json
+#         """
+#         if self.dtype == float:
+#             return "float"
+#         elif self.dtype == int:
+#             return "int"
+#         elif self.dtype == str:
+#             return "str"
+#         else:
+#             raise NodeVarEx(11, msg=str(self.dtype))
+
+#     def makeNaN(self):
+#         """
+#         Set the value to NaN
+#         """
+#         self.value = float("nan")
+
+#     def setType(self, dtype=float):
+#         """
+#         Convert from the current dtype to a new one.
+#         """
+#         if dtype == "float":
+#             dtype = float
+#         elif dtype == "int":
+#             dtype = int
+#         elif dtype == "str":
+#             dtype = str
+#         if not dtype in [float, int, str]:
+#             raise NodeVarEx(11, msg=str(dtype))
+#         self.dtype = dtype
+#         self.value = dtype(self.value)
+#         self.min = dtype(self.min)
+#         self.max = dtype(self.max)
+#         self.default = dtype(self.default)
+
+#     def setMin(self, val):
+#         """
+#         Set the minimum value
+#         """
+#         self.__min = self.dtype(val)
+
+#     def setMax(self, val):
+#         """
+#         Set the maximum value
+#         """
+#         self.__max = self.dtype(val)
+
+#     def setDefault(self, val):
+#         """
+#         Set the default value
+#         """
+#         self.__default = self.dtype(val)
+
+#     def setValue(self, val):
+#         """
+#         Set the variable value
+#         """
+#         self.__value = self.dtype(val)
+
+#     def __getattr__(self, name):
+#         """
+#         This should only be called if a variable doesn't have the attribute name.
+#         """
+#         if name == "value":
+#             return self.__value
+#         elif name == "min":
+#             return self.__min
+#         elif name == "max":
+#             return self.__max
+#         elif name == "default":
+#             return self.__default
+#         else:
+#             raise AttributeError
+
+#     def __setattr__(self, name, val):
+#         """
+#         This is called when setting an attribute, if the attribute is value,
+#         min, max, default, convert data type, otherwise do normal stuff
+#         """
+#         if name == "value":
+#             self.setValue(val)
+#         elif name == "min":
+#             self.setMin(val)
+#         elif name == "max":
+#             self.setMax(val)
+#         elif name == "default":
+#             self.setDefault(val)
+#         else:
+#             super(NodeVars, self).__setattr__(name, val)
+
+#     def scale(self):
+#         """
+#         Scale the value stored in the value field and put the result in the
+#         scaled field.
+#         """
+#         self.scaled = self.scale2(self.value)
+
+#     def unscale(self):
+#         """
+#         Unscale the value stored in the scaled field and put the result in the
+#         value field.
+#         """
+#         self.value = self.unscale2(self.scaled)
+
+#     def scaleBounds(self):
+#         """
+#         Calculate the scaled bounds and store the results in the minScaled and
+#         maxScaled fields.
+#         """
+#         self.minScaled = self.scale2(self.min)
+#         self.maxScaled = self.scale2(self.max)
+
+#     def scale2(self, val):
+#         """
+#         Use the variable's bounds and scale type to scale.  The scales all run
+#         from 0 at the minimum to 10 at the maximum, except None which does
+#         nothing.
+#         """
+#         try:
+#             if self.scaling == "None":
+#                 out = val
+#             elif self.scaling == "Linear":
+#                 out = 10 * (val - self.min) / (self.max - self.min)
+#             elif self.scaling == "Log":
+#                 out = (
+#                     10
+#                     * (math.log10(val) - math.log10(self.min))
+#                     / (math.log10(self.max) - math.log10(self.min))
+#                 )
+#             elif self.scaling == "Power":
+#                 out = (
+#                     10
+#                     * (math.pow(10, val) - math.pow(10, self.min))
+#                     / (math.pow(10, self.max) - math.pow(10, self.min))
+#                 )
+#             elif self.scaling == "Log 2":
+#                 out = 10 * math.log10(9 * (val - self.min) / (self.max - self.min) + 1)
+#             elif self.scaling == "Power 2":
+#                 out = (
+#                     10.0
+#                     / 9.0
+#                     * (math.pow(10, (val - self.min) / (self.max - self.min)) - 1)
+#                 )
+#             else:
+#                 raise (f"Unknown scaling: {self.scaling}")
+#         except:
+#             raise NodeVarEx(
+#                 code=9,
+#                 msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+#             )
+#         return out
+
+#     def unscale2(self, val):
+#         """
+#         Convert value to an unscaled value using the variables settings.
+#         """
+#         try:
+#             if self.scaling == "None":
+#                 out = val
+#             elif self.scaling == "Linear":
+#                 out = val * (self.max - self.min) / 10.0 + self.min
+#             elif self.scaling == "Log":
+#                 out = math.pow(self.min * (self.max / self.min), (val / 10.0))
+#             elif self.scaling == "Power":
+#                 out = math.log10(
+#                     (val / 10.0) * (math.pow(10, self.max) - math.pow(10, self.min))
+#                     + math.pow(10, self.min)
+#                 )
+#             elif self.scaling == "Log 2":
+#                 out = (math.pow(10, val / 10.0) - 1) * (
+#                     self.max - self.min
+#                 ) / 9.0 + self.min
+#             elif self.scaling == "Power 2":
+#                 out = math.log10(9.0 * val / 10.0 + 1) * (self.max - self.min) + self.min
+#             else:
+#                 raise (f"Unknown scaling: {self.scaling}")
+#         except:
+#             raise NodeVarEx(
+#                 code=9,
+#                 msg="value = {0}, scaling method = {1}".format(val, self.scaling),
+#             )
+#         return out
+
+#     def saveDict(self):
+#         """
+#         Save a variable's content to a dictionary. This is mostly used to save
+#         to a file but can also be used as an ugly way to make a copy of a
+#         variable.
+#         """
+#         sd = dict()
+#         vmin = self.min
+#         vmax = self.max
+#         vdefault = self.default
+#         value = self.value
+#         if self.dtype == float:
+#             sd["dtype"] = "float"
+#         elif self.dtype == int:
+#             sd["dtype"] = "int"
+#         elif self.dtype == str:
+#             sd["dtype"] = "str"
+#         elif self.dtype == object:
+#             sd["dtype"] = "object"
+#         else:
+#             raise NodeVarEx(11, msg=str(self.dtype))
+#         sd["value"] = value
+#         sd["min"] = vmin
+#         sd["max"] = vmax
+#         sd["default"] = vdefault
+#         sd["unit"] = self.unit
+#         sd["set"] = self.set
+#         sd["desc"] = self.desc
+#         sd["scaling"] = self.scaling
+#         sd["tags"] = self.tags
+#         sd["dist"] = self.dist.saveDict()
+#         return sd
+
+#     def loadDict(self, sd):
+#         """
+#         Load the contents of a dictionary created by saveDict(), and possibly
+#         read back in as part of a json file.
+
+#         Args:
+#             sd: dict of data
+#         """
+#         assert isinstance(sd, dict)
+#         dtype = sd.get("dtype", "float")
+#         if dtype == "float":
+#             self.dtype = float
+#         elif dtype == "int":
+#             self.dtype = int
+#         elif dtype == "str":
+#             self.dtype = str
+#         elif self.dtype == object:
+#             sd["dtype"] = "object"
+#         else:
+#             raise NodeVarEx(11, msg=str(dtype))
+#         # Depending on how old the session file is, have history or value
+#         hist = sd.get("hist", None)
+#         value = sd.get("value", None)
+#         if hist is not None:
+#             self.value = hist[0]
+#         else:
+#             self.value = value
+#         self.min = sd.get("min", 0)
+#         self.max = sd.get("max", 0)
+#         self.default = sd.get("default", 0)
+#         self.unit = sd.get("unit", "")
+#         self.set = sd.get("set", "user")
+#         self.desc = sd.get("desc", "")
+#         self.scaling = sd.get("scaling", "None")
+#         self.tags = sd.get("tags", [])
+#         dist = sd.get("dist", None)
+#         if dist is not None:
+#             self.dist.loadDict(dist)
+#         self.scale()
+#         self.scaleBounds()
+
+class NodeVars(object):
     """
-    Class for defining vector variables
+    Class for variable attributes, variable scaling, and saving/loading.
     """
+
     def __init__(
         self,
-        value=[0],
-        vmin=[0],
-        vmax=[1],
-        vdflt=[0],
+        value=0,
+        vmin=0,
+        vmax=1,
+        vdflt=0,
         # index=0,
         unit="",
         vst="user",
         vdesc="",
         tags=[],
-        dtype=object,
+        dtype=float,
         dist=Distribution(Distribution.UNIFORM),
     ):
         """
@@ -384,11 +1079,11 @@ class NodeVarsVector(object):
         value = value
             
         if vmin is None:
-            vmin = list(value)
+            vmin = value
         if vmax is None:
-            vmax = list(value)
+            vmax = value
         if vdflt is None:
-            vdflt = list(value)
+            vdflt = value
         # if self.dtype == list:
         #     print('yes')
         #     value = [value]
@@ -399,359 +1094,6 @@ class NodeVarsVector(object):
         self.max = vmax  # minimum value
         self.default = vdflt  # default value
         # self.index=index
-        self.unit = unit  # units of measure
-        self.set = vst  # variable set name user or sinter so I know if
-        # user added it or from sinter configuration file
-        self.desc = vdesc  # variable description
-        self.scaled = [0.0]  # scaled value for the variable
-        self.scaling = "None"  # type of variable scaling
-        self.minScaled = [0.0]  # scaled minimum
-        self.maxScaled = [0.0]  # scaled maximum
-        self.tags = tags  # set of tags for use in heat integration or
-        # other searching and sorting
-        self.con = False  # true if the input is set through connection
-        self.setValue(value)  # value of the variable
-        self.setType(dtype)
-        self.dist = copy.copy(dist)
-
-    def typeStr(self):
-        """
-        Convert the data type to a string for saving the variable to json
-        """
-        if self.dtype == object:
-            return "object"
-        else:
-            raise NodeVarEx(11, msg=str(self.dtype))
-
-    def makeNaN(self):
-        """
-        Set the value to NaN
-        """
-        self.value = float("nan")
-
-    def setType(self, dtype):
-        """
-        Convert from the current dtype to a new one.
-        """
-        if dtype == "float":
-            dtype = float
-        elif dtype == "int":
-            dtype = int
-        elif dtype == "str":
-            dtype = str
-        elif dtype == "object":
-            dtype = object
-        if not dtype in [float, int, str, object]:
-            raise NodeVarEx(11, msg=str(dtype))
-        self.dtype = dtype
-        # self.dtype = dtype
-        # if dtype == list:
-        #     self.value = ast.literal_eval(self.value)
-        # else:
-        #     self.value = dtype(self.value)
-        # if dtype == str:
-        #     self.value = ast.literal_eval(self.value)
-        #     self.min = ast.literal_eval(self.min)
-        #     self.max = ast.literal_eval(self.max)
-        #     self.default = ast.literal_eval(self.default)
-        # else:
-            
-        # self.value = [self.value]
-        # self.min = [self.min]
-        # self.max = [self.max]
-        # self.default = [self.default]
-
-    def setMin(self, minval):
-        """
-        Set the minimum value
-        """
-        # self.index = index
-        # if self.index==0:
-        self.__min = list(minval)
-
-    def setMax(self, maxval):
-        """
-        Set the maximum value
-        """
-        self.__max = list(maxval)
-
-    def setDefault(self, value):
-        """
-        Set the default value
-        """
-        # self.index = index
-        # if self.index==0:
-        # vector_len = len(self.value)
-        # self.__default = list([val])*vector_len
-        self.__default = list(value)
-
-    def setValue(self, value):
-        """
-        Set the variable value
-        """
-        self.__value = list(value)
-
-    def __getattr__(self, name):
-        """
-        This should only be called if a variable doesn't have the attribute name.
-        """
-        if name == "value":
-            return self.__value
-        elif name == "min":
-            return self.__min
-        elif name == "max":
-            return self.__max
-        elif name == "default":
-            return self.__default
-        # elif name == "index":
-        #     return self.index
-        else:
-            raise AttributeError
-
-    def __setattr__(self, name, val):
-        """
-        This is called when setting an attribute, if the attribute is value,
-        min, max, default, convert data type, otherwise do normal stuff
-        """
-        if name == "value":
-            self.setValue(val)
-        elif name == "min":
-            self.setMin(val)
-        elif name == "max":
-            self.setMax(val)
-        elif name == "default":
-            self.setDefault(val)
-        # elif name == "dtype":
-        #     self.setType(val)
-        else:
-            super(NodeVarsVector, self).__setattr__(name, val)
-
-    def scale(self):
-        """
-        Scale the value stored in the value field and put the result in the
-        scaled field.
-        """
-        self.scaled = self.scale2(self.value)
-
-    def unscale(self):
-        """
-        Unscale the value stored in the scaled field and put the result in the
-        value field.
-        """
-        self.value = self.unscale2(self.scaled)
-
-    def scaleBounds(self):
-        """
-        Calculate the scaled bounds and store the results in the minScaled and
-        maxScaled fields.
-        """
-        self.minScaled = self.scale2(self.min)
-        self.maxScaled = self.scale2(self.max)
-
-    def scale2(self, val):
-        """
-        Use the variable's bounds and scale type to scale.  The scales all run
-        from 0 at the minimum to 10 at the maximum, except None which does
-        nothing.
-        """
-        out=[]
-        try:
-            # out = []
-            if self.scaling == "None":
-                for i in range(len(val)):
-                    out.append(val[i])
-            elif self.scaling == "Linear":
-                for i in range(len(val)):
-                    out.append(10 * (val[i] - self.min[i]) / (self.max[i] - self.min[i]))
-            elif self.scaling == "Log":
-                for i in range(len(val)):
-                    out.append((
-                        10
-                        * (math.log10(val[i]) - math.log10(self.min[i]))
-                        / (math.log10(self.max[i]) - math.log10(self.min[i]))
-                    ))
-            elif self.scaling == "Power":
-                for i in range(len(val)):
-                    out.append((
-                        10
-                        * (math.pow(10, val[i]) - math.pow(10, self.min[i]))
-                        / (math.pow(10, self.max[i]) - math.pow(10, self.min[i]))
-                    ))
-            elif self.scaling == "Log 2":
-                for i in range(len(val)):
-                    out.append(10 * math.log10(9 * (val[i] - self.min[i]) / (self.max[i] - self.min[i]) + 1))
-            elif self.scaling == "Power 2":
-                for i in range(len(val)):
-                    out.append((
-                        10.0
-                        / 9.0
-                        * (math.pow(10, (val[i] - self.min[i]) / (self.max[i] - self.min[i])) - 1)
-                    ))
-            else:
-                raise (f"Unknown scaling: {self.scaling}")
-        except:
-            raise NodeVarEx(
-                code=9,
-                msg="value = {0}, scaling method = {1}".format(val, self.scaling),
-            )
-        return out
-
-    def unscale2(self, val):
-        """
-        Convert value to an unscaled value using the variables settings.
-        """
-        out=[]
-        try:
-            if self.scaling == "None":
-                for i in range(len(val)):
-                    out.append(val[i])
-            elif self.scaling == "Linear":
-                for i in range(len(val)):
-                    out.append(val[i] * (self.max[i] - self.min[i]) / 10.0 + self.min[i])
-            elif self.scaling == "Log":
-                for i in range(len(val)):
-                    out.append(math.pow(self.min[i] * (self.max[i] / self.min[i]), (val[i] / 10.0)))
-            elif self.scaling == "Power":
-                for i in range(len(val)):
-                    out.append(math.log10(
-                        (val[i] / 10.0) * (math.pow(10, self.max[i]) - math.pow(10, self.min[i]))
-                        + math.pow(10, self.min[i])
-                    ))
-            elif self.scaling == "Log 2":
-                for i in range(len(val)):
-                    out.append((math.pow(10, val[i] / 10.0) - 1) * (
-                        self.max[i] - self.min[i]
-                    ) / 9.0 + self.min[i])
-            elif self.scaling == "Power 2":
-                for i in range(len(val)):
-                    out.append(math.log10(9.0 * val[i] / 10.0 + 1) * (self.max[i] - self.min[i]) + self.min[i])
-            else:
-                raise (f"Unknown scaling: {self.scaling}")
-        except:
-            raise NodeVarEx(
-                code=9,
-                msg="value = {0}, scaling method = {1}".format(val, self.scaling),
-            )
-        return out
-
-    def saveDict(self):
-        """
-        Save a variable's content to a dictionary. This is mostly used to save
-        to a file but can also be used as an ugly way to make a copy of a
-        variable.
-        """
-        sd = dict()
-        vmin = self.min
-        vmax = self.max
-        vdefault = self.default
-        value = self.value
-        if self.dtype == float:
-            sd["dtype"] = "float"
-        elif self.dtype == int:
-            sd["dtype"] = "int"
-        elif self.dtype == str:
-            sd["dtype"] = "str"
-        elif self.dtype == object:
-            sd["dtype"] = "object"
-        else:
-            raise NodeVarEx(11, msg=str(self.dtype))
-        sd["value"] = value
-        sd["min"] = vmin
-        sd["max"] = vmax
-        sd["default"] = vdefault
-        sd["unit"] = self.unit
-        sd["set"] = self.set
-        sd["desc"] = self.desc
-        sd["scaling"] = self.scaling
-        sd["tags"] = self.tags
-        sd["dist"] = self.dist.saveDict()
-        return sd
-
-    def loadDict(self, sd):
-        """
-        Load the contents of a dictionary created by saveDict(), and possibly
-        read back in as part of a json file.
-
-        Args:
-            sd: dict of data
-        """
-        assert isinstance(sd, dict)
-        dtype = sd.get("dtype", "float")
-        if dtype == "float":
-            self.dtype = float
-        elif dtype == "int":
-            self.dtype = int
-        elif dtype == "str":
-            self.dtype = str
-        elif dtype == "object":
-            self.dtype = object
-        else:
-            raise NodeVarEx(11, msg=str(dtype))
-        # Depending on how old the session file is, have history or value
-        hist = sd.get("hist", None)
-        value = sd.get("value", None)
-        if hist is not None:
-            self.value = hist[0]
-        else:
-            self.value = value
-        self.min = sd.get("min", 0)
-        self.max = sd.get("max", 0)
-        self.default = sd.get("default", 0)
-        self.unit = sd.get("unit", "")
-        self.set = sd.get("set", "user")
-        self.desc = sd.get("desc", "")
-        self.scaling = sd.get("scaling", "None")
-        self.tags = sd.get("tags", [])
-        dist = sd.get("dist", None)
-        if dist is not None:
-            self.dist.loadDict(dist)
-        self.scale()
-        self.scaleBounds()
-        
-class NodeVars(object):
-    """
-    Class for variable attributes, variable scaling, and saving/loading.
-    """
-
-    def __init__(
-        self,
-        value=0.0,
-        vmin=None,
-        vmax=None,
-        vdflt=None,
-        unit="",
-        vst="user",
-        vdesc="",
-        tags=[],
-        dtype=float,
-        dist=Distribution(Distribution.UNIFORM),
-    ):
-        """
-        Initialize the variable list
-
-        Args:
-            value: variable value
-            vmin: min value
-            vmax: max value
-            vdflt: default value
-            unit: string description of units of measure
-            vst: A sring description of a group for the variable {"user", "sinter"}
-            vdesc: A sentence or so describing the variable
-            tags: List of string tags for the variable
-            dtype: type of data {float, int, str}
-            dist: distribution type for UQ
-        """
-        self.dtype = dtype  # type of data
-        value = value
-        if vmin is None:
-            vmin = value
-        if vmax is None:
-            vmax = value
-        if vdflt is None:
-            vdflt = value
-        self.min = vmin  # maximum value
-        self.max = vmax  # minimum value
-        self.default = vdflt  # default value
         self.unit = unit  # units of measure
         self.set = vst  # variable set name user or sinter so I know if
         # user added it or from sinter configuration file
@@ -777,6 +1119,8 @@ class NodeVars(object):
             return "int"
         elif self.dtype == str:
             return "str"
+        elif self.dtype == object:
+            return "object"
         else:
             raise NodeVarEx(11, msg=str(self.dtype))
 
@@ -796,37 +1140,79 @@ class NodeVars(object):
             dtype = int
         elif dtype == "str":
             dtype = str
-        if not dtype in [float, int, str]:
+        elif dtype == "object":
+            dtype = object
+        if not dtype in [float, int, str, object]:
             raise NodeVarEx(11, msg=str(dtype))
         self.dtype = dtype
-        self.value = dtype(self.value)
-        self.min = dtype(self.min)
-        self.max = dtype(self.max)
-        self.default = dtype(self.default)
+        print(self.dtype)
+        print(self.value)
+        print(self.min)
+        # if dtype == list:
+        #     self.value = ast.literal_eval(self.value)
+        # else:
+        #     self.value = dtype(self.value)
+        # if dtype == str:
+        #     self.value = ast.literal_eval(self.value)
+        #     self.min = ast.literal_eval(self.min)
+        #     self.max = ast.literal_eval(self.max)
+        #     self.default = ast.literal_eval(self.default)
+        # else:
+        if self.dtype != object:           
+            self.value = dtype(self.value)
+            self.min = dtype(self.min)
+            self.max = dtype(self.max)
+            self.default = dtype(self.default)
+        else:
+            self.value = [self.value]
+            self.min = [self.min]
+            self.max = [self.max]
+            self.default = [self.default]
 
     def setMin(self, val):
         """
         Set the minimum value
         """
-        self.__min = self.dtype(val)
+        # self.index = index
+        # if self.index==0:
+        if self.dtype != object:
+            self.__min = self.dtype(val)
+        else:
+            self.__min = list(val)
 
     def setMax(self, val):
         """
         Set the maximum value
         """
-        self.__max = self.dtype(val)
+        if self.dtype != object:
+            self.__max = self.dtype(val)
+        else:
+            self.__max = list(val)
 
     def setDefault(self, val):
         """
         Set the default value
         """
-        self.__default = self.dtype(val)
+        # self.index = index
+        # if self.index==0:
+        if self.dtype != object:
+            self.__default = self.dtype(val)
+        else:
+            # vector_len = len(self.value)
+            # self.__default = list([val])*vector_len
+            self.__default = list(val)
 
     def setValue(self, val):
         """
         Set the variable value
         """
-        self.__value = self.dtype(val)
+        if self.dtype != object:
+            self.__value = self.dtype(val)
+        else:
+            # vector_len = len(val)
+            print("****PRINT4****")
+            print(list(val))
+            self.__value = list(val)
 
     def __getattr__(self, name):
         """
@@ -840,6 +1226,8 @@ class NodeVars(object):
             return self.__max
         elif name == "default":
             return self.__default
+        # elif name == "index":
+        #     return self.index
         else:
             raise AttributeError
 
@@ -1001,8 +1389,8 @@ class NodeVars(object):
             self.dtype = int
         elif dtype == "str":
             self.dtype = str
-        elif self.dtype == object:
-            sd["dtype"] = "object"
+        elif dtype == "object":
+            self.dtype = object
         else:
             raise NodeVarEx(11, msg=str(dtype))
         # Depending on how old the session file is, have history or value
@@ -1025,3 +1413,4 @@ class NodeVars(object):
             self.dist.loadDict(dist)
         self.scale()
         self.scaleBounds()
+        

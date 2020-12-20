@@ -1,0 +1,133 @@
+import os
+import tempfile
+import re
+import platform
+
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.Common import Common
+
+dname = os.path.join(os.getcwd(), 'ODOE_files')
+
+
+def writeSample(fname, data):
+    xdat = data.getInputData()
+    ydat = data.getOutputData()
+    if len(ydat) == 0:
+        ydat = None
+    RSAnalyzer.writeRSsample(fname, xdat, y=ydat)
+    return fname
+
+
+def getSampleShape(data):
+    nrows = data.getNumSamples()
+    ncols = data.getNumInputs()
+    return nrows, ncols
+
+
+def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
+
+    # cdata: SampleData containing the candidate set
+    # pdata: SampleData containing the sample representing the prior over uncertain variables
+    # rsdata: SampleData containing the RS training data
+    # rstypes: dictionary with output index as key and string denote RS types as value; possible values: ['MARS', 'linear', 'quadratic', 'cubic']
+    # nd: int denoting design size
+    # uniprior: True/False depending on whether pdata is a uniform sample of the random variables
+    # max_iters: int denoting maximum number of iterations for the optimization routine [default: 100]
+
+    # parse params
+    opts = ['G', 'I', 'D', 'A']
+    assert(opt in opts)
+    optdict = dict(zip(opts, range(1, len(opts)+1)))
+    opt_index = optdict[opt]
+    # if prior is uniform, then we can use the faster method (odoeu_optn)
+    cmds = {True: 'odoeu_optn', False: 'odoeu_optns'}
+    cmd = cmds[uniprior]
+
+    # TO DO for Pedro: check in GUI?
+    # maximum iterations should be in range [100, 1000]
+    assert(99 < max_iters < 1001)
+        
+    # initialize constants
+    ncand = cdata.getNumSamples()
+    nInputs = rsdata.getNumInputs()
+    nOutputs = rsdata.getNumOutputs()
+
+    # extract the indices of random variables
+    inputNames = rsdata.getInputNames()
+    priorNames = pdata.getInputNames()
+    priorIndices = []
+    for name in priorNames:
+        priorIndices.append(inputNames.index(name))
+
+    rs_list = ['MARS', 'linear', 'quadratic', 'cubic']
+    # TO DO for Pedro: check in GUI?
+    # this checks to see if user is trying to pass an unsupported RS
+    for rs in rstypes:
+        assert(rstypes[rs] in rs_list)
+    assert(len(rstypes) == nOutputs)
+        
+    # extract the indices of RS types for outputs
+    rs_idx = [ResponseSurfaces.getEnumValue(s) for s in rs_list]
+    rsdict = dict(zip(rs_list, rs_idx))
+        
+    # convert the data into psuade files
+    cfile = os.path.join(dname, 'CandidateSet')
+    pfile = os.path.join(dname, 'PriorSample')
+    rsfile = os.path.join(dname, 'RSTrainData')
+    cfile = writeSample(cfile, cdata)
+    pfile = writeSample(pfile, pdata)
+    y = 1
+    rsfile = RSAnalyzer.writeRSdata(rsfile, y, rsdata)
+
+    # write script
+    f = tempfile.SpooledTemporaryFile(mode='wt')
+    if platform.system() == 'Windows':
+        import win32api
+        cfile = win32api.GetShortPathName(cfile)
+        pfile = win32api.GetShortPathName(pfile)
+        rsfile = win32api.GetShortPathName(rsfile)
+    f.write('%s\n' % cmd)
+    # f.write('y\n')                 # yes to proceed
+    f.write('%d\n' % opt_index)    # choose G, I, D, A
+    f.write('%d\n' % ncand)        # size of the candidate set
+    f.write('%d\n' % nd)           # design size
+    f.write('%d\n' % max_iters)    # max number of iterations, must be greater or equal to 100
+    f.write('n\n')                 # no initial guess
+    f.write('%s\n' % rsfile)       # file containing RS training data (psuade format)
+    for i in priorIndices:
+        f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
+    f.write('0\n')                 # 0 to proceed
+    f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
+    if uniprior:
+        f.write('%s\n' % pfile)    # file containing the uniform sample (psuade sample format)
+    f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
+    f.write('%s\n' % cfile)        # ... evaluate the optimality values on the (same) candidate set
+    for rs in rstypes:             # for each output, specify RS index
+        f.write('%d\n' % rsdict[rstypes[rs]])
+        # TO DO: as we add more RS, may need to port more code from RSAnalyzer.py to handle different RS types
+    f.write('quit\n')
+    f.seek(0)
+
+    # invoke psuade
+    out, error = Common.invokePsuade(f)
+    f.close()
+    if error:
+        return None
+
+    # parse output
+    best_indices = None
+    best_optval = None
+    m = re.findall(cmd + r' best selection = (\d+ \d+)', out)
+    if m:
+        best_indices = [i for i in m[0].split()]
+        s = r'\s*'.join([i for i in best_indices])
+        best_optvals = re.findall(s + r'\s*===> output = (\S*)', out)
+
+        best_indices = [int(i) for i in best_indices]
+        best_optval = float(best_optvals[0])
+
+    print("RESULTS START HERE!!!!")
+    print("Best Indices: ", best_indices)
+    print("Best Optimization Values: ", best_optval)
+    return best_indices, best_optval

@@ -370,7 +370,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                 # Type
                 combobox = self.distTable.cellWidget(row, 1)
                 if combobox is None:
-                    text = self.distTable.item(row,1).text()
+                    text = self.distTable.item(row, 1).text()
                 else:
                     text = combobox.currentText()
 
@@ -383,23 +383,23 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                 if value == Model.VARIABLE:
                     selectedInputs.append(inputNum)
 
-                #Defaults
+                # Defaults
                 item = self.distTable.item(row, 2)
                 if item is None or len(item.text()) == 0:
                     defaults.append(None)
                 else:
                     defaults.append(float(item.text()))
 
-                #Mins
+                # Mins
                 item = self.distTable.item(row, 3)
                 mins.append(float(item.text()))
 
-                #Maxs
+                # Maxs
                 item = self.distTable.item(row, 4)
                 maxs.append(float(item.text()))
 
                 row += 1
-            else: # Fixed
+            else:  # Fixed
                 types.append(Model.FIXED)
                 defaults.append(modelDefaults[inputNum])
                 mins.append(modelMins[inputNum])
@@ -469,7 +469,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         runData.setSampleMethod(scheme)
 
         # Check number of samples
-        scheme =  runData.getSampleMethod()
+        scheme = runData.getSampleMethod()
         newNumSamples = SamplingMethods.validateSampleSize(scheme, len(selectedInputs), numSamples)
         if scheme == SamplingMethods.LSA:
             if newNumSamples != numSamples:
@@ -505,7 +505,6 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                 else:
                     return
 
-
         # Visual indications of processing
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.generateStatusText.setText('Generating...')
@@ -535,7 +534,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         runData.setRunState([0] * runData.getNumSamples())
         self.runData = runData
 
-        #Handle archive of METIS file
+        # Handle archive of METIS file
         if self.runData.getSampleMethod() == SamplingMethods.METIS:
             if self.currentArchiveData is not None:
                 self.currentArchiveData.removeArchiveFolder()
@@ -551,7 +550,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         self.previewButton.setEnabled(True)
         self.doneButton.setEnabled(True)
 
-    ### Preview button
+    # Preview button
     def preview(self):
         previewData = self.runData
         hname = None
@@ -567,6 +566,6 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         dialog = sdoePreview(previewData, hname, dirname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
-    ### Return data
+    # Return data
     def getData(self):
         return self.runData

@@ -537,7 +537,7 @@ class RSAnalyzer:
         return None
 
     @staticmethod
-    def writeRSsample(fname,x,y=None):
+    def writeRSsample(fname, x, y=None):
         
         d = ' '
         nSamples, nInputs = x.shape
@@ -546,8 +546,8 @@ class RSAnalyzer:
         if y is not None:
             nOutputs = y.shape[1]
             header = '%d %d %d' % (nSamples, nInputs, nOutputs)
-            z = np.concatenate((x,y),axis=1)
-        np.savetxt(fname,z,header=header,comments='',delimiter=d)
+            z = np.concatenate((x, y), axis=1)
+        np.savetxt(fname, z, header=header, comments='', delimiter=d)
 
         return None
 

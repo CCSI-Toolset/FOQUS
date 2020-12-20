@@ -13,7 +13,7 @@ from foqus_lib.framework.uq.RSAnalyzer import *
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.framework.sdoe import df_utils
+from foqus_lib.framework.sdoe import df_utils, odoeu
 from .sdoeAnalysisDialog import sdoeAnalysisDialog
 from .sdoePreview import sdoePreview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
@@ -34,6 +34,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     runsFinishedSignal = QtCore.pyqtSignal()
     addDataSignal = QtCore.pyqtSignal(SampleData)
     changeDataSignal = QtCore.pyqtSignal(SampleData)
+    addPriorSignal = QtCore.pyqtSignal(SampleData)
     addCandidateSignal = QtCore.pyqtSignal(SampleData)
     changeCandidateSignal = QtCore.pyqtSignal(SampleData)
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
@@ -118,6 +119,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.addSimulationButton.clicked.connect(self.addSimulation)
         self.addSimulationButton.setEnabled(True)
         self.addDataSignal.connect(self.addDataToSimTable)
+        self.addPriorSignal.connect(self.addInputPrior)
         self.addCandidateSignal.connect(self.addDataToCandTable)
         self.loadFileButton.clicked.connect(self.loadSimulation)
         self.loadFileButton.setEnabled(True)
@@ -170,6 +172,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_design_groupBox.setEnabled(False)
         self.odoe_setup_groupBox.setEnabled(False)
         self.odoe_data = None
+        self.odoe_priorData = None
+        self.uniformPrior = False
         self.loadtrainData_button.clicked.connect(self.loadRStrainData)
         self.confirmInputs_button.clicked.connect(self.confirmInputs)
         self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3, 'mars1': 4, 'mars2': 5}
@@ -1252,11 +1256,31 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def confirmInputs(self):
         QApplication.processEvents()
+        self.generateInputPriorData()
         self.odoe_design_groupBox.setEnabled(True)
         self.generateCandidate_button.setEnabled(False)
         self.deleteSelection_button.setEnabled(False)
         self.confirmCandidates_button.setEnabled(self.checkCandidates())
         QApplication.processEvents()
+
+    def generateInputPriorData(self):
+        QApplication.processEvents()
+        data = copy.deepcopy(self.odoe_data)
+        names, indices = self.input_table.getVariablesWithType('Variable')
+        del_indices = []
+        for i in range(data.getNumInputs()):
+            if i not in indices:
+                del_indices.append(i)
+
+        data.deleteInputs(del_indices)
+
+        simDialog = odoeSimSetup(data.model, self.dat, returnDataSignal=self.addPriorSignal, parent=self)
+        simDialog.show()
+
+        QApplication.processEvents()
+
+    def addInputPrior(self, data):
+        self.odoe_priorData = data
 
     def loadCandidate(self):
         self.freeze()
@@ -1299,19 +1323,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.unfreeze()
 
     def generateCandidate(self):
-        data = self.odoe_data
-        mins = np.min(data.getInputData(), 0)
-        maxs = np.max(data.getInputData(), 0)
-        defaults = []
-        for i in range(len(mins)):
-            defaults.append((mins[i] + maxs[i]) / 2)
+        data = copy.deepcopy(self.odoe_data)
+        names, indices = self.input_table.getDesignVariables()
+        del_indices = []
+        for i in range(data.getNumInputs()):
+            if i not in indices:
+                del_indices.append(i)
 
-        data.model.setInputMins(mins)
-        data.model.setInputMaxs(maxs)
-        data.model.setInputDefaults(defaults)
-        self.dat.model = data.model
-
-        simDialog = odoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addCandidateSignal, parent=self)
+        data.deleteInputs(del_indices)
+        simDialog = odoeSimSetup(data.model, self.dat, returnDataSignal=self.addCandidateSignal, parent=self)
         simDialog.show()
 
     def addDataToCandTable(self, data):
@@ -1591,9 +1611,35 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         numRestarts = int(self.restarts_comboBox.currentText())
 
-        print("Optimality Criterion: ", optCriterion, "(Type: ", type(optCriterion), ")")
-        print("Design Size: ", designSize, "(Type: ", type(designSize), ")")
-        print("Number of Restarts: ", numRestarts, "(Type: ", type(numRestarts), ")")
+        cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
+        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+        pdata = self.odoe_priorData
+        rsdata = self.odoe_data
+        y = {}
+        rs1 = {}
+        rs2 = {}
+        numOutputs = self.output_table.rowCount()
+        for row in range(numOutputs):
+            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
+                y[row] = row+1
+                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
+                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+
+        rs = {}
+        for row in y:
+            rs[row] = RSCombos.lookupRS(rs1[row], rs2[row])
+
+        rsOptions = {}
+        for row in y:
+            if rs[row].startswith('MARS'):
+                rsOptions[row] = {'marsBases': self.output_table.cellWidget(row, self.outputCol_index['mars1']).value(),
+                                  'marsInteractions': self.output_table.cellWidget(row, self.outputCol_index['mars2']).value()}
+            else:
+                rsOptions[row] = None
+
+        uniprior = self.uniformPrior
+
+        for nr in range(numRestarts):
+            odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize, uniprior)
 
         QApplication.processEvents()
-        return optCriterion, designSize, numRestarts

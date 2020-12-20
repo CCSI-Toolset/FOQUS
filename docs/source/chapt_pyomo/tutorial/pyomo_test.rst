@@ -74,7 +74,8 @@ Instructions
    Line 17 sets the solver to ipopt and line 18 sends the problem to be solved to the solver. Ipopt is a nonlinear optimization solver.
 
    .. note::
-      ipopt will need to be available in your environment.  To install it into your conda or pip environment you could use: ``conda install -c conda-forge ipopt`` or ``pip install ipopt``
+      ipopt will need to be available in your environment.  To install it into your conda environment you should use the command: ``conda install -c conda-forge ipopt``
+      The conda install method is preferred for Windows users.
 
 
    Once the model is solved, the values of decision variables ``x1``, ``x2``, ``y`` are assigned to the Node Output Variables in lines 19 to 21.

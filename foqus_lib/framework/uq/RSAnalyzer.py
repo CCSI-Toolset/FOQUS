@@ -545,11 +545,17 @@ class RSAnalyzer:
         z = x
         if row:
             z = np.concatenate((np.arange(1, nSamples+1)[:, np.newaxis], x), axis=1)
+            format = '%i'
+            for i in range(nInputs):
+                format += ' %1.18e'
         if y is not None:
             nOutputs = y.shape[1]
             header = '%d %d %d' % (nSamples, nInputs, nOutputs)
             z = np.concatenate((x, y), axis=1)
-        np.savetxt(fname, z, header=header, comments='', delimiter=d)
+        if row:
+            np.savetxt(fname, z, header=header, comments='', delimiter=d, fmt=format)
+        else:
+            np.savetxt(fname, z, header=header, comments='', delimiter=d)
 
         return None
 

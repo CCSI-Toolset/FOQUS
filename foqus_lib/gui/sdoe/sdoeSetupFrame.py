@@ -1141,9 +1141,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.trainData_edit.setText(fileName)
         self.odoe_data = data
         self.odoe_inputs_groupBox.setEnabled(True)
-        self.odoe_outputs_groupBox.setEnabled(True)
-        self.validateRS_button.setEnabled(False)
-        self.confirmRS_button.setEnabled(False)
         self.input_table.init(self.odoe_data, InputPriorTable.ODOE)
         self.refreshOutputTable()
 
@@ -1509,7 +1506,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         QApplication.processEvents()
         candData = self.createAggCandData()
         if self.checkCandCols(candData):
+            self.odoe_outputs_groupBox.setEnabled(True)
             self.validateRS_button.setEnabled(self.checkOutputs())
+            self.confirmRS_button.setEnabled(False)
         else:
             self.showColWarning()
         QApplication.processEvents()

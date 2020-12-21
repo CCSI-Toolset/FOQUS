@@ -12,10 +12,7 @@ dname = os.path.join(os.getcwd(), 'ODOE_files')
 
 def writeSample(fname, data):
     xdat = data.getInputData()
-    ydat = data.getOutputData()
-    if len(ydat) == 0:
-        ydat = None
-    RSAnalyzer.writeRSsample(fname, xdat, y=ydat)
+    RSAnalyzer.writeRSsample(fname, xdat, row=True)
     return fname
 
 
@@ -25,14 +22,14 @@ def getSampleShape(data):
     return nrows, ncols
 
 
-def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
+def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
 
     # cdata: SampleData containing the candidate set
     # pdata: SampleData containing the sample representing the prior over uncertain variables
     # rsdata: SampleData containing the RS training data
-    # rstypes: dictionary with output index as key and string denote RS types as value; possible values: ['MARS', 'linear', 'quadratic', 'cubic']
+    # rstypes: dictionary with output index as key and string denote RS types as value; possible values: ['MARS',
+    # 'linear', 'quadratic', 'cubic']
     # nd: int denoting design size
-    # uniprior: True/False depending on whether pdata is a uniform sample of the random variables
     # max_iters: int denoting maximum number of iterations for the optimization routine [default: 100]
 
     # parse params
@@ -40,9 +37,7 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
     assert(opt in opts)
     optdict = dict(zip(opts, range(1, len(opts)+1)))
     opt_index = optdict[opt]
-    # if prior is uniform, then we can use the faster method (odoeu_optn)
-    cmds = {True: 'odoeu_optn', False: 'odoeu_optns'}
-    cmd = cmds[uniprior]
+    cmd =  'odoeu_optns'
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
@@ -50,7 +45,7 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
         
     # initialize constants
     ncand = cdata.getNumSamples()
-    nInputs = rsdata.getNumInputs()
+    _nInputs = rsdata.getNumInputs()
     nOutputs = rsdata.getNumOutputs()
 
     # extract the indices of random variables
@@ -88,7 +83,6 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
     f.write('%s\n' % cmd)
-    # f.write('y\n')                 # yes to proceed
     f.write('%d\n' % opt_index)    # choose G, I, D, A
     f.write('%d\n' % ncand)        # size of the candidate set
     f.write('%d\n' % nd)           # design size
@@ -99,8 +93,6 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, uniprior, max_iters=100):
         f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
     f.write('0\n')                 # 0 to proceed
     f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
-    if uniprior:
-        f.write('%s\n' % pfile)    # file containing the uniform sample (psuade sample format)
     f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
     f.write('%s\n' % cfile)        # ... evaluate the optimality values on the (same) candidate set
     for rs in rstypes:             # for each output, specify RS index

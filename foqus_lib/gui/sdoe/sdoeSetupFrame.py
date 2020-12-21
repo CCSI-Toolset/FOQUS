@@ -173,7 +173,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_setup_groupBox.setEnabled(False)
         self.odoe_data = None
         self.odoe_priorData = None
-        self.uniformPrior = False
         self.loadtrainData_button.clicked.connect(self.loadRStrainData)
         self.confirmInputs_button.clicked.connect(self.confirmInputs)
         self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3, 'mars1': 4, 'mars2': 5}
@@ -1637,9 +1636,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             else:
                 rsOptions[row] = None
 
-        uniprior = self.uniformPrior
-
         for nr in range(numRestarts):
-            odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize, uniprior)
+            odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize)
 
         QApplication.processEvents()

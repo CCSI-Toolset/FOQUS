@@ -537,12 +537,14 @@ class RSAnalyzer:
         return None
 
     @staticmethod
-    def writeRSsample(fname, x, y=None):
+    def writeRSsample(fname, x, y=None, row=False):
         
         d = ' '
         nSamples, nInputs = x.shape
         header = '%d %d' % (nSamples, nInputs)
         z = x
+        if row:
+            z = np.concatenate((np.arange(1, nSamples+1)[:, np.newaxis], x), axis=1)
         if y is not None:
             nOutputs = y.shape[1]
             header = '%d %d %d' % (nSamples, nInputs, nOutputs)

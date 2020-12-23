@@ -1,30 +1,55 @@
+""" turbineConfiguration.py
+
+* This class contains Turbine configuration profiles and  functions for
+  interacting with Turbine
+* trying to move turbine related stuff into one place so fixes and
+  improvements to the Turbine interaction are easier
+
+Joshua Boverhof, Lawrence Berkeley National Lab
+John Eslick, Carnegie Mellon University, 2014
+See LICENSE.md for license and copyright details.
+"""
+
 import os
 import time
 import logging
+import base64
+import json
+import threading
+from datetime import datetime
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+import websocket
+from typing import Optional
 from foqus_lib.help.helpPath import *
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox, QTextBrowser
-
+from PyQt5.QtWidgets import QMainWindow
 mypath = os.path.dirname(__file__)
 _helpBrowserDockUI, _helpBrowserDock = \
         uic.loadUiType(os.path.join(mypath, "helpBrowser_UI.ui"))
-
+from foqus_lib.framework.session.session import session as _session
 
 class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
     #showHelpTopic = QtCore.pyqtSignal([types.StringType])
     showAbout = QtCore.pyqtSignal()
     hideHelp = QtCore.pyqtSignal()
 
-    def __init__(self, parent=None, dat=None):
+    def __init__(self,
+            parent: Optional[QMainWindow] = None,
+            dat: Optional[_session] = None):
         """
         Node view/edit dock widget constructor
         """
+        assert isinstance(dat, _session) or dat is None, \
+            "parameter dat is %s, expecting %s" %(type(dat), _session)
+        assert isinstance(parent, QMainWindow) or parent is None, \
+            "parameter parent is %s" %(type(parent), QMainWindow)
         super(helpBrowserDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
         self.mw = parent
+        self._cloud_notification = None
         self.aboutButton.clicked.connect(self.showAbout.emit)
         #self.contentsButton.clicked.connect(self.showContents)
         self.licenseButton.clicked.connect(self.showLicense)
@@ -190,6 +215,12 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         '''
         self.logView.clear()
 
+    def clearNotificationView(self):
+        '''
+            Clear the Cloud log text
+        '''
+        self.CloudLogView.clear()
+
     def timerCB(self):
         '''
             Function called by the timer to ubdate log display.
@@ -231,3 +262,99 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             logging.getLogger("foqus." + __name__).exception(
                 "Error opening log file for log viewer, "
                 "stopping the update timer")
+
+        if self._cloud_notification is None and \
+            self.dat.foqusSettings.runFlowsheetMethod == 1:
+            # Cloud View
+            self._cloud_notification = False
+            if not self.dat.flowsheet.turbConfig.notification:
+                self.CloudLogView.append("==> Disabled")
+                return
+            self.CloudLogView.append("==> Start")
+            try:
+                self._cloud_notification = WebSocketApp(self.CloudLogView,
+                    self.dat.flowsheet.turbConfig)
+            except ValueError as e:
+                logging.getLogger("foqus." + __name__).info(str(e))
+                self.CloudLogView.append("Cloud Notifcations: OFF")
+                self.CloudLogView.append("turbine configuration section Application, key notification")
+            else:
+                self._cloud_notification.signalUpdateStatus.connect(self.showStatus)
+                self._cloud_notification.start()
+
+    def showStatus(self):
+        logging.getLogger("foqus." + __name__).info("on_message")
+        self.widget = self.CloudLogView
+        self.widget.clear()
+        self.widget.append("%s>" %(datetime.now().isoformat()))
+        d = json.loads(self._cloud_notification.message)
+        if ("sqs" in d):
+            self.widget.append("== SQS Job Queue:")
+            for k,v in d['sqs'].get('Attributes',{}).items():
+                self.widget.append("  %s: %s" %(k,v))
+        if ("autoscale" in d):
+            self.widget.append("== AutoScale:")
+            for group in d['autoscale'].get('AutoScalingGroups',[]):
+                self.widget.append("  %s" %(group['AutoScalingGroupName']))
+                for key in ['MinSize','MaxSize','DesiredCapacity']:
+                    self.widget.append("    %s: %s" %(key,group[key]))
+        if ("ec2" in d):
+            self.widget.append("== EC2:")
+            for reservation in d['ec2'].get('Reservations',[]):
+                for inst in reservation['Instances']:
+                    logging.getLogger("foqus." + __name__).info(inst)
+                    tag_name = 'NO NAME'
+                    for tag in filter(lambda a: a['Key'] == 'Name', inst['Tags']):
+                        tag_name = tag['Value']
+                    self.widget.append("  %s" %(tag_name))
+                    for key in ['InstanceType','Platform','State']:
+                        self.widget.append("    %s: %s" %(key,inst[key]))
+
+
+
+#class WebSocketApp(threading.Thread):
+class WebSocketApp(QtCore.QThread):
+    signalUpdateStatus = QtCore.pyqtSignal()
+
+    def __init__(self, widget:QTextBrowser, config:TurbineConfiguration):
+        #threading.Thread.__init__(self)
+        super(QtCore.QThread, self).__init__()
+        self.stop = threading.Event()
+        self.daemon = True
+        assert type(widget) is QTextBrowser, type(widget)
+        assert type(config) is TurbineConfiguration, type(config)
+        websocket.enableTrace(True)
+        wss_url = config.notification
+        if not wss_url.startswith('wss://'):
+            raise ValueError("Require Web Sockets Secure (wss) protocol")
+        usertok = '%s:%s' %(config.user, config.pwd)
+        token = base64.b64encode(bytes(usertok, 'utf-8')).decode('ascii')
+        header = 'Authorization: Basic {0}'.format(token)
+        self.ws = websocket.WebSocketApp(wss_url,
+                                header=[header],
+                                on_message = self.on_message,
+                                on_open = self.on_open,
+                                on_error = self.on_error,
+                                on_close = self.on_close)
+        self.widget = widget
+        self.config = config
+        self.url = wss_url
+
+    def on_message(self, message):
+        self.message = message
+        self.signalUpdateStatus.emit()
+
+    def on_error(self, error):
+        logging.getLogger("foqus." + __name__).error(error)
+        self.widget.append("Notification error: %s" %(error))
+
+    def on_close(self):
+        logging.getLogger("foqus." + __name__).info("WSS closed")
+
+    def on_open(self):
+        logging.getLogger("foqus." + __name__).debug("WSS open: %s" %self.url)
+        self.ws.send('{"action":"status"}')
+
+    def run(self):
+        logging.getLogger("foqus." + __name__).info("run_forever")
+        self.ws.run_forever()

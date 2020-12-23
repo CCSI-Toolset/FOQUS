@@ -179,8 +179,8 @@ class opt(optimization):
         self.options.add(
             name='Multistart',
             default=True,
-            desc="Multistart approach for each iteration's math optimization initialization")
-
+            desc="Multistart approach for each iteration's math optimization initialization")        
+        
         self.options.add(
             name='Objective value tolerance',
             default=1e-03,
@@ -470,8 +470,7 @@ class opt(optimization):
             kwds['io_options'] = io_options
             kwds['tee'] = tee
             kwds['keepfiles'] = True
-            kwds['tmpdir'] = 'temp'
-
+            kwds['tmpdir'] = 'temp'    
         else:
             optimizer = SolverFactory(mathoptsolver)
             kwds = dict()

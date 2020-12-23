@@ -3,23 +3,28 @@ import configparser, time, os
 import numpy as np
 import pandas as pd
 
-def save(fnames, results, elapsed_time):
-    write(fnames['cand'], results['best_cand'])
-    print('Candidates saved to {}'.format(fnames['cand']))
-    np.save(fnames['dmat'], results['best_dmat'])
-    print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
-                                                              results['best_val'], elapsed_time)))
-    print('Candidate distances saved to {}'.format(fnames['dmat']))
+
+def save(fnames, results, elapsed_time, irsf=False):
+    if irsf:
+        write(fnames['des'], results['des'])
+        print('Designs saved to {}'.format(fnames['des']))
+        write(fnames['pf'], results['pareto_front'])
+        print('Pareto Front saved to {}'.format(fnames['pf']))
+
+    else:
+        write(fnames['cand'], results['best_cand'])
+        print('Candidates saved to {}'.format(fnames['cand']))
+        np.save(fnames['dmat'], results['best_dmat'])
+        print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
+                                                                  results['best_val'], elapsed_time)))
+        print('Candidate distances saved to {}'.format(fnames['dmat']))
+
 
 def run(config_file, nd, test=False):
 
-    # check config file
-    config_file = config_file.strip()
-    assert(os.path.isfile(config_file))
-    
     # parse config file
     config = configparser.ConfigParser(allow_no_value=True)
-    config.read(config_file.strip())
+    config.read(config_file)
     
     mode = config['METHOD']['mode']
     nr = int(config['METHOD']['number_random_starts'])
@@ -41,19 +46,21 @@ def run(config_file, nd, test=False):
         id_ = id_[0]
     else:
         id_ = None
+
     outdir = config['OUTPUT']['results_dir']
 
-    nusf = 'SF' in config.sections()
-    
-    if nusf:
+    sf_method = config['SF']['sf_method']
+
+    if sf_method == 'nusf':
         # 'Weight' column (should only be one)
         idw = [x for x, t in zip(include, types) if t == 'Weight']
         assert len(idw) == 1, 'Multiple WEIGHT columns detected. There should only be one WEIGHT column.'
         idw = idw[0]
 
         weight_mode = config['WEIGHT']['weight_mode']
-        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
-            
+        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. ' \
+                                         'Only BY_USER is currently supported.'.format(weight_mode)
+      
         scale_method = config['SF']['scale_method']
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])
         mwr_values = [int(s) for s in config['SF']['mwr_values'].split(',')]
@@ -65,15 +72,22 @@ def run(config_file, nd, test=False):
                 'mwr_values': mwr_values,
                 'scale_method': scale_method}
         from .nusf import criterion
-        
-    else:
-        scl = np.array([ub-lb for ub,lb in zip(max_vals, min_vals)])
+    
+    if sf_method == 'usf':
+        scl = np.array([ub-lb for ub, lb in zip(max_vals, min_vals)])
         args = {'icol': id_,
                 'xcols': idx,
-                'wcol': None,
                 'scale_factors': pd.Series(scl, index=include)}
         from .usf import criterion
-        
+
+    if sf_method == 'irsf':
+        args = {'max_iterations': 1000,
+                'ws': np.linspace(0.1, 0.9, 5),
+                'icol': id_,
+                'idx': idx,
+                'idy': [x for x, t in zip(include, types) if t == 'Response']}
+        from .irsf import criterion
+
     # create outdir as needed
     if not os.path.exists(outdir):
         os.makedirs(outdir)
@@ -85,19 +99,21 @@ def run(config_file, nd, test=False):
             include = list(cand)
 
     # load history
-    hist = None
-    if hist is None:
-        pass
-    else:
-        assert id_ in hfile, 'History file should have an INDEX column named "{}"'.format(id_)
+    if hfile != '':
         hist = load(hfile, index=id_)
-        
+    else:
+        hist = None
+
     # do a quick test to get an idea of runtime
     if test:
-        t0 = time.time()
-        results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
-        elapsed_time = time.time() - t0
-        return elapsed_time
+        if sf_method == 'irsf':
+            results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)
+            return results['t1'], results['t2']
+        else:
+            t0 = time.time()
+            _results = criterion(cand, args, nr, nd, mode=mode, hist=hist)
+            elapsed_time = time.time() - t0
+            return elapsed_time
 
     # otherwise, run sdoe for real
     t0 = time.time()
@@ -105,17 +121,27 @@ def run(config_file, nd, test=False):
     elapsed_time = time.time() - t0
 
     # save the output
-    if nusf:
+    if sf_method == 'nusf':
         fnames = {}
         for mwr in mwr_values:
-            suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(idx+[idw]))
+            suffix = 'd{}_n{}_m{}_{}'.format(nd, nr, mwr, '+'.join(include))
             fnames[mwr] = {'cand': os.path.join(outdir, 'nusf_{}.csv'.format(suffix)),
                            'dmat': os.path.join(outdir, 'nusf_dmat_{}.npy'.format(suffix))}
             save(fnames[mwr], results[mwr], elapsed_time)
-    else:
-        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join([id_]+idx))
+
+    if sf_method == 'usf':
+        suffix = 'd{}_n{}_{}'.format(nd, nr, '+'.join(include))
         fnames = {'cand': os.path.join(outdir, 'usf_{}.csv'.format(suffix)),
                   'dmat': os.path.join(outdir, 'usf_dmat_{}.npy'.format(suffix))}
         save(fnames, results, elapsed_time)
-        
+
+    if sf_method == 'irsf':
+        fnames = {}
+        for design in range(1, results[1]['num_designs'] + 1):
+            suffix = 'design{}_d{}_n{}_{}'.format(design, nd, nr, '+'.join(include))
+            suffix_pareto = 'paretoFront_d{}_n{}_{}'.format(nd, nr, '+'.join(include))
+            fnames[design] = {'des': os.path.join(outdir, 'irsf_{}.csv'.format(suffix)),
+                              'pf': os.path.join(outdir, 'irsf_{}.csv'.format(suffix_pareto))}
+            save(fnames[design], results[design], elapsed_time, irsf=True)
+
     return fnames, results, elapsed_time

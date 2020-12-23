@@ -3,7 +3,7 @@
 John Eslick, Carnegie Mellon University, 2014
 See LICENSE.md for license and copyright details.
 """
-from setuptools import setup, find_namespace_packages
+from setuptools import setup, find_packages
 import sys
 import os
 import subprocess
@@ -44,7 +44,7 @@ dist = setup(
     maintainer = ver.maintainer,
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
-    packages = find_namespace_packages(),
+    packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
@@ -54,6 +54,7 @@ dist = setup(
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",
+            "foqusPSUADEClient = foqus_lib.gui.ouu.foqusPSUADEClient:main",
         ],
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
@@ -64,6 +65,7 @@ dist = setup(
         "cma",
         "matplotlib",
         "mlrose_hiive",
+        "mplcursors",
         "numpy",
         "pandas",
         "psutil",
@@ -74,6 +76,7 @@ dist = setup(
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
+        "websocket_client>=0.57"
         ],
 )
 

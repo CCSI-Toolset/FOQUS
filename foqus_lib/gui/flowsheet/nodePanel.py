@@ -513,38 +513,39 @@ class nodeDock(_nodeDock, _nodeDockUI):
         row = 0
         for name in sorted(list(vars.keys()), key = lambda s: s.lower()):
             var = vars[name]
+            # if var.dtype!=dict:
             gh.setTableItem(table, row,
-                self.ovCols["Name"],
-                name, editable=False)
+                    self.ovCols["Name"],
+                    name, editable=False)
             gh.setTableItem(table, row,
-                self.ovCols["Value"],
-                var.value,
-                jsonEnc = True)
-            # if var.dtype==object:
-            #     for i in range(len(var.value)):
-            #         var1=vars[name+'_{0}'.format(i)]
-            #         gh.setTableItem(table, row,
-            #         self.ovCols["Name"],
-            #         name+'_{0}'.format(i), editable=False)
-            #         var1.value=var.value[i]
-            #         gh.setTableItem(table, row,
-            #         self.ovCols["Value"],
-            #         var1.value,
-            #         jsonEnc = True)                    
+                    self.ovCols["Value"],
+                    var.value,
+                    jsonEnc = True)
+                # if var.dtype==object:
+                #     for i in range(len(var.value)):
+                #         var1=vars[name+'_{0}'.format(i)]
+                #         gh.setTableItem(table, row,
+                #         self.ovCols["Name"],
+                #         name+'_{0}'.format(i), editable=False)
+                #         var1.value=var.value[i]
+                #         gh.setTableItem(table, row,
+                #         self.ovCols["Value"],
+                #         var1.value,
+                #         jsonEnc = True)                    
             gh.setTableItem(table, row,
-                self.ovCols["Unit"],
-                var.unit)
+                    self.ovCols["Unit"],
+                    var.unit)
             gh.setTableItem(table, row,
-                self.ovCols["Type"],
-                pullDown= ["float", "int", "str", "object"],
-                text=var.typeStr())
+                    self.ovCols["Type"],
+                    pullDown= ["float", "int", "str", "object"],
+                    text=var.typeStr())
             gh.setTableItem(table, row,
-                self.ovCols["Description"],
-                var.desc)
+                    self.ovCols["Description"],
+                    var.desc)
             gh.setTableItem(table, row,
-                self.ovCols["Tags"],
-                var.tags,
-                jsonEnc = True)
+                    self.ovCols["Tags"],
+                    var.tags,
+                    jsonEnc = True)
             row += 1
         table.resizeColumnsToContents()
         self.outputVarTable.setSelectionMode(
@@ -655,29 +656,29 @@ class nodeDock(_nodeDock, _nodeDockUI):
             if int(size)>1:
                 self.node.gr.input.addVectorVariable(self.node.name, newName, ip, size, minval, maxval, value)
                 nodevarvec=self.node.gr.input.get(self.node.name, newName)
-                
-            # else:
-            #     self.node.gr.input.addVariable(self.node.name, newName)
-            #     nodevar=self.node.gr.input.get(self.node.name, newName)
+            # ******************    
+            # # else:
+            # #     self.node.gr.input.addVariable(self.node.name, newName)
+            # #     nodevar=self.node.gr.input.get(self.node.name, newName)
             
-                # Insert bounds and values of the new vector and scalar variables
-                for i in range(int(size)):
-                    # nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
+            #     # Insert bounds and values of the new vector and scalar variables
+            #     for i in range(int(size)):
+            #         # nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
                     
-                    # nodevar.min = float(minval[i])
-                    # nodevarvec.min[i] = float(minval[i])
+            #         # nodevar.min = float(minval[i])
+            #         # nodevarvec.min[i] = float(minval[i])
                     
-                    # nodevar.max = float(maxval[i])
-                    # nodevarvec.max[i] = float(maxval[i])
+            #         # nodevar.max = float(maxval[i])
+            #         # nodevarvec.max[i] = float(maxval[i])
     
-                    # nodevar.value = float(value[i])
-                    # nodevarvec.value[i] = float(value[i])
+            #         # nodevar.value = float(value[i])
+            #         # nodevarvec.value[i] = float(value[i])
                     
-                    nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
-                    nodevarvec.min[i] = nodevar.min                   
-                    nodevarvec.max[i] = nodevar.max
-                    nodevarvec.value[i] = nodevar.value
-                   
+            #         nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))
+            #         nodevarvec.min[i] = nodevar.min                   
+            #         nodevarvec.max[i] = nodevar.max
+            #         nodevarvec.value[i] = nodevar.value
+             # ******************      
             else:
                 self.node.gr.input.addVariable(self.node.name, newName)
                 nodevar=self.node.gr.input.get(self.node.name, newName)
@@ -725,15 +726,15 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 "Output Size",
                 "New output variable size:",
                 QLineEdit.Normal)
-            value, ok = QInputDialog.getText(
-                self,
-                "Output Value",
-                "New output variable value:",
-                QLineEdit.Normal)
+            # value, ok = QInputDialog.getText(
+            #     self,
+            #     "Output Value",
+            #     "New output variable value:",
+            #     QLineEdit.Normal)
         else:
             newName = name
             ok = True
-        value = ast.literal_eval(value)
+        # value = ast.literal_eval(value)
         if ok and newName != '':
             if newName in self.node.outVars:
                 QMessageBox.warning(
@@ -743,11 +744,11 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 return
             # size condition
             if int(size)>1:
-                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size, value=value)
+                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size, value=None)
                    
             else:
                 self.node.gr.output.addVariable(self.node.name, newName)
-                
+            self.applyChanges()                
             self.updateOutputVariables()
 
     def delOutput(self):

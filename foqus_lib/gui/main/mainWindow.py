@@ -1362,11 +1362,11 @@ class mainWindow(QMainWindow):
                     if key not in self.singleRun.res[0]:
                         self.singleRun.res[0][key] = value
 
-                self.dat.flowsheet.results.add_result(
-                    set_name='Single_runs',
-                    result_name='single_{}'.format(self.dat.flowsheet.singleCount),
-                    time=None,
-                    sd=self.singleRun.res[0])
+                # self.dat.flowsheet.results.add_result(
+                #     set_name='Single_runs',
+                #     result_name='single_{}'.format(self.dat.flowsheet.singleCount),
+                #     time=None,
+                #     sd=self.singleRun.res[0])
             else:
                 self.dat.flowsheet.setErrorCode(20)
                 logging.getLogger("foqus." + __name__).error(

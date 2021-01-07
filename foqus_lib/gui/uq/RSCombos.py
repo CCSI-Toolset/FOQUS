@@ -56,7 +56,7 @@ class RSCombo1(QComboBox):
             item = model.itemFromIndex(index)
             item.setEnabled(True)
         if odoe:
-            for i in range(2, 8):
+            for i in range(3, 8):
                 index = model.index(i, 0)
                 item = model.itemFromIndex(index)
                 item.setEnabled(False)
@@ -225,7 +225,7 @@ class RSCombo2(QComboBox):
             self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG))
         self.setEnabled(True)
         if self.odoe:
-            self.removeItem(1)
+            self.removeItem(0)
         self.enableLegendre(False)
         self.fileMode = False
 

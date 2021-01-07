@@ -175,7 +175,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_priorData = None
         self.loadtrainData_button.clicked.connect(self.loadRStrainData)
         self.confirmInputs_button.clicked.connect(self.confirmInputs)
-        self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3, 'mars1': 4, 'mars2': 5}
+        self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3}
         self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in
                                     range(self.output_table.columnCount())]
         self.outputMeans = None
@@ -1560,8 +1560,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rsOptions = {}
         for row in y:
             if rs[row].startswith('MARS'):
-                rsOptions[row] = {'marsBases': self.output_table.cellWidget(row, self.outputCol_index['mars1']).value(),
-                                  'marsInteractions': self.output_table.cellWidget(row, self.outputCol_index['mars2']).value()}
+                rsOptions[row] = {'marsBases': min([100, self.odoe_data.getNumSamples()]),
+                                  'marsInteractions': min([8, self.odoe_data.getNumVarInputs()])}
             else:
                 rsOptions[row] = None
 
@@ -1574,6 +1574,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                                 'If the generated response surfaces satisfy your needs, please confirm.'
                                 'If not, please select a new response surface and validate again.')
         self.confirmRS_button.setEnabled(True)
+        self.unfreeze()
         QApplication.processEvents()
 
     def rsValidate(self, y, rs, rsOptions, genRSCode, odoe=True):

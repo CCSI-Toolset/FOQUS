@@ -969,16 +969,6 @@ selection-color: rgb(0, 0, 0);</string>
                  <string>(cont'd)</string>
                 </property>
                </column>
-               <column>
-                <property name="text">
-                 <string>MARS # Basis Func's</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>MARS Deg. of Interaction</string>
-                </property>
-               </column>
               </widget>
              </item>
              <item>

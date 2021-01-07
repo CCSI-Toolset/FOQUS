@@ -100,7 +100,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         self.samplingTabs.currentChanged[int].connect(self.checkDists)
 
         # Set up distributions table
-        self.distTable.init(model, InputPriorTable.SIMSETUP, viewOnly = viewOnly)
+        self.distTable.init(model, InputPriorTable.SIMSETUP, viewOnly=viewOnly)
 
         self.allFixedButton.clicked.connect(self.makeAllFixed)
         self.allVariableButton.clicked.connect(self.makeAllVariable)
@@ -119,6 +119,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         self.schemesList.clear()
         self.schemesList.addItems(SamplingMethods.fullNames[0:4])
         self.schemesList.addItems(SamplingMethods.fullNames[7:8])
+        self.schemesList.addItems(SamplingMethods.fullNames[9:])
 
         if not foundMETIS:
             item = self.schemesList.item(SamplingMethods.METIS)

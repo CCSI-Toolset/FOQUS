@@ -37,7 +37,7 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
     assert(opt in opts)
     optdict = dict(zip(opts, range(1, len(opts)+1)))
     opt_index = optdict[opt]
-    cmd =  'odoeu_optns'
+    cmd = 'odoeu_optns'
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
@@ -77,12 +77,14 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
 
     # write script
     f = tempfile.SpooledTemporaryFile(mode='wt')
+    # f = open('/Users/sotorrio1/Desktop/odoeu.in', 'w')
     if platform.system() == 'Windows':
         import win32api
         cfile = win32api.GetShortPathName(cfile)
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
     f.write('%s\n' % cmd)
+    f.write('y\n')
     f.write('%d\n' % opt_index)    # choose G, I, D, A
     f.write('%d\n' % ncand)        # size of the candidate set
     f.write('%d\n' % nd)           # design size
@@ -94,6 +96,7 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
     f.write('0\n')                 # 0 to proceed
     f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
     f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
+    f.write('n\n')
     f.write('%s\n' % cfile)        # ... evaluate the optimality values on the (same) candidate set
     for rs in rstypes:             # for each output, specify RS index
         f.write('%d\n' % rsdict[rstypes[rs]])

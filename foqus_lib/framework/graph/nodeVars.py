@@ -202,30 +202,44 @@ class NodeVarList(OrderedDict):
         # #     var = NodeVarsVector(size)              
         # return var
         
-        minval = np.array(minval)
-        maxval = np.array(maxval)
-        value = np.array(value)
+        # minval = np.array(minval)
+        # maxval = np.array(maxval)
+        # value = np.array(value)
+        # minval = list(minval)
+        # maxval = list(maxval)
+        # value = list(value)
+        
         if nodeName not in self:
             raise NodeVarListEx(2, msg=nodeName)
         if varName in self[nodeName]:
             raise NodeVarListEx(7, msg=varName)
+        # self.scalarvarnames = []
         if not var:
             # var = NodeVarVector()
             for i in range(int(size)):
                 self.addVariable(nodeName, varName + '_{0}'.format(i))
                 nodevar = self[nodeName][varName + '_{0}'.format(i)]
-                if ip==True:
+                # self.scalarvarnames.append((nodeName, varName + '_{0}'.format(i)))
+                if ip is True:
                     # nodevar = self.node.gr.input.get(self.node.name, newName + '_{0}'.format(i))    
                     nodevar.min = float(minval[i])                       
                     nodevar.max = float(maxval[i])       
                     nodevar.value = float(value[i])
+                    nodevar.ipvname = (nodeName,varName + '_{0}'.format(i))
                 else:
                     nodevar.value = 0
+                    nodevar.opvname = (nodeName,varName + '_{0}'.format(i))
+                # nodevar.vname = (nodeName,varName + '_{0}'.format(i))
             var = NodeVars()
             var.dtype = object
-            var.add_vector()
+            var.add_vector(size)
+            if ip is True:
+                var.ipvname = (nodeName,varName)
+            else:
+                var.opvname = (nodeName,varName)
             for i in range(int(size)):
                 var.vector[i] = self[nodeName][varName + '_{0}'.format(i)]
+                # var.vname.append((nodeName,varName + '_{0}'.format(i)))
             # if ip is True:
             #     var.setMin()
             #     var.setMax()
@@ -342,14 +356,22 @@ class NodeVarList(OrderedDict):
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
-                # print(sd[node][var])
-                # if sd[node][var]['dtype']!='object':
-                #     print('scalar')
                 self.addVariable(node, var).loadDict(sd[node][var])
-                # else:
-                #     pass
-                    # print('vector')
-                    # self.addVectorVariable(node, var).loadDict(sd[node][var])
+            # vectorlist = [v for v in sd[node] if len(sd[node][v]['vector'])>0]
+            # # scalarvectorlist = [v for v in sd[node] if v in sd[node][k]['vector']
+            # for var in sd[node]:
+            #     if sd[node][var]['dtype']!='object':
+            #         for vecvar in vectorlist:
+            #             if sd[node][var]['ipvname'] or sd[node][var]['opvname'] not in sd[node][vecvar]['vector']:
+            #                 self.addVariable(node, var).loadDict(sd[node][var])
+            #     else:
+            #         if sd[node][var]['ipvname'] == None:
+            #             ip = False
+            #         else:
+            #             ip = True
+            #         size = len(sd[node][var]['value'])
+                    
+            #         self.addVectorVariable(node, var, ip, size).loadDict(sd[node][var])
 
     def scale(self):
         """
@@ -1125,6 +1147,9 @@ class NodeVars(object):
         vmax=1,
         vdflt=0,
         # index=0,
+        vector=dict(),
+        ipvname=None,
+        opvname=None,
         unit="",
         vst="user",
         vdesc="",
@@ -1186,14 +1211,16 @@ class NodeVars(object):
         # other searching and sorting
         self.con = False  # true if the input is set through connection
         self.setValue(value)  # value of the variable
+        self.setVector(vector) # dictionary for vector variables
         self.setType(dtype)
+        self.setname(ipvname,opvname)
         self.dist = copy.copy(dist)
 
-    def add_vector(self):
+    def add_vector(self, size):
         if self.dtype != object:
             pass
         else:
-            self.vector = dict()
+            self.vector = {x: None for x in range(int(size))}
             # self.vector[index] = val
         return self.vector
 
@@ -1230,7 +1257,7 @@ class NodeVars(object):
             dtype = str
         elif dtype == "object":
             dtype = object
-        if not dtype in [float, int, str, object]:
+        if dtype not in [float, int, str, object]:
             raise NodeVarEx(11, msg=str(dtype))
         self.dtype = dtype
         print(self.dtype)
@@ -1252,10 +1279,14 @@ class NodeVars(object):
             self.max = dtype(self.max)
             self.default = dtype(self.default)
         else:
-            self.value = self.value
-            self.min = self.min
-            self.max = self.max
-            self.default = self.default
+            # self.value = np.array([self.value])
+            # self.min = np.array([self.min])
+            # self.max = np.array([self.max])
+            # self.default = np.array([self.default])
+            self.value = [self.value]
+            self.min = [self.min]
+            self.max = [self.max]
+            self.default = [self.default]
 
     def setMin(self, val):
         """
@@ -1266,10 +1297,13 @@ class NodeVars(object):
         if self.dtype != object:
             self.__min = self.dtype(val)
         else:
-            self.__min = np.array(val)
-            for idx in len(self.vector):
+            # pass
+            # self.__min = np.array(range(len(self.vector)))
+            self.__min = []
+            for idx in range(len(self.vector)):
                 minval = self.vector[idx].min
-                self.__min[idx] = minval
+                # self.__min[idx] = minval 
+                self.__min.append(minval)
             # self.__min = np.array(val)
 
     def setMax(self, val):
@@ -1279,10 +1313,13 @@ class NodeVars(object):
         if self.dtype != object:
             self.__max = self.dtype(val)
         else:
-            self.__max = np.array(val)
-            for idx in len(self.vector):
+            # pass
+            # self.__max = np.array(range(len(self.vector)))
+            self.__max = []
+            for idx in range(len(self.vector)):
                 maxval = self.vector[idx].max
-                self.__max[idx] = maxval
+                # self.__max[idx] = maxval  
+                self.__max.append(maxval)  
             # self.__max = np.array(val)
 
     def setDefault(self, val):
@@ -1294,12 +1331,13 @@ class NodeVars(object):
         if self.dtype != object:
             self.__default = self.dtype(val)
         else:
-            # vector_len = len(self.value)
-            # self.__default = list([val])*vector_len
-            self.__default = np.array(val)
-            for idx in len(self.vector):
+            # pass
+            # self.__default = np.array(range(len(self.vector)))
+            self.__default = []
+            for idx in range(len(self.vector)):
                 defval = self.vector[idx].default
-                self.__default[idx] = defval
+                # self.__default[idx] = defval  
+                self.__default.append(defval)
             # self.__default = np.array(val)
 
     def setValue(self, val):
@@ -1309,13 +1347,27 @@ class NodeVars(object):
         if self.dtype != object:
             self.__value = self.dtype(val)
         else:
-            # vector_len = len(val)
-            print("****PRINT4****")
-            self.__value = np.array(val)
-            for idx in len(self.vector):
-                val = self.vector[idx].value
-                self.__value[idx] = val
+            # pass
+            # self.__value = np.array(range(len(self.vector)))
+            self.__value = []
+            for idx in range(len(self.vector)):
+                valu = self.vector[idx].value
+                # self.__value[idx] = valu 
+                self.__value.append(valu)
             # self.__value = np.array(val)
+    
+    def setVector(self, vector):
+        """
+        Set the vector variable dictionary
+        """
+        # if self.dtype != object:
+        #     self.vector = None
+        # else:
+        self.vector = vector
+        
+    def setname(self, ip, op):
+        self.ipvname = ip
+        self.opvname = op
 
     def __getattr__(self, name):
         """
@@ -1329,9 +1381,12 @@ class NodeVars(object):
             return self.__max
         elif name == "default":
             return self.__default
+        # elif name == "vector":
+        #     return self.vector
         # elif name == "index":
         #     return self.index
         else:
+            print(name)
             raise AttributeError
 
     def __setattr__(self, name, val):
@@ -1347,6 +1402,8 @@ class NodeVars(object):
             self.setMax(val)
         elif name == "default":
             self.setDefault(val)
+        # elif name == "vector":
+        #     self.setVector(val)
         else:
             super(NodeVars, self).__setattr__(name, val)
 
@@ -1454,6 +1511,9 @@ class NodeVars(object):
         vmax = self.max
         vdefault = self.default
         value = self.value
+        ipvname = self.ipvname
+        opvname = self.opvname
+        vector = self.vector
         if self.dtype == float:
             sd["dtype"] = "float"
         elif self.dtype == int:
@@ -1468,6 +1528,15 @@ class NodeVars(object):
         sd["min"] = vmin
         sd["max"] = vmax
         sd["default"] = vdefault
+        # for i in range(len(vector)):
+        # self[nodeName][varName + '_{0}'.format(i)]
+        sd["ipvname"] = ipvname
+        sd["opvname"] = opvname
+        # sd["vector"] = {i:vector[i].vname for i in range(len(vector))}
+        if opvname is None:
+            sd["vector"] = {i:vector[i].ipvname for i in range(len(vector))}
+        else:
+            sd["vector"] = {i:vector[i].opvname for i in range(len(vector))}
         sd["unit"] = self.unit
         sd["set"] = self.set
         sd["desc"] = self.desc
@@ -1506,6 +1575,19 @@ class NodeVars(object):
         self.min = sd.get("min", 0)
         self.max = sd.get("max", 0)
         self.default = sd.get("default", 0)
+        # self.vector = sd.get("vector", dict())
+        print(sd.get("vector"))
+        self.ipvname = sd.get("ipvname")
+        self.opvname = sd.get("opvname")
+        # if self.opvname is None:
+        #     self.vector = {x:None for x in range(len(sd.get("vector")))}
+        #     for i in range(len(sd.get("vector"))):
+        #         self.vector[i] = self.node.gr.input.get(sd.get("vector")[i][0], sd.get("vector")[i][1])
+        # else:
+        #     self.vector = {x:None for x in range(len(sd.get("vector")))}
+        #     for i in range(len(sd.get("vector"))):
+        #         self.vector[i] = self.node.gr.output.get(sd.get("vector")[i][0], sd.get("vector")[i][1])
+        # self.vector = {i:NodeVarList[sd.get("vector")[i][0]][sd.get("vector")[i][1]] for i in range(len(self.vname))}
         self.unit = sd.get("unit", "")
         self.set = sd.get("set", "user")
         self.desc = sd.get("desc", "")

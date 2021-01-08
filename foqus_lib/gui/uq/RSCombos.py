@@ -225,7 +225,7 @@ class RSCombo2(QComboBox):
             self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG))
         self.setEnabled(True)
         if self.odoe:
-            self.removeItem(0)
+            self.removeItem(1)
         self.enableLegendre(False)
         self.fileMode = False
 

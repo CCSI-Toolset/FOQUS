@@ -1631,8 +1631,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rsOptions = {}
         for row in y:
             if rs[row].startswith('MARS'):
-                rsOptions[row] = {'marsBases': self.output_table.cellWidget(row, self.outputCol_index['mars1']).value(),
-                                  'marsInteractions': self.output_table.cellWidget(row, self.outputCol_index['mars2']).value()}
+                rsOptions[row] = {'marsBases': min([100, self.odoe_data.getNumSamples()]),
+                                  'marsInteractions': min([8, self.odoe_data.getNumVarInputs()])}
             else:
                 rsOptions[row] = None
 

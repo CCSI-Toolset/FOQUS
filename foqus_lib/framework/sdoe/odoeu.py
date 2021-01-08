@@ -53,9 +53,9 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
     priorNames = pdata.getInputNames()
     priorIndices = []
     for name in priorNames:
-        priorIndices.append(inputNames.index(name))
+        priorIndices.append(inputNames.index(name) + 1)
 
-    rs_list = ['MARS', 'linear', 'quadratic', 'cubic']
+    rs_list = ['MARS', 'linear', 'quadratic', 'cubic', 'GP3']
     # TO DO for Pedro: check in GUI?
     # this checks to see if user is trying to pass an unsupported RS
     for rs in rstypes:
@@ -96,7 +96,9 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
     f.write('0\n')                 # 0 to proceed
     f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
     f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
-    f.write('n\n')
+    f.write('y\n')
+    for i in range(ncand):
+        f.write('0.05\n')
     f.write('%s\n' % cfile)        # ... evaluate the optimality values on the (same) candidate set
     for rs in rstypes:             # for each output, specify RS index
         f.write('%d\n' % rsdict[rstypes[rs]])
@@ -105,8 +107,8 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
     f.seek(0)
 
     # invoke psuade
+    os.chdir(dname)
     out, error = Common.invokePsuade(f)
-    f.close()
     if error:
         return None
 

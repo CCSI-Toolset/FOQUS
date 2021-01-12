@@ -1044,7 +1044,7 @@ if usePyside:
             for i, status in enumerate(outputStatus):
                 if status == Model.NEED_TO_CALCULATE:
                     import time
-                    _start = time.clock()
+                    _start = time.process_time()
                     psfile, _rs, _legOrder = RSAnalyzer.emulate(self.data.getEmulatorTrainingFile(),
                                                                 emulatorFileName, i + 1,
                                                                 textDialog=self.textDialog,

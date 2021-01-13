@@ -173,6 +173,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.odoe_setup_groupBox.setEnabled(False)
         self.odoe_data = None
         self.odoe_priorData = None
+        self.resultMessage = None
         self.loadtrainData_button.clicked.connect(self.loadRStrainData)
         self.confirmInputs_button.clicked.connect(self.confirmInputs)
         self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3}
@@ -1569,10 +1570,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         for row in y:
             self.rsValidate(y[row], rs[row], rsOptions[row], genRSCode)
-        QMessageBox.information(None, 'Response Surface Validation Plots',
-                                'Check the response surface validation plots for each one of your outputs.'
-                                'If the generated response surfaces satisfy your needs, please confirm.'
-                                'If not, please select a new response surface and validate again.')
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle('Response Surface Validation Plots')
+        msgBox.setText('Check the response surface validation plots for each one of your outputs.'
+                       'If the generated response surfaces satisfy your needs, please confirm.'
+                       'If not, please select a new response surface and validate again.')
+        msgBox.exec_()
         self.confirmRS_button.setEnabled(True)
         self.unfreeze()
         QApplication.processEvents()
@@ -1636,7 +1640,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             else:
                 rsOptions[row] = None
 
+        self.resultMessage = ""
         for nr in range(numRestarts):
-            odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize)
+            best_indices, best_optval = odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize)
+            self.resultMessage += "FOQUS ODoE Finished.\n\n"
+            self.resultMessage += "Results for Run #%d:\n" % (nr+1)
+            self.resultMessage += "Best indices: %s\n" % best_indices
+            self.resultMessage += "Best Optimization Value: %f\n\n" % best_optval
+
+        msgBox = QMessageBox()
+        msgBox.setText(self.resultMessage)
+        msgBox.exec_()
 
         QApplication.processEvents()

@@ -124,7 +124,4 @@ def odoeu(cdata, pdata, rsdata, rstypes, opt, nd, max_iters=100):
         best_indices = [int(i) for i in best_indices]
         best_optval = float(best_optvals[0])
 
-    print("RESULTS START HERE!!!!")
-    print("Best Indices: ", best_indices)
-    print("Best Optimization Values: ", best_optval)
     return best_indices, best_optval

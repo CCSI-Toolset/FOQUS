@@ -37,6 +37,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     addPriorSignal = QtCore.pyqtSignal(SampleData)
     addCandidateSignal = QtCore.pyqtSignal(SampleData)
     changeCandidateSignal = QtCore.pyqtSignal(SampleData)
+    addEvalSignal = QtCore.pyqtSignal(SampleData)
+    changeEvalSignal = QtCore.pyqtSignal(SampleData)
     format = '%.5f'             # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
@@ -139,6 +141,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
         self.changeCandidateSignal.connect(lambda data: self.changeDataInCandTable(data, row))
+        self.changeEvalSignal.connect(lambda data: self.changeDataInEvalTable(data, row))
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -181,15 +184,26 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                                     range(self.output_table.columnCount())]
         self.outputMeans = None
         self.outputStdDevs = None
+
         self.yesCand_radioButton.clicked.connect(self.checkCandFile)
         self.noCand_radioButton.clicked.connect(self.checkCandFile)
         self.generateCandidate_button.clicked.connect(self.generateCandidate)
         self.loadCandidate_button.clicked.connect(self.loadCandidate)
 
+        self.yesEval_radioButton.clicked.connect(self.checkEvalFile)
+        self.noEval_radioButton.clicked.connect(self.checkEvalFile)
+        self.loadEval_button.clicked.connect(self.loadEval)
+
         self.odoe_cand_table.resizeColumnsToContents()
         self.odoe_cand_table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.odoe_cand_table.itemSelectionChanged.connect(self.candSelected)
         self.deleteSelection_button.clicked.connect(self.deleteSelection)
+
+        self.odoe_eval_table.resizeColumnsToContents()
+        self.odoe_eval_table.setSelectionBehavior(QAbstractItemView.SelectRows)
+        self.odoe_eval_table.itemSelectionChanged.connect(self.evalSelected)
+        self.deleteEval_button.clicked.connect(self.deleteEval)
+
         self.confirmCandidates_button.clicked.connect(self.confirmCandidates)
         self.validateRS_button.clicked.connect(self.validateRS)
         self.confirmRS_button.clicked.connect(self.confirmRS)
@@ -1251,12 +1265,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             self.loadCandidate_button.setEnabled(False)
             self.generateCandidate_button.setEnabled(True)
 
+    def checkEvalFile(self):
+        if self.yesEval_radioButton.isChecked():
+            self.loadEval_button.setEnabled(True)
+        else:
+            self.loadEval_button.setEnabled(False)
+
     def confirmInputs(self):
         QApplication.processEvents()
         self.generateInputPriorData()
         self.odoe_design_groupBox.setEnabled(True)
         self.generateCandidate_button.setEnabled(False)
         self.deleteSelection_button.setEnabled(False)
+        self.deleteEval_button.setEnabled(False)
         self.confirmCandidates_button.setEnabled(self.checkCandidates())
         QApplication.processEvents()
 
@@ -1506,6 +1527,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def confirmCandidates(self):
         QApplication.processEvents()
         candData = self.createAggCandData()
+        eval_list = self.getEvalList()
+        if len(eval_list) > 0:
+            _evalData = self.createAggEvalData()
         if self.checkCandCols(candData):
             self.odoe_outputs_groupBox.setEnabled(True)
             self.validateRS_button.setEnabled(self.checkOutputs())
@@ -1522,12 +1546,225 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def showColWarning(self):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
-        msg.setWindowTitle('Design inputs and candidates do not match!')
-        msg.setText('The design inputs selected in the input settings table do not match the candidate set inputs.'
-                    'Please make sure your candidate set inputs match the design inputs.')
+        msg.setWindowTitle('Design inputs and candidates/evaluation set do not match!')
+        msg.setText('The design inputs selected in the input settings table do not match the candidate/evaluation set inputs.'
+                    'Please make sure your candidate/evaluation set inputs match the design inputs.')
         msg.setStandardButtons(QMessageBox.Ok)
         reply = msg.exec_()
         return reply
+
+    def loadEval(self):
+        self.freeze()
+        # Get file name
+        if platform.system() == 'Windows':
+            _allFiles = '*.*'
+        else:
+            _allFiles = '*'
+        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Evaluation Set", '',
+                                                               "CSV (Comma delimited) (*.csv)")
+        if len(fileName) == 0:
+            self.unfreeze()
+            return
+
+        if fileName.endswith('.csv'):
+            data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
+        else:
+            try:
+                data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
+            except:
+                import traceback
+                traceback.print_exc()
+                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                                           'File does not have the correct format! Please consult the users manual '
+                                           'about the format.')
+                logging.getLogger("foqus." + __name__).exception(
+                    "Error loading psuade file.")
+                self.unfreeze()
+                return
+
+        data.setSession(self.dat)
+        self.dat.odoeEvalList.append(data)
+
+        res = Results()
+        res.eval_add_result(data)
+        shutil.copy(fileName, self.odoe_dname)
+
+        # Update table
+        self.updateEvalTable()
+        self.unfreeze()
+
+    def addDataToEvalTable(self, data):
+        if data is None:
+            return
+        self.dat.odoeEvalList.append(data)
+        res = Results()
+        res.eval_add_result(data)
+
+        self.updateEvalTable()
+
+    def changeDataInEvalTable(self, data, row):
+        if data is None:
+            return
+        self.dat.odoeEvalList[row] = data
+        res = Results()
+        res.eval_add_result(data)
+
+        self.updateEvalTableRow(row)
+
+    def updateEvalTable(self):
+        QApplication.processEvents()
+        # Update table
+        numEvals = len(self.dat.odoeEvalList)
+        self.odoe_eval_table.setRowCount(numEvals)
+        self.updateEvalTableRow(numEvals - 1)
+        self.odoe_eval_table.selectRow(numEvals - 1)
+        self.odoe_eval_table.resizeColumnsToContents()
+        QApplication.processEvents()
+
+    def updateEvalTableRow(self, row):
+        data = self.dat.odoeEvalList[row]
+        item = self.odoe_eval_table.item(row, self.indexCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(str(row + 1))
+        item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
+        flags = item.flags()
+        mask = ~Qt.ItemIsEditable
+        item.setFlags(flags & mask)
+        self.odoe_eval_table.setItem(row, self.indexCol, item)
+
+        item = self.odoe_eval_table.item(row, self.fileCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(data.getModelName())
+        self.odoe_eval_table.setItem(row, self.fileCol, item)
+
+        # create checkboxes for select column
+        checkbox = QCheckBox()
+        checkbox.setChecked(True)
+        self.odoe_eval_table.setCellWidget(row, self.selectCol, checkbox)
+        checkbox.setProperty('row', row)
+        checkbox.toggled.connect(self.on_checkbox_changed_eval)
+
+        viewButton = self.odoe_eval_table.cellWidget(row, self.visualizeCol)
+        newViewButton = False
+        if viewButton is None:
+            newViewButton = True
+            viewButton = QPushButton()
+            viewButton.setText('View')
+            viewButton.setToolTip('View and plot the evaluation set.')
+
+        viewButton.setProperty('row', row)
+        if newViewButton:
+            viewButton.clicked.connect(self.viewEval)
+            self.odoe_eval_table.setCellWidget(row, self.visualizeCol, viewButton)
+
+        # Resize table
+        self.resizeColumns()
+        minWidth = 2 + self.odoe_eval_table.columnWidth(0) + self.odoe_eval_table.columnWidth(1) + \
+                   self.odoe_eval_table.columnWidth(2) + self.odoe_eval_table.columnWidth(3)
+        if self.odoe_eval_table.verticalScrollBar().isVisible():
+            minWidth += self.odoe_eval_table.verticalScrollBar().width()
+        self.odoe_eval_table.setMinimumWidth(minWidth)
+
+    def viewEval(self):
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeEvalSignal.disconnect()
+        self.changeEvalSignal.connect(lambda data: self.changeDataInEvalTable(data, row))
+
+        previewData = self.dat.odoeEvalList[row]
+        hname = None
+        usf = None
+        nusf = None
+        irsf = None
+        scatterLabel = 'Evaluations'
+        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self)
+        dialog.show()
+
+    def evalSelected(self):
+        selectedIndexes = self.odoe_eval_table.selectedIndexes()
+        if not selectedIndexes:
+            self.deleteEval_button.setEnabled(False)
+            return
+        self.deleteEval_button.setEnabled(True)
+
+        row = selectedIndexes[0].row()
+        _eval = self.dat.odoeEvalList[row]
+
+    def deleteEval(self):
+        QApplication.processEvents()
+        # Get selected row
+        row = self.odoe_eval_table.selectedIndexes()[0].row()
+
+        # Delete simulation
+        self.dat.odoeEvalList.pop(row)
+        self.refreshEvalTable()
+        QApplication.processEvents()
+        numEvals = len(self.dat.odoeEvalList)
+        if numEvals > 0:
+            if row >= numEvals:
+                self.odoe_eval_table.selectRow(numEvals - 1)
+                row = numEvals - 1
+            _eval = self.dat.odoeEvalList[row]
+        QApplication.processEvents()
+
+    def refreshEvalTable(self):
+        numEvals = len(self.dat.odoeEvalList)
+        self.odoe_eval_table.setRowCount(numEvals)
+        for i in range(numEvals):
+            self.updateEvalTableRow(i)
+
+    def checkEvals(self):
+        numEvals = len(self.dat.odoeEvalList)
+        count = 0
+        for row in range(numEvals):
+            if self.odoe_eval_table.cellWidget(row, self.selectCol).isChecked():
+                count += 1
+
+        return count > 0
+
+    def on_checkbox_changed_eval(self):
+        self.confirmCandidates_button.setEnabled(self.checkCandidates())
+
+    def getEvalList(self):
+        eval_list = []
+        numFiles = len(self.dat.odoeEvalList)
+        for i in range(numFiles):
+            if self.odoe_eval_table.cellWidget(i, self.selectCol).isChecked():
+                eval_list.append(self.dat.odoeEvalList[i])
+
+        return eval_list   # returns sample data structures
+
+    def aggregateEvalList(self):
+        eval_list = self.getEvalList()
+
+        eval_csv_list = []
+        for eval in eval_list:
+            eval_path = os.path.join(self.odoe_dname, eval.getModelName())
+            if not os.path.exists(eval_path):
+                eval.writeToCsv(eval_path, inputsOnly=True)
+            eval_csv_list.append(eval_path)
+
+        hist_csv_list = []
+
+        eval_agg, hist_agg = df_utils.check(eval_csv_list, hist_csv_list)
+        return eval_agg
+
+    def createAggEvalData(self):
+        eval_agg = self.aggregateEvalList()  # this is a df
+
+        eval_fname = os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')
+        df_utils.write(eval_fname, eval_agg)
+        evalData = LocalExecutionModule.readSampleFromCsvFile(eval_fname, askForNumInputs=False)
+
+        return evalData
+
+    def checkEvalCols(self, evalData):
+        designVarsNames, designVarsIndex = self.input_table.getDesignVariables()
+        evalInputNames = list(evalData.getInputNames())
+        return designVarsNames == evalInputNames
 
     def checkOutputs(self):
         numOutputs = self.output_table.rowCount()
@@ -1597,23 +1834,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def confirmRS(self):
         QApplication.processEvents()
         self.odoe_setup_groupBox.setEnabled(True)
+        self.runRsEval()
+        self.populateRsEvalTable()
         QApplication.processEvents()
 
-    def runOdoe(self):
-        QApplication.processEvents()
-        if self.Gopt_radioButton.isChecked():
-            optCriterion = 'G'
-        elif self.Iopt_radioButton.isChecked():
-            optCriterion = 'I'
-        elif self.Dopt_radioButton.isChecked():
-            optCriterion = 'D'
-        elif self.Aopt_radioButton.isChecked():
-            optCriterion = 'A'
-
-        designSize = self.odoeDesignSize_spin.value()
-
-        numRestarts = int(self.restarts_comboBox.currentText())
-
+    def runRsEval(self):
         cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
         cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
         pdata = self.odoe_priorData
@@ -1632,18 +1857,112 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for row in y:
             rs[row] = RSCombos.lookupRS(rs1[row], rs2[row])
 
-        rsOptions = {}
-        for row in y:
-            if rs[row].startswith('MARS'):
-                rsOptions[row] = {'marsBases': min([100, self.odoe_data.getNumSamples()]),
-                                  'marsInteractions': min([8, self.odoe_data.getNumVarInputs()])}
-            else:
-                rsOptions[row] = None
+        odoeu.rseval(rsdata, pdata, cdata, rs)
 
-        self.resultMessage = ""
+    def populateRsEvalTable(self):
+
+        cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
+        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+
+        rsdata = self.odoe_data
+        outputName = rsdata.getOutputNames()[0]
+        rsevalfname = os.path.join(self.odoe_dname, 'odoeu_rseval.out')
+        inputData, outputData, numInputs, numOutputs = LocalExecutionModule.readDataFromSimpleFile(rsevalfname)
+
+        inputNames = cdata.getInputNames()
+
+        # Set up table
+        self.rsEval_table.setColumnCount(numInputs + 2)
+        headers = inputNames + ('{} mean'.format(outputName), '{} std'.format(outputName))
+        self.rsEval_table.setRowCount(inputData.shape[0])
+
+        c = 0
+        for i, inputName in enumerate(headers):
+            for r in range(inputData.shape[0]):
+                item = self.rsEval_table.item(r, c)
+                if item is None:
+                    item = QTableWidgetItem('%g' % inputData[r][i])
+                    self.rsEval_table.setItem(r, c, item)
+                else:
+                    item.setText('%g' % inputData[r][i])
+            c = c + 1
+        self.rsEval_table.setColumnCount(len(headers))
+        self.rsEval_table.setHorizontalHeaderLabels(headers)
+        self.rsEval_table.resizeColumnsToContents()
+
+        # Disable input columns
+        rows = self.rsEval_table.rowCount()
+        columns = self.rsEval_table.columnCount()
+        for r in range(rows):
+            for c in range(columns):
+                item = self.rsEval_table.item(r, c)
+                item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEnabled)
+
+        # Make mean and std columns editable
+        for r in range(rows):
+            for c in range(columns-2, columns):
+                item = self.rsEval_table.item(r, c)
+                item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
+
+    def getRsEvalTableData(self):
+        fname = os.path.join(self.odoe_dname, 'CandidateSet')
+        rows = self.rsEval_table.rowCount()
+        columns = self.rsEval_table.columnCount()
+        data = np.zeros([rows, columns])
+        for r in range(rows):
+            for c in range(columns):
+                data[r, c] = self.rsEval_table.item(r, c).text()
+        print("STARTS HERE!!!")
+        print(data)
+        RSAnalyzer.writeRSsample(fname, data, row=True)
+        return fname
+
+    def runOdoe(self):
+        QApplication.processEvents()
+        if self.Gopt_radioButton.isChecked():
+            optCriterion = 'G'
+        elif self.Iopt_radioButton.isChecked():
+            optCriterion = 'I'
+        elif self.Dopt_radioButton.isChecked():
+            optCriterion = 'D'
+        elif self.Aopt_radioButton.isChecked():
+            optCriterion = 'A'
+
+        designSize = self.odoeDesignSize_spin.value()
+
+        numRestarts = int(self.restarts_comboBox.currentText())
+
+        cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
+        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+        cfile = self.getRsEvalTableData()
+        # cfile = os.path.join(self.odoe_dname, 'odoeu_rseval.out')
+        pdata = self.odoe_priorData
+        rsdata = self.odoe_data
+        if os.path.exists(os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')):
+            efname = os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')
+            edata = LocalExecutionModule.readSampleFromCsvFile(efname, askForNumInputs=False)
+        else:
+            edata = None
+
+        y = {}
+        rs1 = {}
+        rs2 = {}
+        numOutputs = self.output_table.rowCount()
+        for row in range(numOutputs):
+            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
+                y[row] = row+1
+                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
+                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+
+        rs = {}
+        for row in y:
+            rs[row] = RSCombos.lookupRS(rs1[row], rs2[row])
+
+        self.resultMessage = "FOQUS ODoE Finished.\n\n"
         for nr in range(numRestarts):
-            best_indices, best_optval = odoeu.odoeu(cdata, pdata, rsdata, rs, optCriterion, designSize)
-            self.resultMessage += "FOQUS ODoE Finished.\n\n"
+            best_indices, best_optval = odoeu.odoeu(cdata, cfile, pdata, rsdata,
+                                                    rs, optCriterion, designSize, efile=edata)
+
             self.resultMessage += "Results for Run #%d:\n" % (nr+1)
             self.resultMessage += "Best indices: %s\n" % best_indices
             self.resultMessage += "Best Optimization Value: %f\n\n" % best_optval

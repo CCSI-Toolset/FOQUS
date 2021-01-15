@@ -144,6 +144,8 @@ class InputPriorTable(QTableWidget):
 
                 if combobox.currentText() == 'Fixed':
                     comboFixed = True
+                if self.mode == InputPriorTable.ODOE:
+                    combobox.removeItem(1)
             # add display checkbox
             if 'check' in col_index:
                 chkbox = QCheckBox('')

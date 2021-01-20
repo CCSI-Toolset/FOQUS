@@ -579,7 +579,7 @@ class TurbineConfiguration():
                 if self.user or self.pwd:
                     self.user = ""
                     self.pwd = ""
-                    self.writeConfig()
+            self.writeConfig()
         except Exception as e:
             raise TurbineInterfaceEx(code = 201, msg = path+" "+str(e))
 
@@ -620,6 +620,8 @@ class TurbineConfiguration():
         config.set("Application", "url", address + "/application/" )
         config.set("Authentication", "username", self.user)
         config.set("Authentication", "password", self.pwd)
+        if self.turbVer == 'Remote':
+            config.set("Simulation", "SignedUrl", "True")
         if self.notification:
             config.add_section("Notification")
             config.set("Notification", "url", self.notification)

@@ -65,6 +65,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.ccButton.clicked.connect(self.clearCode)
         self.crButton.clicked.connect(self.clearRes)
         self.clearLogButton.clicked.connect(self.clearLogView)
+        self.statusCloudButton.clicked.connect(self.clearCloudLogView)
         self.synhi = PythonHighlighter(self.pycodeEdit.document())
         self.stop = False
         self.timer = None
@@ -215,11 +216,12 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         '''
         self.logView.clear()
 
-    def clearNotificationView(self):
+    def clearCloudLogView(self):
         '''
             Clear the Cloud log text
         '''
         self.CloudLogView.clear()
+        self.showStatus()
 
     def timerCB(self):
         '''

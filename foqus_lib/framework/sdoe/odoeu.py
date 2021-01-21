@@ -142,7 +142,6 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
 
     # write script
     f = tempfile.SpooledTemporaryFile(mode='wt')
-    # f = open('/Users/sotorrio1/Desktop/odoeu.in', 'w')
     if platform.system() == 'Windows':
         import win32api
         pfile = win32api.GetShortPathName(pfile)

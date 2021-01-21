@@ -82,7 +82,7 @@ def rseval(rsdata, pdata, cdata, rstypes):
     return outfile
 
 
-def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, efile=None):
+def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=None):
 
     # cdata: SampleData containing the original candidate set
     # cfile: PSUADE sample file containing the original candidates with the mean/std of the selected output
@@ -93,7 +93,7 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, efile=No
     # 'linear', 'quadratic', 'cubic']
     # nd: int denoting design size
     # max_iters: int denoting maximum number of iterations for the optimization routine [default: 100]
-    # efile: PSUADE sample file containing the evaluation set
+    # edata: SampleData containing the evaluation set
 
     # parse params
     opts = ['G', 'I', 'D', 'A']
@@ -132,9 +132,11 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, efile=No
     pfile = os.path.join(dname, 'PriorSample')
     rsfile = os.path.join(dname, 'RSTrainData')
     pfile = writeSample(pfile, pdata)
-    if efile is None:
-        efile = os.path.join(dname, 'EvaluationSet')
+    efile = os.path.join(dname, 'EvaluationSet')
+    if edata is None:
         efile = writeSample(efile, cdata)
+    else:
+        efile = writeSample(efile, edata)
     y = 1
     rsfile = RSAnalyzer.writeRSdata(rsfile, y, rsdata)
 

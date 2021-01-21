@@ -2,6 +2,8 @@ import platform
 import os
 import logging
 import copy
+import time
+from datetime import datetime
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.sdoe.sdoeSimSetup import *
 from foqus_lib.gui.sdoe.odoeSimSetup import *
@@ -1881,10 +1883,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             for r in range(inputData.shape[0]):
                 item = self.rsEval_table.item(r, c)
                 if item is None:
-                    item = QTableWidgetItem('%g' % inputData[r][i])
+                    item = QTableWidgetItem('%f' % round(inputData[r][i], 5))
                     self.rsEval_table.setItem(r, c, item)
                 else:
-                    item.setText('%g' % inputData[r][i])
+                    item.setText('%f' % round(inputData[r][i], 5))
             c = c + 1
         self.rsEval_table.setColumnCount(len(headers))
         self.rsEval_table.setHorizontalHeaderLabels(headers)
@@ -1912,13 +1914,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for r in range(rows):
             for c in range(columns):
                 data[r, c] = self.rsEval_table.item(r, c).text()
-        print("STARTS HERE!!!")
-        print(data)
+
         RSAnalyzer.writeRSsample(fname, data, row=True)
         return fname
 
     def runOdoe(self):
         QApplication.processEvents()
+
+        # Create run outdir
+        timestamp = datetime.now().strftime('%Y%m%dT%H%M%S')
+        outdir = os.path.join(self.odoe_dname, timestamp)
+        os.makedirs(outdir, exist_ok=True)
+
+        # Check user choices in the GUI
         if self.Gopt_radioButton.isChecked():
             optCriterion = 'G'
         elif self.Iopt_radioButton.isChecked():
@@ -1932,16 +1940,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         numRestarts = int(self.restarts_comboBox.currentText())
 
-        cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
+        cfname = shutil.copy(os.path.join(self.odoe_dname, 'aggregate_candidates.csv'), outdir)
         cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
-        cfile = self.getRsEvalTableData()
-        # cfile = os.path.join(self.odoe_dname, 'odoeu_rseval.out')
+        cfile_temp = self.getRsEvalTableData()
+        cfile = shutil.copy(cfile_temp, outdir)
         pdata = self.odoe_priorData
         rsdata = self.odoe_data
         if os.path.exists(os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')):
-            efname = os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')
+            efname = shutil.copy(os.path.join(self.odoe_dname, 'aggregate_evaluations.csv'), outdir)
             edata = LocalExecutionModule.readSampleFromCsvFile(efname, askForNumInputs=False)
         else:
+            efname = None
             edata = None
 
         y = {}
@@ -1958,15 +1967,55 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for row in y:
             rs[row] = RSCombos.lookupRS(rs1[row], rs2[row])
 
-        self.resultMessage = "FOQUS ODoE Finished.\n\n"
+        self.resultMessage = "===== ODoE RESULTS =====\n\n"
+        time_list = []
         for nr in range(numRestarts):
+            t0 = time.time()
             best_indices, best_optval = odoeu.odoeu(cdata, cfile, pdata, rsdata,
-                                                    rs, optCriterion, designSize, efile=edata)
-
+                                                    rs, optCriterion, designSize, edata=edata)
+            time_list.append(time.time() - t0)
             self.resultMessage += "Results for Run #%d:\n" % (nr+1)
-            self.resultMessage += "Best indices: %s\n" % best_indices
-            self.resultMessage += "Best Optimization Value: %f\n\n" % best_optval
+            self.resultMessage += "Best Design(s): %s\n" % best_indices
+            self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (optCriterion, best_optval)
 
+        # Save results to text file
+        resultsFile = os.path.join(outdir, 'odoe_results.txt')
+        f = open(resultsFile, 'w')
+        f.write(self.resultMessage)
+        f.write("===== ODoE SETUP =====\n")
+        f.write("Input variable types:\n")
+        randNames, randIndices = self.input_table.getVariablesWithType('Variable')
+        desNames, desIndices = self.input_table.getDesignVariables()
+        randDict = dict(zip(randIndices, randNames))
+        desDict = dict(zip(desIndices, desNames))
+        inputDict = {**randDict, **desDict}
+        for i in range(len(inputDict)):
+            f.write('%s -- ' % inputDict[i])
+            if inputDict[i] in randNames:
+                f.write('random\n')
+            else:
+                f.write('design\n')
+
+        f.write('\n')
+        f.write("Candidate set: %s\n" % cfname)
+        f.write("Evaluation set: %s\n\n" % efname)
+
+        f.write("Response surface:\n")
+        rs_path = shutil.copy(os.path.join(self.odoe_dname, 'RSTrainData'), outdir)
+        f.write("Training Data: %s\n" % rs_path)
+        f.write("RS type: %s \n" % rs[0])
+        f.write("RS predictions: %s\n\n" % cfile)
+
+        f.write("Optimality type: %s\n" % optCriterion)
+        f.write("Design size: %d\n" % designSize)
+        f.write("Number of restarts: %d\n\n" % numRestarts)
+
+        f.write("Total runtime: %d seconds\n" % sum(time_list))
+        avg_time = sum(time_list)/len(time_list)
+        f.write("Average runtime (per restart): %d seconds\n" % avg_time)
+        f.close()
+
+        self.resultMessage += "* Results saved to %s" % outdir
         msgBox = QMessageBox()
         msgBox.setText(self.resultMessage)
         msgBox.exec_()

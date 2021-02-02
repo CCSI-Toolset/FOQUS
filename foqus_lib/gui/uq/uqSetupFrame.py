@@ -1000,7 +1000,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.dat.uqSimList.append(newdata)
             res = Results()
             res.uq_add_result(newdata)
-            self.dat.uqFilterResultsList(res)
+            # WHY the fact that self.dat.uqFilterResultsList is being called directly seems to be a real error,
+            # which suggests that this part of the code is not being executed
+            # it's possible that the append() method should be called instead
+            self.dat.uqFilterResultsList(res)  # TODO pylint: disable=not-callable
 
             #print 'here1'
             self.updateSimTable()

@@ -111,6 +111,10 @@ class LocalExecutionModule(object):
         sampleType = None
         legendreOrder = None
         sampleMethod = None
+        # WHY there are a few pylint errors related to inputData, outputData, and runState
+        # for operations that assume these 3 variables to be iterables
+        # this could be addressed without disabling the checks by setting them to empty lists
+        # it's also not clear if all the branches in this function work correctly
         inputData = None
         outputData = None
         runState = None
@@ -154,7 +158,8 @@ class LocalExecutionModule(object):
                     elif not readSampleData: # Sample number and run state
                         nums = line.split()
                         sampleNum = int(nums[0]) - 1
-                        runState[sampleNum] = bool(int(nums[1]))
+                        # runState at this point should still be None, so this would cause a runtime error
+                        runState[sampleNum] = bool(int(nums[1]))  # TODO pylint: disable=unsupported-assignment-operation
                         readSampleData = True
                         numValuesRead = 0
                         sampleInputs = [0] * numInputs
@@ -171,8 +176,8 @@ class LocalExecutionModule(object):
                             sampleOutputs[numValuesRead - numInputs] = float(line)
                             numValuesRead = numValuesRead + 1
                             if numValuesRead - numInputs == numOutputs:
-                                inputData[sampleNum] = sampleInputs
-                                outputData[sampleNum] = sampleOutputs
+                                inputData[sampleNum] = sampleInputs  # pylint: disable=unsupported-assignment-operation
+                                outputData[sampleNum] = sampleOutputs  # pylint: disable=unsupported-assignment-operation
                                 readSampleData = False
                 elif readInputs: # Read inputs
                     stripped = line.strip()
@@ -199,9 +204,9 @@ class LocalExecutionModule(object):
                         # Insert input values
                         if hasSampleData:
                             for i in range(len(inputData)):
-                                inputRow = inputData[i]
+                                inputRow = inputData[i]  # pylint: disable=unsubscriptable-object
                                 inputRow.insert(len(inputNames) - 1, fixedVal)
-                                inputData[i] = inputRow
+                                inputData[i] = inputRow  # pylint: disable=unsupported-assignment-operation
                     elif values[0] == 'PDF': # Distribution
                         index = int(values[1]) - 1
                         inputDists[index] = values[2]

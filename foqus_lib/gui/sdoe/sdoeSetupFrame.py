@@ -118,7 +118,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
-        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))  # TODO pylint: disable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)

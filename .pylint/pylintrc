@@ -6,3 +6,9 @@ extension-pkg-whitelist=PyQt5
 
 [TYPECHECK]
 ignored-modules=win32process,win32api,winshell,adodbapi,scipy.spatial
+# pylint reports missing methods from numpy.ndarray because numpy.ma.array is not supported
+# (see https://github.com/PyCQA/pylint/issues/3342)
+# in the meantime, we ignore errors coming from the ndarray class as a blanket measure
+# to avoid having to write individual pylint exceptions
+ignored-classes=ndarray
+

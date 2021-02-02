@@ -11,7 +11,6 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sdoe import df_utils
-from .sdoeAnalysisDialog import sdoeAnalysisDialog
 from .sdoePreview import sdoePreview
 
 from PyQt5 import QtCore, uic, QtGui
@@ -578,6 +577,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             type = 'IRSF'
         analysis = []
 
+        from .sdoeAnalysisDialog import sdoeAnalysisDialog
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
         dialog.deleteLater()

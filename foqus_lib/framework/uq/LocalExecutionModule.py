@@ -931,7 +931,11 @@ class LocalExecutionModule(object):
 
         # runComplete = False does not necessarily mean run is still going.
         # Need to check.
-        LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
+        # WHY there is no LocalExecutionModule.getNumFinishedRuns() function,
+        # so this looks like a legitimate cause for runtime errors
+        # the method isRunFinished() itself seems to have no references,
+        # which suggests that this piece of code is never executed
+        LocalExecutionModule.getNumFinishedRuns() # TODO pylint: disable=no-member  # Update the runComplete bool
         return LocalExecutionModule.runComplete
 
     @staticmethod

@@ -32,7 +32,9 @@ if usePyQt:
 
         def closeEvent(self, event):
             Plotter.currentDialogs.remove(self)
-            if can_exit:
+            # WHY the missing `can_exit` variable looks like a legitimate cause of runtime error
+            # which suggests that this function is not being run
+            if can_exit:  # TODO pylint: disable=undefined-variable
                 event.accept()  # let the window close
             else:
                 event.ignore()

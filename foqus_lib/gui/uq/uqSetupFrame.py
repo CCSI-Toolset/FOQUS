@@ -565,7 +565,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         if result == QDialog.Rejected:
             return
 
-        simDialog = SimSetup(self.dat.uqModel, self.dat, returnDataSignal = self.addDataSignal, parent = self)
+        simDialog = SimSetup(
+            # WHY self.dat.uqModel is set in updateUQModelDialog.accept(),
+            # but this is not detected by pylint, causing the error
+            self.dat.uqModel,  # pylint: disable=no-member
+            self.dat,
+            returnDataSignal=self.addDataSignal,
+            parent=self
+        )
         #result = simDialog.exec_()
         simDialog.show()
         #if result == QDialog.Rejected:

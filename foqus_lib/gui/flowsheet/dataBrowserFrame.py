@@ -161,7 +161,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             return
         self.results.row_to_flow(
             self.dat.flowsheet, rows[0], filtered=True)
-        self.dat.mainWin.refresh()
+        self.dat.mainWin.refresh()  # pylint: disable=no-member
 
     def refreshContents(self):
         if self.results is None or self.results.empty:

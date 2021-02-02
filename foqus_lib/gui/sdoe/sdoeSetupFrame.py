@@ -280,7 +280,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if result == QDialog.Rejected:
             return
 
-        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addDataSignal, parent=self)
+        simDialog = sdoeSimSetup(
+            # WHY self.dat.model is set in updateSDOEModelDialog(),
+            # but this is not detected by pylint
+            self.dat.model,  # pylint: disable=no-member
+            self.dat,
+            returnDataSignal=self.addDataSignal,
+            parent=self
+        )
         simDialog.show()
 
     def cloneSimulation(self):

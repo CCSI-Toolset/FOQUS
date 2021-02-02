@@ -35,7 +35,9 @@ class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
         self.timeLine.setText(str(self.time))
         if self.allDone:
             self.stopButton.setText("Done")
-        self.dat.mainWin.app.processEvents()
+        # WHY pylint reports this error because mainWin is added to self.dat after its initialization
+        # this could result in a runtime error unless mainWin is always present and always the correct type
+        self.dat.mainWin.app.processEvents()  # TODO pylint: disable=no-member
 
     def closeEvent(self, event):
         '''

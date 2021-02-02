@@ -208,6 +208,7 @@ class TurbineConfiguration():
         # error code of things that may work if retried
         self.retryErrors = [2, 3, 5, 10, 11]
         self.address = "http://localhost:8000/TurbineLite"
+        self.__wss_notification_url = ""
         self.user = ""
         self.pwd = ""
         self.turbVer = "Lite" # Lite, Remote or ....
@@ -218,6 +219,16 @@ class TurbineConfiguration():
         self.aspenVersion = 2
         self.dat = None
         self.tldb = None
+
+    @property
+    def notification(self):
+        return self.__wss_notification_url
+
+    @notification.setter
+    def notification(self, url):
+        assert type(url) is str and url.startswith('wss://'), \
+            'Require WebSocket Secure URL:  %s' %url
+        self.__wss_notification_url = url
 
     def getTurbineLiteDB(self):
         if self.tldb is None:
@@ -541,6 +552,8 @@ class TurbineConfiguration():
             config.read(path)
             self.user = config.get("Authentication", "username")
             self.pwd = config.get("Authentication", "password")
+            if config.has_option("Notification","url"):
+                self.notification = config.get("Notification","url")
             if address:
                 #args = config.get("Job",  "url")
                 args = config.get("Application",  "url")
@@ -607,6 +620,9 @@ class TurbineConfiguration():
         config.set("Application", "url", address + "/application/" )
         config.set("Authentication", "username", self.user)
         config.set("Authentication", "password", self.pwd)
+        if self.notification:
+            config.add_section("Notification")
+            config.set("Notification", "url", self.notification)
         return config
 
     def getApplicationList(self):

@@ -1,0 +1,15 @@
+{
+  "body": "{\"data\":\"hi\"}",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "requestContext": {
+    "domainName": "du6p1udafi.execute-api.us-east-1.amazonaws.com",
+    "stage": "Development",
+    "connectionId":"XPiVjf5BIAMCLqQ=",
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
+}

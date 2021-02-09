@@ -84,6 +84,9 @@ class Graph(threading.Thread):
         self.f = OrderedDict()  # dictionary of outputs
         self.input = NodeVarList()
         self.output = NodeVarList()
+        self.nvlist = None
+        self.input_vectorlist = NodeVarVectorList()
+        self.output_vectorlist = NodeVarVectorList()
         self.input.addNode("graph")  # global variables
         self.output.addNode("graph")  # global variables
         if statusVar:
@@ -212,6 +215,8 @@ class Graph(threading.Thread):
             "edges": self.saveEdgeList(),
             "input": self.input.saveDict(),
             "output": self.output.saveDict(),
+            # "input_vectorlist": self.input_vectorlist.saveDict(),
+            # "output_vectorlist": self.output_vectorlist.saveDict(),
             "tearSolver": self.tearSolver,
             "tearMaxIt": self.tearMaxIt,
             "tearTol": self.tearTol,
@@ -229,6 +234,10 @@ class Graph(threading.Thread):
             "no_solve_nodes": self.no_solve_nodes,
             "turbineSim": self.turbineSim,  # name of FOQUS sim for remote
         }
+        nvl = self.input
+        sd["input_vectorlist"] = self.input_vectorlist.saveDict(nvl)
+        nvl = self.output
+        sd["output_vectorlist"] = self.output_vectorlist.saveDict(nvl)
         if results:
             sd["results"] = self.results.saveDict()
         return sd
@@ -278,7 +287,9 @@ class Graph(threading.Thread):
             self.results.loadDict(temp)
         temp = sd.get("input", None)
         if temp:
+            print('yesthere_graph_1')
             self.input.loadDict(temp)
+            print(self.input)
         else:
             self.input.clear()
             self.input.addNode("graph")
@@ -288,6 +299,20 @@ class Graph(threading.Thread):
         else:
             self.output.clear()
             self.input.addNode("graph")
+        temp = sd.get("input_vectorlist", None)
+        if temp:
+            print('yes_there_graph')
+            self.nvlist = self.input
+            self.input_vectorlist.loadDict(temp)
+            print(self.input_vectorlist)
+        else:
+            self.input_vectorlist.clear()
+        temp = sd.get("output_vectorlist", None)
+        if temp:
+            self.nvlist = self.output
+            self.output_vectorlist.loadDict(temp)
+        else:
+            self.output_vectorlist.clear()
         self.nodes = dict()
         self.edges = []
         self.simList = dict()
@@ -401,9 +426,13 @@ class Graph(threading.Thread):
         """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
+        self.xvector = self.input_vectorlist.createOldStyleDict()
+        self.fvector = self.output_vectorlist.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
         self.xnames = list(self.x.keys())  # get a list of input names
         self.fnames = list(self.f.keys())  # get a list of output names
+        self.xvectornames = list(self.xvector.keys())  # get a list of input vector names
+        self.fvectornames = list(self.fvector.keys())  # get a list of output vector names
         self.markConnectedInputs()  # mark which inputs are set by con.
 
     def markConnectedInputs(self):
@@ -1310,6 +1339,10 @@ class Graph(threading.Thread):
             self.input.addNode(name)
         if not name in self.output:
             self.output.addNode(name)
+        if not name in self.input_vectorlist:
+            self.input_vectorlist.addNode(name)
+        if not name in self.output_vectorlist:
+            self.output_vectorlist.addNode(name)
         self.nodes[name] = Node(x, y, z, parent=self, name=name)
         return self.nodes[name]
 

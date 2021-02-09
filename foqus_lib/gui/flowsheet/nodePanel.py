@@ -654,8 +654,12 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 return
             # size condition
             if int(size)>1:
-                self.node.gr.input.addVectorVariable(self.node.name, newName, ip, size, minval, maxval, value)
-                nodevarvec=self.node.gr.input.get(self.node.name, newName)
+                scalarlist = self.node.gr.input.addVectorVariableScalars(self.node.name, newName, ip, size, minval, maxval, value)
+                nvlist = self.node.gr.input
+                print('nvlist')
+                print(nvlist)
+                self.node.gr.input_vectorlist.addVectorVariable(self.node.name, newName, ip, size, nvlist, minval, maxval, value)
+                # nodevarvec=self.node.gr.input.get(self.node.name, newName)
             # ******************    
             # # else:
             # #     self.node.gr.input.addVariable(self.node.name, newName)
@@ -744,8 +748,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 return
             # size condition
             if int(size)>1:
-                self.node.gr.output.addVectorVariable(self.node.name, newName, ip, size, value=None)
-                   
+                scalarlist = self.node.gr.output.addVectorVariableScalars(self.node.name, newName, ip, size, value=None)
+                nvlist = self.node.gr.output
+                self.node.gr.output_vectorlist.addVectorVariable(self.node.name, newName, ip, size, nvlist, value = None)
             else:
                 self.node.gr.output.addVariable(self.node.name, newName)
             self.applyChanges()                

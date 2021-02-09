@@ -151,6 +151,10 @@ def test_results_session_result_page_1():
     assert g.status['success'] == 3
     assert g.status['unfinished'] == 0
     assert len(g.res) == 3
+    # WHY the items in g.res are set to dicts as a side effect of g.solveListValTurbine(),
+    # but pylint can only infer their type based on their initial value of None in this function
+    # related: the assignment of the g.res items in g,solveListValTurbine() requires them being None before
+    # pylint: disable=unsubscriptable-object
     assert set([i['Id'] for i in g.res]) == set(jids)
     for i in g.res:
         assert i['session'] == session_id

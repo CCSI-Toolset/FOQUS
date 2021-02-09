@@ -341,7 +341,7 @@ class TurbineLiteDB:
         #assert status in ['up','down','terminate'], ''
         #self._sns_notification(dict(resource='consumer', event=status, rc=rc, consumer=self.consumer_id))
         return 'up'
-    def consumer_id(self, pid, rc=0):
+    def consumer_id(self, pid, rc=0):  # TODO pylint: disable=method-hidden
         _log.info("%s.consumer_id", self.__class__.__name__)
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__.__name__)

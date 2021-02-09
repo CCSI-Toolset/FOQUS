@@ -44,7 +44,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         assert isinstance(dat, _session) or dat is None, \
             "parameter dat is %s, expecting %s" %(type(dat), _session)
         assert isinstance(parent, QMainWindow) or parent is None, \
-            "parameter parent is %s" %(type(parent), QMainWindow)
+            "parameter parent is %s, expecting %s" %(type(parent), QMainWindow)
         super(helpBrowserDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
@@ -318,7 +318,7 @@ class WebSocketApp(QtCore.QThread):
 
     def __init__(self, widget:QTextBrowser, config:TurbineConfiguration):
         #threading.Thread.__init__(self)
-        super(QtCore.QThread, self).__init__()
+        super().__init__()
         self.stop = threading.Event()
         self.daemon = True
         assert type(widget) is QTextBrowser, type(widget)

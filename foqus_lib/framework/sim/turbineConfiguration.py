@@ -1010,7 +1010,7 @@ class TurbineConfiguration():
         termAddress = "{}/Job/{}/terminate".format(self.address, jobID)
         #Check job state (not using this now but may soon)
         if not state:
-            res = self.getJobStatus()
+            res = self.getJobStatus(jobID)
             state = res['State']
         # Now we kill the job with a method that depends on the state.
         try:
@@ -1019,13 +1019,13 @@ class TurbineConfiguration():
                 self.turbineConfigParse(),
                 section=b"",
                 data=b"")
-            _log.info("Terminating Job {} posting to:".format(jobID, termAddress))
+            _log.info("Terminating Job {} posting to {}:".format(jobID, termAddress))
         except Exception as e:
             _log.exception(
-                "Error terminating job: {} state: {}".format(jobid, state))
+                "Error terminating job: {} state: {}".format(jobID, state))
             raise TurbineInterfaceEx(
                 code=0,
-                msg="Error terminating job: {} state: {}".format(jobid, state),
+                msg="Error terminating job: {} state: {}".format(jobID, state),
                 e=e,
                 tb=traceback.format_exc())
 
@@ -1469,7 +1469,7 @@ class TurbineConfiguration():
             if n == None:
                 n = netloc
             if n != netloc:
-                errList("expecting same network location for all URLs")
+                errList.append("expecting same network location for all URLs")
         # If the user name, password, and URLs are entered correctly,
         # test the connection.  If the connection fails it could be for
         # a number of reasons to we'll just report the exception and

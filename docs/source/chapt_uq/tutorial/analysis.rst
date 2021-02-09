@@ -56,7 +56,7 @@ dS3 are very important in determining the value of removalCO2, whereas
 Hce and hp have no affect (the y-axis displays the average changes in
 the model output as a result of changing the inputs in their respective
 ranges. For example, from Figure
-`[fig:uqt_param_results] <#fig:uqt_param_results>`__, changing dH2 in
+`[fig:uqt_param_results] <#fig:uqt_param_results>`__, changing dH3 in
 its range results in an average change in CO\ :math:`_2` removal as much
 as about 57 percent with a margin of +/- 3 percent). Thus, it would be
 safe to exclude any inputs that have negligible bar lengths from

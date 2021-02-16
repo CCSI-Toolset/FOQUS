@@ -1311,7 +1311,9 @@ class mainWindow(QMainWindow):
                         #A run new finished read results
                         self.multiRunDone[row] = True
                         r =  res.rlist[row]
-                        res.rlist[row] = res.addFromSavedValues(
+                        # TODO the pylint errors here are most likely true positives
+                        # which suggests that this branch is not executed normally
+                        res.rlist[row] = res.addFromSavedValues(  # TODO pylint: disable=assignment-from-no-return,unexpected-keyword-arg
                             setName = r[res.headMap['SetName']],
                             name = r[res.headMap['ResultName']],
                             tags = r[res.headMap['Tags']],

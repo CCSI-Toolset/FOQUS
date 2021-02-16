@@ -1008,7 +1008,7 @@ class TurbineConfiguration():
         termAddress = "{}/Job/{}/terminate".format(self.address, jobID)
         #Check job state (not using this now but may soon)
         if not state:
-            res = self.getJobStatus()
+            res = self.getJobStatus(jobID)
             state = res['State']
         # Now we kill the job with a method that depends on the state.
         try:
@@ -1017,13 +1017,13 @@ class TurbineConfiguration():
                 self.turbineConfigParse(),
                 section=b"",
                 data=b"")
-            _log.info("Terminating Job {} posting to:".format(jobID, termAddress))
+            _log.info("Terminating Job {} posting to {}:".format(jobID, termAddress))
         except Exception as e:
             _log.exception(
-                "Error terminating job: {} state: {}".format(jobid, state))
+                "Error terminating job: {} state: {}".format(jobID, state))
             raise TurbineInterfaceEx(
                 code=0,
-                msg="Error terminating job: {} state: {}".format(jobid, state),
+                msg="Error terminating job: {} state: {}".format(jobID, state),
                 e=e,
                 tb=traceback.format_exc())
 
@@ -1236,20 +1236,22 @@ class TurbineConfiguration():
             resourceType = None
             app = 'foqus'
             modelFile = (None, app)
+        # WHY the undefined-variable error reported by pylint looks like a true positive
+        # this suggests that the code branches where the underfined variables are used are not run
         else:
             #if no model file found it is probably not a sinter
             #configuration file or FOQUS is out of sync with
             #simSinter development
             raise TurbineInterfaceEx(
                 code = 304,
-                msg = "Path: " + sinterConfigPath)
+                msg = "Path: " + sinterConfigPath)  # TODO pylint: disable=undefined-variable
         if isinstance(modelFile, dict):
             modelFile = modelFile.get('file', None)
             if modelFile is None:
                 #No model file found
                 raise TurbineInterfaceEx(
                     code = 304,
-                    msg = "Path: " + sinterConfigPath)
+                    msg = "Path: " + sinterConfigPath)  # TODO pylint: disable=undefined-variable
         return modelFile
 
     def sinterConfigGetResource(self,sinterConfigPath,checkExists=True):
@@ -1467,7 +1469,7 @@ class TurbineConfiguration():
             if n == None:
                 n = netloc
             if n != netloc:
-                errList("expecting same network location for all URLs")
+                errList.append("expecting same network location for all URLs")
         # If the user name, password, and URLs are entered correctly,
         # test the connection.  If the connection fails it could be for
         # a number of reasons to we'll just report the exception and

@@ -11,7 +11,6 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sdoe import df_utils
-from .sdoeAnalysisDialog import sdoeAnalysisDialog
 from .sdoePreview import sdoePreview
 
 from PyQt5 import QtCore, uic, QtGui
@@ -119,7 +118,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
-        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))  # TODO pylint: disable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -280,7 +279,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if result == QDialog.Rejected:
             return
 
-        simDialog = sdoeSimSetup(self.dat.model, self.dat, returnDataSignal=self.addDataSignal, parent=self)
+        simDialog = sdoeSimSetup(
+            # WHY self.dat.model is set in updateSDOEModelDialog(),
+            # but this is not detected by pylint
+            self.dat.model,  # pylint: disable=no-member
+            self.dat,
+            returnDataSignal=self.addDataSignal,
+            parent=self
+        )
         simDialog.show()
 
     def cloneSimulation(self):
@@ -571,6 +577,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             type = 'IRSF'
         analysis = []
 
+        from .sdoeAnalysisDialog import sdoeAnalysisDialog
         dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
         dialog.exec_()
         dialog.deleteLater()

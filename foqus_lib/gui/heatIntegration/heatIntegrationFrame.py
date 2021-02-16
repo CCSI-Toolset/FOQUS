@@ -12,4 +12,7 @@ class heatIntegrationFrame(_heatIntegrationFrame, _heatIntegrationFrameUI):
         self.dat = dat
 
     def applyChanges(self):
+        # WHY pylint correctly reports these two as missing variables;
+        # the fact that this does not cause a runtime error suggests that this function is not being called
+        # TODO pylint: disable=undefined-variable
         heatIntObject.hrat = float(hratEdit.text())

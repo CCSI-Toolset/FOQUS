@@ -916,10 +916,23 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             # print M1, M2, M3, M4, useBobyqa
             self.OUUobj = OUU()
             try:
-                results = self.OUUobj.ouu(fname,y,self.useAsConstraint,self.useAsDerivative,xtable,phi,
-                                          x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                          optDriver = optDriver, ensOptDriver = ensembleOptDriver, plotSignal = self.plotSignal,
-                                          endFunction=self.finishOUU)
+                # WHY pylint is right in reporting that self.OUUobj.ouu() always returns None;
+                # this is not a runtime error (in the sense that it will not cause the program to crash)
+                # but the assignment could be removed from this function call for greater clarity
+                results = self.OUUobj.ouu(  # TODO pylint: disable=assignment-from-none
+                    fname,
+                    y,
+                    self.useAsConstraint,
+                    self.useAsDerivative,xtable,phi,
+                    x3sample=x3sample,
+                    x4sample=x4sample,
+                    useRS=useRS,
+                    useBobyqa=useBobyqa,
+                    optDriver=optDriver,
+                    ensOptDriver=ensembleOptDriver,
+                    plotSignal=self.plotSignal,
+                    endFunction=self.finishOUU
+                )
             except:
                 import traceback
                 traceback.print_exc()

@@ -30,6 +30,10 @@ def getInputData(inFileName):
     if len(toks) > 1:
         nSamp = nLines
         multiSample = True
+    # WHY pylint report errors when iterating over inData assuming that each item is a list;
+    # setting inData = nSamp * [[]] (i.e. initializing inData as an empty list of lists)
+    # seems to fix the pylint errors, but it's not clear if this would be compatible
+    # with the expected runtime behavior in all cases
     inData  = nSamp * [0]
     if not multiSample:
         inData[0] = []
@@ -53,12 +57,12 @@ def getInputData(inFileName):
             toks = lineIn.split()
             fixedVals.append(float(toks[4]))
         for row in inData:
-            row.extend(fixedVals)
+            row.extend(fixedVals)  # TODO pylint: disable=no-member
 
     outFile = open('tempdata', 'a')
     outFile.write('%d\n' % nSamp)
     for row in inData:
-        for col in row:
+        for col in row:  # TODO pylint: disable=not-an-iterable
             outFile.write('%f ' % col)
         outFile.write('\n')
     outFile.close()

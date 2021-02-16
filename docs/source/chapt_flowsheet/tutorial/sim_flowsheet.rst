@@ -13,12 +13,10 @@ Excel. The COE model estimates the cost of electricity for a 650 MW (net
 before adding capture) supercritical pulverized coal power plant with
 solid sorbent post combustion CO\ :math:`_2` capture process added.
 
-Before starting the tutorial, see Section
-:ref:`tutorial.example.files` to locate and
-copy the example files to a convenient location.
-
 The files for this tutorial is located in:
 **examples/test_files/Optimization/Model_Files/**.
+
+.. note:: |examples_reminder_text|
 
 #. Start FOQUS. The Session window displays (Figure :ref:`fig.tut.opt.session`).
 
@@ -54,8 +52,7 @@ The files for this tutorial is located in:
 
 There are two models needed for this optimization problem: (1) the ACM model for
 the BFB capture system and (2) the Excel cost estimating spreadsheet. These
-models are provided in the ``example/Optimization/Model_Files/`` directory (see
-Section :ref:`tutorial.example.files`).  There are two SimSinter configuration
+models are provided in the ``example/Optimization/Model_Files/`` directory. There are two SimSinter configuration
 files: (1) ``BFB_sinter_config_v6.2.json`` for the process model and (2)
 ``BFB_cost_v6.2.3.json`` for the cost model. The next step is to upload the models
 to Turbine.

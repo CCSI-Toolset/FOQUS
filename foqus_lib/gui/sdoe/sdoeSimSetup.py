@@ -562,7 +562,19 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         filename = os.path.join(dirname, self.getData().getModelName())
         self.getData().writeToCsv(filename, inputsOnly=True)
 
-        dialog = sdoePreview(previewData, hname, dirname, nusf, scatterLabel, self)
+        # WHY pylint reports `scatterLabel` as missing positional argument
+        # comparing the sdoePreview.__init__() signature with the local var names,
+        # the missing arg seems to be `usf` instead;
+        # this should in any case result in a runtime error,
+        # which suggests that this code is not executed
+        dialog = sdoePreview(  # TODO pylint: disable=no-value-for-parameter
+            previewData,
+            hname,
+            dirname,
+            nusf,
+            scatterLabel,
+            self
+        )
         dialog.show()
 
     ### Return data

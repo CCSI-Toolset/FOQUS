@@ -11,6 +11,7 @@ import logging
 import platform
 import subprocess
 try:
+    # pylint: disable=import-error
     from dmf_lib.dmf_browser import DMFBrowser
     from dmf_lib.dialogs.select_repo_dialog import SelectRepoDialog
     from dmf_lib.dialogs.status_dialog import StatusDialog
@@ -29,7 +30,7 @@ try:
     from dmf_lib.common.common import WIN_PATH_SEPARATOR
     from dmf_lib.common.common import WINDOWS
     useDMF = True
-except:
+except ImportError:
     logging.getLogger("foqus." + __name__)\
         .exception('Failed to import or launch DMFBrowser')
     useDMF = False

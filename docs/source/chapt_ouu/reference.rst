@@ -16,7 +16,7 @@ simulation model be represented by the following function:
 
 .. math:: Y = F(Z_1,Z_2,Z_3,Z_4),
 
- which is characterized by four types of variables:
+which is characterized by four types of variables:
 
 #. **Design/Decision/Optimization variables**
 
@@ -94,7 +94,7 @@ In this formulation, there is no recourse variable:
 
 .. math:: Y = F(Z_1, Z_3, Z_4)
 
- and the optimization problem becomes:
+and the optimization problem becomes:
 
 .. math::
 
@@ -157,7 +157,7 @@ becomes:
 
 .. math:: G(\mathbf{Z_1,Z_3,Z_4}) = \min_{Z_2} F(Z_1,Z_2,Z_3,Z_4).
 
- Then the two-stage equation can be rewritten as:
+Then the two-stage equation can be rewritten as:
 
 .. math::
 
@@ -171,7 +171,7 @@ becomes:
    \right)
    \end{array}
 
- which is a single-stage OUU with respect to the :math:`G` function.
+which is a single-stage OUU with respect to the :math:`G` function.
 
 OUU User Interface
 ------------------

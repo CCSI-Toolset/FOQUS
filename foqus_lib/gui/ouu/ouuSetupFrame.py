@@ -5,6 +5,7 @@ from .nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
+import shutil
 
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -543,20 +544,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                 self.updateObjPlot()
 
     def updateObjPlot(self):
-        #if not self.objLine:
-        if True:
-            self.objLine, = self.objFigAx.plot(self.objXPoints, self.objYPoints, 'bo')
-            self.objCanvas.draw()
-        else:
-            self.objLine.set_xdata(self.objXPoints)
-            self.objLine.set_ydata(self.objYPoints)
-            self.objFigAx.draw_artist(self.objFigAx.patch)
-            self.objFigAx.draw_artist(self.objFigAx.xaxis)
-            self.objFigAx.draw_artist(self.objFigAx.yaxis)
-            self.objFigAx.draw_artist(self.objLine)
-            self.objCanvas.update()
-            self.objCanvas.flush_events()
-
+        self.objLine, = self.objFigAx.plot(self.objXPoints, self.objYPoints, 'bo')
+        self.objCanvas.draw()
 
     def addToInputPlots(self, x):
         for i in range(len(self.inputPoints)):
@@ -566,15 +555,13 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                 if numPoints % math.ceil(float(numPoints)/30) == 0: # limit refresh rate as number of points gets large
                   self.updateInputPlot(i)
 
-
     def updateInputPlot(self, index): # Index starts at 1 for first input plot
         self.inputPlots[index - 1]['ax'].plot(self.inputPoints[0], self.inputPoints[index], 'bo')
         self.inputPlots[index - 1]['canvas'].draw()
 
-
     def managePlots(self):
         names, indices = self.input_table.getPrimaryVariables()
-        if len(self.inputPlots) < len(names):  #add plots
+        if len(self.inputPlots) < len(names):  # add plots
             for i in range(len(self.inputPlots), len(names)):
                 fig = Figure(
                     figsize=(400,200),
@@ -620,6 +607,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                     self.inputPlots[i - 1]['canvas'].draw()
 
     def scrollProgressPlots(self, value):
+        QApplication.processEvents()
         names, indices = self.input_table.getPrimaryVariables()
         numPlots = len(names) + 1
         firstPlotToUpdate = int(value/190)
@@ -633,7 +621,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
                 self.updateObjPlot()
             else:
                 self.updateInputPlot(index)
-
+        QApplication.processEvents()
 
     def setFixed(self):
         self.input_table.setCheckedToType(0)
@@ -648,10 +636,10 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.input_table.setCheckedToType(3)
 
     def setX3(self):
-        varNames = self.input_table.setCheckedToType(4)
+        self.input_table.setCheckedToType(4)
 
     def setX4(self):
-        varNames = self.input_table.setCheckedToType(5)
+        self.input_table.setCheckedToType(5)
 
     def setCounts(self):
         # update counts
@@ -740,24 +728,10 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.z4SubsetSize_label.setEnabled(False)
             self.z4SubsetSize_spin.setEnabled(False)
 
-
-    def setupPSUADEClient(self):
-        curDir = os.getcwd()
-        mydir = os.path.dirname(__file__)
-        #Copy needed files
-        if os.name == 'nt':
-            dest1 = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src1 = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copyfile(src1, dest1)
-
-            dest = os.path.join(curDir, 'foqusPSUADEClient.bat')
-            src2 = os.path.join(mydir, 'foqusPSUADEClient.bat')
-            shutil.copyfile(src2, dest)
-        else:
-            dest = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copyfile(src, dest)
-        return dest
+    def setupPSUADEClient(self, client_exe_name='foqusPSUADEClient'):
+        full_path_to_client_exe = shutil.which(client_exe_name)
+        assert full_path_to_client_exe is not None, 'The "foqusPSUADEClient" executable was not found'
+        return full_path_to_client_exe
 
     def analyze(self):
         dir = os.getcwd()
@@ -942,10 +916,23 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             # print M1, M2, M3, M4, useBobyqa
             self.OUUobj = OUU()
             try:
-                results = self.OUUobj.ouu(fname,y,self.useAsConstraint,self.useAsDerivative,xtable,phi,
-                                          x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                          optDriver = optDriver, ensOptDriver = ensembleOptDriver, plotSignal = self.plotSignal,
-                                          endFunction=self.finishOUU)
+                # WHY pylint is right in reporting that self.OUUobj.ouu() always returns None;
+                # this is not a runtime error (in the sense that it will not cause the program to crash)
+                # but the assignment could be removed from this function call for greater clarity
+                results = self.OUUobj.ouu(  # TODO pylint: disable=assignment-from-none
+                    fname,
+                    y,
+                    self.useAsConstraint,
+                    self.useAsDerivative,xtable,phi,
+                    x3sample=x3sample,
+                    x4sample=x4sample,
+                    useRS=useRS,
+                    useBobyqa=useBobyqa,
+                    optDriver=optDriver,
+                    ensOptDriver=ensembleOptDriver,
+                    plotSignal=self.plotSignal,
+                    endFunction=self.finishOUU
+                )
             except:
                 import traceback
                 traceback.print_exc()
@@ -962,7 +949,6 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.OUUobj.stopOUU()
             self.run_button.setEnabled(False)
             self.freeze()
-
 
     def finishOUU(self):
         if self.node_radio.isChecked():
@@ -990,6 +976,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
 
     def getResult(self):
         return self.result
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

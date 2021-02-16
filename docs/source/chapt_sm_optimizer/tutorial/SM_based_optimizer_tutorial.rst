@@ -23,6 +23,8 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
     first, create and add the SimSinter json file to turbine. Then, create a node named ‘FLASH’, and load the simulation in the node.
     The Aspen and json files (along with the FOQUS file) can be found in the folder: **examples/tutorial_files/SM_Optimizer/Flash_Optimization**.
 
+    .. note:: |examples_reminder_text|
+
     Figure 3 and 4 represent the FOQUS node with loaded simulation. Finally, run the flowsheet simulation.
 
     .. figure:: ../figs/flash_input_variables.png

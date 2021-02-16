@@ -38,5 +38,6 @@ Contents
 
     install_python
     install_foqus
+    install_examples
     run_foqus
     install_optional

@@ -1,0 +1,22 @@
+{
+  "name": "on-disconnect",
+  "version": "1.0.0",
+  "description": "FOQUS Web Sockets ondisconnect",
+  "main": "index.js",
+  "author": "Joshua Boverhof",
+  "license": "MIT",
+  "dependencies": {
+    "debug": ">=4.1.1"
+  },
+  "scripts": {
+    "setup": "./node_modules/.bin/node-lambda setup",
+    "test": "./node_modules/.bin/node-lambda run --configFile=test.env",
+    "package": "./node_modules/.bin/node-lambda --keepNodeModules true package",
+    "deploy": "./node_modules/.bin/node-lambda deploy --configFile=deploy.env",
+    "deploytest": "./node_modules/.bin/node-lambda deploy -e test --configFile=test.env"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.739.0",
+    "debug": ">=4.1.1"
+  }
+}

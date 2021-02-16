@@ -87,7 +87,7 @@ class LocalExecutionModule(object):
     numSamples = 0
 
     session = None
-    psuadeVersion = "1.7.6" # Change this to change the version of psuade that is required
+    psuadeVersion = "1.7.6"  # Change this to change the version of psuade that is required
 
     @staticmethod
     def readSampleFromPsuadeFile(fileName, returnModelOnly = False):
@@ -111,6 +111,10 @@ class LocalExecutionModule(object):
         sampleType = None
         legendreOrder = None
         sampleMethod = None
+        # WHY there are a few pylint errors related to inputData, outputData, and runState
+        # for operations that assume these 3 variables to be iterables
+        # this could be addressed without disabling the checks by setting them to empty lists
+        # it's also not clear if all the branches in this function work correctly
         inputData = None
         outputData = None
         runState = None
@@ -154,7 +158,8 @@ class LocalExecutionModule(object):
                     elif not readSampleData: # Sample number and run state
                         nums = line.split()
                         sampleNum = int(nums[0]) - 1
-                        runState[sampleNum] = bool(int(nums[1]))
+                        # runState at this point should still be None, so this would cause a runtime error
+                        runState[sampleNum] = bool(int(nums[1]))  # TODO pylint: disable=unsupported-assignment-operation
                         readSampleData = True
                         numValuesRead = 0
                         sampleInputs = [0] * numInputs
@@ -171,8 +176,8 @@ class LocalExecutionModule(object):
                             sampleOutputs[numValuesRead - numInputs] = float(line)
                             numValuesRead = numValuesRead + 1
                             if numValuesRead - numInputs == numOutputs:
-                                inputData[sampleNum] = sampleInputs
-                                outputData[sampleNum] = sampleOutputs
+                                inputData[sampleNum] = sampleInputs  # pylint: disable=unsupported-assignment-operation
+                                outputData[sampleNum] = sampleOutputs  # pylint: disable=unsupported-assignment-operation
                                 readSampleData = False
                 elif readInputs: # Read inputs
                     stripped = line.strip()
@@ -199,9 +204,9 @@ class LocalExecutionModule(object):
                         # Insert input values
                         if hasSampleData:
                             for i in range(len(inputData)):
-                                inputRow = inputData[i]
+                                inputRow = inputData[i]  # pylint: disable=unsubscriptable-object
                                 inputRow.insert(len(inputNames) - 1, fixedVal)
-                                inputData[i] = inputRow
+                                inputData[i] = inputRow  # pylint: disable=unsupported-assignment-operation
                     elif values[0] == 'PDF': # Distribution
                         index = int(values[1]) - 1
                         inputDists[index] = values[2]
@@ -275,17 +280,7 @@ class LocalExecutionModule(object):
         model.setOptDriverName(optDriverName)
         model.setAuxDriverName(auxDriverName)
         model.setRunType(Model.LOCAL)
-##        print model.getInputNames()
-##        print model.getOutputNames()
-##        print model.getInputDistributions()
-##        print model.getNumSamples()
-##        print model.getNumInputs()
-##        print model.getNumOutputs()
-##        print model.getInputMins()
-##        print model.getInputMaxs()
-##        from SamplingMethods import SamplingMethods
-##        print SamplingMethods.getFullName(model.getSampleMethod())
-##        print model.getDriver()
+
         if returnModelOnly:
             return model
 
@@ -353,7 +348,7 @@ class LocalExecutionModule(object):
                     runState.append(1)
         inputArray = numpy.array(inputVals, dtype = float, ndmin = 2)
         outputArray = numpy.array(outputVals, dtype = float, ndmin = 2)
-        return (inputArray, outputArray, headers[:numInputs], headers[numInputs:], runState)
+        return inputArray, outputArray, headers[:numInputs], headers[numInputs:], runState
 
     @staticmethod
     def readSampleFromCsvFile(fileName, askForNumInputs = True):
@@ -363,7 +358,7 @@ class LocalExecutionModule(object):
 
         # Setup model
         model = Model()
-        path, fname = os.path.split(fileName)  # exclude path from file name
+        _path, fname = os.path.split(fileName)  # exclude path from file name
         model.setName(fname)
         model.setInputNames(inputNames)
         model.setOutputNames(outputNames)
@@ -498,7 +493,7 @@ class LocalExecutionModule(object):
         header = lines[k]
         nums = header.split()
         numExps = int(nums[0])
-        numOutputs = int(nums[1])
+        _numOutputs = int(nums[1])
         numDesign = int(nums[2])
         designVariables = [int(num) for num in nums[3:]]
         # Ignore the rest which are the numbers for which inputs are design parameters
@@ -549,7 +544,7 @@ class LocalExecutionModule(object):
                 location = ''
                 if os.path.exists(psuadeLoc):
                     location = psuadeLoc
-                psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
+                psuadeLoc, _filterName = QtWidgets.QFileDialog.getOpenFileName(
                     None, "Location of Psuade", location, "Executable File (psuade.exe)")
             while len(psuadeLoc) > 0:
                 compatible = LocalExecutionModule.getPsuadeExeCompatibility(psuadeLoc)
@@ -558,10 +553,10 @@ class LocalExecutionModule(object):
                     msgBox.setText('PSUADE version must be %s or later! Browse to its location on the next screen.' % \
                                     LocalExecutionModule.psuadeVersion)
                     msgBox.exec_()
-                    psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
+                    psuadeLoc, _filterName = QtWidgets.QFileDialog.getOpenFileName(
                         None, "Location of Psuade", psuadeLoc, "Executable File (psuade.exe)")
                 else:
-                    psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
+                    _psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
                     if LocalExecutionModule.session is not None:
                         LocalExecutionModule.session.foqusSettings.psuade_path = psuadeLoc
                         LocalExecutionModule.session.foqusSettings.save()
@@ -573,9 +568,8 @@ class LocalExecutionModule(object):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setText('Location of PSUADE has not been set! Browse to its location on the next screen.')
                 msgBox.exec_()
-            # psuadeLoc, filterName = QtWidgets.QFileDialog.getOpenFileName(
-            #     None, "Location of Psuade", "", "All Files (*.*)")
-            fileDlg = QtWidgets.QFileDialog(caption = "Location of Psuade")
+
+            fileDlg = QtWidgets.QFileDialog(caption="Location of Psuade")
             fileDlg.setFileMode(QtWidgets.QFileDialog.ExistingFile)
             proxyModel = LocalExecutionModule.executableFilter()
             fileDlg.setProxyModel(proxyModel)
@@ -586,7 +580,7 @@ class LocalExecutionModule(object):
             else:
                 psuadeLoc = ''
             if len(psuadeLoc) > 0:
-                psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
+                _psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
                 if LocalExecutionModule.session is not None:
                     LocalExecutionModule.session.foqusSettings.psuade_path = psuadeLoc
                     LocalExecutionModule.session.foqusSettings.save()
@@ -648,9 +642,8 @@ class LocalExecutionModule(object):
                 if not compatible:
                     if not usePyside or QtWidgets.QApplication.instance() is None:
                         if showErrorIfNotFound:
-                            raise IOError('Version of PSUADE must be %s or higher! ' +
-                                           'Please put the correct path into the file %s' % \
-                                           (LocalExecutionModule.psuadeVersion, fileName))
+                            raise IOError('Version of PSUADE must be %s or higher!\nPlease put the correct path into '
+                                          'the file %s' % (LocalExecutionModule.psuadeVersion, fileName))
                     else:
                         if showErrorIfNotFound:
                             location = LocalExecutionModule.setPsuadePath()
@@ -665,9 +658,8 @@ class LocalExecutionModule(object):
                 msgBox.setText('Location of PSUADE has not been set! You will need to set it to continue.')
                 msgBox.exec_()
             else:
-                raise IOError('Location of PSUADE has not been set! You will need to set it to continue. ' +
-                              'Please put the correct path into the file %s' % \
-                                           (LocalExecutionModule.psuadeVersion, fileName))
+                raise IOError('Location of PSUADE has not been set! You will need to set it to continue.\nPlease put '
+                              'the correct path into the file %s' % fileName)
             return None
 
         if platform.system() == 'Windows':
@@ -746,7 +738,7 @@ class LocalExecutionModule(object):
 
         # parse results
         lines = out.splitlines()
-        installedString = 'installed... true';
+        installedString = 'installed... true'
         if len(lines) >= 2:
             for line in lines:   # skip first line with version info
                 for lib in libs:
@@ -939,7 +931,11 @@ class LocalExecutionModule(object):
 
         # runComplete = False does not necessarily mean run is still going.
         # Need to check.
-        LocalExecutionModule.getNumFinishedRuns() #Update the runComplete bool
+        # WHY there is no LocalExecutionModule.getNumFinishedRuns() function,
+        # so this looks like a legitimate cause for runtime errors
+        # the method isRunFinished() itself seems to have no references,
+        # which suggests that this piece of code is never executed
+        LocalExecutionModule.getNumFinishedRuns() # TODO pylint: disable=no-member  # Update the runComplete bool
         return LocalExecutionModule.runComplete
 
     @staticmethod
@@ -950,7 +946,7 @@ class LocalExecutionModule(object):
         psuadeOutFile = os.getcwd() + os.path.sep + 'psuadeOutFile'
 
         import shutil
-        shutil.copyfile("psuadeData", psuadeOutFile);
+        shutil.copyfile("psuadeData", psuadeOutFile)
 
         data = LocalExecutionModule.readSampleFromPsuadeFile(psuadeOutFile)
         return data
@@ -1020,17 +1016,16 @@ if usePyside:
             for i, status in enumerate(outputStatus):
                 if status == Model.NEED_TO_CALCULATE:
                     import time
-                    start = time.clock()
-                    psfile, rs, legOrder = RSAnalyzer.emulate(self.data.getEmulatorTrainingFile(),
+                    _start = time.clock()
+                    psfile, _rs, _legOrder = RSAnalyzer.emulate(self.data.getEmulatorTrainingFile(),
                                                               emulatorFileName, i + 1,
-                                                              textDialog = self.textDialog,
-                                                              dialogShowSignal = c.textDialogShowSignal,
-                                                              dialogCloseSignal = c.textDialogCloseSignal,
-                                                              textInsertSignal = c.textDialogInsertSignal,
-                                                              ensureVisibleSignal = c.textDialogEnsureVisibleSignal,
+                                                              textDialog=self.textDialog,
+                                                              dialogShowSignal=c.textDialogShowSignal,
+                                                              dialogCloseSignal=c.textDialogCloseSignal,
+                                                              textInsertSignal=c.textDialogInsertSignal,
+                                                              ensureVisibleSignal=c.textDialogEnsureVisibleSignal,
                                                               )
-                    #print 'Output ' + str(i) + ' done'
-                    #print (time.clock() - start)
+
                     runData = LocalExecutionModule.readSampleFromPsuadeFile(psfile)
                     outputData = runData.getOutputData()
                     originalOutputData = self.returnData.getOutputData()
@@ -1038,10 +1033,7 @@ if usePyside:
                        not originalOutputData:
                         outputRow = [9.9999999999999997e+34] * self.returnData.getNumOutputs()
                         originalOutputData = numpy.array([outputRow] * self.returnData.getNumSamples())
-                    #print outputData
-                    #print originalOutputData
-                    originalOutputData[:,i] = numpy.transpose(outputData)
-                    #print originalOutputData
+                    originalOutputData[:, i] = numpy.transpose(outputData)
                     self.returnData.setOutputData(originalOutputData)
                     self.data.setEmulatorOutputStatus(i, Model.CALCULATED)
                     self.numOutputsFinished = self.numOutputsFinished + 1

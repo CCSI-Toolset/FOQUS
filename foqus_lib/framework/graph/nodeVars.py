@@ -519,12 +519,14 @@ class NodeVarVectorList(OrderedDict):
                     ip = True
                 size = len(sd[node][var]['vector'])
                                
-                self.addVectorVariable(node, var, ip, size).loadDict(sd[node][var])
+                self.addVectorVariable(node, var, ip, size).loadDict(sd[node][var])                
                 sd[node][var]['vector'] = dict(sd[node][var]['vector'])
+                klist=[]
+                vlist=[]
                 for k,v in sd[node][var]['vector'].items():
-                    sd[node][var]['vector'][int(k)] = sd[node][var]['vector'].pop(k)
-                    sd[node][var]['vector'][int(k)] = v
-                    
+                    klist.append(int(k))
+                    vlist.append(v)
+                sd[node][var]['vector']=dict(zip(klist,vlist))
                 if sd[node][var]['opvname'] is None:
                     self[node][var].vector = {x:None for x in range(int(size))}
                     for i in range(len(sd[node][var]['vector'])):

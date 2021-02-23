@@ -353,16 +353,16 @@
        <attribute name="title">
         <string>FOQUS Cloud</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_6">
+       <layout class="QVBoxLayout" name="CloudVerticalLayout">
         <item>
          <widget class="QTextBrowser" name="CloudLogView"/>
         </item>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4">
+         <layout class="QHBoxLayout" name="CloudHorizontalLayout">
           <item>
-           <widget class="QPushButton" name="clearLogButton">
+           <widget class="QPushButton" name="statusCloudButton">
             <property name="text">
-             <string>Clear</string>
+             <string>Status</string>
             </property>
            </widget>
           </item>

@@ -215,8 +215,6 @@ class Graph(threading.Thread):
             "edges": self.saveEdgeList(),
             "input": self.input.saveDict(),
             "output": self.output.saveDict(),
-            # "input_vectorlist": self.input_vectorlist.saveDict(),
-            # "output_vectorlist": self.output_vectorlist.saveDict(),
             "tearSolver": self.tearSolver,
             "tearMaxIt": self.tearMaxIt,
             "tearTol": self.tearTol,
@@ -287,9 +285,7 @@ class Graph(threading.Thread):
             self.results.loadDict(temp)
         temp = sd.get("input", None)
         if temp:
-            print('yesthere_graph_1')
             self.input.loadDict(temp)
-            print(self.input)
         else:
             self.input.clear()
             self.input.addNode("graph")
@@ -301,10 +297,8 @@ class Graph(threading.Thread):
             self.input.addNode("graph")
         temp = sd.get("input_vectorlist", None)
         if temp:
-            print('yes_there_graph')
             self.nvlist = self.input
             self.input_vectorlist.loadDict(temp)
-            print(self.input_vectorlist)
         else:
             self.input_vectorlist.clear()
         temp = sd.get("output_vectorlist", None)
@@ -351,6 +345,10 @@ class Graph(threading.Thread):
             "nodeSettings": {},
             "turbineMessages": {},
         }
+        nvl = self.input
+        sd["input_vectorvals"] = self.input_vectorlist.saveValues(nvl)
+        nvl = self.output
+        sd["output_vectorvals"] = self.output_vectorlist.saveValues(nvl)
         for nkey, node in self.nodes.items():
             sd["nodeError"][nkey] = node.calcError
             sd["turbineMessages"][nkey] = node.turbineMessages
@@ -373,6 +371,18 @@ class Graph(threading.Thread):
         o = sd.get("output", None)
         if o is not None:
             self.output.loadValues(o)
+        o = sd.get("input_vectorvals", None)
+        if o is not None:
+            self.nvlist = self.input
+            self.input_vectorlist.loadValues(o)
+        else:
+            self.input_vectorlist.clear()
+        o = sd.get("output_vectorvals", None)
+        if o is not None:
+            self.nvlist = self.output
+            self.output_vectorlist.loadValues(o)
+        else:
+            self.output_vectorlist.clear()
         self.setErrorCode(sd.get("graphError", -1))
         ne = sd.get("nodeError", {})
         tm = sd.get("turbineMessages", {})
@@ -798,9 +808,18 @@ class Graph(threading.Thread):
                 pass  # Doesn't matter synced is a DMF thing
         # originalValues = self.saveValues()
         assert isinstance(valueList, (list, tuple))
+        # Ensure that the input scalar variable values get assigned to the input vector variables
         for i, vals in enumerate(valueList):
-            # self.loadValues(originalValues)
-            self.loadValues({"input": vals})
+            vectorvals = dict()
+            for n in self.nodes:
+                vectorvals[n] = OrderedDict()
+                for invarsvector in self.nodes[n].inVarsVector.keys():
+                    vectorvals[n][invarsvector] = OrderedDict()
+                    for invar in self.nodes[n].inVars.keys():
+                        if invarsvector in invar:
+                            idx = int(invar[-1])
+                            vectorvals[n][invarsvector][idx] = vals[n][invar]
+            self.loadValues({"input": vals, "input_vectorvals": vectorvals})
             self.setErrorCode(-1)
             if not self.stop.isSet():
                 # run solve if thread has not been stopped

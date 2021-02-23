@@ -13,6 +13,7 @@ import math
 import subprocess
 import logging
 import traceback
+import re
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
@@ -115,9 +116,7 @@ class Node:
         self.inVars = gr.input[self.name]
         self.outVars = gr.output[self.name]
         self.inVarsVector = gr.input_vectorlist[self.name]
-        print('invarsvector')
-        print(self.inVarsVector)
-        self.outVarsVector = gr.output_vectorlist[self.name]
+        #self.outVarsVector = gr.output_vectorlist[self.name]
 
     def addTurbineOptions(self):
         """
@@ -296,22 +295,18 @@ class Node:
         # Below is just to maintain compatibility with older session files
         # It may be deleted at some point in the future
         if "inVars" in sd:
-            print('yes_there_1')
             for vkey, var in sd["inVars"].items():
                 v = self.gr.input.addVariable(self.name, vkey)
                 v.loadDict(var)
         if "outVars" in sd:
-            print('yes_there_2')
             for vkey, var in sd["outVars"].items():
                 v = self.gr.output.addVariable(self.name, vkey)
                 v.loadDict(var)
         if "inVarsVector" in sd:
-            print('yes_there')
             for vkey, var in sd["inVarsVector"].items():
                 v = self.gr.input_vectorlist.addVectorVariable(self.name, vkey)
                 v.loadDict(var)
         if "outVarsVector" in sd:
-            print('yes_there')
             for vkey, var in sd["outVarsVector"].items():
                 v = self.gr.output_vectorlist.addVectorVariable(self.name, vkey)
                 v.loadDict(var)
@@ -578,7 +573,6 @@ class Node:
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
-        print(self.inVars.items())
         # Now try to execute the post code
         try:
             exec(self.pythonCode)

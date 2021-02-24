@@ -374,7 +374,7 @@ class mainWindow(QMainWindow):
         if self.showSDOE:
             self.sdoeSetupAction = QAction(
                 QIcon(self.iconPaths['sdoe']),
-                'SDOE',
+                'SDoE',
                 self)
             self.sdoeSetupAction.setToolTip(
                 "Sequential Design of Experiments")

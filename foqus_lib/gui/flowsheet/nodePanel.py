@@ -6,6 +6,7 @@ See LICENSE.md for license and copyright details.
 """
 import os
 import types
+import json
 import platform
 from configparser import RawConfigParser
 from io import StringIO
@@ -608,14 +609,29 @@ class nodeDock(_nodeDock, _nodeDockUI):
         else:
             newName = name
             ok = True
+        n = newName.split("[")
+        newName = n[0].strip()
+        if len(n) > 1:
+            indexes = json.loads("[" + n[1].strip())
+        else:
+            indexes = None
         if ok and newName != '':
-            if newName in self.node.inVars:
+            ips = self.node.gr.input[self.node.name]
+            if newName in ips or newName in ips.vector:
                 QMessageBox.warning(
                     self,
                     "Invalid Name",
                     "That input already exists")
                 return
-            self.node.gr.input.addVariable(self.node.name, newName)
+            if indexes is None:
+                self.node.gr.input.addVariable(self.node.name, newName)
+            else:
+                vec = self.node.gr.input.addVector(self.node.name, newName)
+                for i in indexes:
+                    varName = "{}[{}]".format(newName, i)
+                    self.node.gr.input.addVariable(self.node.name, varName)
+                    vec.var_names[i] = varName
+                vec.update()
             self.applyChanges()
             self.updateInputVariables()
 
@@ -653,8 +669,15 @@ class nodeDock(_nodeDock, _nodeDockUI):
         else:
             newName = name
             ok = True
+        n = newName.split("[")
+        newName = n[0].strip()
+        if len(n) > 1:
+            indexes = json.loads("[" + n[1].strip())
+        else:
+            indexes = None
         if ok and newName != '':
-            if newName in self.node.outVars:
+            ops = self.node.gr.output[self.node.name]
+            if newName in ops or newName in ops.vector:
                 QMessageBox.warning(
                     self,
                     "Invalid Name",

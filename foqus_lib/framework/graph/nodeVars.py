@@ -45,6 +45,39 @@ class NodeVarListEx(foqusException):
         self.codeString[7] = "Var name already in use, cannont add"
 
 
+class NodeVarVecDict(OrderedDict):
+    def __init__(self):
+        """
+        Initialize the variable list dictionary
+        """
+        OrderedDict.__init__(self)
+        self.vector = OrderedDict()
+
+
+class NodeVarVector(OrderedDict):
+    def __init__(self):
+        OrderedDict.__init__(self)
+        self.var_dict = None
+        self.var_names = OrderedDict()
+
+    def update(self):
+        self.clear()
+        for k, v in self.var_names.items():
+            self[k] = self.var_dict[v]
+
+    def save_list(self):
+        sd = []
+        for k, v in self.var_names.items():
+            sd.append((k, v))
+        return sd
+
+    def load_list(self, sd):
+        self.var_names.clear()
+        for k, v in sd:
+            self.var_names[k] = v
+        self.update()
+
+
 class NodeVarList(OrderedDict):
     """
     This class contains a dictionary of dictionaries the first key is the node
@@ -75,7 +108,26 @@ class NodeVarList(OrderedDict):
         """
         if nodeName in self:
             raise NodeVarListEx(code=5, msg=str(nodeName))
-        self[nodeName] = OrderedDict()
+        self[nodeName] = NodeVarVecDict()
+
+    def addVector(self, nodeName, vecName, vec=None):
+        """
+        Add a variable name to a node:
+
+        Args:
+            nodeName: to node to add a variable to
+            varName: the variable name to add
+            var: a NodeVar object or None to create a new variable
+        """
+        if nodeName not in self:
+            raise NodeVarListEx(2, msg=nodeName)
+        if vecName in self[nodeName] or vecName in self[nodeName].vector:
+            raise NodeVarListEx(7, msg=varName)
+        if not vec:
+            vec = NodeVarVector()
+        vec.var_dict = self[nodeName]
+        self[nodeName].vector[vecName] = vec
+        return vec
 
     def addVariable(self, nodeName, varName, var=None):
         """
@@ -146,7 +198,7 @@ class NodeVarList(OrderedDict):
 
     def splitName(self, name):
         """
-        Split the name at the first '.'' to get a node and variable name
+        Split the name at the first '.' to get a node and variable name
         """
         return name.split(".", 1)
 
@@ -186,6 +238,9 @@ class NodeVarList(OrderedDict):
             sd[node] = OrderedDict()
             for var in self[node]:
                 sd[node][var] = self[node][var].saveDict()
+            sd[node]["__vector__"] = OrderedDict()
+            for vec in self[node].vector:
+                sd[node]["__vector__"][vec] = self[node].vector[vec].save_list()
         return sd
 
     def loadDict(self, sd):
@@ -199,7 +254,13 @@ class NodeVarList(OrderedDict):
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
+                if var == "__vector__":
+                    continue
                 self.addVariable(node, var).loadDict(sd[node][var])
+            for vec in sd[node].get("__vector__", {}):
+                self[node].vector[vec] = NodeVarVector()
+                self[node].vector[vec].var_dict = self[node]
+                self[node].vector[vec].load_list(sd[node]["__vector__"][vec])
 
     def scale(self):
         """

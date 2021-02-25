@@ -579,7 +579,7 @@ class TurbineConfiguration():
                 if self.user or self.pwd:
                     self.user = ""
                     self.pwd = ""
-                    self.writeConfig()
+            self.writeConfig()
         except Exception as e:
             raise TurbineInterfaceEx(code = 201, msg = path+" "+str(e))
 
@@ -620,6 +620,8 @@ class TurbineConfiguration():
         config.set("Application", "url", address + "/application/" )
         config.set("Authentication", "username", self.user)
         config.set("Authentication", "password", self.pwd)
+        if self.turbVer == 'Remote':
+            config.set("Simulation", "SignedUrl", "True")
         if self.notification:
             config.add_section("Notification")
             config.set("Notification", "url", self.notification)
@@ -1236,20 +1238,22 @@ class TurbineConfiguration():
             resourceType = None
             app = 'foqus'
             modelFile = (None, app)
+        # WHY the undefined-variable error reported by pylint looks like a true positive
+        # this suggests that the code branches where the underfined variables are used are not run
         else:
             #if no model file found it is probably not a sinter
             #configuration file or FOQUS is out of sync with
             #simSinter development
             raise TurbineInterfaceEx(
                 code = 304,
-                msg = "Path: " + sinterConfigPath)
+                msg = "Path: " + sinterConfigPath)  # TODO pylint: disable=undefined-variable
         if isinstance(modelFile, dict):
             modelFile = modelFile.get('file', None)
             if modelFile is None:
                 #No model file found
                 raise TurbineInterfaceEx(
                     code = 304,
-                    msg = "Path: " + sinterConfigPath)
+                    msg = "Path: " + sinterConfigPath)  # TODO pylint: disable=undefined-variable
         return modelFile
 
     def sinterConfigGetResource(self,sinterConfigPath,checkExists=True):

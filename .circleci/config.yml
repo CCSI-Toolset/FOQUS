@@ -62,7 +62,7 @@ jobs:
           name: PyLint
           command: |
             . venv/bin/activate
-            pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib || true
+            pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib
 
       - store_artifacts:
           path: test-results

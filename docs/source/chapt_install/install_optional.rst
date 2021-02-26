@@ -18,6 +18,7 @@ toolkit containing a rich set of tools for performing uncertainty analysis, glob
 analysis, design optimization, model calibration, and more.
 
 PSUADE-Lite is now available as a Conda package. To install just follow the steps below::
+  
   conda activate ccsi-foqus
   conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite
   psuade --help  # quickly test that the psuade executable has been installed correctly

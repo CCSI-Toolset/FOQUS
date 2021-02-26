@@ -22,6 +22,8 @@ PSUADE-Lite is now available as a Conda package. To install just follow the step
   conda activate ccsi-foqus
   conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite
   psuade --help  # quickly test that the psuade executable has been installed correctly
+  
+The `psuade` executable should now be available within the Conda environment's folders, i.e. at the path $CONDA_PREFIX/bin/psuade (Linux, macOS) or %CONDA_PREFIX%\bin\psuade.exe (Windows). Once you set the full path in the corresponding field in the FOQUS GUI "Settings" tab, you should be able to use it normally within FOQUS.
 
 Install Turbine and SimSinter (Windows Only)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -116,7 +116,7 @@ class Node:
         self.inVars = gr.input[self.name]
         self.outVars = gr.output[self.name]
         self.inVarsVector = gr.input_vectorlist[self.name]
-        #self.outVarsVector = gr.output_vectorlist[self.name]
+        self.outVarsVector = gr.output_vectorlist[self.name]
 
     def addTurbineOptions(self):
         """
@@ -520,17 +520,11 @@ class Node:
     def getValues(self):
         x = dict()
         f = dict()
-        # xvector = dict()
-        # fvector = dict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
         for vkey, var in self.inVars.items():
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
-        # for vkey, var in self.inVarsVector.items():
-        #     xvector[vkey] = var.value
-        # for vkey, var in self.outVarsVector.items():
-        #     fvector[vkey] = var.value
         return x, f
 
     def resetModel(self):
@@ -583,6 +577,10 @@ class Node:
             for vkey, var in f.items():
                 if vkey in self.outVars:
                     self.outVars[vkey].value = var
+                    for vec in self.outVarsVector:
+                        if vec in vkey:
+                            idx = int(vkey.split('_')[-1])
+                            self.outVars[vkey].value = self.outVarsVector[vec].vector[idx]['value']
         except PyCodeInterupt as e:
             logging.getLogger("foqus." + __name__).error(
                 "Node script interupt: " + str(e)

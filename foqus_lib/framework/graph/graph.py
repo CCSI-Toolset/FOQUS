@@ -381,8 +381,6 @@ class Graph(threading.Thread):
         if o is not None:
             self.nvlist = self.output
             self.output_vectorlist.loadValues(o)
-        else:
-            self.output_vectorlist.clear()
         self.setErrorCode(sd.get("graphError", -1))
         ne = sd.get("nodeError", {})
         tm = sd.get("turbineMessages", {})
@@ -817,7 +815,8 @@ class Graph(threading.Thread):
                     vectorvals[n][invarsvector] = OrderedDict()
                     for invar in self.nodes[n].inVars.keys():
                         if invarsvector in invar:
-                            idx = int(invar[-1])
+                            invarsplit = invar.split('_')
+                            idx = int(invarsplit[-1])
                             vectorvals[n][invarsvector][idx] = vals[n][invar]
             self.loadValues({"input": vals, "input_vectorvals": vectorvals})
             self.setErrorCode(-1)

@@ -119,6 +119,7 @@ class NodeVarList(OrderedDict):
                     nodevar.min = float(minval[i])                       
                     nodevar.max = float(maxval[i])       
                     nodevar.value = float(value[i])
+                    nodevar.default = float(value[i])
                     nodevar.ipvname = (nodeName,varName + '_{0}'.format(i))
                 else:
                     nodevar.value = 0
@@ -336,27 +337,6 @@ class NodeVarVectorList(OrderedDict):
             raise NodeVarListEx(code=5, msg=str(nodeName))
         self[nodeName] = OrderedDict()
 
-    # def addVariable(self, nodeName, varName, var=None):
-    #     """
-    #     Add a variable name to a node:
-
-    #     Args:
-    #         nodeName: to node to add a variable to
-    #         varName: the variable name to add
-    #         var: a NodeVar object or None to create a new variable
-    #     """
-    #     if nodeName not in self:
-    #         raise NodeVarListEx(2, msg=nodeName)
-    #     if varName in self[nodeName]:
-    #         raise NodeVarListEx(7, msg=varName)
-    #     if not var:
-    #         # if size==1:
-    #         var = NodeVars()
-    #     self[nodeName][varName] = var
-    #     # else:
-    #     #     var = NodeVarsVector(size)              
-    #     return var
-
     def addVectorVariable(self, nodeName, varName, ip, size, nvlist=None, minval=None, maxval=None, value=None, var=None):
         """
         Add a vector variable name to a node:
@@ -364,7 +344,7 @@ class NodeVarVectorList(OrderedDict):
         Args:
             nodeName: to node to add a variable to
             varName: the variable name to add
-            var: a NodeVar object or None to create a new variable
+            var: a NodeVarVector object or None to create a new variable
         """
         self.nvlist = nvlist
         if nodeName not in self:
@@ -616,7 +596,6 @@ class NodeVars(object):
         vmin=0,
         vmax=1,
         vdflt=0,
-        # index=0,
         vector=dict(),
         ipvname=None,
         opvname=None,

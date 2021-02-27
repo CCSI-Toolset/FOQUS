@@ -644,7 +644,6 @@ class RSAnalyzer:
 
     @staticmethod
     def pointEval(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None): 
-
         ### xtest should be an array of length N, where N is the number of variable inputs.
         ### xtest[i] should be a single-key dictionary: {'value':%f}
 

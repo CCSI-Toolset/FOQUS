@@ -3,6 +3,7 @@ import os
 import logging
 import copy
 import time
+import pandas as pd
 from datetime import datetime
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.sdoe.sdoeSimSetup import *
@@ -16,7 +17,7 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
 
-from foqus_lib.framework.sdoe import df_utils, odoeu
+from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
 from .sdoePreview import sdoePreview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
@@ -45,9 +46,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
     numberCol = 0
-    typeCol = 1
-    setupCol = 2
-    nameCol = 3
+    selCol = 1
+    typeCol = 2
+    setupCol = 3
+    nameCol = 4
+    rs1Col = 5
+    rs2Col = 6
+    rsValCol = 7
+    rsConfCol = 8
+    impCol = 9
 
     descriptorCol = 0
     viewCol = 1
@@ -507,9 +514,126 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
         dialog.show()
 
+    def rsVal(self):
+        QApplication.processEvents()
+        self.freeze()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        data = copy.deepcopy(self.dat.sdoeSimList[row])
+        numInputs = data.getNumInputs()
+        indices_raw = np.argwhere(np.isnan(data.getInputData()))
+        indices_del = []
+        for ind in indices_raw:
+            indices_del.append(ind[0])
+        indices = []
+        for ind in range(data.getInputData().shape[0]):
+            if ind not in indices_del:
+                indices.append(ind)
+        data = data.getSubSample(indices)
+        names = data.getInputNames()
+        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
+        data.deleteInputs([numInputs-1])
+        data.model.numOutputs = 1
+        data.model.setOutputNames(names[-1])
+        data.setOutputData(output_data)
+        y = 1
+        rs1 = self.filesTable.cellWidget(row, self.rs1Col)
+        rs2 = self.filesTable.cellWidget(row, self.rs2Col)
+        rs = RSCombos.lookupRS(rs1, rs2)
+
+        if rs.startswith('MARS'):
+            rsOptions = {'marsBases': min([100, data.getNumSamples()]),
+                         'marsInteractions': min([8, data.getNumVarInputs()])}
+        else:
+            rsOptions = None
+
+        genRSCode = True
+
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=True)
+        _mfile = rsv.analyze()
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle('Response Surface Validation Plot')
+        msgBox.setText('Check the response surface validation plot.'
+                       'If the generated response surface satisfy your needs, please confirm.'
+                       'If not, please select a new response surface and validate again.')
+        msgBox.exec_()
+        self.filesTable.cellWidget(row, self.rsConfCol).setEnabled(True)
+        self.unfreeze()
+        QApplication.processEvents()
+
+    def rsConf(self):
+        QApplication.processEvents()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        self.filesTable.cellWidget(row, self.impCol).setEnabled(True)
+
+        QApplication.processEvents()
+
+    def dataImputation(self):
+        QApplication.processEvents()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        data = copy.deepcopy(self.dat.sdoeSimList[row])
+        numInputs = data.getNumInputs()
+        indices_raw = np.argwhere(np.isnan(data.getInputData()))
+        indices = []
+        for ind in indices_raw:
+            indices.append(ind[0])
+        data = data.getSubSample(indices)
+        names = data.getInputNames()
+        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
+        data.deleteInputs([numInputs-1])
+        data.model.numOutputs = 1
+        data.model.setOutputNames(names[-1])
+        data.setOutputData(output_data)
+
+        fnameRS = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat')
+        data.writeToPsuade(fnameRS)
+
+        xtest = []
+        for val in data.getInputData():
+            xtest.append({'value': val})
+
+        print("INFO STARTS HERE!!!")
+        print("xtest: ", xtest)
+
+        y = 1
+        rs1 = self.filesTable.cellWidget(row, self.rs1Col)
+        rs2 = self.filesTable.cellWidget(row, self.rs2Col)
+        rs = RSCombos.lookupRS(rs1, rs2)
+
+        if rs.startswith('MARS'):
+            rsOptions = {'marsBases': min([100, data.getNumSamples()]),
+                         'marsInteractions': min([8, data.getNumVarInputs()])}
+        else:
+            rsOptions = None
+
+        ytest = sdoe.dataImputation(fnameRS, xtest, y, rs, rsOptions=rsOptions)
+
+        QApplication.processEvents()
+        print("ytest: ", ytest)
+        return ytest
+
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
         return len(cand_list) > 0
+
+    def missingData(self, data):
+        arr = data.getInputData()
+        return np.sum(np.isnan(arr)) > 0
 
     def addDataToSimTable(self, data):
         if data is None:
@@ -543,18 +667,28 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setFlags(flags & mask)
         self.filesTable.setItem(row, self.numberCol, item)
 
-        item = self.filesTable.item(row, self.nameCol)
-        if item is None:
-            item = QTableWidgetItem()
-        item.setText(data.getModelName())
-        self.filesTable.setItem(row, self.nameCol, item)
+        # create checkboxes for select column
+        checkbox = QCheckBox()
+        checkbox.setChecked(True)
+        self.filesTable.setCellWidget(row, self.selCol, checkbox)
+        checkbox.setProperty('row', row)
+        # checkbox.toggled.connect()
 
+        # Create combo boxes for type column
         combo = QComboBox()
         combo.addItems(['Candidate', 'Previous Data'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
         combo.currentTextChanged.connect(self.on_combobox_changed)
         combo.setMinimumContentsLength(13)
 
+        # Setup name column
+        item = self.filesTable.item(row, self.nameCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(data.getModelName())
+        self.filesTable.setItem(row, self.nameCol, item)
+
+        # Create view button for setup column
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False
         if viewButton is None:
@@ -567,6 +701,73 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if newViewButton:
             viewButton.clicked.connect(self.editSim)
             self.filesTable.setCellWidget(row, self.setupCol, viewButton)
+
+        # add combo boxes for rs1 and rs2 columns
+        combo1 = RSCombos.RSCombo1(self)
+        combo2 = RSCombos.RSCombo2(self)
+        legendreSpin = RSCombos.LegendreSpinBox(self)
+        marsBasisSpin = None
+        marsInteractionSpin = None
+
+        legendreSpin.init(data)
+        combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
+        combo2.setMinimumContentsLength(10)
+        combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
+                    marsDegreeSpin=marsInteractionSpin, odoe=True)
+
+        combo1.setProperty('row', row)
+        combo2.setProperty('row', row)
+
+        combo1.setEnabled(self.missingData(data))
+        combo2.setEnabled(self.missingData(data))
+
+        self.filesTable.setCellWidget(row, self.rs1Col, combo1)
+        self.filesTable.setCellWidget(row, self.rs2Col, combo2)
+
+        # Create validate RS button for RS Validation column
+        rsValButton = self.filesTable.cellWidget(row, self.rsValCol)
+        newRsValButton = False
+        if rsValButton is None:
+            newRsValButton = True
+            rsValButton = QPushButton()
+            rsValButton.setText('Validate RS')
+            rsValButton.setToolTip('Validate the selected response surface.')
+
+        rsValButton.setProperty('row', row)
+        if newRsValButton:
+            rsValButton.clicked.connect(self.rsVal)
+            rsValButton.setEnabled(self.missingData(data))
+            self.filesTable.setCellWidget(row, self.rsValCol, rsValButton)
+
+        # Create confirm RS button for RS Confirmation column
+        rsConfButton = self.filesTable.cellWidget(row, self.rsConfCol)
+        newRsConfButton = False
+        if rsConfButton is None:
+            newRsConfButton = True
+            rsConfButton = QPushButton()
+            rsConfButton.setText('Confirm RS')
+            rsConfButton.setToolTip('If you are happy with the response surface, please confirm.')
+
+        rsConfButton.setProperty('row', row)
+        if newRsConfButton:
+            rsConfButton.clicked.connect(self.rsConf)
+            rsConfButton.setEnabled(False)
+            self.filesTable.setCellWidget(row, self.rsConfCol, rsConfButton)
+
+        # Create data imputation button for data imputation column
+        impButton = self.filesTable.cellWidget(row, self.impCol)
+        newImpButton = False
+        if impButton is None:
+            newImpButton = True
+            impButton = QPushButton()
+            impButton.setText('Impute')
+            impButton.setToolTip('Impute missing data and create a new completed set.')
+
+        impButton.setProperty('row', row)
+        if newImpButton:
+            impButton.clicked.connect(self.dataImputation)
+            impButton.setEnabled(False)
+            self.filesTable.setCellWidget(row, self.impCol, impButton)
 
         # Resize table
         self.resizeColumns()

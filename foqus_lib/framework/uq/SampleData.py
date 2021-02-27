@@ -585,9 +585,7 @@ class SampleData(object):
         self.model.setSelectedOutputs(selectedOutputs)
         self.outputData = self.outputData[..., mask]
 
-
-
-    def writeToPsuade(self, filename, fixedAsVariables = False):
+    def writeToPsuade(self, filename, fixedAsVariables=False):
         outf = open(filename, 'w')
         if self.getNamesIncludeNodes():
             outf.write('# NAMESHAVENODES\n')

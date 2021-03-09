@@ -92,7 +92,7 @@ jobs:
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing
-          QT_QPA_PLATFORM: minimal
+          # QT_QPA_PLATFORM: minimal
           MPLBACKEND: AGG
         run: |
           mkdir -p "$gui_dir"

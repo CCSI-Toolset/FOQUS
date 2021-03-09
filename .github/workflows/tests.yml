@@ -92,12 +92,10 @@ jobs:
       - name: Set up GUI test environment
         if: contains(matrix.os, 'ubuntu')
         run: |
-          sudo apt-get --quiet update
-          sudo apt-get --quiet --yes install libxkbcommon0 libxkbcommon-x11-0
+          echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing
-          # QT_QPA_PLATFORM: minimal
           QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |

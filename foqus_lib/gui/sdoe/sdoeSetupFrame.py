@@ -252,9 +252,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         hist_list = []
         numFiles = len(self.dat.sdoeSimList)
         for i in range(numFiles):
-            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
+            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate' \
+                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
                 cand_list.append(self.dat.sdoeSimList[i])
-            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data':
+            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data'\
+                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
                 hist_list.append(self.dat.sdoeSimList[i])
         return cand_list, hist_list   # returns sample data structures
 
@@ -553,7 +555,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         genRSCode = True
 
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=True)
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=True, error_tol_percent=5)
         _mfile = rsv.analyze()
 
         msgBox = QMessageBox()
@@ -600,32 +602,47 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         data.model.setOutputNames(names[-1])
         data.setOutputData(output_data)
 
-        fnameRS = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat')
-        data.writeToPsuade(fnameRS)
+        fname = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.dat')
 
-        xtest = []
-        for val in data.getInputData():
-            xtest.append({'value': val})
-
-        print("INFO STARTS HERE!!!")
-        print("xtest: ", xtest)
+        eval_fname = os.path.join(RSAnalyzer.dname, 'rseval.dat')
+        RSAnalyzer.writeRSsample(eval_fname, data.getInputData(), row=True, sdoe=True)
 
         y = 1
         rs1 = self.filesTable.cellWidget(row, self.rs1Col)
         rs2 = self.filesTable.cellWidget(row, self.rs2Col)
         rs = RSCombos.lookupRS(rs1, rs2)
 
-        if rs.startswith('MARS'):
-            rsOptions = {'marsBases': min([100, data.getNumSamples()]),
-                         'marsInteractions': min([8, data.getNumVarInputs()])}
-        else:
-            rsOptions = None
+        ytest = sdoe.dataImputation(fname, y, rs, eval_fname)
+        testInput, testOutput, _numInputs, _numOutputs = sdoe.readEvalSample(ytest)
 
-        ytest = sdoe.dataImputation(fnameRS, xtest, y, rs, rsOptions=rsOptions)
+        trainSet = LocalExecutionModule.readSampleFromPsuadeFile(fname)
+        trainInput = trainSet.getInputData()
+        trainOutput = trainSet.getOutputData()
+        colNames = trainSet.getInputNames() + trainSet.getOutputNames()
+        trainData = np.concatenate((trainInput, trainOutput), axis=1)
+        temp = np.concatenate((testInput, testOutput), axis=1)
+        testData = np.delete(temp, -1, axis=1)
+
+        finalData = np.concatenate((trainData, testData), axis=0)
+        df = pd.DataFrame(finalData, columns=colNames)
+        fileName = os.path.join(self.dname, data.getModelName().split('.')[0] + '_imputed.csv')
+        df_utils.write(fileName, df)
+
+        data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
+        data.setSession(self.dat)
+        self.dat.sdoeSimList.append(data)
+
+        res = Results()
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList.append(res)
+        # shutil.copy(fileName, self.dname)
+
+        # Update table
+        self.updateSimTable()
+        self.dataTabs.setEnabled(True)
+        self.unfreeze()
 
         QApplication.processEvents()
-        print("ytest: ", ytest)
-        return ytest
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
@@ -2036,7 +2053,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         data = data.getValidSamples()  # filter out samples that have no output results
 
         # validate RS
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe)
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe, error_tol_percent=5)
         mfile = rsv.analyze()
 
         self.unfreeze()
@@ -2077,7 +2094,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         rsdata = self.odoe_data
         outputName = rsdata.getOutputNames()[0]
-        rsevalfname = os.path.join(self.odoe_dname, 'odoeu_rseval.out')
+        rsevalfname = 'odoeu_rseval.out'
         inputData, outputData, numInputs, numOutputs = LocalExecutionModule.readDataFromSimpleFile(rsevalfname)
 
         inputNames = cdata.getInputNames()

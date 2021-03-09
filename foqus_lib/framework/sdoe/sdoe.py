@@ -161,39 +161,10 @@ def run(config_file, nd, test=False):
     return fnames, results, elapsed_time
 
 
-def dataImputation(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None):
-    # xtest should be an array of length N, where N is the number of variable inputs.
-    # xtest[i] should be a single-key dictionary: {'value':%f}
+def dataImputation(fname, y, rsMethodName, eval_fname):
 
-    # read data
-    data = LocalExecutionModule.readSampleFromPsuadeFile(fname)  # does not assume rstype/order written to data
     rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
 
-    userMethod = False
-    setMARS = False
-    if rsIndex == ResponseSurfaces.LEGENDRE:  # require order for LEGENDRE RS
-        if rsOptions is not None:
-            if isinstance(rsOptions, dict):
-                legendreOrder = rsOptions['legendreOrder']
-            else:
-                legendreOrder = rsOptions
-        else:
-            error = 'RSAnalyzer: In function pointEval(), "legendreOrder" is required for LEGENDRE response surface.'
-            Common.showError(error)
-            return None
-    elif rsIndex == ResponseSurfaces.USER:  # require user regression file for USER REGRESSION RS
-        if userRegressionFile is not None:
-            userMethod = True
-        else:
-            error = 'RSAnalyzer: In function pointEval(), "userRegressionFile" is required for USER REGRESSION response surface.'
-            Common.showError(error)
-            return None
-    elif rsIndex in [ResponseSurfaces.MARS, ResponseSurfaces.MARSBAG]:  # check for MARS options
-        if rsOptions is not None:
-            marsOptions = RSAnalyzer.checkMARS(data, rsOptions)
-            if marsOptions is not None:
-                marsBases, marsInteractions, marsNormOutputs = marsOptions
-                setMARS = True
     # write script
     f = tempfile.SpooledTemporaryFile(mode="wt")
     if platform.system() == 'Windows':
@@ -201,44 +172,17 @@ def dataImputation(fname, xtest, y, rsMethodName, rsOptions=None, userRegression
         fname = win32api.GetShortPathName(fname)
 
     f.write('load %s\n' % fname)  # load data
-    if setMARS:
-        f.write('rs_expert\n')
     cmd = 'rscreate'
     f.write('%s\n' % cmd)
-    nOutputs = data.getNumOutputs()
-    if nOutputs > 1:
-        f.write('%d\n' % y)  # select output
+    f.write('%d\n' % y)  # select output
     f.write('%d\n' % rsIndex)  # select response surface
-    if userMethod:  # ... user regression ...
-        f.write('1\n')  # number of basis functions
-        if platform.system() == 'Windows':
-            userRegressionFile = win32api.GetShortPathName(userRegressionFile)
-        f.write('%s\n' % userRegressionFile)  # driver file
-        f.write('y\n')  # apply auxillary arg (output name)
-        outVarNames = data.getOutputNames()
-        outName = outVarNames[y - 1]
-        if data.getNamesIncludeNodes():
-            index = outName.index('.')
-            outName = outName[index + 1:]
-        f.write('%s\n' % outName)  # output name
-    else:  # ... standard ...
-        if rsIndex == ResponseSurfaces.LEGENDRE:
-            f.write('%d\n' % legendreOrder)
-        elif setMARS:
-            if rsIndex == ResponseSurfaces.MARSBAG:
-                f.write('0\n')  # mean (0) or median (1) mode
-                f.write('100\n')  # number of MARS instantiations [range:10-5000, default=100]
-                ### TO DO: revert back to 100 for deployment
-            f.write('%d\n' % marsBases)
-            f.write('%d\n' % marsInteractions)
-            if rsIndex == ResponseSurfaces.MARS:
-                f.write('%s\n' % marsNormOutputs)
-    f.write('load %s\n' % rseval_fname)
-    cmd = 'rseval_m'
+
+    cmd = 'rseval'
     f.write('%s\n' % cmd)
-    f.write('n\n')  # data taken from register
+    f.write('y\n')  # data taken from register
+    f.write('%s\n' % eval_fname)
     f.write('y\n')  # do fuzzy evaluation
-    f.write('n\n')  # do not write data to file
+    f.write('y\n')  # write data to file
     f.write('quit\n')
     f.seek(0)
 
@@ -248,15 +192,48 @@ def dataImputation(fname, xtest, y, rsMethodName, rsOptions=None, userRegression
     if error:
         return None
 
-    # parse output for prediction
-    ytest = []
-    mres = re.findall(r'Interpolated Point\s*\d*:\s*output\s*\d*\s*=\s*(\S*)', out)
-    if mres:
-        ytest.append(mres[0])
-    mres = re.findall(r'stdev\s*=\s*(\S*)', out)
-    if mres:
-        ytest.append(mres[0][:-1])  # skip last character, which is a parenthesis
-
-    return ytest
+    outfile = 'eval_sample'
+    assert(os.path.exists(outfile))
+    return outfile
 
 
+def readEvalSample(fileName):
+    f = open(fileName, 'r')
+    lines = f.readlines()
+    f.close()
+
+    # remove empty lines
+    lines = [line for line in lines if len(line.strip()) > 0]
+
+    # ignore text preceded by '%'
+    c = '%'
+    lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
+    nlines = len(lines)
+
+    # process header
+    k = 0
+    header = lines[k]
+    nums = header.split()
+    numSamples = int(nums[0])
+    numInputs = int(nums[1])
+    numOutputs = 0
+    if len(nums) == 3:
+        numOutputs = int(nums[2])
+
+    # process samples
+    data = [None] * numSamples
+    for i in range(nlines - k - 1):
+        line = lines[i + k + 1]
+        nums = line.split()
+        data[i] = [float(x) for x in nums]
+
+    # split samples
+    data = np.array(data)
+    inputData = data[:, :numInputs]
+    inputArray = np.array(inputData, dtype=float, ndmin=2)
+    outputArray = None
+    if numOutputs:
+        outputData = data[:, numInputs:]
+        outputArray = np.array(outputData, dtype=float, ndmin=2)
+
+    return inputArray, outputArray, numInputs, numOutputs

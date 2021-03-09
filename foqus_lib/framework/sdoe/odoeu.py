@@ -21,6 +21,7 @@ def getSampleShape(data):
     ncols = data.getNumInputs()
     return nrows, ncols
 
+
 def rseval(rsdata, pdata, cdata, rstypes):
     # rsdata: SampleData containing the RS training data
     # pdata: SampleData containing the sample representing the prior over uncertain variables
@@ -72,12 +73,11 @@ def rseval(rsdata, pdata, cdata, rstypes):
     f.seek(0)
 
     # invoke psuade
-    os.chdir(dname)
     out, error = Common.invokePsuade(f)
     if error:
         return None
 
-    outfile = os.path.join(dname, 'odoeu_rseval.out')
+    outfile = 'odoeu_rseval.out'
     assert(os.path.exists(outfile))
     return outfile
 
@@ -169,7 +169,6 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     f.seek(0)
 
     # invoke psuade
-    os.chdir(dname)
     out, error = Common.invokePsuade(f)
     if error:
         return None

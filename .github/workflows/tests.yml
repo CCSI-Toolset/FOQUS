@@ -98,6 +98,7 @@ jobs:
         env:
           gui_dir: ./gui_testing
           # QT_QPA_PLATFORM: minimal
+          QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |
           mkdir -p "$gui_dir"

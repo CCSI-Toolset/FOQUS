@@ -93,7 +93,7 @@ jobs:
         if: contains(matrix.os, 'ubuntu')
         run: |
           sudo apt-get --quiet update
-          sudo apt-get --quiet --yes install herbstluftwm
+          sudo apt-get --quiet --yes install libxkbcommon0 libxkbcommon-x11-0
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing

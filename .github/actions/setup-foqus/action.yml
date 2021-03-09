@@ -13,7 +13,7 @@ runs:
   steps:
     - name: Install FOQUS and dependencies using pip
       shell: bash -l {0}
-      run:
+      run: |
         echo '::group::Output of "pip install" command'
         ${{ inputs.pip-install-command }} ${{ inputs.pip-install-target}}
         echo '::endgroup::'

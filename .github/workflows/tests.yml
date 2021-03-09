@@ -76,8 +76,8 @@ jobs:
           # - '3.9'
         os:
           - ubuntu-18.04
-          # - windows-latest
-          # - macos-latest
+          - windows-latest
+          - macos-latest
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -89,10 +89,6 @@ jobs:
         uses: ./.github/actions/setup-foqus
         with:
           pip-install-target: -r requirements-dev.txt
-      - name: Set up environment for GUI tests
-        run: |
-          sudo apt-get update --quiet
-          sudo apt-get install --yes xvfb
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing

@@ -12,7 +12,7 @@ runs:
   using: composite
   steps:
     - name: Install FOQUS and dependencies using pip
-      shell: bash -i {0}
+      shell: bash -l {0}
       run:
         echo '::group::Output of "pip install" command'
         ${{ inputs.pip-install-command }} ${{ inputs.pip-install-target}}
@@ -24,6 +24,6 @@ runs:
         pip show ccsi-foqus
         echo '::endgroup::'
     - name: Install psuade-lite using Conda
-      shell: bash -i {0}
+      shell: bash -l {0}
       run: |
         conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite

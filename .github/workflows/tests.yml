@@ -27,8 +27,8 @@ on:
 
 defaults:
   run:
-    # the -i flag is needed for the Conda environment to be activated properly
-    shell: bash -i {0}
+    # the -l flag is needed for the Conda environment to be activated properly
+    shell: bash -l {0}
 
 jobs:
   pytest:

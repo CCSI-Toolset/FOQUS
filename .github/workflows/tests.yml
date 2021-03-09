@@ -75,7 +75,7 @@ jobs:
           # - '3.8'
           # - '3.9'
         os:
-          - ubuntu-18.04
+          - ubuntu-20.04
           - windows-latest
           - macos-latest
     steps:
@@ -89,6 +89,11 @@ jobs:
         uses: ./.github/actions/setup-foqus
         with:
           pip-install-target: -r requirements-dev.txt
+      - name: Set up GUI test environment
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          sudo apt-get --quiet update
+          sudo apt-get --quiet --yes install herbstluftwm
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing

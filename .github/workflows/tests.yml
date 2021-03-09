@@ -1,0 +1,79 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - main
+      - '*_rel'
+  schedule:
+    # run daily at 5:00 am UTC (12 am ET/9 pm PT)
+    - cron: '0 5 * * *'
+  repository_dispatch:
+    # to run this, send a POST API call at repos/IDAES/idaes-pse/dispatches with the specified event_type
+    # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_tests`
+    types: [ci_run_tests]
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git hash (optional)
+        required: false
+  pull_request:
+    types:
+      - opened
+      # ready_for_review occurs when a draft PR is turned to non-draft
+      - ready_for_review
+      # synchronize occurs whenever commits are pushed to the PR branch
+      - synchronize
+
+defaults:
+  run:
+    # the -i flag is needed for the Conda environment to be activated properly
+    shell: bash -i {0}
+
+jobs:
+  pytest:
+    name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          # - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+        os:
+          - ubuntu-18.04
+          - windows-latest
+          - macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: ccsi-foqus
+          python-version: ${{ matrix.python-version }}
+      - name: Set up FOQUS
+        uses: ./.github/actions/setup-foqus
+        with:
+          pip-install-target: -r requirements-dev.txt
+      - name: Run pytest with the default options
+        run: |
+          pytest -v
+  pylint:
+    name: pylint (py${{ matrix.python-version }})
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: ./.github/actions/pylint

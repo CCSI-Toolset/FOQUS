@@ -31,8 +31,8 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  pytest:
-    name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
+  run-tests:
+    name: Run tests (py${{ matrix.python-version }}/${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -57,9 +57,17 @@ jobs:
         uses: ./.github/actions/setup-foqus
         with:
           pip-install-target: -r requirements-dev.txt
-      - name: Run pytest with the default options
+      - name: Run pytest (default options)
         run: |
           pytest -v
+      - name: Run FOQUS workflow in batch mode
+        run: |
+          foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
+      - name: Run GUI tests
+        run: |
+          gui_dir="./gui_testing"
+          mkdir -p "$gui_dir"
+          foqus -s test/system_test/ui_test_01.py --working_dir "$gui_dir"
   pylint:
     name: pylint (py${{ matrix.python-version }})
     runs-on: ubuntu-20.04

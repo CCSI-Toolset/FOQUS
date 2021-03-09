@@ -77,3 +77,14 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       - uses: ./.github/actions/pylint
+        name: Run pylint (action)
+  docs:
+    name: Build docs
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - uses: ./.github/actions/build-docs
+        name: Build docs (action)

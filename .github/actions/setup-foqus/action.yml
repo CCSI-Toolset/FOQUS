@@ -20,8 +20,8 @@ runs:
         echo '::group::Output of "pip list"'
         pip list
         echo '::endgroup::'
-        echo '::group::Output of "pip show ccsi-foqus PyQt5"'
-        pip show ccsi-foqus
+        echo '::group::Output of "pip show" command'
+        pip show ccsi-foqus PyQt5
         echo '::endgroup::'
     - name: Install psuade-lite using Conda
       shell: bash -l {0}

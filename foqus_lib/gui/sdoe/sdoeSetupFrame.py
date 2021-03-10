@@ -635,7 +635,6 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         res = Results()
         res.sdoe_add_result(data)
         self.dat.sdoeFilterResultsList.append(res)
-        # shutil.copy(fileName, self.dname)
 
         # Update table
         self.updateSimTable()

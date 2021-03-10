@@ -14,7 +14,7 @@ on:
 
 jobs:
   user-install-run:
-    name: Install and run FOQUS as a user would (py${{ matrix.python-version }}/${{ matrix.os }})
+    name: User-style install/run (${{ matrix.foqus-release }}/${{ matrix.os }}/py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -25,10 +25,12 @@ jobs:
           # - '3.8'
           # - '3.9'
         os:
-          # - ubuntu-18.04
+          - ubuntu-18.04
           - ubuntu-20.04
-          # - windows-2019
-          # - macos-10.15
+          - windows-2019
+          - macos-10.15
+        foqus-release:
+          - '3.9.0'
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
@@ -50,7 +52,7 @@ jobs:
         shell: bash -l {0}
         env:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
-          release: '3.9.0'
+          release: ${{ matrix.foqus-release }}
         run: |
           wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
           unzip -q examples.zip

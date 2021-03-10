@@ -51,11 +51,11 @@ jobs:
       - name: Download and test examples
         shell: bash -l {0}
         env:
-          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
+          GH_REPO: ${{ github.repository }}
           release: ${{ matrix.foqus-release }}
         run: |
-          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
-          unzip -q examples.zip
+          gh release download "$release" '*examples*.zip'
+          unzip -q *.zip
           echo '::group::Content of examples directory'
           ls -Ralh "$PWD"/examples/
           echo '::endgroup::'

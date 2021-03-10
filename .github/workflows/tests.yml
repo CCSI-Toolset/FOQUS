@@ -38,14 +38,14 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          # - '3.6'
+          - '3.6'
           - '3.7'
           # - '3.8'
           # - '3.9'
         os:
           - ubuntu-18.04
-          - windows-latest
-          - macos-latest
+          - windows-2019
+          - macos-10.15
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -70,14 +70,14 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          # - '3.6'
+          - '3.6'
           - '3.7'
           # - '3.8'
           # - '3.9'
         os:
           - ubuntu-20.04
-          - windows-latest
-          - macos-latest
+          - windows-2019
+          - macos-10.15
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -96,7 +96,8 @@ jobs:
       - name: Run GUI tests
         env:
           gui_dir: ./gui_testing
-          QT_DEBUG_PLUGINS: '1'
+          # uncomment this to debug Qt initialization errors
+          # QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |
           mkdir -p "$gui_dir"

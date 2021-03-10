@@ -35,8 +35,27 @@ jobs:
       - name: Install FOQUS in a Conda env (user mode)
         shell: bash -l {0}
         run: |
+          echo '::group::Output of conda create/activate/install'
           conda create --name ccsi-foqus --quiet --yes python=${{ matrix.python-version }}
           conda activate ccsi-foqus
+          conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite
+          echo '::endgroup::'
+          echo '::group::Output of pip install/list/show'
           pip install --progress-bar off ccsi-foqus
           pip list
+          pip show ccsi-foqus PyQt5
+          echo '::endgroup::'
           foqus --help
+      - name: Download and test examples
+        shell: bash -l {0}
+        env:
+          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
+          examples_release: '3.9.0'
+        run: |
+          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
+          unzip -q examples.zip
+          echo '::group::Content of examples directory'
+          ls -Ralh "$PWD"/examples/
+          echo '::endgroup::'
+          conda activate ccsi-foqus
+          foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus

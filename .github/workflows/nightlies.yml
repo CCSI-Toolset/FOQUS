@@ -50,7 +50,7 @@ jobs:
         shell: bash -l {0}
         env:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
-          examples_release: '3.9.0'
+          release: '3.9.0'
         run: |
           wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
           unzip -q examples.zip

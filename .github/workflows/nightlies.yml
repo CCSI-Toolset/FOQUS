@@ -1,0 +1,42 @@
+name: Nightlies
+
+on:
+  # push is just here while testing
+  push:
+  schedule:
+    # run daily at 5:00 am UTC (12 am ET/9 pm PT)
+    - cron: '0 5 * * *'
+  repository_dispatch:
+    # to run this, send a POST API call at repos/<user>/<repo>/dispatches with the specified event_type
+    # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
+    types: [ci_run_nightlies]
+  workflow_dispatch:
+
+jobs:
+  user-install-run:
+    name: Install and run FOQUS as a user would (py${{ matrix.python-version }}/${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+        os:
+          # - ubuntu-18.04
+          - ubuntu-20.04
+          # - windows-2019
+          # - macos-10.15
+    steps: 
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+      - name: Install FOQUS in a Conda env (user mode)
+        shell: bash -l {0}
+        run: |
+          conda create --name ccsi-foqus --quiet --yes python=${{ matrix.python-version }}
+          conda activate ccsi-foqus
+          pip install --progress-bar off ccsi-foqus
+          pip list
+          foqus --help

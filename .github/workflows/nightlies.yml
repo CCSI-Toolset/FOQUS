@@ -1,8 +1,6 @@
 name: Nightlies
 
 on:
-  # push is just here while testing
-  push:
   schedule:
     # run daily at 5:00 am UTC (12 am ET/9 pm PT)
     - cron: '0 5 * * *'

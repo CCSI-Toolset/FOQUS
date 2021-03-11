@@ -48,14 +48,18 @@ jobs:
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
           foqus --help
+      - name: Install download tools
+        if: contains(matrix.os, 'windows')
+        run:
+          choco install wget
       - name: Download and test examples
         shell: bash -l {0}
         env:
-          GH_REPO: ${{ github.repository }}
+          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.foqus-release }}
         run: |
-          gh release download "$release" '*examples*.zip'
-          unzip -q *.zip
+          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
+          unzip -q examples.zip
           echo '::group::Content of examples directory'
           ls -Ralh "$PWD"/examples/
           echo '::endgroup::'

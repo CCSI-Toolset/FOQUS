@@ -3,7 +3,7 @@ name: Tests
 on:
   push:
     branches:
-      - main
+      - master
       - '*_rel'
   repository_dispatch:
     # to run this, send a POST API call at repos/<user>/<repo>/dispatches with the specified event_type

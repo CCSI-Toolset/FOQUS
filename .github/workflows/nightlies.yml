@@ -14,7 +14,7 @@ on:
 
 jobs:
   user-install-run:
-    name: User-style install/run (${{ matrix.foqus-release }}/${{ matrix.os }}/py${{ matrix.python-version }})
+    name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -29,13 +29,23 @@ jobs:
           - ubuntu-20.04
           - windows-2019
           - macos-10.15
-        foqus-release:
+        foqus-install-target:
+          - stable
+          - master
+        examples-release:
           - '3.9.0'
+        include:
+          - foqus-install-target: stable
+            pip-install-target: ccsi-foqus
+          - foqus-install-target: master
+            pip-install-target: https://github.com/${{ github.repository }}/archive/master.zip
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
       - name: Install FOQUS in a Conda env (user mode)
         shell: bash -l {0}
+        env:
+          pip_install_target: ${{ pip-install-target }}
         run: |
           echo '::group::Output of conda create/activate/install'
           conda create --name ccsi-foqus --quiet --yes python=${{ matrix.python-version }}
@@ -43,20 +53,20 @@ jobs:
           conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite
           echo '::endgroup::'
           echo '::group::Output of pip install/list/show'
-          pip install --progress-bar off ccsi-foqus
+          pip install --progress-bar off "$pip_install_target"
           pip list
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
           foqus --help
-      - name: Install download tools
+      - name: Install download tools (Windows)
         if: contains(matrix.os, 'windows')
         run:
           choco install wget
-      - name: Download and test examples
+      - name: Download and test examples (${{ matrix.examples-release }})
         shell: bash -l {0}
         env:
-          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
-          release: ${{ matrix.foqus-release }}
+          base_url: https://github.com/${{ github.repository }}/releases/download
+          release: ${{ matrix.examples-release }}
         run: |
           wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
           unzip -q examples.zip

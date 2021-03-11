@@ -38,7 +38,7 @@ jobs:
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
           - foqus-install-target: master
-            pip-install-target: https://github.com/${{ github.repository }}/archive/master.zip
+            pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
@@ -66,7 +66,7 @@ jobs:
       - name: Download and test examples (${{ matrix.examples-release }})
         shell: bash -l {0}
         env:
-          base_url: https://github.com/${{ github.repository }}/releases/download
+          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.examples-release }}
         run: |
           wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip

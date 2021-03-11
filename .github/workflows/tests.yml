@@ -51,8 +51,10 @@ jobs:
         with:
           pip-install-target: -r requirements-dev.txt
       - name: Run pytest (default options)
+        # TODO: add coverage
         run: |
           pytest -v
+        # TODO: add Codecov
       - name: Run FOQUS workflow in batch mode
         run: |
           foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus

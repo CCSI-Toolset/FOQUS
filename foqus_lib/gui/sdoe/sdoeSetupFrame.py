@@ -64,6 +64,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     fileCol = 2
     visualizeCol = 3
 
+    imputedData = False
     dname = os.path.join(os.getcwd(), 'SDOE_files')
     odoe_dname = os.path.join(os.getcwd(), 'ODOE_files')
 
@@ -269,6 +270,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         cand_csv_list = []
         for cand in cand_list:
             cand_path = os.path.join(self.dname, cand.getModelName())
+            if 'imputed' in cand_path:
+                self.imputedData = True
+            else:
+                self.imputedData = False
             if not os.path.exists(cand_path):
                 cand.writeToCsv(cand_path, inputsOnly=True)
             cand_csv_list.append(cand_path)
@@ -276,6 +281,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         hist_csv_list = []
         for hist in hist_list:
             hist_path = os.path.join(self.dname, hist.getModelName())
+            if 'imputed' in hist_path:
+                self.imputedData = True
+            else:
+                self.imputedData = False
             if not os.path.exists(hist_path):
                 hist.writeToCsv(hist_path, inputsOnly=True)
             hist_csv_list.append(hist_path)
@@ -835,6 +844,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                         'Input-Response Space Filling (IRSF)'])
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
+        if self.imputedData:
+            combo.model().item(0).setEnabled(False)
+            combo.setCurrentIndex(1)
 
         combo.setToolTip("<ul>"
                          "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "

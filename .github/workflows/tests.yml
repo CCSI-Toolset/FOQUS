@@ -1,0 +1,127 @@
+name: Tests
+
+on:
+  push:
+    branches:
+      - master
+      - '*_rel'
+  repository_dispatch:
+    # to run this, send a POST API call at repos/<user>/<repo>/dispatches with the specified event_type
+    # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_tests`
+    types: [ci_run_tests]
+  workflow_dispatch:
+  pull_request:
+    types:
+      - opened
+      # ready_for_review occurs when a draft PR is turned to non-draft
+      - ready_for_review
+      # synchronize occurs whenever commits are pushed to the PR branch
+      - synchronize
+
+defaults:
+  run:
+    # the -l flag is needed for the Conda environment to be activated properly
+    shell: bash -l {0}
+
+jobs:
+  run-tests:
+    name: Run tests (py${{ matrix.python-version }}/${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+        os:
+          - ubuntu-20.04
+          - windows-2019
+          - macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: ccsi-foqus
+          python-version: ${{ matrix.python-version }}
+      - name: Set up FOQUS
+        uses: ./.github/actions/setup-foqus
+        with:
+          pip-install-target: -r requirements-dev.txt
+      - name: Run pytest (default options)
+        # TODO: add coverage
+        run: |
+          pytest -v
+        # TODO: add Codecov
+      - name: Run FOQUS workflow in batch mode
+        run: |
+          foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
+  gui-tests:
+    name: GUI tests (py${{ matrix.python-version }}/${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+        os:
+          - ubuntu-20.04
+          - windows-2019
+          - macos-10.15
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          activate-environment: ccsi-foqus
+          python-version: ${{ matrix.python-version }}
+      - name: Set up FOQUS
+        uses: ./.github/actions/setup-foqus
+        with:
+          pip-install-target: -r requirements-dev.txt
+      - name: Set up GUI test environment
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
+      - name: Run GUI tests
+        env:
+          gui_dir: ./gui_testing
+          # uncomment this to debug Qt initialization errors
+          # QT_DEBUG_PLUGINS: '1'
+          MPLBACKEND: AGG
+        run: |
+          mkdir -p "$gui_dir"
+          foqus -s test/system_test/ui_test_01.py --working_dir "$gui_dir"
+  pylint:
+    name: pylint (py${{ matrix.python-version }})
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+      - uses: ./.github/actions/pylint
+        name: Run pylint (action)
+  docs:
+    name: Build docs
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.7'
+      - uses: ./.github/actions/build-docs
+        name: Build docs (action)

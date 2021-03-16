@@ -1,6 +1,6 @@
 [![Documentation Status](https://readthedocs.org/projects/foqus/badge/?version=latest)](https://foqus.readthedocs.io/en/latest/?badge=latest)
-[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/g0gvhmlwsv4a4y63?svg=true)](https://ci.appveyor.com/project/ksbeattie/foqus)
-[![CircleCI Build Status](https://circleci.com/gh/CCSI-Toolset/FOQUS.svg?style=svg)](https://circleci.com/gh/CCSI-Toolset/FOQUS)
+[![Tests](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/tests.yml/badge.svg)](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/tests.yml)
+[![Nightlies](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/nightlies.yml/badge.svg)](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/nightlies.yml)
 
 # FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
 Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*

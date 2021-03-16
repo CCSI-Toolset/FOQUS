@@ -1,0 +1,76 @@
+name: Nightlies
+
+on:
+  schedule:
+    # run daily at 5:00 am UTC (12 am ET/9 pm PT)
+    - cron: '0 5 * * *'
+  repository_dispatch:
+    # to run this, send a POST API call at repos/<user>/<repo>/dispatches with the specified event_type
+    # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
+    types: [ci_run_nightlies]
+  workflow_dispatch:
+
+jobs:
+  user-install-run:
+    name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version:
+          - '3.6'
+          - '3.7'
+          # - '3.8'
+          # - '3.9'
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+          - windows-2019
+          - macos-10.15
+        foqus-install-target:
+          - stable
+          - master
+        examples-release:
+          - '3.9.0'
+        include:
+          - foqus-install-target: stable
+            pip-install-target: ccsi-foqus
+          - foqus-install-target: master
+            pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
+    steps: 
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+      - name: Install FOQUS in a Conda env (user mode)
+        shell: bash -l {0}
+        env:
+          py_ver: ${{ matrix.python-version }}
+          pip_install_target: ${{ matrix.pip-install-target }}
+        run: |
+          echo '::group::Output of conda create/activate/install'
+          conda create --name ccsi-foqus --quiet --yes python="$py_ver"
+          conda activate ccsi-foqus
+          conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite
+          echo '::endgroup::'
+          echo '::group::Output of pip install/list/show'
+          pip install --progress-bar off "$pip_install_target"
+          pip list
+          pip show ccsi-foqus PyQt5
+          echo '::endgroup::'
+          foqus --help
+      - name: Install download tools (Windows)
+        if: contains(matrix.os, 'windows')
+        run:
+          choco install wget
+      - name: Download and test examples (${{ matrix.examples-release }})
+        shell: bash -l {0}
+        env:
+          base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
+          release: ${{ matrix.examples-release }}
+        run: |
+          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
+          unzip -q examples.zip
+          echo '::group::Content of examples directory'
+          ls -Ralh "$PWD"/examples/
+          echo '::endgroup::'
+          conda activate ccsi-foqus
+          foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus

@@ -1,0 +1,20 @@
+name: Run pylint
+description: Run pylint
+runs:
+  using: composite
+  steps:
+    - name: Install pylint and dependencies
+      shell: bash
+      run: |
+        echo '::group::Output of "pip install" commands'
+        pip_cmd="pip --no-cache-dir install --progress-bar off"
+        $pip_cmd --upgrade pip wheel setuptools
+        $pip_cmd -r requirements-dev.txt
+        echo '::endgroup::'
+    - name: Run pylint
+      shell: bash
+      run: |
+        echo '::group::Output of pylint'
+        pylint --rcfile=.pylint/pylintrc --disable=W,C,R,I foqus_lib/
+        echo '::endgroup::'
+

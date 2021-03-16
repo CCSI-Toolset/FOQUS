@@ -1,0 +1,31 @@
+name: Set up FOQUS
+description: Install FOQUS app and other tools needed for testing it
+inputs:
+  pip-install-target:
+    description: 'Command-line arguments and options to pass to the `pip install` command'
+    required: true
+  pip-install-command:
+    description: 'Command to use to for `pip install`'
+    required: false
+    default: pip --no-cache-dir install --progress-bar off
+runs:
+  using: composite
+  steps:
+    - name: Install FOQUS and dependencies using pip
+      shell: bash -l {0}
+      run: |
+        echo '::group::Output of "pip install" command'
+        ${{ inputs.pip-install-command }} ${{ inputs.pip-install-target}}
+        echo '::endgroup::'
+        echo '::group::Output of "pip list"'
+        pip list
+        echo '::endgroup::'
+        echo '::group::Output of "pip show" command'
+        pip show ccsi-foqus PyQt5
+        echo '::endgroup::'
+    - name: Install psuade-lite using Conda
+      shell: bash -l {0}
+      run: |
+        echo '::group::Output of "conda install psuade-lite"'
+        conda install --yes --quiet -c CCSI-Toolset -c conda-forge psuade-lite
+        echo '::endgroup::'

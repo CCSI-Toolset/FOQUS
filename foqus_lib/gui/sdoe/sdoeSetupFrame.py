@@ -246,7 +246,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
-        
+
+    def on_checkbox_changed_sdoe(self):
+        self.confirmButton.setEnabled(self.hasCandidates())
+
     def getEnsembleList(self):
         cand_list = []
         hist_list = []
@@ -688,7 +691,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         checkbox.setChecked(True)
         self.filesTable.setCellWidget(row, self.selCol, checkbox)
         checkbox.setProperty('row', row)
-        # checkbox.toggled.connect()
+        checkbox.toggled.connect(self.on_checkbox_changed_sdoe)
 
         # Create combo boxes for type column
         combo = QComboBox()

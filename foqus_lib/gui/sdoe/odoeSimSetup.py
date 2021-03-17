@@ -560,11 +560,12 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
+        nImpPts = 0
 
         filename = os.path.join(dirname, self.getData().getModelName())
         self.getData().writeToCsv(filename, inputsOnly=True)
 
-        dialog = sdoePreview(previewData, hname, dirname, usf, nusf, irsf, scatterLabel, self)
+        dialog = sdoePreview(previewData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     # Return data

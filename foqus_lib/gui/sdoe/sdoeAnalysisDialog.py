@@ -1020,7 +1020,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             irsf = None
 
         scatterLabel = 'Design Points'
-        dialog = sdoePreview(sdoeData, hname, dirname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = 0
+        dialog = sdoePreview(sdoeData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def loadFromConfigFile(self, config_file):

@@ -516,7 +516,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = previewData.getNumImputedPoints()
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def editAgg(self):
@@ -533,7 +534,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = 0
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def rsVal(self):
@@ -642,7 +644,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         trainData = np.concatenate((trainInput, trainOutput), axis=1)
         temp = np.concatenate((testInput, testOutput), axis=1)
         testData = np.delete(temp, -1, axis=1)
-
+        nImpPts = testData.shape[0]
         finalData = np.concatenate((trainData, testData), axis=0)
         df = pd.DataFrame(finalData, columns=colNames)
         fileName = os.path.join(self.dname, data.getModelName().split('.')[0] + '_{}_imputed.csv'.format(rs))
@@ -650,6 +652,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
         data.setSession(self.dat)
+        data.setNumImputedPoints(nImpPts)
         self.dat.sdoeSimList.append(data)
 
         res = Results()
@@ -1701,7 +1704,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = 0
+        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def candSelected(self):

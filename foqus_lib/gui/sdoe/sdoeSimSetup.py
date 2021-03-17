@@ -560,6 +560,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         nusf=None
         irsf = None
         scatterLabel = 'Candidates'
+        nImpPts = 0
 
         filename = os.path.join(dirname, self.getData().getModelName())
         self.getData().writeToCsv(filename, inputsOnly=True)
@@ -575,6 +576,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
             dirname,
             nusf,
             scatterLabel,
+            nImpPts,
             self
         )
         dialog.show()

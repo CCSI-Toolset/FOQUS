@@ -421,25 +421,33 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
                 self.unfreeze()
                 return
-        data.setSession(self.dat)
-        self.dat.sdoeSimList.append(data)
+        dataInfo = self.dataInfo(data)
+        if dataInfo:
+            QMessageBox.critical(self, 'Incorrect format',
+                                 'File has missing values in one or more of the input columns.\n'
+                                 'Please correct the issue or load a different file.')
+            self.unfreeze()
+            return
+        else:
+            data.setSession(self.dat)
+            self.dat.sdoeSimList.append(data)
 
-        res = Results()
-        res.sdoe_add_result(data)
-        self.dat.sdoeFilterResultsList.append(res)
-        shutil.copy(fileName, self.dname)
+            res = Results()
+            res.sdoe_add_result(data)
+            self.dat.sdoeFilterResultsList.append(res)
+            shutil.copy(fileName, self.dname)
 
-        # Update table
-        self.updateSimTable()
-        self.dataTabs.setEnabled(True)
-        self.unfreeze()
+            # Update table
+            self.updateSimTable()
+            self.dataTabs.setEnabled(True)
+            self.unfreeze()
 
     def updateSimTable(self):
         QApplication.processEvents()
@@ -662,6 +670,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def missingData(self, data):
         arr = data.getInputData()
         return np.sum(np.isnan(arr)) > 0
+
+    def dataInfo(self, data):
+        arr = data.getInputData()
+        warningMessage = '{} candidate file info:\n\n'.format(data.getModelName())
+        for i in range(data.getNumInputs()):
+            warningMessage += 'Missing values for column "{}": {}\n'.format(data.getInputNames()[i],
+                                                                            sum(np.isnan(arr)[:, i]))
+        msgBox = QMessageBox()
+        msgBox.setText(warningMessage)
+        msgBox.exec_()
+        return np.sum(np.isnan(arr[:, 0:-1])) > 0
 
     def addDataToSimTable(self, data):
         if data is None:
@@ -1388,7 +1407,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
@@ -1563,7 +1582,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
@@ -1816,7 +1835,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(

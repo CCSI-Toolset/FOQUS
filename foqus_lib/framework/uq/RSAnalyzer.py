@@ -17,9 +17,11 @@ from .ResponseSurfaces import ResponseSurfaces
 from .RawDataAnalyzer import RawDataAnalyzer
 from .Plotter import Plotter
 
+
 class RSAnalyzer:
 
     dname = os.getcwd() + os.path.sep + 'RSAnalyzer_files'
+    Common.initFolder(dname)
 
     @staticmethod
     def writeRSdata(outfile, y, data, **kwargs):

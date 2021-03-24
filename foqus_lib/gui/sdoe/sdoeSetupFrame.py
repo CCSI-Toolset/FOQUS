@@ -647,7 +647,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nImpPts = testData.shape[0]
         finalData = np.concatenate((trainData, testData), axis=0)
         df = pd.DataFrame(finalData, columns=colNames)
-        fileName = os.path.join(self.dname, data.getModelName().split('.')[0] + '_{}_imputed.csv'.format(rs))
+        fileName = os.path.join(self.dname, data.getModelName().split('.csv')[0] + '_{}_imputed.csv'.format(rs))
         df_utils.write(fileName, df)
 
         data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)

@@ -678,8 +678,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         arr = data.getInputData()
         warningMessage = '{} candidate file info:\n\n'.format(data.getModelName())
         for i in range(data.getNumInputs()):
-            warningMessage += 'Missing values for column "{}": {}\n'.format(data.getInputNames()[i],
-                                                                            sum(np.isnan(arr)[:, i]))
+            warningMessage += 'Missing values for column "{}": {}/{}\n'.format(data.getInputNames()[i],
+                                                                               sum(np.isnan(arr)[:, i]),
+                                                                               data.getNumSamples())
         msgBox = QMessageBox()
         msgBox.setText(warningMessage)
         msgBox.exec_()

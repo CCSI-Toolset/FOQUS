@@ -32,8 +32,6 @@ try:
 except:
     pass
 
-if __name__ == '__main__':
-    from user_plugins import *
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge,edgeConnect

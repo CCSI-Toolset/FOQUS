@@ -304,6 +304,13 @@ class LocalExecutionModule(object):
 
     @staticmethod
     def readDataFromCsvFile(fileName, askForNumInputs=True):
+        def is_number(s):
+            try:
+                float(s)
+                return True
+            except ValueError:
+                return False
+
         with open(fileName, 'rt') as csvfile:
             # Detect dialect of csv file
             dialect = csv.Sniffer().sniff(csvfile.readline())
@@ -337,9 +344,10 @@ class LocalExecutionModule(object):
             runState = []
             for row in reader:
                 while row[-1] == '': row.pop()
+                row = [float(v) if is_number(v) else 'nan' for v in row]
+
                 if not numInputs and not askForNumInputs:
                     numInputs = len(row)
-                row = list(map(float, row))
                 inputVals.append(row[:numInputs])
                 outputVals.append(row[numInputs:])
                 if len(headers) > len(row):
@@ -348,8 +356,9 @@ class LocalExecutionModule(object):
                     runState.append(0)
                 else:
                     runState.append(1)
+
         inputArray = numpy.array(inputVals, dtype=float, ndmin=2)
-        outputArray = numpy.array(outputVals, dtype = float, ndmin = 2)
+        outputArray = numpy.array(outputVals, dtype=float, ndmin=2)
         return inputArray, outputArray, headers[:numInputs], headers[numInputs:], runState
 
     @staticmethod

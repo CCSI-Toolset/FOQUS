@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1440</width>
-    <height>855</height>
+    <width>1920</width>
+    <height>1035</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -101,7 +101,7 @@
       <item>
        <widget class="QStackedWidget" name="sdoePages">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_4">
@@ -243,6 +243,11 @@ selection-color: rgb(0, 0, 0);</string>
                  </column>
                  <column>
                   <property name="text">
+                   <string>Select</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
                    <string>File Type</string>
                   </property>
                  </column>
@@ -254,6 +259,31 @@ selection-color: rgb(0, 0, 0);</string>
                  <column>
                   <property name="text">
                    <string>File Name</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Response Surface</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>(cont'd)</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Validate RS</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Confirm RS</string>
+                  </property>
+                 </column>
+                 <column>
+                  <property name="text">
+                   <string>Impute Data</string>
                   </property>
                  </column>
                 </widget>
@@ -886,6 +916,12 @@ Candidate Set</string>
                    <property name="enabled">
                     <bool>false</bool>
                    </property>
+                   <property name="sizePolicy">
+                    <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+                     <horstretch>0</horstretch>
+                     <verstretch>0</verstretch>
+                    </sizepolicy>
+                   </property>
                    <property name="font">
                     <font>
                      <weight>50</weight>
@@ -908,6 +944,9 @@ Evaulation Set</string>
                    </property>
                    <property name="text">
                     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Candidate Set will be used as Evaluation Set&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                   </property>
+                   <property name="scaledContents">
+                    <bool>true</bool>
                    </property>
                    <property name="alignment">
                     <set>Qt::AlignCenter</set>
@@ -1541,7 +1580,7 @@ selection-color: rgb(0, 0, 0);</string>
  <connections/>
  <buttongroups>
   <buttongroup name="cand_buttonGroup"/>
-  <buttongroup name="eval_buttonGroup"/>
   <buttongroup name="sdoePages_buttonGroup"/>
+  <buttongroup name="eval_buttonGroup"/>
  </buttongroups>
 </ui>

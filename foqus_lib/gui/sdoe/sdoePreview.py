@@ -16,7 +16,7 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, parent=None):
+    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, parent=None):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
@@ -26,6 +26,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         self.nusf = nusf
         self.irsf = irsf
         self.scatterLabel = scatterLabel
+        self.nImpPts = nImpPts
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
         if count == 0:
@@ -119,5 +120,6 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         nusf = self.nusf
         irsf = self.irsf
         scatterLabel = self.scatterLabel
-        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf)
+        nImpPts = self.nImpPts
+        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf, nImpPts=nImpPts)
         self.setModal(True)

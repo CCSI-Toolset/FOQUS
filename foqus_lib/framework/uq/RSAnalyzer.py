@@ -17,9 +17,11 @@ from .ResponseSurfaces import ResponseSurfaces
 from .RawDataAnalyzer import RawDataAnalyzer
 from .Plotter import Plotter
 
+
 class RSAnalyzer:
 
     dname = os.getcwd() + os.path.sep + 'RSAnalyzer_files'
+    Common.initFolder(dname)
 
     @staticmethod
     def writeRSdata(outfile, y, data, **kwargs):
@@ -537,11 +539,16 @@ class RSAnalyzer:
         return None
 
     @staticmethod
-    def writeRSsample(fname, x, y=None, row=False):
+    def writeRSsample(fname, x, y=None, row=False, sdoe=False):
         
         d = ' '
         nSamples, nInputs = x.shape
-        header = '%d %d' % (nSamples, nInputs)
+        if sdoe:
+            header = 'PSUADE_BEGIN\n%d %d' % (nSamples, nInputs)
+            footer = 'PSUADE_END'
+        else:
+            header = '%d %d' % (nSamples, nInputs)
+            footer = ''
         z = x
         if row:
             z = np.concatenate((np.arange(1, nSamples+1)[:, np.newaxis], x), axis=1)
@@ -553,9 +560,9 @@ class RSAnalyzer:
             header = '%d %d %d' % (nSamples, nInputs, nOutputs)
             z = np.concatenate((x, y), axis=1)
         if row:
-            np.savetxt(fname, z, header=header, comments='', delimiter=d, fmt=format)
+            np.savetxt(fname, z, header=header, comments='', delimiter=d, fmt=format, footer=footer)
         else:
-            np.savetxt(fname, z, header=header, comments='', delimiter=d)
+            np.savetxt(fname, z, header=header, comments='', delimiter=d, footer=footer)
 
         return None
 
@@ -643,8 +650,7 @@ class RSAnalyzer:
         return rsdata
 
     @staticmethod
-    def pointEval(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None): 
-
+    def pointEval(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None):
         ### xtest should be an array of length N, where N is the number of variable inputs.
         ### xtest[i] should be a single-key dictionary: {'value':%f}
 

@@ -25,6 +25,8 @@ Running Remote Turbine on Your Own Computer
 For this tutorial, the FOQUS file is **Simple_flow.foqus**, and 
 this file is located in: **examples/tutorial_files/Flowsheets/Tutorial_5**
 
+.. note:: |examples_reminder_text|
+
 To run remote turbine on you own computer (e.g., if your
 computer has multiple processors):
 

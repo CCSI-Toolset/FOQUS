@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1339</width>
-    <height>861</height>
+    <width>1440</width>
+    <height>989</height>
    </rect>
   </property>
   <property name="font">
@@ -37,7 +37,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Ensemble Summary</string>
+      <string>Input Summary</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
       <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
@@ -69,7 +69,7 @@
         </row>
         <row>
          <property name="text">
-          <string>History File</string>
+          <string>Previous Data File</string>
          </property>
         </row>
         <row>
@@ -117,7 +117,7 @@
       </font>
      </property>
      <property name="title">
-      <string>Sequential Design of Experiments (SDOE) Set-up</string>
+      <string>Generate Design</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_5">
       <item>
@@ -129,6 +129,21 @@
           <bold>true</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Minimax&lt;/b&gt; selects design to minimize the maximum distance between design points (and previous data, if present) and any point in the input space.&lt;/li&gt;
+
+&lt;li&gt;&lt;b&gt;Maximin&lt;/b&gt; selects design to maximize the minimum distance between any two design points (and previous data, if present)&lt;/li&gt; 
+
+&lt;li&gt;&lt;b&gt;Recommendations:&lt;/b&gt; 
+&lt;br&gt;
+- Generate designs using both approaches and look at the FOQUS-provided summary plots to choose between them.
+&lt;br&gt;
+- If there is concern that any of the edge points in the candidate set are not viable options, minimax may be preferred.
+&lt;br&gt;
+- If the goal is to emphasize collecting data at the edges,  maximin may be preferred.&lt;/li&gt;
+&lt;/ul&gt;</string>
+        </property>
         <property name="title">
          <string>Optimality Method Selection</string>
         </property>
@@ -138,8 +153,7 @@
            <item row="0" column="1">
             <widget class="QRadioButton" name="Maximin_radioButton">
              <property name="toolTip">
-              <string>Maximize the distance
-between design points</string>
+              <string/>
              </property>
              <property name="text">
               <string>Maximin</string>
@@ -149,8 +163,7 @@ between design points</string>
            <item row="0" column="0">
             <widget class="QRadioButton" name="Minimax_radioButton">
              <property name="toolTip">
-              <string>Minimize how far design points
-are from any candidate point</string>
+              <string/>
              </property>
              <property name="text">
               <string>Minimax</string>
@@ -172,6 +185,13 @@ are from any candidate point</string>
           <pointsize>9</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Direct MWR&lt;/b&gt; uses rescaled original weights and preserves the shape of the original distribution.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Ranked MWR&lt;/b&gt; creates a uniformly spaced ordering of points from “least important” to “most important.” This results in an evenly spread flat histogram for the weights.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Recommendation:&lt;/b&gt; Generate designs using both choices and compare results to see which gives a better match for desired spacing throughout the input space.&lt;/li&gt;
+&lt;/ul&gt;</string>
+        </property>
         <property name="title">
          <string>Scaling Method</string>
         </property>
@@ -179,7 +199,7 @@ are from any candidate point</string>
          <item>
           <widget class="QRadioButton" name="Direct_radioButton">
            <property name="text">
-            <string>Direct MWR</string>
+            <string>Direct Maximum Weight Ratio</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -189,7 +209,7 @@ are from any candidate point</string>
          <item>
           <widget class="QRadioButton" name="Ranked_radioButton">
            <property name="text">
-            <string>Ranked MWR</string>
+            <string>Ranked Maximum Weight Ratio</string>
            </property>
           </widget>
          </item>
@@ -206,7 +226,7 @@ are from any candidate point</string>
          </font>
         </property>
         <property name="title">
-         <string>Inputs</string>
+         <string/>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout">
          <item>
@@ -218,8 +238,11 @@ are from any candidate point</string>
              <bold>true</bold>
             </font>
            </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Multiple designs will be created, with the number of experimental runs ranging in size from selected Minimum Design Size to selected Maximum Design Size. &lt;/p&gt;&lt;p&gt;If only one design is desired, set the Minimum and Maximum Design Size to be equal.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="title">
-            <string>Design Specification</string>
+            <string>Desired Design Sizes</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
             <item row="1" column="2">
@@ -265,8 +288,7 @@ are from any candidate point</string>
             <item row="0" column="1">
              <widget class="QSpinBox" name="minDesignSize_spin">
               <property name="toolTip">
-               <string>Please select the
-smallest design size</string>
+               <string/>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -276,9 +298,7 @@ smallest design size</string>
             <item row="1" column="1">
              <widget class="QSpinBox" name="maxDesignSize_spin">
               <property name="toolTip">
-               <string>Select the largest design size.
-Minimize difference between min 
-and max for efficient computation.</string>
+               <string/>
               </property>
               <property name="minimum">
                <number>2</number>
@@ -300,21 +320,149 @@ and max for efficient computation.</string>
              <bold>true</bold>
             </font>
            </property>
-           <property name="title">
-            <string>Design Specification</string>
+           <property name="toolTip">
+            <string>&lt;ul&gt;
+&lt;li&gt;MWR controls how much difference there is in the density of the design points
+&lt;br&gt;
+- Smaller values of MWR (close to 1) result in a nearly uniform design
+&lt;br&gt;
+- Larger values result in a design with a higher density of design points for the higher weighted regions, and lower density for the lower weighted regions&lt;/li&gt;
+
+
+&lt;li&gt;&lt;b&gt;Recommendations&lt;/b&gt;
+&lt;br&gt;
+- Construct several designs, varying the &lt;b&gt;MWR values&lt;/b&gt;, and the &lt;b&gt;scaling method&lt;/b&gt;; compare the results&lt;/li&gt;
+&lt;/ul&gt;
+See FOQUS documentation for a more in-depth discussion about the role of the MWR value and the choice of scaling</string>
            </property>
-           <layout class="QGridLayout" name="gridLayout_5">
-            <item row="0" column="0">
-             <widget class="QLabel" name="designSize_static">
+           <property name="title">
+            <string>Desired Design Size and NUSF Weights</string>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_6">
+            <item>
+             <layout class="QHBoxLayout" name="horizontalLayout_6">
+              <item>
+               <widget class="QLabel" name="designSize_static">
+                <property name="text">
+                 <string>Design Size</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QSpinBox" name="designSize_spin">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimum">
+                 <number>2</number>
+                </property>
+                <property name="maximum">
+                 <number>99</number>
+                </property>
+                <property name="value">
+                 <number>6</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="MWR_static">
+                <property name="text">
+                 <string>MWR:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR1_comboBox">
+                <property name="currentIndex">
+                 <number>-1</number>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR2_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR3_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR4_comboBox"/>
+              </item>
+              <item>
+               <widget class="QComboBox" name="MWR5_comboBox"/>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+            <item>
+             <widget class="QLabel" name="mwr_static">
               <property name="text">
-               <string>Design Size</string>
+               <string>Create up to 5 different designs using different maximum weight ratios (MWRs).</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
               </property>
              </widget>
             </item>
-            <item row="0" column="1">
-             <widget class="QSpinBox" name="designSize_spin">
+           </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QGroupBox" name="rangeIRSF_groupBox">
+           <property name="font">
+            <font>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="title">
+            <string>Desired Design Size</string>
+           </property>
+           <layout class="QHBoxLayout" name="horizontalLayout_5">
+            <item>
+             <widget class="QLabel" name="designSizeIRSF_static">
+              <property name="font">
+               <font>
+                <weight>50</weight>
+                <bold>false</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Desgin Size</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QSpinBox" name="designSizeIRSF_spin">
               <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
@@ -322,55 +470,13 @@ and max for efficient computation.</string>
               <property name="minimum">
                <number>2</number>
               </property>
-              <property name="maximum">
-               <number>99</number>
-              </property>
               <property name="value">
-               <number>6</number>
+               <number>11</number>
               </property>
              </widget>
             </item>
-            <item row="0" column="9">
-             <spacer name="horizontalSpacer_2">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
-              </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>40</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
-            </item>
-            <item row="0" column="3">
-             <widget class="QLabel" name="MWR_static">
-              <property name="text">
-               <string>MWR:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="8">
-             <widget class="QComboBox" name="MWR5_comboBox"/>
-            </item>
-            <item row="0" column="6">
-             <widget class="QComboBox" name="MWR3_comboBox"/>
-            </item>
-            <item row="0" column="7">
-             <widget class="QComboBox" name="MWR4_comboBox"/>
-            </item>
-            <item row="0" column="4">
-             <widget class="QComboBox" name="MWR1_comboBox">
-              <property name="currentIndex">
-               <number>-1</number>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="5">
-             <widget class="QComboBox" name="MWR2_comboBox"/>
-            </item>
-            <item row="0" column="2">
-             <spacer name="horizontalSpacer_9">
+            <item>
+             <spacer name="horizontalSpacer_10">
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
@@ -387,6 +493,12 @@ and max for efficient computation.</string>
          </item>
          <item>
           <widget class="QTableWidget" name="inputSdoeTable">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="font">
             <font>
              <weight>50</weight>
@@ -394,14 +506,19 @@ and max for efficient computation.</string>
             </font>
            </property>
            <property name="toolTip">
-            <string>For each column, specify the type, and whether
-it should be part of the design.
-* Input: inputs to be considered for SDOE
-* Index: unique identifier for the input combination. Not required, but encouraged.
+            <string>&lt;ul&gt;
+&lt;li&gt;&lt;b&gt;Input&lt;/b&gt; (at least 1 required): These columns are used for space filling designs as an input.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Index&lt;/b&gt; (Recommended): This column will be used as a unique label for the design points selected from the candidate set. Column 1 is preset as the Index; if you do not want to include an Index uncheck Column 1&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Weight&lt;/b&gt; (1 required for NUSF only): This column is used to identify regions with higher and lower density.&lt;/li&gt;
+&lt;li&gt;&lt;b&gt;Response&lt;/b&gt; (IRSF only): response/output for space filling.&lt;/li&gt;
+&lt;/ul&gt;
+
+
+
 </string>
            </property>
            <property name="sizeAdjustPolicy">
-            <enum>QAbstractScrollArea::AdjustToContents</enum>
+            <enum>QAbstractScrollArea::AdjustIgnored</enum>
            </property>
            <column>
             <property name="text">
@@ -467,7 +584,7 @@ it should be part of the design.
               </font>
              </property>
              <property name="text">
-              <string>Test SDOE</string>
+              <string>Estimate Runtime</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -476,7 +593,22 @@ it should be part of the design.
            </item>
           </layout>
          </item>
+         <item>
+          <widget class="QLabel" name="testSdoe_static">
+           <property name="text">
+            <string>This performs a small number of iterations of the search algorithm to estimate timing for constructing the designs.</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+         </item>
         </layout>
+        <zorder>inputSdoeTable</zorder>
+        <zorder>range_groupBox</zorder>
+        <zorder>rangeNUSF_groupBox</zorder>
+        <zorder>rangeIRSF_groupBox</zorder>
+        <zorder>testSdoe_static</zorder>
        </widget>
       </item>
       <item>
@@ -489,7 +621,7 @@ it should be part of the design.
          </font>
         </property>
         <property name="title">
-         <string>SDOE Progress</string>
+         <string>SDoE Progress</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -519,6 +651,9 @@ it should be part of the design.
            </item>
            <item>
             <widget class="QSpinBox" name="sampleSize_spin">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;Select a suitable Number of Random Starts. Quality of designs created improve with more starts but will take longer to create. (Default value is n = 10&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000; vertical-align:super;&quot;&gt;5&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; font-size:12pt; color:#000000;&quot;&gt;.) Then Select “Run SDOE”&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
              <property name="minimum">
               <number>3</number>
              </property>
@@ -526,7 +661,7 @@ it should be part of the design.
               <number>7</number>
              </property>
              <property name="value">
-              <number>3</number>
+              <number>5</number>
              </property>
             </widget>
            </item>
@@ -639,7 +774,7 @@ it should be part of the design.
            <item>
             <widget class="QPushButton" name="runSdoeButton">
              <property name="text">
-              <string>Run SDOE</string>
+              <string>Run SDoE</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -652,7 +787,7 @@ it should be part of the design.
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="progressNUSF_groupBox">
+       <widget class="QGroupBox" name="progress2_groupBox">
         <property name="font">
          <font>
           <pointsize>9</pointsize>
@@ -661,7 +796,7 @@ it should be part of the design.
          </font>
         </property>
         <property name="title">
-         <string>SDOE Progress</string>
+         <string>SDoE Progress</string>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_4">
          <item>
@@ -680,7 +815,7 @@ it should be part of the design.
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="sampleSizeNUSF_static">
+            <widget class="QLabel" name="sampleSize2_static">
              <property name="text">
               <string>Number of Random Starts: n =</string>
              </property>
@@ -690,7 +825,11 @@ it should be part of the design.
             </widget>
            </item>
            <item>
-            <widget class="QComboBox" name="sampleSizeNUSF_comboBox"/>
+            <widget class="QComboBox" name="sampleSize_comboBox">
+             <property name="toolTip">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select a suitable Number of Random Starts. Quality of designs created improves with more starts but will take longer to create. (Default value is 50.) Then Select “Run SDOE”&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
            </item>
            <item>
             <spacer name="horizontalSpacer_12">
@@ -723,7 +862,7 @@ it should be part of the design.
             </spacer>
            </item>
            <item>
-            <widget class="QLabel" name="estimateNUSF_static">
+            <widget class="QLabel" name="estimate2_static">
              <property name="text">
               <string>Estimated Runtime:</string>
              </property>
@@ -733,7 +872,7 @@ it should be part of the design.
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="timeNUSF_dynamic">
+            <widget class="QLabel" name="time2_dynamic">
              <property name="text">
               <string>0 seconds</string>
              </property>
@@ -757,23 +896,23 @@ it should be part of the design.
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_infSave_5">
            <item>
-            <widget class="QLabel" name="designInfoNUSF_dynamic">
+            <widget class="QLabel" name="designInfo2_dynamic">
              <property name="text">
               <string>mwr = 5, n = 30</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QProgressBar" name="SDOENUSF_progressBar">
+            <widget class="QProgressBar" name="SDOE2_progressBar">
              <property name="value">
               <number>0</number>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="runSdoeNUSFButton">
+            <widget class="QPushButton" name="runSdoe2Button">
              <property name="text">
-              <string>Run SDOE</string>
+              <string>Run SDoE</string>
              </property>
              <property name="autoDefault">
               <bool>false</bool>
@@ -799,30 +938,26 @@ it should be part of the design.
      <property name="title">
       <string>Created Designs</string>
      </property>
-     <layout class="QGridLayout" name="gridLayout_3">
-      <item row="3" column="0">
-       <spacer name="horizontalSpacer_4">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
-      <item row="0" column="0" colspan="2">
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
        <widget class="QTableWidget" name="analysisTable">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="font">
          <font>
           <weight>50</weight>
           <bold>false</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;First Column:&lt;/span&gt; Criterion used to create design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Second Column:&lt;/span&gt; Number of runs in the design &lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Third Column:&lt;/span&gt; Selected number of random starts used to create the design&lt;/p&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Fourth Coumn:&lt;/span&gt;&lt;span style=&quot; font-family:'Calibri'; color:#000000;&quot;&gt;Minimax or maximin criterion for each design (Larger is better for maximin, smaller is better for minimax)&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="sizeAdjustPolicy">
-         <enum>QAbstractScrollArea::AdjustToContents</enum>
+         <enum>QAbstractScrollArea::AdjustIgnored</enum>
         </property>
         <column>
          <property name="text">
@@ -851,50 +986,91 @@ it should be part of the design.
         </column>
         <column>
          <property name="text">
-          <string>Plot SDOE</string>
+          <string>Plot SDoE</string>
          </property>
         </column>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QPushButton" name="deleteAnalysisButton">
-        <property name="text">
-         <string>Delete Design</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="analysisInstructions_static">
-        <property name="text">
-         <string>* All design results saved in SDOE output directory</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="loadAnalysisButton">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>Reload Design Specification</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1">
-       <widget class="QPushButton" name="orderAnalysisButton">
-        <property name="text">
-         <string>Order Design</string>
-        </property>
-        <property name="autoDefault">
-         <bool>false</bool>
-        </property>
-       </widget>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="2" column="2">
+         <widget class="QPushButton" name="deleteAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="analysisInstructions_static">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>* All design results saved in SDoE output directory</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QPushButton" name="loadAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="focusPolicy">
+           <enum>Qt::NoFocus</enum>
+          </property>
+          <property name="text">
+           <string>Go Back to Generate Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="2">
+         <widget class="QPushButton" name="orderAnalysisButton">
+          <property name="font">
+           <font>
+            <weight>50</weight>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="text">
+           <string>Order Design</string>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <spacer name="horizontalSpacer_4">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>40</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
       </item>
      </layout>
     </widget>

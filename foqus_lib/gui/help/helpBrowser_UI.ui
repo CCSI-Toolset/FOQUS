@@ -348,6 +348,42 @@
         </item>
        </layout>
       </widget>
+
+      <widget class="QWidget" name="tab">
+       <attribute name="title">
+        <string>FOQUS Cloud</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="CloudVerticalLayout">
+        <item>
+         <widget class="QTextBrowser" name="CloudLogView"/>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="CloudHorizontalLayout">
+          <item>
+           <widget class="QPushButton" name="statusCloudButton">
+            <property name="text">
+             <string>Status</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+       </layout>
+      </widget>
+
      </widget>
     </item>
    </layout>

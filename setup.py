@@ -12,7 +12,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.7.0dev0"
+default_version = "3.10.0dev0"
 
 try:
     version=subprocess.check_output(
@@ -47,14 +47,14 @@ dist = setup(
     packages = find_packages(),
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
-            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico']},
+            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
     include_package_data=True,
     scripts = [
-        'cloud/aws/foqus_worker.py',
         'cloud/aws/foqus_service.py'],
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",
+            "foqusPSUADEClient = foqus_lib.gui.ouu.foqusPSUADEClient:main",
         ],
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
@@ -64,7 +64,8 @@ dist = setup(
         "boto3",
         "cma",
         "matplotlib",
-        "mlrose_hiive",
+        "mlrose_hiive==2.1.3",
+        "mplcursors",
         "numpy",
         "pandas",
         "psutil",
@@ -75,6 +76,7 @@ dist = setup(
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
+        "websocket_client>=0.57"
         ],
 )
 

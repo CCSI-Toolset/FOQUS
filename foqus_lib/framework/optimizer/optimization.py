@@ -66,6 +66,9 @@ class optimization(threading.Thread):
         self.stop.set()
         self.msgQueue.put("User Interrupt")
 
+    def optimize(self):
+        raise NotImplementedError
+
     def run(self):
         '''
             This function overloads the Thread class function, and is

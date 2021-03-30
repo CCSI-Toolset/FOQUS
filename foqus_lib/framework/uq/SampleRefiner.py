@@ -7,6 +7,7 @@ from .SampleData import SampleData
 from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
 from .Plotter import Plotter
+from PyQt5 import QtWidgets
 
 class SampleRefiner:
 
@@ -22,8 +23,8 @@ class SampleRefiner:
         # warn user of prohibitively long runtime if nSamples > 1000
         if nSamples > 1000:
             msg = 'SampleRefiner: Adaptive sampling will take a long time with ensembles with greater than 1000 sample points. Proceed?'
-            QMessageBox.warning(None, 'SampleRefiner: Warning of Long Runtime', msg,
-                               QMessageBox.Ok, QMessageBox.Ok)
+            QtWidgets.QMessageBox.warning(None, 'SampleRefiner: Warning of Long Runtime', msg,
+                               QtWidgets.QMessageBox.Ok, QtWidgets.QMessageBox.Ok)
 
         # write script
         suffix = '.refine_%d' % (nSamples + nSamplesNew)

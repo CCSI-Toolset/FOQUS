@@ -136,7 +136,9 @@ class surrogate(threading.Thread):
         pass
 
     def location(self):
-        return os.path(os.path.dirname(__file__))
+        # WHY this is likely a real error reported by pylint,
+        # which suggests that this function is never run
+        return os.path(os.path.dirname(__file__))  # TODO pylint: disable=not-callable
 
     def saveInSession(self):
         self.dat.surrogateProblem[self.name] = self.saveDict()

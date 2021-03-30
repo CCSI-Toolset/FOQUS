@@ -1,0 +1,13 @@
+{
+  "body": "",
+  "headers": {
+    "Accept": "application/json"
+  },
+  "httpMethod": "POST",
+  "requestContext": {
+    "connectionId":"test1",
+    "authorizer": {
+      "principalId": "test"
+    }
+  }
+}

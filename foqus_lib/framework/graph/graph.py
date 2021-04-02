@@ -434,13 +434,13 @@ class Graph(threading.Thread):
         """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
-        self.xvector = self.input_vectorlist.createOldStyleDict()
-        self.fvector = self.output_vectorlist.createOldStyleDict()
+        # self.xvector = self.input_vectorlist.createOldStyleDict()
+        # self.fvector = self.output_vectorlist.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
         self.xnames = list(self.x.keys())  # get a list of input names
         self.fnames = list(self.f.keys())  # get a list of output names
-        self.xvectornames = list(self.xvector.keys())  # get a list of input vector names
-        self.fvectornames = list(self.fvector.keys())  # get a list of output vector names
+        # self.xvectornames = list(self.xvector.keys())  # get a list of input vector names
+        # self.fvectornames = list(self.fvector.keys())  # get a list of output vector names
         self.markConnectedInputs()  # mark which inputs are set by con.
 
     def markConnectedInputs(self):

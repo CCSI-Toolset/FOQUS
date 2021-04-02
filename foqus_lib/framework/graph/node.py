@@ -384,9 +384,20 @@ class Node:
             modelFile = self.gr.turbConfig.getModelFileFromSinterConfigDict(sc)
             app = self.gr.turbConfig.getAppByExtension(modelFile)
             self.turbApp = app
+            # Create input vectors, if any
+            for name, item in sc["inputs"].items():
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    if vector_name not in self.gr.input_vectorlist[self.name]:
+                        self.gr.input_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.input_vectorlist[self.name][vector_name].dtype = object
             # Add inputs
             for name, item in sc["inputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    vector_index = item.get("index",None)
+                    name = vector_name + "_{0}".format(vector_index)
                 self.gr.input[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
                     vmin=item.get("min", None),
@@ -398,9 +409,29 @@ class Node:
                     vdesc=str(item.get("description", "")),
                     tags=[],
                 )
+                # If the variable is part of a vector, add it to the vector variable
+                if "vector" in item:
+                    # vector_name = item.get("vector",None)
+                    # vector_index = item.get("index",None)
+                    self.gr.input_vectorlist[self.name][vector_name].vector[vector_index] =\
+                        self.gr.input[self.name][name]
+                    self.gr.input_vectorlist[self.name][vector_name].ipvname = \
+                        (self.name,name)
+                        
+            # Create output vectors, if any
+            for name, item in sc["outputs"].items():
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    if vector_name not in self.gr.output_vectorlist[self.name]:
+                        self.gr.output_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.output_vectorlist[self.name][vector_name].dtype = object
             # Add outputs
             for name, item in sc["outputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    vector_index = item.get("index",None)
+                    name = vector_name + "_{0}".format(vector_index)
                 self.gr.output[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
                     unit=str(item.get("units", "")),
@@ -409,6 +440,15 @@ class Node:
                     dtype=dtype,
                     tags=[],
                 )
+                # If the variable is part of a vector, add it to the vector variable
+                if "vector" in item:
+                    # vector_name = item.get("vector",None)
+                    # vector_index = item.get("index",None)
+                    self.gr.output_vectorlist[self.name][vector_name].vector[vector_index] =\
+                        self.gr.output[self.name][name]
+                    self.gr.output_vectorlist[self.name][vector_name].opvname = \
+                        (self.name,name)
+                
             # Add an extra output varialbe for simulation status
             # I think this comes out of all simulation run through
             # SimSinter, but its not in the sinter config file.

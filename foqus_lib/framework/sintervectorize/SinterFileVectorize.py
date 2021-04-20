@@ -10,7 +10,8 @@ import copy
 from collections import OrderedDict
 import os
 import ast
-import win32com.client as win32
+import win32com
+from win32com import client as win32
 
 # Take vector names and size from user interface before calling the sintervectorize function
 

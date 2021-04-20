@@ -627,25 +627,25 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 "Input Value",
                 "New input variable value:",
                 QLineEdit.Normal)
+            if int(size) > 1:
+                minvalevaluate = ast.literal_eval(minval)
+                if type(minvalevaluate) in [float, int]:
+                    minval = [minvalevaluate for i in range(int(size))]
+                else:
+                    minval = ast.literal_eval(minval)
+                maxvalevaluate = ast.literal_eval(maxval)
+                if type(maxvalevaluate) in [float, int]:
+                    maxval = [maxvalevaluate for i in range(int(size))]
+                else:
+                    maxval = ast.literal_eval(maxval)
+                valueevaluate = ast.literal_eval(value)
+                if type(valueevaluate) in [float, int]:
+                    value = [valueevaluate for i in range(int(size))]
+                else:
+                    value = ast.literal_eval(value)
         else:
             newName = name
             ok = True
-        if int(size) > 1:
-            minvalevaluate = ast.literal_eval(minval)
-            if type(minvalevaluate) in [float, int]:
-                minval = [minvalevaluate for i in range(int(size))]
-            else:
-                minval = ast.literal_eval(minval)
-            maxvalevaluate = ast.literal_eval(maxval)
-            if type(maxvalevaluate) in [float, int]:
-                maxval = [maxvalevaluate for i in range(int(size))]
-            else:
-                maxval = ast.literal_eval(maxval)
-            valueevaluate = ast.literal_eval(value)
-            if type(valueevaluate) in [float, int]:
-                value = [valueevaluate for i in range(int(size))]
-            else:
-                value = ast.literal_eval(value)
 
         if ok and newName != '':
             if newName in self.node.inVars:

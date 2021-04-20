@@ -96,3 +96,7 @@ html {
     color: black;
     font-weight: 500;
 }
+
+.wy-nav-content {
+    max-width: none;
+}

@@ -630,9 +630,23 @@ class nodeDock(_nodeDock, _nodeDockUI):
         else:
             newName = name
             ok = True
-        minval = ast.literal_eval(minval)
-        maxval = ast.literal_eval(maxval)
-        value = ast.literal_eval(value)
+        if int(size) > 1:
+            minvalevaluate = ast.literal_eval(minval)
+            if type(minvalevaluate) in [float, int]:
+                minval = [minvalevaluate for i in range(int(size))]
+            else:
+                minval = ast.literal_eval(minval)
+            maxvalevaluate = ast.literal_eval(maxval)
+            if type(maxvalevaluate) in [float, int]:
+                maxval = [maxvalevaluate for i in range(int(size))]
+            else:
+                maxval = ast.literal_eval(maxval)
+            valueevaluate = ast.literal_eval(value)
+            if type(valueevaluate) in [float, int]:
+                value = [valueevaluate for i in range(int(size))]
+            else:
+                value = ast.literal_eval(value)
+
         if ok and newName != '':
             if newName in self.node.inVars:
                 QMessageBox.warning(
@@ -666,7 +680,16 @@ class nodeDock(_nodeDock, _nodeDockUI):
             table.currentRow(),
             self.ivCols["Name"])
         self.applyChanges()
-        del self.node.gr.input[self.node.name][name]
+        for vname in self.node.gr.input_vectorlist[self.node.name].keys():
+            if vname in name:
+                for i in range(len(self.node.gr.input_vectorlist[self.node.name][vname].vector)):
+                    del self.node.gr.input[self.node.name][vname+'_{0}'.format(i)]
+                del self.node.gr.input_vectorlist[self.node.name][vname]
+                break
+            else:
+                continue
+        if name in self.node.gr.input[self.node.name].keys():
+            del self.node.gr.input[self.node.name][name]
         self.updateInputVariables()
 
     def addOutputClicked(self):
@@ -724,7 +747,17 @@ class nodeDock(_nodeDock, _nodeDockUI):
             table.currentRow(),
             self.ivCols["Name"])
         self.applyChanges()
-        del(self.node.outVars[name])
+        for vname in self.node.gr.output_vectorlist[self.node.name].keys():
+            if vname in name:
+                for i in range(len(self.node.gr.output_vectorlist[self.node.name][vname].vector)):
+                    del self.node.gr.output[self.node.name][vname+'_{0}'.format(i)]
+                del self.node.gr.output_vectorlist[self.node.name][vname]
+                break
+            else:
+                continue
+        if name in self.node.gr.output[self.node.name].keys():
+            del self.node.gr.output[self.node.name][name]
+        #del(self.node.outVars[name])
         self.updateOutputVariables()
 
     def showVex(self):

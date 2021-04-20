@@ -447,6 +447,18 @@ class NodeVarVectorList(OrderedDict):
                     self[node][var].vector = {x:None for x in range(int(size))}
                     for i in range(len(sd[node][var]['vector'])):
                         self[node][var].vector[i] = sd[node][var]['vector'][i]
+                        
+    def createOldStyleDict(self):
+        """
+        This can be used to create the f and x dictionaries for a graph. I'm
+        trying to phase this out, but I'm using in for now so I can make
+        smaller changes working to new variable list objects
+        """
+        self.odict = OrderedDict()
+        for node in sorted(list(self.keys()), key=lambda s: s.lower()):
+            for var in sorted(list(self[node].keys()), key=lambda s: s.lower()):
+                self.odict[".".join([node, var])] = self[node][var]
+        return self.odict
 
 class NodeVars(object):
     """

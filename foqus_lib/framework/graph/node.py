@@ -411,8 +411,6 @@ class Node:
                 )
                 # If the variable is part of a vector, add it to the vector variable
                 if "vector" in item:
-                    # vector_name = item.get("vector",None)
-                    # vector_index = item.get("index",None)
                     self.gr.input_vectorlist[self.name][vector_name].vector[vector_index] =\
                         self.gr.input[self.name][name]
                     self.gr.input_vectorlist[self.name][vector_name].ipvname = \
@@ -442,8 +440,6 @@ class Node:
                 )
                 # If the variable is part of a vector, add it to the vector variable
                 if "vector" in item:
-                    # vector_name = item.get("vector",None)
-                    # vector_index = item.get("index",None)
                     self.gr.output_vectorlist[self.name][vector_name].vector[vector_index] =\
                         self.gr.output[self.name][name]
                     self.gr.output_vectorlist[self.name][vector_name].opvname = \
@@ -560,11 +556,17 @@ class Node:
     def getValues(self):
         x = dict()
         f = dict()
+        xvector = dict()
+        fvector = dict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
         for vkey, var in self.inVars.items():
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
+        for vkey, var in self.inVarsVector.items():
+            xvector[vkey] = [var.vector[i].value for i in range(len(var.vector))]
+        for vkey, var in self.outVarsVector.items():
+            fvector[vkey] = [var.vector[i].value for i in range(len(var.vector))]
         return x, f
 
     def resetModel(self):

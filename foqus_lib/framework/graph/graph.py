@@ -82,6 +82,8 @@ class Graph(threading.Thread):
         self.edges = []  # connections between simulations
         self.x = OrderedDict()  # dictionary of inputs
         self.f = OrderedDict()  # dictionary of outputs
+        self.xvector = OrderedDict()  # dictionary of input vectors
+        self.fvector = OrderedDict()  # dictionary of output vectors
         self.input = NodeVarList()
         self.output = NodeVarList()
         self.nvlist = None
@@ -434,8 +436,8 @@ class Graph(threading.Thread):
         """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
-        # self.xvector = self.input_vectorlist.createOldStyleDict()
-        # self.fvector = self.output_vectorlist.createOldStyleDict()
+        self.xvector = self.input_vectorlist.createOldStyleDict()
+        self.fvector = self.output_vectorlist.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
         self.xnames = list(self.x.keys())  # get a list of input names
         self.fnames = list(self.f.keys())  # get a list of output names

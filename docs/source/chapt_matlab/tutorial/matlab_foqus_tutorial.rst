@@ -79,7 +79,7 @@ The conversion of reactant A is defined as:
    \mathrm{X_{A}=\frac{c_{A0}-c_{A}}{c_{A0}}}
 
 Instructions for option 1: FOQUS plugin implementation
---------------------------------------------------
+------------------------------------------------------
 
 **Step 1:** Flowsheet Setup - create a node simulation in the FOQUS flowsheet editor, and name it "CSTR_Steady_State".
 
@@ -179,7 +179,7 @@ Now, plotting the conversion vs the reactor's volume, a similar figure to Figure
    Figure 9 - Conversion of Reactant A vs Reactor's Volume
 
 Instructions for option 2: MATLAB script implementation
----------------------------------------------------
+-------------------------------------------------------
 
 **Step 1:** Follow steps 1-3 from the ``Instructions for option 1: FOQUS plugin implementation`` section. Users need to take care when defining the MATLAB function 
 for the model in step 3 as it is necessary to define the MATLAB function inputs in the same order as were defined in the FOQUS flowsheet.
@@ -189,7 +189,7 @@ for the model in step 3 as it is necessary to define the MATLAB function inputs 
 **Step 3:** Select the new generated UQ_Ensemble and click on ``Save Selected`` to save the ensemble as a PSUADE file. Choose a folder to save the file 
 and name it as ``data.dat``.
 
-**Step 4:** Create a new MATLAB script to call the ``matlab_foqus_script.m`` file (which is distributed with FOQUS and can be found in ``PATH TO THE FILE``), 
+**Step 4:** Create a new MATLAB script to call the ``matlab_foqus_script.m`` file (which is distributed with FOQUS and can be found in ``examples/tutorial_files/MATLAB-FOQUS/Tutorial_2``), 
 and pass to it the MATLAB function containing the model. Below is an example of the code that needs to be executed. In ``examples/tutorial_files/MATLAB-FOQUS/Tutorial_2`` 
 you can find a MATLAB file name ``example_2_matlab_foqus.m`` with the code, and you can simply execute it:
 

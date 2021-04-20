@@ -703,7 +703,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         self.addOutput()
 
-    def addOutput(self, name=None):
+    def addOutput(self, name=None, s=0):
         '''
         Add an output variable
         '''
@@ -721,6 +721,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 QLineEdit.Normal)
         else:
             newName = name
+            size = s
             ok = True
         if ok and newName != '':
             if newName in self.node.outVars:

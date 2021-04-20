@@ -99,4 +99,5 @@ html {
 
 .wy-nav-content {
     max-width: none;
+    /* max-width: 95% !important; */
 }

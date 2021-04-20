@@ -10,12 +10,20 @@ import copy
 from collections import OrderedDict
 import os
 import ast
-import win32com
-from win32com import client as win32
+# Check that the win32com module is available and import it if possible.
+# If not, the module will not be used.
+try:
+    import win32com
+    from win32com import client as win32
+    module_available = True
+except ImportError:
+    module_available = False
+# import win32com
+# from win32com import client as win32
 
 # Take vector names and size from user interface before calling the sintervectorize function
 
-def sintervectorize(json_file,input_vectors,output_vectors,vectorized_json_file):
+def sintervectorize(json_file,input_vectors,output_vectors,vectorized_json_file,module_avail=True):
     # Decode the current json file
     f=open(json_file)
     sc = json.load(f)
@@ -41,8 +49,11 @@ def sintervectorize(json_file,input_vectors,output_vectors,vectorized_json_file)
                 ipname_new = v[0] + '_{0}'.format(i)
                 ipname_prev = v[0] + '_{0}'.format(i-1)
                 sc['inputs'][ipname_new] = sc['inputs'][ipname_prev]
-                vector_element = '\\{0}\\'.format(i-1)
-                sc['inputs'][ipname_new]['path'][0] = sc['inputs'][ipname_prev]['path'][0].replace(vector_element,'\\{0}\\'.format(i))
+                sc['inputs'][ipname_new] = dict()
+                sc['inputs'][ipname_new] = sc['inputs'][ipname_prev].copy()
+                vector_element = '\\{0}\\'.format(i)
+                prev_path = copy.copy(sc['inputs'][ipname_prev]['path'][0])
+                sc['inputs'][ipname_new]['path'] = [prev_path.replace(str(vector_element),"\\{0}\\".format(i+1))]
                 sc['inputs'][ipname_new]['default'] = aspen.Tree.FindNode(sc['inputs'][ipname_new]['path'][0]).Value
                 sc['inputs'][ipname_new]['vector'] = v[0]
                 sc['inputs'][ipname_new]['index'] = i

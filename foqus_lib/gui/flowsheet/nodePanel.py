@@ -595,7 +595,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         self.addInput()
 
-    def addInput(self, name=None):
+    def addInput(self, name=None, s=0, minv=0, maxv=1, val=0):
         '''
         Add a new input variable, is a name is given, don't ask user for name,
         just go ahead and add it.
@@ -645,6 +645,10 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     value = ast.literal_eval(value)
         else:
             newName = name
+            size = s
+            minval = minv
+            maxval = maxv
+            value = val
             ok = True
 
         if ok and newName != '':

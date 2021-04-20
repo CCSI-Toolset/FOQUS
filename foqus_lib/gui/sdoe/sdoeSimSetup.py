@@ -421,7 +421,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         for i in range(len(self.session.sdoeSimList)):
             sdoeSimList.append(self.session.sdoeSimList[i].getModelName())
         for i in range(100):
-            possibleNames.append("SDOE_Ensemble_%s" %str(i+1))
+            possibleNames.append("SDoE_Ensemble_%s" % str(i+1))
         for i in range(len(possibleNames)):
             if possibleNames[i] not in sdoeSimList:
                 newName = possibleNames[i]
@@ -556,13 +556,29 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         previewData = self.runData
         hname = None
         dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+        usf = None
         nusf=None
+        irsf = None
         scatterLabel = 'Candidates'
+        nImpPts = 0
 
         filename = os.path.join(dirname, self.getData().getModelName())
         self.getData().writeToCsv(filename, inputsOnly=True)
 
-        dialog = sdoePreview(previewData, hname, dirname, nusf, scatterLabel, self)
+        # WHY pylint reports `scatterLabel` as missing positional argument
+        # comparing the sdoePreview.__init__() signature with the local var names,
+        # the missing arg seems to be `usf` instead;
+        # this should in any case result in a runtime error,
+        # which suggests that this code is not executed
+        dialog = sdoePreview(  # TODO pylint: disable=no-value-for-parameter
+            previewData,
+            hname,
+            dirname,
+            nusf,
+            scatterLabel,
+            nImpPts,
+            self
+        )
         dialog.show()
 
     ### Return data

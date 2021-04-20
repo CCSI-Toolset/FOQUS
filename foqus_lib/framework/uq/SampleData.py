@@ -147,6 +147,7 @@ class SampleData(object):
         self.turbineJobIds = []
         self.turbineSession = None
         self.turbineResub = []
+        self.numImputedPoints = 0
 
     def __deepcopy__(self, memo):
         x = SampleData.__new__(SampleData)
@@ -166,6 +167,7 @@ class SampleData(object):
         sd['numSamples'] = self.numSamples
         sd['origNumSamples'] = self.origNumSamples
         sd['numSamplesAdded'] = self.numSamplesAdded
+        sd['numImputedPoints'] = self.numImputedPoints
         sd['fromFile'] = self.fromFile
         sd['sampleMethod'] = SamplingMethods.getPsuadeName(self.sampleMethod)
         sd['model'] = self.model.saveDict()
@@ -202,6 +204,7 @@ class SampleData(object):
         self.setNumSamples(sd.get('numSamples', 0))
         self.origNumSamples = sd.get('origNumSamples', self.getNumSamples())
         self.setNumSamplesAdded(sd.get('numSamplesAdded', 0))
+        self.setNumImputedPoints(sd.get('numImputedPoints', 0))
         self.setFromFile(sd.get('fromFile', False))
         self.setSampleMethod(sd.get('sampleMethod', None))
         self.setInputData(sd.get('inputData', None))
@@ -306,6 +309,13 @@ class SampleData(object):
 
     def getNumSamplesAdded(self):
         return self.numSamplesAdded
+
+    def setNumImputedPoints(self, value):
+        self.numImputedPoints = value
+
+    def getNumImputedPoints(self):
+        return self.numImputedPoints
+
 
     def setOrigNumSamples(self, value):
         self.origNumSamples = value
@@ -585,9 +595,7 @@ class SampleData(object):
         self.model.setSelectedOutputs(selectedOutputs)
         self.outputData = self.outputData[..., mask]
 
-
-
-    def writeToPsuade(self, filename, fixedAsVariables = False):
+    def writeToPsuade(self, filename, fixedAsVariables=False):
         outf = open(filename, 'w')
         if self.getNamesIncludeNodes():
             outf.write('# NAMESHAVENODES\n')

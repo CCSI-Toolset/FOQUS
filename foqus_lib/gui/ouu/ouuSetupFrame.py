@@ -5,6 +5,7 @@ from .nodeToUQModel import nodeToUQModel
 from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.listen import listen
 from multiprocessing.connection import Client
+import shutil
 
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
@@ -727,23 +728,10 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             self.z4SubsetSize_label.setEnabled(False)
             self.z4SubsetSize_spin.setEnabled(False)
 
-    def setupPSUADEClient(self):
-        curDir = os.getcwd()
-        mydir = os.path.dirname(__file__)
-        #Copy needed files
-        if os.name == 'nt':
-            dest1 = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src1 = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copy(src1, dest1)
-
-            dest = os.path.join(curDir, 'foqusPSUADEClient.bat')
-            src2 = os.path.join(mydir, 'foqusPSUADEClient.bat')
-            shutil.copy(src2, dest)
-        else:
-            dest = os.path.join(curDir, 'foqusPSUADEClient.py')
-            src = os.path.join(mydir, 'foqusPSUADEClient.py')
-            shutil.copy(src, dest)
-        return dest
+    def setupPSUADEClient(self, client_exe_name='foqusPSUADEClient'):
+        full_path_to_client_exe = shutil.which(client_exe_name)
+        assert full_path_to_client_exe is not None, 'The "foqusPSUADEClient" executable was not found'
+        return full_path_to_client_exe
 
     def analyze(self):
         dir = os.getcwd()
@@ -928,10 +916,23 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
             # print M1, M2, M3, M4, useBobyqa
             self.OUUobj = OUU()
             try:
-                results = self.OUUobj.ouu(fname,y,self.useAsConstraint,self.useAsDerivative,xtable,phi,
-                                          x3sample=x3sample,x4sample=x4sample,useRS=useRS,useBobyqa=useBobyqa,
-                                          optDriver = optDriver, ensOptDriver = ensembleOptDriver, plotSignal = self.plotSignal,
-                                          endFunction=self.finishOUU)
+                # WHY pylint is right in reporting that self.OUUobj.ouu() always returns None;
+                # this is not a runtime error (in the sense that it will not cause the program to crash)
+                # but the assignment could be removed from this function call for greater clarity
+                results = self.OUUobj.ouu(  # TODO pylint: disable=assignment-from-none
+                    fname,
+                    y,
+                    self.useAsConstraint,
+                    self.useAsDerivative,xtable,phi,
+                    x3sample=x3sample,
+                    x4sample=x4sample,
+                    useRS=useRS,
+                    useBobyqa=useBobyqa,
+                    optDriver=optDriver,
+                    ensOptDriver=ensembleOptDriver,
+                    plotSignal=self.plotSignal,
+                    endFunction=self.finishOUU
+                )
             except:
                 import traceback
                 traceback.print_exc()

@@ -50,7 +50,7 @@ Flowsheet Setup
 
    Flowsheet Setup
 
-The **Node Editor** displays (Figure :ref:`fig.tut.sur.nodeEdit.Input`). 
+The **Node Editor** displays (Figure :ref:`fig.tut.sur.nodeEdit.Input`).
 Thefirst step to setting up the node for this problem is to add input
 and output variables to the node.
 
@@ -79,7 +79,7 @@ simulation model and calculations are performed directly in FOQUS.
 10. Click on the **Node Script** tab in the Node Editor to enter the
     test equation (this step replaces the use of a simulator).
 
-11. Enter the following equations (Figure 
+11. Enter the following equations (Figure
     :ref:`fig.tut.sur.nodeEdit.eq`):
 
     ::
@@ -240,13 +240,13 @@ method settings values. Strings must be contained in quotes. Lists have
 the following format: [element 1, element 2].
 
 33. Click on the **Method Settings** tab (see Figure
-    :ref:`fig.alamo.method.settigs`).
+    :ref:`fig.alamo.method.settings.1` and :ref:`fig.alamo.method.settings.2`).
 
-34. Set the **FOQUS Model (for UQ)** to “ALAMO_tutorial_UQ.py.”
+34. Set the **FOQUS Model (for UQ)** to “alamo_surrogate_uq.py.”
 
-35. Set the **FOQUS Model (for Flowsheet)** to “ALAMO_tutorial_FS.py”
+35. Set the **FOQUS Model (for Flowsheet)** to “alamo_surrogate_fs.py”
 
-36. Set **Initial Data Filter** to “Initial.”
+36. Set **Initial Data Filter** to “f1”
 
 37. Set **SAMPLER** to select the adaptive sampling method: “None”
     “Random” or “SNOBFIT.” Use “None” in this tutorial.
@@ -257,7 +257,7 @@ the following format: [element 1, element 2].
 39. Set **MULTI2POWER** to select the two variable term powers to [1].
 
 40. Select functions to be considered as basis functions (**EXPFCNS**,
-    **LOGFCNS**, **SINFCNS**, **COSFCNS**).
+    **LOGFCNS**, **SINFCNS**, **COSFCNS**, **LINFCNS**, **CONSTANT**).
 
 41. Leave the rest of settings as default (see Table
     :ref:`tutorial.alamo.table`).
@@ -265,11 +265,17 @@ the following format: [element 1, element 2].
 42. Save this FOQUS session for use in the ACOSSO and BSS-ANOVA
     tutorials.
 
-.. figure:: ../figs/alamo_settings.svg
+.. figure:: ../figs/Alamo_Method_Settings_1.png
    :alt: ALAMO Method Settings
-   :name: fig.alamo.method.settigs
+   :name: fig.alamo.method.settings.1
 
    ALAMO Method Settings
+
+.. figure:: ../figs/Alamo_Method_Settings_2.png
+   :alt: ALAMO Method Settings Continued
+   :name: fig.alamo.method.settings.2
+
+   ALAMO Method Settings Continued
 
 Execution
 ---------

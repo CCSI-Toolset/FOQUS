@@ -6,7 +6,7 @@ from .df_utils import load
 from .nusf import scale_y
 
 # plot parameters
-fc = {'hist': (0.5, 0.5, 0.5, 0.5), 'cand': (0, 0, 1, 0.5)}
+fc = {'hist': (0.5, 0.5, 0.5, 0.5), 'cand': (0, 0, 1, 0.5), 'imp': (1, 0, 0, 0.5)}
 area = {'hist': 40, 'cand': 25}
 
 
@@ -41,7 +41,7 @@ def load_data(fname, hname):
     # load history
     hf = None
     if hname:
-        hf = load(hname)
+        hf = load(hname, index='__id')
         # make sure headers match
         assert (names == list(hf))
     return df, hf
@@ -61,10 +61,19 @@ def remove_yticklabels(ax):
     return ax
 
 
-def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
+def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0):
 
     if cand_rgba is not None:
         fc['cand'] = cand_rgba
+
+    if wcol is not None:
+        cand_vals = cand[wcol].values
+        vals = df[wcol].values
+        area['cand'] = 30 * abs((vals - np.mean(cand_vals)) / np.std(cand_vals)) + 10
+        if hf is not None:
+            vals_h = hf[wcol].values
+            area['hist'] = 30 * abs((vals_h - np.mean(vals_h)) / np.std(vals_h)) + 10
+
     # process inputs to be shown
     if show is None:
         show = list(df)
@@ -75,7 +84,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
         fig = plt.figure()
         ax = fig.add_subplot(111)
         xname = show[0]
-        ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
+        _ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
 
     else:  # multiple inputs
 
@@ -96,7 +105,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
             ax = A[k]
             xname = show[i]
             # ... plot histogram for diagonal subplot
-            ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
+            _ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
 
             for j in range(i + 1, nshow):
                 k = sb_indices[i][j]
@@ -104,9 +113,26 @@ def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'])
+                if nImpPts == 0:
+                    ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'])
+                else:
+                    ax.scatter(df[yname][0:-nImpPts], df[xname][0:-nImpPts], s=area['cand'], facecolor=fc['cand'])
+                    ax.scatter(df[yname][-nImpPts:], df[xname][-nImpPts:], s=area['cand'], facecolor=fc['imp'])
+
                 if hf is not None:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], facecolor=fc['hist'])
+
+                # Setting axis limits to min and max values of the candidate set plus some padding
+                if cand is not None:
+                    xdelta = (max(cand[yname]) - min(cand[yname])) / 20
+                    ydelta = (max(cand[xname]) - min(cand[xname])) / 20
+                    ax.set_xlim((min(cand[yname]) - xdelta, max(cand[yname]) + xdelta))
+                    ax.set_ylim((min(cand[xname]) - ydelta, max(cand[xname]) + ydelta))
+                else:
+                    xdelta = (max(df[yname]) - min(df[yname])) / 20
+                    ydelta = (max(df[xname]) - min(df[xname])) / 20
+                    ax.set_xlim((min(df[yname]) - xdelta, max(df[yname]) + xdelta))
+                    ax.set_ylim((min(df[xname]) - ydelta, max(df[xname]) + ydelta))
 
                 ax.grid(True, axis='both')
                 ax = remove_yticklabels(ax)
@@ -114,11 +140,13 @@ def plot_candidates(df, hf, show, title, scatter_label, cand_rgba=None):
                     ax.xaxis.set_ticks_position('top')
                     ax.xaxis.set_label_position('top')
                 else:
-                    ax = remove_xticklabels(ax)
+                    _ax = remove_xticklabels(ax)
 
     labels = ['Frequency', scatter_label]
+    if nImpPts > 0:
+        labels.append('Imputed')
     if hf is not None:
-        labels.append('History points')
+        labels.append('Previous data points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
     fig.canvas.set_window_title(title)
@@ -141,7 +169,7 @@ def plot_weights(xs, wt, wts, title):
     dist = np.sqrt(np.min(dmat, axis=1))   # Euclidean distance
     nd = dist.shape[0]
     for w, d in zip(wt, dist):
-        ax1.plot([w,w],[0,d], color='b')
+        ax1.plot([w, w], [0, d], color='b')
     ax1.set_title('Distance to closest neighbor within the design set (N={})'.format(nd))
     ax1.set_ylabel('Min distance')
     
@@ -156,27 +184,41 @@ def plot_weights(xs, wt, wts, title):
     return fig
 
 
-def plot(fname, scatter_label, hname=None, show=None, nusf=None):
+def plot(fname, scatter_label, hname=None, show=None, usf=None, nusf=None, irsf=None, nImpPts=0):
     df, hf = load_data(fname, hname)
     title = 'SDOE Candidates Visualization'
-    _fig1 = plot_candidates(df, hf, show, title, scatter_label)
+    if usf:
+        cand = usf['cand']
+        wcol = None
+    elif nusf:
+        cand = nusf['cand']
+        wcol = nusf['wcol']
+    elif irsf:
+        cand = irsf['cand']
+        wcol = None
+    else:
+        cand = None
+        wcol = None
+    _fig1 = plot_candidates(df, hf, show, title, scatter_label, cand, wcol=wcol, nImpPts=nImpPts)
     if nusf:
         des = nusf['results']['best_cand_scaled'].values
         xs = des[:, :-1]    # scaled coordinates from best candidate
         wt = des[:, -1]     # scaled weights from best candidate
         scale_method = nusf['scale_method']
         cand = nusf['cand']
-        wcol = nusf['wcol']
+        idw = nusf['wcol']
+        idw_np = cand.columns.get_loc(idw)
+        cand_np = cand.to_numpy()
         mwr = nusf['results']['mwr']
-        cand_ = scale_y(scale_method, mwr, cand, wcol)
-        wts = cand_[wcol]  # scaled weights from all candidates
+        cand_ = scale_y(scale_method, mwr, cand_np, idw_np)
+        wts = cand_[:, idw_np]  # scaled weights from all candidates
         title = 'SDOE (NUSF) Weight Visualization for MWR={}'.format(mwr)
         _fig2 = plot_weights(xs, wt, wts, title)
         
     plt.show()
 
 
-def plot_pareto(pf, results):  # Plot Pareto front with hovering labels
+def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
 
     def onpick(event):  # Define nested function onpick
         if event.artist != points:
@@ -190,11 +232,13 @@ def plot_pareto(pf, results):  # Plot Pareto front with hovering labels
             df = results[dataind+1]['des']
             hf = None
             show = None
-            title = 'Design %s, Input Distance: %s, Response Distance: %s' % (dataind + 1,
-                                                                              str(round(pf['Best Input'][dataind], 4)),
-                                                                              str(round(pf['Best Response'][dataind], 4)))
+            title = 'Design %s, Input Distance: %s, ' \
+                    'Response Distance: %s' % (dataind + 1,
+                                               str(round(pf['Best Input'][dataind], 4)),
+                                               str(round(pf['Best Response'][dataind], 4)))
             scatter_label = 'Design Points'
-            figi = plot_candidates(df, hf, show, title, scatter_label, cand_rgba=colors[dataind])
+            figi = plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=colors[dataind])
+            
         figi.show()
         return True
 
@@ -206,9 +250,9 @@ def plot_pareto(pf, results):  # Plot Pareto front with hovering labels
     for i, c in enumerate(colors):
         x = pf['Best Input'][i]
         y = pf['Best Response'][i]
-        l = pf['Design'][i]
+        lab = pf['Design'][i]
 
-        ax.scatter(x, y, label=l, c=c, marker='D', zorder=2)
+        ax.scatter(x, y, label=lab, c=c, marker='D', zorder=2)
 
     ax.legend(title='Designs', ncol=4)
 
@@ -222,5 +266,3 @@ def plot_pareto(pf, results):  # Plot Pareto front with hovering labels
     fig.canvas.mpl_connect('pick_event', onpick)
 
     plt.show()
-
-

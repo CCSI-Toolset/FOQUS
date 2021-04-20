@@ -178,11 +178,21 @@ def makeWorkingDirFiles():
     '''
     wdir = os.path.abspath(os.getcwd())
     try:
-        tc = TurbineConfiguration()
+        tc = TurbineConfiguration("turbine.cfg")
         tc.writeConfig(overwrite=False)
     except:
         logging.getLogger("foqus." + __name__).exception(
-            "Couldn't write default turbine config Default.cfg")
+            "Couldn't write default turbine.cfg")
+    try:
+        tc = TurbineConfiguration("turbine_aws.cfg")
+        tc.address = "https://b7x9ucxadg.execute-api.us-east-1.amazonaws.com/development/"
+        tc.notification = "wss://du6p1udafi.execute-api.us-east-1.amazonaws.com/Development"
+        tc.turbVer = "Remote"
+        tc.writeConfig(overwrite=False)
+    except:
+        logging.getLogger("foqus." + __name__).exception(
+            "Couldn't write default turbine_aws.cfg")
+
     try:
         dir = os.path.join(whereInstalled(), "gams")
         dir2 = os.path.join(wdir, "gams")
@@ -308,6 +318,8 @@ class session:
         self.uqSimList = [] # list of UQ simulation ensembles
         self.uqFilterResultsList = [] # list of UQ filter results
         self.sdoeSimList = [] # list of SDOE simulation ensembles
+        self.odoeCandList = []  # list of ODOE candidate sets
+        self.odoeEvalList = []  # list of ODOE evaluation sets
         self.sdoeFilterResultsList = [] # list of SDOE filter results
         self.ID = time.strftime('Session_%y%m%d%H%M%S') #session id
         self.archiveFolder = \
@@ -471,6 +483,16 @@ class session:
         sd["sdoeFilterResultsList"] = []
         for filter in self.sdoeFilterResultsList:
             sd['sdoeFilterResultsList'].append(filter.saveDict())
+        # Save ODOE cand list
+        sd["odoeCandList"] = []
+        for sim in self.odoeCandList:
+            sd['odoeCandList'].append(sim.saveDict())
+
+        # Save ODOE eval list
+        sd["odoeEvalList"] = []
+        for sim in self.odoeEvalList:
+            sd['odoeEvalList'].append(sim.saveDict())
+
         if filename:
             #write two copies of the file one is backup you can keep
             #forever, one is the specified file name with most recent
@@ -593,6 +615,27 @@ class session:
                 filterResults = Results()
                 filterResults.loadDict(filterDict)
                 self.sdoeFilterResultsList.append(filterResults)
+        # Load ODOE Stuff
+        self.odoeCandList = []
+        if 'odoeCandList' in sd:
+            for simDict in sd['odoeCandList']:
+                model = Model()
+                model.loadDict(simDict['model'])
+                sim = SampleData(model)
+                sim.setSession(self)
+                sim.loadDict(simDict)
+                self.odoeCandList.append(sim)
+
+        self.odoeEvalList = []
+        if 'odoeEvalList' in sd:
+            for simDict in sd['odoeEvalList']:
+                model = Model()
+                model.loadDict(simDict['model'])
+                sim = SampleData(model)
+                sim.setSession(self)
+                sim.loadDict(simDict)
+                self.odoeEvalList.append(sim)
+
         self.currentFile = None
 
     def removeArchive(self):
@@ -734,7 +777,7 @@ class generalSettings():
         self.psuade_path = \
             "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
         self.turbConfig = "turbine.cfg"
-        self.turbConfigCluster = "turbine.cfg"
+        self.turbConfigCluster = "turbine_aws.cfg"
         self.alamo_path = ""
         self.foqusLogLevel = logging.DEBUG # FOQUS log level
         self.turbLogLevel = logging.WARNING	# Turbine client log level

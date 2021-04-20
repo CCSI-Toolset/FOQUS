@@ -715,6 +715,8 @@ if __name__ == '__main__':
     fileName = 'C:\\Users\\ou3.THE-LAB\\Documents\CCSI\\pt6_optimize\\sim-based_optimize\\trunk\\examples\\UQ\\lptau5k_10inputs_4outputs.filtered'
 #    model = LocalExecutionModule.readSampleFromPsuadeFile(fileName, True)
     model = LocalExecutionModule.readSampleFromPsuadeFile(fileName, False)
-    form = SimSetup(model)
+    # WHY the missing `session` parameter when instantiating SimSetup seems to be a real error
+    # together with the hard-coded `fileName`, this suggests that this portion of the code is not being run
+    form = SimSetup(model)  # TODO pylint: disable=no-value-for-parameter
     result = form.exec_()
 #    sys.exit(result)

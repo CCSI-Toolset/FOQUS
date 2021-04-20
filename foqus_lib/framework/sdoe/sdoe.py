@@ -1,7 +1,18 @@
+import tempfile
+import platform
+import re
+
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
 import pandas as pd
+
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+
+
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
 
 def save(fnames, results, elapsed_time, irsf=False):
@@ -16,7 +27,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print('Candidates saved to {}'.format(fnames['cand']))
         np.save(fnames['dmat'], results['best_dmat'])
         print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],
-                                                              results['best_val'], elapsed_time)))
+                                                                  results['best_val'], elapsed_time)))
         print('Candidate distances saved to {}'.format(fnames['dmat']))
 
 
@@ -58,7 +69,8 @@ def run(config_file, nd, test=False):
         idw = idw[0]
 
         weight_mode = config['WEIGHT']['weight_mode']
-        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. Only BY_USER is currently supported.'.format(weight_mode)
+        assert weight_mode == 'by_user', 'WEIGHT_MODE {} not recognized for NUSF. ' \
+                                         'Only BY_USER is currently supported.'.format(weight_mode)
       
         scale_method = config['SF']['scale_method']
         assert(scale_method in ['direct_mwr', 'ranked_mwr'])
@@ -106,7 +118,10 @@ def run(config_file, nd, test=False):
     # do a quick test to get an idea of runtime
     if test:
         if sf_method == 'irsf':
-            results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)
+            # WHY: the various criterion() function assigned conditionally have slightly different signature
+            # irsf.criterion supports the `test` kwarg, so the function is called correctly in this branch
+            # but pylint reports an error because it does not support conditionals
+            results = criterion(cand, args, nr, nd, mode=mode, hist=hist, test=True)  # pylint: disable=unexpected-keyword-arg
             return results['t1'], results['t2']
         else:
             t0 = time.time()
@@ -144,3 +159,81 @@ def run(config_file, nd, test=False):
             save(fnames[design], results[design], elapsed_time, irsf=True)
 
     return fnames, results, elapsed_time
+
+
+def dataImputation(fname, y, rsMethodName, eval_fname):
+
+    rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
+
+    # write script
+    f = tempfile.SpooledTemporaryFile(mode="wt")
+    if platform.system() == 'Windows':
+        import win32api
+        fname = win32api.GetShortPathName(fname)
+
+    f.write('load %s\n' % fname)  # load data
+    cmd = 'rscreate'
+    f.write('%s\n' % cmd)
+    f.write('%d\n' % y)  # select output
+    f.write('%d\n' % rsIndex)  # select response surface
+
+    cmd = 'rseval'
+    f.write('%s\n' % cmd)
+    f.write('y\n')  # data taken from register
+    f.write('%s\n' % eval_fname)
+    f.write('y\n')  # do fuzzy evaluation
+    f.write('y\n')  # write data to file
+    f.write('quit\n')
+    f.seek(0)
+
+    # invoke psuade
+    out, error = Common.invokePsuade(f)
+    f.close()
+    if error:
+        return None
+
+    outfile = 'eval_sample'
+    assert(os.path.exists(outfile))
+    return outfile
+
+
+def readEvalSample(fileName):
+    f = open(fileName, 'r')
+    lines = f.readlines()
+    f.close()
+
+    # remove empty lines
+    lines = [line for line in lines if len(line.strip()) > 0]
+
+    # ignore text preceded by '%'
+    c = '%'
+    lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
+    nlines = len(lines)
+
+    # process header
+    k = 0
+    header = lines[k]
+    nums = header.split()
+    numSamples = int(nums[0])
+    numInputs = int(nums[1])
+    numOutputs = 0
+    if len(nums) == 3:
+        numOutputs = int(nums[2])
+
+    # process samples
+    data = [None] * numSamples
+    for i in range(nlines - k - 1):
+        line = lines[i + k + 1]
+        nums = line.split()
+        data[i] = [float(x) for x in nums]
+
+    # split samples
+    data = np.array(data)
+    inputData = data[:, :numInputs]
+    inputArray = np.array(inputData, dtype=float, ndmin=2)
+    outputArray = None
+    if numOutputs:
+        outputData = data[:, numInputs:]
+        outputArray = np.array(outputData, dtype=float, ndmin=2)
+
+    return inputArray, outputArray, numInputs, numOutputs

@@ -3,7 +3,7 @@ import os
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.sdoe import plot_utils
 
-#from Preview_UI import Ui_Dialog
+# from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
@@ -16,14 +16,17 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, hname, dirname, nusf, scatterLabel, parent=None):
+    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, parent=None):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
         self.dirname = dirname
         self.hname = hname
+        self.usf = usf
         self.nusf = nusf
+        self.irsf = irsf
         self.scatterLabel = scatterLabel
+        self.nImpPts = nImpPts
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
         if count == 0:
@@ -113,7 +116,10 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
             show.append(item.strip())
         fname = os.path.join(self.dirname, self.data.getModelName())
         hname = self.hname
+        usf = self.usf
         nusf = self.nusf
+        irsf = self.irsf
         scatterLabel = self.scatterLabel
-        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, nusf=nusf)
+        nImpPts = self.nImpPts
+        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf, nImpPts=nImpPts)
         self.setModal(True)

@@ -18,7 +18,7 @@ AWS DynamoDB is used for job and consumer status tracking, and user management.
 ##### POST session/{id}
 -- sends all jobs in session to submit queue
 
-### Backend: Node.js Lambda Functions (node v6.1.0)
+### Backend: Node.js Lambda Functions (node v12)
 Processes API Requests and Notifications from the EC2 FOQUS Workers
 #### Web Services API Backend
 #### Worker Notification Processor

@@ -219,7 +219,7 @@ in the uncertainty module or any other FOQUS module.
 
 .. figure:: ../figs/tutorial_9.png
 
-   Figure 11 - New Ensemble with MATLAB Reasults
+   Figure 11 - New Ensemble with MATLAB Results
    
 If you plot the conversion vs the reactor's volume, you should get the Figure 9.
 

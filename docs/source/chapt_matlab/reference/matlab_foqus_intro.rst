@@ -13,6 +13,9 @@ leverage FOQUS capabilities for advanced analysis.
 Two different but equivalent approaches were implemented for interfacing MATLAB and FOQUS, which can be used depending on the user needs. These two approaches are 
 described below:
 
+   .. warning:: The setup steps for the two approaches shown below were tested using MATLAB R2019b and Python 3.6, however they must work for other MATLAB and 
+                Python versions.
+
 Option 1: FOQUS plugin implementation
 -------------------------------------
 
@@ -98,9 +101,14 @@ configuration are given below:
    .. note:: ``%pythonroot%`` is the Python executable folder found in step 1. You can also verify if the Python config was stored in MATLAB by typing again ``pyenv``, 
              and then you must see the previous message again.
 
-3. Now, type any of the code lines below::
+   .. warning:: ``pyenv`` was first introduced in MATLAB R2019b. In older MATLAB versions, you need to use ``pyversion``, as shown below:
 
-      help('numpy')
+   .. code-block:: python
+
+      pyversion('%pythonroot%python.exe')
+
+3. Now, type the code line below::
+
       py.numpy.arange(1)
 
    .. note:: If you do not get errors, then the Python configuration is ready and skip the following steps. If you got this, or any similar error: 
@@ -120,9 +128,8 @@ configuration are given below:
    .. note:: Replace ``%pythonroot%`` with the Python executable folder found in step 1. You can also add manually the folder containing the Python 
              binary files to the system environment variables, but this will depend on the specific operating system.
 
-3. Type again any of the codes below::
+6. Type again the code below::
 
-      help('numpy')
       py.numpy.arange(1)
 
    .. note:: This time everting should work fine without errors.

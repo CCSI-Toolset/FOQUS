@@ -41,8 +41,11 @@ function matlab_foqus_script(MatlabFunctionName,PsuadFileName,path)
     index = py.numpy.arange(0,100,1);
     df_data = py.pandas.DataFrame(data_array,index,names);
     save = df_data.to_csv(path+'outputs.csv') ;
-
+    % "PreserveVariableNames" was introduced in MATLAB 2019b, so if you are
+    % using older MATLAB versions, you need to remove that parameter below.
     T = readtable(path+'outputs.csv','PreserveVariableNames',true);
-    writetable(T(:,2:23),path+'outputs.csv')
+    %T = readtable(path+'outputs.csv');
+    [~,n1]=size(T);
+    writetable(T(:,2:n1),path+'outputs.csv')
 end
 

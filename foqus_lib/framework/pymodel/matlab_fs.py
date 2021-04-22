@@ -1,9 +1,15 @@
 #FOQUS_PYMODEL_PLUGIN
 #
 from foqus_lib.framework.pymodel.pymodel import *
-import matlab.engine
 import time
 import subprocess
+# Check that the MATLAB engine module is available and import it if possible.
+# If not the MATLAB plug-in will not be used.
+try:
+    import matlab.engine
+    matlab_engine_available = True
+except ImportError as e:
+    matlab_engine_available = False
 
 
 def checkAvailable():

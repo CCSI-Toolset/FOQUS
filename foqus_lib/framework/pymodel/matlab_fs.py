@@ -13,7 +13,7 @@ except ImportError as e:
 
 
 def checkAvailable():
-    return True
+    return matlab_engine_available
 
 
 class pymodel_pg(pymodel):

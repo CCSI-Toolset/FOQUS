@@ -1,13 +1,12 @@
-﻿MATLAB-FOQUS interface - tutorial
-=================================
+﻿MATLAB-FOQUS interface - tutorials
+==================================
 
 Problem Statement: Steady-State Continuous Stirred Tank Reactor (CSTR)
 ----------------------------------------------------------------------
 
-This example solves a non-linear system of equations which describes a mathematical model for a Continuous Stirred Tank Reactor (CSTR) at 
-steady state. The CSTR is cooled with a cooling coil, and a simple exothermic reaction takes place inside the reactor (see Figure 1).  Some simplifications 
-of the model include: 1) the reactant is perfectly mixed, and 2) the volume, heat capacities and densities are constants. Further details regarding the model 
-are given in Vojtesek and Dostal, 2011.
+This example solves a non-linear system of equations which describes a mathematical model for a Continuous Stirred Tank Reactor (CSTR) at steady state. The 
+CSTR is cooled with a cooling coil, and a simple exothermic reaction takes place inside the reactor (see Figure 1). Model main assumptions: 1) the reactant 
+is perfectly mixed, and 2) the volume, heat capacities and densities are constants. Further details regarding the model are given in Vojtesek and Dostal, 2011.
 
 **Source:** Jiri Vojtesek and Petr Dostal. Use of MATLAB Environment for Simulation and Control of CSTR. International Journal of Mathematics and Computers in 
 Simulation, 6(5), 2011.
@@ -78,8 +77,8 @@ The conversion of reactant A is defined as:
 .. math::
    \mathrm{X_{A}=\frac{c_{A0}-c_{A}}{c_{A0}}}
 
-Instructions for option 1: FOQUS plugin implementation
-------------------------------------------------------
+Tutorial 1: MATLAB - FOQUS direct
+---------------------------------
 
 **Step 1:** Flowsheet Setup - create a node simulation in the FOQUS flowsheet editor, and name it "CSTR_Steady_State".
 
@@ -178,13 +177,13 @@ Now, plotting the conversion vs the reactor's volume, a similar figure to Figure
 
    Figure 9 - Conversion of Reactant A vs Reactor's Volume
 
-Instructions for option 2: MATLAB script implementation
--------------------------------------------------------
+Tutorial 2: MATLAB script implementation
+----------------------------------------
 
-**Step 1:** Follow steps 1-3 from the ``Instructions for option 1: FOQUS plugin implementation`` section. Users need to take care when defining the MATLAB function 
+**Step 1:** Follow steps 1-3 from the ``Tutorial 1: MATLAB - FOQUS direct`` section. Users need to take care when defining the MATLAB function 
 for the model in step 3 as it is necessary to define the MATLAB function inputs in the same order as were defined in the FOQUS flowsheet.
 
-**Step 2:** Follow step 6 from the ``Instructions for option 1: FOQUS plugin implementation`` section to generate a new simulation ensemble.
+**Step 2:** Follow step 6 from the ``Tutorial 1: MATLAB - FOQUS direct`` section to generate a new simulation ensemble.
 
 **Step 3:** Select the new generated UQ_Ensemble and click on ``Save Selected`` to save the ensemble as a PSUADE file. Choose a folder to save the file 
 and name it as ``data.dat``.

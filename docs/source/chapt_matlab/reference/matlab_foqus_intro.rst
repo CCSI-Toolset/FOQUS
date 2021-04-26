@@ -16,13 +16,11 @@ described below:
    .. warning:: The setup steps for the two approaches shown below were tested using MATLAB R2019b and Python 3.6, however they must work for other MATLAB and 
                 Python versions.
 
-Option 1: FOQUS plugin implementation
--------------------------------------
+Option 1: MATLAB - FOQUS direct
+-------------------------------
 
-The FOQUS plugin approach is the simplest and easiest way to run MATLAB simulations within FOQUS. This approach is fully integrated with FOQUS, and it is implemented 
-in a simple way to enable the use of other FOQUS modules such as the Uncertainty Module to run many samples over the same model and perform uncertainty 
-quantification and sensitivity analysis. This approach is best suited for MATLAB simulations that are not computationally intensive, although it could be used in those 
-situations as well.
+This approach is best suited for MATLAB simulations that are not computationally intensive, although it can be used in those situations as well. This approach is fully 
+integrated with FOQUS, and it is implemented in a simple way to enable running MATLAB simulations within FOQUS. 
 
 To be able to call MATLAB models from FOQUS through the FOQUS plugin implementation, it is required to setup properly the MATLAB engine API for Python, which is 
 available for MATLAB-version R2014b or greater. MATLAB supports Python versions 2.7, 3.3, 3.4, 3.5, 3.6, 3.7, and 3.8. Further details regarding specific MATLAB 
@@ -71,20 +69,20 @@ Now, to run MATLAB models within FOQUS follow the steps below:
 8. Terminate MATLAB session.
 
 Further details on how to use this option to interface MATLAB-FOQUS are given in the example presented in the 
-:ref:`tutorial<chapt_matlab/tutorial/matlab_foqus_tutorial:MATLAB-FOQUS interface - tutorial>`.
+:ref:`tutorial 1<chapt_matlab/tutorial/matlab_foqus_tutorial:MATLAB-FOQUS interface - tutorials>`.
 
 Option 2: MATLAB script implementation
 --------------------------------------
 
-The second option available for the MATLAB-FOQUS interface is to run MATLAB models directly in the MATLAB environment, but making the results/outputs fully 
-compatible with the different FOQUS modules. This is automatically achieved through a MATLAB script ``foqus_matlab_script.m`` provided with the FOQUS distribution, 
-which can be executed directly in MATLAB. To use the script, it is necessary to define the inputs for MATLAB models in the same order as were defined in the FOQUS 
-flowsheet. 
+This approach is best suited for MATLAB simulations that are computationally intensive, and FOQUS is used for data analysis and surrogate modeling.
 
-The MATLAB script takes three inputs: 1) the MATLAB function containing the model, 2) the name of the PSUADE file containing the samples space for the model, 
-which needs to be created previously in the uncertainty module in FOQUS, 3) the path where the MATLAB function and PSUADE file are located.
+In this option, the MATLAB-FOQUS interface runs MATLAB models directly in the MATLAB environment, but making the results/outputs fully compatible 
+with FOQUS modules. This is automatically achieved through a MATLAB script ``foqus_matlab_script.m`` provided with the FOQUS distribution, which can 
+be executed directly in MATLAB. To use the script, it is necessary to define the inputs for MATLAB models in the same order as were defined in 
+the FOQUS flowsheet.
 
-This approach is best suited for MATLAB simulations that are computationally intensive as FOQUS is only used during the analysis step and not the runtime of the model. 
+The MATLAB script takes three inputs: 1) the MATLAB function containing the model, 2) the name of the PSUADE file containing the samples space for 
+the model, which needs to be created previously in the uncertainty module in FOQUS, 3) the path where the MATLAB function and PSUADE file are located.
 
 The MATLAB script uses some functions available in FOQUS base code to handle :ref:`PSUADE full file format<file-formats>` and sample data objects, 
 and these functions are written in Python. For this reason, before using the script, it is necessary to configure MATLAB to execute Python modules. The steps for this 
@@ -132,7 +130,7 @@ configuration are given below:
 
       py.numpy.arange(1)
 
-   .. note:: This time everting should work fine without errors.
+   .. note:: This time everything should work fine without errors.
 
 After completing the configuration part to execute Python modules within MATLAB, the general steps to interfacing MATLAB and FOQUS are as follows:
 
@@ -146,4 +144,4 @@ After completing the configuration part to execute Python modules within MATLAB,
 7. Now, the ``outputs.csv`` file can be imported in FOQUS to use the different FOQUS capabilities for subsequent analysis.
 
 Further details on how to use this option to interface MATLAB-FOQUS are given in the example presented in the 
-:ref:`tutorial<chapt_matlab/tutorial/matlab_foqus_tutorial:MATLAB-FOQUS interface - tutorial>`.
+:ref:`tutorial 2<chapt_matlab/tutorial/matlab_foqus_tutorial:MATLAB-FOQUS interface - tutorials>`.

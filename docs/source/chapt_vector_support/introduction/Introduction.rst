@@ -24,7 +24,7 @@ Python, MATLAB, and Aspen Plus.
 
 
 New Features in FOQUS for vector support:
-----------------------------------------
+-----------------------------------------
 
 In order to support vector variables, along with continued support for scalar
 variables, the following new features have been introduced in FOQUS:

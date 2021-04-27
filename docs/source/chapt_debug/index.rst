@@ -82,12 +82,4 @@ The following are known unresolved issues:
    TurbineLite port is changed the configuration file that FOQUS uses to
    connect to TurbineLite, must also be changed.
 
-Reporting Issues
-----------------
-
-To report an issue or ask a question, send an email to:
-ccsi-support@acceleratecarboncapture.org or open an issue at:
-https://github.com/CCSI-Toolset/FOQUS
-
-Please include detailed steps on how to reproduce the error, including if
-possible, screenshots and log files.
+.. include:: ../contact.rst

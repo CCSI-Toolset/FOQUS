@@ -18,8 +18,6 @@ try:
     module_available = True
 except ImportError:
     module_available = False
-# import win32com
-# from win32com import client as win32
 
 # Take vector names and size from user interface before calling the sintervectorize function
 
@@ -51,9 +49,12 @@ def sintervectorize(json_file,input_vectors,output_vectors,vectorized_json_file,
                 sc['inputs'][ipname_new] = sc['inputs'][ipname_prev]
                 sc['inputs'][ipname_new] = dict()
                 sc['inputs'][ipname_new] = sc['inputs'][ipname_prev].copy()
-                vector_element = '\\{0}\\'.format(i)
+                vector_elements = ['\\{0}\\'.format(i),'\\{0}'.format(i)]
                 prev_path = copy.copy(sc['inputs'][ipname_prev]['path'][0])
-                sc['inputs'][ipname_new]['path'] = [prev_path.replace(str(vector_element),"\\{0}\\".format(i+1))]
+                if vector_elements[0] in prev_path:
+                    sc['inputs'][ipname_new]['path'] = [prev_path.replace(str(vector_elements[0]),"\\{0}\\".format(i+1))]
+                elif vector_elements[1] in prev_path:
+                    sc['inputs'][ipname_new]['path'] = [prev_path.replace(str(vector_elements[1]),"\\{0}".format(i+1))]
                 sc['inputs'][ipname_new]['default'] = aspen.Tree.FindNode(sc['inputs'][ipname_new]['path'][0]).Value
                 sc['inputs'][ipname_new]['vector'] = v[0]
                 sc['inputs'][ipname_new]['index'] = i
@@ -76,9 +77,12 @@ def sintervectorize(json_file,input_vectors,output_vectors,vectorized_json_file,
                 opname_prev = v[0] + '_{0}'.format(i-1)
                 sc['outputs'][opname_new] = dict()
                 sc['outputs'][opname_new] = sc['outputs'][opname_prev].copy()
-                vector_element = "\\{0}\\".format(i)
+                vector_elements = ['\\{0}\\'.format(i),'\\{0}'.format(i)]
                 prev_path = copy.copy(sc['outputs'][opname_prev]['path'][0])
-                sc['outputs'][opname_new]['path'] = [prev_path.replace(str(vector_element),"\\{0}\\".format(i+1))]
+                if vector_elements[0] in prev_path:
+                    sc['outputs'][opname_new]['path'] = [prev_path.replace(str(vector_elements[0]),"\\{0}\\".format(i+1))]
+                elif vector_elements[1] in prev_path:
+                    sc['outputs'][opname_new]['path'] = [prev_path.replace(str(vector_elements[1]),"\\{0}".format(i+1))]
                 sc['outputs'][opname_new]['default'] = aspen.Tree.FindNode(sc['outputs'][opname_new]['path'][0]).Value
                 sc['outputs'][opname_new]['vector'] = v[0]
                 sc['outputs'][opname_new]['index'] = i

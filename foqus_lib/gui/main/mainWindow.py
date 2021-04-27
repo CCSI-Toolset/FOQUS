@@ -20,6 +20,7 @@ from foqus_lib.framework.session.hhmmss import *
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework import optimizer
 from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.sintervectorize.SinterFileVectorize import *
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QMainWindow, QStackedWidget, QWidget, QActionGroup,\
     QMenu, QAction, QToolBar
@@ -31,6 +32,7 @@ from foqus_lib.gui.main.settingsFrame import *
 from foqus_lib.gui.main.sessionDescriptionEdit import *
 from foqus_lib.gui.main.saveMetadataDialog import *
 from foqus_lib.gui.model.gatewayUploadDialog import *
+from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import *
 from foqus_lib.gui.flowsheet.drawFlowsheet import *
 from foqus_lib.gui.flowsheet.nodePanel import *
 from foqus_lib.gui.flowsheet.edgePanel import *
@@ -560,6 +562,13 @@ class mainWindow(QMainWindow):
             self)
         self.addTurbineModelAction.triggered.connect(self.addTurbModel)
         self.mainMenu.addAction(self.addTurbineModelAction)
+        # Vectorize a simsinter config file
+        self.addSinterFileVectorizeAction = QAction(
+            QIcon(self.iconPaths['add']),
+            'Vectorize SimSinter File...',
+            self)
+        self.addSinterFileVectorizeAction.triggered.connect(self.SinterFileVectorize)
+        self.mainMenu.addAction(self.addSinterFileVectorizeAction)
         # New session Action
         self.newSessionAction = QAction(
             QIcon(self.iconPaths['new']),
@@ -626,7 +635,22 @@ class mainWindow(QMainWindow):
                 .exception('Error uploading to Turbine file: ')
         self.setCursorNormal()
         g.destroy()
-
+        
+    def SinterFileVectorize(self):
+        '''
+            SimSinter Config File Vectorization
+        '''
+        v = SinterVectorizeDialog(self)
+        v.waiting.connect(self.setCursorWaiting)
+        v.notwaiting.connect(self.setCursorNormal)
+        try:
+            v.exec_()
+        except Exception as e:
+            logging.getLogger("foqus." + __name__)\
+                .exception('Error vectorizing simsinter file: ')
+        self.setCursorNormal()
+        v.destroy()
+        
     def sessionDescEdit(self):
         '''
             This brings up an editor dialog for the FOQUS session
@@ -1365,10 +1389,10 @@ class mainWindow(QMainWindow):
                         self.singleRun.res[0][key] = value
 
                 self.dat.flowsheet.results.add_result(
-                    set_name='Single_runs',
-                    result_name='single_{}'.format(self.dat.flowsheet.singleCount),
-                    time=None,
-                    sd=self.singleRun.res[0])
+                     set_name='Single_runs',
+                     result_name='single_{}'.format(self.dat.flowsheet.singleCount),
+                     time=None,
+                     sd=self.singleRun.res[0])
             else:
                 self.dat.flowsheet.setErrorCode(20)
                 logging.getLogger("foqus." + __name__).error(

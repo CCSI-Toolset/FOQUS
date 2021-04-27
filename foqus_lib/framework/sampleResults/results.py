@@ -380,7 +380,7 @@ class Results(pd.DataFrame):
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None,
-                   empty=False):
+                    empty=False):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001
@@ -402,6 +402,9 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
+                # if type(dat[i])==list:
+                #     self.loc[row, col] = str(dat[i])
+                # else:
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 

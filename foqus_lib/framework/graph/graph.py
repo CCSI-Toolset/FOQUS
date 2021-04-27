@@ -441,6 +441,8 @@ class Graph(threading.Thread):
         # x and f are ordered dictionaries so keys are already sorted
         self.xnames = list(self.x.keys())  # get a list of input names
         self.fnames = list(self.f.keys())  # get a list of output names
+        # self.xvectornames = list(self.xvector.keys())  # get a list of input vector names
+        # self.fvectornames = list(self.fvector.keys())  # get a list of output vector names
         self.markConnectedInputs()  # mark which inputs are set by con.
 
     def markConnectedInputs(self):

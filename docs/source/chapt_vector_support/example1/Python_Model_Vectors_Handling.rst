@@ -136,8 +136,8 @@ displayed, as shown in Figure 12.
    Figure 12: Simulation Result
 
 The simulation runs successfully, and the output variable value is obtained as
-per the rosenbrock function set up in the node script,corresponding to the input
-vector element values.
+per the rosenbrock function set up in the node script, corresponding to the
+input vector element values.
 
 It is to be noted that the functioning of other FOQUS modules like UQ,
 Optimization, and Surrogate Modeling is not affected by introducing vector
@@ -151,7 +151,7 @@ the variable is constructed as a vector, and for size = 1, it is created as a
 scalar.
 
 2. The vector elements are separate scalar node variables that get created,
-and grouped together in a node vector variable object 'x',in the background of
+and grouped together in a node vector variable object 'x', in the background of
 FOQUS. Hence, 'x' can be considered as a vector variable that gets created in
 the background, to store the scalar variables corresponding to its elements, at
 specific index locations.

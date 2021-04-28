@@ -34,7 +34,7 @@ in Figure 1.
 
    Figure 1: Setting up the initial SimSinter file
 
-In order to create the file,access the pumparound flowrates of the absorber as
+In order to create the file, access the pumparound flowrates of the absorber as
 input variables, and temperatures of liquid, vapor phases at the first stage of
 absorber, following the 'Path' shown in the figure, for navigating
 through the variable tree in the GUI.
@@ -105,7 +105,7 @@ directly to check whether it has been modified correctly.
 
 In the json file, the dictionary corresponding to the "outputs" key must contain
 180 scalar variables 90 each corrsponding to the vector variables "B_TEMP" and
-"TVAP".Each scalar output variable corresponding to the vector must contain a
+"TVAP". Each scalar output variable corresponding to the vector must contain a
 "vector" field which includes the vector variable it is associated with, and an
 "index" field, which defines its location in the vector. The indices range from
 0 to (size-1), where size is the number of elements in the vector.

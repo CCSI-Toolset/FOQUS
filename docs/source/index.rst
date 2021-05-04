@@ -21,6 +21,7 @@
     chapt_debug/index
     chapt_dev/index
     references
+    contact
     copyright
 
 FOQUS
@@ -111,3 +112,5 @@ from Carbon Capture Pilot Plant Testing. In: Eden, M.R., Ierapetritou, M.G., Tow
 pp. 283-288.
 
 Additional research work can be found on https://www.acceleratecarboncapture.org/publications 
+
+.. include:: contact.rst

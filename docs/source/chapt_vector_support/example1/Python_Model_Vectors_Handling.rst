@@ -19,7 +19,7 @@ as shown in Figure 1.
    :alt: Figure 1: FOQUS node for rosenbrock function
    :name: fig.rosenbrock.foqus.node
 
-   Figure 1: FOQUS node for rosenbrock function
+   Figure 1: FOQUS node for Rosenbrock function
 
 *Step 2*: Open the node editor and under 'Input Variables' section, click on '+'
 to add a new input variable.
@@ -110,7 +110,7 @@ editor is populated with the scalar variable y as shown in Figure 10.
 
    Figure 10: Output variable in Node Panel
 
-*Step 9*: Enter the rosenbrock function in the node script (set to 'post' mode)
+*Step 9*: Enter the Rosenbrock function in the node script (set to 'post' mode)
 in python format, as shown in Figure 11.
 
 .. figure:: ../figs/node_script.png
@@ -136,7 +136,7 @@ displayed, as shown in Figure 12.
    Figure 12: Simulation Result
 
 The simulation runs successfully, and the output variable value is obtained as
-per the rosenbrock function set up in the node script, corresponding to the
+per the Rosenbrock function set up in the node script, corresponding to the
 input vector element values.
 
 It is to be noted that the functioning of other FOQUS modules like UQ,

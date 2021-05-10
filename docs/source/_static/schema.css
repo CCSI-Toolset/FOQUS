@@ -23,7 +23,6 @@ html {
 #json-schema ul ul ul ul {
     list-style-type: circle;
 }
-
 #json-schema .type {
     font-style: italic;
     opacity: 0.6;
@@ -95,4 +94,8 @@ html {
 #json-schema .listof {
     color: black;
     font-weight: 500;
+}
+.wy-nav-content {
+    max-width: none;
+    /* max-width: 95% !important; */
 }

@@ -24,7 +24,7 @@ as shown in Figure 1.
 *Step 2*: Open the node editor and under 'Input Variables' section, click on '+'
 to add a new input variable.
 Further, in the user interface prompt, enter the variable name 'x' as shown in
-Figure 2, and click ok.
+Figure 2, and click Ok.
 
 .. figure:: ../figs/add_ip_vector_var_1.png
    :alt: Figure 2: Add input vector variable 'x'
@@ -33,7 +33,7 @@ Figure 2, and click ok.
    Figure 2: Add input vector variable 'x'
 
 *Step 3*: In the next user interface prompt, enter 6 as the size of the variable
-as shown in Figure 3, and click ok.
+as shown in Figure 3, and click Ok.
 This would correspond to the number of elements in the vector, if size is
 greater than 1.
 
@@ -44,7 +44,7 @@ greater than 1.
    Figure 3: Specify size of the input vector variable
 
 *Step 4*: In the next user interface prompt, enter 0 as the minimum value for
-the variable elements, shown in Figure 4, and click ok.
+the variable elements, shown in Figure 4, and click Ok.
 
 .. figure:: ../figs/add_ip_vector_var_3.png
    :alt: Figure 4: Specify minimum value of the input vector variable elements
@@ -53,7 +53,7 @@ the variable elements, shown in Figure 4, and click ok.
    Figure 4: Specify minimum value of the input vector variable elements
 
 *Step 5*: In the next user interface prompt, enter 1 as the maximum value for
-the variable elements, shown in Figure 5, and click ok.
+the variable elements, shown in Figure 5, and click Ok.
 
 .. figure:: ../figs/add_ip_vector_var_4.png
    :alt: Figure 5: Specify maximum value of the input vector variable elements
@@ -62,7 +62,7 @@ the variable elements, shown in Figure 5, and click ok.
    Figure 5: Specify maximum value of the input vector variable elements
 
 *Step 6*: In the next user interface prompt, enter 0.5 as the value for the
-variable elements, shown in Figure 6, and click ok.
+variable elements, shown in Figure 6, and click Ok.
 These are the values at which the simulation would run.
 
 .. figure:: ../figs/add_ip_vector_var_5.png
@@ -84,7 +84,7 @@ editor is populated with the vector variable elements x_0 through x_5,
 *Step 7*: Under 'Output Variables' section, click on '+' to add a new output
 variable.
 Further, in the user interface prompt, enter the variable name 'y' as shown in
-Figure 8, and click ok.
+Figure 8, and click Ok.
 
 .. figure:: ../figs/add_op_var.png
    :alt: Figure 8: Add output scalar variable 'y'
@@ -93,7 +93,7 @@ Figure 8, and click ok.
    Figure 8: Add output scalar variable 'y'
 
 *Step 8*: In the next user interface prompt, enter 1 as the size of the variable
-(since it is a scalar), as shown in Figure 9, and click ok.
+(since it is a scalar), as shown in Figure 9, and click Ok.
 
 .. figure:: ../figs/add_op_var_2.png
    :alt: Figure 9: Specify size of the output variable

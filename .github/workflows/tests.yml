@@ -25,6 +25,7 @@ defaults:
 
 jobs:
   run-tests:
+    if: 'false'
     name: Run tests (py${{ matrix.python-version }}/${{ matrix.os }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -97,6 +98,7 @@ jobs:
         run: |
           pytest tests-gui/
   pylint:
+    if: 'false'
     name: pylint (py${{ matrix.python-version }})
     runs-on: ubuntu-20.04
     strategy:
@@ -115,6 +117,7 @@ jobs:
       - uses: ./.github/actions/pylint
         name: Run pylint (action)
   docs:
+    if: 'false'
     name: Build docs
     runs-on: ubuntu-20.04
     steps:

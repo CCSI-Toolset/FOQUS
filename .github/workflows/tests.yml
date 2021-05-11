@@ -95,7 +95,7 @@ jobs:
           # QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |
-          pytest tests/
+          pytest tests-gui/
   pylint:
     name: pylint (py${{ matrix.python-version }})
     runs-on: ubuntu-20.04

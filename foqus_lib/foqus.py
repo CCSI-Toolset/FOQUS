@@ -30,7 +30,7 @@ foqus_application = None # The Qt application so I can show dialogs
 dat = None
 PyQt5 = None
 
-def guiImport():
+def guiImport(mpl_backend='Qt5Agg'):
     """
     Only import the GUI classes if you want the GUI
     """
@@ -50,8 +50,8 @@ def guiImport():
         import PyQt5.QtGui
         import PyQt5.QtCore
         import matplotlib
-        matplotlib.use('Qt5Agg')
-        matplotlib.rcParams['backend']='Qt5Agg'
+        matplotlib.use(mpl_backend)
+        matplotlib.rcParams['backend'] = mpl_backend
         loadGUI = True
         guiAvail = True
     except ImportError:

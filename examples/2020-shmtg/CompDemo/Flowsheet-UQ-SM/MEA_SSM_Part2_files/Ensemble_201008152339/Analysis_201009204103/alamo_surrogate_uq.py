@@ -1,5 +1,5 @@
 #!/usr/bin/python
-###################################################
+#==================================================
 # Response surface interpolator from ALAMO
 # How to run this program : 
 #    python <this program> <infile> <outfile> <aux>
@@ -19,7 +19,7 @@ import sys
 import string
 import math
 import json
-###################################################
+#==================================================
 # Function to get input data for interpolation
 #==================================================
 def getInputData(inFileName):
@@ -35,7 +35,7 @@ def getInputData(inFileName):
          for ind in range(nInputs):
             inData[cnt*nInputs+ind] = float(nCols[ind+1])
    return nSamp, inData, nInputs
-###################################################
+#==================================================
 # Function to generate output file
 #==================================================
 def genOutputFile(outFileName, outData):
@@ -46,7 +46,7 @@ def genOutputFile(outFileName, outData):
       outfile.write("%e\n" % outData[ind])
    outfile.close()
    return None
-###################################################
+#==================================================
 # Model parameters
 #==================================================
 in_labels = ['MEA_UPD.GASABSIN', 'MEA_UPD.GASINCO2FRXN', 'MEA_UPD.SOLVENTABSIN', 'MEA_UPD.STRIP_PRES', 'X_SOLVENT_CALC.AMINECONC', 'X_SOLVENT_CALC.CO2LOADING']
@@ -55,7 +55,7 @@ in_indexes = [3, 4, 14, 15, 16, 17]
 indexes = [5, 6, 1]
 nInputs = 6
 nOutputs = 3
-###################################################
+#==================================================
 # Interpolate function for ALAMO
 #==================================================
 def interpolate(npts, XX, oid):
@@ -72,7 +72,7 @@ def interpolate(npts, XX, oid):
          Xt[ii] = XX[ss*nInputs+ii]
       Ys[ss] = g(Xt)
    return Ys
-###################################################
+#==================================================
 # Main program
 #==================================================
 infileName  = sys.argv[1]

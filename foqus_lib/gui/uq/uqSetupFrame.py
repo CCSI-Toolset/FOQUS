@@ -429,6 +429,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.delegate = uqSetupFrame.MyItemDelegate(self)
         self.delete_table.setItemDelegate(self.delegate)
 
+        self._analysis_dialog = None
+        self._results_box = None
+
 
     def refresh(self):
         numSims = len(self.dat.uqSimList)
@@ -1017,8 +1020,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         sim = self.dat.uqSimList[row]
 
         dialog = AnalysisDialog(row + 1, sim, self)
-        dialog.exec_()
-        dialog.deleteLater()
+        self._analysis_dialog = dialog
+        res = dialog.show()
+        # return res
+        # dialog.deleteLater()
 
     def resizeColumns(self):
         self.simulationTable.resizeColumnsToContents()
@@ -1026,6 +1031,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     def resultsBox(self, numSuccessful, numSamples):
         msgBox = QtWidgets.QMessageBox()
+        self._results_box = msgBox
         msgBox.setWindowTitle('FOQUS Run Finished')
         msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
         result = msgBox.exec_()

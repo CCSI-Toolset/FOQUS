@@ -11,6 +11,7 @@ astroid==2.4.2
 pytest
 pytest-cov
 pytest-qt
+python-slugify
 sphinx
 sphinx_rtd_theme
 

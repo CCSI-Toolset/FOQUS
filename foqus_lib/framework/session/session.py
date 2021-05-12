@@ -369,19 +369,19 @@ class session:
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
                 os.path.dirname(surrogate.__file__)],
-            charLimit = 150)
+            charLimit = 1150)
         self.optSolvers = pluginSearch.plugins(
             idString = '#FOQUS_OPT_PLUGIN',
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
                 os.path.dirname(problem.__file__)],
-            charLimit = 150)
+            charLimit = 1150)
         self.pymodels = pluginSearch.plugins(
             idString = '#FOQUS_PYMODEL_PLUGIN',
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
                 os.path.dirname(pymodel.__file__)],
-            charLimit = 150)
+            charLimit = 1150)
         try:
             self.flowsheet.pymodels = self.pymodels
         except:

@@ -1,4 +1,5 @@
 import contextlib
+import logging
 from pathlib import Path
 import shutil
 import typing as t
@@ -58,6 +59,16 @@ def pytest_addoption(parser):
     parser.addoption(
         '--main-window-title', action='store', default='FOQUS'
     )
+
+
+@pytest.fixture(scope='session', autouse=True)
+def configure_logging(request):
+    logger = pytest_qt_extras._logger
+
+    console = logging.StreamHandler()
+    console.setLevel(logging.DEBUG)
+    console.setFormatter(logging.Formatter('%(relativeCreated)6d :: %(levelname)s :: %(filename)s:L%(lineno)d :: %(message)s'))
+    logger.addHandler(console)
 
 
 @pytest.fixture(scope='session')

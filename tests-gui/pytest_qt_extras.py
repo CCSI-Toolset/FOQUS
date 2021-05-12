@@ -21,7 +21,7 @@ from _pytest.monkeypatch import MonkeyPatch
 KWARGS_PLACEHOLDER_VALUES = {True, any, next, ..., '*', ''}
 
 
-_logger = logging.getLogger('pytest.qt_extras')
+_logger = logging.getLogger('pytest_qt_extras')
 
 
 @dataclass

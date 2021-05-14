@@ -1,5 +1,6 @@
 import contextlib
 import logging
+import os
 from pathlib import Path
 import shutil
 import typing as t
@@ -10,40 +11,6 @@ import pytest
 from pytestqt import plugin as pytestqt_plugin
 from _pytest.monkeypatch import MonkeyPatch
 import pytest_qt_extras
-
-
-@pytest.fixture(scope='session')
-def examples_dir():
-    here = Path(__file__).resolve()  # FOQUS/test/conftest.py
-    _examples_dir = here.parent.parent / 'examples'
-    assert _examples_dir.exists()
-    return _examples_dir
-
-
-@pytest.fixture(scope='session')
-def psuade_path():
-    _psuade_path = shutil.which('psuade')
-    assert _psuade_path is not None
-    return Path(_psuade_path).resolve()
-
-
-@pytest.fixture(
-    scope='session',
-    params=[
-        'UQ/Rosenbrock.foqus'
-    ]
-)
-def flowsheet_session_file(examples_dir, request):
-    return str(examples_dir / 'test_files' / request.param)
-
-
-@pytest.fixture(scope="session")
-def foqus_session(psuade_path):
-    from foqus_lib.framework.session.session import session
-
-    dat = session(useCurrentWorkingDir=True)
-    dat.foqusSettings.psuade_path = str(psuade_path)
-    return dat
 
 
 def pytest_addoption(parser):
@@ -76,7 +43,7 @@ def qtbot_params(request):
     cfg = request.config
     return {
         'slowdown_wait': int(cfg.getoption('--slowdown-wait')),
-        'artifacts_path': Path(cfg.getoption('--artifacts-path')),
+        'artifacts_path': Path(cfg.getoption('--artifacts-path')).absolute(),
     }
 
 
@@ -88,6 +55,52 @@ def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
     if exceptions:
         pytest.fail(pytestqt_plugin.format_captured_exceptions(exceptions))
     _qtbot.describe()
+
+
+@pytest.fixture(scope='session')
+def examples_dir():
+    here = Path(__file__).resolve()  # FOQUS/test/conftest.py
+    _examples_dir = here.parent.parent / 'examples'
+    assert _examples_dir.exists()
+    return _examples_dir
+
+
+@pytest.fixture(scope='session')
+def psuade_path():
+    _psuade_path = shutil.which('psuade')
+    assert _psuade_path is not None
+    return Path(_psuade_path).resolve()
+
+
+@pytest.fixture(
+    scope='session',
+    params=[
+        'UQ/Rosenbrock.foqus'
+    ]
+)
+def flowsheet_session_file(examples_dir, request):
+    return str(examples_dir / 'test_files' / request.param)
+
+
+@pytest.fixture(
+    scope='session',
+)
+def foqus_working_dir(qtbot_params):
+    return qtbot_params['artifacts_path'] / 'foqus_working_dir'
+
+
+@pytest.fixture(scope="session")
+def foqus_session(foqus_working_dir, psuade_path):
+    from foqus_lib.framework.session import session
+    foqus_working_dir.mkdir(exist_ok=True, parents=True)
+    # reproducing what happens in foqus_lib.focus.main()
+    os.chdir(foqus_working_dir)
+    session.makeWorkingDirStruct()
+    session.makeWorkingDirFiles()
+
+    dat = session.session(useCurrentWorkingDir=True)
+    dat.foqusSettings.psuade_path = str(psuade_path)
+    return dat
 
 
 @pytest.fixture(scope='session')

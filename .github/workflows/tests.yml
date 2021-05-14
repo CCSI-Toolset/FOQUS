@@ -22,6 +22,9 @@ defaults:
   run:
     # the -l flag is needed for the Conda environment to be activated properly
     shell: bash -l {0}
+  
+env:
+  PYTEST_ARTIFACTS_PATH: ".pytest-artifacts"
 
 jobs:
   run-tests:
@@ -96,7 +99,13 @@ jobs:
           # QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |
-          pytest tests-gui/
+          pytest --artifacts-path "$PYTEST_ARTIFACTS_PATH" tests-gui/
+      - name: Upload pytest artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: pytest-artifacts
+          path: ${{ env.PYTEST_ARTIFACTS_PATH }}
+          retention-days: 7
   pylint:
     if: 'false'
     name: pylint (py${{ matrix.python-version }})

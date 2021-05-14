@@ -33,7 +33,7 @@ class CallInfo:
     instance: t.Optional[object] = None
     exception: t.Optional[Exception] = None
     result: t.Optional[object] = None
-    parameters: [dict] = field(default_factory=dict)
+    parameters: dict = field(default_factory=dict)
 
 
 @dataclass
@@ -881,6 +881,7 @@ class QtBot(pytestqt_plugin.QtBot):
         self._descriptions = []
         self._screenshot_count = 0
         self._artifacts_base_path = Path(artifacts_path)
+        self._screenshots_path = self._artifacts_base_path / 'screenshots'
         self._init_artifacts()
 
         self._signals = _Signals.instance()
@@ -891,7 +892,12 @@ class QtBot(pytestqt_plugin.QtBot):
         self._slowdown_wait = slowdown_wait
 
     def _init_artifacts(self):
-        self._artifacts_base_path.mkdir(parents=True, exist_ok=True)
+        for path in [
+                self._artifacts_base_path,
+                self._screenshots_path
+            ]:
+            _logger.debug(f'Creating directory "{path}"')
+            path.mkdir(parents=True, exist_ok=True)
 
     def add_description(self, action):
         self._descriptions.append(action.description)
@@ -903,8 +909,9 @@ class QtBot(pytestqt_plugin.QtBot):
         win_handle = native_widget.windowHandle()
         screen = win_handle.screen()
         pixmap = screen.grabWindow(win_handle.winId())
-        file_name = f'screenshot-{self._screenshot_count}-{slugify(label)}.{ext}'
-        file_path = self._artifacts_base_path / file_name
+        # TODO add metadata on the test where the screenshot originates from
+        file_name = f'{self._screenshot_count}-{slugify(label)}.{ext}'
+        file_path = self._screenshots_path / file_name
         pixmap.save(file_path.__fspath__())
         self._screenshot_count += 1
 

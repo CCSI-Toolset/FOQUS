@@ -229,7 +229,7 @@ class FilterOutcome:
 
 # if we define "Handler" as anything that wraps and acts on a single widget object,
 # this could be a SearchHandler and the Agent an ActionHandler
-class OutcomesForCandidate:
+class SearchHandler:
     def __init__(self, candidate):
         self._candidate = candidate
         self._outcomes = {}
@@ -245,8 +245,8 @@ class OutcomesForCandidate:
     def __iter__(self):
         yield from self.outcomes
 
-    def __str__(self):
-        return f'{self.__class__.__name__}({self.candidate})'
+    def __repr__(self):
+        return f'<{self.__class__.__name__}({self.candidate})>'
 
     @property
     def is_match(self):
@@ -293,16 +293,16 @@ class OutcomesForCandidate:
 class SearchMatches:
     def __init__(self, items=None):
         self._all_items = list(items or [])
-        self._handlers = [OutcomesForCandidate(item) for item in self._all_items]
+        self._handlers = [SearchHandler(item) for item in self._all_items]
 
     def __iter__(self):
         yield from self._handlers
 
     def apply_filter(self, filter_):
-        print(f'applying filter {filter_}')
+        _logger.debug(f'applying filter {filter_}')
         for handler in self:
             outcome = handler.apply(filter_)
-            print(f'outcome={outcome} for {handler}')
+            _logger.debug(f'\t\t{handler}:\t{outcome}')
 
     def apply_filters(self, filters):
         for f in filters:

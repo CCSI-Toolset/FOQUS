@@ -64,7 +64,7 @@ jobs:
           foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
   gui-tests:
     name: GUI tests (py${{ matrix.python-version }}/${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
       matrix:

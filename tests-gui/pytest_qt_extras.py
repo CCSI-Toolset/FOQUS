@@ -924,6 +924,7 @@ class QtBot(pytestqt_plugin.QtBot):
         file_name = f'{self._screenshot_count}-{slugify(label)}.{ext}'
         file_path = self._screenshots_path / file_name
         pixmap.save(file_path.__fspath__())
+        _logger.info(f'Created screenshot: {file_name}')
         self._screenshot_count += 1
 
     @contextlib.contextmanager

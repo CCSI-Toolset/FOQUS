@@ -83,6 +83,7 @@ def _wrap_callable(
 def instrument(target, signal_before=None, signal_after=None):
     mp = MonkeyPatch()
 
+    _logger.info(f'instrumenting target {target}')
     if isinstance(target, tuple) and len(target) == 2:
         owner, name = target
         instance = None
@@ -94,10 +95,10 @@ def instrument(target, signal_before=None, signal_after=None):
     func = getattr(owner, name)
     assert callable(func), f'{func} must be callable'
 
-    _logger.info(f'target={target}')
-    _logger.info(f'name={name}')
-    _logger.info(f'owner={owner}')
-    _logger.info(f'func={func}')
+    _logger.debug(f'target={target}')
+    _logger.debug(f'name={name}')
+    _logger.debug(f'owner={owner}')
+    _logger.debug(f'func={func}')
 
     def _do_nothing(*args, **kwargs): ...
 
@@ -391,6 +392,9 @@ class Agent:
         self._target_identifier = target_identifier or (type(self.target).__name__,)
         self._highlighter = None
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__}(target={self.target} as="{self.readable_target}")>'
+
     @property
     def target(self):
         return self._target
@@ -515,7 +519,7 @@ class Agent:
         else:
             raise ValueError(f'If "hint" is used, it should be a callable or a string, but an object of type {type(hint)} was provided')
 
-        _logger.info(f'self.target={self.target}')
+        _logger.info(f'locating widget within search root {self.target}')
         cands = self.target.findChildren(widget_cls)
         all_children = self.target.findChildren(QtWidgets.QWidget)
         # print(f'all_children={all_children}')
@@ -530,7 +534,9 @@ class Agent:
         _logger.info(f'filters={filters}')
         matches = SearchMatches(cands)
         matches.apply_filters(filters)
-        return matches[index]
+        result = matches[index]
+        _logger.info(f'result={result}')
+        return result
 
 
 class InvalidMatchError(ValueError):
@@ -627,7 +633,7 @@ class Dispatcher:
         matcher = issubclass if isinstance(target, type) else isinstance
         for match_key, match_val in self.dispatch_rules:
             if matcher(target, match_key):
-                _logger.info(f'found match between {match_key} and {target}: {match_val}')
+                _logger.debug(f'found match between {match_key} and {target}: {match_val}')
                 return match_val
         raise ValueError(f"No matching value found for {target}")
 
@@ -885,11 +891,16 @@ class QtBot(pytestqt_plugin.QtBot):
         self._init_artifacts()
 
         self._signals = _Signals.instance()
+        self._init_signals()
+
+        self._slowdown_wait = slowdown_wait
+
+    def _init_signals(self):
+        self._signals.actionStarted.connect(lambda a: _logger.info(f'Action started: {a}'))
+        self._signals.actionEnded.connect(lambda a: _logger.info(f'Action ended: {a}'))
         self._signals.actionEnded.connect(self.add_description)
         self._signals.actionStarted.connect(self.start_highlight)
         self._signals.actionEnded.connect(self.stop_highlight)
-
-        self._slowdown_wait = slowdown_wait
 
     def _init_artifacts(self):
         for path in [
@@ -1060,7 +1071,7 @@ class QtBot(pytestqt_plugin.QtBot):
 
         def _modal_slot(call_info: CallInfo):
             widget = call_info.instance or call_info.args[0]
-            _logger.info(f'_modal_slot called for {widget}')
+            _logger.debug(f'_modal_slot called for {widget}')
             def _to_be_called_async():
                 _logger.debug(call_info)
                 handler(widget, **kwargs)
@@ -1071,7 +1082,7 @@ class QtBot(pytestqt_plugin.QtBot):
         signal.connect(_modal_slot)
 
         with instrument(target, signal_before=signal) as instrumented:
-            _logger.info(f'instrumented={instrumented}')
+            _logger.debug(f'instrumented={instrumented}')
             with self.wait_signal(signal, timeout=timeout):
                 yield
         # must disconnect upon exiting the context or modal_slot will be connected again

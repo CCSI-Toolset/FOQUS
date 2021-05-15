@@ -74,9 +74,16 @@ jobs:
           # - '3.8'
           # - '3.9'
         os:
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - linux
+          - win64
+          - macos
+        include:
+          - os: macos
+            os-version: macos-10.15
+          - os: linux
+            os-version: ubuntu-20.04
+          - os: win64
+            os-version: windows-2019
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -89,7 +96,7 @@ jobs:
         with:
           pip-install-target: -r requirements-dev.txt
       - name: Set up GUI test environment
-        if: contains(matrix.os, 'ubuntu')
+        if: startswith(matrix.os, 'linux')
         run: |
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Run GUI tests
@@ -103,7 +110,7 @@ jobs:
       - name: Upload pytest artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: pytest-artifacts
+          name: pytest-artifacts-${{ matrix.os }}
           path: ${{ env.PYTEST_ARTIFACTS_PATH }}
           retention-days: 7
   pylint:

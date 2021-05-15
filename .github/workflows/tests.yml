@@ -106,9 +106,10 @@ jobs:
           # QT_DEBUG_PLUGINS: '1'
           MPLBACKEND: AGG
         run: |
-          pytest --artifacts-path "$PYTEST_ARTIFACTS_PATH" tests-gui/
+          pytest -sv --artifacts-path "$PYTEST_ARTIFACTS_PATH" tests-gui/
       - name: Upload pytest artifacts
         uses: actions/upload-artifact@v2
+        if: always()
         with:
           name: pytest-artifacts-${{ matrix.os }}
           path: ${{ env.PYTEST_ARTIFACTS_PATH }}

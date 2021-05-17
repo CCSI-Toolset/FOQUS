@@ -145,7 +145,7 @@ def _get_sibling_label_text(widget):
             _logger.debug(f'Adding {child} (text={child.text()})')
             preceding_siblings.append(child)
         else:
-            _logger.debug(f'Widget {child} is not visible, skipping')
+            _logger.debug(f'Widget {child} (text={child.text()} is not visible, skipping')
 
     # reversed to search for the label from closest to farthest
     for sibling in reversed(preceding_siblings):

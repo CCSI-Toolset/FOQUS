@@ -1,4 +1,4 @@
-""" #FOQUS_OPT_PLUGIN Pyomo_Surrogate.py
+""" #FOQUS_OPT_PLUGIN SM_Optimizer.py
 
 Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
 150 characters of text.  They also need to have a .py extension and
@@ -78,7 +78,7 @@ def checkAvailable():
 
 class opt(optimization):
     '''
-        The optimization solver (in this case, Pyomo_Surrogate) class.
+        The optimization solver (in this case, SM_Optimizer) class.
         It describes the solver & its properties. Should be called opt and
         inherit optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:

@@ -36,7 +36,7 @@ class plugins():
     """
     This class maintains a list of DFO solver plugins
     """
-    def __init__(self, idString, pathList, charLimit=200):
+    def __init__(self, idString, pathList, charLimit=1150):
         self.idString = idString
         self.pathList = pathList
         self.charLimit = charLimit

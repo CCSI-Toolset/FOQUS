@@ -13,13 +13,13 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-#
-#FOQUS_OPT_PLUGIN
-#
-# Optimization plugins need to have FOQUS_OPT_PLUGIN in the first
-# 150 characters of text.  They also need to have a .py extension and
-# inherit the optimization class.
-#
+""" #FOQUS_OPT_PLUGIN PSUADE.py
+
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the surrogate class.
+
+"""
 #
 # PSUADE
 #

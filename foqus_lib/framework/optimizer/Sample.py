@@ -15,13 +15,12 @@
 ###############################################################################
 """ #FOQUS_OPT_PLUGIN Sample.py
 
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the surrogate class.
 
-* Just evaluates the objective function for flowsheet results and
-   picks the best result.  If the status for any result is -1 the
-   result is rerun.
+* Just evaluates the objective function for flowsheet results and picks the best
+  result.  If the status for any result is -1 the result is rerun.
 
 John Eslick, Carnegie Mellon University, 2014
 """

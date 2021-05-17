@@ -131,12 +131,21 @@ def _get_sibling_label_text(widget):
         top_left = w.geometry().topLeft()
         return (top_left.y(), top_left.x())
 
-    ordered_as_text = sorted(widget.parent().children(), key=get_order_key_top_down_left_right)
+    search_pool = [
+        w
+        for w in widget.parent().findChildren(QtWidgets.QWidget)
+        if (hasattr(w, 'text') or w is widget)
+    ]
+    ordered_as_text = sorted(search_pool, key=get_order_key_top_down_left_right)
 
     for child in ordered_as_text:
         if child == widget:
             break
-        preceding_siblings.append(child)
+        if child.isVisible():
+            _logger.debug(f'Adding {child} (text={child.text()})')
+            preceding_siblings.append(child)
+        else:
+            _logger.debug(f'Widget {child} is not visible, skipping')
 
     # reversed to search for the label from closest to farthest
     for sibling in reversed(preceding_siblings):

@@ -1006,12 +1006,15 @@ class QtBot(pytestqt_plugin.QtBot):
     def locate(self, target=None, hint=None, **kwargs):
         if isinstance(target, QtWidgets.QWidget):
             return target
+
+        locate_spec = dict(target=target, hint=hint, kwargs=kwargs)
         with self.agent.highlighting(color=QtCore.Qt.blue):
+            self.take_screenshot(f'locate-{locate_spec}')
             self.slow_down()
             try:
+                _logger.info(f'qtbot.locate({locate_spec}')
                 res = self.agent.locate(target=target, hint=hint, **kwargs)
             except InvalidMatchError as e:
-                locate_spec = dict(target=target, hint=hint, kwargs=kwargs)
                 _logger.error(f'invalid match for QtBot.locate({locate_spec})')
                 self.take_screenshot(f'invalid-match-{e}-{locate_spec}')
                 raise e

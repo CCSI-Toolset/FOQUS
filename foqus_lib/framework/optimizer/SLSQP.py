@@ -13,11 +13,11 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-""" #FOQUS_OPT_PLUGIN SLSQP.py
+""" #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 begining of the file (see pluginSearch.plugins() for exact character count of
-text).  They also need to have a .py extension and inherit the surrogate class.
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for scipy SLSQP using finite dif
 * Uses scipy optimization module

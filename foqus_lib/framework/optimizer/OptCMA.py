@@ -13,11 +13,11 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-""" #FOQUS_OPT_PLUGIN  OptCMA.py
+""" #FOQUS_OPT_PLUGIN
 
 Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 begining of the file (see pluginSearch.plugins() for exact character count of
-text).  They also need to have a .py extension and inherit the surrogate class.
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * This is an example of an optimization plugin for FOQUS, CMA
   optimization solver from https://www.lri.fr/~hansen/cmaes_inmatlab.html#python

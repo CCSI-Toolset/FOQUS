@@ -9,12 +9,19 @@ from foqus_lib.framework.uq.ResponseSurfaces import *
 from foqus_lib.framework.uq.Common import Common
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QDialog
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QListWidgetItem,
+    QAbstractItemView,
+    QDialogButtonBox,
+    QDialog,
+)
+
 mypath = os.path.dirname(__file__)
-_updateUQModelDialogUI, _updateUQModelDialog = \
-        uic.loadUiType(os.path.join(mypath, "updateUQModelDialog_UI.ui"))
-        
+_updateUQModelDialogUI, _updateUQModelDialog = uic.loadUiType(
+    os.path.join(mypath, "updateUQModelDialog_UI.ui")
+)
+
 
 class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
     def __init__(self, dat, parent=None):
@@ -22,7 +29,7 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
         self.setupUi(self)
         self.dat = dat
 
-        #Init options
+        # Init options
         self.nodeRadioButton.toggled.connect(self.showNodeOption)
         self.emulatorRadioButton.toggled.connect(self.showEmulatorOption)
         nodes = sorted(dat.flowsheet.nodes.keys())
@@ -69,19 +76,23 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
             self.fileStatsLabel.setEnabled(enableSelection)
 
             items = self.outputList.selectedItems()
-            outputsChosen = (len(items) != 0)
+            outputsChosen = len(items) != 0
             button = self.buttonBox.button(QDialogButtonBox.Ok)
-            #print enableSelection, outputsChosen
+            # print enableSelection, outputsChosen
             button.setEnabled(enableSelection and outputsChosen)
 
     def getDataFileName(self):
-        if platform.system() == 'Windows':
-            allFiles = '*.*'
+        if platform.system() == "Windows":
+            allFiles = "*.*"
         else:
-            allFiles = '*'
-       # Get file name
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Simulation Ensemble",
-                                                                                   '' , "Psuade Files (*.dat *.filtered);; All files (%s)" % allFiles)
+            allFiles = "*"
+        # Get file name
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self,
+            "Open Simulation Ensemble",
+            "",
+            "Psuade Files (*.dat *.filtered);; All files (%s)" % allFiles,
+        )
         if len(fileName) == 0:
             return
 
@@ -101,24 +112,22 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
         if RSType == ResponseSurfaces.LEGENDRE:
             legendreOrder = data.getLegendreOrder()
 
-        statsText = 'Response Surface Type: ' + ResponseSurfaces.getFullName(RSType)
+        statsText = "Response Surface Type: " + ResponseSurfaces.getFullName(RSType)
         if legendreOrder:
-            statsText = statsText + '\nLegendre Order: ' + str(legendreOrder)
+            statsText = statsText + "\nLegendre Order: " + str(legendreOrder)
         self.fileStatsLabel.setText(statsText)
 
     def checkItemSelected(self, item):
         items = self.outputList.selectedItems()
-        enable = (len(items) != 0)
+        enable = len(items) != 0
         button = self.buttonBox.button(QDialogButtonBox.Ok)
-        #print enableSelection, outputsChosen
+        # print enableSelection, outputsChosen
         button.setEnabled(enable)
-
-
 
     def accept(self):
         if self.nodeRadioButton.isChecked():
             self.dat.uqModel = flowsheetToUQModel(self.dat.flowsheet)
-            #printUQModel(self.dat.uqModel)
+            # printUQModel(self.dat.uqModel)
         else:
             fileName = self.dataFileEdit.text()
             data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
@@ -136,15 +145,17 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
             data.model.setRunType(Model.EMULATOR)
             data.model.setOutputNames(outputNames)
             data.model.setSelectedOutputs(list(range(len(outputNames))))
-            data.model.setEmulatorOutputStatus(list(range(len(outputNames))), Model.NEED_TO_CALCULATE)
+            data.model.setEmulatorOutputStatus(
+                list(range(len(outputNames))), Model.NEED_TO_CALCULATE
+            )
             data.setOutputData(outputData)
             fnameRoot = Common.getFileNameRoot(fileName)
-            data.model.setName(fnameRoot + '.emulatorTestData')
-            newFileName = fnameRoot + '.emulatorTrainData'
+            data.model.setName(fnameRoot + ".emulatorTestData")
+            newFileName = fnameRoot + ".emulatorTrainData"
             data.writeToPsuade(newFileName)
             data.setEmulatorTrainingFile(newFileName)
             self.dat.uqModel = data.model
         self.done(QDialog.Accepted)
 
     def reject(self):
-            self.done(QDialog.Rejected)
+        self.done(QDialog.Rejected)

@@ -8,14 +8,15 @@ import foqus_lib.gui.helpers.guiHelpers as gh
 _log = logging.getLogger("foqus.{}".format(__name__))
 mypath = os.path.dirname(__file__)
 
-_edgeDockUI, _edgeDock = \
-        uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
+_edgeDockUI, _edgeDock = uic.loadUiType(os.path.join(mypath, "edgePanel_UI.ui"))
+
 
 class edgeDock(_edgeDock, _edgeDockUI):
     """
     Dock widget for editing an edge.  In FOQUS an edge connects variables in
     two nodes.
     """
+
     redrawFlowsheet = QtCore.pyqtSignal()
 
     def __init__(self, dat, parent=None):
@@ -51,23 +52,27 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.addConnection()
 
     def applyChanges(self):
-        '''
-            Update the edge with the parameters shown on the form
-        '''
+        """
+        Update the edge with the parameters shown on the form
+        """
         if self.edge == None:
             return
-        if self.tearBox.isChecked(): self.edge.tear = True
-        else: self.edge.tear = False
-        if self.activeBox.isChecked(): self.edge.active = True
-        else: self.edge.active = False
+        if self.tearBox.isChecked():
+            self.edge.tear = True
+        else:
+            self.edge.tear = False
+        if self.activeBox.isChecked():
+            self.edge.active = True
+        else:
+            self.edge.active = False
         try:
-            self.edge.curve = float( self.curveBox.text() )
+            self.edge.curve = float(self.curveBox.text())
         except:
             print("Curve must be a number")
         self.edge.start = self.fromBox.currentText()
         self.edge.end = self.toBox.currentText()
         self.edge.con = []
-        for row in range( self.connectTable.rowCount() ):
+        for row in range(self.connectTable.rowCount()):
             f = gh.cellPulldownValue(self.connectTable, row, 0)
             t = gh.cellPulldownValue(self.connectTable, row, 1)
             a = gh.isCellChecked(self.connectTable, row, 2)[0]
@@ -96,12 +101,12 @@ class edgeDock(_edgeDock, _edgeDockUI):
             index: the index of the edge in the graph
         """
         if index == None:
-            #if there are edges in the for clearContent will update the
-            #form with edge 0 selected
+            # if there are edges in the for clearContent will update the
+            # form with edge 0 selected
             self.edge = None
             self.clearContent()
         else:
-            #Update the form with the specified index
+            # Update the form with the specified index
             self.index = index
             self.edge = self.dat.flowsheet.edges[self.index]
             self.updateForm()
@@ -138,7 +143,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         Returns:
             None
         """
-        #self.indexBox.setText(str(self.index))
+        # self.indexBox.setText(str(self.index))
         self.updateIndexBox()
         if self.index == None or self.index < 0:
             self.clearContent()
@@ -163,7 +168,8 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.indexBox.blockSignals(True)
         self.indexBox.clear()
         self.indexBox.addItems(
-            list(map(str, list(range(len(self.dat.flowsheet.edges))))))
+            list(map(str, list(range(len(self.dat.flowsheet.edges)))))
+        )
         if self.index is not None and self.index >= 0:
             self.indexBox.setCurrentIndex(self.index)
         self.index = self.indexBox.currentIndex()
@@ -190,10 +196,12 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.toBox.addItems(nodes)
         if self.edge != None:
             index = self.fromBox.findText(self.edge.start)
-            if index < 0: index = 0
+            if index < 0:
+                index = 0
             self.fromBox.setCurrentIndex(index)
             index = self.toBox.findText(self.edge.end)
-            if index < 0: index = 0
+            if index < 0:
+                index = 0
             self.toBox.setCurrentIndex(index)
         self.fromBox.blockSignals(False)
         self.toBox.blockSignals(False)
@@ -212,19 +220,29 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.connectTable.clearContents()
         vars1in = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
         vars1out = sorted(self.dat.flowsheet.nodes[n1].outVars.keys())
-        vars2 = sorted(self.dat.flowsheet.nodes[n2] .inVars.keys())
+        vars2 = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
         if self.edge.start == n1 and self.edge.end == n2:
             self.connectTable.setRowCount(len(self.edge.con))
-            for i in range( len(self.edge.con) ):
+            for i in range(len(self.edge.con)):
                 gh.setTableItem(
-                    self.connectTable, i, 0, self.edge.con[i].fromName,
-                    pullDown=vars1out+vars1in)
-                self.connectTable.cellWidget(i,0).insertSeparator(len(vars1out))
+                    self.connectTable,
+                    i,
+                    0,
+                    self.edge.con[i].fromName,
+                    pullDown=vars1out + vars1in,
+                )
+                self.connectTable.cellWidget(i, 0).insertSeparator(len(vars1out))
                 gh.setTableItem(
-                    self.connectTable, i, 1, self.edge.con[i].toName,
-                    pullDown=vars2)
-                gh.setTableItem(self.connectTable, i, 2, "",
-                    check=self.edge.con[i].active, editable=False)
+                    self.connectTable, i, 1, self.edge.con[i].toName, pullDown=vars2
+                )
+                gh.setTableItem(
+                    self.connectTable,
+                    i,
+                    2,
+                    "",
+                    check=self.edge.con[i].active,
+                    editable=False,
+                )
         else:
             self.connectTable.setRowCount(0)
         self.connectTable.resizeColumnsToContents()
@@ -242,9 +260,9 @@ class edgeDock(_edgeDock, _edgeDockUI):
         """
         n1 = self.fromBox.currentText()
         n2 = self.toBox.currentText()
-        N1In  = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
+        N1In = sorted(self.dat.flowsheet.nodes[n1].inVars.keys())
         N1Out = sorted(self.dat.flowsheet.nodes[n1].outVars.keys())
-        N2In  = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
+        N2In = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
         for var in N1Out:
             if var in N2In:
                 self.addConnection(fv=var, tv=var)
@@ -266,7 +284,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
         """
         n1 = self.fromBox.currentText()
         n2 = self.toBox.currentText()
-        _log.debug("Adding connection from {}.{} to {}.{}".format(n1,fv,n2,tv))
+        _log.debug("Adding connection from {}.{} to {}.{}".format(n1, fv, n2, tv))
         # Add row
         self.connectTable.setRowCount(self.connectTable.rowCount() + 1)
         # get variable names, can connect in and out vars in n1 to in vars in n2
@@ -275,14 +293,13 @@ class edgeDock(_edgeDock, _edgeDockUI):
         vars2 = sorted(self.dat.flowsheet.nodes[n2].inVars.keys())
         # Fill in the pull down boxes
         row = self.connectTable.rowCount() - 1
-        gh.setTableItem(
-            self.connectTable, row, 0, fv, pullDown=vars1out + vars1in)
+        gh.setTableItem(self.connectTable, row, 0, fv, pullDown=vars1out + vars1in)
         # Put a seperator between output and input vars in from vars
         self.connectTable.cellWidget(row, 0).insertSeparator(len(vars1out))
-        gh.setTableItem(
-            self.connectTable, row, 1, tv, pullDown=vars2)
-        gh.setTableItem( # This is the active checkbox
-            self.connectTable, row, 2, "", check=True, editable=False)
+        gh.setTableItem(self.connectTable, row, 1, tv, pullDown=vars2)
+        gh.setTableItem(  # This is the active checkbox
+            self.connectTable, row, 2, "", check=True, editable=False
+        )
         # make columns wide enough to see what's goning on
         self.connectTable.resizeColumnsToContents()
 
@@ -296,8 +313,7 @@ class edgeDock(_edgeDock, _edgeDockUI):
             None
         """
         indexes = self.connectTable.selectedIndexes()
-        delRowSet = \
-            sorted(list(set([index.row() for index in indexes])), reverse=True)
+        delRowSet = sorted(list(set([index.row() for index in indexes])), reverse=True)
         for row in delRowSet:
             self.connectTable.removeRow(row)
 

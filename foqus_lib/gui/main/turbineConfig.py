@@ -6,19 +6,24 @@ See LICENSE.md for license and copyright details.
 """
 import os
 from foqus_lib.framework.sim.turbineConfiguration import (
-    TurbineInterfaceEx, TurbineConfiguration)
+    TurbineInterfaceEx,
+    TurbineConfiguration,
+)
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QFileDialog, QDialog
+
 mypath = os.path.dirname(__file__)
-_turbineConfigUI, _turbineConfigFrame = \
-        uic.loadUiType(os.path.join(mypath, "turbineConfig_UI.ui"))
+_turbineConfigUI, _turbineConfigFrame = uic.loadUiType(
+    os.path.join(mypath, "turbineConfig_UI.ui")
+)
 
 
 class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
-    '''
-        This class provides a dialog box that allows you to create, a
-        Turbine configuration file.
-    '''
+    """
+    This class provides a dialog box that allows you to create, a
+    Turbine configuration file.
+    """
+
     def __init__(self, dat, cfile=None, parent=None):
         super(turbineConfig, self).__init__(parent=parent)
         self.setupUi(self)
@@ -58,7 +63,7 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
                 return False
         except:
             return False
-        #need to add check file format
+        # need to add check file format
         return True
 
     def apply(self):
@@ -84,10 +89,8 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
     def saveAsConf(self):
         self.apply()
         fileName, filtr = QFileDialog.getSaveFileName(
-            self,
-            "Save File",
-            "",
-            "cfg files (*.cfg);;All Files (*)")
+            self, "Save File", "", "cfg files (*.cfg);;All Files (*)"
+        )
         if fileName:
             self.tconf.path = fileName
             self.accept()
@@ -95,9 +98,9 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
             return
 
     def accept(self):
-        '''
-            If pressed the save button make the configuration file
-        '''
+        """
+        If pressed the save button make the configuration file
+        """
         if self.tconf.getFile() != None:
             self.tconf.writeConfig()
         self.done(QDialog.Accepted)
@@ -109,16 +112,15 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
         QMessageBox.information(
             self,
             "Test",
-            ("The Turbine configuration format and Turbine connection"
-             " will be tested.  This may take some time." ))
+            (
+                "The Turbine configuration format and Turbine connection"
+                " will be tested.  This may take some time."
+            ),
+        )
         errList = self.dat.flowsheet.turbConfig.testConfig()
         if len(errList) == 0:
             QMessageBox.information(
-                self,
-                "Success",
-                "The Turbine configuration is okay.")
+                self, "Success", "The Turbine configuration is okay."
+            )
         else:
-            QMessageBox.information(
-                self,
-                "Error",
-                str(errList))
+            QMessageBox.information(self, "Error", str(errList))

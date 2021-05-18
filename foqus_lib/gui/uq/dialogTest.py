@@ -1,8 +1,9 @@
 import sys
 from PyQt5 import QtGui, QtCore, QtWidgets
 
-class Dialog(QtWidgets.QDialog): #QtWidgets.QMainWindow):
-    def __init__(self, title, parent=None, signal = None):
+
+class Dialog(QtWidgets.QDialog):  # QtWidgets.QMainWindow):
+    def __init__(self, title, parent=None, signal=None):
         super(Dialog, self).__init__(parent)
         self.button = QtWidgets.QPushButton("Push")
         self.gridLayout = QtWidgets.QGridLayout(self)
@@ -21,10 +22,11 @@ class Dialog(QtWidgets.QDialog): #QtWidgets.QMainWindow):
             self.closeSignal.emit(5)
         event.accept()
 
+
 class MainWindow(QtWidgets.QMainWindow):
     valueSignal = QtCore.pyqtSignal(int)
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.button = QtWidgets.QPushButton("Push")
         self.setCentralWidget(self.button)
@@ -33,9 +35,9 @@ class MainWindow(QtWidgets.QMainWindow):
 
     def popup(self):
         print("pushed")
-        self.d = Dialog("Dialog 1", self, signal = self.valueSignal)
-        #self.d.exec_()
-        #self.d.setModal(True)
+        self.d = Dialog("Dialog 1", self, signal=self.valueSignal)
+        # self.d.exec_()
+        # self.d.setModal(True)
         self.d.show()
 
     def printValue(self, value):
@@ -49,7 +51,7 @@ if __name__ == "__main__":
     w = MainWindow()
     w.resize(250, 150)
     w.move(300, 300)
-    w.setWindowTitle('Simple')
+    w.setWindowTitle("Simple")
     w.show()
 
     sys.exit(app.exec_())

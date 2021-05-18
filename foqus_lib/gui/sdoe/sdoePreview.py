@@ -7,16 +7,22 @@ from foqus_lib.framework.sdoe import plot_utils
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QListWidgetItem, QAbstractItemView, \
-     QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import (
+    QListWidgetItem,
+    QAbstractItemView,
+    QApplication,
+    QTableWidgetItem,
+)
 from PyQt5.QtGui import QCursor, QColor
+
 mypath = os.path.dirname(__file__)
-_sdoePreviewUI, _sdoePreview = \
-        uic.loadUiType(os.path.join(mypath, "sdoePreview_UI.ui"))
+_sdoePreviewUI, _sdoePreview = uic.loadUiType(os.path.join(mypath, "sdoePreview_UI.ui"))
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, parent=None):
+    def __init__(
+        self, data, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, parent=None
+    ):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
@@ -93,12 +99,12 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 for r in range(inputData.shape[0]):
                     item = self.table.item(r, c)
                     if item is None:
-                        item = QTableWidgetItem('%g' % inputData[r][i])
+                        item = QTableWidgetItem("%g" % inputData[r][i])
                         if r >= inputData.shape[0] - numSamplesAdded:
                             item.setBackground(refinedColor)
                         self.table.setItem(r, c, item)
                     else:
-                        item.setText('%g' % inputData[r][i])
+                        item.setText("%g" % inputData[r][i])
                 c = c + 1
                 if inputType == Model.VARIABLE:
                     item = sdoePreview.listItem(inputNames[i], i)
@@ -121,5 +127,14 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         irsf = self.irsf
         scatterLabel = self.scatterLabel
         nImpPts = self.nImpPts
-        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf, nImpPts=nImpPts)
+        plot_utils.plot(
+            fname,
+            scatterLabel,
+            hname=hname,
+            show=show,
+            usf=usf,
+            nusf=nusf,
+            irsf=irsf,
+            nImpPts=nImpPts,
+        )
         self.setModal(True)

@@ -26,7 +26,7 @@ def merge(fnames):
     if len(dfs) == 1:
         return dfs[0]
 
-    df = pd.concat(dfs, join='inner', ignore_index=True)
+    df = pd.concat(dfs, join="inner", ignore_index=True)
     df = df.drop_duplicates()  # remove duplicate rows
     return df
 

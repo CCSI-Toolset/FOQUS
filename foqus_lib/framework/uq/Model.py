@@ -1,4 +1,4 @@
-'''
+"""
 Methods:
     setName(name):
         Sets the name of the model
@@ -87,7 +87,7 @@ Methods:
 
     getDriverName():
         Gets the filename of the driver or emulator
-'''
+"""
 
 import numbers, json
 import numpy
@@ -95,10 +95,14 @@ import numpy
 from .SamplingMethods import SamplingMethods
 from .Distribution import *
 
+
 class Model:
-    FIXED, VARIABLE = list(range(2)) #Input type
-    GATEWAY, LOCAL, EMULATOR = list(range(3)) #Run type
-    NOT_CALCULATED, NEED_TO_CALCULATE, CALCULATED = list(range(3)) #Emulator output status
+    FIXED, VARIABLE = list(range(2))  # Input type
+    GATEWAY, LOCAL, EMULATOR = list(range(3))  # Run type
+    NOT_CALCULATED, NEED_TO_CALCULATE, CALCULATED = list(
+        range(3)
+    )  # Emulator output status
+
     def __init__(self):
         self.name = None
         self.driverName = None
@@ -122,19 +126,19 @@ class Model:
         self.namesIncludeNodes = False
         self.flowsheetFixed = None
 
-    def saveFile(self, filename = 'UQModelTest.json'):
-        '''
-            Save the model to a json file
-        '''
+    def saveFile(self, filename="UQModelTest.json"):
+        """
+        Save the model to a json file
+        """
         sd = self.saveDict()
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             json.dump(sd, f, indent=2)
 
     def saveDict(self):
-        '''
-            Put model contents in a dictionary, so it can be easily
-            saved in a json file.
-        '''
+        """
+        Put model contents in a dictionary, so it can be easily
+        saved in a json file.
+        """
         sd = dict()
         sd["name"] = self.name
         sd["driverName"] = self.driverName
@@ -146,12 +150,12 @@ class Model:
         sd["inputTypes"] = self.inputTypes
         sd["inputMins"] = self.inputMins.tolist()
         sd["inputMaxs"] = self.inputMaxs.tolist()
-        sd['inputDists'] = []
-        
+        sd["inputDists"] = []
+
         if self.inputDists:
             for dist in self.inputDists:
-                sd['inputDists'].append(dist.saveDict())
-                
+                sd["inputDists"].append(dist.saveDict())
+
         sd["inputDefaults"] = self.inputDefaults.tolist()
         sd["outputSelections"] = self.outputSelections
         sd["emulatorOutputStats"] = self.emulatorOutputStatus
@@ -160,42 +164,42 @@ class Model:
         sd["inputsFlowsheetFixed"] = self.flowsheetFixed
         return sd
 
-    def loadFile(self, filename = 'UQModelTest.json'):
-        with open(filename, 'r') as f:
+    def loadFile(self, filename="UQModelTest.json"):
+        with open(filename, "r") as f:
             sd = json.load(f)
         self.loadDict(sd)
 
     def loadDict(self, sd):
-        '''
-            Load model from a dictionary
-        '''
-        self.setName( sd.get("name", None) )
-        self.setDriverName( sd.get("driverName", None) )
-        self.setOptDriverName( sd.get("optDriverName", None) )
-        self.setAuxDriverName( sd.get("auxDriverName", None) )
-        self.setRunType( sd.get("runType", None) )
-        self.setInputNames( sd.get("inputNames", None) )
-        self.setOutputNames( sd.get("outputNames", None) )
-        self.setInputTypes( sd.get("inputTypes", None) )
-        self.setInputMins( sd.get("inputMins", None) )
-        self.setInputMaxs( sd.get("inputMaxs", None) )
+        """
+        Load model from a dictionary
+        """
+        self.setName(sd.get("name", None))
+        self.setDriverName(sd.get("driverName", None))
+        self.setOptDriverName(sd.get("optDriverName", None))
+        self.setAuxDriverName(sd.get("auxDriverName", None))
+        self.setRunType(sd.get("runType", None))
+        self.setInputNames(sd.get("inputNames", None))
+        self.setOutputNames(sd.get("outputNames", None))
+        self.setInputTypes(sd.get("inputTypes", None))
+        self.setInputMins(sd.get("inputMins", None))
+        self.setInputMaxs(sd.get("inputMaxs", None))
         self.inputDists = []
-        if 'inputDists' in sd:
-            for distDict in sd['inputDists']:
+        if "inputDists" in sd:
+            for distDict in sd["inputDists"]:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 self.inputDists.append(distr)
 
         if not self.inputDists:
             self.inputDists = None
-        self.setInputDefaults( sd.get("inputDefaults", None) )
-        self.setSelectedOutputs( sd.get("outputSelections", None) )
-        self.setNamesIncludeNodes( sd.get("namesIncludeNodes", None) )
+        self.setInputDefaults(sd.get("inputDefaults", None))
+        self.setSelectedOutputs(sd.get("outputSelections", None))
+        self.setNamesIncludeNodes(sd.get("namesIncludeNodes", None))
         stats = sd.get("emulatorOutputStats", None)
         for i, stat in enumerate(stats):
             self.setEmulatorOutputStatus(i, stat)
         self.setEmulatorTrainingFile(sd.get("emulatorTrainingFile", None))
-        self.inputsFlowsheetFixed = (sd.get("inputsFlowsheetFixed", None))
+        self.inputsFlowsheetFixed = sd.get("inputsFlowsheetFixed", None)
 
     def getName(self):
         return self.name
@@ -245,7 +249,7 @@ class Model:
                 count += 1
         self.numVarInputs = count
         return self.numVarInputs
-      
+
     def getNumOutputs(self):
         return self.numOutputs
 
@@ -254,7 +258,8 @@ class Model:
 
     def setEmulatorOutputStatus(self, outputIds, value):
         import collections
-        if isinstance(outputIds, collections.Sequence): # Check if list or tuple
+
+        if isinstance(outputIds, collections.Sequence):  # Check if list or tuple
             for outputId in outputIds:
                 self.emulatorOutputStatus[outputId] = value
         else:
@@ -266,7 +271,7 @@ class Model:
     def setEmulatorTrainingFile(self, fname):
         self.emulatorTrainingFile = fname
 
-    def setNamesIncludeNodes(self,value):
+    def setNamesIncludeNodes(self, value):
         self.namesIncludeNodes = value
 
     def getNamesIncludeNodes(self):
@@ -274,15 +279,15 @@ class Model:
 
     def setInputNames(self, *names):
         if len(names) == 1:
-            #Remove single value from tuple. Needed if argument is a collection
+            # Remove single value from tuple. Needed if argument is a collection
             names = names[0]
-        if isinstance(names, str): #Single string
+        if isinstance(names, str):  # Single string
             self.inputNames = (names,)
-        #Check all items in collection are strings
+        # Check all items in collection are strings
         elif all(isinstance(name, str) for name in names):
             self.inputNames = tuple([str(name) for name in names])
         else:
-            raise TypeError('Not all names are strings!')
+            raise TypeError("Not all names are strings!")
 
         self.numInputs = len(self.inputNames)
         self.flowsheetFixed = [False] * self.numInputs
@@ -294,24 +299,23 @@ class Model:
     def setOutputNames(self, *names):
         if len(names) == 1:
             names = names[0]
-        if isinstance(names, str): #Single string
+        if isinstance(names, str):  # Single string
             self.outputNames = (names,)
-        #Check all items in collection are strings
+        # Check all items in collection are strings
         elif all(isinstance(name, str) for name in names):
             self.outputNames = tuple(names)
         else:
-            raise TypeError('Not all names are strings!')
+            raise TypeError("Not all names are strings!")
 
         self.numOutputs = len(self.outputNames)
         self.emulatorOutputStatus = [Model.NOT_CALCULATED] * self.numOutputs
-
 
     def getOutputNames(self):
         return self.outputNames
 
     def setInputTypes(self, types):
         if len(types) != self.numInputs:
-            raise ValueError('Number of types does not match number of inputs!')
+            raise ValueError("Number of types does not match number of inputs!")
         self.inputTypes = tuple(types)
 
     def getInputTypes(self):
@@ -319,7 +323,7 @@ class Model:
 
     def setInputMins(self, mins):
         if len(mins) != self.numInputs:
-            raise ValueError('Number of minimums does not match number of inputs!')
+            raise ValueError("Number of minimums does not match number of inputs!")
         self.inputMins = numpy.array(mins)
 
     def getInputMins(self):
@@ -327,7 +331,7 @@ class Model:
 
     def setInputMaxs(self, maxs):
         if len(maxs) != self.numInputs:
-            raise ValueError('Number of maximums does not match number of inputs!')
+            raise ValueError("Number of maximums does not match number of inputs!")
         self.inputMaxs = numpy.array(maxs)
 
     def getInputMaxs(self):
@@ -336,7 +340,7 @@ class Model:
     def getInputDistributions(self):
         return self.inputDists
 
-    def setInputDistributions(self, distTypes, param1Vals = None, param2Vals = None):
+    def setInputDistributions(self, distTypes, param1Vals=None, param2Vals=None):
         if len(distTypes) == 0 or distTypes == None:
             self.inputDists = []
         # Check if distTypes is a collection of Distribution objects
@@ -348,7 +352,7 @@ class Model:
                 param1Vals = [None]
             if not param2Vals:
                 param2Vals = [None]
-            #print distTypes, param1Vals, param2Vals
+            # print distTypes, param1Vals, param2Vals
             for dist, val1, val2 in zip(distTypes, param1Vals, param2Vals):
                 if dist is None:
                     distribObj = None
@@ -360,7 +364,7 @@ class Model:
 
     def setInputDefaults(self, defaults):
         if len(defaults) != self.numInputs:
-            raise ValueError('Number of defaults does not match number of inputs!')
+            raise ValueError("Number of defaults does not match number of inputs!")
         self.inputDefaults = numpy.array(defaults)
 
     def getInputDefaults(self):
@@ -374,7 +378,7 @@ class Model:
                 self.flowsheetFixed = [False] * self.numInputs
             self.flowsheetFixed[indexOrTuple] = True
 
-    def getInputFlowsheetFixed(self, index = None):
+    def getInputFlowsheetFixed(self, index=None):
         if index is None:
             return self.flowsheetFixed
         else:

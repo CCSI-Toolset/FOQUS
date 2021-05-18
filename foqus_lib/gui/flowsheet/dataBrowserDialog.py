@@ -10,9 +10,11 @@ import os
 from foqus_lib.gui.flowsheet.dataBrowserFrame import *
 from PyQt5 import uic
 from PyQt5.QtWidgets import QDialog
+
 mypath = os.path.dirname(__file__)
-_dataBrowserDialogUI, _dataBrowserDialog = \
-        uic.loadUiType(os.path.join(mypath, "dataBrowserDialog_UI.ui"))
+_dataBrowserDialogUI, _dataBrowserDialog = uic.loadUiType(
+    os.path.join(mypath, "dataBrowserDialog_UI.ui")
+)
 
 
 class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
@@ -20,7 +22,7 @@ class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
         super(dataBrowserDialog, self).__init__(parent=parent, flags=flags)
         self.setupUi(self)
         self.dat = dat
-        #self.closeButton.clicked.connect( self.closeButtonClick )
+        # self.closeButton.clicked.connect( self.closeButtonClick )
         self.dataFrame = dataBrowserFrame(dat, self)
         self.layout().addWidget(self.dataFrame)
 
@@ -36,7 +38,7 @@ class dataBrowserDialog(_dataBrowserDialog, _dataBrowserDialogUI):
         # delay.
         #
         # Turned off takes too long with a lot of columns.
-        #self.dataFrame.tableView.resizeColumnsToContents()
+        # self.dataFrame.tableView.resizeColumnsToContents()
 
     def closeButtonClick(self):
         self.hide()

@@ -146,8 +146,8 @@ class Graph(threading.Thread):
 
     def turbineSimList(self):
         """
-            Return a list of turbine simultaion names used in this
-            flowsheet.
+        Return a list of turbine simultaion names used in this
+        flowsheet.
         """
         names = set()
         for nkey, node in self.nodes.items():
@@ -174,8 +174,8 @@ class Graph(threading.Thread):
 
     def errorLookup(self, i):
         """
-            Give a descriptive error message to go with an
-            integer error code.
+        Give a descriptive error message to go with an
+        integer error code.
         """
         e = GraphEx()
         if i == -1:
@@ -187,10 +187,10 @@ class Graph(threading.Thread):
 
     def copyGraph(self):
         """
-            Make a copy of a graph by saving it to a dictionary and
-            reloading it using the  loadDict() and saveDict() functions.
-            The does not make an exact copy some things like generate
-            global variables may need redone
+        Make a copy of a graph by saving it to a dictionary and
+        reloading it using the  loadDict() and saveDict() functions.
+        The does not make an exact copy some things like generate
+        global variables may need redone
         """
         sd = self.saveDict(results=False)
         gr = Graph(self.includeStatusOutput)
@@ -206,9 +206,9 @@ class Graph(threading.Thread):
 
     def saveDict(self, results=True):
         """
-            This is mostly used to save a graph as json, but
-            it could also be used to make a copy of the graph.
-            The information can be loaded back in with loadDict()
+        This is mostly used to save a graph as json, but
+        it could also be used to make a copy of the graph.
+        The information can be loaded back in with loadDict()
         """
         sd = {
             "errorStat": self.errorStat,
@@ -264,7 +264,7 @@ class Graph(threading.Thread):
 
     def loadDict(self, sd):
         """
-            Loads a dictionary created by saveDict() or read from json
+        Loads a dictionary created by saveDict() or read from json
         """
         self.errorStat = sd.get("errorStat", self.errorStat)
         self.includeStatusOutput = sd.get("includeStatusOutput", True)
@@ -334,9 +334,9 @@ class Graph(threading.Thread):
 
     def saveValues(self):
         """
-            This function saves the variable values and run status codes
-            to a dictionary.  The dictionary can be written to a json
-            string.
+        This function saves the variable values and run status codes
+        to a dictionary.  The dictionary can be written to a json
+        string.
         """
         sd = {
             "solTime": self.solTime,
@@ -393,8 +393,8 @@ class Graph(threading.Thread):
 
     def getCenter(self):
         """
-            returns the center of the graph if you draw it you will know
-            where to center the view
+        returns the center of the graph if you draw it you will know
+        where to center the view
         """
         ave_x = 0
         ave_y = 0
@@ -411,8 +411,8 @@ class Graph(threading.Thread):
 
     def setAsNotRun(self):
         """
-            This sets all the error codes in the nodes and the graph to
-            -1, which I am using to mean not executed.
+        This sets all the error codes in the nodes and the graph to
+        -1, which I am using to mean not executed.
         """
         for key, node in self.nodes.items():
             node.calcError = -1
@@ -420,19 +420,19 @@ class Graph(threading.Thread):
 
     def killTurbineJobs(self):
         """
-            Go through all the nodes and if they are turbine runs with a
-            session id, kill all the jobs in that session.
+        Go through all the nodes and if they are turbine runs with a
+        session id, kill all the jobs in that session.
         """
         for key, node in self.nodes.items():
             node.killTurbineSession()
 
     def generateGlobalVariables(self):
         """
-            This function creates a dictionary of input variable
-            (self.x) and a dictionary of output variables (self.f) and
-            stores pointers to the input and output variables contained
-            in the nodes.  The dictionary keys are:
-            <node name>.<variable name>
+        This function creates a dictionary of input variable
+        (self.x) and a dictionary of output variables (self.f) and
+        stores pointers to the input and output variables contained
+        in the nodes.  The dictionary keys are:
+        <node name>.<variable name>
         """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
@@ -447,8 +447,8 @@ class Graph(threading.Thread):
 
     def markConnectedInputs(self):
         """
-            Mark inputs that are connected to outputs these shouldn't be
-            considered inputs for optimization or UQ purposes.
+        Mark inputs that are connected to outputs these shouldn't be
+        considered inputs for optimization or UQ purposes.
         """
         # clear all the connected flags
         for [name, node] in self.nodes.items():
@@ -467,7 +467,7 @@ class Graph(threading.Thread):
 
     def loadDefaults(self):
         """
-            Return all input variables to there default value
+        Return all input variables to there default value
         """
         for key, n in self.nodes.items():
             n.loadDefaultValues()
@@ -506,8 +506,8 @@ class Graph(threading.Thread):
 
     def solveListValTurbineCreateSession(self):
         """
-            Create a session in Turbine to run FOQUS flowsheet samples
-            (split up solveListValTurbine() to help maintanabiliy)
+        Create a session in Turbine to run FOQUS flowsheet samples
+        (split up solveListValTurbine() to help maintanabiliy)
         """
         try:
             turbSession = self.turbConfig.retryFunction(
@@ -522,9 +522,9 @@ class Graph(threading.Thread):
 
     def solveListValTurbineCreateJobs(self, valueList, maxSend):
         """
-            Make jobs to send to turbine split into smaller sets to
-            submit large numbers of jobs to avoid send too much
-            information a once.  Submit and start each set.
+        Make jobs to send to turbine split into smaller sets to
+        submit large numbers of jobs to avoid send too much
+        information a once.  Submit and start each set.
         """
         turbSession = self.turbSession
         njobs = len(valueList)
@@ -570,7 +570,7 @@ class Graph(threading.Thread):
 
     def solveListValTurbineGetGenerator(self):
         """
-            Get a results genrator from Turbine, if fail return None
+        Get a results genrator from Turbine, if fail return None
         """
         try:
             gid = self.turbConfig.retryFunction(
@@ -595,7 +595,7 @@ class Graph(threading.Thread):
 
     def solveListValTurbineGeneratorReadPage(self, gid, page, maxRes):
         """
-            Get the Turbine results from a generator page.
+        Get the Turbine results from a generator page.
         """
         _log.debug("New results page {0} from {1}".format(page, gid))
         try:
@@ -624,7 +624,7 @@ class Graph(threading.Thread):
 
     def solveListValTurbineReSub(self, inp, oi):
         """
-            Resubmit a failed job for another try
+        Resubmit a failed job for another try
         """
         job = {"Simulation": self.turbineSim, "Input": inp, "Reset": False}
         # Create new job to rerun failed job
@@ -642,16 +642,16 @@ class Graph(threading.Thread):
 
     def solveListValTurbine(self, valueList=None, maxSend=20, sid=None, jobIds=[]):
         """
-            Send a list of flowsheet runs to Turbine, this allows the
-            flowsheets to be solved in parallel.
+        Send a list of flowsheet runs to Turbine, this allows the
+        flowsheets to be solved in parallel.
 
-            valueList = list of input dicts for jobs to run
-            maxsend = the maximum number of jobs to send to Turbine at
-                one time, for a large number of jobs the amount of input
-                can get to large for Turbine to receive all at once.
-            sid = A turbine session ID to reconnect to.  If a previous
-                run was disconnected this will hook back up and contiune
-                to receive results until the session is done.
+        valueList = list of input dicts for jobs to run
+        maxsend = the maximum number of jobs to send to Turbine at
+            one time, for a large number of jobs the amount of input
+            can get to large for Turbine to receive all at once.
+        sid = A turbine session ID to reconnect to.  If a previous
+            run was disconnected this will hook back up and contiune
+            to receive results until the session is done.
         """
         ######
         # Create a session and submit jobs
@@ -736,12 +736,14 @@ class Graph(threading.Thread):
                             )
                         )
                         continue
-                    assert 'State' in job, 'Missing State Field in Job %s Record' %i
-                    if job['State'] == 'error':
+                    assert "State" in job, "Missing State Field in Job %s Record" % i
+                    if job["State"] == "error":
                         logging.getLogger("foqus." + __name__).error(
-                            "Job(%s) Error: %s", job['Id'],
-                            job.get('Message', 'No Error Message Provided'))
-                    jobRes = job.get('Output', None)
+                            "Job(%s) Error: %s",
+                            job["Id"],
+                            job.get("Message", "No Error Message Provided"),
+                        )
+                    jobRes = job.get("Output", None)
                     if jobRes is None:
                         jobErr = -3
                     else:
@@ -817,7 +819,7 @@ class Graph(threading.Thread):
                     vectorvals[n][invarsvector] = OrderedDict()
                     for invar in self.nodes[n].inVars.keys():
                         if invarsvector in invar:
-                            invarsplit = invar.split('_')
+                            invarsplit = invar.split("_")
                             idx = int(invarsplit[-1])
                             vectorvals[n][invarsvector][idx] = vals[n][invar]
             self.loadValues({"input": vals, "input_vectorvals": vectorvals})
@@ -847,12 +849,12 @@ class Graph(threading.Thread):
 
     def run(self):
         """
-            This function should not be called directly
-            it is called by the thread start() function
+        This function should not be called directly
+        it is called by the thread start() function
 
-            If self.runList is set assume there are a set
-            of runs specified by self.runList, otherwise
-            assume it is a single run with current values
+        If self.runList is set assume there are a set
+        of runs specified by self.runList, otherwise
+        assume it is a single run with current values
         """
         if not self.useTurbine:
             _log.debug("run: Running flowsheet(s) locally")
@@ -898,15 +900,15 @@ class Graph(threading.Thread):
         self, runList=None, useTurbine=False, sid=None, jobIds=[], resubs=None, dat=None
     ):
         """
-            Open a new thread and run a list of simulations
-            with the inputs specified in runList.  runList is
-            a list of dictionaries with the format:
-                runList[i][nodeKey][varKey] = value
+        Open a new thread and run a list of simulations
+        with the inputs specified in runList.  runList is
+        a list of dictionaries with the format:
+            runList[i][nodeKey][varKey] = value
 
-            This returns a new running graph thread.  The results
-            are stored in a list in the res attribute of the new
-            graph thread.  The results are in list where each results
-            is the output of the saveValues function.
+        This returns a new running graph thread.  The results
+        are stored in a list in the res attribute of the new
+        graph thread.  The results are in list where each results
+        is the output of the saveValues function.
         """
         self.useTurbine = useTurbine
         if not useTurbine:
@@ -940,13 +942,13 @@ class Graph(threading.Thread):
 
     def runAsThread(self, useTurbine=False, sid=None, dat=None):
         """
-            Run current graph setting in a separate thread the
-            results are stored in the res attribute of the returned
-            graph.  The format of the results are a dictionary that
-            can be loaded into the original graph with the loadValues
-            function.
+        Run current graph setting in a separate thread the
+        results are stored in the res attribute of the returned
+        graph.  The format of the results are a dictionary that
+        can be loaded into the original graph with the loadValues
+        function.
 
-            This returns a new running graph thread.
+        This returns a new running graph thread.
         """
         self.useTurbine = useTurbine
         if not useTurbine:
@@ -963,10 +965,10 @@ class Graph(threading.Thread):
 
     def solve(self):
         """
-            This function solves each strongly connected component
-            following the SCC calculation ordering.  If an SCC has
-            more than one tear they are converged simultaneously.
-            I know that is probably not best but it is easy for now
+        This function solves each strongly connected component
+        following the SCC calculation ordering.  If an SCC has
+        more than one tear they are converged simultaneously.
+        I know that is probably not best but it is easy for now
         """
         for key, node in self.nodes.items():
             if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
@@ -1094,9 +1096,9 @@ class Graph(threading.Thread):
 
     def checkTearStatus(self):
         """
-            Check whether the specified tear streams are sufficient.
-            If the graph minus the tear edges is not a tree then the
-            tear set is not sufficient to solve the graph.
+        Check whether the specified tear streams are sufficient.
+        If the graph minus the tear edges is not a tree then the
+        tear set is not sufficient to solve the graph.
         """
         [
             sccNodes,
@@ -1112,9 +1114,9 @@ class Graph(threading.Thread):
 
     def setTearX(self, tears, x):
         """
-            Transfer the value of the two side of a set of tear streams
-            to the value x, x is a list of values for each connection in
-            each tear
+        Transfer the value of the two side of a set of tear streams
+        to the value x, x is a list of values for each connection in
+        each tear
         """
         i = 0
         for tear in tears:
@@ -1318,14 +1320,14 @@ class Graph(threading.Thread):
 
     def runGraph(self, order):
         """
-            This runs calculations for nodes in a specific order.  The
-            order argument in a list of lists of node names.  The nodes
-            are run in the order given in the first list followed by the
-            order given in the second list and so on.  Information is
-            transfered between nodes for any active none tear edges
-            after the completion of each node calculation.  If there
-            is an error in any node this returns immediatly and sets the
-            graph error status to indicate error.
+        This runs calculations for nodes in a specific order.  The
+        order argument in a list of lists of node names.  The nodes
+        are run in the order given in the first list followed by the
+        order given in the second list and so on.  Information is
+        transfered between nodes for any active none tear edges
+        after the completion of each node calculation.  If there
+        is an error in any node this returns immediatly and sets the
+        graph error status to indicate error.
         """
         for namelst in order:
             for name in namelst:
@@ -1341,7 +1343,7 @@ class Graph(threading.Thread):
 
     def runNode(self, name):
         """
-            Run the calculations for the node named name
+        Run the calculations for the node named name
         """
         node = self.nodes[name]
         node.runCalc()
@@ -1427,7 +1429,7 @@ class Graph(threading.Thread):
 
     def nNodes(self):
         """
-            returns the number of nodes in a graph
+        returns the number of nodes in a graph
         """
         return len(self.nodes)
 
@@ -1439,24 +1441,24 @@ class Graph(threading.Thread):
         subGraphEdges=None,
     ):
         """
-            This function returns the common graph data structures:
-                adjacency matrix
-                reverse adjacency matrix
-                adjacency lists
-                reverse adjacency lists
-            These structures are commonly used by graph algorithms.
+        This function returns the common graph data structures:
+            adjacency matrix
+            reverse adjacency matrix
+            adjacency lists
+            reverse adjacency lists
+        These structures are commonly used by graph algorithms.
 
-            By default this function ignores inactive and tear edges,
-            but they can be included optionally.  This can also be used
-            to cunstruct data structures for subgraphs.  The sub graphs
-            are specified by providing a list of node names and/or a
-            list of edge indexes.
+        By default this function ignores inactive and tear edges,
+        but they can be included optionally.  This can also be used
+        to cunstruct data structures for subgraphs.  The sub graphs
+        are specified by providing a list of node names and/or a
+        list of edge indexes.
 
-            Since the adjacency matrix gives the nodes indexs this
-            function provides a way to get the index form the name
-            or the name from the index.  The results returned are
+        Since the adjacency matrix gives the nodes indexs this
+        function provides a way to get the index form the name
+        or the name from the index.  The results returned are
 
-            nn - dictionary to look up node index in adj matrix
+        nn - dictionary to look up node index in adj matrix
 
         """
         nn = dict()  # matrix index lookup from node names
@@ -1584,24 +1586,24 @@ class Graph(threading.Thread):
         subGraphEdges=None,
     ):
         """
-            This function find all the cycles in a directed graph.
-            The algorithm is based on Tarjan 1973 Enumeration of the
-            elementary circuits of a directed graph,
-            SIAM J. Comput. v3 n2 1973.
-            ---Arguments---
-            includeTear = {True, False} include or exclude tear edges
-            includeInactive = {True, False} include or exclude
-                edges marked inactive
-            subGraphNodes = {None, []} if None consider all nodes,
-                otherwise a list of nodes in a subgraph
-            subGraphEdges = {None, []} if None consider all edges
-                attached at both ends to a node in the subgraph.
-                Otherwise a list of edge indexes in a subgraph only
-                edges attached at both ends to a node in the subgraph
-                will be included.
-            ---Return Value---
-            return[0] = a list of lists of nodes in each cycle
-            return[1] = a list of lists of edges in each cycle
+        This function find all the cycles in a directed graph.
+        The algorithm is based on Tarjan 1973 Enumeration of the
+        elementary circuits of a directed graph,
+        SIAM J. Comput. v3 n2 1973.
+        ---Arguments---
+        includeTear = {True, False} include or exclude tear edges
+        includeInactive = {True, False} include or exclude
+            edges marked inactive
+        subGraphNodes = {None, []} if None consider all nodes,
+            otherwise a list of nodes in a subgraph
+        subGraphEdges = {None, []} if None consider all edges
+            attached at both ends to a node in the subgraph.
+            Otherwise a list of edge indexes in a subgraph only
+            edges attached at both ends to a node in the subgraph
+            will be included.
+        ---Return Value---
+        return[0] = a list of lists of nodes in each cycle
+        return[1] = a list of lists of edges in each cycle
         """
 
         def backtrack(v):
@@ -1674,26 +1676,26 @@ class Graph(threading.Thread):
         subGraphEdges=None,
     ):
         """
-            This is an algorithm for finding strongly connected components in a graph. It is based on
-            Tarjan. 1972 Depth-First Search and Linear Graph Algorithms, SIAM J. Comput. v1 no. 2 1972
+        This is an algorithm for finding strongly connected components in a graph. It is based on
+        Tarjan. 1972 Depth-First Search and Linear Graph Algorithms, SIAM J. Comput. v1 no. 2 1972
 
-            Arguments:
+        Arguments:
 
-            includeTear = {True, False} include or exclude tear edges
-            includeInactive = {True, False} include or exclude edges marked inactive
-            subGraphNodes = {None, []} if none consider all nodes, other wise a list of nodes in a subgraph
-            subGraphEdges = {None, []} if none consider all edges attached at both ends to a node in the
-                                        subgraph.  Otherwise a list of edge indexes in a subgraph only edges
-                                        attached at both ends to a node in the subgraph will be inclued.
+        includeTear = {True, False} include or exclude tear edges
+        includeInactive = {True, False} include or exclude edges marked inactive
+        subGraphNodes = {None, []} if none consider all nodes, other wise a list of nodes in a subgraph
+        subGraphEdges = {None, []} if none consider all edges attached at both ends to a node in the
+                                    subgraph.  Otherwise a list of edge indexes in a subgraph only edges
+                                    attached at both ends to a node in the subgraph will be inclued.
 
-            Return Value:
+        Return Value:
 
-            This function returns a list containing several results.
-            result[0] = list of lists of node in each strongly connected component (SCC)
-            result[1] = list of lists of edges in each SCC
-            result[2] = list of lists of out edges in each SCC. (edges that start in a SCC but end outside)
-            result[3] = list of lists of in edges in each SCC. (edges that end in a SCC but start outside)
-            result[4] = list of order in which to calculate SCCs (the way the information flows, the SCC are a tree)
+        This function returns a list containing several results.
+        result[0] = list of lists of node in each strongly connected component (SCC)
+        result[1] = list of lists of edges in each SCC
+        result[2] = list of lists of out edges in each SCC. (edges that start in a SCC but end outside)
+        result[3] = list of lists of in edges in each SCC. (edges that end in a SCC but start outside)
+        result[4] = list of order in which to calculate SCCs (the way the information flows, the SCC are a tree)
         """
 
         def sc(v, stk, depth, strngComps):
@@ -1776,35 +1778,35 @@ class Graph(threading.Thread):
 
     def selectTear(self):
         """
-            This finds optimal sets of tear edges based on two criteria.
-            The primary objective is to minimize the maximum number of
-            times any cycle is broken.  The seconday criteria is to
-            minimize the number of tears.  This function uses a branch
-            and bound type approach.
+        This finds optimal sets of tear edges based on two criteria.
+        The primary objective is to minimize the maximum number of
+        times any cycle is broken.  The seconday criteria is to
+        minimize the number of tears.  This function uses a branch
+        and bound type approach.
 
-            Output:
-                List of lists of tear sets.  All the tear sets returned
-                are equally good there are often a very large number of
-                equally good tear sets.
+        Output:
+            List of lists of tear sets.  All the tear sets returned
+            are equally good there are often a very large number of
+            equally good tear sets.
 
-            Improvemnts for the future.
-            I think I can imporve the efficency of this, but it is good
-            enough for now.  Here are some ideas for improvement:
-            1) Reduce the number of redundant solutions.  It is possible
-               to find tears sets [1,2] and [2,1].  I eliminate
-               redundent solutions from the results, but they can
-               occur and it reduces efficency
-            2) Look at strongly connected components instead of whole
-               graph this would cut back on the size of graph we are
-               looking at.  The flowsheets are rearly one strongly
-               conneted componet.
-            3) When you add an edge to a tear set you could reduce the
-               size of the problem in the branch by only looking at
-               strongly connected components with that edge removed.
-            4) This returns all equally good optimal tear sets.  That
-               may not really be nessicary.  For very large flowsheets
-               There could be an extreemly large number of optimial tear
-               edge sets.
+        Improvemnts for the future.
+        I think I can imporve the efficency of this, but it is good
+        enough for now.  Here are some ideas for improvement:
+        1) Reduce the number of redundant solutions.  It is possible
+           to find tears sets [1,2] and [2,1].  I eliminate
+           redundent solutions from the results, but they can
+           occur and it reduces efficency
+        2) Look at strongly connected components instead of whole
+           graph this would cut back on the size of graph we are
+           looking at.  The flowsheets are rearly one strongly
+           conneted componet.
+        3) When you add an edge to a tear set you could reduce the
+           size of the problem in the branch by only looking at
+           strongly connected components with that edge removed.
+        4) This returns all equally good optimal tear sets.  That
+           may not really be nessicary.  For very large flowsheets
+           There could be an extreemly large number of optimial tear
+           edge sets.
         """
 
         def sear(depth, prevY):
@@ -1911,13 +1913,13 @@ class Graph(threading.Thread):
 
     def tearUpperBound(self):
         """
-            This function quickly finds a sub-optimal set of tear
-            edges.  This serves as an inital upperbound when looking
-            for an optimal tear set.  Having an inital upper bound
-            improves efficenty.
+        This function quickly finds a sub-optimal set of tear
+        edges.  This serves as an inital upperbound when looking
+        for an optimal tear set.  Having an inital upper bound
+        improves efficenty.
 
-            This works by constructing a search tree and just makes a
-            tear set out of all the back edges.
+        This works by constructing a search tree and just makes a
+        tear set out of all the back edges.
         """
 
         def cyc(vkey, vnode, depth):
@@ -1948,18 +1950,18 @@ class Graph(threading.Thread):
 
     def subGraphEdges(self, nodes):
         """
-            This function returns a list of edges that are included in
-            a subgraph given by a list of node names.  The function
-            returns a list of three lists:
-            Output List Elements:
-            0 -- List of edges in the subgraph
-            1 -- List of in edges to subgraph (edges that originate
-                outside the subgraph but terminate in the subgraph)
-            2 -- List of out edges from subgraph (originate but don't
-                terminate in the subgraph)
+        This function returns a list of edges that are included in
+        a subgraph given by a list of node names.  The function
+        returns a list of three lists:
+        Output List Elements:
+        0 -- List of edges in the subgraph
+        1 -- List of in edges to subgraph (edges that originate
+            outside the subgraph but terminate in the subgraph)
+        2 -- List of out edges from subgraph (originate but don't
+            terminate in the subgraph)
 
-            Arguments:
-            nodes -- list of subgraph node names
+        Arguments:
+        nodes -- list of subgraph node names
         """
         # Given a subgraph defined by a set of nodes
         # find the edges in the subgraph
@@ -1985,25 +1987,25 @@ class Graph(threading.Thread):
 
     def sccOrderCalc(self, sccNodes, ie, oe):
         """
-            This determines the order in witch to do calculations
-            for strongly connected components, it is used to help
-            determine the most efficient order to solve tear streams
+        This determines the order in witch to do calculations
+        for strongly connected components, it is used to help
+        determine the most efficient order to solve tear streams
 
-            if you have a graph like  SCC0--+-->--SCC1
-                                            |
-                                            +-->--SCC2
-            you would want to do tear streams in SCC0 before SCC1
-            and SCC2 to prevent extra iterations
+        if you have a graph like  SCC0--+-->--SCC1
+                                        |
+                                        +-->--SCC2
+        you would want to do tear streams in SCC0 before SCC1
+        and SCC2 to prevent extra iterations
 
-            This just makes and adjacency list with the SCCs as nodes
-            and calls the tree order function.
+        This just makes and adjacency list with the SCCs as nodes
+        and calls the tree order function.
 
-            Arguments
-            sccNodes: List on lists of node names in the SCCs The top
-                level list is the list of SCCs the list elements are
-                lists of nodes in the SCC
-            ie: list of lists of in edges to SCCs
-            oe: list of lists of out edged to SCCs
+        Arguments
+        sccNodes: List on lists of node names in the SCCs The top
+            level list is the list of SCCs the list elements are
+            lists of nodes in the SCC
+        ie: list of lists of in edges to SCCs
+        oe: list of lists of out edged to SCCs
 
         """
         # initialize empty adjacency lists
@@ -2032,32 +2034,32 @@ class Graph(threading.Thread):
 
     def treeOrder(self, adj, adjR, roots=None):
         """
-            This function determines the ordering of nodes in a directed
-            tree.  This is a generic function that can opertate on any
-            given tree represented the the adjaceny and reverse
-            adjacency lists.  **If the adjacency list does not represent
-            a tree the results are not valid.
+        This function determines the ordering of nodes in a directed
+        tree.  This is a generic function that can opertate on any
+        given tree represented the the adjaceny and reverse
+        adjacency lists.  **If the adjacency list does not represent
+        a tree the results are not valid.
 
-            In the returned order, it is sometimes possible for more
-            than one node to be caclulated at once.  So a list of lists
-            is returned by this function.  These represent a bredth
-            first search order of the tree.  Following the order all
-            nodes that lead to a particular node will be visited
-            before it.
+        In the returned order, it is sometimes possible for more
+        than one node to be caclulated at once.  So a list of lists
+        is returned by this function.  These represent a bredth
+        first search order of the tree.  Following the order all
+        nodes that lead to a particular node will be visited
+        before it.
 
-            Arguments:
-            adj: an adjeceny list for a directed tree.  This uses
-                generic integer node indexes, not node names form the
-                graph (self).  This allows this to be used on sub-graphs
-                and graps of components more easily
-            adjR: the reverse adjacency list coresponing to adj
-            roots: list of node indexes to start from.  These do not
-                need to be the root nodes of the tree, in some cases
-                like when a node changes the changes may only affect
-                nodes reachable in the tree from the changed node, in
-                the case that roots are supplied not all the nodes in
-                the tree may appear in the ordering.  If no roots are
-                supplied, the roots of the tree are used.
+        Arguments:
+        adj: an adjeceny list for a directed tree.  This uses
+            generic integer node indexes, not node names form the
+            graph (self).  This allows this to be used on sub-graphs
+            and graps of components more easily
+        adjR: the reverse adjacency list coresponing to adj
+        roots: list of node indexes to start from.  These do not
+            need to be the root nodes of the tree, in some cases
+            like when a node changes the changes may only affect
+            nodes reachable in the tree from the changed node, in
+            the case that roots are supplied not all the nodes in
+            the tree may appear in the ordering.  If no roots are
+            supplied, the roots of the tree are used.
         """
         adjR = copy.deepcopy(adjR)
         for i, l in enumerate(adjR):

@@ -15,14 +15,14 @@ from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame
 from .sdoePreview import sdoePreview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
-#from SimSetup_UI import Ui_Dialog
+# from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QStackedLayout, QComboBox, QApplication, QMessageBox
 from PyQt5.QtGui import QCursor
+
 mypath = os.path.dirname(__file__)
-_SimSetupUI, _sdoeSimSetup = \
-        uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
+_SimSetupUI, _sdoeSimSetup = uic.loadUiType(os.path.join(mypath, "SimSetup_UI.ui"))
 
 
 class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
@@ -31,13 +31,17 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     LOAD_PAGE_INDEX = 1
     FLOWSHEET_PAGE_INDEX = 2
 
-    def __init__(self, model, session, viewOnly = False, returnDataSignal = None, parent=None):
+    def __init__(
+        self, model, session, viewOnly=False, returnDataSignal=None, parent=None
+    ):
         super(sdoeSimSetup, self).__init__(parent)
 
         self.setupUi(self)
         self.viewOnly = viewOnly
         self.returnDataSignal = returnDataSignal
-        self.sampleFileSet = set() # Contains which inputs are of the distribution "Sample from File"
+        self.sampleFileSet = (
+            set()
+        )  # Contains which inputs are of the distribution "Sample from File"
 
         self.fsDataBrowser = dataBrowserFrame(session, self)
         self.dataViewWidget.setLayout(QStackedLayout(self.dataViewWidget))
@@ -56,7 +60,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
             data = SampleData(model)
             dists = []
             for i in range(model.getNumInputs()):
-                dists = dists + ['U']
+                dists = dists + ["U"]
             data.setInputDistributions(dists)
         else:
             data = model
@@ -83,7 +87,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         self.doneButton.clicked.connect(self.doneClicked)
         self.doneButton.setEnabled(False)
         if viewOnly:
-            self.cancelButton.setText('OK')
+            self.cancelButton.setText("OK")
             self.doneButton.setHidden(True)
             self.samplingTabs.setTabEnabled(1, False)
 
@@ -100,7 +104,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         self.samplingTabs.currentChanged[int].connect(self.checkDists)
 
         # Set up distributions table
-        self.distTable.init(model, InputPriorTable.SIMSETUP, viewOnly = viewOnly)
+        self.distTable.init(model, InputPriorTable.SIMSETUP, viewOnly=viewOnly)
 
         self.allFixedButton.clicked.connect(self.makeAllFixed)
         self.allVariableButton.clicked.connect(self.makeAllVariable)
@@ -110,11 +114,11 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
 
         # Set up sampling schemes tab
         self.generateSamplesButton.setEnabled(False)
-        self.generateStatusText.setText('')
+        self.generateStatusText.setText("")
         self.allSchemesRadio.setChecked(True)
 
-        foundLibs = LocalExecutionModule.getPsuadeInstalledModules();
-        foundMETIS = foundLibs['METIS']
+        foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
+        foundMETIS = foundLibs["METIS"]
 
         self.schemesList.clear()
         self.schemesList.addItems(SamplingMethods.fullNames[0:4])
@@ -123,7 +127,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         if not foundMETIS:
             item = self.schemesList.item(SamplingMethods.METIS)
             text = item.text()
-            item.setText(text + ' (Not installed)')
+            item.setText(text + " (Not installed)")
             flags = item.flags()
             item.setFlags(flags & ~Qt.ItemIsEnabled)
 
@@ -145,16 +149,16 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def doneClicked(self):
         if self.returnDataSignal:
             self.returnDataSignal.emit(self.getData())
-            dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+            dirname = os.path.join(os.getcwd(), "SDOE_Files")
             filename = os.path.join(dirname, self.getData().getModelName())
             self.getData().writeToCsv(filename, inputsOnly=True)
 
         self.accept()
 
     def setPage(self):
-        '''
-            Change the page view
-        '''
+        """
+        Change the page view
+        """
 
         self.samplePages.setCurrentIndex(self.SCHEME_PAGE_INDEX)
         self.previewButton.setEnabled(self.samplesGenerated)
@@ -166,7 +170,6 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def makeAllVariable(self):
         self.distTable.makeAllVariable()
 
-
     def checkDists(self, tabIndex):
         if tabIndex == 0 or self.ignoreDistributionCheck:
             self.ignoreDistributionCheck = False
@@ -175,24 +178,27 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         showMessage = False
         if self.distTable.getNumVariables() == 0:
             showMessage = True
-            message = 'All inputs are fixed! One needs to be variable.'
+            message = "All inputs are fixed! One needs to be variable."
         else:
             valid, error = self.distTable.checkValidInputs()
             if not valid:
                 showMessage = True
-                message = 'Distribution settings not correct or entirely filled out! %s' % error
+                message = (
+                    "Distribution settings not correct or entirely filled out! %s"
+                    % error
+                )
             else:
                 rowsToWarnAboutMass = []
                 for row in range(self.distTable.rowCount()):
-                    for col in [3,4]:
-                        item = self.distTable.item(row,col)
+                    for col in [3, 4]:
+                        item = self.distTable.item(row, col)
                         if col == 3:
                             minVal = float(item.text())
                         else:
                             maxVal = float(item.text())
 
                     #### Get distribution parameters
-                    for col in [6,7]:
+                    for col in [6, 7]:
                         cellTable = self.distTable.cellWidget(row, col)
                         if isinstance(cellTable, QComboBox):
                             continue
@@ -218,7 +224,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                     if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
                         f = tempfile.SpooledTemporaryFile()
                         for i in range(2):
-                            f.write(b'cdf_lookup\n')
+                            f.write(b"cdf_lookup\n")
                             distNum = dist
                             if dist == Distribution.BETA:
                                 distNum = 4
@@ -228,27 +234,29 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                                 distNum = 6
                             elif dist == Distribution.EXPONENTIAL:
                                 distNum = 7
-                            f.write(b'%d\n' % distNum) # Number of distribution
-                            f.write(b'%f\n' % distParam1) # Parameter 1
+                            f.write(b"%d\n" % distNum)  # Number of distribution
+                            f.write(b"%f\n" % distParam1)  # Parameter 1
                             if distParam2 is not None:
-                                f.write(b'%f\n' % distParam2) # Parameter 2
+                                f.write(b"%f\n" % distParam2)  # Parameter 2
                             if i == 0:
                                 val = minVal
                             else:
                                 val = maxVal
-                            f.write(b'%f\n' % val) # Min or max value
-                        f.write(b'quit\n')
+                            f.write(b"%f\n" % val)  # Min or max value
+                        f.write(b"quit\n")
                         f.seek(0)
 
                         # invoke psuade
                         psuadePath = LocalExecutionModule.getPsuadePath()
                         if psuadePath is None:
                             return
-                        p = subprocess.Popen(psuadePath,
-                                             stdin=f,
-                                             stdout=subprocess.PIPE,
-                                             stderr=subprocess.PIPE,
-                                             shell=True)
+                        p = subprocess.Popen(
+                            psuadePath,
+                            stdin=f,
+                            stdout=subprocess.PIPE,
+                            stderr=subprocess.PIPE,
+                            shell=True,
+                        )
                         f.close()
 
                         # process error
@@ -261,7 +269,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                         lines = out.splitlines()
                         vals = []
                         for line in lines:
-                            if 'Cumulative probability = ' in line.decode('utf-8'):
+                            if "Cumulative probability = " in line.decode("utf-8"):
                                 words = line.split()
                                 vals.append(float(words[-1]))
 
@@ -273,12 +281,15 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                     self.samplingTabs.setCurrentIndex(0)
                     for row in rowsToWarnAboutMass:
                         msgbox = QMessageBox()
-                        msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                        msgbox.setText('Regarding input ' + self.model.getInputNames()[row] + \
-                                       ': Min/max range is narrow for its distribution. ' + \
-                                       'This could cause sample generation to take more time.  Continue?')
+                        msgbox.setWindowTitle("UQ/Opt GUI Warning")
+                        msgbox.setText(
+                            "Regarding input "
+                            + self.model.getInputNames()[row]
+                            + ": Min/max range is narrow for its distribution. "
+                            + "This could cause sample generation to take more time.  Continue?"
+                        )
                         msgbox.setIcon(QMessageBox.Warning)
-                        msgbox.setStandardButtons(QMessageBox.Yes|QMessageBox.No)
+                        msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                         msgbox.setDefaultButton(QMessageBox.Yes)
                         ret = msgbox.exec_()
                         if ret != QMessageBox.Yes:
@@ -290,18 +301,17 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         if showMessage:
             self.samplingTabs.setCurrentIndex(0)
             msgbox = QMessageBox()
-            msgbox.setWindowTitle('UQ/Opt GUI Warning')
+            msgbox.setWindowTitle("UQ/Opt GUI Warning")
             msgbox.setText(message)
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
             return
 
-
     ### Sampling schemes methods
     def showAllSchemes(self):
         if self.chooseSchemeRadio.isChecked():
-            foundLibs = LocalExecutionModule.getPsuadeInstalledModules();
-            foundMETIS = foundLibs['METIS']
+            foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
+            foundMETIS = foundLibs["METIS"]
 
             self.schemesList.clear()
             self.schemesList.addItems(SamplingMethods.fullNames[0:4])
@@ -309,21 +319,20 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
             if not foundMETIS:
                 item = self.schemesList.item(SamplingMethods.METIS)
                 text = item.text()
-                item.setText(text + ' (Not installed)')
+                item.setText(text + " (Not installed)")
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
-
     def showAdaptiveRefineSchemes(self):
         if self.adaptiveRefineRadio.isChecked():
-            foundLibs = LocalExecutionModule.getPsuadeInstalledModules();
-            foundMETIS = foundLibs['METIS']
+            foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
+            foundMETIS = foundLibs["METIS"]
             self.schemesList.clear()
             self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.METIS))
             if not foundMETIS:
                 item = self.schemesList.item(0)
                 text = item.text()
-                item.setText(text + ' (Not installed)')
+                item.setText(text + " (Not installed)")
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
@@ -357,7 +366,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         modelMaxs = self.model.getInputMaxs()
         dists = []
         selectedInputs = []
-        #Set sampling scheme to selected or monte carlo if adaptive
+        # Set sampling scheme to selected or monte carlo if adaptive
         if self.chooseSchemeRadio.isChecked():
             scheme = self.schemesList.currentItem().text()
         else:
@@ -370,11 +379,11 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 # Type
                 combobox = self.distTable.cellWidget(row, 1)
                 if combobox is None:
-                    text = self.distTable.item(row,1).text()
+                    text = self.distTable.item(row, 1).text()
                 else:
                     text = combobox.currentText()
 
-                if text == 'Fixed':
+                if text == "Fixed":
                     value = Model.FIXED
                 else:
                     value = Model.VARIABLE
@@ -383,28 +392,27 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 if value == Model.VARIABLE:
                     selectedInputs.append(inputNum)
 
-                #Defaults
+                # Defaults
                 item = self.distTable.item(row, 2)
                 if item is None or len(item.text()) == 0:
                     defaults.append(None)
                 else:
                     defaults.append(float(item.text()))
 
-                #Mins
+                # Mins
                 item = self.distTable.item(row, 3)
                 mins.append(float(item.text()))
 
-                #Maxs
+                # Maxs
                 item = self.distTable.item(row, 4)
                 maxs.append(float(item.text()))
 
                 row += 1
-            else: # Fixed
+            else:  # Fixed
                 types.append(Model.FIXED)
                 defaults.append(modelDefaults[inputNum])
                 mins.append(modelMins[inputNum])
                 maxs.append(modelMaxs[inputNum])
-
 
         # Update model
         model.setInputTypes(types)
@@ -421,13 +429,13 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         for i in range(len(self.session.sdoeSimList)):
             sdoeSimList.append(self.session.sdoeSimList[i].getModelName())
         for i in range(100):
-            possibleNames.append("SDoE_Ensemble_%s" % str(i+1))
+            possibleNames.append("SDoE_Ensemble_%s" % str(i + 1))
         for i in range(len(possibleNames)):
             if possibleNames[i] not in sdoeSimList:
                 newName = possibleNames[i]
                 break
             else:
-                newName = possibleNames[i+1]
+                newName = possibleNames[i + 1]
 
         runData.setModelName(newName)
         runData.setFromFile(False)
@@ -441,13 +449,17 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 combobox = self.distTable.cellWidget(row, 5)
                 dist = combobox.currentIndex()
                 # Check non-uniform distribution and non-Monte Carlo scheme
-                if False: #dist != Distribution.UNIFORM and SamplingMethods.getEnumValue(scheme) != SamplingMethods.MC:
+                if (
+                    False
+                ):  # dist != Distribution.UNIFORM and SamplingMethods.getEnumValue(scheme) != SamplingMethods.MC:
                     msgbox = QMessageBox()
-                    msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                    msgbox.setText('Non-Uniform distributions are not compatible with any ' + \
-                                   'sampling scheme other than Monte Carlo!  Please change ' + \
-                                   'all distributions back to uniform or select Monte Carlo ' + \
-                                   'sampling scheme.')
+                    msgbox.setWindowTitle("UQ/Opt GUI Warning")
+                    msgbox.setText(
+                        "Non-Uniform distributions are not compatible with any "
+                        + "sampling scheme other than Monte Carlo!  Please change "
+                        + "all distributions back to uniform or select Monte Carlo "
+                        + "sampling scheme."
+                    )
                     msgbox.setIcon(QMessageBox.Warning)
                     msgbox.exec_()
                     return
@@ -458,7 +470,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 dists += [self.distTable.getDistribution(row)]
 
                 row += 1
-            else: #Fixed
+            else:  # Fixed
                 dist = Distribution(Distribution.UNIFORM)
                 dists = dists + [dist]
 
@@ -469,14 +481,22 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         runData.setSampleMethod(scheme)
 
         # Check number of samples
-        scheme =  runData.getSampleMethod()
-        newNumSamples = SamplingMethods.validateSampleSize(scheme, len(selectedInputs), numSamples)
+        scheme = runData.getSampleMethod()
+        newNumSamples = SamplingMethods.validateSampleSize(
+            scheme, len(selectedInputs), numSamples
+        )
         if scheme == SamplingMethods.LSA:
             if newNumSamples != numSamples:
                 msgbox = QMessageBox()
-                msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                msgbox.setText('%s scheme with %d variable inputs requires %d samples! Do you want to proceed?' % \
-                               (SamplingMethods.getPsuadeName(scheme), len(selectedInputs), newNumSamples))
+                msgbox.setWindowTitle("UQ/Opt GUI Warning")
+                msgbox.setText(
+                    "%s scheme with %d variable inputs requires %d samples! Do you want to proceed?"
+                    % (
+                        SamplingMethods.getPsuadeName(scheme),
+                        len(selectedInputs),
+                        newNumSamples,
+                    )
+                )
                 msgbox.setIcon(QMessageBox.Question)
                 msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
                 msgbox.setDefaultButton(QMessageBox.Yes)
@@ -488,13 +508,22 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         elif scheme == SamplingMethods.MOAT or scheme == SamplingMethods.GMOAT:
             if type(newNumSamples) is tuple:
                 msgbox = QMessageBox()
-                msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                msgbox.setText('%s scheme with %d variable inputs cannot have %d samples! How do you want to proceed?' % \
-                               (SamplingMethods.getFullName(scheme), len(selectedInputs),
-                                numSamples))
+                msgbox.setWindowTitle("UQ/Opt GUI Warning")
+                msgbox.setText(
+                    "%s scheme with %d variable inputs cannot have %d samples! How do you want to proceed?"
+                    % (
+                        SamplingMethods.getFullName(scheme),
+                        len(selectedInputs),
+                        numSamples,
+                    )
+                )
                 msgbox.setIcon(QMessageBox.Question)
-                firstValButton = msgbox.addButton('Change to %d samples' % newNumSamples[0], QMessageBox.AcceptRole)
-                secondValButton = msgbox.addButton('Change to %d samples' % newNumSamples[1], QMessageBox.AcceptRole)
+                firstValButton = msgbox.addButton(
+                    "Change to %d samples" % newNumSamples[0], QMessageBox.AcceptRole
+                )
+                secondValButton = msgbox.addButton(
+                    "Change to %d samples" % newNumSamples[1], QMessageBox.AcceptRole
+                )
                 cancelButton = msgbox.addButton(QMessageBox.Cancel)
 
                 msgbox.exec_()
@@ -505,17 +534,18 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
                 else:
                     return
 
-
         # Visual indications of processing
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.generateStatusText.setText('Generating...')
+        self.generateStatusText.setText("Generating...")
         self.generateStatusText.repaint()
 
         # Generate samples for the variable inputs
-        selectedRunData = ExperimentalDesign.generateSamples(runData, selectedInputs, self.model.getSelectedOutputs())
+        selectedRunData = ExperimentalDesign.generateSamples(
+            runData, selectedInputs, self.model.getSelectedOutputs()
+        )
         if selectedRunData is None:
             QApplication.restoreOverrideCursor()
-            self.generateStatusText.setText('')
+            self.generateStatusText.setText("")
             return
         selectedInputData = selectedRunData.getInputData()
 
@@ -535,17 +565,17 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         runData.setRunState([0] * runData.getNumSamples())
         self.runData = runData
 
-        #Handle archive of METIS file
+        # Handle archive of METIS file
         if self.runData.getSampleMethod() == SamplingMethods.METIS:
             if self.currentArchiveData is not None:
                 self.currentArchiveData.removeArchiveFolder()
                 pass
-            self.runData.archiveFile('psuadeMetisInfo')
+            self.runData.archiveFile("psuadeMetisInfo")
             self.currentArchiveData = self.runData
 
         # Restore cursor
         QApplication.restoreOverrideCursor()
-        self.generateStatusText.setText('Done!')
+        self.generateStatusText.setText("Done!")
 
         self.samplesGenerated = True
         self.previewButton.setEnabled(True)
@@ -555,11 +585,11 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
     def preview(self):
         previewData = self.runData
         hname = None
-        dirname = os.path.join(os.getcwd(), 'SDOE_Files')
+        dirname = os.path.join(os.getcwd(), "SDOE_Files")
         usf = None
-        nusf=None
+        nusf = None
         irsf = None
-        scatterLabel = 'Candidates'
+        scatterLabel = "Candidates"
         nImpPts = 0
 
         filename = os.path.join(dirname, self.getData().getModelName())
@@ -571,13 +601,7 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         # this should in any case result in a runtime error,
         # which suggests that this code is not executed
         dialog = sdoePreview(  # TODO pylint: disable=no-value-for-parameter
-            previewData,
-            hname,
-            dirname,
-            nusf,
-            scatterLabel,
-            nImpPts,
-            self
+            previewData, hname, dirname, nusf, scatterLabel, nImpPts, self
         )
         dialog.show()
 

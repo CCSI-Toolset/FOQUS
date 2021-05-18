@@ -6,7 +6,7 @@ from urllib.request import urlopen
 
 from io import StringIO
 
-if os.name == 'nt':
+if os.name == "nt":
     try:
         import win32process
     except:
@@ -14,9 +14,12 @@ if os.name == 'nt':
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QFileDialog
+
 mypath = os.path.dirname(__file__)
-_basicDataFrameUI, _basicDataFrame = \
-        uic.loadUiType(os.path.join(mypath, "basicDataFrame_UI.ui"))
+_basicDataFrameUI, _basicDataFrame = uic.loadUiType(
+    os.path.join(mypath, "basicDataFrame_UI.ui")
+)
+
 
 class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
     def __init__(self, dat, parent=None):
@@ -24,7 +27,7 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
         self.setupUi(self)
         self.dat = dat
         self.folderBrowse_button.clicked.connect(self.chooseInputFolder)
-        #self.ingest_button.clicked.connect(self.ingest)
+        # self.ingest_button.clicked.connect(self.ingest)
         """
         config = StringIO()
         # Fake properties header to allow working with configParser
@@ -43,7 +46,7 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
 
     def chooseInputFolder(self):
         self.fname = QFileDialog.getExistingDirectory(self, "Input Directory")
-        if self.fname == '':
+        if self.fname == "":
             return
         else:
             self.selected_folder.setText(self.fname)

@@ -5,28 +5,15 @@ import copy
 import numpy
 import json
 
+
 class testNodeVarListSteady(unittest.TestCase):
     def makeTestList1(self):
         l = NodeVarList()
         l.addNode("N1")
         l.addNode("N2")
-        l.addVariable(
-            "N1",
-            "V1",
-            NodeVars(
-                value = 1.0,
-                vmin = 1.0,
-                vmax = 10.0,
-                vdflt = 3.0))
+        l.addVariable("N1", "V1", NodeVars(value=1.0, vmin=1.0, vmax=10.0, vdflt=3.0))
 
-        l.addVariable(
-            "N2",
-            "V1",
-            NodeVars(
-                value = 2.0,
-                vmin = 1.0,
-                vmax = 10.0,
-                vdflt = 3.0))
+        l.addVariable("N2", "V1", NodeVars(value=2.0, vmin=1.0, vmax=10.0, vdflt=3.0))
         return l
 
     def testGet1(self):
@@ -54,9 +41,9 @@ class testNodeVarListSteady(unittest.TestCase):
     def testFlatten2(self):
         l = self.makeTestList1()
         names = ["N1.V1", "N2.V1"]
-        l.get("N1.V1").scaling = 'Linear'
-        l.get("N2.V1").scaling = 'Linear'
-        v = l.getFlat(names, scaled = True)
+        l.get("N1.V1").scaling = "Linear"
+        l.get("N2.V1").scaling = "Linear"
+        v = l.getFlat(names, scaled=True)
         self.assertAlmostEqual(v[0], 0.0)
         self.assertAlmostEqual(v[1], 1.111111, places=5)
 
@@ -70,12 +57,10 @@ class testNodeVarListSteady(unittest.TestCase):
 
     def testUnFlatten2(self):
         l = self.makeTestList1()
-        l.get("N1.V1").scaling = 'Linear'
-        l.get("N2.V1").scaling = 'Linear'
+        l.get("N1.V1").scaling = "Linear"
+        l.get("N2.V1").scaling = "Linear"
         names = ["N1.V1", "N2.V1"]
-        values = [
-            0.0,
-            1.111111]
+        values = [0.0, 1.111111]
         v = l.unflatten(names, values, unScale=True)
         self.assertAlmostEqual(v["N1"]["V1"], 1.0, places=5)
         self.assertAlmostEqual(v["N2"]["V1"], 2.0, places=5)

@@ -30,6 +30,8 @@ try:
     import scipy.optimize
     bfgs_available = True
 except ImportError:
+    logging.getLogger("foqus." + __name__).\
+        info("Failed to import scipy package used to access the bfgs solver")
     bfgs_available = False
 
 def checkAvailable():

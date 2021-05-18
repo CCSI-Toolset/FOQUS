@@ -20,10 +20,16 @@ import sys
 import logging
 import math
 import numpy
-import scipy
 import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
+
+try:
+    import scipy
+    slsqp_available = True
+except ImportError:
+    logging.getLogger("foqus." + __name__).info("Failed to import scipy package used to access the slsqp solver")
+    slsqp_available = False
 
 def checkAvailable():
     '''
@@ -31,7 +37,7 @@ def checkAvailable():
         additional required software.  If requirements are not available
         plugin will not be available.
     '''
-    return True
+    return slsqp_available
 
 class opt(optimization):
     '''

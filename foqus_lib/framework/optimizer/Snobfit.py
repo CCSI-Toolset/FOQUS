@@ -33,10 +33,10 @@ try:
     import SQSnobFit
     import SQCommon
     snobfit_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).info("Failed to import SQSnobFit and SQCommon packages used to access the snobfit solver")
     snobfit_available = False
 
-#print(snobfit_available)
 
 def checkAvailable():
     '''

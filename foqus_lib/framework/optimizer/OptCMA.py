@@ -36,8 +36,8 @@ from foqus_lib.framework.optimizer.optimization import optimization
 try:
     import cma
     cma_available = True
-except ImportError as e:
-    logging.getLogger("foqus." + __name__).exception("CMA-ES not found")
+except ImportError:
+    logging.getLogger("foqus." + __name__).info("CMA-ES not found")
     cma_available = False
 
 def checkAvailable():

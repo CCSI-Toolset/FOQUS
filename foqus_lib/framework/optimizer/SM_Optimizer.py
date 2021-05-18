@@ -63,7 +63,8 @@ try:
     from pyDOE import *
     from smt.sampling_methods import LHS
     packages_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).exception("Failed to import the required packages for SM Optimizer solver")
     packages_available = False
 
 

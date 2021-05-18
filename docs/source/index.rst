@@ -20,6 +20,7 @@
     chapt_sm_optimizer/index
     chapt_debug/index
     chapt_dev/index
+    chapt_vector_support/index
     references
     contact
     copyright

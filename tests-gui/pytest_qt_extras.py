@@ -134,7 +134,7 @@ def _get_sibling_label_text(widget):
     search_pool = [
         w
         for w in widget.parent().findChildren(QtWidgets.QWidget)
-        if (hasattr(w, 'text') or w is widget)
+        if (isinstance(w, QtWidgets.QLabel) or w is widget)
     ]
     ordered_as_text = sorted(search_pool, key=get_order_key_top_down_left_right)
 
@@ -145,7 +145,7 @@ def _get_sibling_label_text(widget):
             _logger.debug(f'Adding {child} (text={child.text()})')
             preceding_siblings.append(child)
         else:
-            _logger.debug(f'Widget {child} (text={child.text()} is not visible, skipping')
+            _logger.debug(f'Widget not visible: {child} (text={child.text()}')
 
     # reversed to search for the label from closest to farthest
     for sibling in reversed(preceding_siblings):
@@ -361,15 +361,16 @@ def get_active_windows():
 class Highlighter(QtWidgets.QRubberBand):
 
     @classmethod
-    def create(cls, widget):
-        hl = cls(QtWidgets.QRubberBand.Rectangle, parent=widget)
+    def create(cls, widget, **kwargs):
+        hl = cls(QtWidgets.QRubberBand.Rectangle, parent=widget, **kwargs)
         geom = widget.rect()
         hl.setGeometry(geom)
         return hl
 
-    def __init__(self, *args, color=QtCore.Qt.gray, **kwargs):
+    def __init__(self, *args, color=QtCore.Qt.gray, text: str = None, **kwargs):
         super().__init__(*args, **kwargs)
         self.color = color
+        self.text = text
         # self.setStyle(QtWidgets.QStyleFactory.create('windowsvista'))
 
     def __enter__(self):
@@ -391,6 +392,8 @@ class Highlighter(QtWidgets.QRubberBand):
         outer = QtCore.QRect(base.topLeft().x() - hw, base.topLeft().y() - hw, base.width() + hw, base.height() + hw)
         painter.setPen(QtGui.QPen(self.color, 2 * hw, QtCore.Qt.SolidLine))
         painter.drawRect(base)
+        if self.text:
+            painter.drawText(base, 0, self.text)
         painter.end()
 
 
@@ -434,6 +437,39 @@ class Agent:
         hl.show()
         yield hl
         hl.hide()
+
+    @contextlib.contextmanager
+    def highlighting_children(self):
+        to_highlight = [
+            w for w in self.target.findChildren(QtWidgets.QWidget)
+            if (w.isVisible() and not type(w) in {QtWidgets.QWidget, Highlighter})
+        ]
+        annotations = []
+        try:
+            for idx, child in enumerate(to_highlight):
+                hl = Highlighter.create(child, text=str(idx))
+                annotations.append(hl)
+                hl.color = QtCore.Qt.red
+                print(f'{idx:2d}: {child}')
+                print(f'\tgeometry={child.geometry()}')
+                parent = child.parent()
+                layout = child.layout() or parent.layout()
+                print(f'\tparent={child.parent()}')
+                print(f'\tlayout={layout}')
+                if layout:
+                    for i in range(layout.count()):
+                        item = layout.itemAt(i)
+                        item_content = item.widget() or item.layout()
+                        print(f'\t\t{i}: {item_content}')
+                    print(f'\t{layout.indexOf(child)}')
+                print(f'\ttext={getattr(child, "text", lambda: None)()}')
+                hl.show()
+            yield
+        except Exception as e:
+            _logger.exception(e)
+        finally: 
+            for obj in annotations:
+                obj.deleteLater()
 
     @classmethod
     def get_queryable_text(cls, w):
@@ -972,6 +1008,11 @@ class QtBot(pytestqt_plugin.QtBot):
         self.slow_down()
         action.agent.highlighter.hide()
 
+    def take_widget_snapshot(self):
+        with self.agent.highlighting_children():
+            self.slow_down()
+            self.take_screenshot(f'snapshot-{self.focused}')
+
     def _create_dispatcher(self):
 
         dispatcher = WidgetDispatcher()
@@ -1015,7 +1056,7 @@ class QtBot(pytestqt_plugin.QtBot):
     def locate(self, target=None, hint=None, **kwargs):
         if isinstance(target, QtWidgets.QWidget):
             return target
-
+        self.take_widget_snapshot()
         locate_spec = dict(target=target, hint=hint, kwargs=kwargs)
         with self.agent.highlighting(color=QtCore.Qt.blue):
             self.take_screenshot(f'locate-{locate_spec}')

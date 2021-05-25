@@ -1,8 +1,23 @@
-""" #FOQUS_SURROGATE_PLUGIN ALAMO.py
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_SURROGATE_PLUGIN
 
-Surrogate plugins need to have FOQUS_SURROGATE_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the surrogate class.
+Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the surrogate class.
 
 * This is an example of a surrogate model builder plugin for FOQUS,
   it uses the ALAMO surrogate model builder program ref:
@@ -13,7 +28,7 @@ inherit the surrogate class.
 * A setting of this plugin is the location of the ALAMO executable
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
+
 """
 
 

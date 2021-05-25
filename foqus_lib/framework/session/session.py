@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """session.py
 
 * Some functions to setup FOQUS environment
@@ -5,7 +20,6 @@
 * Class for genral FOQUS settings
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 import json
 import os
@@ -354,20 +368,17 @@ class session:
             idString = '#FOQUS_SURROGATE_PLUGIN',
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
-                os.path.dirname(surrogate.__file__)],
-            charLimit = 150)
+                os.path.dirname(surrogate.__file__)])
         self.optSolvers = pluginSearch.plugins(
             idString = '#FOQUS_OPT_PLUGIN',
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
-                os.path.dirname(problem.__file__)],
-            charLimit = 150)
+                os.path.dirname(problem.__file__)])
         self.pymodels = pluginSearch.plugins(
             idString = '#FOQUS_PYMODEL_PLUGIN',
             pathList = [
                 os.path.join(os.getcwd(), 'user_plugins'),
-                os.path.dirname(pymodel.__file__)],
-            charLimit = 150)
+                os.path.dirname(pymodel.__file__)])
         try:
             self.flowsheet.pymodels = self.pymodels
         except:

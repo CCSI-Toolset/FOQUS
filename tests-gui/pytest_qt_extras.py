@@ -397,6 +397,92 @@ class Highlighter(QtWidgets.QRubberBand):
         painter.end()
 
 
+class TreePath:
+    def __init__(self, items):
+        self._items = list(items or [])
+
+    def with_appended(self, item):
+        return type(self)(self._items + [item])
+
+    def __iter__(self):
+        return iter(self._items)
+
+    def __str__(self):
+        return _join(self, sep='.')
+
+
+@dataclass
+class WidgetInfo:
+    widget: QtWidgets.QWidget
+    tree_path: TreePath
+    geometry: t.Any = None
+    n_children: int = None
+
+    @classmethod
+    def collect(cls, w, tree_path=None):
+        tree_path = tree_path or TreePath([0])
+        children = w.children()
+        info = cls(
+            widget=w,
+            tree_path=tree_path,
+            geometry=w.geometry(),
+            n_children=len(children),
+        )
+        yield info
+        for idx, child in enumerate(children):
+            if isinstance(child, QtWidgets.QWidget):
+                yield from cls.collect(
+                    child,
+                    tree_path.with_appended(idx)
+                )
+
+    def __str__(self):
+        s = f'{self.tree_path}'
+        s += f'\n\t{self.widget}'
+        s += f'\n\tgeometry={self.geometry}'
+        if self.n_children:
+            s += f'\n\tn_children={self.n_children}'
+        return s
+
+
+class HierarchyInfo:
+    def __init__(self, root: QtWidgets.QWidget):
+        self._root = root
+        self._items = None
+        self._annotations = []
+
+    def __iter__(self) -> t.Iterable[WidgetInfo]:
+        if self._items is None:
+            self._items = [
+                info for info in WidgetInfo.collect(self._root)
+                if info.widget.isVisible()
+                and not type(info.widget) in {QtWidgets.QWidget, Highlighter}
+            ]    
+        return iter(self._items)
+
+    def __str__(self):
+        lines = [str(info) for info in self]
+        return str.join('\n', lines)
+
+    @contextlib.contextmanager
+    def highlighting(self):
+        try:
+            for widget_info in self:
+                hl = Highlighter.create(
+                    widget_info.widget,
+                    text=_join(widget_info.tree_path, sep='.')
+                )
+                hl.color = QtCore.Qt.darkRed
+                self._annotations.append(hl)
+                hl.show()
+            yield self._annotations
+        except Exception as e:
+            _logger.exception(e)
+        finally:
+            for obj in self._annotations:
+                obj.deleteLater()
+
+
 class Agent:
     def __init__(self, target: QtWidgets.QWidget, dispatcher=None, target_identifier=None):
         self._target = target
@@ -603,7 +689,9 @@ class TooManyMatchesError(InvalidMatchError):
 
 
 def _join(it, sep=' '):
-    return str.join(sep, [str(_) for _ in it if _])
+    def is_to_skip(s):
+        return any(s == to_skip for to_skip in ['', None])
+    return str.join(sep, [str(_) for _ in it if not is_to_skip(_)])
 
 
 @dataclass
@@ -1072,9 +1160,16 @@ class QtBot(pytestqt_plugin.QtBot):
         action.agent.highlighter.hide()
 
     def take_widget_snapshot(self):
-        with self.agent.highlighting_children():
+        root = self.agent.target
+        info = HierarchyInfo(root)
+        with info.highlighting():
             self.slow_down()
-            self.take_screenshot(f'snapshot-{self.focused}')
+            snapshot = Snapshot.take(
+                label=root,
+            )
+            snapshot.text = str(info)
+        self.slow_down()
+        self._snapshots.add(snapshot)
 
     def _create_dispatcher(self):
 

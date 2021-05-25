@@ -911,6 +911,88 @@ class GroupBoxAgent(Agent):
         return w.title()
 
 
+class _TestArtifact:
+    def __init__(self, label=None):
+        self._label = label
+
+    @property
+    def label(self):
+        return self._label 
+
+    def save(self, path: Path):
+        raise NotImplementedError
+
+
+class ArtifactManager:
+    def __init__(self, base_path: Path, save_later=False):
+        self.base_path = Path(base_path).resolve()
+        self.base_path.mkdir(parents=True, exist_ok=True)
+        self._items = []
+        self.save_later = save_later
+
+    def __iter__(self):
+        return iter(self._items)
+
+    def __len__(self):
+        return len(self._items)
+
+    def add(self, item: _TestArtifact):
+        self._items.append(item)
+        if not self.save_later:
+            self.save(item)
+
+    def save(self, item: _TestArtifact):
+        item_dir = Path(self.base_path)
+        progressive_id = len(self)
+        filename = slugify(f'{progressive_id}-{item.label}')
+        item_path = item_dir / filename
+        try:
+            return item.save(item_path)
+        except Exception as e:
+            _logger.error(f'Error while saving artifact at {item_path}')
+            _logger.exception(e)
+        else:
+            _logger.info(f'Saved artifact at {item_path}')
+
+    def save_all(self):
+        for item in self:
+            self.save_item(item)
+
+
+
+class Snapshot(_TestArtifact):
+
+    @classmethod
+    def take(cls, native_widget: QtWidgets.QWidget = None, **kwargs):
+        native_widget = native_widget or QtWidgets.QApplication.instance().activeWindow()
+        try:
+            win_handle = native_widget.windowHandle()
+            screen = win_handle.screen()
+            pixmap = screen.grabWindow(win_handle.winId())
+        except Exception as e:
+            _logger.error(f'Could not capture pixmap ({kwargs})')
+            _logger.exception(e)
+            pixmap = None
+        return cls(
+            pixmap=pixmap,
+            **kwargs
+        )
+
+    def __init__(self, pixmap: QtGui.QPixmap = None, text: str = None, **kwargs):
+        super().__init__(**kwargs)
+        self._pixmap = pixmap
+        self.text = text
+
+    def save(self, path: Path):
+        if self._pixmap is None:
+            _logger.warning(f'No pixmap to save for {self}')
+        else:
+            self._pixmap.save(path.with_suffix('.png').__fspath__())
+        if self.text:
+            path.with_suffix('.txt').write_text(self.text)
+
+
+
 class QtBot(pytestqt_plugin.QtBot):
     "Extends original class with a few convenience methods"
 
@@ -930,10 +1012,9 @@ class QtBot(pytestqt_plugin.QtBot):
         self.focused = focused or QtWidgets.QApplication.instance().activeWindow()
 
         self._descriptions = []
-        self._screenshot_count = 0
         self._artifacts_base_path = Path(artifacts_path)
-        self._screenshots_path = self._artifacts_base_path / 'screenshots'
-        self._init_artifacts()
+        self._screenshots = ArtifactManager(self._artifacts_base_path / 'screenshots')
+        self._snapshots = ArtifactManager(self._artifacts_base_path / 'snapshots')
 
         self._signals = _Signals.instance()
         self._init_signals()
@@ -947,30 +1028,12 @@ class QtBot(pytestqt_plugin.QtBot):
         self._signals.actionStarted.connect(self.start_highlight)
         self._signals.actionEnded.connect(self.stop_highlight)
 
-    def _init_artifacts(self):
-        for path in [
-                self._artifacts_base_path,
-                self._screenshots_path
-            ]:
-            _logger.debug(f'Creating directory "{path}"')
-            path.mkdir(parents=True, exist_ok=True)
-
     def add_description(self, action):
         self._descriptions.append(action.description)
 
-    def take_screenshot(self, label, ext='png'):
-        native_widget = QtWidgets.QApplication.activeWindow()
-        if native_widget is None:
-            return
-        win_handle = native_widget.windowHandle()
-        screen = win_handle.screen()
-        pixmap = screen.grabWindow(win_handle.winId())
+    def take_screenshot(self, label):
         # TODO add metadata on the test where the screenshot originates from
-        file_name = f'{self._screenshot_count}-{slugify(label)}.{ext}'
-        file_path = self._screenshots_path / file_name
-        pixmap.save(file_path.__fspath__())
-        _logger.info(f'Created screenshot: {file_name}')
-        self._screenshot_count += 1
+        self._screenshots.add(Snapshot.take(label=label))
 
     @contextlib.contextmanager
     def taking_screenshots(self, actions=True):

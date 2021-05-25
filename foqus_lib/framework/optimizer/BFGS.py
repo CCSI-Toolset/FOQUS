@@ -33,14 +33,21 @@ import sys
 import logging
 import math
 import numpy
-import scipy
-import scipy.optimize
 import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
-# Check that the CMA-ES python script is available and import it if
-# possible.  If not the CMA-ES plug-in will not be available.
+# Check that the BFGS python script is available and import it if
+# possible.  If not the BFGS plug-in will not be available.
+
+try:
+    import scipy
+    import scipy.optimize
+    bfgs_available = True
+except ImportError:
+    logging.getLogger("foqus." + __name__).\
+        info("Failed to import scipy package used to access the bfgs solver")
+    bfgs_available = False
 
 def checkAvailable():
     '''
@@ -48,7 +55,7 @@ def checkAvailable():
         additional required software.  If requirements are not available
         plugin will not be available.
     '''
-    return True
+    return bfgs_available
 
 class opt(optimization):
     '''
@@ -69,7 +76,7 @@ class opt(optimization):
     '''
     def __init__(self, dat = None):
         '''
-            Initialize CMA-ES optimization module
+            Initialize BFGS optimization module
         '''
         optimization.__init__(self, dat)
         self.name = "SciPy-BFGS"

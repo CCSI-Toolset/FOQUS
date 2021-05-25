@@ -77,7 +77,8 @@ try:
     from pyDOE import *
     from smt.sampling_methods import LHS
     packages_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).exception("Failed to import the required packages for SM Optimizer solver")
     packages_available = False
 
 
@@ -92,7 +93,7 @@ def checkAvailable():
 
 class opt(optimization):
     '''
-        The optimization solver (in this case, Pyomo_Surrogate) class.
+        The optimization solver (in this case, SM_Optimizer) class.
         It describes the solver & its properties. Should be called opt and
         inherit optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:

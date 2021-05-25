@@ -44,7 +44,9 @@ from foqus_lib.framework.optimizer.optimization import optimization
 try:
     import nlopt
     nlopt_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).\
+        info("Failed to import the nlopt package")
     nlopt_available = False
 
 def checkAvailable():

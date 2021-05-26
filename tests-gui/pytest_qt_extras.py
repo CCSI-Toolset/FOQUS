@@ -1066,6 +1066,15 @@ class Snapshot(_TestArtifact):
             **kwargs
         )
 
+    @classmethod
+    def from_widget(cls, widget: QtWidgets.QWidget, entire_window=True, **kwargs):
+        to_grab = widget.window() if entire_window else widget
+        pixmap = to_grab.grab()
+        return cls(
+            pixmap=pixmap,
+            **kwargs
+        )
+
     def __init__(self, pixmap: QtGui.QPixmap = None, text: str = None, **kwargs):
         super().__init__(**kwargs)
         self._pixmap = pixmap
@@ -1121,16 +1130,21 @@ class QtBot(pytestqt_plugin.QtBot):
 
     def take_screenshot(self, label):
         # TODO add metadata on the test where the screenshot originates from
-        self._screenshots.add(Snapshot.take(label=label))
+        shot = Snapshot.from_widget(self.focused, label=label)
+        self._screenshots.add(shot)
 
     @contextlib.contextmanager
     def taking_screenshots(self, actions=True):
         take_scr = self.take_screenshot
 
-        def take_before(action):
-            take_scr(f'before-{action.description}')
-        def take_after(action):
-            take_scr(f'after-{action.description}')
+        def take_scr(action, when):
+            widget = action.agent.target
+            for_window = Snapshot.from_widget(widget=widget, label=f'{when}-{action.description}')
+            for_widget = Snapshot.from_widget(widget=widget, entire_window=False, label=f'{when}-{action.description}-widget-only')
+            self._screenshots.add(for_window)
+
+        take_before = lambda a: take_scr(a, 'before')
+        take_after = lambda a: take_scr(a, 'after')
 
         sig = self._signals
         sig.actionStarted.connect(take_before)
@@ -1160,12 +1174,13 @@ class QtBot(pytestqt_plugin.QtBot):
         action.agent.highlighter.hide()
 
     def take_widget_snapshot(self):
-        root = self.agent.target
+        root = self.focused
         info = HierarchyInfo(root)
         with info.highlighting():
             self.slow_down()
-            snapshot = Snapshot.take(
-                label=root,
+            snapshot = Snapshot.from_widget(
+                widget=root,
+                label=str(root),
             )
             snapshot.text = str(info)
         self.slow_down()

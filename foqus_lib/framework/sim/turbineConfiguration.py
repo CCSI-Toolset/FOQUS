@@ -1250,15 +1250,17 @@ class TurbineConfiguration:
             # configuration file or FOQUS is out of sync with
             # simSinter development
             raise TurbineInterfaceEx(
+                # pylint: disable=undefined-variable
                 code=304, msg="Path: " + sinterConfigPath
-            )  # TODO pylint: disable=undefined-variable
+            )
         if isinstance(modelFile, dict):
             modelFile = modelFile.get("file", None)
             if modelFile is None:
                 # No model file found
                 raise TurbineInterfaceEx(
+                    # pylint: disable=undefined-variable
                     code=304, msg="Path: " + sinterConfigPath
-                )  # TODO pylint: disable=undefined-variable
+                )
         return modelFile
 
     def sinterConfigGetResource(self, sinterConfigPath, checkExists=True):

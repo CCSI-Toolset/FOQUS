@@ -179,15 +179,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
+        # TODO the "row" variable in the signal call would cause an error at runtime,
+        # but the connection is redefined later with the correct arguments
+        # pylint: disable=undefined-variable
         self.changeDataSignal.connect(
             lambda data: self.changeDataInSimTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
         self.changeCandidateSignal.connect(
             lambda data: self.changeDataInCandTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
         self.changeEvalSignal.connect(
             lambda data: self.changeDataInEvalTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
+        # pylint: enable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)

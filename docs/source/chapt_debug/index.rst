@@ -39,7 +39,7 @@ Known Issues
 
 The following are known unresolved issues:
 
--  Calculator block that use Excel in Aspen Plus do not work in FOQUS,
+-  Calculator blocks that use Excel in Aspen Plus do not work in FOQUS,
    because they are not supported by the Aspen Plus COM interface, and
    can only be used in interactive mode.
 

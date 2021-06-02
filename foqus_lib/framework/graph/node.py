@@ -618,11 +618,17 @@ class Node:
         # outputs are stored in the f dictionary
         x = AtDict()
         f = AtDict()
+        f_init = AtDict()
+        ivar = self.inVars
+        ovar = self.outVars
+        ivar_vector = self.inVarsVector
+        ovar_vector = self.outVarsVector
         # Copy the inputs and outputs to easy-to-use temporary dicts
         for vkey, var in self.inVars.items():
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
+            f_init[vkey] = f[vkey]
         # Now try to execute the post code
         try:
             exec(self.pythonCode)
@@ -631,7 +637,11 @@ class Node:
             # tricky but don't know why you would.  That would be very
             # confusing.
             for vkey, var in f.items():
-                if vkey in self.outVars:
+                # Additional if condition to include the use of 'f' dict in
+                # nodescript, in which case, values in 'f'
+                # (after nodescript execution) and 'f_init' (before nodescript
+                # execution) will be different
+                if vkey in self.outVars and var != f_init[vkey]:
                     self.outVars[vkey].value = var
                     for vec in self.outVarsVector:
                         if vec in vkey:

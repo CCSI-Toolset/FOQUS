@@ -10,7 +10,7 @@ pylint==2.6.0
 astroid==2.4.2
 pytest
 pytest-cov
-pytest-qt
+pytest-qt==4.0.*
 python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8

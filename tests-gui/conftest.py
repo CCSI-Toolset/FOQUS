@@ -8,7 +8,7 @@ import typing as t
 from PyQt5 import QtWidgets, QtCore, QtGui
 
 import pytest
-from pytestqt import plugin as pytestqt_plugin
+from pytestqt.exceptions import capture_exceptions, format_captured_exceptions
 from _pytest.monkeypatch import MonkeyPatch
 import pytest_qt_extras
 
@@ -50,10 +50,10 @@ def qtbot_params(request):
 @pytest.fixture(scope='class')
 def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
     _qtbot = pytest_qt_extras.QtBot(request, **qtbot_params)
-    with pytestqt_plugin.capture_exceptions() as exceptions:
+    with capture_exceptions() as exceptions:
         yield _qtbot
     if exceptions:
-        pytest.fail(pytestqt_plugin.format_captured_exceptions(exceptions))
+        pytest.fail(format_captured_exceptions(exceptions))
     _qtbot.describe()
 
 

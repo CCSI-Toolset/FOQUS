@@ -42,6 +42,17 @@ class RSCombinations:
 
 
 @pytest.mark.usefixtures('setup_frame_blank')
+class TestSearch(_HasAttributesSetByFixture):
+    @pytest.fixture(scope='class')
+    def setup(self, qtbot, main_window):
+        qtbot.focused = main_window
+        qtbot.take_widget_snapshot()
+
+    def test_search(self, setup):
+        assert True
+
+
+@pytest.mark.usefixtures('setup_frame_blank')
 class TestUQ(_HasAttributesSetByFixture):
     @pytest.fixture(scope='class')
     def generate_samples(self, qtbot):
@@ -52,12 +63,12 @@ class TestUQ(_HasAttributesSetByFixture):
         with qtbot.searching_within(SimSetup) as sim_frame, qtbot.taking_screenshots():
             with qtbot.searching_within(group_box="Choose how to generate samples:"):
                 qtbot.click(radio_button="Choose sampling scheme")
-            qtbot.show_tab("Distributions")
+            qtbot.select_tab("Distributions")
             qtbot.click(button="All Variable")
             with qtbot.focusing_on(table=any):
                 qtbot.select_row(1)
                 qtbot.using(column="Type").set_option("Fixed")
-            qtbot.show_tab("Sampling scheme")
+            qtbot.select_tab("Sampling scheme")
             qtbot.click(radio_button="All")
             qtbot.using(item_list=any).set_option("Latin Hypercube")
             qtbot.using(spin_box=...).enter_value(2000)
@@ -104,16 +115,8 @@ class TestUQ(_HasAttributesSetByFixture):
     @pytest.fixture(scope='class')
     def run_analyses(self, qtbot, setup_analysis_dialog_expert):
         with qtbot.focusing_on(group_box="Ensemble Data Analysis"), qtbot.taking_screenshots():
-            # type_combo = frame.dataAnalyze_combo1
-            # order_combo = frame.dataAnalyze_combo2
-            ana_label = "Choose UQ Analysis:"
-            type_combo = qtbot.locate(combo_box=ana_label, index=0)
-            order_combo = qtbot.locate(combo_box=ana_label, index=1)
-            # type_combo, order_combo = qtbot.locate(combo_box="Choose UQ Analysis:", index=[0, 1])
-            # type_combo, order_combo = qtbot.locate(combo_box="Choose UQ Analysis:", which_of_many=[0, 1])
-            # type_combo, order_combo = qtbot.locate(combo_box="Choose UQ Analysis:", which_of_many=all)
-            print(f'type_combo={type_combo}')
-            print(f'order_combo={order_combo}')
+            # ana_label = "Choose UQ Analysis:"
+            type_combo, order_combo = qtbot.locate(combo_box="Choose UQ Analysis:", index=[0, 1])
             def run_and_wait():
                 qtbot.click(button="Analyze")
                 qtbot.wait_until_called(frame.unfreeze)
@@ -132,15 +135,13 @@ class TestUQ(_HasAttributesSetByFixture):
     @pytest.mark.skip
     def test_analyses_performed(self, qtbot):
         with qtbot.searching_within(group_box="Analyses Performed"):
-            ana_table = qtbot.locate(table=True)
+            ana_table = qtbot.locate_widget(table=True)
             assert ana_table.rowCount() > 0
 
     @pytest.fixture(scope='class')
     def visualize(self, qtbot, setup_analysis_dialog_expert):
         with qtbot.focusing_on(group_box="Ensemble Data Analysis"), qtbot.taking_screenshots():
-            viz_label = "Visualize Data:"
-            viz_1st_combo = qtbot.locate(combo_box=viz_label, index=0)
-            viz_2nd_combo = qtbot.locate(combo_box=viz_label, index=1)
+            viz_1st_combo, viz_2nd_combo = qtbot.locate(combo_box="Visualize Data:", index=[0, 1])
             viz_button = qtbot.locate(button="Visualize")
 
             qtbot.using(viz_1st_combo).set_option("Rosenbrock.x4")
@@ -184,13 +185,13 @@ class TestUQ(_HasAttributesSetByFixture):
         scope='function',
         params=[
             ('Polynomial ->', 'Linear Regression'),
-            ('Polynomial ->', 'Quadratic Regression'),
-            ('Polynomial ->', 'Cubic Regression'),
-            ('Polynomial ->', 'Legendre Polynomial Regression'),
+            # ('Polynomial ->', 'Quadratic Regression'),
+            # ('Polynomial ->', 'Cubic Regression'),
+            # ('Polynomial ->', 'Legendre Polynomial Regression'),
             ('MARS ->', None),
             # ('MARS ->', 'MARS with Bagging'),  # this takes a while but eventually converges 
             # ('Kriging', None),  # this doesn't seem to converge
-            ('Sum of Trees', None),
+            # ('Sum of Trees', None),
             # ('Radial Basis Function', None)  # also takes a looong time
         ]
     )

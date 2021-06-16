@@ -42,17 +42,6 @@ class RSCombinations:
 
 
 @pytest.mark.usefixtures('setup_frame_blank')
-class TestSearch(_HasAttributesSetByFixture):
-    @pytest.fixture(scope='class')
-    def setup(self, qtbot, main_window):
-        qtbot.focused = main_window
-        qtbot.take_widget_snapshot()
-
-    def test_search(self, setup):
-        assert True
-
-
-@pytest.mark.usefixtures('setup_frame_blank')
 class TestUQ(_HasAttributesSetByFixture):
     @pytest.fixture(scope='class')
     def generate_samples(self, qtbot):

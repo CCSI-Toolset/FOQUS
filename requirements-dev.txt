@@ -12,6 +12,9 @@ pytest
 pytest-cov
 pytest-qt
 python-slugify
+oyaml
+# singledispatchmethod needed for < 3.8
+singledispatchmethod
 sphinx
 sphinx_rtd_theme
 

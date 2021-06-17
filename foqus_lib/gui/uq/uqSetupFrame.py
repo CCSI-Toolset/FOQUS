@@ -1036,8 +1036,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         dialog = AnalysisDialog(row + 1, sim, self)
 
-        dialog.exec_()
-        dialog.deleteLater()
+        self._analysis_dialog = dialog
+        res = dialog.show()
 
     def resizeColumns(self):
         self.simulationTable.resizeColumnsToContents()

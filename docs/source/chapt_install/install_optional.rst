@@ -130,10 +130,13 @@ ACOSSO and BSS-ANOVA surrogate models and the Basic Data's SolventFit model.
   executable.
 
 
-Optional FOQUS Settings
------------------------
+The FOQUS "Settings" Tab
+------------------------
 
-Go to the FOQUS settings tab:
+Use the FOQUS "Settings" tab to set the optional software configuration described in this section:
 
-  - Set ALAMO and PSUADE locations.
-  - Test TurbineLite config.
+.. figure:: ./figs/foqus-settings.png
+   :alt: Figure 1: The FOQUS "Settings" tab
+   :name: fig.settings
+
+   Figure 1: The FOQUS "Settings" tab

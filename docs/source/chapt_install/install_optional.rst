@@ -17,13 +17,14 @@ PSUADE (Problem Solving environment for Uncertainty Analysis and Design Explorat
 toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity
 analysis, design optimization, model calibration, and more.
 
-PSUADE-Lite is now available as a Conda package. To install just follow the steps below::
-  
+`PSUADE-Lite <https://github.com/LLNL/psuade-lite>`_ is now available as a Conda package. To install just follow the steps below::
+
   conda activate ccsi-foqus
   conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite
   psuade --help  # quickly test that the psuade executable has been installed correctly
-  
-The `psuade` executable should now be available within the Conda environment's folders, i.e. at the path $CONDA_PREFIX/bin/psuade (Linux, macOS) or %CONDA_PREFIX%\bin\psuade.exe (Windows). Once you set the full path in the corresponding field in the FOQUS GUI "Settings" tab, you should be able to use it normally within FOQUS.
+
+The ``psuade`` executable should now be available within the Conda environment's folders, i.e. at the path ``$CONDA_PREFIX/bin/psuade`` (Linux, macOS) or ``%CONDA_PREFIX%\bin\psuade.exe`` (Windows).
+Once you set the full path in the corresponding field in the FOQUS GUI "Settings" tab, you should be able to use it normally within FOQUS.
 
 Install Turbine and SimSinter (Windows Only)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -63,13 +64,12 @@ Download ALAMO and request a license from the `ALAMO download page
 Install NLopt
 ^^^^^^^^^^^^^
 
-NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately, the Python
-module is not available to be installed with pip. See the `NLopt Installation Instructions
-<https://nlopt.readthedocs.io/en/latest/>`_ or NLopt can be installed with conda as follows::
+NLopt is an optional optimization library, which can be used by FOQUS. NLopt is not available to be installed with pip, but can be installed with conda as follows::
 
-    conda activate ccsi-foqus
-    conda install -c conda-forge nlopt
+  conda activate ccsi-foqus
+  conda install -c conda-forge nlopt
 
+For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
 
 Install SnobFit
 ^^^^^^^^^^^^^^^
@@ -85,7 +85,7 @@ available versions and installation, see the `SQSnobFit PyPI package page
 <https://pypi.org/project/SQSnobFit/>`_.
 
 Once the python package is downloaded, navigate the path to "SQSnobFit" folder (likely
-`$CONDA_PREFIX/lib/python3.7/site-packages/SQSnobFit/`) and modify the ``_snobfit.py`` file making
+``$CONDA_PREFIX/lib/python3.7/site-packages/SQSnobFit/``) and modify the ``_snobfit.py`` file making
 the following changes:
 
 Comment out or remove the following code lines just below ``def minimize(...)`` function definition::

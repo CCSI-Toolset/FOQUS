@@ -24,9 +24,9 @@ defaults:
     shell: bash -l {0}
 
 jobs:
-  run-tests:
-    name: Run tests (py${{ matrix.python-version }}/${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+  pytest:
+    name: Tests (py${{ matrix.python-version }}/${{ matrix.os }})
+    runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -36,9 +36,16 @@ jobs:
           - '3.8'
           # - '3.9'
         os:
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - linux
+          - win64
+          - macos
+        include:
+          - os: macos
+            os-version: macos-10.15
+          - os: linux
+            os-version: ubuntu-20.04
+          - os: win64
+            os-version: windows-2019
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -60,7 +67,7 @@ jobs:
           foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus
   gui-tests:
     name: GUI tests (py${{ matrix.python-version }}/${{ matrix.os }})
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -70,9 +77,16 @@ jobs:
           - '3.8'
           # - '3.9'
         os:
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - linux
+          - win64
+          - macos
+        include:
+          - os: macos
+            os-version: macos-10.15
+          - os: linux
+            os-version: ubuntu-20.04
+          - os: win64
+            os-version: windows-2019
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda

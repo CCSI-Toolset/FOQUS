@@ -99,7 +99,7 @@ jobs:
         with:
           pip-install-target: -r requirements-dev.txt
       - name: Set up GUI test environment
-        if: contains(matrix.os, 'ubuntu')
+        if: contains(matrix.os, 'linux')
         run: |
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Run GUI tests

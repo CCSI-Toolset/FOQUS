@@ -54,7 +54,7 @@ Install ALAMO
 
 ALAMO (Automated Learning of Algebraic Models for Optimization) is a software toolkit that generates
 algebraic models of simulations, experiments, or other black-box systems. For more information, go
-to the `ALAMO Home Page <http://archimedes.cheme.cmu.edu/?q=alamo>`_.
+to the `ALAMO Home Page <https://sahinidis.coe.gatech.edu/alamo>`_.
 
 Download ALAMO and request a license from the `ALAMO download page
 <https://minlp.com/alamo-downloads>`_.

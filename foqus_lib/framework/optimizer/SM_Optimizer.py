@@ -78,7 +78,7 @@ try:
     from smt.sampling_methods import LHS
     packages_available = True
 except ImportError:
-    logging.getLogger("foqus." + __name__).exception("Failed to import the required packages for SM Optimizer solver")
+    logging.getLogger("foqus." + __name__).info("Failed to import the required packages for SM Optimizer solver")
     packages_available = False
 
 

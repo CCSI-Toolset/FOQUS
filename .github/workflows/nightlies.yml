@@ -9,13 +9,19 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
     types: [ci_run_nightlies]
   workflow_dispatch:
+  # FIXME remove before merging in
+  pull_request:
+    types:
+      - opened
+      - synchronize
 
 jobs:
   user-install-run:
     name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
     runs-on: ${{ matrix.os }}
     strategy:
-      fail-fast: false
+      # FIXME change to "false" before merging
+      fail-fast: true
       matrix:
         python-version:
           - '3.6'
@@ -37,6 +43,8 @@ jobs:
             pip-install-target: ccsi-foqus
           - foqus-install-target: master
             pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
+          - foqus-install-target: dot
+            pip-install-target: '.'
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
@@ -57,6 +65,7 @@ jobs:
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
           foqus --help
+          python -c 'import foqus_lib.gui.main.mainWindow'
       - name: Install download tools (Windows)
         if: contains(matrix.os, 'windows')
         run:

@@ -50,7 +50,7 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
       - uses: actions/checkout@v2
-        if: foqus-install-target == 'dot'
+        if: matrix.foqus-install-target == 'dot'
       - name: Install FOQUS in a Conda env (user mode)
         shell: bash -l {0}
         env:

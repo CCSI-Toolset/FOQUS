@@ -36,6 +36,7 @@ jobs:
         foqus-install-target:
           - stable
           - master
+          - dot
         examples-release:
           - '3.9.0'
         include:

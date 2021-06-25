@@ -68,7 +68,9 @@ jobs:
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
           foqus --help
-          python -c 'import foqus_lib.gui.main.mainWindow'
+          # this starts the FOQUS GUI in the background, waits a few seconds, and then kills the process (%1: PID of last background job)
+          # if FOQUS crashes before then, the kill command will fail resulting in an overall error exit code
+          foqus & sleep 10 ; kill -9 %1
       - name: Install download tools (Windows)
         if: contains(matrix.os, 'windows')
         run:

@@ -85,6 +85,7 @@ jobs:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.examples-release }}
         run: |
+          rm -r "$PWD"/examples/ || echo "No examples directory found. It will be downloaded"
           wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
           unzip -q examples.zip
           echo '::group::Content of examples directory'

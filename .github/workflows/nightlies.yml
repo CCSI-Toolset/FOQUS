@@ -51,6 +51,10 @@ jobs:
         uses: conda-incubator/setup-miniconda@v2
       - uses: actions/checkout@v2
         if: matrix.foqus-install-target == 'dot'
+      - name: Set up GUI test environment
+        if: contains(matrix.os, 'ubuntu')
+        run: |
+          echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
       - name: Install FOQUS in a Conda env (user mode)
         shell: bash -l {0}
         env:

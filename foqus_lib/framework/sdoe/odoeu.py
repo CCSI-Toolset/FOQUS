@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import os
 import tempfile
 import re
@@ -20,6 +35,7 @@ def getSampleShape(data):
     nrows = data.getNumSamples()
     ncols = data.getNumInputs()
     return nrows, ncols
+
 
 def rseval(rsdata, pdata, cdata, rstypes):
     # rsdata: SampleData containing the RS training data
@@ -72,12 +88,11 @@ def rseval(rsdata, pdata, cdata, rstypes):
     f.seek(0)
 
     # invoke psuade
-    os.chdir(dname)
     out, error = Common.invokePsuade(f)
     if error:
         return None
 
-    outfile = os.path.join(dname, 'odoeu_rseval.out')
+    outfile = 'odoeu_rseval.out'
     assert(os.path.exists(outfile))
     return outfile
 
@@ -169,7 +184,6 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     f.seek(0)
 
     # invoke psuade
-    os.chdir(dname)
     out, error = Common.invokePsuade(f)
     if error:
         return None

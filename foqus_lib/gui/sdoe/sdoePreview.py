@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import os
 
 from foqus_lib.framework.uq.Model import Model
@@ -16,7 +31,7 @@ _sdoePreviewUI, _sdoePreview = \
 
 
 class sdoePreview(_sdoePreview, _sdoePreviewUI):
-    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, parent=None):
+    def __init__(self, data, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, parent=None):
         super(sdoePreview, self).__init__(parent)
         self.setupUi(self)
         self.data = data
@@ -26,6 +41,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         self.nusf = nusf
         self.irsf = irsf
         self.scatterLabel = scatterLabel
+        self.nImpPts = nImpPts
         inputTypes = data.getInputTypes()
         count = inputTypes.count(Model.FIXED)
         if count == 0:
@@ -119,5 +135,6 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         nusf = self.nusf
         irsf = self.irsf
         scatterLabel = self.scatterLabel
-        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf)
+        nImpPts = self.nImpPts
+        plot_utils.plot(fname, scatterLabel, hname=hname, show=show, usf=usf, nusf=nusf, irsf=irsf, nImpPts=nImpPts)
         self.setModal(True)

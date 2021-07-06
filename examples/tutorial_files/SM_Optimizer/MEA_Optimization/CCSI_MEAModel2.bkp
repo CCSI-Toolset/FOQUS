@@ -1033,9 +1033,9 @@ END_HIDEBUF ? SETUP MAIN ? \ TITLE TITLE = "CCSI MEA Model" \
 MOLEFLOW MASSFLOW = MASSFLOW MOLEFRAC = MOLEFRAC MASSFRAC = MASSFRAC 
 PROPERTIES = ( PPCO2 WAPP ) TFFFILE = FULL VISITED = 1 PSVUNITS = "SI" \ \ 
 COMMENTS COMMENTS = ( 
-";Copyright (c) 2012-2019, the Carbon Capture Simulation Initiative and West Virginia University" 
+";Copyright (c) 2012-2021, the Carbon Capture Simulation Initiative and West Virginia University" 
 ";All rights reserved." "; " ";Copyright Notice" "; " 
-";MEA Steady State Model was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and is copyright (c) 2012 - 2019 by the software owners: Oak Ridge Institute for Science and Education " 
+";MEA Steady State Model was produced under the DOE Carbon Capture Simulation Initiative (CCSI), and is copyright (c) 2012 - 2021 by the software owners: Oak Ridge Institute for Science and Education " 
 ";(ORISE), TRIAD National Security, LLC., Lawrence Livermore National Security, LLC., The Regents of the University of California, through Lawrence Berkeley National Laboratory, Battelle Memorial " 
 ";Institute, Pacific Northwest Division through Pacific Northwest National Laboratory, Carnegie Mellon University, West Virginia University, Boston University, the Trustees of Princeton University, " 
 ";The University of Texas at Austin, URS Energy & Construction, Inc., et al.. All rights reserved. " 
@@ -1044,7 +1044,7 @@ COMMENTS COMMENTS = (
 ";itself and others acting on its behalf a paid-up, nonexclusive, irrevocable, worldwide license in the Software to reproduce, distribute copies to the public, prepare derivative works, and perform " 
 ";publicly and display publicly, and to permit other to do so." "; " 
 ";License Agreement " "; " 
-";MEA Steady State Model Copyright (c) 2012 - 2019, by the software owners: Oak Ridge Institute for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence Livermore National Security, " 
+";MEA Steady State Model Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence Livermore National Security, " 
 ";LLC., The Regents of the University of California, through Lawrence Berkeley National Laboratory, Battelle Memorial Institute, Pacific Northwest Division through Pacific Northwest National Laboratory," 
 ";Carnegie Mellon University, West Virginia University, Boston University, the Trustees of Princeton University, The University of Texas at Austin, URS Energy & Construction, Inc., et al. All rights " 
 ";reserved." "; " 

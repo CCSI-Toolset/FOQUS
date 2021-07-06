@@ -1,7 +1,33 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+import tempfile
+import platform
+import re
+
 from .df_utils import load, write
 import configparser, time, os
 import numpy as np
 import pandas as pd
+
+from foqus_lib.framework.uq.Common import Common
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
+
+
+from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 
 
 def save(fnames, results, elapsed_time, irsf=False):
@@ -148,3 +174,81 @@ def run(config_file, nd, test=False):
             save(fnames[design], results[design], elapsed_time, irsf=True)
 
     return fnames, results, elapsed_time
+
+
+def dataImputation(fname, y, rsMethodName, eval_fname):
+
+    rsIndex = ResponseSurfaces.getEnumValue(rsMethodName)
+
+    # write script
+    f = tempfile.SpooledTemporaryFile(mode="wt")
+    if platform.system() == 'Windows':
+        import win32api
+        fname = win32api.GetShortPathName(fname)
+
+    f.write('load %s\n' % fname)  # load data
+    cmd = 'rscreate'
+    f.write('%s\n' % cmd)
+    f.write('%d\n' % y)  # select output
+    f.write('%d\n' % rsIndex)  # select response surface
+
+    cmd = 'rseval'
+    f.write('%s\n' % cmd)
+    f.write('y\n')  # data taken from register
+    f.write('%s\n' % eval_fname)
+    f.write('y\n')  # do fuzzy evaluation
+    f.write('y\n')  # write data to file
+    f.write('quit\n')
+    f.seek(0)
+
+    # invoke psuade
+    out, error = Common.invokePsuade(f)
+    f.close()
+    if error:
+        return None
+
+    outfile = 'eval_sample'
+    assert(os.path.exists(outfile))
+    return outfile
+
+
+def readEvalSample(fileName):
+    f = open(fileName, 'r')
+    lines = f.readlines()
+    f.close()
+
+    # remove empty lines
+    lines = [line for line in lines if len(line.strip()) > 0]
+
+    # ignore text preceded by '%'
+    c = '%'
+    lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
+    nlines = len(lines)
+
+    # process header
+    k = 0
+    header = lines[k]
+    nums = header.split()
+    numSamples = int(nums[0])
+    numInputs = int(nums[1])
+    numOutputs = 0
+    if len(nums) == 3:
+        numOutputs = int(nums[2])
+
+    # process samples
+    data = [None] * numSamples
+    for i in range(nlines - k - 1):
+        line = lines[i + k + 1]
+        nums = line.split()
+        data[i] = [float(x) for x in nums]
+
+    # split samples
+    data = np.array(data)
+    inputData = data[:, :numInputs]
+    inputArray = np.array(inputData, dtype=float, ndmin=2)
+    outputArray = None
+    if numOutputs:
+        outputData = data[:, numInputs:]
+        outputArray = np.array(outputData, dtype=float, ndmin=2)
+
+    return inputArray, outputArray, numInputs, numOutputs

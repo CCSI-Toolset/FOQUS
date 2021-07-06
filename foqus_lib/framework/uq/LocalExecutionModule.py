@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 '''
 Includes all functionality to read data from file, maintain Psuade location,
 and make local runs
@@ -304,6 +319,13 @@ class LocalExecutionModule(object):
 
     @staticmethod
     def readDataFromCsvFile(fileName, askForNumInputs=True):
+        def is_number(s):
+            try:
+                float(s)
+                return True
+            except ValueError:
+                return False
+
         with open(fileName, 'rt') as csvfile:
             # Detect dialect of csv file
             dialect = csv.Sniffer().sniff(csvfile.readline())
@@ -337,9 +359,10 @@ class LocalExecutionModule(object):
             runState = []
             for row in reader:
                 while row[-1] == '': row.pop()
+                row = [float(v) if is_number(v) else 'nan' for v in row]
+
                 if not numInputs and not askForNumInputs:
                     numInputs = len(row)
-                row = list(map(float, row))
                 inputVals.append(row[:numInputs])
                 outputVals.append(row[numInputs:])
                 if len(headers) > len(row):
@@ -348,8 +371,9 @@ class LocalExecutionModule(object):
                     runState.append(0)
                 else:
                     runState.append(1)
+
         inputArray = numpy.array(inputVals, dtype=float, ndmin=2)
-        outputArray = numpy.array(outputVals, dtype = float, ndmin = 2)
+        outputArray = numpy.array(outputVals, dtype=float, ndmin=2)
         return inputArray, outputArray, headers[:numInputs], headers[numInputs:], runState
 
     @staticmethod

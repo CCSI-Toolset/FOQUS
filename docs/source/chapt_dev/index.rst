@@ -79,11 +79,4 @@ To build a local copy of the documentation::
 
 Then open the file ``FOQUS/docs/build/html/index.html`` to view the results.
 
-Developer Details
------------------
-
-More details are listed in our `GitHub Wiki pages <https://github.com/CCSI-Toolset/FOQUS/wiki>`_.
-
-The development team can be contacted via GitHub `Issues
-<https://github.com/CCSI-Toolset/FOQUS/issues>`_, `PRs
-<https://github.com/CCSI-Toolset/FOQUS/pulls>`_ or email: ccsi-support@acceleratecarboncapture.org.
+.. include:: ../contact.rst

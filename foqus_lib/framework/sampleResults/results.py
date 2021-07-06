@@ -1,9 +1,23 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """results.py
 
 * This contains the class for sample results data heading
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
@@ -380,7 +394,7 @@ class Results(pd.DataFrame):
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None,
-                   empty=False):
+                    empty=False):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001
@@ -402,6 +416,9 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
+                # if type(dat[i])==list:
+                #     self.loc[row, col] = str(dat[i])
+                # else:
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 

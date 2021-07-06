@@ -1,8 +1,24 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import platform
 import os
 import logging
 import copy
 import time
+import pandas as pd
 from datetime import datetime
 from foqus_lib.gui.sdoe.updateSDOEModelDialog import *
 from foqus_lib.gui.sdoe.sdoeSimSetup import *
@@ -16,7 +32,7 @@ from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.framework.sampleResults.results import Results
 
-from foqus_lib.framework.sdoe import df_utils, odoeu
+from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe
 from .sdoePreview import sdoePreview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
@@ -45,9 +61,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
     numberCol = 0
-    typeCol = 1
-    setupCol = 2
-    nameCol = 3
+    selCol = 1
+    typeCol = 2
+    setupCol = 3
+    nameCol = 4
+    rs1Col = 5
+    rs2Col = 6
+    rsValCol = 7
+    rsConfCol = 8
+    impCol = 9
 
     descriptorCol = 0
     viewCol = 1
@@ -57,6 +79,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     fileCol = 2
     visualizeCol = 3
 
+    imputedData = False
     dname = os.path.join(os.getcwd(), 'SDOE_files')
     odoe_dname = os.path.join(os.getcwd(), 'ODOE_files')
 
@@ -239,15 +262,20 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def on_combobox_changed(self):
         self.confirmButton.setEnabled(self.hasCandidates())
-        
+
+    def on_checkbox_changed_sdoe(self):
+        self.confirmButton.setEnabled(self.hasCandidates())
+
     def getEnsembleList(self):
         cand_list = []
         hist_list = []
         numFiles = len(self.dat.sdoeSimList)
         for i in range(numFiles):
-            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate':
+            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate' \
+                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
                 cand_list.append(self.dat.sdoeSimList[i])
-            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data':
+            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data'\
+                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
                 hist_list.append(self.dat.sdoeSimList[i])
         return cand_list, hist_list   # returns sample data structures
 
@@ -257,6 +285,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         cand_csv_list = []
         for cand in cand_list:
             cand_path = os.path.join(self.dname, cand.getModelName())
+            if 'imputed' in cand_path:
+                self.imputedData = True
+            else:
+                self.imputedData = False
             if not os.path.exists(cand_path):
                 cand.writeToCsv(cand_path, inputsOnly=True)
             cand_csv_list.append(cand_path)
@@ -264,6 +296,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         hist_csv_list = []
         for hist in hist_list:
             hist_path = os.path.join(self.dname, hist.getModelName())
+            if 'imputed' in hist_path:
+                self.imputedData = True
+            else:
+                self.imputedData = False
             if not os.path.exists(hist_path):
                 hist.writeToCsv(hist_path, inputsOnly=True)
             hist_csv_list.append(hist_path)
@@ -400,25 +436,33 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file.")
                 self.unfreeze()
                 return
-        data.setSession(self.dat)
-        self.dat.sdoeSimList.append(data)
+        dataInfo = self.dataInfo(data)
+        if dataInfo:
+            QMessageBox.critical(self, 'Incorrect format',
+                                 'File has missing values in one or more of the input columns.\n'
+                                 'Please correct the issue or load a different file.')
+            self.unfreeze()
+            return
+        else:
+            data.setSession(self.dat)
+            self.dat.sdoeSimList.append(data)
 
-        res = Results()
-        res.sdoe_add_result(data)
-        self.dat.sdoeFilterResultsList.append(res)
-        shutil.copy(fileName, self.dname)
+            res = Results()
+            res.sdoe_add_result(data)
+            self.dat.sdoeFilterResultsList.append(res)
+            shutil.copy(fileName, self.dname)
 
-        # Update table
-        self.updateSimTable()
-        self.dataTabs.setEnabled(True)
-        self.unfreeze()
+            # Update table
+            self.updateSimTable()
+            self.dataTabs.setEnabled(True)
+            self.unfreeze()
 
     def updateSimTable(self):
         QApplication.processEvents()
@@ -487,7 +531,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = previewData.getNumImputedPoints()
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def editAgg(self):
@@ -504,12 +549,157 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = 0
+        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
+
+    def rsVal(self):
+        QApplication.processEvents()
+        self.freeze()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        data = copy.deepcopy(self.dat.sdoeSimList[row])
+        numInputs = data.getNumInputs()
+        indices_raw = np.argwhere(np.isnan(data.getInputData()))
+        indices_del = []
+        for ind in indices_raw:
+            indices_del.append(ind[0])
+        indices = []
+        for ind in range(data.getInputData().shape[0]):
+            if ind not in indices_del:
+                indices.append(ind)
+        data = data.getSubSample(indices)
+        names = data.getInputNames()
+        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
+        data.deleteInputs([numInputs-1])
+        data.model.numOutputs = 1
+        data.model.setOutputNames(names[-1])
+        data.setOutputData(output_data)
+        y = 1
+        rs1 = self.filesTable.cellWidget(row, self.rs1Col)
+        rs2 = self.filesTable.cellWidget(row, self.rs2Col)
+        rs = RSCombos.lookupRS(rs1, rs2)
+
+        if rs.startswith('MARS'):
+            rsOptions = {'marsBases': min([100, data.getNumSamples()]),
+                         'marsInteractions': min([8, data.getNumVarInputs()])}
+        else:
+            rsOptions = None
+
+        genRSCode = True
+
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=True, error_tol_percent=5)
+        _mfile = rsv.analyze()
+
+        msgBox = QMessageBox()
+        msgBox.setWindowTitle('Response Surface Validation Plot')
+        msgBox.setText('Check the response surface validation plot.'
+                       'If the generated response surface satisfy your needs, please confirm.'
+                       'If not, please select a new response surface and validate again.')
+        msgBox.exec_()
+        self.filesTable.cellWidget(row, self.rsConfCol).setEnabled(True)
+        self.unfreeze()
+        QApplication.processEvents()
+
+    def rsConf(self):
+        QApplication.processEvents()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        self.filesTable.cellWidget(row, self.impCol).setEnabled(True)
+
+        QApplication.processEvents()
+
+    def dataImputation(self):
+        QApplication.processEvents()
+        sender = self.sender()
+        row = sender.property('row')
+
+        self.changeDataSignal.disconnect()
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
+
+        data = copy.deepcopy(self.dat.sdoeSimList[row])
+        numInputs = data.getNumInputs()
+        indices_raw = np.argwhere(np.isnan(data.getInputData()))
+        indices = []
+        for ind in indices_raw:
+            indices.append(ind[0])
+        data = data.getSubSample(indices)
+        names = data.getInputNames()
+        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
+        data.deleteInputs([numInputs-1])
+        data.model.numOutputs = 1
+        data.model.setOutputNames(names[-1])
+        data.setOutputData(output_data)
+
+        fname = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.dat')
+
+        eval_fname = os.path.join(RSAnalyzer.dname, 'rseval.dat')
+        RSAnalyzer.writeRSsample(eval_fname, data.getInputData(), row=True, sdoe=True)
+
+        y = 1
+        rs1 = self.filesTable.cellWidget(row, self.rs1Col)
+        rs2 = self.filesTable.cellWidget(row, self.rs2Col)
+        rs = RSCombos.lookupRS(rs1, rs2)
+
+        ytest = sdoe.dataImputation(fname, y, rs, eval_fname)
+        testInput, testOutput, _numInputs, _numOutputs = sdoe.readEvalSample(ytest)
+
+        trainSet = LocalExecutionModule.readSampleFromPsuadeFile(fname)
+        trainInput = trainSet.getInputData()
+        trainOutput = trainSet.getOutputData()
+        colNames = trainSet.getInputNames() + trainSet.getOutputNames()
+        trainData = np.concatenate((trainInput, trainOutput), axis=1)
+        temp = np.concatenate((testInput, testOutput), axis=1)
+        testData = np.delete(temp, -1, axis=1)
+        nImpPts = testData.shape[0]
+        finalData = np.concatenate((trainData, testData), axis=0)
+        df = pd.DataFrame(finalData, columns=colNames)
+        fileName = os.path.join(self.dname, data.getModelName().split('.csv')[0] + '_{}_imputed.csv'.format(rs))
+        df_utils.write(fileName, df)
+
+        data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
+        data.setSession(self.dat)
+        data.setNumImputedPoints(nImpPts)
+        self.dat.sdoeSimList.append(data)
+
+        res = Results()
+        res.sdoe_add_result(data)
+        self.dat.sdoeFilterResultsList.append(res)
+
+        # Update table
+        self.updateSimTable()
+        self.dataTabs.setEnabled(True)
+        self.unfreeze()
+
+        QApplication.processEvents()
 
     def hasCandidates(self):
         cand_list, hist_list = self.getEnsembleList()
         return len(cand_list) > 0
+
+    def missingData(self, data):
+        arr = data.getInputData()
+        return np.sum(np.isnan(arr)) > 0
+
+    def dataInfo(self, data):
+        arr = data.getInputData()
+        warningMessage = '{} candidate file info:\n\n'.format(data.getModelName())
+        for i in range(data.getNumInputs()):
+            warningMessage += 'Missing values for column "{}": {}/{}\n'.format(data.getInputNames()[i],
+                                                                               sum(np.isnan(arr)[:, i]),
+                                                                               data.getNumSamples())
+        msgBox = QMessageBox()
+        msgBox.setText(warningMessage)
+        msgBox.exec_()
+        return np.sum(np.isnan(arr[:, 0:-1])) > 0
 
     def addDataToSimTable(self, data):
         if data is None:
@@ -543,18 +733,28 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         item.setFlags(flags & mask)
         self.filesTable.setItem(row, self.numberCol, item)
 
-        item = self.filesTable.item(row, self.nameCol)
-        if item is None:
-            item = QTableWidgetItem()
-        item.setText(data.getModelName())
-        self.filesTable.setItem(row, self.nameCol, item)
+        # create checkboxes for select column
+        checkbox = QCheckBox()
+        checkbox.setChecked(True)
+        self.filesTable.setCellWidget(row, self.selCol, checkbox)
+        checkbox.setProperty('row', row)
+        checkbox.toggled.connect(self.on_checkbox_changed_sdoe)
 
+        # Create combo boxes for type column
         combo = QComboBox()
         combo.addItems(['Candidate', 'Previous Data'])
         self.filesTable.setCellWidget(row, self.typeCol, combo)
         combo.currentTextChanged.connect(self.on_combobox_changed)
         combo.setMinimumContentsLength(13)
 
+        # Setup name column
+        item = self.filesTable.item(row, self.nameCol)
+        if item is None:
+            item = QTableWidgetItem()
+        item.setText(data.getModelName())
+        self.filesTable.setItem(row, self.nameCol, item)
+
+        # Create view button for setup column
         viewButton = self.filesTable.cellWidget(row, self.setupCol)
         newViewButton = False
         if viewButton is None:
@@ -567,6 +767,73 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if newViewButton:
             viewButton.clicked.connect(self.editSim)
             self.filesTable.setCellWidget(row, self.setupCol, viewButton)
+
+        # add combo boxes for rs1 and rs2 columns
+        combo1 = RSCombos.RSCombo1(self)
+        combo2 = RSCombos.RSCombo2(self)
+        legendreSpin = RSCombos.LegendreSpinBox(self)
+        marsBasisSpin = None
+        marsInteractionSpin = None
+
+        legendreSpin.init(data)
+        combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
+        combo2.setMinimumContentsLength(10)
+        combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
+                    marsDegreeSpin=marsInteractionSpin, odoe=True)
+
+        combo1.setProperty('row', row)
+        combo2.setProperty('row', row)
+
+        combo1.setEnabled(self.missingData(data))
+        combo2.setEnabled(self.missingData(data))
+
+        self.filesTable.setCellWidget(row, self.rs1Col, combo1)
+        self.filesTable.setCellWidget(row, self.rs2Col, combo2)
+
+        # Create validate RS button for RS Validation column
+        rsValButton = self.filesTable.cellWidget(row, self.rsValCol)
+        newRsValButton = False
+        if rsValButton is None:
+            newRsValButton = True
+            rsValButton = QPushButton()
+            rsValButton.setText('Validate RS')
+            rsValButton.setToolTip('Validate the selected response surface.')
+
+        rsValButton.setProperty('row', row)
+        if newRsValButton:
+            rsValButton.clicked.connect(self.rsVal)
+            rsValButton.setEnabled(self.missingData(data))
+            self.filesTable.setCellWidget(row, self.rsValCol, rsValButton)
+
+        # Create confirm RS button for RS Confirmation column
+        rsConfButton = self.filesTable.cellWidget(row, self.rsConfCol)
+        newRsConfButton = False
+        if rsConfButton is None:
+            newRsConfButton = True
+            rsConfButton = QPushButton()
+            rsConfButton.setText('Confirm RS')
+            rsConfButton.setToolTip('If you are happy with the response surface, please confirm.')
+
+        rsConfButton.setProperty('row', row)
+        if newRsConfButton:
+            rsConfButton.clicked.connect(self.rsConf)
+            rsConfButton.setEnabled(False)
+            self.filesTable.setCellWidget(row, self.rsConfCol, rsConfButton)
+
+        # Create data imputation button for data imputation column
+        impButton = self.filesTable.cellWidget(row, self.impCol)
+        newImpButton = False
+        if impButton is None:
+            newImpButton = True
+            impButton = QPushButton()
+            impButton.setText('Impute')
+            impButton.setToolTip('Impute missing data and create a new completed set.')
+
+        impButton.setProperty('row', row)
+        if newImpButton:
+            impButton.clicked.connect(self.dataImputation)
+            impButton.setEnabled(False)
+            self.filesTable.setCellWidget(row, self.impCol, impButton)
 
         # Resize table
         self.resizeColumns()
@@ -615,6 +882,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                         'Input-Response Space Filling (IRSF)'])
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
+        if self.imputedData:
+            combo.model().item(0).setEnabled(False)
+            combo.setCurrentIndex(1)
 
         combo.setToolTip("<ul>"
                          "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
@@ -1156,7 +1426,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
@@ -1331,7 +1601,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
@@ -1450,7 +1720,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Candidates'
-        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self)
+        nImpPts = 0
+        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
         dialog.show()
 
     def candSelected(self):
@@ -1584,7 +1855,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             except:
                 import traceback
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(self, 'Incorrect format',
+                QMessageBox.critical(self, 'Incorrect format',
                                            'File does not have the correct format! Please consult the users manual '
                                            'about the format.')
                 logging.getLogger("foqus." + __name__).exception(
@@ -1835,7 +2106,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         data = data.getValidSamples()  # filter out samples that have no output results
 
         # validate RS
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe)
+        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe, error_tol_percent=5)
         mfile = rsv.analyze()
 
         self.unfreeze()
@@ -1876,7 +2147,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         rsdata = self.odoe_data
         outputName = rsdata.getOutputNames()[0]
-        rsevalfname = os.path.join(self.odoe_dname, 'odoeu_rseval.out')
+        rsevalfname = 'odoeu_rseval.out'
         inputData, outputData, numInputs, numOutputs = LocalExecutionModule.readDataFromSimpleFile(rsevalfname)
 
         inputNames = cdata.getInputNames()

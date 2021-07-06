@@ -15,11 +15,14 @@
     chapt_HI/index
     chapt_pyomo/index
     chapt_idaes/index
+    chapt_matlab/index
     chapt_sinter/index
     chapt_sm_optimizer/index
     chapt_debug/index
     chapt_dev/index
+    chapt_vector_support/index
     references
+    contact
     copyright
 
 FOQUS
@@ -110,3 +113,5 @@ from Carbon Capture Pilot Plant Testing. In: Eden, M.R., Ierapetritou, M.G., Tow
 pp. 283-288.
 
 Additional research work can be found on https://www.acceleratecarboncapture.org/publications 
+
+.. include:: contact.rst

@@ -90,7 +90,7 @@ dist = setup(
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
-        "websocket_client>=0.57"
+        "websocket_client>=1.1.0"
         ],
 )
 

@@ -356,18 +356,18 @@ class WebSocketApp(QtCore.QThread):
         self.config = config
         self.url = wss_url
 
-    def on_message(self, message):
+    def on_message(self, wsapp, message):
         self.message = message
         self.signalUpdateStatus.emit()
 
-    def on_error(self, error):
+    def on_error(self, wsapp, error):
         logging.getLogger("foqus." + __name__).error(error)
         self.widget.append("Notification error: %s" %(error))
 
-    def on_close(self):
+    def on_close(self, wsapp):
         logging.getLogger("foqus." + __name__).info("WSS closed")
 
-    def on_open(self):
+    def on_open(self, wsapp):
         logging.getLogger("foqus." + __name__).debug("WSS open: %s" %self.url)
         self.ws.send('{"action":"status"}')
 

@@ -1,0 +1,18 @@
+# Code coverage configuration
+# See: https://coverage.readthedocs.io/
+[run]
+source = foqus_lib
+omit =
+    */examples/*
+    # skip test directories
+    */tests/*
+    # test files
+    test_*.py
+    */unit_test/*
+    */system_test/*
+    */test/*
+
+branch = True
+
+[report]
+show_missing = False

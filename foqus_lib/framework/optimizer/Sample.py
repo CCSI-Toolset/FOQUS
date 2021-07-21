@@ -77,7 +77,7 @@ class opt(optimization):
             This is the optimization routine.
         '''
         backupInt = self.options["Backup interval"].value
-        start = time.clock()
+        start = time.process_time()
         self.msgQueue.put("Started at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         rerunList = []
@@ -108,7 +108,7 @@ class opt(optimization):
             0,
             0,
             0])
-        timeOfBackup = time.clock()
+        timeOfBackup = time.process_time()
         if len(rerunSamp) > 0:
             finished = 0
             userInterupt = False
@@ -140,7 +140,7 @@ class opt(optimization):
                 # back up if its time.  Don't back up for intervals
                 # of less than 15 seconds, because that setting dosen't
                 # make sense even 15 seconds is crazy.
-                timeSinceBackup = time.clock() - timeOfBackup
+                timeSinceBackup = time.process_time() - timeOfBackup
                 if backupInt > 15.0 and timeSinceBackup > backupInt:
                     self.dat.save(
                         filename = "".join([

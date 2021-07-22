@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 import shutil
+import sys
 import typing as t
 
 from PyQt5 import QtWidgets, QtCore, QtGui
@@ -49,6 +50,8 @@ def qtbot_params(request):
 
 @pytest.fixture(scope='class')
 def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
+    if sys.version_info < (3, 7):
+        pytest.skip('GUI tests are not available for Python 3.6 or lower')
     _qtbot = pytest_qt_extras.QtBot(request, **qtbot_params)
     with capture_exceptions() as exceptions:
         yield _qtbot

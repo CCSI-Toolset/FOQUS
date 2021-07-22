@@ -1119,9 +1119,9 @@ class Search(_SerializableMixin):
         return dict(
             selectors=list(self.selectors),
             info=dict(self.info),
-            n_candidates=len(self.candidates),
+            n_candidates=len(self._candidates),
             matching=list(self.matching),
-            result_key=self.result_key,
+            result_key=self._result_key,
             result=self.result,
         )
 

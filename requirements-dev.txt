@@ -11,10 +11,11 @@ astroid==2.4.2
 pytest
 pytest-cov
 pytest-qt==4.0.*
+dataclasses;python_version<"3.7"
 python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8
-singledispatchmethod
+singledispatchmethod;python_version<"3.8"
 sphinx
 sphinx_rtd_theme
 

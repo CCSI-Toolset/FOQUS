@@ -36,6 +36,8 @@ version.wxi
 
 # Pytest
 pytest.log
+.pytest-artifacts/
+.pytest_cache/
 
 # Sphinx
 docs/sphinx-build.log

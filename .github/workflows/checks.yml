@@ -46,6 +46,8 @@ jobs:
             os-version: ubuntu-20.04
           - os: win64
             os-version: windows-2019
+          - python-version: "3.8"  # avoid uploading coverage for full matrix
+            use_coverage: true
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda
@@ -58,10 +60,16 @@ jobs:
         with:
           pip-install-target: -r requirements-dev.txt
       - name: Run pytest (default options)
-        # TODO: add coverage
+        if: "! matrix.use_coverage"
         run: |
-          pytest -v
-        # TODO: add Codecov
+          pytest --verbose
+      - name: Run pytest (coverage)
+        if: matrix.use_coverage
+        run: |
+          pytest --verbose --cov=./ --cov-report=xml --cov-report=term
+      - name: Upload coverage report to Codecov
+        if: matrix.use_coverage
+        uses: codecov/codecov-action@v2
       - name: Run FOQUS workflow in batch mode
         run: |
           foqus --load ./examples/test_files/Optimization/Opt_Test_01.foqus --run opt --out test_opt.foqus

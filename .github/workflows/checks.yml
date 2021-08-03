@@ -10,13 +10,14 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_tests`
     types: [ci_run_tests]
   workflow_dispatch:
-  pull_request:
-    types:
-      - opened
-      # ready_for_review occurs when a draft PR is turned to non-draft
-      - ready_for_review
-      # synchronize occurs whenever commits are pushed to the PR branch
-      - synchronize
+  # FIXME uncomment before merging
+  # pull_request:
+  #   types:
+  #     - opened
+  #     # ready_for_review occurs when a draft PR is turned to non-draft
+  #     - ready_for_review
+  #     # synchronize occurs whenever commits are pushed to the PR branch
+  #     - synchronize
 
 defaults:
   run:

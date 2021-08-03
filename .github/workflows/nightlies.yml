@@ -34,7 +34,7 @@ jobs:
           # - ubuntu-18.04  # FIXME uncomment before merging
           - ubuntu-20.04
           - windows-2019
-          # - macos-10.15  # FIXME uncomment before merging
+          - macos-10.15
         foqus-install-target:
           - stable
           - master
@@ -77,16 +77,12 @@ jobs:
         run: |
           conda activate ccsi-foqus
           foqus --help
-      - name: Install download tools (Windows)
-        if: contains(matrix.os, 'windows')
-        run:
-          choco install wget
       - name: Download and test examples (${{ matrix.examples-release }})
         env:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.examples-release }}
         run: |
-          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
+          curl --silent --show-error -L "$base_url/$release/ccsi-foqus-$release-examples.zip" --output examples.zip
           unzip -q examples.zip
           echo '::group::Content of examples directory'
           ls -Ralh "$PWD"/examples/

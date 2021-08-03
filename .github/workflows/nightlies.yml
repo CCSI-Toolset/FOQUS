@@ -13,6 +13,11 @@ on:
   push:
   pull_request:
 
+defaults:
+  run:
+    # needed to be able to use 
+    shell: bash -l {0}
+
 jobs:
   user-install-run:
     name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
@@ -49,7 +54,6 @@ jobs:
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
       - name: Install FOQUS in a Conda env (user mode)
-        shell: bash -l {0}
         env:
           py_ver: ${{ matrix.python-version }}
           pip_install_target: ${{ matrix.pip-install-target }}
@@ -69,13 +73,13 @@ jobs:
         run: ${{ matrix.hotfix-command }}
       - name: Show foqus help
         run: |
+          conda activate ccsi-foqus
           foqus --help
       - name: Install download tools (Windows)
         if: contains(matrix.os, 'windows')
         run:
           choco install wget
       - name: Download and test examples (${{ matrix.examples-release }})
-        shell: bash -l {0}
         env:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.examples-release }}

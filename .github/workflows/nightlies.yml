@@ -20,8 +20,8 @@ defaults:
 
 jobs:
   user-install-run:
-    name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
-    runs-on: ${{ matrix.os }}
+    name: Install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
       matrix:
@@ -31,22 +31,27 @@ jobs:
           - '3.8'
           # - '3.9'
         os:
-          # - ubuntu-18.04  # FIXME uncomment before merging
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - linux
+          - win64
+          - macos
         foqus-install-target:
           - stable
           - master
         examples-release:
           - '3.9.0'
         include:
+          - os: macos
+            os-version: macos-10.15
+          - os: linux
+            os-version: ubuntu-20.04
+          - os: win64
+            os-version: windows-2019
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
           - foqus-install-target: master
             pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
           - foqus-install-target: stable
-            os: windows-2019
+            os: win64
             python-version: '3.8'
             hotfix-command: pip install pywin32==225 && pip show pywin32
 

@@ -9,6 +9,8 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
     types: [ci_run_nightlies]
   workflow_dispatch:
+  # FIXME remove the "push" trigger once done debugging
+  push:
 
 jobs:
   user-install-run:
@@ -18,15 +20,15 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.6'
+          # - '3.6'  # FIXME uncomment before merging
           - '3.7'
           - '3.8'
           # - '3.9'
         os:
-          - ubuntu-18.04
+          # - ubuntu-18.04  # FIXME uncomment before merging
           - ubuntu-20.04
           - windows-2019
-          - macos-10.15
+          # - macos-10.15  # FIXME uncomment before merging
         foqus-install-target:
           - stable
           - master

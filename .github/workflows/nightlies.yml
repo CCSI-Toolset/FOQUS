@@ -37,6 +37,11 @@ jobs:
             pip-install-target: ccsi-foqus
           - foqus-install-target: master
             pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
+          - foqus-install-target: stable
+            os: windows-2019
+            python-version: '3.8'
+            hotfix-command: pip install pywin32==225 && pip show pywin32
+
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
@@ -56,6 +61,11 @@ jobs:
           pip list
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
+      - name: Apply hotfix commands
+        if: matrix.hotfix-command
+        run: ${{ matrix.hotfix-command }}
+      - name: Show foqus help
+        run: |
           foqus --help
       - name: Install download tools (Windows)
         if: contains(matrix.os, 'windows')

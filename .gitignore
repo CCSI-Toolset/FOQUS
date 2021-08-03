@@ -37,6 +37,9 @@ version.wxi
 # Pytest
 pytest.log
 
+# coverage
+.coverage
+
 # Sphinx
 docs/sphinx-build.log
 

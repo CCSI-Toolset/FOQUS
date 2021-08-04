@@ -168,4 +168,3 @@ jobs:
         run: |
           cd docs/
           make CLOPTS="-qW --keep-going" clean dummy
-

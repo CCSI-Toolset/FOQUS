@@ -44,7 +44,7 @@ will need a copy of the source to work with. Here is rough set of steps to get s
 
 - In a terminal create a conda env in which to work::
 
-    conda create --name ccsi-foqus python=3.7
+    conda create --name ccsi-foqus python=3.8
     conda activate ccsi-foqus
 
 - In a terminal, get the FOQUS source::

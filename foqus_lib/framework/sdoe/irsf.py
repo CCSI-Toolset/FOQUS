@@ -165,7 +165,7 @@ def unitscale_cand(cand):
     cand_arr = np.asarray(cand)
     norm_cand = np.zeros((cand_arr.shape[0], cand_arr.shape[1]))
     for i in range(cand.shape[1]):
-        norm_cand[:, i] = (1 / (max(cand_arr[:, i]) - min(cand_arr[:, i]))) * (cand_arr[:, i] - min(cand_arr[:, i])) - 0
+        norm_cand[:, i] = (1 / (max(cand_arr[:, i]) - min(cand_arr[:, i]))) * (cand_arr[:, i] - min(cand_arr[:, i]))
     return norm_cand
 
 
@@ -173,7 +173,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     cand_arr = np.asarray(cand)
     inv_norm_cand = np.zeros(cand_arr.shape)
     for i in range(cand_arr.shape[1]):
-        inv_norm_cand[:, i] = ((cand_arr[:, i] + 1) / 2) * (xmax[i] - xmin[i]) + xmin[i]
+        inv_norm_cand[:, i] = (cand_arr[:, i] * (xmax[i] - xmin[i])) + xmin[i]
     return inv_norm_cand
 
 

@@ -31,4 +31,4 @@ def test_inv_scale_cand():
     xmax = cand.max(axis=0)
     norm_cand_reversed = irsf.Inv_scale_cand(norm_cand, xmin, xmax)
 
-    assert cand == norm_cand_reversed, "Inv_scale_cand function not working properly."
+    assert np.array_equal(cand, norm_cand_reversed), "Inv_scale_cand function not working properly."

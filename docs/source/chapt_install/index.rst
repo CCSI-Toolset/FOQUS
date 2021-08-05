@@ -16,7 +16,7 @@ FOQUS:
 
   - In a terminal, to setup and install::
       
-      conda create --name ccsi-foqus python=3.7
+      conda create --name ccsi-foqus python=3.8
       conda activate ccsi-foqus
       pip install ccsi-foqus
       foqus --make-shortcut  # Create Desktop shortcut (Windows only)

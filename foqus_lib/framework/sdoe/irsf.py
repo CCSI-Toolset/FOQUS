@@ -165,7 +165,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     cand_arr = np.asarray(cand)
     inv_norm_cand = np.zeros((len(cand_arr), len(cand_arr.T)))
     for i in range(cand_arr.shape[1] - 1):
-        inv_norm_cand[:, i] = ((cand_arr[:, i] + 1) / 2) * (xmax[i] - xmin[i]) + xmin[i]
+        inv_norm_cand[:, i] = (cand_arr[:, i] * (xmax[i] - xmin[i])) + xmin[i]
     inv_norm_cand[:, -1] = cand_arr[:, -1]
     return inv_norm_cand
 

@@ -213,7 +213,7 @@ def criterion(cand,    # candidates
     idw_np = cand.columns.get_loc(idw)
 
     cand_np = cand.to_numpy()
-
+    cand_np_ = cand_np.copy()
     # scale inputs
     cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np) 
     
@@ -225,8 +225,6 @@ def criterion(cand,    # candidates
         hist_wt = None
 
     def step(mwr, cand_np):
-
-        cand_np_ = cand_np.copy()
 
         cand_np = scale_y(scale_method, mwr, cand_np, idw_np) 
         best_cand = []

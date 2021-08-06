@@ -22,13 +22,8 @@ from foqus_lib import foqus
 
 
 @pytest.fixture
-def examples_dir_path():
-    return Path(__file__).parent.parent.parent / 'examples'
-
-
-@pytest.fixture
-def input_file(examples_dir_path):
-    return str(examples_dir_path / 'test_files/Optimization/Opt_Test_01.foqus')
+def input_file(examples_dir):
+    return str(examples_dir / 'test_files/Optimization/Opt_Test_01.foqus')
 
 
 @pytest.fixture
@@ -66,13 +61,6 @@ def test_run_optimization_with_nonexisting_input_file_fails(nonexisting_input_fi
     ]
 
     with pytest.raises(SystemExit, match='10'):
-        foqus.main(cli_args)
-
-
-@pytest.mark.requires_human("Close the GUI window manually to complete the test")
-def test_start_gui():
-    cli_args = []
-    with pytest.raises(SystemExit, match="0"):
         foqus.main(cli_args)
 
 

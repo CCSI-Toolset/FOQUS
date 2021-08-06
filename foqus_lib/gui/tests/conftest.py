@@ -14,21 +14,6 @@ from _pytest.monkeypatch import MonkeyPatch
 import pytest_qt_extras
 
 
-def pytest_addoption(parser):
-    parser.addoption(
-        '--slowdown-wait', action='store', default=100,
-    )
-    parser.addoption(
-        '--artifacts-path', action='store', default='.pytest-artifacts',
-    )
-    parser.addoption(
-        '--main-window-size', action='store', default='800x600', help="Size of the main window specified as a <width>x<height> string"
-    )
-    parser.addoption(
-        '--main-window-title', action='store', default='FOQUS'
-    )
-
-
 @pytest.fixture(scope='session', autouse=True)
 def configure_logging(request):
     logger = pytest_qt_extras._logger
@@ -59,51 +44,6 @@ def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
         pytest.fail(format_captured_exceptions(exceptions))
     _qtbot.describe()
 
-
-@pytest.fixture(scope='session')
-def examples_dir():
-    here = Path(__file__).resolve()  # FOQUS/test/conftest.py
-    _examples_dir = here.parent.parent / 'examples'
-    assert _examples_dir.exists()
-    return _examples_dir
-
-
-@pytest.fixture(scope='session')
-def psuade_path():
-    _psuade_path = shutil.which('psuade')
-    assert _psuade_path is not None
-    return Path(_psuade_path).resolve()
-
-
-@pytest.fixture(
-    scope='session',
-    params=[
-        'UQ/Rosenbrock.foqus'
-    ]
-)
-def flowsheet_session_file(examples_dir, request):
-    return str(examples_dir / 'test_files' / request.param)
-
-
-@pytest.fixture(
-    scope='session',
-)
-def foqus_working_dir(qtbot_params):
-    return qtbot_params['artifacts_path'] / 'foqus_working_dir'
-
-
-@pytest.fixture(scope="session")
-def foqus_session(foqus_working_dir, psuade_path):
-    from foqus_lib.framework.session import session
-    foqus_working_dir.mkdir(exist_ok=True, parents=True)
-    # reproducing what happens in foqus_lib.focus.main()
-    os.chdir(foqus_working_dir)
-    session.makeWorkingDirStruct()
-    session.makeWorkingDirFiles()
-
-    dat = session.session(useCurrentWorkingDir=True)
-    dat.foqusSettings.psuade_path = str(psuade_path)
-    return dat
 
 
 @pytest.fixture(scope='session')
@@ -146,3 +86,13 @@ def main_window(foqus_session, qtbot, main_window_params):
     print(f'main_win.app.activeWindow()={main_win.app.activeWindow()}')
     yield main_win
     main_win.close()
+
+
+@pytest.fixture(scope='class')
+def uq_setup_view(main_window, flowsheet_session_file, qtbot):
+    main_window.loadSessionFile(
+        flowsheet_session_file,
+        saveCurrent=False
+    )
+    main_window.uqSetupAction.trigger()
+    return main_window.uqSetupFrame

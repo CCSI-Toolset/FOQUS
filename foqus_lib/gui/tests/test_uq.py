@@ -10,6 +10,9 @@ from foqus_lib.gui.uq.AnalysisDialog import AnalysisDialog
 import pytest
 
 
+pytestmark = pytest.mark.gui
+
+
 @pytest.fixture(scope='class')
 def setup_frame_blank(main_window, flowsheet_session_file, request):
     main_window.loadSessionFile(

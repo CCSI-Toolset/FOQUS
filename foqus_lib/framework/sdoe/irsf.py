@@ -96,6 +96,9 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
                                                                                            args['max_iterations'],
                                                                                            nr,
                                                                                            mode)
+        # Reverse scaling
+        PFxdes[i] = Inv_scale_cand(PFxdes[i], xmin, xmax)
+        PFydes[i] = Inv_scale_cand(PFydes[i], ymin, ymax)
 
         # Reverse scaling
         PFxdes[i] = Inv_scale_cand(PFxdes[i], xmin, xmax)
@@ -174,6 +177,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     inv_norm_cand = np.zeros(cand_arr.shape)
     for i in range(cand_arr.shape[1]):
         inv_norm_cand[:, i] = (cand_arr[:, i] * (xmax[i] - xmin[i])) + xmin[i]
+    
     return inv_norm_cand
 
 

@@ -100,6 +100,10 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
         PFxdes[i] = Inv_scale_cand(PFxdes[i], xmin, xmax)
         PFydes[i] = Inv_scale_cand(PFydes[i], ymin, ymax)
 
+        # Reverse scaling
+        PFxdes[i] = Inv_scale_cand(PFxdes[i], xmin, xmax)
+        PFydes[i] = Inv_scale_cand(PFydes[i], ymin, ymax)
+
     # Pareto Front for each weight i is created here. For example if 3 Pareto solutions were found for ith weight, and
     # the design size is 10, then PFxdes will contain all 3 designs (10 each) in an order, so the number of rows in
     # PFxdes is 30.
@@ -173,7 +177,7 @@ def Inv_scale_cand(cand, xmin, xmax):
     inv_norm_cand = np.zeros(cand_arr.shape)
     for i in range(cand_arr.shape[1]):
         inv_norm_cand[:, i] = (cand_arr[:, i] * (xmax[i] - xmin[i])) + xmin[i]
-
+    
     return inv_norm_cand
 
 

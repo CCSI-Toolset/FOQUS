@@ -215,8 +215,8 @@ def criterion(cand,    # candidates
     cand_np = cand.to_numpy()
     cand_np_ = cand_np.copy()
     # scale inputs
-    cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np) 
-    
+    cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np)
+
     if hist is not None:
         hist_xs = hist[idx].values
         hist_wt = hist[idw].values

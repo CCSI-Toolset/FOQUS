@@ -21,9 +21,13 @@ import pytest
 from foqus_lib import foqus
 
 
-@pytest.fixture
-def input_file(examples_dir):
-    return str(examples_dir / 'test_files/Optimization/Opt_Test_01.foqus')
+@pytest.fixture(
+    params=[
+        'test_files/Optimization/Opt_Test_01.foqus',
+    ]
+)
+def input_file(examples_dir, request):
+    return str(examples_dir / request.param)
 
 
 @pytest.fixture

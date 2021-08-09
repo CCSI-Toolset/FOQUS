@@ -84,7 +84,7 @@ dist = setup(
         # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues
         # (ImportError: DLL load failed while importing ...)
         # for more information see e.g. https://stackoverflow.com/a/62249872
-        "pywin32==225; sys_platform == 'win32'",
+        "pywin32==301; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",

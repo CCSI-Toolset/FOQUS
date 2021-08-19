@@ -56,6 +56,7 @@ dist = setup(
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
     packages = find_packages(),
+    py_modules = ['pytest_qt_extras'],
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},

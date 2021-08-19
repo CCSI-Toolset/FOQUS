@@ -11,8 +11,6 @@ pytest
 ### coverage
 coverage
 pytest-cov
-# coveragepy: required for CodeCov upload
-coveragepy
 
 sphinx
 sphinx_rtd_theme

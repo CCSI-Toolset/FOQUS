@@ -8,3 +8,6 @@ version: 2
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
     fail_on_warning: true
+
+# Build all formats
+formats: all

@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import time
 import numpy
 from PyQt5.QtWidgets import QComboBox, QFileDialog, QSpinBox
@@ -15,10 +30,11 @@ class RSCombo1(QComboBox):
         super(RSCombo1, self).__init__(parent)
         self.combo2 = None
 
-    def init(self, data, combo2, combo2SetFile = False, removeDisabled = False,
-             marsBasisSpin = None, marsBasisCaption = None,
-             marsDegreeSpin = None, marsDegreeCaption = None):
-            # Call this after combo2 init()
+    def init(self, data, combo2, combo2SetFile=False, removeDisabled=False,
+             marsBasisSpin=None, marsBasisCaption=None,
+             marsDegreeSpin=None, marsDegreeCaption=None,
+             odoe=False):
+        # Call this after combo2 init()
 
         self.setEnabled(True)
         self.combo2SetFile = combo2SetFile
@@ -54,7 +70,11 @@ class RSCombo1(QComboBox):
             index = model.index(i, 0)
             item = model.itemFromIndex(index)
             item.setEnabled(True)
-
+        if odoe:
+            for i in range(3, 8):
+                index = model.index(i, 0)
+                item = model.itemFromIndex(index)
+                item.setEnabled(False)
         i = poly
         if not RSAnalyzer.checkSampleSize(nSamples, nInputs, ResponseSurfaces.LINEAR):
             disable.append(i)
@@ -157,12 +177,16 @@ class RSCombo2(QComboBox):
         self.legendreCaption = None
         self.useShortNames = False
         self.fileMode = False
+        self.odoe = False
 
-    def init(self, data, legendreSpin, legendreCaption = None, useShortNames = False):
+    def init(self, data, legendreSpin,
+             legendreCaption=None, useShortNames=False,
+             odoe=False):
         self.data = data
         self.legendreSpin = legendreSpin
         self.legendreCaption = legendreCaption
         self.useShortNames = useShortNames
+        self.odoe = odoe
 
         self.currentIndexChanged[int].connect(self.change)
         self.isSetFileSignal = False
@@ -200,6 +224,9 @@ class RSCombo2(QComboBox):
         if RSAnalyzer.checkSampleSize(nSamples, nInputs, rs, legendreOrder=1):
             enable.append(rs)
 
+        if self.odoe:
+            enable = [ResponseSurfaces.LINEAR, ResponseSurfaces.QUADRATIC,
+                      ResponseSurfaces.CUBIC]
         return enable
 
     def showMars(self):
@@ -212,9 +239,10 @@ class RSCombo2(QComboBox):
         else:
             self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG))
         self.setEnabled(True)
+        if self.odoe:
+            self.removeItem(1)
         self.enableLegendre(False)
         self.fileMode = False
-
 
     def showFiles(self):
         self.fileMode = True

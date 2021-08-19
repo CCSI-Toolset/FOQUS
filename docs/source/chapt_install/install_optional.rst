@@ -10,16 +10,21 @@ Windows and is used to interface with Excel, Aspen, and gPROMS software.
 
 Other software listed below will enable additional features of FOQUS if available.
 
-Install PSUADE (current version: 1.7.12)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Install PSUADE-Lite (current version: 1.8.0)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PSUADE (Problem Solving environment for Uncertainty Analysis and Design Exploration) is a software
 toolkit containing a rich set of tools for performing uncertainty analysis, global sensitivity
 analysis, design optimization, model calibration, and more.
 
-PSUADE install instructions are on the `PSUADE github site <https://github.com/LLNL/psuade>`_. For
-Windows users, there is an installer at the `PSUADE releases page
-<https://github.com/LLNL/psuade/releases>`_ for your convenience.
+`PSUADE-Lite <https://github.com/LLNL/psuade-lite>`_ is now available as a Conda package. To install just follow the steps below::
+
+  conda activate ccsi-foqus
+  conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite
+  psuade --help  # quickly test that the psuade executable has been installed correctly
+
+The ``psuade`` executable should now be available within the Conda environment's folders, i.e. at the path ``$CONDA_PREFIX/bin/psuade`` (Linux, macOS) or ``%CONDA_PREFIX%\bin\psuade.exe`` (Windows).
+Once you set the full path in the corresponding field in the FOQUS GUI "Settings" tab, you should be able to use it normally within FOQUS.
 
 Install Turbine and SimSinter (Windows Only)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -50,7 +55,7 @@ Install ALAMO
 
 ALAMO (Automated Learning of Algebraic Models for Optimization) is a software toolkit that generates
 algebraic models of simulations, experiments, or other black-box systems. For more information, go
-to the `ALAMO Home Page <http://archimedes.cheme.cmu.edu/?q=alamo>`_.
+to the `ALAMO Home Page <https://sahinidis.coe.gatech.edu/alamo>`_.
 
 Download ALAMO and request a license from the `ALAMO download page
 <https://minlp.com/alamo-downloads>`_.
@@ -59,13 +64,12 @@ Download ALAMO and request a license from the `ALAMO download page
 Install NLopt
 ^^^^^^^^^^^^^
 
-NLopt is an optional optimization library, which can be used by FOQUS. Unfortunately, the Python
-module is not available to be installed with pip. See the `NLopt Installation Instructions
-<https://nlopt.readthedocs.io/en/latest/>`_ or NLopt can be installed with conda as follows::
+NLopt is an optional optimization library, which can be used by FOQUS. NLopt is not available to be installed with pip, but can be installed with conda as follows::
 
-    conda activate ccsi-foqus
-    conda install -c conda-forge nlopt
+  conda activate ccsi-foqus
+  conda install -c conda-forge nlopt
 
+For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
 
 Install SnobFit
 ^^^^^^^^^^^^^^^
@@ -81,7 +85,7 @@ available versions and installation, see the `SQSnobFit PyPI package page
 <https://pypi.org/project/SQSnobFit/>`_.
 
 Once the python package is downloaded, navigate the path to "SQSnobFit" folder (likely
-`$CONDA_PREFIX/lib/python3.7/site-packages/SQSnobFit/`) and modify the ``_snobfit.py`` file making
+``$CONDA_PREFIX/lib/python3.7/site-packages/SQSnobFit/``) and modify the ``_snobfit.py`` file making
 the following changes:
 
 Comment out or remove the following code lines just below ``def minimize(...)`` function definition::
@@ -126,10 +130,13 @@ ACOSSO and BSS-ANOVA surrogate models and the Basic Data's SolventFit model.
   executable.
 
 
-Optional FOQUS Settings
------------------------
+The FOQUS "Settings" Tab
+------------------------
 
-Go to the FOQUS settings tab:
+Use the FOQUS "Settings" tab to set the optional software configuration described in this section:
 
-  - Set ALAMO and PSUADE locations.
-  - Test TurbineLite config.
+.. figure:: ./figs/foqus-settings.png
+   :alt: Figure 1: The FOQUS "Settings" tab
+   :name: fig.settings
+
+   Figure 1: The FOQUS "Settings" tab

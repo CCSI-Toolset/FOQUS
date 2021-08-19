@@ -1,14 +1,29 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """nodePanel.py
 * This is a node editor widget
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 import os
 import types
 import platform
 from configparser import RawConfigParser
 from io import StringIO
+import ast
 
 from foqus_lib.gui.dialogs.tagSelectDialog import *
 from foqus_lib.framework.graph.node import *
@@ -472,7 +487,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 bgColor = bgColor)
             gh.setTableItem(table, row,
                 self.ivCols["Type"],
-                pullDown= ["float", "int", "str"],
+                pullDown= ["float", "int", "str", "object"],
                 text=var.typeStr(),
                 bgColor = bgColor)
             gh.setTableItem(table, row,
@@ -513,26 +528,26 @@ class nodeDock(_nodeDock, _nodeDockUI):
         for name in sorted(list(vars.keys()), key = lambda s: s.lower()):
             var = vars[name]
             gh.setTableItem(table, row,
-                self.ovCols["Name"],
-                name, editable=False)
+                    self.ovCols["Name"],
+                    name, editable=False)
             gh.setTableItem(table, row,
-                self.ovCols["Value"],
-                var.value,
-                jsonEnc = True)
+                    self.ovCols["Value"],
+                    var.value,
+                    jsonEnc = True)                   
             gh.setTableItem(table, row,
-                self.ovCols["Unit"],
-                var.unit)
+                    self.ovCols["Unit"],
+                    var.unit)
             gh.setTableItem(table, row,
-                self.ovCols["Type"],
-                pullDown= ["float", "int", "str"],
-                text=var.typeStr())
+                    self.ovCols["Type"],
+                    pullDown= ["float", "int", "str", "object"],
+                    text=var.typeStr())
             gh.setTableItem(table, row,
-                self.ovCols["Description"],
-                var.desc)
+                    self.ovCols["Description"],
+                    var.desc)
             gh.setTableItem(table, row,
-                self.ovCols["Tags"],
-                var.tags,
-                jsonEnc = True)
+                    self.ovCols["Tags"],
+                    var.tags,
+                    jsonEnc = True)
             row += 1
         table.resizeColumnsToContents()
         self.outputVarTable.setSelectionMode(
@@ -594,20 +609,62 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         self.addInput()
 
-    def addInput(self, name=None):
+    def addInput(self, name=None, s=0, minv=0, maxv=1, val=0):
         '''
         Add a new input variable, is a name is given, don't ask user for name,
         just go ahead and add it.
         '''
+        ip=True
         if name is None:
             newName, ok = QInputDialog.getText(
                 self,
                 "Input Name",
                 "New input variable name:",
                 QLineEdit.Normal)
+            size, ok = QInputDialog.getText(
+                self,
+                "Input Size",
+                "New input variable size:",
+                QLineEdit.Normal)
+            minval, ok = QInputDialog.getText(
+                self,
+                "Input min value",
+                "New input variable min value:",
+                QLineEdit.Normal)
+            maxval, ok = QInputDialog.getText(
+                self,
+                "Input max Value",
+                "New input variable max value:",
+                QLineEdit.Normal)
+            value, ok = QInputDialog.getText(
+                self,
+                "Input Value",
+                "New input variable value:",
+                QLineEdit.Normal)
+            if int(size) > 1:
+                minvalevaluate = ast.literal_eval(minval)
+                if type(minvalevaluate) in [float, int]:
+                    minval = [minvalevaluate for i in range(int(size))]
+                else:
+                    minval = ast.literal_eval(minval)
+                maxvalevaluate = ast.literal_eval(maxval)
+                if type(maxvalevaluate) in [float, int]:
+                    maxval = [maxvalevaluate for i in range(int(size))]
+                else:
+                    maxval = ast.literal_eval(maxval)
+                valueevaluate = ast.literal_eval(value)
+                if type(valueevaluate) in [float, int]:
+                    value = [valueevaluate for i in range(int(size))]
+                else:
+                    value = ast.literal_eval(value)
         else:
             newName = name
+            size = s
+            minval = minv
+            maxval = maxv
+            value = val
             ok = True
+
         if ok and newName != '':
             if newName in self.node.inVars:
                 QMessageBox.warning(
@@ -615,7 +672,18 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That input already exists")
                 return
-            self.node.gr.input.addVariable(self.node.name, newName)
+            # size condition
+            if int(size)>1:
+                self.node.gr.input.addVectorVariableScalars(self.node.name, newName, ip, size, minval, maxval, value)
+                nvlist = self.node.gr.input
+                self.node.gr.input_vectorlist.addVectorVariable(self.node.name, newName, ip, size, nvlist)
+            else:
+                self.node.gr.input.addVariable(self.node.name, newName)
+                nodevar=self.node.gr.input.get(self.node.name, newName)
+                nodevar.min = float(minval)
+                nodevar.max = float(maxval)
+                nodevar.value = float(value)
+                
             self.applyChanges()
             self.updateInputVariables()
 
@@ -630,7 +698,16 @@ class nodeDock(_nodeDock, _nodeDockUI):
             table.currentRow(),
             self.ivCols["Name"])
         self.applyChanges()
-        del self.node.gr.input[self.node.name][name]
+        for vname in self.node.gr.input_vectorlist[self.node.name].keys():
+            if vname in name:
+                for i in range(len(self.node.gr.input_vectorlist[self.node.name][vname].vector)):
+                    del self.node.gr.input[self.node.name][vname+'_{0}'.format(i)]
+                del self.node.gr.input_vectorlist[self.node.name][vname]
+                break
+            else:
+                continue
+        if name in self.node.gr.input[self.node.name].keys():
+            del self.node.gr.input[self.node.name][name]
         self.updateInputVariables()
 
     def addOutputClicked(self):
@@ -640,18 +717,25 @@ class nodeDock(_nodeDock, _nodeDockUI):
         """
         self.addOutput()
 
-    def addOutput(self, name=None):
+    def addOutput(self, name=None, s=0):
         '''
         Add an output variable
         '''
+        ip=False
         if name==None:
             newName, ok = QInputDialog.getText(
                 self,
                 "Output Name",
                 "New output variable name:",
                 QLineEdit.Normal)
+            size, ok = QInputDialog.getText(
+                self,
+                "Output Size",
+                "New output variable size:",
+                QLineEdit.Normal)
         else:
             newName = name
+            size = s
             ok = True
         if ok and newName != '':
             if newName in self.node.outVars:
@@ -660,8 +744,14 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     "Invalid Name",
                     "That output already exists")
                 return
-            self.applyChanges()
-            self.node.gr.output.addVariable(self.node.name, newName)
+            # size condition
+            if int(size)>1:
+                self.node.gr.output.addVectorVariableScalars(self.node.name, newName, ip, size, value=None)
+                nvlist = self.node.gr.output
+                self.node.gr.output_vectorlist.addVectorVariable(self.node.name, newName, ip, size, nvlist)
+            else:
+                self.node.gr.output.addVariable(self.node.name, newName)
+            self.applyChanges()                
             self.updateOutputVariables()
 
     def delOutput(self):
@@ -676,7 +766,17 @@ class nodeDock(_nodeDock, _nodeDockUI):
             table.currentRow(),
             self.ivCols["Name"])
         self.applyChanges()
-        del(self.node.outVars[name])
+        for vname in self.node.gr.output_vectorlist[self.node.name].keys():
+            if vname in name:
+                for i in range(len(self.node.gr.output_vectorlist[self.node.name][vname].vector)):
+                    del self.node.gr.output[self.node.name][vname+'_{0}'.format(i)]
+                del self.node.gr.output_vectorlist[self.node.name][vname]
+                break
+            else:
+                continue
+        if name in self.node.gr.output[self.node.name].keys():
+            del self.node.gr.output[self.node.name][name]
+        #del(self.node.outVars[name])
         self.updateOutputVariables()
 
     def showVex(self):

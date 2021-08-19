@@ -1,9 +1,23 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """node.py
 
 * This contains the classes for nodes
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import os
@@ -13,6 +27,7 @@ import math
 import subprocess
 import logging
 import traceback
+import re
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
@@ -114,6 +129,8 @@ class Node:
             self.name = name
         self.inVars = gr.input[self.name]
         self.outVars = gr.output[self.name]
+        self.inVarsVector = gr.input_vectorlist[self.name]
+        self.outVarsVector = gr.output_vectorlist[self.name]
 
     def addTurbineOptions(self):
         """
@@ -299,6 +316,14 @@ class Node:
             for vkey, var in sd["outVars"].items():
                 v = self.gr.output.addVariable(self.name, vkey)
                 v.loadDict(var)
+        if "inVarsVector" in sd:
+            for vkey, var in sd["inVarsVector"].items():
+                v = self.gr.input_vectorlist.addVectorVariable(self.name, vkey)
+                v.loadDict(var)
+        if "outVarsVector" in sd:
+            for vkey, var in sd["outVarsVector"].items():
+                v = self.gr.output_vectorlist.addVectorVariable(self.name, vkey)
+                v.loadDict(var)
 
     def stringToType(self, s):
         # only check start of string since sinter inclued dimensions
@@ -373,9 +398,20 @@ class Node:
             modelFile = self.gr.turbConfig.getModelFileFromSinterConfigDict(sc)
             app = self.gr.turbConfig.getAppByExtension(modelFile)
             self.turbApp = app
+            # Create input vectors, if any
+            for name, item in sc["inputs"].items():
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    if vector_name not in self.gr.input_vectorlist[self.name]:
+                        self.gr.input_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.input_vectorlist[self.name][vector_name].dtype = object
             # Add inputs
             for name, item in sc["inputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    vector_index = item.get("index",None)
+                    name = vector_name + "_{0}".format(vector_index)
                 self.gr.input[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
                     vmin=item.get("min", None),
@@ -387,9 +423,27 @@ class Node:
                     vdesc=str(item.get("description", "")),
                     tags=[],
                 )
+                # If the variable is part of a vector, add it to the vector variable
+                if "vector" in item:
+                    self.gr.input_vectorlist[self.name][vector_name].vector[vector_index] =\
+                        self.gr.input[self.name][name]
+                    self.gr.input_vectorlist[self.name][vector_name].ipvname = \
+                        (self.name,name)
+                        
+            # Create output vectors, if any
+            for name, item in sc["outputs"].items():
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    if vector_name not in self.gr.output_vectorlist[self.name]:
+                        self.gr.output_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.output_vectorlist[self.name][vector_name].dtype = object
             # Add outputs
             for name, item in sc["outputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
+                if "vector" in item:
+                    vector_name = item.get("vector",None)
+                    vector_index = item.get("index",None)
+                    name = vector_name + "_{0}".format(vector_index)
                 self.gr.output[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
                     unit=str(item.get("units", "")),
@@ -398,6 +452,13 @@ class Node:
                     dtype=dtype,
                     tags=[],
                 )
+                # If the variable is part of a vector, add it to the vector variable
+                if "vector" in item:
+                    self.gr.output_vectorlist[self.name][vector_name].vector[vector_index] =\
+                        self.gr.output[self.name][name]
+                    self.gr.output_vectorlist[self.name][vector_name].opvname = \
+                        (self.name,name)
+                
             # Add an extra output varialbe for simulation status
             # I think this comes out of all simulation run through
             # SimSinter, but its not in the sinter config file.
@@ -431,6 +492,9 @@ class Node:
             Change the current input values to their defaults
         """
         for key, var in self.inVars.items():
+            var.value = var.default
+            
+        for key, var in self.inVarsVector.items():
             var.value = var.default
 
     def runCalc(self, nanout=False):
@@ -506,11 +570,17 @@ class Node:
     def getValues(self):
         x = dict()
         f = dict()
+        xvector = dict()
+        fvector = dict()
         # Copy the inputs and outputs to easy-to-use temporary dicts
         for vkey, var in self.inVars.items():
             x[vkey] = var.value
         for vkey, var in self.outVars.items():
             f[vkey] = var.value
+        for vkey, var in self.inVarsVector.items():
+            xvector[vkey] = [var.vector[i].value for i in range(len(var.vector))]
+        for vkey, var in self.outVarsVector.items():
+            fvector[vkey] = [var.vector[i].value for i in range(len(var.vector))]
         return x, f
 
     def resetModel(self):
@@ -563,6 +633,10 @@ class Node:
             for vkey, var in f.items():
                 if vkey in self.outVars:
                     self.outVars[vkey].value = var
+                    for vec in self.outVarsVector:
+                        if vec in vkey:
+                            idx = int(vkey.split('_')[-1])
+                            self.outVars[vkey].value = self.outVarsVector[vec].vector[idx]['value']
         except PyCodeInterupt as e:
             logging.getLogger("foqus." + __name__).error(
                 "Node script interupt: " + str(e)

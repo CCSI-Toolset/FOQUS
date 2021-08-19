@@ -1,13 +1,28 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """nodeVars.py
 
 * This contains the classes for node variables
 * Class for lists of node variables
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 from collections import OrderedDict
+import numpy as np
 import json
 import math
 import logging
@@ -94,6 +109,34 @@ class NodeVarList(OrderedDict):
             var = NodeVars()
         self[nodeName][varName] = var
         return var
+
+    def addVectorVariableScalars(self, nodeName, varName, ip, size, minval=None, maxval=None, value=None, var=None):
+        """
+        Add scalars associated with vector variables to the node:
+
+        Args:
+            nodeName: to node to add a variable to
+            varName: the variable name to add
+            var: a NodeVar object or None to create a new variable
+        """
+        
+        if nodeName not in self:
+            raise NodeVarListEx(2, msg=nodeName)
+        if varName in self[nodeName]:
+            raise NodeVarListEx(7, msg=varName)
+        if not var:
+            for i in range(int(size)):
+                self.addVariable(nodeName, varName + '_{0}'.format(i))
+                nodevar = self[nodeName][varName + '_{0}'.format(i)]
+                if ip is True:
+                    nodevar.min = float(minval[i])                       
+                    nodevar.max = float(maxval[i])       
+                    nodevar.value = float(value[i])
+                    nodevar.default = float(value[i])
+                    nodevar.ipvname = (nodeName,varName + '_{0}'.format(i))
+                else:
+                    nodevar.value = 0
+                    nodevar.opvname = (nodeName,varName + '_{0}'.format(i))
 
     def get(self, name, varName=None):
         """
@@ -269,7 +312,167 @@ class NodeVarList(OrderedDict):
                     sd[name[0]][name[1]]
                 )
         return sd
+    
+class NodeVarVectorList(OrderedDict):
+    """
+    This class contains a dictionary of dictionaries the first key is the node
+    name, the second key is the variable name.
+    """
 
+    def __init__(self):
+        """
+        Initialize the variable list dictionary
+        """
+        OrderedDict.__init__(self)
+        self.nvlist = None
+        self.sd_scalars = None
+
+    def addNode(self, nodeName):
+        """
+        Add a node to the variable list
+
+        Args:
+            nodeName = a string name for the node to add, must not exist already
+        """
+        if nodeName in self:
+            raise NodeVarListEx(code=5, msg=str(nodeName))
+        self[nodeName] = OrderedDict()
+
+    def addVectorVariable(self, nodeName, varName, ip, size, nvlist=None, var=None):
+        """
+        Add a vector variable name to a node:
+
+        Args:
+            nodeName: to node to add a variable to
+            varName: the variable name to add
+            var: a NodeVarVector object or None to create a new variable
+        """
+        self.nvlist = nvlist
+        if nodeName not in self:
+            raise NodeVarListEx(2, msg=nodeName)
+        if varName in self[nodeName]:
+            raise NodeVarListEx(7, msg=varName)
+        if not var:
+            var = NodeVarVector()
+            var.dtype = object
+            var.add_vector(size)
+            if ip is True:
+                var.ipvname = (nodeName,varName)
+            else:
+                var.opvname = (nodeName,varName)
+            for i in range(int(size)):
+                if nvlist is not None:
+                    var.vector[i] = nvlist[nodeName][varName + '_{0}'.format(i)]
+                else:
+                    var.vector[i] = None
+            self[nodeName][varName] = var
+        return var
+
+    def saveValues(self,nvl):
+        """
+        Make a dictionary of variable values with the node and variable name
+        keys
+        """
+        sd = dict()
+        self.nvlist = nvl
+        for node in self:
+            sd[node] = OrderedDict()
+            if self.nvlist is not None:
+                svals_scalars = self.nvlist.saveValues()
+            else:
+                svals_scalars = None
+            for var in self[node]:
+                sd[node][var] = OrderedDict()
+                for i in range(len(self[node][var].vector)):
+                    sd[node][var][i] = svals_scalars[node][var + '_{0}'.format(i)]
+        return sd
+
+    def loadValues(self, sd):
+        """
+        Load the variables values out of a dictionary
+        """
+        self.odict = None
+        for node in sd:
+            if node not in self:
+                logging.getLogger("foqus." + __name__).debug(
+                    "Cannot load variable node not in flowsheet, node:"
+                    " {0} not in {1}".format(node, list(self.keys()))
+                )
+                raise NodeVarListEx(2, msg=node)
+            for var in sd[node]:
+                for i in range(len(self[node][var].vector)):
+                    if type(self[node][var].vector[i])!=dict:
+                        self[node][var].vector[i].value = sd[node][var][i]
+                    else:
+                        self[node][var].vector[i]['value'] = sd[node][var][i]
+
+    def saveDict(self,nvl):
+        """
+        Save the full variables list information to a dictionary
+        """
+        sd = dict()
+        self.nvlist = nvl
+        for node in self:
+            sd[node] = OrderedDict()
+            if self.nvlist is not None:
+                sd_scalars = self.nvlist.saveDict()
+            else:
+                sd_scalars = None
+            for var in self[node]:
+                sd[node][var] = self[node][var].saveDict()
+                size = len(sd[node][var]['vector'])
+                for i in range(int(size)):
+                    if sd_scalars is not None:
+                        sd[node][var]['vector'][i] = sd_scalars[node][var + '_{0}'.format(i)]
+                    else:
+                        sd[node][var]['vector'][i] = None
+        return sd
+
+    def loadDict(self, sd):
+        """
+        Load the full variable list innformation from a dict
+
+        Args:
+            sd: the dictionary with the stored information
+        """
+        self.clear()
+        for node in sd:
+            self.addNode(node)
+            for var in sd[node]:
+                if sd[node][var]['ipvname'] is None:
+                    ip = False
+                else:
+                    ip = True
+                size = len(sd[node][var]['vector'])
+                               
+                self.addVectorVariable(node, var, ip, size).loadDict(sd[node][var])                
+                sd[node][var]['vector'] = dict(sd[node][var]['vector'])
+                klist=[]
+                vlist=[]
+                for k,v in sd[node][var]['vector'].items():
+                    klist.append(int(k))
+                    vlist.append(v)
+                sd[node][var]['vector']=dict(zip(klist,vlist))
+                if sd[node][var]['opvname'] is None:
+                    self[node][var].vector = {x:None for x in range(int(size))}
+                    for i in range(len(sd[node][var]['vector'])):
+                        self[node][var].vector[i] = sd[node][var]['vector'][i]
+                else:
+                    self[node][var].vector = {x:None for x in range(int(size))}
+                    for i in range(len(sd[node][var]['vector'])):
+                        self[node][var].vector[i] = sd[node][var]['vector'][i]
+                        
+    def createOldStyleDict(self):
+        """
+        This can be used to create the f and x dictionaries for a graph. I'm
+        trying to phase this out, but I'm using in for now so I can make
+        smaller changes working to new variable list objects
+        """
+        self.odict = OrderedDict()
+        for node in sorted(list(self.keys()), key=lambda s: s.lower()):
+            for var in sorted(list(self[node].keys()), key=lambda s: s.lower()):
+                self.odict[".".join([node, var])] = self[node][var]
+        return self.odict
 
 class NodeVars(object):
     """
@@ -278,10 +481,13 @@ class NodeVars(object):
 
     def __init__(
         self,
-        value=0.0,
-        vmin=None,
-        vmax=None,
-        vdflt=None,
+        value=0,
+        vmin=0,
+        vmax=1,
+        vdflt=0,
+        # vector=dict(),
+        ipvname=None,
+        opvname=None,
         unit="",
         vst="user",
         vdesc="",
@@ -301,11 +507,12 @@ class NodeVars(object):
             vst: A sring description of a group for the variable {"user", "sinter"}
             vdesc: A sentence or so describing the variable
             tags: List of string tags for the variable
-            dtype: type of data {float, int, str}
+            dtype: type of data {float, int, str, object}
             dist: distribution type for UQ
         """
-        self.dtype = dtype  # type of data
+        self.dtype = dtype
         value = value
+            
         if vmin is None:
             vmin = value
         if vmax is None:
@@ -327,7 +534,9 @@ class NodeVars(object):
         # other searching and sorting
         self.con = False  # true if the input is set through connection
         self.setValue(value)  # value of the variable
+        # self.setVector(vector) # dictionary for vector variables
         self.setType(dtype)
+        self.setname(ipvname,opvname)
         self.dist = copy.copy(dist)
 
     def typeStr(self):
@@ -340,6 +549,8 @@ class NodeVars(object):
             return "int"
         elif self.dtype == str:
             return "str"
+        elif self.dtype == object:
+            return "object"
         else:
             raise NodeVarEx(11, msg=str(self.dtype))
 
@@ -359,7 +570,7 @@ class NodeVars(object):
             dtype = int
         elif dtype == "str":
             dtype = str
-        if not dtype in [float, int, str]:
+        if dtype not in [float, int, str]:
             raise NodeVarEx(11, msg=str(dtype))
         self.dtype = dtype
         self.value = dtype(self.value)
@@ -390,6 +601,10 @@ class NodeVars(object):
         Set the variable value
         """
         self.__value = self.dtype(val)
+        
+    def setname(self, ip, op):
+        self.ipvname = ip
+        self.opvname = op
 
     def __getattr__(self, name):
         """
@@ -404,6 +619,7 @@ class NodeVars(object):
         elif name == "default":
             return self.__default
         else:
+            print(name)
             raise AttributeError
 
     def __setattr__(self, name, val):
@@ -526,6 +742,9 @@ class NodeVars(object):
         vmax = self.max
         vdefault = self.default
         value = self.value
+        ipvname = self.ipvname
+        opvname = self.opvname
+        # vector = self.vector
         if self.dtype == float:
             sd["dtype"] = "float"
         elif self.dtype == int:
@@ -538,6 +757,8 @@ class NodeVars(object):
         sd["min"] = vmin
         sd["max"] = vmax
         sd["default"] = vdefault
+        sd["ipvname"] = ipvname
+        sd["opvname"] = opvname
         sd["unit"] = self.unit
         sd["set"] = self.set
         sd["desc"] = self.desc
@@ -574,6 +795,8 @@ class NodeVars(object):
         self.min = sd.get("min", 0)
         self.max = sd.get("max", 0)
         self.default = sd.get("default", 0)
+        self.ipvname = sd.get("ipvname")
+        self.opvname = sd.get("opvname")
         self.unit = sd.get("unit", "")
         self.set = sd.get("set", "user")
         self.desc = sd.get("desc", "")
@@ -584,3 +807,140 @@ class NodeVars(object):
             self.dist.loadDict(dist)
         self.scale()
         self.scaleBounds()
+        
+class NodeVarVector(object):
+    """
+    Class for variable attributes, variable scaling, and saving/loading.
+    """
+
+    def __init__(
+        self,
+        vector=dict(),
+        nvlist=dict(),
+        ipvname=None,
+        opvname=None,
+        dtype=float,
+    ):
+        """
+        Initialize the variable list
+
+        Args:
+            value: variable value
+            vmin: min value
+            vmax: max value
+            vdflt: default value
+            unit: string description of units of measure
+            vst: A sring description of a group for the variable {"user", "sinter"}
+            vdesc: A sentence or so describing the variable
+            tags: List of string tags for the variable
+            dtype: type of data {float, int, str, object}
+            dist: distribution type for UQ
+        """
+        self.dtype = dtype
+        self.setVector(vector) # dictionary for vector variables
+        self.setNodeVarList(nvlist)
+        self.setType(dtype)
+        self.setname(ipvname,opvname)
+
+    def add_vector(self, size):
+        if self.dtype != object:
+            pass
+        else:
+            self.vector = {x: None for x in range(int(size))}
+        return self.vector
+
+    def typeStr(self):
+        """
+        Convert the data type to a string for saving the variable to json
+        """
+        if self.dtype == float:
+            return "float"
+        elif self.dtype == int:
+            return "int"
+        elif self.dtype == str:
+            return "str"
+        elif self.dtype == object:
+            return "object"
+        else:
+            raise NodeVarEx(11, msg=str(self.dtype))
+
+    def setType(self, dtype=float):
+        """
+        Convert from the current dtype to a new one.
+        """
+        if dtype == "float":
+            dtype = float
+        elif dtype == "int":
+            dtype = int
+        elif dtype == "str":
+            dtype = str
+        elif dtype == "object":
+            dtype = object
+        if dtype not in [float, int, str, object]:
+            raise NodeVarEx(11, msg=str(dtype))
+        self.dtype = dtype
+
+    def setVector(self, vector):
+        """
+        Set the vector variable dictionary
+        """
+        self.vector = vector
+        
+    def setNodeVarList(self, nvlist):
+        self.nodevarlist = nvlist
+        
+    def setname(self, ip, op):
+        self.ipvname = ip
+        self.opvname = op
+
+    def saveDict(self):
+        """
+        Save a variable's content to a dictionary. This is mostly used to save
+        to a file but can also be used as an ugly way to make a copy of a
+        variable.
+        """
+        sd = dict()
+        ipvname = self.ipvname
+        opvname = self.opvname
+        vector = self.vector
+        if self.dtype == float:
+            sd["dtype"] = "float"
+        elif self.dtype == int:
+            sd["dtype"] = "int"
+        elif self.dtype == str:
+            sd["dtype"] = "str"
+        elif self.dtype == object:
+            sd["dtype"] = "object"
+        else:
+            raise NodeVarEx(11, msg=str(self.dtype))
+        sd["ipvname"] = ipvname
+        sd["opvname"] = opvname
+        if opvname is None:
+            sd["vector"] = {i:None for i in range(len(vector))}
+        else:
+            sd["vector"] = {i:None for i in range(len(vector))}
+        return sd
+
+    def loadDict(self, sd):
+        """
+        Load the contents of a dictionary created by saveDict(), and possibly
+        read back in as part of a json file.
+
+        Args:
+            sd: dict of data
+        """
+        assert isinstance(sd, dict)
+        dtype = sd.get("dtype", "float")
+        if dtype == "float":
+            self.dtype = float
+        elif dtype == "int":
+            self.dtype = int
+        elif dtype == "str":
+            self.dtype = str
+        elif dtype == "object":
+            self.dtype = object
+        else:
+            raise NodeVarEx(11, msg=str(dtype))
+
+        self.ipvname = sd.get("ipvname")
+        self.opvname = sd.get("opvname")

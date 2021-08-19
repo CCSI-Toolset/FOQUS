@@ -39,22 +39,15 @@ Known Issues
 
 The following are known unresolved issues:
 
+-  Calculator blocks that use Excel in Aspen Plus do not work in FOQUS,
+   because they are not supported by the Aspen Plus COM interface, and
+   can only be used in interactive mode.
+
 -  The FOQUS flowsheet can be edited while a flowsheet evaluation,
    optimization, or UQ is running. This should not be allowed, and may
-   cause problems.
-
--  With the windows installer, FOQUS may produce output to standard
-   error, especially if it immediately fails to launch. Output is
-   usually caught and redirected to the FOQUS log and displayed in
-   dialog boxes within FOQUS, but rare instances may occur where error
-   messages are not caught. Output to standard error is logged in the
-   directory with foqus.exe in the file foqus.exe.log. The user does not
-   typically have permission to write to the FOQUS install location, so
-   an error message such as “Cannot write to foqus.exe.log” will be
-   displayed. If this occurs there are two solutions (1) change the
-   permissions for the FOQUS install directory or (2) run “FOQUS
-   Console” application, which will direct FOQUS output to the “cmd”
-   window.
+   cause unexpected behaviors. Currently changes to a flowsheet while
+   running an evaluation will be ignored and reset when the evaluation
+   is completed.
 
 -  The win32com module generates Python code, which it needs to run.
    This code is generated in the FOQUS install location
@@ -76,18 +69,10 @@ The following are known unresolved issues:
    DMF when dealing with files in Turbine involving directories.
 
 -  The default port for TurbineLite is 8080. If another program is
-   already using port 8000, there will be an error in FOQUS when
+   already using port 8080, there will be an error in FOQUS when
    connecting to TurbineLite. In the **Turbine** Tab of the Settings
    window, there is a tool to change the TurbineLite port. If the
    TurbineLite port is changed the configuration file that FOQUS uses to
    connect to TurbineLite, must also be changed.
 
-Reporting Issues
-----------------
-
-To report an issue or ask a question, send an email to:
-ccsi-support@acceleratecarboncapture.org or open an issue at:
-https://github.com/CCSI-Toolset/FOQUS
-
-Please include detailed steps on how to reproduce the error, including if
-possible, screenshots and log files.
+.. include:: ../contact.rst

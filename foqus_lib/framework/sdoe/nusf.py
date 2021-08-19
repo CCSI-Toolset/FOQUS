@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import numpy as np
 from scipy.stats import rankdata
 from .distance import compute_dist
@@ -198,10 +213,10 @@ def criterion(cand,    # candidates
     idw_np = cand.columns.get_loc(idw)
 
     cand_np = cand.to_numpy()
-
+    cand_np_ = cand_np.copy()
     # scale inputs
-    cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np) 
-    
+    cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np)
+
     if hist is not None:
         hist_xs = hist[idx].values
         hist_wt = hist[idw].values
@@ -210,8 +225,6 @@ def criterion(cand,    # candidates
         hist_wt = None
 
     def step(mwr, cand_np):
-
-        cand_np_ = cand_np.copy()
 
         cand_np = scale_y(scale_method, mwr, cand_np, idw_np) 
         best_cand = []

@@ -1,9 +1,23 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """results.py
 
 * This contains the class for sample results data heading
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
@@ -18,17 +32,18 @@ from collections import OrderedDict
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
+
 class dataFilter(object):
 
     def __init__(self, no_results=False):
-        self.filterTerm = None       # list of columns to filter by
-        self.sortTerm = None         # list of columns to sort by
-        self.no_results = no_results # if true return no matches
+        self.filterTerm = None        # list of columns to filter by
+        self.sortTerm = None          # list of columns to sort by
+        self.no_results = no_results  # if true return no matches
 
     def saveDict(self):
-        sd = {'filterTerm':self.filterTerm,
-              'sortTerm':self.sortTerm,
-              'no_results':self.no_results}
+        sd = {'filterTerm': self.filterTerm,
+              'sortTerm': self.sortTerm,
+              'no_results': self.no_results}
         return sd
 
     def loadDict(self, sd):
@@ -37,15 +52,18 @@ class dataFilter(object):
         self.no_results = sd.get('no_results', False)
         return self
 
+
 def iso_time_str():
     return str(datetime.datetime.utcnow().isoformat())
+
 
 def sd_col_list(sd, time=None):
     """
     Take a value dict saved from results and turn it into a list of columns
     labels and data
     """
-    if time is None: time = iso_time_str()
+    if time is None:
+        time = iso_time_str()
 
     try:
         assert "nodeError" in sd
@@ -58,7 +76,7 @@ def sd_col_list(sd, time=None):
     except AssertionError:
         columns = ["time", "err"]
         dat = [time, 1001]
-        return (columns, dat)
+        return columns, dat
 
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]
@@ -71,13 +89,14 @@ def sd_col_list(sd, time=None):
                 if s[1] == "setting":
                     el = repr(el)
                 dat.append(el)
-    #node error and turbine messages columns
+    # node error and turbine messages columns
     for s in [["nodeError", "node_err"], ["turbineMessages", "turb"]]:
         for n in sd[s[0]]:
             columns.append("{}.{}".format(s[1], n))
             dat.append(sd[s[0]][n])
     # return the list of of columns and list of associated data.
-    return (columns, dat)
+    return columns, dat
+
 
 def uq_sd_col_list(sd):
 
@@ -87,10 +106,11 @@ def uq_sd_col_list(sd):
     ynames = ['output.'+name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
-        return (xnames , xvals)
+        return xnames , xvals
 
     else:
-        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+        return xnames+ynames, np.concatenate([xvals, yvals], axis = 1)
+
 
 def sdoe_sd_col_list(sd):
 
@@ -100,10 +120,39 @@ def sdoe_sd_col_list(sd):
     ynames = ['output.'+name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
-        return (xnames , xvals)
+        return xnames, xvals
 
     else:
-        return (xnames+ynames, np.concatenate([xvals, yvals], axis = 1))
+        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+
+
+def odoe_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return xnames, xvals
+
+    else:
+        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+
+
+def eval_sd_col_list(sd):
+
+    xvals = sd.getInputData()
+    yvals = sd.getOutputData()
+    xnames = ['input.'+name for name in sd.getInputNames()]
+    ynames = ['output.'+name for name in sd.getOutputNames()]
+
+    if len(yvals) == 0:
+        return xnames, xvals
+
+    else:
+        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+
 
 def incriment_name(name, exnames):
     """
@@ -121,6 +170,7 @@ def incriment_name(name, exnames):
         else:
             "".join([name, "_", str(index).zfill(4)])
     return "".join([name, "_", str(index).zfill(4)])
+
 
 def search_term_list(st):
     st = st.strip()
@@ -157,21 +207,21 @@ class Results(pd.DataFrame):
     def __init__(self, *args, **kwargs):
         super(Results, self).__init__(*args, **kwargs)
         if "set" not in self.columns:
-            self.filters = None # do this to avoid set column from attribute warn
-            self.filters = {} # now that atribute exists set to empty dict
+            self.filters = None  # do this to avoid set column from attribute warn
+            self.filters = {}    # now that atribute exists set to empty dict
             self.filters["none"] = dataFilter(no_results=True)
             self.filters["all"] = dataFilter()
             self._current_filter = None
-            self._filter_indexes = None # avoid set column from attribute warn
-            self._filter_indexes = [] # now that atribute exists set to empty list
-            self.flatTable = None # avoid set column from attribute warn
+            self._filter_indexes = None  # avoid set column from attribute warn
+            self._filter_indexes = []  # now that atribute exists set to empty list
+            self.flatTable = None  # avoid set column from attribute warn
             self.flatTable = True
             self["set"] = []
             self["result"] = []
             self._filter_mask = None
-            self.hidden_cols = None # avoid set column from attribute warn
+            self.hidden_cols = None  # avoid set column from attribute warn
             self.hidden_cols = []
-            self.calculated_columns = None # avoid set column from attribute warn
+            self.calculated_columns = None  # avoid set column from attribute warn
             self.calculated_columns = OrderedDict()
 
     def row_to_flow(self, fs, row, filtered=True):
@@ -185,12 +235,12 @@ class Results(pd.DataFrame):
                 # this would happen for cols with less than two .'s and is
                 # totally fine
                 continue
-            if typ=="input":
+            if typ == "input":
                 try:
                     fs.nodes[node].inVars[var].value = self.loc[idx, col]
                 except KeyError:
                     pass
-            elif typ=="output":
+            elif typ == "output":
                 try:
                     fs.nodes[node].outVars[var].value = self.loc[idx, col]
                 except KeyError:
@@ -285,10 +335,10 @@ class Results(pd.DataFrame):
                 return n
 
         sd = {
-            "__columns":list(self.columns),
-            "__indexes":list(map(convertIndex, list(self.index))),
-            "__filters":{},
-            "__current_filter":self._current_filter}
+            "__columns": list(self.columns),
+            "__indexes": list(map(convertIndex, list(self.index))),
+            "__filters": {},
+            "__current_filter": self._current_filter}
         for f in self.filters:
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
@@ -326,7 +376,7 @@ class Results(pd.DataFrame):
 
         if "none" not in self.filters:
             self.filters["none"] = \
-                dataFilter().loadDict({"fstack":[[10,{"term2":0,"term1":1,"op":0}]]})
+                dataFilter().loadDict({"fstack": [[10, {"term2": 0, "term1": 1, "op": 0}]]})
         if "all" not in self.filters:
             self.filters["all"] = dataFilter()
         self.calculated_columns = sd.get("calculated_columns", OrderedDict())
@@ -335,7 +385,7 @@ class Results(pd.DataFrame):
 
     def data_sets(self):
         """Return a set of data set labels"""
-        return set(self.loc[:,"set"])
+        return set(self.loc[:, "set"])
 
     def addFromSavedValues(self, setName, name, time=None, valDict=None):
         """Temoprary function for compatablility
@@ -344,13 +394,13 @@ class Results(pd.DataFrame):
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
     def add_result(self, sd, set_name="default", result_name="res", time=None,
-                   empty=False):
+                    empty=False):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001
         """
         if len(self["set"]) > 0:
-            names = list(self.loc[self["set"] == set_name].loc[:,"result"])
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
         result_name = incriment_name(result_name, names)
@@ -366,6 +416,9 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
+                # if type(dat[i])==list:
+                #     self.loc[row, col] = str(dat[i])
+                # else:
                 self.loc[row, col] = dat[i]
         self.update_filter_indexes()
 
@@ -407,9 +460,46 @@ class Results(pd.DataFrame):
                 self.loc[row, col] = dat[row][i]
         self.update_filter_indexes()
 
+    def odoe_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = odoe_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in range(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
+        self.update_filter_indexes()
+
+    def eval_add_result(self, data, set_name="default", result_name="res", time=None):
+
+        if len(self["set"]) > 0:
+            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+        else:
+            names = []
+        result_name = incriment_name(result_name, names)
+        columns, dat = eval_sd_col_list(data)
+
+        for c in columns:
+            if c not in self.columns:
+                self[c] = [np.nan] * self.count_rows(filtered=False)
+        for row in range(data.getNumSamples()):
+            self.loc[row, "set"] = set_name
+            self.loc[row, "result"] = result_name
+            for i, col in enumerate(columns):
+                self.loc[row, col] = dat[row][i]
+        self.update_filter_indexes()
+
     def exportVarsCSV(self, file, inputs, outputs, flat=True):
-        #flat isn't used, just there for compatablility from when there
-        #were vector vars.
+        # flat isn't used, just there for compatablility from when there were vector vars.
         df = pd.DataFrame(columns=inputs + outputs)
         for c in inputs:
             df[c] = self["input."+c]
@@ -477,9 +567,9 @@ class Results(pd.DataFrame):
             fltr = self.current_filter()
         if fltr is None or fltr == "all":
             self.sort_index(inplace=True)
-            return (list(self.index), [True]*len(self.index))
+            return list(self.index), [True]*len(self.index)
         if fltr == "none" or self.filters[fltr].no_results:
-            return ([], [False]*len(self.index))
+            return [], [False]*len(self.index)
         # Swap the name for the actual filter object
         fltr = self.filters[fltr]
         # If a sort term string is provided, sort
@@ -496,8 +586,8 @@ class Results(pd.DataFrame):
         ft = fltr.filterTerm
         mask = [True]*len(self.index)
         if ft is None or ft == "" or ft == False:
-            return (list(self.index), mask)
+            return list(self.index), mask
         else:
             mask = self.calculate_filter_expr(ft)
         indexes = list(map(int, list(self[mask].index)))
-        return (indexes, mask)
+        return indexes, mask

@@ -3,7 +3,7 @@
 
 # You can set these variables from the command line.
 # DATE          = $(shell date +%Y-%m-%d_%H%M%S)
-SPHINXOPTS    = -w sphinx-build.log
+SPHINXOPTS    = -w sphinx-build.log -W --keep-going
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build

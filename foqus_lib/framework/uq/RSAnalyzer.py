@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import math
 import os
 import subprocess
@@ -17,9 +32,11 @@ from .ResponseSurfaces import ResponseSurfaces
 from .RawDataAnalyzer import RawDataAnalyzer
 from .Plotter import Plotter
 
+
 class RSAnalyzer:
 
     dname = os.getcwd() + os.path.sep + 'RSAnalyzer_files'
+    Common.initFolder(dname)
 
     @staticmethod
     def writeRSdata(outfile, y, data, **kwargs):
@@ -537,17 +554,30 @@ class RSAnalyzer:
         return None
 
     @staticmethod
-    def writeRSsample(fname,x,y=None):
+    def writeRSsample(fname, x, y=None, row=False, sdoe=False):
         
         d = ' '
         nSamples, nInputs = x.shape
-        header = '%d %d' % (nSamples, nInputs)
+        if sdoe:
+            header = 'PSUADE_BEGIN\n%d %d' % (nSamples, nInputs)
+            footer = 'PSUADE_END'
+        else:
+            header = '%d %d' % (nSamples, nInputs)
+            footer = ''
         z = x
+        if row:
+            z = np.concatenate((np.arange(1, nSamples+1)[:, np.newaxis], x), axis=1)
+            format = '%i'
+            for i in range(nInputs):
+                format += ' %1.18e'
         if y is not None:
             nOutputs = y.shape[1]
             header = '%d %d %d' % (nSamples, nInputs, nOutputs)
-            z = np.concatenate((x,y),axis=1)
-        np.savetxt(fname,z,header=header,comments='',delimiter=d)
+            z = np.concatenate((x, y), axis=1)
+        if row:
+            np.savetxt(fname, z, header=header, comments='', delimiter=d, fmt=format, footer=footer)
+        else:
+            np.savetxt(fname, z, header=header, comments='', delimiter=d, footer=footer)
 
         return None
 
@@ -635,8 +665,7 @@ class RSAnalyzer:
         return rsdata
 
     @staticmethod
-    def pointEval(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None): 
-
+    def pointEval(fname, xtest, y, rsMethodName, rsOptions=None, userRegressionFile=None):
         ### xtest should be an array of length N, where N is the number of variable inputs.
         ### xtest[i] should be a single-key dictionary: {'value':%f}
 

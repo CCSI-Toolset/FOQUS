@@ -1,15 +1,28 @@
-""" #FOQUS_OPT_PLUGIN Sample.py
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_OPT_PLUGIN
 
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the optimization class.
 
-* Just evaluates the objective function for flowsheet results and
-   picks the best result.  If the status for any result is -1 the
-   result is rerun.
+* Just evaluates the objective function for flowsheet results and picks the best
+  result.  If the status for any result is -1 the result is rerun.
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import time
@@ -64,7 +77,7 @@ class opt(optimization):
             This is the optimization routine.
         '''
         backupInt = self.options["Backup interval"].value
-        start = time.clock()
+        start = time.process_time()
         self.msgQueue.put("Started at {0}".format(
             time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
         rerunList = []
@@ -95,7 +108,7 @@ class opt(optimization):
             0,
             0,
             0])
-        timeOfBackup = time.clock()
+        timeOfBackup = time.process_time()
         if len(rerunSamp) > 0:
             finished = 0
             userInterupt = False
@@ -127,7 +140,7 @@ class opt(optimization):
                 # back up if its time.  Don't back up for intervals
                 # of less than 15 seconds, because that setting dosen't
                 # make sense even 15 seconds is crazy.
-                timeSinceBackup = time.clock() - timeOfBackup
+                timeSinceBackup = time.process_time() - timeOfBackup
                 if backupInt > 15.0 and timeSinceBackup > backupInt:
                     self.dat.save(
                         filename = "".join([

@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cm
@@ -6,7 +21,7 @@ from .df_utils import load
 from .nusf import scale_y
 
 # plot parameters
-fc = {'hist': (0.5, 0.5, 0.5, 0.5), 'cand': (0, 0, 1, 0.5)}
+fc = {'hist': (0.5, 0.5, 0.5, 0.5), 'cand': (0, 0, 1, 0.5), 'imp': (1, 0, 0, 0.5)}
 area = {'hist': 40, 'cand': 25}
 
 
@@ -61,7 +76,7 @@ def remove_yticklabels(ax):
     return ax
 
 
-def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None):
+def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0):
 
     if cand_rgba is not None:
         fc['cand'] = cand_rgba
@@ -85,7 +100,6 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
         ax = fig.add_subplot(111)
         xname = show[0]
         _ax = plot_hist(ax, df[xname], xname, show_grids=True, linewidth=0, hbars=True, cand_rgba=cand_rgba)
-
 
     else:  # multiple inputs
 
@@ -114,7 +128,12 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'])
+                if nImpPts == 0:
+                    ax.scatter(df[yname], df[xname], s=area['cand'], facecolor=fc['cand'])
+                else:
+                    ax.scatter(df[yname][0:-nImpPts], df[xname][0:-nImpPts], s=area['cand'], facecolor=fc['cand'])
+                    ax.scatter(df[yname][-nImpPts:], df[xname][-nImpPts:], s=area['cand'], facecolor=fc['imp'])
+
                 if hf is not None:
                     ax.scatter(hf[yname], hf[xname], s=area['hist'], facecolor=fc['hist'])
 
@@ -139,6 +158,8 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
                     _ax = remove_xticklabels(ax)
 
     labels = ['Frequency', scatter_label]
+    if nImpPts > 0:
+        labels.append('Imputed')
     if hf is not None:
         labels.append('Previous data points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
@@ -178,7 +199,7 @@ def plot_weights(xs, wt, wts, title):
     return fig
 
 
-def plot(fname, scatter_label, hname=None, show=None, usf=None, nusf=None, irsf=None):
+def plot(fname, scatter_label, hname=None, show=None, usf=None, nusf=None, irsf=None, nImpPts=0):
     df, hf = load_data(fname, hname)
     title = 'SDOE Candidates Visualization'
     if usf:
@@ -193,7 +214,7 @@ def plot(fname, scatter_label, hname=None, show=None, usf=None, nusf=None, irsf=
     else:
         cand = None
         wcol = None
-    _fig1 = plot_candidates(df, hf, show, title, scatter_label, cand, wcol=wcol)
+    _fig1 = plot_candidates(df, hf, show, title, scatter_label, cand, wcol=wcol, nImpPts=nImpPts)
     if nusf:
         des = nusf['results']['best_cand_scaled'].values
         xs = des[:, :-1]    # scaled coordinates from best candidate

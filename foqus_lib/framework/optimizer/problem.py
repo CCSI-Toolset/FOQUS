@@ -1,9 +1,23 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """problem.py
 
 * This performs optimization problem evaluation
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import copy
@@ -336,7 +350,14 @@ class problem(object):
         self.gt = gt
         if gt.errorStat == 40:
             raise Exception("Error connecting to Turbine")
-        return self.calculateObj(gt.res, nsamples = snum)
+        inputvectorscopy = slv.graph.input_vectorlist.copy()
+        outputvectorscopy = slv.graph.output_vectorlist.copy()
+        for n in slv.graph.nodes:
+            mergecopy = inputvectorscopy[n].keys()|outputvectorscopy[n].keys()
+            if any(k in self.obj[0].pycode for k in mergecopy):
+                return self.calculateObjVector(gt.res, nsamples = snum)
+            else:
+                return self.calculateObj(gt.res, nsamples = snum)
 
     def prep(self, slv):
         '''
@@ -399,6 +420,59 @@ class problem(object):
             elif self.objtype == self.OBJ_TYPE_CUST:
                 res[obj_index], const[obj_index], pen[obj_index] = \
                     self.custObjFunc(x, f, fail)
+        return res, const, pen
+    
+    def calculateObjVector(self, svlist, nsamples = 1):
+        '''
+            Do some commnon preliminary setup then call the right type
+            of objective calculation.
+
+            svlist is a list of flowsheet evaluation results
+            nsamples is the number of flowsheet calculations that go
+                into each objective evaluation.  svlist is arranged
+                so that there are blocks of samples use to cacluatate
+                objective functions
+        '''
+        numObj = len(svlist)//nsamples # number of obj. func. evals.
+        res = [[float('nan')]]*numObj
+        const = [[0.0]]*numObj
+        pen = [[0.0]]*numObj
+        for obj_index in range(numObj):
+            # split up sv lists into parts for objcalcs
+            istart = obj_index*nsamples
+            model_res = svlist[istart:istart+nsamples]
+            xvector = [0]*nsamples
+            fvector = [0]*nsamples
+            fail = [False]*nsamples
+            for i, sv in enumerate(model_res):
+                if sv is None:
+                    # this is probably due to an exception being
+                    #thrown during flowsheet eval so is an error.
+                    fail[i] = True
+                elif sv.get('input_vectorvals', None) is None:
+                    #if the sample has no input something is wrong
+                    fail[i] = True
+                elif sv.get('output_vectorvals', None) is None:
+                    #if the sample has no input something is wrong
+                    fail[i] = True
+                else:
+                    if nsamples == 1:
+                        xvector = sv['input_vectorvals']
+                        fvector = sv['output_vectorvals']
+                    else:
+                        xvector[i] = sv['input_vectorvals']
+                        fvector[i] = sv['output_vectorvals']
+                    if sv['graphError'] != 0:
+                        #This is just some error that was caught usually
+                        #means failed to converge.
+                        fail[i] = True
+            (xvector, fvector) = self.get_at_dicts(xvector,fvector)
+            if self.objtype == self.OBJ_TYPE_EVAL:
+                res[obj_index], const[obj_index], pen[obj_index] = \
+                    self.calculateObjSimpExp(xvector, fvector, fail)
+            elif self.objtype == self.OBJ_TYPE_CUST:
+                res[obj_index], const[obj_index], pen[obj_index] = \
+                    self.custObjFunc(xvector, fvector, fail)
         return res, const, pen
 
     def get_at_dicts(self, x, f):

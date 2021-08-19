@@ -1,13 +1,27 @@
-""" #FOQUS_OPT_PLUGIN Pyomo_Surrogate.py
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_OPT_PLUGIN
 
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for Surrogate Based Optimization in Pyomo
 
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
-See LICENSE.md for license and copyright details.
 """
 
 import csv
@@ -32,8 +46,6 @@ try:
 except:
     pass
 
-if __name__ == '__main__':
-    from user_plugins import *
 from foqus_lib.framework.optimizer.optimization import optimization
 from foqus_lib.framework.graph.nodeVars import NodeVars
 from foqus_lib.framework.graph.edge import edge,edgeConnect
@@ -65,7 +77,8 @@ try:
     from pyDOE import *
     from smt.sampling_methods import LHS
     packages_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).info("Failed to import the required packages for SM Optimizer solver")
     packages_available = False
 
 
@@ -80,7 +93,7 @@ def checkAvailable():
 
 class opt(optimization):
     '''
-        The optimization solver (in this case, Pyomo_Surrogate) class.
+        The optimization solver (in this case, SM_Optimizer) class.
         It describes the solver & its properties. Should be called opt and
         inherit optimization.  The are several attributes from the optimization
         base class that should be set for an optimization plug-in:

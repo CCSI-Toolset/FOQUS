@@ -1,8 +1,19 @@
 #!/usr/bin/env python
-""" setup.py
-John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
-"""
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 from setuptools import setup, find_packages
 import sys
 import os
@@ -12,7 +23,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.9.0dev0"
+default_version = "3.10.0dev0"
 
 try:
     version=subprocess.check_output(
@@ -45,6 +56,7 @@ dist = setup(
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
     packages = find_packages(),
+    py_modules = ['pytest_qt_extras'],
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
@@ -64,19 +76,22 @@ dist = setup(
         "boto3",
         "cma",
         "matplotlib",
-        "mlrose_hiive",
+        "mlrose_hiive==2.1.3",
         "mplcursors",
         "numpy",
         "pandas",
         "psutil",
         "PyQt5==5.13",
-        "pywin32; sys_platform == 'win32'",
+        # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues
+        # (ImportError: DLL load failed while importing ...)
+        # for more information see e.g. https://stackoverflow.com/a/62249872
+        "pywin32==225; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
-        "websocket_client>=0.57"
+        "websocket_client>=1.1.0"
         ],
 )
 

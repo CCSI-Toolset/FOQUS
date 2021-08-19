@@ -1,14 +1,27 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_OPT_PLUGIN
 
-""" #FOQUS_OPT_PLUGIN Snobfit.py
-
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for Snobfit
 
 Anuja Deshpande, KeyLogic Systems, Inc. - NETL
-See LICENSE.md for license and copyright details.
 """
 
 import time
@@ -33,10 +46,10 @@ try:
     import SQSnobFit
     import SQCommon
     snobfit_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).info("Failed to import SQSnobFit and SQCommon packages used to access the snobfit solver")
     snobfit_available = False
 
-#print(snobfit_available)
 
 def checkAvailable():
     '''

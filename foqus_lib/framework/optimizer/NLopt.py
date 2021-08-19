@@ -1,8 +1,23 @@
-""" #FOQUS_OPT_PLUGIN NLopt.py
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_OPT_PLUGIN
 
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first
-150 characters of text.  They also need to have a .py extension and
-inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for NLopt
 * NLopt is licenced under the LGPL and available from
@@ -10,7 +25,6 @@ inherit the optimization class.
 * NLopt developer Steven G. Johnson at MIT
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 import time   # Some of these things are left over from CMA-ES
 import copy   # too lazy to sort out which I really need in here
@@ -30,7 +44,9 @@ from foqus_lib.framework.optimizer.optimization import optimization
 try:
     import nlopt
     nlopt_available = True
-except ImportError as e:
+except ImportError:
+    logging.getLogger("foqus." + __name__).\
+        info("Failed to import the nlopt package")
     nlopt_available = False
 
 def checkAvailable():

@@ -10,4 +10,6 @@ sphinx:
     fail_on_warning: true
 
 # Build all formats
-formats: all
+formats:
+    - pdf
+    - htmlzip

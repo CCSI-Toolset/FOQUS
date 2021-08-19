@@ -11,8 +11,6 @@ pytest
 ### coverage
 coverage
 pytest-cov
-# coveragepy: required for CodeCov upload
-coveragepy
 
 # pytest-qt-extras
 pytest-qt==4.0.*

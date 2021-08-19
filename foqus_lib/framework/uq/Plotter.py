@@ -1076,7 +1076,7 @@ class Plotter:
         except AttributeError:
             return # the selected axis (e.g., colorbar) does not have geometry attribute
 
-        if event.button is 1:
+        if event.button == 1:
             # On left click, zoom in 
             axlist = event.canvas.figure.axes
             # if any one of the subplots are already zoomed in, ignore
@@ -1096,7 +1096,7 @@ class Plotter:
                     if axis is not ax:
                         axis.set_visible(False)
 
-        elif event.button is 3:
+        elif event.button == 3:
             # On right click, restore the axes
             if ax.get_geometry() == (1,1,1):
                 nrows, ncols, num = ax._geometry

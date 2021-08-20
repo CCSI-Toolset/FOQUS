@@ -164,7 +164,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
         labels.append('Previous data points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
-    fig.canvas.set_window_title(title)
+    fig.canvas.manager.set_window_title(title)
     
     return fig
 
@@ -267,7 +267,7 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
         y = pf['Best Response'][i]
         lab = pf['Design'][i]
 
-        ax.scatter(x, y, label=lab, c=c, marker='D', zorder=2)
+        ax.scatter(x, y, label=lab, color=c, marker='D', zorder=2)
 
     ax.legend(title='Designs', ncol=4)
 

@@ -90,7 +90,7 @@ class opt():
 			gr.createCSV(ofile) # create a CSV output file add a coulmn for objective
 			self.ofile = ofile
 		self.flushc = 0
-		start = time.clock()
+		start = time.process_time()
 
 		xopt, fopt, nit = snobfit.snobfit(self.func,
 										  xinit,
@@ -100,7 +100,7 @@ class opt():
 		if ofile != "":
 			gr.closeCSV()
 		print("-------------------------")
-		print(("Elapsed Time: " + str(time.clock() - start) + " sec"))
+		print(("Elapsed Time: " + str(time.process_time() - start) + " sec"))
 		print("-------------------------")
 		print("Solution")
 		print("-------------------------")

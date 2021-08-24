@@ -282,8 +282,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'FOQUS.tex', u'FOQUS Documentation',
-     u'CCIS team', 'manual'),
+    (master_doc, 'FOQUS.tex', u'FOQUS Documentation', u'CCSI team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

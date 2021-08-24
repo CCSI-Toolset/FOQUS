@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """graph.py
 
 * This is the main class for storing directed graphs
@@ -5,7 +20,6 @@
 * Includes methods to find tears and solve recycle
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 
 import queue
@@ -82,8 +96,13 @@ class Graph(threading.Thread):
         self.edges = []  # connections between simulations
         self.x = OrderedDict()  # dictionary of inputs
         self.f = OrderedDict()  # dictionary of outputs
+        self.xvector = OrderedDict()  # dictionary of input vectors
+        self.fvector = OrderedDict()  # dictionary of output vectors
         self.input = NodeVarList()
         self.output = NodeVarList()
+        self.nvlist = None
+        self.input_vectorlist = NodeVarVectorList()
+        self.output_vectorlist = NodeVarVectorList()
         self.input.addNode("graph")  # global variables
         self.output.addNode("graph")  # global variables
         if statusVar:
@@ -229,6 +248,10 @@ class Graph(threading.Thread):
             "no_solve_nodes": self.no_solve_nodes,
             "turbineSim": self.turbineSim,  # name of FOQUS sim for remote
         }
+        nvl = self.input
+        sd["input_vectorlist"] = self.input_vectorlist.saveDict(nvl)
+        nvl = self.output
+        sd["output_vectorlist"] = self.output_vectorlist.saveDict(nvl)
         if results:
             sd["results"] = self.results.saveDict()
         return sd
@@ -288,6 +311,18 @@ class Graph(threading.Thread):
         else:
             self.output.clear()
             self.input.addNode("graph")
+        temp = sd.get("input_vectorlist", None)
+        if temp:
+            self.nvlist = self.input
+            self.input_vectorlist.loadDict(temp)
+        else:
+            self.input_vectorlist.clear()
+        temp = sd.get("output_vectorlist", None)
+        if temp:
+            self.nvlist = self.output
+            self.output_vectorlist.loadDict(temp)
+        else:
+            self.output_vectorlist.clear()
         self.nodes = dict()
         self.edges = []
         self.simList = dict()
@@ -326,6 +361,10 @@ class Graph(threading.Thread):
             "nodeSettings": {},
             "turbineMessages": {},
         }
+        nvl = self.input
+        sd["input_vectorvals"] = self.input_vectorlist.saveValues(nvl)
+        nvl = self.output
+        sd["output_vectorvals"] = self.output_vectorlist.saveValues(nvl)
         for nkey, node in self.nodes.items():
             sd["nodeError"][nkey] = node.calcError
             sd["turbineMessages"][nkey] = node.turbineMessages
@@ -348,6 +387,16 @@ class Graph(threading.Thread):
         o = sd.get("output", None)
         if o is not None:
             self.output.loadValues(o)
+        o = sd.get("input_vectorvals", None)
+        if o is not None:
+            self.nvlist = self.input
+            self.input_vectorlist.loadValues(o)
+        else:
+            self.input_vectorlist.clear()
+        o = sd.get("output_vectorvals", None)
+        if o is not None:
+            self.nvlist = self.output
+            self.output_vectorlist.loadValues(o)
         self.setErrorCode(sd.get("graphError", -1))
         ne = sd.get("nodeError", {})
         tm = sd.get("turbineMessages", {})
@@ -401,9 +450,13 @@ class Graph(threading.Thread):
         """
         self.x = self.input.createOldStyleDict()
         self.f = self.output.createOldStyleDict()
+        self.xvector = self.input_vectorlist.createOldStyleDict()
+        self.fvector = self.output_vectorlist.createOldStyleDict()
         # x and f are ordered dictionaries so keys are already sorted
         self.xnames = list(self.x.keys())  # get a list of input names
         self.fnames = list(self.f.keys())  # get a list of output names
+        # self.xvectornames = list(self.xvector.keys())  # get a list of input vector names
+        # self.fvectornames = list(self.fvector.keys())  # get a list of output vector names
         self.markConnectedInputs()  # mark which inputs are set by con.
 
     def markConnectedInputs(self):
@@ -769,9 +822,19 @@ class Graph(threading.Thread):
                 pass  # Doesn't matter synced is a DMF thing
         # originalValues = self.saveValues()
         assert isinstance(valueList, (list, tuple))
+        # Ensure that the input scalar variable values get assigned to the input vector variables
         for i, vals in enumerate(valueList):
-            # self.loadValues(originalValues)
-            self.loadValues({"input": vals})
+            vectorvals = dict()
+            for n in self.nodes:
+                vectorvals[n] = OrderedDict()
+                for invarsvector in self.nodes[n].inVarsVector.keys():
+                    vectorvals[n][invarsvector] = OrderedDict()
+                    for invar in self.nodes[n].inVars.keys():
+                        if invarsvector in invar:
+                            invarsplit = invar.split('_')
+                            idx = int(invarsplit[-1])
+                            vectorvals[n][invarsvector][idx] = vals[n][invar]
+            self.loadValues({"input": vals, "input_vectorvals": vectorvals})
             self.setErrorCode(-1)
             if not self.stop.isSet():
                 # run solve if thread has not been stopped
@@ -1310,6 +1373,10 @@ class Graph(threading.Thread):
             self.input.addNode(name)
         if not name in self.output:
             self.output.addNode(name)
+        if not name in self.input_vectorlist:
+            self.input_vectorlist.addNode(name)
+        if not name in self.output_vectorlist:
+            self.output_vectorlist.addNode(name)
         self.nodes[name] = Node(x, y, z, parent=self, name=name)
         return self.nodes[name]
 

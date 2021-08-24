@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.cm as cm
@@ -149,7 +164,7 @@ def plot_candidates(df, hf, show, title, scatter_label, cand, cand_rgba=None, wc
         labels.append('Previous data points')
     fig.legend(labels=labels, loc='lower left', fontsize='xx-large')
 
-    fig.canvas.set_window_title(title)
+    fig.canvas.manager.set_window_title(title)
     
     return fig
 
@@ -252,7 +267,7 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
         y = pf['Best Response'][i]
         lab = pf['Design'][i]
 
-        ax.scatter(x, y, label=lab, c=c, marker='D', zorder=2)
+        ax.scatter(x, y, label=lab, color=c, marker='D', zorder=2)
 
     ax.legend(title='Designs', ncol=4)
 

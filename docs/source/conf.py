@@ -66,7 +66,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'FOQUS'
-copyright = u'2012 - 2020 by CCSI Team All rights reserved.'
+copyright = u'2012 - 2021 by CCSI Team All rights reserved.'
 author = u'CCSI'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -282,8 +282,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'FOQUS.tex', u'FOQUS Documentation',
-     u'CCIS team', 'manual'),
+    (master_doc, 'FOQUS.tex', u'FOQUS Documentation', u'CCSI team', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of

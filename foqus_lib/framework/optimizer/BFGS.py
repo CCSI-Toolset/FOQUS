@@ -1,13 +1,28 @@
-"""#FOQUS_OPT_PLUGIN BFGS.py
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
+""" #FOQUS_OPT_PLUGIN
 
-Optimization plugins need to have #FOQUS_OPT_PLUGIN in the first 150 characters,
-have a .py extension and inherit the optimization class.
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the optimization class.
 
 * FOQUS optimization plugin for scipy BFGS using finite dif
 * Uses scipy optimization module
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 import time
 import copy
@@ -18,14 +33,21 @@ import sys
 import logging
 import math
 import numpy
-import scipy
-import scipy.optimize
 import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
-# Check that the CMA-ES python script is available and import it if
-# possible.  If not the CMA-ES plug-in will not be available.
+# Check that the BFGS python script is available and import it if
+# possible.  If not the BFGS plug-in will not be available.
+
+try:
+    import scipy
+    import scipy.optimize
+    bfgs_available = True
+except ImportError:
+    logging.getLogger("foqus." + __name__).\
+        info("Failed to import scipy package used to access the bfgs solver")
+    bfgs_available = False
 
 def checkAvailable():
     '''
@@ -33,7 +55,7 @@ def checkAvailable():
         additional required software.  If requirements are not available
         plugin will not be available.
     '''
-    return True
+    return bfgs_available
 
 class opt(optimization):
     '''
@@ -54,7 +76,7 @@ class opt(optimization):
     '''
     def __init__(self, dat = None):
         '''
-            Initialize CMA-ES optimization module
+            Initialize BFGS optimization module
         '''
         optimization.__init__(self, dat)
         self.name = "SciPy-BFGS"

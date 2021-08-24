@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 import re
 import numpy as np
 import matplotlib as mpl
@@ -1061,7 +1076,7 @@ class Plotter:
         except AttributeError:
             return # the selected axis (e.g., colorbar) does not have geometry attribute
 
-        if event.button is 1:
+        if event.button == 1:
             # On left click, zoom in 
             axlist = event.canvas.figure.axes
             # if any one of the subplots are already zoomed in, ignore
@@ -1081,7 +1096,7 @@ class Plotter:
                     if axis is not ax:
                         axis.set_visible(False)
 
-        elif event.button is 3:
+        elif event.button == 3:
             # On right click, restore the axes
             if ax.get_geometry() == (1,1,1):
                 nrows, ncols, num = ax._geometry

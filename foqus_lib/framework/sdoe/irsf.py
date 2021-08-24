@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 from operator import itemgetter
 import random
 import numpy as np
@@ -10,9 +25,13 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     inp_x = cand[args['idx']]
     xcols = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
+    xmin = inp_x.to_numpy().min(axis=0)
+    xmax = inp_x.to_numpy().max(axis=0)
     inp_y = cand[args['idy']]
     ycols = list(inp_y.columns)
     norm_y = unitscale_cand(inp_y)
+    ymin = inp_y.to_numpy().min(axis=0)
+    ymax = inp_y.to_numpy().max(axis=0)
 
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
     if test:
@@ -77,6 +96,9 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
                                                                                            args['max_iterations'],
                                                                                            nr,
                                                                                            mode)
+        # Reverse scaling
+        PFxdes[i] = Inv_scale_cand(PFxdes[i], xmin, xmax)
+        PFydes[i] = Inv_scale_cand(PFydes[i], ymin, ymax)
 
     # Pareto Front for each weight i is created here. For example if 3 Pareto solutions were found for ith weight, and
     # the design size is 10, then PFxdes will contain all 3 designs (10 each) in an order, so the number of rows in
@@ -142,16 +164,16 @@ def unitscale_cand(cand):
     cand_arr = np.asarray(cand)
     norm_cand = np.zeros((cand_arr.shape[0], cand_arr.shape[1]))
     for i in range(cand.shape[1]):
-        norm_cand[:, i] = (1 / (max(cand_arr[:, i]) - min(cand_arr[:, i]))) * (cand_arr[:, i] - min(cand_arr[:, i])) - 0
+        norm_cand[:, i] = (1 / (max(cand_arr[:, i]) - min(cand_arr[:, i]))) * (cand_arr[:, i] - min(cand_arr[:, i]))
     return norm_cand
 
 
 def Inv_scale_cand(cand, xmin, xmax):
     cand_arr = np.asarray(cand)
-    inv_norm_cand = np.zeros((len(cand_arr), len(cand_arr.T)))
-    for i in range(cand_arr.shape[1] - 1):
-        inv_norm_cand[:, i] = ((cand_arr[:, i] + 1) / 2) * (xmax[i] - xmin[i]) + xmin[i]
-    inv_norm_cand[:, -1] = cand_arr[:, -1]
+    inv_norm_cand = np.zeros(cand_arr.shape)
+    for i in range(cand_arr.shape[1]):
+        inv_norm_cand[:, i] = (cand_arr[:, i] * (xmax[i] - xmin[i])) + xmin[i]
+    
     return inv_norm_cand
 
 

@@ -1,3 +1,18 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """ turbineConfiguration.py
 
 * This class contains Turbine configuration profiles and  functions for
@@ -6,7 +21,6 @@
   improvements to the Turbine interaction are easier
 
 John Eslick, Carnegie Mellon University, 2014
-See LICENSE.md for license and copyright details.
 """
 import os
 import os.path
@@ -421,10 +435,10 @@ class TurbineConfiguration():
                     postAddress, self.turbineConfigParse(), b"", b"")
                 _log.info("Terminating Consumer {} posting to {}".format(
                     ci.cid, postAddress))
-                swt = time.clock()
+                swt = time.process_time()
                 while proc.poll() is None:
                     # wait for consumer to go down
-                    if time.clock() - swt > maxWait:
+                    if time.process_time() - swt > maxWait:
                         _log.error("Error stopping consumer {} "
                             "Subprocess still running?, post: {}"\
                             .format(ci.cid, postAddress))
@@ -1075,7 +1089,7 @@ class TurbineConfiguration():
         else:
             checkInt = random.uniform(minCheckInt, maxCheckInt)
         #Set start times
-        start = time.clock() # Time monitoring started
+        start = time.process_time() # Time monitoring started
         runStart = None      # Time job started running on Turbine
         setupStart = None
         timeout = False
@@ -1119,9 +1133,9 @@ class TurbineConfiguration():
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
                 if not setupStart and state == 'setup':
-                    setupStart = time.clock()
+                    setupStart = time.process_time()
                 if not runStart and res.get('Running', False):
-                    runStart = time.clock()
+                    runStart = time.process_time()
                     _log.info("Job " + str(jobID) + " Started Running")
             except TurbineInterfaceEx as e:
                 # sometimes there is a temporary network disruption just
@@ -1134,7 +1148,7 @@ class TurbineConfiguration():
                     #this is a 404 error there is a good chance that
                     #I'm checking the job status too fast and the job
                     #page has not bee created yet
-                    if time.clock() - start < 20:
+                    if time.process_time() - start < 20:
                         # started less than 20 sec ago give it some time
                         _log.exception(
                             "Job {} status check failed retrying".format(jobID))
@@ -1179,7 +1193,7 @@ class TurbineConfiguration():
                     raise TurbineInterfaceEx(
                         code = 350,
                         msg = "".join(["Results: ", str(res)]))
-            elif time.clock() - start > maxWaitTime:
+            elif time.process_time() - start > maxWaitTime:
                 # Jobs not done but I'm not waiting any more (timeout)
                 try:
                     self.killJob(jobID, state)
@@ -1192,7 +1206,7 @@ class TurbineConfiguration():
                     raise TurbineInterfaceEx(
                         code = 353,
                         msg = "".join(["Results: ", str(res)]))
-            elif runStart and time.clock() - runStart > maxRunTime:
+            elif runStart and time.process_time() - runStart > maxRunTime:
                 try:
                     self.killJob(jobID, state)
                 except Exception:

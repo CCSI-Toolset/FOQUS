@@ -1,10 +1,24 @@
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#
+###############################################################################
 """
 * FOQUS Commands:
 - foqus: to start FOQUS
 
 John Eslick, Carnegie Mellon University, 2014
 Keith Beattie, Lawrence Berkeley National Labs, 2020
-See LICENSE.md for license and copyright details.
 """
 
 # Imports
@@ -30,7 +44,7 @@ foqus_application = None # The Qt application so I can show dialogs
 dat = None
 PyQt5 = None
 
-def guiImport():
+def guiImport(mpl_backend='Qt5Agg'):
     """
     Only import the GUI classes if you want the GUI
     """
@@ -50,8 +64,8 @@ def guiImport():
         import PyQt5.QtGui
         import PyQt5.QtCore
         import matplotlib
-        matplotlib.use('Qt5Agg')
-        matplotlib.rcParams['backend']='Qt5Agg'
+        matplotlib.use(mpl_backend)
+        matplotlib.rcParams['backend'] = mpl_backend
         loadGUI = True
         guiAvail = True
     except ImportError:

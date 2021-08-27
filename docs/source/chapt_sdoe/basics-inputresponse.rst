@@ -112,3 +112,25 @@ When the SDOE module has completed the design creation process, the left window 
    
    Created Designs Window
 
+13. 
+To view each of the designs on the pareto front, click **View**. The plot given is of the pareto front, with circles indicating the varying trade-offs of input and response space-filling criteria of each design on the pareto front. Click on any circle to see a pairwise scatterplot of that individual design. These created-design pairwise scatterplots are similar in characteristics to their counterparts for the candidate set. It is helpful to examine the plots to compare their properties to those sought by the experimenter. A final choice should be made based on what is needed for the goals of the study. 
+
+.. figure:: figs/irsfb-0106-paretofront.png
+   :alt: Pareto Front Plot
+   :name: fig.irsfb-paretofront
+   
+   Viewing a Pareto Front
+
+.. figure:: figs/irsfb-0107b-bluedesign-middle.png
+   :alt: Design Scatterplot Blue
+   :name: fig.irsfb-bluedesign-middle
+   
+   Viewing the Pairwise Scatterplot of a Created Design
+
+14. To access the files with the generated designs, go to the **SDOE_files** folder, and a single folder will have been created for each pareto front of designs created. This folder will have a name containing the date and time the designs were created. When opened, csv files of all created designs will be listed in the order they appear on the pareto front, with the best-response design displayed first, and the best-input design second-to-last. The last file in the folder will be a csv file of the pareto front, containing the values of the input and response space-filling criteria for each design. 
+
+The created design files will have names similar to those given to files of Uniform and Non-Uniform Space-Filling designs mentioned in previous sections. The labeling reflects choices made by the experimenter in creating the designs. For example, the file **irsf_design2_d15_n30__id+G+lldg+L+S+CapPct.csv** contains the Input-Response Space-Filling design of size 15 (d15) generated from 30 random starts (n30). This design is the second design on the pareto front (design2), which means it has the second-highest value of the response space-filling criterion, and the second-lowest value of the input space-filling criterion. The columns from the file that were used include “_id” (system-generated id column), “G”, “lldg”, “L”, “S”, and “CapPct”. 
+
+When one of these design files is opened it contains the details of each of the runs in the design, with the input factor levels that should be set for that run.
+
+To evaluate and compare the designs that have been created, it is helpful to look at a number of summaries, including the criteria values of input and response space filling, and visualizing the spread of the design points throughout the region by studying the pairwise scatterplots. Recall that at the beginning of the design creation process we recommended constructing multiple sets of designs. By examining many designs, it is easier to determine which design is best suited to the requirements of the experiment.

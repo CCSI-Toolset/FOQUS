@@ -7,7 +7,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/1_SDoE_main.png
       :alt: SDoE Main Window
-      :name: fig.SDoE_main
+      :name: fig.SDoE_main1
 
       SDoE Main Window
 
@@ -16,7 +16,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/2_ODoE_main.png
       :alt: ODoE Main Window
-      :name: fig.ODoE_main
+      :name: fig.ODoE_main1
 
       ODoE Main Window
 
@@ -28,7 +28,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/3a_ODoE_numInputs.png
       :alt: ODoE Specify Number of Inputs
-      :name: fig.ODoE_numInputs
+      :name: fig.ODoE_numInputs1
 
       ODoE Specify Number of Inputs
 
@@ -36,7 +36,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/3b_ODoE_LoadRSTrainData.png
       :alt: ODoE Load RS Train Data
-      :name: fig.ODoE_loadRSTrainData
+      :name: fig.ODoE_loadRSTrainData1
 
       ODoE Load RS Train Data
 
@@ -45,7 +45,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/4_ODoE_inputSetup.png
       :alt: ODoE Input Setup
-      :name: fig.ODoE_inputSetup
+      :name: fig.ODoE_inputSetup1
 
       ODoE Input Setup
 
@@ -54,7 +54,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/5_ODoE_PriorGeneration1.png
       :alt: ODoE Simulation Ensemble Setup for Prior Sample Generation
-      :name: fig.ODoE_priorGen1
+      :name: fig.ODoE_priorGen1_1
 
       ODoE Simulation Ensemble Setup for Prior Sample Generation
 
@@ -65,7 +65,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/6_ODoE_PriorGeneration2.png
       :alt: ODoE Simulation Ensemble Setup for Prior Sample Generation - Sample Scheme
-      :name: fig.ODoE_priorGen2
+      :name: fig.ODoE_priorGen2_1
 
       ODoE Simulation Ensemble Setup for Prior Sample Generation - Sample Scheme
 
@@ -73,7 +73,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/7a_ODoE_LoadCand1.png
       :alt: ODoE Load Existing Candidate Set
-      :name: fig.ODoE_loadCand1
+      :name: fig.ODoE_loadCand1_1
 
       ODoE Load Existing Candidate Set
 
@@ -83,7 +83,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/8a_ODoE_LoadCand2.png
       :alt: ODoE Load Existing Candidate Set
-      :name: fig.ODoE_loadCand2
+      :name: fig.ODoE_loadCand2_1
 
       ODoE Load Existing Candidate Set
 
@@ -92,7 +92,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/9a-1_ODoE_LoadEval.png
       :alt: ODoE Load Evaluation Set
-      :name: fig.ODoE_loadEval
+      :name: fig.ODoE_loadEval1
 
       ODoE Load Evaluation Set
 
@@ -103,7 +103,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/9a-2_ODoE_Cand&EvalSets.png
       :alt: ODoE Candidate and Evaluation Sets
-      :name: fig.ODoE_candEValSet
+      :name: fig.ODoE_candEValSet1
 
       ODoE Candidate and Evaluation Sets
 
@@ -112,7 +112,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/10_ODoE_outputSetup.png
       :alt: ODoE Output Setup - MARS
-      :name: fig.ODoE_outputSetup
+      :name: fig.ODoE_outputSetup1
 
       ODoE Output Setup - MARS
 
@@ -121,13 +121,13 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/11_ODoE_RSValidation_message.png
       :alt: ODoE Response Surface Validation Message
-      :name: fig.ODoE_RSValMessage
+      :name: fig.ODoE_RSValMessage1
 
       ODoE Response Surface Validation Message
 
    .. figure:: figs/12a_ODoE_RSValidation_plot.png
       :alt: ODoE Response Surface Validation Plot
-      :name: fig.ODoE_RSValPlot
+      :name: fig.ODoE_RSValPlot1
 
       ODoE Response Surface Validation Plot
 
@@ -138,7 +138,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/13_ODoE_RSConfirmed.png
       :alt: ODoE Response Surface Confirmed and Predictions Generated
-      :name: fig.ODoE_RSConfirmed
+      :name: fig.ODoE_RSConfirmed1
 
       ODoE Response Surface Confirmed and Predictions Generated
 
@@ -148,7 +148,7 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/14_ODoE_PSUADErunning.png
       :alt: ODoE PSUADE Running Window
-      :name: fig.ODoE_PSUADE
+      :name: fig.ODoE_PSUADE1
 
       ODoE PSUADE Running Window
 
@@ -158,12 +158,12 @@ In this example, the user will provide an existing candidate set.
 
    .. figure:: figs/15_ODoE_resultsWindow.png
       :alt: ODoE Results Window
-      :name: fig.ODoE_resultsWindow
+      :name: fig.ODoE_resultsWindow1
 
       ODoE Results Window
 
    .. figure:: figs/16_ODoE_ResultsFile.png
       :alt: ODoE Results File
-      :name: fig.ODoE_resultsFile
+      :name: fig.ODoE_ResultsFile1
 
       ODoE Results File

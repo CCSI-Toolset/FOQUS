@@ -162,7 +162,7 @@ In this example, the user will provide an existing candidate set.
 
       ODoE Results Window
 
-   .. figure:: figs/16_ODoE_resultsFile.png
+   .. figure:: figs/16_ODoE_ResultsFile.png
       :alt: ODoE Results File
       :name: fig.ODoE_resultsFile
 

@@ -1,7 +1,6 @@
 --index-url https://pypi.python.org/simple/
 
 # These will override requirements picked up from setup.py below:
-coverage
 # pinning the pylint version to ensure reproducible behavior and defaults
 pylint==2.6.0
 # also pinning the version for astroid (used by pylint to analyze the AST)
@@ -9,7 +8,18 @@ pylint==2.6.0
 # both in terms of behavior and performance
 astroid==2.4.2
 pytest
+### coverage
+coverage
 pytest-cov
+
+# pytest-qt-extras
+pytest-qt==4.0.*
+dataclasses;python_version<"3.7"
+python-slugify
+oyaml
+# singledispatchmethod needed for < 3.8
+singledispatchmethod;python_version<"3.8"
+
 sphinx
 sphinx_rtd_theme
 

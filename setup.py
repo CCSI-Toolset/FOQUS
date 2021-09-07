@@ -56,6 +56,7 @@ dist = setup(
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
     packages = find_packages(),
+    py_modules = ['pytest_qt_extras'],
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
@@ -81,13 +82,16 @@ dist = setup(
         "pandas",
         "psutil",
         "PyQt5==5.13",
-        "pywin32; sys_platform == 'win32'",
+        # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues
+        # (ImportError: DLL load failed while importing ...)
+        # for more information see e.g. https://stackoverflow.com/a/62249872
+        "pywin32==225; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
-        "websocket_client>=0.57"
+        "websocket_client>=1.1.0"
         ],
 )
 

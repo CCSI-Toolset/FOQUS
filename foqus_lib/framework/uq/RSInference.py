@@ -718,13 +718,13 @@ class psuadeThread(QtCore.QThread):
         self.finished.connect(self.deleteLater)
 
 class psuadeWorker(QtCore.QObject):
-    finishedSignal = QtCore.Signal()
-    functionSignal = QtCore.Signal(str, str)
-    textDialogShowSignal = QtCore.Signal()
-    textDialogCloseSignal = QtCore.Signal()
-    textDialogInsertSignal = QtCore.Signal(str)
-    textDialogEnsureVisibleSignal = QtCore.Signal()
-    showErrorSignal = QtCore.Signal(str, str)
+    finishedSignal = QtCore.pyqtSignal()
+    functionSignal = QtCore.pyqtSignal(str, str)
+    textDialogShowSignal = QtCore.pyqtSignal()
+    textDialogCloseSignal = QtCore.pyqtSignal()
+    textDialogInsertSignal = QtCore.pyqtSignal(str)
+    textDialogEnsureVisibleSignal = QtCore.pyqtSignal()
+    showErrorSignal = QtCore.pyqtSignal(str, str)
 
     def __init__(self, parent, fileHandle, onFinishedFunctionHandle, textDialog):
         QtCore.QObject.__init__(self)

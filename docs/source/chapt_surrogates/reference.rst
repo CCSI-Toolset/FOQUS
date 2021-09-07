@@ -118,6 +118,15 @@ during surrogate generation.
 
    Surrogate Variable Selection
 
+**Note** : The input and output variables that are displayed in this section
+are the ones present in the FOQUS flowsheet nodes. If the user would like to
+include additional output variables (calculated based on the original
+node variables) in the surrogate model, it is recommended to create them in the
+output section of the flowsheet node itself, from the very beginning.
+With this approach, the calculated variables will be a part of the surrogate
+variable selection, and their relation with the other node variables can be
+defined in the nodescript. 
+
 Method Settings
 ---------------
 

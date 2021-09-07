@@ -10,44 +10,58 @@ on:
     types: [ci_run_nightlies]
   workflow_dispatch:
 
+defaults:
+  run:
+    # needed to be able to use 
+    shell: bash -l {0}
+
 jobs:
   user-install-run:
-    name: User-style install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
-    runs-on: ${{ matrix.os }}
+    name: Install/run (${{ matrix.foqus-install-target }}/${{ matrix.os }}/py${{ matrix.python-version }})
+    runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false
       matrix:
         python-version:
           - '3.6'
           - '3.7'
-          # - '3.8'
+          - '3.8'
           # - '3.9'
         os:
-          - ubuntu-18.04
-          - ubuntu-20.04
-          - windows-2019
-          - macos-10.15
+          - linux
+          - win64
+          - macos
         foqus-install-target:
           - stable
           - master
         examples-release:
           - '3.9.0'
         include:
+          - os: macos
+            os-version: macos-10.15
+          - os: linux
+            os-version: ubuntu-20.04
+          - os: win64
+            os-version: windows-2019
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
           - foqus-install-target: master
             pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
+          - foqus-install-target: stable
+            os: win64
+            python-version: '3.8'
+            hotfix-command: pip install pywin32==225 && pip show pywin32
+
     steps: 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
       - name: Install FOQUS in a Conda env (user mode)
-        shell: bash -l {0}
         env:
           py_ver: ${{ matrix.python-version }}
           pip_install_target: ${{ matrix.pip-install-target }}
         run: |
           echo '::group::Output of conda create/activate/install'
-          conda create --name ccsi-foqus --quiet --yes python="$py_ver"
+          conda create --name ccsi-foqus --quiet --yes python="$py_ver" pip=21.1
           conda activate ccsi-foqus
           conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite
           echo '::endgroup::'
@@ -56,18 +70,21 @@ jobs:
           pip list
           pip show ccsi-foqus PyQt5
           echo '::endgroup::'
+      - name: Apply hotfix commands
+        if: matrix.hotfix-command
+        run: |
+          conda activate ccsi-foqus
+          ${{ matrix.hotfix-command }}
+      - name: Show foqus help
+        run: |
+          conda activate ccsi-foqus
           foqus --help
-      - name: Install download tools (Windows)
-        if: contains(matrix.os, 'windows')
-        run:
-          choco install wget
       - name: Download and test examples (${{ matrix.examples-release }})
-        shell: bash -l {0}
         env:
           base_url: https://github.com/CCSI-Toolset/FOQUS/releases/download
           release: ${{ matrix.examples-release }}
         run: |
-          wget --no-verbose "$base_url/$release/ccsi-foqus-$release-examples.zip" --output-document examples.zip
+          curl --silent --show-error -L "$base_url/$release/ccsi-foqus-$release-examples.zip" --output examples.zip
           unzip -q examples.zip
           echo '::group::Content of examples directory'
           ls -Ralh "$PWD"/examples/

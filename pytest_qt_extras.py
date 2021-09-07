@@ -332,7 +332,7 @@ class Dispatcher(_SerializableMixin):
 class Handler(_SerializableMixin):
     log = ObjLogger()
     dispatcher = Dispatcher(
-        button=W.QPushButton,
+        button=W.QAbstractButton,
         radio_button=W.QRadioButton,
         combo_box=W.QComboBox,
         group_box=W.QGroupBox,

@@ -69,7 +69,7 @@ jobs:
           pip-install-target: -r requirements-dev.txt
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--verbose --artifacts-path "$PYTEST_ARTIFACTS_PATH"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib -s --verbose --artifacts-path "$PYTEST_ARTIFACTS_PATH"' >> $GITHUB_ENV
       - name: Set up GUI test environment (Linux)
         if: contains(matrix.os, 'linux')
         run: |
@@ -77,11 +77,11 @@ jobs:
       - name: Run pytest (default options)
         if: "! matrix.use_coverage"
         run: |
-          pytest --pyargs foqus_lib -sv
+          pytest
       - name: Run pytest (coverage)
         if: matrix.use_coverage
         run: |
-          pytest --pyargs foqus_lib -sv --cov=./ --cov-report=xml --cov-report=term
+          pytest --cov=./ --cov-report=xml --cov-report=term
       - name: Upload pytest artifacts
         uses: actions/upload-artifact@v2
         if: always()

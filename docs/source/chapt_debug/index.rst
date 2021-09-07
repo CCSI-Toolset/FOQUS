@@ -58,13 +58,6 @@ The following are known unresolved issues:
    writable. So far, in testing, this error seems to occur in Windows 8
    and 10, but not 7.
 
--  The user regression analysis features, iREVEAL and ALAMO, of the UQ
-   tool requires a separate Python 2.7 installation. Furthermore, Python
-   must be both in PATH variable and associated with .py files. Details
-   on installing Python and fixing any issues encountered may be found
-   in the iREVEAL Installation Guide and the iREVEAL User Manual, Known
-   Issues section.
-
 -  FOQUS has trouble getting files from Turbine and saving them to the
    DMF when dealing with files in Turbine involving directories.
 

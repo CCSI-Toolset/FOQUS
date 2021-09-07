@@ -42,41 +42,59 @@ will need a copy of the source to work with. Here is rough set of steps to get s
 
 - Download and install `Anaconda <https://www.anaconda.com/distribution/>`_.
 
-- In a terminal create a conda env in which to work::
+- In a terminal create a conda env in which to work:
 
-    conda create --name ccsi-foqus python=3.8
-    conda activate ccsi-foqus
+  .. code-block:: shell
 
-- In a terminal, get the FOQUS source::
+     conda create --name ccsi-foqus python=3.8
+     conda activate ccsi-foqus
 
-    conda activate ccsi-foqus
-    cd CCSI-Toolset  # Or a dir of your choice
-    git clone git@github.com:CCSI-Toolset/FOQUS.git  # Note: clone the FOQUS repo if you expect to contribute
-    cd FOQUS
+- In a terminal, get the FOQUS source:
 
-- Build and Install FOQUS as a developer::
+  .. code-block:: shell
 
-    pip install -r requirements-dev.txt  # This will pick up both user and developer required packages.
-    foqus  # Start the app
+     conda activate ccsi-foqus
+     cd CCSI-Toolset  # Or a dir of your choice
+     git clone git@github.com:CCSI-Toolset/FOQUS.git  # Note: clone the FOQUS repo if you expect to contribute
+     cd FOQUS
+
+- Build and install FOQUS in developer mode:
+
+  .. code-block:: shell
+
+     pip install -r requirements-dev.txt  # This will pick up both user and developer required packages.
+     conda install -c conda-forge -c CCSI-Toolset psuade-lite
 
 
-Run Tests
----------
+Running Tests
+-------------
 
-From top level of foqus repo::
+After installing FOQUS in developer mode, from the top level of the FOQUS repo (i.e. where the ``pytest.ini`` file is located), run:
 
-  pytest
-  python foqus.py -s test/system_test/ui_test_01.py
+.. code-block:: shell
 
+   pytest --pyargs foqus_lib
+
+Adding the ``--help`` flag will display a comprehensive list of all available command-line options.
 
 Building the Docs locally
 -------------------------
 
-To build a local copy of the documentation::
+To build a local copy of the documentation:
 
-    cd FOQUS/docs
-    make clean html
+.. code-block:: shell
+
+   make clean html
 
 Then open the file ``FOQUS/docs/build/html/index.html`` to view the results.
+
+
+Additional Content
+------------------
+
+.. toctree::
+    :maxdepth: 1
+
+    writing_tests
 
 .. include:: ../contact.rst

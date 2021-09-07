@@ -78,7 +78,7 @@ dist = setup(
         "matplotlib",
         "mlrose_hiive==2.1.3",
         "mplcursors",
-        "numpy",
+        "numpy<1.21",
         "pandas<1.3",
         "psutil",
         "PyQt5==5.13",

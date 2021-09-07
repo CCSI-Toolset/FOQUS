@@ -24,6 +24,7 @@ def _matches_current_index(mw, idx_or_key):
     return mw.mainWidget.currentIndex() == idx
 
 
+@pytest.mark.skip('Check if these tests cause issues')
 @pytest.mark.usefixtures('setup_main_window')
 class TestNavigateMainWindow:
 

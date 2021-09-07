@@ -77,11 +77,11 @@ jobs:
       - name: Run pytest (default options)
         if: "! matrix.use_coverage"
         run: |
-          pytest foqus_lib/
+          pytest --pyargs foqus_lib -sv
       - name: Run pytest (coverage)
         if: matrix.use_coverage
         run: |
-          pytest foqus_lib/ --cov=./ --cov-report=xml --cov-report=term
+          pytest --pyargs foqus_lib -sv --cov=./ --cov-report=xml --cov-report=term
       - name: Upload pytest artifacts
         uses: actions/upload-artifact@v2
         if: always()

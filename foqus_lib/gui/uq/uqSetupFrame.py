@@ -201,11 +201,13 @@ class checkingThread(QtCore.QThread):
                                 sampleNum = runMap[i]
                                 outputValues = [0]*len(ynames)
                                 if not runState[sampleNum]:
+                                    print(f'Before problematic statement causing issues in uqSetupFrame (numTries={numTries}, i={i})')
                                     self.parent.dat.flowsheet.results\
                                         .addFromSavedValues(
                                         setName=setName,
                                         name='uq_{0:06d}'.format(sampleNum),
                                         valDict=gt.res[i])
+                                    print(f'After problematic statement causing issues in uqSetupFrame (numTries={numTries}, i={i})')
                                 r = gt.res[i]
                                 for j, name in enumerate(outputNames):
                                     key = name.split('.',1)

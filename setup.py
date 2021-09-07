@@ -79,7 +79,7 @@ dist = setup(
         "mlrose_hiive==2.1.3",
         "mplcursors",
         "numpy",
-        "pandas",
+        "pandas<1.3",
         "psutil",
         "PyQt5==5.13",
         # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues

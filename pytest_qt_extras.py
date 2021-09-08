@@ -1480,10 +1480,11 @@ class QtBot(pytestqt_plugin.QtBot):
         return self.locate(*args, **kwargs)
     using = get_handler
 
-    def locate(self, *args, **kwargs):
+    def locate(self, *args, take_snapshot=False, **kwargs):
         self.slow_down()
         try:
-            # self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
+            if take_snapshot:
+                self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
             res = self.handler.locate(*args, **kwargs)
         except InvalidMatchError as e:
             self.log.error(f'Invalid match for locate({args, kwargs})')

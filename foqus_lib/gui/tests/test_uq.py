@@ -73,7 +73,7 @@ class TestUQ(_HasAttributesSetByFixture):
 
     @pytest.fixture(scope='class')
     def run_simulation(self, qtbot):
-        with qtbot.options(take_snapshot_on_locate=True):
+        with qtbot.options(take_snapshot_on_locate=False):
             with qtbot.focusing_on(self.frame.simulationTable):
                 qtbot.select_row(0)
                 # qtbot.wait(5_000)

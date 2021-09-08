@@ -48,8 +48,8 @@ class RSCombinations:
 class TestUQ(_HasAttributesSetByFixture):
     @pytest.fixture(scope='class')
     def generate_samples(self, qtbot):
+        qtbot.focused = self.frame
         with qtbot.options(take_snapshot_on_locate=False):
-            qtbot.focused = self.frame
             with qtbot.waiting_for_modal(handler=_accept_dialog):
                 qtbot.take_screenshot('samples-modal')
                 qtbot.click(button='Add New...')

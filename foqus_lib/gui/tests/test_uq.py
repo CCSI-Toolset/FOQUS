@@ -73,11 +73,12 @@ class TestUQ(_HasAttributesSetByFixture):
 
     @pytest.fixture(scope='class')
     def run_simulation(self, qtbot):
-        with qtbot.focusing_on(self.frame.simulationTable, take_snapshot=True):
-            qtbot.select_row(0, take_snapshot=True)
-            # qtbot.wait(5_000)
-            with qtbot.intercepting_modal(), qtbot.wait_signal(self.frame.runsFinishedSignal, timeout=90_000):
-                qtbot.using(column='Launch', take_snapshot=True).click()
+        with qtbot.options(take_snapshot_on_locate=True):
+            with qtbot.focusing_on(self.frame.simulationTable):
+                qtbot.select_row(0)
+                # qtbot.wait(5_000)
+                with qtbot.intercepting_modal(), qtbot.wait_signal(self.frame.runsFinishedSignal, timeout=90_000):
+                    qtbot.using(column='Launch').click()
 
     @pytest.mark.usefixtures('run_simulation')
     def test_after_running_simulation(self, qtbot):

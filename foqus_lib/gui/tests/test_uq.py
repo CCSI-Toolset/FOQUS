@@ -53,14 +53,14 @@ class TestUQ(_HasAttributesSetByFixture):
             qtbot.take_screenshot('samples-modal')
             qtbot.click(button='Add New...')
             with qtbot.searching_within(SimSetup) as sim_frame, qtbot.taking_screenshots():
-                with qtbot.options(take_snapshot_on_locate=False):
-                    with qtbot.searching_within(group_box="Choose how to generate samples:"):
-                        qtbot.click(radio_button="Choose sampling scheme")
+                with qtbot.searching_within(group_box="Choose how to generate samples:"):
+                    qtbot.click(radio_button="Choose sampling scheme")
                 qtbot.select_tab("Distributions")
                 qtbot.click(button="All Variable")
-                with qtbot.focusing_on(table=any):
-                    qtbot.select_row(1)
-                    qtbot.using(column="Type").set_option("Fixed")
+                with qtbot.options(take_snapshot_on_locate=False):
+                    with qtbot.focusing_on(table=any):
+                        qtbot.select_row(1)
+                        qtbot.using(column="Type").set_option("Fixed")
                 qtbot.select_tab("Sampling scheme")
                 qtbot.click(radio_button="All")
                 qtbot.using(item_list=any).set_option("Latin Hypercube")

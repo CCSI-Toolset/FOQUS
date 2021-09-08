@@ -1483,7 +1483,7 @@ class QtBot(pytestqt_plugin.QtBot):
     def locate(self, *args, **kwargs):
         self.slow_down()
         try:
-            # self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
+            self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
             res = self.handler.locate(*args, **kwargs)
         except InvalidMatchError as e:
             self.log.error(f'Invalid match for locate({args, kwargs})')

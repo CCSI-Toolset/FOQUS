@@ -49,10 +49,10 @@ class TestUQ(_HasAttributesSetByFixture):
     @pytest.fixture(scope='class')
     def generate_samples(self, qtbot):
         qtbot.focused = self.frame
+        with qtbot.waiting_for_modal(handler=_accept_dialog):
+            qtbot.take_screenshot('samples-modal')
+            qtbot.click(button='Add New...')
         with qtbot.options(take_snapshot_on_locate=False):
-            with qtbot.waiting_for_modal(handler=_accept_dialog):
-                qtbot.take_screenshot('samples-modal')
-                qtbot.click(button='Add New...')
             with qtbot.searching_within(SimSetup) as sim_frame, qtbot.taking_screenshots():
                 with qtbot.searching_within(group_box="Choose how to generate samples:"):
                     qtbot.click(radio_button="Choose sampling scheme")

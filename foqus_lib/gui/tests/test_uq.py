@@ -57,16 +57,16 @@ class TestUQ(_HasAttributesSetByFixture):
                     qtbot.click(radio_button="Choose sampling scheme")
                 qtbot.select_tab("Distributions")
                 qtbot.click(button="All Variable")
+                with qtbot.focusing_on(table=any):
+                    qtbot.select_row(1)
+                    qtbot.using(column="Type").set_option("Fixed")
                 with qtbot.options(take_snapshot_on_locate=False):
-                    with qtbot.focusing_on(table=any):
-                        qtbot.select_row(1)
-                        qtbot.using(column="Type").set_option("Fixed")
-                qtbot.select_tab("Sampling scheme")
-                qtbot.click(radio_button="All")
-                qtbot.using(item_list=any).set_option("Latin Hypercube")
-                qtbot.using(spin_box=...).enter_value(2000)
-                qtbot.click(button="Generate Samples")
-                qtbot.click(button="Done")
+                    qtbot.select_tab("Sampling scheme")
+                    qtbot.click(radio_button="All")
+                    qtbot.using(item_list=any).set_option("Latin Hypercube")
+                    qtbot.using(spin_box=...).enter_value(2000)
+                    qtbot.click(button="Generate Samples")
+                    qtbot.click(button="Done")
 
     def test_generate_samples(self, qtbot, generate_samples):
         table = self.frame.simulationTable

@@ -52,10 +52,10 @@ class TestUQ(_HasAttributesSetByFixture):
         with qtbot.waiting_for_modal(handler=_accept_dialog):
             qtbot.take_screenshot('samples-modal')
             qtbot.click(button='Add New...')
-        with qtbot.options(take_snapshot_on_locate=False):
             with qtbot.searching_within(SimSetup) as sim_frame, qtbot.taking_screenshots():
-                with qtbot.searching_within(group_box="Choose how to generate samples:"):
-                    qtbot.click(radio_button="Choose sampling scheme")
+                with qtbot.options(take_snapshot_on_locate=False):
+                    with qtbot.searching_within(group_box="Choose how to generate samples:"):
+                        qtbot.click(radio_button="Choose sampling scheme")
                 qtbot.select_tab("Distributions")
                 qtbot.click(button="All Variable")
                 with qtbot.focusing_on(table=any):

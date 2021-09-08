@@ -1,5 +1,5 @@
 import contextlib
-from dataclasses import dataclass, field, asdict, is_dataclass
+from dataclasses import dataclass, field, asdict, is_dataclass, replace
 import enum
 from functools import singledispatch
 import logging
@@ -1364,6 +1364,11 @@ class Snapshot(_TestArtifact):
             )
 
 
+@dataclass
+class Options:
+    take_snapshot_on_locate: bool = False
+
+
 class QtBot(pytestqt_plugin.QtBot):
     "Extends original class with a few convenience methods"
     log = ObjLogger()
@@ -1390,8 +1395,20 @@ class QtBot(pytestqt_plugin.QtBot):
         self._screenshots = ArtifactManager(artifacts_path / 'screenshots')
         self._snapshots = ArtifactManager(artifacts_path / 'snapshots')
 
+        self._options = Options()
+
         self._signals = _Signals.instance()
         self._init_signals()
+
+    @contextlib.contextmanager
+    def options(self, **kwargs):
+        prev_opts = self._options
+        _logger.info(f'self._options before entering context: {self._options}')
+        self._options = replace(prev_opts, **kwargs)
+        _logger.info(f'self._options after entering context: {self._options}')
+        yield self._options
+        self._options = prev_opts
+        _logger.info(f'self._options upon exiting context: {self._options}')
 
     def _init_signals(self):
         # self._signals[Action][When.BEGIN].connect(lambda a: _logger.info(f'Action started: {a}'))
@@ -1420,6 +1437,7 @@ class QtBot(pytestqt_plugin.QtBot):
         self._screenshots.add(shot)
 
     def take_debug_snapshot(self, label, **kwargs):
+        _logger.info(f'Taking debug snapshot with label: "{label}"')
         debug_shot = Snapshot.from_widget(
             self.focused,
             label=label,
@@ -1480,10 +1498,10 @@ class QtBot(pytestqt_plugin.QtBot):
         return self.locate(*args, **kwargs)
     using = get_handler
 
-    def locate(self, *args, take_snapshot=False, **kwargs):
+    def locate(self, *args, **kwargs):
         self.slow_down()
         try:
-            if take_snapshot:
+            if self._options.take_snapshot_on_locate:
                 self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
             res = self.handler.locate(*args, **kwargs)
         except InvalidMatchError as e:

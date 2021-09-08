@@ -1364,14 +1364,13 @@ class Snapshot(_TestArtifact):
             )
 
 
-@dataclass
-class Options:
-    take_snapshot_on_locate: bool = False
-
-
 class QtBot(pytestqt_plugin.QtBot):
     "Extends original class with a few convenience methods"
     log = ObjLogger()
+
+    @dataclass
+    class Options:
+        take_snapshot_on_locate: bool = True
 
     def __init__(
             self,

@@ -1394,7 +1394,7 @@ class QtBot(pytestqt_plugin.QtBot):
         self._screenshots = ArtifactManager(artifacts_path / 'screenshots')
         self._snapshots = ArtifactManager(artifacts_path / 'snapshots')
 
-        self._options = Options()
+        self._options = type(self).Options()
 
         self._signals = _Signals.instance()
         self._init_signals()

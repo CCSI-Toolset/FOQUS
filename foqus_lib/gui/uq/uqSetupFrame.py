@@ -195,7 +195,8 @@ class checkingThread(QtCore.QThread):
                 if numUnfinishedPrev!=numUnfinished or not gt.isAlive():
                     numUnfinishedPrev = numUnfinished
                     with gt.resLock:
-                        for i in range(len(gt.res)):
+                        copied_gt_res = copy.deepcopy(gt.res)
+                        for i in range(len(copied_gt_res)):
                             if not readres[i] and gt.res_fin[i] != -1:
                                 readres[i] = True
                                 sampleNum = runMap[i]
@@ -206,9 +207,9 @@ class checkingThread(QtCore.QThread):
                                         .addFromSavedValues(
                                         setName=setName,
                                         name='uq_{0:06d}'.format(sampleNum),
-                                        valDict=gt.res[i])
+                                        valDict=copied_gt_res[i])
                                     print(f'After problematic statement causing issues in uqSetupFrame (numTries={numTries}, i={i})')
-                                r = gt.res[i]
+                                r = copied_gt_res[i]
                                 for j, name in enumerate(outputNames):
                                     key = name.split('.',1)
                                     nkey = key[0]

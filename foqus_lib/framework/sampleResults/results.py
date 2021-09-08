@@ -416,6 +416,7 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
+                print(f'i={i}, col={col}, row={row}, dat[i]={dat[i]}')
                 # if type(dat[i])==list:
                 #     self.loc[row, col] = str(dat[i])
                 # else:

@@ -93,11 +93,16 @@ this file is located in: **examples/tutorial_files/Surrogates**
       predicted values versus actual values to the right. For more
       information, refer to the UQ Tutorial in
       Section\ `[tutorial.uq.rs] <#tutorial.uq.rs>`__\ .
+      The response surface validation result is saved in the
+      "Analyses Performed" section.
 
    #. Once a “Response Surface” has been validated, other UQ analysis
       options are available. Choose “Uncertainty Analysis” in Step 5 and
       click Analyze to perform uncertainty analysis using your ACOSSO
       surrogate.
+
+   #. Save the FOQUS session after all the required uncertainty analysis
+      results are saved.
 
 During validation, if the error, “RSAnalyzer: RSTest_hs.m does not
 exist.” displays, this is likely caused by incompatibility with the
@@ -106,3 +111,14 @@ has six inputs, but your surrogate assumes five inputs. This is easily
 fixed by returning to the Surrogates screen, clicking on the
 **Variables** tab, and making sure the appropriate selections are made
 (i.e., check off six inputs instead of just five).
+
+**Important Note**
+
+Before opening the FOQUS file containing the response surface validation result,
+ensure that the corresponding UQ driver file is present in the same path in the
+machine, from where it was accessed in the “User Regression File” section, for
+validation. This is important to avoid problems while opening the FOQUS file,
+which may happen if it isn't able to find the UQ driver file.
+
+Ideally, the UQ driver file should be present in the FOQUS
+working directory itself to avoid confusion.

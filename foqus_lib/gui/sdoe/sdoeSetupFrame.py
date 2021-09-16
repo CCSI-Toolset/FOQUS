@@ -309,7 +309,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def createAggData(self):
         cand_agg, hist_agg = self.aggregateEnsembleList()  # these are dfs
-        cand_agg.insert(0, "__id", range(1, cand_agg.shape[0] + 1), True)
+        cand_agg.insert(0, "__id", range(cand_agg.shape[0]), True)
 
         cand_fname = os.path.join(self.dname, 'aggregate_candidates.csv')
         df_utils.write(cand_fname, cand_agg)

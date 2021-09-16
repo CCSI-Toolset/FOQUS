@@ -10,6 +10,7 @@ When you first click on the  **SDOE** button from the main FOQUS homepage, a fir
     :maxdepth: 2
 
     creating-candidate
+    data-imputation
     basics-uniform
     basics-nonuniform
     basics-runorder

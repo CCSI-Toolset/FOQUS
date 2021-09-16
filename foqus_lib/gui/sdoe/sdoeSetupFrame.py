@@ -858,7 +858,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         viewButton.setProperty('row', row)
         if newViewButton:
             viewButton.clicked.connect(self.editAgg)
-            self.aggFilesTable.setCellWidget(2, self.viewCol, viewButton)
+            self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton)
 
         candidateData, historyData = self.createAggData()
 

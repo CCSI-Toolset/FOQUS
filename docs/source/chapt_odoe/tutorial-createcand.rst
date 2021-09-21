@@ -12,7 +12,7 @@ In this example, the user will generate a new candidate set.
       SDoE Main Window
 
 
-#. Select the radio button **Robust omptimality-based DoE (ODoE)**
+#. Select the radio button **Robust optimality-based DoE (ODoE)**
 
    .. figure:: figs/2_ODoE_main.png
       :alt: ODoE Main Window

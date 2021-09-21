@@ -21,3 +21,4 @@ The files for these tutorials are located in: **examples/tutorial_files/SDOE**
 
     examples-uniform
     examples-nonuniform
+    examples-inputresponse

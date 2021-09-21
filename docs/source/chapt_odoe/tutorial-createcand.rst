@@ -156,7 +156,23 @@ In this example, the user will generate a new candidate set.
       ODoE Response Surface Confirmed and Predictions Generated
 
 #. Under ODoE Setup select the **Optimality Criterion** (in this case G-Opt), **Design Size**
-   (in this case 2) and **Number of Restarts** (in this case 3). Once those three parameters are
+   (in this case 2) and **Number of Restarts** (in this case 3).
+
+   The choice of optimality criterion to use for design construction is driven by the objectives of the
+   experimenter. If the primary focus of the experimenter is parameter estimation, then selecting the D-
+   or A-optimality criterion is recommended. If the primary objective of the experimenter is precise
+   prediction of the response of interest, then it is best to select the G- or I-optimality criterion.
+   In this case, the experimenter was primarily interested in response prediction, so the G-optimal
+   criterion was selected. Likewise, Design Size and Number of Restarts should be selected to best serve
+   the needs of the experimental objectives. A larger design will allow more information to be collected
+   than a smaller design, but will necessitate the use of more time and other experimental resources.
+   The choice of design size is often dictated by the size of the experimental budget. Furthermore, the
+   choice of Number of Restarts involves a trade-off between the quality of the design generated and the
+   time to generate the design, with more restarts typically resulting in better designs. In this example,
+   both design size and number of restarts were selected to fit within the given budgetary and time
+   constraints of the experimenter.
+
+   Once those three parameters are
    decided, click the **Run ODoE** button. A window with PSUADE running will show up.
 
    .. figure:: figs/14_ODoE_PSUADErunning.png

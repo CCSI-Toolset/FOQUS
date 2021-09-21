@@ -6,6 +6,10 @@ either in the weights column (NUSF) or the response column (IRSF). The data impu
 capability integrated from the Uncertainty Quantification (UQ) module to impute those missing values and return the user
 a complete candidate set ready to use for the design creation.
 
+The new complete candidate set is given as a separate file from the original set. It is very important that the
+original incomplete candidate set be deleted or deselected (unchecked) before continuing. If not, the new and old
+candidate sets will be combined, and will still contain missing values.
+
 .. note::
     To use this feature you need to install the latest version of PSUADE. For more details go to section :ref:`install_optional`
 
@@ -40,6 +44,9 @@ again if it doesn't.
 .. figure:: figs/03_dataImputation_RSValidationPlot_MARS.png
    :alt: Response Surface Validation Plot - MARS
    :name: fig.rs_validation_plot_mars
+
+The validation plot is a plot of expected values based on the model versus the actual values. The better the
+model fits, the closer the points will be around the diagonal line.
 
 Since this particular validation plot looks good (note the points falling along the diagonal line), user can go ahead
 and confirm the response surface by clicking the **Confirm RS** button.

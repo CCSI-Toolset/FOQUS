@@ -51,7 +51,7 @@ Next, by selecting **View** and then **Plot**, it is possible to see the grid of
    Figure 5: Choose Design Method on the Right-Hand Side
    
 3. 
-Next, click on **Continue** to advance to the **Design Construction** Window, and then click on **Input-Response Space Filling (IRSF)** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, the first choice for **Optimality Method Selection** is automatic, since the input-response space filling designs only use the **Maximin** criterion. We next select the **Design Size**, where here we have decided to construct a design with 20 runs. The choice of design size is typically based on the budget of the experiment.
+Next, click on **Continue** to advance to the **Design Construction** Window, and then click on **Input-Response Space Filling (IRSF)** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, the first choice for **Optimality Method Selection** is automatic, since the input-response space filling designs only use the **Maximin** criterion. We next select the **Design Size**, where here we have decided to construct a design with 10 runs. The choice of design size is typically based on the budget of the experiment.
 
 .. figure:: figs/irsf-e131-designchoices.png
    :alt: SDOE Design Choices
@@ -103,7 +103,7 @@ Once the Pareto front has been examined, experimenters should further explore by
 7. 
 To get a better understanding of the different designs located on the Pareto front, we will examine three: one from the left end, one from the right end, and one from the middle. The three designs we will choose are Design 1 (purple), Design 11 (red), and Design 7 (green), as shown on the Pareto front plot above. 
 
-From the values on the axes in Figure ****** for each of the three design points, we can determine, even before viewing the individual designs, several important facts. We know that Design 1 (purple) is the best design if we want the objectively-best space-filling in the response space, and don’t mind poor space-filling in the input space. Similarly, we know that Design 11 (red) is the best design if we want the objectively-best space-filling in the input space, and don’t mind poor space-filling in the response space. We also know Design 7 (green) will offer a compromise, with moderate space-filling in both spaces. Design 7, or another compromise design along the Pareto front, is a good choice if we hope to balance space-filling in the input and response spaces. 
+From the values on the axes in Figure 10 for each of the three design points, we can determine, even before viewing the individual designs, several important facts. We know that Design 1 (purple) is the best design if we want the objectively-best space-filling in the response space, and don’t mind poor space-filling in the input space. Similarly, we know that Design 11 (red) is the best design if we want the objectively-best space-filling in the input space, and don’t mind poor space-filling in the response space. We also know Design 7 (green) will offer a compromise, with moderate space-filling in both spaces. Design 7, or another compromise design along the Pareto front, is a good choice if we hope to balance space-filling in the input and response spaces. 
 
 .. note:: 
 The design with the best space-filling in the input space overall, here Design 11 (red), is the same as a regular uniform space-filling design. 
@@ -126,7 +126,7 @@ The design with the best space-filling in the input space overall, here Design 1
    
    Figure 13: Pairwise Scatterplot of Design 7
 
-To determine how well a design fills the response space, we will look at the histogram for the response, Y, in the bottom-right and see how evenly spread the values appear. If we had a two- or higher-dimensional response space, we would examine the scatterplot(s) for the response variables for even spacing. We can confirm that Design 1 (purple) does have the best space-filling in the response space of the three. The values of the response are evenly spread throughout the space, with no large gaps. By contrast, Design 11 (red) has many holes and gaps in the response space.
+To determine how well a design fills the response space, we will look at the histogram for the response, Y, in the bottom-right for each of the designs and see how evenly spread the values appear. If we had a two- or higher-dimensional response space, we would examine the scatterplot(s) for the response variables for even spacing. We can confirm that Design 1 (purple) does have the best space-filling in the response space of the three. The values of the response are evenly spread throughout the space, with no large gaps. By contrast, Design 11 (red) has many holes and gaps in the response space.
 
 Even though the criterion value for response space-filling in Design 7 (green) is less than half that of Design 1 (purple), the response space-filling in Design 7 seems to fill the space fairly well. The differences in criterion values provide a useful summary of the trade-offs but it is important to also examine the scatterplots directly for a more intuitive illustration of what these trade-offs will look like in practice. 
 

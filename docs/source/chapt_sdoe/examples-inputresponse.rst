@@ -106,7 +106,7 @@ To get a better understanding of the different designs located on the Pareto fro
 From the values on the axes in Figure 10 for each of the three design points, we can determine, even before viewing the individual designs, several important facts. We know that Design 1 (purple) is the best design if we want the objectively-best space-filling in the response space, and don’t mind poor space-filling in the input space. Similarly, we know that Design 11 (red) is the best design if we want the objectively-best space-filling in the input space, and don’t mind poor space-filling in the response space. We also know Design 7 (green) will offer a compromise, with moderate space-filling in both spaces. Design 7, or another compromise design along the Pareto front, is a good choice if we hope to balance space-filling in the input and response spaces. 
 
 .. note:: 
-The design with the best space-filling in the input space overall, here Design 11 (red), is the same as a regular uniform space-filling design. 
+   The design with the best space-filling in the input space overall, here Design 11 (red), is the same as a regular uniform space-filling design. 
 
 .. figure:: figs/irsf-e136-design1purple.png
    :alt: Design 1 Purple

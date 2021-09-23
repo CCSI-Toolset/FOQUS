@@ -101,7 +101,7 @@
       <item>
        <widget class="QStackedWidget" name="sdoePages">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="page">
          <layout class="QGridLayout" name="gridLayout_4">
@@ -1433,10 +1433,10 @@ selection-color: rgb(0, 0, 0);</string>
                       </font>
                      </property>
                      <property name="minimum">
-                      <number>1</number>
+                      <number>2</number>
                      </property>
                      <property name="value">
-                      <number>1</number>
+                      <number>2</number>
                      </property>
                     </widget>
                    </item>
@@ -1579,8 +1579,8 @@ selection-color: rgb(0, 0, 0);</string>
  <resources/>
  <connections/>
  <buttongroups>
+  <buttongroup name="eval_buttonGroup"/>
   <buttongroup name="cand_buttonGroup"/>
   <buttongroup name="sdoePages_buttonGroup"/>
-  <buttongroup name="eval_buttonGroup"/>
  </buttongroups>
 </ui>

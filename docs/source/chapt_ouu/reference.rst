@@ -1,5 +1,3 @@
-[sec:ouu\_overview]
-
 Reference
 =========
 
@@ -189,8 +187,6 @@ Figure [fig:ouu\_screen].
 .. figure:: figs/1_OUUScreen.png
    :alt: Optimization Under Uncertainty Screen
    :name: fig:ouu_screen
-   :width: 6.50000in
-   :height: 4.00000in
 
    Optimization Under Uncertainty Screen
 

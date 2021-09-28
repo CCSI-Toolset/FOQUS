@@ -2,8 +2,8 @@ ODoE Overview
 ==============
 The FOQUS ODoE module supports several variants of optimal experimental
 design. This chapter presents an overview of these variants.
-Subsequently, details of the OUU graphical user
-interface will be discussed.
+Subsequently, details of the ODoE graphical user
+interface will be discussed in the :ref:`odoe_tutorials` section.
 
 ODoE Variables
 --------------

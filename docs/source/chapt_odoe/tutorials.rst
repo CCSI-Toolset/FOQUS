@@ -1,3 +1,5 @@
+.. _odoe_tutorials:
+
 Tutorials
 =========
 

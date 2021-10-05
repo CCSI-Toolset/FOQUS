@@ -319,7 +319,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         if len(hist_agg) == 0:
             historyData = None
         else:
-            hist_agg.insert(0, "__id",  range(cand_agg.shape[0]+1, cand_agg.shape[0]+hist_agg.shape[0]+1), True)
+            hist_agg.insert(0, "__id",  range(cand_agg.shape[0], cand_agg.shape[0]+hist_agg.shape[0]), True)
             df_utils.write(hist_fname, hist_agg)
             historyData = LocalExecutionModule.readSampleFromCsvFile(hist_fname, askForNumInputs=False)
 

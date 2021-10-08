@@ -88,7 +88,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         row = cand[j]
         k = mdpts[i]                  # k = {0, ..., nd}
         rcand[k, xcols] = row[xcols]  
-        dmat = update_dmat(row, rcand, xcols, wcol, dmat_, k)
+        dmat = update_dmat(row, rcand, xcols, wcol, dmat, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
             mties = mt0[i, j]

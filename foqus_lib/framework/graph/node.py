@@ -28,6 +28,7 @@ import subprocess
 import logging
 import traceback
 import re
+from foqus_lib.framework.pymodel.pymodel import *
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
@@ -41,7 +42,8 @@ class NodeOptionSets:
     NODE_OPTIONS = 1
     TURBINE_OPTIONS = 2
     SINTER_OPTIONS = 3
-    PLUGIN_OPTONS = 4
+    PLUGIN_OPTiONS = 4
+    ML_AI_OPTIONS = 5
 
 
 class PyCodeInterupt(Exception):
@@ -78,6 +80,89 @@ class NodeEx(foqusException):
         self.codeString[27] = "Can't read variable in results (see log)"
         self.codeString[50] = "Node script interupt exception"
         self.codeString[61] = "Unknow type string"
+
+
+class pymodel_ml_ai(pymodel):
+    def __init__(self):
+        pymodel.__init__(self)
+        
+        # attempt to retrieve required information from loaded model, and set defaults otherwise
+        try:
+            inputs_labels = self.model.layers[1].input_labels
+        except:
+            input_labels = ['x' + str(i+1) for i in range(np.shape(self.model.layers[1].inputs[0])[1])]
+        try:
+            input_bounds = self.model.layers[1].input_bounds
+            input_min = [input_bounds[idx][0] for idx in input_bounds]
+            input_max = [input_bounds[idx][1] for idx in input_bounds]
+        except:
+            input_min = 0 * len(input_labels)
+            input_max = 1E5 * len(input_labels)
+            print("No input bound provided, using default min = 0 and max = 1E5 for all vars")
+        try:
+            output_labels = self.model.output_labels
+        except:
+            output_labels = ['z' + str(j+1) for j in range(np.shape(self.model.outputs[0])[1])]
+        
+        # attempt to retrieve optional information from loaded model, and set defaults otherwise
+        try:
+            input_defaults = self.model.input_defaults
+        except:
+            inputs_defaults = 0 * len(input_labels)
+        try:
+            output_defaults = self.model.output_defaults
+        except:
+            output_defaults = 0 * len(output_labels)
+        try:
+            input_desc = self.model.input_desc
+        except:
+            input_desc = ['input var ' + str(i+1) for i in range(len(input_labels))]
+        try:
+            output_desc = self.model.output_desc
+        except:
+            output_desc = ['output var ' + str(j+1) for i in range(len(output_labels))]
+        
+        for i in range(len(input_labels)):
+            self.inputs[input_labels[i]] = NodeVars(
+                value = input_default[i],
+                vmin = input_min[i],
+                vmax = input_max[i],
+                vdflt = 0.0,
+                unit = "",
+                vst = "pymodel",
+                vdesc = input_desc[i],
+                tags = [],
+                dtype = float)
+        for j in range(len(output_labels)):
+            self.outputs[output_labels[i]] = NodeVars(
+                value = output_default[i],
+                vmin = 0,
+                vmax = 1000000,
+                vdflt = 0.0,
+                unit = "",
+                vst = "pymodel",
+                vdesc = output_desc[i],
+                tags = [],
+                dtype = float)
+
+    def run(self):
+        import numpy
+        import tensorflow.keras.models.load_model as load
+        inputs = [self.inputs[i].value for i in self.inputs]
+        print(inputs)
+        model = 'load(NN_model) or custom command(*args) to load NN model'
+        # set up input dictionary for NN surrogate
+        sim_parameter_dict = {self.inputs[i]: (self.inputs[i].value) for i in self.inputs}
+        # use model to simulate using user inputs and initial conditions (init_data) for 500 timesteps
+        out_dict = model.predict(sim_parameter_dict = sim_parameter_dict,
+                                 init_data = 'name of init data file',
+                                 timesteps = 500,
+                                 store_frames = False)
+        # set output to be value calculated at last timestep of surrogate simulation
+        output_var_list = [j for j in self.outputs]
+        output = [out_dict[var] for var in output_var_list]
+        for j in range(len(output_var_list)):
+            self.outputs[j].value = output[j]
 
 
 class Node:
@@ -475,6 +560,17 @@ class Node:
                         desc=item["description"],
                         optSet=NodeOptionSets.SINTER_OPTIONS,
                     )
+        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+            # link to pymodel class for ml/ai models
+            inst = pymodel_ml_ai()
+            # the node can have the pymodel instances variables since
+            # i'm not going to use the pymodel instance for anything
+            # else there is no need to copy them.  I'll create a
+            # different instance for running the model.
+            for vkey, v in inst.inputs.items():
+                self.gr.input[self.name][vkey] = v
+            for vkey, v in inst.outputs.items():
+                self.gr.output[self.name][vkey] = v
 
     def upadteSCDefaults(self, outfile=None):
         if outfile is None:
@@ -559,6 +655,8 @@ class Node:
             self.runPymodelPlugin()
         elif self.modelType == nodeModelTypes.MODEL_TURBINE:
             self.runTurbineCalc(retry=self.options["Retry"].value)
+        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+            self.runPymodelMLAI()
         else:
             # This shouldn't happen from the GUI there should
             # be no way to select an unknown model type.
@@ -945,3 +1043,22 @@ class Node:
             logging.getLogger("foqus." + __name__).error(
                 "Failed to kill session sid: {0} Exception: {1}".format(sid, str(e))
             )
+
+    def runPymodelMLAI(self):
+        """
+            Runs a Neural Network machine learning/artificial intelligence model.
+        """
+        # create a python model instance if needed
+        if not self.pyModel:
+            self.pyModel = pymodel_ml_ai()
+        # set the instance inputs
+        for vkey, v in self.gr.input[self.name].items():
+            if vkey in self.pyModel.inputs:
+                self.pyModel.inputs[vkey].value = v.value
+        # run the model
+        self.pyModel.setNode(self)
+        self.pyModel.run()
+        # set the node outputs
+        for vkey, v in self.gr.output[self.name].items():
+            if vkey in self.pyModel.outputs:
+                v.value = self.pyModel.outputs[vkey].value

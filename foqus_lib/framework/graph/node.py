@@ -24,6 +24,8 @@ import os
 import time
 import json
 import math
+import numpy
+from tensorflow.keras.models import load_model as load
 import subprocess
 import logging
 import traceback
@@ -35,6 +37,7 @@ from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 from foqus_lib.framework.at_dict.at_dict import AtDict
+from PyQt5.QtWidgets import QMessageBox
 
 
 class NodeOptionSets:
@@ -85,6 +88,8 @@ class NodeEx(foqusException):
 class pymodel_ml_ai(pymodel):
     def __init__(self):
         pymodel.__init__(self)
+
+        self.model = load('../ml_ai_models/' + str(self.modelName) + '.h5')
         
         # attempt to retrieve required information from loaded model, and set defaults otherwise
         try:
@@ -96,9 +101,13 @@ class pymodel_ml_ai(pymodel):
             input_min = [input_bounds[idx][0] for idx in input_bounds]
             input_max = [input_bounds[idx][1] for idx in input_bounds]
         except:
-            input_min = 0 * len(input_labels)
-            input_max = 1E5 * len(input_labels)
-            print("No input bound provided, using default min = 0 and max = 1E5 for all vars")
+            input_min = [0] * len(input_labels)
+            input_max = [1E5] * len(input_labels)
+            QMessageBox.warning(
+                self,
+                "No input bound provided or error in bound entries, ",
+                "using default min = 0 and max = 1E5 for all vars ",
+                "for model {0}").format(self.modelName)
         try:
             output_labels = self.model.output_labels
         except:
@@ -108,11 +117,11 @@ class pymodel_ml_ai(pymodel):
         try:
             input_defaults = self.model.input_defaults
         except:
-            inputs_defaults = 0 * len(input_labels)
+            inputs_defaults = [0] * len(input_labels)
         try:
             output_defaults = self.model.output_defaults
         except:
-            output_defaults = 0 * len(output_labels)
+            output_defaults =[0] * len(output_labels)
         try:
             input_desc = self.model.input_desc
         except:
@@ -137,7 +146,7 @@ class pymodel_ml_ai(pymodel):
             self.outputs[output_labels[i]] = NodeVars(
                 value = output_default[i],
                 vmin = 0,
-                vmax = 1000000,
+                vmax = 1E5,
                 vdflt = 0.0,
                 unit = "",
                 vst = "pymodel",
@@ -146,23 +155,13 @@ class pymodel_ml_ai(pymodel):
                 dtype = float)
 
     def run(self):
-        import numpy
-        import tensorflow.keras.models.load_model as load
+        import numpy as np
         inputs = [self.inputs[i].value for i in self.inputs]
         print(inputs)
-        model = 'load(NN_model) or custom command(*args) to load NN model'
-        # set up input dictionary for NN surrogate
-        sim_parameter_dict = {self.inputs[i]: (self.inputs[i].value) for i in self.inputs}
-        # use model to simulate using user inputs and initial conditions (init_data) for 500 timesteps
-        out_dict = model.predict(sim_parameter_dict = sim_parameter_dict,
-                                 init_data = 'name of init data file',
-                                 timesteps = 500,
-                                 store_frames = False)
-        # set output to be value calculated at last timestep of surrogate simulation
-        output_var_list = [j for j in self.outputs]
-        output = [out_dict[var] for var in output_var_list]
-        for j in range(len(output_var_list)):
-            self.outputs[j].value = output[j]
+        # set output values to be generated from NN surrogate
+        outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
+        for j in self.outputs:
+            self.outputs[j].value = outputs[j]
 
 
 class Node:

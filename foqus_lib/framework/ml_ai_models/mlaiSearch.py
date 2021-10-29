@@ -37,7 +37,7 @@ class ml_ai_models():
     def __init__(self, pathList):
         self.pathList = pathList
         self.mlaimodellist = {}
-        self.importMLAIModels()
+        self.getMLAIList()
 
     def getMLAIList(self):
         '''

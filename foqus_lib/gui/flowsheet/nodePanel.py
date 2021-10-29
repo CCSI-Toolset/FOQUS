@@ -424,13 +424,13 @@ class nodeDock(_nodeDock, _nodeDockUI):
         elif self.modelTypeBox.currentIndex() == 2:
             # model type is plugin
             sl = sorted(
-                list(self.dat.pymodels.ml_ai.keys()),  # IS THIS LINE CORRECT?
+                list(self.dat.pymodels.plugins.keys()),
                 key=lambda s: s.lower())
             self.simNameBox.addItems(sl)
         elif self.modelTypeBox.currentIndex() == 5:
             # model type is ml_ai
             sl = sorted(
-                list(self.dat.pymodels.plugins.keys()),
+                list(self.dat.pymodels.ml_ai_models.keys()),
                 key=lambda s: s.lower())
             self.simNameBox.addItems(sl)
         try:

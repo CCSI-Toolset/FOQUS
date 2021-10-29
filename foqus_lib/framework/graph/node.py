@@ -45,7 +45,7 @@ class NodeOptionSets:
     NODE_OPTIONS = 1
     TURBINE_OPTIONS = 2
     SINTER_OPTIONS = 3
-    PLUGIN_OPTiONS = 4
+    PLUGIN_OPTIONS = 4
     ML_AI_OPTIONS = 5
 
 

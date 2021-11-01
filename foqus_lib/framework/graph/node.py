@@ -24,8 +24,7 @@ import os
 import time
 import json
 import math
-import numpy
-from tensorflow.keras.models import load_model as load
+import numpy as np
 import subprocess
 import logging
 import traceback
@@ -38,6 +37,14 @@ from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 from foqus_lib.framework.at_dict.at_dict import AtDict
 from PyQt5.QtWidgets import QMessageBox
+from importlib import import_module
+
+try:
+    # tensorflow should be installed, but is not required for non ML/AI models
+    from tensorflow.keras.models import load_model as load
+except:
+    pass  # errors will be thrown if tensorflow is called but not installed,
+    #  otherwise no error should be thrown so passing is fine
 
 
 class NodeOptionSets:
@@ -86,69 +93,40 @@ class NodeEx(foqusException):
 
 
 class pymodel_ml_ai(pymodel):
-    def __init__(self):
+    def __init__(self, model):
         pymodel.__init__(self)
         
         # attempt to retrieve required information from loaded model, and set defaults otherwise
-        try:
-            inputs_labels = self.model.layers[1].input_labels
-        except:
-            input_labels = ['x' + str(i+1) for i in range(np.shape(self.model.layers[1].inputs[0])[1])]
-        try:
+        self.model = model
+        
+        for i in range(np.shape(self.model.inputs[0])[1]):
+            input_labels = self.model.layers[1].input_labels[i]
             input_bounds = self.model.layers[1].input_bounds
-            input_min = [input_bounds[idx][0] for idx in input_bounds]
-            input_max = [input_bounds[idx][1] for idx in input_bounds]
-        except:
-            input_min = [0] * len(input_labels)
-            input_max = [1E5] * len(input_labels)
-            QMessageBox.warning(
-                self,
-                "No input bound provided or error in bound entries, ",
-                "using default min = 0 and max = 1E5 for all vars ",
-                "for model {0}").format(self.modelName)
-        try:
-            output_labels = self.model.output_labels
-        except:
-            output_labels = ['z' + str(j+1) for j in range(np.shape(self.model.outputs[0])[1])]
-        
-        # attempt to retrieve optional information from loaded model, and set defaults otherwise
-        try:
-            input_defaults = self.model.input_defaults
-        except:
-            inputs_defaults = [0] * len(input_labels)
-        try:
-            output_defaults = self.model.output_defaults
-        except:
-            output_defaults =[0] * len(output_labels)
-        try:
-            input_desc = self.model.input_desc
-        except:
-            input_desc = ['input var ' + str(i+1) for i in range(len(input_labels))]
-        try:
-            output_desc = self.model.output_desc
-        except:
-            output_desc = ['output var ' + str(j+1) for i in range(len(output_labels))]
-        
-        for i in range(len(input_labels)):
-            self.inputs[input_labels[i]] = NodeVars(
-                value = input_default[i],
-                vmin = input_min[i],
-                vmax = input_max[i],
+            input_min = self.model.layers[1].input_bounds[input_labels][0]
+            input_max = self.model.layers[1].input_bounds[input_labels][1]
+            
+            self.inputs[self.model.layers[1].input_labels[i]] = NodeVars(
+                value = 0,  # input_defaults[i],
+                vmin = input_min,
+                vmax = input_max,
                 vdflt = 0.0,
                 unit = "",
                 vst = "pymodel",
-                vdesc = input_desc[i],
+                vdesc = 'input var ' + str(i+1),
                 tags = [],
                 dtype = float)
-        for j in range(len(output_labels)):
-            self.outputs[output_labels[i]] = NodeVars(
-                value = output_default[i],
+            
+        for j in range(np.shape(self.model.outputs[0])[1]):
+            output_labels = self.model.layers[1].output_labels[j]
+            
+            self.outputs[self.model.layers[1].output_labels[j]] = NodeVars(
+                value = 0,  # output_defaults[i],
                 vmin = 0,
                 vmax = 1E5,
                 vdflt = 0.0,
                 unit = "",
                 vst = "pymodel",
-                vdesc = output_desc[i],
+                vdesc = 'output var ' + str(j+1),
                 tags = [],
                 dtype = float)
 
@@ -561,14 +539,11 @@ class Node:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
             os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
-            try:
-                self.model = load(str(self.modelName) + ".h5")
-            except:
-                QMessageBox.warning("Keras load_model() failed, check if "
-                                    "installed tensorflow version matches "
-                                    "version used to train and save model.")
+            module = import_module(str(self.modelName))  # contains CustomLayer
+            self.model = load(str(self.modelName) + ".h5",
+                              custom_objects = {'CustomLayer': module.CustomLayer})
             os.chdir(cwd)  # reset to original working directory
-            inst = self.model.pymodel_ml_ai()
+            inst = pymodel_ml_ai(self.model)
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.items():
@@ -1055,14 +1030,11 @@ class Node:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
             os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
-            try:
-                self.model = load(str(self.modelName) + ".h5")
-            except:
-                QMessageBox.warning("Keras load_model() failed, check if "
-                                    "installed tensorflow version matches "
-                                    "version used to train and save model.")
+            module = import_module(str(self.modelName))  # contains CustomLayer
+            self.model = load(str(self.modelName) + ".h5",
+                              custom_objects = {'CustomLayer': module.CustomLayer})
             os.chdir(cwd)  # reset to original working directory
-            self.pyModel = self.model.pymodel_ml_ai()
+            self.pyModel = pymodel_ml_ai(self.model)
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():
             if vkey in self.pyModel.inputs:

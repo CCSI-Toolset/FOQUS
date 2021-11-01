@@ -36,7 +36,7 @@ class ml_ai_models():
     """
     def __init__(self, pathList):
         self.pathList = pathList
-        self.mlaimodellist = {}
+        self.ml_ai_models = {}
         self.getMLAIList()
 
     def getMLAIList(self):
@@ -51,15 +51,15 @@ class ml_ai_models():
                     mname = fname.rsplit('.', 1) #split off extension
                     if len(mname) > 1 and mname[1] == 'h5':
                         try:
-                            if mname[0] in self.mlaimodels:
+                            if mname[0] in self.ml_ai_models:
                                 _log.info("Reloading ML_AI Model: {}".format(
                                     os.path.join(p, fname)))
-                                self.mlaimodellist[mname[0]] = mname[0]
+                                self.ml_ai_models[mname[0]] = mname[0]
                             else:
                                 logging.getLogger("foqus." + __name__).\
                                     info("Loading ML_AI Model: " + \
                                     os.path.join(p, fname))
-                                self.mlaimodellist[mname[0]] = mname[0]
+                                self.ml_ai_models[mname[0]] = mname[0]
                         except:
                             _log.exception("Error Loading ML_AI Model: {}".format(
                                 os.path.join(p, fname)))

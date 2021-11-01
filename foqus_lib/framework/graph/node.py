@@ -88,8 +88,6 @@ class NodeEx(foqusException):
 class pymodel_ml_ai(pymodel):
     def __init__(self):
         pymodel.__init__(self)
-
-        self.model = load('../ml_ai_models/' + str(self.modelName) + '.h5')
         
         # attempt to retrieve required information from loaded model, and set defaults otherwise
         try:
@@ -543,7 +541,7 @@ class Node:
                     self.gr.output_vectorlist[self.name][vector_name].opvname = \
                         (self.name,name)
                 
-            # Add an extra output varialbe for simulation status
+            # Add an extra output variable for simulation status
             # I think this comes out of all simulation run through
             # SimSinter, but its not in the sinter config file.
             self.gr.output[self.name]["status"] = NodeVars(
@@ -561,11 +559,16 @@ class Node:
                     )
         elif self.modelType == nodeModelTypes.MODEL_ML_AI:
             # link to pymodel class for ml/ai models
-            inst = pymodel_ml_ai()
-            # the node can have the pymodel instances variables since
-            # i'm not going to use the pymodel instance for anything
-            # else there is no need to copy them.  I'll create a
-            # different instance for running the model.
+            cwd = os.getcwd()
+            os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
+            try:
+                self.model = load(str(self.modelName) + ".h5")
+            except:
+                QMessageBox.warning("Keras load_model() failed, check if "
+                                    "installed tensorflow version matches "
+                                    "version used to train and save model.")
+            os.chdir(cwd)  # reset to original working directory
+            inst = self.model.pymodel_ml_ai()
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.items():
@@ -1049,7 +1052,17 @@ class Node:
         """
         # create a python model instance if needed
         if not self.pyModel:
-            self.pyModel = pymodel_ml_ai()
+            # load ml_ai_model and build pymodel class object
+            cwd = os.getcwd()
+            os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
+            try:
+                self.model = load(str(self.modelName) + ".h5")
+            except:
+                QMessageBox.warning("Keras load_model() failed, check if "
+                                    "installed tensorflow version matches "
+                                    "version used to train and save model.")
+            os.chdir(cwd)  # reset to original working directory
+            self.pyModel = self.model.pymodel_ml_ai()
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():
             if vkey in self.pyModel.inputs:

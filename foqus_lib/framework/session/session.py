@@ -347,6 +347,7 @@ class session:
         # the node make instances of pymodels to run.  the nodes don't have
         # access to the session object
         self.flowsheet.pymodels = self.pymodels
+        self.flowsheet.pymodels_ml_ai = self.pymodels_ml_ai
 
     def loadSettings(self):
         self.foqusSettings.load(self.settingUseCWD)
@@ -389,18 +390,18 @@ class session:
             pass
 
     def reloadMLAIModels(self):
-        self.pymodels.importMLAIModels()
+        self.pymodels.getMLAIList()
 
     def loadMLAIModels(self):
         '''
             Search for ml_ai_models
         '''
-        self.pymodels = mlaiSearch.ml_ai_models(
+        self.pymodels_ml_ai = mlaiSearch.ml_ai_models(
             pathList = [
                 os.path.join(os.getcwd(), 'user_ml_ai_models'),
                 os.path.dirname(surrogate.__file__)])
         try:
-            self.flowsheet.pymodels = self.pymodels
+            self.flowsheet.pymodels_ml_ai = self.pymodels_ml_ai
         except:
             pass
 

@@ -193,16 +193,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
-
+        # TODO pylint: disable=undefined-variable
         self.changeDataSignal.connect(
             lambda data: self.changeDataInSimTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
         self.changeCandidateSignal.connect(
             lambda data: self.changeDataInCandTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
         self.changeEvalSignal.connect(
             lambda data: self.changeDataInEvalTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
+        # TODO pylint: enable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)

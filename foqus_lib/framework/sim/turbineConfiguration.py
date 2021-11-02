@@ -1257,22 +1257,24 @@ class TurbineConfiguration:
             resourceType = None
             app = 'foqus'
             modelFile = (None, app)
-        # WHY the undefined-variable error reported by pylint looks like a true positive
+        # WHY the undefined-variable errors reported by pylint look like true positive
         # this suggests that the code branches where the underfined variables are used are not run
         else:
             # if no model file found it is probably not a sinter
             # configuration file or FOQUS is out of sync with
             # simSinter development
             raise TurbineInterfaceEx(
+                # TODO pylint: disable=undefined-variable
                 code=304, msg="Path: " + sinterConfigPath
-            )  # TODO pylint: disable=undefined-variable
+            )
         if isinstance(modelFile, dict):
             modelFile = modelFile.get('file', None)
             if modelFile is None:
                 # No model file found
                 raise TurbineInterfaceEx(
+                    # TODO pylint: disable=undefined-variable
                     code=304, msg="Path: " + sinterConfigPath
-                )  # TODO pylint: disable=undefined-variable
+                )
         return modelFile
 
     def sinterConfigGetResource(self, sinterConfigPath, checkExists=True):

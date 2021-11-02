@@ -156,9 +156,11 @@ def run(config_file, nd, test=False):
             # WHY: the various criterion() function assigned conditionally have slightly different signature
             # irsf.criterion supports the `test` kwarg, so the function is called correctly in this branch
             # but pylint reports an error because it does not support conditionals
+            # pylint: disable=unexpected-keyword-arg
             results = criterion(
                 cand, args, nr, nd, mode=mode, hist=hist, test=True
-            )  # pylint: disable=unexpected-keyword-arg
+            )
+            # pylint: enable=unexpected-keyword-arg
             return results['t1'], results['t2']
         else:
             t0 = time.time()

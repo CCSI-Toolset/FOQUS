@@ -1305,15 +1305,17 @@ class mainWindow(QMainWindow):
                         r = res.rlist[row]
                         # TODO the pylint errors here are most likely true positives
                         # which suggests that this branch is not executed normally
+                        # TODO pylint: disable=assignment-from-no-return,unexpected-keyword-arg
                         res.rlist[
                             row
-                        ] = res.addFromSavedValues(  # TODO pylint: disable=assignment-from-no-return,unexpected-keyword-arg
+                        ] = res.addFromSavedValues(
                             setName=r[res.headMap['SetName']],
                             name=r[res.headMap['ResultName']],
                             tags=r[res.headMap['Tags']],
                             valDict=gt.res[i],
                             append=False,
                         )
+                        # TODO pylint: enable=assignment-from-no-return,unexpected-keyword-arg
                         if gt.res_fin[i] == 0:
                             self.multiSuccess += 1
                         else:

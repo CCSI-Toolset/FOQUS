@@ -13,21 +13,49 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-import abc #abstract base class
+import abc  # abstract base class
 import time
 
+
 class UQAnalysis(object, metaclass=abc.ABCMeta):
-    PARAM_SCREEN, UNCERTAINTY, CORRELATION, SENSITIVITY, VISUALIZATION, \
-    RS_VALIDATION, RS_UNCERTAINTY, RS_SENSITIVITY, INFERENCE, \
-    RS_VISUALIZATION = list(range(10))
+    (
+        PARAM_SCREEN,
+        UNCERTAINTY,
+        CORRELATION,
+        SENSITIVITY,
+        VISUALIZATION,
+        RS_VALIDATION,
+        RS_UNCERTAINTY,
+        RS_SENSITIVITY,
+        INFERENCE,
+        RS_VISUALIZATION,
+    ) = list(range(10))
 
-    fullNames = ('Parameter Screening', 'Uncertainty Analysis',
-                 'Correlation Analysis', 'Sensitivity Analysis',
-                 'Visualization', 'RS Validation',
-                 'RS Uncertainty Analysis', 'RS Sensitivity Analysis',
-                 'Bayesian Inference', 'RS Visualization')
+    fullNames = (
+        'Parameter Screening',
+        'Uncertainty Analysis',
+        'Correlation Analysis',
+        'Sensitivity Analysis',
+        'Visualization',
+        'RS Validation',
+        'RS Uncertainty Analysis',
+        'RS Sensitivity Analysis',
+        'Bayesian Inference',
+        'RS Visualization',
+    )
 
-    codeNames = ('ps', 'ua', 'ca', 'sa', 'viz', 'rsvalid', 'rsua', 'rssa', 'inf', 'rsviz')
+    codeNames = (
+        'ps',
+        'ua',
+        'ca',
+        'sa',
+        'viz',
+        'rsvalid',
+        'rsua',
+        'rssa',
+        'inf',
+        'rsviz',
+    )
 
     FIRST_ORDER, SECOND_ORDER, TOTAL_ORDER = list(range(3))
     sensitivityTypes = ('First-order', 'Second-order', 'Total-order')
@@ -50,7 +78,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def getSubTypeFullName(num):
         return None
 
-    def __init__(self, ensemble, outputs, analysisType, subType = None):
+    def __init__(self, ensemble, outputs, analysisType, subType=None):
         self.ensemble = ensemble
         self.type = analysisType
         self.subType = subType
@@ -87,7 +115,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
 
     def getEnsemble(self):
         return self.ensemble
-        
+
     def getType(self):
         return (self.type, self.subType)
 
@@ -132,9 +160,11 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def getDescription(self):
         return self.description
 
-    def archiveFile(self, fileName, folderStructure = None):
+    def archiveFile(self, fileName, folderStructure=None):
         if self.ensemble == None:
-            raise Exception('UQAnalysis object does not have an ensemble associated with it')
+            raise Exception(
+                'UQAnalysis object does not have an ensemble associated with it'
+            )
             return
         if folderStructure is None:
             folderStructure = []
@@ -143,9 +173,11 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
         folderStructure.insert(0, self.ID)
         self.ensemble.archiveFile(fileName, folderStructure)
 
-    def restoreFromArchive(self, fileName, folderStructure = None):
+    def restoreFromArchive(self, fileName, folderStructure=None):
         if self.ensemble == None:
-            raise Exception('UQAnalysis object does not have an ensemble associated with it')
+            raise Exception(
+                'UQAnalysis object does not have an ensemble associated with it'
+            )
             return
         if folderStructure is None:
             folderStructure = []
@@ -154,9 +186,11 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
         folderStructure.insert(0, self.ID)
         return self.ensemble.restoreFromArchive(fileName, folderStructure)
 
-    def removeArchiveFolder(self, folderStructure = None):
+    def removeArchiveFolder(self, folderStructure=None):
         if self.ensemble == None:
-            raise Exception('UQAnalysis object does not have an ensemble associated with it')
+            raise Exception(
+                'UQAnalysis object does not have an ensemble associated with it'
+            )
             return
         if folderStructure is None:
             folderStructure = []
@@ -165,9 +199,11 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
         folderStructure.insert(0, self.ID)
         self.ensemble.removeArchiveFolder(folderStructure)
 
-    def removeArchiveFile(self, fileName, folderStructure = None):
+    def removeArchiveFile(self, fileName, folderStructure=None):
         if self.ensemble == None:
-            raise Exception('UQAnalysis object does not have an ensemble associated with it')
+            raise Exception(
+                'UQAnalysis object does not have an ensemble associated with it'
+            )
             return
         if folderStructure is None:
             folderStructure = []
@@ -176,9 +212,11 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
         folderStructure.insert(0, self.ID)
         self.ensemble.removeArchiveFile(fileName, folderStructure)
 
-    def existsInArchive(self, fileName, folderStructure = None):
+    def existsInArchive(self, fileName, folderStructure=None):
         if self.ensemble == None:
-            raise Exception('UQAnalysis object does not have an ensemble associated with it')
+            raise Exception(
+                'UQAnalysis object does not have an ensemble associated with it'
+            )
             return
         if folderStructure is None:
             folderStructure = []

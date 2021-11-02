@@ -37,7 +37,8 @@ class foqusListener2(threading.Thread):
     A multiprocessing listener to allow FOQUS to be controlled over a socket
     connection. The main purpose for this adaptive sampling.
     """
-    def __init__(self, dat, host = 'localhost', port=56002):
+
+    def __init__(self, dat, host='localhost', port=56002):
         threading.Thread.__init__(self)
         self.daemon = True
         self.gt = None
@@ -49,7 +50,7 @@ class foqusListener2(threading.Thread):
     def run(self):
         quitListening = False
         while True:
-            #Wait for a connection to be made
+            # Wait for a connection to be made
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
@@ -94,15 +95,18 @@ class foqusListener2(threading.Thread):
                             self.dat.flowsheet.errorStat = 19
                         self.dat.saveFlowsheetValues(msg[1])
                         conn.send([0])
-            if quitListening: break
+            if quitListening:
+                break
         self.listener.close()
+
 
 class foqusListener(threading.Thread):
     """
     A multiprocessing listener to allow FOQUS to be controlled over a socket
     connection. The main purpose for this adaptive sampling.
     """
-    def __init__(self, dat, host = 'localhost', port=56001):
+
+    def __init__(self, dat, host='localhost', port=56001):
 
         threading.Thread.__init__(self)
         self.daemon = True
@@ -132,7 +136,7 @@ class foqusListener(threading.Thread):
         inpDict = self.dat.flowsheet.saveValues()['input']
         # Enter loop waiting for requests from client
         while True:
-            #Wait for a connection to be made
+            # Wait for a connection to be made
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
@@ -155,21 +159,20 @@ class foqusListener(threading.Thread):
                     # Start up a thread to run samples
                     # Run samples either locally or through Turbine
                     if self.dat.foqusSettings.runFlowsheetMethod == 0:
-                        #run local
+                        # run local
+                        self.gt = self.dat.flowsheet.runListAsThread(self.samples)
+                    else:  # run in turbine
                         self.gt = self.dat.flowsheet.runListAsThread(
-                            self.samples)
-                    else: #run in turbine
-                        self.gt = self.dat.flowsheet.runListAsThread(
-                            self.samples, useTurbine=True)
+                            self.samples, useTurbine=True
+                        )
                     conn.send(['run', len(self.samples)])
                 elif msg[0] == "submit":
                     # put a run on the input queue
-                    varVals = msg[1]  #List of variable values
+                    varVals = msg[1]  # List of variable values
                     sampInput = copy.deepcopy(inpDict)
                     vals = self.dat.flowsheet.input.unflatten(
-                        self.inputNames,
-                        varVals,
-                        unScale=self.scaled)
+                        self.inputNames, varVals, unScale=self.scaled
+                    )
                     for nkey in vals:
                         for vkey in vals[nkey]:
                             sampInput[nkey][vkey] = vals[nkey][vkey]
@@ -180,16 +183,14 @@ class foqusListener(threading.Thread):
                     # send run status
                     conn.send(['status', self.gt.status])
                 elif msg[0] == 'result':
-                    #Store results in FOQUS and send them to client also
+                    # Store results in FOQUS and send them to client also
                     self.gt.join()
                     ret = []
                     stat = []
                     for res in self.gt.res:
                         self.dat.flowsheet.results.addFromSavedValues(
-                            self.resStoreSet,
-                            'res_{0}'.format(self.runid),
-                            None,
-                            res)
+                            self.resStoreSet, 'res_{0}'.format(self.runid), None, res
+                        )
                         self.runid += 1
                         stat.append(res['graphError'])
                         r = []
@@ -219,7 +220,8 @@ class foqusListener(threading.Thread):
                     # Set the output variable names.
                     self.setOutputs(msg[1])
                     conn.send(['outputNames', self.outputNames])
-            if quitListening: break
+            if quitListening:
+                break
         # do whatever to finish up
         print("exiting foqus listener")
         self.listener.close()

@@ -18,9 +18,12 @@ import os
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
+
 mypath = os.path.dirname(__file__)
-_basicDataParentFrameUI, _basicDataParentFrame = \
-        uic.loadUiType(os.path.join(mypath, "basicDataParentFrame_UI.ui"))
+_basicDataParentFrameUI, _basicDataParentFrame = uic.loadUiType(
+    os.path.join(mypath, "basicDataParentFrame_UI.ui")
+)
+
 
 class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
     format = '%.5f'  # numeric format for table entries in UQ Toolbox

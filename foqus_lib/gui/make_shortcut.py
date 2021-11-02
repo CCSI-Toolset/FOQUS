@@ -14,8 +14,9 @@
 #
 ###############################################################################
 
+
 def makeShortcut():
-    """ Create a windows shortcut on the desktop to start FOQUS """
+    """Create a windows shortcut on the desktop to start FOQUS"""
     import os
     import pathlib as pl
     import sys
@@ -34,7 +35,7 @@ def makeShortcut():
     conda_base = pl.Path(os.environ['CONDA_PREFIX_1'])
     activate_bat = conda_base / 'Scripts' / 'activate.bat'
     conda_env = pl.Path(os.environ['CONDA_PREFIX'])
-    foqus_exe = conda_env / 'Scripts' /'foqus.exe'
+    foqus_exe = conda_env / 'Scripts' / 'foqus.exe'
     win32_cmd = pl.Path(winshell.folder('CSIDL_SYSTEM')) / 'cmd.exe'
     this_dir = pl.Path(__file__).resolve().parent
     icon = this_dir / "foqus.ico"

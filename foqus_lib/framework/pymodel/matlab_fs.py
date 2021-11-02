@@ -13,15 +13,17 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-#FOQUS_PYMODEL_PLUGIN
+# FOQUS_PYMODEL_PLUGIN
 #
 from foqus_lib.framework.pymodel.pymodel import *
 import time
 import subprocess
+
 # Check that the MATLAB engine module is available and import it if possible.
 # If not the MATLAB plug-in cannot be used.
 try:
     import matlab.engine
+
     matlab_engine_available = True
 except ImportError as e:
     matlab_engine_available = False
@@ -36,7 +38,9 @@ class pymodel_pg(pymodel):
         pymodel.__init__(self)
         engs = matlab.engine.find_matlab()
         if len(engs) == 0 or 'MatlabEngine' not in engs:
-            eng = subprocess.Popen("matlab -nosplash -minimize -r \"matlab.engine.shareEngine('MatlabEngine')\"")
+            eng = subprocess.Popen(
+                "matlab -nosplash -minimize -r \"matlab.engine.shareEngine('MatlabEngine')\""
+            )
 
     def run(self):
         no_matlab_engine = True

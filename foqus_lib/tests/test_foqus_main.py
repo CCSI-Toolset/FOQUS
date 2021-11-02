@@ -44,9 +44,12 @@ def test_run_optimization_with_existing_input_file_succeeds(input_file, output_f
     assert Path(input_file).exists()
 
     cli_args = [
-        '--load', input_file,
-        '--run', 'opt',
-        '--out', output_file,
+        '--load',
+        input_file,
+        '--run',
+        'opt',
+        '--out',
+        output_file,
     ]
 
     with pytest.raises(SystemExit, match='0'):
@@ -55,13 +58,18 @@ def test_run_optimization_with_existing_input_file_succeeds(input_file, output_f
     assert Path(output_file).exists()
 
 
-def test_run_optimization_with_nonexisting_input_file_fails(nonexisting_input_file, output_file):
+def test_run_optimization_with_nonexisting_input_file_fails(
+    nonexisting_input_file, output_file
+):
     assert not Path(nonexisting_input_file).exists()
 
     cli_args = [
-        '--load', nonexisting_input_file,
-        '--run', 'opt',
-        '--out', output_file,
+        '--load',
+        nonexisting_input_file,
+        '--run',
+        'opt',
+        '--out',
+        output_file,
     ]
 
     with pytest.raises(SystemExit, match='10'):
@@ -71,4 +79,6 @@ def test_run_optimization_with_nonexisting_input_file_fails(nonexisting_input_fi
 def test_gui_imports():
     if foqus.PyQt5 is None:
         foqus.guiImport()
-    assert foqus.PyQt5 is not None, "After running guiImport(), foqus.PyQt5 points to the actual module instead of the placeholder value None"
+    assert (
+        foqus.PyQt5 is not None
+    ), "After running guiImport(), foqus.PyQt5 points to the actual module instead of the placeholder value None"

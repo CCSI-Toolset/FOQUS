@@ -23,6 +23,7 @@ from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
 from .Plotter import Plotter
 
+
 class RawDataAnalyzer:
 
     dname = os.getcwd() + os.path.sep + 'RawDataAnalyzer_files'
@@ -37,21 +38,24 @@ class RawDataAnalyzer:
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
         f.write('%s\n' % cmd)
-        f.write('%d\n' % y)  # select output 
+        f.write('%d\n' % y)  # select output
         if cmd == 'gp_sa':
-            f.write('3\n')   # 1 for MacKay's Tpros, 2 for Rasmussen's gp-mc, 3 for kriging
+            f.write(
+                '3\n'
+            )  # 1 for MacKay's Tpros, 2 for Rasmussen's gp-mc, 3 for kriging
         elif cmd == 'moat':
-            f.write('n\n')   # select no to generate screening diagram
-            f.write('n\n')   # select no to generate scatter plot
-            f.write('y\n')   # select yes to generate bootstrap mean plot
+            f.write('n\n')  # select no to generate screening diagram
+            f.write('n\n')  # select no to generate scatter plot
+            f.write('y\n')  # select yes to generate bootstrap mean plot
         elif cmd == 'mars_sa':
-            f.write('0\n')     # 0 for MARS or 1 for MARS with bagging
+            f.write('0\n')  # 0 for MARS or 1 for MARS with bagging
         f.write('quit\n')
         f.seek(0)
-        
+
         # invoke psuade
         out, error = Common.invokePsuade(f)
         f.close()
@@ -61,12 +65,14 @@ class RawDataAnalyzer:
             return None
 
         # check output file
-        outfile = {'moat': 'matlabmoatbs.m',
-                   'delta_test': 'matlabdelta.m',
-                   'sot_sa': 'matlabsot.m',
-                   'mars_sa': 'matlabmarsa.m',
-                   'gp_sa': 'matlabkrisa.m',
-                   'lsa': 'matlablsa.m'}
+        outfile = {
+            'moat': 'matlabmoatbs.m',
+            'delta_test': 'matlabdelta.m',
+            'sot_sa': 'matlabsot.m',
+            'mars_sa': 'matlabmarsa.m',
+            'gp_sa': 'matlabkrisa.m',
+            'lsa': 'matlablsa.m',
+        }
         mfile = outfile[cmd]
         if os.path.exists(mfile):
             mfile_ = RawDataAnalyzer.dname + os.path.sep + mfile
@@ -80,34 +86,41 @@ class RawDataAnalyzer:
         RawDataAnalyzer.plotScreenInputs(data, cmd, y, mfile)
         return mfile
 
-
-    @staticmethod 
+    @staticmethod
     def plotScreenInputs(data, cmd, y, mfile):
         # plot
-        datvar = {'moat': ['Means','Stds'],
-                  'delta_test': 'A',
-                  'sot_sa': 'A',
-                  'mars_sa': 'Y',
-                  'gp_sa': 'Y',
-                  'lsa': 'Y'}
-        figtitle = {'moat': 'MORRIS',
-                    'delta_test': 'DELTA',
-                    'sot_sa': 'SUM-OF-TREES',
-                    'mars_sa': 'MARS',
-                    'gp_sa': 'KRIGING',
-                    'lsa': 'LOCAL SUM-OF-TREES'}
-        title = {'moat': 'Modified Means Plot (Bootstrap)',
-                 'delta_test': 'Delta Test Rankings',
-                 'sot_sa': 'Sum-of-trees Rankings',
-                 'mars_sa': 'MARS Rankings',
-                 'gp_sa': 'Kriging Rankings',
-                 'lsa': 'Local Sensitivity Rankings'}
-        ylabel = {'moat': 'Modified Means (of gradients)',
-                 'delta_test': 'Delta Metric (normalized)',
-                 'sot_sa': 'Sum-of-trees Metric (normalized)',
-                 'mars_sa': 'MARS Measure',
-                 'gp_sa': 'Kriging Measure',
-                 'lsa': 'Sensitivity Measure'}
+        datvar = {
+            'moat': ['Means', 'Stds'],
+            'delta_test': 'A',
+            'sot_sa': 'A',
+            'mars_sa': 'Y',
+            'gp_sa': 'Y',
+            'lsa': 'Y',
+        }
+        figtitle = {
+            'moat': 'MORRIS',
+            'delta_test': 'DELTA',
+            'sot_sa': 'SUM-OF-TREES',
+            'mars_sa': 'MARS',
+            'gp_sa': 'KRIGING',
+            'lsa': 'LOCAL SUM-OF-TREES',
+        }
+        title = {
+            'moat': 'Modified Means Plot (Bootstrap)',
+            'delta_test': 'Delta Test Rankings',
+            'sot_sa': 'Sum-of-trees Rankings',
+            'mars_sa': 'MARS Rankings',
+            'gp_sa': 'Kriging Rankings',
+            'lsa': 'Local Sensitivity Rankings',
+        }
+        ylabel = {
+            'moat': 'Modified Means (of gradients)',
+            'delta_test': 'Delta Metric (normalized)',
+            'sot_sa': 'Sum-of-trees Metric (normalized)',
+            'mars_sa': 'MARS Measure',
+            'gp_sa': 'Kriging Measure',
+            'lsa': 'Sensitivity Measure',
+        }
         xlabel = 'Input Parameters'
         xticklabels = []
         inputNames = data.getInputNames()
@@ -122,11 +135,12 @@ class RawDataAnalyzer:
             dat = Plotter.getdata(mfile, datvar[cmd])
             std = None
         outVarNames = data.getOutputNames()
-        outVarName = outVarNames[y-1]
+        outVarName = outVarNames[y - 1]
         ftitle = '%s Parameter Screening Rankings' % figtitle[cmd]
         ptitle = '%s for %s' % (title[cmd], outVarName)
-        Plotter.plotbar(dat, std, ftitle, ptitle,
-                        xlabel, ylabel[cmd], xticklabels, barlabels=True)
+        Plotter.plotbar(
+            dat, std, ftitle, ptitle, xlabel, ylabel[cmd], xticklabels, barlabels=True
+        )
 
     @staticmethod
     def performUA(fname, y, **kwargs):
@@ -148,10 +162,11 @@ class RawDataAnalyzer:
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
         f.write('%s\n' % cmd)
-        f.write('%d\n' % y)    # select output
+        f.write('%d\n' % y)  # select output
         f.write('quit\n')
         f.seek(0)
 
@@ -165,8 +180,12 @@ class RawDataAnalyzer:
 
         # parse output for moment info
         mres = []
-        mstr = [r'Sample mean\s*=\s*(\S*)', r'Sample std dev\s*=\s*(\S*)', 
-                r'Sample skewness\s*=\s*(\S*)', r'Sample kurtosis\s*=\s*(\S*)']
+        mstr = [
+            r'Sample mean\s*=\s*(\S*)',
+            r'Sample std dev\s*=\s*(\S*)',
+            r'Sample skewness\s*=\s*(\S*)',
+            r'Sample kurtosis\s*=\s*(\S*)',
+        ]
         for m in mstr:
             regex = re.findall(m, out)
             if regex:
@@ -175,7 +194,12 @@ class RawDataAnalyzer:
                 mres.append('')
         moments = None
         if len(mres) == 4:
-            moments = {'mean': mres[0], 'std': mres[1], 'skew': mres[2], 'kurt': mres[3]}
+            moments = {
+                'mean': mres[0],
+                'std': mres[1],
+                'skew': mres[2],
+                'kurt': mres[3],
+            }
 
         # check output file
         mfile = 'matlab' + cmd + '.m'
@@ -196,7 +220,7 @@ class RawDataAnalyzer:
     def plotUA(data, y, mfile, moments):
         # plot
         outVarNames = SampleData.getOutputNames(data)
-        outVarName = outVarNames[y-1]
+        outVarName = outVarNames[y - 1]
         datvar = 'Y'
         dat = Plotter.getdata(mfile, datvar)
         ftitle = 'Uncertainty Analysis on Ensemble Data'
@@ -206,7 +230,7 @@ class RawDataAnalyzer:
         ystd = None
         rsPDF = None
         Plotter.plothist(dat, moments, ftitle, ptitle, xlabel, ylabel)
-    
+
     @staticmethod
     def performCA(fname, y):
 
@@ -218,13 +242,14 @@ class RawDataAnalyzer:
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
         f.write('%s\n' % cmd)
-        f.write('%d\n' % y)   # select output
+        f.write('%d\n' % y)  # select output
         f.write('quit\n')
         f.seek(0)
-        
+
         # invoke psuade
         out, error = Common.invokePsuade(f)
         f.close()
@@ -233,7 +258,7 @@ class RawDataAnalyzer:
         if error:
             return None
 
-        # check output file                
+        # check output file
         mfile = 'matlab' + cmd + '.m'
         if os.path.exists(mfile):
             mfile_ = RawDataAnalyzer.dname + os.path.sep + mfile
@@ -255,7 +280,7 @@ class RawDataAnalyzer:
     def plotCA(data, y, mfile):
         # plot
         outVarNames = SampleData.getOutputNames(data)
-        outVarName = outVarNames[y-1]
+        outVarName = outVarNames[y - 1]
         ftitle = 'Correlation Analysis on Ensemble Data'
         ptitle = 'Correlation Analysis for %s' % outVarName
         xlabel = 'Input Parameters'
@@ -270,24 +295,30 @@ class RawDataAnalyzer:
         dat_pcc = Plotter.getdata(mfile, 'PCC')
         dat_scc = Plotter.getdata(mfile, 'SPEA')
         dat = [dat_pcc, dat_scc]
-        std = [None]*len(dat)
-        Plotter.plotbar(dat, std, ftitle, ptitle,
-                        xlabel, ylabel, xticklabels, barlabels=True)
+        std = [None] * len(dat)
+        Plotter.plotbar(
+            dat, std, ftitle, ptitle, xlabel, ylabel, xticklabels, barlabels=True
+        )
 
     @staticmethod
     def performSA(fname, y, cmd):
-        
+
         # read data
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
 
-        # check sample size 
+        # check sample size
         nSamples = SampleData.getNumSamples(data)
-        nSamplesLB = {'me': 1000,    # lower bound on number of samples
-                      'ie': 1000,
-                      'tsi': 10000}
+        nSamplesLB = {
+            'me': 1000,  # lower bound on number of samples
+            'ie': 1000,
+            'tsi': 10000,
+        }
         N = nSamplesLB[cmd]
         if nSamples < N:
-            error = 'RawDataAnalyzer: In function performSA(), %s requires at least %d samples.' % (cmd.upper(), N)
+            error = (
+                'RawDataAnalyzer: In function performSA(), %s requires at least %d samples.'
+                % (cmd.upper(), N)
+            )
             Common.showError(error)
             return None
 
@@ -296,7 +327,10 @@ class RawDataAnalyzer:
         if cmd == 'tsi':
             D = 10
             if nInputs > D:
-                error = 'RawDataAnalyzer: In function performSA(), %s requires at most %d inputs for total sensitivity analysis.' % (cmd.upper(), D)
+                error = (
+                    'RawDataAnalyzer: In function performSA(), %s requires at most %d inputs for total sensitivity analysis.'
+                    % (cmd.upper(), D)
+                )
                 Common.showError(error)
                 return None
 
@@ -304,10 +338,11 @@ class RawDataAnalyzer:
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
         f.write('%s\n' % cmd)
-        f.write('%d\n' % y)   # select output
+        f.write('%d\n' % y)  # select output
         f.write('quit\n')
         f.seek(0)
 
@@ -320,10 +355,8 @@ class RawDataAnalyzer:
             return None
 
         # check output file
-        outfile = {'me': 'matlabme.m',
-                   'ie': 'matlabaie.m',
-                   'tsi': 'matlabtsi.m'}
-        
+        outfile = {'me': 'matlabme.m', 'ie': 'matlabaie.m', 'tsi': 'matlabtsi.m'}
+
         mfile = outfile[cmd]
         if os.path.exists(mfile):
             mfile_ = RawDataAnalyzer.dname + os.path.sep + mfile
@@ -341,12 +374,12 @@ class RawDataAnalyzer:
     def plotSA(data, cmd, y, mfile):
         # plot
         datvar = 'Mids'
-        figtitle = {'me': 'First-order',
-                    'ie': 'Second-order',
-                    'tsi': 'Total-order'}
-        title = {'me': 'Sobol First Order Indices',
-                 'ie': 'Sobol First and Second Order Indices',
-                 'tsi': 'Sobol Total Order Indices'}
+        figtitle = {'me': 'First-order', 'ie': 'Second-order', 'tsi': 'Total-order'}
+        title = {
+            'me': 'Sobol First Order Indices',
+            'ie': 'Sobol First and Second Order Indices',
+            'tsi': 'Sobol Total Order Indices',
+        }
         ylabel = 'Sobol Indices'
         xlabel = 'Input Parameters'
         xticklabels = []
@@ -358,20 +391,31 @@ class RawDataAnalyzer:
         dat = Plotter.getdata(mfile, datvar)
         std = None
         outVarNames = SampleData.getOutputNames(data)
-        outVarName = outVarNames[y-1]
+        outVarName = outVarNames[y - 1]
         ftitle = '%s Sensitivity Analysis on Ensemble Data' % figtitle[cmd]
         ptitle = '%s for %s' % (title[cmd], outVarName)
         if cmd == 'ie':
-            import numpy as np   # numpy used here only
-            import math          # math used here only
+            import numpy as np  # numpy used here only
+            import math  # math used here only
+
             L = len(dat)
             M = int(math.sqrt(L))
-            dat = np.reshape(dat, [M,M], order='F')
+            dat = np.reshape(dat, [M, M], order='F')
             yticklabels = xticklabels
-            Plotter.plotbar3d(dat, std, ftitle, ptitle,
-                              xlabel, ylabel, xticklabels, yticklabels, barlabels=True)
+            Plotter.plotbar3d(
+                dat,
+                std,
+                ftitle,
+                ptitle,
+                xlabel,
+                ylabel,
+                xticklabels,
+                yticklabels,
+                barlabels=True,
+            )
         else:
-            Plotter.plotbar(dat, std, ftitle, ptitle,
-                            xlabel, ylabel, xticklabels, barlabels=True)
+            Plotter.plotbar(
+                dat, std, ftitle, ptitle, xlabel, ylabel, xticklabels, barlabels=True
+            )
 
         return mfile

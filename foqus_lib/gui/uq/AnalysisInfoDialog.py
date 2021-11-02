@@ -15,12 +15,19 @@
 ###############################################################################
 import copy
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import QGridLayout, QTableWidget, QTableWidgetItem,\
-    QLabel, QPushButton, QDialog
+from PyQt5.QtWidgets import (
+    QGridLayout,
+    QTableWidget,
+    QTableWidgetItem,
+    QLabel,
+    QPushButton,
+    QDialog,
+)
 from PyQt5.QtGui import QFont
 from collections import OrderedDict
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+
 
 class AnalysisInfoDialog(QDialog):
     def __init__(self, info, parent=None):
@@ -42,8 +49,8 @@ class AnalysisInfoDialog(QDialog):
         for key in list(info.keys()):
             if key in ('xprior', 'xtable', 'ytable', 'obsTable'):
                 continue
-            #item = QTableWidgetItem(key)
-            #self.table.setItem(row, 0, item)
+            # item = QTableWidgetItem(key)
+            # self.table.setItem(row, 0, item)
             if isinstance(info[key], (list, tuple)):
                 strings = []
                 for strItem in info[key]:
@@ -67,13 +74,19 @@ class AnalysisInfoDialog(QDialog):
             self.gridLayout.addWidget(self.table)
             self.table.horizontalHeader().setHidden(True)
             self.table.setRowCount(row)
-            self.table.setVerticalHeaderLabels([key for key in list(info.keys()) if key not in ('xprior', 'xtable', 'ytable', 'obsTable')])
-            #self.table.verticalHeader().setHidden(True)
+            self.table.setVerticalHeaderLabels(
+                [
+                    key
+                    for key in list(info.keys())
+                    if key not in ('xprior', 'xtable', 'ytable', 'obsTable')
+                ]
+            )
+            # self.table.verticalHeader().setHidden(True)
             self.table.setWordWrap(True)
             self.table.resizeColumnsToContents()
             self.table.resizeRowsToContents()
 
-            self.show() # Needed for headers to be correctly sized
+            self.show()  # Needed for headers to be correctly sized
             width = 2 + self.table.verticalHeader().width() + self.table.columnWidth(0)
             if self.table.verticalScrollBar().isVisible():
                 width += self.table.verticalScrollBar().width()
@@ -87,11 +100,10 @@ class AnalysisInfoDialog(QDialog):
             if width + 20 > totalWidth:
                 totalWidth = width + 20
 
-
         # Show table
         for key in info:
             if key in ('xprior', 'xtable', 'ytable', 'obsTable'):
-                #self.resize(800, 400)
+                # self.resize(800, 400)
                 values = info[key]
                 for d in values:
                     if d is not None and 'type' in d and d['type'] == 'Design':
@@ -111,7 +123,9 @@ class AnalysisInfoDialog(QDialog):
                 self.gridLayout.addWidget(label)
                 table = QTableWidget()
                 self.gridLayout.addWidget(table)
-                table.setRowCount(len([1 for i in range(len(values)) if values[i] is not None]))
+                table.setRowCount(
+                    len([1 for i in range(len(values)) if values[i] is not None])
+                )
 
                 # column headers
                 if key == 'obsTable':
@@ -128,17 +142,49 @@ class AnalysisInfoDialog(QDialog):
                         columnHeaders.append(out + ' Std Dev')
                     table.setColumnCount(len(columnHeaders))
                     table.setHorizontalHeaderLabels(columnHeaders)
-                    table.setVerticalHeaderLabels(['Experiment ' + str(num) for num in range(1, len(values) + 1)])
+                    table.setVerticalHeaderLabels(
+                        ['Experiment ' + str(num) for num in range(1, len(values) + 1)]
+                    )
                 else:
                     columnSet = set()
                     if key == 'ytable':
-                        valuesKeys = ['name', 'rsIndex', 'legendreOrder', 'marsBases', 'marsInteractions',
-                                      'userRegressionFile']
-                        columnHeaders = ['Output Name', 'RS Type', 'Legendre Order', 'MARS # Basis Functions',
-                                         'MARS Deg. of Interaction', 'User Regression File']
-                    else: #xprior, xtable
-                        valuesKeys = ['name', 'type', 'value', 'pdf', 'param1', 'param2', 'min', 'max']
-                        columnHeaders = ['Input Name', 'Type', 'Fixed Value', 'PDF', 'PDF Param 1', 'PDF Param 2', 'Min', 'Max']
+                        valuesKeys = [
+                            'name',
+                            'rsIndex',
+                            'legendreOrder',
+                            'marsBases',
+                            'marsInteractions',
+                            'userRegressionFile',
+                        ]
+                        columnHeaders = [
+                            'Output Name',
+                            'RS Type',
+                            'Legendre Order',
+                            'MARS # Basis Functions',
+                            'MARS Deg. of Interaction',
+                            'User Regression File',
+                        ]
+                    else:  # xprior, xtable
+                        valuesKeys = [
+                            'name',
+                            'type',
+                            'value',
+                            'pdf',
+                            'param1',
+                            'param2',
+                            'min',
+                            'max',
+                        ]
+                        columnHeaders = [
+                            'Input Name',
+                            'Type',
+                            'Fixed Value',
+                            'PDF',
+                            'PDF Param 1',
+                            'PDF Param 2',
+                            'Min',
+                            'Max',
+                        ]
                     for d in values:
                         if d is not None:
                             d2 = copy.deepcopy(d)
@@ -150,7 +196,9 @@ class AnalysisInfoDialog(QDialog):
                     usedColumns = []
                     usedHeaders = []
                     columnIndices = {}
-                    for i, (valuesKey, header) in enumerate(zip(valuesKeys, columnHeaders)):
+                    for i, (valuesKey, header) in enumerate(
+                        zip(valuesKeys, columnHeaders)
+                    ):
                         if valuesKey in columnSet:
                             usedColumns.append(valuesKey)
                             usedHeaders.append(header)
@@ -170,9 +218,13 @@ class AnalysisInfoDialog(QDialog):
                         for c, colName in enumerate(usedColumns):
                             if colName in values[r]:
                                 if colName == 'pdf':
-                                    string = Distribution.getFullName(values[r][colName])
+                                    string = Distribution.getFullName(
+                                        values[r][colName]
+                                    )
                                 elif colName == 'rsIndex':
-                                    string = ResponseSurfaces.getFullName(values[r][colName])
+                                    string = ResponseSurfaces.getFullName(
+                                        values[r][colName]
+                                    )
                                 else:
                                     string = str(values[r][colName])
                                 item = QTableWidgetItem(string)
@@ -200,7 +252,6 @@ class AnalysisInfoDialog(QDialog):
                 totalHeight += maxHeight + 20
                 if width + 20 > totalWidth:
                     totalWidth = width + 20
-
 
         self.okButton = QPushButton(self)
         self.okButton.setText('OK')

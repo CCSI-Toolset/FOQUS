@@ -15,9 +15,11 @@
 ###############################################################################
 import os
 from PyQt5 import uic
+
 mypath = os.path.dirname(__file__)
-_runRowsDialogUI, _runRowsDialog = \
-        uic.loadUiType(os.path.join(mypath, "runRowsDialog_UI.ui"))
+_runRowsDialogUI, _runRowsDialog = uic.loadUiType(
+    os.path.join(mypath, "runRowsDialog_UI.ui")
+)
 
 
 class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
@@ -56,8 +58,8 @@ class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
 
     def closeEvent(self, event):
         '''
-            Intercept close main window close event
-            make sure you really want to quit
+        Intercept close main window close event
+        make sure you really want to quit
         '''
         if self.allDone:
             event.accept()

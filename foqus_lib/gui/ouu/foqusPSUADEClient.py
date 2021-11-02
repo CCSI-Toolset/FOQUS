@@ -26,18 +26,20 @@ Jeremy Ou, Lawrence Livermore National Laboratory, 2015
 """
 import sys
 from multiprocessing.connection import Client
-#==================================================
+
+# ==================================================
 # Function to get input data for interpolation
-#==================================================
+# ==================================================
 def getInputData(inFileName):
     import shutil
+
     shutil.copyfile(inFileName, 'tempdata')
-    inFile  = open(inFileName, 'r')
+    inFile = open(inFileName, 'r')
     lines = inFile.readlines()
     inFile.close()
     lines = [line for line in lines if len(line.strip()) != 0]
-    lineIn  = lines[0]
-    toks   = lineIn.split()
+    lineIn = lines[0]
+    toks = lineIn.split()
     nLines = eval(toks[0])
     multiSample = False
     nSamp = 1
@@ -48,12 +50,12 @@ def getInputData(inFileName):
     # setting inData = nSamp * [[]] (i.e. initializing inData as an empty list of lists)
     # seems to fix the pylint errors, but it's not clear if this would be compatible
     # with the expected runtime behavior in all cases
-    inData  = nSamp * [0]
+    inData = nSamp * [0]
     if not multiSample:
         inData[0] = []
     for cnt in range(nLines):
         lineIn = lines[cnt + 1]
-        nCols  = lineIn.split()
+        nCols = lineIn.split()
         row = len(nCols) * [0]
         for ind in range(len(nCols)):
             row[ind] = eval(nCols[ind])
@@ -82,9 +84,10 @@ def getInputData(inFileName):
     outFile.close()
     return nSamp, inData
 
-#==================================================
+
+# ==================================================
 # Function to generate output file
-#==================================================
+# ==================================================
 def genOutputFile(outFileName, outData):
     nLeng = len(outData)
     outfile = open(outFileName, 'w')
@@ -122,7 +125,6 @@ def main():
         f.write('\n')
     f.close()
 
-
     # Submit the samples to FOQUS to be run
     f = open('foquspsuadeclient.log', 'a')
     f.write('Send clear\n')
@@ -143,7 +145,7 @@ def main():
     f.close()
     conn.send(['run'])
     n = conn.recv()[1]
-    #print 'Submitted {0} samples to FOQUS'.format(n)
+    # print 'Submitted {0} samples to FOQUS'.format(n)
     f = open('foquspsuadeclient.log', 'a')
     f.write('Get results\n')
     f.close()

@@ -20,15 +20,12 @@ import copy
 import numpy
 import json
 
+
 class testNodeVarsSteady(unittest.TestCase):
-     # Used assertAlmostEqual here a lot because I'm concerned about
-     # using equal on floating points
+    # Used assertAlmostEqual here a lot because I'm concerned about
+    # using equal on floating points
     def makeVar(self):
-        return NodeVars(
-            value = 2.5,
-            vmin = 1.0,
-            vmax = 10.0,
-            vdflt = 3.0)
+        return NodeVars(value=2.5, vmin=1.0, vmax=10.0, vdflt=3.0)
 
     def testValue(self):
         var = self.makeVar()
@@ -52,13 +49,13 @@ class testNodeVarsSteady(unittest.TestCase):
     def testConvertInt2(self):
         var = self.makeVar()
         var.value = 2.55
-        r= round(var.value)
+        r = round(var.value)
         self.assertEqual(r, 3)
 
     def testCopy(self):
-       var = self.makeVar()
-       var2 = copy.copy(var)
-       self.assertAlmostEqual(var2.value, 2.5)
+        var = self.makeVar()
+        var2 = copy.copy(var)
+        self.assertAlmostEqual(var2.value, 2.5)
 
     def testDeepCopy(self):
         var = self.makeVar()
@@ -179,4 +176,4 @@ class testNodeVarsSteady(unittest.TestCase):
         var.scaled = 0.3877365362129
         var.scaling = 'Power 2'
         var.unscale()
-        self.assertAlmostEqual(var.value, 4.12, places = 3)
+        self.assertAlmostEqual(var.value, 4.12, places=3)

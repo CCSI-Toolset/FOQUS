@@ -15,8 +15,17 @@
 ###############################################################################
 import os
 from PyQt5.QtCore import Qt, pyqtSignal
-from PyQt5.QtWidgets import QApplication, QTableWidget, QTableWidgetItem, QComboBox,\
-    QCheckBox, QMessageBox, QAbstractItemView, QSpinBox, QFileDialog
+from PyQt5.QtWidgets import (
+    QApplication,
+    QTableWidget,
+    QTableWidgetItem,
+    QComboBox,
+    QCheckBox,
+    QMessageBox,
+    QAbstractItemView,
+    QSpinBox,
+    QFileDialog,
+)
 from PyQt5.QtGui import QColor
 import numpy as np
 
@@ -33,7 +42,7 @@ class InputPriorTable(QTableWidget):
     def __init__(self, parent=None):
         super(InputPriorTable, self).__init__(parent)
         self.typeItems = []
-        self.format = '%g'             # numeric format for table entries in UQ Toolbox
+        self.format = '%g'  # numeric format for table entries in UQ Toolbox
         self.paramColWidth = 126
         self.labelWidth = 62
         self.paramWidth = 62
@@ -57,7 +66,7 @@ class InputPriorTable(QTableWidget):
         # self.rsAnalysis = (mode == InputPriorTable.RSANALYSIS)
         # self.ouu = (mode == InputPriorTable.OUU)
         self.wizardMode = wizardMode  # RSANALYSIS mode
-        self.viewOnly = viewOnly     # SIMSETUP mode : Generate ensemble
+        self.viewOnly = viewOnly  # SIMSETUP mode : Generate ensemble
 
         # populate prior table
         inVarNames = data.getInputNames()
@@ -76,17 +85,54 @@ class InputPriorTable(QTableWidget):
             if not wizardMode:
                 col_index.update({'pdf': 4, 'p1': 5, 'p2': 6, 'min': 7, 'max': 8})
         elif self.mode == InputPriorTable.SIMSETUP:
-            col_index = {'name': 0, 'type': 1, 'value': 2, 'min': 3, 'max': 4,
-                         'pdf': 5, 'p1': 6, 'p2': 7}
+            col_index = {
+                'name': 0,
+                'type': 1,
+                'value': 2,
+                'min': 3,
+                'max': 4,
+                'pdf': 5,
+                'p1': 6,
+                'p2': 7,
+            }
         elif self.mode == InputPriorTable.RSANALYSIS:  # RS Analysis
-            col_index = {'name': 0, 'type': 1, 'value': 2, 'pdf': 3, 'p1': 4, 'p2': 5, 'min': 6, 'max': 7}
+            col_index = {
+                'name': 0,
+                'type': 1,
+                'value': 2,
+                'pdf': 3,
+                'p1': 4,
+                'p2': 5,
+                'min': 6,
+                'max': 7,
+            }
         elif self.mode == InputPriorTable.ODOE:  # ODOE
-            col_index = {'name': 0, 'type': 1, 'value': 2, 'pdf': 3, 'p1': 4, 'p2': 5, 'min': 6, 'max': 7}
+            col_index = {
+                'name': 0,
+                'type': 1,
+                'value': 2,
+                'pdf': 3,
+                'p1': 4,
+                'p2': 5,
+                'min': 6,
+                'max': 7,
+            }
         else:  # OUU
-            col_index = {'check': 0, 'name': 1, 'type': 2, 'scale': 3, 'min': 4, 'max': 5, 'value': 6, 'pdf': 7, 'p1': 8, 'p2': 9}
+            col_index = {
+                'check': 0,
+                'name': 1,
+                'type': 2,
+                'scale': 3,
+                'min': 4,
+                'max': 5,
+                'value': 6,
+                'pdf': 7,
+                'p1': 8,
+                'p2': 9,
+            }
         self.col_index = col_index
         flowsheetFixed = data.getInputFlowsheetFixed()
-        #rowCount = 0
+        # rowCount = 0
         if self.mode == InputPriorTable.SIMSETUP:
             rowCount = nInputs
         else:
@@ -99,7 +145,7 @@ class InputPriorTable(QTableWidget):
         if self.mode == InputPriorTable.RSANALYSIS:
             self.setColumnHidden(col_index['type'], True)
             self.setColumnHidden(col_index['value'], True)
-        r = 0   # row index
+        r = 0  # row index
 
         for i in range(nInputs):
             # do not add fixed input variables to table
@@ -110,8 +156,8 @@ class InputPriorTable(QTableWidget):
                 dtype = Distribution.UNIFORM
                 d = Distribution(dtype)
             else:
-                d = dist[i]                               # distribution
-                dtype = d.getDistributionType()           # distribution type
+                d = dist[i]  # distribution
+                dtype = d.getDistributionType()  # distribution type
 
             # change SAMPLE to UNIFORM
             if dtype == Distribution.SAMPLE:
@@ -121,7 +167,7 @@ class InputPriorTable(QTableWidget):
                 data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
                 sampleData = data[0]
                 # compute min/max from sample file
-                sdata = sampleData[:, sampleIndex-1]
+                sdata = sampleData[:, sampleIndex - 1]
                 # TO DO: insert error handling for if sampleData file does not exist or if incorrect # of columns
                 xmin = np.min(sdata)
                 xmax = np.max(sdata)
@@ -130,8 +176,10 @@ class InputPriorTable(QTableWidget):
                 xmin = self.lb[i]
                 xmax = self.ub[i]
 
-            p1val, p2val = d.getParameterValues()                    # distribution parameter values
-            p1name, p2name = Distribution.getParameterNames(dtype)   # distribution parameter names
+            p1val, p2val = d.getParameterValues()  # distribution parameter values
+            p1name, p2name = Distribution.getParameterNames(
+                dtype
+            )  # distribution parameter names
 
             nameMask = ~Qt.ItemIsEnabled
             # add input name
@@ -209,8 +257,9 @@ class InputPriorTable(QTableWidget):
                     combobox.setEnabled(False)
                 else:
                     text = typeCombo.currentText()
-                    if ('type' in col_index and self.isColumnHidden(col_index['type'])) or \
-                       text in ['Variable', 'Aleatory', 'UQ: Continuous (Z4)']:
+                    if (
+                        'type' in col_index and self.isColumnHidden(col_index['type'])
+                    ) or text in ['Variable', 'Aleatory', 'UQ: Continuous (Z4)']:
                         combobox.setEnabled(True)
                     else:
                         combobox.setEnabled(False)
@@ -272,7 +321,7 @@ class InputPriorTable(QTableWidget):
                     self.setItem(r, col_index['max'], item)
                     self.obsTableValues[(r, col_index['max'])] = s
 
-            r = r + 1   # increment row
+            r = r + 1  # increment row
 
         self.resizeColumns()
         self.cellChanged.connect(self.change)
@@ -281,19 +330,27 @@ class InputPriorTable(QTableWidget):
     def setupLB(self):
         inVarTypes = self.data.getInputTypes()
         self.lb = self.data.getInputMins()
-        self.lbVariable = [self.lb[i] for i in range(len(self.lb)) if inVarTypes[i] == Model.VARIABLE]
+        self.lbVariable = [
+            self.lb[i] for i in range(len(self.lb)) if inVarTypes[i] == Model.VARIABLE
+        ]
 
     def setupUB(self):
         inVarTypes = self.data.getInputTypes()
         self.ub = self.data.getInputMaxs()
-        self.ubVariable = [self.ub[i] for i in range(len(self.ub)) if inVarTypes[i] == Model.VARIABLE]
+        self.ubVariable = [
+            self.ub[i] for i in range(len(self.ub)) if inVarTypes[i] == Model.VARIABLE
+        ]
 
     def setupDists(self):
         if self.dist == None:
             self.distVariable = None
         else:
             inVarTypes = self.data.getInputTypes()
-            self.distVariable = [self.dist[i] for i in range(len(self.dist)) if inVarTypes[i] == Model.VARIABLE]
+            self.distVariable = [
+                self.dist[i]
+                for i in range(len(self.dist))
+                if inVarTypes[i] == Model.VARIABLE
+            ]
 
     def resizeColumns(self):
         col_index = self.col_index
@@ -307,10 +364,15 @@ class InputPriorTable(QTableWidget):
         item = self.item(row, col)
         if item is not None:
             text = item.text()
-            if (row, col) in self.obsTableValues and text == self.obsTableValues[(row, col)]:
+            if (row, col) in self.obsTableValues and text == self.obsTableValues[
+                (row, col)
+            ]:
                 return
-            self.obsTableValues[(row,col)] = text
-            if len(text) > 0 or ('min' in self.col_index and col in (self.col_index['min'], self.col_index['max'])):
+            self.obsTableValues[(row, col)] = text
+            if len(text) > 0 or (
+                'min' in self.col_index
+                and col in (self.col_index['min'], self.col_index['max'])
+            ):
                 if 'min' in self.col_index:
                     minItem = self.item(row, self.col_index['min'])
                     maxItem = self.item(row, self.col_index['max'])
@@ -330,7 +392,11 @@ class InputPriorTable(QTableWidget):
                         message = 'Value outside bounds. Your response surface will be extrapolating, which could lead to lower accuracy. Your new bounds will not be saved to the flowsheet.'
                         outOfBounds = False
 
-                    if 'min' in self.col_index and 'max' in self.col_index and col in (self.col_index['min'], self.col_index['max']):
+                    if (
+                        'min' in self.col_index
+                        and 'max' in self.col_index
+                        and col in (self.col_index['min'], self.col_index['max'])
+                    ):
                         if minItem is not None and maxItem is not None:
                             minVal = float(minItem.text())
                             maxVal = float(maxItem.text())
@@ -338,7 +404,9 @@ class InputPriorTable(QTableWidget):
                             if minVal >= maxVal:
                                 minMoreThanMax = True
                                 showMessage = True
-                                message = 'Minimum value must be less than maximum value!'
+                                message = (
+                                    'Minimum value must be less than maximum value!'
+                                )
 
                 if showMessage and not hideError:
                     msgbox = QMessageBox()
@@ -360,7 +428,10 @@ class InputPriorTable(QTableWidget):
                 else:
                     # item.setForeground(QColor(0,0,0))
                     item.setBackground(QColor(255, 255, 255))
-                    if 'min' in self.col_index and col in (self.col_index['min'], self.col_index['max']):
+                    if 'min' in self.col_index and col in (
+                        self.col_index['min'],
+                        self.col_index['max'],
+                    ):
                         if minItem is not None and maxItem is not None:
                             minVal = float(minItem.text())
                             maxVal = float(maxItem.text())
@@ -370,7 +441,10 @@ class InputPriorTable(QTableWidget):
                                 minItem.setBackground(QColor(255, 255, 255))
                                 maxItem.setBackground(QColor(255, 255, 255))
                             else:
-                                if minVal < self.ubVariable[row] and maxVal > self.lbVariable[row]:
+                                if (
+                                    minVal < self.ubVariable[row]
+                                    and maxVal > self.lbVariable[row]
+                                ):
                                     # minItem.setForeground(QColor(0,0,0))
                                     # maxItem.setForeground(QColor(0,0,0))
                                     minItem.setBackground(QColor(255, 255, 255))
@@ -418,7 +492,7 @@ class InputPriorTable(QTableWidget):
                 else:
                     if count < len(distNames):
                         combobox.insertItem(3, distNames[3])
-                        for name in distNames[count + 1:]:
+                        for name in distNames[count + 1 :]:
                             combobox.addItem(name)
 
     def setRSEvalMode(self, on):
@@ -444,7 +518,7 @@ class InputPriorTable(QTableWidget):
 
     def updatePriorTableRow(self):
         # identify the row of inputPrior_table that requires updating
-        combobox = self.sender()        # the pdf combobox that sent the signal
+        combobox = self.sender()  # the pdf combobox that sent the signal
         r = combobox.property('row')
         c = combobox.property('col')
 
@@ -480,7 +554,12 @@ class InputPriorTable(QTableWidget):
                 self.activateCell(r, col_index['value'])
                 if 'min' in col_index:
                     self.clearMinMax(r)
-            elif cbtext in ['Epistemic', 'Opt: Primary Continuous (Z1)', 'Opt: Primary Discrete (Z1d)', 'Opt: Recourse (Z2)']:
+            elif cbtext in [
+                'Epistemic',
+                'Opt: Primary Continuous (Z1)',
+                'Opt: Primary Discrete (Z1d)',
+                'Opt: Recourse (Z2)',
+            ]:
                 self.activateCell(r, col_index['value'])
                 self.activateMinMax(r, inVarNames)
             elif cbtext == 'UQ: Discrete (Z3)':
@@ -500,8 +579,11 @@ class InputPriorTable(QTableWidget):
 
             # PDF columns
             if 'pdf' in col_index:
-                if self.isColumnHidden(col_index['type']) or \
-                   cbtext in ['Variable', 'Aleatory', 'UQ: Continuous (Z4)']:
+                if self.isColumnHidden(col_index['type']) or cbtext in [
+                    'Variable',
+                    'Aleatory',
+                    'UQ: Continuous (Z4)',
+                ]:
                     pdfcombo.setEnabled(True)
                 else:
                     pdfcombo.setEnabled(False)
@@ -512,10 +594,12 @@ class InputPriorTable(QTableWidget):
 
         if 'pdf' in col_index:
             # update the row in inputPrior_table
-            d = pdfcombo.currentText() # distribution type
+            d = pdfcombo.currentText()  # distribution type
             d = Distribution.getEnumValue(d)
             dist = Distribution(d)
-            d1name, d2name = Distribution.getParameterNames(d)   # distribution parameter names
+            d1name, d2name = Distribution.getParameterNames(
+                d
+            )  # distribution parameter names
 
             # TO DO: handle the case 'd == Distribution.SAMPLE'
             if d == Distribution.UNIFORM:
@@ -532,11 +616,14 @@ class InputPriorTable(QTableWidget):
                 dists = self.dist
                 if dists is not None:
                     defaultDist = dists[r]
-                    if defaultDist is not None and d == defaultDist.getDistributionType():
+                    if (
+                        defaultDist is not None
+                        and d == defaultDist.getDistributionType()
+                    ):
                         (value1, value2) = defaultDist.getParameterValues()
                 self.activateParamCell(r, 1, d1name, value1)
                 if d2name is None:
-                    self.clearParamCell(r,2)
+                    self.clearParamCell(r, 2)
                 else:
                     self.activateParamCell(r, 2, d2name, value2)
                 if self.mode != InputPriorTable.SIMSETUP:
@@ -643,7 +730,9 @@ class InputPriorTable(QTableWidget):
         cellTable.setColumnWidth(1, self.paramWidth)
         cellTable.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
         cellTable.cellChanged.connect(self.paramChange)
-        cellTable.setEditTriggers(QAbstractItemView.AllEditTriggers) # Allow single click to edit
+        cellTable.setEditTriggers(
+            QAbstractItemView.AllEditTriggers
+        )  # Allow single click to edit
 
         return cellTable
 
@@ -662,12 +751,21 @@ class InputPriorTable(QTableWidget):
         if item is not None and item.text():
             if self.isnumeric(item.text()):
                 value = float(item.text())
-                if col == self.col_index['p2'] and dist in (Distribution.NORMAL, Distribution.LOGNORMAL, Distribution.TRIANGLE):
+                if col == self.col_index['p2'] and dist in (
+                    Distribution.NORMAL,
+                    Distribution.LOGNORMAL,
+                    Distribution.TRIANGLE,
+                ):
                     if value <= 0:
                         message = 'Value must be greater than 0!  Please fix it.'
                         showMessage = True
                         outOfBounds = True
-                if dist in (Distribution.LOGNORMAL, Distribution.GAMMA, Distribution.BETA, Distribution.WEIBULL):
+                if dist in (
+                    Distribution.LOGNORMAL,
+                    Distribution.GAMMA,
+                    Distribution.BETA,
+                    Distribution.WEIBULL,
+                ):
                     if value < 0:
                         message = 'Value must not be negative!  Please fix it.'
                         showMessage = True
@@ -711,10 +809,10 @@ class InputPriorTable(QTableWidget):
         items = ['Select File']
         items.extend([os.path.basename(f) for f in self.dispSampleFiles])
         items.append('Browse...')
-        for i, item in enumerate(items[:combobox.count()]):
+        for i, item in enumerate(items[: combobox.count()]):
             if i < combobox.count:
                 combobox.setItemText(i, items[i])
-        combobox.addItems(items[combobox.count():])
+        combobox.addItems(items[combobox.count() :])
         combobox.setProperty('row', row)
         combobox.currentIndexChanged[int].connect(self.setFile)
 
@@ -752,7 +850,12 @@ class InputPriorTable(QTableWidget):
             else:
                 allFiles = '*'
             fname, _ = QFileDialog.getOpenFileName(
-                self, "Load Sample file", "", "Psuade Simple Files (*.smp);;CSV (Comma delimited) (*.csv);;All files (%s)" % allFiles)
+                self,
+                "Load Sample file",
+                "",
+                "Psuade Simple Files (*.smp);;CSV (Comma delimited) (*.csv);;All files (%s)"
+                % allFiles,
+            )
 
             if len(fname) == 0:  # Cancelled
                 combobox.setCurrentIndex(0)
@@ -766,17 +869,24 @@ class InputPriorTable(QTableWidget):
                 spinbox = table.cellWidget(0, 1)
                 spinbox.setMaximum(self.sampleNumInputs[index - 1])
             else:
-##                try: # Full PSUADE format
-##                    data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
-##                    inputData = data.getInputData()
-##                    numInputs = data.getNumInputs()
-##                except:
+                ##                try: # Full PSUADE format
+                ##                    data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
+                ##                    inputData = data.getInputData()
+                ##                    numInputs = data.getNumInputs()
+                ##                except:
                 dispFName = fname
                 try:  # Simple format
                     if fname.endswith('.csv'):
-                        data = LocalExecutionModule.readDataFromCsvFile(fname, askForNumInputs=False)
+                        data = LocalExecutionModule.readDataFromCsvFile(
+                            fname, askForNumInputs=False
+                        )
                         Common.initFolder(LocalExecutionModule.dname)
-                        newFileName = LocalExecutionModule.dname + os.sep + os.path.basename(fname)[:-4] + '.smp'
+                        newFileName = (
+                            LocalExecutionModule.dname
+                            + os.sep
+                            + os.path.basename(fname)[:-4]
+                            + '.smp'
+                        )
                         LocalExecutionModule.writeSimpleFile(newFileName, data[0])
                         fname = newFileName
                     else:
@@ -785,10 +895,13 @@ class InputPriorTable(QTableWidget):
                     numInputs = inputData.shape[1]
                 except:  # Invalid file
                     import traceback
+
                     traceback.print_exc()
                     msgbox = QMessageBox()
                     msgbox.setWindowTitle('UQ/Opt GUI Warning')
-                    msgbox.setText('File format not recognized!  File must be in PSUADE simple format.')
+                    msgbox.setText(
+                        'File format not recognized!  File must be in PSUADE simple format.'
+                    )
                     msgbox.setIcon(QMessageBox.Warning)
                     msgbox.exec_()
                     combobox.setCurrentIndex(0)
@@ -826,8 +939,15 @@ class InputPriorTable(QTableWidget):
             spinbox = table.cellWidget(0, 1)
             spinbox.setMaximum(self.sampleNumInputs[index - 1])
             # Set index to next value if previous row has same file selected
-            if currentRow > 0 and self.cellWidget(currentRow - 1, col_index['pdf']).currentText() == 'Sample':
-                if self.cellWidget(currentRow - 1, col_index['p1']).currentIndex() == index:
+            if (
+                currentRow > 0
+                and self.cellWidget(currentRow - 1, col_index['pdf']).currentText()
+                == 'Sample'
+            ):
+                if (
+                    self.cellWidget(currentRow - 1, col_index['p1']).currentIndex()
+                    == index
+                ):
                     prevRowTable = self.cellWidget(currentRow - 1, col_index['p2'])
                     prevRowSpinbox = prevRowTable.cellWidget(0, 1)
                     spinbox.setValue(prevRowSpinbox.value() + 1)
@@ -873,7 +993,7 @@ class InputPriorTable(QTableWidget):
             if checkbox.isChecked():
                 if isinstance(type, str):  # String
                     combo.setCurrentIndex(self.typeItems.index(type))
-                else: # Integer index
+                else:  # Integer index
                     combo.setCurrentIndex(type)
                 checkbox.setChecked(False)
                 checkbox.setEnabled(True)
@@ -959,10 +1079,10 @@ class InputPriorTable(QTableWidget):
         param1 = None
         param2 = None
         if widget:
-            if dtype == Distribution.SAMPLE: # file
+            if dtype == Distribution.SAMPLE:  # file
                 param1 = self.sampleFiles[widget.currentIndex() - 1]
             else:
-                param1 = float(widget.item(0,1).text())
+                param1 = float(widget.item(0, 1).text())
         cellTable = self.cellWidget(row, col_index['p2'])
         if cellTable:
             if dtype == Distribution.SAMPLE:
@@ -1002,72 +1122,132 @@ class InputPriorTable(QTableWidget):
                     if self.mode == InputPriorTable.SIMSETUP:
                         xmin = self.item(i, col_index['min'])
                         xmax = self.item(i, col_index['max'])
-                        if (xmin is not None) and self.isnumeric(xmin.text()) and (xmax is not None) and self.isnumeric(xmax.text()):
+                        if (
+                            (xmin is not None)
+                            and self.isnumeric(xmin.text())
+                            and (xmax is not None)
+                            and self.isnumeric(xmax.text())
+                        ):
                             minVal = float(xmin.text())
                             maxVal = float(xmax.text())
                             if minVal >= maxVal:
-                                return False, 'Minimum value is not less than max value for %s!' % inputName
+                                return (
+                                    False,
+                                    'Minimum value is not less than max value for %s!'
+                                    % inputName,
+                                )
                             b = True
                         else:
-                            return False,  'Min or max value for %s is not a number!' % inputName
+                            return (
+                                False,
+                                'Min or max value for %s is not a number!' % inputName,
+                            )
                     if dtype == Distribution.UNIFORM:
                         xmin = self.item(i, col_index['min'])
                         xmax = self.item(i, col_index['max'])
-                        if (xmin is not None) and self.isnumeric(xmin.text()) and (xmax is not None) and self.isnumeric(xmax.text()):
+                        if (
+                            (xmin is not None)
+                            and self.isnumeric(xmin.text())
+                            and (xmax is not None)
+                            and self.isnumeric(xmax.text())
+                        ):
                             minVal = float(xmin.text())
                             maxVal = float(xmax.text())
-                            if minVal >= self.ubVariable[i] or maxVal <= self.lbVariable[i] or minVal >= maxVal :
-                                    return False,  'Minimum value is not less than max value for %s!' % inputName
+                            if (
+                                minVal >= self.ubVariable[i]
+                                or maxVal <= self.lbVariable[i]
+                                or minVal >= maxVal
+                            ):
+                                return (
+                                    False,
+                                    'Minimum value is not less than max value for %s!'
+                                    % inputName,
+                                )
                             b = True
                         else:
-                            return False,  'Min or max value for %s is not a number!' % inputName
-                    elif dtype == Distribution.LOGNORMAL: # Lognormal mean less than 0
+                            return (
+                                False,
+                                'Min or max value for %s is not a number!' % inputName,
+                            )
+                    elif dtype == Distribution.LOGNORMAL:  # Lognormal mean less than 0
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)
                         if (param1 is not None) and self.isnumeric(param1.text()):
                             if float(param1.text()) < 0:
-                                return False,  'Mean value for %s cannot be negative!' % inputName
+                                return (
+                                    False,
+                                    'Mean value for %s cannot be negative!' % inputName,
+                                )
                             b = True
                         else:
-                            return False,  'Mean value for %s is not a number!' % inputName
+                            return (
+                                False,
+                                'Mean value for %s is not a number!' % inputName,
+                            )
                     elif dtype == Distribution.EXPONENTIAL:
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)
                         if (param1 is not None) and self.isnumeric(param1.text()):
                             b = True
                         else:
-                            return False,  'Lambda value for %s is not a number!' % inputName
-                    elif dtype == Distribution.GAMMA or \
-                         dtype == Distribution.BETA or \
-                         dtype == Distribution.WEIBULL: # Parameters less than 0
+                            return (
+                                False,
+                                'Lambda value for %s is not a number!' % inputName,
+                            )
+                    elif (
+                        dtype == Distribution.GAMMA
+                        or dtype == Distribution.BETA
+                        or dtype == Distribution.WEIBULL
+                    ):  # Parameters less than 0
                         cellTable = self.cellWidget(i, col_index['p1'])
                         param1 = cellTable.item(0, 1)
                         cellTable = self.cellWidget(i, col_index['p2'])
                         param2 = cellTable.item(0, 1)
-                        if (param1 is not None) and self.isnumeric(param1.text()) and \
-                           (param2 is not None) and self.isnumeric(param2.text()):
+                        if (
+                            (param1 is not None)
+                            and self.isnumeric(param1.text())
+                            and (param2 is not None)
+                            and self.isnumeric(param2.text())
+                        ):
                             if float(param1.text()) < 0 or float(param2.text()) < 0:
-                                return False,  'Distribution parameter value for %s cannot be negative!' % inputName
+                                return (
+                                    False,
+                                    'Distribution parameter value for %s cannot be negative!'
+                                    % inputName,
+                                )
                             b = True
                         else:
-                            return False,  'Distribution parameter value for %s is not a number!' % inputName
+                            return (
+                                False,
+                                'Distribution parameter value for %s is not a number!'
+                                % inputName,
+                            )
 
                     elif dtype == Distribution.SAMPLE:
                         combo = self.cellWidget(i, col_index['p1'])
                         text = combo.currentText()
                         if text == 'Browse...' or text == 'Select File':
-                            return False,  'No file selected for %s!' % inputName
+                            return False, 'No file selected for %s!' % inputName
                         b = True
 
                     else:
                         cellTable = self.cellWidget(i, col_index['p1'])
-                        param1 = cellTable.item(0, 1)   # param1 value
+                        param1 = cellTable.item(0, 1)  # param1 value
                         cellTable = self.cellWidget(i, col_index['p2'])
-                        param2 = cellTable.item(0, 1)   # param2 value
-                        if (param1 is not None) and self.isnumeric(param1.text()) and (param2 is not None) and self.isnumeric(param2.text()):
+                        param2 = cellTable.item(0, 1)  # param2 value
+                        if (
+                            (param1 is not None)
+                            and self.isnumeric(param1.text())
+                            and (param2 is not None)
+                            and self.isnumeric(param2.text())
+                        ):
                             b = True
                         else:
-                            return False,  'Distribution parameter value for %s is not a number!' % inputName
+                            return (
+                                False,
+                                'Distribution parameter value for %s is not a number!'
+                                % inputName,
+                            )
                 else:
                     b = True
             elif type == 'Fixed':
@@ -1076,8 +1256,8 @@ class InputPriorTable(QTableWidget):
                     value = float(value.text())
                     b = True
                 else:
-                    return False,  'Fixed value for %s is not a number!' % inputName
-            else: # Design
+                    return False, 'Fixed value for %s is not a number!' % inputName
+            else:  # Design
                 b = True
 
         return b, None
@@ -1085,7 +1265,7 @@ class InputPriorTable(QTableWidget):
     def getTableValues(self):
         nInputs = self.rowCount()
         col_index = self.col_index
-        values = [None]*nInputs
+        values = [None] * nInputs
         for i in range(nInputs):
             inType = 'Variable'
             value = {}
@@ -1095,9 +1275,14 @@ class InputPriorTable(QTableWidget):
             if 'type' in col_index:
                 combobox = self.cellWidget(i, col_index['type'])
                 inType = combobox.currentText()
-                value['type']= inType
-            if (self.mode == InputPriorTable.RSANALYSIS and not self.epistemicMode) or inType != 'Fixed':
-                if 'pdf' in col_index and self.cellWidget(i, col_index['pdf']).isEnabled():
+                value['type'] = inType
+            if (
+                self.mode == InputPriorTable.RSANALYSIS and not self.epistemicMode
+            ) or inType != 'Fixed':
+                if (
+                    'pdf' in col_index
+                    and self.cellWidget(i, col_index['pdf']).isEnabled()
+                ):
                     combobox = self.cellWidget(i, col_index['pdf'])
                     distName = combobox.currentText()
                     dtype = Distribution.getEnumValue(distName)
@@ -1113,7 +1298,7 @@ class InputPriorTable(QTableWidget):
                         xmax = float(xmaxText)
                     widget = self.cellWidget(i, col_index['p1'])
                     if widget:
-                        if dtype == Distribution.SAMPLE: # file
+                        if dtype == Distribution.SAMPLE:  # file
                             param1 = self.sampleFiles[widget.currentIndex() - 1]
                         else:
                             param1 = float(widget.item(0, 1).text())
@@ -1123,7 +1308,7 @@ class InputPriorTable(QTableWidget):
                             param2 = cellTable.cellWidget(0, 1).value()
                         else:
                             param2 = float(cellTable.item(0, 1).text())
-                else: # No pdf setting.  Use default PDFs from data
+                else:  # No pdf setting.  Use default PDFs from data
                     if self.distVariable is None or len(self.distVariable) == 0:
                         dtype = Distribution.UNIFORM
                         param1 = None
@@ -1137,11 +1322,17 @@ class InputPriorTable(QTableWidget):
 
                 value.update({'pdf': dtype})
                 if dtype == Distribution.UNIFORM:
-                    value.update({'param1': None, 'param2': None, 'min': xmin, 'max': xmax})
+                    value.update(
+                        {'param1': None, 'param2': None, 'min': xmin, 'max': xmax}
+                    )
                 elif dtype == Distribution.EXPONENTIAL:
-                    value.update({'param1': param1, 'param2': None, 'min': None, 'max': None})
+                    value.update(
+                        {'param1': param1, 'param2': None, 'min': None, 'max': None}
+                    )
                 elif dtype != None:
-                    value.update({'param1': param1, 'param2': param2, 'min': None, 'max': None})
+                    value.update(
+                        {'param1': param1, 'param2': param2, 'min': None, 'max': None}
+                    )
             fixedVal = self.item(i, col_index['value'])
             if fixedVal.text() == '':
                 value['value'] = None

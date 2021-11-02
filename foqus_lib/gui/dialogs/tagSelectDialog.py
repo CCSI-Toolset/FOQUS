@@ -18,20 +18,23 @@ import os
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QTreeWidgetItem
+
 mypath = os.path.dirname(__file__)
-_tagSelectDialogUI, _tagSelectDialog = \
-        uic.loadUiType(os.path.join(mypath, "tagSelectDialog_UI.ui"))
+_tagSelectDialogUI, _tagSelectDialog = uic.loadUiType(
+    os.path.join(mypath, "tagSelectDialog_UI.ui")
+)
+
 
 class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
-    sendTag = QtCore.pyqtSignal( )
+    sendTag = QtCore.pyqtSignal()
 
-    def __init__(self, dat, parent = None, lock = None):
+    def __init__(self, dat, parent=None, lock=None):
         """
         Constructor for model setup dialog
         """
         super(tagSelectDialog, self).__init__(parent=parent)
-        self.setupUi(self) # Create the widgets
-        self.dat = dat     # all of the session data
+        self.setupUi(self)  # Create the widgets
+        self.dat = dat  # all of the session data
         self.availTags = dict()
         self.doneButton.clicked.connect(self.accept)
         self.createTagButton.clicked.connect(self.userAddTag)
@@ -51,7 +54,7 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         tlst = self.mainTagList.selectedItems()
         if tlst == []:
             return
-        tagList = [""]*len(tlst)
+        tagList = [""] * len(tlst)
         for i in range(len(tlst)):
             tagList[i] = tlst[i].text(0)
         self.selectedTags = tagList
@@ -62,12 +65,12 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         self.updateAvailableTagsRec(self.availTags, self.mainTagList)
 
     def updateAvailableTagsRec(self, tdict, item):
-        for key in sorted(list(tdict.keys()), key = lambda s: s.lower()):
+        for key in sorted(list(tdict.keys()), key=lambda s: s.lower()):
             val = tdict[key]
             i = QTreeWidgetItem(item)
             i.setText(0, key)
             if len(val):
-                #set flags to make not selectable
+                # set flags to make not selectable
                 i.setFlags(i.flags() & ~QtCore.Qt.ItemIsSelectable)
                 self.updateAvailableTagsRec(val, i)
 
@@ -86,7 +89,8 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         """
         Close the dialog and save the tags if there was a change
         """
-        if self.tagsChanged: self.saveTags()
+        if self.tagsChanged:
+            self.saveTags()
         self.done(0)
 
     def addTag(self, text):

@@ -37,30 +37,34 @@ import os
 import traceback
 from foqus_lib.framework.optimizer.optimization import optimization
 
+
 def checkAvailable():
     '''
-        Plugins should have this function to check availability of any
-        additional required software.  If requirements are not available
-        plugin will not be available.
+    Plugins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plugin will not be available.
     '''
     return True
 
+
 class opt(optimization):
     '''
-        CSV_Sample
+    CSV_Sample
     '''
-    def __init__(self, dat = None):
+
+    def __init__(self, dat=None):
         '''
-            Initialize CMA-ES optimization module
+        Initialize CMA-ES optimization module
         '''
         optimization.__init__(self, dat)
         self.name = "CMA-ES"
-        self.methodDescription = \
-            ("This plugin just runs samples evaluetes all the flowsheet "
-             "samples and picks out the best one.  If any samples have "
-             "not been evaluted (status -1), they will be evaluted.  "
-             "This works with the currently selected data filter, and "
-             "is mostly used for testing.")
+        self.methodDescription = (
+            "This plugin just runs samples evaluetes all the flowsheet "
+            "samples and picks out the best one.  If any samples have "
+            "not been evaluted (status -1), they will be evaluted.  "
+            "This works with the currently selected data filter, and "
+            "is mostly used for testing."
+        )
         self.mp = True
         self.mobj = False
         self.requireScaling = False
@@ -69,17 +73,22 @@ class opt(optimization):
         self.options.add(
             name="Backup interval",
             default=0,
-            desc=("Time between saving FOQUS session backups (sec)"
-                  " ( < 15 no backup)"))
+            desc=(
+                "Time between saving FOQUS session backups (sec)" " ( < 15 no backup)"
+            ),
+        )
 
     def optimize(self):
         '''
-            This is the optimization routine.
+        This is the optimization routine.
         '''
         backupInt = self.options["Backup interval"].value
         start = time.process_time()
-        self.msgQueue.put("Started at {0}".format(
-            time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())))
+        self.msgQueue.put(
+            "Started at {0}".format(
+                time.strftime("%a, %d %b %Y %H:%M:%S", time.localtime())
+            )
+        )
         rerunList = []
         rerunSamp = []
         bestObj = numpy.array(self.prob.obj[0].fail)
@@ -90,9 +99,8 @@ class opt(optimization):
                 # If r not run add it to the
                 rerunList.append(i)
                 rerunSamp.append(r.toSavedInputValues())
-                #otherwise calculate the objective
-                objValues, cv, pv = self.prob.calculateObj(
-                    [r.toSavedValuesFormat()])
+                # otherwise calculate the objective
+                objValues, cv, pv = self.prob.calculateObj([r.toSavedValuesFormat()])
                 obj = objValues[0][0]
                 if obj < bestObj:
                     bestObj = obj
@@ -100,14 +108,7 @@ class opt(optimization):
         self.msgQueue.put("Running {0} samples".format(len(rerunSamp)))
         err = 0
         # now rerun samples that were not alreay run
-        self.resQueue.put([
-            "PROG",
-            0,
-            len(rerunSamp),
-            0,
-            0,
-            0,
-            0])
+        self.resQueue.put(["PROG", 0, len(rerunSamp), 0, 0, 0, 0])
         timeOfBackup = time.process_time()
         if len(rerunSamp) > 0:
             finished = 0
@@ -116,7 +117,7 @@ class opt(optimization):
             doneList = []
             while gt.is_alive():
                 gt.join(2)
-                if self.stop.isSet(): # check for stop flag
+                if self.stop.isSet():  # check for stop flag
                     userInterupt = True
                     gt.terminate()
                 if gt.status['finished'] != finished:
@@ -124,34 +125,34 @@ class opt(optimization):
                         if res != None:
                             if i not in doneList:
                                 doneList.append(i)
-                                r = self.graph.results.subsetResult(
-                                    rerunList[i])
+                                r = self.graph.results.subsetResult(rerunList[i])
                                 r.resetResultFromValues(res)
                     finished = gt.status['finished']
-                    #put out status
-                    self.resQueue.put([
-                        "PROG",
-                        finished,
-                        len(rerunSamp),
-                        gt.status['error'],
-                        0,
-                        finished,
-                        gt.status['error']])
+                    # put out status
+                    self.resQueue.put(
+                        [
+                            "PROG",
+                            finished,
+                            len(rerunSamp),
+                            gt.status['error'],
+                            0,
+                            finished,
+                            gt.status['error'],
+                        ]
+                    )
                 # back up if its time.  Don't back up for intervals
                 # of less than 15 seconds, because that setting dosen't
                 # make sense even 15 seconds is crazy.
                 timeSinceBackup = time.process_time() - timeOfBackup
                 if backupInt > 15.0 and timeSinceBackup > backupInt:
                     self.dat.save(
-                        filename = "".join([
-                            "Opt_Backup_",
-                            self.dat.name,
-                            ".json"]),
-                        updateCurrentFile = False,
-                        bkp = False)
+                        filename="".join(["Opt_Backup_", self.dat.name, ".json"]),
+                        updateCurrentFile=False,
+                        bkp=False,
+                    )
                 if userInterupt:
                     break
-            #finish rerun loop
+            # finish rerun loop
             if gt.res:
                 for i, res in enumerate(gt.res):
                     if i not in doneList:
@@ -159,14 +160,13 @@ class opt(optimization):
                             doneList.append(i)
                         r = self.graph.results.subsetResult(rerunList[i])
                         r.resetResultFromValues(res)
-        #Calculate objectives
+        # Calculate objectives
         bestObj = numpy.array(self.prob.obj[0].fail)
         bestRes = -1
         for i in range(self.graph.results.subsetLen()):
             r = self.graph.results.subsetResult(i)
-            #otherwise calculate the objective
-            objValues, cv, pv = self.prob.calculateObj(
-                [r.toSavedValuesFormat()])
+            # otherwise calculate the objective
+            objValues, cv, pv = self.prob.calculateObj([r.toSavedValuesFormat()])
             obj = objValues[0][0]
             if obj < bestObj:
                 bestObj = obj

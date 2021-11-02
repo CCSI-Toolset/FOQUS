@@ -21,7 +21,8 @@ model plugins.
 John Eslick, Carnegie Mellon University, 2014
 """
 
-class option():
+
+class option:
     def __init__(
         self,
         default=0.0,
@@ -31,27 +32,28 @@ class option():
         vmax=None,
         dtype=None,
         validValues=[],
-        optSet = 0,
-        disable = False,
-        section = "",
-        hint = ""):
+        optSet=0,
+        disable=False,
+        section="",
+        hint="",
+    ):
         '''
-            creates a new option, options are used in settings for
-            optimization solvers, and surrogate model methods they
-            may be used in more plases in the future.
+        creates a new option, options are used in settings for
+        optimization solvers, and surrogate model methods they
+        may be used in more plases in the future.
 
-            Args/attributes
+        Args/attributes
 
-            default -  a default value for the option (if dtype is
-                not specified the type of the default will be used
-                to set the option type
-            value - the current option value
-            desc - a string description of the option
-            vmin - a min value optionally used to validate float and int
-            vmax - a max value optionally used to validate float and int
-            dtype - a data type for otpion if None, set by default value
-            validValues - a list of valid values, empty list means no
-                restriction
+        default -  a default value for the option (if dtype is
+            not specified the type of the default will be used
+            to set the option type
+        value - the current option value
+        desc - a string description of the option
+        vmin - a min value optionally used to validate float and int
+        vmax - a max value optionally used to validate float and int
+        dtype - a data type for otpion if None, set by default value
+        validValues - a list of valid values, empty list means no
+            restriction
         '''
         self.desc = desc
         if value == None:
@@ -69,15 +71,15 @@ class option():
 
     def saveDict(self):
         sd = {
-            'desc':self.desc,
-            'value':self.value,
-            'default':self.default,
-            'vmax':self.vmax,
-            'vmin':self.vmin,
-            'dtype':self.typeToString(self.dtype),
-            'validValues':self.validValues,
-            'optSet':self.optSet,
-            'disable':self.disable
+            'desc': self.desc,
+            'value': self.value,
+            'default': self.default,
+            'vmax': self.vmax,
+            'vmin': self.vmin,
+            'dtype': self.typeToString(self.dtype),
+            'validValues': self.validValues,
+            'optSet': self.optSet,
+            'disable': self.disable,
         }
         return sd
 
@@ -97,13 +99,7 @@ class option():
         self.optSet = sd.get('optSet', self.optSet)
 
     def validTypes(self):
-        return [
-            float,
-            int,
-            str,
-            bool,
-            list,
-            dict]
+        return [float, int, str, bool, list, dict]
 
     def typeToString(self, t):
         if t == float:
@@ -147,15 +143,12 @@ class option():
         return self.value
 
     def valid(self):
-        return \
-            self.validateType() and \
-            self.validateRange() and \
-            self.validateList()
+        return self.validateType() and self.validateRange() and self.validateList()
 
     def validateType(self):
         '''
-            Check that the value type matches the specified data type.
-            Also allows int values for float.
+        Check that the value type matches the specified data type.
+        Also allows int values for float.
         '''
         if isinstance(self.value, self.dtype):
             return True
@@ -166,8 +159,8 @@ class option():
 
     def validateRange(self):
         '''
-            Check that if the value is an int or float that it is between
-            less than vmax and more than vmin if vmax and vmin are given
+        Check that if the value is an int or float that it is between
+        less than vmax and more than vmin if vmax and vmin are given
         '''
         if not isinstance(self.value, (int, float)):
             return True
@@ -180,7 +173,7 @@ class option():
 
     def validateList(self):
         '''
-            Check that the value is in the list of valid values
+        Check that the value is in the list of valid values
         '''
         if self.validValues == []:
             return True

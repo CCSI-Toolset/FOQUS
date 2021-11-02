@@ -16,16 +16,16 @@
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.uq.Model import *
 from foqus_lib.framework.uq.Distribution import *
-    
-    
+
+
 def flowsheetToUQModel(gr):
     '''
-        This function converts a node model to a UQ model for UQ analysis.  This is temporary solution.
-        The extra python calculations that are include in a node are not converted, just the simulation.
+    This function converts a node model to a UQ model for UQ analysis.  This is temporary solution.
+    The extra python calculations that are include in a node are not converted, just the simulation.
     '''
     uqModel = Model()
     uqModel.setName('Flowsheet')
-    uqModel.setRunType(Model.GATEWAY)#Basically run through John's stuff
+    uqModel.setRunType(Model.GATEWAY)  # Basically run through John's stuff
     uqModel.setNamesIncludeNodes(True)
     keys = gr.input.compoundNames()
     names = []
@@ -56,14 +56,15 @@ def flowsheetToUQModel(gr):
     uqModel.setInputDefaults(default)
     uqModel.setInputFlowsheetFixed(flowsheetFixed)
     # Set output names and set all outputs as selected
-    keys =  gr.output.compoundNames()
+    keys = gr.output.compoundNames()
     uqModel.setOutputNames(keys)
     uqModel.setSelectedOutputs(list(range(len(keys))))
     return uqModel
-    
+
+
 def printUQModel(self):
     '''
-        Print the UQ model, to make sure things are working as expected.
+    Print the UQ model, to make sure things are working as expected.
     '''
     print("Model Name:")
     print(self.getName())

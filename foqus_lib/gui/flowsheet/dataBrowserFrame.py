@@ -28,11 +28,20 @@ from foqus_lib.gui.flowsheet.dataModel import *
 from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QMenu, QMessageBox, QAction,\
-    QLineEdit, QInputDialog, QFileDialog
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMenu,
+    QMessageBox,
+    QAction,
+    QLineEdit,
+    QInputDialog,
+    QFileDialog,
+)
+
 mypath = os.path.dirname(__file__)
-_dataBrowserFrameUI, _dataBrowserFrame = \
-        uic.loadUiType(os.path.join(mypath, "dataBrowserFrame_UI.ui"))
+_dataBrowserFrameUI, _dataBrowserFrame = uic.loadUiType(
+    os.path.join(mypath, "dataBrowserFrame_UI.ui")
+)
 
 
 class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
@@ -52,13 +61,13 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.editFiltersButton.clicked.connect(self.editFilters)
         self.filterSelectBox.currentIndexChanged.connect(self.selectFilter)
         self.tableView.setAlternatingRowColors(True)
-        #self.columnsButton.clicked.connect(self.columnSelect)
+        # self.columnsButton.clicked.connect(self.columnSelect)
         self.columnsButton.hide()
         self.saveEnsembleButton.hide()
         self.tableView.verticalHeader().show()
-        #for col in range(self.results.count_cols()):
+        # for col in range(self.results.count_cols()):
         #    self.tableView.setColumnHidden(col, False)
-        #for col in self.results.hidden_cols:
+        # for col in self.results.hidden_cols:
         #    i = list(self.results.columns).index(col)
         #    self.tableView.hideColumn(i)
 
@@ -76,75 +85,51 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
     def addMenuActions(self):
         # export csv
-        self.exportCsvAct = QAction(
-            'Export to CSV File...',
-            self)
+        self.exportCsvAct = QAction('Export to CSV File...', self)
         self.exportCsvAct.triggered.connect(self.saveResultsToCSV)
         self.expMenu.addAction(self.exportCsvAct)
         # copy to clipboard
-        self.toClipAct = QAction(
-            'Copy Data to Clipboard',
-            self)
+        self.toClipAct = QAction('Copy Data to Clipboard', self)
         self.toClipAct.triggered.connect(self.toClipboard)
         self.expMenu.addAction(self.toClipAct)
         # import from csv
-        self.importCsvAct = QAction(
-            'Import from CSV file...',
-            self)
+        self.importCsvAct = QAction('Import from CSV file...', self)
         self.importCsvAct.triggered.connect(self.importCSV)
         self.impMenu.addAction(self.importCsvAct)
         # paste from clipboard
-        self.fromClipAct = QAction(
-            'Paste Data from Clipboard',
-            self)
+        self.fromClipAct = QAction('Paste Data from Clipboard', self)
         self.fromClipAct.triggered.connect(self.importClip)
         self.impMenu.addAction(self.fromClipAct)
         # copy selected row to flowsheet.
-        self.getRowAct = QAction(
-            'Row to Flowsheet',
-            self)
+        self.getRowAct = QAction('Row to Flowsheet', self)
         self.getRowAct.triggered.connect(self.rowToFlow)
         self.editMenu.addAction(self.getRowAct)
         # clear data
-        self.clearDataAct = QAction(
-            'Clear All Data',
-            self)
+        self.clearDataAct = QAction('Clear All Data', self)
         self.clearDataAct.triggered.connect(self.clearResults)
         self.editMenu.addAction(self.clearDataAct)
         #
-        self.deleteDataAct = QAction(
-            'Delete Rows',
-            self)
+        self.deleteDataAct = QAction('Delete Rows', self)
         self.deleteDataAct.triggered.connect(self.deleteResults)
         self.editMenu.addAction(self.deleteDataAct)
         # Add blank result
-        self.addResultAct = QAction(
-            'Add Empty Result',
-            self)
+        self.addResultAct = QAction('Add Empty Result', self)
         self.addResultAct.triggered.connect(self.addEmptyResult)
         self.editMenu.addAction(self.addResultAct)
         # edit Set
-        self.editSetAct = QAction(
-            'Edit Set for Selected Rows',
-            self)
+        self.editSetAct = QAction('Edit Set for Selected Rows', self)
         self.editSetAct.triggered.connect(self.editDataSet)
         self.editMenu.addAction(self.editSetAct)
         # hide columns
-        self.hideDataColsAct = QAction(
-            'Hide Selected Columns',
-            self)
+        self.hideDataColsAct = QAction('Hide Selected Columns', self)
         self.hideDataColsAct.triggered.connect(self.hideCols)
         self.viewMenu.addAction(self.hideDataColsAct)
         # un-hide columns
-        self.unhideDataColsAct = QAction(
-            'Show All Columns',
-            self)
+        self.unhideDataColsAct = QAction('Show All Columns', self)
         self.unhideDataColsAct.triggered.connect(self.unhideCols)
         self.viewMenu.addAction(self.unhideDataColsAct)
         # resize columns
-        self.resizeColumnsAct = QAction(
-            'Resize Columns',
-            self)
+        self.resizeColumnsAct = QAction('Resize Columns', self)
         self.resizeColumnsAct.triggered.connect(self.autoResizeCols)
         self.viewMenu.addAction(self.resizeColumnsAct)
 
@@ -173,8 +158,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         rows = self.selectedRows()
         if len(rows) < 1:
             return
-        self.results.row_to_flow(
-            self.dat.flowsheet, rows[0], filtered=True)
+        self.results.row_to_flow(self.dat.flowsheet, rows[0], filtered=True)
         self.dat.mainWin.refresh()  # pylint: disable=no-member
 
     def refreshContents(self):
@@ -202,9 +186,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         msgBox = QMessageBox()
         msgBox.setText("Delete selected data?")
         msgBox.setInformativeText(
-            "If you select yes, the selected rows will be deleted. ")
-        msgBox.setStandardButtons(
-            QMessageBox.No | QMessageBox.Yes)
+            "If you select yes, the selected rows will be deleted. "
+        )
+        msgBox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
         if ret == QMessageBox.Yes:
@@ -219,10 +203,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         rl = self.results
         rows = self.selectedRows()
         name, ok = QInputDialog.getText(
-            self,
-            "Set Name",
-            'Enter new set name:',
-            QLineEdit.Normal)
+            self, "Set Name", 'Enter new set name:', QLineEdit.Normal
+        )
         if ok and name != '':
             rl.edit_set_name(name, rows, filtered=True)
 
@@ -234,7 +216,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self,
             "Import CSV Result File",
             "",
-            "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)")
+            "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)",
+        )
         if fileName:
             self.results.read_csv(fileName)
             self.refreshContents()
@@ -243,8 +226,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
 
-        self.results.add_result(sd=self.dat.flowsheet.saveValues(),
-                                result_name="empty", empty=True)
+        self.results.add_result(
+            sd=self.dat.flowsheet.saveValues(), result_name="empty", empty=True
+        )
         self.refreshContents()
 
     def selectedRows(self):
@@ -271,10 +255,12 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         msgBox = QMessageBox()
         msgBox.setText("Delete all data?")
         msgBox.setInformativeText(
-            ("If you select yes, all flowsheet result data in this "
-             "session will be deleted. "))
-        msgBox.setStandardButtons(
-            QMessageBox.No | QMessageBox.Yes)
+            (
+                "If you select yes, all flowsheet result data in this "
+                "session will be deleted. "
+            )
+        )
+        msgBox.setStandardButtons(QMessageBox.No | QMessageBox.Yes)
         msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
         if ret == QMessageBox.Yes:
@@ -285,7 +271,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
 
-        df = dataFilterDialog.dataFilterDialog(self.dat, self, results = self.results)
+        df = dataFilterDialog.dataFilterDialog(self.dat, self, results=self.results)
         df.exec_()
         self.updateFilterBox()
         self.selectFilter()
@@ -298,17 +284,16 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.filterSelectBox.clear()
         items = [''] + sorted(self.results.filters.keys())
         self.filterSelectBox.addItems(items)
-        i=-1
+        i = -1
         if self.results.current_filter() != None:
-            i = self.filterSelectBox.findText(
-                self.results.current_filter())
+            i = self.filterSelectBox.findText(self.results.current_filter())
         if i != -1:
             self.filterSelectBox.setCurrentIndex(i)
         else:
             self.filterSelectBox.setCurrentIndex(-1)
         self.filterSelectBox.blockSignals(False)
 
-    def selectFilter(self, i = 0):
+    def selectFilter(self, i=0):
         if self.results is None or self.results.empty:
             self.results = self.dat.flowsheet.results
 
@@ -330,7 +315,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self,
             "Save CSV Result File",
             "",
-            "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)")
+            "CSV Files (*.csv);;Text Files (*.txt);;All Files (*)",
+        )
         if fileName:
             self.results.to_csv(fileName)
 
@@ -342,7 +328,8 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self,
             "Save CSV Result File",
             "",
-            "PSUADE Files (*.dat);;Text Files (*.txt);;All Files (*)")
+            "PSUADE Files (*.dat);;Text Files (*.txt);;All Files (*)",
+        )
         if fileName:
             self.results.to_psuade(fileName)
 

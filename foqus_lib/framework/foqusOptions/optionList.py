@@ -23,32 +23,34 @@ John Eslick, Carnegie Mellon University, 2014
 
 from foqus_lib.framework.foqusOptions.option import *
 
+
 class optionList(dict):
     def __init__(self):
         '''
-            Initalize an option list
+        Initalize an option list
         '''
         dict.__init__(self)
-        self.order = [] # display order for options
+        self.order = []  # display order for options
 
     def clear(self):
         dict.clear(self)
-        self.order=[]
+        self.order = []
 
     def loadValues(self, sd):
         '''
-            Save a dictornary with only option names and values.  Good
-            for fixed sets of options, where nothing but the values
-            change.
+        Save a dictornary with only option names and values.  Good
+        for fixed sets of options, where nothing but the values
+        change.
         '''
-        if sd == None: return
+        if sd == None:
+            return
         for k, v in sd.items():
             if k in self:
                 self[k].value = v
 
     def saveValues(self):
         '''
-            Load the option values from a dictionary.
+        Load the option values from a dictionary.
         '''
         sd = {}
         for k, v in self.items():
@@ -57,25 +59,23 @@ class optionList(dict):
 
     def saveDict(self):
         '''
-            Save all of the option attributes to a dictionary.  This is
-            good for things like node that have varying sets of options.
+        Save all of the option attributes to a dictionary.  This is
+        good for things like node that have varying sets of options.
         '''
-        sd = {'order':self.order, 'options':{}}
+        sd = {'order': self.order, 'options': {}}
         for key in self:
             sd['options'][key] = self[key].saveDict()
         return sd
 
     def loadDict(self, sd):
         '''
-            Load an entire option list from a dictionary.  For things
-            with varying sets of options.
+        Load an entire option list from a dictionary.  For things
+        with varying sets of options.
         '''
         for opt in sd['options']:
             self[opt] = option()
             self[opt].loadDict(sd['options'][opt])
-        self.order = sd.get(
-            'order',
-            sorted(list(self.keys()), key=lambda s: s.lower()))
+        self.order = sd.get('order', sorted(list(self.keys()), key=lambda s: s.lower()))
 
     def addIfNew(
         self,
@@ -89,11 +89,12 @@ class optionList(dict):
         validValues=[],
         optSet=0,
         disable=False,
-        section = "",
-        hint = ""):
+        section="",
+        hint="",
+    ):
         '''
-            Add an option only if it does not already exist.  Otherwise
-            same as add.
+        Add an option only if it does not already exist.  Otherwise
+        same as add.
         '''
         if name not in self:
             self.add(
@@ -106,7 +107,8 @@ class optionList(dict):
                 dtype=dtype,
                 validValues=validValues,
                 optSet=optSet,
-                disable=disable)
+                disable=disable,
+            )
 
     def add(
         self,
@@ -120,10 +122,11 @@ class optionList(dict):
         validValues=[],
         optSet=0,
         disable=False,
-        section = "",
-        hint = ""):
+        section="",
+        hint="",
+    ):
         '''
-            Add an option to the list.
+        Add an option to the list.
         '''
         self[name] = option(
             default=default,
@@ -134,13 +137,14 @@ class optionList(dict):
             dtype=dtype,
             validValues=validValues,
             optSet=optSet,
-            disable=disable)
+            disable=disable,
+        )
         if name not in self.order:
             self.order.append(name)
 
     def delete(self, key):
         '''
-            delete an option from the list
+        delete an option from the list
         '''
         del self[key]
         self.order.remove(key)

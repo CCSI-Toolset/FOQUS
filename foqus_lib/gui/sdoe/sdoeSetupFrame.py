@@ -37,15 +37,27 @@ from .sdoePreview import sdoePreview
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
 from PyQt5 import QtCore, uic, QtGui
-from PyQt5.QtWidgets import QStyledItemDelegate, QApplication, QTableWidgetItem, \
-    QPushButton, QStyle, QDialog, QMessageBox, QMenu, QAbstractItemView, QCheckBox
+from PyQt5.QtWidgets import (
+    QStyledItemDelegate,
+    QApplication,
+    QTableWidgetItem,
+    QPushButton,
+    QStyle,
+    QDialog,
+    QMessageBox,
+    QMenu,
+    QAbstractItemView,
+    QCheckBox,
+)
 from PyQt5.QtCore import QCoreApplication, QSize, QRect, QEvent
 from PyQt5.QtGui import QCursor
 
 from PyQt5 import uic
+
 mypath = os.path.dirname(__file__)
-_sdoeSetupFrameUI, _sdoeSetupFrame = \
-        uic.loadUiType(os.path.join(mypath, "sdoeSetupFrame_UI.ui"))
+_sdoeSetupFrameUI, _sdoeSetupFrame = uic.loadUiType(
+    os.path.join(mypath, "sdoeSetupFrame_UI.ui")
+)
 
 
 class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
@@ -57,7 +69,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     changeCandidateSignal = QtCore.pyqtSignal(SampleData)
     addEvalSignal = QtCore.pyqtSignal(SampleData)
     changeEvalSignal = QtCore.pyqtSignal(SampleData)
-    format = '%.5f'             # numeric format for table entries in UQ Toolbox
+    format = '%.5f'  # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
     numberCol = 0
@@ -85,23 +97,32 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     # This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
-
         def paint(self, painter, option, index):
             if index.row() == 0 or index.column() == 0:
-                textMargin = QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
-                newRect = QStyle.alignedRect(option.direction, Qt.AlignCenter,
-                                             QSize(option.decorationSize.width() + 5,
-                                                   option.decorationSize.height()),
-                                             QRect(option.rect.x() + textMargin, option.rect.y(),
-                                                   option.rect.width() - (2 * textMargin),
-                                                   option.rect.height()))
+                textMargin = (
+                    QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
+                )
+                newRect = QStyle.alignedRect(
+                    option.direction,
+                    Qt.AlignCenter,
+                    QSize(
+                        option.decorationSize.width() + 5,
+                        option.decorationSize.height(),
+                    ),
+                    QRect(
+                        option.rect.x() + textMargin,
+                        option.rect.y(),
+                        option.rect.width() - (2 * textMargin),
+                        option.rect.height(),
+                    ),
+                )
                 option.rect = newRect
             QStyledItemDelegate.paint(self, painter, option, index)
 
         def editorEvent(self, event, model, option, index):
             # make sure that the item is checkable
             flags = model.flags(index)
-            if not (flags & Qt.ItemIsUserCheckable) or not(flags & Qt.ItemIsEnabled):
+            if not (flags & Qt.ItemIsUserCheckable) or not (flags & Qt.ItemIsEnabled):
                 return False
             # make sure that we have a check state
             value = index.data(Qt.CheckStateRole)
@@ -109,11 +130,20 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 return False
             # make sure that we have the right event type
             if event.type() == QEvent.MouseButtonRelease:
-                textMargin = QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
-                checkRect = QStyle.alignedRect(option.direction, Qt.AlignCenter, option.decorationSize,
-                                               QRect(option.rect.x() + (2 * textMargin), option.rect.y(),
-                                                     option.rect.width() - (2 * textMargin),
-                                                     option.rect.height()))
+                textMargin = (
+                    QApplication.style().pixelMetric(QStyle.PM_FocusFrameHMargin) + 1
+                )
+                checkRect = QStyle.alignedRect(
+                    option.direction,
+                    Qt.AlignCenter,
+                    option.decorationSize,
+                    QRect(
+                        option.rect.x() + (2 * textMargin),
+                        option.rect.y(),
+                        option.rect.width() - (2 * textMargin),
+                        option.rect.height(),
+                    ),
+                )
                 if not checkRect.contains(event.pos()):
                     return False
             elif event.type() == QEvent.KeyPress:
@@ -164,9 +194,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
 
-        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))  # TODO pylint: disable=undefined-variable
-        self.changeCandidateSignal.connect(lambda data: self.changeDataInCandTable(data, row))  # TODO pylint: disable=undefined-variable
-        self.changeEvalSignal.connect(lambda data: self.changeDataInEvalTable(data, row))  # TODO pylint: disable=undefined-variable
+        self.changeDataSignal.connect(
+            lambda data: self.changeDataInSimTable(data, row)
+        )  # TODO pylint: disable=undefined-variable
+        self.changeCandidateSignal.connect(
+            lambda data: self.changeDataInCandTable(data, row)
+        )  # TODO pylint: disable=undefined-variable
+        self.changeEvalSignal.connect(
+            lambda data: self.changeDataInEvalTable(data, row)
+        )  # TODO pylint: disable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -186,7 +222,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.changeButton.hide()
         self.resetButton.clicked.connect(self.redrawDeleteTable)
         self.deleteTable.itemChanged.connect(self.deleteTableCellChanged)
-        self.deleteTable.verticalScrollBar().valueChanged.connect(self.scrollDeleteTable)
+        self.deleteTable.verticalScrollBar().valueChanged.connect(
+            self.scrollDeleteTable
+        )
         self.delegate = sdoeSetupFrame.MyItemDelegate(self)
         self.deleteTable.setItemDelegate(self.delegate)
 
@@ -205,8 +243,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.loadtrainData_button.clicked.connect(self.loadRStrainData)
         self.confirmInputs_button.clicked.connect(self.confirmInputs)
         self.outputCol_index = {'sel': 0, 'name': 1, 'rs1': 2, 'rs2': 3}
-        self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in
-                                    range(self.output_table.columnCount())]
+        self.outputColumnHeaders = [
+            self.output_table.horizontalHeaderItem(i).text()
+            for i in range(self.output_table.columnCount())
+        ]
         self.outputMeans = None
         self.outputStdDevs = None
 
@@ -271,13 +311,19 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         hist_list = []
         numFiles = len(self.dat.sdoeSimList)
         for i in range(numFiles):
-            if str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Candidate' \
-                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
+            if (
+                str(self.filesTable.cellWidget(i, self.typeCol).currentText())
+                == 'Candidate'
+                and self.filesTable.cellWidget(i, self.selCol).isChecked()
+            ):
                 cand_list.append(self.dat.sdoeSimList[i])
-            elif str(self.filesTable.cellWidget(i, self.typeCol).currentText()) == 'Previous Data'\
-                    and self.filesTable.cellWidget(i, self.selCol).isChecked():
+            elif (
+                str(self.filesTable.cellWidget(i, self.typeCol).currentText())
+                == 'Previous Data'
+                and self.filesTable.cellWidget(i, self.selCol).isChecked()
+            ):
                 hist_list.append(self.dat.sdoeSimList[i])
-        return cand_list, hist_list   # returns sample data structures
+        return cand_list, hist_list  # returns sample data structures
 
     def aggregateEnsembleList(self):
         cand_list, hist_list = self.getEnsembleList()
@@ -313,15 +359,24 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         cand_fname = os.path.join(self.dname, 'aggregate_candidates.csv')
         df_utils.write(cand_fname, cand_agg)
-        candidateData = LocalExecutionModule.readSampleFromCsvFile(cand_fname, askForNumInputs=False)
+        candidateData = LocalExecutionModule.readSampleFromCsvFile(
+            cand_fname, askForNumInputs=False
+        )
 
         hist_fname = os.path.join(self.dname, 'aggregate_previousData.csv')
         if len(hist_agg) == 0:
             historyData = None
         else:
-            hist_agg.insert(0, "__id",  range(cand_agg.shape[0], cand_agg.shape[0]+hist_agg.shape[0]), True)
+            hist_agg.insert(
+                0,
+                "__id",
+                range(cand_agg.shape[0], cand_agg.shape[0] + hist_agg.shape[0]),
+                True,
+            )
             df_utils.write(hist_fname, hist_agg)
-            historyData = LocalExecutionModule.readSampleFromCsvFile(hist_fname, askForNumInputs=False)
+            historyData = LocalExecutionModule.readSampleFromCsvFile(
+                hist_fname, askForNumInputs=False
+            )
 
         return candidateData, historyData
 
@@ -394,7 +449,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             self.dat.model,  # pylint: disable=no-member
             self.dat,
             returnDataSignal=self.addDataSignal,
-            parent=self
+            parent=self,
         )
         simDialog.show()
 
@@ -422,8 +477,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             _allFiles = '*.*'
         else:
             _allFiles = '*'
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Ensemble", '',
-                                                               "CSV (Comma delimited) (*.csv)")
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Open Ensemble", '', "CSV (Comma delimited) (*.csv)"
+        )
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -435,19 +491,27 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
             except:
                 import traceback
+
                 traceback.print_exc()
-                QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual '
-                                           'about the format.')
+                QMessageBox.critical(
+                    self,
+                    'Incorrect format',
+                    'File does not have the correct format! Please consult the users manual '
+                    'about the format.',
+                )
                 logging.getLogger("foqus." + __name__).exception(
-                    "Error loading psuade file.")
+                    "Error loading psuade file."
+                )
                 self.unfreeze()
                 return
         dataInfo = self.dataInfo(data)
         if dataInfo:
-            QMessageBox.critical(self, 'Incorrect format',
-                                 'File has missing values in one or more of the input columns.\n'
-                                 'Please correct the issue or load a different file.')
+            QMessageBox.critical(
+                self,
+                'Incorrect format',
+                'File has missing values in one or more of the input columns.\n'
+                'Please correct the issue or load a different file.',
+            )
             self.unfreeze()
             return
         else:
@@ -507,10 +571,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = self.filesTable.selectedIndexes()[0].row()
 
         sim = self.dat.sdoeSimList[row]
-        fileName, selectedFilter = QFileDialog.getSaveFileName(self,
-                                                               "File to Save Ensemble",
-                                                               '',
-                                                               psuadeFilter + ';;' + csvFilter)
+        fileName, selectedFilter = QFileDialog.getSaveFileName(
+            self, "File to Save Ensemble", '', psuadeFilter + ';;' + csvFilter
+        )
         if fileName == '':
             return
         if selectedFilter == psuadeFilter:
@@ -532,7 +595,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         irsf = None
         scatterLabel = 'Candidates'
         nImpPts = previewData.getNumImputedPoints()
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
+        dialog = sdoePreview(
+            previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self
+        )
         dialog.show()
 
     def editAgg(self):
@@ -550,7 +615,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         irsf = None
         scatterLabel = 'Candidates'
         nImpPts = 0
-        dialog = sdoePreview(previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
+        dialog = sdoePreview(
+            previewData, hname, self.dname, usf, nusf, irsf, scatterLabel, nImpPts, self
+        )
         dialog.show()
 
     def rsVal(self):
@@ -574,8 +641,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 indices.append(ind)
         data = data.getSubSample(indices)
         names = data.getInputNames()
-        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
-        data.deleteInputs([numInputs-1])
+        output_data = np.transpose(
+            np.array(data.getInputData()[:, -1], ndmin=2, dtype=float)
+        )
+        data.deleteInputs([numInputs - 1])
         data.model.numOutputs = 1
         data.model.setOutputNames(names[-1])
         data.setOutputData(output_data)
@@ -585,21 +654,33 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rs = RSCombos.lookupRS(rs1, rs2)
 
         if rs.startswith('MARS'):
-            rsOptions = {'marsBases': min([100, data.getNumSamples()]),
-                         'marsInteractions': min([8, data.getNumVarInputs()])}
+            rsOptions = {
+                'marsBases': min([100, data.getNumSamples()]),
+                'marsInteractions': min([8, data.getNumVarInputs()]),
+            }
         else:
             rsOptions = None
 
         genRSCode = True
 
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=True, error_tol_percent=5)
+        rsv = RSValidation(
+            data,
+            y,
+            rs,
+            rsOptions=rsOptions,
+            genCodeFile=genRSCode,
+            odoe=True,
+            error_tol_percent=5,
+        )
         _mfile = rsv.analyze()
 
         msgBox = QMessageBox()
         msgBox.setWindowTitle('Response Surface Validation Plot')
-        msgBox.setText('Check the response surface validation plot.'
-                       'If the generated response surface satisfy your needs, please confirm.'
-                       'If not, please select a new response surface and validate again.')
+        msgBox.setText(
+            'Check the response surface validation plot.'
+            'If the generated response surface satisfy your needs, please confirm.'
+            'If not, please select a new response surface and validate again.'
+        )
         msgBox.exec_()
         self.filesTable.cellWidget(row, self.rsConfCol).setEnabled(True)
         self.unfreeze()
@@ -633,13 +714,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             indices.append(ind[0])
         data = data.getSubSample(indices)
         names = data.getInputNames()
-        output_data = np.transpose(np.array(data.getInputData()[:, -1], ndmin=2, dtype=float))
-        data.deleteInputs([numInputs-1])
+        output_data = np.transpose(
+            np.array(data.getInputData()[:, -1], ndmin=2, dtype=float)
+        )
+        data.deleteInputs([numInputs - 1])
         data.model.numOutputs = 1
         data.model.setOutputNames(names[-1])
         data.setOutputData(output_data)
 
-        fname = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.dat')
+        fname = Common.getLocalFileName(
+            RSAnalyzer.dname, data.getModelName().split()[0], '.dat'
+        )
 
         eval_fname = os.path.join(RSAnalyzer.dname, 'rseval.dat')
         RSAnalyzer.writeRSsample(eval_fname, data.getInputData(), row=True, sdoe=True)
@@ -662,7 +747,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nImpPts = testData.shape[0]
         finalData = np.concatenate((trainData, testData), axis=0)
         df = pd.DataFrame(finalData, columns=colNames)
-        fileName = os.path.join(self.dname, data.getModelName().split('.csv')[0] + '_{}_imputed.csv'.format(rs))
+        fileName = os.path.join(
+            self.dname,
+            data.getModelName().split('.csv')[0] + '_{}_imputed.csv'.format(rs),
+        )
         df_utils.write(fileName, df)
 
         data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
@@ -693,9 +781,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         arr = data.getInputData()
         warningMessage = '{} candidate file info:\n\n'.format(data.getModelName())
         for i in range(data.getNumInputs()):
-            warningMessage += 'Missing values for column "{}": {}/{}\n'.format(data.getInputNames()[i],
-                                                                               sum(np.isnan(arr)[:, i]),
-                                                                               data.getNumSamples())
+            warningMessage += 'Missing values for column "{}": {}/{}\n'.format(
+                data.getInputNames()[i], sum(np.isnan(arr)[:, i]), data.getNumSamples()
+            )
         msgBox = QMessageBox()
         msgBox.setText(warningMessage)
         msgBox.exec_()
@@ -778,8 +866,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         legendreSpin.init(data)
         combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
         combo2.setMinimumContentsLength(10)
-        combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
-                    marsDegreeSpin=marsInteractionSpin, odoe=True)
+        combo1.init(
+            data,
+            combo2,
+            True,
+            True,
+            marsBasisSpin=marsBasisSpin,
+            marsDegreeSpin=marsInteractionSpin,
+            odoe=True,
+        )
 
         combo1.setProperty('row', row)
         combo2.setProperty('row', row)
@@ -812,7 +907,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             newRsConfButton = True
             rsConfButton = QPushButton()
             rsConfButton.setText('Confirm RS')
-            rsConfButton.setToolTip('If you are happy with the response surface, please confirm.')
+            rsConfButton.setToolTip(
+                'If you are happy with the response surface, please confirm.'
+            )
 
         rsConfButton.setProperty('row', row)
         if newRsConfButton:
@@ -837,8 +934,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Resize table
         self.resizeColumns()
-        minWidth = 2 + self.filesTable.columnWidth(0) + self.filesTable.columnWidth(1) + \
-                   self.filesTable.columnWidth(2) + self.filesTable.columnWidth(3)
+        minWidth = (
+            2
+            + self.filesTable.columnWidth(0)
+            + self.filesTable.columnWidth(1)
+            + self.filesTable.columnWidth(2)
+            + self.filesTable.columnWidth(3)
+        )
         if self.filesTable.verticalScrollBar().isVisible():
             minWidth += self.filesTable.verticalScrollBar().width()
         self.filesTable.setMinimumWidth(minWidth)
@@ -878,31 +980,42 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.aggFilesTable.setItem(2, self.descriptorCol, item)
 
         combo = QComboBox()
-        combo.addItems(['Uniform Space Filling (USF)', 'Non-Uniform Space Filling (NUSF)',
-                        'Input-Response Space Filling (IRSF)'])
+        combo.addItems(
+            [
+                'Uniform Space Filling (USF)',
+                'Non-Uniform Space Filling (NUSF)',
+                'Input-Response Space Filling (IRSF)',
+            ]
+        )
         self.aggFilesTable.setCellWidget(3, self.descriptorCol, combo)
         combo.setEnabled(True)
         if self.imputedData:
             combo.model().item(0).setEnabled(False)
             combo.setCurrentIndex(1)
 
-        combo.setToolTip("<ul>"
-                         "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
-                         "out throughout the input space. Use when the goal is to collect information across the "
-                         "experimental region, without assumptions about which areas of the region are more "
-                         "important than others. This provides good precision for predicting new results at any new "
-                         "location in the input space, because data will have been collected close by.</li>"
-                         "<br>"
-                         "<li><b>Non-Uniform Space Filling Designs</b> maintain the goal of having design points spread"
-                         " throughout the input space but add a feature of being able to emphasize some regions "
-                         "more than others. Use for added flexibility when certain areas of the input space require "
-                         "more in-depth exploration than others.</li>"
-                         "</ul>")
+        combo.setToolTip(
+            "<ul>"
+            "<li><b>Uniform Space Filling Designs</b> place design points so that they’re evenly spread "
+            "out throughout the input space. Use when the goal is to collect information across the "
+            "experimental region, without assumptions about which areas of the region are more "
+            "important than others. This provides good precision for predicting new results at any new "
+            "location in the input space, because data will have been collected close by.</li>"
+            "<br>"
+            "<li><b>Non-Uniform Space Filling Designs</b> maintain the goal of having design points spread"
+            " throughout the input space but add a feature of being able to emphasize some regions "
+            "more than others. Use for added flexibility when certain areas of the input space require "
+            "more in-depth exploration than others.</li>"
+            "</ul>"
+        )
 
         # Resize table
         self.resizeColumns()
-        minWidth = 2 + self.aggFilesTable.columnWidth(0) + self.aggFilesTable.columnWidth(1) + \
-                   self.aggFilesTable.columnWidth(2)
+        minWidth = (
+            2
+            + self.aggFilesTable.columnWidth(0)
+            + self.aggFilesTable.columnWidth(1)
+            + self.aggFilesTable.columnWidth(2)
+        )
         if self.aggFilesTable.verticalScrollBar().isVisible():
             minWidth += self.aggFilesTable.verticalScrollBar().width()
         self.aggFilesTable.setMinimumWidth(minWidth)
@@ -910,18 +1023,30 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def launchSdoe(self):
         candidateData, historyData = self.createAggData()
         dname = self.dname
-        if str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Uniform Space Filling (USF)':
+        if (
+            str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText())
+            == 'Uniform Space Filling (USF)'
+        ):
             type = 'USF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Non-Uniform Space ' \
-                                                                                        'Filling (NUSF)':
+        elif (
+            str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText())
+            == 'Non-Uniform Space '
+            'Filling (NUSF)'
+        ):
             type = 'NUSF'
-        elif str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText()) == 'Input-Response Space ' \
-                                                                                        'Filling (IRSF)':
+        elif (
+            str(self.aggFilesTable.cellWidget(3, self.descriptorCol).currentText())
+            == 'Input-Response Space '
+            'Filling (IRSF)'
+        ):
             type = 'IRSF'
         analysis = []
 
         from .sdoeAnalysisDialog import sdoeAnalysisDialog
-        dialog = sdoeAnalysisDialog(candidateData, dname, analysis, historyData, type, self)
+
+        dialog = sdoeAnalysisDialog(
+            candidateData, dname, analysis, historyData, type, self
+        )
         dialog.exec_()
         dialog.deleteLater()
 
@@ -1038,14 +1163,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.deleteTable.cellClicked.connect(self.activateDeleteButton)
         self.deleteTable.setColumnCount(self.nInputs + self.nOutputs + 1)
         self.deleteTable.setRowCount(self.nSamples + 1)
-        self.deleteTable.setHorizontalHeaderLabels(('Variables',) + inputNames + outputNames)
+        self.deleteTable.setHorizontalHeaderLabels(
+            ('Variables',) + inputNames + outputNames
+        )
         self.deleteTable.setContextMenuPolicy(Qt.CustomContextMenu)
         self.deleteTable.customContextMenuRequested.connect(self.popup)
         self.deleteTable.verticalHeader().setContextMenuPolicy(Qt.CustomContextMenu)
         self.deleteTable.verticalHeader().customContextMenuRequested.connect(self.popup)
-        sampleLabels = tuple([str(i) for i in range(1, self.nSamples+1)])
+        sampleLabels = tuple([str(i) for i in range(1, self.nSamples + 1)])
         self.deleteTable.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
-        inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
+        inputColor = QtGui.QColor(255, 0, 0, 50)  # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
         mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
@@ -1065,13 +1192,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             flags = item.flags()
             item.setFlags(flags & checkboxMask)
             item.setCheckState(Qt.Unchecked)
-            self.deleteTable.setItem(r+1, 0, item)
+            self.deleteTable.setItem(r + 1, 0, item)
 
-        for c in range(self.nInputs):         # populate input values
+        for c in range(self.nInputs):  # populate input values
             item = QTableWidgetItem()
             flags = item.flags()
             item.setFlags(flags & mask)
-            self.deleteTable.setItem(0, c+1, item)
+            self.deleteTable.setItem(0, c + 1, item)
             for r in range(end):
                 item = QTableWidgetItem(self.format % self.inputData[r][c])
                 flags = item.flags()
@@ -1081,21 +1208,21 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 else:
                     color = inputRefinedColor
                 item.setBackground(color)
-                self.deleteTable.setItem(r+1, c+1, item)
-        for c in range(self.nOutputs):        # output values populated in redrawDeleteTable()
-            item = self.deleteTable.item(0, self.nInputs+c+1)
+                self.deleteTable.setItem(r + 1, c + 1, item)
+        for c in range(self.nOutputs):  # output values populated in redrawDeleteTable()
+            item = self.deleteTable.item(0, self.nInputs + c + 1)
             if item is None:
                 item = QTableWidgetItem()
-                self.deleteTable.setItem(0, self.nInputs+c+1, item)
+                self.deleteTable.setItem(0, self.nInputs + c + 1, item)
             flags = item.flags()
             item.setFlags(flags & mask)
             item.setCheckState(Qt.Unchecked)
 
             for r in range(end):
-                item = self.deleteTable.item(r+1, self.nInputs+c+1)
+                item = self.deleteTable.item(r + 1, self.nInputs + c + 1)
                 if item is None:
                     item = QTableWidgetItem()
-                    self.deleteTable.setItem(r+1, self.nInputs+c+1, item)
+                    self.deleteTable.setItem(r + 1, self.nInputs + c + 1, item)
         self.redrawDeleteTable()
 
         self.unfreeze()
@@ -1112,7 +1239,12 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             check = Qt.Unchecked
         if check is not None:
             self.freeze()
-            rows = set([i.row() for i in self.deleteTable.selectionModel().selection().indexes()])
+            rows = set(
+                [
+                    i.row()
+                    for i in self.deleteTable.selectionModel().selection().indexes()
+                ]
+            )
             _nSamples = self.deleteTable.rowCount() - 1
             for r in rows:
                 item = self.deleteTable.item(r, 0)
@@ -1138,10 +1270,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             first -= 1
         self.deleteScrollRow = first
 
-        inputColor = QtGui.QColor(255, 0, 0, 50)      # translucent red
+        inputColor = QtGui.QColor(255, 0, 0, 50)  # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
-        outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
-        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
+        outputColor = QtGui.QColor(255, 255, 0, 50)  # translucent yellow
+        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)  # translucent yellow
         mask = ~Qt.ItemIsEditable
         checkboxMask = ~(Qt.ItemIsSelectable | Qt.ItemIsEditable)
         numRows = self.deleteTable.rowCount()
@@ -1156,7 +1288,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 item.setFlags(flags & checkboxMask)
                 item.setCheckState(Qt.Unchecked)
                 self.deleteTable.setItem(r, 0, item)
-            for c in range(self.nInputs):         # populate input values
+            for c in range(self.nInputs):  # populate input values
                 item = self.deleteTable.item(r, c + 1)
                 if item is None:
                     item = QTableWidgetItem(self.format % self.inputData[r - 1][c])
@@ -1167,21 +1299,23 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     else:
                         color = inputRefinedColor
                     item.setBackground(color)
-                    self.deleteTable.setItem(r, c+1, item)
+                    self.deleteTable.setItem(r, c + 1, item)
             if isinstance(self.outputData, numpy.ndarray):
-                for c in range(self.nOutputs):        # populate output values
+                for c in range(self.nOutputs):  # populate output values
                     item = self.deleteTable.item(r, self.nInputs + c + 1)
                     if item is None:
-                        if math.isnan(self.outputData[r-1][c]):
+                        if math.isnan(self.outputData[r - 1][c]):
                             item = QTableWidgetItem()
                         else:
-                            item = QTableWidgetItem(self.format % self.outputData[r - 1][c])
+                            item = QTableWidgetItem(
+                                self.format % self.outputData[r - 1][c]
+                            )
                         if r - 1 < self.nSamples - self.nSamplesAdded:
                             color = outputColor
                         else:
                             color = outputRefinedColor
                         item.setBackground(color)
-                        self.deleteTable.setItem(r, self.nInputs+c+1, item)
+                        self.deleteTable.setItem(r, self.nInputs + c + 1, item)
 
         self.isDrawingDeleteTable = False
 
@@ -1196,23 +1330,25 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         data = self.dat.sdoeSimList[row]
         _data = data.getValidSamples()  # filter out samples that have no output results
 
-        outputColor = QtGui.QColor(255, 255, 0, 50)   # translucent yellow
-        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)   # translucent yellow
+        outputColor = QtGui.QColor(255, 255, 0, 50)  # translucent yellow
+        outputRefinedColor = QtGui.QColor(255, 255, 0, 100)  # translucent yellow
         for c in range(self.nInputs):
-            item = self.deleteTable.item(0, c+1)
+            item = self.deleteTable.item(0, c + 1)
             item.setCheckState(Qt.Unchecked)
             for r in range(self.nSamples):
-                item = self.deleteTable.item(r+1, 0)
+                item = self.deleteTable.item(r + 1, 0)
                 if item is not None:
                     item.setCheckState(Qt.Unchecked)
 
-        for c in range(self.nOutputs):        # populate output values
-            item = self.deleteTable.item(0, self.nInputs+c+1)
+        for c in range(self.nOutputs):  # populate output values
+            item = self.deleteTable.item(0, self.nInputs + c + 1)
             item.setCheckState(Qt.Unchecked)
             for r in range(self.deleteScrollRow - 1, self.deleteScrollRow + 14):
-                item = self.deleteTable.item(r+1, self.nInputs+c+1)
+                item = self.deleteTable.item(r + 1, self.nInputs + c + 1)
                 if item is not None:
-                    if isinstance(self.outputData, numpy.ndarray) and not numpy.isnan(self.outputData[r][c]):
+                    if isinstance(self.outputData, numpy.ndarray) and not numpy.isnan(
+                        self.outputData[r][c]
+                    ):
                         item.setText(self.format % self.outputData[r][c])
                     else:
                         item.setText('')
@@ -1249,11 +1385,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selections
         samples = []
         vars = []
-        for i in range(1, nSamples+1):
+        for i in range(1, nSamples + 1):
             item = self.deleteTable.item(i, 0)
             if (item is not None) and item.checkState() == Qt.Checked:
                 samples.append(i - 1)
-        for i in range(1, nVars+1):
+        for i in range(1, nVars + 1):
             item = self.deleteTable.item(0, i)
             if (item is not None) and item.checkState() == Qt.Checked:
                 vars.append(i - 1)
@@ -1269,15 +1405,29 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             k = numpy.where(vars >= nInputs)
             outVars = vars[k]
             outVars = outVars.tolist()
-            outVars = [x-nInputs for x in outVars]
+            outVars = [x - nInputs for x in outVars]
 
-        return samples, inVars, outVars, nSamples, nInputs, nOutputs  # first 3 output args are 1-indexed
+        return (
+            samples,
+            inVars,
+            outVars,
+            nSamples,
+            nInputs,
+            nOutputs,
+        )  # first 3 output args are 1-indexed
 
     def activateDeleteButton(self, row, column):
 
         if row == 0 or column == 0:
             b = False
-            samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
+            (
+                samples,
+                inVars,
+                outVars,
+                nSamples,
+                nInputs,
+                nOutputs,
+            ) = self.getDeleteSelections()
             if samples or inVars or outVars:
                 if (nSamples - len(samples) > 0) and (nInputs - len(inVars) > 0):
                     b = True
@@ -1301,11 +1451,20 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         # get selected row
         row = self.filesTable.selectedIndexes()[0].row()
         data = self.dat.sdoeSimList[row]
-        fname = Common.getLocalFileName(DataProcessor.dname, data.getModelName().split()[0], '.dat')
+        fname = Common.getLocalFileName(
+            DataProcessor.dname, data.getModelName().split()[0], '.dat'
+        )
         data.writeToPsuade(fname)
 
         # perform deletion
-        samples, inVars, outVars, nSamples, nInputs, nOutputs = self.getDeleteSelections()
+        (
+            samples,
+            inVars,
+            outVars,
+            nSamples,
+            nInputs,
+            nOutputs,
+        ) = self.getDeleteSelections()
         if samples:
             samplesToKeep = [i for i in range(nSamples) if i not in samples]
             newdata = data.getSubSample(samplesToKeep)
@@ -1339,7 +1498,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = index.row()
         col = index.column()
 
-        modifiedColor = QtGui.QColor(0, 250, 0, 100)      # translucent green
+        modifiedColor = QtGui.QColor(0, 250, 0, 100)  # translucent green
 
         # get selected row
         simRow = self.filesTable.selectedIndexes()[0].row()
@@ -1363,10 +1522,14 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def updateOutputValues(self):
         # Warn user
-        button = QMessageBox.question(self, 'Change output values?',
-                                      'You are about to permanently change the output values.  '
-                                      'This cannot be undone.  Do you want to proceed?',
-                                      QMessageBox.Yes, QMessageBox.No)
+        button = QMessageBox.question(
+            self,
+            'Change output values?',
+            'You are about to permanently change the output values.  '
+            'This cannot be undone.  Do you want to proceed?',
+            QMessageBox.Yes,
+            QMessageBox.No,
+        )
         if button != QMessageBox.Yes:
             return
 
@@ -1412,8 +1575,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             _allFiles = '*.*'
         else:
             _allFiles = '*'
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Train Data", '',
-                                                               "CSV (Comma delimited) (*.csv)")
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Open Train Data", '', "CSV (Comma delimited) (*.csv)"
+        )
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -1425,12 +1589,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
             except:
                 import traceback
+
                 traceback.print_exc()
-                QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual '
-                                           'about the format.')
+                QMessageBox.critical(
+                    self,
+                    'Incorrect format',
+                    'File does not have the correct format! Please consult the users manual '
+                    'about the format.',
+                )
                 logging.getLogger("foqus." + __name__).exception(
-                    "Error loading psuade file.")
+                    "Error loading psuade file."
+                )
                 self.unfreeze()
                 return
         self.trainData_edit.setText(fileName)
@@ -1453,7 +1622,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.outputStdDevs = [0] * nOutputs
         self.output_table.setRowCount(nOutputs)
         self.output_table.setColumnCount(len(self.outputCol_index))
-        self.output_table.setHorizontalHeaderLabels(self.outputColumnHeaders[:len(self.outputCol_index)])
+        self.output_table.setHorizontalHeaderLabels(
+            self.outputColumnHeaders[: len(self.outputCol_index)]
+        )
         for i in range(nOutputs):
 
             # compute mean and standard deviation
@@ -1478,7 +1649,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                     chkbox = QCheckBox('', self)
                     chkbox.setChecked(True)
                     chkbox.setEnabled(True)
-                    self.output_table.setCellWidget(i, self.outputCol_index['sel'], chkbox)
+                    self.output_table.setCellWidget(
+                        i, self.outputCol_index['sel'], chkbox
+                    )
                     chkbox.toggled.connect(self.on_output_checkbox_changed)
 
                 # add combo boxes for RS1 and rs2 and Legendre spinbox
@@ -1497,8 +1670,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 legendreSpin.init(data)
                 combo2.init(data, legendreSpin, useShortNames=True, odoe=True)
                 combo2.setMinimumContentsLength(10)
-                combo1.init(data, combo2, True, True, marsBasisSpin=marsBasisSpin,
-                            marsDegreeSpin=marsInteractionSpin, odoe=True)
+                combo1.init(
+                    data,
+                    combo2,
+                    True,
+                    True,
+                    marsBasisSpin=marsBasisSpin,
+                    marsDegreeSpin=marsInteractionSpin,
+                    odoe=True,
+                )
 
                 combo1.setProperty('row', i)
                 combo2.setProperty('row', i)
@@ -1506,9 +1686,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 self.output_table.setCellWidget(i, self.outputCol_index['rs1'], combo1)
                 self.output_table.setCellWidget(i, self.outputCol_index['rs2'], combo2)
                 if 'mars1' in self.outputCol_index:
-                    self.output_table.setCellWidget(i, self.outputCol_index['mars1'], marsBasisSpin)
+                    self.output_table.setCellWidget(
+                        i, self.outputCol_index['mars1'], marsBasisSpin
+                    )
                 if 'mars2' in self.outputCol_index:
-                    self.output_table.setCellWidget(i, self.outputCol_index['mars2'], marsInteractionSpin)
+                    self.output_table.setCellWidget(
+                        i, self.outputCol_index['mars2'], marsInteractionSpin
+                    )
 
             else:
                 # add a disabled checkbox
@@ -1572,7 +1756,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         data.deleteInputs(del_indices)
 
-        simDialog = odoeSimSetup(data.model, self.dat, returnDataSignal=self.addPriorSignal, parent=self)
+        simDialog = odoeSimSetup(
+            data.model, self.dat, returnDataSignal=self.addPriorSignal, parent=self
+        )
         simDialog.show()
 
         QApplication.processEvents()
@@ -1587,8 +1773,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             _allFiles = '*.*'
         else:
             _allFiles = '*'
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Candidate Set", '',
-                                                               "CSV (Comma delimited) (*.csv)")
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Open Candidate Set", '', "CSV (Comma delimited) (*.csv)"
+        )
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -1600,12 +1787,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
             except:
                 import traceback
+
                 traceback.print_exc()
-                QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual '
-                                           'about the format.')
+                QMessageBox.critical(
+                    self,
+                    'Incorrect format',
+                    'File does not have the correct format! Please consult the users manual '
+                    'about the format.',
+                )
                 logging.getLogger("foqus." + __name__).exception(
-                    "Error loading psuade file.")
+                    "Error loading psuade file."
+                )
                 self.unfreeze()
                 return
 
@@ -1629,7 +1821,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 del_indices.append(i)
 
         data.deleteInputs(del_indices)
-        simDialog = odoeSimSetup(data.model, self.dat, returnDataSignal=self.addCandidateSignal, parent=self)
+        simDialog = odoeSimSetup(
+            data.model, self.dat, returnDataSignal=self.addCandidateSignal, parent=self
+        )
         simDialog.show()
 
     def addDataToCandTable(self, data):
@@ -1701,8 +1895,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Resize table
         self.resizeColumns()
-        minWidth = 2 + self.odoe_cand_table.columnWidth(0) + self.odoe_cand_table.columnWidth(1) + \
-                   self.odoe_cand_table.columnWidth(2) + self.odoe_cand_table.columnWidth(3)
+        minWidth = (
+            2
+            + self.odoe_cand_table.columnWidth(0)
+            + self.odoe_cand_table.columnWidth(1)
+            + self.odoe_cand_table.columnWidth(2)
+            + self.odoe_cand_table.columnWidth(3)
+        )
         if self.odoe_cand_table.verticalScrollBar().isVisible():
             minWidth += self.odoe_cand_table.verticalScrollBar().width()
         self.odoe_cand_table.setMinimumWidth(minWidth)
@@ -1712,7 +1911,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = sender.property('row')
 
         self.changeCandidateSignal.disconnect()
-        self.changeCandidateSignal.connect(lambda data: self.changeDataInCandTable(data, row))
+        self.changeCandidateSignal.connect(
+            lambda data: self.changeDataInCandTable(data, row)
+        )
 
         previewData = self.dat.odoeCandList[row]
         hname = None
@@ -1721,7 +1922,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         irsf = None
         scatterLabel = 'Candidates'
         nImpPts = 0
-        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, nImpPts, self)
+        dialog = sdoePreview(
+            previewData,
+            hname,
+            self.odoe_dname,
+            usf,
+            nusf,
+            irsf,
+            scatterLabel,
+            nImpPts,
+            self,
+        )
         dialog.show()
 
     def candSelected(self):
@@ -1779,7 +1990,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             if self.odoe_cand_table.cellWidget(i, self.selectCol).isChecked():
                 cand_list.append(self.dat.odoeCandList[i])
 
-        return cand_list   # returns sample data structures
+        return cand_list  # returns sample data structures
 
     def aggregateCandList(self):
         cand_list = self.getCandList()
@@ -1801,7 +2012,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         cand_fname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
         df_utils.write(cand_fname, cand_agg)
-        candidateData = LocalExecutionModule.readSampleFromCsvFile(cand_fname, askForNumInputs=False)
+        candidateData = LocalExecutionModule.readSampleFromCsvFile(
+            cand_fname, askForNumInputs=False
+        )
 
         return candidateData
 
@@ -1828,8 +2041,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         msg = QMessageBox()
         msg.setIcon(QMessageBox.Warning)
         msg.setWindowTitle('Design inputs and candidates/evaluation set do not match!')
-        msg.setText('The design inputs selected in the input settings table do not match the candidate/evaluation set inputs.'
-                    'Please make sure your candidate/evaluation set inputs match the design inputs.')
+        msg.setText(
+            'The design inputs selected in the input settings table do not match the candidate/evaluation set inputs.'
+            'Please make sure your candidate/evaluation set inputs match the design inputs.'
+        )
         msg.setStandardButtons(QMessageBox.Ok)
         reply = msg.exec_()
         return reply
@@ -1841,8 +2056,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             _allFiles = '*.*'
         else:
             _allFiles = '*'
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Evaluation Set", '',
-                                                               "CSV (Comma delimited) (*.csv)")
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Open Evaluation Set", '', "CSV (Comma delimited) (*.csv)"
+        )
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -1854,12 +2070,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
             except:
                 import traceback
+
                 traceback.print_exc()
-                QMessageBox.critical(self, 'Incorrect format',
-                                           'File does not have the correct format! Please consult the users manual '
-                                           'about the format.')
+                QMessageBox.critical(
+                    self,
+                    'Incorrect format',
+                    'File does not have the correct format! Please consult the users manual '
+                    'about the format.',
+                )
                 logging.getLogger("foqus." + __name__).exception(
-                    "Error loading psuade file.")
+                    "Error loading psuade file."
+                )
                 self.unfreeze()
                 return
 
@@ -1942,8 +2163,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Resize table
         self.resizeColumns()
-        minWidth = 2 + self.odoe_eval_table.columnWidth(0) + self.odoe_eval_table.columnWidth(1) + \
-                   self.odoe_eval_table.columnWidth(2) + self.odoe_eval_table.columnWidth(3)
+        minWidth = (
+            2
+            + self.odoe_eval_table.columnWidth(0)
+            + self.odoe_eval_table.columnWidth(1)
+            + self.odoe_eval_table.columnWidth(2)
+            + self.odoe_eval_table.columnWidth(3)
+        )
         if self.odoe_eval_table.verticalScrollBar().isVisible():
             minWidth += self.odoe_eval_table.verticalScrollBar().width()
         self.odoe_eval_table.setMinimumWidth(minWidth)
@@ -1953,7 +2179,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         row = sender.property('row')
 
         self.changeEvalSignal.disconnect()
-        self.changeEvalSignal.connect(lambda data: self.changeDataInEvalTable(data, row))
+        self.changeEvalSignal.connect(
+            lambda data: self.changeDataInEvalTable(data, row)
+        )
 
         previewData = self.dat.odoeEvalList[row]
         hname = None
@@ -1961,7 +2189,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = 'Evaluations'
-        dialog = sdoePreview(previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self)
+        dialog = sdoePreview(
+            previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self
+        )
         dialog.show()
 
     def evalSelected(self):
@@ -2016,7 +2246,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             if self.odoe_eval_table.cellWidget(i, self.selectCol).isChecked():
                 eval_list.append(self.dat.odoeEvalList[i])
 
-        return eval_list   # returns sample data structures
+        return eval_list  # returns sample data structures
 
     def aggregateEvalList(self):
         eval_list = self.getEvalList()
@@ -2038,7 +2268,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         eval_fname = os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')
         df_utils.write(eval_fname, eval_agg)
-        evalData = LocalExecutionModule.readSampleFromCsvFile(eval_fname, askForNumInputs=False)
+        evalData = LocalExecutionModule.readSampleFromCsvFile(
+            eval_fname, askForNumInputs=False
+        )
 
         return evalData
 
@@ -2051,7 +2283,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         numOutputs = self.output_table.rowCount()
         count = 0
         for row in range(numOutputs):
-            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
+            if self.output_table.cellWidget(
+                row, self.outputCol_index['sel']
+            ).isChecked():
                 count += 1
 
         return count > 0
@@ -2067,10 +2301,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rs2 = {}
         numOutputs = self.output_table.rowCount()
         for row in range(numOutputs):
-            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
-                y[row] = row+1
-                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
-                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+            if self.output_table.cellWidget(
+                row, self.outputCol_index['sel']
+            ).isChecked():
+                y[row] = row + 1
+                rs1[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs1']
+                )
+                rs2[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs2']
+                )
 
         rs = {}
         for row in y:
@@ -2079,8 +2319,10 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rsOptions = {}
         for row in y:
             if rs[row].startswith('MARS'):
-                rsOptions[row] = {'marsBases': min([100, self.odoe_data.getNumSamples()]),
-                                  'marsInteractions': min([8, self.odoe_data.getNumVarInputs()])}
+                rsOptions[row] = {
+                    'marsBases': min([100, self.odoe_data.getNumSamples()]),
+                    'marsInteractions': min([8, self.odoe_data.getNumVarInputs()]),
+                }
             else:
                 rsOptions[row] = None
 
@@ -2091,9 +2333,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         msgBox = QMessageBox()
         msgBox.setWindowTitle('Response Surface Validation Plots')
-        msgBox.setText('Check the response surface validation plots for each one of your outputs.'
-                       'If the generated response surfaces satisfy your needs, please confirm.'
-                       'If not, please select a new response surface and validate again.')
+        msgBox.setText(
+            'Check the response surface validation plots for each one of your outputs.'
+            'If the generated response surfaces satisfy your needs, please confirm.'
+            'If not, please select a new response surface and validate again.'
+        )
         msgBox.exec_()
         self.confirmRS_button.setEnabled(True)
         self.unfreeze()
@@ -2106,7 +2350,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         data = data.getValidSamples()  # filter out samples that have no output results
 
         # validate RS
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile=genRSCode, odoe=odoe, error_tol_percent=5)
+        rsv = RSValidation(
+            data,
+            y,
+            rs,
+            rsOptions=rsOptions,
+            genCodeFile=genRSCode,
+            odoe=odoe,
+            error_tol_percent=5,
+        )
         mfile = rsv.analyze()
 
         self.unfreeze()
@@ -2121,7 +2373,9 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def runRsEval(self):
         cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
-        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+        cdata = LocalExecutionModule.readSampleFromCsvFile(
+            cfname, askForNumInputs=False
+        )
         pdata = self.odoe_priorData
         rsdata = self.odoe_data
         y = {}
@@ -2129,10 +2383,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rs2 = {}
         numOutputs = self.output_table.rowCount()
         for row in range(numOutputs):
-            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
-                y[row] = row+1
-                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
-                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+            if self.output_table.cellWidget(
+                row, self.outputCol_index['sel']
+            ).isChecked():
+                y[row] = row + 1
+                rs1[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs1']
+                )
+                rs2[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs2']
+                )
 
         rs = {}
         for row in y:
@@ -2143,18 +2403,28 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
     def populateRsEvalTable(self):
 
         cfname = os.path.join(self.odoe_dname, 'aggregate_candidates.csv')
-        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+        cdata = LocalExecutionModule.readSampleFromCsvFile(
+            cfname, askForNumInputs=False
+        )
 
         rsdata = self.odoe_data
         outputName = rsdata.getOutputNames()[0]
         rsevalfname = 'odoeu_rseval.out'
-        inputData, outputData, numInputs, numOutputs = LocalExecutionModule.readDataFromSimpleFile(rsevalfname)
+        (
+            inputData,
+            outputData,
+            numInputs,
+            numOutputs,
+        ) = LocalExecutionModule.readDataFromSimpleFile(rsevalfname)
 
         inputNames = cdata.getInputNames()
 
         # Set up table
         self.rsEval_table.setColumnCount(numInputs + 2)
-        headers = inputNames + ('{} mean'.format(outputName), '{} std'.format(outputName))
+        headers = inputNames + (
+            '{} mean'.format(outputName),
+            '{} std'.format(outputName),
+        )
         self.rsEval_table.setRowCount(inputData.shape[0])
 
         c = 0
@@ -2181,9 +2451,13 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         # Make mean and std columns editable
         for r in range(rows):
-            for c in range(columns-2, columns):
+            for c in range(columns - 2, columns):
                 item = self.rsEval_table.item(r, c)
-                item.setFlags(QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable | QtCore.Qt.ItemIsEnabled)
+                item.setFlags(
+                    QtCore.Qt.ItemIsSelectable
+                    | QtCore.Qt.ItemIsEditable
+                    | QtCore.Qt.ItemIsEnabled
+                )
 
     def getRsEvalTableData(self):
         fname = os.path.join(self.odoe_dname, 'CandidateSet')
@@ -2219,15 +2493,23 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         numRestarts = int(self.restarts_comboBox.currentText())
 
-        cfname = shutil.copy(os.path.join(self.odoe_dname, 'aggregate_candidates.csv'), outdir)
-        cdata = LocalExecutionModule.readSampleFromCsvFile(cfname, askForNumInputs=False)
+        cfname = shutil.copy(
+            os.path.join(self.odoe_dname, 'aggregate_candidates.csv'), outdir
+        )
+        cdata = LocalExecutionModule.readSampleFromCsvFile(
+            cfname, askForNumInputs=False
+        )
         cfile_temp = self.getRsEvalTableData()
         cfile = shutil.copy(cfile_temp, outdir)
         pdata = self.odoe_priorData
         rsdata = self.odoe_data
         if os.path.exists(os.path.join(self.odoe_dname, 'aggregate_evaluations.csv')):
-            efname = shutil.copy(os.path.join(self.odoe_dname, 'aggregate_evaluations.csv'), outdir)
-            edata = LocalExecutionModule.readSampleFromCsvFile(efname, askForNumInputs=False)
+            efname = shutil.copy(
+                os.path.join(self.odoe_dname, 'aggregate_evaluations.csv'), outdir
+            )
+            edata = LocalExecutionModule.readSampleFromCsvFile(
+                efname, askForNumInputs=False
+            )
         else:
             efname = None
             edata = None
@@ -2237,10 +2519,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         rs2 = {}
         numOutputs = self.output_table.rowCount()
         for row in range(numOutputs):
-            if self.output_table.cellWidget(row, self.outputCol_index['sel']).isChecked():
-                y[row] = row+1
-                rs1[row] = self.output_table.cellWidget(row, self.outputCol_index['rs1'])
-                rs2[row] = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+            if self.output_table.cellWidget(
+                row, self.outputCol_index['sel']
+            ).isChecked():
+                y[row] = row + 1
+                rs1[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs1']
+                )
+                rs2[row] = self.output_table.cellWidget(
+                    row, self.outputCol_index['rs2']
+                )
 
         rs = {}
         for row in y:
@@ -2250,12 +2538,16 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         time_list = []
         for nr in range(numRestarts):
             t0 = time.time()
-            best_indices, best_optval = odoeu.odoeu(cdata, cfile, pdata, rsdata,
-                                                    rs, optCriterion, designSize, edata=edata)
+            best_indices, best_optval = odoeu.odoeu(
+                cdata, cfile, pdata, rsdata, rs, optCriterion, designSize, edata=edata
+            )
             time_list.append(time.time() - t0)
-            self.resultMessage += "Results for Run #%d:\n" % (nr+1)
+            self.resultMessage += "Results for Run #%d:\n" % (nr + 1)
             self.resultMessage += "Best Design(s): %s\n" % best_indices
-            self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (optCriterion, best_optval)
+            self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (
+                optCriterion,
+                best_optval,
+            )
 
         # Save results to text file
         resultsFile = os.path.join(outdir, 'odoe_results.txt')
@@ -2290,7 +2582,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         f.write("Number of restarts: %d\n\n" % numRestarts)
 
         f.write("Total runtime: %d seconds\n" % sum(time_list))
-        avg_time = sum(time_list)/len(time_list)
+        avg_time = sum(time_list) / len(time_list)
         f.write("Average runtime (per restart): %d seconds\n" % avg_time)
         f.close()
 

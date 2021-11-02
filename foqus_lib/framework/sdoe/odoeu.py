@@ -71,6 +71,7 @@ def rseval(rsdata, pdata, cdata, rstypes):
     f = tempfile.SpooledTemporaryFile(mode='wt')
     if platform.system() == 'Windows':
         import win32api
+
         cfile = win32api.GetShortPathName(cfile)
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
@@ -78,11 +79,13 @@ def rseval(rsdata, pdata, cdata, rstypes):
     f.write('%s\n' % cmd)
     f.write('y\n')
     for i in priorIndices:
-        f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
-    f.write('0\n')                 # 0 to proceed
-    f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
-    f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
-    for rs in rstypes:             # for each output, specify RS index
+        f.write(
+            '%d\n' % i
+        )  # specify random variables, should be consistent with vars in prior
+    f.write('0\n')  # 0 to proceed
+    f.write('%s\n' % pfile)  # file containing the prior sample (psuade sample format)
+    f.write('%s\n' % cfile)  # file containing the candidate set (psuade sample format)
+    for rs in rstypes:  # for each output, specify RS index
         f.write('%d\n' % rsdict[rstypes[rs]])
     f.write('quit\n')
     f.seek(0)
@@ -93,7 +96,7 @@ def rseval(rsdata, pdata, cdata, rstypes):
         return None
 
     outfile = 'odoeu_rseval.out'
-    assert(os.path.exists(outfile))
+    assert os.path.exists(outfile)
     return outfile
 
 
@@ -112,14 +115,14 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
 
     # parse params
     opts = ['G', 'I', 'D', 'A']
-    assert(opt in opts)
-    optdict = dict(zip(opts, range(1, len(opts)+1)))
+    assert opt in opts
+    optdict = dict(zip(opts, range(1, len(opts) + 1)))
     opt_index = optdict[opt]
     cmd = 'odoeu_optns'
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
-    assert(99 < max_iters < 1001)
+    assert 99 < max_iters < 1001
 
     # initialize constants
     ncand = cdata.getNumSamples()
@@ -136,8 +139,8 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # TO DO for Pedro: check in GUI?
     # this checks to see if user is trying to pass an unsupported RS
     for rs in rstypes:
-        assert(rstypes[rs] in rs_list)
-    assert(len(rstypes) == nOutputs)
+        assert rstypes[rs] in rs_list
+    assert len(rstypes) == nOutputs
 
     # extract the indices of RS types for outputs
     rs_idx = [ResponseSurfaces.getEnumValue(s) for s in rs_list]
@@ -159,25 +162,32 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     f = tempfile.SpooledTemporaryFile(mode='wt')
     if platform.system() == 'Windows':
         import win32api
+
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
         efile = win32api.GetShortPathName(efile)
 
     f.write('%s\n' % cmd)
     f.write('y\n')
-    f.write('%d\n' % opt_index)    # choose G, I, D, A
-    f.write('%d\n' % ncand)        # size of the candidate set
-    f.write('%d\n' % nd)           # design size
-    f.write('%d\n' % max_iters)    # max number of iterations, must be greater or equal to 100
-    f.write('n\n')                 # no initial guess
-    f.write('%s\n' % rsfile)       # file containing RS training data (psuade format)
+    f.write('%d\n' % opt_index)  # choose G, I, D, A
+    f.write('%d\n' % ncand)  # size of the candidate set
+    f.write('%d\n' % nd)  # design size
+    f.write(
+        '%d\n' % max_iters
+    )  # max number of iterations, must be greater or equal to 100
+    f.write('n\n')  # no initial guess
+    f.write('%s\n' % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
-        f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
-    f.write('0\n')                 # 0 to proceed
-    f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
-    f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
-    f.write('%s\n' % efile)        # ... evaluate the optimality values on the (same) candidate set
-    for rs in rstypes:             # for each output, specify RS index
+        f.write(
+            '%d\n' % i
+        )  # specify random variables, should be consistent with vars in prior
+    f.write('0\n')  # 0 to proceed
+    f.write('%s\n' % pfile)  # file containing the prior sample (psuade sample format)
+    f.write('%s\n' % cfile)  # file containing the candidate set (psuade sample format)
+    f.write(
+        '%s\n' % efile
+    )  # ... evaluate the optimality values on the (same) candidate set
+    for rs in rstypes:  # for each output, specify RS index
         f.write('%d\n' % rsdict[rstypes[rs]])
         # TO DO: as we add more RS, may need to port more code from RSAnalyzer.py to handle different RS types
     f.write('quit\n')

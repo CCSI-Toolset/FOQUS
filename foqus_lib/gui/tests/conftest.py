@@ -20,7 +20,11 @@ def configure_logging(request):
 
     console = logging.StreamHandler()
     console.setLevel(logging.DEBUG)
-    console.setFormatter(logging.Formatter('%(relativeCreated)6d :: %(levelname)s :: %(filename)s:L%(lineno)d :: %(message)s'))
+    console.setFormatter(
+        logging.Formatter(
+            '%(relativeCreated)6d :: %(levelname)s :: %(filename)s:L%(lineno)d :: %(message)s'
+        )
+    )
     logger.addHandler(console)
 
 
@@ -45,7 +49,6 @@ def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
     _qtbot.describe()
 
 
-
 @pytest.fixture(scope='session')
 def main_window_params(request):
     cfg = request.config
@@ -60,6 +63,7 @@ def main_window_params(request):
 @pytest.yield_fixture(scope="class")
 def main_window(foqus_session, qtbot, main_window_params):
     from foqus_lib import foqus
+
     foqus.guiImport(mpl_backend='AGG')
 
     from foqus_lib.gui.main.mainWindow import mainWindow
@@ -68,14 +72,14 @@ def main_window(foqus_session, qtbot, main_window_params):
         main_window_params['title'],
         main_window_params['width'],
         main_window_params['height'],
-        foqus_session, # FOQUS session data
+        foqus_session,  # FOQUS session data
         splash=None,
         showUQ=False,
         showOpt=False,
         showOuu=True,
         showBasicData=False,
         showSDOE=False,
-        ts=False
+        ts=False,
     )
     main_win.closeEvent = lambda *args, **kwargs: None
     print(f'main_win={main_win}')
@@ -90,9 +94,6 @@ def main_window(foqus_session, qtbot, main_window_params):
 
 @pytest.fixture(scope='class')
 def uq_setup_view(main_window, flowsheet_session_file, qtbot):
-    main_window.loadSessionFile(
-        flowsheet_session_file,
-        saveCurrent=False
-    )
+    main_window.loadSessionFile(flowsheet_session_file, saveCurrent=False)
     main_window.uqSetupAction.trigger()
     return main_window.uqSetupFrame

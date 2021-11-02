@@ -21,7 +21,8 @@ import platform
 import abc
 import numpy as np
 from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
-#from PySide import QtCore, QtGui
+
+# from PySide import QtCore, QtGui
 from PyQt5 import QtCore, QtGui
 from .Model import Model
 from .SampleData import SampleData
@@ -34,14 +35,33 @@ from .Plotter import Plotter
 from .UQAnalysis import UQAnalysis
 from .UQRSAnalysis import UQRSAnalysis
 
-class RSInference(UQRSAnalysis):
 
-    def __init__(self, ensemble, ytable, xtable, obsTable, genPostSample = False, addDisc = False,
-                 showList = None, endFunction = None, disableWhilePlotting = None,
-                 userRegressionFile = None):
+class RSInference(UQRSAnalysis):
+    def __init__(
+        self,
+        ensemble,
+        ytable,
+        xtable,
+        obsTable,
+        genPostSample=False,
+        addDisc=False,
+        showList=None,
+        endFunction=None,
+        disableWhilePlotting=None,
+        userRegressionFile=None,
+    ):
         outputs = [i + 1 for i in range(len(ytable)) if ytable[i] is not None]
-        super(RSInference, self).__init__(ensemble, outputs, UQAnalysis.INFERENCE, [y['rsIndex'] for y in ytable if y is not None])
-        self.inputs = [i + 1 for i in range(len(xtable)) if xtable[i] is None or xtable[i]['type'] != 'Fixed']
+        super(RSInference, self).__init__(
+            ensemble,
+            outputs,
+            UQAnalysis.INFERENCE,
+            [y['rsIndex'] for y in ytable if y is not None],
+        )
+        self.inputs = [
+            i + 1
+            for i in range(len(xtable))
+            if xtable[i] is None or xtable[i]['type'] != 'Fixed'
+        ]
         self.ytable = ytable
         self.xtable = xtable
         self.obsTable = obsTable
@@ -84,24 +104,34 @@ class RSInference(UQRSAnalysis):
         return self.mfile
 
     def analyze(self):
-        fname = Common.getLocalFileName(RSInferencer.dname, self.ensemble.getModelName().split()[0], '.dat')
-        fixedAsVariables = ResponseSurfaces.USER in [ResponseSurfaces.getEnumValue(rs) for rs in self.responseSurface]
+        fname = Common.getLocalFileName(
+            RSInferencer.dname, self.ensemble.getModelName().split()[0], '.dat'
+        )
+        fixedAsVariables = ResponseSurfaces.USER in [
+            ResponseSurfaces.getEnumValue(rs) for rs in self.responseSurface
+        ]
         self.ensemble.writeToPsuade(fname, fixedAsVariables=fixedAsVariables)
-        self.inferencer.infer(fname, self.ytable, self.xtable, self.obsTable,
-                                  genPostSample=self.genPostSample,
-                                  addDisc = self.addDisc,
-                                  show=self.showList,
-                                  endFunction = self.newEndFunction,
-                                  disableWhilePlotting = self.disableWhilePlotting,
-                                  userRegressionFile = self.userRegressionFile)
+        self.inferencer.infer(
+            fname,
+            self.ytable,
+            self.xtable,
+            self.obsTable,
+            genPostSample=self.genPostSample,
+            addDisc=self.addDisc,
+            show=self.showList,
+            endFunction=self.newEndFunction,
+            disableWhilePlotting=self.disableWhilePlotting,
+            userRegressionFile=self.userRegressionFile,
+        )
 
-
-    def showResults(self, showList = None):
+    def showResults(self, showList=None):
         if showList == None:
             showList = self.showList
         self.mfile_post = 'matlabmcmc2.m'
         self.restoreFromArchive(self.mfile)
-        fname = Common.getLocalFileName(RSInferencer.dname, self.ensemble.getModelName().split()[0], '.dat')
+        fname = Common.getLocalFileName(
+            RSInferencer.dname, self.ensemble.getModelName().split()[0], '.dat'
+        )
         self.inferencer.infplot(self.mfile, fname, showList)
 
     def getAdditionalInfo(self):
@@ -113,7 +143,9 @@ class RSInference(UQRSAnalysis):
         return info
 
 
-class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to stay in main thread
+class RSInferencer(
+    QtCore.QObject
+):  # Must inherit from QObject for plotting to stay in main thread
 
     dname = os.getcwd() + os.path.sep + 'RSInference_files'
 
@@ -122,7 +154,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         self.mfile = None
 
     @staticmethod
-    def pdfrange(pdf,param1,param2=None):
+    def pdfrange(pdf, param1, param2=None):
         # apply this function for initializing the prior bounds
         # parameters need to be passed in as floats
 
@@ -133,44 +165,53 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             rv = norm(loc=mu, scale=sigma)
         elif pdf == Distribution.LOGNORMAL:
             # lognorm.pdf(x, s) = 1 / (s*x*sqrt(2*pi)) * exp(-1/2*(log(x)/s)**2)
-            mu = param1       # scale parameter "exp(mu)"
-            sigma = param2    # shape parameter "s"
+            mu = param1  # scale parameter "exp(mu)"
+            sigma = param2  # shape parameter "s"
             rv = lognorm(sigma, loc=0, scale=np.exp(mu))
         elif pdf == Distribution.TRIANGLE:
             # triangular dist represented as upsloping line from loc to (loc+c*scale)
             # and then downsloping line from (loc+c*scale) to (loc+scale)
-            c = param1       # shape parameter "mode"
-            scale = param2   # scale parameter "width"
-            loc = c - scale/2    # location parameter "start"
+            c = param1  # shape parameter "mode"
+            scale = param2  # scale parameter "width"
+            loc = c - scale / 2  # location parameter "start"
             rv = triang(c, loc=loc, scale=scale)
         elif pdf == Distribution.GAMMA:
             # gamma.pdf(x, a) = b**a * x**(a-1) * exp(-b*x) / gamma(a)
-            a = param1       # shape parameter "alpha" > 0
-            b = param2       # rate parameter "beta" > 0
-            rv = gamma(a, loc=0, scale=1.0/b)
+            a = param1  # shape parameter "alpha" > 0
+            b = param2  # rate parameter "beta" > 0
+            rv = gamma(a, loc=0, scale=1.0 / b)
         elif pdf == Distribution.BETA:
             # beta.pdf(x, a, b) = gamma(a+b)/(gamma(a)*gamma(b)) * x**(a-1) * (1-x)**(b-1)
-            a = param1       # shape parameter "alpha" > 0
-            b = param2       # shape parameter "beta" > 0
+            a = param1  # shape parameter "alpha" > 0
+            b = param2  # shape parameter "beta" > 0
             rv = beta(a, b, loc=0, scale=1)
         elif pdf == Distribution.EXPONENTIAL:
             # expon.pdf(x) = b * exp(- b*x)
-            b = param1       # rate parameter "lambda" > 0
-            rv = expon(loc=0, scale=1.0/b)
+            b = param1  # rate parameter "lambda" > 0
+            rv = expon(loc=0, scale=1.0 / b)
         elif pdf == Distribution.WEIBULL:
             # weibull_min.pdf(x, c) = c * x**(c-1) * exp(-x**c)
-            scale = param1   # scale parameter "lambda" > 0
-            c = param2       # shape parameter "k" > 0
+            scale = param1  # scale parameter "lambda" > 0
+            c = param2  # shape parameter "k" > 0
             rv = weibull_min(c, loc=0, scale=scale)
         else:
             return None
 
-        return rv.interval(.99)
+        return rv.interval(0.99)
 
-    def infer(self, fname, ytable, xtable, exptable,
-              genPostSample=False, addDisc=None, show=None,
-              endFunction=None, disableWhilePlotting=None,
-              userRegressionFile=None):
+    def infer(
+        self,
+        fname,
+        ytable,
+        xtable,
+        exptable,
+        genPostSample=False,
+        addDisc=None,
+        show=None,
+        endFunction=None,
+        disableWhilePlotting=None,
+        userRegressionFile=None,
+    ):
 
         xtable = copy.deepcopy(xtable)
         self.stopInfer = False
@@ -185,7 +226,9 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         self.disableWhilePlotting = disableWhilePlotting
 
         # read data
-        data = LocalExecutionModule.readSampleFromPsuadeFile(fname)  # does not assume rstype/order written to data
+        data = LocalExecutionModule.readSampleFromPsuadeFile(
+            fname
+        )  # does not assume rstype/order written to data
 
         # process output RS info
         nOutputs = SampleData.getNumOutputs(data)
@@ -193,13 +236,25 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             error = 'RSInference: In function infer(), "ytable" is expected to be a list of length "nOutputs".'
             Common.showError(error)
             return None
-        indices = []               # indices[i] stores the output index for the i-th observed output variable
-        rsIndices = []             # rsIndices[i] stores the RS index for the i-th observed output variable
-        legendreOrders = []        # legendreOrders[i] stores the Legendre order for the i-th observed output variable
-        userRegressionFiles = []   # userRegressionFiles[i] stores the user driver file for the i-th observed output variable
-        userRegressionArgs = []    # userRegressionArgs[i] stores the output index, an optional argument to the driver file,
-                                   # ... for the i-th observed output variable
-        marsOptions = [None] * nOutputs           # marsOptions[i] stores customized settings for MARS and MARSBag
+        indices = (
+            []
+        )  # indices[i] stores the output index for the i-th observed output variable
+        rsIndices = (
+            []
+        )  # rsIndices[i] stores the RS index for the i-th observed output variable
+        legendreOrders = (
+            []
+        )  # legendreOrders[i] stores the Legendre order for the i-th observed output variable
+        userRegressionFiles = (
+            []
+        )  # userRegressionFiles[i] stores the user driver file for the i-th observed output variable
+        userRegressionArgs = (
+            []
+        )  # userRegressionArgs[i] stores the output index, an optional argument to the driver file,
+        # ... for the i-th observed output variable
+        marsOptions = [
+            None
+        ] * nOutputs  # marsOptions[i] stores customized settings for MARS and MARSBag
         setMARS = []
         ### ytable should be an array of length N, where N is the number of outputs, observed and unobserved.
         ### if output is unobserved, ytable[i] = None
@@ -244,20 +299,27 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                     if userArg is not None and isinstance(userArg, (int, str)):
                         userRegressionArgs.append(userArg)
                     else:
-                        userRegressionArgs.append(1)  # if no output index or name is given, use 1 as default
-                elif rsIndex in [ResponseSurfaces.MARS, ResponseSurfaces.MARSBAG]: # check for MARS options
+                        userRegressionArgs.append(
+                            1
+                        )  # if no output index or name is given, use 1 as default
+                elif rsIndex in [
+                    ResponseSurfaces.MARS,
+                    ResponseSurfaces.MARSBAG,
+                ]:  # check for MARS options
                     if 'marsBases' in obs and 'marsInteractions' in obs:
                         mopts = RSAnalyzer.checkMARS(data, obs)
                         if mopts is not None:
                             setMARS.append(i)
                             marsOptions[i] = mopts
-#                            marsBases, marsInteractions, marsNormOutputs = marsOptions
+                #                            marsBases, marsInteractions, marsNormOutputs = marsOptions
 
                 rsIndices.append(rsIndex)
                 indices.append(i)
 
         # delete unobserved outputs from data
-        odelete = [i+1 for i in range(nOutputs) if i not in indices]  # stores the (1-indexed) output variable indices that are unobserved
+        odelete = [
+            i + 1 for i in range(nOutputs) if i not in indices
+        ]  # stores the (1-indexed) output variable indices that are unobserved
         if odelete:
             # ... write script
             nOutputs = SampleData.getNumOutputs(data) - len(odelete)
@@ -265,10 +327,15 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             f = tempfile.SpooledTemporaryFile(mode="wt")
             if platform.system() == 'Windows':
                 import win32api
+
                 fname = win32api.GetShortPathName(fname)
             f.write('load %s\n' % fname)
             odelete_reverse = odelete[::-1]  # reverse output indices to be deleted
-            for y in odelete_reverse:        # at each odelete, the highest-indexed output needs to be deleted first
+            for (
+                y
+            ) in (
+                odelete_reverse
+            ):  # at each odelete, the highest-indexed output needs to be deleted first
                 f.write('odelete\n')
                 f.write('%d\n' % y)
             if platform.system() == 'Windows':
@@ -276,7 +343,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 head = win32api.GetShortPathName(head)
                 outfile = os.path.join(head, tail)
             f.write('write %s\n' % outfile)
-            f.write('n\n')                   # write all outputs
+            f.write('n\n')  # write all outputs
             f.write('quit\n')
             f.seek(0)
             out, error = Common.invokePsuade(f)
@@ -286,7 +353,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             # ... operate on the new data file
             fname = outfile
             data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
-            marsOptions = [m for i,m in enumerate(marsOptions) if i in indices]
+            marsOptions = [m for i, m in enumerate(marsOptions) if i in indices]
 
         # process input prior info
         ### xtable should be an array of length N, where N is the number of inputs.
@@ -295,9 +362,9 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         inputTypes = data.getInputTypes()
         nVariableInputs = inputTypes.count(Model.VARIABLE)
         # ... get design inputs
-        designInVars = [i+1 for i,e in enumerate(xtable) if e['type'] == 'Design']
+        designInVars = [i + 1 for i, e in enumerate(xtable) if e['type'] == 'Design']
         # ... get fixed inputs
-        fixedInVars = [i+1 for i,e in enumerate(xtable) if e['type'] == 'Fixed']
+        fixedInVars = [i + 1 for i, e in enumerate(xtable) if e['type'] == 'Fixed']
         indexfile = None
         if fixedInVars:
             # ... write index file based on fixed inputs
@@ -305,7 +372,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             f = open(indexfile, 'w')
             f.write('%d\n' % nVariableInputs)
             for i in range(nVariableInputs):
-                k = i+1
+                k = i + 1
                 e = xtable[i]
                 if e['type'] == 'Fixed':
                     f.write('%d %d %f\n' % (k, 0, e['value']))
@@ -316,13 +383,17 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         j = 0
         newTable = [None] * nVariableInputs
         inputNames = data.getInputNames()
-        variableInputNames = [inputName for i, inputName in enumerate(inputNames) if inputTypes[i] == Model.VARIABLE]
+        variableInputNames = [
+            inputName
+            for i, inputName in enumerate(inputNames)
+            if inputTypes[i] == Model.VARIABLE
+        ]
         newShow = []
         for i in range(nVariableInputs):
             e = xtable[j]
             if e['name'] == variableInputNames[i]:
                 # ... nullify xtable's entries corresponding to design/fixed inputs
-                if e['type'] not in ['Design','Fixed']:
+                if e['type'] not in ['Design', 'Fixed']:
                     newTable[i] = e
                 if j in show:
                     newShow.append(i)
@@ -336,8 +407,16 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         if p is not None:
             outfile = Common.getLocalFileName(RSInferencer.dname, fname, '.infdat')
             y = 1
-            RSAnalyzer.writeRSdata(outfile, y, data, indexfile=indexfile, randseed=1211319841,   ### TO DO: remove rand seed?
-                                   inputLowerBounds=p['inputLB'], inputUpperBounds=p['inputUB'], inputPDF=p['dist'])
+            RSAnalyzer.writeRSdata(
+                outfile,
+                y,
+                data,
+                indexfile=indexfile,
+                randseed=1211319841,  ### TO DO: remove rand seed?
+                inputLowerBounds=p['inputLB'],
+                inputUpperBounds=p['inputUB'],
+                inputPDF=p['dist'],
+            )
             # ... operate on the new data file
             fname = outfile
             data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
@@ -359,9 +438,9 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         mcmcfile = RSInferencer.dname + os.path.sep + 'mcmcFile'
         f = open(mcmcfile, 'w')
         f.write('PSUADE_BEGIN\n')
-        nOutputs = SampleData.getNumOutputs(data)   # number of (observed) outputs
-        nExp = len(exptable)                        # number of experiments
-        nDesignInVars = len(designInVars)           # number of design parameters
+        nOutputs = SampleData.getNumOutputs(data)  # number of (observed) outputs
+        nExp = len(exptable)  # number of experiments
+        nDesignInVars = len(designInVars)  # number of design parameters
         delim = ' '
         # ... write header
         dstr = ''
@@ -370,7 +449,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             dstr = delim.join(dstr)
         f.write('%d %d %d %s\n' % (nExp, nOutputs, nDesignInVars, dstr))
         # ... write data
-        nterms = nDesignInVars + 2*nOutputs + 1
+        nterms = nDesignInVars + 2 * nOutputs + 1
         for i in range(nExp):
             e = exptable[i]
             if len(e) == nterms:
@@ -378,7 +457,10 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 estr = delim.join(estr)
                 f.write('%s\n' % estr)
             else:
-                error = 'RSInference: In function infer(), the %d-th row of exptable expects %d terms.' % (i+1, nterms)
+                error = (
+                    'RSInference: In function infer(), the %d-th row of exptable expects %d terms.'
+                    % (i + 1, nterms)
+                )
                 Common.showError(error, out)
                 return None
         f.write('PSUADE_END\n')
@@ -389,66 +471,80 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
         if len(setMARS) > 0:
             f.write('rs_expert\n')
-        f.write('ana_expert\n')     # turn on analysis expert mode, required for non-uniform input priors
+        f.write(
+            'ana_expert\n'
+        )  # turn on analysis expert mode, required for non-uniform input priors
         f.write('%s\n' % cmd)
         if platform.system() == 'Windows':
             import win32api
+
             mcmcfile = win32api.GetShortPathName(mcmcfile)
-        f.write('%s\n' % mcmcfile)        # spec file for building the likelihood function
-        f.write('y\n')                    # do include response surface uncertainties
-        for i in range(nOutputs):        # for each output, set RS; all outputs are observed in this data file
+        f.write('%s\n' % mcmcfile)  # spec file for building the likelihood function
+        f.write('y\n')  # do include response surface uncertainties
+        for i in range(
+            nOutputs
+        ):  # for each output, set RS; all outputs are observed in this data file
             rsIndex = rsIndices[i]
             f.write('%d\n' % rsIndex)
             if rsIndex == ResponseSurfaces.LEGENDRE:
                 f.write('%d\n' % legendreOrders[i])
             elif rsIndex == ResponseSurfaces.USER:
-                f.write('1\n')                             # number of basis functions
+                f.write('1\n')  # number of basis functions
                 driverFile = userRegressionFiles[i]
                 if platform.system() == 'Windows':
                     driverFile = win32api.GetShortPathName(driverFile)
-                f.write('%s\n' % driverFile)   # driver file
-                f.write('y\n')                             # apply auxillary arg (output index)
+                f.write('%s\n' % driverFile)  # driver file
+                f.write('y\n')  # apply auxillary arg (output index)
                 arg = userRegressionArgs[i]
                 if isinstance(arg, int):
                     formatString = '%d\n'
                 else:
                     formatString = '%s\n'
-                f.write(formatString % arg)    # output name
+                f.write(formatString % arg)  # output name
             elif indices[i] in setMARS:
                 if rsIndex == ResponseSurfaces.MARSBAG:
-                    f.write('0\n')    # mean (0) or median (1) mode
-                    f.write('100\n')   # number of MARS instantiations [range:10-5000, default=100]
-                                      ### TO DO: revert back to 100 for deployment
+                    f.write('0\n')  # mean (0) or median (1) mode
+                    f.write(
+                        '100\n'
+                    )  # number of MARS instantiations [range:10-5000, default=100]
+                    ### TO DO: revert back to 100 for deployment
                 marsBases, marsInteractions, marsNormOutputs = marsOptions[i]
                 f.write('%d\n' % marsBases)
                 f.write('%d\n' % marsInteractions)
                 if rsIndex == ResponseSurfaces.MARS:
                     f.write('%s\n' % marsNormOutputs)
-        f.write('5000\n')                  # MCMC sample increment [range: 5000 - 50000]; default = 10000
-        f.write('20\n')                    # number of bins in histogram [range: 10 - 25]; default = 20
-        f.write('-1\n')                    # generate posterior plots for all inputs
+        f.write(
+            '5000\n'
+        )  # MCMC sample increment [range: 5000 - 50000]; default = 10000
+        f.write('20\n')  # number of bins in histogram [range: 10 - 25]; default = 20
+        f.write('-1\n')  # generate posterior plots for all inputs
         disc = 'n'
         if addDisc:
             disc = 'y'
-        f.write('%s\n' % disc)            # add discrepancy function
+        f.write('%s\n' % disc)  # add discrepancy function
         saveSample = 'n'
         if genPostSample:
             saveSample = 'y'
-        f.write('%s\n' % saveSample)      # generate a sample from posterior distributions
-        f.write('60\n')                   # sample size to construct MCMC proposal distribution; default = 100
+        f.write('%s\n' % saveSample)  # generate a sample from posterior distributions
+        f.write(
+            '60\n'
+        )  # sample size to construct MCMC proposal distribution; default = 100
         if addDisc:
-            f.write('18\n')               # set RS for discrepancy function; default = kriging
-                                          ### TO DO: allow user to customize RS for discrepancy function
-            f.write('n\n')                # set nominal values for other inputs
+            f.write('18\n')  # set RS for discrepancy function; default = kriging
+            ### TO DO: allow user to customize RS for discrepancy function
+            f.write('n\n')  # set nominal values for other inputs
             if len(setMARS) > 0:
-               f.write('3\n')             # Kriging slow mode
-               f.write('1e-4\n')          # Kriging tolerance
-        f.write('3\n')                    # number of MCMC chains; default = 3
-        f.write('1.05\n')                 # PSRF (convergence metric for MCMC) thershold; default = 1.05
+                f.write('3\n')  # Kriging slow mode
+                f.write('1e-4\n')  # Kriging tolerance
+        f.write('3\n')  # number of MCMC chains; default = 3
+        f.write(
+            '1.05\n'
+        )  # PSRF (convergence metric for MCMC) thershold; default = 1.05
         f.write('quit\n')
         f.seek(0)
 
@@ -466,7 +562,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         self.stopInfer = True
 
     def finishInfer(self, out, error):
-        #if self.stopInfer:
+        # if self.stopInfer:
         #    return
 
         if self.disableWhilePlotting is not None:
@@ -479,7 +575,10 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             os.remove(errfile)
             s = '.................................'
             ss = 'Recommendations'
-            error = 'RSInference: In function infer(), psuade has terminated.\n%s%s%s\n1. Increase the standard deviation of the observed outputs.\n2. Try different parameters for the input prior distributions.\n%s%s%s' % (s, ss, s, s, ''.join(['.']*len(ss)), s)
+            error = (
+                'RSInference: In function infer(), psuade has terminated.\n%s%s%s\n1. Increase the standard deviation of the observed outputs.\n2. Try different parameters for the input prior distributions.\n%s%s%s'
+                % (s, ss, s, s, ''.join(['.'] * len(ss)), s)
+            )
             Common.showError(error, out)
             return None
 
@@ -547,7 +646,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         xdat = []
         ydat = []
         zdat = []
-        hdat = []     # data for diagonal subplots (histograms)
+        hdat = []  # data for diagonal subplots (histograms)
         zmin = np.inf
         zmax = -zmin
         xlabel = []
@@ -573,7 +672,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         ylim = []
         for r in range(nshow):
             i_ = showInputs[r]
-            i = i_ + 1    # psuade is 1-indexed
+            i = i_ + 1  # psuade is 1-indexed
             datvar = 'X\(%d,:\)' % i
             xd = Plotter.getdata(mfile, datvar)
             xdat.append(xd)
@@ -586,10 +685,10 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             xlabel.append(inVarName)
             ylabel.append('Probabilities')
             xlim.append([xmin[i_], xmax[i_]])
-            ylim.append(None)   # placeholder, actual limits will get set later
-            for c in range(r+1,nshow):
+            ylim.append(None)  # placeholder, actual limits will get set later
+            for c in range(r + 1, nshow):
                 j_ = showInputs[c]
-                j = j_ + 1 # psuade is 1-indexed
+                j = j_ + 1  # psuade is 1-indexed
                 xdat.append(xd)
                 datvar = 'X\(%d,:\)' % j
                 ydat.append(Plotter.getdata(mfile, datvar))
@@ -599,7 +698,7 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
                 zdf = zd.flatten()
                 zmin = min(zmin, min(zdf))
                 zmax = max(zmax, max(zdf))
-                ylabel.append(inVarName)                # input parameter above goes on y-axis
+                ylabel.append(inVarName)  # input parameter above goes on y-axis
                 ylim.append([xmin[i_], xmax[i_]])
                 xlabel.append(variableInputNames[j_])
                 xlim.append([xmin[j_], xmax[j_]])
@@ -609,25 +708,28 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
             if ylim[e] is None:
                 ylim[e] = [hmin, hmax]
         zlim = [zmin, zmax]
-        ylabel = ['Probabilities']*len(xlabel)
-        sb_indices = np.reshape(np.arange(1,nshow**2+1), [nshow, nshow])
-        sb_indices[np.tril(sb_indices,-1) > 0] = -1   # set lower triangular elements to -1
+        ylabel = ['Probabilities'] * len(xlabel)
+        sb_indices = np.reshape(np.arange(1, nshow ** 2 + 1), [nshow, nshow])
+        sb_indices[
+            np.tril(sb_indices, -1) > 0
+        ] = -1  # set lower triangular elements to -1
 
-        return (xdat,ydat,zdat,xlabel,ylabel,xlim,ylim,zlim,sb_indices,loglik)
+        return (xdat, ydat, zdat, xlabel, ylabel, xlim, ylim, zlim, sb_indices, loglik)
 
     @staticmethod
-    def genheatmap(fname,filetype=None,move=True):
+    def genheatmap(fname, filetype=None, move=True):
 
         Common.initFolder(RSInferencer.dname)
-        loadcmd = {None:'load', 'std':'read_std'}
+        loadcmd = {None: 'load', 'std': 'read_std'}
 
         # write script
         cmd = 'iplot2_pdf'
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
-        f.write('%s %s\n' % (loadcmd[filetype],fname))
+        f.write('%s %s\n' % (loadcmd[filetype], fname))
         f.write('%s\n' % cmd)
         f.write('quit\n')
         f.seek(0)
@@ -665,12 +767,14 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         xnames = []
         xmin = []
         xmax = []
-        for name, vartype, lower, upper in zip(inVarNames, inVarTypes, inVarLB, inVarUB):
+        for name, vartype, lower, upper in zip(
+            inVarNames, inVarTypes, inVarLB, inVarUB
+        ):
             if vartype == Model.VARIABLE:
                 xnames.append(name)
                 xmin.append(lower)
                 xmax.append(upper)
-        return (xnames,xmin,xmax)
+        return (xnames, xmin, xmax)
 
     @staticmethod
     def infplot_prior(mfile, fname, show=None):
@@ -679,11 +783,35 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         xnames, xmin, xmax = RSInferencer.xvarinfo(fname)
 
         # plot prior
-        plotvars = {'hist':'D','heatmap':'NC'}
-        xdat,ydat,zdat,xlabel,ylabel,xlim,ylim,zlim,sb_indices,loglik = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
+        plotvars = {'hist': 'D', 'heatmap': 'NC'}
+        (
+            xdat,
+            ydat,
+            zdat,
+            xlabel,
+            ylabel,
+            xlim,
+            ylim,
+            zlim,
+            sb_indices,
+            loglik,
+        ) = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
         ptitle = 'Input PRIOR Probabilities'
         ftitle = 'Input Distribution Plots'
-        Plotter.plotinf(xdat,ydat,zdat,ftitle,ptitle,xlabel,ylabel,sb_indices,xlim,ylim,zlim,lastplot=True)
+        Plotter.plotinf(
+            xdat,
+            ydat,
+            zdat,
+            ftitle,
+            ptitle,
+            xlabel,
+            ylabel,
+            sb_indices,
+            xlim,
+            ylim,
+            zlim,
+            lastplot=True,
+        )
 
     @staticmethod
     def infplot(mfile, fname, show=None):
@@ -692,30 +820,82 @@ class RSInferencer(QtCore.QObject): # Must inherit from QObject for plotting to 
         xnames, xmin, xmax = RSInferencer.xvarinfo(fname)
 
         # plot prior
-        plotvars = {'hist':'DP','heatmap':'NCP'}
-        xdat,ydat,zdat,xlabel,ylabel,xlim,ylim,zlim,sb_indices,loglik = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
+        plotvars = {'hist': 'DP', 'heatmap': 'NCP'}
+        (
+            xdat,
+            ydat,
+            zdat,
+            xlabel,
+            ylabel,
+            xlim,
+            ylim,
+            zlim,
+            sb_indices,
+            loglik,
+        ) = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
         ptitle = 'Input PRIOR Probabilities'
         ftitle = 'Input Distribution Plots *before* Bayesian Inference'
-        Plotter.plotinf(xdat,ydat,zdat,ftitle,ptitle,xlabel,ylabel,sb_indices,xlim,ylim,zlim,lastplot=False)
+        Plotter.plotinf(
+            xdat,
+            ydat,
+            zdat,
+            ftitle,
+            ptitle,
+            xlabel,
+            ylabel,
+            sb_indices,
+            xlim,
+            ylim,
+            zlim,
+            lastplot=False,
+        )
 
         # plot posterior
-        plotvars = {'hist':'D','heatmap':'NC'}
-        xdat,ydat,zdat,xlabel,ylabel,xlim,ylim,zlim,sb_indices,loglik = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
+        plotvars = {'hist': 'D', 'heatmap': 'NC'}
+        (
+            xdat,
+            ydat,
+            zdat,
+            xlabel,
+            ylabel,
+            xlim,
+            ylim,
+            zlim,
+            sb_indices,
+            loglik,
+        ) = RSInferencer.getplotdat(mfile, xnames, xmin, xmax, plotvars, show=show)
         ptitle = 'Input POSTERIOR Probabilities'
-        if (loglik != None):
-           ptitle = ptitle + ' (loglikelihood=' + str(loglik) + ')'
+        if loglik != None:
+            ptitle = ptitle + ' (loglikelihood=' + str(loglik) + ')'
         ftitle = 'Input Distribution Plots *after* Bayesian Inference'
-        Plotter.plotinf(xdat,ydat,zdat,ftitle,ptitle,xlabel,ylabel,sb_indices,xlim,ylim,zlim,lastplot=True)
+        Plotter.plotinf(
+            xdat,
+            ydat,
+            zdat,
+            ftitle,
+            ptitle,
+            xlabel,
+            ylabel,
+            sb_indices,
+            xlim,
+            ylim,
+            zlim,
+            lastplot=True,
+        )
+
 
 class psuadeThread(QtCore.QThread):
     def __init__(self, parent, fileHandle, onFinishedFunctionHandle, textDialog):
         QtCore.QThread.__init__(self)
-        self.worker = psuadeWorker(self, fileHandle, onFinishedFunctionHandle, textDialog)
+        self.worker = psuadeWorker(
+            self, fileHandle, onFinishedFunctionHandle, textDialog
+        )
         self.worker.moveToThread(self)
         self.started.connect(self.worker.run)
         self.worker.finishedSignal.connect(self.quit)
         self.worker.finishedSignal.connect(self.worker.deleteLater)
         self.finished.connect(self.deleteLater)
+
 
 class psuadeWorker(QtCore.QObject):
     finishedSignal = QtCore.pyqtSignal()
@@ -738,16 +918,20 @@ class psuadeWorker(QtCore.QObject):
         self.textDialogShowSignal.connect(self.textDialog.show)
         self.textDialogCloseSignal.connect(self.textDialog.close)
         self.textDialogInsertSignal.connect(self.textDialog.textedit.insertPlainText)
-        self.textDialogEnsureVisibleSignal.connect(self.textDialog.textedit.ensureCursorVisible)
+        self.textDialogEnsureVisibleSignal.connect(
+            self.textDialog.textedit.ensureCursorVisible
+        )
         self.showErrorSignal.connect(self.textDialog.showError)
-        out, error = Common.invokePsuade(self.fileHandle, textDialog = self.textDialog,
-                                                          dialogShowSignal = self.textDialogShowSignal,
-                                                          dialogCloseSignal = self.textDialogCloseSignal,
-                                                          textInsertSignal = self.textDialogInsertSignal,
-                                                          ensureVisibleSignal = self.textDialogEnsureVisibleSignal,
-                                                          showErrorSignal = self.showErrorSignal,
-                                                          printOutputToScreen = True,
-                                                          )
+        out, error = Common.invokePsuade(
+            self.fileHandle,
+            textDialog=self.textDialog,
+            dialogShowSignal=self.textDialogShowSignal,
+            dialogCloseSignal=self.textDialogCloseSignal,
+            textInsertSignal=self.textDialogInsertSignal,
+            ensureVisibleSignal=self.textDialogEnsureVisibleSignal,
+            showErrorSignal=self.showErrorSignal,
+            printOutputToScreen=True,
+        )
         if out is None:
             return
         self.fileHandle.close()

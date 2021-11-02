@@ -14,15 +14,24 @@
 #
 ###############################################################################
 import os
-import abc #abstract base class
+import abc  # abstract base class
 from collections import OrderedDict
 from .ResponseSurfaces import ResponseSurfaces
 from .UQAnalysis import UQAnalysis
 
+
 class UQRSAnalysis(UQAnalysis, metaclass=abc.ABCMeta):
-    def __init__(self, ensemble, output, analysisType, responseSurface,
-                 subType = None, rsOptions = None, userRegressionFile = None,
-                 xprior = None):
+    def __init__(
+        self,
+        ensemble,
+        output,
+        analysisType,
+        responseSurface,
+        subType=None,
+        rsOptions=None,
+        userRegressionFile=None,
+        xprior=None,
+    ):
         super(UQRSAnalysis, self).__init__(ensemble, output, analysisType, subType)
         self.responseSurface = responseSurface
         self.rsOptions = rsOptions
@@ -48,8 +57,6 @@ class UQRSAnalysis(UQAnalysis, metaclass=abc.ABCMeta):
             self.userRegressionFile = self.restoreFromArchive(self.userRegressionFile)
         self.xprior = sd.get('xprior', None)
 
-
-
     def getResponseSurface(self):
         return self.responseSurface
 
@@ -60,9 +67,7 @@ class UQRSAnalysis(UQAnalysis, metaclass=abc.ABCMeta):
     def getRSOptions(self):
         return self.rsOptions
 
-
     #### Add RS coefficient code file?
-
 
     # Thresholds for RS Vis plot
     def setThresholds(self, lower, upper):
@@ -79,16 +84,22 @@ class UQRSAnalysis(UQAnalysis, metaclass=abc.ABCMeta):
             if rs == ResponseSurfaces.LEGENDRE:
                 if self.rsOptions is not None:
                     if isinstance(self.rsOptions, dict):
-                        info['Legendre Polynomial Order'] = self.rsOptions['legendreOrder']
+                        info['Legendre Polynomial Order'] = self.rsOptions[
+                            'legendreOrder'
+                        ]
                     else:
                         info['Legendre Poynomial Order'] = self.rsOptions
-            elif rs in [ResponseSurfaces.MARS, ResponseSurfaces.MARSBAG]: #MARS
+            elif rs in [ResponseSurfaces.MARS, ResponseSurfaces.MARSBAG]:  # MARS
                 if self.rsOptions is not None:
                     info['Number of MARS basis functions'] = self.rsOptions['marsBases']
-                    info['MARS degree of interaction'] = self.rsOptions['marsInteractions']
+                    info['MARS degree of interaction'] = self.rsOptions[
+                        'marsInteractions'
+                    ]
             elif rs == ResponseSurfaces.USER:
                 if self.userRegressionFile is not None:
-                    info['User Regression File'] = os.path.basename(self.userRegressionFile)
+                    info['User Regression File'] = os.path.basename(
+                        self.userRegressionFile
+                    )
 
         # xprior info
         if self.xprior is not None:

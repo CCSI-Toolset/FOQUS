@@ -17,6 +17,7 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('..'))
 
 # For Read the Docs theme
@@ -41,8 +42,8 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.napoleon',
     'sphinx.ext.autosectionlabel',
-#    'sphinxarg.ext',
-#    'sphinx-jsonschema'
+    #    'sphinxarg.ext',
+    #    'sphinx-jsonschema'
 ]
 
 # Avoid duplicating heading labels across parallely constructed documentation
@@ -136,7 +137,7 @@ todo_include_todos = False
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 html_theme = 'sphinx_rtd_theme'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -147,7 +148,7 @@ html_theme = 'sphinx_rtd_theme'
 
 # Add any paths that contain custom themes here, relative to this directory.
 # html_theme_path = []
-#html_theme_path = ['_themes', ]
+# html_theme_path = ['_themes', ]
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # The name for this set of Sphinx documents.
@@ -168,7 +169,7 @@ html_logo = "_static/big_ccsi.png"
 # the docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
 #
-#html_favicon = "source/_static/idaes-logo.ico"
+# html_favicon = "source/_static/idaes-logo.ico"
 html_favicon = "_static/foqus.ico"
 
 
@@ -261,21 +262,18 @@ htmlhelp_basename = 'FOQUSdoc'
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-     # The paper size ('letterpaper' or 'a4paper').
-     #
-     # 'papersize': 'letterpaper',
-
-     # The font size ('10pt', '11pt' or '12pt').
-     #
-     # 'pointsize': '10pt',
-
-     # Additional stuff for the LaTeX preamble.
-     #
+    # The paper size ('letterpaper' or 'a4paper').
+    #
+    # 'papersize': 'letterpaper',
+    # The font size ('10pt', '11pt' or '12pt').
+    #
+    # 'pointsize': '10pt',
+    # Additional stuff for the LaTeX preamble.
+    #
     'preamble': r'\usepackage{enumitem}\setlistdepth{99}',
-
-     # Latex figure (float) alignment
-     #
-     # 'figure_align': 'htbp',
+    # Latex figure (float) alignment
+    #
+    # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
@@ -322,10 +320,10 @@ latex_documents = [
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-#man_pages = [
+# man_pages = [
 #    ('dmf/cli', 'dmf', u'Data Management Framework',
 #     [author], 1)
-#]
+# ]
 
 # If true, show URL addresses after external links.
 #
@@ -338,9 +336,15 @@ latex_documents = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'FOQUS', u'FOQUS Documentation', author, 'FOQUS',
-     'Framework for Optimization Quantification of Uncertainty and Surrogates',
-     'Miscellaneous'),
+    (
+        master_doc,
+        'FOQUS',
+        u'FOQUS Documentation',
+        author,
+        'FOQUS',
+        'Framework for Optimization Quantification of Uncertainty and Surrogates',
+        'Miscellaneous',
+    ),
 ]
 
 # Documents to append as an appendix to all manuals.

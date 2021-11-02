@@ -41,12 +41,13 @@ if __name__ == '__main__':
     samples = []
     with open(inputFile, 'r') as f:
         print("Reading Input File {}".format(inputFile))
-        line = f.readline() # read and ignore first line
+        line = f.readline()  # read and ignore first line
         line = f.readline()
-        while(line):
+        while line:
             line = line.strip()
             line = line.split()
-            if line[0] == 'T': break
+            if line[0] == 'T':
+                break
             for i in range(len(line)):
                 try:
                     line[i] = float(line[i])
@@ -72,8 +73,8 @@ if __name__ == '__main__':
     conn.close()
     # Write the output file that ALAMO can read
     with open(outputFile, 'w') as f:
-        #f.write(str(k))
-        #f.write('\n')
+        # f.write(str(k))
+        # f.write('\n')
         # Write the input lines
         for i, sample in enumerate(samples):
             result = results[i]

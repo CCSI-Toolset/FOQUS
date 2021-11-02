@@ -25,10 +25,12 @@ import os
 import numpy as np
 import mlrose_hiive as mlrose
 from .df_utils import load, write
+
 _log = logging.getLogger("foqus." + __name__)
 
+
 def mat2tuples(mat):
-    ''' assumes mat as dense matrix, extracts lower-triangular elements '''
+    '''assumes mat as dense matrix, extracts lower-triangular elements'''
     lte = []
     nrows, _ = mat.shape
     for i in range(nrows):
@@ -38,8 +40,9 @@ def mat2tuples(mat):
                 lte.append((i, j, val))
     return lte
 
+
 def rank(fnames, ga_max_attempts=25):
-    ''' return fnames ranked '''
+    '''return fnames ranked'''
     dist_mat = np.load(fnames['dmat'])
     dist_list = mat2tuples(dist_mat)
 
@@ -48,13 +51,12 @@ def rank(fnames, ga_max_attempts=25):
 
     # define optimization problem object
     n_len = dist_mat.shape[0]
-    problem_fit = mlrose.TSPOpt(length=n_len, fitness_fn=fitness_dists,
-                                maximize=False)
+    problem_fit = mlrose.TSPOpt(length=n_len, fitness_fn=fitness_dists, maximize=False)
 
     # solve problem using the genetic algorithm
-    best_state = mlrose.genetic_alg(problem_fit, mutation_prob=0.2,
-                                    max_attempts=ga_max_attempts,
-                                    random_state=2)[0]
+    best_state = mlrose.genetic_alg(
+        problem_fit, mutation_prob=0.2, max_attempts=ga_max_attempts, random_state=2
+    )[0]
 
     # retrieve ranked list
     cand = load(fnames['cand'])

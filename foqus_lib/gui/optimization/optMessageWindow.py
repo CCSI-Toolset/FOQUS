@@ -18,9 +18,11 @@ John Eslick, Carnegie Mellon University, 2013
 """
 import os
 from PyQt5 import uic
+
 mypath = os.path.dirname(__file__)
-_optMessageWindowUI, _optMessageWindow = \
-        uic.loadUiType(os.path.join(mypath, "optMessageWindow_UI.ui"))
+_optMessageWindowUI, _optMessageWindow = uic.loadUiType(
+    os.path.join(mypath, "optMessageWindow_UI.ui")
+)
 
 
 class optMessageWindow(_optMessageWindow, _optMessageWindowUI):
@@ -29,7 +31,7 @@ class optMessageWindow(_optMessageWindow, _optMessageWindowUI):
         Constructor for optimization message window
         '''
         super(optMessageWindow, self).__init__(parent=parent)
-        self.setupUi(self) # Create the widgets
+        self.setupUi(self)  # Create the widgets
 
     def closeEvent(self, e):
         e.ignore()

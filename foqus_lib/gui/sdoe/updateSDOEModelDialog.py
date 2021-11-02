@@ -20,12 +20,13 @@ import numpy as np
 from foqus_lib.framework.uq.LocalExecutionModule import *
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-     QDialogButtonBox, QDialog
+from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, QDialogButtonBox, QDialog
+
 mypath = os.path.dirname(__file__)
-_updateSDOEModelDialogUI, _updateSDOEModelDialog = \
-        uic.loadUiType(os.path.join(mypath, "updateSDOEModelDialog_UI.ui"))
-        
+_updateSDOEModelDialogUI, _updateSDOEModelDialog = uic.loadUiType(
+    os.path.join(mypath, "updateSDOEModelDialog_UI.ui")
+)
+
 
 class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
     def __init__(self, dat, parent=None):
@@ -33,7 +34,7 @@ class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
         self.setupUi(self)
         self.dat = dat
 
-        #Init options
+        # Init options
         self.historyRadioButton.toggled.connect(self.showHistoryOption)
         self.templateRadioButton.toggled.connect(self.showTemplateOption)
 
@@ -81,8 +82,10 @@ class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
             allFiles = '*.*'
         else:
             allFiles = '*'
-       # Get file name
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Open Ensemble", '' , "CSV (Comma delimited) (*.csv)")
+        # Get file name
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Open Ensemble", '', "CSV (Comma delimited) (*.csv)"
+        )
         if len(fileName) == 0:
             return
 
@@ -120,4 +123,4 @@ class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
         self.done(QDialog.Accepted)
 
     def reject(self):
-            self.done(QDialog.Rejected)
+        self.done(QDialog.Rejected)

@@ -13,14 +13,11 @@ except ImportError:
     from singledispatchmethod import singledispatchmethod
 
 import oyaml as yaml
+
 # import yaml
 from slugify import slugify
 
-from PyQt5 import (
-    QtWidgets as W,
-    QtCore,
-    QtGui
-)
+from PyQt5 import QtWidgets as W, QtCore, QtGui
 
 from pytestqt import plugin as pytestqt_plugin
 from _pytest.monkeypatch import MonkeyPatch
@@ -35,34 +32,23 @@ KWARGS_PLACEHOLDER_VALUES = {True, any, next, ..., '*', ''}
 _logger = logging.getLogger('pytest_qt_extras')
 
 
-
 class _SerializableMixin:
     @classmethod
     def to_yaml(cls, dumper, obj):
-        return dumper.represent_mapping(
-            f'!{type(obj).__qualname__}',
-            obj.as_record()
-        )
+        return dumper.represent_mapping(f'!{type(obj).__qualname__}', obj.as_record())
 
     def __str__(self):
         return self.dump()
 
     def as_record(self):
-        return {
-            k: v
-            for k, v in self.__dict__.items()
-            if not k.startswith('_')
-        }
+        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
 
     def dump(self):
         return yaml.dump(self, Dumper=yaml.Dumper)
 
 
 def _object_to_yaml(dumper, obj):
-    return dumper.represent_scalar(
-        f'!{type(obj).__qualname__}',
-        str(obj)
-    )
+    return dumper.represent_scalar(f'!{type(obj).__qualname__}', str(obj))
 
 
 yaml.add_multi_representer(object, _object_to_yaml)
@@ -91,7 +77,6 @@ def _(group_box: W.QGroupBox):
 
 
 class ObjLogger:
-
     def __init__(self, **kwargs):
         self._logger_opts = kwargs
 
@@ -158,10 +143,10 @@ class _WrappedCallable:
 
 
 def _wrap_callable(
-        func: t.Callable,
-        call_begin: t.Callable[[CallInfo], t.Any],
-        call_end: t.Callable[[CallInfo], t.Any]
-        ) -> t.Callable[[t.Any], t.Any]:
+    func: t.Callable,
+    call_begin: t.Callable[[CallInfo], t.Any],
+    call_end: t.Callable[[CallInfo], t.Any],
+) -> t.Callable[[t.Any], t.Any]:
     name = getattr(func, '__name__', None)
     instance = getattr(func, '__self__', None)
     is_bound_method = instance is not None
@@ -204,19 +189,15 @@ def instrument(target, signal_begin=None, signal_end=None):
         name = target.__name__
     func = getattr(owner, name)
     assert callable(func), f'{func} must be callable'
-    _logger.debug(dict(
-        target=target,
-        name=name,
-        owner=owner,
-        func=func
-    ))
+    _logger.debug(dict(target=target, name=name, owner=owner, func=func))
 
-    def _do_nothing(*args, **kwargs): ...
+    def _do_nothing(*args, **kwargs):
+        ...
 
     _patched_callable = _wrap_callable(
         func,
         call_begin=signal_begin.emit if signal_begin else _do_nothing,
-        call_end=signal_end.emit if signal_end else _do_nothing
+        call_end=signal_end.emit if signal_end else _do_nothing,
     )
 
     mp.setattr(owner, name, _patched_callable)
@@ -252,7 +233,7 @@ class _Signals(QtCore.QObject):
             CallInfo: {
                 When.BEGIN: self.callBegin,
                 When.END: self.callEnd,
-            }
+            },
         }
 
     def __getitem__(self, key):
@@ -268,6 +249,7 @@ class _Signals(QtCore.QObject):
 def _join(it, sep=' '):
     def is_to_skip(s):
         return str(s).strip() not in {str(None), ''}
+
     return str.join(sep, [str(_) for _ in it if not is_to_skip(_)])
 
 
@@ -275,12 +257,14 @@ def action(f):
     cls = Action
     signals = _Signals.instance()[cls]
     name = f.__name__
+
     def _wrapped(*args, **kwargs):
         handler = args[0]
         action = cls(name=name, target=handler.target, args=args[1:])
         signals[When.BEGIN].emit(action)
         f(*args, **kwargs)
         signals[When.END].emit(action)
+
     ...
     return _wrapped
 
@@ -316,15 +300,10 @@ class Dispatcher(_SerializableMixin):
 
     @get_handler.register(list)
     def get_handler_from_list(self, widgets: t.List[W.QWidget], *args, **kwargs):
-        return [
-            self.get_handler(w, *args, **kwargs)
-            for w in widgets
-        ]
+        return [self.get_handler(w, *args, **kwargs) for w in widgets]
 
     def as_record(self):
-        return dict(
-            self.alias_map
-        )
+        return dict(self.alias_map)
 
 
 # this should have as little behavior as possible that depends directly on the widget type
@@ -363,11 +342,7 @@ class Handler(_SerializableMixin):
     def create(cls, *args, **kwargs):
         return cls.dispatcher.get_handler(*args, **kwargs)
 
-    def locate(
-            self,
-            *args,
-            **kwargs
-        ):
+    def locate(self, *args, **kwargs):
         _logger.info(f'Starting locate for args: {args}, kwargs: {kwargs}')
         if not args:
             if not kwargs:
@@ -395,10 +370,7 @@ class Handler(_SerializableMixin):
             else:
                 raise ValueError(f'Invalid type for target: {type(target)}')
 
-        search = VisibleWidgetSearch.build(
-            hint=hint,
-            **kwargs
-        )
+        search = VisibleWidgetSearch.build(hint=hint, **kwargs)
         search.among_children(root=self.widget, widget_cls=widget_cls)
         search.summarize()
         result = search.result
@@ -465,10 +437,7 @@ class Handler(_SerializableMixin):
         return f'<{type(self).__name__}({self._widget})>'
 
     def as_record(self):
-        return dict(
-            widget=self.widget,
-            located_by=self._located_by
-        )
+        return dict(widget=self.widget, located_by=self._located_by)
 
 
 TableRowSpec = t.Union[int, str, None]
@@ -489,7 +458,9 @@ class TableRowSearch(_SerializableMixin):
             if hint < count:
                 idx = hint
             else:
-                raise InvalidMatchError(f'row index {hint} out of range: (count: {count})')
+                raise InvalidMatchError(
+                    f'row index {hint} out of range: (count: {count})'
+                )
         elif hint is None:
             if count == 1:
                 idx = 0
@@ -499,11 +470,7 @@ class TableRowSearch(_SerializableMixin):
         else:
             raise ValueError(f'Invalid hint: {hint!r}')
 
-        return cls(
-            hint=hint,
-            idx=idx,
-            count=count
-        )
+        return cls(hint=hint, idx=idx, count=count)
 
 
 @dataclass
@@ -526,7 +493,9 @@ class TableColumnSearch(_SerializableMixin):
             if hint < count:
                 idx = hint
             else:
-                raise InvalidMatchError(f'Column index {hint} out of range: (count: {count})')
+                raise InvalidMatchError(
+                    f'Column index {hint} out of range: (count: {count})'
+                )
         elif isinstance(hint, str):
             name_by_idx = {i: cls.get_name(table, i) for i in range(count)}
             for idx, name in name_by_idx.items():
@@ -535,7 +504,9 @@ class TableColumnSearch(_SerializableMixin):
                 idx = idx
                 name = name
             else:
-                raise InvalidMatchError(f'Hint "{hint}" does not match any of {list(name_by_idx.values())}')
+                raise InvalidMatchError(
+                    f'Hint "{hint}" does not match any of {list(name_by_idx.values())}'
+                )
         elif hint is None:
             if count == 1:
                 idx = 0
@@ -543,10 +514,7 @@ class TableColumnSearch(_SerializableMixin):
             raise ValueError(f'Invalid hint: {hint!r}')
 
         return cls(
-            hint=hint,
-            idx=idx,
-            name=name or cls.get_name(table, idx),
-            count=count
+            hint=hint, idx=idx, name=name or cls.get_name(table, idx), count=count
         )
 
 
@@ -572,7 +540,7 @@ class TableCellSearch(_SerializableMixin):
             row_search=row_search,
             column_search=column_search,
             widget=widget,
-            item=item
+            item=item,
         )
 
     @property
@@ -624,20 +592,14 @@ class TableHandler(Handler):
                 return row_idx
 
     def locate(
-            self,
-            row: TableRowSpec = None,
-            column: TableColumnSpec = None,
-            **kwargs
-        ):
+        self, row: TableRowSpec = None, column: TableColumnSpec = None, **kwargs
+    ):
         "Locate a widget within (i.e. in a cell of) the table."
         if column is None and len(kwargs) == 1:
             column = set(kwargs.values()).pop()
         cell_match = TableCellSearch.run(self.table, row, column)
         _logger.debug(f'cell_match: {cell_match}')
-        return self.create(
-            cell_match.content,
-            located_by=cell_match
-        )
+        return self.create(cell_match.content, located_by=cell_match)
 
 
 class TreePath:
@@ -673,15 +635,10 @@ class TextOnOffsetLabel(WidgetDecoration):
     text_align: t.Any = QtCore.Qt.AlignCenter
 
     def make_text_box(self, text_height: int):
-        return self.rect.adjusted(
-            0, -text_height,
-            0, -self.rect.height()
-        )
+        return self.rect.adjusted(0, -text_height, 0, -self.rect.height())
 
     def draw_rect(self, painter):
-        painter.setPen(
-            QtGui.QPen(self.color, self.line_width, self.line_style)
-        )
+        painter.setPen(QtGui.QPen(self.color, self.line_width, self.line_style))
         painter.drawRect(self.rect)
 
     def draw_text(self, painter, text_height):
@@ -741,9 +698,7 @@ class Annotations(W.QWidget):
         for w in widgets:
             key = id(w)
             self._items[key] = make_decoration(
-                rect=self.get_rect(w),
-                color=color or self.color,
-                **kwargs
+                rect=self.get_rect(w), color=color or self.color, **kwargs
             )
         self.update()
 
@@ -766,23 +721,18 @@ class Annotations(W.QWidget):
             action.target,
             text=action.readable_name,
             make_decoration=TextOnOffsetLabel,
-            **kwargs
+            **kwargs,
         )
 
     @remove.register
     def remove_action(self, action: Action):
-        self.remove(
-            action.target
-        )
+        self.remove(action.target)
 
     def paintEvent(self, ev):
         painter = QtGui.QPainter()
         painter.begin(self)
         for deco in self._items.values():
-            deco(
-                painter,
-                text_height=self.text_height
-            )
+            deco(painter, text_height=self.text_height)
         painter.end()
 
 
@@ -804,10 +754,7 @@ class WidgetInfo:
 
     @classmethod
     def link_display(cls, w):
-        return cls(
-            id_=str(hex(id(w))),
-            type_=type(w).__qualname__
-        ).abbrev
+        return cls(id_=str(hex(id(w))), type_=type(w).__qualname__).abbrev
 
     @singledispatchmethod
     @classmethod
@@ -823,8 +770,7 @@ class WidgetInfo:
 
         if children:
             info.children = {
-                i: cls.link_display(child)
-                for i, child in enumerate(children)
+                i: cls.link_display(child) for i, child in enumerate(children)
             }
 
         if isinstance(w, W.QWidget):
@@ -845,10 +791,7 @@ class WidgetInfo:
         yield tree_path, info
         for idx, child in enumerate(children):
             yield from cls.walk(
-                child,
-                tree_path=tree_path.with_appended(idx),
-                parent=w,
-                collect=collect
+                child, tree_path=tree_path.with_appended(idx), parent=w, collect=collect
             )
 
     def items_to_publish(self):
@@ -872,16 +815,12 @@ class HierarchyInfo(_SerializableMixin):
         return info
 
     def __iter__(self):
-        if self._items is None: 
+        if self._items is None:
             self._items = list(WidgetInfo.walk(self._root, collect=self.collect))
         return iter(self._items)
 
     def as_record(self):
-        return {
-            str(path): info.as_record()
-            for path, info in self
-        }
-
+        return {str(path): info.as_record() for path, info in self}
 
     @contextlib.contextmanager
     def annotating(self):
@@ -912,7 +851,6 @@ class HierarchyInfo(_SerializableMixin):
 
 
 class InvalidMatchError(ValueError):
-
     @classmethod
     def check(cls, found: t.Iterable, expected: int = 1, **kwargs):
         found = list(found)
@@ -945,18 +883,17 @@ class Selection(_SerializableMixin):
     def from_locals(cls, data):
         "Make it easier to collect variables from a function scope using locals()"
         to_collect = {
-            k: v for k, v in data.items()
-            if not (k.startswith('_') or k in {'self'})
+            k: v for k, v in data.items() if not (k.startswith('_') or k in {'self'})
         }
         return cls(**to_collect)
 
     def __init__(
-            self,
-            is_match: bool = None,
-            cand: t.Any = None,
-            error: Exception = None,
-            **kwargs
-        ):
+        self,
+        is_match: bool = None,
+        cand: t.Any = None,
+        error: Exception = None,
+        **kwargs,
+    ):
         self.is_match = is_match
         self.cand = cand
         self.error = error
@@ -987,11 +924,7 @@ class Selector(_SerializableMixin):
             self.log.debug(str(sel))
             self._selections.append(sel)
 
-        self._matching = [
-            sel.cand
-            for sel in self._selections
-            if sel
-        ]
+        self._matching = [sel.cand for sel in self._selections if sel]
 
         return list(self._matching)
 
@@ -1008,7 +941,9 @@ class Selector(_SerializableMixin):
             elif isinstance(res, bool):
                 sel = Selection(is_match=res, cand=cand)
             else:
-                raise ValueError(f'Invalid type returned by callable {self._func}: {type(res)}')
+                raise ValueError(
+                    f'Invalid type returned by callable {self._func}: {type(res)}'
+                )
         return sel
 
     @property
@@ -1050,7 +985,7 @@ class Search(_SerializableMixin):
         self._result_key = result_key
         self.info = {}
 
-        for sel in (selectors or []):
+        for sel in selectors or []:
             self.add(sel)
 
     @property
@@ -1058,7 +993,9 @@ class Search(_SerializableMixin):
         return self._selectors
 
     def add(self, maybe_sel, **kwargs):
-        selector = maybe_sel if isinstance(maybe_sel, Selector) else Selector(func=maybe_sel)
+        selector = (
+            maybe_sel if isinstance(maybe_sel, Selector) else Selector(func=maybe_sel)
+        )
         self._selectors.append(selector)
         self.info.update(kwargs)
 
@@ -1083,10 +1020,7 @@ class Search(_SerializableMixin):
 
     @property
     def stats(self):
-        return dict(
-            n_candidates=len(self._candidates),
-            n_matching=len(self.matching)
-        )
+        return dict(n_candidates=len(self._candidates), n_matching=len(self.matching))
 
     def summarize(self, dump=True):
         _logger.info(f'{self!r}')
@@ -1110,10 +1044,7 @@ class Search(_SerializableMixin):
             return matching[key]
         else:
             # assume is a sequence of integers to be used to index multiple items
-            return [
-                matching[idx]
-                for idx in key
-            ]
+            return [matching[idx] for idx in key]
 
     def as_record(self):
         return dict(
@@ -1129,15 +1060,10 @@ class Search(_SerializableMixin):
 @get_text.register(W.QComboBox)
 @get_text.register(W.QSpinBox)
 def from_sibling_labels(target: W.QWidget, direction='E'):
-
     def has_nonempty_text(cand: W.QWidget):
         text = get_text(cand)
 
-        return Selection(
-            is_match=(text != ""),
-            cand=cand,
-            text=text
-        )
+        return Selection(is_match=(text != ""), cand=cand, text=text)
 
     def is_related_by_proximity(cand: W.QWidget):
         # the geometries are directly comparable because the widgets are siblings
@@ -1154,7 +1080,9 @@ def from_sibling_labels(target: W.QWidget, direction='E'):
 
         is_cand_completely_above = cand_btm < tgt_top
         is_cand_completely_below = cand_top > tgt_btm
-        has_partial_vertical_overlap = not (is_cand_completely_above or is_cand_completely_below)
+        has_partial_vertical_overlap = not (
+            is_cand_completely_above or is_cand_completely_below
+        )
 
         is_match = is_cand_preceeding_horizontally and has_partial_vertical_overlap
 
@@ -1164,11 +1092,7 @@ def from_sibling_labels(target: W.QWidget, direction='E'):
         return isinstance(w, W.QLabel)
 
     search = Search(
-        selectors=[
-            refers_to_other_widgets,
-            has_nonempty_text,
-            is_related_by_proximity
-        ]
+        selectors=[refers_to_other_widgets, has_nonempty_text, is_related_by_proximity]
     )
     parent = target.parent()
     # we only search for labels among the immediate (non-recursive) siblings
@@ -1194,7 +1118,13 @@ class VisibleTextMatcher(_SerializableMixin):
     truncation_symbol: str = None
 
     @classmethod
-    def build(cls, hint: str, case_sensitive: t.Union[str, bool] = 'smart', truncation_symbol: str = '[...]', **kwargs):
+    def build(
+        cls,
+        hint: str,
+        case_sensitive: t.Union[str, bool] = 'smart',
+        truncation_symbol: str = '[...]',
+        **kwargs,
+    ):
         if case_sensitive == 'smart':
             case_sensitive = hint.casefold() != hint
 
@@ -1207,7 +1137,7 @@ class VisibleTextMatcher(_SerializableMixin):
             compare=compare,
             case_sensitive=case_sensitive,
             truncation_symbol=truncation_symbol,
-            **kwargs
+            **kwargs,
         )
 
     @classmethod
@@ -1228,8 +1158,7 @@ class VisibleTextMatcher(_SerializableMixin):
         text_to_search_in = str(extracted)
 
         is_match = self.compare(
-            self.transform(text_to_search_in),
-            self.transform(text_to_search_for)
+            self.transform(text_to_search_in), self.transform(text_to_search_for)
         )
 
         return Selection.from_locals(locals())
@@ -1244,7 +1173,6 @@ def is_enabled(w: W.QWidget):
 
 
 class VisibleWidgetSearch(Search):
-
     @classmethod
     def build(cls, hint=None, require_enabled=None, index=None, **kwargs):
         self = cls(result_key=index, **kwargs)
@@ -1271,11 +1199,10 @@ class _TestArtifact:
 
     @property
     def label(self):
-        return self._label 
+        return self._label
 
     def save(self, path: Path):
         raise NotImplementedError
-
 
 
 class ArtifactManager:
@@ -1320,16 +1247,15 @@ class ArtifactManager:
 
 
 class Snapshot(_TestArtifact):
-
     @classmethod
     def from_widget(
-            cls,
-            widget: W.QWidget,
-            entire_window=True,
-            hierarchy_info=False,
-            annotate=False,
-            **kwargs
-        ):
+        cls,
+        widget: W.QWidget,
+        entire_window=True,
+        hierarchy_info=False,
+        annotate=False,
+        **kwargs,
+    ):
         to_grab = widget.window() if entire_window else widget
         pixmap = to_grab.grab()
 
@@ -1340,12 +1266,15 @@ class Snapshot(_TestArtifact):
                 with info.annotating():
                     pixmap = to_grab.grab()
 
-        return cls(
-            pixmap=pixmap,
-            **kwargs
-        )
+        return cls(pixmap=pixmap, **kwargs)
 
-    def __init__(self, pixmap: QtGui.QPixmap = None, text: str = None, data: t.Any = None, **kwargs):
+    def __init__(
+        self,
+        pixmap: QtGui.QPixmap = None,
+        text: str = None,
+        data: t.Any = None,
+        **kwargs,
+    ):
         super().__init__(**kwargs)
         self._pixmap = pixmap
         self.text = text
@@ -1369,13 +1298,13 @@ class QtBot(pytestqt_plugin.QtBot):
     log = ObjLogger()
 
     def __init__(
-            self,
-            *args,
-            focused: W.QWidget = None,
-            slowdown_wait=500,
-            artifacts_path='.pytest-artifacts',
-            **kwargs
-        ):
+        self,
+        *args,
+        focused: W.QWidget = None,
+        slowdown_wait=500,
+        artifacts_path='.pytest-artifacts',
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
 
         self._dispatcher = None
@@ -1421,11 +1350,7 @@ class QtBot(pytestqt_plugin.QtBot):
 
     def take_debug_snapshot(self, label, **kwargs):
         debug_shot = Snapshot.from_widget(
-            self.focused,
-            label=label,
-            annotate=True,
-            hierarchy_info=True,
-            **kwargs
+            self.focused, label=label, annotate=True, hierarchy_info=True, **kwargs
         )
         self._snapshots.add(debug_shot)
 
@@ -1438,8 +1363,14 @@ class QtBot(pytestqt_plugin.QtBot):
 
         def take_scr(action: Action, when):
             widget = action.target
-            for_window = Snapshot.from_widget(widget=widget, label=f'{when}-{action.description}')
-            for_widget = Snapshot.from_widget(widget=widget, entire_window=False, label=f'{when}-{action.description}-widget-only')
+            for_window = Snapshot.from_widget(
+                widget=widget, label=f'{when}-{action.description}'
+            )
+            for_widget = Snapshot.from_widget(
+                widget=widget,
+                entire_window=False,
+                label=f'{when}-{action.description}-widget-only',
+            )
             self._screenshots.add(for_window)
 
         on_action_begin = lambda a: take_scr(a, 'before')
@@ -1478,6 +1409,7 @@ class QtBot(pytestqt_plugin.QtBot):
             handler = args[0]
             return handler
         return self.locate(*args, **kwargs)
+
     using = get_handler
 
     def locate(self, *args, **kwargs):
@@ -1502,6 +1434,7 @@ class QtBot(pytestqt_plugin.QtBot):
             yield new
         finally:
             del self.focused
+
     focusing_on = searching_within = switching_focused
 
     def click(self, *args, **kwargs):
@@ -1525,7 +1458,9 @@ class QtBot(pytestqt_plugin.QtBot):
     @contextlib.contextmanager
     def instrumenting(self, func):
         signals = self._signals[CallInfo]
-        with instrument(func, signal_begin=signals[When.BEGIN], signal_end=signals[When.END]) as instrumented:
+        with instrument(
+            func, signal_begin=signals[When.BEGIN], signal_end=signals[When.END]
+        ) as instrumented:
             instrumented.signals = signals
             yield instrumented
 
@@ -1536,20 +1471,19 @@ class QtBot(pytestqt_plugin.QtBot):
             self.wait_signal(
                 instrumented.signals[wait_for],
                 check_params_cb=instrumented.matches_call,
-                **kwargs
+                **kwargs,
             )
 
     @contextlib.contextmanager
     def intercepting_modal(
-            self,
-            target: t.Union[t.Callable, t.Tuple[type, str]] = None,
-            handler: t.Callable = None,
-            timeout=0,
-            wait_before=500,
-            wait_after=500,
-            **kwargs
-        ):
-
+        self,
+        target: t.Union[t.Callable, t.Tuple[type, str]] = None,
+        handler: t.Callable = None,
+        timeout=0,
+        wait_before=500,
+        wait_after=500,
+        **kwargs,
+    ):
         def _default_accept_dialog(w: W.QDialog):
             self.wait_for_window_shown(w)
             _logger.info(f'About to accept dialog {w}')
@@ -1565,9 +1499,11 @@ class QtBot(pytestqt_plugin.QtBot):
         def _modal_slot(call_info: CallInfo):
             widget = call_info.instance or call_info.args[0]
             _logger.debug(f'_modal_slot called for {widget}')
+
             def _to_be_called_async():
                 _logger.debug(call_info)
                 handler(widget, **kwargs)
+
             _logger.info(f'call_info.callee={call_info.callee}')
             if True:
                 QtCore.QTimer.singleShot(0, _to_be_called_async)
@@ -1584,4 +1520,5 @@ class QtBot(pytestqt_plugin.QtBot):
             # must disconnect upon exiting the context or modal_slot will be connected again
             # the next time intercepting_modal() is called
             signal.disconnect(_modal_slot)
+
     waiting_for_modal = intercepting_modal

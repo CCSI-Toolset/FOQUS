@@ -22,16 +22,22 @@ from foqus_lib.framework.uq.Visualizer import Visualizer
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.RSInference import RSInferencer
 
-#from Preview_UI import Ui_Dialog
+# from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QFileDialog, QListWidgetItem, \
-    QAbstractItemView, QDialogButtonBox, QApplication, QTableWidgetItem
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QListWidgetItem,
+    QAbstractItemView,
+    QDialogButtonBox,
+    QApplication,
+    QTableWidgetItem,
+)
 from PyQt5.QtGui import QCursor, QColor
+
 mypath = os.path.dirname(__file__)
-_PreviewUI, _Preview = \
-        uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))
+_PreviewUI, _Preview = uic.loadUiType(os.path.join(mypath, "Preview_UI.ui"))
 
 
 class Preview(_Preview, _PreviewUI):
@@ -51,7 +57,7 @@ class Preview(_Preview, _PreviewUI):
         self.graph1DButton.clicked.connect(self.graph1D)
         self.graph2DDistButton.clicked.connect(self.graph2DDist)
         self.graph2DScatterButton.clicked.connect(self.graph2DScatter)
-        self.checkItemSelected(QListWidgetItem()) # Enable or disable graph button
+        self.checkItemSelected(QListWidgetItem())  # Enable or disable graph button
 
         self.refresh()
 
@@ -74,10 +80,10 @@ class Preview(_Preview, _PreviewUI):
 
     def checkItemSelected(self, item):
         items = self.inputList.selectedItems()
-        enable = (len(items) != 0)
+        enable = len(items) != 0
         self.graph1DButton.setEnabled(enable)
         self.graph2DDistButton.setEnabled(enable)
-        enable = (len(items) == 2)
+        enable = len(items) == 2
         self.graph2DScatterButton.setEnabled(enable)
 
     def refresh(self):
@@ -124,11 +130,11 @@ class Preview(_Preview, _PreviewUI):
     def graph1D(self):
         selected = self.inputList.selectedItems()
         indices = [0] * len(selected)
-        for i,item in enumerate(selected):
+        for i, item in enumerate(selected):
             indices[i] = item.getInputIndex() + 1
         self.data.writeToPsuade('previewData')
         Common.initFolder(Visualizer.dname)
-        #self.setModal(False)
+        # self.setModal(False)
 
         # number of samples added from adaptive sampling
         numSamplesAdded = self.data.getNumSamplesAdded()
@@ -142,13 +148,15 @@ class Preview(_Preview, _PreviewUI):
         # plot
         cmd = 'iplot1'
         Visualizer.xScatter('previewData', indices, cmd, newSamples)
-        #self.setModal(False)
+        # self.setModal(False)
 
     def graph2DDist(self):
         self.freeze()
         inputNames = self.data.getInputNames()
 
-        indices = [index.row() for index in self.inputList.selectionModel().selectedIndexes()]
+        indices = [
+            index.row() for index in self.inputList.selectionModel().selectedIndexes()
+        ]
 
         self.data.writeToPsuade('previewData')
         Common.initFolder(Visualizer.dname)
@@ -165,7 +173,7 @@ class Preview(_Preview, _PreviewUI):
         # Need indices corresponding to data, not just list
         selected = self.inputList.selectedItems()
         indices = [0] * len(selected)
-        for i,item in enumerate(selected):
+        for i, item in enumerate(selected):
             indices[i] = item.getInputIndex() + 1
 
         self.data.writeToPsuade('previewData')

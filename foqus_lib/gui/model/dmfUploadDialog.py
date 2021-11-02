@@ -24,6 +24,7 @@ import json
 import logging
 import platform
 import subprocess
+
 try:
     # pylint: disable=import-error
     from dmf_lib.dmf_browser import DMFBrowser
@@ -43,32 +44,36 @@ try:
     from dmf_lib.common.common import UTF8
     from dmf_lib.common.common import WIN_PATH_SEPARATOR
     from dmf_lib.common.common import WINDOWS
+
     useDMF = True
 except ImportError:
-    logging.getLogger("foqus." + __name__)\
-        .exception('Failed to import or launch DMFBrowser')
+    logging.getLogger("foqus." + __name__).exception(
+        'Failed to import or launch DMFBrowser'
+    )
     useDMF = False
 from urllib.request import urlopen
 from io import StringIO
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog,\
-    QLineEdit
+from PyQt5.QtWidgets import QMessageBox, QDialog, QInputDialog, QFileDialog, QLineEdit
+
 mypath = os.path.dirname(__file__)
-_dmfUploadDialogUI, _dmfUploadDialog = \
-        uic.loadUiType(os.path.join(mypath, "dmfUploadDialog_UI.ui"))
+_dmfUploadDialogUI, _dmfUploadDialog = uic.loadUiType(
+    os.path.join(mypath, "dmfUploadDialog_UI.ui")
+)
 
 
 class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
     '''
-        This class provides a dialog box that allows you to create,
-        upload and update simulations to the DMF.
+    This class provides a dialog box that allows you to create,
+    upload and update simulations to the DMF.
     '''
+
     waiting = QtCore.pyqtSignal()  # signal for start waiting on long task
     notwaiting = QtCore.pyqtSignal()  # signal the task is done
 
     def __init__(self, dat, turbConfig, parent=None):
-        ''' Initialize dialog '''
+        '''Initialize dialog'''
         super(dmfUploadDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.root = parent
@@ -76,8 +81,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # Connect buttons
         self.turb = turbConfig
         self.configFileButton.clicked.connect(self.browseSinter)
-        self.sinterConfigGUIButton.clicked.connect(
-            self.showSinterConfigGUI)
+        self.sinterConfigGUIButton.clicked.connect(self.showSinterConfigGUI)
         self.addFileButton.clicked.connect(self.addFile)
         self.removeFileButton.clicked.connect(self.removeFile)
         self.relpathButton.clicked.connect(self.setResRelPath)
@@ -89,11 +93,9 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.updateFileTable()
         self.enableSinterConfigGUI(None)
         if platform.system().startswith(WINDOWS):
-            self.PROP_LOC = (
-                os.environ[REPO_PROPERTIES_WIN_PATH] + WIN_PATH_SEPARATOR)
+            self.PROP_LOC = os.environ[REPO_PROPERTIES_WIN_PATH] + WIN_PATH_SEPARATOR
         else:
-            self.PROP_LOC = (
-                os.environ[REPO_PROPERTIES_UNIX_PATH] + UNIX_PATH_SEPARATOR)
+            self.PROP_LOC = os.environ[REPO_PROPERTIES_UNIX_PATH] + UNIX_PATH_SEPARATOR
         _, _, repo_props = self.getDMFRepoProperties()
         if self.root.last_dmf_repo and self.root.last_repo_props == repo_props:
             self.currentPropList, repo_name = self.root.last_dmf_repo
@@ -102,8 +104,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             repo_name = DMF_LITE_REPO_NAME
         self.dmfRepo.setText(repo_name)
         if not useDMF:
-            QMessageBox.information(
-                self, "Error", "Unable to setup DMF.")
+            QMessageBox.information(self, "Error", "Unable to setup DMF.")
 
     def getDMFRepoProperties(self):
         config = StringIO()
@@ -111,9 +112,11 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         config.write('[' + PROP_HEADER + ']\n')
         # Get a list of property files for repositories
         repo_props = [
-            f for f in os.listdir(self.PROP_LOC)
-            if os.path.isfile(os.path.join(self.PROP_LOC, f)) and
-            f.endswith(PROPERTIES_EXT)]
+            f
+            for f in os.listdir(self.PROP_LOC)
+            if os.path.isfile(os.path.join(self.PROP_LOC, f))
+            and f.endswith(PROPERTIES_EXT)
+        ]
         repo_name_list = []
         status_list = []
 
@@ -122,12 +125,13 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             print("Validating the following properties file(s):")
         while i < len(repo_props):
             is_valid, return_vals = Common().validateAndGetKeyProps(
-                os.path.join(self.PROP_LOC, repo_props[i]))
+                os.path.join(self.PROP_LOC, repo_props[i])
+            )
             if is_valid:
                 try:
                     response = urlopen(
-                        return_vals[1] + SHARE_LOGIN_EXT,
-                        timeout=REQUESTS_TIMEOUT)
+                        return_vals[1] + SHARE_LOGIN_EXT, timeout=REQUESTS_TIMEOUT
+                    )
                     status_code = response.getcode()
                     response.getcode()
                 except:
@@ -150,11 +154,13 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             self.currentPropList = config
             self.dmfRepo.setText(repo_name)
             StatusDialog.displayStatus(
-                "No DMF properties file detected. Defaulting to DMF Lite.")
+                "No DMF properties file detected. Defaulting to DMF Lite."
+            )
         else:
             dialog = SelectRepoDialog()
             result, index, repo_name = dialog.getDialog(
-                repo_name_list, status_list, dmf_home, show_dmf_lite=True)
+                repo_name_list, status_list, dmf_home, show_dmf_lite=True
+            )
             if not result:
                 return
             if index < len(repo_name_list):
@@ -177,25 +183,15 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.fileTable.setRowCount(0)
         self.fileTable.setRowCount(len(self.files))
         for row, f in enumerate(self.files):
-            gh.setTableItem(
-                self.fileTable,
-                row,
-                0,
-                text=f[0],
-                editable=False)
-            gh.setTableItem(
-                self.fileTable,
-                row,
-                1,
-                text=f[1],
-                editable=False)
+            gh.setTableItem(self.fileTable, row, 0, text=f[0], editable=False)
+            gh.setTableItem(self.fileTable, row, 1, text=f[1], editable=False)
         self.fileTable.resizeColumnsToContents()
 
     def enableSinterConfigGUI(self, b=True):
         '''
-            Enable or disable the sinter config gui launch button
-            should be enabled in sinterConfigGui path is set right and
-            you are on windows.  SinterConfigGUI is windows only
+        Enable or disable the sinter config gui launch button
+        should be enabled in sinterConfigGui path is set right and
+        you are on windows.  SinterConfigGUI is windows only
         '''
         if not b:
             # automatically decide whether to enable it
@@ -214,8 +210,8 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
     def showSinterConfigGUI(self):
         '''
-            Run sinter config gui so you can create or edit a
-            sinter config file
+        Run sinter config gui so you can create or edit a
+        sinter config file
         '''
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
@@ -253,21 +249,23 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                 self.appEdit.setText(a)
             except:
                 logging.getLogger("foqus." + __name__).exception(
-                    "Error setting sinter config file")
+                    "Error setting sinter config file"
+                )
         self.sinterConfigGUIButton.blockSignals(False)
 
     def selectedTCRows(self):
-        indx = reversed(sorted(set([
-            item.row() for item in self.tableWidget.selectedItems()])))
+        indx = reversed(
+            sorted(set([item.row() for item in self.tableWidget.selectedItems()]))
+        )
         return indx
 
     def accept(self):
         '''
-            If the okay button is press, use the simulation name and
-            sinter configuration file path from the dialog to attempt
-            to upload simulation files.  The Turbine configuration file
-            is a global setting stored in self.dat.turbineConfFile. I'm
-            assuming you will want to use the same gateway for a session
+        If the okay button is press, use the simulation name and
+        sinter configuration file path from the dialog to attempt
+        to upload simulation files.  The Turbine configuration file
+        is a global setting stored in self.dat.turbineConfFile. I'm
+        assuming you will want to use the same gateway for a session
         '''
         simulation_keys = ["aspenfile", "spreadsheet", "model"]
         sim_name = self.simNameEdit.currentText()
@@ -291,14 +289,11 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                         break
             if not sim_path:
                 raise Exception("No simulation path found.")
-            with open(sinter_config_path, "rb") as scf, open(
-                    sim_path, "rb") as sim:
+            with open(sinter_config_path, "rb") as scf, open(sim_path, "rb") as sim:
                 confidence = "experimental"
                 sim_id = DMFBrowser.getSimIDByName(
-                    self,
-                    self.currentPropList,
-                    self.dmfRepo.text(),
-                    sim_name)
+                    self, self.currentPropList, self.dmfRepo.text(), sim_name
+                )
                 DMFBrowser.uploadSimulation(
                     self,
                     self.currentPropList,
@@ -311,7 +306,8 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                     sinter_config_bytestream=bytearray(scf.read()),
                     sinter_config_name=sinter_config_name,
                     resource_bytestream_list=resource_bytestream_list,
-                    resource_name_list=resource_name_list)
+                    resource_name_list=resource_name_list,
+                )
         except Exception as e:
             print(e)
             QMessageBox.information(self, "Error", str(e))
@@ -321,19 +317,20 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
     def reject(self):
         '''
-            If cancel just do nothing and close dialog
+        If cancel just do nothing and close dialog
         '''
         self.done(QDialog.Rejected)
 
     def browseSinter(self):
         '''
-            Browse for a Sinter configuration file.
+        Browse for a Sinter configuration file.
         '''
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sinter Configuration File",
             "",
-            "JSON Files (*.json);;All Files (*)")
+            "JSON Files (*.json);;All Files (*)",
+        )
         if fileName:
             fileName = os.path.normpath(fileName)
             isNewSinterConfFmt = False
@@ -362,7 +359,8 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                 except:
                     QMessageBox.information(self, "Error", str(e))
                     logging.getLogger("foqus." + __name__).exception(
-                        "Error reading sinter config")
+                        "Error reading sinter config"
+                    )
 
             if self.simNameEdit.currentText() == "":
                 try:
@@ -380,14 +378,12 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
     def addFile(self):
         '''
-            Add additional files required for a simulation
+        Add additional files required for a simulation
         '''
         # Browse for a file
         fileNames, filtr = QFileDialog.getOpenFileNames(
-            self,
-            "Additional Files",
-            "",
-            "All Files (*)")
+            self, "Additional Files", "", "All Files (*)"
+        )
         if fileNames:
             for fileName in fileNames:
                 fileName = os.path.normpath(fileName)
@@ -395,10 +391,17 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.updateFileTable()
 
     def removeFile(self):
-        indx = reversed(sorted(set([
-            item.row()
-            for item in self.fileTable.selectedItems()
-            if item.row() > 1])))
+        indx = reversed(
+            sorted(
+                set(
+                    [
+                        item.row()
+                        for item in self.fileTable.selectedItems()
+                        if item.row() > 1
+                    ]
+                )
+            )
+        )
         for i in indx:
             self.files.pop(i)
         self.updateFileTable()
@@ -418,10 +421,12 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration")
+                self, "Warning", "Won't set releative path for configuration"
+            )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model")
+                self, "Warning", "Won't set releative path for model"
+            )
         rows.discard(0)
         rows.discard(1)
         if len(rows) == 0:
@@ -430,10 +435,12 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             self,
             "Relative path",
             "Enter a relative path for selected resources:",
-            QLineEdit.Normal)
+            QLineEdit.Normal,
+        )
         if ok:
             relpath = relpath.strip()
             relpath = relpath.strip('\\/')
         for row in rows:
-            gh.setCellText(self.fileTable, row, 0,
-                           '\\'.join([relpath, self.files[row][0]]))
+            gh.setCellText(
+                self.fileTable, row, 0, '\\'.join([relpath, self.files[row][0]])
+            )

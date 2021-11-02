@@ -41,16 +41,27 @@ from .InferenceDialog import *
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from . import RSCombos
 
-#from AnalysisDialog_UI import Ui_Dialog
+# from AnalysisDialog_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox, QFileDialog, QCheckBox,\
-    QTableWidgetItem, QAbstractItemView, QGridLayout, QDialog, QLabel,\
-    QPushButton
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMessageBox,
+    QFileDialog,
+    QCheckBox,
+    QTableWidgetItem,
+    QAbstractItemView,
+    QGridLayout,
+    QDialog,
+    QLabel,
+    QPushButton,
+)
 from PyQt5.QtGui import QCursor
+
 mypath = os.path.dirname(__file__)
-_AnalysisDialogUI, _AnalysisDialog = \
-        uic.loadUiType(os.path.join(mypath, "AnalysisDialog_UI.ui"))
+_AnalysisDialogUI, _AnalysisDialog = uic.loadUiType(
+    os.path.join(mypath, "AnalysisDialog_UI.ui")
+)
 
 
 class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
@@ -80,17 +91,19 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         Common.initFolder(RSAnalyzer.dname)
         Common.initFolder(Visualizer.dname)
 
-        self.setWindowTitle('Analysis of Ensemble %d: %s' % (idNum, data.getModelName()))
+        self.setWindowTitle(
+            'Analysis of Ensemble %d: %s' % (idNum, data.getModelName())
+        )
 
         self.wizardRSValidated = False
 
         ##### Hide until implemented!
-        #self.analysisTableGroup.hide()
+        # self.analysisTableGroup.hide()
 
         ## Info table
         mask = ~(Qt.ItemIsEnabled)
 
-        #ID Number
+        # ID Number
         item = QTableWidgetItem(str(idNum))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
@@ -98,7 +111,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.idRow, 0, item)
 
-        #Num inputs
+        # Num inputs
         item = QTableWidgetItem(str(data.getNumInputs()))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
@@ -106,7 +119,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.numInputsRow, 0, item)
 
-        #Num outputs
+        # Num outputs
         item = QTableWidgetItem(str(data.getNumOutputs()))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
@@ -114,21 +127,21 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.numOutputsRow, 0, item)
 
-        #Sample size
+        # Sample size
         item = QTableWidgetItem(str(data.getNumSamples()))
         item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
         flags = item.flags()
         item.setFlags(flags & mask)
         self.infoTable.setItem(self.sampleSizeRow, 0, item)
 
-        #Sampling scheme
+        # Sampling scheme
         item = QTableWidgetItem(SamplingMethods.getFullName(data.getSampleMethod()))
         flags = item.flags()
         item.setFlags(flags & mask)
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.schemeRow, 0, item)
 
-        #Descriptor
+        # Descriptor
         item = QTableWidgetItem(data.getModelName())
         flags = item.flags()
         item.setFlags(flags & mask)
@@ -139,18 +152,30 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.expertModeButtonText = 'Mode: Expert (Click for Wizard Mode)'
 
         self.numInputsOverWhichToScreen = 10
-        self.paramScreenRecommendedText = 'You have over %d inputs. ' % self.numInputsOverWhichToScreen
+        self.paramScreenRecommendedText = (
+            'You have over %d inputs. ' % self.numInputsOverWhichToScreen
+        )
         self.paramScreenRecommendedText += 'Parameter selection is recommended to determine which inputs can be removed from initial consideration.'
-        self.noParamScreenNeededText = 'No parameter selection is necessary for %d inputs. ' % data.getNumInputs()
-        self.noParamScreenNeededText += 'However, if selection is still desired, click here:'
+        self.noParamScreenNeededText = (
+            'No parameter selection is necessary for %d inputs. ' % data.getNumInputs()
+        )
+        self.noParamScreenNeededText += (
+            'However, if selection is still desired, click here:'
+        )
 
         self.numSamplesForRawAnalysis = 1000
-        self.ensembleAnalysisRecommendedText = 'You have at least %d samples. ' % self.numSamplesForRawAnalysis
+        self.ensembleAnalysisRecommendedText = (
+            'You have at least %d samples. ' % self.numSamplesForRawAnalysis
+        )
         self.ensembleAnalysisRecommendedText += 'This is enough to perform analysis on the ensemble data with good results. '
         self.ensembleAnalysisRecommendedText += 'You may still choose to analyze data evaluated by a response surface trained on the ensemble data instead.'
-        self.RSAnalysisRecommendedText = 'You have fewer than %d samples. ' % self.numSamplesForRawAnalysis
+        self.RSAnalysisRecommendedText = (
+            'You have fewer than %d samples. ' % self.numSamplesForRawAnalysis
+        )
         self.RSAnalysisRecommendedText += 'It is recommended to perform analysis using a response surface trained on the data rather than the raw data itself. '
-        self.RSAnalysisRecommendedText += 'You may still choose to analyze the raw ensemble data instead.'
+        self.RSAnalysisRecommendedText += (
+            'You may still choose to analyze the raw ensemble data instead.'
+        )
 
         # Set wizard page as default
         self.modeButton.setText(self.wizardModeButtonText)
@@ -161,40 +186,41 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.initWizardPage()
         self.initExpertPage()
 
-
         # Resize tables
         self.infoTable.resizeColumnsToContents()
         self.analysisTable.resizeColumnsToContents()
         self.show()
 
-        width = 2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)
+        width = (
+            2 + self.infoTable.verticalHeader().width() + self.infoTable.columnWidth(0)
+        )
         if self.infoTable.verticalScrollBar().isVisible():
             width += self.infoTable.verticalScrollBar().width()
-#        scollBarWidth = QApplication.style().pixelMetric(QStyle.PM_ScrollBarExtent)
-#        width += scollBarWidth
+        #        scollBarWidth = QApplication.style().pixelMetric(QStyle.PM_ScrollBarExtent)
+        #        width += scollBarWidth
         self.infoTable.setMaximumWidth(width)
         self.infoGroup.setMinimumWidth(width + 22)
-        #self.infoGroup.setMaximumWidth(width + 60)
+        # self.infoGroup.setMaximumWidth(width + 60)
         maxHeight = 4
         for i in range(6):
             maxHeight += self.infoTable.rowHeight(i)
         self.infoTable.setMaximumHeight(maxHeight)
 
-#        print self.analysisTable.verticalHeader().width()
+        #        print self.analysisTable.verticalHeader().width()
         width = 2 + self.analysisTable.verticalHeader().width()
         for i in range(self.analysisTable.columnCount()):
             width += self.analysisTable.columnWidth(i)
-#            print self.analysisTable.columnWidth(i)
+        #            print self.analysisTable.columnWidth(i)
         if self.analysisTable.verticalScrollBar().isVisible():
             width += self.analysisTable.verticalScrollBar().width()
-#        width += scollBarWidth
+        #        width += scollBarWidth
         self.analysisTable.setMinimumWidth(width)
         self.analysisTable.setMaximumWidth(width)
         self.analysisTable.setRowCount(0)
         self.analysisTable.itemSelectionChanged.connect(self.analysisSelected)
         self.analysisTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.analysisTable.setWordWrap(True)
-#        print width
+        #        print width
         self.refreshAnalysisTable()
         self.analysisSelected()
 
@@ -204,11 +230,11 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     def switchModes(self):
         QApplication.processEvents()
-        if self.modeButton.text() == self.wizardModeButtonText: #Wizard mode
+        if self.modeButton.text() == self.wizardModeButtonText:  # Wizard mode
             # Switch to Expert mode
             self.modeButton.setText(self.expertModeButtonText)
             self.modePages.setCurrentIndex(1)
-        else: #Expert mode
+        else:  # Expert mode
             # Switch to Wizard mode
             self.modeButton.setText(self.wizardModeButtonText)
             self.modePages.setCurrentIndex(0)
@@ -251,23 +277,28 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         analType, subtype = analysis.getType()
         item.setText(UQAnalysis.getTypeFullName(analType))
 
-        #Analysis subtype
+        # Analysis subtype
         item = self.analysisTable.item(row, self.subtypeCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.subtypeCol, item)
         item.setText(analysis.getSubTypeFullName(subtype))
 
-        #Response surface
+        # Response surface
         item = self.analysisTable.item(row, self.rsCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.rsCol, item)
         if isinstance(analysis, UQRSAnalysis):
             if isinstance(analysis.getResponseSurface(), str):
-                item.setText(ResponseSurfaces.getFullName(analysis.getResponseSurface()))
+                item.setText(
+                    ResponseSurfaces.getFullName(analysis.getResponseSurface())
+                )
             else:
-                names = [ResponseSurfaces.getFullName(rs) for rs in analysis.getResponseSurface()]
+                names = [
+                    ResponseSurfaces.getFullName(rs)
+                    for rs in analysis.getResponseSurface()
+                ]
                 text = ', '.join(names)
                 maxLength = max([len(name) for name in names]) + 1
                 maxLength = max([maxLength, 15])
@@ -276,7 +307,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             item.setText('')
 
         # Input
-        item = self.analysisTable.item(row,self.inputCol)
+        item = self.analysisTable.item(row, self.inputCol)
         if item is None:
             item = QTableWidgetItem()
             self.analysisTable.setItem(row, self.inputCol, item)
@@ -327,8 +358,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # Inference requires additional selection of which plots to display
         if isinstance(analysis, RSInference):
+
             class Dialog(QDialog):
-                def __init__(self, xtable, parent = None):
+                def __init__(self, xtable, parent=None):
                     super(Dialog, self).__init__(parent)
                     self.setWindowTitle('Plot input selection')
                     self.resize(100, 100)
@@ -341,7 +373,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                     else:
                         numCols = 1
                     numVariables = len([1 for x in xtable if x['type'] != 'Design'])
-                    numRows = (numVariables + 1)/2
+                    numRows = (numVariables + 1) / 2
                     for i, x in enumerate(xtable):
                         if x['type'] != 'Design':
                             chkbox = QCheckBox(x['name'])
@@ -361,7 +393,11 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                     self.adjustSize()
 
                 def getShowList(self):
-                    return [i for i, chkbox in enumerate(self.checkboxes) if chkbox is not None and chkbox.isChecked()]
+                    return [
+                        i
+                        for i, chkbox in enumerate(self.checkboxes)
+                        if chkbox is not None and chkbox.isChecked()
+                    ]
 
             d = Dialog(analysis.xtable, QApplication.activeWindow())
             result = d.exec_()
@@ -373,14 +409,16 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.freeze()
         try:
             if isinstance(analysis, RSInference):
-                analysis.showResults(showList = showList)
+                analysis.showResults(showList=showList)
             else:
                 analysis.showResults()
         except IOError:
             self.unfreeze()
             msgBox = QMessageBox()
-            msgBox.setText("Analysis results file is missing. Do you want to run the analysis again?")
-            #msgBox.setInformativeText("Do you want to save your changes?")
+            msgBox.setText(
+                "Analysis results file is missing. Do you want to run the analysis again?"
+            )
+            # msgBox.setInformativeText("Do you want to save your changes?")
             msgBox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             msgBox.setDefaultButton(QMessageBox.Yes)
             ret = msgBox.exec_()
@@ -421,15 +459,19 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def initParamScreenCombo(self, comboBox, method):
         # populate method combo
         comboBox.clear()
-        if method in (SamplingMethods.MC,
-                      SamplingMethods.LPTAU,
-                      SamplingMethods.LH,
-                      SamplingMethods.OA,
-                      SamplingMethods.METIS,
-                      SamplingMethods.GMETIS):
+        if method in (
+            SamplingMethods.MC,
+            SamplingMethods.LPTAU,
+            SamplingMethods.LH,
+            SamplingMethods.OA,
+            SamplingMethods.METIS,
+            SamplingMethods.GMETIS,
+        ):
             # ... disable MARS if not installed
             marsIndex = 0
-            marsName = ParameterScreening.getSubTypeFullName(ParameterScreening.MARSRANK)
+            marsName = ParameterScreening.getSubTypeFullName(
+                ParameterScreening.MARSRANK
+            )
             comboBox.addItem(marsName)
             foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
             foundMARS = foundLibs.get('MARS', False)
@@ -441,15 +483,28 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                 item = model.itemFromIndex(index)
                 item.setEnabled(False)
             # ... done disabling
-            comboBox.addItem(ParameterScreening.getSubTypeFullName(ParameterScreening.SOT))
-            comboBox.addItem(ParameterScreening.getSubTypeFullName(ParameterScreening.DELTA))
-            comboBox.addItem(ParameterScreening.getSubTypeFullName(ParameterScreening.GP))
+            comboBox.addItem(
+                ParameterScreening.getSubTypeFullName(ParameterScreening.SOT)
+            )
+            comboBox.addItem(
+                ParameterScreening.getSubTypeFullName(ParameterScreening.DELTA)
+            )
+            comboBox.addItem(
+                ParameterScreening.getSubTypeFullName(ParameterScreening.GP)
+            )
         elif method == SamplingMethods.LSA:
-            comboBox.addItem(ParameterScreening.getSubTypeFullName(ParameterScreening.LSA))
+            comboBox.addItem(
+                ParameterScreening.getSubTypeFullName(ParameterScreening.LSA)
+            )
         elif method == SamplingMethods.MOAT or method == SamplingMethods.GMOAT:
-            comboBox.addItem(ParameterScreening.getSubTypeFullName(ParameterScreening.MOAT))
+            comboBox.addItem(
+                ParameterScreening.getSubTypeFullName(ParameterScreening.MOAT)
+            )
         else:
-            raise NotImplementedError('There are no parameter screening methods that support sample type %s.' % method)
+            raise NotImplementedError(
+                'There are no parameter screening methods that support sample type %s.'
+                % method
+            )
         comboBox.setCurrentIndex(0)
 
     def screen(self, outputNum, screen_combo):
@@ -473,26 +528,47 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         filename = regressionFile_edit.text()
         if len(filename) == 0:
             filename = os.getcwd()
-        fname, selectedFilter = QFileDialog.getOpenFileName(self, 'Indicate file that has user regression code:',
-                                                            filename, 'Python File (*.py)')
+        fname, selectedFilter = QFileDialog.getOpenFileName(
+            self,
+            'Indicate file that has user regression code:',
+            filename,
+            'Python File (*.py)',
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             regressionFile_edit.setText(fname)
             return True
         return False
 
-
     ## RS Validate
-    def rsValidate(self, y, rs, rsOptions, genRSCode, nCV = None, userRegressionFile = None,
-                   testFile = None, error_tol_percent = 10):
+    def rsValidate(
+        self,
+        y,
+        rs,
+        rsOptions,
+        genRSCode,
+        nCV=None,
+        userRegressionFile=None,
+        testFile=None,
+        error_tol_percent=10,
+    ):
         self.freeze()
 
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
 
         # validate RS
         self.setModal(False)
-        rsv = RSValidation(data, y, rs, rsOptions=rsOptions, genCodeFile = genRSCode,
-                           nCV = nCV, userRegressionFile = userRegressionFile, testFile = testFile, error_tol_percent=error_tol_percent)
+        rsv = RSValidation(
+            data,
+            y,
+            rs,
+            rsOptions=rsOptions,
+            genCodeFile=genRSCode,
+            nCV=nCV,
+            userRegressionFile=userRegressionFile,
+            testFile=testFile,
+            error_tol_percent=error_tol_percent,
+        )
         mfile = rsv.analyze()
         if mfile is not None:
             self.data.addAnalysis(rsv)
@@ -523,7 +599,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # visualize data
         self.setModal(False)
-        #Visualizer.yScatter(fname, y, x, cmd)  #x indices are 1-indexed
+        # Visualizer.yScatter(fname, y, x, cmd)  #x indices are 1-indexed
         v = Visualization(data, y, x)
         result = v.analyze()
 
@@ -592,10 +668,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if inf != numItems:
             combo1.removeItem(inf)
 
-
     def handleDataAnalyzeCombo2(self, combo1, combo2):
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
         nInputs = data.getNumInputs()
         nSamples = data.getNumSamples()
 
@@ -604,23 +679,31 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if method.startswith('Sensitivity'):
             disable = []
             enable = []
-            if nSamples < 1000:  # this should never happen, as SA should be disabled in combo1
-                disable = ['First-order (Requires at least 1K samples)',
-                           'Second-order (Requires at least 1K samples)',
-                           'Total-order (Requires at least 10K samples)']
+            if (
+                nSamples < 1000
+            ):  # this should never happen, as SA should be disabled in combo1
+                disable = [
+                    'First-order (Requires at least 1K samples)',
+                    'Second-order (Requires at least 1K samples)',
+                    'Total-order (Requires at least 10K samples)',
+                ]
             else:
                 if nInputs <= 2:
                     enable = ['First-order']
-                    disable = ['Second-order (Requires at least 3 inputs)',
-                               'Total-order (Requires at least 3 inputs)']
+                    disable = [
+                        'Second-order (Requires at least 3 inputs)',
+                        'Total-order (Requires at least 3 inputs)',
+                    ]
                 elif nSamples < 10000:
                     enable = ['First-order', 'Second-order']
                     disable = ['Total-order (Requires at least 10K samples)']
                 else:
                     if nInputs <= 2:
                         enable = ['First-order']
-                        disable = ['Second-order (Requires at least 3 inputs)',
-                                   'Total-order (Requires at least 3 inputs)']
+                        disable = [
+                            'Second-order (Requires at least 3 inputs)',
+                            'Total-order (Requires at least 3 inputs)',
+                        ]
                     elif nInputs > 10:
                         enable = ['First-order', 'Second-order']
                         disable = ['Total-order (Requires at most 10 inputs)']
@@ -640,10 +723,11 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         else:
             combo2.setEnabled(False)
 
-
     ## RS Analysis
 
-    def initRSAnalyzeCombo1(self, combo1, combo2, expertMode = False, samplePDFChosen = False):
+    def initRSAnalyzeCombo1(
+        self, combo1, combo2, expertMode=False, samplePDFChosen=False
+    ):
         numItems = combo1.count()
         sa = numItems
         for i in range(numItems):
@@ -667,11 +751,11 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             combo1.setItemText(sa, 'Sensitivity Analysis ->')
         combo2.show()
 
-    def handleRSAnalyzeCombo2(self, combo1, combo2, samplePDFChosen = False):
+    def handleRSAnalyzeCombo2(self, combo1, combo2, samplePDFChosen=False):
 
         method = combo1.currentText()
 
-        if method.startswith('Uncertainty Analysis ->'): # expert mode has arrow
+        if method.startswith('Uncertainty Analysis ->'):  # expert mode has arrow
             if combo2.itemText(0) != 'Aleatory Only':
                 combo2.clear()
                 combo2.addItem('Aleatory Only')
@@ -706,9 +790,19 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             combo2.setEnabled(False)
         combo2.show()
 
-    def RSAnalyze(self, output_combo, RSAnalyze_combo1, RSAnalyze_combo2, legendre_spin,
-                  userRegressionFile_edit, rs, xprior = None, evars = None,
-                  marsBasis_spin = None, marsDegree_spin = None):
+    def RSAnalyze(
+        self,
+        output_combo,
+        RSAnalyze_combo1,
+        RSAnalyze_combo2,
+        legendre_spin,
+        userRegressionFile_edit,
+        rs,
+        xprior=None,
+        evars=None,
+        marsBasis_spin=None,
+        marsDegree_spin=None,
+    ):
 
         self.freeze()
 
@@ -726,36 +820,66 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             rsOptions = legendre_spin.value()
         elif rs.startswith('MARS'):
             if marsBasis_spin is not None and marsDegree_spin is not None:
-                rsOptions = {'marsBases': marsBasis_spin.value(),
-                             'marsInteractions': marsDegree_spin.value()}
+                rsOptions = {
+                    'marsBases': marsBasis_spin.value(),
+                    'marsInteractions': marsDegree_spin.value(),
+                }
         if method == 'Point Evaluation':
             # Evaluate RS
             data = self.data
-            fnameRS = Common.getLocalFileName(RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat')
+            fnameRS = Common.getLocalFileName(
+                RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat'
+            )
             data.writeToPsuade(fnameRS)
-            value = RSAnalyzer.pointEval(fnameRS, xprior, y, rs, rsOptions, userRegressionFile_edit.text())
-            self.pointEval_label.setText('RS evaluated value for %s is %g with a standard dev. of %g' % \
-                                         (output_combo.currentText(), float(value[0]), float(value[1])))
+            value = RSAnalyzer.pointEval(
+                fnameRS, xprior, y, rs, rsOptions, userRegressionFile_edit.text()
+            )
+            self.pointEval_label.setText(
+                'RS evaluated value for %s is %g with a standard dev. of %g'
+                % (output_combo.currentText(), float(value[0]), float(value[1]))
+            )
         else:
             if method.startswith('Uncertainty Analysis'):
                 # RSAnalyzer.performUA(fnameRS, y, rs, legendre_spin.value(), userRegressionFile_edit.text(), xprior)
                 if 'Epistemic' in RSAnalyze_combo2.currentText():
                     if len(evars) == 0 or len(evars) >= self.data.getNumInputs():
                         self.unfreeze()
-                        QMessageBox.information(self, 'No epistemic variables',
-                                                'This analysis requires at least one aleatory and one epistemic variable!')
+                        QMessageBox.information(
+                            self,
+                            'No epistemic variables',
+                            'This analysis requires at least one aleatory and one epistemic variable!',
+                        )
                         return
-                    analysis = RSUncertaintyAnalysis(self.data, y, RSUncertaintyAnalysis.ALEATORY_EPISTEMIC,
-                                                 rs, rsOptions,
-                                                 userRegressionFile_edit.text(), xprior)
+                    analysis = RSUncertaintyAnalysis(
+                        self.data,
+                        y,
+                        RSUncertaintyAnalysis.ALEATORY_EPISTEMIC,
+                        rs,
+                        rsOptions,
+                        userRegressionFile_edit.text(),
+                        xprior,
+                    )
                 else:
-                    analysis = RSUncertaintyAnalysis(self.data, y, RSUncertaintyAnalysis.ALEATORY_ONLY,
-                                                 rs, rsOptions,
-                                                 userRegressionFile_edit.text(), xprior)
+                    analysis = RSUncertaintyAnalysis(
+                        self.data,
+                        y,
+                        RSUncertaintyAnalysis.ALEATORY_ONLY,
+                        rs,
+                        rsOptions,
+                        userRegressionFile_edit.text(),
+                        xprior,
+                    )
             elif method.startswith('Sensitivity'):
                 sa_method = RSAnalyze_combo2.currentIndex()
-                analysis = RSSensitivityAnalysis(self.data, y, sa_method, rs, rsOptions,
-                                            userRegressionFile_edit.text(), xprior)
+                analysis = RSSensitivityAnalysis(
+                    self.data,
+                    y,
+                    sa_method,
+                    rs,
+                    rsOptions,
+                    userRegressionFile_edit.text(),
+                    xprior,
+                )
 
             results = analysis.analyze()
             if results is not None:
@@ -765,15 +889,15 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.unfreeze()
 
     def infer(self, wizardMode):
-        dialog = InferenceDialog(self.data, wizardMode, parent = self)
+        dialog = InferenceDialog(self.data, wizardMode, parent=self)
         self.unfreeze()
-        #dialog.exec_()
-        #dialog.deleteLater()
+        # dialog.exec_()
+        # dialog.deleteLater()
         dialog.show()
 
     def initRSVizCombos(self, combo1, combo2, combo3):
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
         nSamples = data.getNumSamples()
         inVarNames = data.getInputNames()
         inTypes = data.getInputTypes()
@@ -800,7 +924,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                     combo3.addItem(x)
             combo3.setCurrentIndex(0)
 
-    def RSVizCombosUnique(self, combo1, combo2, combo3 = None):
+    def RSVizCombosUnique(self, combo1, combo2, combo3=None):
 
         # get inputs
         x1 = combo1.currentIndex()
@@ -817,8 +941,18 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         return cond
 
-    def RSViz(self, y, combo1, combo2, combo3, rs, rsOptions = None,
-              minVal = -numpy.inf, maxVal = numpy.inf, userRegressionFile = None):
+    def RSViz(
+        self,
+        y,
+        combo1,
+        combo2,
+        combo3,
+        rs,
+        rsOptions=None,
+        minVal=-numpy.inf,
+        maxVal=numpy.inf,
+        userRegressionFile=None,
+    ):
 
         self.freeze()
 
@@ -842,7 +976,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # visualize data
         self.setModal(False)
-        rsviz = RSVisualization(data, y, x, rs, minVal, maxVal, rsOptions, userRegressionFile)
+        rsviz = RSVisualization(
+            data, y, x, rs, minVal, maxVal, rsOptions, userRegressionFile
+        )
         results = rsviz.analyze()
         if results is not None:
             self.data.addAnalysis(rsviz)
@@ -862,13 +998,13 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         numInputs = self.data.getNumInputs()
 
         # Set up what's hidden or visible based on number of inputs
-        if numInputs == 1: # No screening for one input
+        if numInputs == 1:  # No screening for one input
             self.wizardScreenGroup.setVisible(False)
-        elif numInputs <= self.numInputsOverWhichToScreen: # No screening needed
+        elif numInputs <= self.numInputsOverWhichToScreen:  # No screening needed
             self.wizardScreenText.setText(self.noParamScreenNeededText)
             self.enableScreen_button.setVisible(True)
             self.setWizardScreenComponentsVisible(False)
-        else: # Screening needed
+        else:  # Screening needed
             self.wizardScreenText.setText(self.paramScreenRecommendedText)
             self.enableScreen_button.setVisible(False)
 
@@ -876,7 +1012,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # populate output combo
         self.wizardScreenOutput_combo.clear()
-        #self.wizardScreenOutput_combo.addItem('None selected')
+        # self.wizardScreenOutput_combo.addItem('None selected')
         ydata = self.data.getOutputData()
         disable = []
         currentIndex = 0
@@ -902,7 +1038,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.wizardScreenOutput_combo.setCurrentIndex(currentIndex)
         self.wizardScreenOutput_combo.setEnabled(True)
 
-        self.initParamScreenCombo(self.wizardScreenMethod_combo, self.data.getSampleMethod())
+        self.initParamScreenCombo(
+            self.wizardScreenMethod_combo, self.data.getSampleMethod()
+        )
         self.wizardScreenCompute_button.clicked.connect(self.wizardScreen)
 
     def enableWizardScreen(self):
@@ -921,21 +1059,23 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def wizardScreen(self):
         y = self.wizardScreenOutput_combo.currentIndex() + 1
         self.screen(y, self.wizardScreenMethod_combo)
-        QMessageBox.information(None, 'Parameter Selection Plot',
-                                'Take note of which inputs are more sensitive and which are less. '
-                                'Taller bars in the plot mean more sensitive.')
-
+        QMessageBox.information(
+            None,
+            'Parameter Selection Plot',
+            'Take note of which inputs are more sensitive and which are less. '
+            'Taller bars in the plot mean more sensitive.',
+        )
 
     # ---- Wizard Page Analysis Group
 
     def initWizardAnalysisGroup(self):
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
         nSamples = data.getNumSamples()
         nInputs = data.getNumInputs()
 
         self.wizardAnalysisOutput_combo.clear()
-        #self.analysisOutput_combo.addItem('None selected')
+        # self.analysisOutput_combo.addItem('None selected')
         ydata = self.data.getOutputData()
         disable = []
         currentIndex = 0
@@ -960,7 +1100,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             item.setEnabled(False)
         self.wizardAnalysisOutput_combo.setCurrentIndex(currentIndex)
         self.wizardAnalysisOutput_combo.setEnabled(True)
-        self.wizardAnalysisOutput_combo.currentIndexChanged[int].connect(self.deactivateWizardRSAnalysis)
+        self.wizardAnalysisOutput_combo.currentIndexChanged[int].connect(
+            self.deactivateWizardRSAnalysis
+        )
         self.wizardEnsemble_radio.toggled.connect(self.setWizardEnsembleAnalysisMode)
         self.wizardRS_radio.toggled.connect(self.setWizardRSAnalysisMode)
 
@@ -973,8 +1115,12 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.wizardAnalyze_combo2.setEnabled(False)
 
         self.wizardRSLegendre_spin.init(self.data)
-        self.wizardRS_combo2.init(self.data, self.wizardRSLegendre_spin, self.wizardRSLegendre_static) # Must be called after legendre spinbox
-        self.wizardRS_combo1.init(self.data, self.wizardRS_combo2)  # Must be called after combo2 init
+        self.wizardRS_combo2.init(
+            self.data, self.wizardRSLegendre_spin, self.wizardRSLegendre_static
+        )  # Must be called after legendre spinbox
+        self.wizardRS_combo1.init(
+            self.data, self.wizardRS_combo2
+        )  # Must be called after combo2 init
         self.wizardRSValidate_button.setEnabled(self.wizardRS_combo1.isEnabled())
         self.wizardRS_combo1.currentIndexChanged[int].connect(self.activateWizardRS1)
         self.wizardRS_combo2.currentIndexChanged[int].connect(self.activateWizardRS2)
@@ -983,14 +1129,26 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.wizardUserRegression_static.setEnabled(False)
         self.wizardUserRegressionFile_edit.setEnabled(False)
         self.wizardUserRegressionBrowse_button.setEnabled(False)
-        self.wizardUserRegressionBrowse_button.clicked.connect(self.populateWizardUserRegressionFile)
+        self.wizardUserRegressionBrowse_button.clicked.connect(
+            self.populateWizardUserRegressionFile
+        )
         self.wizardRSValidate_button.clicked.connect(self.wizardRSValidate)
-        self.wizardAnalyze_combo1.currentIndexChanged[int].connect(self.activateWizardAnalyze1)
+        self.wizardAnalyze_combo1.currentIndexChanged[int].connect(
+            self.activateWizardAnalyze1
+        )
         self.wizardAnalyze_button.clicked.connect(self.wizardAnalyze)
-        self.initRSVizCombos(self.wizardViz_combo1, self.wizardViz_combo2, self.wizardViz_combo3)
-        self.wizardViz_combo1.currentIndexChanged[int].connect(self.activateWizardVizButton)
-        self.wizardViz_combo2.currentIndexChanged[int].connect(self.activateWizardVizButton)
-        self.wizardViz_combo3.currentIndexChanged[int].connect(self.activateWizardVizButton)
+        self.initRSVizCombos(
+            self.wizardViz_combo1, self.wizardViz_combo2, self.wizardViz_combo3
+        )
+        self.wizardViz_combo1.currentIndexChanged[int].connect(
+            self.activateWizardVizButton
+        )
+        self.wizardViz_combo2.currentIndexChanged[int].connect(
+            self.activateWizardVizButton
+        )
+        self.wizardViz_combo3.currentIndexChanged[int].connect(
+            self.activateWizardVizButton
+        )
         self.wizardViz_button.setEnabled(False)
         self.wizardViz_button.clicked.connect(self.wizardViz)
         self.wizardInfer_button.clicked.connect(self.wizardInfer)
@@ -1018,19 +1176,25 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def setWizardEnsembleAnalysisMode(self, checked):
         if checked:
             self.showWizardRSAnalysisComponents(False)
-            self.wizardViz_static.setText( \
-                '3. If you would like to visualize the data, choose the inputs and click "Visualize".')
+            self.wizardViz_static.setText(
+                '3. If you would like to visualize the data, choose the inputs and click "Visualize".'
+            )
             self.wizardAnalyze_static.setText('4. Choose UQ Analysis:')
             self.wizardAnalyze_button.setEnabled(True)
-            self.initDataAnalyzeCombo1(self.wizardAnalyze_combo1, self.wizardAnalyze_combo2)
+            self.initDataAnalyzeCombo1(
+                self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
+            )
 
     def setWizardRSAnalysisMode(self, checked):
         if checked:
             self.showWizardRSAnalysisComponents(True)
-            self.wizardViz_static.setText( \
-                '5. If you would like to visualize the response surface for correctness of the chosen method for the selected output, choose the inputs and click "Visualize".')
+            self.wizardViz_static.setText(
+                '5. If you would like to visualize the response surface for correctness of the chosen method for the selected output, choose the inputs and click "Visualize".'
+            )
             self.wizardAnalyze_static.setText('7. Choose UQ Analysis:')
-            self.initRSAnalyzeCombo1(self.wizardAnalyze_combo1, self.wizardAnalyze_combo2)
+            self.initRSAnalyzeCombo1(
+                self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
+            )
             if self.wizardRSValidated:
                 self.activateWizardRSAnalysis()
             else:
@@ -1069,36 +1233,49 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         y = self.wizardAnalysisOutput_combo.currentIndex() + 1
 
         # get RS
-        rs =  self.getWizardRS()
+        rs = self.getWizardRS()
         rsOptions = None
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.wizardRSLegendre_spin.value()
-	
-        result = self.rsValidate(y, rs, rsOptions, False, userRegressionFile = self.wizardUserRegressionFile_edit.text(), error_tol_percent = self.wizardErrorEnvelope_edit.value())
+
+        result = self.rsValidate(
+            y,
+            rs,
+            rsOptions,
+            False,
+            userRegressionFile=self.wizardUserRegressionFile_edit.text(),
+            error_tol_percent=self.wizardErrorEnvelope_edit.value(),
+        )
         self.unfreeze()
         self.activateWizardRSAnalysis()
 
         # Make expert mode components reflect the same RS Validation
-        self.output_combo.setCurrentIndex(self.wizardAnalysisOutput_combo.currentIndex() + 1)
+        self.output_combo.setCurrentIndex(
+            self.wizardAnalysisOutput_combo.currentIndex() + 1
+        )
         self.RS_combo1.setCurrentIndex(self.wizardRS_combo1.currentIndex())
         self.RS_combo2.setCurrentIndex(self.wizardRS_combo2.currentIndex())
         self.RSLegendre_spin.setValue(self.wizardRSLegendre_spin.value())
         self.doubleSpinBox.setValue(self.wizardErrorEnvelope_edit.value())
-        self.expertUserRegressionFile_edit.setText(self.wizardUserRegressionFile_edit.text())
+        self.expertUserRegressionFile_edit.setText(
+            self.wizardUserRegressionFile_edit.text()
+        )
         self.activateExpertRSAnalysis()
 
         if result is not None:
-            QMessageBox.information(None, 'Response Surface Validation Plot',
-                                    'The two plots help you gauge the fitness of %s '
-                                    'response surface to the ensemble data. The left '
-                                    'plot is a histogram of the errors between the '
-                                    'ensemble data and response surface prediction of '
-                                    'that data for each sample. A good fit results in '
-                                    'tall bars near 0.0 and very short bars further '
-                                    'from 0.0.  On the right is a plot of predicted '
-                                    'value vs. actual value. A good fit results in all '
-                                    'the points being very close to the diagonal line.' % rs
-                                    )
+            QMessageBox.information(
+                None,
+                'Response Surface Validation Plot',
+                'The two plots help you gauge the fitness of %s '
+                'response surface to the ensemble data. The left '
+                'plot is a histogram of the errors between the '
+                'ensemble data and response surface prediction of '
+                'that data for each sample. A good fit results in '
+                'tall bars near 0.0 and very short bars further '
+                'from 0.0.  On the right is a plot of predicted '
+                'value vs. actual value. A good fit results in all '
+                'the points being very close to the diagonal line.' % rs,
+            )
 
     def activateWizardRSAnalysis(self):
         self.wizardRSValidated = True
@@ -1112,51 +1289,69 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.wizardViz_button.setEnabled(False)
 
     def activateWizardAnalyze1(self):
-        if self.wizardEnsemble_radio.isChecked(): #Raw data
-            self.handleDataAnalyzeCombo2(self.wizardAnalyze_combo1, self.wizardAnalyze_combo2)
-        else: # RS Analysis
+        if self.wizardEnsemble_radio.isChecked():  # Raw data
+            self.handleDataAnalyzeCombo2(
+                self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
+            )
+        else:  # RS Analysis
             self.wizardAnalyze_combo2.show()
-            self.handleRSAnalyzeCombo2(self.wizardAnalyze_combo1, self.wizardAnalyze_combo2)
+            self.handleRSAnalyzeCombo2(
+                self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
+            )
 
     def wizardAnalyze(self):
-        if self.wizardEnsemble_radio.isChecked(): #Raw data
-            self.dataAnalyze(self.wizardAnalysisOutput_combo, self.wizardAnalyze_combo1,
-                             self.wizardAnalyze_combo2)
-        else: # RS Analysis
+        if self.wizardEnsemble_radio.isChecked():  # Raw data
+            self.dataAnalyze(
+                self.wizardAnalysisOutput_combo,
+                self.wizardAnalyze_combo1,
+                self.wizardAnalyze_combo2,
+            )
+        else:  # RS Analysis
             # get RS
             rs = self.getWizardRS()
 
-            self.RSAnalyze(self.wizardAnalysisOutput_combo, self.wizardAnalyze_combo1,
-                           self.wizardAnalyze_combo2, self.wizardRSLegendre_spin,
-                           self.wizardUserRegressionFile_edit, rs)
+            self.RSAnalyze(
+                self.wizardAnalysisOutput_combo,
+                self.wizardAnalyze_combo1,
+                self.wizardAnalyze_combo2,
+                self.wizardRSLegendre_spin,
+                self.wizardUserRegressionFile_edit,
+                rs,
+            )
 
             # Show plot help text
             analysisType = self.wizardAnalyze_combo1.currentText()
             if analysisType.startswith('Uncertainty'):
-                QMessageBox.information(None, 'Uncertainty Analysis Plot',
-                                        'This plot displays the distribution of the output '
-                                        '(Normal on top, cumulative on the bottom) as well as '
-                                        'statistics on the top. Use this plot to gauge whether '
-                                        'the uncertainty of the output is acceptable. If not, '
-                                        'further analysis is needed to examine relationships '
-                                        'between inputs and outputs and what can be done to '
-                                        'reduce the uncertainties on the inputs that contribute '
-                                        'more to the uncertainty of this output.'
-                                        )
+                QMessageBox.information(
+                    None,
+                    'Uncertainty Analysis Plot',
+                    'This plot displays the distribution of the output '
+                    '(Normal on top, cumulative on the bottom) as well as '
+                    'statistics on the top. Use this plot to gauge whether '
+                    'the uncertainty of the output is acceptable. If not, '
+                    'further analysis is needed to examine relationships '
+                    'between inputs and outputs and what can be done to '
+                    'reduce the uncertainties on the inputs that contribute '
+                    'more to the uncertainty of this output.',
+                )
             elif analysisType.startswith('Sensitivity'):
                 order = self.wizardAnalyze_combo2.currentText()
-                QMessageBox.information(None, '%s Plot' % order,
-                                        'Take note of which inputs are more sensitive and which are less. '
-                                        'Taller bars in the plot mean more sensitive.')
-
+                QMessageBox.information(
+                    None,
+                    '%s Plot' % order,
+                    'Take note of which inputs are more sensitive and which are less. '
+                    'Taller bars in the plot mean more sensitive.',
+                )
 
     def activateWizardVizButton(self):
         if self.wizardEnsemble_radio.isChecked():
-            enable = self.RSVizCombosUnique(self.wizardViz_combo1, self.wizardViz_combo2)
+            enable = self.RSVizCombosUnique(
+                self.wizardViz_combo1, self.wizardViz_combo2
+            )
         else:
-            enable = self.wizardRSValidated and self.RSVizCombosUnique(self.wizardViz_combo1,
-                                                                       self.wizardViz_combo2,
-                                                                       self.wizardViz_combo3)
+            enable = self.wizardRSValidated and self.RSVizCombosUnique(
+                self.wizardViz_combo1, self.wizardViz_combo2, self.wizardViz_combo3
+            )
 
         self.wizardViz_button.setEnabled(enable)
 
@@ -1171,8 +1366,15 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             rsOptions = None
             if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
                 rsOptions = self.RSLegendre_spin.value()
-            self.RSViz(y, self.wizardViz_combo1, self.wizardViz_combo2, self.wizardViz_combo3, rs, rsOptions,
-                       userRegressionFile = self.wizardUserRegressionFile_edit.text())
+            self.RSViz(
+                y,
+                self.wizardViz_combo1,
+                self.wizardViz_combo2,
+                self.wizardViz_combo3,
+                rs,
+                rsOptions,
+                userRegressionFile=self.wizardUserRegressionFile_edit.text(),
+            )
 
     def wizardInfer(self):
         self.infer(True)
@@ -1182,13 +1384,19 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def initExpertPage(self):
         self.initExpertAnalysisGroups()
         ##### Expert Page
-        self.output_combo.currentIndexChanged[int].connect(self.activateExpertAnalysisGroups)
+        self.output_combo.currentIndexChanged[int].connect(
+            self.activateExpertAnalysisGroups
+        )
         # ~ ~ ~ ~ ~ SCREEN GROUP ~ ~ ~ ~ ~
         self.screen_combo.currentIndexChanged[int].connect(self.activateScreenButton)
         self.screen_button.clicked.connect(self.expertScreen)
         # ~ ~ ~ ~ ~ DATA ANALYSIS GROUP ~ ~ ~ ~ ~
-        self.dataAnalyze_combo1.currentIndexChanged[int].connect(self.activateDataAnalyze1)
-        self.dataAnalyze_combo2.currentIndexChanged[int].connect(self.activateDataAnalyzeButton)
+        self.dataAnalyze_combo1.currentIndexChanged[int].connect(
+            self.activateDataAnalyze1
+        )
+        self.dataAnalyze_combo2.currentIndexChanged[int].connect(
+            self.activateDataAnalyzeButton
+        )
         self.dataAnalyze_button.clicked.connect(self.expertDataAnalyze)
         self.dataViz_combo1.currentIndexChanged[int].connect(self.activateDataVizButton)
         self.dataViz_combo2.currentIndexChanged[int].connect(self.activateDataVizButton)
@@ -1202,15 +1410,23 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSMarsDegree_spin.valueChanged.connect(self.activateRSValidateButton)
         self.RSLegendre_spin.valueChanged.connect(self.deactivateExpertRSAnalysis)
         self.RSLegendre_spin.valueChanged.connect(self.activateRSValidateButton)
-        self.expertUserRegressionBrowse_button.clicked.connect(self.populateExpertUserRegressionFile)
+        self.expertUserRegressionBrowse_button.clicked.connect(
+            self.populateExpertUserRegressionFile
+        )
         self.testSet_chkbox.toggled.connect(self.activateTestSet)
         self.testSetBrowse_button.clicked.connect(self.populateTestSetFile)
-        self.RSValidationGroups_spin.valueChanged.connect(self.RSValidate_button.setEnabled)
+        self.RSValidationGroups_spin.valueChanged.connect(
+            self.RSValidate_button.setEnabled
+        )
         self.RSCodeBrowse_button.clicked.connect(self.RSCodeBrowse)
         self.RSValidate_button.clicked.connect(self.expertRSValidate)
         self.RSAnalyze_combo1.currentIndexChanged[int].connect(self.activateRSAnalyze1)
-        self.RSAnalyze_combo2.currentIndexChanged[int].connect(self.changePriorTableMode)
-        self.RSAnalyze_combo2.currentIndexChanged[int].connect(self.activateRSAnalyzeButton)
+        self.RSAnalyze_combo2.currentIndexChanged[int].connect(
+            self.changePriorTableMode
+        )
+        self.RSAnalyze_combo2.currentIndexChanged[int].connect(
+            self.activateRSAnalyzeButton
+        )
         self.RSAnalyze_button.clicked.connect(self.expertRSAnalyze)
         self.inputPrior_table.pdfChanged.connect(self.inputPriorTablePDFChanged)
         self.inputPrior_table.typeChanged.connect(self.inputPriorTablePDFChanged)
@@ -1246,7 +1462,6 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.output_combo.setCurrentIndex(0)
         self.output_combo.setEnabled(True)
 
-
         # deactivate all groups until output is chosen
         self.paramSelectGroup.setEnabled(False)
         self.ensembleDataGroup.setEnabled(False)
@@ -1260,7 +1475,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     def activateExpertAnalysisGroups(self):
         output = self.output_combo.currentText()
-        enable = (output != 'None selected')
+        enable = output != 'None selected'
 
         # activate groups
         self.paramSelectGroup.setEnabled(enable)
@@ -1297,7 +1512,6 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         y = self.output_combo.currentIndex()
         self.screen(y, self.screen_combo)
         self.enableScreen(True)
-
 
     # ~ ~ ~ ~ ~ EXPERT PAGE: DATA ANALYSIS Group ~ ~ ~ ~ ~
     def initExpertDataGroup(self):
@@ -1354,7 +1568,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def expertDataAnalyze(self):
 
         self.enableDataAnalyze(False)
-        self.dataAnalyze(self.output_combo, self.dataAnalyze_combo1, self.dataAnalyze_combo2)
+        self.dataAnalyze(
+            self.output_combo, self.dataAnalyze_combo1, self.dataAnalyze_combo2
+        )
         self.enableDataAnalyze(True)
 
     def activateDataVizButton(self):
@@ -1391,21 +1607,24 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def initExpertRSGroup(self):
 
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
         nSamples = data.getNumSamples()
         inTypes = data.getInputTypes()
         nInputs = inTypes.count(Model.VARIABLE)
 
-        #set up GUI components
+        # set up GUI components
         self.RSMarsBasis_spin.init(data)
         self.RSMarsDegree_spin.init(data)
         self.RSLegendre_spin.init(data)
         self.RS_combo2.init(data, self.RSLegendre_spin, self.RSLegendre_static)
-        self.RS_combo1.init(data, self.RS_combo2,
-                            marsBasisSpin = self.RSMarsBasis_spin,
-                            marsBasisCaption = self.RSMarsBasis_static,
-                            marsDegreeSpin = self.RSMarsDegree_spin,
-                            marsDegreeCaption = self.RSMarsDegree_static)
+        self.RS_combo1.init(
+            data,
+            self.RS_combo2,
+            marsBasisSpin=self.RSMarsBasis_spin,
+            marsBasisCaption=self.RSMarsBasis_static,
+            marsDegreeSpin=self.RSMarsDegree_spin,
+            marsDegreeCaption=self.RSMarsDegree_static,
+        )
         self.RSValidate_button.setEnabled(self.RS_combo1.isEnabled())
         self.expertUserRegression_static.setEnabled(False)
         self.expertUserRegressionFile_edit.setEnabled(False)
@@ -1493,23 +1712,31 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         filename = self.testSet_edit.text()
         if len(filename) == 0:
             filename = os.getcwd()
-        fname, selectedFilter = QFileDialog.getOpenFileName(self, 'Indicate file that has user regression test set:',
-                                                            filename)
+        fname, selectedFilter = QFileDialog.getOpenFileName(
+            self, 'Indicate file that has user regression test set:', filename
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             try:
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
                 if data.getNumOutputs() > 1:
-                    QMessageBox.critical(self, 'File Outputs', 'This file can only have one output!')
+                    QMessageBox.critical(
+                        self, 'File Outputs', 'This file can only have one output!'
+                    )
             except:
-                QMessageBox.critical(self, 'File format Incorrect', 'This file is not a PSUADE formatted file!')
+                QMessageBox.critical(
+                    self,
+                    'File format Incorrect',
+                    'This file is not a PSUADE formatted file!',
+                )
             self.testSet_edit.setText(fname)
         self.activateRSValidateButton()
 
-
     def activateRSCodeSave(self):
         rs = self.RS_combo2.currentText()
-        if rs in [ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG),
-                  ResponseSurfaces.getFullName(ResponseSurfaces.USER)]:
+        if rs in [
+            ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG),
+            ResponseSurfaces.getFullName(ResponseSurfaces.USER),
+        ]:
             enable = False
         else:
             enable = True
@@ -1517,8 +1744,12 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     def RSCodeBrowse(self):
         filename = os.getcwd() + os.sep + 'rs.py'
-        fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save posterior input samples',
-                                                            filename, 'Python code (*.py);;C code (*.c)' )
+        fname, selectedFilter = QFileDialog.getSaveFileName(
+            self,
+            'Indicate file to save posterior input samples',
+            filename,
+            'Python code (*.py);;C code (*.c)',
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             if '*.py' in selectedFilter:
                 origFile = 'psuade_rs.py'
@@ -1575,14 +1806,16 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         y = self.output_combo.currentIndex()
 
         # get RS
-        rs =  self.getExpertRS()
+        rs = self.getExpertRS()
         rsOptions = None
         error_tol_percent = self.doubleSpinBox.value()
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.RSLegendre_spin.value()
         elif rs.startswith('MARS'):
-            rsOptions = {'marsBases': self.RSMarsBasis_spin.value(),
-                         'marsInteractions': self.RSMarsDegree_spin.value()}
+            rsOptions = {
+                'marsBases': self.RSMarsBasis_spin.value(),
+                'marsInteractions': self.RSMarsDegree_spin.value(),
+            }
 
         nCV = self.RSValidationGroups_spin.value()
 
@@ -1591,30 +1824,41 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             testFile = self.testSet_edit.text()
 
         genRSCode = True
-        self.rsValidate(y, rs, rsOptions, genRSCode, nCV, self.expertUserRegressionFile_edit.text(), testFile, error_tol_percent)
+        self.rsValidate(
+            y,
+            rs,
+            rsOptions,
+            genRSCode,
+            nCV,
+            self.expertUserRegressionFile_edit.text(),
+            testFile,
+            error_tol_percent,
+        )
 
         rs = self.RS_combo2.currentText()
         if rs != ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG):
             if not os.path.exists('psuade_rs.info'):
-                pass #TODO: error psuade_rs.info missing
+                pass  # TODO: error psuade_rs.info missing
             if not os.path.exists('psuade_rs.py'):
-                pass #TODO: error psuade_rs.py missing
-
+                pass  # TODO: error psuade_rs.py missing
 
         self.activateRSCodeSave()
         self.activateExpertRSAnalysis()
 
         # Make expert mode components reflect the same RS Validation
-        self.wizardAnalysisOutput_combo.setCurrentIndex(self.output_combo.currentIndex() - 1)
+        self.wizardAnalysisOutput_combo.setCurrentIndex(
+            self.output_combo.currentIndex() - 1
+        )
         self.wizardRS_combo1.setCurrentIndex(self.RS_combo1.currentIndex())
         self.wizardRS_combo2.setCurrentIndex(self.RS_combo2.currentIndex())
         self.wizardRSLegendre_spin.setValue(self.RSLegendre_spin.value())
-        self.wizardUserRegressionFile_edit.setText(self.expertUserRegressionFile_edit.text())
+        self.wizardUserRegressionFile_edit.setText(
+            self.expertUserRegressionFile_edit.text()
+        )
         self.wizardErrorEnvelope_edit.setValue(self.doubleSpinBox.value())
         self.activateWizardRSAnalysis()
 
         self.unfreeze()
-
 
     def activateExpertRSAnalysis(self):
         self.output_combo.setEnabled(True)
@@ -1625,7 +1869,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if rs.startswith('Polynomial') or rs.startswith('MARS'):
             self.RS_combo2.setEnabled(True)
             rs = self.RS_combo2.currentText()
-            enable = (rs == ResponseSurfaces.getFullName(ResponseSurfaces.LEGENDRE))
+            enable = rs == ResponseSurfaces.getFullName(ResponseSurfaces.LEGENDRE)
             self.RSLegendre_static.setEnabled(enable)
             self.RSLegendre_spin.setEnabled(enable)
             self.RSValidationGroups_static.setEnabled(True)
@@ -1634,7 +1878,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             self.RS_combo2.setEnabled(False)
             self.RSLegendre_static.setEnabled(False)
             self.RSLegendre_spin.setEnabled(False)
-            enable = (rs == ResponseSurfaces.getFullName(ResponseSurfaces.USER))
+            enable = rs == ResponseSurfaces.getFullName(ResponseSurfaces.USER)
             self.expertUserRegression_static.setEnabled(enable)
             self.expertUserRegressionFile_edit.setEnabled(enable)
             self.expertUserRegressionBrowse_button.setEnabled(enable)
@@ -1665,7 +1909,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSAnalyze_combo1.setEnabled(b)
         self.RSAnalyze_combo1.setCurrentIndex(0)
         self.RSAnalyze_combo2.setEnabled(b)
-        #self.RSAnalyze_combo2.clear()
+        # self.RSAnalyze_combo2.clear()
         self.RSAnalyze_button.setEnabled(b)
         self.inputPrior_table.setEnabled(b)
         self.RSViz_combo1.setEnabled(b)
@@ -1683,15 +1927,20 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSVizMin_edit.setEnabled(b)
         self.RSVizMax_edit.setEnabled(b)
 
-
     def activateRSAnalyze1(self):
-        self.initRSAnalyzeCombo1(self.RSAnalyze_combo1, self.RSAnalyze_combo2,
-                                   True, self.samplePDFChosen)
+        self.initRSAnalyzeCombo1(
+            self.RSAnalyze_combo1, self.RSAnalyze_combo2, True, self.samplePDFChosen
+        )
         # temporarily disable the table mode change
-        self.RSAnalyze_combo2.currentIndexChanged[int].disconnect(self.changePriorTableMode)
-        self.handleRSAnalyzeCombo2(self.RSAnalyze_combo1, self.RSAnalyze_combo2,
-                                   self.samplePDFChosen)
-        self.RSAnalyze_combo2.currentIndexChanged[int].connect(self.changePriorTableMode)
+        self.RSAnalyze_combo2.currentIndexChanged[int].disconnect(
+            self.changePriorTableMode
+        )
+        self.handleRSAnalyzeCombo2(
+            self.RSAnalyze_combo1, self.RSAnalyze_combo2, self.samplePDFChosen
+        )
+        self.RSAnalyze_combo2.currentIndexChanged[int].connect(
+            self.changePriorTableMode
+        )
         self.pointEval_label.setText('')
         self.changePriorTableMode()
         self.RSAnalyze_button.setEnabled(True)
@@ -1699,8 +1948,8 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
     def inputPriorTablePDFChanged(self):
         self.samplePDFChosen = self.inputPrior_table.isSamplePDFChosen()
         self.activateRSAnalyze1()
-#        self.handleRSAnalyzeCombo2(self.RSAnalyze_combo1, self.RSAnalyze_combo2,
-#                                   self.samplePDFChosen)
+        #        self.handleRSAnalyzeCombo2(self.RSAnalyze_combo1, self.RSAnalyze_combo2,
+        #                                   self.samplePDFChosen)
         self.activateRSAnalyzeButton()
 
     def changePriorTableMode(self):
@@ -1708,13 +1957,12 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if self.RSAnalyze_combo1.currentText() != 'Point Evaluation':
             self.inputPrior_table.setRSEvalMode(False)
         mode = self.RSAnalyze_combo2.currentText() == 'Epistemic-Aleatory'
-        #if mode != self.epistemicMode: # Change in mode
+        # if mode != self.epistemicMode: # Change in mode
         if True:
             self.inputPrior_table.setAleatoryEpistemicMode(mode)
             self.epistemicMode = mode
         if self.RSAnalyze_combo1.currentText() == 'Point Evaluation':
             self.inputPrior_table.setRSEvalMode(True)
-
 
     def activateRSAnalyzeButton(self):
 
@@ -1749,11 +1997,18 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         rs = self.getExpertRS()
         epistemicNames, epistemicIndices = self.inputPrior_table.getEpistemicVariables()
         evars = [indx + 1 for indx in epistemicIndices]
-        self.RSAnalyze(self.output_combo, self.RSAnalyze_combo1, self.RSAnalyze_combo2,
-                       self.RSLegendre_spin, self.expertUserRegressionFile_edit, rs,
-                       self.inputPrior_table.getTableValues(), evars, self.RSMarsBasis_spin,
-                       self.RSMarsDegree_spin)
-
+        self.RSAnalyze(
+            self.output_combo,
+            self.RSAnalyze_combo1,
+            self.RSAnalyze_combo2,
+            self.RSLegendre_spin,
+            self.expertUserRegressionFile_edit,
+            rs,
+            self.inputPrior_table.getTableValues(),
+            evars,
+            self.RSMarsBasis_spin,
+            self.RSMarsDegree_spin,
+        )
 
         self.enableRSAnalyze(True)
 
@@ -1773,7 +2028,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # TO DO: activate based on valid min/max values if checkboxes are checked
 
-        cond1 = self.RSVizCombosUnique(self.RSViz_combo1, self.RSViz_combo2, self.RSViz_combo3)
+        cond1 = self.RSVizCombosUnique(
+            self.RSViz_combo1, self.RSViz_combo2, self.RSViz_combo3
+        )
 
         # get min/max
         vmin = True
@@ -1782,7 +2039,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             vmin = self.isnumeric(self.RSVizMin_edit.text())
         if self.RSVizMax_chkbox.isChecked():
             vmax = self.isnumeric(self.RSVizMin_edit.text())
-        cond2 = (vmin and vmax)
+        cond2 = vmin and vmax
 
         if cond1 and cond2:
             self.RSViz_button.setEnabled(True)
@@ -1830,12 +2087,22 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if rs == ResponseSurfaces.getFullName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.RSLegendre_spin.value()
         elif rs.startswith('MARS'):
-            rsOptions = {'marsBases': self.RSMarsBasis_spin.value(),
-                         'marsInteractions': self.RSMarsDegree_spin.value()}
+            rsOptions = {
+                'marsBases': self.RSMarsBasis_spin.value(),
+                'marsInteractions': self.RSMarsDegree_spin.value(),
+            }
 
-        self.RSViz(y, self.RSViz_combo1, self.RSViz_combo2,
-                   self.RSViz_combo3, rs, rsOptions, ymin, ymax,
-                   userRegressionFile = self.expertUserRegressionFile_edit.text())
+        self.RSViz(
+            y,
+            self.RSViz_combo1,
+            self.RSViz_combo2,
+            self.RSViz_combo3,
+            rs,
+            rsOptions,
+            ymin,
+            ymax,
+            userRegressionFile=self.expertUserRegressionFile_edit.text(),
+        )
 
         self.enableRSViz(True)
 

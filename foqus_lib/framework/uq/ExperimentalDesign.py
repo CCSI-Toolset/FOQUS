@@ -28,14 +28,14 @@ from .LocalExecutionModule import LocalExecutionModule
 from .RSAnalyzer import RSAnalyzer
 from .Common import Common
 
-class ExperimentalDesign:
 
+class ExperimentalDesign:
     @staticmethod
     def createPsuadeInFile(data, filename, includePDF=True):
         outf = open(filename, 'w')
         outf.write('PSUADE\n')
 
-        #Write inputs
+        # Write inputs
         outf.write('INPUT\n')
         outf.write('   dimension = %d\n' % data.getNumInputs())
         names = data.getInputNames()
@@ -43,18 +43,20 @@ class ExperimentalDesign:
         maxs = data.getInputMaxs()
         indices = list(range(data.getNumInputs()))
         for i, name, minimum, maximum in zip(indices, names, mins, maxs):
-            outf.write('   variable %d %s = %e %e\n' % (i + 1, name,
-                                                        minimum, maximum))
+            outf.write('   variable %d %s = %e %e\n' % (i + 1, name, minimum, maximum))
         distributions = data.getInputDistributions()
         for i, dist in zip(indices, distributions):
             distType = dist.getDistributionType()
             distParams = dist.getParameterValues()
             if distType == Distribution.SAMPLE:
-                outf.write('   PDF %d %c' % (i + 1, Distribution.getPsuadeName(distType)))
+                outf.write(
+                    '   PDF %d %c' % (i + 1, Distribution.getPsuadeName(distType))
+                )
                 if distParams[0] is not None:
                     filename = distParams[0]
                     if platform.system() == 'Windows':
                         import win32api
+
                         filename = win32api.GetShortPathName(filename)
                     outf.write(' %s' % filename)
                 if distParams[1] is not None:
@@ -62,7 +64,9 @@ class ExperimentalDesign:
                 outf.write('\n')
             elif includePDF:  # write out PDF info for all non-uniform PDF types
                 if distType != Distribution.UNIFORM:
-                    outf.write('   PDF %d %c' % (i + 1, Distribution.getPsuadeName(distType)))
+                    outf.write(
+                        '   PDF %d %c' % (i + 1, Distribution.getPsuadeName(distType))
+                    )
                     if distParams[0] is not None:
                         outf.write(' %e' % distParams[0])
                     if distParams[1] is not None:
@@ -70,7 +74,7 @@ class ExperimentalDesign:
                     outf.write('\n')
         outf.write('END\n')
 
-        #Write outputs
+        # Write outputs
         outf.write('OUTPUT\n')
         if data.getNumOutputs() == 0:
             outf.write('   dimension = 1\n')
@@ -87,15 +91,17 @@ class ExperimentalDesign:
 
         outf.write('END\n')
 
-        #Write Method
+        # Write Method
         outf.write('METHOD\n')
-        outf.write('   sampling = %s\n' % SamplingMethods.getPsuadeName(data.getSampleMethod()))
+        outf.write(
+            '   sampling = %s\n' % SamplingMethods.getPsuadeName(data.getSampleMethod())
+        )
         outf.write('   num_samples = %d\n' % data.getNumSamples())
         if data.getSampleMethod() != SamplingMethods.GMOAT:
             outf.write('   randomize\n')
         outf.write('END\n')
 
-        #Write Application
+        # Write Application
         outf.write('APPLICATION\n')
         driverString = data.getDriverName()
         if driverString is None:
@@ -103,6 +109,7 @@ class ExperimentalDesign:
         elif platform.system() == 'Windows':
             if os.path.exists(driverString):
                 import win32api
+
                 driverString = win32api.GetShortPathName(driverString)
             else:
                 driverString = 'NONE'
@@ -112,7 +119,7 @@ class ExperimentalDesign:
         outf.write('   save_frequency = 1\n')
         outf.write('END\n')
 
-        #Write Analysis
+        # Write Analysis
         outf.write('ANALYSIS\n')
         outf.write('   diagnostics 2\n')
         outf.write('END\n')
@@ -121,8 +128,9 @@ class ExperimentalDesign:
         outf.close()
 
     @staticmethod
-    def generateSamples(data, selectedInputs, selectedOutputs,
-                        numSamples = None, sampleMethod = -1):
+    def generateSamples(
+        data, selectedInputs, selectedOutputs, numSamples=None, sampleMethod=-1
+    ):
         psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
         if os.path.exists(psuadeDataFile):
             os.remove(psuadeDataFile)
@@ -149,28 +157,38 @@ class ExperimentalDesign:
             returnData.setSampleMethod(sampleMethod)
         else:
             returnData.setSampleMethod(data.getSampleMethod())
-        if returnData.getSampleMethod() == SamplingMethods.METIS and os.path.exists('psuadeMetisInfo'):
+        if returnData.getSampleMethod() == SamplingMethods.METIS and os.path.exists(
+            'psuadeMetisInfo'
+        ):
             os.remove('psuadeMetisInfo')
 
         distributions = data.getInputDistributions()
         pdfconvert = False
         for dist in distributions:
             distType = dist.getDistributionType()
-            if returnData.getSampleMethod() != SamplingMethods.MC and distType not in [Distribution.SAMPLE, Distribution.UNIFORM]:
+            if returnData.getSampleMethod() != SamplingMethods.MC and distType not in [
+                Distribution.SAMPLE,
+                Distribution.UNIFORM,
+            ]:
                 pdfconvert = True
         returnData.setInputDistributions(distributions)
 
         curDir = os.getcwd()
         if platform.system() == 'Windows':
             import win32api
+
             curDir = win32api.GetShortPathName(curDir)
         psuadeInFile = curDir + os.sep + 'psuade.in'
 
         if pdfconvert:
             # omit non-uniform and non-sample PDF info from input file
-            ExperimentalDesign.createPsuadeInFile(returnData, psuadeInFile, includePDF=False)
+            ExperimentalDesign.createPsuadeInFile(
+                returnData, psuadeInFile, includePDF=False
+            )
         else:
-            ExperimentalDesign.createPsuadeInFile(returnData, psuadeInFile, includePDF=True)
+            ExperimentalDesign.createPsuadeInFile(
+                returnData, psuadeInFile, includePDF=True
+            )
 
         out, error = Common.invokePsuade(psuadeInFile)
 
@@ -182,18 +200,19 @@ class ExperimentalDesign:
                 tmpfile = os.getcwd() + os.path.sep + 'tmp'
                 y = 1
                 # add back in the full PDF info
-                RSAnalyzer.writeRSdata(tmpfile,y,data,inputPDF=distributions)
+                RSAnalyzer.writeRSdata(tmpfile, y, data, inputPDF=distributions)
                 # write script to PDF conversion
                 f = tempfile.SpooledTemporaryFile()
                 if platform.system() == 'Windows':
                     import win32api
+
                     tmpfile = win32api.GetShortPathName(tmpfile)
                 f.write(('load %s\n' % tmpfile).encode())
                 f.write(b'pdfconvert\n')
                 f.write(('write %s\n' % psuadeDataFile).encode())
                 nOutputs = returnData.getNumOutputs()
                 if nOutputs > 1:
-                    f.write(b'n\n')     # write all outputs
+                    f.write(b'n\n')  # write all outputs
                 f.write(b'quit\n')
                 f.seek(0)
                 out, error = Common.invokePsuade(f)

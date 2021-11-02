@@ -8,27 +8,28 @@ import pytest
 
 def pytest_addoption(parser):
     parser.addoption(
-        '--slowdown-wait', action='store', default=100,
+        '--slowdown-wait',
+        action='store',
+        default=100,
     )
     parser.addoption(
-        '--artifacts-path', action='store', default='.pytest-artifacts',
+        '--artifacts-path',
+        action='store',
+        default='.pytest-artifacts',
     )
     parser.addoption(
-        '--main-window-size', action='store', default='800x600', help="Size of the main window specified as a <width>x<height> string"
+        '--main-window-size',
+        action='store',
+        default='800x600',
+        help="Size of the main window specified as a <width>x<height> string",
     )
-    parser.addoption(
-        '--main-window-title', action='store', default='FOQUS'
-    )
+    parser.addoption('--main-window-title', action='store', default='FOQUS')
 
 
 @pytest.fixture(scope='session')
 def _repo_root():
     this_file = Path(__file__).resolve()  # FOQUS/foqus_lib/conftest.py
-    repo_root = (
-        this_file
-        .parent
-        .parent
-    )
+    repo_root = this_file.parent.parent
     assert (repo_root / '.git').is_dir()
     return repo_root
 
@@ -47,12 +48,7 @@ def psuade_path():
     return Path(_psuade_path).resolve()
 
 
-@pytest.fixture(
-    scope='session',
-    params=[
-        'UQ/Rosenbrock.foqus'
-    ]
-)
+@pytest.fixture(scope='session', params=['UQ/Rosenbrock.foqus'])
 def flowsheet_session_file(examples_dir, request):
     return str(examples_dir / 'test_files' / request.param)
 

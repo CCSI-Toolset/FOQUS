@@ -22,6 +22,7 @@ from .SampleData import SampleData
 from .LocalExecutionModule import LocalExecutionModule
 from .Common import Common
 
+
 class DataProcessor:
 
     dname = os.getcwd() + os.path.sep + 'DataProcessor_files'
@@ -64,38 +65,47 @@ class DataProcessor:
             Common.showError(error)
             return None
         if (vmin is None) | (vmax is None) | (vmin >= vmax):
-            error = 'DataProcessor: filterData() requires a valid [min, max] range to filter the variable "%s".' % filterVar
+            error = (
+                'DataProcessor: filterData() requires a valid [min, max] range to filter the variable "%s".'
+                % filterVar
+            )
             Common.showError(error)
             return None
 
-        # check if the filter variable exists 
+        # check if the filter variable exists
         if filterVar not in varNames:
-            error = 'DataProcessor: In function filterData(), %s does not contain the filter variable "%s".' % (fname, filterVar)
+            error = (
+                'DataProcessor: In function filterData(), %s does not contain the filter variable "%s".'
+                % (fname, filterVar)
+            )
             Common.showError(error)
             outfile = fname
             return outfile
 
         # get the output index to filter variable
-        filterIndex = varNames.index(filterVar) + 1    # psuade is 1-indexed
+        filterIndex = varNames.index(filterVar) + 1  # psuade is 1-indexed
 
         # write script
         outfile = Common.getLocalFileName(DataProcessor.dname, fname, '.filtered')
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
-            fname = win32api.GetShortPathName(fname)        
+
+            fname = win32api.GetShortPathName(fname)
         f.write('load %s\n' % fname)
-        f.write('%s\n' % cmd)            # invoke ifilter or ofilter
-        if (cmd == 'ifilter' and data.getNumInputs() > 1) or (cmd == 'ofilter' and data.getNumOutputs() > 1):
-            f.write('%d\n' % filterIndex)    # select the filter variable
-        f.write('%f\n' % vmin)           # extract points within range [vmin, vmax]
+        f.write('%s\n' % cmd)  # invoke ifilter or ofilter
+        if (cmd == 'ifilter' and data.getNumInputs() > 1) or (
+            cmd == 'ofilter' and data.getNumOutputs() > 1
+        ):
+            f.write('%d\n' % filterIndex)  # select the filter variable
+        f.write('%f\n' % vmin)  # extract points within range [vmin, vmax]
         f.write('%f\n' % vmax)
         if platform.system() == 'Windows':
             head, tail = os.path.split(outfile)
             head = win32api.GetShortPathName(head)
             outfile = os.path.join(head, tail)
-        f.write('write %s\n' % outfile) 
-        f.write('n\n')                   # write all outputs
+        f.write('write %s\n' % outfile)
+        f.write('n\n')  # write all outputs
         f.write('quit\n')
         f.seek(0)
 
@@ -131,33 +141,34 @@ class DataProcessor:
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if platform.system() == 'Windows':
             import win32api
+
             fname = win32api.GetShortPathName(fname)
-        
+
         f.write('load %s\n' % fname)
         if (di > 0) and inVars:
-            f.write('idelete\n')            # invoke idelete
-            f.write('%d\n' % len(inVars))   # number of inputs to be deleted
+            f.write('idelete\n')  # invoke idelete
+            f.write('%d\n' % len(inVars))  # number of inputs to be deleted
             for i in inVars:
-                f.write('%d\n' % i)         # select the input variable to delete
+                f.write('%d\n' % i)  # select the input variable to delete
         if (do > 0) and outVars:
             outVars_reverse = outVars[::-1]
             for i in outVars_reverse:
-                f.write('odelete\n')        # invoke odelete
-                f.write('%d\n' % i)         # select the output variable to delete
+                f.write('odelete\n')  # invoke odelete
+                f.write('%d\n' % i)  # select the output variable to delete
             nOutputs = nOutputs - len(outVars)
         if (ds > 0) and samples:
             samples_reverse = samples[::-1]
             for i in samples_reverse:
-                f.write('sdelete\n')        # invoke sdelete
-                f.write('%d\n' % i)         # select the sample point to delete
+                f.write('sdelete\n')  # invoke sdelete
+                f.write('%d\n' % i)  # select the sample point to delete
         if platform.system() == 'Windows':
             head, tail = os.path.split(outfile)
             head = win32api.GetShortPathName(head)
             outfile = os.path.join(head, tail)
-        f.write('write %s\n' % outfile) 
+        f.write('write %s\n' % outfile)
 
         if nOutputs > 1:
-            f.write('n\n')                      # write all outputs
+            f.write('n\n')  # write all outputs
         f.write('quit\n')
         f.seek(0)
 
@@ -165,7 +176,7 @@ class DataProcessor:
         out, error = Common.invokePsuade(f)
         f.close()
 
-        # process error        
+        # process error
         if error:
             return None
 

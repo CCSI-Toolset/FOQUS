@@ -23,10 +23,10 @@ import pandas as pd  # only used for the final output of criterion
 def compute_dmat(weight_mat, xcols, wcol, hist_xs=None, hist_wt=None):
 
     # Inputs:
-    #  weight_mat - numpy array of size (nd, nx+1) containing scaled weights 
-    #       xcols - list of integers corresponding to column indices for inputs 
-    #        wcol - integer corresponding to the index of the weight column 
-    #        hist - numpy array of shape (nh, nx+1) 
+    #  weight_mat - numpy array of size (nd, nx+1) containing scaled weights
+    #       xcols - list of integers corresponding to column indices for inputs
+    #        wcol - integer corresponding to the index of the weight column
+    #        hist - numpy array of shape (nh, nx+1)
     # Output:
     #        dmat - numpy array of shape (nd+nh, nd+nh)
 
@@ -47,18 +47,18 @@ def compute_min_params(dmat):
 
     md = np.min(dmat)
     mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
-    mties = mdpts.shape[0]                    # number of points returned
+    mties = mdpts.shape[0]  # number of points returned
     mdpts = np.unique(mdpts.flatten())
     return md, mdpts, mties
 
 
 def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     # Inputs:
-    #   rcand - numpy array of size (nd, nx+1) containing scaled weights 
-    #    cand - numpy array of size (ncand, nx+1) containing scaled weights, nd < ncand 
+    #   rcand - numpy array of size (nd, nx+1) containing scaled weights
+    #    cand - numpy array of size (ncand, nx+1) containing scaled weights, nd < ncand
     #   ncand - number of candidates to choose <nd> best design from, i.e., cand.shape[0]
-    #   xcols - list of integers corresponding to column indices for inputs 
-    #    wcol - integer corresponding to the index of the weight column 
+    #   xcols - list of integers corresponding to column indices for inputs
+    #    wcol - integer corresponding to the index of the weight column
     #      md - scalar representing min(dmat)
     #   mdpts - numpy array of shape (K, 2) representing indices where 'md' occurs
     #   mties - scalar representing number of 'mdpts'
@@ -72,9 +72,9 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
     #  update - boolean representing whether an update should occur
 
     def update_dmat(row, rcand, xcols, wcol, dmat_, k, val=9999):
-        rcand_norm = row[xcols] - rcand[:, xcols] 
-        m = np.sum(rcand_norm**2, axis=1)     
-        row = m*row[wcol]*rcand[:, wcol] 
+        rcand_norm = row[xcols] - rcand[:, xcols]
+        m = np.sum(rcand_norm ** 2, axis=1)
+        row = m * row[wcol] * rcand[:, wcol]
         dmat = np.copy(dmat_)
         dmat[k, :] = row
         dmat[:, k] = row.T
@@ -83,11 +83,11 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
 
     def step(pt, rcand_, cand, xcols, wcol, mdpts, dmat_, mt0=None):
         i, j = pt
-        rcand = rcand_.copy() 
+        rcand = rcand_.copy()
         dmat = np.copy(dmat_)
         row = cand[j]
-        k = mdpts[i]                  # k = {0, ..., nd}
-        rcand[k, xcols] = row[xcols]  
+        k = mdpts[i]  # k = {0, ..., nd}
+        rcand[k, xcols] = row[xcols]
         dmat = update_dmat(row, rcand, xcols, wcol, dmat_, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
@@ -95,8 +95,8 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         return rcand, dmat, md, mdpts, mties
 
     # initialize d0 and mt0
-    d0 = np.empty((int(2*mties), ncand))
-    mt0 = np.empty((int(2*mties), ncand))
+    d0 = np.empty((int(2 * mties), ncand))
+    mt0 = np.empty((int(2 * mties), ncand))
 
     for pt in np.ndindex(len(mdpts), ncand):
         i, j = pt
@@ -109,15 +109,19 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         _md = d0_max
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
-        rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
+        rcand, dmat, md, mdpts, mties = step(
+            pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0
+        )
     elif d0_max == md:
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
-            rcand, dmat, md, mdpts, mties = step(pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0)
+            rcand, dmat, md, mdpts, mties = step(
+                pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0
+            )
     else:
         update = False
-            
+
     return rcand, md, mdpts, mties, dmat, update
 
 
@@ -127,8 +131,8 @@ def scale_xs(mat_, xcols):
     #  xcols - list of integers corresponding to column indices for inputs
     # Output:
     #    mat - numpy array of size (nd, nx+1) containing the scaled inputs
-    #   xmin - numpy array of shape (1, nx) 
-    #   xmax - numpy array of shape (1, nx) 
+    #   xmin - numpy array of shape (1, nx)
+    #   xmax - numpy array of shape (1, nx)
 
     mat = mat_.copy()
     xs = mat[:, xcols]
@@ -157,7 +161,7 @@ def scale_y(scale_method, mwr, mat_, wcol):
         wts = mat[:, wcol]
         wmin = np.min(wts)
         wmax = np.max(wts)
-        mat[:, wcol] = 1 + (mwr-1)*(wts-wmin)/(wmax-wmin)
+        mat[:, wcol] = 1 + (mwr - 1) * (wts - wmin) / (wmax - wmin)
         return mat
 
     def ranked_mwr(mwr, mat, wcol):
@@ -165,8 +169,7 @@ def scale_y(scale_method, mwr, mat_, wcol):
         return direct_mwr(mwr, mat, wcol)
 
     # equivalent to if-else statements, but easier to maintain
-    methods = {'direct_mwr': direct_mwr,
-               'ranked_mwr': ranked_mwr}
+    methods = {'direct_mwr': direct_mwr, 'ranked_mwr': ranked_mwr}
 
     return methods[scale_method](mwr, mat, wcol)
 
@@ -188,17 +191,24 @@ def inv_scale_xs(mat_, xmin, xmax, xcols):
     return mat
 
 
-def criterion(cand,    # candidates 
-              args,    # maximum number of iterations & mwr values
-              nr,      # number of restarts (each restart uses a random set of <nd> points)
-              nd,      # design size <= len(candidates)
-              mode='maximin', hist=None):
+def criterion(
+    cand,  # candidates
+    args,  # maximum number of iterations & mwr values
+    nr,  # number of restarts (each restart uses a random set of <nd> points)
+    nd,  # design size <= len(candidates)
+    mode='maximin',
+    hist=None,
+):
 
     ncand = len(cand)
-    assert nd <= ncand, 'Number of designs exceeds number of available candidates.'  
+    assert nd <= ncand, 'Number of designs exceeds number of available candidates.'
 
     mode = mode.lower()
-    assert mode == 'maximin', 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(mode)
+    assert (
+        mode == 'maximin'
+    ), 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(
+        mode
+    )
 
     T = args['max_iterations']
     mwr_vals = args['mwr_values']
@@ -206,7 +216,7 @@ def criterion(cand,    # candidates
 
     # indices of type ...
     idx = args['xcols']  # Input
-    idw = args['wcol']   # Weight
+    idw = args['wcol']  # Weight
 
     # np indices
     idx_np = [cand.columns.get_loc(i) for i in idx]
@@ -226,18 +236,18 @@ def criterion(cand,    # candidates
 
     def step(mwr, cand_np):
 
-        cand_np = scale_y(scale_method, mwr, cand_np, idw_np) 
+        cand_np = scale_y(scale_method, mwr, cand_np, idw_np)
         best_cand = []
         best_md = 0
         best_mties = 0
         best_index = []
-        
+
         t0 = time.time()
 
         for i in range(nr):
-        
+
             print('Random start {}'.format(i))
-            
+
             # sample without replacement <nd> indices
             rand_index = np.random.choice(ncand, nd, replace=False)
             # extract the <nd> rows
@@ -251,11 +261,11 @@ def criterion(cand,    # candidates
             while update and (t < T):
                 update = False
 
-                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(rcand, cand_np, ncand,
-                                                                              idx_np, idw_np, md, mdpts,
-                                                                              mties, dmat)  # bottleneck in old code
-                                                     
-                t = t+1
+                rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(
+                    rcand, cand_np, ncand, idx_np, idw_np, md, mdpts, mties, dmat
+                )  # bottleneck in old code
+
+                t = t + 1
 
                 if update_:
                     rcand = rcand_
@@ -280,20 +290,24 @@ def criterion(cand,    # candidates
         best_cand_unscaled = cand_np_[best_index]
 
         best_cand = pd.DataFrame(best_cand, index=best_index, columns=list(cand))
-        best_cand_unscaled = pd.DataFrame(best_cand_unscaled, index=best_index, columns=list(cand))
+        best_cand_unscaled = pd.DataFrame(
+            best_cand_unscaled, index=best_index, columns=list(cand)
+        )
 
-        results = {'best_cand_scaled': best_cand, 
-                   'best_cand': best_cand_unscaled,
-                   'best_index': best_index,
-                   'best_val': best_md,
-                   'best_mdpts': best_mdpts,
-                   'best_mties': best_mties,
-                   'best_dmat': best_dmat,
-                   'mode': mode,
-                   'design_size': nd,
-                   'num_restarts': nr,
-                   'mwr': mwr,
-                   'elapsed_time': elapsed_time}
+        results = {
+            'best_cand_scaled': best_cand,
+            'best_cand': best_cand_unscaled,
+            'best_index': best_index,
+            'best_val': best_md,
+            'best_mdpts': best_mdpts,
+            'best_mties': best_mties,
+            'best_dmat': best_dmat,
+            'mode': mode,
+            'design_size': nd,
+            'num_restarts': nr,
+            'mwr': mwr,
+            'elapsed_time': elapsed_time,
+        }
 
         return results
 

@@ -30,24 +30,34 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import QFileDialog, QMessageBox, QApplication,\
-    QTableWidgetItem, QCheckBox, QMainWindow, QVBoxLayout, QLabel
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QMessageBox,
+    QApplication,
+    QTableWidgetItem,
+    QCheckBox,
+    QMainWindow,
+    QVBoxLayout,
+    QLabel,
+)
+
 mypath = os.path.dirname(__file__)
-_solventFitSetupFrameUI, _solventFitSetupFrame = \
-        uic.loadUiType(os.path.join(mypath, "solventFitSetupFrame.ui"))
+_solventFitSetupFrameUI, _solventFitSetupFrame = uic.loadUiType(
+    os.path.join(mypath, "solventFitSetupFrame.ui")
+)
 
 
 class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
-    format = '%.5f'             # numeric format for table entries in UQ Toolbox
+    format = '%.5f'  # numeric format for table entries in UQ Toolbox
 
-    #def __init__(self, wizardMode = False, userRegressionFile = None, parent=None):
+    # def __init__(self, wizardMode = False, userRegressionFile = None, parent=None):
 
-    def init(self, wizardMode = False, userRegressionFile = None, parent=None):
+    def init(self, wizardMode=False, userRegressionFile=None, parent=None):
         super(solventFitSetupFrame, self).__init__(parent=parent)
         self.setupUi(self)
-        #self.originalData = data
-        #data = data.getValidSamples() # filter out samples that have no output results
-        #self.data = data
+        # self.originalData = data
+        # data = data.getValidSamples() # filter out samples that have no output results
+        # self.data = data
         self.wizardMode = wizardMode
         self.userRegressionFile = userRegressionFile
         self.fileDir = ''
@@ -58,7 +68,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.trainingAllowInfer = False
         self.trainingAllowReplot = False
         self.restartAllowInfer = False
-
 
         self.obsTableValues = {}
         self.obsTableDefaultValues = []
@@ -80,8 +89,11 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             self.replotInstruction.hide()
             self.numExperiments_static.setText('Number of experiments:')
 
-        self.outputColumnHeaders = [self.output_table.horizontalHeaderItem(i).text() for i in range(self.output_table.columnCount())]
-        self.outputCol_index  = {'obs':0, 'name':1, 'rs1':2}
+        self.outputColumnHeaders = [
+            self.output_table.horizontalHeaderItem(i).text()
+            for i in range(self.output_table.columnCount())
+        ]
+        self.outputCol_index = {'obs': 0, 'name': 1, 'rs1': 2}
 
         self.output_groupBox.setEnabled(False)
         self.input_groupBox.setEnabled(False)
@@ -139,7 +151,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
         # Changes in cells will check fields
         self.output_table.cellChanged.connect(self.activateInfButton)
-#        self.inputPrior_table.cellChanged.connect(self.activateInfButton)
+        #        self.inputPrior_table.cellChanged.connect(self.activateInfButton)
         self.inputPrior_table.pdfChanged.connect(self.activateInfButton)
         self.numExperiments_spin.valueChanged.connect(self.activateInfButton)
         self.obs_table.cellChanged.connect(self.activateInfButton)
@@ -149,11 +161,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.infSave_button.clicked.connect(self.infBrowse)
         self.rdsSave_chkbox.toggled.connect(self.activateRdsSave)
         self.rdsSave_button.clicked.connect(self.rdsBrowse)
-        self.numIterCalibSpin.valueChanged.connect(lambda value: self.numBurnInCalibSpin.setMaximum(value - 1))
-        self.numIterEmulSpin.valueChanged.connect(lambda value: self.numBurnInEmulSpin.setMaximum(value - 1))
+        self.numIterCalibSpin.valueChanged.connect(
+            lambda value: self.numBurnInCalibSpin.setMaximum(value - 1)
+        )
+        self.numIterEmulSpin.valueChanged.connect(
+            lambda value: self.numBurnInEmulSpin.setMaximum(value - 1)
+        )
         self.inf_button.clicked.connect(self.infer)
         self.replot_button.clicked.connect(self.replot)
-
 
     def setTrainingMode(self, on):
         if on:
@@ -183,8 +198,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             filterString = "Psuade Files (*.dat *.psuade *.filtered);;CSV (Comma delimited) (*.csv);;All files (%s)"
         else:
             filterString = "R Data file (*.rds);;All files (%s)"
-        fileName, selectedFilter = QFileDialog.getOpenFileName(self, "Load Training Data",
-                                               self.fileDir , filterString % allFiles)
+        fileName, selectedFilter = QFileDialog.getOpenFileName(
+            self, "Load Training Data", self.fileDir, filterString % allFiles
+        )
         if len(fileName) == 0:
             self.unfreeze()
             return
@@ -199,9 +215,13 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                     data = LocalExecutionModule.readSampleFromPsuadeFile(fileName)
                 except:
                     import traceback
+
                     traceback.print_exc()
-                    QMessageBox.critical(self, 'Incorrect format',
-                                               'File does not have the correct format! Please consult the users manual about the format.')
+                    QMessageBox.critical(
+                        self,
+                        'Incorrect format',
+                        'File does not have the correct format! Please consult the users manual about the format.',
+                    )
                     self.unfreeze()
                     return
             self.initWithData(data)
@@ -226,7 +246,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.numBurnInEmulSpin.setEnabled(True)
         self.trainingFile_edit.setText(fileName)
 
-
     def initWithData(self, data):
         self.data = data
 
@@ -236,7 +255,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         nInputs = data.getNumInputs()
 
         ### TO DO: change initFolder to not delete post sample files OR save somewhere else
-        sampleFile = Common.getLocalFileName(os.getcwd(), data.getModelName().split()[0], '.inputPostSample')
+        sampleFile = Common.getLocalFileName(
+            os.getcwd(), data.getModelName().split()[0], '.inputPostSample'
+        )
         self.infSave_edit.setText(sampleFile)
 
         self.initPriorTable()
@@ -254,8 +275,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.infSave_button.setEnabled(infSaveEnable)
         self.infSave_edit.setEnabled(infSaveEnable)
 
-        enableCommonComponents = (self.newAnalysis_radio.isChecked() and self.trainingFileLoaded) or \
-                                (self.restart_radio.isChecked() and self.restartFileLoaded)
+        enableCommonComponents = (
+            self.newAnalysis_radio.isChecked() and self.trainingFileLoaded
+        ) or (self.restart_radio.isChecked() and self.restartFileLoaded)
         self.rdsSave_chkbox.setEnabled(enableCommonComponents)
         rdsSaveEnable = enable and self.rdsSave_chkbox.isChecked()
         self.rdsSave_edit.setEnabled(rdsSaveEnable)
@@ -270,7 +292,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.discrepancy_chkbox.setEnabled(enable)
         discrepancyEnable = enable and self.discrepancy_chkbox.isChecked()
         self.discrepancySave_chkbox.setEnabled(discrepancyEnable)
-        discrepancySaveEnable = discrepancyEnable and self.discrepancySave_chkbox.isChecked()
+        discrepancySaveEnable = (
+            discrepancyEnable and self.discrepancySave_chkbox.isChecked()
+        )
         self.discrepancySave_edit.setEnabled(discrepancySaveEnable)
         self.discrepancySave_button.setEnabled(discrepancySaveEnable)
 
@@ -284,7 +308,6 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.numBurnInCalibStatic.setEnabled(enableCommonComponents)
         self.numBurnInEmulSpin.setEnabled(enableCommonComponents)
         self.numBurnInCalibSpin.setEnabled(enableCommonComponents)
-
 
     def freeze(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -306,31 +329,38 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             return False
 
     def activateInfSave(self):
-        b =  self.infSave_chkbox.isChecked()
+        b = self.infSave_chkbox.isChecked()
         self.infSave_button.setEnabled(b)
         self.infSave_edit.setEnabled(b)
 
     def infBrowse(self):
         fname = self.infSave_edit.text()
-        fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save posterior input samples', fname)
+        fname, selectedFilter = QFileDialog.getSaveFileName(
+            self, 'Indicate file to save posterior input samples', fname
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             self.infSave_edit.setText(fname)
             self.replot_button.setEnabled(False)
             self.trainingAllowReplot = False
 
     def activateRdsSave(self):
-        b =  self.rdsSave_chkbox.isChecked()
+        b = self.rdsSave_chkbox.isChecked()
         self.rdsSave_button.setEnabled(b)
         self.rdsSave_edit.setEnabled(b)
 
     def rdsBrowse(self):
         fname = self.rdsSave_edit.text()
-        fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save for restart', fname, 'R Data File (*.rds);;All files(*.*)')
+        fname, selectedFilter = QFileDialog.getSaveFileName(
+            self,
+            'Indicate file to save for restart',
+            fname,
+            'R Data File (*.rds);;All files(*.*)',
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             self.rdsSave_edit.setText(fname)
 
     def activateDiscrepancy(self):
-        b =  self.discrepancy_chkbox.isChecked()
+        b = self.discrepancy_chkbox.isChecked()
         self.discrepancySave_chkbox.setEnabled(b)
         if b:
             self.activateDiscrepancySave()
@@ -346,14 +376,16 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
     def setDiscrepancyFile(self):
         fname = self.discrepancySave_edit.text()
-        fname, selectedFilter = QFileDialog.getSaveFileName(self, 'Indicate file to save posterior input samples', fname)
+        fname, selectedFilter = QFileDialog.getSaveFileName(
+            self, 'Indicate file to save posterior input samples', fname
+        )
         if len(fname) > 0:  # if a file was indicated during browse
             self.discrepancySave_edit.setText(fname)
 
     def refreshOutputTable(self):
 
         data = self.data
-        data = data.getValidSamples() # filter out samples that have no output results
+        data = data.getValidSamples()  # filter out samples that have no output results
         nSamples = data.getNumSamples()
         inTypes = data.getInputTypes()
         nInputs = inTypes.count(Model.VARIABLE)
@@ -369,7 +401,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         for i in range(nOutputs):
 
             # compute mean and standard deviation
-            yi = y[:,i]
+            yi = y[:, i]
             mu = np.mean(yi)
             self.outputMeans[i] = mu
             sigma = np.std(yi)
@@ -392,7 +424,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                     chkbox.setEnabled(True)
                     chkbox.toggled.connect(self.refreshObsTable)
                     chkbox.toggled.connect(self.activateInfButton)
-                    self.output_table.setCellWidget(i, self.outputCol_index['obs'], chkbox)
+                    self.output_table.setCellWidget(
+                        i, self.outputCol_index['obs'], chkbox
+                    )
 
                 # add combo boxes for RS1 and rs2 and Legendre spinbox
                 widget = self.output_table.cellWidget(i, self.outputCol_index['rs1'])
@@ -403,7 +437,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 mask = ~Qt.ItemIsEnabled
                 item.setFlags(flags & mask)
                 item.setForeground(Qt.black)
-                self.output_table.setItem(i,self.outputCol_index['rs1'], item)
+                self.output_table.setItem(i, self.outputCol_index['rs1'], item)
 
             else:
                 # add a disabled checkbox
@@ -436,7 +470,9 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.output_table.resizeColumnsToContents()
 
     def initPriorTable(self):
-        self.inputPrior_table.init(self.data, InputPriorTable.INFERENCE, self.wizardMode)
+        self.inputPrior_table.init(
+            self.data, InputPriorTable.INFERENCE, self.wizardMode
+        )
         self.inputPrior_table.typeChanged.connect(self.refreshObsTable)
         self.inputPrior_table.pdfChanged.connect(self.disableReplot)
 
@@ -464,9 +500,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             allFiles = '*.*'
         else:
             allFiles = '*'
-        fname,_ = QFileDialog.getOpenFileName(
-            self, "Browse to observations file", self.fileDir, "Psuade Simple File (*.smp);;CSV (Comma delimited) (*.csv);;All files (%s)" % allFiles)
-        if not fname: # Cancelled
+        fname, _ = QFileDialog.getOpenFileName(
+            self,
+            "Browse to observations file",
+            self.fileDir,
+            "Psuade Simple File (*.smp);;CSV (Comma delimited) (*.csv);;All files (%s)"
+            % allFiles,
+        )
+        if not fname:  # Cancelled
             return
 
         self.fileDir = os.path.dirname(fname)
@@ -480,15 +521,18 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 _, designData, outputData = LocalExecutionModule.readMCMCFile(fname)
                 numExps = designData.shape[0]
                 data = np.hstack([designData, outputData])
-        except: # Invalid file
+        except:  # Invalid file
             import traceback
+
             traceback.print_exc()
             msgbox = QMessageBox()
             msgbox.setWindowTitle('UQ/Opt GUI Warning')
-            msgbox.setText('File format not recognized!  File must be in PSUADE simple or CSV format.')
+            msgbox.setText(
+                'File format not recognized!  File must be in PSUADE simple or CSV format.'
+            )
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
-            #combobox.setCurrentIndex(0)
+            # combobox.setCurrentIndex(0)
             return
 
         showMessage = False
@@ -498,17 +542,28 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             expectedCols = mcmcNumDesign + 2 * self.getNumObservedOutputs()
             if numCols != expectedCols:
                 showMessage = True
-                message = 'Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)' % (numCols, expectedCols, mcmcNumDesign, self.getNumObservedOutputs())
+                message = 'Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)' % (
+                    numCols,
+                    expectedCols,
+                    mcmcNumDesign,
+                    self.getNumObservedOutputs(),
+                )
         else:
             numDesign = designData.shape[1]
             numOutputColumns = outputData.shape[1]
 
             if numDesign != mcmcNumDesign:
                 showMessage = True
-                message = 'Number of design parameters selected (%d) does not match file (%d).' % (numDesign, mcmcNumDesign)
+                message = (
+                    'Number of design parameters selected (%d) does not match file (%d).'
+                    % (numDesign, mcmcNumDesign)
+                )
             elif numOutputColumns != 2 * self.getNumObservedOutputs():
                 showMessage = True
-                message = 'Number of outputs observed (%d) does not match file (%d).' % (self.getNumObservedOutputs(), numOutputColumns / 2)
+                message = (
+                    'Number of outputs observed (%d) does not match file (%d).'
+                    % (self.getNumObservedOutputs(), numOutputColumns / 2)
+                )
 
         if showMessage:
             msgbox = QMessageBox()
@@ -531,9 +586,10 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         self.unfreeze()
 
     def saveObservation(self):
-        fname, selectedFilter = QFileDialog.getSaveFileName(self,
-                                                            'Set observation file name:')
-        if len(fname) == 0: #Cancelled
+        fname, selectedFilter = QFileDialog.getSaveFileName(
+            self, 'Set observation file name:'
+        )
+        if len(fname) == 0:  # Cancelled
             return
 
         designVariables, indices = self.inputPrior_table.getDesignVariables()
@@ -546,9 +602,13 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 rowValues.append(float(item.text()))
             data.append(rowValues)
 
-        LocalExecutionModule.saveMCMCFile(fname, self.getNumObservedOutputs(),
-                                          self.inputPrior_table.getNumDesignVariables(),
-                                          indices, data)
+        LocalExecutionModule.saveMCMCFile(
+            fname,
+            self.getNumObservedOutputs(),
+            self.inputPrior_table.getNumDesignVariables(),
+            indices,
+            data,
+        )
 
     def refreshObsTable(self):
         self.replot_button.setEnabled(False)
@@ -569,10 +629,10 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
         ### Update table
 
         ## Set number of columns
-        numCols = self.inputPrior_table.getNumDesignVariables() #Design variables
+        numCols = self.inputPrior_table.getNumDesignVariables()  # Design variables
         # outputs
         count = self.getNumObservedOutputs()
-        numCols += count * 2 # mean and std dev
+        numCols += count * 2  # mean and std dev
 
         self.obs_table.clearContents()
         self.setObsTableRowCount(numRows)
@@ -612,7 +672,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                         item = QTableWidgetItem()
                         self.obs_table.setItem(row, col, item)
                     item.setText(value)
-                    self.obsTableValues[(row,col)] = value
+                    self.obsTableValues[(row, col)] = value
             elif col >= numDesignVariables:
                 for row in range(numRows):
                     item = self.obs_table.item(row, col)
@@ -620,7 +680,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                         item = QTableWidgetItem()
                         self.obs_table.setItem(row, col, item)
                     item.setText('%g' % defvalue)
-                    self.obsTableValues[(row,col)] = '%g' % defvalue
+                    self.obsTableValues[(row, col)] = '%g' % defvalue
 
         self.obs_table.resizeColumnsToContents()
 
@@ -651,20 +711,20 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
     def checkObs(self):
         b = False
         for r in range(self.obs_table.rowCount()):
-            names,indices = self.inputPrior_table.getDesignVariables()
+            names, indices = self.inputPrior_table.getDesignVariables()
             numDesign = len(names)
             mins = self.inputPrior_table.getMins()
             maxs = self.inputPrior_table.getMaxs()
             for c in range(self.obs_table.columnCount()):
-                item = self.obs_table.item(r,c)
+                item = self.obs_table.item(r, c)
                 if item is not None:
                     text = item.text()
                     if len(text) > 0:
-                        if (r,c) in self.obsTableValues:
-                            textSame = text == self.obsTableValues[(r,c)]
+                        if (r, c) in self.obsTableValues:
+                            textSame = text == self.obsTableValues[(r, c)]
                         else:
                             textSame = False
-                        self.obsTableValues[(r,c)] = text
+                        self.obsTableValues[(r, c)] = text
                         showMessage = False
                         if not self.isnumeric(text):
                             showMessage = True
@@ -676,8 +736,11 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                             maxVal = maxs[index]
                             if value < minVal or value > maxVal:
                                 showMessage = True
-                                message = 'Value must be between %g and %g!' % (minVal, maxVal)
-                        elif (c - numDesign) % 2 == 1: #Std Dev value
+                                message = 'Value must be between %g and %g!' % (
+                                    minVal,
+                                    maxVal,
+                                )
+                        elif (c - numDesign) % 2 == 1:  # Std Dev value
                             value = float(item.text())
                             if value <= 0:
                                 showMessage = True
@@ -689,14 +752,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                                 msgbox.setText(message)
                                 msgbox.setIcon(QMessageBox.Warning)
                                 response = msgbox.exec_()
-                                self.obs_table.setCurrentCell(r,c)
+                                self.obs_table.setCurrentCell(r, c)
                                 self.obs_table.setFocus()
-                            #self.colorChanged.add((r, c))
-                            item.setForeground(QColor(192,0,0))
+                            # self.colorChanged.add((r, c))
+                            item.setForeground(QColor(192, 0, 0))
                             return False
                         else:
-                            #self.colorChanged.add((r, c))
-                            item.setForeground(QColor(0,0,0))
+                            # self.colorChanged.add((r, c))
+                            item.setForeground(QColor(0, 0, 0))
                             b = True
                     else:
                         return False
@@ -704,15 +767,19 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                     return False
         return b
 
-    def activateInfButton(self, row = None, col = None):
+    def activateInfButton(self, row=None, col=None):
         # TO DO: check valid file name in self.infSave_edit.text()
 
         self.replot_button.setEnabled(False)
         self.trainingAllowReplot = False
 
         showList = self.inputPrior_table.getShowInputList()
-        if self.checkOutputTable() and self.checkObs() and \
-           self.inputPrior_table.checkValidInputs()[0] and len(showList) > 0:
+        if (
+            self.checkOutputTable()
+            and self.checkObs()
+            and self.inputPrior_table.checkValidInputs()[0]
+            and len(showList) > 0
+        ):
             self.saveObs_button.setEnabled(True)
             self.inf_button.setEnabled(True)
             if self.newAnalysis_radio.isChecked():
@@ -749,7 +816,7 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             self.discrepancySave_edit.setEnabled(False)
             self.discrepancySave_button.setEnabled(False)
 
-        #self.inf_button.setEnabled(b)
+        # self.inf_button.setEnabled(b)
         self.inf_button.setEnabled(b)
         if self.newAnalysis_radio.isChecked():
             self.trainingAllowInfer = b
@@ -776,12 +843,14 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
             if self.newAnalysis_radio.isChecked():
                 data = self.data
-                data = data.getValidSamples() # filter out samples that have no output results
+                data = (
+                    data.getValidSamples()
+                )  # filter out samples that have no output results
 
                 # parse output table
                 nOutputs = self.output_table.rowCount()
                 col_index = self.outputCol_index
-                ytable = [None]*nOutputs
+                ytable = [None] * nOutputs
                 for i in range(nOutputs):
                     chkbox = self.output_table.cellWidget(i, col_index['obs'])
                     if chkbox.isChecked():
@@ -808,19 +877,23 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
                 for i, name in enumerate(designVariables):
                     labels.append('"%s"' % name)
                 for row in range(self.output_table.rowCount()):
-                    chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
+                    chkbox = self.output_table.cellWidget(
+                        row, self.outputCol_index['obs']
+                    )
                     if chkbox is not None and chkbox.isChecked():
-                        name = self.output_table.item(row, self.outputCol_index['name']).text()
+                        name = self.output_table.item(
+                            row, self.outputCol_index['name']
+                        ).text()
                         labels.append('"%s"' % name)
                 obsTable = [labels] + obsTable
 
-    ##            fname = Common.getLocalFileName(RSInferencer.dname, data.getModelName(), '.dat')
-    ##            data.writeToPsuade(fname)
+                ##            fname = Common.getLocalFileName(RSInferencer.dname, data.getModelName(), '.dat')
+                ##            data.writeToPsuade(fname)
 
                 # perform inference
                 saveSample = self.infSave_chkbox.isChecked()
                 showList = self.inputPrior_table.getShowInputList()
-                self.inf_button.setText('Stop') #Switch button to allow stop
+                self.inf_button.setText('Stop')  # Switch button to allow stop
                 saveRdsFile = None
                 message = None
                 if self.rdsSave_chkbox.isChecked():
@@ -841,27 +914,33 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
 
                 # Write csv files
                 inputsFileName = 'solventFitInputs.csv'
-                data.writeToCsv(inputsFileName, inputsOnly = True)
+                data.writeToCsv(inputsFileName, inputsOnly=True)
                 outputFileName = 'solventFitOutputs.csv'
                 outputIndices = self.getObservedOutputsIndices()
-                data.writeToCsv(outputFileName, outputIndices = outputIndices)
-                self.solventFitPlotArgs = SolventFit.fit(inputsFileName, outputFileName, ytable, xtable, obsTable,
-                                  genPostSample=True,
-                                  addDisc = useDiscrepancy,
-                                  show=showList, rpath = self.parent().parent.dat.foqusSettings.rScriptPath,
-                                  saveRdsFile = saveRdsFile,
-                                  numEmulIter=self.numIterEmulSpin.value(),
-                                  numEmulBurnIn=self.numBurnInEmulSpin.value(),
-                                  numCalibIter=self.numIterCalibSpin.value(),
-                                  numCalibBurnIn=self.numBurnInCalibSpin.value())
+                data.writeToCsv(outputFileName, outputIndices=outputIndices)
+                self.solventFitPlotArgs = SolventFit.fit(
+                    inputsFileName,
+                    outputFileName,
+                    ytable,
+                    xtable,
+                    obsTable,
+                    genPostSample=True,
+                    addDisc=useDiscrepancy,
+                    show=showList,
+                    rpath=self.parent().parent.dat.foqusSettings.rScriptPath,
+                    saveRdsFile=saveRdsFile,
+                    numEmulIter=self.numIterEmulSpin.value(),
+                    numEmulBurnIn=self.numBurnInEmulSpin.value(),
+                    numCalibIter=self.numIterCalibSpin.value(),
+                    numCalibBurnIn=self.numBurnInCalibSpin.value(),
+                )
 
-            else: # restart
+            else:  # restart
                 restartFile = self.trainingFile_edit.text()
-
 
             self.finishInfer()
 
-        else: # Infer button says stop
+        else:  # Infer button says stop
             f = open('psuade_stop', 'w')
             f.close()
             self.stopInfer = True
@@ -870,43 +949,54 @@ class solventFitSetupFrame(_solventFitSetupFrame, _solventFitSetupFrameUI):
             self.unfreeze()
             self.output_table.setEnabled(True)
             self.inputPrior_table.setEnabled(True)
-#            self.enableInf(True)
+
+    #            self.enableInf(True)
 
     def finishInfer(self):  # Called after inference is done
-#        mfile = 'matlabmcmc2.m'
-#        if os.path.exists(mfile):  #Inference happened just fine
-        if self.infSave_chkbox.isChecked() and self.inference.inferencer.sampleFile is not None:
+        #        mfile = 'matlabmcmc2.m'
+        #        if os.path.exists(mfile):  #Inference happened just fine
+        if (
+            self.infSave_chkbox.isChecked()
+            and self.inference.inferencer.sampleFile is not None
+        ):
             sampleFile = self.infSave_edit.text()
             if os.path.exists(sampleFile):
                 os.remove(sampleFile)
             shutil.copyfile('post.samples.std', sampleFile)
 
-        if self.discrepancy_chkbox.isChecked() and self.discrepancySave_chkbox.isChecked():
+        if (
+            self.discrepancy_chkbox.isChecked()
+            and self.discrepancySave_chkbox.isChecked()
+        ):
             shutil.copyfile('disc.samples', self.discrepancySave_edit.text())
 
         self.unfreeze()
         self.inf_button.setText('Infer')
         self.enableInf(True)
-        #self.inf_button.setEnabled(True)
+        # self.inf_button.setEnabled(True)
         self.output_table.setEnabled(True)
         self.inputPrior_table.setEnabled(True)
-
 
     def replot(self):
         self.freeze()
 
         showList = self.inputPrior_table.getShowInputList()
         if len(showList) == 0:
-            QMessageBox.information(self, 'Bayesian Inference Plot', 'At least one input must be selected for display.')
+            QMessageBox.information(
+                self,
+                'Bayesian Inference Plot',
+                'At least one input must be selected for display.',
+            )
             self.unfreeze()
             return
 
         if self.inputPrior_table.getNumVariables() == 1:
             SolventFit.plotSingleRandomSample(*self.solventFitPlotArgs)
         else:
-            SolventFit.plotsample(*self.solventFitPlotArgs, show = showList)
+            SolventFit.plotsample(*self.solventFitPlotArgs, show=showList)
 
         self.unfreeze()
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
@@ -914,10 +1004,10 @@ if __name__ == "__main__":
 
     MainFrame = solventFitSetupFrame()
     MainWindow.setCentralWidget(MainFrame)
-    #MainFrameLayout = QVBoxLayout(MainFrame)
+    # MainFrameLayout = QVBoxLayout(MainFrame)
 
-    #label = QLabel('A Label')
-    #MainFrameLayout.addWidget(label)
+    # label = QLabel('A Label')
+    # MainFrameLayout.addWidget(label)
 
     MainWindow.show()
     sys.exit(app.exec_())

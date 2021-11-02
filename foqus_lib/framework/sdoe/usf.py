@@ -30,27 +30,27 @@ def criterion(
     args,  # scaling factors for included columns
     nr,  # number of restarts (each restart uses a random set of <nd> points)
     nd,  # design size <= len(candidates)
-    mode='maximin',
+    mode="maximin",
     hist=None,
 ):
 
     mode = mode.lower()
-    assert mode in ['maximin', 'minimax'], 'MODE {} not recognized.'.format(mode)
-    if mode == 'maximin':
+    assert mode in ["maximin", "minimax"], "MODE {} not recognized.".format(mode)
+    if mode == "maximin":
         best_val = -1
         fcn = np.mean
         cond = gt
-    elif mode == 'minimax':
+    elif mode == "minimax":
         best_val = 99999
         fcn = np.max
         cond = lt
 
     # indices of type ...
-    _id_ = args['icol']  # Index
-    idx = args['xcols']  # Input
+    _id_ = args["icol"]  # Index
+    idx = args["xcols"]  # Input
 
     # scaling factors
-    scl = args['scale_factors']
+    scl = args["scale_factors"]
     scl = scl[idx].values
 
     # history, if provided
@@ -65,7 +65,7 @@ def criterion(
     t0 = time.time()
     for i in range(nr):
 
-        print('Random start {}'.format(i))
+        print("Random start {}".format(i))
 
         # sample without replacement <nd> indices
         rand_index = np.random.choice(cand.index, nd, replace=False)
@@ -85,15 +85,15 @@ def criterion(
     # best_cand.insert(loc=0, column=id_, value=best_cand.index)
 
     results = {
-        'best_cand': best_cand,
-        'best_index': best_index,
-        'best_val': best_val,
-        'best_dmat': best_dmat,
-        'dmat_cols': idx,
-        'mode': mode,
-        'design_size': nd,
-        'num_restarts': nr,
-        'elapsed_time': elapsed_time,
+        "best_cand": best_cand,
+        "best_index": best_index,
+        "best_val": best_val,
+        "best_dmat": best_dmat,
+        "dmat_cols": idx,
+        "mode": mode,
+        "design_size": nd,
+        "num_restarts": nr,
+        "elapsed_time": elapsed_time,
     }
 
     return results

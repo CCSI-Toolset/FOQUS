@@ -21,7 +21,7 @@ from urllib.request import urlopen
 
 from io import StringIO
 
-if os.name == 'nt':
+if os.name == "nt":
     try:
         import win32process
     except:
@@ -61,7 +61,7 @@ class basicDataFrame(_basicDataFrame, _basicDataFrameUI):
 
     def chooseInputFolder(self):
         self.fname = QFileDialog.getExistingDirectory(self, "Input Directory")
-        if self.fname == '':
+        if self.fname == "":
             return
         else:
             self.selected_folder.setText(self.fname)

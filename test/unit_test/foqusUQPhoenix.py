@@ -23,19 +23,19 @@ from foqus_lib.framework.uq.Common import Common
 MAX_RUN_TIME = 5000000  # Maximum time to let script run in ms.
 TIME_STEP = 1
 TEXT_NOTEXT = 0
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:
-    f.write('')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:
+    f.write("")
 timers = {}
 
 
 def go(MainWin=MainWin):
-    '''
+    """
     Process gui events so that gui can still function(ish) while
     script is running also add delay between calls to GUI stuff to
     make the execution fun to watch.  Also checks the stop flag and
     returns True keep going or False to stop.
-    '''
+    """
     MainWin.app.processEvents()
     time.sleep(0.25)
     return not MainWin.helpDock.stop
@@ -53,8 +53,8 @@ def getButton(w, label):
 def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
     TIME_STEP = 1
     w = MainWin.app.activeWindow()
-    if 'AnalysisDialog' in str(type(w)):
-        timers['rs_analyze'].stop()
+    if "AnalysisDialog" in str(type(w)):
+        timers["rs_analyze"].stop()
         MainWin.app.processEvents()
         time.sleep(TIME_STEP)
         ### switch to expert mode
@@ -91,45 +91,45 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
         ### Set up Viscosity input pdf
         # fname1 = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-        fname1 = '../examples/UQ/test_suite/'
-        fname1 = fname1 + 'Phoenix/Viscosity/VisPostSample'
+        fname1 = "../examples/UQ/test_suite/"
+        fname1 = fname1 + "Phoenix/Viscosity/VisPostSample"
         data1 = LocalExecutionModule.readDataFromSimpleFile(fname1)
         nInputs1 = data1[0].shape[1]
         c.sampleFiles.append(fname1)
-        c.dispSampleFiles.append('VisPostSample')
+        c.dispSampleFiles.append("VisPostSample")
         c.sampleNumInputs.append(nInputs1)
 
         ### Set up Density input pdf
         # fname2 = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-        fname2 = '../examples/UQ/test_suite/'
-        fname2 = fname2 + 'Phoenix/DensityModel/DenPostSample'
+        fname2 = "../examples/UQ/test_suite/"
+        fname2 = fname2 + "Phoenix/DensityModel/DenPostSample"
         data2 = LocalExecutionModule.readDataFromSimpleFile(fname2)
         nInputs2 = data2[0].shape[1]
         c.sampleFiles.append(fname2)
-        c.dispSampleFiles.append('DenPostSample')
+        c.dispSampleFiles.append("DenPostSample")
         c.sampleNumInputs.append(nInputs2)
 
         ### Set up Surface Tension input pdf
         # fname3 = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-        fname3 = '../examples/UQ/test_suite/'
-        fname3 = fname3 + 'Phoenix/SurfaceTension/STPostSample'
+        fname3 = "../examples/UQ/test_suite/"
+        fname3 = fname3 + "Phoenix/SurfaceTension/STPostSample"
         data3 = LocalExecutionModule.readDataFromSimpleFile(fname3)
         nInputs3 = data3[0].shape[1]
         c.sampleFiles.append(fname3)
-        c.dispSampleFiles.append('STPostSample')
+        c.dispSampleFiles.append("STPostSample")
         c.sampleNumInputs.append(nInputs3)
 
         ### Set up Surface Tension input numbers
         def changeValue(row, fileNum, fileIndex):
             c.verticalScrollBar().setValue(max([0, row - 2]))
-            p = c.cellWidget(row, c.col_index['pdf'])
+            p = c.cellWidget(row, c.col_index["pdf"])
             p.setCurrentIndex(8)  # Set pdf to sample
             MainWin.app.processEvents()
-            combo = c.cellWidget(row, c.col_index['p1'])
+            combo = c.cellWidget(row, c.col_index["p1"])
             combo.setCurrentIndex(fileNum)
             MainWin.app.processEvents()
             time.sleep(TIME_STEP / 2)
-            table = c.cellWidget(row, c.col_index['p2'])
+            table = c.cellWidget(row, c.col_index["p2"])
             spinbox = table.cellWidget(0, 1)
             spinbox.setValue(fileIndex)
             MainWin.app.processEvents()
@@ -190,7 +190,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
-    '''
+    """
     Using timers to push buttons on popups and modal dialogs and
     other things were I need an easy way to make things happen from
     a seperate thread.  Usually where something is blocking the main
@@ -198,15 +198,15 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
     name: string name of timer
     cd is the timer call back function
-    '''
+    """
     timers[name] = QtCore.QTimer(MainWin)
     timers[name].timeout.connect(cb)
 
 
 def timersStop(timers=timers):
-    '''
+    """
     Call stop for all timers to make sure they all stop
-    '''
+    """
     for key, t in timers.items():
         t.stop()
 
@@ -214,13 +214,13 @@ def timersStop(timers=timers):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script for taking too long
-addTimer('msg_okay', MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
-addTimer('msg_no', MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
-addTimer('rs_analyze', rsAnalyze)
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script for taking too long
+addTimer("msg_okay", MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
+addTimer("msg_no", MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
+addTimer("rs_analyze", rsAnalyze)
 # Start timer to stop script for running too long
 # This won't work it execution of the script is blocked.
-timers['time_out'].start(MAX_RUN_TIME)
+timers["time_out"].start(MAX_RUN_TIME)
 
 try:
     # raise(Exception("Test excpetion handeling"))
@@ -231,13 +231,13 @@ try:
             dialog = Common.textDialog(MainWin)
             dialog.show()
             textedit = dialog.textedit
-            pText = 'Do not move your mouse or type anything until the end\n'
+            pText = "Do not move your mouse or type anything until the end\n"
             textedit.insertPlainText(pText)
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
 
         ### Go to main window home
         if TEXT_NOTEXT == 1:
-            textedit.insertPlainText('Entering the home screen\n')
+            textedit.insertPlainText("Entering the home screen\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
@@ -249,7 +249,7 @@ try:
 
         ### Enter session name
         if TEXT_NOTEXT == 1:
-            textedit.insertPlainText('Typing in the session name = Full model\n')
+            textedit.insertPlainText("Typing in the session name = Full model\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
@@ -263,7 +263,7 @@ try:
         ### Go to UQ module (click the top icon)
         ###===========================================
         if TEXT_NOTEXT == 1:
-            textedit.insertPlainText('Clicking the Uncertainty icon (top)\n')
+            textedit.insertPlainText("Clicking the Uncertainty icon (top)\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
@@ -275,7 +275,7 @@ try:
 
         ### add simulation in UQ module ('Load File')
         if TEXT_NOTEXT == 1:
-            pText = '   Clicking the load file button, enter file name\n'
+            pText = "   Clicking the load file button, enter file name\n"
             textedit.insertPlainText(pText)
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
@@ -283,8 +283,8 @@ try:
         time.sleep(TIME_STEP)
         ###MainWin.uqSetupFrame.loadSimulationButton.click()
         # fname = '/g/g0/chtong/FOQUS/FOQUS/examples/UQ/test_suite/'
-        fname = '../examples/UQ/test_suite/'
-        fname = fname + 'Phoenix/FullModel/dataSet.psuade'
+        fname = "../examples/UQ/test_suite/"
+        fname = fname + "Phoenix/FullModel/dataSet.psuade"
         data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
         data.setSession(MainWin.uqSetupFrame.dat)
         MainWin.uqSetupFrame.dat.uqSimList.append(data)
@@ -300,28 +300,28 @@ try:
 
         ### go to analyze screen
         if TEXT_NOTEXT == 1:
-            pText = '   Clicking the Analysis button for Ensemble 1\n'
+            pText = "   Clicking the Analysis button for Ensemble 1\n"
             textedit.insertPlainText(pText)
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
-            pText = '      - perform uncertainty analysis using default PDFs\n'
+            pText = "      - perform uncertainty analysis using default PDFs\n"
             textedit.insertPlainText(pText)
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
-            pText = '      - perform uncertainty analysis using posterior samples\n'
+            pText = "      - perform uncertainty analysis using posterior samples\n"
             textedit.insertPlainText(pText)
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
         time.sleep(TIME_STEP)
-        timers['rs_analyze'].start(1000)
+        timers["rs_analyze"].start(1000)
         w = MainWin.uqSetupFrame.simulationTable.cellWidget(0, 4)
         w.click()
-        timers['rs_analyze'].stop()
+        timers["rs_analyze"].stop()
         if not go():
             break
 
         ### Wait
         if TEXT_NOTEXT == 1:
-            textedit.insertPlainText('This test will terminate in 30 seconds\n')
+            textedit.insertPlainText("This test will terminate in 30 seconds\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
@@ -335,11 +335,11 @@ try:
         # w = MainWin.app.activeWindow()
         # if 'AnalysisDialog' in str(type(w)):
         #   w.close()
-        timers['msg_no'].start(20)
+        timers["msg_no"].start(20)
         if TEXT_NOTEXT == 1:
             dialog.close()
         MainWin.close()
-        timers['msg_no'].stop()
+        timers["msg_no"].stop()
         break
 
 except Exception as e:
@@ -347,7 +347,7 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("Exception: {0}\n".format(e))
     raise (e)
 timersStop()  # make sure all timers are stopped

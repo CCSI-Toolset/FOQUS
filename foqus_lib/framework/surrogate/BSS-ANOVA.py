@@ -47,17 +47,17 @@ from multiprocessing.connection import Client
 
 
 def checkAvailable():
-    '''
+    """
     Plug-ins should have this function to check availability of any
     additional required software.  If requirements are not available
     plug-in will not be available.
-    '''
+    """
     # Need to check for R and quadprog?
     return True
 
 
 class surrogateMethod(surrogate):
-    metaDataJsonString = '''
+    metaDataJsonString = """
     "CCSIFileMetaData":{
         "ID":"uuid",
         "CreationTime":"",
@@ -72,13 +72,13 @@ class surrogateMethod(surrogate):
         "Parents":[],
         "UpdateMetadata":True,
         "Version":""}
-    '''
-    name = 'BSS-ANOVA'
+    """
+    name = "BSS-ANOVA"
 
     def __init__(self, dat=None):
-        '''
+        """
         BSS-ANOVA interface constructor
-        '''
+        """
         surrogate.__init__(self, dat)
         self.ex = None
         # Information about the method
@@ -101,31 +101,31 @@ class surrogateMethod(surrogate):
             "</html>"
         )
         # bssanova working directory
-        self.bssanovaDir = 'bssanova'
+        self.bssanovaDir = "bssanova"
         # add options
         self.options.add(
             name="Data Filter",
-            default='all',
+            default="all",
             dtype=str,
             desc="Filter for sample data, from flowsheet data",
-            validValues=['All', 'None'],
+            validValues=["All", "None"],
         )
         self.options.add(
             name="Use Flowsheet Data",
-            default='Yes',
+            default="Yes",
             dtype=str,
             desc="Use data from FOQUS flowsheet or provide csv files",
-            validValues=['Yes', 'No'],
+            validValues=["Yes", "No"],
         )
         self.options.add(
             name="Input Data File",
-            default='bssanova' + os.path.sep + 'xdat.csv',
+            default="bssanova" + os.path.sep + "xdat.csv",
             dtype=str,
             desc="csv file containing data for model inputs",
         )
         self.options.add(
             name="Output Data File",
-            default='bssanova' + os.path.sep + 'ydat.csv',
+            default="bssanova" + os.path.sep + "ydat.csv",
             dtype=str,
             desc="csv file containing data for model outputs",
         )
@@ -137,7 +137,7 @@ class surrogateMethod(surrogate):
         #    desc="Full path the RScript executable")
         self.options.add(
             name="Model File",
-            default='bssanova_fit.rds',
+            default="bssanova_fit.rds",
             dtype=str,
             desc="BSS-ANOVA output R data file",
         )
@@ -202,17 +202,17 @@ class surrogateMethod(surrogate):
         adir = self.bssanovaDir
         self.createDir(adir)
         # Copy needed files
-        dest = os.path.join(adir, 'bssanova_fit.R')
+        dest = os.path.join(adir, "bssanova_fit.R")
         if not os.path.exists(dest):
             mydir = os.path.dirname(__file__)
-            src = os.path.join(mydir, 'bssanova/bssanova_fit.R')
+            src = os.path.join(mydir, "bssanova/bssanova_fit.R")
             shutil.copyfile(src, dest)
 
     def run(self):
-        '''
+        """
         This function overloads the Thread class function,
         and is called when you run start() to start a new thread.
-        '''
+        """
         try:
             # Get options and show some information about settings
             adir = self.bssanovaDir
@@ -269,12 +269,12 @@ class surrogateMethod(surrogate):
             process = subprocess.Popen(
                 [
                     rscriptFile,
-                    'bssanova_fit.R',
+                    "bssanova_fit.R",
                     os.path.abspath(xdata),
                     os.path.abspath(ydata),
                     modelFile,
                     bte,
-                    'auto',
+                    "auto",
                     str(nterms),
                     str(order),
                     str(prior),
@@ -285,10 +285,10 @@ class surrogateMethod(surrogate):
                 stderr=subprocess.PIPE,
             )
             line = process.stdout.readline()
-            while process.poll() == None or line != b'':
-                if line == b'':
+            while process.poll() == None or line != b"":
+                if line == b"":
                     time.sleep(0.2)
-                if line != b'':
+                if line != b"":
                     self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.isSet():
@@ -297,17 +297,17 @@ class surrogateMethod(surrogate):
                     break
             self.msgQueue.put("Process completed code: {0}".format(process.poll()))
             line = process.stderr.readline()
-            while line != b'':
+            while line != b"":
                 self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stderr.readline()
             modelFile2 = os.path.join(adir, modelFile)
             driverFile2 = os.path.join(adir, driverFile)
-            rfile = os.path.join(adir, 'bssanova_pred.R')
+            rfile = os.path.join(adir, "bssanova_pred.R")
             bssAnovaData = {
-                'outputNames': self.output,  # assume univariate
-                'modelNames': [modelFile2],
-                'rscriptPath': rscriptExe,
-                'rfile': rfile,
+                "outputNames": self.output,  # assume univariate
+                "modelNames": [modelFile2],
+                "rscriptPath": rscriptExe,
+                "rfile": rfile,
             }
             SurrogateParser.writeBssAnovaDriver(bssAnovaData, driverFile2)
             self.msgQueue.put("Wrote Python driver file: {0}".format(driverFile2))
@@ -321,52 +321,52 @@ class surrogateMethod(surrogate):
             )
 
     def writePlugin(self):  # added by BN, 2/4/2016
-        file_name = self.options['FOQUS Model (for Flowsheet)'].value
+        file_name = self.options["FOQUS Model (for Flowsheet)"].value
 
         # Write the standard code top, then append "main()" from the UQ driver
         s = self.writePluginTop(
-            method='BSS-ANOVA', comments=['BSS-ANOVA Flowsheet Model']
+            method="BSS-ANOVA", comments=["BSS-ANOVA Flowsheet Model"]
         )
-        with open(os.path.join('user_plugins', file_name), 'w') as f:
+        with open(os.path.join("user_plugins", file_name), "w") as f:
             f.write(s)
             lines = []
-            lines.append('')
-            lines.append('    def run(self):')
-            lines.append('')
-            lines.append('        # write input file')
+            lines.append("")
+            lines.append("    def run(self):")
+            lines.append("")
+            lines.append("        # write input file")
             lines.append("        infileName = 'bssanova_fs.in'")
             lines.append("        f = open(infileName,'w')")
-            lines.append('        nx = %d' % len(self.input))
+            lines.append("        nx = %d" % len(self.input))
             lines.append("        f.write('1 %d\\n' % nx)")
             lines.append("        f.write('1 ')")
-            lines.append('        for val in self.inputvals:')
+            lines.append("        for val in self.inputvals:")
             lines.append("            f.write('%f ' % val)")
             lines.append("        f.write('\\n')")
-            lines.append('        f.close()')
-            lines.append('')
+            lines.append("        f.close()")
+            lines.append("")
             lines.append(
-                '        # for each output, invoke UQ driver based on that output'
-                's trained model'
+                "        # for each output, invoke UQ driver based on that output"
+                "s trained model"
             )
-            lines.append('        for i, vname in enumerate(self.outputs):')
+            lines.append("        for i, vname in enumerate(self.outputs):")
             lines.append("            outfileName = 'bssanova_fs.out%d' % i")
             lines.append(
                 "            p = subprocess.Popen(['python', r'%s', infileName, outfileName, '{0}'.format(i)],"
                 % self.driverFile
             )
             lines.append(
-                '                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)'
+                "                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE)"
             )
-            lines.append('            stdout, stderr = p.communicate()')
-            lines.append('            if stdout:')
-            lines.append('                print(stdout)')
-            lines.append('            if stderr:')
-            lines.append('                print(stderr)')
-            lines.append('')
-            lines.append('            # read results and instantiate output value')
+            lines.append("            stdout, stderr = p.communicate()")
+            lines.append("            if stdout:")
+            lines.append("                print(stdout)")
+            lines.append("            if stderr:")
+            lines.append("                print(stderr)")
+            lines.append("")
+            lines.append("            # read results and instantiate output value")
             lines.append("            ypred = numpy.loadtxt(outfileName)")
-            lines.append('            self.outputs[vname].value = ypred[1]')
-            lines.append('')
-            f.write('\n'.join(lines))
+            lines.append("            self.outputs[vname].value = ypred[1]")
+            lines.append("")
+            f.write("\n".join(lines))
 
         self.dat.reloadPlugins()

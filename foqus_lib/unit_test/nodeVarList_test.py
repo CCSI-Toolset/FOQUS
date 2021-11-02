@@ -56,8 +56,8 @@ class testNodeVarListSteady(unittest.TestCase):
     def testFlatten2(self):
         l = self.makeTestList1()
         names = ["N1.V1", "N2.V1"]
-        l.get("N1.V1").scaling = 'Linear'
-        l.get("N2.V1").scaling = 'Linear'
+        l.get("N1.V1").scaling = "Linear"
+        l.get("N2.V1").scaling = "Linear"
         v = l.getFlat(names, scaled=True)
         self.assertAlmostEqual(v[0], 0.0)
         self.assertAlmostEqual(v[1], 1.111111, places=5)
@@ -72,8 +72,8 @@ class testNodeVarListSteady(unittest.TestCase):
 
     def testUnFlatten2(self):
         l = self.makeTestList1()
-        l.get("N1.V1").scaling = 'Linear'
-        l.get("N2.V1").scaling = 'Linear'
+        l.get("N1.V1").scaling = "Linear"
+        l.get("N2.V1").scaling = "Linear"
         names = ["N1.V1", "N2.V1"]
         values = [0.0, 1.111111]
         v = l.unflatten(names, values, unScale=True)

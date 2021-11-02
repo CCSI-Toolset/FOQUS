@@ -33,10 +33,10 @@ _turbineConfigUI, _turbineConfigFrame = uic.loadUiType(
 
 
 class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
-    '''
+    """
     This class provides a dialog box that allows you to create, a
     Turbine configuration file.
-    '''
+    """
 
     def __init__(self, dat, cfile=None, parent=None):
         super(turbineConfig, self).__init__(parent=parent)
@@ -112,9 +112,9 @@ class turbineConfig(_turbineConfigFrame, _turbineConfigUI):
             return
 
     def accept(self):
-        '''
+        """
         If pressed the save button make the configuration file
-        '''
+        """
         if self.tconf.getFile() != None:
             self.tconf.writeConfig()
         self.done(QDialog.Accepted)

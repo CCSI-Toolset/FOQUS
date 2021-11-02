@@ -46,7 +46,7 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
 
     def userAddTag(self):
         text = self.newTagEdit.text()
-        if text != '':
+        if text != "":
             self.addTag(text)
             self.updateAvailableTags()
 
@@ -75,12 +75,12 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
                 self.updateAvailableTagsRec(val, i)
 
     def saveTags(self):
-        with open('tags.tgs', 'w') as outfile:
+        with open("tags.tgs", "w") as outfile:
             json.dump(self.availTags, outfile, indent=2)
 
     def loadTags(self):
         try:
-            with open('tags.tgs', 'r') as infile:
+            with open("tags.tgs", "r") as infile:
                 self.availTags = json.load(infile)
         except:
             self.defaultTags()
@@ -98,7 +98,7 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         Add a tag to the main tag list
         """
         self.tagsChanged = True
-        hi = text.split('.')
+        hi = text.split(".")
         d = self.availTags
         for i in hi:
             r = d.get(i, None)
@@ -113,16 +113,16 @@ class tagSelectDialog(_tagSelectDialog, _tagSelectDialogUI):
         If there is no tags json file, then set up this default list of tags
         """
         self.availTags = dict()
-        self.addTag('Heat Integration.Block Name.Block *')
-        self.addTag('Heat Integration.Port Type.Port_Material_In')
-        self.addTag('Heat Integration.Port Type.Port_Material_Out')
-        self.addTag('Heat Integration.Port Type.Port_Heat_In')
-        self.addTag('Heat Integration.Port Type.Port_Heat_Out')
-        self.addTag('Heat Integration.Port Type.Blk_Var')
-        self.addTag('Heat Integration.Variable Type.T')
-        self.addTag('Heat Integration.Variable Type.Q')
-        self.addTag('Heat Integration.Source Type.heater')
-        self.addTag('Heat Integration.Source Type.HX_Hot')
-        self.addTag('Heat Integration.Source Type.HX_Cold')
-        self.addTag('Heat Integration.Source Type.Point_Hot')
-        self.addTag('Heat Integration.Source Type.Point_Cold')
+        self.addTag("Heat Integration.Block Name.Block *")
+        self.addTag("Heat Integration.Port Type.Port_Material_In")
+        self.addTag("Heat Integration.Port Type.Port_Material_Out")
+        self.addTag("Heat Integration.Port Type.Port_Heat_In")
+        self.addTag("Heat Integration.Port Type.Port_Heat_Out")
+        self.addTag("Heat Integration.Port Type.Blk_Var")
+        self.addTag("Heat Integration.Variable Type.T")
+        self.addTag("Heat Integration.Variable Type.Q")
+        self.addTag("Heat Integration.Source Type.heater")
+        self.addTag("Heat Integration.Source Type.HX_Hot")
+        self.addTag("Heat Integration.Source Type.HX_Cold")
+        self.addTag("Heat Integration.Source Type.Point_Hot")
+        self.addTag("Heat Integration.Source Type.Point_Cold")

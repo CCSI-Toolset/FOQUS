@@ -117,11 +117,11 @@ class checkingThread(QtCore.QThread):
         xnames = []
         inputNames = sim.getInputNames()
         for name in inputNames:
-            xnames.append(sim.getModelName() + '.' + name)
+            xnames.append(sim.getModelName() + "." + name)
         ynames = []
         outputNames = sim.getOutputNames()
         for name in outputNames:
-            ynames.append(sim.getModelName() + '.' + name)
+            ynames.append(sim.getModelName() + "." + name)
         runState = runState.tolist()
         errors = [True] * numUnfinished
         outData = [None] * len(runState)
@@ -202,14 +202,14 @@ class checkingThread(QtCore.QThread):
                 if not gt.isAlive():
                     if gt.errorStat == 19:
                         raise Exception("Exception in graph thread (see log)")
-                    numSuccessful = status['success']
+                    numSuccessful = status["success"]
                     numError = numSamples - numSuccessful
                     numUnfinished = 0
                     goagain = False
                 else:
-                    numError = status['error']
-                    numSuccessful = status['success']
-                    numUnfinished = status['unfinished']
+                    numError = status["error"]
+                    numSuccessful = status["success"]
+                    numUnfinished = status["unfinished"]
                     goagain = True
                 if numUnfinishedPrev != numUnfinished or not gt.isAlive():
                     numUnfinishedPrev = numUnfinished
@@ -222,17 +222,17 @@ class checkingThread(QtCore.QThread):
                                 if not runState[sampleNum]:
                                     self.parent.dat.flowsheet.results.addFromSavedValues(
                                         setName=setName,
-                                        name='uq_{0:06d}'.format(sampleNum),
+                                        name="uq_{0:06d}".format(sampleNum),
                                         valDict=gt.res[i],
                                     )
                                 r = gt.res[i]
                                 for j, name in enumerate(outputNames):
-                                    key = name.split('.', 1)
+                                    key = name.split(".", 1)
                                     nkey = key[0]
                                     vkey = key[1]
                                     try:
-                                        outputValues[j] = r['output'][nkey][vkey]
-                                        errcode = r['graphError']
+                                        outputValues[j] = r["output"][nkey][vkey]
+                                        errcode = r["graphError"]
                                     except:
                                         # no output available.
                                         # Run failed and got no output
@@ -253,7 +253,7 @@ class checkingThread(QtCore.QThread):
                     # updatae sim so intermediate results can be saved
                     sim.setRunState(runState)
                     sim.setOutputData(outData)
-                    errorIndex = sim.getOutputNames().index('graph.error')
+                    errorIndex = sim.getOutputNames().index("graph.error")
                     numErrors = sum([row[errorIndex] > 0 for row in outData])
                     c.progressBarErrorSignal.emit(progressBar, numErrors)
             numTries += 1
@@ -277,14 +277,14 @@ class checkingThread(QtCore.QThread):
                 if numCompleteToDisplay != numComplete:
                     numCompleteToDisplay = numComplete
                     c.progressBarSignal.emit(numComplete)
-        editButton.setText('View')
+        editButton.setText("View")
         c.editButtonSignal.emit(True)
         # if sim.getSampleMethod() == SamplingMethods.METIS:
         if numUnfinished == 0:
-            launchButton.setText('Sample Refinement')
+            launchButton.setText("Sample Refinement")
             c.launchButtonSignal.emit(True)
         else:
-            launchButton.setText('Launch')
+            launchButton.setText("Launch")
             c.launchButtonSignal.emit(False)
         c.analyzeButtonSignal.emit(True)
         c.resizeColumnSignal.emit()
@@ -311,7 +311,7 @@ class uqSetupFrame(_uqSetupFrame, _uqSetupFrameUI):
     runsFinishedSignal = QtCore.pyqtSignal()
     addDataSignal = QtCore.pyqtSignal(SampleData)
     changeDataSignal = QtCore.pyqtSignal(SampleData)
-    format = '%.5f'  # numeric format for table entries in UQ Toolbox
+    format = "%.5f"  # numeric format for table entries in UQ Toolbox
     drawDataDeleteTable = True  # flag to track whether delete table needs to be redrawn
 
     numberCol = 0
@@ -327,7 +327,7 @@ class uqSetupFrame(_uqSetupFrame, _uqSetupFrameUI):
     schemeRow = 2
     sampleSizeRow = 3
 
-    progressBarDefaultStyle = '''
+    progressBarDefaultStyle = """
 QProgressBar:horizontal {
 border: 1px solid gray;
 border-radius: 3px;
@@ -339,7 +339,7 @@ text-align: center;
 QProgressBar::chunk:horizontal {
 background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(128, 255, 128 , 255), stop: 0.5 rgba(0, 226, 0, 255), stop: 1 rgba(0, 192, 0, 255));
 }
-'''
+"""
 
     ## This delegate is used to make the checkboxes in the delete table centered
     class MyItemDelegate(QStyledItemDelegate):
@@ -436,9 +436,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # this signal is redefined (with all the correct variables) in editSim(),
         # so it's possible that this line here is redundant and could be deleted
         # TODO pylint: disable=undefined-variable
-        self.changeDataSignal.connect(
-            lambda data: self.changeDataInSimTable(data, row)
-        )
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
         # TODO pylint: enable=undefined-variable
 
         self.infoGroupBox.hide()
@@ -582,17 +580,17 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             sim.setModelName(newName)
 
     def setProgressBarNumErrors(self, progressBar, value):
-        formatString = '%v / %m  # errors: ' + str(value)
+        formatString = "%v / %m  # errors: " + str(value)
         progressBar.setFormat(formatString)
 
     def setProgressBarErrorStyle(self, progressBar, numGood, numError, numTotal):
-        styleLeft = '''
+        styleLeft = """
 QProgressBar:horizontal {
 border: 1px solid gray;
 border-radius: 3px;
-background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, '''
+background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, """
 
-        styleRight = ''');
+        styleRight = """);
 padding: 1px;
 text-align: center;
 }
@@ -600,25 +598,25 @@ text-align: center;
 QProgressBar::chunk:horizontal {
 background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 rgba(128, 255, 128 , 255), stop: 0.5 rgba(0, 226, 0, 255), stop: 1 rgba(0, 192, 0, 255));
 }
-'''
+"""
         progressBar.setValue(numGood)
         if numError == 0:
-            styleMiddle = 'stop: 0 lightgrey stop: 1 lightgrey'
+            styleMiddle = "stop: 0 lightgrey stop: 1 lightgrey"
         else:
             if numGood == 0:
-                styleMiddle = 'stop: 0 red, '
+                styleMiddle = "stop: 0 red, "
             else:
                 styleMiddle = (
-                    'stop: 0 lightgrey, stop: %g lightgrey, stop: %g red, '
+                    "stop: 0 lightgrey, stop: %g lightgrey, stop: %g red, "
                     % ((numGood - 0.4) / numTotal, (numGood + 0.4) / numTotal)
                 )
 
             if numGood + numError == numTotal:
-                styleMiddle = styleMiddle + 'stop: 1 red'
+                styleMiddle = styleMiddle + "stop: 1 red"
             else:
                 styleMiddle = (
                     styleMiddle
-                    + 'stop: %g red, stop: %g lightgrey, stop: 1 lightgrey'
+                    + "stop: %g red, stop: %g lightgrey, stop: 1 lightgrey"
                     % (
                         (numGood + numError - 0.4) / numTotal,
                         (numGood + numError + 0.4) / numTotal,
@@ -676,14 +674,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.freeze()
 
         # Get file name
-        if platform.system() == 'Windows':
-            allFiles = '*.*'
+        if platform.system() == "Windows":
+            allFiles = "*.*"
         else:
-            allFiles = '*'
+            allFiles = "*"
         fileName, selectedFilter = QFileDialog.getOpenFileName(
             self,
             "Open Simulation Ensemble",
-            '',
+            "",
             "Psuade Files (*.dat *.psuade *.filtered);;CSV (Comma delimited) (*.csv);;All files (%s)"
             % allFiles,
         )
@@ -691,7 +689,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.unfreeze()
             return
 
-        if fileName.endswith('.csv'):
+        if fileName.endswith(".csv"):
             data = LocalExecutionModule.readSampleFromCsvFile(fileName)
         else:
             try:
@@ -702,8 +700,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 traceback.print_exc()
                 QtGui.QMessageBox.critical(
                     self,
-                    'Incorrect format',
-                    'File does not have the correct format! Please consult the users manual about the format.',
+                    "Incorrect format",
+                    "File does not have the correct format! Please consult the users manual about the format.",
                 )
                 logging.getLogger("foqus." + __name__).exception(
                     "Error loading psuade file."
@@ -746,17 +744,17 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             sim = self.dat.uqSimList[row]
 
     def saveSimulation(self):
-        psuadeFilter = 'Psuade Files (*.dat)'
-        csvFilter = 'Comma-Separated Values (Excel) (*.csv)'
+        psuadeFilter = "Psuade Files (*.dat)"
+        csvFilter = "Comma-Separated Values (Excel) (*.csv)"
 
         # Get selected row
         row = self.simulationTable.selectedIndexes()[0].row()
 
         sim = self.dat.uqSimList[row]
         fileName, selectedFilter = QFileDialog.getSaveFileName(
-            self, "File to Save Ensemble", '', psuadeFilter + ';;' + csvFilter
+            self, "File to Save Ensemble", "", psuadeFilter + ";;" + csvFilter
         )
-        if fileName == '':
+        if fileName == "":
             return
         if selectedFilter == psuadeFilter:
             sim.writeToPsuade(fileName)
@@ -765,10 +763,10 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     def editSim(self):
         sender = self.sender()
-        row = sender.property('row')
+        row = sender.property("row")
 
         viewOnly = True
-        if sender.text() == 'Revise':
+        if sender.text() == "Revise":
             viewOnly = False
         self.changeDataSignal.disconnect()
         self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
@@ -854,16 +852,16 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         progressBar.setMinimum(0)
         if data.getRunType() == Model.EMULATOR:
             progressBar.setMaximum(data.getNumOutputs())
-            formatString = '%v / %m output(s) computed'
+            formatString = "%v / %m output(s) computed"
         else:
             progressBar.setMaximum(data.getNumSamples())
             try:
-                index = data.getOutputNames().index('graph.error')
+                index = data.getOutputNames().index("graph.error")
                 errorCount = sum(row[index] > 0 for row in data.getOutputData())
                 # errorCount = np.count_nonzero(outDataErrors)
-                formatString = '%v / %m  # errors: ' + str(errorCount)
+                formatString = "%v / %m  # errors: " + str(errorCount)
             except:
-                formatString = '%v / %m'
+                formatString = "%v / %m"
         progressBar.setFormat(formatString)
         runState = data.getRunState().tolist()
         runCount = runState.count(True)
@@ -883,11 +881,11 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             or data.getFromFile() == True
             or data.getNumSamplesAdded() > 0
         ):  # Samples added from refinement
-            editButton.setText('View')
+            editButton.setText("View")
         else:
-            editButton.setText('Revise')
+            editButton.setText("Revise")
 
-        editButton.setProperty('row', row)
+        editButton.setProperty("row", row)
         if newEditButton:
             editButton.clicked.connect(self.editSim)
             self.simulationTable.setCellWidget(row, self.editCol, editButton)
@@ -899,19 +897,19 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         if launchButton is None:
             newLaunchButton = True
             launchButton = QPushButton()
-        launchButton.setText('Launch')
+        launchButton.setText("Launch")
         # if data.getFromFile() == True:
         #     launchButton.setEnabled(False)
         if runCount == data.getNumSamples():
             if data.getSampleMethod() == SamplingMethods.METIS or data.getFromFile():
-                launchButton.setText('Sample Refinement')
+                launchButton.setText("Sample Refinement")
             else:
                 launchButton.setEnabled(False)
         elif (
             data.getFromFile()
         ):  # Should not be able to launch or refine sample loaded from file that is not complete
             launchButton.setEnabled(False)
-        launchButton.setProperty('row', row)
+        launchButton.setProperty("row", row)
         if newLaunchButton:
             launchButton.clicked.connect(self.launchSim)
             self.simulationTable.setCellWidget(row, self.launchCol, launchButton)
@@ -923,9 +921,9 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         if analyzeButton is None:
             newAnalyzeButton = True
             analyzeButton = QPushButton()
-        analyzeButton.setText('Analyze')
+        analyzeButton.setText("Analyze")
         analyzeButton.setEnabled(runCount == data.getNumSamples())
-        analyzeButton.setProperty('row', row)
+        analyzeButton.setProperty("row", row)
         if newAnalyzeButton:
             analyzeButton.clicked.connect(self.analyzeSim)
             self.simulationTable.setCellWidget(row, self.analyzeCol, analyzeButton)
@@ -947,13 +945,13 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     def launchSim(self):
         sender = self.sender()
-        row = sender.property('row')
+        row = sender.property("row")
         sim = self.dat.uqSimList[row]
-        if sender.text() == 'Launch':
+        if sender.text() == "Launch":
             logging.getLogger("foqus." + __name__).debug(
                 "Lauch button pressed, launching UQ ensemble"
             )
-            sender.setText('Stop')
+            sender.setText("Stop")
             # self.freeze()
             runType = sim.getRunType()
             if runType == Model.LOCAL:
@@ -971,7 +969,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 self.runMap = []
                 # save current graph inputs
                 # will coly this and overwrite sample inputs
-                inpDict = self.dat.flowsheet.saveValues()['input']
+                inpDict = self.dat.flowsheet.saveValues()["input"]
                 # create the input list for samples to run
                 for i in range(len(inputs)):
                     runAlready = runState[i]
@@ -1017,7 +1015,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.checkThread = checkingThread(row, self)
             self.checkThread.runsFinishedSignal.connect(self.runsFinishedSignal)
             self.checkThread.start()
-        elif sender.text() == 'Stop':
+        elif sender.text() == "Stop":
             if self.dat.foqusSettings.runFlowsheetMethod == 1:
                 stopDialog = stopEnsembleDialog(self)
                 if not self.gThread.allSubmitted:
@@ -1046,8 +1044,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             # Get number of samples to add
             numToAdd, ok = QInputDialog.getInt(
                 self,
-                'Samples to Add',
-                'Number of samples to add:',
+                "Samples to Add",
+                "Number of samples to add:",
                 min([100, sim.getNumSamples()]),
                 1,
                 sim.getNumSamples(),
@@ -1060,8 +1058,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             if sim.getNumOutputs() > 1:
                 output, ok = QInputDialog.getItem(
                     self,
-                    'Output Selection',
-                    'Select Output to refine:',
+                    "Output Selection",
+                    "Select Output to refine:",
                     sim.getOutputNames(),
                 )
                 if not ok:
@@ -1071,14 +1069,14 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.freeze()
             Common.initFolder(SampleRefiner.dname)
             fname = Common.getLocalFileName(
-                SampleRefiner.dname, sim.getModelName().split()[0], '.dat'
+                SampleRefiner.dname, sim.getModelName().split()[0], ".dat"
             )
             sim.writeToPsuade(fname)
             # Common.restoreFromArchive('psuadeMetisInfo', sim.getID())
-            if sim.existsInArchive('psuadeMetisInfo'):
-                sim.restoreFromArchive('psuadeMetisInfo')
-            if sim.existsInArchive('psuadeGMetisInfo'):
-                sim.restoreFromArchive('psuadeGMetisInfo')
+            if sim.existsInArchive("psuadeMetisInfo"):
+                sim.restoreFromArchive("psuadeMetisInfo")
+            if sim.existsInArchive("psuadeGMetisInfo"):
+                sim.restoreFromArchive("psuadeGMetisInfo")
 
             outfile = SampleRefiner.adaptiveSample(
                 fname, y, sim.getOrigNumSamples(), numToAdd
@@ -1100,12 +1098,12 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             newdata.setInputDistributions(sim.getInputDistributions())
             # Common.archiveFile('psuadeMetisInfo', newdata.getID())
             newdata.setSession(sim.getSession())
-            if os.path.exists('psuadeMetisInfo'):
-                newdata.archiveFile('psuadeMetisInfo')
-                os.remove('psuadeMetisInfo')
-            if os.path.exists('psuadeGMetisInfo'):
-                newdata.archiveFile('psuadeGMetisInfo')
-                os.remove('psuadeGMetisInfo')
+            if os.path.exists("psuadeMetisInfo"):
+                newdata.archiveFile("psuadeMetisInfo")
+                os.remove("psuadeMetisInfo")
+            if os.path.exists("psuadeGMetisInfo"):
+                newdata.archiveFile("psuadeGMetisInfo")
+                os.remove("psuadeGMetisInfo")
 
             # add to simulation table, select new data
             self.dat.uqSimList.append(newdata)
@@ -1124,7 +1122,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     def analyzeSim(self):
         sender = self.sender()
-        row = sender.property('row')
+        row = sender.property("row")
         sim = self.dat.uqSimList[row]
 
         dialog = AnalysisDialog(row + 1, sim, self)
@@ -1138,8 +1136,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
     def resultsBox(self, numSuccessful, numSamples):
         msgBox = QtWidgets.QMessageBox()
-        msgBox.setWindowTitle('FOQUS Run Finished')
-        msgBox.setText('%d of %d runs were successful!' % (numSuccessful, numSamples))
+        msgBox.setWindowTitle("FOQUS Run Finished")
+        msgBox.setText("%d of %d runs were successful!" % (numSuccessful, numSamples))
         result = msgBox.exec_()
         self.refreshFilterData(updateResult=True)
         return result
@@ -1200,7 +1198,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
 
         newdata = data.getSubSample(indices)
 
-        newdata.setModelName(data.getModelName().split('.')[0] + '.filtered')
+        newdata.setModelName(data.getModelName().split(".")[0] + ".filtered")
         newdata.setSession(self.dat)
 
         # add to simulation table, select new data
@@ -1266,7 +1264,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         self.delete_table.setColumnCount(self.nInputs + self.nOutputs + 1)
         self.delete_table.setRowCount(self.nSamples + 1)
         self.delete_table.setHorizontalHeaderLabels(
-            ('Variables',) + inputNames + outputNames
+            ("Variables",) + inputNames + outputNames
         )
         self.delete_table.setContextMenuPolicy(Qt.CustomContextMenu)
         self.delete_table.customContextMenuRequested.connect(self.popup)
@@ -1275,7 +1273,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
             self.popup
         )
         sampleLabels = tuple([str(i) for i in range(1, self.nSamples + 1)])
-        self.delete_table.setVerticalHeaderLabels(('Sample #',) + sampleLabels)
+        self.delete_table.setVerticalHeaderLabels(("Sample #",) + sampleLabels)
         inputColor = QtGui.QColor(255, 0, 0, 50)  # translucent red
         inputRefinedColor = QtGui.QColor(255, 0, 0, 100)
         #        mask = ~(Qt.ItemIsSelectable | Qt.ItemIsEnabled | Qt.ItemIsEditable)
@@ -1462,7 +1460,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                     ):
                         item.setText(self.format % self.outputData[r][c])
                     else:
-                        item.setText('')
+                        item.setText("")
                     if r < self.nSamples - self.nSamplesAdded:
                         color = outputColor
                     else:
@@ -1568,7 +1566,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         data = self.dat.uqSimList[row]
         # data = data.getValidSamples() # filter out samples that have no output results
         fname = Common.getLocalFileName(
-            DataProcessor.dname, data.getModelName().split()[0], '.dat'
+            DataProcessor.dname, data.getModelName().split()[0], ".dat"
         )
         data.writeToPsuade(fname)
 
@@ -1594,7 +1592,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # outfile = DataProcessor.delete(fname, nInputs, nOutputs, nSamples, inVars, outVars, samples)
         #
         # newdata = LocalExecutionModule.readSampleFromPsuadeFile(outfile)
-        newdata.setModelName(data.getModelName().split('.')[0] + '.deleted')
+        newdata.setModelName(data.getModelName().split(".")[0] + ".deleted")
         newdata.setSession(self.dat)
 
         # add to simulation table, select new data
@@ -1650,8 +1648,8 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # Warn user
         button = QMessageBox.question(
             self,
-            'Change output values?',
-            'You are about to permanently change the output values.  This cannot be undone.  Do you want to proceed?',
+            "Change output values?",
+            "You are about to permanently change the output values.  This cannot be undone.  Do you want to proceed?",
             QMessageBox.Yes,
             QMessageBox.No,
         )

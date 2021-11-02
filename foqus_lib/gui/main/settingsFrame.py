@@ -31,7 +31,7 @@ from pprint import pprint
 import subprocess
 import xml.etree.ElementTree as ET
 
-if os.name == 'nt':
+if os.name == "nt":
     import win32process
 
 from PyQt5 import QtCore, uic
@@ -45,19 +45,19 @@ _settingsFrameUI, _settingsFrame = uic.loadUiType(
 
 
 class settingsFrame(_settingsFrame, _settingsFrameUI):
-    '''
+    """
     This class is a dialog box that allows you to view and change
     general FOQUS settings.  It's called log settings because it
     started out with only log settings.
-    '''
+    """
 
     waiting = QtCore.pyqtSignal()  # indicates a task is going take a while
     notwaiting = QtCore.pyqtSignal()  # indicates a wait is over
 
     def __init__(self, dat, parent=None):
-        '''
+        """
         Initialize FOQUS settings dialog
-        '''
+        """
         super(settingsFrame, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
         self.dat = dat
@@ -115,7 +115,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         )
         # Get XML string
         try:
-            with open(tcfg, 'r') as f:
+            with open(tcfg, "r") as f:
                 xmls = f.read()
         except:
             logging.getLogger("foqus." + __name__).exception(
@@ -145,7 +145,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         settingsEl = uSetEl.find(
             "SelfManagedWebApplicationWindowsService.Properties.Settings"
         )
-        netLoc = settingsEl.find("setting[@name='netloc']").find('value')
+        netLoc = settingsEl.find("setting[@name='netloc']").find("value")
         netURL = netLoc.text.split(":")[0]
         netPort = netLoc.text.split(":")[1]
         #
@@ -168,7 +168,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         tcfgs = StringIO()
         tree.write(tcfgs, encoding="utf-8", xml_declaration=True)
         tcfgs = tcfgs.getvalue().replace("<unity>", '<unity xmlns="{0}">'.format(xmlns))
-        with open(tcfg, 'w') as f:
+        with open(tcfg, "w") as f:
             f.write(tcfgs)
         QMessageBox.information(
             self,
@@ -221,7 +221,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
 
     def startTurbineService(self):
         proc = subprocess.Popen(
-            ['net', 'start', 'Turbine Web API Service'],
+            ["net", "start", "Turbine Web API Service"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             stdin=None,
@@ -247,7 +247,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
 
     def stopTurbineService(self):
         proc = subprocess.Popen(
-            ['net', 'stop', 'Turbine Web API Service'],
+            ["net", "stop", "Turbine Web API Service"],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             stdin=None,
@@ -311,25 +311,25 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
         self.trReSubEdit.setText(str(self.dat.foqusSettings.turbineRemoteReSub))
 
     def editTurbineConfigFile(self):
-        '''
+        """
         Show turbine profile config dialog
-        '''
+        """
         cfile = self.turbConfEdit.text()
         m = turbineConfig(self.dat, cfile, self)
         m.exec_()
 
     def editTurbineCConfigFile(self):
-        '''
+        """
         Show turbine profile config dialog
-        '''
+        """
         cfile = self.turbConfClusterEdit.text()
         m = turbineConfig(self.dat, cfile, self)
         m.exec_()
 
     def browseWorkingDir(self):
-        '''
+        """
         Open file browser to select the working directory
-        '''
+        """
         msg = QFileDialog()
         msg.setFileMode(QFileDialog.Directory)
         msg.setOption(QFileDialog.ShowDirsOnly)
@@ -339,9 +339,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.wdirEdit.setText(dirs)
 
     def browseRScriptPath(self):
-        '''
+        """
         Open file browser to select the R exe file
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self, "Find RScript exe", "", "Executable (*.exe);;All Files (*)"
         )
@@ -359,9 +359,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.turbLiteHomeEdit.setText(dirs)
 
     def browseALAMOPath(self):
-        '''
+        """
         Open file browser to select the ALAMO exe file
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self, "Find ALMO exe", "", "Executable (*.exe);;All Files (*)"
         )
@@ -370,9 +370,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.alamoPathEdit.setText(fileName)
 
     def browseTurbineFile(self):
-        '''
+        """
         Open file browser to select the turbine config file
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find Turbine Confguration",
@@ -384,9 +384,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.turbConfEdit.setText(fileName)
 
     def browseTurbineCFile(self):
-        '''
+        """
         Open file browser to select the turbine config file
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Find Turbine Cluster Confguration",
@@ -398,9 +398,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.turbConfClusterEdit.setText(fileName)
 
     def browsePsuadeFile(self):
-        '''
+        """
         Open file browser to select the psuade exe file
-        '''
+        """
         ##        fileName, filtr = QFileDialog.getOpenFileName(
         ##            self,
         ##            "Open File",
@@ -412,9 +412,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.psuadeEdit.setText(fileName)
 
     def browseSinterFile(self):
-        '''
+        """
         Open file browser to select the psuade exe file
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self, "Open File", "", "EXE Files (*.exe);;All Files (*)"
         )
@@ -423,9 +423,9 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             self.sinterConfigEdit.setText(fileName)
 
     def applyChanges(self):
-        '''
+        """
         Apply FOQUS settings from form
-        '''
+        """
         # Check box options
         self.dat.foqusSettings.compactSession = self.saveSmallCheck.isChecked()
         self.dat.foqusSettings.backupSession = self.saveBackCheck.isChecked()
@@ -477,7 +477,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             )
 
     def revert(self):
-        '''
+        """
         Don't update the FOQUS settings
-        '''
+        """
         self.updateForm()

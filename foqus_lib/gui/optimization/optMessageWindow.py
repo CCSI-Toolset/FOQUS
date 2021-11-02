@@ -27,9 +27,9 @@ _optMessageWindowUI, _optMessageWindow = uic.loadUiType(
 
 class optMessageWindow(_optMessageWindow, _optMessageWindowUI):
     def __init__(self, parent=None):
-        '''
+        """
         Constructor for optimization message window
-        '''
+        """
         super(optMessageWindow, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
 

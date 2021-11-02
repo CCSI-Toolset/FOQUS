@@ -37,7 +37,7 @@ class option:
         section="",
         hint="",
     ):
-        '''
+        """
         creates a new option, options are used in settings for
         optimization solvers, and surrogate model methods they
         may be used in more plases in the future.
@@ -54,7 +54,7 @@ class option:
         dtype - a data type for otpion if None, set by default value
         validValues - a list of valid values, empty list means no
             restriction
-        '''
+        """
         self.desc = desc
         if value == None:
             self.value = default
@@ -71,64 +71,64 @@ class option:
 
     def saveDict(self):
         sd = {
-            'desc': self.desc,
-            'value': self.value,
-            'default': self.default,
-            'vmax': self.vmax,
-            'vmin': self.vmin,
-            'dtype': self.typeToString(self.dtype),
-            'validValues': self.validValues,
-            'optSet': self.optSet,
-            'disable': self.disable,
+            "desc": self.desc,
+            "value": self.value,
+            "default": self.default,
+            "vmax": self.vmax,
+            "vmin": self.vmin,
+            "dtype": self.typeToString(self.dtype),
+            "validValues": self.validValues,
+            "optSet": self.optSet,
+            "disable": self.disable,
         }
         return sd
 
     def loadDict(self, sd):
-        self.desc = sd.get('desc', self.desc)
-        self.value = sd.get('value', self.value)
-        self.default = sd.get('default', self.default)
-        self.vmax = sd.get('vmax', self.vmax)
-        self.vmin = sd.get('vmin', self.vmin)
-        self.dtype = sd.get('dtype', None)
-        self.disable = sd.get('disable', False)
+        self.desc = sd.get("desc", self.desc)
+        self.value = sd.get("value", self.value)
+        self.default = sd.get("default", self.default)
+        self.vmax = sd.get("vmax", self.vmax)
+        self.vmin = sd.get("vmin", self.vmin)
+        self.dtype = sd.get("dtype", None)
+        self.disable = sd.get("disable", False)
         if self.dtype is None:
             self.dtype = self.stringToType(self.dtype)
         else:
             self.dtype = type(self.default)
-        self.validValues = sd.get('validValues', self.validValues)
-        self.optSet = sd.get('optSet', self.optSet)
+        self.validValues = sd.get("validValues", self.validValues)
+        self.optSet = sd.get("optSet", self.optSet)
 
     def validTypes(self):
         return [float, int, str, bool, list, dict]
 
     def typeToString(self, t):
         if t == float:
-            return 'float'
+            return "float"
         elif t == int:
-            return 'int'
+            return "int"
         elif t == str:
-            return 'str'
+            return "str"
         elif t == bool:
-            return 'bool'
+            return "bool"
         elif t == list:
-            return 'list'
+            return "list"
         elif t == dict:
-            return 'dict'
+            return "dict"
         else:
             return None
 
     def stringToType(self, s):
-        if s == 'float':
+        if s == "float":
             return float
-        elif s == 'int':
+        elif s == "int":
             return int
-        elif s == 'str':
+        elif s == "str":
             return str
-        elif s == 'bool':
+        elif s == "bool":
             return bool
-        elif s == 'list':
+        elif s == "list":
             return list
-        elif s == 'dict':
+        elif s == "dict":
             return dict
         else:
             return None
@@ -146,10 +146,10 @@ class option:
         return self.validateType() and self.validateRange() and self.validateList()
 
     def validateType(self):
-        '''
+        """
         Check that the value type matches the specified data type.
         Also allows int values for float.
-        '''
+        """
         if isinstance(self.value, self.dtype):
             return True
         elif isinstance(self.value, int) and self.dtype == float:
@@ -158,10 +158,10 @@ class option:
             return False
 
     def validateRange(self):
-        '''
+        """
         Check that if the value is an int or float that it is between
         less than vmax and more than vmin if vmax and vmin are given
-        '''
+        """
         if not isinstance(self.value, (int, float)):
             return True
         elif self.vmin != None and self.value < self.vmin:
@@ -172,9 +172,9 @@ class option:
             return True
 
     def validateList(self):
-        '''
+        """
         Check that the value is in the list of valid values
-        '''
+        """
         if self.validValues == []:
             return True
         elif self.value in self.validValues:

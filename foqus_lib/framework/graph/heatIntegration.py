@@ -357,7 +357,7 @@ def heatIntegrationCalc(node):
     # write GAMS input
     #
     try:
-        f = open('gams/GamsInput.inc', 'w')
+        f = open("gams/GamsInput.inc", "w")
     except:
         print("Couldn't open GAMS input file")
         return
@@ -590,7 +590,7 @@ def heatIntegrationCalc(node):
     f.write("    RankCF(C) = 0;\n")
     if feedIs:
         for feedC in feedSet:
-            f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ';\n')
+            f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ";\n")
 
     # write whatever
 
@@ -599,7 +599,7 @@ def heatIntegrationCalc(node):
 
     # execute gams code with system call
     try:
-        process = subprocess.Popen(['gams', 'HeatIntegration.gms', 'lo=0'], cwd='gams')
+        process = subprocess.Popen(["gams", "HeatIntegration.gms", "lo=0"], cwd="gams")
         process.wait()  # could get fancy later and add a timeout
     except:
         node.calcError = -2
@@ -608,7 +608,7 @@ def heatIntegrationCalc(node):
 
     # read GAMS output file
     try:
-        f = open('gams\GamsOutput.txt', 'r')
+        f = open("gams\GamsOutput.txt", "r")
     except:
         print("couldn't open GAMS output file")
         return

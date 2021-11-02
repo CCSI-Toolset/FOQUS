@@ -24,24 +24,24 @@ from foqus_lib.framework.graph.nodeVars import *
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return True
 
 
 class pymodel_pg(pymodel):
-    '''
+    """
     This is a plugin model for a supercritical power plant using
     some simple coorelations.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Initialize steam cycle object
-        '''
+        """
         pymodel.__init__(self)
         self.description = "Heat integration..."
         # Input variables
@@ -564,7 +564,7 @@ class pymodel_pg(pymodel):
         # write GAMS input
         #
         try:
-            f = open('gams/GamsInput.inc', 'w')
+            f = open("gams/GamsInput.inc", "w")
         except:
             print("Couldn't open GAMS input file")
             return
@@ -838,7 +838,7 @@ class pymodel_pg(pymodel):
         f.write("    RankCF(C) = 0;\n")
         if feedIs:
             for feedC in feedSet:
-                f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ';\n')
+                f.write('    RankCF("' + feedC + '") = ' + str(feedRank[feedC]) + ";\n")
 
         # write whatever
 
@@ -848,7 +848,7 @@ class pymodel_pg(pymodel):
         # execute gams code with system call
         try:
             process = subprocess.Popen(
-                ['gams', 'HeatIntegration.gms', 'lo=0'], cwd='gams'
+                ["gams", "HeatIntegration.gms", "lo=0"], cwd="gams"
             )
             process.wait()  # could get fancy later and add a timeout
         except:
@@ -858,7 +858,7 @@ class pymodel_pg(pymodel):
 
         # read GAMS output file
         try:
-            f = open('gams\GamsOutput.txt', 'r')
+            f = open("gams\GamsOutput.txt", "r")
         except:
             print("couldn't open GAMS output file")
             return

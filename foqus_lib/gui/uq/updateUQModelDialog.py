@@ -97,15 +97,15 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
             button.setEnabled(enableSelection and outputsChosen)
 
     def getDataFileName(self):
-        if platform.system() == 'Windows':
-            allFiles = '*.*'
+        if platform.system() == "Windows":
+            allFiles = "*.*"
         else:
-            allFiles = '*'
+            allFiles = "*"
         # Get file name
         fileName, selectedFilter = QFileDialog.getOpenFileName(
             self,
             "Open Simulation Ensemble",
-            '',
+            "",
             "Psuade Files (*.dat *.filtered);; All files (%s)" % allFiles,
         )
         if len(fileName) == 0:
@@ -127,9 +127,9 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
         if RSType == ResponseSurfaces.LEGENDRE:
             legendreOrder = data.getLegendreOrder()
 
-        statsText = 'Response Surface Type: ' + ResponseSurfaces.getFullName(RSType)
+        statsText = "Response Surface Type: " + ResponseSurfaces.getFullName(RSType)
         if legendreOrder:
-            statsText = statsText + '\nLegendre Order: ' + str(legendreOrder)
+            statsText = statsText + "\nLegendre Order: " + str(legendreOrder)
         self.fileStatsLabel.setText(statsText)
 
     def checkItemSelected(self, item):
@@ -165,8 +165,8 @@ class updateUQModelDialog(_updateUQModelDialog, _updateUQModelDialogUI):
             )
             data.setOutputData(outputData)
             fnameRoot = Common.getFileNameRoot(fileName)
-            data.model.setName(fnameRoot + '.emulatorTestData')
-            newFileName = fnameRoot + '.emulatorTrainData'
+            data.model.setName(fnameRoot + ".emulatorTestData")
+            newFileName = fnameRoot + ".emulatorTrainData"
             data.writeToPsuade(newFileName)
             data.setEmulatorTrainingFile(newFileName)
             self.dat.uqModel = data.model

@@ -39,23 +39,23 @@ from foqus_lib.framework.optimizer.optimization import optimization
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return True
 
 
 class opt(optimization):
-    '''
+    """
     CSV_Sample
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize CMA-ES optimization module
-        '''
+        """
         optimization.__init__(self, dat)
         self.name = "CMA-ES"
         self.methodDescription = (
@@ -79,9 +79,9 @@ class opt(optimization):
         )
 
     def optimize(self):
-        '''
+        """
         This is the optimization routine.
-        '''
+        """
         backupInt = self.options["Backup interval"].value
         start = time.process_time()
         self.msgQueue.put(
@@ -120,24 +120,24 @@ class opt(optimization):
                 if self.stop.isSet():  # check for stop flag
                     userInterupt = True
                     gt.terminate()
-                if gt.status['finished'] != finished:
+                if gt.status["finished"] != finished:
                     for i, res in enumerate(gt.res):
                         if res != None:
                             if i not in doneList:
                                 doneList.append(i)
                                 r = self.graph.results.subsetResult(rerunList[i])
                                 r.resetResultFromValues(res)
-                    finished = gt.status['finished']
+                    finished = gt.status["finished"]
                     # put out status
                     self.resQueue.put(
                         [
                             "PROG",
                             finished,
                             len(rerunSamp),
-                            gt.status['error'],
+                            gt.status["error"],
                             0,
                             finished,
-                            gt.status['error'],
+                            gt.status["error"],
                         ]
                     )
                 # back up if its time.  Don't back up for intervals

@@ -113,36 +113,36 @@ class problem(object):
         problem to a json file.
         """
         sd = {
-            'obj': [o.saveDict() for o in self.obj],
-            'g': [g.saveDict() for g in self.g],
-            'objtype': self.objtype,
-            'custpy': self.custpy,
-            'v': self.v,
-            'vs': self.vs,
-            'samp': self.samp,
-            'solver': self.solver,
-            'solverOptions': {},
+            "obj": [o.saveDict() for o in self.obj],
+            "g": [g.saveDict() for g in self.g],
+            "objtype": self.objtype,
+            "custpy": self.custpy,
+            "v": self.v,
+            "vs": self.vs,
+            "samp": self.samp,
+            "solver": self.solver,
+            "solverOptions": {},
         }
         for skey in self.solverOptions:
-            sd['solverOptions'][skey] = {}
+            sd["solverOptions"][skey] = {}
             for okey, ov in self.solverOptions[skey].items():
-                sd['solverOptions'][skey][okey] = ov
+                sd["solverOptions"][skey][okey] = ov
         return sd
 
     def loadDict(self, sd):
-        '''
+        """
         Load the optimization problem from a dictionary.  Usualy
         used when reading a problem back in from a json file.
-        '''
+        """
         self.obj = []
         self.g = []
         self.h = []
-        self.objtype = sd.get('objtype', self.OBJ_TYPE_EVAL)
-        self.custpy = sd.get('custpy', '')
-        self.samp = sd.get('samp', {})
-        self.v = sd.get('v', [])
-        self.vs = sd.get('vs', [])
-        self.solver = sd.get('solver', None)
+        self.objtype = sd.get("objtype", self.OBJ_TYPE_EVAL)
+        self.custpy = sd.get("custpy", "")
+        self.samp = sd.get("samp", {})
+        self.v = sd.get("v", [])
+        self.vs = sd.get("vs", [])
+        self.solver = sd.get("solver", None)
         #
         for d in sd.get("obj", []):
             self.obj.append(objectiveFunction())
@@ -153,15 +153,15 @@ class problem(object):
             self.g[-1].loadDict(d)
         #
         self.solverOptions = {}
-        if not 'solverOptions' in sd:
+        if not "solverOptions" in sd:
             return
-        for dkey, d in sd['solverOptions'].items():
+        for dkey, d in sd["solverOptions"].items():
             self.solverOptions[dkey] = {}
             for okey, ov in d.items():
                 self.solverOptions[dkey][okey] = ov
 
     def loadSamples(self, fname):
-        with open(fname, 'r') as f:
+        with open(fname, "r") as f:
             cr = csv.reader(f)
             head = [h.strip() for h in next(cr)]
             for h in head:
@@ -230,17 +230,17 @@ class problem(object):
         return n
 
     def addSampleVar(self, vname):
-        '''
+        """
         Adds a variable to the sample dict, not to the sample var
         list (self.vs).  I keep track of samples for varaibles that
         are not sample variables just in case the user changes their
         mind about the set of sample variables.  All the defined
         samples won't be lost.
-        '''
+        """
         n = self.numSamples()
         if vname not in self.samp:
             if n > 0:
-                self.samp[vname] = [float('nan')] * n
+                self.samp[vname] = [float("nan")] * n
             else:
                 self.samp[vname] = []
 
@@ -249,7 +249,7 @@ class problem(object):
             if key not in self.samp:
                 self.addSampleVar(key)
         for key in self.samp:
-            self.samp[key].append(samples.get(key, float('nan')))
+            self.samp[key].append(samples.get(key, float("nan")))
 
     def runSamples(self, X, slv):
         """Runs the flowsheet samples for the objective calculation
@@ -280,7 +280,7 @@ class problem(object):
                             samp[-1][nkey][vkey] = vals[nkey][vkey]
                     # Now add on sample variable info
                     for vname in self.vs:
-                        vname2 = vname.split('.', 1)
+                        vname2 = vname.split(".", 1)
                         samp[-1][vname2[0]][vname2[1]] = self.samp[vname][s]
         else:
             for xvec in X:  # create sample set in correct format
@@ -319,22 +319,22 @@ class problem(object):
             goagain = gt.is_alive()
             with gt.statLock:
                 status = copy.copy(gt.status)
-            if status['finished'] != finished or not goagain:
+            if status["finished"] != finished or not goagain:
                 # if it is the last time through because the thread is
                 # no longer alive make sure to read the last of the
                 # results, the finished counter goes up before the
                 # job results are retrived from turbine
-                finished = status['finished']
+                finished = status["finished"]
                 # Put out progress monitor message to queue
                 slv.resQueue.put(
                     [
                         "PROG",
                         finished,
                         nsam,
-                        status['error'],
+                        status["error"],
                         self.iterationNumber,
                         self.totalSamplesRead + finished,
-                        self.totalSampleErrors + status['error'],
+                        self.totalSampleErrors + status["error"],
                     ]
                 )
                 # get sample result
@@ -345,14 +345,14 @@ class problem(object):
                                 readres[i] = True
                                 slv.graph.results.addFromSavedValues(
                                     self.storeResults,
-                                    'res_{0:05d}_{1:05d}'.format(
+                                    "res_{0:05d}_{1:05d}".format(
                                         self.iterationNumber, i
                                     ),
                                     None,
                                     gt.res[i],
                                 )
         self.totalSamplesRead = self.totalSamplesRead + nsam
-        self.totalSampleErrors = self.totalSampleErrors + status['error']
+        self.totalSampleErrors = self.totalSampleErrors + status["error"]
         self.gt = gt
         if gt.errorStat == 40:
             raise Exception("Error connecting to Turbine")
@@ -366,17 +366,17 @@ class problem(object):
                 return self.calculateObj(gt.res, nsamples=snum)
 
     def prep(self, slv):
-        '''
+        """
         do whatever can be done outside the objective calucualtion
         loop to speed things up
-        '''
+        """
         if self.objtype == self.OBJ_TYPE_CUST:
             exec(self.custpy, globals())
             self.custObjFunc = objfunc  # pylint: disable=undefined-variable
-        self.inpDict = slv.graph.saveValues()['input']
+        self.inpDict = slv.graph.saveValues()["input"]
 
     def calculateObj(self, svlist, nsamples=1):
-        '''
+        """
         Do some commnon preliminary setup then call the right type
         of objective calculation.
 
@@ -385,9 +385,9 @@ class problem(object):
             into each objective evaluation.  svlist is arranged
             so that there are blocks of samples use to cacluatate
             objective functions
-        '''
+        """
         numObj = len(svlist) // nsamples  # number of obj. func. evals.
-        res = [[float('nan')]] * numObj
+        res = [[float("nan")]] * numObj
         const = [[0.0]] * numObj
         pen = [[0.0]] * numObj
         for obj_index in range(numObj):
@@ -402,20 +402,20 @@ class problem(object):
                     # this is probably due to an exception being
                     # thrown during flowsheet eval so is an error.
                     fail[i] = True
-                elif sv.get('input', None) is None:
+                elif sv.get("input", None) is None:
                     # if the sample has no input something is wrong
                     fail[i] = True
-                elif sv.get('output', None) is None:
+                elif sv.get("output", None) is None:
                     # if the sample has no input something is wrong
                     fail[i] = True
                 else:
                     if nsamples == 1:
-                        x = sv['input']
-                        f = sv['output']
+                        x = sv["input"]
+                        f = sv["output"]
                     else:
-                        x[i] = sv['input']
-                        f[i] = sv['output']
-                    if sv['graphError'] != 0:
+                        x[i] = sv["input"]
+                        f[i] = sv["output"]
+                    if sv["graphError"] != 0:
                         # This is just some error that was caught usually
                         # means failed to converge.
                         fail[i] = True
@@ -433,7 +433,7 @@ class problem(object):
         return res, const, pen
 
     def calculateObjVector(self, svlist, nsamples=1):
-        '''
+        """
         Do some commnon preliminary setup then call the right type
         of objective calculation.
 
@@ -442,9 +442,9 @@ class problem(object):
             into each objective evaluation.  svlist is arranged
             so that there are blocks of samples use to cacluatate
             objective functions
-        '''
+        """
         numObj = len(svlist) // nsamples  # number of obj. func. evals.
-        res = [[float('nan')]] * numObj
+        res = [[float("nan")]] * numObj
         const = [[0.0]] * numObj
         pen = [[0.0]] * numObj
         for obj_index in range(numObj):
@@ -459,20 +459,20 @@ class problem(object):
                     # this is probably due to an exception being
                     # thrown during flowsheet eval so is an error.
                     fail[i] = True
-                elif sv.get('input_vectorvals', None) is None:
+                elif sv.get("input_vectorvals", None) is None:
                     # if the sample has no input something is wrong
                     fail[i] = True
-                elif sv.get('output_vectorvals', None) is None:
+                elif sv.get("output_vectorvals", None) is None:
                     # if the sample has no input something is wrong
                     fail[i] = True
                 else:
                     if nsamples == 1:
-                        xvector = sv['input_vectorvals']
-                        fvector = sv['output_vectorvals']
+                        xvector = sv["input_vectorvals"]
+                        fvector = sv["output_vectorvals"]
                     else:
-                        xvector[i] = sv['input_vectorvals']
-                        fvector[i] = sv['output_vectorvals']
-                    if sv['graphError'] != 0:
+                        xvector[i] = sv["input_vectorvals"]
+                        fvector[i] = sv["output_vectorvals"]
+                    if sv["graphError"] != 0:
                         # This is just some error that was caught usually
                         # means failed to converge.
                         fail[i] = True
@@ -511,7 +511,7 @@ class problem(object):
         return x, f
 
     def calculateObjSimpExp(self, x, f, failVec):
-        ''' '''
+        """ """
         res_e = []
         const_e = []
         fail = any(failVec)
@@ -526,11 +526,11 @@ class problem(object):
                 # vi to 0 for zero penalty
                 vi = 0
             # calculate penalty
-            if o.penForm == 'Linear':
+            if o.penForm == "Linear":
                 pen = vi * o.penalty
-            elif o.penForm == 'Quadratic':
+            elif o.penForm == "Quadratic":
                 pen = vi * vi * o.penalty
-            elif o.penForm == 'Step' and vi > 0.0:
+            elif o.penForm == "Step" and vi > 0.0:
                 pen = o.penalty
             penTotal += pen
             const_e.append(pen)
@@ -552,17 +552,17 @@ class problem(object):
         return res_e, const_e, penTotal
 
     def check(self, graph, minVars=2, maxVars=1000, mustScale=True):
-        '''
+        """
         Check that an optimization problem is properly specified as
         much as possible.
-        '''
+        """
         # Check number of variables
         n = 0
         graph.generateGlobalVariables()
         sv = graph.saveValues()
         for vname in self.v:
             n += 1
-            if mustScale and graph.input.get(vname).scaling == 'None':
+            if mustScale and graph.input.get(vname).scaling == "None":
                 return [
                     1,
                     (

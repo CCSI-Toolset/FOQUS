@@ -23,7 +23,7 @@ import json
 
 
 class surrogate(threading.Thread):
-    '''
+    """
     This is a base class for surrogate model building methods.
     It should be inherited by surrogate model classes.  The
     saveDict and loadDict functions can be overloaded.
@@ -31,7 +31,7 @@ class surrogate(threading.Thread):
     The run and runAdaptive functions should also be overloaded.
     Not all surrogate model methods will need a run adaptive
     function.
-    '''
+    """
 
     name = "surrogate"
 
@@ -50,7 +50,7 @@ class surrogate(threading.Thread):
         # object to a dictionary that can be turned into a json
         # string.  Some things may not fit this and you may need
         # to overload the saveDict and loadDict functions.
-        self.directCopy = ['input', 'output', 'inputOptions', 'outputOptions']
+        self.directCopy = ["input", "output", "inputOptions", "outputOptions"]
         self.msgQueue = queue.Queue()  # queue for messages to print
         self.resQueue = queue.Queue()  # a queue for plots and monitoring
         self.inputOptions = dict()
@@ -80,12 +80,12 @@ class surrogate(threading.Thread):
                 self.outputOptions[item[0]] = {}
 
     def getInputVarOption(self, opt, var):
-        '''
+        """
         Get input variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist return default
             opt: string option name
             var: string variable name
-        '''
+        """
         d = self.inputOptions.get(opt, None)
         if d is None:
             return None
@@ -95,12 +95,12 @@ class surrogate(threading.Thread):
         return v
 
     def getOutputVarOption(self, opt, var):
-        '''
+        """
         Get output variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist return default
             opt: string option name
             var: string variable name
-        '''
+        """
         d = self.outputOptions.get(opt, None)
         if d is None:
             return None
@@ -110,14 +110,14 @@ class surrogate(threading.Thread):
         return v
 
     def setInputVarOption(self, opt, var, val=None):
-        '''
+        """
         Set input variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
         If val is set and option exists returs val.
             opt: string option name
             var: string variable name
             val: value to set if none use default
-        '''
+        """
         d = self.inputOptions.get(opt, None)
         if d is None:
             return None
@@ -127,14 +127,14 @@ class surrogate(threading.Thread):
         return val
 
     def setOutputVarOption(self, opt, var, val=None):
-        '''
+        """
         Set output variable specific option.  If option doesn't exist
         returns none.  If variables doesn't exist set/return default
         If val is set and option exists returs val.
             opt: string option name
             var: string variable name
             val: value to set if none use default
-        '''
+        """
         d = self.outputOptions.get(opt, None)
         if d is None:
             return None
@@ -144,7 +144,7 @@ class surrogate(threading.Thread):
         return val
 
     def updateOptions(self):
-        ''' '''
+        """ """
         pass
 
     def location(self):
@@ -165,7 +165,7 @@ class surrogate(threading.Thread):
         sd = {}
         for att in self.directCopy:
             sd[att] = copy.deepcopy(self.__dict__[att])
-        sd['options'] = self.options.saveValues()
+        sd["options"] = self.options.saveValues()
         return sd
 
     def loadDict(self, sd):
@@ -173,7 +173,7 @@ class surrogate(threading.Thread):
             if sd.get(att, None) != None:
                 self.__dict__[att] = sd[att]
         self.updateVarCols()
-        opts = sd.get('options', None)
+        opts = sd.get("options", None)
         if opts is not None:
             self.options.loadValues(opts)
 
@@ -211,10 +211,10 @@ class surrogate(threading.Thread):
         return err
 
     def createDir(self, wdir=None):
-        '''
+        """
         Check for a working directory and create it if it
         does not exist
-        '''
+        """
         if wdir == None:
             return
         # Check if wdir exists and create it if not.
@@ -225,10 +225,10 @@ class surrogate(threading.Thread):
                 raise e
 
     def setData(self, dat=None):
-        '''
+        """
         Set the session data so the optimization routine can get
         the flowsheet and whatever else it may need.
-        '''
+        """
         self.dat = dat
         if dat:
             self.graph = dat.flowsheet
@@ -236,13 +236,13 @@ class surrogate(threading.Thread):
             self.graph = None
 
     def terminate(self):
-        '''
+        """
         This sets the stop flag to indicate that you want to stop
         the optimization.  The optimize function needs to check the
         stop flag periodically for this to work, so the optimization
         may take some time to stop, or may not stop at all if the
         flag is not checked in the derived class.
-        '''
+        """
         self.stop.set()
 
     def writePluginTop(self, method="Generic", comments=[], importLines=[]):
@@ -284,8 +284,8 @@ class surrogate(threading.Thread):
         lines.append("    def __init__(self):")
         lines.append("        pymodel.__init__(self)")
         # Some indents
-        s8 = '        '
-        s12 = '            '
+        s8 = "        "
+        s12 = "            "
         # flowsheet variables
         gin = self.dat.flowsheet.input
         gout = self.dat.flowsheet.output
@@ -307,8 +307,8 @@ class surrogate(threading.Thread):
             lines.append(s12 + 'unit = "",')
             lines.append(s12 + 'vst = "pymodel",')
             lines.append(s12 + 'vdesc = "{0}",'.format(desc))
-            lines.append(s12 + 'tags = [],')
-            lines.append(s12 + 'dtype = float)')
+            lines.append(s12 + "tags = [],")
+            lines.append(s12 + "dtype = float)")
             inputvals.append(defVal)
         # input vector of default values (needed for ACOSSO, BSS-ANOVA & iREVEAL)
         lines.append(s8 + "self.inputvals = {0}".format(json.dumps(inputvals)))
@@ -328,8 +328,8 @@ class surrogate(threading.Thread):
             lines.append(s12 + 'unit = "",')
             lines.append(s12 + 'vst = "pymodel",')
             lines.append(s12 + 'vdesc = "{0}",'.format(desc))
-            lines.append(s12 + 'tags = [],')
-            lines.append(s12 + 'dtype = float)')
+            lines.append(s12 + "tags = [],")
+            lines.append(s12 + "dtype = float)")
         # add a blank line on the end
         lines.append("")
         return "\n".join(lines)

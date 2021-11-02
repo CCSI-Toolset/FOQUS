@@ -23,7 +23,7 @@ from .Common import Common
 
 class RSSensitivityAnalysis(UQRSAnalysis):
 
-    psuadeNames = ['rssobol1', 'rssobol2', 'rssoboltsi']
+    psuadeNames = ["rssobol1", "rssobol2", "rssoboltsi"]
 
     def __init__(
         self,
@@ -55,7 +55,7 @@ class RSSensitivityAnalysis(UQRSAnalysis):
     def analyze(self):
         data = self.ensemble
         fnameRS = Common.getLocalFileName(
-            RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat'
+            RSAnalyzer.dname, data.getModelName().split()[0], ".rsdat"
         )
         index = ResponseSurfaces.getEnumValue(self.responseSurface)
         fixedAsVariables = index == ResponseSurfaces.USER
@@ -80,8 +80,8 @@ class RSSensitivityAnalysis(UQRSAnalysis):
         cmd = RSSensitivityAnalysis.psuadeNames[self.subType]
         cmd_ = cmd
         if self.showErrorBars:
-            cmd = cmd + 'b'
-        mfile = 'matlab' + cmd + '.m'
+            cmd = cmd + "b"
+        mfile = "matlab" + cmd + ".m"
         self.restoreFromArchive(mfile)
 
         RSAnalyzer.plotSA(

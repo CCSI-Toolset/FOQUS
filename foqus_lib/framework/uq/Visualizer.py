@@ -28,7 +28,7 @@ from .Plotter import Plotter
 
 class Visualizer:
 
-    dname = os.getcwd() + os.path.sep + 'Visualizer_files'
+    dname = os.getcwd() + os.path.sep + "Visualizer_files"
 
     @staticmethod
     def xScatter(fname, x, cmd, star=None):
@@ -42,7 +42,7 @@ class Visualizer:
         nInputs = data.getNumInputs()
         validInputs = set(x).issubset(range(1, nInputs + 1))
         if not validInputs:
-            error = 'Visualizer: In function xScatter(), x is out of range for valid inputs.'
+            error = "Visualizer: In function xScatter(), x is out of range for valid inputs."
             Common.showError(error)
             return None
 
@@ -56,27 +56,27 @@ class Visualizer:
                 variableIndices.append(i + 1)
 
         mfiles = []
-        datvar = 'X'
+        datvar = "X"
 
-        if cmd == 'iplot1':
+        if cmd == "iplot1":
             xdat = []
             ydat = []
             ptitle = []
             ylabel = []
 
-            mfileRoot = 'matlabiplt1'
-            mfile = mfileRoot + '.m'
+            mfileRoot = "matlabiplt1"
+            mfile = mfileRoot + ".m"
             for i in x:
                 # write script
                 f = tempfile.SpooledTemporaryFile(mode="wt")
-                if platform.system() == 'Windows':
+                if platform.system() == "Windows":
                     import win32api
 
                     fname = win32api.GetShortPathName(fname)
-                f.write('load %s\n' % fname)
-                f.write('%s\n' % cmd)
-                f.write('%d\n' % (variableIndices.index(i) + 1))  # select input
-                f.write('quit\n')
+                f.write("load %s\n" % fname)
+                f.write("%s\n" % cmd)
+                f.write("%d\n" % (variableIndices.index(i) + 1))  # select input
+                f.write("quit\n")
                 f.seek(0)
 
                 # invoke psuade
@@ -89,12 +89,12 @@ class Visualizer:
 
                 # check output file
                 if os.path.exists(mfile):
-                    suffix = '_x%d.m' % i
+                    suffix = "_x%d.m" % i
                     mfile_ = Visualizer.dname + os.path.sep + mfileRoot + suffix
                     os.rename(mfile, mfile_)
                     mfiles.append(mfile_)
                 else:
-                    error = 'Visualizer: %s does not exist.' % mfile
+                    error = "Visualizer: %s does not exist." % mfile
                     Common.showError(error, out)
                     return None
 
@@ -105,28 +105,28 @@ class Visualizer:
                 ydat.append(y)
                 sampleIndices = list(range(1, len(y) + 1))
                 xdat.append(sampleIndices)
-                ptitle.append('Scatter Plot of %s' % inVarName)
+                ptitle.append("Scatter Plot of %s" % inVarName)
                 ylabel.append(inVarName)
 
             nx = len(x)
-            xlabel = ['Sample Number'] * nx
+            xlabel = ["Sample Number"] * nx
             ylim = None
-            ftitle = '1-Input Scatter Plot'
+            ftitle = "1-Input Scatter Plot"
 
-        elif cmd == 'iplot2':
+        elif cmd == "iplot2":
             if len(x) == 2:
                 x1 = x[0]
                 x2 = x[1]
                 if x1 == x2:
                     error = (
-                        'Visualizer: In function xScatter(), %s requires unique elements in x.'
+                        "Visualizer: In function xScatter(), %s requires unique elements in x."
                         % cmd.upper()
                     )
                     Common.showError(error)
                     return None
             else:
                 error = (
-                    'Visualizer: In function xScatter(), %s expects x to be a list of length 2.'
+                    "Visualizer: In function xScatter(), %s expects x to be a list of length 2."
                     % cmd.upper()
                 )
                 Common.showError(error)
@@ -134,15 +134,15 @@ class Visualizer:
 
             # write script
             f = tempfile.SpooledTemporaryFile(mode="wt")
-            if platform.system() == 'Windows':
+            if platform.system() == "Windows":
                 import win32api
 
                 fname = win32api.GetShortPathName(fname)
-            f.write('load %s\n' % fname)
-            f.write('%s\n' % cmd)
-            f.write('%d\n' % (variableIndices.index(x1) + 1))  # select input
-            f.write('%d\n' % (variableIndices.index(x2) + 1))  # select input
-            f.write('quit\n')
+            f.write("load %s\n" % fname)
+            f.write("%s\n" % cmd)
+            f.write("%d\n" % (variableIndices.index(x1) + 1))  # select input
+            f.write("%d\n" % (variableIndices.index(x2) + 1))  # select input
+            f.write("quit\n")
             f.seek(0)
 
             # invoke psuade
@@ -154,15 +154,15 @@ class Visualizer:
                 return None
 
             # check output file
-            mfileRoot = 'matlabiplt2'
-            mfile = mfileRoot + '.m'
+            mfileRoot = "matlabiplt2"
+            mfile = mfileRoot + ".m"
             if os.path.exists(mfile):
-                suffix = '_x%d_x%d.m' % (x1, x2)
+                suffix = "_x%d_x%d.m" % (x1, x2)
                 mfile_ = Visualizer.dname + os.path.sep + mfileRoot + suffix
                 os.rename(mfile, mfile_)
                 mfiles.append(mfile_)
             else:
-                error = 'Visualizer: %s does not exist.' % mfile
+                error = "Visualizer: %s does not exist." % mfile
                 Common.showError(error, out)
                 return None
 
@@ -172,10 +172,10 @@ class Visualizer:
             ydat = [dat[:, 1]]
             xlabel = inVarNames[x1 - 1]
             ylabel = inVarNames[x2 - 1]
-            ptitle = ['Scatter Plot of %s vs. %s' % (ylabel, xlabel)]
+            ptitle = ["Scatter Plot of %s vs. %s" % (ylabel, xlabel)]
             xlabel = [xlabel]
             ylabel = [ylabel]
-            ftitle = '2-Input Scatter Plot'
+            ftitle = "2-Input Scatter Plot"
 
         ylim = None
         xdat = np.array(xdat)
@@ -199,26 +199,26 @@ class Visualizer:
                 variableIndices.append(i + 1)
 
         # process user arguments
-        if cmd == 'splot':
+        if cmd == "splot":
             validInputs = set(x).issubset(range(1, nInputs + 1))
             if not validInputs:
-                error = 'Visualizer: In function yScatter(), x is out of range for valid inputs.'
+                error = "Visualizer: In function yScatter(), x is out of range for valid inputs."
                 Common.showError(error)
                 return None
-        elif cmd == 'splot2':
+        elif cmd == "splot2":
             if len(x) == 2:
                 x1 = x[0]
                 x2 = x[1]
                 if x1 == x2:
                     error = (
-                        'Visualizer: In function yScatter(), %s requires unique elements in x.'
+                        "Visualizer: In function yScatter(), %s requires unique elements in x."
                         % cmd.upper()
                     )
                     Common.showError(error)
                     return None
             else:
                 error = (
-                    'Visualizer: In function yScatter(), %s expects x to be a list of length 2.'
+                    "Visualizer: In function yScatter(), %s expects x to be a list of length 2."
                     % cmd.upper()
                 )
                 Common.showError(error)
@@ -226,17 +226,17 @@ class Visualizer:
 
         # write script
         f = tempfile.SpooledTemporaryFile(mode="wt")
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             import win32api
 
             fname = win32api.GetShortPathName(fname)
-        f.write('load %s\n' % fname)
-        f.write('%s\n' % cmd)
-        if cmd == 'splot2':
-            f.write('%d\n' % (variableIndices.index(x1) + 1))  # select input
-            f.write('%d\n' % (variableIndices.index(x2) + 1))  # select input
-        f.write('%d\n' % y)  # select output
-        f.write('quit\n')
+        f.write("load %s\n" % fname)
+        f.write("%s\n" % cmd)
+        if cmd == "splot2":
+            f.write("%d\n" % (variableIndices.index(x1) + 1))  # select input
+            f.write("%d\n" % (variableIndices.index(x2) + 1))  # select input
+        f.write("%d\n" % y)  # select output
+        f.write("quit\n")
         f.seek(0)
 
         # invoke psuade
@@ -248,14 +248,14 @@ class Visualizer:
             return None
 
         # check output file
-        outfile = {'splot': 'matlabsp.m', 'splot2': 'matlabsp2.m'}
+        outfile = {"splot": "matlabsp.m", "splot2": "matlabsp2.m"}
         mfile = outfile[cmd]
         if os.path.exists(mfile):
             mfile_ = Visualizer.dname + os.path.sep + mfile
             os.rename(mfile, mfile_)
             mfile = mfile_
         else:
-            error = 'Visualizer: %s does not exist.' % mfile
+            error = "Visualizer: %s does not exist." % mfile
             Common.showError(error, out)
             return None
 
@@ -275,28 +275,28 @@ class Visualizer:
         inVarNames = SampleData.getInputNames(data)
         outVarNames = SampleData.getOutputNames(data)
         outVarName = outVarNames[y - 1]
-        if cmd == 'splot':
+        if cmd == "splot":
             ftitle = '"1-Input to 1-Output" Scatter Plot of %s' % outVarName
             xdat = []
             xlabel = []
             ptitle = []
             for i in x:
-                datvar = 'X%d' % (variableIndices.index(i) + 1)
+                datvar = "X%d" % (variableIndices.index(i) + 1)
                 xdat.append(Plotter.getdata(mfile, datvar))
                 inVarName = inVarNames[i - 1]
                 xlabel.append(inVarName)
-                ptitle.append('%s vs. %s' % (outVarName, inVarName))
+                ptitle.append("%s vs. %s" % (outVarName, inVarName))
             nx = len(x)
             xdat = np.array(xdat)
-            datvar = 'Y'
+            datvar = "Y"
             y = Plotter.getdata(mfile, datvar)
             ylim = [min(y), max(y)]
             ydat = [y] * nx
             ydat = np.array(ydat)
             ylabel = [outVarName] * nx
             Plotter.plotscatter(xdat, ydat, ftitle, ptitle, xlabel, ylabel, ylim)
-        elif cmd == 'splot2':
-            datvar = 'X'
+        elif cmd == "splot2":
+            datvar = "X"
             dat = Plotter.getdata(mfile, datvar)
             xdat = dat[:, 0]
             ydat = dat[:, 1]
@@ -307,7 +307,7 @@ class Visualizer:
             xlabel = inVarNames[x1 - 1]
             ylabel = inVarNames[x2 - 1]
             zlabel = outVarName
-            ptitle = '%s vs. (%s, %s)' % (zlabel, xlabel, ylabel)
+            ptitle = "%s vs. (%s, %s)" % (zlabel, xlabel, ylabel)
             Plotter.plotscatter3d(
                 xdat, ydat, zdat, ftitle, ptitle, xlabel, ylabel, zlabel
             )
@@ -321,7 +321,7 @@ class Visualizer:
 
         if vm.mask.all():  # if all values are masked (i.e., no valid data)
             error = (
-                'Visualizer: Data lies within [%f, %f] (outside of specified range [%f, %f]).'
+                "Visualizer: Data lies within [%f, %f] (outside of specified range [%f, %f])."
                 % (min(v), max(v), vmin, vmax)
             )
             Common.showError(error)
@@ -359,7 +359,7 @@ class Visualizer:
         setMARS = False
         for key in kwargs:
             k = key.lower()
-            if k == 'rsoptions':
+            if k == "rsoptions":
                 rsOptions = kwargs[key]
                 if rsIndex == ResponseSurfaces.LEGENDRE:
                     if rsOptions is None:
@@ -368,7 +368,7 @@ class Visualizer:
                         return None
                     else:
                         if isinstance(rsOptions, dict):
-                            legendreOrder = rsOptions['legendreOrder']
+                            legendreOrder = rsOptions["legendreOrder"]
                         else:
                             legendreOrder = rsOptions
                         if type(legendreOrder) == int:
@@ -388,98 +388,98 @@ class Visualizer:
                         if marsOptions is not None:
                             marsBases, marsInteractions, marsNormOutputs = marsOptions
                             setMARS = True
-            elif k == 'vmin':
+            elif k == "vmin":
                 vmin = kwargs[key]
-            elif k == 'vmax':
+            elif k == "vmax":
                 vmax = kwargs[key]
-            elif k == 'userregressionfile':
+            elif k == "userregressionfile":
                 userRegressionFile = kwargs[key]
 
         # check user arguments
         if rsdim < 1 or rsdim > 3:
-            error = 'Visualizer: showRS() supports only rs1, rs2 and rs3.'
+            error = "Visualizer: showRS() supports only rs1, rs2 and rs3."
             Common.showError(error)
             return None
         nx = len(x)
         if nx != rsdim:
-            error = 'Visualizer: showRS() expects x to be a list of length %d.' % rsdim
+            error = "Visualizer: showRS() expects x to be a list of length %d." % rsdim
             Common.showError(error)
             return None
         uniqx = list(set(x))
         if nx != len(uniqx):
-            error = 'Visualizer: showRS() expects unique elements in x.'
+            error = "Visualizer: showRS() expects unique elements in x."
             Common.showError(error)
             return None
         if vmin >= vmax:
-            error = 'Visualizer: showRS() requires vmin to be less than vmax.'
+            error = "Visualizer: showRS() requires vmin to be less than vmax."
             Common.showError(error)
             return None
 
         # write script
-        cmd = 'rs%d' % rsdim
+        cmd = "rs%d" % rsdim
         f = tempfile.SpooledTemporaryFile(mode="wt")
         if setMARS:
-            f.write('rs_expert\n')
-        if platform.system() == 'Windows':
+            f.write("rs_expert\n")
+        if platform.system() == "Windows":
             import win32api
 
             fnameRS = win32api.GetShortPathName(fnameRS)
-        f.write('load %s\n' % fnameRS)
+        f.write("load %s\n" % fnameRS)
         if nSamples > 4000:
-            f.write('rsmax %d\n' % nSamples)
-        f.write('%s\n' % cmd)
+            f.write("rsmax %d\n" % nSamples)
+        f.write("%s\n" % cmd)
         ngrid = 0
         if rsdim == 2:
             ngrid = 256  # select grid resolution (32-256)
-            f.write('%d\n' % ngrid)
+            f.write("%d\n" % ngrid)
         elif rsdim == 3:
             ngrid = 32  # select grid resolution (16-32)
-            f.write('%d\n' % ngrid)
-        f.write('%d\n' % rsIndex)  # select response surface
+            f.write("%d\n" % ngrid)
+        f.write("%d\n" % rsIndex)  # select response surface
         if rsIndex == ResponseSurfaces.USER and userRegressionFile is not None:
-            f.write('1\n')  # number of basis functions
-            f.write('%s\n' % userRegressionFile)  # surrogate file
-            f.write('y\n')  # apply auxillary arg (output index)
+            f.write("1\n")  # number of basis functions
+            f.write("%s\n" % userRegressionFile)  # surrogate file
+            f.write("y\n")  # apply auxillary arg (output index)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(
                 outName, userRegressionFile, data
             )
-            f.write('%s\n' % outName)  # output name
+            f.write("%s\n" % outName)  # output name
         elif setMARS:
             if rsIndex == ResponseSurfaces.MARSBAG:
-                f.write('0\n')  # mean (0) or median (1) mode
+                f.write("0\n")  # mean (0) or median (1) mode
                 f.write(
-                    '100\n'
+                    "100\n"
                 )  # number of MARS instantiations [range:10-5000, default=100]
                 ### TO DO: revert back to 100 for deployment
-            f.write('%d\n' % marsBases)
-            f.write('%d\n' % marsInteractions)
+            f.write("%d\n" % marsBases)
+            f.write("%d\n" % marsInteractions)
             if rsIndex == ResponseSurfaces.MARS:
-                f.write('%s\n' % marsNormOutputs)
+                f.write("%s\n" % marsNormOutputs)
         nInputs = SampleData.getNumInputs(data)
         if nInputs > rsdim:
             for d in range(0, rsdim):
                 # f.write('%d\n' % (variableIndices.index(x[d]) + 1))   # select input
-                f.write('%d\n' % (variableNames.index(x[d]) + 1))  # select input
-            f.write('y\n')  # set nominal values for other inputs
+                f.write("%d\n" % (variableNames.index(x[d]) + 1))  # select input
+            f.write("y\n")  # set nominal values for other inputs
         elif nInputs == rsdim:
             for d in range(0, rsdim - 1):  # psuade can infer last remaining input
                 # f.write('%d\n' % (variableIndices.index(x[d]) + 1))   # select input
-                f.write('%d\n' % (variableNames.index(x[d]) + 1))  # select input
+                f.write("%d\n" % (variableNames.index(x[d]) + 1))  # select input
         elif nInputs < rsdim:
             error = (
-                'Visualizer: In showRS(), %s cannot be performed on a %d-input system.'
+                "Visualizer: In showRS(), %s cannot be performed on a %d-input system."
                 % (cmd.upper(), nInputs)
             )
             Common.showError(error)
             return None
-        f.write('%d\n' % y)  # select output
+        f.write("%d\n" % y)  # select output
         if rsIndex == ResponseSurfaces.LEGENDRE:
-            f.write('%d\n' % order)
-        f.write('n\n')  # select no for selecting lower threshold
-        f.write('n\n')  # select no for selecting upper threshold
-        f.write('quit\n')
+            f.write("%d\n" % order)
+        f.write("n\n")  # select no for selecting lower threshold
+        f.write("n\n")  # select no for selecting upper threshold
+        f.write("quit\n")
         f.seek(0)
 
         # print the psuade script to screen
@@ -496,13 +496,13 @@ class Visualizer:
             return None
 
         # check output file
-        mfile = 'matlab' + cmd + '.m'
+        mfile = "matlab" + cmd + ".m"
         if os.path.exists(mfile):
             mfile_ = Visualizer.dname + os.path.sep + mfile
             os.rename(mfile, mfile_)
             mfile = mfile_
         else:
-            error = 'Visualizer: %s does not exist.' % mfile
+            error = "Visualizer: %s does not exist." % mfile
             Common.showError(error, out)
             return None
 
@@ -517,8 +517,8 @@ class Visualizer:
         outVarNames = data.getOutputNames()
         outVarName = outVarNames[y - 1]
         if rsdim == 1:
-            xdat = Plotter.getdata(mfile, 'X')
-            ydat = Plotter.getdata(mfile, 'A')
+            xdat = Plotter.getdata(mfile, "X")
+            ydat = Plotter.getdata(mfile, "A")
             ydatm = Visualizer.maskdata(ydat, vmin, vmax)
             if ydatm is None:
                 error = (
@@ -541,10 +541,10 @@ class Visualizer:
             )
             Plotter.plotline(xdat, ydatm, ftitle, ptitle, xlabel, ylabel)
         elif rsdim == 2:
-            xdat = Plotter.getdata(mfile, 'x')
-            ydat = Plotter.getdata(mfile, 'y')
+            xdat = Plotter.getdata(mfile, "x")
+            ydat = Plotter.getdata(mfile, "y")
             xmesh, ymesh = np.meshgrid(xdat, ydat)
-            zdat = Plotter.getdata(mfile, 'A')
+            zdat = Plotter.getdata(mfile, "A")
             zdatm = Visualizer.maskdata(zdat, vmin, vmax)
             if zdatm is None:
                 error = (
@@ -555,7 +555,7 @@ class Visualizer:
                 return None
             L = len(zdat)
             M = int(math.sqrt(L))
-            zdatm = np.reshape(zdatm, [M, M], order='F')
+            zdatm = np.reshape(zdatm, [M, M], order="F")
             # xlabel = inVarNames[x[0] - 1]
             # ylabel = inVarNames[x[1] - 1]
             xlabel = x[0]
@@ -580,10 +580,10 @@ class Visualizer:
             zdat = []
             vdat = []
             for g in range(1, ngrid + 1):
-                xdat.append(Plotter.getdata(mfile, 'X\(:,:,%d\)' % g))
-                ydat.append(Plotter.getdata(mfile, 'Y\(:,:,%d\)' % g))
-                zdat.append(Plotter.getdata(mfile, 'Z\(:,:,%d\)' % g))
-                vdat.append(Plotter.getdata(mfile, 'V\(:,:,%d\)' % g))
+                xdat.append(Plotter.getdata(mfile, "X\(:,:,%d\)" % g))
+                ydat.append(Plotter.getdata(mfile, "Y\(:,:,%d\)" % g))
+                zdat.append(Plotter.getdata(mfile, "Z\(:,:,%d\)" % g))
+                vdat.append(Plotter.getdata(mfile, "V\(:,:,%d\)" % g))
             vdatm = Visualizer.maskdata(vdat, vmin, vmax)
             if vdatm is None:
                 error = (

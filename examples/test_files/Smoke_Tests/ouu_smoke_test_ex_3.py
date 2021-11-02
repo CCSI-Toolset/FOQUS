@@ -19,9 +19,9 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from foqus_lib.framework.ouu.OUU import OUU
 
 MAX_RUN_TIME = 6000000  # Maximum time to let script run in ms.
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:  # file to write test results to
-    f.write('Test Results\n')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:  # file to write test results to
+    f.write("Test Results\n")
 timers = {}  # mainly put all timers in a dic so I can easily stop them all
 
 
@@ -56,7 +56,7 @@ def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'Error' in str(w.windowTitle()):
+        if "Error" in str(w.windowTitle()):
             w.close()
             global errorCount
             global errorTitle
@@ -93,8 +93,8 @@ def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if a, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'FOQUS UQ developers' in str(w.text()):
-            getButton(w, 'OK').click()
+        if "FOQUS UQ developers" in str(w.text()):
+            getButton(w, "OK").click()
             global errorCount
             global errorTitle
             global errorFile
@@ -130,16 +130,16 @@ def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'OK').click()
-        timers['msg_okay'].stop()
+        getButton(w, "OK").click()
+        timers["msg_okay"].stop()
 
 
 def msg_no(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click No when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'No').click()
-        timers['msg_no'].stop()
+        getButton(w, "No").click()
+        timers["msg_no"].stop()
 
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
@@ -169,7 +169,7 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
         if not timers[timer].isActive():
             return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
-    with open(tf, 'a') as f:  # file to write test results to
+    with open(tf, "a") as f:  # file to write test results to
         f.write("ERROR: timer {} didn't stop in alloted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
@@ -177,12 +177,12 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script if too long
-addTimer('msg_okay', msg_okay)  # click OK on mgsbox
-addTimer('msg_no', msg_no)  # click No on msgbox
-addTimer('Error_okay', Error_okay)  # click okay on uq ensemble dialog
-addTimer('Error_okay_text', Error_okay_text)  # click okay on uq ensemble dialog
-timers['time_out'].start(MAX_RUN_TIME)  # start max script time timer
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script if too long
+addTimer("msg_okay", msg_okay)  # click OK on mgsbox
+addTimer("msg_no", msg_no)  # click No on msgbox
+addTimer("Error_okay", Error_okay)  # click okay on uq ensemble dialog
+addTimer("Error_okay_text", Error_okay_text)  # click okay on uq ensemble dialog
+timers["time_out"].start(MAX_RUN_TIME)  # start max script time timer
 
 try:  # Catch any exception and stop all timers before finishing up
     while 1:  # Loop and break and break as convenient way to jump to end
@@ -204,8 +204,8 @@ try:  # Catch any exception and stop all timers before finishing up
             break
 
         ## -----------------Start Error Monitoring----------------------------
-        timers['Error_okay'].start(1000)
-        timers['Error_okay_text'].start(1000)
+        timers["Error_okay"].start(1000)
+        timers["Error_okay_text"].start(1000)
         ## -------------------------------------------------------------------
 
         global errorTitle
@@ -287,7 +287,7 @@ try:  # Catch any exception and stop all timers before finishing up
         MainWin.ouuSetupFrame.tabs.setCurrentIndex(3)
         MainWin.ouuSetupFrame.run_button.click()
         errNum = errorCount
-        timers['msg_okay'].start(1000)
+        timers["msg_okay"].start(1000)
         while MainWin.ouuSetupFrame.OUUobj.thread.isRunning():  # while is running
             if not go():
                 MainWin.ouuSetupFrame.OUUobj.thread.terminate()
@@ -298,12 +298,12 @@ try:  # Catch any exception and stop all timers before finishing up
             if errorCount > errNum:
                 break
         time.sleep(1)
-        timers['msg_okay'].stop()
+        timers["msg_okay"].stop()
 
         ## -----------------Stop Error Monitoring----------------------------
-        if not timerWait('Error_okay'):
+        if not timerWait("Error_okay"):
             break
-        if not timerWait('Error_okay_text'):
+        if not timerWait("Error_okay_text"):
             break
         ## -------------------------------------------------------------------
 
@@ -314,13 +314,13 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('ERROR: Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("ERROR: Exception: {0}\n".format(e))
 timersStop()  # make sure all timers are stopped
 # print("after exception")
 
 # Try to close FOQUS
-timers['msg_no'].start(1000)
+timers["msg_no"].start(1000)
 MainWin.close()
-timerWait('msg_no')
+timerWait("msg_no")
 print("Exited Code: OUU Test 3")

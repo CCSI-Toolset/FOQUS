@@ -18,10 +18,10 @@ from foqus_lib.framework.uq.Model import *
 
 
 def nodeToUQModel(name, node):
-    '''
+    """
     This function converts a node model to a UQ model for UQ analysis.  This is temporary solution.
     The extra python calculations that are include in a node are not converted, just the simulation.
-    '''
+    """
     uqModel = Model()
     uqModel.setName(name)
     uqModel.setRunType(Model.GATEWAY)  # Basically run through John's stuff
@@ -43,7 +43,7 @@ def nodeToUQModel(name, node):
         dist.append(node.inVars[key].dist)
         default.append(node.inVars[key].default)
     # Set input values
-    uqModel.setInputNames(['%s.%s' % (name, key) for key in keys])
+    uqModel.setInputNames(["%s.%s" % (name, key) for key in keys])
     uqModel.setInputTypes(typ)
     uqModel.setInputMins(min)
     uqModel.setInputMaxs(max)
@@ -51,15 +51,15 @@ def nodeToUQModel(name, node):
     uqModel.setInputDefaults(default)
     # Set output names and set all outputs as selected
     keys = list(node.outVars.keys())
-    uqModel.setOutputNames(['%s.%s' % (name, key) for key in keys])
+    uqModel.setOutputNames(["%s.%s" % (name, key) for key in keys])
     uqModel.setSelectedOutputs(list(range(len(keys))))
     return uqModel
 
 
 def printUQModel(self):
-    '''
+    """
     Print the UQ model, to make sure things are working as expected.
-    '''
+    """
     print("Model Name:")
     print(self.getName())
     print("\nRun File:")

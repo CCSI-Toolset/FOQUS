@@ -56,7 +56,7 @@ class RSCombo1(QComboBox):
         nInputs = data.getNumInputs()
         self.combo2 = combo2
 
-        rs = ['Polynomial ->', 'MARS ->']
+        rs = ["Polynomial ->", "MARS ->"]
         # rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.SVM))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.GP))
         rs.append(ResponseSurfaces.getFullName(ResponseSurfaces.KRIGING))
@@ -89,21 +89,21 @@ class RSCombo1(QComboBox):
             disable.append(i)
             order = 1
             nMinSamples = ResponseSurfaces.getPolynomialMinSampleSize(nInputs, order)
-            items[i] = '%s (Requires at least %d samples)' % (rs[i], nMinSamples)
+            items[i] = "%s (Requires at least %d samples)" % (rs[i], nMinSamples)
         # ... disable non-polynomial RS if nSamples < 100 or not installed
         currentTime = time.time()
         if RSCombo1.foundLibs == None or currentTime - RSCombo1.checkTime > 10:
             RSCombo1.foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
             RSCombo1.checkTime = currentTime
-        foundMARS = RSCombo1.foundLibs.get('MARS', False)
+        foundMARS = RSCombo1.foundLibs.get("MARS", False)
         # foundSVM = RSCombo1.foundLibs.get('SVM', False)
         i = mars
         if not foundMARS:
             disable.append(i)
-            items[i] = '%s (Not installed)' % rs[i][:-3]
+            items[i] = "%s (Not installed)" % rs[i][:-3]
         elif nSamples < 50:
             disable.append(i)
-            items[i] = '%s (Requires at least 50 samples)' % rs[i][:-3]
+            items[i] = "%s (Requires at least 50 samples)" % rs[i][:-3]
         # i = svm
         # if not foundSVM:
         #     disable.append(i)
@@ -115,7 +115,7 @@ class RSCombo1(QComboBox):
         i = krig
         if nSamples < 10:
             disable.append(i)
-            items[i] = '%s (Requires at least 10 samples)' % rs[i]
+            items[i] = "%s (Requires at least 10 samples)" % rs[i]
         if removeDisabled:
             disable.reverse()
             for i in disable:
@@ -160,11 +160,11 @@ class RSCombo1(QComboBox):
 
     def change(self):
         if self.combo2 == None:
-            raise RuntimeError('Not initialized properly')
+            raise RuntimeError("Not initialized properly")
         rs = self.currentText()
-        if rs.startswith('Polynomial'):
+        if rs.startswith("Polynomial"):
             self.combo2.showPolynomial()
-        elif rs.startswith('MARS'):
+        elif rs.startswith("MARS"):
             self.combo2.showMars()
         elif (
             rs == ResponseSurfaces.getFullName(ResponseSurfaces.USER)
@@ -175,7 +175,7 @@ class RSCombo1(QComboBox):
             self.combo2.showNothing()
 
         # show Mars components
-        showMarsWidgets = rs.startswith('MARS')
+        showMarsWidgets = rs.startswith("MARS")
         for widget in [
             self.marsBasisSpin,
             self.marsBasisCaption,
@@ -216,14 +216,14 @@ class RSCombo2(QComboBox):
         if self.receivers(self.currentIndexChanged[int]) > 0 and self.isSetFileSignal:
             self.currentIndexChanged[int].disconnect(self.setFile)
         if self.data == None:
-            raise RuntimeError('Not initialized properly')
+            raise RuntimeError("Not initialized properly")
         self.clear()
         enable = self.checkPolynomialRS()
         for poly in enable:
             s = ResponseSurfaces.getFullName(poly)
             if self.useShortNames:
-                s = s.replace(' Regression', '')
-                s = s.replace(' Polynomial', '')
+                s = s.replace(" Regression", "")
+                s = s.replace(" Polynomial", "")
             self.addItem(s)
         self.setCurrentIndex(0)
         self.setEnabled(True)
@@ -262,7 +262,7 @@ class RSCombo2(QComboBox):
         self.clear()
         self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARS))
         if self.useShortNames:
-            self.addItem('With Bagging')
+            self.addItem("With Bagging")
         else:
             self.addItem(ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG))
         self.setEnabled(True)
@@ -280,9 +280,9 @@ class RSCombo2(QComboBox):
 
     def setFile(self):
         text = self.currentText()
-        if text == 'Browse...':
+        if text == "Browse...":
             fname, selectedFilter = QFileDialog.getOpenFileName(
-                self, 'Browse to sample file:', '', 'Python files (*.py)'
+                self, "Browse to sample file:", "", "Python files (*.py)"
             )
             if len(fname) == 0:  # Cancelled
                 self.setCurrentIndex(0)
@@ -301,9 +301,9 @@ class RSCombo2(QComboBox):
     def refresh(self):
         if self.fileMode:
             index = self.currentIndex()
-            items = ['Select File']
+            items = ["Select File"]
             items.extend([os.path.basename(f) for f in self.userFiles])
-            items.append('Browse...')
+            items.append("Browse...")
             self.clear()
             self.addItems(items)
             self.setCurrentIndex(index)
@@ -324,7 +324,7 @@ class RSCombo2(QComboBox):
     def change(self):
         # self.legendreSpin.setValue(1)
         rs = self.currentText()
-        self.enableLegendre(rs.startswith('Legendre'))
+        self.enableLegendre(rs.startswith("Legendre"))
 
     def enableLegendre(self, enable):
         if self.legendreCaption is not None:
@@ -380,14 +380,14 @@ def lookupRS(combo1, combo2):
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.KNN))
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.RBF))
     otherRS.append(ResponseSurfaces.getFullName(ResponseSurfaces.USER))
-    if rs1.startswith('Polynomial') or rs1.startswith('MARS'):
-        if 'Legendre' in rs2:
+    if rs1.startswith("Polynomial") or rs1.startswith("MARS"):
+        if "Legendre" in rs2:
             rs = ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE)
-        elif rs2.endswith('Bagging'):
+        elif rs2.endswith("Bagging"):
             rs = ResponseSurfaces.getPsuadeName(ResponseSurfaces.MARSBAG)
         else:
             if rs2 not in ResponseSurfaces.fullNames:
-                rs2 += ' Regression'
+                rs2 += " Regression"
             rs = ResponseSurfaces.getPsuadeName(ResponseSurfaces.getEnumValue(rs2))
     elif rs1 in otherRS:
         rs = ResponseSurfaces.getPsuadeName(ResponseSurfaces.getEnumValue(rs1))

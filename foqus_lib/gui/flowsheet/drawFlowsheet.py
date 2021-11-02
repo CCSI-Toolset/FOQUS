@@ -41,9 +41,9 @@ import types
 
 
 class fsScene(QGraphicsScene):
-    '''
+    """
     Class for viewing and editing a flowsheet.
-    '''
+    """
 
     # Mouse Modes
     MODE_SELECT = 1
@@ -55,9 +55,9 @@ class fsScene(QGraphicsScene):
     ITEM_EDGE = 2
 
     def __init__(self, parent=None):
-        '''
+        """
         Initialize the flowsheet display
-        '''
+        """
         super(fsScene, self).__init__(parent)
         # Location of mouse events and whether the mouse button is down
         self.mouseDown = False
@@ -192,9 +192,9 @@ class fsScene(QGraphicsScene):
         self.whiteBrush.setStyle(self.fpWB)
 
     def drawGrid(self):
-        '''
+        """
         Draw the grid for the drawing area
-        '''
+        """
         # Add vertical minor grids
         path = QPainterPath()
         minLoc = self.xMinGrid + self.minorGrid
@@ -227,9 +227,9 @@ class fsScene(QGraphicsScene):
         self.addPath(path, self.majorGridPen)
 
     def addTextCenteredOn(self, x, y, text):
-        '''
+        """
         Add text vertically and horizontally centered on (x, y)
-        '''
+        """
         text = self.addText(text, self.font)
         text.setPos(
             x - text.boundingRect().width() / 2.0,
@@ -237,7 +237,7 @@ class fsScene(QGraphicsScene):
         )
 
     def drawNode(self, x, y, nodeName, nodeType):
-        '''
+        """
         Draw a node centered at x,y.  Text lines are centered
         under the node for the node name and node type
         --Args--
@@ -245,7 +245,7 @@ class fsScene(QGraphicsScene):
         y: y coordinate of node
         nodeName: text for the first line under the node
         nodeType: text for the second line under the node
-        '''
+        """
         # draw a square centered on x,y
         path = QPainterPath()
         path.addRect(
@@ -270,7 +270,7 @@ class fsScene(QGraphicsScene):
         self.addTextCenteredOn(x, y + self.nodeSize / 2 + self.fontSize + 16, nodeType)
 
     def drawEdge(self, x1, y1, x2, y2, index, curve, tear=False):
-        '''
+        """
         Draw an edge from x1, y1 to x2, y2.  Edges connect two nodes
         --Args--
         index: the edge index
@@ -278,7 +278,7 @@ class fsScene(QGraphicsScene):
                curved edge (can be positive or negitive.  Used to
                keep edges from overlapping.
         tear: if true draw in tear edge style
-        '''
+        """
         # determine if edge conntects a node to itself.
         if abs(x1 - x2) < 0.01 and abs(y1 - y2) < 0.01:
             path = QPainterPath()
@@ -347,18 +347,18 @@ class fsScene(QGraphicsScene):
             gi.setData(2, "edge")
 
     def nearestGrid(self, x, y):
-        '''
+        """
         Find the nearest minor grid to a point.
-        '''
+        """
         xg = round(x / self.minorGrid) * self.minorGrid
         yg = round(y / self.minorGrid) * self.minorGrid
         return xg, yg
 
     def deleteSelected(self):
-        '''
+        """
         Delete the selected nodes and edges then redraw
         the flowsheet
-        '''
+        """
         self.p.dat.flowsheet.deleteEdges(self.selectedEdges)
         self.selectedEdges = []
         self.p.dat.flowsheet.deleteNodes(self.selectedNodes)
@@ -367,9 +367,9 @@ class fsScene(QGraphicsScene):
         self.p.createScene()
 
     def mouseMoveEvent(self, evnt):
-        '''
+        """
         If the mouse button is held down move selected nodes
-        '''
+        """
         # if mouse button is down check if you want to move nodes
         if not evnt.buttons() == QtCore.Qt.LeftButton:
             return
@@ -389,10 +389,10 @@ class fsScene(QGraphicsScene):
     def mousePressEvent(
         self, evnt, dbg_x=None, dbg_y=None, dbg_mod=None, dbg_name=None
     ):
-        '''
+        """
         The mouse was clicked on the flowsheet editor window.  Check
         what was selected on the mouse mode and do something.
-        '''
+        """
         # Get the location of the mouse event
         if evnt is None:
             mod = dbg_mod
@@ -443,13 +443,13 @@ class fsScene(QGraphicsScene):
             else:
                 ok = True
                 name = dbg_name
-            if ok and name != '':
+            if ok and name != "":
                 if name in self.p.dat.flowsheet.nodes:
                     QMessageBox.warning(
                         self.p, "Invalid Name", "That node name is already being used."
                     )
                     return
-                if ' ' in name:
+                if " " in name:
                     QMessageBox.warning(
                         self.p,
                         "Invalid Name",
@@ -487,11 +487,11 @@ class fsScene(QGraphicsScene):
 
 
 class drawFlowsheet(QGraphicsView):
-    '''
+    """
     This is the widget for viewing a flowsheet the actual drawing
     and event handing is done by the fsSecne object contained in
     drawFlowsheet object
-    '''
+    """
 
     nodeSelected = QtCore.pyqtSignal([str])
     edgeSelected = QtCore.pyqtSignal([int])
@@ -501,9 +501,9 @@ class drawFlowsheet(QGraphicsView):
     updateEdgeEdit = QtCore.pyqtSignal()
 
     def __init__(self, dat, parent=None):
-        '''
+        """
         Initialize drawFlowsheet widget
-        '''
+        """
         # call __init__ form base class
         super(drawFlowsheet, self).__init__(parent)
         # create and set scene object
@@ -516,9 +516,9 @@ class drawFlowsheet(QGraphicsView):
         self.createScene()
 
     def createScene(self):
-        '''
+        """
         Draw the current flowsheet state
-        '''
+        """
         self.scene().clear()
         self.scene().drawGrid()
         # draw nodes
@@ -544,64 +544,64 @@ class drawFlowsheet(QGraphicsView):
         self.noneSelectedEmit()
 
     def updateEdgeEditEmit(self):
-        '''
+        """
         Send a signal to update the edge editor.
-        '''
+        """
         self.updateEdgeEdit.emit()
 
     def nodeSelectedEmit(self, node):
-        '''
+        """
         Send a signal the says and node was selected, and the name
         of the last node selected.  You can select multiple nodes
         but the editor is only displayed for the last on selected
-        '''
+        """
         self.nodeSelected.emit(node)
 
     def edgeSelectedEmit(self, edge):
-        '''
+        """
         Send a signal that an edge was seslected.  You can select
         multiple edges, but only the last on selected is used to
         open the edge editor
-        '''
+        """
         self.edgeSelected.emit(edge)
 
     def noneSelectedEmit(self):
-        '''
+        """
         Send a signal that nothing is selected, used to close node
         or edge editors
-        '''
+        """
         self.noneSelected.emit()
 
     def center(self):
-        '''
+        """
         Set the center on the view to the senter of the flowsheet
         The center of the flowsheet is determined from extreme
         locations of the nodes.
-        '''
+        """
         cp = self.dat.flowsheet.getCenter()
         self.centerOn(cp[0], cp[1])
 
     def setModeSelect(self):
-        '''
+        """
         Set the mouse mode to selection
-        '''
+        """
         self.scene().mode = fsScene.MODE_SELECT
 
     def setModeAddNode(self):
-        '''
+        """
         Set the mouse mode to add node
-        '''
+        """
         self.scene().mode = fsScene.MODE_ADDNODE
 
     def setModeAddEdge(self):
-        '''
+        """
         Set the mouse mode to add edge
-        '''
+        """
         self.scene().mode = fsScene.MODE_ADDEDGE
 
     def deleteSelected(self):
-        '''
+        """
         Delete selected nodes and edges, also deletes any edges
         connected to a deleted node.
-        '''
+        """
         self.scene().deleteSelected()

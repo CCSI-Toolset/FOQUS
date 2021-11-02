@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-'''
+"""
     Distribution class
 
     ***** Here are all the static methods dealing with the enum value ****
@@ -51,7 +51,7 @@
     setParameterValues(value1, value2 = None):
         Sets the values of the parameters.  Calling with just one parameter
         sets the first parameter and makes the second None.
-'''
+"""
 
 
 import numbers
@@ -70,37 +70,37 @@ class Distribution:
         SAMPLE,
     ) = list(range(9))
     fullNames = (
-        'Uniform',
-        'Normal',
-        'Lognormal',
-        'Triangle',
-        'Gamma',
-        'Beta',
-        'Exponential',
-        'Weibull',
-        'Sample',
+        "Uniform",
+        "Normal",
+        "Lognormal",
+        "Triangle",
+        "Gamma",
+        "Beta",
+        "Exponential",
+        "Weibull",
+        "Sample",
     )
-    psuadeNames = ('U', 'N', 'L', 'T', 'G', 'B', 'E', 'W', 'S')
+    psuadeNames = ("U", "N", "L", "T", "G", "B", "E", "W", "S")
     firstParamNames = (
         None,
-        'Mean',
-        'Mean',
-        'Mode',
-        'Alpha',
-        'Alpha',
-        'Lambda',
-        'Lambda',
+        "Mean",
+        "Mean",
+        "Mode",
+        "Alpha",
+        "Alpha",
+        "Lambda",
+        "Lambda",
         None,
     )
     secondParamNames = (
         None,
-        'Std Dev',
-        'Std Dev',
-        'Width',
-        'Beta',
-        'Beta',
+        "Std Dev",
+        "Std Dev",
+        "Width",
+        "Beta",
+        "Beta",
         None,
-        'k',
+        "k",
         None,
     )
 
@@ -139,23 +139,23 @@ class Distribution:
     def __repr__(self):  # Command prompt behavior
         returnString = "<" + self.getPsuadeName(self.type) + " Distribution instance"
         if self.firstParamValue is not None:
-            returnString = returnString + ' ' + str(self.firstParamValue)
+            returnString = returnString + " " + str(self.firstParamValue)
         if self.secondParamValue is not None:
-            returnString = returnString + ' ' + str(self.secondParamValue)
-        returnString = returnString + '>'
+            returnString = returnString + " " + str(self.secondParamValue)
+        returnString = returnString + ">"
         return returnString
 
     def saveDict(self):
         sd = dict()
-        sd['type'] = self.getPsuadeName(self.type)
-        sd['firstParamValue'] = self.firstParamValue
-        sd['secondParamValue'] = self.secondParamValue
+        sd["type"] = self.getPsuadeName(self.type)
+        sd["firstParamValue"] = self.firstParamValue
+        sd["secondParamValue"] = self.secondParamValue
         return sd
 
     def loadDict(self, sd):
-        self.setDistributionType(sd.get('type', 'Uniform'))
-        self.firstParamValue = sd.get('firstParamValue', None)
-        self.secondParamValue = sd.get('secondParamValue', None)
+        self.setDistributionType(sd.get("type", "Uniform"))
+        self.firstParamValue = sd.get("firstParamValue", None)
+        self.secondParamValue = sd.get("secondParamValue", None)
 
     def setDistributionType(self, distType):
         if isinstance(distType, numbers.Number):

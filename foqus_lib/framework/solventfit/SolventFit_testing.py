@@ -39,11 +39,11 @@ from foqus_lib.framework.uq.Common import *
 
 class SolventFit:
 
-    dname = os.getcwd() + os.path.sep + 'SolventFit_files'
+    dname = os.getcwd() + os.path.sep + "SolventFit_files"
 
     @staticmethod
     def getVarNames(datfile):
-        f = open(datfile, 'r')
+        f = open(datfile, "r")
         reader = csv.reader(f)
         varNames = next(reader)
         f.close()
@@ -60,8 +60,8 @@ class SolventFit:
         modelfile,  # RDS file where trained model will be saved
         expfile,  # experiment data
         priorsfile,  # file describing parametric form of input PDFs
-        initsfile='NULL',  # file of initial values, not avaailable in this version.
-        restartfile='NULL',  # restart file name to restart from output, not available in this version
+        initsfile="NULL",  # file of initial values, not avaailable in this version.
+        restartfile="NULL",  # restart file name to restart from output, not available in this version
         disc=True,  # include discrepancy
         writepost=True,  # write posterior sample
         writedisc=True,  # write discrepancy sample
@@ -70,16 +70,16 @@ class SolventFit:
         disc_params=None,
         pt_mass=False,
         incl_em=True,
-        model_func='NULL',
+        model_func="NULL",
     ):  # last three parameters are not available in this version, but are needed in R code
 
         if emul_params is None:
-            emul_params = {'bte': '[0,1000,1]', 'nterms': '20', 'order': '2'}
+            emul_params = {"bte": "[0,1000,1]", "nterms": "20", "order": "2"}
 
         if calib_params is None:
-            calib_params = {'bte': '[0,2000,1]'}
+            calib_params = {"bte": "[0,2000,1]"}
 
-        booldict = {True: '1', False: '0'}
+        booldict = {True: "1", False: "0"}
         disc = booldict[disc]
         writepost = booldict[writepost]
         writedisc = booldict[writedisc]
@@ -87,9 +87,9 @@ class SolventFit:
         incl_em = booldict[incl_em]  # capability not available
 
         if disc_params is None:
-            disc_params = {'nterms': '20', 'order': '2'}
+            disc_params = {"nterms": "20", "order": "2"}
 
-        files = ['solvfit_calibfit.R', 'solvfit_emulfit.R']
+        files = ["solvfit_calibfit.R", "solvfit_emulfit.R"]
         for f in files:
             mydir = os.path.dirname(__file__)
             src = os.path.join(mydir, f)
@@ -99,7 +99,7 @@ class SolventFit:
 
         commandItems = [
             rpath,
-            'solvfit_calibfit.R',
+            "solvfit_calibfit.R",
             str(nx_design),
             str(nx_var),
             str(nx_out),
@@ -112,19 +112,19 @@ class SolventFit:
             disc,
             writepost,
             writedisc,
-            emul_params['bte'],
-            emul_params['nterms'],
-            emul_params['order'],
-            calib_params['bte'],
-            disc_params['nterms'],
-            disc_params['order'],
+            emul_params["bte"],
+            emul_params["nterms"],
+            emul_params["order"],
+            calib_params["bte"],
+            disc_params["nterms"],
+            disc_params["order"],
             pt_mass,
             incl_em,
             model_func,
             restartfile,
         ]
         commandItems = list(map(str, commandItems))
-        Common.runCommandInWindow(' '.join(commandItems), 'solventfit_log')
+        Common.runCommandInWindow(" ".join(commandItems), "solventfit_log")
 
         # p = subprocess.Popen([rpath, 'solvfit_calibfit.R',
         #                       str(nx_design), str(nx_var), xdatfile, ydatfile, modelfile,
@@ -156,15 +156,15 @@ class SolventFit:
 
 
 rdsfile = SolventFit.calibfit(
-    'Rscript',
+    "Rscript",
     1,
     3,
     3,
-    'example2/xdat.csv',
-    'example2/ydatmult.csv',
-    'example2/solvfit_calibrator5_test.rds',
-    'example2/expdatmult.csv',
-    priorsfile='example2/morrispriorsmultfile.txt',
+    "example2/xdat.csv",
+    "example2/ydatmult.csv",
+    "example2/solvfit_calibrator5_test.rds",
+    "example2/expdatmult.csv",
+    priorsfile="example2/morrispriorsmultfile.txt",
     disc=True,
 )
 

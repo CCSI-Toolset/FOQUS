@@ -41,7 +41,7 @@ _InferenceDialogUI, _InferenceDialog = uic.loadUiType(
 
 
 class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
-    format = '%.5f'  # numeric format for table entries in UQ Toolbox
+    format = "%.5f"  # numeric format for table entries in UQ Toolbox
 
     def __init__(self, data, wizardMode=False, userRegressionFile=None, parent=None):
         super(InferenceDialog, self).__init__(parent)
@@ -52,12 +52,12 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         self.data = data
         self.wizardMode = wizardMode
         self.userRegressionFile = userRegressionFile
-        self.fileDir = ''
+        self.fileDir = ""
 
         self.obsTableValues = {}
         self.obsTableDefaultValues = []
 
-        self.setWindowTitle('Bayesian Inference of Ensemble %s' % data.getModelName())
+        self.setWindowTitle("Bayesian Inference of Ensemble %s" % data.getModelName())
 
         # Hide items in wizard mode and expert mode
         if wizardMode:
@@ -74,7 +74,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             self.saveInstruction.hide()
             self.inferInstruction.hide()
             self.replotInstruction.hide()
-            self.numExperiments_static.setText('Number of experiments:')
+            self.numExperiments_static.setText("Number of experiments:")
 
         self.outputColumnHeaders = [
             self.output_table.horizontalHeaderItem(i).text()
@@ -94,7 +94,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         # activate save components
         ### TO DO: change initFolder to not delete post sample files OR save somewhere else
         sampleFile = Common.getLocalFileName(
-            os.getcwd(), data.getModelName().split()[0], '.inputPostSample'
+            os.getcwd(), data.getModelName().split()[0], ".inputPostSample"
         )
         self.infSave_edit.setText(sampleFile)
         self.infSave_chkbox.setEnabled(True)
@@ -106,10 +106,10 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         self.initPriorTable()
         self.inputPrior_table.setEnabled(True)
         # self.refreshOutputTable()
-        self.outputCol_index = {'obs': 0, 'name': 1, 'rs1': 2, 'rs2': 3, 'legendre': 4}
+        self.outputCol_index = {"obs": 0, "name": 1, "rs1": 2, "rs2": 3, "legendre": 4}
         if not self.wizardMode:
-            self.outputCol_index['marsbasis'] = 5
-            self.outputCol_index['marsinteraction'] = 6
+            self.outputCol_index["marsbasis"] = 5
+            self.outputCol_index["marsinteraction"] = 6
         self.refreshOutputTable()
         self.inputPrior_table.setSolventFitMode(False)
         self.initObsTable()
@@ -172,7 +172,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
     def infBrowse(self):
         fname = self.infSave_edit.text()
         fname, selectedFilter = QFileDialog.getSaveFileName(
-            self, 'Indicate file to save posterior input samples', fname
+            self, "Indicate file to save posterior input samples", fname
         )
         if len(fname) > 0:  # if a file was indicated during browse
             self.infSave_edit.setText(fname)
@@ -196,7 +196,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
     def setDiscrepancyFile(self):
         fname = self.discrepancySave_edit.text()
         fname, selectedFilter = QFileDialog.getSaveFileName(
-            self, 'Indicate file to save posterior input samples', fname
+            self, "Indicate file to save posterior input samples", fname
         )
         if len(fname) > 0:  # if a file was indicated during browse
             self.discrepancySave_edit.setText(fname)
@@ -235,19 +235,19 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             mask = ~QtCore.Qt.ItemIsEnabled
             item.setFlags(flags & mask)
             item.setForeground(Qt.black)
-            self.output_table.setItem(i, self.outputCol_index['name'], item)
+            self.output_table.setItem(i, self.outputCol_index["name"], item)
             # if output takes on one value, then disable that output from inference
             if sigma > 0:
                 # add checkbox
-                chkbox = self.output_table.cellWidget(i, self.outputCol_index['obs'])
+                chkbox = self.output_table.cellWidget(i, self.outputCol_index["obs"])
                 if chkbox is None:
-                    chkbox = QCheckBox('', self)
+                    chkbox = QCheckBox("", self)
                     chkbox.setChecked(False)
                     chkbox.setEnabled(True)
                     chkbox.toggled.connect(self.refreshObsTable)
                     chkbox.toggled.connect(self.activateInfButton)
                     self.output_table.setCellWidget(
-                        i, self.outputCol_index['obs'], chkbox
+                        i, self.outputCol_index["obs"], chkbox
                     )
 
                 # add combo boxes for RS1 and rs2 and Legendre spinbox
@@ -256,10 +256,10 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                 legendreSpin = RSCombos.LegendreSpinBox(self)
                 marsBasisSpin = None
                 marsInteractionSpin = None
-                if 'marsbasis' in self.outputCol_index:
+                if "marsbasis" in self.outputCol_index:
                     marsBasisSpin = RSCombos.MarsBasisSpinBox(self)
                     marsBasisSpin.init(data)
-                if 'marsinteraction' in self.outputCol_index:
+                if "marsinteraction" in self.outputCol_index:
                     marsInteractionSpin = RSCombos.MarsDegreeSpinBox(self)
                     marsInteractionSpin.init(data)
 
@@ -274,66 +274,66 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                     marsDegreeSpin=marsInteractionSpin,
                 )
 
-                combo1.setProperty('row', i)
-                combo2.setProperty('row', i)
+                combo1.setProperty("row", i)
+                combo2.setProperty("row", i)
 
                 combo1.currentIndexChanged[int].connect(self.disableReplot)
                 combo2.currentIndexChanged[int].connect(self.disableReplot)
                 combo2.fileAdded.connect(self.refreshUserRegressionFiles)
                 legendreSpin.valueChanged[int].connect(self.disableReplot)
-                if 'marsbasis' in self.outputCol_index:
+                if "marsbasis" in self.outputCol_index:
                     marsBasisSpin.valueChanged[int].connect(self.disableReplot)
-                if 'marsinteraction' in self.outputCol_index:
+                if "marsinteraction" in self.outputCol_index:
                     marsInteractionSpin.valueChanged[int].connect(self.disableReplot)
 
-                self.output_table.setCellWidget(i, self.outputCol_index['rs1'], combo1)
-                self.output_table.setCellWidget(i, self.outputCol_index['rs2'], combo2)
+                self.output_table.setCellWidget(i, self.outputCol_index["rs1"], combo1)
+                self.output_table.setCellWidget(i, self.outputCol_index["rs2"], combo2)
                 self.output_table.setCellWidget(
-                    i, self.outputCol_index['legendre'], legendreSpin
+                    i, self.outputCol_index["legendre"], legendreSpin
                 )
-                if 'marsbasis' in self.outputCol_index:
+                if "marsbasis" in self.outputCol_index:
                     self.output_table.setCellWidget(
-                        i, self.outputCol_index['marsbasis'], marsBasisSpin
+                        i, self.outputCol_index["marsbasis"], marsBasisSpin
                     )
-                if 'marsinteraction' in self.outputCol_index:
+                if "marsinteraction" in self.outputCol_index:
                     self.output_table.setCellWidget(
-                        i, self.outputCol_index['marsinteraction'], marsInteractionSpin
+                        i, self.outputCol_index["marsinteraction"], marsInteractionSpin
                     )
 
             else:
                 # add a disabled checkbox
-                chkbox = QCheckBox('')
+                chkbox = QCheckBox("")
                 chkbox.setChecked(False)
                 chkbox.setEnabled(False)
-                self.output_table.setCellWidget(i, self.outputCol_index['obs'], chkbox)
+                self.output_table.setCellWidget(i, self.outputCol_index["obs"], chkbox)
                 # add inactive field for RS1
-                item = QTableWidgetItem('')
+                item = QTableWidgetItem("")
                 flags = item.flags()
                 mask = ~QtCore.Qt.ItemIsEnabled
                 item.setFlags(flags & mask)
                 item.setForeground(Qt.black)
                 item.setBackground(Qt.lightGray)
                 item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                self.output_table.setItem(i, self.outputCol_index['rs1'], item)
+                self.output_table.setItem(i, self.outputCol_index["rs1"], item)
                 # add inactive field for RS2
-                item = QTableWidgetItem('')
+                item = QTableWidgetItem("")
                 flags = item.flags()
                 mask = ~QtCore.Qt.ItemIsEnabled
                 item.setFlags(flags & mask)
                 item.setForeground(Qt.black)
                 item.setBackground(Qt.lightGray)
                 item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-                self.output_table.setItem(i, self.outputCol_index['rs2'], item)
+                self.output_table.setItem(i, self.outputCol_index["rs2"], item)
 
             # add inactive field for Legendre
-            item = QTableWidgetItem('')
+            item = QTableWidgetItem("")
             flags = item.flags()
             mask = ~QtCore.Qt.ItemIsEnabled
             item.setFlags(flags & mask)
             item.setForeground(Qt.black)
             item.setBackground(Qt.lightGray)
             item.setTextAlignment(Qt.AlignRight | Qt.AlignVCenter)
-            self.output_table.setItem(i, self.outputCol_index['legendre'], item)
+            self.output_table.setItem(i, self.outputCol_index["legendre"], item)
 
         self.output_table.resizeColumnsToContents()
 
@@ -343,7 +343,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
     def refreshUserRegressionFiles(self):
         rows = self.output_table.rowCount()
         for row in range(rows):
-            combo = self.output_table.cellWidget(row, self.outputCol_index['rs2'])
+            combo = self.output_table.cellWidget(row, self.outputCol_index["rs2"])
             if combo is not None:
                 combo.refresh()
         self.output_table.resizeColumnsToContents()
@@ -364,21 +364,21 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         for row in range(count):
             item = self.obs_table.verticalHeaderItem(row)
             if item is None:
-                item = QTableWidgetItem('Experiment %d' % (row + 1))
+                item = QTableWidgetItem("Experiment %d" % (row + 1))
                 self.obs_table.setVerticalHeaderItem(row, item)
 
                 # Populate default values
                 for col in range(self.obs_table.columnCount()):
                     value = self.obsTableDefaultValues[col]
                     if value is not None:
-                        item = QTableWidgetItem('%g' % value)
+                        item = QTableWidgetItem("%g" % value)
                         self.obs_table.setItem(row, col, item)
 
     def loadObservation(self):
-        if platform.system() == 'Windows':
-            allFiles = '*.*'
+        if platform.system() == "Windows":
+            allFiles = "*.*"
         else:
-            allFiles = '*'
+            allFiles = "*"
         fname, _ = QFileDialog.getOpenFileName(
             self,
             "Browse to observations file",
@@ -392,7 +392,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         self.fileDir = os.path.dirname(fname)
 
         try:
-            if fname.endswith('.csv'):
+            if fname.endswith(".csv"):
                 data = LocalExecutionModule.readDataFromCsvFile(fname, False)
                 data = data[0]
                 numExps = data.shape[0]
@@ -405,9 +405,9 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
 
             traceback.print_exc()
             msgbox = QMessageBox()
-            msgbox.setWindowTitle('UQ/Opt GUI Warning')
+            msgbox.setWindowTitle("UQ/Opt GUI Warning")
             msgbox.setText(
-                'File format not recognized!  File must be in PSUADE simple or CSV format.'
+                "File format not recognized!  File must be in PSUADE simple or CSV format."
             )
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
@@ -416,12 +416,12 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
 
         showMessage = False
         mcmcNumDesign = self.inputPrior_table.getNumDesignVariables()
-        if fname.endswith('.csv'):
+        if fname.endswith(".csv"):
             numCols = data.shape[1]
             expectedCols = mcmcNumDesign + 2 * self.getNumObservedOutputs()
             if numCols != expectedCols:
                 showMessage = True
-                message = 'Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)' % (
+                message = "Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)" % (
                     numCols,
                     expectedCols,
                     mcmcNumDesign,
@@ -434,19 +434,19 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             if numDesign != mcmcNumDesign:
                 showMessage = True
                 message = (
-                    'Number of design parameters selected (%d) does not match file (%d).'
+                    "Number of design parameters selected (%d) does not match file (%d)."
                     % (numDesign, mcmcNumDesign)
                 )
             elif numOutputColumns != 2 * self.getNumObservedOutputs():
                 showMessage = True
                 message = (
-                    'Number of outputs observed (%d) does not match file (%d).'
+                    "Number of outputs observed (%d) does not match file (%d)."
                     % (self.getNumObservedOutputs(), numOutputColumns / 2)
                 )
 
         if showMessage:
             msgbox = QMessageBox()
-            msgbox.setWindowTitle('UQ/Opt GUI Warning')
+            msgbox.setWindowTitle("UQ/Opt GUI Warning")
             msgbox.setText(message)
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
@@ -461,12 +461,12 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                 if item is None:
                     item = QTableWidgetItem()
                     self.obs_table.setItem(r, c, item)
-                item.setText('%g' % data[r, c])
+                item.setText("%g" % data[r, c])
         self.unfreeze()
 
     def saveObservation(self):
         fname, selectedFilter = QFileDialog.getSaveFileName(
-            self, 'Set observation file name:'
+            self, "Set observation file name:"
         )
         if len(fname) == 0:  # Cancelled
             return
@@ -497,7 +497,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
 
         for c in range(self.obs_table.columnCount()):
             columnHeader = self.obs_table.horizontalHeaderItem(c).text()
-            values = [''] * numRows
+            values = [""] * numRows
             for r in range(numRows):
                 item = self.obs_table.item(r, c)
                 if item is not None:
@@ -522,14 +522,14 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         designVariables, indices = self.inputPrior_table.getDesignVariables()
         numDesignVariables = len(designVariables)
         for i, name in enumerate(designVariables):
-            labels.append(name + ' Value')
+            labels.append(name + " Value")
         for row in range(self.output_table.rowCount()):
-            chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
+            chkbox = self.output_table.cellWidget(row, self.outputCol_index["obs"])
             if chkbox is not None and chkbox.isChecked():
-                name = self.output_table.item(row, self.outputCol_index['name']).text()
-                labels.append(name + ' Mean')
+                name = self.output_table.item(row, self.outputCol_index["name"]).text()
+                labels.append(name + " Mean")
                 indices.append(row)
-                labels.append(name + ' Std Dev')
+                labels.append(name + " Std Dev")
                 indices.append(row)
         self.obs_table.setHorizontalHeaderLabels(labels)
 
@@ -537,7 +537,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         self.obsTableDefaultValues = [None] * numCols
         for col, label in enumerate(labels):
             if col >= numDesignVariables:
-                if label.endswith('Mean'):
+                if label.endswith("Mean"):
                     defvalue = self.outputMeans[indices[col]]
                 else:
                     defvalue = self.outputStdDevs[indices[col]]
@@ -557,15 +557,15 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                     if item is None:
                         item = QTableWidgetItem()
                         self.obs_table.setItem(row, col, item)
-                    item.setText('%g' % defvalue)
-                    self.obsTableValues[(row, col)] = '%g' % defvalue
+                    item.setText("%g" % defvalue)
+                    self.obsTableValues[(row, col)] = "%g" % defvalue
 
         self.obs_table.resizeColumnsToContents()
 
     def getNumObservedOutputs(self):
         count = 0
         for row in range(self.output_table.rowCount()):
-            chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
+            chkbox = self.output_table.cellWidget(row, self.outputCol_index["obs"])
             if chkbox is not None and chkbox.isChecked():
                 count += 1
         return count
@@ -574,14 +574,14 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         count = 0
         indices = []
         for row in range(self.output_table.rowCount()):
-            chkbox = self.output_table.cellWidget(row, self.outputCol_index['obs'])
+            chkbox = self.output_table.cellWidget(row, self.outputCol_index["obs"])
             if chkbox is not None and chkbox.isChecked():
                 indices.append(row)
         return indices
 
     def checkOutputTable(self):
         for i in range(self.output_table.rowCount()):
-            chkbox = self.output_table.cellWidget(i, self.outputCol_index['obs'])
+            chkbox = self.output_table.cellWidget(i, self.outputCol_index["obs"])
             if chkbox is not None and chkbox.isChecked():
                 return True
         return False
@@ -606,7 +606,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                         showMessage = False
                         if not self.isnumeric(text):
                             showMessage = True
-                            message = 'Value must be a number!'
+                            message = "Value must be a number!"
                         elif c < numDesign:
                             value = float(item.text())
                             index = indices[c]
@@ -614,7 +614,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                             maxVal = maxs[index]
                             if value < minVal or value > maxVal:
                                 showMessage = True
-                                message = 'Value must be between %g and %g!' % (
+                                message = "Value must be between %g and %g!" % (
                                     minVal,
                                     maxVal,
                                 )
@@ -622,11 +622,11 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                             value = float(item.text())
                             if value <= 0:
                                 showMessage = True
-                                message = 'Std dev value must be greater than 0!'
+                                message = "Std dev value must be greater than 0!"
                         if showMessage:
                             if not textSame:
                                 msgbox = QMessageBox()
-                                msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                                msgbox.setWindowTitle("UQ/Opt GUI Warning")
                                 msgbox.setText(message)
                                 msgbox.setIcon(QMessageBox.Warning)
                                 response = msgbox.exec_()
@@ -692,9 +692,9 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         self.replot_button.setEnabled(b)
 
     def infer(self):
-        if self.inf_button.text() == 'Infer':
-            if os.path.exists('psuade_stop'):
-                os.remove('psuade_stop')
+        if self.inf_button.text() == "Infer":
+            if os.path.exists("psuade_stop"):
+                os.remove("psuade_stop")
 
             # check arguments
             if not self.activateInfButton():
@@ -715,39 +715,39 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             col_index = self.outputCol_index
             ytable = [None] * nOutputs
             for i in range(nOutputs):
-                chkbox = self.output_table.cellWidget(i, col_index['obs'])
+                chkbox = self.output_table.cellWidget(i, col_index["obs"])
                 if chkbox.isChecked():
-                    outputName = self.output_table.item(i, col_index['name']).text()
-                    value = {'name': outputName}
-                    rs1 = self.output_table.cellWidget(i, col_index['rs1'])
-                    rs2 = self.output_table.cellWidget(i, col_index['rs2'])
+                    outputName = self.output_table.item(i, col_index["name"]).text()
+                    value = {"name": outputName}
+                    rs1 = self.output_table.cellWidget(i, col_index["rs1"])
+                    rs2 = self.output_table.cellWidget(i, col_index["rs2"])
                     rs = RSCombos.lookupRS(rs1, rs2)
                     rsIndex = ResponseSurfaces.getEnumValue(rs)
-                    value['rsIndex'] = rsIndex
+                    value["rsIndex"] = rsIndex
                     if not self.wizardMode and rsIndex in (
                         ResponseSurfaces.MARS,
                         ResponseSurfaces.MARSBAG,
                     ):
                         marsBases = self.output_table.cellWidget(
-                            i, col_index['marsbasis']
+                            i, col_index["marsbasis"]
                         ).value()
                         marsInteractions = self.output_table.cellWidget(
-                            i, col_index['marsinteraction']
+                            i, col_index["marsinteraction"]
                         ).value()
-                        value['marsBases'] = marsBases
-                        value['marsInteractions'] = marsInteractions
+                        value["marsBases"] = marsBases
+                        value["marsInteractions"] = marsInteractions
                     elif rsIndex == ResponseSurfaces.LEGENDRE:
                         legendreOrder = self.output_table.cellWidget(
-                            i, col_index['legendre']
+                            i, col_index["legendre"]
                         ).value()
-                        value['legendreOrder'] = legendreOrder
+                        value["legendreOrder"] = legendreOrder
                     elif rsIndex == ResponseSurfaces.USER:
                         fileName = rs2.getFile()
-                        value['userRegressionFile'] = fileName
+                        value["userRegressionFile"] = fileName
                         outputName = Common.getUserRegressionOutputName(
                             outputName, fileName, data
                         )
-                        value['userRegressionArg'] = outputName
+                        value["userRegressionArg"] = outputName
                     ytable[i] = value
 
             # parse input prior table
@@ -769,7 +769,7 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             # perform inference
             saveSample = self.infSave_chkbox.isChecked()
             showList = self.inputPrior_table.getShowInputList()
-            self.inf_button.setText('Stop')  # Switch button to allow stop
+            self.inf_button.setText("Stop")  # Switch button to allow stop
             useDiscrepancy = self.discrepancy_chkbox.isChecked()
             self.setModal(False)
             self.enableInf(False)
@@ -789,11 +789,11 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             self.inference.analyze()
 
         else:  # Infer button says stop
-            f = open('psuade_stop', 'w')
+            f = open("psuade_stop", "w")
             f.close()
             self.stopInfer = True
             self.inference.inferencer.stopInference()
-            self.inf_button.setText('Infer')
+            self.inf_button.setText("Infer")
             self.unfreeze()
             self.output_table.setEnabled(True)
             self.inputPrior_table.setEnabled(True)
@@ -818,30 +818,30 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
                 self.discrepancy_chkbox.isChecked()
                 and self.discrepancySave_chkbox.isChecked()
             ):
-                os.rename('psDiscrepancyModel', self.discrepancySave_edit.text())
+                os.rename("psDiscrepancyModel", self.discrepancySave_edit.text())
 
-            message = ''
+            message = ""
             if self.wizardMode:
                 message = (
-                    'This plot shows the posterior distribution of the inputs '
-                    'that will result in the observations specified.  The '
-                    'diagonal subplots show the distribution of each individual '
-                    'input as a histogram. The off-diagonal subplots are '
-                    'pair-wise heatmaps of this distribution. '
+                    "This plot shows the posterior distribution of the inputs "
+                    "that will result in the observations specified.  The "
+                    "diagonal subplots show the distribution of each individual "
+                    "input as a histogram. The off-diagonal subplots are "
+                    "pair-wise heatmaps of this distribution. "
                 )
             if self.stopInfer:
                 if (
                     self.inference.inferencer.mfile is None
                 ):  # PSUADE was not allowed to go far enough to provide a plot
-                    message = 'Inference was not allowed to complete far enough to create a plot.  If one is desired, please start inference again.'
+                    message = "Inference was not allowed to complete far enough to create a plot.  If one is desired, please start inference again."
                 else:
-                    message += 'Because inference was not allowed to fully complete, these results are not as accurate as possible.'
+                    message += "Because inference was not allowed to fully complete, these results are not as accurate as possible."
 
             if len(message) > 0:
-                QMessageBox.information(self, 'Bayesian Inference Plot', message)
+                QMessageBox.information(self, "Bayesian Inference Plot", message)
 
         self.unfreeze()
-        self.inf_button.setText('Infer')
+        self.inf_button.setText("Infer")
         self.enableInf(True)
         # self.inf_button.setEnabled(True)
         self.output_table.setEnabled(True)
@@ -864,8 +864,8 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
         if len(showList) == 0:
             QMessageBox.information(
                 self,
-                'Bayesian Inference Plot',
-                'At least one input must be selected for display.',
+                "Bayesian Inference Plot",
+                "At least one input must be selected for display.",
             )
             self.unfreeze()
             return

@@ -26,29 +26,29 @@ from _pytest.monkeypatch import MonkeyPatch
 # NOTE these values can be given to aliases used as kwargs when an actual filter is not needed
 # the actual value is a matter of synctactic sugar but it should suggest the meaning of
 # "any result is fine, no need to filter since I expect it to be the only one"
-KWARGS_PLACEHOLDER_VALUES = {True, any, next, ..., '*', ''}
+KWARGS_PLACEHOLDER_VALUES = {True, any, next, ..., "*", ""}
 
 
-_logger = logging.getLogger('pytest_qt_extras')
+_logger = logging.getLogger("pytest_qt_extras")
 
 
 class _SerializableMixin:
     @classmethod
     def to_yaml(cls, dumper, obj):
-        return dumper.represent_mapping(f'!{type(obj).__qualname__}', obj.as_record())
+        return dumper.represent_mapping(f"!{type(obj).__qualname__}", obj.as_record())
 
     def __str__(self):
         return self.dump()
 
     def as_record(self):
-        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     def dump(self):
         return yaml.dump(self, Dumper=yaml.Dumper)
 
 
 def _object_to_yaml(dumper, obj):
-    return dumper.represent_scalar(f'!{type(obj).__qualname__}', str(obj))
+    return dumper.represent_scalar(f"!{type(obj).__qualname__}", str(obj))
 
 
 yaml.add_multi_representer(object, _object_to_yaml)
@@ -63,7 +63,7 @@ def get_text(w: W.QWidget):
 
 @get_text.register
 def _(btn: W.QAbstractButton):
-    return btn.text().replace('&', '')
+    return btn.text().replace("&", "")
 
 
 @get_text.register
@@ -81,12 +81,12 @@ class ObjLogger:
         self._logger_opts = kwargs
 
     def _get_logger_instance(self, cls: type):
-        attr_name = '_logger'
+        attr_name = "_logger"
         logger = getattr(cls, attr_name, None)
         if logger is None:
             name = cls.__qualname__
             logger = logging.getLogger(name, **self._logger_opts)
-            setattr(logger, '__call__', logger.info)
+            setattr(logger, "__call__", logger.info)
             setattr(cls, attr_name, logger)
         return logger
 
@@ -105,18 +105,18 @@ class Action:
 
     @property
     def readable_name(self):
-        return self.name.capitalize().replace('_', ' ')
+        return self.name.capitalize().replace("_", " ")
 
     @property
     def description(self):
         if not self.args:
-            return f'{self.name.title()} the {self.target}.'
-        return f'Using the {self.target}, {self.name} {_join(self.args)}.'
+            return f"{self.name.title()} the {self.target}."
+        return f"Using the {self.target}, {self.name} {_join(self.args)}."
 
 
 class When(str, enum.Enum):
-    BEGIN = 'BEGIN'
-    END = 'END'
+    BEGIN = "BEGIN"
+    END = "END"
 
 
 @dataclass
@@ -147,8 +147,8 @@ def _wrap_callable(
     call_begin: t.Callable[[CallInfo], t.Any],
     call_end: t.Callable[[CallInfo], t.Any],
 ) -> t.Callable[[t.Any], t.Any]:
-    name = getattr(func, '__name__', None)
-    instance = getattr(func, '__self__', None)
+    name = getattr(func, "__name__", None)
+    instance = getattr(func, "__self__", None)
     is_bound_method = instance is not None
 
     def _wrapped(*args, **kwargs):
@@ -178,17 +178,17 @@ def _wrap_callable(
 def instrument(target, signal_begin=None, signal_end=None):
     mp = MonkeyPatch()
 
-    _logger.info(f'instrumenting target {target}')
+    _logger.info(f"instrumenting target {target}")
     if isinstance(target, tuple) and len(target) == 2:
         owner, name = target
         instance = None
     # TODO check if methodtype?
     else:
-        instance = getattr(target, '__self__', None)
+        instance = getattr(target, "__self__", None)
         owner = instance.__class__
         name = target.__name__
     func = getattr(owner, name)
-    assert callable(func), f'{func} must be callable'
+    assert callable(func), f"{func} must be callable"
     _logger.debug(dict(target=target, name=name, owner=owner, func=func))
 
     def _do_nothing(*args, **kwargs):
@@ -207,11 +207,11 @@ def instrument(target, signal_begin=None, signal_end=None):
         instance=instance,
         wrapper=_patched_callable,
     )
-    _logger.debug('returning patched object')
+    _logger.debug("returning patched object")
     yield patched_info
-    _logger.debug('start undoing monkeypatching')
+    _logger.debug("start undoing monkeypatching")
     mp.undo()
-    _logger.debug('monkeypatching done')
+    _logger.debug("monkeypatching done")
 
 
 class _Signals(QtCore.QObject):
@@ -240,15 +240,15 @@ class _Signals(QtCore.QObject):
         return self.by_type_and_when[key]
 
     @classmethod
-    def instance(cls) -> '_Signals':
+    def instance(cls) -> "_Signals":
         if cls.__instance is None:
             cls.__instance = cls()
         return cls.__instance
 
 
-def _join(it, sep=' '):
+def _join(it, sep=" "):
     def is_to_skip(s):
-        return str(s).strip() not in {str(None), ''}
+        return str(s).strip() not in {str(None), ""}
 
     return str.join(sep, [str(_) for _ in it if not is_to_skip(_)])
 
@@ -279,7 +279,7 @@ class Dispatcher(_SerializableMixin):
         alias_map = self.alias_map
 
         alias_in_kwargs: t.Set = kwargs.keys() & alias_map.keys()
-        self.log.debug(f'alias_in_kwargs={alias_in_kwargs}')
+        self.log.debug(f"alias_in_kwargs={alias_in_kwargs}")
         InvalidMatchError.check(alias_in_kwargs, expected=1)
         alias = alias_in_kwargs.pop()
         widget_cls = alias_map[alias]
@@ -343,7 +343,7 @@ class Handler(_SerializableMixin):
         return cls.dispatcher.get_handler(*args, **kwargs)
 
     def locate(self, *args, **kwargs):
-        _logger.info(f'Starting locate for args: {args}, kwargs: {kwargs}')
+        _logger.info(f"Starting locate for args: {args}, kwargs: {kwargs}")
         if not args:
             if not kwargs:
                 raise ValueError
@@ -355,7 +355,7 @@ class Handler(_SerializableMixin):
             # locate(button='Click here')
         else:
             if not len(args) in {1, 2}:
-                raise ValueError(f'Invalid number of args specified')
+                raise ValueError(f"Invalid number of args specified")
             if len(args) == 1:
                 # locate(QPushButton)
                 target, hint = args[0], None
@@ -368,13 +368,13 @@ class Handler(_SerializableMixin):
             elif isinstance(target, type) and issubclass(target, W.QWidget):
                 widget_cls = target
             else:
-                raise ValueError(f'Invalid type for target: {type(target)}')
+                raise ValueError(f"Invalid type for target: {type(target)}")
 
         search = VisibleWidgetSearch.build(hint=hint, **kwargs)
         search.among_children(root=self.widget, widget_cls=widget_cls)
         search.summarize()
         result = search.result
-        _logger.info(f'search result: {result}')
+        _logger.info(f"search result: {result}")
         return self.create(result, located_by=search)
 
     @action
@@ -434,7 +434,7 @@ class Handler(_SerializableMixin):
                 return tab_idx
 
     def __repr__(self):
-        return f'<{type(self).__name__}({self._widget})>'
+        return f"<{type(self).__name__}({self._widget})>"
 
     def as_record(self):
         return dict(widget=self.widget, located_by=self._located_by)
@@ -459,16 +459,16 @@ class TableRowSearch(_SerializableMixin):
                 idx = hint
             else:
                 raise InvalidMatchError(
-                    f'row index {hint} out of range: (count: {count})'
+                    f"row index {hint} out of range: (count: {count})"
                 )
         elif hint is None:
             if count == 1:
                 idx = 0
             else:
-                hint = 'currentRow'
+                hint = "currentRow"
                 idx = table.currentRow()
         else:
-            raise ValueError(f'Invalid hint: {hint!r}')
+            raise ValueError(f"Invalid hint: {hint!r}")
 
         return cls(hint=hint, idx=idx, count=count)
 
@@ -494,7 +494,7 @@ class TableColumnSearch(_SerializableMixin):
                 idx = hint
             else:
                 raise InvalidMatchError(
-                    f'Column index {hint} out of range: (count: {count})'
+                    f"Column index {hint} out of range: (count: {count})"
                 )
         elif isinstance(hint, str):
             name_by_idx = {i: cls.get_name(table, i) for i in range(count)}
@@ -511,7 +511,7 @@ class TableColumnSearch(_SerializableMixin):
             if count == 1:
                 idx = 0
         else:
-            raise ValueError(f'Invalid hint: {hint!r}')
+            raise ValueError(f"Invalid hint: {hint!r}")
 
         return cls(
             hint=hint, idx=idx, name=name or cls.get_name(table, idx), count=count
@@ -567,8 +567,8 @@ class TableHandler(Handler):
     def select_row(self, row: TableRowSpec):
         search = TableRowSearch.run(self.table, row)
         self.table.selectRow(search.idx)
-        _logger.debug(f'self.table.currentRow()={self.table.currentRow()}')
-        _logger.debug(f'self.table.currentColumn()={self.table.currentColumn()}')
+        _logger.debug(f"self.table.currentRow()={self.table.currentRow()}")
+        _logger.debug(f"self.table.currentColumn()={self.table.currentColumn()}")
 
     @action
     def select_cell(self, row: TableRowSpec, col: TableColumnSpec):
@@ -598,7 +598,7 @@ class TableHandler(Handler):
         if column is None and len(kwargs) == 1:
             column = set(kwargs.values()).pop()
         cell_match = TableCellSearch.run(self.table, row, column)
-        _logger.debug(f'cell_match: {cell_match}')
+        _logger.debug(f"cell_match: {cell_match}")
         return self.create(cell_match.content, located_by=cell_match)
 
 
@@ -613,7 +613,7 @@ class TreePath:
         return iter(self._indices)
 
     def __str__(self):
-        return str.join('.', [str(i) for i in self])
+        return str.join(".", [str(i) for i in self])
 
     @classmethod
     def root(cls):
@@ -750,7 +750,7 @@ class WidgetInfo:
 
     @property
     def abbrev(self):
-        return f'{self.type_}(...{self.id_[-5:]})'
+        return f"{self.type_}(...{self.id_[-5:]})"
 
     @classmethod
     def link_display(cls, w):
@@ -796,7 +796,7 @@ class WidgetInfo:
 
     def items_to_publish(self):
         for k, v in self.__dict__.items():
-            if v is None or k.startswith('_'):
+            if v is None or k.startswith("_"):
                 continue
             yield k, v
 
@@ -883,7 +883,7 @@ class Selection(_SerializableMixin):
     def from_locals(cls, data):
         "Make it easier to collect variables from a function scope using locals()"
         to_collect = {
-            k: v for k, v in data.items() if not (k.startswith('_') or k in {'self'})
+            k: v for k, v in data.items() if not (k.startswith("_") or k in {"self"})
         }
         return cls(**to_collect)
 
@@ -903,7 +903,7 @@ class Selection(_SerializableMixin):
         return bool(self.is_match)
 
     def __repr__(self):
-        s = f'{type(self).__name__}({bool(self)}, cand={self.cand}, error={self.error}, info={self.info})'
+        s = f"{type(self).__name__}({bool(self)}, cand={self.cand}, error={self.error}, info={self.info})"
         return s
 
 
@@ -942,7 +942,7 @@ class Selector(_SerializableMixin):
                 sel = Selection(is_match=res, cand=cand)
             else:
                 raise ValueError(
-                    f'Invalid type returned by callable {self._func}: {type(res)}'
+                    f"Invalid type returned by callable {self._func}: {type(res)}"
                 )
         return sel
 
@@ -1023,10 +1023,10 @@ class Search(_SerializableMixin):
         return dict(n_candidates=len(self._candidates), n_matching=len(self.matching))
 
     def summarize(self, dump=True):
-        _logger.info(f'{self!r}')
+        _logger.info(f"{self!r}")
         _logger.info(self.stats)
         if not self.matching:
-            _logger.warning('No matches found')
+            _logger.warning("No matches found")
             if dump:
                 _logger.info(self.dump())
 
@@ -1059,7 +1059,7 @@ class Search(_SerializableMixin):
 
 @get_text.register(W.QComboBox)
 @get_text.register(W.QSpinBox)
-def from_sibling_labels(target: W.QWidget, direction='E'):
+def from_sibling_labels(target: W.QWidget, direction="E"):
     def has_nonempty_text(cand: W.QWidget):
         text = get_text(cand)
 
@@ -1121,11 +1121,11 @@ class VisibleTextMatcher(_SerializableMixin):
     def build(
         cls,
         hint: str,
-        case_sensitive: t.Union[str, bool] = 'smart',
-        truncation_symbol: str = '[...]',
+        case_sensitive: t.Union[str, bool] = "smart",
+        truncation_symbol: str = "[...]",
         **kwargs,
     ):
-        if case_sensitive == 'smart':
+        if case_sensitive == "smart":
             case_sensitive = hint.casefold() != hint
 
         transform = str if case_sensitive else str.casefold
@@ -1153,7 +1153,7 @@ class VisibleTextMatcher(_SerializableMixin):
         return op
 
     def __call__(self, cand):
-        text_to_search_for = self.hint.replace(self.truncation_symbol, '')
+        text_to_search_for = self.hint.replace(self.truncation_symbol, "")
         extracted = self.extract(cand)
         text_to_search_in = str(extracted)
 
@@ -1231,15 +1231,15 @@ class ArtifactManager:
     def save(self, item: _TestArtifact):
         item_dir = Path(self.base_path)
         progressive_id = len(self)
-        filename = slugify(f'{progressive_id}-{item.label}')
+        filename = slugify(f"{progressive_id}-{item.label}")
         item_path = item_dir / filename
         try:
             return item.save(item_path)
         except Exception as e:
-            _logger.error(f'Error while saving artifact at {item_path}')
+            _logger.error(f"Error while saving artifact at {item_path}")
             _logger.exception(e)
         else:
-            _logger.info(f'Saved artifact at {item_path}')
+            _logger.info(f"Saved artifact at {item_path}")
 
     def save_all(self):
         for item in self:
@@ -1261,7 +1261,7 @@ class Snapshot(_TestArtifact):
 
         if hierarchy_info:
             info = HierarchyInfo(widget)
-            kwargs['data'] = info
+            kwargs["data"] = info
             if annotate:
                 with info.annotating():
                     pixmap = to_grab.grab()
@@ -1282,13 +1282,13 @@ class Snapshot(_TestArtifact):
 
     def save(self, path: Path):
         if self._pixmap is None:
-            _logger.warning(f'No pixmap to save for {self}')
+            _logger.warning(f"No pixmap to save for {self}")
         else:
-            self._pixmap.save(path.with_suffix('.png').__fspath__())
+            self._pixmap.save(path.with_suffix(".png").__fspath__())
         if self.text:
-            path.with_suffix('.txt').write_text(self.text)
+            path.with_suffix(".txt").write_text(self.text)
         if self.data:
-            path.with_suffix('.yml').write_text(
+            path.with_suffix(".yml").write_text(
                 yaml.dump(self.data, Dumper=yaml.Dumper)
             )
 
@@ -1302,7 +1302,7 @@ class QtBot(pytestqt_plugin.QtBot):
         *args,
         focused: W.QWidget = None,
         slowdown_wait=500,
-        artifacts_path='.pytest-artifacts',
+        artifacts_path=".pytest-artifacts",
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -1316,8 +1316,8 @@ class QtBot(pytestqt_plugin.QtBot):
         self.annotations = Annotations()
 
         artifacts_path = Path(artifacts_path)
-        self._screenshots = ArtifactManager(artifacts_path / 'screenshots')
-        self._snapshots = ArtifactManager(artifacts_path / 'snapshots')
+        self._screenshots = ArtifactManager(artifacts_path / "screenshots")
+        self._snapshots = ArtifactManager(artifacts_path / "snapshots")
 
         self._signals = _Signals.instance()
         self._init_signals()
@@ -1329,14 +1329,14 @@ class QtBot(pytestqt_plugin.QtBot):
         self._signals[Action][When.END].connect(self.on_action_end)
 
     def on_action_begin(self, action: Action):
-        _logger.info(f'Begin: {action}')
+        _logger.info(f"Begin: {action}")
         self.annotations.add(action, color=QtCore.Qt.red)
         self.annotations.show()
         # action.begin_annotate()
         self.slow_down()
 
     def on_action_end(self, action: Action):
-        _logger.info(f'End: {action}')
+        _logger.info(f"End: {action}")
         # self.slow_down()
         self.annotations.remove(action)
         # action.end_annotate()
@@ -1364,17 +1364,17 @@ class QtBot(pytestqt_plugin.QtBot):
         def take_scr(action: Action, when):
             widget = action.target
             for_window = Snapshot.from_widget(
-                widget=widget, label=f'{when}-{action.description}'
+                widget=widget, label=f"{when}-{action.description}"
             )
             for_widget = Snapshot.from_widget(
                 widget=widget,
                 entire_window=False,
-                label=f'{when}-{action.description}-widget-only',
+                label=f"{when}-{action.description}-widget-only",
             )
             self._screenshots.add(for_window)
 
-        on_action_begin = lambda a: take_scr(a, 'before')
-        on_action_end = lambda a: take_scr(a, 'after')
+        on_action_begin = lambda a: take_scr(a, "before")
+        on_action_end = lambda a: take_scr(a, "after")
 
         signals = self._signals[Action]
         signals[When.BEGIN].connect(on_action_begin)
@@ -1415,10 +1415,10 @@ class QtBot(pytestqt_plugin.QtBot):
     def locate(self, *args, **kwargs):
         self.slow_down()
         try:
-            self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
+            self.take_debug_snapshot(label=f"locate-{args}-{kwargs}")
             res = self.handler.locate(*args, **kwargs)
         except InvalidMatchError as e:
-            self.log.error(f'Invalid match for locate({args, kwargs})')
+            self.log.error(f"Invalid match for locate({args, kwargs})")
             self.log.exception(e)
             raise e
         return res
@@ -1486,32 +1486,32 @@ class QtBot(pytestqt_plugin.QtBot):
     ):
         def _default_accept_dialog(w: W.QDialog):
             self.wait_for_window_shown(w)
-            _logger.info(f'About to accept dialog {w}')
+            _logger.info(f"About to accept dialog {w}")
             self.wait(wait_before)
             w.accept()
             self.wait(wait_after)
-            _logger.info('After accepting dialog')
+            _logger.info("After accepting dialog")
 
-        target = target or (W.QDialog, 'exec_')
+        target = target or (W.QDialog, "exec_")
         handler = handler or _default_accept_dialog
         signal = self._signals.callBegin
 
         def _modal_slot(call_info: CallInfo):
             widget = call_info.instance or call_info.args[0]
-            _logger.debug(f'_modal_slot called for {widget}')
+            _logger.debug(f"_modal_slot called for {widget}")
 
             def _to_be_called_async():
                 _logger.debug(call_info)
                 handler(widget, **kwargs)
 
-            _logger.info(f'call_info.callee={call_info.callee}')
+            _logger.info(f"call_info.callee={call_info.callee}")
             if True:
                 QtCore.QTimer.singleShot(0, _to_be_called_async)
 
         try:
             signal.connect(_modal_slot)
             with self.instrumenting(target) as instrumented:
-                _logger.debug(f'instrumented={instrumented}')
+                _logger.debug(f"instrumented={instrumented}")
                 with self.wait_signal(signal, timeout=timeout):
                     yield
         except Exception as e:

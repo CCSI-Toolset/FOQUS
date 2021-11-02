@@ -45,7 +45,7 @@ class Common(obj):
         class textDialog(QtWidgets.QDialog):
             def __init__(self, parent=None):
                 super(Common.textDialog, self).__init__(parent)
-                self.setWindowTitle('Calculating...')
+                self.setWindowTitle("Calculating...")
                 self.resize(600, 400)
                 self.gridLayout = QtWidgets.QGridLayout(self)
                 self.textedit = QtWidgets.QTextEdit()
@@ -62,7 +62,7 @@ class Common(obj):
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setIcon(QtWidgets.QMessageBox.Critical)
                 msgBox.setText(
-                    error + '\nPlease consult the FOQUS UQ developers for assistance.'
+                    error + "\nPlease consult the FOQUS UQ developers for assistance."
                 )
                 if out is not None:
                     msgBox.setDetailedText(out)
@@ -71,13 +71,13 @@ class Common(obj):
     @staticmethod
     def getPsuadePath():  ### OBSOLETE in this release
         # Brenda's version of getPsuadePath(), superceded by LocalExecutionModule.getPsuadePath()
-        fname = os.getcwd() + os.path.sep + 'PSUADEPATH'
+        fname = os.getcwd() + os.path.sep + "PSUADEPATH"
         if not os.path.exists(fname):
-            error = '%s does not exist.' % fname
+            error = "%s does not exist." % fname
             Common.showError(error)
             return None
 
-        f = open(fname, 'r')
+        f = open(fname, "r")
         path = f.readline()
         f.close()
         return path.rstrip()
@@ -101,19 +101,19 @@ class Common(obj):
     @staticmethod
     def getFileNameRoot(fname):
         base = os.path.basename(fname)
-        fnameRoot = base.split('.')[0]  # split on '.'
+        fnameRoot = base.split(".")[0]  # split on '.'
         return fnameRoot
 
     @staticmethod
     def getLocalFileName(dname, fname, suffix):
         fnameRoot = Common.getFileNameRoot(fname)
-        outfile = '%s%s%s%s' % (dname, os.path.sep, fnameRoot, suffix)
+        outfile = "%s%s%s%s" % (dname, os.path.sep, fnameRoot, suffix)
         return outfile
 
     @staticmethod
     def showError(error, out=None, showDeveloperHelpMessage=True):
-        if out is not None and 'Regression ERROR: true rank of sample ' in out:
-            error = 'The selected regression response surface does not work with the data. \nPlease select a different response surface.\n\n'
+        if out is not None and "Regression ERROR: true rank of sample " in out:
+            error = "The selected regression response surface does not work with the data. \nPlease select a different response surface.\n\n"
             showDeveloperHelpMessage = False
         if not usePyside or QtWidgets.QApplication.instance() is None:
             print(error)
@@ -122,7 +122,7 @@ class Common(obj):
             msgBox.setIcon(QtWidgets.QMessageBox.Critical)
             if showDeveloperHelpMessage:
                 msgBox.setText(
-                    error + '\nPlease consult the FOQUS UQ developers for assistance.'
+                    error + "\nPlease consult the FOQUS UQ developers for assistance."
                 )
             else:
                 msgBox.setText(error)
@@ -153,7 +153,7 @@ class Common(obj):
             return (None, None)
 
         scriptHandle = None
-        psFileName = ''
+        psFileName = ""
 
         if isinstance(arg1, io.IOBase) or isinstance(
             arg1, tempfile.SpooledTemporaryFile
@@ -166,7 +166,7 @@ class Common(obj):
                     printOutputToScreen = arg2
                 else:
                     raise TypeError(
-                        'Second argument is not psuade input filename nor True/False for printing output to screen'
+                        "Second argument is not psuade input filename nor True/False for printing output to screen"
                     )
         elif isinstance(arg1, str):
             psFileName = arg1
@@ -179,12 +179,12 @@ class Common(obj):
                     printOutputToScreen = arg2
                 else:
                     raise TypeError(
-                        'Second argument is not script file handle nor True/False for printing output to screen'
+                        "Second argument is not script file handle nor True/False for printing output to screen"
                     )
 
         return Common.runCommandInWindow(
-            psuadePath + ' ' + psFileName,
-            'psuadelog',
+            psuadePath + " " + psFileName,
+            "psuadelog",
             scriptHandle,
             printOutputToScreen,
             textDialog,
@@ -212,8 +212,8 @@ class Common(obj):
     ):
 
         executable = None
-        if platform.system() == 'Linux':
-            executable = '/bin/bash'
+        if platform.system() == "Linux":
+            executable = "/bin/bash"
         p = subprocess.Popen(
             command,
             stdin=scriptHandle,
@@ -223,7 +223,7 @@ class Common(obj):
             shell=True,
         )
 
-        logFile = open(logFile, 'w')
+        logFile = open(logFile, "w")
 
         if usePyside and QtWidgets.QApplication.instance() is not None:
             if textDialog is None:
@@ -233,7 +233,7 @@ class Common(obj):
                 Common.dialog = textDialog
                 dialogShowSignal.emit()
 
-        out = ''
+        out = ""
         count = 0
         startTime = time.time()
         readChars = False
@@ -256,16 +256,16 @@ class Common(obj):
                 nextline = p.stdout.read(1)
                 # If character is a letter, switch back to reading lines
                 value = ord(nextline)
-                if value >= ord('A') and value <= ord('Z'):
+                if value >= ord("A") and value <= ord("Z"):
                     readChars = False
             else:
                 nextline = p.stdout.readline()
-                if not 'OUU' in nextline.decode(
+                if not "OUU" in nextline.decode(
                     "utf-8"
-                ) and 'iteration = ' in nextline.decode("utf-8"):
+                ) and "iteration = " in nextline.decode("utf-8"):
                     readChars = True
             out += nextline.decode("utf-8")
-            if nextline.decode("utf-8") == '' and p.poll() is not None:
+            if nextline.decode("utf-8") == "" and p.poll() is not None:
                 break
             logFile.write(nextline.decode("utf-8"))
             if printOutputToScreen:
@@ -290,7 +290,7 @@ class Common(obj):
                 # Common.dialog.repaint()
             if plotOuuValuesSignal is not None:
                 if not grabz:
-                    pat = 'Outer optimization iteration = ([0-9]*)'
+                    pat = "Outer optimization iteration = ([0-9]*)"
                     regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         grabz = False
@@ -300,13 +300,13 @@ class Common(obj):
                         x.append(i)
                         continue
                 if grabx:
-                    pat = 'Current Level 1 input \s*[0-9]* = (.*)'
+                    pat = "Current Level 1 input \s*[0-9]* = (.*)"
                     regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         x.append(float(regex[0]))  # input value
                         continue
 
-                pat = 'computing objective .* nFuncEval = (.*)'
+                pat = "computing objective .* nFuncEval = (.*)"
                 regex = re.findall(pat, nextline.decode("utf-8"))
                 if regex:
                     grabx = False
@@ -317,31 +317,31 @@ class Common(obj):
                     continue
 
                 if grabz:
-                    pat = 'computed  objective .* = (.*)\.'
+                    pat = "computed  objective .* = (.*)\."
                     regex = re.findall(pat, nextline.decode("utf-8"))
                     if regex:
                         z.append(float(regex[0]))
                         grabz = False
                         plotValues = {}
-                        plotValues['input'] = x
-                        plotValues['objective'] = (z[0], z[1])
+                        plotValues["input"] = x
+                        plotValues["objective"] = (z[0], z[1])
                         plotOuuValuesSignal.emit(plotValues)
                         continue
             iteration += 1
         if printOutputToScreen:
-            print('\n\n')
+            print("\n\n")
 
         logFile.close()
 
         # process error
         out2, error = p.communicate()
-        error = error.decode('utf-8')
+        error = error.decode("utf-8")
         try:
             p.terminate()
         except:
             logging.getLogger("foqus." + __name__).exception(
-                'Error terminating PSUADE process, this may be okay'
-                'but not sure so logged it (JCE)'
+                "Error terminating PSUADE process, this may be okay"
+                "but not sure so logged it (JCE)"
             )
         if error:
             if showErrorSignal is None:
@@ -365,9 +365,9 @@ class Common(obj):
             lines = regF.readlines()
             for line in lines:
                 print(line)
-                if line.strip().lower().startswith('labels') and ''.join(
+                if line.strip().lower().startswith("labels") and "".join(
                     line.lower().split()
-                ).startswith('labels='):
+                ).startswith("labels="):
                     labelsLine = line
                     break
 
@@ -375,12 +375,12 @@ class Common(obj):
         if labelsLine:  # labels line found. Check them
             exec(labelsLine)
             newName = outName.replace(
-                '.', '_'
+                ".", "_"
             )  # Input name that includes node name in the variable name
             if newName in labelsLine:
                 useNodeNames = True
                 outName = newName
         if not useNodeNames and data.getNamesIncludeNodes():
-            index = outName.index('.')
+            index = outName.index(".")
             outName = outName[index + 1 :]
         return outName

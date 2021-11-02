@@ -33,8 +33,8 @@ from multiprocessing.connection import Client
 def getInputData(inFileName):
     import shutil
 
-    shutil.copyfile(inFileName, 'tempdata')
-    inFile = open(inFileName, 'r')
+    shutil.copyfile(inFileName, "tempdata")
+    inFile = open(inFileName, "r")
     lines = inFile.readlines()
     inFile.close()
     lines = [line for line in lines if len(line.strip()) != 0]
@@ -75,12 +75,12 @@ def getInputData(inFileName):
         for row in inData:
             row.extend(fixedVals)  # TODO pylint: disable=no-member
 
-    outFile = open('tempdata', 'a')
-    outFile.write('%d\n' % nSamp)
+    outFile = open("tempdata", "a")
+    outFile.write("%d\n" % nSamp)
     for row in inData:
         for col in row:  # TODO pylint: disable=not-an-iterable
-            outFile.write('%f ' % col)
-        outFile.write('\n')
+            outFile.write("%f " % col)
+        outFile.write("\n")
     outFile.close()
     return nSamp, inData
 
@@ -90,73 +90,73 @@ def getInputData(inFileName):
 # ==================================================
 def genOutputFile(outFileName, outData):
     nLeng = len(outData)
-    outfile = open(outFileName, 'w')
+    outfile = open(outFileName, "w")
     for row in outData:
-        outfile.write(' '.join([str(dat) for dat in row]))
-        outfile.write('\n')
+        outfile.write(" ".join([str(dat) for dat in row]))
+        outfile.write("\n")
     outfile.close()
     return None
 
 
 def main():
-    f = open('foquspsuadeclient.log', 'w')
-    f.write(' '.join(sys.argv))
-    f.write('\n')
+    f = open("foquspsuadeclient.log", "w")
+    f.write(" ".join(sys.argv))
+    f.write("\n")
     inputFile = sys.argv[1]
     outputFile = sys.argv[2]
     # Set the socket address, maybe someday this will change or
     # have some setting option, but for now is hard coded
-    address = ('localhost', 56001)
-    f.write('Create client\n')
+    address = ("localhost", 56001)
+    f.write("Create client\n")
     f.close()
     # Open the connection
     conn = Client(address)
     # Read the sample from the input file made by PSUADE
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Get samples from file %s\n' % inputFile)
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Get samples from file %s\n" % inputFile)
     f.close()
     (nSamples, samples) = getInputData(inputFile)
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Number of samples is %d\n' % nSamples)
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Number of samples is %d\n" % nSamples)
     f.close()
-    f = open('foquspsuadeclient.log', 'a')
+    f = open("foquspsuadeclient.log", "a")
     for row in samples:
-        f.write(' '.join(map(str, row)))
-        f.write('\n')
+        f.write(" ".join(map(str, row)))
+        f.write("\n")
     f.close()
 
     # Submit the samples to FOQUS to be run
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Send clear\n')
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Send clear\n")
     f.close()
-    conn.send(['clear'])
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Write samples:\n')
+    conn.send(["clear"])
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Write samples:\n")
     f.close()
     for sample in samples:
-        f = open('foquspsuadeclient.log', 'a')
-        f.write(' '.join(map(str, sample)))
-        f.write('\n')
+        f = open("foquspsuadeclient.log", "a")
+        f.write(" ".join(map(str, sample)))
+        f.write("\n")
         f.close()
-        conn.send(['submit', sample])
+        conn.send(["submit", sample])
         conn.recv()
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Samples sent. Running...\n')
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Samples sent. Running...\n")
     f.close()
-    conn.send(['run'])
+    conn.send(["run"])
     n = conn.recv()[1]
     # print 'Submitted {0} samples to FOQUS'.format(n)
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Get results\n')
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Get results\n")
     f.close()
-    conn.send(['result'])
+    conn.send(["result"])
     msg = conn.recv()
     status = msg[1]
     results = msg[2]
-    conn.send(['close'])
+    conn.send(["close"])
     conn.close()
-    f = open('foquspsuadeclient.log', 'a')
-    f.write('Done\n')
+    f = open("foquspsuadeclient.log", "a")
+    f.write("Done\n")
     f.close()
 
     # Write the output file that ALAMO can read

@@ -65,14 +65,14 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.generateSamplesButton.clicked.connect(self.genSamples)
         #
         self.scalingOpts = ivarScales
-        self.penForms = ['None', 'Quadratic', 'Linear', 'Step']
+        self.penForms = ["None", "Quadratic", "Linear", "Step"]
         #
         self.osolvers = sorted(
             list(self.dat.optSolvers.plugins.keys()), key=lambda s: s.lower()
         )
         self.methods = self.dat.optSolvers.plugins  # dict of solvers
         self.optMonitorFrame = optMonitor(self.dat, self)
-        self.tabWidget.addTab(self.optMonitorFrame, 'Run')
+        self.tabWidget.addTab(self.optMonitorFrame, "Run")
         self.optMonitorFrame.setStatusBar.connect(self.setStatusBar)
         self.optMonitorFrame.updateGraph.connect(self.updateGraph)
         self.tabWidget.currentChanged.connect(self.switchTab)
@@ -80,9 +80,9 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.synhi = PythonHighlighter(self.customCodeEdit.document())
 
     def clearOld(self):
-        '''
+        """
         Clear messages from old optimzation runs
-        '''
+        """
         self.optMonitorFrame.clearMessages()
         try:
             self.optMonitorFrame.clearPlots()
@@ -128,7 +128,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                 if name in prob.samp:
                     gh.setCellJSON(table, row, ci[name], prob.samp[name][row])
                 else:
-                    gh.setCellJSON(table, row, ci[name], float('nan'))
+                    gh.setCellJSON(table, row, ci[name], float("nan"))
         table.resizeColumnsToContents()
 
     def switchTab(self, i):
@@ -150,13 +150,13 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         vkey = v[2]
 
     def updateColIndexes(self):
-        '''
+        """
         Setup dictionaries to look up column indexes.  Makes it easy
         to rearrange the table columns.  The dictionary keys are the
         column headings and the dictionary stores the corresponding
         column index. If the columns are renamed the functions that
         use these column indexes will need to be updated also.
-        '''
+        """
         self.vtCols = dict()  # Variable column indexes
         self.ofCols = dict()  # Objective function column indexes
         self.icCols = dict()  # Inequality constraints column indexes
@@ -168,16 +168,16 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
             self.icCols[self.gTable.horizontalHeaderItem(col).text()] = col
 
     def revert(self):
-        '''
+        """
         return form contents to current optimization options
-        '''
+        """
         self.refreshContents()
 
     def applyChanges(self):
-        '''
+        """
         Use information stored in this form to update the
         optimization options
-        '''
+        """
         #
         # Delete optimization settings and rebuild them from the form
         if self.running:
@@ -259,19 +259,19 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.updateSampleVarsTable()
 
     def scaleHelper(self, ind=0):
-        '''
+        """
         If a descision variable has a none scale type set the scale
         to lineae.  For other variables set the scale type to none
         and disable the scale selection.
-        '''
+        """
         table = self.varForm
         typeCol = self.vtCols["Type"]
         scaleCol = self.vtCols["Scale"]
         for row in range(table.rowCount()):
             vtype = gh.getCellText(table, row, typeCol)
             stype = gh.getCellText(table, row, scaleCol)
-            if vtype == 'Decision':
-                if stype == 'None':
+            if vtype == "Decision":
+                if stype == "None":
                     gh.cellPulldownSetText(table, row, scaleCol, "Linear")
                 table.cellWidget(row, scaleCol).setEnabled(True)
             else:
@@ -279,7 +279,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                 table.cellWidget(row, scaleCol).setEnabled(False)
 
     def refreshContents(self):
-        ''' '''
+        """ """
         self.dat.flowsheet.generateGlobalVariables()
         prob = self.dat.optProblem
         x = self.dat.flowsheet.x
@@ -385,11 +385,11 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         self.updateSampleVarsTable()
 
     def setSolver(self, name):
-        '''
+        """
         Set the current solver
 
         name: the name of the solver to make active
-        '''
+        """
         slvr = self.methods[name].opt()
         self.methodDescriptionBox.setHtml(slvr.methodDescription)
         opts = slvr.options
@@ -409,7 +409,7 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
                     table,
                     i,
                     1,
-                    '',
+                    "",
                     check=opts[opt].value,
                     jsonEnc=False,
                     bgColor=QColor(235, 255, 235),
@@ -438,32 +438,32 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         table.resizeColumnsToContents()
 
     def selectSolver(self, indx):
-        '''
+        """
         Called when a solver is selected in the solver combobox
         index:  the combo box index of current selection
             (ignored. is just needed by combo box change signal)
-        '''
+        """
         self.applyChanges()
         self.setSolver(self.solverBox.currentText())
         self.lastSolver = self.solverBox.currentText()
 
     def addF(self):
-        '''
+        """
         Add an objective function
-        '''
+        """
         self.fTable.setRowCount(self.fTable.rowCount() + 1)
 
     def delF(self):
-        '''
+        """
         Delete an objective function
-        '''
+        """
         row = self.fTable.currentRow()
         self.fTable.removeRow(row)
 
     def addG(self):
-        '''
+        """
         Add a new inequality constraint
-        '''
+        """
         self.gTable.setRowCount(self.gTable.rowCount() + 1)
         gh.setTableItem(
             self.gTable,
@@ -474,21 +474,21 @@ class optSetupFrame(_optSetupFrame, _optSetupFrameUI):
         )
 
     def delG(self):
-        '''
+        """
         Remove an inequality constraint
-        '''
+        """
         row = self.gTable.currentRow()
         self.gTable.removeRow(row)
 
     def checkInput(self):
-        '''
+        """
         This function checks several things
         1.  At least on optimization variable
         2.  Max > Min for all variables
         3.  Variable scaling other than none for all optimization
             variables
         4.  Python code evaluates without errors
-        '''
+        """
         # New objective types mean this needs fixed.  Commented out checks
         # for now.
 

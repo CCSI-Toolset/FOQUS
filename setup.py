@@ -31,7 +31,7 @@ try:
             ## Undo the 'n' here, this is just testing without having to put in a real tag ##
             ["ngit", "describe", "--tags", "--abbrev=0"]
         )
-        .decode('utf-8')
+        .decode("utf-8")
         .strip()
     )
     version = version.replace("-", ".dev", 1)
@@ -40,10 +40,10 @@ except:
     version = default_version
 
 # Write the version module
-with open("foqus_lib/version/version.template", 'r') as f:
+with open("foqus_lib/version/version.template", "r") as f:
     verfile = f.read()
 verfile = verfile.format(VERSION=version)
-with open("foqus_lib/version/version.py", 'w') as f:
+with open("foqus_lib/version/version.py", "w") as f:
     f.write(verfile)
 
 # now import version.
@@ -62,25 +62,25 @@ dist = setup(
     maintainer_email=ver.maintainer_email,
     url=ver.webpage,
     packages=find_packages(),
-    py_modules=['pytest_qt_extras'],
+    py_modules=["pytest_qt_extras"],
     package_data={
-        '': [
-            '*.template',
-            '*.json',
-            '*.dll',
-            '*.so',
-            '*.svg',
-            '*.png',
-            '*.html',
-            '*.gms',
-            '*.gpr',
-            '*.ccs',
-            '*.ico',
-            '*.R',
+        "": [
+            "*.template",
+            "*.json",
+            "*.dll",
+            "*.so",
+            "*.svg",
+            "*.png",
+            "*.html",
+            "*.gms",
+            "*.gpr",
+            "*.ccs",
+            "*.ico",
+            "*.R",
         ]
     },
     include_package_data=True,
-    scripts=['cloud/aws/foqus_service.py'],
+    scripts=["cloud/aws/foqus_service.py"],
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",

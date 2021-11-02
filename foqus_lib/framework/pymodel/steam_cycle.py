@@ -22,24 +22,24 @@ from foqus_lib.framework.graph.nodeVars import *
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return True
 
 
 class pymodel_pg(pymodel):
-    '''
+    """
     This is a plugin model for a supercritical power plant using
     some simple coorelations.
-    '''
+    """
 
     def __init__(self):
-        '''
+        """
         Initialize steam cycle object
-        '''
+        """
         pymodel.__init__(self)
         self.description = "Steam cycle corrrelations..."
         # Input variables
@@ -210,9 +210,9 @@ class pymodel_pg(pymodel):
         )
 
     def run(self):
-        '''
+        """
         perform steam cycle calculations
-        '''
+        """
         # net power output w/o CCS (MW)
         if self.inputs["Net.Power"].value > 0:
             NetPower = self.inputs["Net.Power"].value

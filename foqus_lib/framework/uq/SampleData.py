@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-'''
+"""
 Methods:
     SampleData(Model):
         Must be instantiated with an object of type Model
@@ -128,7 +128,7 @@ Methods:
 
     writeToCsv():
         Writes SampleData data to a csv file that can be read in by Excel
-'''
+"""
 
 import os
 import numpy
@@ -145,7 +145,7 @@ class SampleData(object):
     def __init__(self, model, session=None):
         if not isinstance(model, Model):
             raise TypeError("Expecting an object of type Model!")
-        self.ID = time.strftime('Ensemble_%y%m%d%H%M%S')
+        self.ID = time.strftime("Ensemble_%y%m%d%H%M%S")
         self.session = session
         self.numSamples = 0
         self.origNumSamples = None
@@ -168,9 +168,9 @@ class SampleData(object):
         x = SampleData.__new__(SampleData)
         memo[id(self)] = x
         for n, v in self.__dict__.items():
-            if n == 'session':
+            if n == "session":
                 setattr(x, n, self.__getattribute__(n))
-            elif n == 'analyses':
+            elif n == "analyses":
                 setattr(x, n, [])
             else:
                 setattr(x, n, copy.deepcopy(v, memo))
@@ -178,113 +178,113 @@ class SampleData(object):
 
     def saveDict(self):
         sd = dict()
-        sd['ID'] = self.ID
-        sd['numSamples'] = self.numSamples
-        sd['origNumSamples'] = self.origNumSamples
-        sd['numSamplesAdded'] = self.numSamplesAdded
-        sd['numImputedPoints'] = self.numImputedPoints
-        sd['fromFile'] = self.fromFile
-        sd['sampleMethod'] = SamplingMethods.getPsuadeName(self.sampleMethod)
-        sd['model'] = self.model.saveDict()
+        sd["ID"] = self.ID
+        sd["numSamples"] = self.numSamples
+        sd["origNumSamples"] = self.origNumSamples
+        sd["numSamplesAdded"] = self.numSamplesAdded
+        sd["numImputedPoints"] = self.numImputedPoints
+        sd["fromFile"] = self.fromFile
+        sd["sampleMethod"] = SamplingMethods.getPsuadeName(self.sampleMethod)
+        sd["model"] = self.model.saveDict()
         if isinstance(self.inputData, numpy.ndarray):
-            sd['inputData'] = self.inputData.tolist()
+            sd["inputData"] = self.inputData.tolist()
         else:
-            sd['inputData'] = self.inputData
+            sd["inputData"] = self.inputData
 
         if isinstance(self.outputData, numpy.ndarray):
-            sd['outputData'] = self.outputData.tolist()
+            sd["outputData"] = self.outputData.tolist()
         else:
-            sd['outputData'] = self.outputData
-        sd['runState'] = self.runState.tolist()
-        sd['legendreOrder'] = self.legendreOrder
-        sd['fromFile'] = self.fromFile
-        sd['sampleRSType'] = ResponseSurfaces.getPsuadeName(self.sampleRSType)
+            sd["outputData"] = self.outputData
+        sd["runState"] = self.runState.tolist()
+        sd["legendreOrder"] = self.legendreOrder
+        sd["fromFile"] = self.fromFile
+        sd["sampleRSType"] = ResponseSurfaces.getPsuadeName(self.sampleRSType)
         sd["turbineJobIds"] = self.turbineJobIds
         sd["turbineSession"] = self.turbineSession
         sd["turbineResub"] = self.turbineResub
-        sd['analyses'] = []
+        sd["analyses"] = []
         for analysis in self.analyses:
-            sd['analyses'].append(analysis.saveDict())
+            sd["analyses"].append(analysis.saveDict())
 
         return sd
 
     def loadDict(self, sd):
         self.model = Model()
         try:
-            self.model.loadDict(sd['model'])
+            self.model.loadDict(sd["model"])
         except:
             pass
 
-        self.setID(sd.get('ID', ''))
-        self.setNumSamples(sd.get('numSamples', 0))
-        self.origNumSamples = sd.get('origNumSamples', self.getNumSamples())
-        self.setNumSamplesAdded(sd.get('numSamplesAdded', 0))
-        self.setNumImputedPoints(sd.get('numImputedPoints', 0))
-        self.setFromFile(sd.get('fromFile', False))
-        self.setSampleMethod(sd.get('sampleMethod', None))
-        self.setInputData(sd.get('inputData', None))
-        self.setOutputData(sd.get('outputData', None))
-        self.setRunState(sd.get('runState', None))
-        self.legendreOrder = sd.get('legendreOrder', None)
-        self.fromFile = sd.get('fromFile', False)
-        self.sampleRSType = ResponseSurfaces.getEnumValue(sd.get('sampleRSType'))
+        self.setID(sd.get("ID", ""))
+        self.setNumSamples(sd.get("numSamples", 0))
+        self.origNumSamples = sd.get("origNumSamples", self.getNumSamples())
+        self.setNumSamplesAdded(sd.get("numSamplesAdded", 0))
+        self.setNumImputedPoints(sd.get("numImputedPoints", 0))
+        self.setFromFile(sd.get("fromFile", False))
+        self.setSampleMethod(sd.get("sampleMethod", None))
+        self.setInputData(sd.get("inputData", None))
+        self.setOutputData(sd.get("outputData", None))
+        self.setRunState(sd.get("runState", None))
+        self.legendreOrder = sd.get("legendreOrder", None)
+        self.fromFile = sd.get("fromFile", False)
+        self.sampleRSType = ResponseSurfaces.getEnumValue(sd.get("sampleRSType"))
         self.turbineJobIds = sd.get("turbineJobIds", [])
         self.turbineSession = sd.get("turbineSession", None)
         self.turbineResub = sd.get("turbineResub", [])
         inputDists = []
-        if 'inputDists' in sd['model']:
-            for distDict in sd['model']['inputDists']:
+        if "inputDists" in sd["model"]:
+            for distDict in sd["model"]["inputDists"]:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 inputDists.append(distr)
         self.setInputDistributions(inputDists)
         self.analyses = []
-        if 'analyses' in sd:
-            for analDict in sd['analyses']:
-                type = UQAnalysis.getTypeEnumValue(analDict['type'])
+        if "analyses" in sd:
+            for analDict in sd["analyses"]:
+                type = UQAnalysis.getTypeEnumValue(analDict["type"])
                 if type == UQAnalysis.PARAM_SCREEN:
                     from .ParameterScreening import ParameterScreening
 
                     anal = ParameterScreening(
-                        self, analDict['outputs'], analDict['subType']
+                        self, analDict["outputs"], analDict["subType"]
                     )
                 elif type == UQAnalysis.UNCERTAINTY:
                     from .UncertaintyAnalysis import UncertaintyAnalysis
 
-                    anal = UncertaintyAnalysis(self, analDict['outputs'])
+                    anal = UncertaintyAnalysis(self, analDict["outputs"])
                 elif type == UQAnalysis.CORRELATION:
                     from .CorrelationAnalysis import CorrelationAnalysis
 
-                    anal = CorrelationAnalysis(self, analDict['outputs'])
+                    anal = CorrelationAnalysis(self, analDict["outputs"])
                 elif type == UQAnalysis.SENSITIVITY:
                     from .SensitivityAnalysis import SensitivityAnalysis
 
                     anal = SensitivityAnalysis(
-                        self, analDict['outputs'], analDict['subType']
+                        self, analDict["outputs"], analDict["subType"]
                     )
                 elif type == UQAnalysis.VISUALIZATION:
                     from .Visualization import Visualization
 
-                    anal = Visualization(self, analDict['outputs'], analDict['inputs'])
+                    anal = Visualization(self, analDict["outputs"], analDict["inputs"])
                 else:  # RS Analyses
                     userRegressionFile = (
-                        analDict['userRegressionFile']
-                        if 'userRegressionFile' in analDict
+                        analDict["userRegressionFile"]
+                        if "userRegressionFile" in analDict
                         else None
                     )
                     if type == UQAnalysis.RS_VALIDATION:
                         from .RSValidation import RSValidation
 
                         testFile = (
-                            analDict['testFile'] if 'testFile' in analDict else None
+                            analDict["testFile"] if "testFile" in analDict else None
                         )
                         anal = RSValidation(
                             self,
-                            analDict['outputs'],
-                            analDict['rs'],
-                            analDict['rsOptions'],
-                            analDict['genCodeFile'],
-                            analDict['nCV'],
+                            analDict["outputs"],
+                            analDict["rs"],
+                            analDict["rsOptions"],
+                            analDict["genCodeFile"],
+                            analDict["nCV"],
                             userRegressionFile,
                             testFile,
                         )
@@ -293,36 +293,36 @@ class SampleData(object):
 
                         anal = RSUncertaintyAnalysis(
                             self,
-                            analDict['outputs'],
-                            analDict['subType'],
-                            analDict['rs'],
-                            analDict['rsOptions'],
+                            analDict["outputs"],
+                            analDict["subType"],
+                            analDict["rs"],
+                            analDict["rsOptions"],
                             userRegressionFile,
-                            analDict['xprior'],
+                            analDict["xprior"],
                         )
                     elif type == UQAnalysis.RS_SENSITIVITY:
                         from .RSSensitivityAnalysis import RSSensitivityAnalysis
 
                         anal = RSSensitivityAnalysis(
                             self,
-                            analDict['outputs'],
-                            analDict['subType'],
-                            analDict['rs'],
-                            analDict['rsOptions'],
+                            analDict["outputs"],
+                            analDict["subType"],
+                            analDict["rs"],
+                            analDict["rsOptions"],
                             userRegressionFile,
-                            analDict['xprior'],
+                            analDict["xprior"],
                         )
                     elif type == UQAnalysis.INFERENCE:
                         from .RSInference import RSInference
 
                         anal = RSInference(
                             self,
-                            analDict['ytable'],
-                            analDict['xtable'],
-                            analDict['obsTable'],
-                            analDict['genPostSample'],
-                            analDict['addDisc'],
-                            analDict['showList'],
+                            analDict["ytable"],
+                            analDict["xtable"],
+                            analDict["obsTable"],
+                            analDict["genPostSample"],
+                            analDict["addDisc"],
+                            analDict["showList"],
                             userRegressionFile=userRegressionFile,
                         )
                     elif type == UQAnalysis.RS_VISUALIZATION:
@@ -330,12 +330,12 @@ class SampleData(object):
 
                         anal = RSVisualization(
                             self,
-                            analDict['outputs'],
-                            analDict['inputs'],
-                            analDict['rs'],
-                            analDict['minVal'],
-                            analDict['maxVal'],
-                            analDict['rsOptions'],
+                            analDict["outputs"],
+                            analDict["inputs"],
+                            analDict["rs"],
+                            analDict["minVal"],
+                            analDict["maxVal"],
+                            analDict["rsOptions"],
                             userRegressionFile,
                         )
 
@@ -568,7 +568,7 @@ class SampleData(object):
     def archiveFile(self, fileName, folderStructure=None):
         if self.session == None:
             raise Exception(
-                'SampleData object does not have a session associated with it'
+                "SampleData object does not have a session associated with it"
             )
             return
         if folderStructure is None:
@@ -581,7 +581,7 @@ class SampleData(object):
     def restoreFromArchive(self, fileName, folderStructure=None):
         if self.session == None:
             raise Exception(
-                'SampleData object does not have a session associated with it'
+                "SampleData object does not have a session associated with it"
             )
             return
         if folderStructure is None:
@@ -594,7 +594,7 @@ class SampleData(object):
     def removeArchiveFolder(self, folderStructure=None):
         if self.session == None:
             raise Exception(
-                'SampleData object does not have a session associated with it'
+                "SampleData object does not have a session associated with it"
             )
             return
         if folderStructure is None:
@@ -607,7 +607,7 @@ class SampleData(object):
     def removeArchiveFile(self, fileName, folderStructure=None):
         if self.session == None:
             raise Exception(
-                'SampleData object does not have a session associated with it'
+                "SampleData object does not have a session associated with it"
             )
             return
         if folderStructure is None:
@@ -620,7 +620,7 @@ class SampleData(object):
     def existsInArchive(self, fileName, folderStructure=None):
         if self.session == None:
             raise Exception(
-                'SampleData object does not have a session associated with it'
+                "SampleData object does not have a session associated with it"
             )
             return
         if folderStructure is None:
@@ -694,10 +694,10 @@ class SampleData(object):
         self.outputData = self.outputData[..., mask]
 
     def writeToPsuade(self, filename, fixedAsVariables=False):
-        outf = open(filename, 'w')
+        outf = open(filename, "w")
         if self.getNamesIncludeNodes():
-            outf.write('# NAMESHAVENODES\n')
-        outf.write('PSUADE_IO (Note : inputs not true inputs if pdf ~=U)\n')
+            outf.write("# NAMESHAVENODES\n")
+        outf.write("PSUADE_IO (Note : inputs not true inputs if pdf ~=U)\n")
         types = self.getInputTypes()
 
         if fixedAsVariables:
@@ -705,7 +705,7 @@ class SampleData(object):
         else:
             numInputs = types.count(Model.VARIABLE)
         outf.write(
-            '%d %d %d\n' % (numInputs, self.getNumOutputs(), self.getNumSamples())
+            "%d %d %d\n" % (numInputs, self.getNumOutputs(), self.getNumSamples())
         )
 
         # Write out data
@@ -723,26 +723,26 @@ class SampleData(object):
                 else:
                     hasOutputData = True
         for i in range(self.getNumSamples()):
-            outf.write('%d %d\n' % (i + 1, self.runState[i]))
+            outf.write("%d %d\n" % (i + 1, self.runState[i]))
             for j in range(self.getNumInputs()):
                 if types[j] == Model.VARIABLE or fixedAsVariables:
-                    outf.write(' % .16e\n' % self.inputData[i][j])
+                    outf.write(" % .16e\n" % self.inputData[i][j])
             for j in range(self.getNumOutputs()):
                 if hasOutputData and not numpy.isnan(self.outputData[i][j]):
-                    outf.write(' % .16e\n' % self.outputData[i][j])
+                    outf.write(" % .16e\n" % self.outputData[i][j])
                 else:
-                    outf.write(' 9.9999999999999997e+34\n')
+                    outf.write(" 9.9999999999999997e+34\n")
 
-        outf.write('PSUADE_IO\n')
-        outf.write('PSUADE\n')
+        outf.write("PSUADE_IO\n")
+        outf.write("PSUADE\n")
 
         # Write inputs
-        outf.write('INPUT\n')
+        outf.write("INPUT\n")
         numFixed = self.getNumInputs() - numInputs
         if numFixed > 0:
-            outf.write('   num_fixed %d\n' % numFixed)
+            outf.write("   num_fixed %d\n" % numFixed)
         # outf.write('   dimension = %d\n' % self.getNumInputs())
-        outf.write('   dimension = %d\n' % numInputs)
+        outf.write("   dimension = %d\n" % numInputs)
         names = self.getInputNames()
         mins = self.getInputMins()
         maxs = self.getInputMaxs()
@@ -759,11 +759,11 @@ class SampleData(object):
             names, mins, maxs, types, distributions, defaults
         ):
             if not fixedAsVariables and inType == Model.FIXED:
-                outf.write('   fixed %d %s =  % .16e\n' % (fixedIndex, name, default))
+                outf.write("   fixed %d %s =  % .16e\n" % (fixedIndex, name, default))
                 fixedIndex = fixedIndex + 1
             else:
                 outf.write(
-                    '   variable %d %s  =  % .16e  % .16e\n'
+                    "   variable %d %s  =  % .16e  % .16e\n"
                     % (variableIndex, name, minimum, maximum)
                 )
                 if dist is not None:
@@ -771,120 +771,120 @@ class SampleData(object):
                     distParams = dist.getParameterValues()
                     if distType != Distribution.UNIFORM:
                         outf.write(
-                            '   PDF %d %c'
+                            "   PDF %d %c"
                             % (variableIndex, Distribution.getPsuadeName(distType))
                         )
                         if distType == Distribution.SAMPLE:
                             fileString = distParams[0]
                             import platform
 
-                            if platform.system() == 'Windows':
+                            if platform.system() == "Windows":
                                 import win32api
 
                                 fileString = win32api.GetShortPathName(fileString)
-                            outf.write(' %s %d' % (fileString, distParams[1]))
+                            outf.write(" %s %d" % (fileString, distParams[1]))
                         else:
                             if distParams[0] is not None:
-                                outf.write(' % .16e' % distParams[0])
+                                outf.write(" % .16e" % distParams[0])
                             if distParams[1] is not None:
-                                outf.write(' % .16e' % distParams[1])
-                        outf.write('\n')
+                                outf.write(" % .16e" % distParams[1])
+                        outf.write("\n")
                 variableIndex = variableIndex + 1
-        outf.write('END\n')
+        outf.write("END\n")
 
         # Write outputs
-        outf.write('OUTPUT\n')
-        outf.write('   dimension = %d\n' % self.getNumOutputs())
+        outf.write("OUTPUT\n")
+        outf.write("   dimension = %d\n" % self.getNumOutputs())
         names = self.getOutputNames()
         indices = list(range(self.getNumOutputs()))
         for i, name in zip(indices, names):
-            outf.write('   variable %d %s\n' % (i + 1, name))
-        outf.write('END\n')
+            outf.write("   variable %d %s\n" % (i + 1, name))
+        outf.write("END\n")
 
         # Write Method
-        outf.write('METHOD\n')
+        outf.write("METHOD\n")
         if self.getSampleMethod() != None:
             outf.write(
-                '   sampling = %s\n'
+                "   sampling = %s\n"
                 % SamplingMethods.getPsuadeName(self.getSampleMethod())
             )
-        outf.write('   num_samples = %d\n' % self.getNumSamples())
-        outf.write('   num_replications = 1\n')
-        outf.write('   num_refinements = 0\n')
-        outf.write('   refinement_size = 10000000\n')
-        outf.write('   reference_num_refinements = 0\n')
-        outf.write('END\n')
+        outf.write("   num_samples = %d\n" % self.getNumSamples())
+        outf.write("   num_replications = 1\n")
+        outf.write("   num_refinements = 0\n")
+        outf.write("   refinement_size = 10000000\n")
+        outf.write("   reference_num_refinements = 0\n")
+        outf.write("END\n")
 
         # Write Application
-        outf.write('APPLICATION\n')
+        outf.write("APPLICATION\n")
         driverString = self.getDriverName()
         if driverString is None or not os.path.exists(driverString):
-            driverString = 'NONE'
+            driverString = "NONE"
         else:
             import platform
 
-            if platform.system() == 'Windows':
+            if platform.system() == "Windows":
                 import win32api
 
                 driverString = win32api.GetShortPathName(driverString)
-        outf.write('   driver = %s\n' % driverString)
+        outf.write("   driver = %s\n" % driverString)
         driverString = self.getOptDriverName()
-        if driverString != 'PSUADE_LOCAL':
+        if driverString != "PSUADE_LOCAL":
             if driverString is None or not os.path.exists(driverString):
-                driverString = 'NONE'
+                driverString = "NONE"
             else:
                 import platform
 
-                if platform.system() == 'Windows':
+                if platform.system() == "Windows":
                     import win32api
 
                     driverString = win32api.GetShortPathName(driverString)
-        outf.write('   opt_driver = %s\n' % driverString)
+        outf.write("   opt_driver = %s\n" % driverString)
         driverString = self.getEnsembleOptDriverName()
-        if driverString != 'PSUADE_LOCAL':
+        if driverString != "PSUADE_LOCAL":
             if driverString is None or not os.path.exists(driverString):
-                driverString = 'NONE'
+                driverString = "NONE"
             else:
                 import platform
 
-                if platform.system() == 'Windows':
+                if platform.system() == "Windows":
                     import win32api
 
                     driverString = win32api.GetShortPathName(driverString)
-        outf.write('   ensemble_opt_driver = %s\n' % driverString)
+        outf.write("   ensemble_opt_driver = %s\n" % driverString)
         driverString = self.getAuxDriverName()
         if driverString is None or not os.path.exists(driverString):
-            driverString = 'NONE'
+            driverString = "NONE"
         else:
             import platform
 
-            if platform.system() == 'Windows':
+            if platform.system() == "Windows":
                 import win32api
 
                 driverString = win32api.GetShortPathName(driverString)
-        outf.write('   aux_opt_driver = %s\n' % driverString)
-        outf.write('   max_job_wait_time = 1000000\n')
-        outf.write('   save_frequency = 1\n')
-        outf.write('END\n')
+        outf.write("   aux_opt_driver = %s\n" % driverString)
+        outf.write("   max_job_wait_time = 1000000\n")
+        outf.write("   save_frequency = 1\n")
+        outf.write("END\n")
 
         # Write Analysis
-        outf.write('ANALYSIS\n')
-        outf.write('   analyzer output_id  = 1\n')
+        outf.write("ANALYSIS\n")
+        outf.write("   analyzer output_id  = 1\n")
         rs = self.getSampleRSType()
         if rs == None:
-            rs = 'MARS'
+            rs = "MARS"
         else:
             rs = ResponseSurfaces.getPsuadeName(rs)
-        outf.write('   analyzer rstype = %s\n' % rs)
+        outf.write("   analyzer rstype = %s\n" % rs)
 
         order = self.getLegendreOrder()
         if order is not None:
-            outf.write('   analyzer rs_legendre_order = %d\n' % self.getLegendreOrder())
-        outf.write('   analyzer threshold = 1.000000e+00\n')
-        outf.write('   diagnostics 1\n')
-        outf.write('END\n')
+            outf.write("   analyzer rs_legendre_order = %d\n" % self.getLegendreOrder())
+        outf.write("   analyzer threshold = 1.000000e+00\n")
+        outf.write("   diagnostics 1\n")
+        outf.write("END\n")
 
-        outf.write('END\n')
+        outf.write("END\n")
         outf.close()
 
     def writeToCsv(
@@ -895,7 +895,7 @@ class SampleData(object):
         inputIndex=None,
         outputIndices=None,
     ):
-        outf = open(filename, 'w')
+        outf = open(filename, "w")
 
         # Write variable names
 
@@ -917,7 +917,7 @@ class SampleData(object):
         outf.write('"%s"' % varNames[0])
         for name in varNames[1:]:
             outf.write(',"%s"' % name)
-        outf.write('\n')
+        outf.write("\n")
 
         # Write data
         inData = self.getInputData()
@@ -934,11 +934,11 @@ class SampleData(object):
             data = numpy.hstack((inData, outData))
         for row in data:
             if isinstance(row, numpy.ndarray):
-                outf.write('%f' % row[0])
+                outf.write("%f" % row[0])
                 for item in row[1:]:
-                    outf.write(',%f' % item)
+                    outf.write(",%f" % item)
             else:
-                outf.write('%f' % row)
-            outf.write('\n')
+                outf.write("%f" % row)
+            outf.write("\n")
 
         outf.close()

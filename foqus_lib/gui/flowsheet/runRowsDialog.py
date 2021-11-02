@@ -57,10 +57,10 @@ class runRowsDialog(_runRowsDialog, _runRowsDialogUI):
         self.dat.mainWin.app.processEvents()  # TODO pylint: disable=no-member
 
     def closeEvent(self, event):
-        '''
+        """
         Intercept close main window close event
         make sure you really want to quit
-        '''
+        """
         if self.allDone:
             event.accept()
         else:

@@ -22,16 +22,16 @@ def fit(
     xdatfile,
     ydatfile,
     modelfile,
-    bte='[200,1000,1]',
-    categorical='auto',
-    nterms='25',
-    order='2',
-    priorprob='0.5',
+    bte="[200,1000,1]",
+    categorical="auto",
+    nterms="25",
+    order="2",
+    priorprob="0.5",
 ):
     p = subprocess.Popen(
         [
-            'Rscript',
-            'bssanova_fit.R',
+            "Rscript",
+            "bssanova_fit.R",
             xdatfile,
             ydatfile,
             modelfile,
@@ -54,5 +54,5 @@ def fit(
 # ---------------------------------------
 # Example usage
 # ---------------------------------------
-rdsfile = fit('xdat.csv', 'ydat.csv', 'bssanova_fit.rds')
+rdsfile = fit("xdat.csv", "ydat.csv", "bssanova_fit.rds")
 print(rdsfile)

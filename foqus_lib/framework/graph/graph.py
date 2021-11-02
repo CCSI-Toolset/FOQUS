@@ -750,14 +750,14 @@ class Graph(threading.Thread):
                             )
                         )
                         continue
-                    assert 'State' in job, 'Missing State Field in Job %s Record' % i
-                    if job['State'] == 'error':
+                    assert "State" in job, "Missing State Field in Job %s Record" % i
+                    if job["State"] == "error":
                         logging.getLogger("foqus." + __name__).error(
                             "Job(%s) Error: %s",
-                            job['Id'],
-                            job.get('Message', 'No Error Message Provided'),
+                            job["Id"],
+                            job.get("Message", "No Error Message Provided"),
                         )
-                    jobRes = job.get('Output', None)
+                    jobRes = job.get("Output", None)
                     if jobRes is None:
                         jobErr = -3
                     else:
@@ -833,7 +833,7 @@ class Graph(threading.Thread):
                     vectorvals[n][invarsvector] = OrderedDict()
                     for invar in self.nodes[n].inVars.keys():
                         if invarsvector in invar:
-                            invarsplit = invar.split('_')
+                            invarsplit = invar.split("_")
                             idx = int(invarsplit[-1])
                             vectorvals[n][invarsvector][idx] = vals[n][invar]
             self.loadValues({"input": vals, "input_vectorvals": vectorvals})

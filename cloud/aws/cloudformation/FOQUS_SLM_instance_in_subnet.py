@@ -76,7 +76,7 @@ def _create_template(
 ):
     """returns Template instance"""
     t = Template()
-    t.add_version('2010-09-09')
+    t.add_version("2010-09-09")
     t.add_description(
         """Template to create SLM instance and bind to
     passed in Newtork Interface\
@@ -85,23 +85,23 @@ def _create_template(
 
     keyname_param = t.add_parameter(
         Parameter(
-            'KeyName',
-            ConstraintDescription='must be the name of an existing EC2 KeyPair.',
-            Description='Name of an existing EC2 KeyPair to enable SSH access to \
-    the instance',
-            Type='AWS::EC2::KeyPair::KeyName',
+            "KeyName",
+            ConstraintDescription="must be the name of an existing EC2 KeyPair.",
+            Description="Name of an existing EC2 KeyPair to enable SSH access to \
+    the instance",
+            Type="AWS::EC2::KeyPair::KeyName",
         )
     )
 
     sshlocation_param = t.add_parameter(
         Parameter(
-            'RDPLocation',
-            Description=' The IP address range that can be used to RDP to the EC2 \
-    instances',
-            Type='String',
-            MinLength='9',
-            MaxLength='18',
-            Default='0.0.0.0/0',
+            "RDPLocation",
+            Description=" The IP address range that can be used to RDP to the EC2 \
+    instances",
+            Type="String",
+            MinLength="9",
+            MaxLength="18",
+            Default="0.0.0.0/0",
             AllowedPattern=r"(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})/(\d{1,2})",
             ConstraintDescription=(
                 "must be a valid IP CIDR range of the form x.x.x.x/x."
@@ -111,66 +111,66 @@ def _create_template(
 
     instanceType_param = t.add_parameter(
         Parameter(
-            'InstanceType',
-            Type='String',
-            Description='SLM Server EC2 instance type',
-            Default='t2.micro',
+            "InstanceType",
+            Type="String",
+            Description="SLM Server EC2 instance type",
+            Default="t2.micro",
             AllowedValues=[
-                't1.micro',
-                't2.micro',
-                't2.small',
-                't2.medium',
-                't3.micro',
-                't3.small',
-                't3.medium',
-                't3.large',
-                't3.xlarge',
+                "t1.micro",
+                "t2.micro",
+                "t2.small",
+                "t2.medium",
+                "t3.micro",
+                "t3.small",
+                "t3.medium",
+                "t3.large",
+                "t3.xlarge",
             ],
-            ConstraintDescription='must be a valid EC2 instance type.',
+            ConstraintDescription="must be a valid EC2 instance type.",
         )
     )
 
     t.add_mapping(
-        'AWSInstanceType2Arch',
+        "AWSInstanceType2Arch",
         {
-            't1.micro': {'Arch': 'PV64'},
-            't2.micro': {'Arch': 'HVM64'},
-            't2.small': {'Arch': 'HVM64'},
-            't2.medium': {'Arch': 'HVM64'},
-            't3.micro': {'Arch': 'HVM64'},
-            't3.small': {'Arch': 'HVM64'},
-            't3.medium': {'Arch': 'HVM64'},
-            't3.large': {'Arch': 'HVM64'},
-            't3.xlarge': {'Arch': 'HVM64'},
+            "t1.micro": {"Arch": "PV64"},
+            "t2.micro": {"Arch": "HVM64"},
+            "t2.small": {"Arch": "HVM64"},
+            "t2.medium": {"Arch": "HVM64"},
+            "t3.micro": {"Arch": "HVM64"},
+            "t3.small": {"Arch": "HVM64"},
+            "t3.medium": {"Arch": "HVM64"},
+            "t3.large": {"Arch": "HVM64"},
+            "t3.xlarge": {"Arch": "HVM64"},
         },
     )
 
     # Windows_Server-2016-English-Full-Base-2018.09.15
     t.add_mapping(
-        'AWSRegionArch2AMI', {'us-east-1': {'HVM64': 'ami-01945499792201081'}}
+        "AWSRegionArch2AMI", {"us-east-1": {"HVM64": "ami-01945499792201081"}}
     )
 
-    ref_stack_id = Ref('AWS::StackId')
-    ref_region = Ref('AWS::Region')
-    ref_stack_name = Ref('AWS::StackName')
+    ref_stack_id = Ref("AWS::StackId")
+    ref_region = Ref("AWS::Region")
+    ref_stack_name = Ref("AWS::StackName")
 
     routeTable = t.add_resource(
-        RouteTable('RouteTable', VpcId=vpc_id, Tags=Tags(Application=ref_stack_id))
+        RouteTable("RouteTable", VpcId=vpc_id, Tags=Tags(Application=ref_stack_id))
     )
 
     route = t.add_resource(
         Route(
-            'Route',
+            "Route",
             # DependsOn='AttachGateway',
             GatewayId=internetgateway_id,
-            DestinationCidrBlock='0.0.0.0/0',
+            DestinationCidrBlock="0.0.0.0/0",
             RouteTableId=Ref(routeTable),
         )
     )
 
     subnetRouteTableAssociation = t.add_resource(
         SubnetRouteTableAssociation(
-            'SubnetRouteTableAssociation',
+            "SubnetRouteTableAssociation",
             SubnetId=subnet_public_id,
             RouteTableId=Ref(routeTable),
         )
@@ -266,13 +266,13 @@ def _create_template(
     """
     instanceSecurityGroup = t.add_resource(
         SecurityGroup(
-            'InstanceSecurityGroup',
-            GroupDescription='Enable RDP access via port 3389',
+            "InstanceSecurityGroup",
+            GroupDescription="Enable RDP access via port 3389",
             SecurityGroupIngress=[
                 SecurityGroupRule(
-                    IpProtocol='tcp',
-                    FromPort='3389',
-                    ToPort='3389',
+                    IpProtocol="tcp",
+                    FromPort="3389",
+                    ToPort="3389",
                     CidrIp=Ref(sshlocation_param),
                 )
             ],
@@ -315,10 +315,10 @@ def _create_template(
                             Statement(
                                 Effect=Allow,
                                 Action=[
-                                    Action('s3', 'List*'),
-                                    Action('s3', 'Get*'),
+                                    Action("s3", "List*"),
+                                    Action("s3", "Get*"),
                                 ],
-                                Resource=['arn:aws:s3:::*'],
+                                Resource=["arn:aws:s3:::*"],
                             )
                         ]
                     ),
@@ -335,37 +335,37 @@ def _create_template(
 
     instance = t.add_resource(
         Instance(
-            'SLMServerInstance',
+            "SLMServerInstance",
             # Metadata=instance_metadata,
             ImageId=FindInMap(
-                'AWSRegionArch2AMI',
-                Ref('AWS::Region'),
-                FindInMap('AWSInstanceType2Arch', Ref(instanceType_param), 'Arch'),
+                "AWSRegionArch2AMI",
+                Ref("AWS::Region"),
+                FindInMap("AWSInstanceType2Arch", Ref(instanceType_param), "Arch"),
             ),
             InstanceType=Ref(instanceType_param),
             KeyName=Ref(keyname_param),
             NetworkInterfaces=[
                 NetworkInterfaceProperty(
-                    NetworkInterfaceId=network_interface_id, DeviceIndex='0'
+                    NetworkInterfaceId=network_interface_id, DeviceIndex="0"
                 )
             ],
             IamInstanceProfile=Ref(slm_instanceprofile),
             UserData=Base64(
                 Join(
-                    '',
+                    "",
                     [
-                        '<powershell>\n',
-                        '$ErrorActionPreference = \"Stop\"\n',
-                        'net user Administrator %(password)s\n'
+                        "<powershell>\n",
+                        '$ErrorActionPreference = "Stop"\n',
+                        "net user Administrator %(password)s\n"
                         % dict(password=ADMIN_PASSWORD),
-                        r'Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip\n'
+                        r"Read-S3Object -BucketName %(bucket_name)s -Key SLMLockInfo.zip -File \Users\Administrtor\Desktop\SLMLockInfo.zip\n"
                         % dict(bucket_name=BUCKET_NAME),
                         'Rename-Computer -NewName "SLMServer" -Restart\n'
-                        '</powershell>\n',
+                        "</powershell>\n",
                     ],
                 )
             ),
-            Tags=Tags(Name='FOQUS_SLMServer', Application=ref_stack_id),
+            Tags=Tags(Name="FOQUS_SLMServer", Application=ref_stack_id),
         )
     )
     """
@@ -380,9 +380,9 @@ def _create_template(
     t.add_output(
         [
             Output(
-                'URL',
-                Description='Newly created application URL',
-                Value=Join('', ['http://', GetAtt('SLMServerInstance', 'PublicIp')]),
+                "URL",
+                Description="Newly created application URL",
+                Value=Join("", ["http://", GetAtt("SLMServerInstance", "PublicIp")]),
             )
         ]
     )
@@ -393,8 +393,8 @@ def main():
     cp = ConfigParser()
     cp.read(CONFIG_FILE)
     global BUCKET_NAME, ADMIN_PASSWORD
-    BUCKET_NAME = cp.get('S3', 'bucket')
-    ADMIN_PASSWORD = cp.get('CloudInit', 'admin_password')
+    BUCKET_NAME = cp.get("S3", "bucket")
+    ADMIN_PASSWORD = cp.get("CloudInit", "admin_password")
     op = optparse.OptionParser(
         usage="USAGE: %prog [vpc_id] [subnet_id] [internet_gateway_id] [network_interface_id] [allocation_id]",
         description=main.__doc__,
@@ -403,19 +403,19 @@ def main():
     # if len(args) != 1: usage()
     # command = args[0]
     # Ref(VPC)
-    assert args[0].startswith('vpc-')
+    assert args[0].startswith("vpc-")
     vpc_id = args[0]
     # Ref(subnet_public)
-    assert args[1].startswith('subnet-')
+    assert args[1].startswith("subnet-")
     subnet_public_id = args[1]
 
     ## TODO: ADD THESE TO VPC Main Output
     # Ref(internetGateway)
-    assert args[2].startswith('igw-')
+    assert args[2].startswith("igw-")
     internetgateway_id = args[2]
-    assert args[3].startswith('eni-')
+    assert args[3].startswith("eni-")
     network_interface_id = args[3]
-    assert args[4].startswith('eipalloc-')
+    assert args[4].startswith("eipalloc-")
     allocation_id = args[4]
 
     t = _create_template(
@@ -428,5 +428,5 @@ def main():
     print(t.to_json())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

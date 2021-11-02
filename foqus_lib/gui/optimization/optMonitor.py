@@ -47,9 +47,9 @@ class optMonitor(_optMonitor, _optMonitorUI):
     updateGraph = QtCore.Signal()
 
     def __init__(self, dat, parent=None):
-        '''
+        """
         Constructor for model set up dialog
-        '''
+        """
         super(optMonitor, self).__init__(parent=parent)
         self.settingsForm = parent
         self.setupUi(self)  # Create the widgets
@@ -161,16 +161,16 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.coordFigAx.set_xlim(0.75, len(self.xnames) + 0.25, auto=False)
         self.coordFigAx.set_yticks(list(range(11)))
         self.coordFigAx.set_xticks(list(range(1, len(self.xnames) + 1)))
-        self.coordFigAx.set_xticklabels(self.xnames, rotation='vertical')
+        self.coordFigAx.set_xticklabels(self.xnames, rotation="vertical")
         self.bestX = [11] * len(self.xnames)
         self.sampLim = [[11] * len(self.xnames), [11] * len(self.xnames)]
         self.coordXCoord = list(range(1, (len(self.bestX) + 1)))
         self.coorFigLine1 = self.coordFigAx.plot(self.coordXCoord, self.bestX)
         self.coorFigLine2 = self.coordFigAx.plot(
-            self.coordXCoord, self.sampLim[0], 'bo'
+            self.coordXCoord, self.sampLim[0], "bo"
         )
         self.coorFigLine3 = self.coordFigAx.plot(
-            self.coordXCoord, self.sampLim[1], 'bo'
+            self.coordXCoord, self.sampLim[1], "bo"
         )
 
     def startOptimization(self):
@@ -251,10 +251,10 @@ class optMonitor(_optMonitor, _optMonitorUI):
             self.coorFigLine2[0].set_data(self.coordXCoord, self.sampLim[0])
             self.coorFigLine3[0].set_data(self.coordXCoord, self.sampLim[1])
             self.coordCanvas.draw()
-            self.objbestFigAx.plot(self.bestiter, self.bestObj, '-bo')
+            self.objbestFigAx.plot(self.bestiter, self.bestObj, "-bo")
             self.objCanvas.draw()
         if itChange:
-            self.objFigAx.plot(objPoints[0], objPoints[1], 'ro')
+            self.objFigAx.plot(objPoints[0], objPoints[1], "ro")
             self.objCanvas.draw()
         if updateStatusLine:
             self.msgSubwindow.statusLine.setText(

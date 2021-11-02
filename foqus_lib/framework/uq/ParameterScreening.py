@@ -22,22 +22,22 @@ class ParameterScreening(UQAnalysis):
     MOAT, LSA, MARSRANK, SOT, DELTA, GP = list(range(6))
 
     fullNames = (
-        'MOAT',
-        'Local Sensitivity Analysis',
-        'MARS Ranking',
-        'Sum of Trees',
-        'Delta Test',
-        'Gaussian Process',
+        "MOAT",
+        "Local Sensitivity Analysis",
+        "MARS Ranking",
+        "Sum of Trees",
+        "Delta Test",
+        "Gaussian Process",
     )
-    psuadeNames = ('moat', 'lsa', 'mars_sa', 'sot_sa', 'delta_test', 'gp_sa')
+    psuadeNames = ("moat", "lsa", "mars_sa", "sot_sa", "delta_test", "gp_sa")
 
     outFileNames = (
-        'matlabmoatbs.m',
-        'matlablsa.m',
-        'matlabmarsa.m',
-        'matlabsot.m',
-        'matlabdelta.m',
-        'matlabkrisa.m',
+        "matlabmoatbs.m",
+        "matlablsa.m",
+        "matlabmarsa.m",
+        "matlabsot.m",
+        "matlabdelta.m",
+        "matlabkrisa.m",
     )
 
     @staticmethod
@@ -70,7 +70,7 @@ class ParameterScreening(UQAnalysis):
         data = self.ensemble.getValidSamples()
         Common.initFolder(RawDataAnalyzer.dname)
         fname = Common.getLocalFileName(
-            RawDataAnalyzer.dname, data.getModelName().split()[0], '.dat'
+            RawDataAnalyzer.dname, data.getModelName().split()[0], ".dat"
         )
         data.writeToPsuade(fname)
 

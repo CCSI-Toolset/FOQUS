@@ -43,14 +43,14 @@ _surrogateFrameUI, _surrogateFrame = uic.loadUiType(
 
 
 class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
-    '''
+    """
     This is the frame for setting up surrogate model methods
-    '''
+    """
 
     setStatusBar = QtCore.pyqtSignal(str)
 
     def __init__(self, dat, parent=None):
-        ''' '''
+        """ """
         super(surrogateFrame, self).__init__(parent=parent)
         self.mainWin = parent
         self.setupUi(self)
@@ -101,7 +101,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
     def selectAllOutputs(self):
         table = self.outputTable
         for row in range(table.rowCount()):
-            if gh.getCellText(table, row, 0) != 'graph.error':
+            if gh.getCellText(table, row, 0) != "graph.error":
                 gh.setCellChecked(table, row, 0, check=True)
 
     def selectNoInputs(self):
@@ -115,18 +115,18 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             gh.setCellChecked(table, row, 0, check=False)
 
     def clearOld(self):
-        '''
+        """
         Clear old run messages.
-        '''
+        """
         self.monitorTextBox.setPlainText("")
 
     def stop(self):
         self.pg.terminate()
 
     def run(self):
-        '''
+        """
         Start making the surrogate models
-        '''
+        """
         self.monitorTextBox.setPlainText("")
         self.applyChanges()
         self.toolBox.setCurrentIndex(4)
@@ -157,11 +157,11 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             lb = self.mainWin.uqSetupFrame.simulationTable.cellWidget(row, col)
             lb.clicked.emit()
         wd = self.dat.foqusSettings.working_dir
-        src_psuade_data_file = os.path.join(wd, 'psuadeData')
+        src_psuade_data_file = os.path.join(wd, "psuadeData")
         # dest_psuade_data_file = os.path.join(
         #    iREVEAL_work_dir, 'psuadeData')
         # shutil.copyfile(src_psuade_data_file, dest_psuade_data_file)
-        src_psuade_in_file = os.path.join(wd, 'psuade.in')
+        src_psuade_in_file = os.path.join(wd, "psuade.in")
         # dest_psuade_in_file = os.path.join(iREVEAL_work_dir, 'psuade.in')
         # shutil.copyfile(src_psuade_in_file, dest_psuade_in_file)
         self.refreshData()
@@ -170,10 +170,10 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.dataBrowser.refreshContents()
 
     def selectTool(self, i):
-        '''
+        """
         This is called to when the tool pull down is used to select
         a different tool
-        '''
+        """
         tool = self.toolSelectBox.currentText()
         self.applyChanges(tool=self.prevTool)
         self.prevTool = tool
@@ -188,11 +188,11 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.refreshContents()
 
     def createOptionsTables(self):
-        '''
+        """
         Get the options for all the surrogate method plugins and
         make oftion tables for them.  These go into a stack
         widget that switches when you change the tool selection
-        '''
+        """
         self.optTable = {}
         for tool in self.tools:
             pg = self.dat.surrogateMethods.plugins[tool].surrogateMethod(self.dat)
@@ -200,7 +200,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             self.settingsStack.addWidget(self.optTable[tool])
             self.optTable[tool].setColumnCount(3)
             self.optTable[tool].setHorizontalHeaderLabels(
-                ['Setting Name', 'Value', 'Description']
+                ["Setting Name", "Value", "Description"]
             )
             self.optTable[tool].setRowCount(len(pg.options.order))
             for i, opt in enumerate(pg.options.order):
@@ -215,7 +215,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                         self.optTable[tool],
                         i,
                         1,
-                        '',
+                        "",
                         check=pg.options[opt].value,
                         jsonEnc=False,
                         bgColor=QColor(235, 255, 235),
@@ -281,10 +281,10 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.refreshContents()
 
     def refreshContents(self):
-        '''
+        """
         Update the contents of the surrogate for to reflect the
         current state of the foqus session.
-        '''
+        """
         self.ivGeneralButton1.hide()
         self.ivGeneralButton2.hide()
         self.ovGeneralButton1.hide()
@@ -306,7 +306,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
                 self.toolSelectBox.setCurrentIndex(i)
                 self.blockapply = False
         tool = self.toolSelectBox.currentText()
-        if tool == '':
+        if tool == "":
             return
         pg = self.dat.surrogateMethods.plugins[tool].surrogateMethod(self.dat)
         pg.loadFromSession()
@@ -363,7 +363,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             gh.setTableItem(
                 self.inputTable,
                 row=i,
-                col=self.inputCols['Name'],
+                col=self.inputCols["Name"],
                 text=inputNames[i],
                 check=inputNames[i] in pg.input,
                 editable=False,
@@ -371,14 +371,14 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             gh.setTableItem(
                 self.inputTable,
                 row=i,
-                col=self.inputCols['Max'],
+                col=self.inputCols["Max"],
                 text=var.max,
                 jsonEnc=True,
             )
             gh.setTableItem(
                 self.inputTable,
                 row=i,
-                col=self.inputCols['Min'],
+                col=self.inputCols["Min"],
                 text=var.min,
                 jsonEnc=True,
             )
@@ -396,7 +396,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
             gh.setTableItem(
                 self.outputTable,
                 row=i,
-                col=self.outputCols['Name'],
+                col=self.outputCols["Name"],
                 text=outputNames[i],
                 check=outputNames[i] in pg.output,
                 editable=False,
@@ -414,9 +414,9 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.outputTable.resizeColumnsToContents()
 
     def applyChanges(self, tool=None):
-        '''
+        """
         Save surrogate model setup in foqus session
-        '''
+        """
         if self.blockapply:
             return
         if tool is None:
@@ -425,14 +425,14 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         inputs = []
         outputs = []
         dataFilter = self.dataBrowser.filterSelectBox.currentText()
-        if dataFilter == '':
+        if dataFilter == "":
             dataFilter = None
         # inputs and input var options
         for i in range(self.inputTable.rowCount()):
             c = gh.isCellChecked(self.inputTable, i, 0)
             var = self.dat.flowsheet.input.get(c[1])
-            var.setMin(gh.getCellJSON(self.inputTable, i, self.inputCols['Min']))
-            var.setMax(gh.getCellJSON(self.inputTable, i, self.inputCols['Max']))
+            var.setMin(gh.getCellJSON(self.inputTable, i, self.inputCols["Min"]))
+            var.setMax(gh.getCellJSON(self.inputTable, i, self.inputCols["Max"]))
             if c[0]:
                 inputs.append(c[1])
                 for item in pg.inputCols:
@@ -464,11 +464,11 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         self.dat.surrogateCurrent = pg.name
 
     def updateStatus(self):
-        '''
+        """
         This function is called by the timer periodically and
         updates the surrogate generation status.  If finished it
         also stops the timer and resests the start/stop buttons.
-        '''
+        """
         done = False
         if not self.pg.isAlive():
             done = True

@@ -114,12 +114,12 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 for r in range(inputData.shape[0]):
                     item = self.table.item(r, c)
                     if item is None:
-                        item = QTableWidgetItem('%g' % inputData[r][i])
+                        item = QTableWidgetItem("%g" % inputData[r][i])
                         if r >= inputData.shape[0] - numSamplesAdded:
                             item.setBackground(refinedColor)
                         self.table.setItem(r, c, item)
                     else:
-                        item.setText('%g' % inputData[r][i])
+                        item.setText("%g" % inputData[r][i])
                 c = c + 1
                 if inputType == Model.VARIABLE:
                     item = sdoePreview.listItem(inputNames[i], i)

@@ -42,11 +42,11 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
                 item.setCheckState(QtCore.Qt.Unchecked)
             else:
                 item.setCheckState(QtCore.Qt.Checked)
-            if h.startswith('input.'):
+            if h.startswith("input."):
                 self.inputColumnsList.addItem(item)
-            elif h.startswith('output.'):
+            elif h.startswith("output."):
                 self.outputColumnsList.addItem(item)
-            elif h.startswith('setting.'):
+            elif h.startswith("setting."):
                 self.settingsColumnsList.addItem(item)
             else:
                 self.metadataColumnsList.addItem(item)

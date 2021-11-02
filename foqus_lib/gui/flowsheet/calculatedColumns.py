@@ -34,7 +34,7 @@ _calculatedColumnsUI, _calculatedColumns = uic.loadUiType(
 def _list_item_mime_to_text(mime_data, c=False):
     if mime_data.hasText():
         return
-    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    data = mime_data.data("application/x-qabstractitemmodeldatalist")
     if not data:
         return
     ds = QtCore.QDataStream(data)
@@ -126,7 +126,7 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         newName, ok = QtWidgets.QInputDialog.getText(
             self, "Column Name", "New column name:"
         )
-        if ok and newName != '':  # if name supplied and not canceled
+        if ok and newName != "":  # if name supplied and not canceled
             if newName in self.dat.flowsheet.results.calculated_columns:
                 QtWidgets.QMessageBox.information(
                     self, "Error", "The column already exists."

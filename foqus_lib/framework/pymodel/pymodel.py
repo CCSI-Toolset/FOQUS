@@ -30,7 +30,7 @@ class pymodel:
         self.node = node
 
     def run(self):
-        '''
+        """
         Override this function with python model
-        '''
+        """
         pass

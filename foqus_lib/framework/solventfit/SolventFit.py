@@ -27,11 +27,11 @@ from foqus_lib.framework.uq.Plotter import Plotter
 
 class SolventFit:
 
-    dname = os.getcwd() + os.path.sep + 'SolventFit_files'
+    dname = os.getcwd() + os.path.sep + "SolventFit_files"
 
     @staticmethod
     def getVarNames(datfile):
-        f = open(datfile, 'r')
+        f = open(datfile, "r")
         reader = csv.reader(f)
         varNames = next(reader)
         f.close()
@@ -48,8 +48,8 @@ class SolventFit:
         modelfile,  # RDS file where trained model will be saved
         expfile,  # experiment data
         priorsfile,  # file describing parametric form of input PDFs
-        initsfile='NULL',  # file of initial values, not avaailable in this version.
-        restartfile='NULL',  # restart file name to restart from output, not available in this version
+        initsfile="NULL",  # file of initial values, not avaailable in this version.
+        restartfile="NULL",  # restart file name to restart from output, not available in this version
         disc=True,  # include discrepancy
         writepost=True,  # write posterior sample
         writedisc=True,  # write discrepancy sample
@@ -58,16 +58,16 @@ class SolventFit:
         disc_params=None,
         pt_mass=False,
         incl_em=True,
-        model_func='NULL',
+        model_func="NULL",
     ):  # last four parameters are not available in this version, but are needed in R code
 
         if emul_params is None:
-            emul_params = {'bte': '[0,10000,1]', 'nterms': '20', 'order': '3'}
+            emul_params = {"bte": "[0,10000,1]", "nterms": "20", "order": "3"}
 
         if calib_params is None:
-            calib_params = {'bte': '[0,50000,1]'}
+            calib_params = {"bte": "[0,50000,1]"}
 
-        booldict = {True: '1', False: '0'}
+        booldict = {True: "1", False: "0"}
         disc = booldict[disc]
         writepost = booldict[writepost]
         writedisc = booldict[writedisc]
@@ -75,9 +75,9 @@ class SolventFit:
         incl_em = booldict[incl_em]  # capability not available
 
         if disc_params is None:
-            disc_params = {'nterms': '20', 'order': '2'}
+            disc_params = {"nterms": "20", "order": "2"}
 
-        files = ['solvfit_calibfit.R', 'solvfit_emulfit.R']
+        files = ["solvfit_calibfit.R", "solvfit_emulfit.R"]
         for f in files:
             mydir = os.path.dirname(__file__)
             src = os.path.join(mydir, f)
@@ -89,7 +89,7 @@ class SolventFit:
         #                       emul_params['bte'], emul_params['nterms'], emul_params['order'],
         #                       calib_params['bte'], disc_params['nterms'], disc_params['order']],
         #                      stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             import win32api
 
             rpath = win32api.GetShortPathName(rpath)
@@ -100,7 +100,7 @@ class SolventFit:
 
         commandItems = [
             rpath,
-            'solvfit_calibfit.R',
+            "solvfit_calibfit.R",
             str(nx_design),
             str(nx_var),
             str(nx_out),
@@ -113,19 +113,19 @@ class SolventFit:
             disc,
             writepost,
             writedisc,
-            emul_params['bte'],
-            emul_params['nterms'],
-            emul_params['order'],
-            calib_params['bte'],
-            disc_params['nterms'],
-            disc_params['order'],
+            emul_params["bte"],
+            emul_params["nterms"],
+            emul_params["order"],
+            calib_params["bte"],
+            disc_params["nterms"],
+            disc_params["order"],
             pt_mass,
             incl_em,
             model_func,
             restartfile,
         ]
         commandItems = list(map(str, commandItems))
-        Common.runCommandInWindow(' '.join(commandItems), 'solventfit_log')
+        Common.runCommandInWindow(" ".join(commandItems), "solventfit_log")
 
         # out, error = p.communicate()
         # if error:
@@ -151,7 +151,7 @@ class SolventFit:
         genPostSample=True,  # posterior sample is ALWAYS generated, set to True to copy sample to user-specified file
         addDisc=None,
         show=None,
-        rpath='Rscript',
+        rpath="Rscript",
         saveRdsFile=None,
         numEmulIter=10000,
         numCalibIter=50000,
@@ -197,26 +197,26 @@ class SolventFit:
         fixedVals = []
         N = 1000  # prior sample size
         for i, e in enumerate(xtable):
-            if e['type'] == 'Design':
+            if e["type"] == "Design":
                 xdesign.append(i)
-            elif e['type'] == 'Variable':
-                d = e['pdf']
+            elif e["type"] == "Variable":
+                d = e["pdf"]
                 dist.append(pdf_index[d])
                 if d == Distribution.UNIFORM:
-                    p1 = e['min']
-                    p2 = e['max']
+                    p1 = e["min"]
+                    p2 = e["max"]
                 else:
-                    p1 = e['param1']
-                    p2 = e['param2']
+                    p1 = e["param1"]
+                    p2 = e["param2"]
                 param1.append(p1)
                 param2.append(p2)
-                minval.append(e['min'])
-                maxval.append(e['max'])
+                minval.append(e["min"])
+                maxval.append(e["max"])
                 pdfgen = pdf_generator[d]
                 priorsample.append(pdfgen(p1, p2, N))
                 xrand.append(i)
             else:  ## TODO Sham: Account for fixed variable
-                fixedVals.append(e['value'])
+                fixedVals.append(e["value"])
                 xfixed.append(i)
         xnames = [inVarNames[x] for x in (xrand + xfixed)]  # names of variable inputs
         dist += [0] * len(xfixed)
@@ -228,7 +228,7 @@ class SolventFit:
 
         # ... reorder the columns in xdatfile: design followed by random
         lines = []
-        f = open(xdatfile, 'r')
+        f = open(xdatfile, "r")
         reader = csv.reader(f)
         for row in reader:
             lines.append(row)
@@ -241,15 +241,15 @@ class SolventFit:
             newcols.append(cols[i])
         xdat = list(zip(*newcols))  # list of tuples with data in correct order
         Common.initFolder(SolventFit.dname)
-        xdatfile_ = Common.getLocalFileName(SolventFit.dname, xdatfile, '.ordered')
-        f = open(xdatfile_, 'w')
+        xdatfile_ = Common.getLocalFileName(SolventFit.dname, xdatfile, ".ordered")
+        f = open(xdatfile_, "w")
         xdat[0] = ['"%s"' % x for x in xdat[0]]
         for i, row in enumerate(xdat):
             if i == 0:
                 row += ['"%s"' % inVarNames[x] for x in xfixed]
-                f.write(','.join(row) + '\n')
+                f.write(",".join(row) + "\n")
             else:
-                f.write(','.join(row + tuple(fixedVals)) + '\n')
+                f.write(",".join(row + tuple(fixedVals)) + "\n")
         f.close()
         xdatfile = xdatfile_  # use ordered file for training
 
@@ -261,23 +261,23 @@ class SolventFit:
         ### Line 4: min value
         ### Line 5: max value
         ### Line 6: boolean for point mass (set to 0 bc not currently supported)
-        priorsfile = SolventFit.dname + os.path.sep + 'priors.txt'
-        f = open(priorsfile, 'w')
-        f.write(' '.join([str(e) for e in dist]) + '\n')
-        f.write(' '.join([str(e) for e in param1]) + '\n')
-        f.write(' '.join([str(e) for e in param2]) + '\n')
-        f.write(' '.join([str(e) for e in minval]) + '\n')
-        f.write(' '.join([str(e) for e in maxval]) + '\n')
-        f.write(' '.join(['0'] * len(dist)) + '\n')
+        priorsfile = SolventFit.dname + os.path.sep + "priors.txt"
+        f = open(priorsfile, "w")
+        f.write(" ".join([str(e) for e in dist]) + "\n")
+        f.write(" ".join([str(e) for e in param1]) + "\n")
+        f.write(" ".join([str(e) for e in param2]) + "\n")
+        f.write(" ".join([str(e) for e in minval]) + "\n")
+        f.write(" ".join([str(e) for e in maxval]) + "\n")
+        f.write(" ".join(["0"] * len(dist)) + "\n")
         f.close()
 
         # ... write priors sample
-        priorsamplefile = SolventFit.dname + os.path.sep + 'prior.samples.std'
+        priorsamplefile = SolventFit.dname + os.path.sep + "prior.samples.std"
         priorsample = list(zip(*priorsample))
-        f = open(priorsamplefile, 'w')
-        f.write('%d %d 0\n' % (N, len(xrand)))  # header
+        f = open(priorsamplefile, "w")
+        f.write("%d %d 0\n" % (N, len(xrand)))  # header
         for row in priorsample:
-            f.write(' '.join([str(e) for e in row]) + '\n')
+            f.write(" ".join([str(e) for e in row]) + "\n")
         f.close()
 
         ### exptable should be an array of length p where p = number of experiments.
@@ -287,14 +287,14 @@ class SolventFit:
         ###        New format: [expIndex, designVal_1, ..., designVal_m, outputMean_1, outputStd_1, ..., outputMean_n, outputStd_n]
         ###    Also make sure your test files use this format for exptable as well.
         # ... write experiment data file
-        expfile = SolventFit.dname + os.path.sep + 'expdata.csv'
-        f = open(expfile, 'w')
+        expfile = SolventFit.dname + os.path.sep + "expdata.csv"
+        f = open(expfile, "w")
         numDesign = len(xdesign)
         for i, row in enumerate(exptable):
             if i == 0:
                 f.write(
-                    ','.join(row[1:] + ['%sStd' % r for r in row[numDesign + 1 :]])
-                    + '\n'
+                    ",".join(row[1:] + ["%sStd" % r for r in row[numDesign + 1 :]])
+                    + "\n"
                 )
             else:
                 # Reorder everything to conform to new format
@@ -302,20 +302,20 @@ class SolventFit:
                 newRow += row[numDesign + 1 : len(row) : 2]  # Means
                 newRow += row[numDesign + 2 : len(row) : 2]  # Std Devs
                 f.write(
-                    ','.join([str(e) for e in newRow]) + '\n'
+                    ",".join([str(e) for e in newRow]) + "\n"
                 )  # omit expIndex when writing
         f.close()
 
         ## TODO Sham: Do we want both emul_params and calib_params to be changed with burn in and iterations
         emul_params = {
-            'bte': '[%d,%d,1]' % (numEmulBurnIn, numEmulIter),
-            'nterms': '20',
-            'order': '2',
+            "bte": "[%d,%d,1]" % (numEmulBurnIn, numEmulIter),
+            "nterms": "20",
+            "order": "2",
         }
-        calib_params = {'bte': '[%d,%d,1]' % (numCalibBurnIn, numCalibIter)}
+        calib_params = {"bte": "[%d,%d,1]" % (numCalibBurnIn, numCalibIter)}
 
         # invoke R to perform SolventFit calibration
-        rdsFile = 'solvfit_calib.rds'
+        rdsFile = "solvfit_calib.rds"
         #        if not xdesign:  # account for dummy variable
         #            SolventFit.calibfit(rpath,1,len(xrand),xdatfile,ydatfile,
         #                                rdsFile,expfile,priorsfile,
@@ -340,7 +340,7 @@ class SolventFit:
         )
 
         # check output files
-        postsamplefile = 'post.samples'
+        postsamplefile = "post.samples"
         if os.path.exists(postsamplefile):
             postsamplefile_ = SolventFit.dname + os.path.sep + postsamplefile
             if os.path.exists(postsamplefile_):
@@ -348,7 +348,7 @@ class SolventFit:
             os.rename(postsamplefile, postsamplefile_)
             postsamplefile = postsamplefile_
         else:
-            error = 'SolventFit: %s does not exist.' % postsamplefile
+            error = "SolventFit: %s does not exist." % postsamplefile
             Common.showError(error)
             return None
         if os.path.exists(rdsFile):
@@ -359,7 +359,7 @@ class SolventFit:
             os.rename(rdsFile, saveRdsFile)
             rdsFile = saveRdsFile
         else:
-            error = 'SolventFit: %s does not exist.' % rdsFile
+            error = "SolventFit: %s does not exist." % rdsFile
             Common.showError(error)
             return None
 
@@ -373,20 +373,20 @@ class SolventFit:
         # ----- plot heatmaps for more than 1 random inputs -----
         # add header to posterior sample file
         nrows = len(postsample)
-        postsamplefile = postsamplefile + '.std'
-        f = open(postsamplefile, 'w')
-        f.write('%d %d 0\n' % (nrows - 1, len(xrand)))  # header
+        postsamplefile = postsamplefile + ".std"
+        f = open(postsamplefile, "w")
+        f.write("%d %d 0\n" % (nrows - 1, len(xrand)))  # header
         for row in postsample:
-            f.write(' '.join([str(e) for e in row]) + '\n')
+            f.write(" ".join([str(e) for e in row]) + "\n")
         f.close()
 
         # generate prior heatmap
         prior_mfile = RSInferencer.genheatmap(
-            priorsamplefile, filetype='std', move=False
+            priorsamplefile, filetype="std", move=False
         )
-        prior_mfile_ = SolventFit.dname + os.path.sep + 'prior_' + prior_mfile
+        prior_mfile_ = SolventFit.dname + os.path.sep + "prior_" + prior_mfile
         if not os.path.exists(prior_mfile):
-            error = 'SolventFit: %s does not exist.' % prior_mfile
+            error = "SolventFit: %s does not exist." % prior_mfile
             Common.showError(error)
             return None
         if os.path.exists(prior_mfile_):
@@ -395,10 +395,10 @@ class SolventFit:
         prior_mfile = prior_mfile_
 
         # generate posterior heatmap
-        post_mfile = RSInferencer.genheatmap(postsamplefile, filetype='std', move=False)
-        post_mfile_ = SolventFit.dname + os.path.sep + 'post_' + post_mfile
+        post_mfile = RSInferencer.genheatmap(postsamplefile, filetype="std", move=False)
+        post_mfile_ = SolventFit.dname + os.path.sep + "post_" + post_mfile
         if not os.path.exists(post_mfile):
-            error = 'SolventFit: %s does not exist.' % post_mfile
+            error = "SolventFit: %s does not exist." % post_mfile
             Common.showError(error)
             return None
         if os.path.exists(post_mfile_):
@@ -417,7 +417,7 @@ class SolventFit:
     def plotsample(prior_mfile, post_mfile, xnames, xmin, xmax, show=None):
 
         # plot prior
-        plotvars = {'hist': 'D', 'heatmap': 'NC'}
+        plotvars = {"hist": "D", "heatmap": "NC"}
         (
             xdat,
             ydat,
@@ -432,8 +432,8 @@ class SolventFit:
         ) = RSInferencer.getplotdat(
             prior_mfile, xnames, xmin, xmax, plotvars, show=show
         )
-        ptitle = 'Input PRIOR Probabilities'
-        ftitle = 'Input Distribution Plots *before* Bayesian Inference'
+        ptitle = "Input PRIOR Probabilities"
+        ftitle = "Input Distribution Plots *before* Bayesian Inference"
         Plotter.plotinf(
             xdat,
             ydat,
@@ -450,7 +450,7 @@ class SolventFit:
         )
 
         # plot posterior
-        plotvars = {'hist': 'D', 'heatmap': 'NC'}
+        plotvars = {"hist": "D", "heatmap": "NC"}
         (
             xdat,
             ydat,
@@ -463,8 +463,8 @@ class SolventFit:
             sb_indices,
             loglik,
         ) = RSInferencer.getplotdat(post_mfile, xnames, xmin, xmax, plotvars, show=show)
-        ptitle = 'Input POSTERIOR Probabilities'
-        ftitle = 'Input Distribution Plots *after* Bayesian Inference'
+        ptitle = "Input POSTERIOR Probabilities"
+        ftitle = "Input Distribution Plots *after* Bayesian Inference"
         Plotter.plotinf(
             xdat,
             ydat,
@@ -486,7 +486,7 @@ class SolventFit:
         genPostSample=True,  # posterior sample is ALWAYS generated, set to True to copy sample to user-specified file
         addDisc=None,
         show=None,
-        rpath='Rscript',
+        rpath="Rscript",
         saveRdsFile=None,
         numIter=1000,
         numBurnIn=0,
@@ -499,23 +499,23 @@ class SolventFit:
         from scipy import stats
 
         # compute moments
-        fmt = '%1.4e'
+        fmt = "%1.4e"
         priormoments = {
-            'mean': fmt % np.mean(priorsample),
-            'std': fmt % np.std(priorsample),
-            'skew': fmt % stats.skew(priorsample),
-            'kurt': fmt % (stats.kurtosis(priorsample, bias=False) + 3),
+            "mean": fmt % np.mean(priorsample),
+            "std": fmt % np.std(priorsample),
+            "skew": fmt % stats.skew(priorsample),
+            "kurt": fmt % (stats.kurtosis(priorsample, bias=False) + 3),
         }
         postmoments = {
-            'mean': fmt % np.mean(postsample),
-            'std': fmt % np.std(postsample),
-            'skew': fmt % stats.skew(postsample),
-            'kurt': fmt % (stats.kurtosis(postsample, bias=False) + 3),
+            "mean": fmt % np.mean(postsample),
+            "std": fmt % np.std(postsample),
+            "skew": fmt % stats.skew(postsample),
+            "kurt": fmt % (stats.kurtosis(postsample, bias=False) + 3),
         }
         # plot
-        ylabel = 'Probabilities'
-        ptitle = 'Input PRIOR Probabilities'
-        ftitle = 'Input Distribution Plots *before* Bayesian Inference'
+        ylabel = "Probabilities"
+        ptitle = "Input PRIOR Probabilities"
+        ftitle = "Input Distribution Plots *before* Bayesian Inference"
         Plotter.plothist(
             np.array(priorsample),
             priormoments,
@@ -526,8 +526,8 @@ class SolventFit:
             plotcdf=False,
             lastplot=False,
         )
-        ptitle = 'Input POSTERIOR Probabilities'
-        ftitle = 'Input Distribution Plots *after* Bayesian Inference'
+        ptitle = "Input POSTERIOR Probabilities"
+        ftitle = "Input Distribution Plots *after* Bayesian Inference"
         Plotter.plothist(
             np.array(postsample),
             postmoments,

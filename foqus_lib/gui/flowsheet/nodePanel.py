@@ -46,9 +46,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
     notwaiting = QtCore.pyqtSignal()  # indicates a wait is over
 
     def __init__(self, dat, parent=None):
-        '''
+        """
         Node view/edit dock widget constructor
-        '''
+        """
         super(nodeDock, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
@@ -93,11 +93,11 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.updateForm()
 
     def setNodeName2(self, name):
-        '''
+        """
         Set the node that is being viewed\edited
-        '''
+        """
         gr = self.dat.flowsheet  # shorter name for graph
-        if name == None or name == '':
+        if name == None or name == "":
             self.clearContent()
         else:
             self.nodeName = name  # set the original node name
@@ -110,13 +110,13 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.checkSim()
 
     def checkSim(self):
-        '''
+        """
         Check if the model assigned to the node exists.  This would
         mostly be a problem when someone passes a flowsheet to
         someone else who is using a differnt Turbine instance.  They
         may not have uploaded the models to Turbine, or may be using
         differnt model names.
-        '''
+        """
         if self.node.modelType == nodeModelTypes.MODEL_NONE:
             pass
         elif self.node.modelType == nodeModelTypes.MODEL_TURBINE:
@@ -141,19 +141,19 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 )
 
     def runNode(self):
-        '''
+        """
         Run the nodes calculations; this is mostly just to test
         that a node is properly set up without running entire
         flowsheet
-        '''
+        """
         self.parent().runSim(node=self.nodeName)
 
     def stopRun(self):
-        '''
+        """
         Stop button on node panel calls this, this stop any running
         single simulation, does not stop optimization, uq, surrogate
         ...
-        '''
+        """
         self.parent().stopSim()
 
     def clearContent(self):
@@ -168,9 +168,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.pyCode.setPlainText("")
 
     def openTagBrowserInputs(self):
-        '''
+        """
         Opens up the tag browser to help add tags to input variables
-        '''
+        """
         te = tagSelectDialog(self.dat, self)
         te.setWindowTitle("Input Tag Browser")
 
@@ -189,10 +189,10 @@ class nodeDock(_nodeDock, _nodeDockUI):
         te.show()
 
     def openTagBrowserOutputs(self):
-        '''
+        """
         Opens up the tag browser to help add tags to
         output variables
-        '''
+        """
         te = tagSelectDialog(self.dat, self)
         te.setWindowTitle("Output Tag Browser")
 
@@ -211,18 +211,18 @@ class nodeDock(_nodeDock, _nodeDockUI):
         te.show()
 
     def revert(self):
-        '''
+        """
         Reset the node to the state it was in when the node
         was first selected
-        '''
+        """
         self.node.loadDict(self.nodeBkp)
         self.updateForm()
         self.redrawFlowsheet.emit()
 
     def applyChanges(self):
-        '''
+        """
         Update the node with the settings in the forms
-        '''
+        """
         if self.nodeName not in self.dat.flowsheet.nodes:
             return  # don't apply if node was deleted already
         gr = self.dat.flowsheet  # shorter name for graph
@@ -278,10 +278,10 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.redrawFlowsheet.emit()
 
     def updateColIndexes(self):
-        '''
+        """
         Update the dictionary of column indexes the key is the
         column heading name
-        '''
+        """
         self.ivCols = dict()
         self.ovCols = dict()
         for col in range(self.inputVarTable.columnCount()):
@@ -290,9 +290,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.ovCols[self.outputVarTable.horizontalHeaderItem(col).text()] = col
 
     def updateForm(self):
-        '''
+        """
         Update the form to reflect the current state of the node.
-        '''
+        """
         self.updateNodeList()
         if self.nodeName != "":
             self.calcErrorBox.setText(str(self.node.calcError))
@@ -325,20 +325,20 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.nodeNameBox.blockSignals(False)
 
     def updateLocation(self):
-        '''
+        """
         Update the location information for a node.  This may be
         used by itself it the node is being dragged to a new
         location.
-        '''
+        """
         self.xBox.setText(str(self.node.x))
         self.yBox.setText(str(self.node.y))
         self.zBox.setText(str(self.node.z))
 
     def getModelType(self):
-        '''
+        """
         Get the enumerated node model type from the selection
         in the modelTypeBox
-        '''
+        """
         if self.modelTypeBox.currentIndex() == 0:
             # the model type is none os there are no models
             return nodeModelTypes.MODEL_NONE
@@ -353,12 +353,12 @@ class nodeDock(_nodeDock, _nodeDockUI):
             return nodeModelTypes.MODEL_NONE
 
     def updateModelType(self):
-        '''
+        """
         Set the model type to match the node; since changes to the
         model type pulldown are connected to the
         updateSimulationList function that will also happen if the
         index is changed
-        '''
+        """
         if self.node == None:
             self.modelTypeBox.setCurrentIndex(0)
         elif self.node.modelType == nodeModelTypes.MODEL_NONE:
@@ -370,9 +370,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.updateSimulationList()
 
     def updateSimulationList(self):
-        '''
+        """
         Update the simulation list.
-        '''
+        """
         self.simNameBox.blockSignals(True)
         self.simNameBox.clear()
         self.simNameBox.addItem("")
@@ -411,9 +411,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.node.upadteSCDefaults()
 
     def updateInputVariables(self):
-        '''
+        """
         Update the input variables table from the node contents
-        '''
+        """
         table = self.inputVarTable
         vars = self.node.inVars
         table.clearContents()
@@ -497,9 +497,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.inputVarTable.setSelectionBehavior(QAbstractItemView.SelectRows)
 
     def updateOutputVariables(self):
-        '''
+        """
         Update the output variables table from the node contents
-        '''
+        """
         table = self.outputVarTable
         vars = self.node.outVars
         table.clearContents()
@@ -525,10 +525,10 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.outputVarTable.setSelectionBehavior(QAbstractItemView.SelectRows)
 
     def updateSettingsTable(self):
-        '''
+        """
         This table contains node/model options.  Sinter simulation
         options, turbine options, plugin options...
-        '''
+        """
         table = self.simSettingsTable
         table.clearContents()
         opts = self.node.options
@@ -546,7 +546,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                     table,
                     row,
                     1,
-                    '',
+                    "",
                     check=opts[opt].value,
                     jsonEnc=False,
                     bgColor=QColor(235, 255, 235),
@@ -582,10 +582,10 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.addInput()
 
     def addInput(self, name=None, s=0, minv=0, maxv=1, val=0):
-        '''
+        """
         Add a new input variable, is a name is given, don't ask user for name,
         just go ahead and add it.
-        '''
+        """
         ip = True
         if name is None:
             newName, ok = QInputDialog.getText(
@@ -633,7 +633,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
             value = val
             ok = True
 
-        if ok and newName != '':
+        if ok and newName != "":
             if newName in self.node.inVars:
                 QMessageBox.warning(self, "Invalid Name", "That input already exists")
                 return
@@ -657,9 +657,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.updateInputVariables()
 
     def delInput(self):
-        '''
+        """
         Delete selected variable
-        '''
+        """
         table = self.inputVarTable
         if table.currentRow() < 0:
             return
@@ -670,7 +670,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 for i in range(
                     len(self.node.gr.input_vectorlist[self.node.name][vname].vector)
                 ):
-                    del self.node.gr.input[self.node.name][vname + '_{0}'.format(i)]
+                    del self.node.gr.input[self.node.name][vname + "_{0}".format(i)]
                 del self.node.gr.input_vectorlist[self.node.name][vname]
                 break
             else:
@@ -687,9 +687,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.addOutput()
 
     def addOutput(self, name=None, s=0):
-        '''
+        """
         Add an output variable
-        '''
+        """
         ip = False
         if name == None:
             newName, ok = QInputDialog.getText(
@@ -702,7 +702,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
             newName = name
             size = s
             ok = True
-        if ok and newName != '':
+        if ok and newName != "":
             if newName in self.node.outVars:
                 QMessageBox.warning(self, "Invalid Name", "That output already exists")
                 return
@@ -721,9 +721,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.updateOutputVariables()
 
     def delOutput(self):
-        '''
+        """
         Delete selected output variable
-        '''
+        """
         table = self.outputVarTable
         if table.currentRow() < 0:
             return
@@ -734,7 +734,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
                 for i in range(
                     len(self.node.gr.output_vectorlist[self.node.name][vname].vector)
                 ):
-                    del self.node.gr.output[self.node.name][vname + '_{0}'.format(i)]
+                    del self.node.gr.output[self.node.name][vname + "_{0}".format(i)]
                 del self.node.gr.output_vectorlist[self.node.name][vname]
                 break
             else:
@@ -745,9 +745,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.updateOutputVariables()
 
     def showVex(self):
-        '''
+        """
         Shows the variable explored for writing post code
-        '''
+        """
         self.parent().varBrowse.format = "node"
         self.parent().varBrowse.nodeMask = [self.nodeName]
         self.parent().varBrowse.refreshVars()
@@ -759,9 +759,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.updateForm()
 
     def closeEvent(self, event):
-        '''
+        """
         Intercept the close event and apply changes to node first
-        '''
+        """
         self.applyChanges()
         event.accept()
         self.mw.toggleNodeEditorAction.setChecked(False)

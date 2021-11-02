@@ -23,9 +23,9 @@ I need to figure out what is booting out this script if I want to completely
 """
 
 MAX_RUN_TIME = 500000  # Maximum time to let script run in ms.
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:  # file to write test results to
-    f.write('Test Results\n')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:  # file to write test results to
+    f.write("Test Results\n")
 timers = {}  # mainly put all timers in a dic so I can easily stop them all
 
 
@@ -60,7 +60,7 @@ def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'Error' in str(w.windowTitle()):
+        if "Error" in str(w.windowTitle()):
             w.close()
             global errorCount
             global errorTitle
@@ -97,8 +97,8 @@ def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if a, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'FOQUS UQ developers' in str(w.text()):
-            getButton(w, 'OK').click()
+        if "FOQUS UQ developers" in str(w.text()):
+            getButton(w, "OK").click()
             global errorCount
             global errorTitle
             global errorFile
@@ -134,32 +134,32 @@ def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'OK').click()
-        timers['msg_okay'].stop()
+        getButton(w, "OK").click()
+        timers["msg_okay"].stop()
 
 
 def msg_no(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click No when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'No').click()
-        timers['msg_no'].stop()
+        getButton(w, "No").click()
+        timers["msg_no"].stop()
 
 
 def add_UQ_cancel(MainWin=MainWin, getButton=getButton, timers=timers):
     """Cancel adding a UQ ensemble, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        getButton(w.buttonBox, 'Cancel').click()
-        timers['add_UQ_cancel'].stop()
+    if "updateUQModelDialog" in str(type(w)):
+        getButton(w.buttonBox, "Cancel").click()
+        timers["add_UQ_cancel"].stop()
 
 
 def add_UQ_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Press OK in adding a UQ ensemble, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        getButton(w.buttonBox, 'OK').click()
-        timers['add_UQ_okay'].stop()
+    if "updateUQModelDialog" in str(type(w)):
+        getButton(w.buttonBox, "OK").click()
+        timers["add_UQ_okay"].stop()
 
 
 def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
@@ -167,11 +167,11 @@ def uq_sampling_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=g
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Set Up Sampling Scheme"
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme'].stop()
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme"].stop()
         w.distTable.cellWidget(2, 1).setCurrentIndex(1)
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Latin Hypercube', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Latin Hypercube", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(100)
         w.generateSamplesButton.click()
@@ -185,8 +185,8 @@ def uq_analyze_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Change to Expert Mode"
-    if 'AnalysisDialog' in str(type(w)):
-        timers['uq_analyze_scheme'].stop()
+    if "AnalysisDialog" in str(type(w)):
+        timers["uq_analyze_scheme"].stop()
         ## Change to Expert Mode
         if w.modeButton.text() == w.wizardModeButtonText:
             w.modeButton.click()
@@ -202,13 +202,13 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Fill Inference Scheme and Launch"
-    if 'InferenceDialog' in str(type(w)):
-        timers['uq_infer_scheme'].stop()
+    if "InferenceDialog" in str(type(w)):
+        timers["uq_infer_scheme"].stop()
         w.output_table.cellWidget(1, 0).toggle()
         ## Test Different Response Surfaces
         # w.inf_button.click()
         errorTitle = "Quadratic"
-        response_sub_select = w.output_table.cellWidget(1, 3).findText('Quadratic')
+        response_sub_select = w.output_table.cellWidget(1, 3).findText("Quadratic")
         w.output_table.cellWidget(1, 3).setCurrentIndex(response_sub_select)
         errNum = errorCount
         w.inf_button.click()
@@ -220,7 +220,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "Cubic"
-        response_sub_select = w.output_table.cellWidget(1, 3).findText('Cubic')
+        response_sub_select = w.output_table.cellWidget(1, 3).findText("Cubic")
         w.output_table.cellWidget(1, 3).setCurrentIndex(response_sub_select)
         errNum = errorCount
         w.inf_button.click()
@@ -231,7 +231,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "Legendre"
-        response_sub_select = w.output_table.cellWidget(1, 3).findText('Legendre')
+        response_sub_select = w.output_table.cellWidget(1, 3).findText("Legendre")
         w.output_table.cellWidget(1, 3).setCurrentIndex(response_sub_select)
         errNum = errorCount
         w.inf_button.click()
@@ -242,7 +242,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "MARS"
-        response_select = w.output_table.cellWidget(1, 2).findText('MARS ->')
+        response_select = w.output_table.cellWidget(1, 2).findText("MARS ->")
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
         w.inf_button.click()
@@ -253,7 +253,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "MARS With Bagging"
-        response_sub_select = w.output_table.cellWidget(1, 3).findText('With Bagging')
+        response_sub_select = w.output_table.cellWidget(1, 3).findText("With Bagging")
         w.output_table.cellWidget(1, 3).setCurrentIndex(response_sub_select)
         errNum = errorCount
         w.inf_button.click()
@@ -264,7 +264,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "Gaussian Process"
-        response_select = w.output_table.cellWidget(1, 2).findText('Gaussian Process')
+        response_select = w.output_table.cellWidget(1, 2).findText("Gaussian Process")
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
         w.inf_button.click()
@@ -275,7 +275,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "Kriging"
-        response_select = w.output_table.cellWidget(1, 2).findText('Kriging')
+        response_select = w.output_table.cellWidget(1, 2).findText("Kriging")
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
         w.inf_button.click()
@@ -286,7 +286,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
             if errorCount > errNum:
                 break
         errorTitle = "Sum of Trees"
-        response_select = w.output_table.cellWidget(1, 2).findText('Sum of Trees')
+        response_select = w.output_table.cellWidget(1, 2).findText("Sum of Trees")
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
         w.inf_button.click()
@@ -298,7 +298,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
                 break
         errorTitle = "K Nearest Neighbors"
         response_select = w.output_table.cellWidget(1, 2).findText(
-            'K Nearest Neighbors'
+            "K Nearest Neighbors"
         )
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
@@ -311,7 +311,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
                 break
         errorTitle = "Radial Basis Function"
         response_select = w.output_table.cellWidget(1, 2).findText(
-            'Radial Basis Function'
+            "Radial Basis Function"
         )
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
@@ -325,7 +325,7 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
         ## Enable Discrepancy
         errorTitle = "Polynomial ->"
         w.discrepancy_chkbox.toggle()
-        response_select = w.output_table.cellWidget(1, 2).findText('Polynomial ->')
+        response_select = w.output_table.cellWidget(1, 2).findText("Polynomial ->")
         w.output_table.cellWidget(1, 2).setCurrentIndex(response_select)
         errNum = errorCount
         w.inf_button.click()
@@ -341,16 +341,16 @@ def uq_infer_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
 def uq_analyze_close(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
-    if 'AnalysisDialog' in str(type(w)):
-        timers['uq_analyze_close'].stop()
+    if "AnalysisDialog" in str(type(w)):
+        timers["uq_analyze_close"].stop()
         w.close()
 
 
 def uq_infer_close(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Setup a UQ analysis from the sampling scheme, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
-    if 'InferenceDialog' in str(type(w)):
-        timers['uq_infer_close'].stop()
+    if "InferenceDialog" in str(type(w)):
+        timers["uq_infer_close"].stop()
         w.close_button.click()
 
 
@@ -381,7 +381,7 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
         if not timers[timer].isActive():
             return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
-    with open(tf, 'a') as f:  # file to write test results to
+    with open(tf, "a") as f:  # file to write test results to
         f.write("ERROR: timer {} didn't stop in alloted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
@@ -389,21 +389,21 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script if too long
-addTimer('msg_okay', msg_okay)  # click OK on mgsbox
-addTimer('msg_no', msg_no)  # click No on msgbox
-addTimer('add_UQ_cancel', add_UQ_cancel)  # click cancel on uq ensemble dialog
-addTimer('add_UQ_okay', add_UQ_okay)  # click okay on uq ensemble dialog
-addTimer('Error_okay', Error_okay)  # click okay on uq ensemble dialog
-addTimer('Error_okay_text', Error_okay_text)  # click okay on uq ensemble dialog
-addTimer('uq_sampling_scheme', uq_sampling_scheme)  # do sampling scheme dialog
-addTimer('uq_analyze_scheme', uq_analyze_scheme)  # do analysis scheme dialog
-addTimer('uq_infer_scheme', uq_infer_scheme)  # do inference scheme dialog
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script if too long
+addTimer("msg_okay", msg_okay)  # click OK on mgsbox
+addTimer("msg_no", msg_no)  # click No on msgbox
+addTimer("add_UQ_cancel", add_UQ_cancel)  # click cancel on uq ensemble dialog
+addTimer("add_UQ_okay", add_UQ_okay)  # click okay on uq ensemble dialog
+addTimer("Error_okay", Error_okay)  # click okay on uq ensemble dialog
+addTimer("Error_okay_text", Error_okay_text)  # click okay on uq ensemble dialog
+addTimer("uq_sampling_scheme", uq_sampling_scheme)  # do sampling scheme dialog
+addTimer("uq_analyze_scheme", uq_analyze_scheme)  # do analysis scheme dialog
+addTimer("uq_infer_scheme", uq_infer_scheme)  # do inference scheme dialog
 
-addTimer('uq_analyze_close', uq_analyze_close)  # do analysis scheme dialog
-addTimer('uq_infer_close', uq_infer_close)  # do inference scheme dialog
+addTimer("uq_analyze_close", uq_analyze_close)  # do analysis scheme dialog
+addTimer("uq_infer_close", uq_infer_close)  # do inference scheme dialog
 
-timers['time_out'].start(MAX_RUN_TIME)  # start max script time timer
+timers["time_out"].start(MAX_RUN_TIME)  # start max script time timer
 
 try:  # Catch any exception and stop all timers before finishing up
     while 1:  # Loop and break and break as convenient way to jump to end
@@ -482,18 +482,18 @@ try:  # Catch any exception and stop all timers before finishing up
             break
 
         ## -----------------Start Error Monitoring----------------------------
-        timers['Error_okay'].start(1000)
-        timers['Error_okay_text'].start(1000)
+        timers["Error_okay"].start(1000)
+        timers["Error_okay_text"].start(1000)
         ## -------------------------------------------------------------------
 
         # Before running start up a timer to close completed run msgbox
-        timers['msg_okay'].start(500)  # timer to push ok on a msgbox if up
+        timers["msg_okay"].start(500)  # timer to push ok on a msgbox if up
         MainWin.runAction.trigger()  # run flowsheet
         while MainWin.singleRun.is_alive():
             if not go():
                 MainWin.singleRun.terminate()
                 break
-        if not timerWait('msg_okay'):
+        if not timerWait("msg_okay"):
             break
         # assert abs(self.flowsheet.output["Rosenbrock"]["f"] - 126859) < 1e-8
         # assert self.flowsheet.errorStat==0
@@ -506,37 +506,37 @@ try:  # Catch any exception and stop all timers before finishing up
         # MainWin.uqSetupFrame.addSimulationButton.click()
         # if not timerWait('add_UQ_cancel'): break
         # This time add for real
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme'):
+        if not timerWait("uq_sampling_scheme"):
             break
         # Run UQ ensemble
         MainWin.uqSetupFrame.simulationTable.cellWidget(0, 3).click()
-        timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+        timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
         while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
             if not go():
                 MainWin.uqSetupFrame.gThread.terminate()
                 break
-        if not timerWait('msg_okay'):
+        if not timerWait("msg_okay"):
             break
-        timers['uq_infer_scheme'].start(500)
-        timers['uq_analyze_scheme'].start(500)
+        timers["uq_infer_scheme"].start(500)
+        timers["uq_analyze_scheme"].start(500)
         MainWin.uqSetupFrame.simulationTable.cellWidget(0, 4).click()
-        if not timerWait('uq_analyze_scheme'):
+        if not timerWait("uq_analyze_scheme"):
             break
-        if not timerWait('uq_infer_scheme'):
+        if not timerWait("uq_infer_scheme"):
             break
-        timers['uq_analyze_close'].start(500)
-        if not timerWait('uq_analyze_close'):
+        timers["uq_analyze_close"].start(500)
+        if not timerWait("uq_analyze_close"):
             break
 
         ## -----------------Stop Error Monitoring----------------------------
-        if not timerWait('Error_okay'):
+        if not timerWait("Error_okay"):
             break
-        if not timerWait('Error_okay_text'):
+        if not timerWait("Error_okay_text"):
             break
         ## -------------------------------------------------------------------
 
@@ -546,12 +546,12 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('ERROR: Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("ERROR: Exception: {0}\n".format(e))
 timersStop()  # make sure all timers are stopped
 
 # Try to close FOQUS
-timers['msg_no'].start(1000)
+timers["msg_no"].start(1000)
 MainWin.close()
-timerWait('msg_no')
+timerWait("msg_no")
 print("Exited Code: UQ Inference")

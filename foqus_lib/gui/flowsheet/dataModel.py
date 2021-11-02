@@ -26,31 +26,31 @@ import numpy as np
 
 
 class dataModel(QtCore.QAbstractTableModel):
-    '''
+    """
     A data model for displaying flowsheet results in a QTableView
-    '''
+    """
 
     def __init__(self, results, parent=None):
         QtCore.QAbstractTableModel.__init__(self, parent)
         self.results = results
 
     def rowCount(self, parent=QtCore.QModelIndex()):
-        '''
+        """
         Return the number of rows in a column
-        '''
+        """
         return self.results.count_rows(filtered=True)
 
     def columnCount(self, parent=QtCore.QModelIndex()):
-        '''
+        """
         Returns the number of columns in a table
-        '''
+        """
         return self.results.count_cols()
 
     def flags(self, index):
-        '''
+        """
         If the result header column has a set function add the
         editable flag to the cell flags.
-        '''
+        """
         flags = QtCore.QAbstractTableModel.flags(self, index) | QtCore.Qt.ItemIsEditable
         return flags
 
@@ -81,10 +81,10 @@ class dataModel(QtCore.QAbstractTableModel):
             return None
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
-        '''
+        """
         Called to set the value of a cell.  This will edit the result
         data
-        '''
+        """
         row = index.row()
         col = self.results.columns[index.column()]
         if role == QtCore.Qt.EditRole:
@@ -92,10 +92,10 @@ class dataModel(QtCore.QAbstractTableModel):
             return True
 
     def headerData(self, i, orientation, role=QtCore.Qt.DisplayRole):
-        '''
+        """
         Return the column headings for the horizontal header and
         index numbers for the vertical header.
-        '''
+        """
         if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
             return self.results.columns[i]
         elif orientation == QtCore.Qt.Vertical and role == QtCore.Qt.DisplayRole:

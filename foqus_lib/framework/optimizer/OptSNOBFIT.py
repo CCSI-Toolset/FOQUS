@@ -49,7 +49,7 @@ class opt:
         self.optionsDesc[name] = desc
 
     def func(self, x):
-        self.graph.setGlobalVariables(self.xnames, x, 'scaled', True)
+        self.graph.setGlobalVariables(self.xnames, x, "scaled", True)
         obj = self.graph.calcObjective()[0]
         if self.ofile != "":
             self.graph.writeCSV()  # write all graph input, output, err code, and solution time plus add objective
@@ -66,7 +66,7 @@ class opt:
         xnames = gr.opt.v
         self.xnames = xnames
         gr.scaleGlobalVariables(xnames)
-        xinit = gr.getGlobalVariables(xnames, 'scaled', True)
+        xinit = gr.getGlobalVariables(xnames, "scaled", True)
         for xn in xnames:
             print(
                 (xn + ": " + str(gr.x[xn].value) + "  scaled: " + str(gr.x[xn].scaled))
@@ -108,9 +108,9 @@ class opt:
         print("-------------------------")
 
         # resolve with opt so the best solution will be on flowsheet
-        gr.setGlobalVariables(xnames, xopt, 'scaled', True)
+        gr.setGlobalVariables(xnames, xopt, "scaled", True)
         gr.solve()  # resolve with optimal input
-        xfinal = gr.getGlobalVariables(xnames, 'value', True)
+        xfinal = gr.getGlobalVariables(xnames, "value", True)
 
         print(("best f " + str(fopt)))
         print(("best x (scaled): " + str(xopt)))

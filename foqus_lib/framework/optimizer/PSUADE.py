@@ -37,17 +37,17 @@ from foqus_lib.framework.optimizer.optimization import optimization
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     # TODO check for PSUADE
     return True
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver class.  Should be called opt and inherit
     optimization.  The are several attributes from the optimization
     base class that should be set for an optimization plug-in:
@@ -62,12 +62,12 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize CMA-ES optimization module
-        '''
+        """
         optimization.__init__(self, dat)
         self.name = "PSUADE"
         self.methodDescription = (
@@ -86,13 +86,13 @@ class opt(optimization):
         self.minVars = 2  # minimum number of decision variables
         self.maxVars = 10000  # max variables
         self.options.add(
-            name='upper',
+            name="upper",
             default=10.0,
             dtype=float,  # don't need this if default is proper type
             desc="Upper bound on scaled variables (usually 10.0)",
         )
         self.options.add(
-            name='lower',
+            name="lower",
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)",
         )
@@ -106,9 +106,9 @@ class opt(optimization):
         )
 
     def optimize(self):
-        '''
+        """
         This is the optimization routine.
-        '''
+        """
         # get the initial guess, flatten arrays and scale inputs
         xinit = self.graph.input.getFlat(self.prob.v, scaled=True)
         # Display a little information to check that things are working

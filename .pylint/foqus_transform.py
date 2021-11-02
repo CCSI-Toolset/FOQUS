@@ -42,7 +42,7 @@ def get_pyqtsignal_classdef(context=None):
 # add here names of pyQt signals incorrectly detected as normal attributes/bound methods
 PYQTSIGNAL_ATTRIBUTE_NAMES = frozenset(
     [
-        'currentIndexChanged',
+        "currentIndexChanged",
     ]
 )
 
@@ -58,12 +58,12 @@ def _is_attribute_actually_pyqtsignal(node: astroid.Attribute):
 
 def _is_assign_attr_dat(node: astroid.AssignAttr):
     # TODO make this more specific, e.g. checking that the assigned value is None
-    return node.attrname == 'dat'
+    return node.attrname == "dat"
 
 
 def get_session_classdef(context=None):
     node = astroid.extract_node(
-        'from foqus_lib.framework.session.session import session; session'
+        "from foqus_lib.framework.session.session import session; session"
     )
     clsdef_node = astroid.helpers.safe_infer(node, context=context)
     return clsdef_node

@@ -20,14 +20,14 @@ import pandas as pd
 import time
 
 
-def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
+def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     _hist = hist
-    inp_x = cand[args['idx']]
+    inp_x = cand[args["idx"]]
     xcols = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
     xmin = inp_x.to_numpy().min(axis=0)
     xmax = inp_x.to_numpy().max(axis=0)
-    inp_y = cand[args['idy']]
+    inp_y = cand[args["idy"]]
     ycols = list(inp_y.columns)
     norm_y = unitscale_cand(inp_y)
     ymin = inp_y.to_numpy().min(axis=0)
@@ -37,12 +37,12 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     if test:
         t0 = time.time()
         design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(
-            norm_x, args['max_iterations'], nd, nr, mode
+            norm_x, args["max_iterations"], nd, nr, mode
         )
         print("X space Best value in Normalized Scale: ", best_X)
         t1 = time.time() - t0
         design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(
-            norm_y, args['max_iterations'], nd, nr, mode
+            norm_y, args["max_iterations"], nd, nr, mode
         )
         print("Y space Best value in Normalized Scale: ", best_Y)
 
@@ -61,10 +61,10 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
             PFmdvals,
         ) = ({}, {}, {}, {}, {}, {}, {}, {}, {}, {}, {})
 
-        args['ws'] = [0.5]
-        for i in range(len(args['ws'])):
+        args["ws"] = [0.5]
+        for i in range(len(args["ws"])):
             t0 = time.time()
-            print("Weight: ", round(args['ws'][i], 1))
+            print("Weight: ", round(args["ws"][i], 1))
             (
                 best_xdes[i],
                 best_ydes[i],
@@ -83,14 +83,14 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
                 nd,
                 best_X,
                 best_Y,
-                args['ws'][i],
-                args['max_iterations'],
+                args["ws"][i],
+                args["max_iterations"],
                 nr,
                 mode,
             )
             t2 = time.time() - t0
 
-        results = {'t1': t1, 't2': t2}
+        results = {"t1": t1, "t2": t2}
 
         return results
 
@@ -99,12 +99,12 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     # the boundary points for the Pareto Front.
     # Possible to parallelize: search for X and Y at the same time
     design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(
-        norm_x, args['max_iterations'], nd, nr, mode
+        norm_x, args["max_iterations"], nd, nr, mode
     )
     print("X space Best value in Normalized Scale: ", best_X)
 
     design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(
-        norm_y, args['max_iterations'], nd, nr, mode
+        norm_y, args["max_iterations"], nd, nr, mode
     )
     print("Y space Best value in Normalized Scale: ", best_Y)
 
@@ -126,8 +126,8 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function
     # and returning
     # Possible to parallelize: one call to criterion_irsf for each weight (5 different values)
-    for i in range(len(args['ws'])):
-        print("Weight: ", round(args['ws'][i], 1))
+    for i in range(len(args["ws"])):
+        print("Weight: ", round(args["ws"][i], 1))
         (
             best_xdes[i],
             best_ydes[i],
@@ -146,8 +146,8 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
             nd,
             best_X,
             best_Y,
-            args['ws'][i],
-            args['max_iterations'],
+            args["ws"][i],
+            args["max_iterations"],
             nr,
             mode,
         )
@@ -163,7 +163,7 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     # (Here 0.1, 0.3, 0.5, 0.7 and 0.9) all together.
 
     PFcomb = [PFxdes[0], PFydes[0], PFmdvals[0]]
-    for i in range(1, len(args['ws'])):
+    for i in range(1, len(args["ws"])):
         temp_new = [PFxdes[i], PFydes[i], PFmdvals[i]]
         PFcomb = CombPF(temp_new, PFcomb, nd)
 
@@ -191,8 +191,8 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
             PV[key] = np.expand_dims(PV[key], axis=0)
         PV_tuple += (PV[key],)
     PV_arr = np.concatenate(PV_tuple, axis=0)
-    PV_df = pd.DataFrame(data=PV_arr, columns=['Best Input', 'Best Response'])
-    PV_df.insert(0, 'Design', PV_df.index + 1)
+    PV_df = pd.DataFrame(data=PV_arr, columns=["Best Input", "Best Response"])
+    PV_df.insert(0, "Design", PV_df.index + 1)
 
     design_dict = {}
 
@@ -205,13 +205,13 @@ def criterion(cand, args, nr, nd, mode='maximin', hist=None, test=False):
     results = {}
     for design in design_dict:
         results[design] = {
-            'pareto_front': PV_df,
-            'design': design,
-            'des': design_dict[design],
-            'mode': mode,
-            'design_size': nd,
-            'num_restarts': nr,
-            'num_designs': len(PV_df),
+            "pareto_front": PV_df,
+            "design": design,
+            "des": design_dict[design],
+            "mode": mode,
+            "design_size": nd,
+            "num_restarts": nr,
+            "num_designs": len(PV_df),
         }
 
     return results

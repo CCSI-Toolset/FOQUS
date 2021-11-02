@@ -51,7 +51,7 @@ def getJobStatus(self, jobID, verbose=False, suppressLog=False):
             getJobStatus._messages = []
             getJobStatus._jobid = jobID
 
-        for msg in ret.get('Messages', []):
+        for msg in ret.get("Messages", []):
             if msg not in getJobStatus._messages:
                 getJobStatus._messages.append(msg)
                 getJobStatus._db.add_message(
@@ -89,12 +89,12 @@ class AppServerSvc(win32serviceutil.ServiceFramework):
         servicemanager.LogMsg(
             servicemanager.EVENTLOG_INFORMATION_TYPE,
             servicemanager.PYS_SERVICE_STARTED,
-            (self._svc_name_, ''),
+            (self._svc_name_, ""),
         )
         self._flowsheet_ctrl = FlowsheetControl()
         self._flowsheet_ctrl.run()
         servicemanager.LogInfoMsg("%s exit run loop" % (self._svc_name_))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     win32serviceutil.HandleCommandLine(AppServerSvc)

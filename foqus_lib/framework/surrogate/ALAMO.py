@@ -71,7 +71,7 @@ def checkAvailable():
 
 
 class surrogateMethod(surrogate):
-    metaDataJsonString = '''
+    metaDataJsonString = """
     "CCSIFileMetaData":{
         "ID":"uuid",
         "CreationTime":"",
@@ -86,13 +86,13 @@ class surrogateMethod(surrogate):
         "Parents":[],
         "UpdateMetadata":True,
         "Version":""}
-    '''
-    name = 'ALAMO'
+    """
+    name = "ALAMO"
 
     def __init__(self, dat=None):
-        '''
+        """
         ALAMO interface constructor
-        '''
+        """
         surrogate.__init__(self, dat)
         self.name = "ALAMO"
         self.ex = None
@@ -106,25 +106,25 @@ class surrogateMethod(surrogate):
             "</head>\n"
             "<b>Automatic Learning of Algebraic Models for Optimization"
             " (ALAMO)</b>"
-            "<p class=\"hangingindent\">Cozad, A., N. V. Sahinidis "
+            '<p class="hangingindent">Cozad, A., N. V. Sahinidis '
             "and D. C. Miller, Learning surrogate models "
             "for simulation‐based optimization, "
             "AIChE Journal, 60, p. 2211–2227, 2014.</p></html>"
         )
-        self.alamoDir = 'alamo'
+        self.alamoDir = "alamo"
         self.inputCols = [
-            ('XFACTOR', float, 1.0),
-            ('EXTRAPXMIN', float, 0.0),
-            ('EXTRAPXMAX', float, 1.0),
+            ("XFACTOR", float, 1.0),
+            ("EXTRAPXMIN", float, 0.0),
+            ("EXTRAPXMAX", float, 1.0),
         ]
         self.outputCols = [
-            ('MAXTERMS', int, -1),
-            ('IGNORE', int, 0),
-            ('TOLMEANERROR', float, 0.000001),
-            ('TOLRELMETRIC', float, 0.000001),
-            ('ZMIN', float, 0.0),
-            ('ZMAX', float, 1.0),
-            ('CUSTOMCON', list, []),
+            ("MAXTERMS", int, -1),
+            ("IGNORE", int, 0),
+            ("TOLMEANERROR", float, 0.000001),
+            ("TOLRELMETRIC", float, 0.000001),
+            ("ZMIN", float, 0.0),
+            ("ZMAX", float, 1.0),
+            ("CUSTOMCON", list, []),
         ]
         self.updateVarCols()
         # include a Section called DATA Settings
@@ -132,23 +132,23 @@ class surrogateMethod(surrogate):
         self.options.add(
             name="Initial Data Filter",
             section="DATA Settings",
-            default='All',
+            default="All",
             dtype=str,
             desc="Filter to be applied to the initial data set.",
             hint="Data filters help the user to generate models based"
             "on specific data for each variable.",
-            validValues=['All', 'None'],
+            validValues=["All", "None"],
         )
 
         self.options.add(
             name="Validation Data Filter",
             section="DATA Settings",
-            default='None',
+            default="None",
             dtype=str,
             desc="Data set used to compute model errors at the validation phase.",
             hint="The number of data points in a preexisting validation data set"
             "can be specified by the user",
-            validValues=['All', 'None'],
+            validValues=["All", "None"],
         )
         # Maxtime
         self.options.add(
@@ -330,7 +330,7 @@ class surrogateMethod(surrogate):
             section="Model Settings",
             default=10.0,
             desc="Convex penalty term used if Convex penalty is selected.",
-            hint="When MODELER is set to \"Convex Penalty,\" a convex "
+            hint='When MODELER is set to "Convex Penalty," a convex '
             "penalty consisting of the sum of square errors and a "
             "term penalizing model size is used for model building. "
             "In this case, the size of the model is weighted "
@@ -520,9 +520,9 @@ class surrogateMethod(surrogate):
             " in the working directory.",
         )
 
-        self.inputVarButtons = (('Set XFACTOR from range', self.autoXFact),)
+        self.inputVarButtons = (("Set XFACTOR from range", self.autoXFact),)
         self.outputVarButtons = (
-            ('Set ZMIN and ZMAX from current data filter', self.autoZMin),
+            ("Set ZMIN and ZMAX from current data filter", self.autoZMin),
         )
 
     def autoXFact(self):
@@ -532,13 +532,13 @@ class surrogateMethod(surrogate):
                     self.graph.input.get(var).max - self.graph.input.get(var).min
                 )
             )
-            self.setInputVarOption('XFACTOR', var, xf)
+            self.setInputVarOption("XFACTOR", var, xf)
 
     def autoZMin(self):
         for var in self.output:
             vals = self.dat.flowsheet.results.getVarColumn(var)
-            self.setOutputVarOption('ZMAX', var, max(vals))
-            self.setOutputVarOption('ZMIN', var, min(vals))
+            self.setOutputVarOption("ZMAX", var, max(vals))
+            self.setOutputVarOption("ZMIN", var, min(vals))
 
     def updateOptions(self):
         filters = sorted(
@@ -549,23 +549,23 @@ class surrogateMethod(surrogate):
 
     def setupWorkingDir(self):
         alamoDir = self.alamoDir
-        adaptive = self.options['SAMPLER'].value
+        adaptive = self.options["SAMPLER"].value
         # create dir does nothing if dir exists, but does not raise
         # exception
         self.createDir(alamoDir)
         # Copy needed files
         if adaptive:
-            dest = os.path.join(alamoDir, 'foqusALAMOClient.py')
+            dest = os.path.join(alamoDir, "foqusALAMOClient.py")
             if not os.path.exists(dest):
                 mydir = os.path.dirname(__file__)
-                src = os.path.join(mydir, 'foqusALAMOClient.py')
+                src = os.path.join(mydir, "foqusALAMOClient.py")
                 shutil.copyfile(src, dest)
 
     def run(self):
-        '''
+        """
         This function overloads the Thread class function,
         and is called when you run start() to start a new thread.
-        '''
+        """
         alamoExe = self.dat.foqusSettings.alamo_path
         try:
             assert os.path.isfile(alamoExe)
@@ -598,16 +598,16 @@ class surrogateMethod(surrogate):
             for v in self.zList:
                 self.zi[v] = cn.index(v)
             # Get options and show some information about settings
-            adaptive = self.options['SAMPLER'].value
+            adaptive = self.options["SAMPLER"].value
             alamoDir = self.alamoDir
             alamoDirFull = os.path.abspath(alamoDir)
             self.setupWorkingDir()
-            adpexe = os.path.join(alamoDirFull, 'foqusALAMOClient.py')
+            adpexe = os.path.join(alamoDirFull, "foqusALAMOClient.py")
             self.writeAlamoInputFile(adaptiveExe=adpexe)
             if self.checkNumVars():
                 return
             alamoInput = self.options["Input File"].value
-            alamoOutput = alamoInput.rsplit('.', 1)[0] + '.lst'
+            alamoOutput = alamoInput.rsplit(".", 1)[0] + ".lst"
             self.msgQueue.put("------------------------------------")
             self.msgQueue.put("Starting ALAMO\n")
             self.msgQueue.put("Exec File Path:    " + alamoExe)
@@ -635,10 +635,10 @@ class surrogateMethod(surrogate):
                 creationflags=win32process.CREATE_NO_WINDOW,
             )
             line = process.stdout.readline()
-            while process.poll() == None or line != b'':
-                if line == b'':
+            while process.poll() == None or line != b"":
+                if line == b"":
                     time.sleep(0.2)
-                if line != b'':
+                if line != b"":
                     self.msgQueue.put(line.decode("utf-8").rstrip())
                 line = process.stdout.readline()
                 if self.stop.set():
@@ -650,10 +650,10 @@ class surrogateMethod(surrogate):
             if adaptive:
                 # stop the listener
                 conn = Client(address)
-                conn.send(['quit'])
+                conn.send(["quit"])
                 conn.close()
             alamoOutput = os.path.join(alamoDir, alamoOutput)
-            if self.options['FUNFORM'].value != "Fortran":
+            if self.options["FUNFORM"].value != "Fortran":
                 self.msgQueue.put(
                     "MUST USE FORTRAN FORM to make UQ and flowsheet plugins"
                 )
@@ -688,7 +688,7 @@ class surrogateMethod(surrogate):
         """Write the input file for the ALAMO executable."""
         # Get around the need to associate py files with a python
         # interperater in Windows.
-        adaptive = self.samplers.get(self.options['SAMPLER'].value, False)
+        adaptive = self.samplers.get(self.options["SAMPLER"].value, False)
         if os.name == "nt":
             if adaptive:
                 with open(adaptiveExe + ".bat", "w") as f:
@@ -705,9 +705,9 @@ class surrogateMethod(surrogate):
         nin = self.nInput()
         nout = self.nOutput()
         # Filter for initial data
-        dataFilter = self.options['Initial Data Filter'].value
+        dataFilter = self.options["Initial Data Filter"].value
         # filter for validation data
-        validFilter = self.options['Validation Data Filter'].value
+        validFilter = self.options["Validation Data Filter"].value
         # set the number of initial data
         self.graph.results.set_filter(dataFilter)
         ndata = self.graph.results.count_rows(filtered=True)
@@ -715,43 +715,43 @@ class surrogateMethod(surrogate):
         self.graph.results.set_filter(validFilter)
         nvaldata = self.graph.results.count_rows(filtered=True)
         # Get some option values
-        nsample = self.options['NSAMPLE'].value
-        maxsim = self.options['MAXSIM'].value
-        modeler = self.modelers.get(self.options['MODELER'].value, 1)
-        preset = self.options['PRESET'].value
-        maxtime = self.options['MAXTIME'].value
-        scalez = int(self.options['SCALEZ'].value)
-        mono = list(map(str, self.options['MONOMIALPOWER'].value))
-        multi2 = list(map(str, self.options['MULTI2POWER'].value))
-        multi3 = list(map(str, self.options['MULTI3POWER'].value))
-        ratios = list(map(str, self.options['RATIOPOWER'].value))
-        expfcns = int(self.options['EXPFCNS'].value)
-        logfcns = int(self.options['LOGFCNS'].value)
-        sinfcns = int(self.options['SINFCNS'].value)
-        cosfcns = int(self.options['COSFCNS'].value)
-        linfcns = int(self.options['LINFCNS'].value)
-        constant = int(self.options['CONSTANT'].value)
-        custombas = list(map(str, self.options['CUSTOMBAS'].value))
-        convpen = self.options['CONVPEN'].value
-        screener = self.screener[self.options['SCREENER'].value]
-        mipoptca = self.options['MIPOPTCA'].value
-        mipoptcr = self.options['MIPOPTCR'].value
-        linearerror = int(self.options['LINEARERROR'].value)
-        gams = self.options['GAMS'].value
-        gamssolver = self.options['GAMSSOLVER'].value
-        solvemip = int(self.options['SOLVEMIP'].value)
-        funform = self.funform[self.options['FUNFORM'].value]
-        conreg = self.options['CONREG'].value
-        crninitial = self.options['CRNINITIAL'].value
-        crnmaxiter = self.options['CRNMAXITER'].value
-        crnviol = self.options['CRNVIOL'].value
-        crntrials = self.options['CRNTRIALS'].value
-        crtol = self.options['CRTOL'].value
-        usecrncustom = self.options['CRNCUSTOM'].value
+        nsample = self.options["NSAMPLE"].value
+        maxsim = self.options["MAXSIM"].value
+        modeler = self.modelers.get(self.options["MODELER"].value, 1)
+        preset = self.options["PRESET"].value
+        maxtime = self.options["MAXTIME"].value
+        scalez = int(self.options["SCALEZ"].value)
+        mono = list(map(str, self.options["MONOMIALPOWER"].value))
+        multi2 = list(map(str, self.options["MULTI2POWER"].value))
+        multi3 = list(map(str, self.options["MULTI3POWER"].value))
+        ratios = list(map(str, self.options["RATIOPOWER"].value))
+        expfcns = int(self.options["EXPFCNS"].value)
+        logfcns = int(self.options["LOGFCNS"].value)
+        sinfcns = int(self.options["SINFCNS"].value)
+        cosfcns = int(self.options["COSFCNS"].value)
+        linfcns = int(self.options["LINFCNS"].value)
+        constant = int(self.options["CONSTANT"].value)
+        custombas = list(map(str, self.options["CUSTOMBAS"].value))
+        convpen = self.options["CONVPEN"].value
+        screener = self.screener[self.options["SCREENER"].value]
+        mipoptca = self.options["MIPOPTCA"].value
+        mipoptcr = self.options["MIPOPTCR"].value
+        linearerror = int(self.options["LINEARERROR"].value)
+        gams = self.options["GAMS"].value
+        gamssolver = self.options["GAMSSOLVER"].value
+        solvemip = int(self.options["SOLVEMIP"].value)
+        funform = self.funform[self.options["FUNFORM"].value]
+        conreg = self.options["CONREG"].value
+        crninitial = self.options["CRNINITIAL"].value
+        crnmaxiter = self.options["CRNMAXITER"].value
+        crnviol = self.options["CRNVIOL"].value
+        crntrials = self.options["CRNTRIALS"].value
+        crtol = self.options["CRTOL"].value
+        usecrncustom = self.options["CRNCUSTOM"].value
         # make list of custom constraints
         customcon = []
         for ii, x in enumerate(self.output):
-            val = copy.copy(self.getOutputVarOption('CUSTOMCON', x))
+            val = copy.copy(self.getOutputVarOption("CUSTOMCON", x))
             for i, c in enumerate(val):
                 val[i] = "{0} {1}".format(ii + 1, c)
             customcon.extend(val)
@@ -774,24 +774,24 @@ class surrogateMethod(surrogate):
         for i, v in enumerate(customcon):
             customcon[i] = v.replace(".", "_")
 
-        nkey, vkey = self.xList2[0].split('.', 1)
+        nkey, vkey = self.xList2[0].split(".", 1)
         for i, v in enumerate(self.xList2):
-            nkey2, vkey = v.split('.', 1)
+            nkey2, vkey = v.split(".", 1)
             self.xList2[i] = vkey
             if nkey != nkey2:
                 self.xList2 = copy.copy(self.xList)
                 break
 
-        nkey, vkey = self.zList2[0].split('.', 1)
+        nkey, vkey = self.zList2[0].split(".", 1)
         for i, v in enumerate(self.zList2):
-            nkey2, vkey = v.split('.', 1)
+            nkey2, vkey = v.split(".", 1)
             self.zList2[i] = vkey
             if nkey != nkey2:
                 self.zList2 = copy.copy(self.zList)
                 break
 
         # Set the path to the alamo input file
-        almFile = os.path.join(self.alamoDir, self.options['Input File'].value)
+        almFile = os.path.join(self.alamoDir, self.options["Input File"].value)
         # Start writing the ALAMO input file
         with open(almFile, "w") as af:
             af.write("preset {0}\n".format(preset))
@@ -810,8 +810,8 @@ class surrogateMethod(surrogate):
             af.write("maxiter {0}\n".format(maxiter))
             af.write("maxsim {0}\n".format(maxsim))
             af.write("simulator {}\n".format(adaptiveExe))
-            af.write('#simin input.txt\n')
-            af.write('#simout output.txt\n')
+            af.write("#simin input.txt\n")
+            af.write("#simout output.txt\n")
             af.write("ninputs {0}\n".format(nin))
             af.write("noutputs {0}\n".format(nout))
             # write the min vector
@@ -828,32 +828,32 @@ class surrogateMethod(surrogate):
             # XFACTOR
             xfact = []
             for x in self.input:
-                val = self.getInputVarOption('XFACTOR', x)
+                val = self.getInputVarOption("XFACTOR", x)
                 xfact.append(val)
             af.write("xfactor {0}\n".format(" ".join(map(str, xfact))))
             af.write("scalez {0}\n".format(scalez))
             # MAXTERMS
             maxterms = []
             for x in self.output:
-                val = self.getOutputVarOption('MAXTERMS', x)
+                val = self.getOutputVarOption("MAXTERMS", x)
                 maxterms.append(val)
             af.write("maxterms {0}\n".format(" ".join(map(str, maxterms))))
             # IGNORE
             ignore = []
             for x in self.output:
-                val = self.getOutputVarOption('IGNORE', x)
+                val = self.getOutputVarOption("IGNORE", x)
                 ignore.extend(np.array(val).flatten())
             af.write("ignore {0}\n".format(" ".join(map(str, ignore))))
             # TOLMEANERROR
             tme = []
             for x in self.output:
-                val = self.getOutputVarOption('TOLMEANERROR', x)
+                val = self.getOutputVarOption("TOLMEANERROR", x)
                 tme.extend(np.array(val).flatten())
             af.write("tolmeanerror {0}\n".format(" ".join(map(str, tme))))
             # TOLRELMETRIC
             trm = []
             for x in self.output:
-                val = self.getOutputVarOption('TOLRELMETRIC', x)
+                val = self.getOutputVarOption("TOLRELMETRIC", x)
                 trm.extend(np.array(val).flatten())
             af.write("tolrelmetric {0}\n".format(" ".join(map(str, trm))))
             #
@@ -899,22 +899,22 @@ class surrogateMethod(surrogate):
             if conreg:
                 z = []
                 for x in self.output:
-                    val = self.getOutputVarOption('ZMIN', x)
+                    val = self.getOutputVarOption("ZMIN", x)
                     z.extend(np.array(val).flatten())
                 af.write("zmin {0}\n".format(" ".join(map(str, z))))
                 z = []
                 for x in self.output:
-                    val = self.getOutputVarOption('ZMAX', x)
+                    val = self.getOutputVarOption("ZMAX", x)
                     z.extend(np.array(val).flatten())
                 af.write("zmax {0}\n".format(" ".join(map(str, z))))
                 z = []
                 for x in self.input:
-                    val = self.getInputVarOption('EXTRAPXMIN', x)
+                    val = self.getInputVarOption("EXTRAPXMIN", x)
                     z.extend(np.array(val).flatten())
                 af.write("extrapxmin {0}\n".format(" ".join(map(str, z))))
                 z = []
                 for x in self.input:
-                    val = self.getInputVarOption('EXTRAPXMAX', x)
+                    val = self.getInputVarOption("EXTRAPXMAX", x)
                     z.extend(np.array(val).flatten())
                 af.write("extrapxmax {0}\n".format(" ".join(map(str, z))))
             # custom constraints
@@ -940,7 +940,7 @@ class surrogateMethod(surrogate):
                         line[p] = res["output.{}".format(vname)][i]
                         p += 1
                     line = [str(x) for x in line]
-                    af.write(' '.join(line))
+                    af.write(" ".join(line))
                     af.write("\n")
                 af.write("END_DATA\n")
             # write validation data section (probably should reuse code
@@ -959,36 +959,36 @@ class surrogateMethod(surrogate):
                     line[p] = res["output.{}".format(vname)][i]
                     p += 1
                 line = [str(x) for x in line]
-                af.write(' '.join(line))
+                af.write(" ".join(line))
                 af.write("\n")
             af.write("END_VALDATA\n")
 
     def writePlugin(self):
-        excludeBefore = '[a-zA-Z0-9_\'\".]'
-        excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+        excludeBefore = "[a-zA-Z0-9_'\".]"
+        excludeAfter = "[0-9a-zA-Z_.('\"]"
         file_name = self.options["FOQUS Model (for Flowsheet)"].value
         # Replace variables in the resulting equations with foqus
         # plugin variable names.
         eq_list = []
-        for eq_str in self.result['outputEqns']:
+        for eq_str in self.result["outputEqns"]:
             for i, v in enumerate(self.xList):
                 vo = self.xListNP[i]
                 pat = "(?<!{0}){1}(?!{2})".format(
-                    excludeBefore, vo.replace('.', '\\.'), excludeAfter
+                    excludeBefore, vo.replace(".", "\\."), excludeAfter
                 )
                 newForm = "self.inputs['{0}'].value".format(v)
                 eq_str = re.sub(pat, newForm, eq_str)
             for i, v in enumerate(self.zList):
                 vo = self.zListNP[i]
                 pat = "(?<!{0}){1}(?!{2})".format(
-                    excludeBefore, vo.replace('.', '\\.'), excludeAfter
+                    excludeBefore, vo.replace(".", "\\."), excludeAfter
                 )
                 newForm = "self.outputs['{0}'].value".format(v)
                 eq_str = re.sub(pat, newForm, eq_str)
             eq_list.append(eq_str.strip())
         # Write the standard code top
-        s = self.writePluginTop(method='ALAMO', comments=["ALAMO Model for Flowsheet"])
-        with open(os.path.join("user_plugins", file_name), 'w') as f:
+        s = self.writePluginTop(method="ALAMO", comments=["ALAMO Model for Flowsheet"])
+        with open(os.path.join("user_plugins", file_name), "w") as f:
             f.write(s)
             # write the equations
             f.write("\n")
@@ -998,8 +998,8 @@ class surrogateMethod(surrogate):
         self.dat.reloadPlugins()
 
     def writepyomofile(self):
-        excludeBefore = '[a-zA-Z0-9_\'\".]'
-        excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+        excludeBefore = "[a-zA-Z0-9_'\".]"
+        excludeAfter = "[0-9a-zA-Z_.('\"]"
         file_name3 = self.options["Pyomo Model for Optimization"].value
 
         minval = []
@@ -1023,7 +1023,7 @@ class surrogateMethod(surrogate):
             initvalout = gout.get(v).value
             initvals_output.append(initvalout)
 
-        with open(os.path.join("user_plugins", file_name3), 'w') as f:
+        with open(os.path.join("user_plugins", file_name3), "w") as f:
             f.write("from pyomo.environ import *\n")
             f.write("from pyomo.opt import SolverFactory\n")
             f.write("from pyomo.core.kernel.component_set import ComponentSet\n")
@@ -1041,7 +1041,7 @@ class surrogateMethod(surrogate):
             v1list = []
 
             for v in self.xList:
-                v1 = v.replace('.', '_')
+                v1 = v.replace(".", "_")
                 v1list.append(v1)
 
             f.write("    for v1 in {0}:\n".format(v1list))
@@ -1060,7 +1060,7 @@ class surrogateMethod(surrogate):
             v2list = []
 
             for v in self.zList:
-                v2 = v.replace('.', '_')
+                v2 = v.replace(".", "_")
                 v2list.append(v2)
             f.write("    initvals_output = {0}\n".format(initvals_output))
             f.write("    for v2 in {0}:\n".format(v2list))
@@ -1073,24 +1073,24 @@ class surrogateMethod(surrogate):
             f.write("        vlist2[i].value = initvals_output[i]\n")
 
             eq_list1 = []
-            for eq_str1 in self.result['outputEqns']:
+            for eq_str1 in self.result["outputEqns"]:
                 for i, v in enumerate(self.xList):
                     vo1 = self.xListNP[i]
                     pat1 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo1.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo1.replace(".", "\\."), excludeAfter
                     )
-                    newForm1 = 'm.{0}'.format(v1list[i])
+                    newForm1 = "m.{0}".format(v1list[i])
                     eq_str1 = re.sub(pat1, newForm1, eq_str1)
 
-                p1 = re.compile('(=)')
-                eq_str1 = p1.sub('==', eq_str1)
+                p1 = re.compile("(=)")
+                eq_str1 = p1.sub("==", eq_str1)
 
                 for i, v in enumerate(self.zList):
                     vo2 = self.zListNP[i]
                     pat2 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo2.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo2.replace(".", "\\."), excludeAfter
                     )
-                    newForm2 = 'm.{0}'.format(v2list[i])
+                    newForm2 = "m.{0}".format(v2list[i])
                     eq_str1 = re.sub(pat2, newForm2, eq_str1)
                 eq_list1.append(eq_str1.strip())
 
@@ -1113,8 +1113,8 @@ class surrogateMethod(surrogate):
         self.dat.reloadPlugins()
 
     def writepyomostandalonefile(self):
-        excludeBefore = '[a-zA-Z0-9_\'\".]'
-        excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+        excludeBefore = "[a-zA-Z0-9_'\".]"
+        excludeAfter = "[0-9a-zA-Z_.('\"]"
         file_name3 = self.options["Standalone Pyomo Model for Optimization"].value
 
         minval = []
@@ -1131,7 +1131,7 @@ class surrogateMethod(surrogate):
             maxval.append(maxVal)
             initvals.append(initval)
 
-        with open(os.path.join("user_plugins", file_name3), 'w') as f:
+        with open(os.path.join("user_plugins", file_name3), "w") as f:
             f.write("# This file is meant for standalone use.\n")
             f.write("# Surrogate Model based Optimizaton.\n")
             f.write("from pyomo.environ import *\n")
@@ -1146,7 +1146,7 @@ class surrogateMethod(surrogate):
             v1list = []
 
             for v in self.xList:
-                v1 = v.replace('.', '_')
+                v1 = v.replace(".", "_")
                 v1list.append(v1)
 
             f.write("for v1 in {0}:\n".format(v1list))
@@ -1164,7 +1164,7 @@ class surrogateMethod(surrogate):
             v2list = []
 
             for v in self.zList:
-                v2 = v.replace('.', '_')
+                v2 = v.replace(".", "_")
                 v2list.append(v2)
 
             f.write("for v2 in {0}:\n".format(v2list))
@@ -1179,24 +1179,24 @@ class surrogateMethod(surrogate):
             f.write(" # ********\n")
 
             eq_list1 = []
-            for eq_str1 in self.result['outputEqns']:
+            for eq_str1 in self.result["outputEqns"]:
                 for i, v in enumerate(self.xList):
                     vo1 = self.xListNP[i]
                     pat1 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo1.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo1.replace(".", "\\."), excludeAfter
                     )
-                    newForm1 = 'm.{0}'.format(v1list[i])
+                    newForm1 = "m.{0}".format(v1list[i])
                     eq_str1 = re.sub(pat1, newForm1, eq_str1)
 
-                p1 = re.compile('(=)')
-                eq_str1 = p1.sub('==', eq_str1)
+                p1 = re.compile("(=)")
+                eq_str1 = p1.sub("==", eq_str1)
 
                 for i, v in enumerate(self.zList):
                     vo2 = self.zListNP[i]
                     pat2 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo2.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo2.replace(".", "\\."), excludeAfter
                     )
-                    newForm2 = 'm.{0}'.format(v2list[i])
+                    newForm2 = "m.{0}".format(v2list[i])
                     eq_str1 = re.sub(pat2, newForm2, eq_str1)
                 eq_list1.append(eq_str1.strip())
 

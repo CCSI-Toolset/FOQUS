@@ -18,11 +18,11 @@ import subprocess
 # ---------------------------------------
 # SOLVENTFIT EMULATOR fit function
 # ---------------------------------------
-def fit(xdatfile, ydatfile, modelfile, bte='[0,1000,1]', nterms='25', order='2'):
+def fit(xdatfile, ydatfile, modelfile, bte="[0,1000,1]", nterms="25", order="2"):
     p = subprocess.Popen(
         [
-            'Rscript',
-            'solvfit_emulfit.R',
+            "Rscript",
+            "solvfit_emulfit.R",
             xdatfile,
             ydatfile,
             modelfile,
@@ -43,5 +43,5 @@ def fit(xdatfile, ydatfile, modelfile, bte='[0,1000,1]', nterms='25', order='2')
 # ---------------------------------------
 # Example usage
 # ---------------------------------------
-rdsfile = fit('example/xdat.csv', 'example/ydat.csv', 'solvfit_emulator.rds')
+rdsfile = fit("example/xdat.csv", "example/ydat.csv", "solvfit_emulator.rds")
 print(rdsfile)

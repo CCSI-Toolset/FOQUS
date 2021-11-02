@@ -66,7 +66,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.show()
 
     def _add_input_file(self):
-        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        dialog = QFileDialog(self, "Model File", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
             file = os.path.relpath(res)
@@ -93,7 +93,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.input_files_table.removeRow(row)
 
     def _model_browse(self):
-        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        dialog = QFileDialog(self, "Model File", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
             self.model_file.setText(os.path.relpath(res))
@@ -150,7 +150,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
 
     def _save_dialog(self):
         file = "{}{}".format(self.model_file.text().split(".")[0], ".json")
-        dialog = QFileDialog(self, 'Save Config', directory=os.getcwd())
+        dialog = QFileDialog(self, "Save Config", directory=os.getcwd())
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.selectFile(file)
         if dialog.exec_() == QDialog.Accepted:
@@ -159,7 +159,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         return False
 
     def _load_dialog(self):
-        dialog = QFileDialog(self, 'Load Config', directory=os.getcwd())
+        dialog = QFileDialog(self, "Load Config", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             self._load(file=dialog.selectedFiles()[0])
             return True
@@ -334,7 +334,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
             json.dump(d, fp, indent=2)
 
     def _browse_for_working_dir(self):
-        dialog = QFileDialog(self, 'Working Directory', directory=os.getcwd())
+        dialog = QFileDialog(self, "Working Directory", directory=os.getcwd())
         dialog.setFileMode(QFileDialog.DirectoryOnly)
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]

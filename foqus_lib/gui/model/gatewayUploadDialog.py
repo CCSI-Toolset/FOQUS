@@ -34,18 +34,18 @@ _gatewayUploadDialogUI, _gatewayUploadDialog = uic.loadUiType(
 
 
 class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
-    '''
+    """
     This class provides a dialog box that allows you to create,
     upload and update simulations on the Turbine Science Gateway.
-    '''
+    """
 
     waiting = QtCore.pyqtSignal()  # signal for start waiting on long task
     notwaiting = QtCore.pyqtSignal()  # signal the task is done
 
     def __init__(self, dat, turbConfig, parent=None):
-        '''
+        """
         Initialize dialog
-        '''
+        """
         super(gatewayUploadDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
@@ -59,12 +59,12 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.deleteSimButton.clicked.connect(self.deleteSim)
         self.okButton.clicked.connect(self.accept)
         self.cancelButton.clicked.connect(self.reject)
-        self.files = [['configuration', ''], ['model', '']]
+        self.files = [["configuration", ""], ["model", ""]]
         self.updateFileTable()
         self.enableSinterConfigGUI(None)
         try:
             simList = self.turb.getSimulationList()
-            self.simNameEdit.addItem('')
+            self.simNameEdit.addItem("")
             self.simNameEdit.addItems(simList)
         except:
             pass
@@ -101,17 +101,17 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.fileTable.resizeColumnsToContents()
 
     def enableSinterConfigGUI(self, b=True):
-        '''
+        """
         Enable or disable the sinter config gui launch button
         should be enabled in sinterConfigGui path is set right and
         you are on windows.  SinterConfigGUI is windows only
-        '''
+        """
         if b == None:
             # automatically decide whether to enable it
-            if os.name == 'nt':
+            if os.name == "nt":
                 # is a windows only feature
                 exepath = str(self.dat.foqusSettings.simsinter_path)
-                exepath = os.path.join(exepath, 'SinterConfigGUI.exe')
+                exepath = os.path.join(exepath, "SinterConfigGUI.exe")
                 if os.path.isfile(exepath):
                     # only if config points to a file
                     b = True
@@ -122,17 +122,17 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.sinterConfigGUIButton.setEnabled(b)
 
     def showSinterConfigGUI(self):
-        '''
+        """
         Run sinter config gui so you can create or edit a
         sinter config file
-        '''
+        """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
         # stored up sent signals.  But they happen after fnction returns
         # so can't figure out how to block them.  launch process in a
         # seperate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
-        exepath = os.path.join(exepath, 'SinterConfigGUI.exe')
+        exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
         try:
             sinterConfigPath = self.files[0][1]
@@ -144,7 +144,7 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         process.wait()
         self.notwaiting.emit()
         try:
-            with open(tmp_file, 'r') as f:
+            with open(tmp_file, "r") as f:
                 fileName = f.readline().strip()
         except:
             fileName = ""
@@ -157,10 +157,10 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 tc = self.dat.flowsheet.turbConfig
                 m, r, a, oth = tc.sinterConfigGetResource(fileName)
                 di = os.path.dirname(os.path.abspath(m))
-                self.files[0] = ['configuration', fileName]
+                self.files[0] = ["configuration", fileName]
                 self.files[1] = [r, m]
                 for f in oth:
-                    f = f.get('file', None)
+                    f = f.get("file", None)
                     if f is not None:
                         self.files.append([f, os.path.join(di, f)])
                 self.updateFileTable()
@@ -242,13 +242,13 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             self.tableWidget.setRowCount(0)
 
     def accept(self):
-        '''
+        """
         If the okay button is press, use the simulation name and
         sinter configuration file path from the dialog to attempt
         to upload simulation files.  The Turbine configuration file
         is a global setting stored in self.dat.turbineConfFile. I'm
         assuming you will want to use the same gateway for a session
-        '''
+        """
         simName = self.simNameEdit.currentText()
         sinterConfigPath = self.files[0][1]
         if len(self.files) > 2:
@@ -283,15 +283,15 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         self.done(QDialog.Accepted)
 
     def reject(self):
-        '''
+        """
         If cancel just do nothing and close dialog
-        '''
+        """
         self.done(QDialog.Rejected)
 
     def browseSinter(self):
-        '''
+        """
         Browse for a Sinter configuration file.
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sinter Configuration File",
@@ -303,11 +303,11 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
             try:
                 tc = self.dat.flowsheet.turbConfig
                 m, r, a, oth = tc.sinterConfigGetResource(fileName)
-                self.files[0] = ['configuration', fileName]
+                self.files[0] = ["configuration", fileName]
                 self.files[1] = [r, m]
                 di = os.path.dirname(os.path.abspath(m))
                 for f in oth:
-                    f = f.get('file', None)
+                    f = f.get("file", None)
                     if f is not None:
                         self.files.append([f, os.path.join(di, f)])
                 self.updateFileTable()
@@ -319,16 +319,16 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
                 )
             if self.simNameEdit.currentText() == "":
                 simNameGuess = os.path.basename(fileName)
-                simNameGuess = simNameGuess.rsplit('.')[0]
+                simNameGuess = simNameGuess.rsplit(".")[0]
                 self.simNameEdit.addItem(simNameGuess)
                 i = self.simNameEdit.findText(simNameGuess)
                 self.simNameEdit.setCurrentIndex(i)
             self.simNameEdit.setFocus()
 
     def addFile(self):
-        '''
+        """
         Add additional files required for a simulation
-        '''
+        """
         # Browse for a file
         fileNames, filtr = QFileDialog.getOpenFileNames(
             self, "Additional Files", "", "All Files (*)"
@@ -381,8 +381,8 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         )
         if ok:
             relpath = relpath.strip()
-            relpath = relpath.strip('\\/')
+            relpath = relpath.strip("\\/")
         for row in rows:
             gh.setCellText(
-                self.fileTable, row, 0, '\\'.join([relpath, self.files[row][0]])
+                self.fileTable, row, 0, "\\".join([relpath, self.files[row][0]])
             )

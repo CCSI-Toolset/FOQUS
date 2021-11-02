@@ -24,12 +24,12 @@ import traceback
 
 class foqusException(Exception):
     def __init__(self, code=0, msg="", e=None, tb=None):
-        '''
+        """
         code: an error code for the problem
         msg: string containing additional specific information
         e: the original exception that was caught if any
         tb: the trace back string to locate problem in code
-        '''
+        """
         self.code = code
         self.msg = msg
         if tb == None:
@@ -37,13 +37,13 @@ class foqusException(Exception):
             l2 = []
             for i in range(len(l) - 1):
                 l2.append(
-                    ' '.join(
+                    " ".join(
                         [
-                            'line:',
+                            "line:",
                             str(l[i][1]),
-                            'file:',
+                            "file:",
                             str(l[i][0]),
-                            '\n  ',
+                            "\n  ",
                             str(l[i][3]),
                         ]
                     )
@@ -55,28 +55,28 @@ class foqusException(Exception):
         self.setCodeStrings()
 
     def getCodeString(self):
-        '''
+        """
         Return the string error message accosiated with error code
-        '''
+        """
         return self.codeString.get(self.code, "Error code: {0}".format(self.code))
 
     def setCodeStrings(self):
-        '''
+        """
         This is a function that should be overloaded to add to the
         error code strings to the codeString dictionary, use integer
         keys.
-        '''
+        """
         pass
 
     def __str__(self):
-        '''
+        """
         This is function gets called when use use the str() function
         to turn the excepetion into a string.  This tries to turn
         the exception object into a nice helpful string message to
         print out.
-        '''
-        if self.tb == None or self.tb[0:4] == 'None':
-            tb = ''
+        """
+        if self.tb == None or self.tb[0:4] == "None":
+            tb = ""
         else:
             tb = self.tb
         if self.msg == "":

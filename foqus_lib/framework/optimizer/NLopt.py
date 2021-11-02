@@ -51,16 +51,16 @@ except ImportError:
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return nlopt_available
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver class.  Should be called opt and inherit
     optimization.  The are several attributes from the optimization
     base class that should be set for an optimization plug-in:
@@ -75,14 +75,14 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize NLOPT optimization module
         Args:
             dat = foqus session object
-        '''
+        """
         optimization.__init__(self, dat)  # base class __init__
         self.name = "NLopt"  # Plugin name is actually comming from file
         # name at this point so give file same name
@@ -96,7 +96,7 @@ class opt(optimization):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "<p class=\"hangingindent\">"
+            '<p class="hangingindent">'
             "<p>Steven G. Johnson, The NLopt nonlinear-optimization"
             " package, http://ab-initio.mit.edu/nlopt <\p>"
             "<p>Algorithm Type: Both derivative free & gradient based</p>"
@@ -119,7 +119,7 @@ class opt(optimization):
         # creates a dropdown box.
         #
         self.options.add(  # NLopt contains a bunch of slovers this is the
-            name='Solver',  # list of solvers DFO to select from
+            name="Solver",  # list of solvers DFO to select from
             default="BOBYQA",
             dtype=str,
             validValues=[
@@ -139,7 +139,7 @@ class opt(optimization):
             desc="Solver",
         )
         self.options.add(
-            name='pop',
+            name="pop",
             default=0,
             dtype=int,
             desc=(
@@ -148,19 +148,19 @@ class opt(optimization):
             ),
         )
         self.options.add(
-            name='init step',
+            name="init step",
             default=0,
             dtype=float,
             desc="Initial step size for some local DFOs (<=0 default)",
         )
         self.options.add(
-            name='upper',
+            name="upper",
             default=10.0,
             dtype=float,
             desc="Upper bound on scaled variables (usually 10.0)",
         )
         self.options.add(
-            name='lower',
+            name="lower",
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)",
         )
@@ -204,13 +204,13 @@ class opt(optimization):
             name="Save results", default=True, desc="Save all flowsheet results?"
         )
         self.options.add(
-            name='Set Name',
+            name="Set Name",
             default="NLopt",
             dtype=str,
             desc="Name of flowsheet result set to store data",
         )
         self.options.add(
-            name='Backup Interval',
+            name="Backup Interval",
             default=1.0,
             dtype=float,
             desc="How often (in hours) to save a backup session while "
@@ -218,10 +218,10 @@ class opt(optimization):
         )
 
     def optMethod(self, s):
-        '''
+        """
         This function just takes the solver string and converts it to the
         NLopt enumerated type for the solver.
-        '''
+        """
         if s == "BOBYQA":
             return nlopt.LN_BOBYQA
         elif s == "COBYLA":
@@ -250,14 +250,14 @@ class opt(optimization):
         return nlopt.LN_BOBYQA
 
     def f(self, x, grad):
-        '''
+        """
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
         stick in other dignostic output.  Whatever you like.  Since
         only the DFO solvers are made avalable the grad arg can be
         ignored.  If there is an exception in here optimization
         terminates (NLopt behavior).
-        '''
+        """
         # run the flowsheet at point x.  X is turned into a list there
         # because this function can return there results of multiple
         # evaluations here we just want one.  If FOQUS is setup right
@@ -314,10 +314,10 @@ class opt(optimization):
         return obj
 
     def optimize(self):
-        '''
+        """
         This is the main optimization routine.  This gets called to start
         things up.
-        '''
+        """
         # get the initial guess, flatten arrays and scale inputs
         xinit = self.graph.input.getFlat(self.prob.v, scaled=True)
         # Display a little information to check that things are working
@@ -391,7 +391,7 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float('inf')  # set inital best values
+        self.bestSoFar = float("inf")  # set inital best values
         self.bestSoFarList = []  # List of all previous best so far values
         #        self.bestSoFarList.append(self.bestSoFar)
 

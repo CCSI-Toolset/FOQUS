@@ -28,16 +28,16 @@ _dashFrameUI, _dashFrame = uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))
 
 
 class dashFrame(_dashFrame, _dashFrameUI):
-    '''
+    """
     This is the main FOQUS screen, it contains some FOQUS settings
     and a session description.  Very little happens here all the
     buttons emit signals that are handled by the main window
-    '''
+    """
 
     def __init__(self, parent=None):
-        '''
+        """
         Initialize dash frame
-        '''
+        """
         super(dashFrame, self).__init__(parent=parent)
         self.setupUi(self)
         self.underlineButton.clicked.connect(self.underline)
@@ -51,15 +51,15 @@ class dashFrame(_dashFrame, _dashFrameUI):
         self.getFormat()
 
     def setSessionDescription(self, text):
-        '''
+        """
         Set the session description
-        '''
+        """
         self.textEdit.setHtml(text)
 
     def sessionDescription(self):
-        '''
+        """
         Get the session description
-        '''
+        """
         return self.textEdit.toHtml()
 
     def getFormat(self):

@@ -36,9 +36,9 @@ import botocore.exceptions
 
 _instanceid = None
 WORKING_DIRECTORY = os.path.abspath(
-    os.environ.get('FOQUS_SERVICE_WORKING_DIR', "\\ProgramData\\foqus_service")
+    os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
 )
-AWS_REGION = 'us-east-1'
+AWS_REGION = "us-east-1"
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = None
@@ -56,17 +56,17 @@ def _set_working_dir(wdir):
     os.chdir(wdir)
     FoqusSettings().applyLogSettings()
 
-    _log = logging.getLogger('foqus.foqus_lib.service.flowsheet')
+    _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
     _log.setLevel(logging.DEBUG)
-    _log.info('Working Directory: %s', WORKING_DIRECTORY)
-    logging.getLogger('boto3').setLevel(logging.ERROR)
-    logging.getLogger('botocore').setLevel(logging.ERROR)
-    logging.getLogger('urllib3').setLevel(logging.ERROR)
+    _log.info("Working Directory: %s", WORKING_DIRECTORY)
+    logging.getLogger("boto3").setLevel(logging.ERROR)
+    logging.getLogger("botocore").setLevel(logging.ERROR)
+    logging.getLogger("urllib3").setLevel(logging.ERROR)
 
 
 def _get_user_config_location(*args, **kw):
     _log.debug("USER CONFIG: %s", str(args))
-    return os.path.join(WORKING_DIRECTORY, 'foqus.cfg')
+    return os.path.join(WORKING_DIRECTORY, "foqus.cfg")
 
 
 FoqusSettings.getUserConfigLocation = _get_user_config_location
@@ -76,7 +76,7 @@ def getfilenames(jid):
     global CURRENT_JOB_DIR
     CURRENT_JOB_DIR = os.path.join(WORKING_DIRECTORY, str(jid))
 
-    _log.info('Job Directory: %s', CURRENT_JOB_DIR)
+    _log.info("Job Directory: %s", CURRENT_JOB_DIR)
     try:
         os.makedirs(CURRENT_JOB_DIR)
     except OSError as e:
@@ -117,7 +117,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
 
     """
     assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, (
-        'DAT Flowsheet nodes turbApp is %s' % dat.flowsheet.nodes[nkey].turbApp
+        "DAT Flowsheet nodes turbApp is %s" % dat.flowsheet.nodes[nkey].turbApp
     )
 
     node = dat.flowsheet.nodes[nkey]
@@ -125,18 +125,18 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     model_name = node.modelName
     assert turb_app is not None
     turb_app = turb_app.lower()
-    assert turb_app in ['acm', 'aspenplus'], (
+    assert turb_app in ["acm", "aspenplus"], (
         'unknown turbine application "%s"' % turb_app
     )
 
     """ Search S3 Bucket for node simulation
     """
-    s3 = boto3.client('s3', region_name=AWS_REGION)
+    s3 = boto3.client("s3", region_name=AWS_REGION)
     bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
-    prefix = '%s/%s/' % (user_name, model_name)
+    prefix = "%s/%s/" % (user_name, model_name)
     l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
     assert (
-        'Contents' in l
+        "Contents" in l
     ), 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' % (
         nkey,
         bucket_name,
@@ -144,28 +144,28 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     )
     key_sinter_filename = None
     key_model_filename = None
-    s3_key_list = [i['Key'] for i in l['Contents']]
-    _log.debug('Node model %s staged-input files %s' % (model_name, s3_key_list))
+    s3_key_list = [i["Key"] for i in l["Contents"]]
+    _log.debug("Node model %s staged-input files %s" % (model_name, s3_key_list))
     for k in s3_key_list:
-        if k.endswith('/%s_sinter.json' % turb_app):
+        if k.endswith("/%s_sinter.json" % turb_app):
             key_sinter_filename = k
-        elif turb_app == 'acm' and k.endswith('.acmf'):
-            assert key_model_filename is None, 'detected multiple model files'
+        elif turb_app == "acm" and k.endswith(".acmf"):
+            assert key_model_filename is None, "detected multiple model files"
             key_model_filename = k
-        elif turb_app == 'aspenplus' and k.endswith('.bkp'):
-            assert key_model_filename is None, 'detected multiple model files'
+        elif turb_app == "aspenplus" and k.endswith(".bkp"):
+            assert key_model_filename is None, "detected multiple model files"
             key_model_filename = k
 
     assert (
         key_sinter_filename is not None
-    ), 'Flowsheet node=%s simulation=%s sinter configuration not in %s' % (
+    ), "Flowsheet node=%s simulation=%s sinter configuration not in %s" % (
         nkey,
         model_name,
         str(s3_key_list),
     )
     assert (
         key_model_filename is not None
-    ), 'Flowsheet node=%s simulation=%s model file not in %s' % (
+    ), "Flowsheet node=%s simulation=%s model file not in %s" % (
         nkey,
         model_name,
         str(s3_key_list),
@@ -175,14 +175,14 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     """
     print(turbine_simulation_script.__file__)
     turbine_cfg = node.gr.turbConfig.getFile()
-    _log.debug('CWD: %s', os.path.abspath(os.path.curdir))
+    _log.debug("CWD: %s", os.path.abspath(os.path.curdir))
     turbine_cfg = os.path.abspath(turbine_cfg)
-    _log.debug('Turbine Configuration File: %s', turbine_cfg)
+    _log.debug("Turbine Configuration File: %s", turbine_cfg)
     sim_list = turbine_simulation_script.main_list([turbine_cfg], func=None)
-    print('Simulation List %s' % sim_list)
-    sim_d = [i for i in sim_list if i['Name'] == model_name]
+    print("Simulation List %s" % sim_list)
+    sim_d = [i for i in sim_list if i["Name"] == model_name]
     cache_sim_guid = None
-    assert len(sim_d) < 2, 'Expecting 0 or 1 entries for simulation %s' % model_name
+    assert len(sim_d) < 2, "Expecting 0 or 1 entries for simulation %s" % model_name
     if len(sim_d) == 0:
         _log.debug('No simulation="%s" in TurbineLite' % model_name)
         sim_d = None
@@ -190,24 +190,24 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     else:
         _log.debug('Found simulation="%s" in TurbineLite' % model_name)
         sim_d = sim_d[0]
-        assert 'Id' in sim_d, 'Missing keys in Simulation %s' % sim_d
-        cache_sim_guid = sim_d['Id']
+        assert "Id" in sim_d, "Missing keys in Simulation %s" % sim_d
+        cache_sim_guid = sim_d["Id"]
 
     """ upload all staged-inputs to TurbineLite if new or updated in
     s3://{bucketname}/{username}/{simulation}
     """
     entry_list = [
-        i for i in l['Contents'] if i['Key'] != prefix and i['Key'].startswith(prefix)
+        i for i in l["Contents"] if i["Key"] != prefix and i["Key"].startswith(prefix)
     ]
     update_required = False
     # target_dir = os.path.join(CURRENT_JOB_DIR, model_name)
-    target_dir = os.path.join(WORKING_DIRECTORY, 'test', cache_sim_guid)
+    target_dir = os.path.join(WORKING_DIRECTORY, "test", cache_sim_guid)
     os.makedirs(target_dir, exist_ok=True)
     sinter_local_filename = None
     for entry in entry_list:
         _log.debug("s3 staged input: %s", entry)
-        key = entry['Key']
-        etag = entry.get('ETag', "").strip('"')
+        key = entry["Key"]
+        etag = entry.get("ETag", "").strip('"')
         # Upload to TurbineLite
         # if ends with json or acmf
         si_metadata = []
@@ -220,25 +220,25 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
             sinter_local_filename = target_file_path
             if sim_d:
                 si_metadata = [
-                    i for i in sim_d["StagedInputs"] if i['Name'] == 'configuration'
+                    i for i in sim_d["StagedInputs"] if i["Name"] == "configuration"
                 ]
             s3.download_file(bucket_name, key, target_file_path)
         elif key == key_model_filename:
             # assert key_model_filename == '/'.join(prefix, key_model_filename.split('/')[-1]), \
             #    'sinter configuration "%s" must be in model base directory: "%s"' %(key_model_filename,prefix)
-            target_file_path = os.path.join(target_dir, key.split('/')[-1])
+            target_file_path = os.path.join(target_dir, key.split("/")[-1])
             if sim_d:
                 si_metadata = [
-                    i for i in sim_d["StagedInputs"] if i['Name'] == 'aspenfile'
+                    i for i in sim_d["StagedInputs"] if i["Name"] == "aspenfile"
                 ]
             s3.download_file(bucket_name, key, target_file_path)
         else:
-            args = [i for i in key[len(prefix) :].split('/') if i]
+            args = [i for i in key[len(prefix) :].split("/") if i]
             args.insert(0, target_dir)
             target_file_path = os.path.join(*args)
             if sim_d:
                 si_metadata = [
-                    i for i in sim_d["StagedInputs"] if i['Name'] == key.split('/')[-1]
+                    i for i in sim_d["StagedInputs"] if i["Name"] == key.split("/")[-1]
                 ]
             s3.download_file(bucket_name, key, target_file_path)
 
@@ -266,7 +266,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
             update_required = True
         """
 
-    assert sinter_local_filename is not None, 'missing sinter configuration file'
+    assert sinter_local_filename is not None, "missing sinter configuration file"
 
     if sim_d is None:
         _log.debug('Adding Simulation "%s" "%s"' % (model_name, cache_sim_guid))
@@ -309,7 +309,7 @@ class FOQUSAWSConfig:
     def get_instance(cls):
         if cls._inst is not None:
             return cls._inst
-        request = urllib.request.urlopen('http://169.254.169.254/latest/user-data')
+        request = urllib.request.urlopen("http://169.254.169.254/latest/user-data")
         cls._inst = cls()
         cls._inst._d = json.load(request)
         return cls._inst
@@ -320,7 +320,7 @@ class FOQUSAWSConfig:
     def _get(self, key):
         v = self._d.get(key)
         assert v, "UserData Missing Key: %s" % key
-        _log.debug('FOQUSAWSConfig._get: %s = %s' % (key, v))
+        _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
 
     def get_update_topic_arn(self):
@@ -364,25 +364,25 @@ class TurbineLiteDB:
     """ """
 
     def __init__(self, close_after=True):
-        self._sns = boto3.client('sns', region_name=AWS_REGION)
+        self._sns = boto3.client("sns", region_name=AWS_REGION)
         self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
         self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
-        self._user_name = 'unknown'
+        self._user_name = "unknown"
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
-        _log.debug('_sns_notification obj: %s' % obj)
-        resource = obj.get('resource', 'unknown')
-        status = obj.get('status', 'unknown')
-        if resource == 'consumer':
-            status = obj.get('event', 'unknown')
-        event = '%s.%s' % (resource, status)
-        _log.debug('_sns_notification event: %s' % event)
+        _log.debug("_sns_notification obj: %s" % obj)
+        resource = obj.get("resource", "unknown")
+        status = obj.get("status", "unknown")
+        if resource == "consumer":
+            status = obj.get("event", "unknown")
+        event = "%s.%s" % (resource, status)
+        _log.debug("_sns_notification event: %s" % event)
         attrs = dict(
-            event=dict(DataType='String', StringValue=event),
-            username=dict(DataType='String', StringValue=self._user_name),
+            event=dict(DataType="String", StringValue=event),
+            username=dict(DataType="String", StringValue=self._user_name),
         )
-        _log.debug('MessageAttributes: %s' % attrs)
+        _log.debug("MessageAttributes: %s" % attrs)
         self._sns.publish(
             Message=json.dumps([obj]), MessageAttributes=attrs, TopicArn=self._topic_arn
         )
@@ -422,8 +422,8 @@ class TurbineLiteDB:
         _log.info("%s.consumer_keepalive", self.__class__.__name__)
         self._sns_notification(
             dict(
-                resource='consumer',
-                event='running',
+                resource="consumer",
+                event="running",
                 rc=rc,
                 consumer=self.consumer_id,
                 instanceid=_instanceid,
@@ -434,7 +434,7 @@ class TurbineLiteDB:
         _log.info("%s.consumer_status", self.__class__.__name__)
         # assert status in ['up','down','terminate'], ''
         # self._sns_notification(dict(resource='consumer', event=status, rc=rc, consumer=self.consumer_id))
-        return 'up'
+        return "up"
 
     def consumer_id(self, pid, rc=0):  # TODO pylint: disable=method-hidden
         _log.info("%s.consumer_id", self.__class__.__name__)
@@ -442,9 +442,9 @@ class TurbineLiteDB:
     def consumer_register(self, rc=0):
         _log.info("%s.consumer_register", self.__class__.__name__)
         d = dict(
-            resource='consumer',
+            resource="consumer",
             instanceid=_instanceid,
-            event='running',
+            event="running",
             rc=rc,
             consumer=self.consumer_id,
         )
@@ -467,28 +467,28 @@ class TurbineLiteDB:
     def job_change_status(self, job_d, status, rc=0, message=None):
         assert type(job_d) is dict
         assert status in [
-            'success',
-            'setup',
-            'running',
-            'error',
-            'terminate',
-            'expired',
+            "success",
+            "setup",
+            "running",
+            "error",
+            "terminate",
+            "expired",
         ], (
             "Incorrect Job Status %s" % status
         )
         _log.info("%s.job_change_status %s", self.__class__.__name__, job_d)
         d = dict(
-            resource='job',
-            event='status',
+            resource="job",
+            event="status",
             rc=rc,
             status=status,
-            jobid=job_d['Id'],
+            jobid=job_d["Id"],
             instanceid=_instanceid,
             consumer=self.consumer_id,
-            sessionid=job_d.get('sessionid', 'unknown'),
+            sessionid=job_d.get("sessionid", "unknown"),
         )
         if message:
-            d['message'] = message
+            d["message"] = message
         self._sns_notification(d)
 
     def job_save_output(self, job_d, workingDir, rc=0):
@@ -506,13 +506,13 @@ class TurbineLiteDB:
         )
         self._sns_notification(
             dict(
-                resource='job',
-                event='output',
-                jobid=job_d['Id'],
+                resource="job",
+                event="output",
+                jobid=job_d["Id"],
                 username=self._user_name,
                 value=output,
                 rc=rc,
-                sessionid=job_d.get('sessionid', 'unknown'),
+                sessionid=job_d.get("sessionid", "unknown"),
             )
         )
 
@@ -538,9 +538,9 @@ class FlowsheetControl:
         self._stop = False
         self._receipt_handle = None
         self._simulation_name = None
-        self._sqs = boto3.client('sqs', region_name=AWS_REGION)
+        self._sqs = boto3.client("sqs", region_name=AWS_REGION)
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
-        self._dynamodb = boto3.client('dynamodb', region_name=AWS_REGION)
+        self._dynamodb = boto3.client("dynamodb", region_name=AWS_REGION)
         self._dynamodb_table_name = (
             FOQUSAWSConfig.get_instance().get_dynamo_table_name()
         )
@@ -565,9 +565,9 @@ class FlowsheetControl:
         VisibilityTimeout = 60 * 10
         try:
             _instanceid = urllib.request.urlopen(
-                'http://169.254.169.254/latest/meta-data/instance-id'
+                "http://169.254.169.254/latest/meta-data/instance-id"
             ).read()
-            _instanceid = _instanceid.decode('ascii')
+            _instanceid = _instanceid.decode("ascii")
         except:
             _log.error("Failed to discover instance-id")
 
@@ -590,7 +590,7 @@ class FlowsheetControl:
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
-                    "job failed in verify: %r" % (ex), job_desc['Id'], exception=msg
+                    "job failed in verify: %r" % (ex), job_desc["Id"], exception=msg
                 )
                 self._delete_sqs_job()
                 continue
@@ -602,7 +602,7 @@ class FlowsheetControl:
                 continue
             assert type(ret) is tuple and len(ret) == 2
             user_name, job_desc = ret
-            job_id = uuid.UUID(job_desc.get('Id'))
+            job_id = uuid.UUID(job_desc.get("Id"))
             # getJobStatus._flowsheet_job_id = str(job_id)
             db.set_user_name(user_name)
             """
@@ -622,10 +622,10 @@ class FlowsheetControl:
 
             response = self._dynamodb.get_item(
                 TableName=self._dynamodb_table_name,
-                Key={'Id': {'S': str(job_id)}, 'Type': {'S': 'Job'}},
+                Key={"Id": {"S": str(job_id)}, "Type": {"S": "Job"}},
             )
 
-            item = response.get('Item')
+            item = response.get("Item")
             if not item:
                 msg = "Job %s expired:  Not in DynamoDB table %s" % (
                     job_id,
@@ -639,10 +639,10 @@ class FlowsheetControl:
 
             """ Job is Finished it is in state (terminate,stop,success,error)
             """
-            if item.get('Finished', None):
+            if item.get("Finished", None):
                 _log.info("Job %s will be dequeued and ignored", str(job_id))
                 self._delete_sqs_job()
-                db.add_message("Job State %s" % item['Finished'], jobid=str(job_id))
+                db.add_message("Job State %s" % item["Finished"], jobid=str(job_id))
                 continue
             try:
                 dat = self.setup_foqus(db, user_name, job_desc)
@@ -652,7 +652,7 @@ class FlowsheetControl:
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
                     "job failed in setup NotImplementedError",
-                    job_desc['Id'],
+                    job_desc["Id"],
                     exception=msg,
                 )
                 self._delete_sqs_job()
@@ -661,7 +661,7 @@ class FlowsheetControl:
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
-                    "job failed in setup URLError", job_desc['Id'], exception=msg
+                    "job failed in setup URLError", job_desc["Id"], exception=msg
                 )
                 self._delete_sqs_job()
                 raise
@@ -671,7 +671,7 @@ class FlowsheetControl:
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
-                    "job failed in setup: %r" % (ex), job_desc['Id'], exception=msg
+                    "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
                 )
                 self._delete_sqs_job()
                 raise
@@ -717,10 +717,10 @@ class FlowsheetControl:
     def _check_job_terminate(self, job_id):
         response = self._dynamodb.get_item(
             TableName=self._dynamodb_table_name,
-            Key={'Id': {'S': str(job_id)}, 'Type': {'S': 'Job'}},
+            Key={"Id": {"S": str(job_id)}, "Type": {"S": "Job"}},
         )
 
-        item = response.get('Item')
+        item = response.get("Item")
         if not item:
             _log.warn(
                 "Job %s expired:  Not in DynamoDB table %s"
@@ -730,10 +730,10 @@ class FlowsheetControl:
 
         """ Job is Finished it is in state (terminate,stop,success,error)
         """
-        if item.get('Finished', None):
-            state = item.get('State')
+        if item.get("Finished", None):
+            state = item.get("State")
             _log.info("Job %s in Finished State=%s", str(job_id), state)
-            return state == 'terminate'
+            return state == "terminate"
         return False
 
     def pop_job(self, db, VisibilityTimeout=300):
@@ -750,9 +750,9 @@ class FlowsheetControl:
         # Receive message from SQS queue
         response = self._sqs.receive_message(
             QueueUrl=self._queue_url,
-            AttributeNames=['SentTimestamp'],
+            AttributeNames=["SentTimestamp"],
             MaxNumberOfMessages=1,
-            MessageAttributeNames=['All'],
+            MessageAttributeNames=["All"],
             VisibilityTimeout=VisibilityTimeout,
             WaitTimeSeconds=10,
         )
@@ -760,36 +760,36 @@ class FlowsheetControl:
             _log.info("Job Queue is Empty")
             return
 
-        message = response['Messages'][0]
-        self._receipt_handle = message['ReceiptHandle']
-        body = json.loads(message['Body'])
-        _log.info('MessageAttributes: ' + str(body.get('MessageAttributes')))
-        user_name = body['MessageAttributes'].get('username').get('Value')
-        _log.info('username: ' + user_name)
+        message = response["Messages"][0]
+        self._receipt_handle = message["ReceiptHandle"]
+        body = json.loads(message["Body"])
+        _log.info("MessageAttributes: " + str(body.get("MessageAttributes")))
+        user_name = body["MessageAttributes"].get("username").get("Value")
+        _log.info("username: " + user_name)
         db.set_user_name(user_name)
-        job_desc = json.loads(body['Message'])
-        _log.info('Job Description: ' + body['Message'])
-        for key in ['Id', 'Input', 'Simulation']:
+        job_desc = json.loads(body["Message"])
+        _log.info("Job Description: " + body["Message"])
+        for key in ["Id", "Input", "Simulation"]:
             if job_desc.get(key) is None:
                 raise FOQUSJobException(
                     "Job Description Missing Key %s" % key, job_desc, user_name
                 )
 
-        sfile, rfile, vfile, ofile = getfilenames(job_desc['Id'])
-        with open(vfile, 'w') as fd:
-            json.dump(dict(input=job_desc['Input']), fd)
+        sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
+        with open(vfile, "w") as fd:
+            json.dump(dict(input=job_desc["Input"]), fd)
 
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
-        _log.info('Simulation Bucket: ' + bucket_name)
-        s3 = boto3.client('s3', region_name=AWS_REGION)
-        simulation_name = job_desc['Simulation']
-        flowsheet_key = '%s/%s/session.foqus' % (user_name, simulation_name)
+        _log.info("Simulation Bucket: " + bucket_name)
+        s3 = boto3.client("s3", region_name=AWS_REGION)
+        simulation_name = job_desc["Simulation"]
+        flowsheet_key = "%s/%s/session.foqus" % (user_name, simulation_name)
 
         l = s3.list_objects(
-            Bucket=bucket_name, Prefix='%s/%s/' % (user_name, simulation_name)
+            Bucket=bucket_name, Prefix="%s/%s/" % (user_name, simulation_name)
         )
         # BFB_OUU_MultVar_04.09.2018.foqus
-        if 'Contents' not in l:
+        if "Contents" not in l:
             _log.error(
                 "S3 Simulation:  No keys match %s/%s" % (user_name, simulation_name)
             )
@@ -800,11 +800,11 @@ class FlowsheetControl:
                 user_name,
             )
 
-        foqus_keys = [i['Key'] for i in l['Contents'] if i['Key'].endswith('.foqus')]
+        foqus_keys = [i["Key"] for i in l["Contents"] if i["Key"].endswith(".foqus")]
         if len(foqus_keys) < 1:
             _log.error(
                 "S3 Simulation:  No keys match %s"
-                % '%s/%s/*.foqus'
+                % "%s/%s/*.foqus"
                 % (user_name, simulation_name)
             )
             raise FOQUSJobException(
@@ -841,7 +841,7 @@ class FlowsheetControl:
         s3.download_file(bucket_name, flowsheet_key, sfile)
 
         # WRITE CURRENT JOB TO FILE
-        with open(os.path.join(CURRENT_JOB_DIR, 'current_foqus.json'), 'w') as fd:
+        with open(os.path.join(CURRENT_JOB_DIR, "current_foqus.json"), "w") as fd:
             json.dump(job_desc, fd)
 
         return user_name, job_desc
@@ -853,10 +853,10 @@ class FlowsheetControl:
         Pull FOQUS nodes' simulation files from AWS S3
         ACM simulations store in TurbineLite
         """
-        sfile, rfile, vfile, ofile = getfilenames(job_desc['Id'])
-        guid = job_desc['Id']
+        sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
+        guid = job_desc["Id"]
         jid = None
-        simulation_name = job_desc['Simulation']
+        simulation_name = job_desc["Simulation"]
         # Run the job
         db.add_message("consumer={0}, setup foqus job".format(db.consumer_id), guid)
         _log.debug("setup foqus")
@@ -864,8 +864,8 @@ class FlowsheetControl:
         configContent = db.get_configuration_file(simulation_name)
         logging.getLogger("foqus." + __name__).info("Job {0} is submitted".format(jid))
 
-        reset = job_desc.get('Reset', False)
-        assert type(reset) is bool, 'Bad type for reset %s' % type(reset)
+        reset = job_desc.get("Reset", False)
+        assert type(reset) is bool, "Bad type for reset %s" % type(reset)
         if self._dat != None:
             assert type(self._dat) is Session
         else:
@@ -896,7 +896,7 @@ class FlowsheetControl:
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError(
-                'setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes'
+                "setup_foqus: Not supporting Flowsheet with multiple Turbine App nodes"
             )
         if count_turb_apps:
             try:
@@ -918,8 +918,8 @@ class FlowsheetControl:
         assert isinstance(db, TurbineLiteDB)
         assert isinstance(dat, Session)
         exit_code = 0
-        sfile, rfile, vfile, ofile = getfilenames(job_desc['Id'])
-        guid = job_desc['Id']
+        sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
+        guid = job_desc["Id"]
         jid = guid  # NOTE: like to use actual increment job id but hard to find.
         db.job_change_status(job_desc, "running")
         gt = dat.flowsheet.runAsThread()
@@ -928,7 +928,7 @@ class FlowsheetControl:
         while gt.isAlive():
             gt.join(10)
             status = db.consumer_status()
-            if status == 'terminate' or self._stop or self._check_job_terminate(jid):
+            if status == "terminate" or self._stop or self._check_job_terminate(jid):
                 terminate = True
                 db.job_change_status(
                     job_desc,

@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-__author__ = 'sotorrio1'
+__author__ = "sotorrio1"
 
 from PyQt5.QtCore import pyqtSignal
 from foqus_lib.gui.flowsheet.dataBrowserFrame import dataBrowserFrame

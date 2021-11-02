@@ -50,16 +50,16 @@ except ImportError:
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return slsqp_available
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver class.  Should be called opt and inherit
     optimization.  The are several attributes from the optimization
     base class that should be set for an optimization plug-in:
@@ -74,12 +74,12 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize CMA-ES optimization module
-        '''
+        """
         optimization.__init__(self, dat)
         self.name = "SciPy-SLSQP"
         self.methodDescription = (
@@ -89,20 +89,20 @@ class opt(optimization):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "<p class=\"hangingindent\">"
+            '<p class="hangingindent">'
             "<p>Developer: Dieter Kraft</p>"
             "<p>Algorithm Type: Han–Powell quasi–Newton method</p>"
             "<p>Optimization Problems handling Capability: Nonlinear Optimization Problems with general equality & inequality constraints, and variable bounds.</p>"
             "</html>"
         )
         self.options.add(
-            name='upper',
+            name="upper",
             default=10.0,
             dtype=float,
             desc="Upper bound on scaled variables (usually 10.0)",
         )
         self.options.add(
-            name='lower',
+            name="lower",
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)",
         )
@@ -134,7 +134,7 @@ class opt(optimization):
             name="Save results", default=True, desc="Save all flowsheet results?"
         )
         self.options.add(
-            name='Set Name',
+            name="Set Name",
             default="SciPy-SLSQP",
             dtype=str,
             desc="Name of flowsheet result set to store data",
@@ -163,9 +163,9 @@ class opt(optimization):
         return obj
 
     def optimize(self):
-        '''
+        """
         This is the optimization routine.
-        '''
+        """
         # get the initial guess, flatten arrays and scale inputs
         xinit = self.graph.input.getFlat(self.prob.v, scaled=True)
         # Display a little information to check that things are working
@@ -207,7 +207,7 @@ class opt(optimization):
             setName = self.dat.flowsheet.results.incrimentSetName(setName)
         start = time.time()
         self.userInterupt = False
-        self.bestSoFar = float('inf')
+        self.bestSoFar = float("inf")
         self.prob.iterationNumber = 0
         self.prob.initSolverParameters()
         self.prob.solverStart = start
@@ -220,9 +220,9 @@ class opt(optimization):
         ores = scipy.optimize.minimize(
             self.f,
             xinit,
-            method='SLSQP',
+            method="SLSQP",
             bounds=bounds,
-            options={'ftol': ftol, 'eps': eps, 'maxiter': maxiter},
+            options={"ftol": ftol, "eps": eps, "maxiter": maxiter},
         )
         # Print some final words
         eltime = time.time() - start

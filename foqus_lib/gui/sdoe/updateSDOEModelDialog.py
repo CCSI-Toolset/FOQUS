@@ -78,13 +78,13 @@ class updateSDOEModelDialog(_updateSDOEModelDialog, _updateSDOEModelDialogUI):
             button.setEnabled(True)
 
     def getDataFileName(self):
-        if platform.system() == 'Windows':
-            allFiles = '*.*'
+        if platform.system() == "Windows":
+            allFiles = "*.*"
         else:
-            allFiles = '*'
+            allFiles = "*"
         # Get file name
         fileName, selectedFilter = QFileDialog.getOpenFileName(
-            self, "Open Ensemble", '', "CSV (Comma delimited) (*.csv)"
+            self, "Open Ensemble", "", "CSV (Comma delimited) (*.csv)"
         )
         if len(fileName) == 0:
             return

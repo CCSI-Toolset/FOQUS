@@ -92,7 +92,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         Common.initFolder(Visualizer.dname)
 
         self.setWindowTitle(
-            'Analysis of Ensemble %d: %s' % (idNum, data.getModelName())
+            "Analysis of Ensemble %d: %s" % (idNum, data.getModelName())
         )
 
         self.wizardRSValidated = False
@@ -148,33 +148,33 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         item.setForeground(Qt.black)
         self.infoTable.setItem(self.descriptorRow, 0, item)
 
-        self.wizardModeButtonText = 'Mode: Wizard (Click for Expert Mode)'
-        self.expertModeButtonText = 'Mode: Expert (Click for Wizard Mode)'
+        self.wizardModeButtonText = "Mode: Wizard (Click for Expert Mode)"
+        self.expertModeButtonText = "Mode: Expert (Click for Wizard Mode)"
 
         self.numInputsOverWhichToScreen = 10
         self.paramScreenRecommendedText = (
-            'You have over %d inputs. ' % self.numInputsOverWhichToScreen
+            "You have over %d inputs. " % self.numInputsOverWhichToScreen
         )
-        self.paramScreenRecommendedText += 'Parameter selection is recommended to determine which inputs can be removed from initial consideration.'
+        self.paramScreenRecommendedText += "Parameter selection is recommended to determine which inputs can be removed from initial consideration."
         self.noParamScreenNeededText = (
-            'No parameter selection is necessary for %d inputs. ' % data.getNumInputs()
+            "No parameter selection is necessary for %d inputs. " % data.getNumInputs()
         )
         self.noParamScreenNeededText += (
-            'However, if selection is still desired, click here:'
+            "However, if selection is still desired, click here:"
         )
 
         self.numSamplesForRawAnalysis = 1000
         self.ensembleAnalysisRecommendedText = (
-            'You have at least %d samples. ' % self.numSamplesForRawAnalysis
+            "You have at least %d samples. " % self.numSamplesForRawAnalysis
         )
-        self.ensembleAnalysisRecommendedText += 'This is enough to perform analysis on the ensemble data with good results. '
-        self.ensembleAnalysisRecommendedText += 'You may still choose to analyze data evaluated by a response surface trained on the ensemble data instead.'
+        self.ensembleAnalysisRecommendedText += "This is enough to perform analysis on the ensemble data with good results. "
+        self.ensembleAnalysisRecommendedText += "You may still choose to analyze data evaluated by a response surface trained on the ensemble data instead."
         self.RSAnalysisRecommendedText = (
-            'You have fewer than %d samples. ' % self.numSamplesForRawAnalysis
+            "You have fewer than %d samples. " % self.numSamplesForRawAnalysis
         )
-        self.RSAnalysisRecommendedText += 'It is recommended to perform analysis using a response surface trained on the data rather than the raw data itself. '
+        self.RSAnalysisRecommendedText += "It is recommended to perform analysis using a response surface trained on the data rather than the raw data itself. "
         self.RSAnalysisRecommendedText += (
-            'You may still choose to analyze the raw ensemble data instead.'
+            "You may still choose to analyze the raw ensemble data instead."
         )
 
         # Set wizard page as default
@@ -299,12 +299,12 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                     ResponseSurfaces.getFullName(rs)
                     for rs in analysis.getResponseSurface()
                 ]
-                text = ', '.join(names)
+                text = ", ".join(names)
                 maxLength = max([len(name) for name in names]) + 1
                 maxLength = max([maxLength, 15])
                 item.setText(textwrap.fill(text, maxLength))
         else:
-            item.setText('')
+            item.setText("")
 
         # Input
         item = self.analysisTable.item(row, self.inputCol)
@@ -320,7 +320,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             names = [self.data.getInputNames()[input - 1] for input in inputs]
             maxLength = max([len(name) for name in names]) + 1
             maxLength = max([maxLength, 15])
-            input = ', '.join(names)
+            input = ", ".join(names)
             input = textwrap.fill(input, maxLength)
         item.setText(input)
 
@@ -338,7 +338,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             names = [self.data.getOutputNames()[output - 1] for output in outputs]
             maxLength = max([len(name) for name in names]) + 1
             maxLength = max([maxLength, 15])
-            output = ', '.join(names)
+            output = ", ".join(names)
             output = textwrap.fill(output, maxLength)
         item.setText(output)
 
@@ -362,21 +362,21 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             class Dialog(QDialog):
                 def __init__(self, xtable, parent=None):
                     super(Dialog, self).__init__(parent)
-                    self.setWindowTitle('Plot input selection')
+                    self.setWindowTitle("Plot input selection")
                     self.resize(100, 100)
                     self.gridLayout = QGridLayout(self)
-                    text = QLabel('Select inputs to plot:')
+                    text = QLabel("Select inputs to plot:")
                     self.gridLayout.addWidget(text, 0, 0, 1, 2)
                     self.checkboxes = [None] * len(xtable)
                     if len(xtable) > 12:
                         numCols = 2
                     else:
                         numCols = 1
-                    numVariables = len([1 for x in xtable if x['type'] != 'Design'])
+                    numVariables = len([1 for x in xtable if x["type"] != "Design"])
                     numRows = (numVariables + 1) / 2
                     for i, x in enumerate(xtable):
-                        if x['type'] != 'Design':
-                            chkbox = QCheckBox(x['name'])
+                        if x["type"] != "Design":
+                            chkbox = QCheckBox(x["name"])
                             self.checkboxes[i] = chkbox
                             if i >= numRows:
                                 self.gridLayout.addWidget(chkbox, i - numRows + 1, 1)
@@ -384,10 +384,10 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                                 self.gridLayout.addWidget(chkbox, i + 1, 0)
                             if i in analysis.showList:
                                 chkbox.setChecked(True)
-                    self.okButton = QPushButton('OK')
+                    self.okButton = QPushButton("OK")
                     self.okButton.clicked.connect(self.accept)
                     self.gridLayout.addWidget(self.okButton, numRows + 1, 0, 1, 1)
-                    self.cancelButton = QPushButton('Cancel')
+                    self.cancelButton = QPushButton("Cancel")
                     self.cancelButton.clicked.connect(self.reject)
                     self.gridLayout.addWidget(self.cancelButton, numRows + 1, 1, 1, 1)
                     self.adjustSize()
@@ -474,9 +474,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             )
             comboBox.addItem(marsName)
             foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
-            foundMARS = foundLibs.get('MARS', False)
+            foundMARS = foundLibs.get("MARS", False)
             if not foundMARS:
-                marsName = marsName + ' (Not installed)'
+                marsName = marsName + " (Not installed)"
                 comboBox.setItemText(marsIndex, marsName)
                 model = comboBox.model()
                 index = model.index(marsIndex, 0)
@@ -502,7 +502,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             )
         else:
             raise NotImplementedError(
-                'There are no parameter screening methods that support sample type %s.'
+                "There are no parameter screening methods that support sample type %s."
                 % method
             )
         comboBox.setCurrentIndex(0)
@@ -530,9 +530,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             filename = os.getcwd()
         fname, selectedFilter = QFileDialog.getOpenFileName(
             self,
-            'Indicate file that has user regression code:',
+            "Indicate file that has user regression code:",
             filename,
-            'Python File (*.py)',
+            "Python File (*.py)",
         )
         if len(fname) > 0:  # if a file was indicated during browse
             regressionFile_edit.setText(fname)
@@ -615,14 +615,14 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         method = dataAnalyze_combo1.currentText()
         # get output
         y = output_combo.currentIndex()
-        if output_combo.itemText(0) != 'None selected':
+        if output_combo.itemText(0) != "None selected":
             y += 1
 
         self.setModal(False)
-        if method == 'Uncertainty Analysis':
+        if method == "Uncertainty Analysis":
             # RawDataAnalyzer.performUA(fname, y)
             analysis = UncertaintyAnalysis(self.data, y)
-        elif method == 'Correlation Analysis':
+        elif method == "Correlation Analysis":
             # RawDataAnalyzer.performCA(fname, y)
             analysis = CorrelationAnalysis(self.data, y)
         else:
@@ -643,24 +643,24 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         sa = numItems
         inf = numItems
         for i in range(numItems):
-            if combo1.itemText(i).startswith('Sensitivity'):
+            if combo1.itemText(i).startswith("Sensitivity"):
                 sa = i
-            elif 'Infer' in combo1.itemText(i):
+            elif "Infer" in combo1.itemText(i):
                 inf = i
 
         # disable SA if nSamples < 1000
         if sa == numItems:
-            raise RuntimeError('Combo 1 does not have sensitivity analysis')
+            raise RuntimeError("Combo 1 does not have sensitivity analysis")
         model = combo1.model()
         index = model.index(sa, 0)
         item = model.itemFromIndex(index)
         if nSamples < 1000:
-            combo1.setItemText(sa, 'Sensitivity (Requires at least 1K samples)')
+            combo1.setItemText(sa, "Sensitivity (Requires at least 1K samples)")
             item.setEnabled(False)
             combo1.setCurrentIndex(0)
             combo2.hide()
         else:
-            combo1.setItemText(sa, 'Sensitivity Analysis ->')
+            combo1.setItemText(sa, "Sensitivity Analysis ->")
             item.setEnabled(True)
             combo2.show()
 
@@ -676,39 +676,39 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         method = combo1.currentText()
         combo2.clear()
-        if method.startswith('Sensitivity'):
+        if method.startswith("Sensitivity"):
             disable = []
             enable = []
             if (
                 nSamples < 1000
             ):  # this should never happen, as SA should be disabled in combo1
                 disable = [
-                    'First-order (Requires at least 1K samples)',
-                    'Second-order (Requires at least 1K samples)',
-                    'Total-order (Requires at least 10K samples)',
+                    "First-order (Requires at least 1K samples)",
+                    "Second-order (Requires at least 1K samples)",
+                    "Total-order (Requires at least 10K samples)",
                 ]
             else:
                 if nInputs <= 2:
-                    enable = ['First-order']
+                    enable = ["First-order"]
                     disable = [
-                        'Second-order (Requires at least 3 inputs)',
-                        'Total-order (Requires at least 3 inputs)',
+                        "Second-order (Requires at least 3 inputs)",
+                        "Total-order (Requires at least 3 inputs)",
                     ]
                 elif nSamples < 10000:
-                    enable = ['First-order', 'Second-order']
-                    disable = ['Total-order (Requires at least 10K samples)']
+                    enable = ["First-order", "Second-order"]
+                    disable = ["Total-order (Requires at least 10K samples)"]
                 else:
                     if nInputs <= 2:
-                        enable = ['First-order']
+                        enable = ["First-order"]
                         disable = [
-                            'Second-order (Requires at least 3 inputs)',
-                            'Total-order (Requires at least 3 inputs)',
+                            "Second-order (Requires at least 3 inputs)",
+                            "Total-order (Requires at least 3 inputs)",
                         ]
                     elif nInputs > 10:
-                        enable = ['First-order', 'Second-order']
-                        disable = ['Total-order (Requires at most 10 inputs)']
+                        enable = ["First-order", "Second-order"]
+                        disable = ["Total-order (Requires at most 10 inputs)"]
                     else:
-                        enable = ['First-order', 'Second-order', 'Total-order']
+                        enable = ["First-order", "Second-order", "Total-order"]
             for i in range(len(enable)):
                 s = enable[i]
                 combo2.addItem(s)
@@ -732,52 +732,52 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         sa = numItems
         for i in range(numItems):
             text = combo1.itemText(i)
-            if text.startswith('Sensitivity'):
+            if text.startswith("Sensitivity"):
                 sa = i
                 break
 
         if sa == numItems:
-            raise RuntimeError('Combo 1 does not have sensitivity analysis')
+            raise RuntimeError("Combo 1 does not have sensitivity analysis")
 
         model = combo1.model()
         index = model.index(sa, 0)
         item = model.itemFromIndex(index)
         item.setEnabled(not samplePDFChosen)
         if samplePDFChosen:
-            combo1.setItemText(sa, 'Sensitivity (Incompatible with Sample PDF)')
+            combo1.setItemText(sa, "Sensitivity (Incompatible with Sample PDF)")
             if combo1.currentIndex() == sa:
                 combo1.setCurrentIndex(sa - 1)
         else:
-            combo1.setItemText(sa, 'Sensitivity Analysis ->')
+            combo1.setItemText(sa, "Sensitivity Analysis ->")
         combo2.show()
 
     def handleRSAnalyzeCombo2(self, combo1, combo2, samplePDFChosen=False):
 
         method = combo1.currentText()
 
-        if method.startswith('Uncertainty Analysis ->'):  # expert mode has arrow
-            if combo2.itemText(0) != 'Aleatory Only':
+        if method.startswith("Uncertainty Analysis ->"):  # expert mode has arrow
+            if combo2.itemText(0) != "Aleatory Only":
                 combo2.clear()
-                combo2.addItem('Aleatory Only')
-                combo2.addItem('Epistemic-Aleatory')
+                combo2.addItem("Aleatory Only")
+                combo2.addItem("Epistemic-Aleatory")
             combo2.setEnabled(True)
-        elif method.startswith('Sensitivity'):
-            if combo2.itemText(0) != 'First-order':
+        elif method.startswith("Sensitivity"):
+            if combo2.itemText(0) != "First-order":
                 combo2.clear()
-                combo2.addItem('First-order')
+                combo2.addItem("First-order")
                 nInputs = self.data.getNumInputs()
                 disableHighSAs = False
                 if nInputs <= 2:
-                    combo2.addItem('Second-order (Requires at least 3 inputs)')
-                    combo2.addItem('Total-order (Requires at least 3 inputs)')
+                    combo2.addItem("Second-order (Requires at least 3 inputs)")
+                    combo2.addItem("Total-order (Requires at least 3 inputs)")
                     disableHighSAs = True
                 elif samplePDFChosen:
-                    combo2.addItem('Second-order (Incompatible with Sample PDF)')
-                    combo2.addItem('Total-order (Incompatible with Sample PDF)')
+                    combo2.addItem("Second-order (Incompatible with Sample PDF)")
+                    combo2.addItem("Total-order (Incompatible with Sample PDF)")
                     disableHighSAs = True
                 else:
-                    combo2.addItem('Second-order')
-                    combo2.addItem('Total-order')
+                    combo2.addItem("Second-order")
+                    combo2.addItem("Total-order")
                 if disableHighSAs:
                     model = combo2.model()
                     for i in [1, 2]:
@@ -808,7 +808,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # get output
         y = output_combo.currentIndex()
-        if output_combo.itemText(0) != 'None selected':
+        if output_combo.itemText(0) != "None selected":
             y += 1
 
         # get method and analyze RS
@@ -818,36 +818,36 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         rsOptions = None
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = legendre_spin.value()
-        elif rs.startswith('MARS'):
+        elif rs.startswith("MARS"):
             if marsBasis_spin is not None and marsDegree_spin is not None:
                 rsOptions = {
-                    'marsBases': marsBasis_spin.value(),
-                    'marsInteractions': marsDegree_spin.value(),
+                    "marsBases": marsBasis_spin.value(),
+                    "marsInteractions": marsDegree_spin.value(),
                 }
-        if method == 'Point Evaluation':
+        if method == "Point Evaluation":
             # Evaluate RS
             data = self.data
             fnameRS = Common.getLocalFileName(
-                RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat'
+                RSAnalyzer.dname, data.getModelName().split()[0], ".rsdat"
             )
             data.writeToPsuade(fnameRS)
             value = RSAnalyzer.pointEval(
                 fnameRS, xprior, y, rs, rsOptions, userRegressionFile_edit.text()
             )
             self.pointEval_label.setText(
-                'RS evaluated value for %s is %g with a standard dev. of %g'
+                "RS evaluated value for %s is %g with a standard dev. of %g"
                 % (output_combo.currentText(), float(value[0]), float(value[1]))
             )
         else:
-            if method.startswith('Uncertainty Analysis'):
+            if method.startswith("Uncertainty Analysis"):
                 # RSAnalyzer.performUA(fnameRS, y, rs, legendre_spin.value(), userRegressionFile_edit.text(), xprior)
-                if 'Epistemic' in RSAnalyze_combo2.currentText():
+                if "Epistemic" in RSAnalyze_combo2.currentText():
                     if len(evars) == 0 or len(evars) >= self.data.getNumInputs():
                         self.unfreeze()
                         QMessageBox.information(
                             self,
-                            'No epistemic variables',
-                            'This analysis requires at least one aleatory and one epistemic variable!',
+                            "No epistemic variables",
+                            "This analysis requires at least one aleatory and one epistemic variable!",
                         )
                         return
                     analysis = RSUncertaintyAnalysis(
@@ -869,7 +869,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
                         userRegressionFile_edit.text(),
                         xprior,
                     )
-            elif method.startswith('Sensitivity'):
+            elif method.startswith("Sensitivity"):
                 sa_method = RSAnalyze_combo2.currentIndex()
                 analysis = RSSensitivityAnalysis(
                     self.data,
@@ -906,19 +906,19 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         combo1.clear()
         combo2.clear()
         combo3.clear()
-        combo1.addItem('None selected')
+        combo1.addItem("None selected")
         for x, inType in zip(inVarNames, inTypes):
             if inType == Model.VARIABLE:
                 combo1.addItem(x)
         combo1.setCurrentIndex(0)
         if nInputs > 1:
-            combo2.addItem('None selected')
+            combo2.addItem("None selected")
             for x, inType in zip(inVarNames, inTypes):
                 if inType == Model.VARIABLE:
                     combo2.addItem(x)
             combo2.setCurrentIndex(0)
         if nSamples > 2:
-            combo3.addItem('None selected')
+            combo3.addItem("None selected")
             for x, inType in zip(inVarNames, inTypes):
                 if inType == Model.VARIABLE:
                     combo3.addItem(x)
@@ -1020,7 +1020,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             data = ydata[:, i]
             std = numpy.std(data)
             if std == 0:
-                text = y + ' (No variance)'
+                text = y + " (No variance)"
                 disable.append(i)
                 if currentIndex == i:
                     currentIndex += 1
@@ -1061,9 +1061,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.screen(y, self.wizardScreenMethod_combo)
         QMessageBox.information(
             None,
-            'Parameter Selection Plot',
-            'Take note of which inputs are more sensitive and which are less. '
-            'Taller bars in the plot mean more sensitive.',
+            "Parameter Selection Plot",
+            "Take note of which inputs are more sensitive and which are less. "
+            "Taller bars in the plot mean more sensitive.",
         )
 
     # ---- Wizard Page Analysis Group
@@ -1083,7 +1083,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             data = ydata[:, i]
             std = numpy.std(data)
             if std == 0:
-                text = y + ' (No variance)'
+                text = y + " (No variance)"
                 disable.append(i)
                 if currentIndex == i:
                     currentIndex += 1
@@ -1179,7 +1179,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             self.wizardViz_static.setText(
                 '3. If you would like to visualize the data, choose the inputs and click "Visualize".'
             )
-            self.wizardAnalyze_static.setText('4. Choose UQ Analysis:')
+            self.wizardAnalyze_static.setText("4. Choose UQ Analysis:")
             self.wizardAnalyze_button.setEnabled(True)
             self.initDataAnalyzeCombo1(
                 self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
@@ -1191,7 +1191,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
             self.wizardViz_static.setText(
                 '5. If you would like to visualize the response surface for correctness of the chosen method for the selected output, choose the inputs and click "Visualize".'
             )
-            self.wizardAnalyze_static.setText('7. Choose UQ Analysis:')
+            self.wizardAnalyze_static.setText("7. Choose UQ Analysis:")
             self.initRSAnalyzeCombo1(
                 self.wizardAnalyze_combo1, self.wizardAnalyze_combo2
             )
@@ -1265,16 +1265,16 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if result is not None:
             QMessageBox.information(
                 None,
-                'Response Surface Validation Plot',
-                'The two plots help you gauge the fitness of %s '
-                'response surface to the ensemble data. The left '
-                'plot is a histogram of the errors between the '
-                'ensemble data and response surface prediction of '
-                'that data for each sample. A good fit results in '
-                'tall bars near 0.0 and very short bars further '
-                'from 0.0.  On the right is a plot of predicted '
-                'value vs. actual value. A good fit results in all '
-                'the points being very close to the diagonal line.' % rs,
+                "Response Surface Validation Plot",
+                "The two plots help you gauge the fitness of %s "
+                "response surface to the ensemble data. The left "
+                "plot is a histogram of the errors between the "
+                "ensemble data and response surface prediction of "
+                "that data for each sample. A good fit results in "
+                "tall bars near 0.0 and very short bars further "
+                "from 0.0.  On the right is a plot of predicted "
+                "value vs. actual value. A good fit results in all "
+                "the points being very close to the diagonal line." % rs,
             )
 
     def activateWizardRSAnalysis(self):
@@ -1321,26 +1321,26 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
             # Show plot help text
             analysisType = self.wizardAnalyze_combo1.currentText()
-            if analysisType.startswith('Uncertainty'):
+            if analysisType.startswith("Uncertainty"):
                 QMessageBox.information(
                     None,
-                    'Uncertainty Analysis Plot',
-                    'This plot displays the distribution of the output '
-                    '(Normal on top, cumulative on the bottom) as well as '
-                    'statistics on the top. Use this plot to gauge whether '
-                    'the uncertainty of the output is acceptable. If not, '
-                    'further analysis is needed to examine relationships '
-                    'between inputs and outputs and what can be done to '
-                    'reduce the uncertainties on the inputs that contribute '
-                    'more to the uncertainty of this output.',
+                    "Uncertainty Analysis Plot",
+                    "This plot displays the distribution of the output "
+                    "(Normal on top, cumulative on the bottom) as well as "
+                    "statistics on the top. Use this plot to gauge whether "
+                    "the uncertainty of the output is acceptable. If not, "
+                    "further analysis is needed to examine relationships "
+                    "between inputs and outputs and what can be done to "
+                    "reduce the uncertainties on the inputs that contribute "
+                    "more to the uncertainty of this output.",
                 )
-            elif analysisType.startswith('Sensitivity'):
+            elif analysisType.startswith("Sensitivity"):
                 order = self.wizardAnalyze_combo2.currentText()
                 QMessageBox.information(
                     None,
-                    '%s Plot' % order,
-                    'Take note of which inputs are more sensitive and which are less. '
-                    'Taller bars in the plot mean more sensitive.',
+                    "%s Plot" % order,
+                    "Take note of which inputs are more sensitive and which are less. "
+                    "Taller bars in the plot mean more sensitive.",
                 )
 
     def activateWizardVizButton(self):
@@ -1441,14 +1441,14 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         # populate output combo
         self.output_combo.clear()
-        self.output_combo.addItem('None selected')
+        self.output_combo.addItem("None selected")
         ydata = self.data.getOutputData()
         disable = []
         for i, y in enumerate(self.data.getOutputNames()):
             data = ydata[:, i]
             std = numpy.std(data)
             if std == 0:
-                text = y + ' (No variance)'
+                text = y + " (No variance)"
                 disable.append(i + 1)
             else:
                 text = y
@@ -1475,7 +1475,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     def activateExpertAnalysisGroups(self):
         output = self.output_combo.currentText()
-        enable = output != 'None selected'
+        enable = output != "None selected"
 
         # activate groups
         self.paramSelectGroup.setEnabled(enable)
@@ -1537,13 +1537,13 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         # populate combo
         self.dataViz_combo1.clear()
         self.dataViz_combo2.clear()
-        self.dataViz_combo1.addItem('None selected')
+        self.dataViz_combo1.addItem("None selected")
         for x, inType in zip(inVarNames, inTypes):
             if inType == Model.VARIABLE:
                 self.dataViz_combo1.addItem(x)
         self.dataViz_combo1.setCurrentIndex(0)
         if nInputs > 1:
-            self.dataViz_combo2.addItem('None selected')
+            self.dataViz_combo2.addItem("None selected")
             for x, inType in zip(inVarNames, inTypes):
                 if inType == Model.VARIABLE:
                     self.dataViz_combo2.addItem(x)
@@ -1639,7 +1639,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSCodeBrowse_button.setEnabled(False)
         self.RSAnalyze_combo1.setEnabled(False)
         self.RSAnalyze_combo2.clear()
-        self.RSAnalyze_combo2.addItems(['Aleatory Only', 'Epistemic-Aleatory'])
+        self.RSAnalyze_combo2.addItems(["Aleatory Only", "Epistemic-Aleatory"])
         self.RSAnalyze_combo2.setEnabled(False)
         self.RSAnalyze_button.setEnabled(False)
         b = False
@@ -1713,20 +1713,20 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         if len(filename) == 0:
             filename = os.getcwd()
         fname, selectedFilter = QFileDialog.getOpenFileName(
-            self, 'Indicate file that has user regression test set:', filename
+            self, "Indicate file that has user regression test set:", filename
         )
         if len(fname) > 0:  # if a file was indicated during browse
             try:
                 data = LocalExecutionModule.readSampleFromPsuadeFile(fname)
                 if data.getNumOutputs() > 1:
                     QMessageBox.critical(
-                        self, 'File Outputs', 'This file can only have one output!'
+                        self, "File Outputs", "This file can only have one output!"
                     )
             except:
                 QMessageBox.critical(
                     self,
-                    'File format Incorrect',
-                    'This file is not a PSUADE formatted file!',
+                    "File format Incorrect",
+                    "This file is not a PSUADE formatted file!",
                 )
             self.testSet_edit.setText(fname)
         self.activateRSValidateButton()
@@ -1743,18 +1743,18 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSCodeBrowse_button.setEnabled(enable)
 
     def RSCodeBrowse(self):
-        filename = os.getcwd() + os.sep + 'rs.py'
+        filename = os.getcwd() + os.sep + "rs.py"
         fname, selectedFilter = QFileDialog.getSaveFileName(
             self,
-            'Indicate file to save posterior input samples',
+            "Indicate file to save posterior input samples",
             filename,
-            'Python code (*.py);;C code (*.c)',
+            "Python code (*.py);;C code (*.c)",
         )
         if len(fname) > 0:  # if a file was indicated during browse
-            if '*.py' in selectedFilter:
-                origFile = 'psuade_rs.py'
+            if "*.py" in selectedFilter:
+                origFile = "psuade_rs.py"
             else:
-                origFile = 'psuade_rs.info'
+                origFile = "psuade_rs.info"
             if os.path.exists(origFile):
                 if os.path.exists(fname):
                     os.remove(fname)
@@ -1811,10 +1811,10 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         error_tol_percent = self.doubleSpinBox.value()
         if rs == ResponseSurfaces.getPsuadeName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.RSLegendre_spin.value()
-        elif rs.startswith('MARS'):
+        elif rs.startswith("MARS"):
             rsOptions = {
-                'marsBases': self.RSMarsBasis_spin.value(),
-                'marsInteractions': self.RSMarsDegree_spin.value(),
+                "marsBases": self.RSMarsBasis_spin.value(),
+                "marsInteractions": self.RSMarsDegree_spin.value(),
             }
 
         nCV = self.RSValidationGroups_spin.value()
@@ -1837,9 +1837,9 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
         rs = self.RS_combo2.currentText()
         if rs != ResponseSurfaces.getFullName(ResponseSurfaces.MARSBAG):
-            if not os.path.exists('psuade_rs.info'):
+            if not os.path.exists("psuade_rs.info"):
                 pass  # TODO: error psuade_rs.info missing
-            if not os.path.exists('psuade_rs.py'):
+            if not os.path.exists("psuade_rs.py"):
                 pass  # TODO: error psuade_rs.py missing
 
         self.activateRSCodeSave()
@@ -1866,7 +1866,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         # restore/disable RS validate GUI components
         self.RS_combo1.setEnabled(True)
         rs = self.RS_combo1.currentText()
-        if rs.startswith('Polynomial') or rs.startswith('MARS'):
+        if rs.startswith("Polynomial") or rs.startswith("MARS"):
             self.RS_combo2.setEnabled(True)
             rs = self.RS_combo2.currentText()
             enable = rs == ResponseSurfaces.getFullName(ResponseSurfaces.LEGENDRE)
@@ -1941,7 +1941,7 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         self.RSAnalyze_combo2.currentIndexChanged[int].connect(
             self.changePriorTableMode
         )
-        self.pointEval_label.setText('')
+        self.pointEval_label.setText("")
         self.changePriorTableMode()
         self.RSAnalyze_button.setEnabled(True)
 
@@ -1954,14 +1954,14 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
 
     def changePriorTableMode(self):
         self.disableTableSignals = True
-        if self.RSAnalyze_combo1.currentText() != 'Point Evaluation':
+        if self.RSAnalyze_combo1.currentText() != "Point Evaluation":
             self.inputPrior_table.setRSEvalMode(False)
-        mode = self.RSAnalyze_combo2.currentText() == 'Epistemic-Aleatory'
+        mode = self.RSAnalyze_combo2.currentText() == "Epistemic-Aleatory"
         # if mode != self.epistemicMode: # Change in mode
         if True:
             self.inputPrior_table.setAleatoryEpistemicMode(mode)
             self.epistemicMode = mode
-        if self.RSAnalyze_combo1.currentText() == 'Point Evaluation':
+        if self.RSAnalyze_combo1.currentText() == "Point Evaluation":
             self.inputPrior_table.setRSEvalMode(True)
 
     def activateRSAnalyzeButton(self):
@@ -2086,10 +2086,10 @@ class AnalysisDialog(_AnalysisDialog, _AnalysisDialogUI):
         rsOptions = None
         if rs == ResponseSurfaces.getFullName(ResponseSurfaces.LEGENDRE):
             rsOptions = self.RSLegendre_spin.value()
-        elif rs.startswith('MARS'):
+        elif rs.startswith("MARS"):
             rsOptions = {
-                'marsBases': self.RSMarsBasis_spin.value(),
-                'marsInteractions': self.RSMarsDegree_spin.value(),
+                "marsBases": self.RSMarsBasis_spin.value(),
+                "marsInteractions": self.RSMarsDegree_spin.value(),
             }
 
         self.RSViz(

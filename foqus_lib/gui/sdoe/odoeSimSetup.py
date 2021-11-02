@@ -75,7 +75,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
             data = SampleData(model)
             dists = []
             for i in range(model.getNumInputs()):
-                dists = dists + ['U']
+                dists = dists + ["U"]
             data.setInputDistributions(dists)
         else:
             data = model
@@ -102,7 +102,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         self.doneButton.clicked.connect(self.doneClicked)
         self.doneButton.setEnabled(False)
         if viewOnly:
-            self.cancelButton.setText('OK')
+            self.cancelButton.setText("OK")
             self.doneButton.setHidden(True)
             self.samplingTabs.setTabEnabled(1, False)
 
@@ -129,11 +129,11 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
 
         # Set up sampling schemes tab
         self.generateSamplesButton.setEnabled(False)
-        self.generateStatusText.setText('')
+        self.generateStatusText.setText("")
         self.allSchemesRadio.setChecked(True)
 
         foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
-        foundMETIS = foundLibs['METIS']
+        foundMETIS = foundLibs["METIS"]
 
         self.schemesList.clear()
         self.schemesList.addItems(SamplingMethods.fullNames[0:4])
@@ -143,7 +143,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         if not foundMETIS:
             item = self.schemesList.item(SamplingMethods.METIS)
             text = item.text()
-            item.setText(text + ' (Not installed)')
+            item.setText(text + " (Not installed)")
             flags = item.flags()
             item.setFlags(flags & ~Qt.ItemIsEnabled)
 
@@ -165,16 +165,16 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
     def doneClicked(self):
         if self.returnDataSignal:
             self.returnDataSignal.emit(self.getData())
-            dirname = os.path.join(os.getcwd(), 'ODOE_Files')
+            dirname = os.path.join(os.getcwd(), "ODOE_Files")
             filename = os.path.join(dirname, self.getData().getModelName())
             self.getData().writeToCsv(filename, inputsOnly=True)
 
         self.accept()
 
     def setPage(self):
-        '''
+        """
         Change the page view
-        '''
+        """
 
         self.samplePages.setCurrentIndex(self.SCHEME_PAGE_INDEX)
         self.previewButton.setEnabled(self.samplesGenerated)
@@ -194,13 +194,13 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         showMessage = False
         if self.distTable.getNumVariables() == 0:
             showMessage = True
-            message = 'All inputs are fixed! One needs to be variable.'
+            message = "All inputs are fixed! One needs to be variable."
         else:
             valid, error = self.distTable.checkValidInputs()
             if not valid:
                 showMessage = True
                 message = (
-                    'Distribution settings not correct or entirely filled out! %s'
+                    "Distribution settings not correct or entirely filled out! %s"
                     % error
                 )
             else:
@@ -240,7 +240,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                     if dist not in [Distribution.UNIFORM, Distribution.SAMPLE]:
                         f = tempfile.SpooledTemporaryFile()
                         for i in range(2):
-                            f.write(b'cdf_lookup\n')
+                            f.write(b"cdf_lookup\n")
                             distNum = dist
                             if dist == Distribution.BETA:
                                 distNum = 4
@@ -250,16 +250,16 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                                 distNum = 6
                             elif dist == Distribution.EXPONENTIAL:
                                 distNum = 7
-                            f.write(b'%d\n' % distNum)  # Number of distribution
-                            f.write(b'%f\n' % distParam1)  # Parameter 1
+                            f.write(b"%d\n" % distNum)  # Number of distribution
+                            f.write(b"%f\n" % distParam1)  # Parameter 1
                             if distParam2 is not None:
-                                f.write(b'%f\n' % distParam2)  # Parameter 2
+                                f.write(b"%f\n" % distParam2)  # Parameter 2
                             if i == 0:
                                 val = minVal
                             else:
                                 val = maxVal
-                            f.write(b'%f\n' % val)  # Min or max value
-                        f.write(b'quit\n')
+                            f.write(b"%f\n" % val)  # Min or max value
+                        f.write(b"quit\n")
                         f.seek(0)
 
                         # invoke psuade
@@ -285,7 +285,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                         lines = out.splitlines()
                         vals = []
                         for line in lines:
-                            if 'Cumulative probability = ' in line.decode('utf-8'):
+                            if "Cumulative probability = " in line.decode("utf-8"):
                                 words = line.split()
                                 vals.append(float(words[-1]))
 
@@ -297,12 +297,12 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                     self.samplingTabs.setCurrentIndex(0)
                     for row in rowsToWarnAboutMass:
                         msgbox = QMessageBox()
-                        msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                        msgbox.setWindowTitle("UQ/Opt GUI Warning")
                         msgbox.setText(
-                            'Regarding input '
+                            "Regarding input "
                             + self.model.getInputNames()[row]
-                            + ': Min/max range is narrow for its distribution. '
-                            + 'This could cause sample generation to take more time.  Continue?'
+                            + ": Min/max range is narrow for its distribution. "
+                            + "This could cause sample generation to take more time.  Continue?"
                         )
                         msgbox.setIcon(QMessageBox.Warning)
                         msgbox.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
@@ -317,7 +317,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         if showMessage:
             self.samplingTabs.setCurrentIndex(0)
             msgbox = QMessageBox()
-            msgbox.setWindowTitle('UQ/Opt GUI Warning')
+            msgbox.setWindowTitle("UQ/Opt GUI Warning")
             msgbox.setText(message)
             msgbox.setIcon(QMessageBox.Warning)
             msgbox.exec_()
@@ -327,7 +327,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
     def showAllSchemes(self):
         if self.chooseSchemeRadio.isChecked():
             foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
-            foundMETIS = foundLibs['METIS']
+            foundMETIS = foundLibs["METIS"]
 
             self.schemesList.clear()
             self.schemesList.addItems(SamplingMethods.fullNames[0:4])
@@ -335,20 +335,20 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
             if not foundMETIS:
                 item = self.schemesList.item(SamplingMethods.METIS)
                 text = item.text()
-                item.setText(text + ' (Not installed)')
+                item.setText(text + " (Not installed)")
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
     def showAdaptiveRefineSchemes(self):
         if self.adaptiveRefineRadio.isChecked():
             foundLibs = LocalExecutionModule.getPsuadeInstalledModules()
-            foundMETIS = foundLibs['METIS']
+            foundMETIS = foundLibs["METIS"]
             self.schemesList.clear()
             self.schemesList.addItem(SamplingMethods.getFullName(SamplingMethods.METIS))
             if not foundMETIS:
                 item = self.schemesList.item(0)
                 text = item.text()
-                item.setText(text + ' (Not installed)')
+                item.setText(text + " (Not installed)")
                 flags = item.flags()
                 item.setFlags(flags & ~Qt.ItemIsEnabled)
 
@@ -399,7 +399,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                 else:
                     text = combobox.currentText()
 
-                if text == 'Fixed':
+                if text == "Fixed":
                     value = Model.FIXED
                 else:
                     value = Model.VARIABLE
@@ -469,12 +469,12 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                     False
                 ):  # dist != Distribution.UNIFORM and SamplingMethods.getEnumValue(scheme) != SamplingMethods.MC:
                     msgbox = QMessageBox()
-                    msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                    msgbox.setWindowTitle("UQ/Opt GUI Warning")
                     msgbox.setText(
-                        'Non-Uniform distributions are not compatible with any '
-                        + 'sampling scheme other than Monte Carlo!  Please change '
-                        + 'all distributions back to uniform or select Monte Carlo '
-                        + 'sampling scheme.'
+                        "Non-Uniform distributions are not compatible with any "
+                        + "sampling scheme other than Monte Carlo!  Please change "
+                        + "all distributions back to uniform or select Monte Carlo "
+                        + "sampling scheme."
                     )
                     msgbox.setIcon(QMessageBox.Warning)
                     msgbox.exec_()
@@ -504,9 +504,9 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         if scheme == SamplingMethods.LSA:
             if newNumSamples != numSamples:
                 msgbox = QMessageBox()
-                msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                msgbox.setWindowTitle("UQ/Opt GUI Warning")
                 msgbox.setText(
-                    '%s scheme with %d variable inputs requires %d samples! Do you want to proceed?'
+                    "%s scheme with %d variable inputs requires %d samples! Do you want to proceed?"
                     % (
                         SamplingMethods.getPsuadeName(scheme),
                         len(selectedInputs),
@@ -524,9 +524,9 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         elif scheme == SamplingMethods.MOAT or scheme == SamplingMethods.GMOAT:
             if type(newNumSamples) is tuple:
                 msgbox = QMessageBox()
-                msgbox.setWindowTitle('UQ/Opt GUI Warning')
+                msgbox.setWindowTitle("UQ/Opt GUI Warning")
                 msgbox.setText(
-                    '%s scheme with %d variable inputs cannot have %d samples! How do you want to proceed?'
+                    "%s scheme with %d variable inputs cannot have %d samples! How do you want to proceed?"
                     % (
                         SamplingMethods.getFullName(scheme),
                         len(selectedInputs),
@@ -535,10 +535,10 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
                 )
                 msgbox.setIcon(QMessageBox.Question)
                 firstValButton = msgbox.addButton(
-                    'Change to %d samples' % newNumSamples[0], QMessageBox.AcceptRole
+                    "Change to %d samples" % newNumSamples[0], QMessageBox.AcceptRole
                 )
                 secondValButton = msgbox.addButton(
-                    'Change to %d samples' % newNumSamples[1], QMessageBox.AcceptRole
+                    "Change to %d samples" % newNumSamples[1], QMessageBox.AcceptRole
                 )
                 cancelButton = msgbox.addButton(QMessageBox.Cancel)
 
@@ -552,7 +552,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
 
         # Visual indications of processing
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.generateStatusText.setText('Generating...')
+        self.generateStatusText.setText("Generating...")
         self.generateStatusText.repaint()
 
         # Generate samples for the variable inputs
@@ -561,7 +561,7 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
         )
         if selectedRunData is None:
             QApplication.restoreOverrideCursor()
-            self.generateStatusText.setText('')
+            self.generateStatusText.setText("")
             return
         selectedInputData = selectedRunData.getInputData()
 
@@ -586,12 +586,12 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
             if self.currentArchiveData is not None:
                 self.currentArchiveData.removeArchiveFolder()
                 pass
-            self.runData.archiveFile('psuadeMetisInfo')
+            self.runData.archiveFile("psuadeMetisInfo")
             self.currentArchiveData = self.runData
 
         # Restore cursor
         QApplication.restoreOverrideCursor()
-        self.generateStatusText.setText('Done!')
+        self.generateStatusText.setText("Done!")
 
         self.samplesGenerated = True
         self.previewButton.setEnabled(True)
@@ -601,11 +601,11 @@ class odoeSimSetup(_odoeSimSetup, _SimSetupUI):
     def preview(self):
         previewData = self.runData
         hname = None
-        dirname = os.path.join(os.getcwd(), 'ODOE_Files')
+        dirname = os.path.join(os.getcwd(), "ODOE_Files")
         usf = None
         nusf = None
         irsf = None
-        scatterLabel = 'Candidates'
+        scatterLabel = "Candidates"
         nImpPts = 0
 
         filename = os.path.join(dirname, self.getData().getModelName())

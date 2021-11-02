@@ -20,9 +20,9 @@ from .Common import Common
 
 class SensitivityAnalysis(UQAnalysis):
 
-    fullNames = ['First-order', 'Second-order', 'Total-order']
-    psuadeNames = ['me', 'ie', 'tsi']
-    outFileNames = ['matlabme.m', 'matlabaie.m', 'matlabtsi.m']
+    fullNames = ["First-order", "Second-order", "Total-order"]
+    psuadeNames = ["me", "ie", "tsi"]
+    outFileNames = ["matlabme.m", "matlabaie.m", "matlabtsi.m"]
 
     def __init__(self, ensemble, output, subType):
         super(SensitivityAnalysis, self).__init__(
@@ -37,7 +37,7 @@ class SensitivityAnalysis(UQAnalysis):
         data = self.ensemble.getValidSamples()
         Common.initFolder(RawDataAnalyzer.dname)
         fname = Common.getLocalFileName(
-            RawDataAnalyzer.dname, data.getModelName().split()[0], '.dat'
+            RawDataAnalyzer.dname, data.getModelName().split()[0], ".dat"
         )
         data.writeToPsuade(fname)
 

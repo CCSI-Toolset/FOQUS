@@ -165,11 +165,11 @@ def scale_y(scale_method, mwr, mat_, wcol):
         return mat
 
     def ranked_mwr(mwr, mat, wcol):
-        mat[:, wcol] = rankdata(mat[:, wcol], method='dense')
+        mat[:, wcol] = rankdata(mat[:, wcol], method="dense")
         return direct_mwr(mwr, mat, wcol)
 
     # equivalent to if-else statements, but easier to maintain
-    methods = {'direct_mwr': direct_mwr, 'ranked_mwr': ranked_mwr}
+    methods = {"direct_mwr": direct_mwr, "ranked_mwr": ranked_mwr}
 
     return methods[scale_method](mwr, mat, wcol)
 
@@ -196,27 +196,27 @@ def criterion(
     args,  # maximum number of iterations & mwr values
     nr,  # number of restarts (each restart uses a random set of <nd> points)
     nd,  # design size <= len(candidates)
-    mode='maximin',
+    mode="maximin",
     hist=None,
 ):
 
     ncand = len(cand)
-    assert nd <= ncand, 'Number of designs exceeds number of available candidates.'
+    assert nd <= ncand, "Number of designs exceeds number of available candidates."
 
     mode = mode.lower()
     assert (
-        mode == 'maximin'
-    ), 'MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.'.format(
+        mode == "maximin"
+    ), "MODE {} not recognized for NUSF. Only MAXIMIN is currently supported.".format(
         mode
     )
 
-    T = args['max_iterations']
-    mwr_vals = args['mwr_values']
-    scale_method = args['scale_method']
+    T = args["max_iterations"]
+    mwr_vals = args["mwr_values"]
+    scale_method = args["scale_method"]
 
     # indices of type ...
-    idx = args['xcols']  # Input
-    idw = args['wcol']  # Weight
+    idx = args["xcols"]  # Input
+    idw = args["wcol"]  # Weight
 
     # np indices
     idx_np = [cand.columns.get_loc(i) for i in idx]
@@ -246,7 +246,7 @@ def criterion(
 
         for i in range(nr):
 
-            print('Random start {}'.format(i))
+            print("Random start {}".format(i))
 
             # sample without replacement <nd> indices
             rand_index = np.random.choice(ncand, nd, replace=False)
@@ -284,7 +284,7 @@ def criterion(
                 best_dmat = dmat
 
             elapsed_time = time.time() - t0
-            print('Best minimum distance for this random start: {}'.format(best_md))
+            print("Best minimum distance for this random start: {}".format(best_md))
 
         # no need to inverse-scale; can just use the indices to look up original rows in cand_
         best_cand_unscaled = cand_np_[best_index]
@@ -295,30 +295,30 @@ def criterion(
         )
 
         results = {
-            'best_cand_scaled': best_cand,
-            'best_cand': best_cand_unscaled,
-            'best_index': best_index,
-            'best_val': best_md,
-            'best_mdpts': best_mdpts,
-            'best_mties': best_mties,
-            'best_dmat': best_dmat,
-            'mode': mode,
-            'design_size': nd,
-            'num_restarts': nr,
-            'mwr': mwr,
-            'elapsed_time': elapsed_time,
+            "best_cand_scaled": best_cand,
+            "best_cand": best_cand_unscaled,
+            "best_index": best_index,
+            "best_val": best_md,
+            "best_mdpts": best_mdpts,
+            "best_mties": best_mties,
+            "best_dmat": best_dmat,
+            "mode": mode,
+            "design_size": nd,
+            "num_restarts": nr,
+            "mwr": mwr,
+            "elapsed_time": elapsed_time,
         }
 
         return results
 
     results = {}
     for mwr in mwr_vals:
-        print('>>>>>> mwr={} <<<<<<'.format(mwr))
+        print(">>>>>> mwr={} <<<<<<".format(mwr))
         res = step(mwr, cand_np)
-        print('Best NUSF Design in Scaled Coordinates:\n', res['best_cand_scaled'])
-        print('Best NUSF Design in Original Coordinates:\n', res['best_cand'])
-        print('Best value in Normalized Scale:', res['best_val'])
-        print('Elapsed time:', res['elapsed_time'])
+        print("Best NUSF Design in Scaled Coordinates:\n", res["best_cand_scaled"])
+        print("Best NUSF Design in Original Coordinates:\n", res["best_cand"])
+        print("Best value in Normalized Scale:", res["best_val"])
+        print("Elapsed time:", res["elapsed_time"])
         results[mwr] = res
 
     return results

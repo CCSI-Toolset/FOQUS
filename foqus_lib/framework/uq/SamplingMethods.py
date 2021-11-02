@@ -19,28 +19,28 @@ import numpy as np
 class SamplingMethods:
     MC, LPTAU, LH, OA, MOAT, GMOAT, LSA, METIS, GMETIS, FACT = list(range(10))
     fullNames = (
-        'Monte Carlo',
-        'Quasi Monte Carlo',
-        'Latin Hypercube',
-        'Orthogonal Array',
-        'Morris Design',
-        'Generalized Morris Design',
-        'Gradient Sample',
-        'METIS',
-        'Monte Carlo',
-        'Full Factorial Design',
+        "Monte Carlo",
+        "Quasi Monte Carlo",
+        "Latin Hypercube",
+        "Orthogonal Array",
+        "Morris Design",
+        "Generalized Morris Design",
+        "Gradient Sample",
+        "METIS",
+        "Monte Carlo",
+        "Full Factorial Design",
     )
     psuadeNames = (
-        'MC',
-        'LPTAU',
-        'LH',
-        'OA',
-        'MOAT',
-        'GMOAT',
-        'LSA',
-        'METIS',
-        'GMETIS',
-        'FACT',
+        "MC",
+        "LPTAU",
+        "LH",
+        "OA",
+        "MOAT",
+        "GMOAT",
+        "LSA",
+        "METIS",
+        "GMETIS",
+        "FACT",
     )
 
     @staticmethod

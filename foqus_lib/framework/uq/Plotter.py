@@ -28,9 +28,9 @@ try:
 except:
     usePyQt = False
 
-plt.rcParams['figure.figsize'] = 10, 10
+plt.rcParams["figure.figsize"] = 10, 10
 useFrameAlpha = False
-mplVersion = mpl.__version__.split('.')
+mplVersion = mpl.__version__.split(".")
 if int(mplVersion[0]) > 1 or (int(mplVersion[0]) == 1 and int(mplVersion[1]) >= 3):
     useFrameAlpha = True
 
@@ -77,17 +77,17 @@ class Plotter:
         f.close()
 
         # delete \r
-        lines = lines.replace('\r', '')
+        lines = lines.replace("\r", "")
 
         # grab data
-        pat = '%s = \[\n(.*?)[\s\n]\]\'*;\s*\n' % datvar
+        pat = "%s = \[\n(.*?)[\s\n]\]'*;\s*\n" % datvar
         if grabline:
-            pat = '%s = (.*?);' % datvar
+            pat = "%s = (.*?);" % datvar
         regex = re.findall(pat, lines, re.DOTALL)
 
         # process only the first match
         i = 0
-        nlines = len(regex[i].split('\n'))
+        nlines = len(regex[i].split("\n"))
         tokens = regex[i].split()
         ntokens = len(tokens)
         dat = [float(s) for s in tokens]
@@ -114,7 +114,7 @@ class Plotter:
         from matplotlib.patches import Rectangle
 
         return Rectangle(
-            (0, 0), 0.01, 0.01, fc="w", fill=False, edgecolor='none', linewidth=0
+            (0, 0), 0.01, 0.01, fc="w", fill=False, edgecolor="none", linewidth=0
         )
 
     @staticmethod
@@ -123,11 +123,11 @@ class Plotter:
         fig = plt.figure()
         fig.canvas.set_window_title(figtitle)
         _ax = fig.add_subplot(111)
-        plt.plot(xdat, ydat, color='b', linewidth=2)
+        plt.plot(xdat, ydat, color="b", linewidth=2)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         plt.title(title)
-        plt.autoscale(enable=True, axis='both')
+        plt.autoscale(enable=True, axis="both")
         plt.grid()
         plt.tight_layout()
         plt.show()
@@ -140,7 +140,7 @@ class Plotter:
         # check if there are multiple plots to generate
         if nseries > 1:
 
-            colorVals = Plotter.gencolors(nseries, 'jet')
+            colorVals = Plotter.gencolors(nseries, "jet")
 
             # generate subplots
             if nseries < 4:
@@ -159,8 +159,8 @@ class Plotter:
                     if star is not None:
                         k = [e for e in range(len(xdat[i])) if e not in star]
                         l = [e for e in range(len(xdat[i])) if e in star]
-                        ax.scatter(xdat[i][k], ydat[i][k], color='k', s=40)
-                        ax.scatter(xdat[i][l], ydat[i][l], color=c, marker='*', s=80)
+                        ax.scatter(xdat[i][k], ydat[i][k], color="k", s=40)
+                        ax.scatter(xdat[i][l], ydat[i][l], color=c, marker="*", s=80)
                     else:
                         ax.scatter(xdat[i], ydat[i], color=c, s=80)
                     ax.set_xlabel(xlabel[i])
@@ -169,7 +169,7 @@ class Plotter:
                     ax.yaxis.grid(True)
                     if ylim is not None:  # force same y-axis limits across subplots
                         ax.set_ylim(ylim)
-                    ax.autoscale(enable=True, axis='x', tight=True)
+                    ax.autoscale(enable=True, axis="x", tight=True)
                     ax.set_title(title[i])
 
                 else:
@@ -178,7 +178,7 @@ class Plotter:
                 i = i + 1  # increment plot count
 
             # add subplot zooming
-            fig.canvas.mpl_connect('button_press_event', Plotter.on_click)
+            fig.canvas.mpl_connect("button_press_event", Plotter.on_click)
 
         else:
 
@@ -186,19 +186,19 @@ class Plotter:
             fig = plt.figure()
 
             ax = fig.add_subplot(111)
-            c = 'm'
+            c = "m"
             if star is not None:
                 k = [e for e in range(len(xdat[0])) if e not in star]
                 l = [e for e in range(len(xdat[0])) if e in star]
-                ax.scatter(xdat[0][k], ydat[0][k], color='k', s=40)
-                ax.scatter(xdat[0][l], ydat[0][l], color=c, marker='*', s=80)
+                ax.scatter(xdat[0][k], ydat[0][k], color="k", s=40)
+                ax.scatter(xdat[0][l], ydat[0][l], color=c, marker="*", s=80)
             else:
                 ax.scatter(xdat[0], ydat[0], color=c, s=80)
             ax.set_xlabel(xlabel[0])
             ax.set_ylabel(ylabel[0])
             ax.xaxis.grid(True)
             ax.yaxis.grid(True)
-            ax.autoscale(enable=True, axis='both', tight=True)
+            ax.autoscale(enable=True, axis="both", tight=True)
             ax.set_title(title[0])
 
         fig.canvas.set_window_title(figtitle)
@@ -210,13 +210,13 @@ class Plotter:
 
         fig = plt.figure()
         fig.canvas.set_window_title(figtitle)
-        ax = fig.add_subplot(111, projection='3d')
-        ax.scatter(xdat, ydat, zdat, c='m', marker='o')
+        ax = fig.add_subplot(111, projection="3d")
+        ax.scatter(xdat, ydat, zdat, c="m", marker="o")
         ax.set_xlabel(xlabel)
         ax.set_ylabel(ylabel)
         ax.set_zlabel(zlabel)
         plt.title(title)
-        plt.autoscale(enable=True, axis='both')
+        plt.autoscale(enable=True, axis="both")
         plt.grid()
         plt.tight_layout()
         plt.show()
@@ -248,33 +248,33 @@ class Plotter:
         xdat = bedges[:-1]
         ydat = bheights_normed
         ax1.bar(
-            xdat, ydat, color='g', width=w, align='center', alpha=opacity, edgecolor='k'
+            xdat, ydat, color="g", width=w, align="center", alpha=opacity, edgecolor="k"
         )
         ax1.set_xlabel(xlabel)
         ax1.set_ylabel(ylabel)
         ax1.set_title(title)
 
         dummy = Plotter.emptypatch()
-        s = '    '
+        s = "    "
         numValidStats = 0
         validStats = []
         for stat, desc in zip(
-            ['mean', 'std', 'skew', 'kurt'], ['mean', 'std dev', 'skewness', 'kurtosis']
+            ["mean", "std", "skew", "kurt"], ["mean", "std dev", "skewness", "kurtosis"]
         ):
-            if moments[stat] != '':
+            if moments[stat] != "":
                 numValidStats += 1
-                validStats.append('Sample %s: ' % desc + moments[stat] + s)
+                validStats.append("Sample %s: " % desc + moments[stat] + s)
 
         if useFrameAlpha:
             ax1.legend(
                 [dummy] * numValidStats,
                 validStats,
                 loc=0,
-                prop={'size': 10},
+                prop={"size": 10},
                 framealpha=0.8,
             )
         else:
-            ax1.legend([dummy] * numValidStats, validStats, loc=0, prop={'size': 10})
+            ax1.legend([dummy] * numValidStats, validStats, loc=0, prop={"size": 10})
 
         xmin = min(xdat)
         xmax = max(xdat)
@@ -286,14 +286,14 @@ class Plotter:
 
             # plot CDF
             ax2 = fig.add_subplot(212)
-            ax2.plot(xdat, np.cumsum(ydat), linewidth=3, color='k')
+            ax2.plot(xdat, np.cumsum(ydat), linewidth=3, color="k")
             ax2.set_xlabel(xlabel)
             ax2.set_ylabel(ylabel)
-            m = re.findall('.* for (.*)', title)
+            m = re.findall(".* for (.*)", title)
             if m:
-                title = 'Cumulative Distribution for ' + m[0]
+                title = "Cumulative Distribution for " + m[0]
             else:
-                title = 'Corresponding Cumulative Distribution'
+                title = "Corresponding Cumulative Distribution"
             ax2.set_title(title)
             ax2.set_xlim(xmin, xmax)
             ax2.xaxis.grid(True)
@@ -317,30 +317,30 @@ class Plotter:
         pdf1 = ax1.bar(
             xdat,
             ydat[0],
-            color='y',
+            color="y",
             width=w,
             yerr=None,
-            error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-            align='center',
+            error_kw={"ecolor": "b", "elinewidth": 6, "capsize": 10},
+            align="center",
             alpha=opacity[0],
-            edgecolor='k',
+            edgecolor="k",
         )
         legend_handles = [pdf1]
-        legend_labels = ['PDF']
+        legend_labels = ["PDF"]
         if pdfs is not None:
             pdf2 = ax1.bar(
                 xdat,
                 ydat[1],
-                color='g',
+                color="g",
                 width=w,
                 yerr=None,
-                error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                align='center',
+                error_kw={"ecolor": "b", "elinewidth": 6, "capsize": 10},
+                align="center",
                 alpha=opacity[1],
-                edgecolor='k',
+                edgecolor="k",
             )
             legend_handles = [pdf1, pdf2]
-            legend_labels = ['Ensemble PDF', 'Mean PDF']
+            legend_labels = ["Ensemble PDF", "Mean PDF"]
         if useFrameAlpha:
             pdflegend = plt.legend(legend_handles, legend_labels, loc=1, framealpha=0.8)
         else:
@@ -350,33 +350,33 @@ class Plotter:
         ax1.set_title(title)
 
         dummy = Plotter.emptypatch()
-        s = '    '
+        s = "    "
         if useFrameAlpha:
             ax1.legend(
                 [dummy, dummy, dummy, dummy, dummy],
                 [
-                    'STATISTICS FOR MEAN PDF',
-                    'Sample mean: ' + moments['mean'] + s,
-                    'Sample std dev: ' + moments['std'] + s,
-                    'Sample skewness: ' + moments['skew'] + s,
-                    'Sample kurtosis: ' + moments['kurt'] + s,
+                    "STATISTICS FOR MEAN PDF",
+                    "Sample mean: " + moments["mean"] + s,
+                    "Sample std dev: " + moments["std"] + s,
+                    "Sample skewness: " + moments["skew"] + s,
+                    "Sample kurtosis: " + moments["kurt"] + s,
                 ],
                 loc=2,
-                prop={'size': 10},
+                prop={"size": 10},
                 framealpha=0.8,
             )
         else:
             ax1.legend(
                 [dummy, dummy, dummy, dummy, dummy],
                 [
-                    'STATISTICS FOR MEAN PDF',
-                    'Sample mean: ' + moments['mean'] + s,
-                    'Sample std dev: ' + moments['std'] + s,
-                    'Sample skewness: ' + moments['skew'] + s,
-                    'Sample kurtosis: ' + moments['kurt'] + s,
+                    "STATISTICS FOR MEAN PDF",
+                    "Sample mean: " + moments["mean"] + s,
+                    "Sample std dev: " + moments["std"] + s,
+                    "Sample skewness: " + moments["skew"] + s,
+                    "Sample kurtosis: " + moments["kurt"] + s,
                 ],
                 loc=2,
-                prop={'size': 10},
+                prop={"size": 10},
             )
 
         ax1.add_artist(pdflegend)
@@ -390,14 +390,14 @@ class Plotter:
         # plot CDF
         ax2 = fig.add_subplot(212)
         if pdfs is None:
-            ax2.plot(xdat, np.cumsum(ydat[0]), linewidth=3, color='k', label='CDF')
+            ax2.plot(xdat, np.cumsum(ydat[0]), linewidth=3, color="k", label="CDF")
         else:  # handle multiple PDFs as a result of RS uncertainty
             P = len(pdfs)
-            colorVals = Plotter.gencolors(P, 'jet')
+            colorVals = Plotter.gencolors(P, "jet")
             for i in range(P):
                 cdf = np.cumsum(pdfs[i])
                 if i == 3:
-                    ax2.plot(xdat, cdf, linewidth=3, color='k', label='Mean CDF')
+                    ax2.plot(xdat, cdf, linewidth=3, color="k", label="Mean CDF")
                 else:
                     ax2.plot(xdat, cdf, color=colorVals[i])
         if useFrameAlpha:
@@ -406,11 +406,11 @@ class Plotter:
             ax2.legend(loc=0)
         ax2.set_xlabel(xlabel)
         ax2.set_ylabel(ylabel)
-        m = re.findall('.* for (.*)', title)
+        m = re.findall(".* for (.*)", title)
         if m:
-            title = 'Cumulative Distribution for ' + m[0]
+            title = "Cumulative Distribution for " + m[0]
         else:
-            title = 'Corresponding Cumulative Distribution'
+            title = "Corresponding Cumulative Distribution"
         ax2.set_title(title)
         ax2.set_xlim(xmin, xmax)
         ax2.set_ylim(0, 1)
@@ -460,7 +460,7 @@ class Plotter:
                 self.ax = self.fig.add_subplot(111)
                 plt.subplots_adjust(left=left, bottom=2 * bottom)
                 self.sliderax = self.fig.add_axes(
-                    [left, bottom, width, height], facecolor='lightgoldenrodyellow'
+                    [left, bottom, width, height], facecolor="lightgoldenrodyellow"
                 )
                 value = self.steps[1]
                 self.slider = DiscreteSlider(
@@ -469,18 +469,18 @@ class Plotter:
                     self.xmin,
                     self.xmax,
                     steps=self.steps,
-                    facecolor='k',
+                    facecolor="k",
                     valinit=value,
-                    valfmt='%f',
+                    valfmt="%f",
                 )
-                self.slider.valtext.set_text('')
+                self.slider.valtext.set_text("")
 
                 (k1,) = np.where(self.cdfL < value)
                 (k2,) = np.where(self.cdfU < value)
                 y1 = self.ydat[min(len(k1), self.ylen - 1)]
                 y2 = self.ydat[min(len(k2), self.ylen - 1)]
                 slabel = (
-                    'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]'
+                    "Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]"
                     % (self.xlabel, value, y1, y2)
                 )
                 self.sliderax.set_title(slabel)
@@ -488,12 +488,12 @@ class Plotter:
 
                 # assume particular order of CDFs
                 for i in range(P - 2):
-                    self.ax.plot(self.cdfs[i], self.ydat, color='k')
+                    self.ax.plot(self.cdfs[i], self.ydat, color="k")
                 (_yu,) = self.ax.plot(
-                    self.cdfU, self.ydat, linewidth=3, color='r', label='Upper CDF'
+                    self.cdfU, self.ydat, linewidth=3, color="r", label="Upper CDF"
                 )
                 (_yl,) = self.ax.plot(
-                    self.cdfL, self.ydat, linewidth=3, color='b', label='Lower CDF'
+                    self.cdfL, self.ydat, linewidth=3, color="b", label="Lower CDF"
                 )
 
                 # draw new line
@@ -501,8 +501,8 @@ class Plotter:
                     [value, value],
                     [y1, y2],
                     linewidth=6,
-                    color='g',
-                    label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2),
+                    color="g",
+                    label="Prob(%s=%f) -> [%.4f,%.4f]" % (self.xlabel, value, y1, y2),
                 )
                 if useFrameAlpha:
                     self.ax.legend(loc=0, framealpha=0.8)
@@ -534,15 +534,15 @@ class Plotter:
                     [value, value],
                     [y1, y2],
                     linewidth=6,
-                    color='g',
-                    label='Prob(%s=%f) -> [%.4f,%.4f]' % (self.xlabel, value, y1, y2),
+                    color="g",
+                    label="Prob(%s=%f) -> [%.4f,%.4f]" % (self.xlabel, value, y1, y2),
                 )
                 if useFrameAlpha:
                     self.ax.legend(loc=0, framealpha=0.8)
                 else:
                     self.ax.legend(loc=0)
                 slabel = (
-                    'Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]'
+                    "Move slider to select input to get corresponding probability range.\n\nProb(%s=%f) -> [%f,%f]"
                     % (self.xlabel, value, y1, y2)
                 )
                 self.sliderax.set_title(slabel)
@@ -557,7 +557,7 @@ class Plotter:
             def __init__(self, *args, **kwargs):
                 """Identical to Slider.__init__, except for the "steps" kwarg.
                 "steps" is a list of discretized values for the slider."""
-                self.steps = kwargs.pop('steps', None)
+                self.steps = kwargs.pop("steps", None)
                 Slider.__init__(self, *args, **kwargs)
 
             def set_val(self, val):
@@ -601,9 +601,9 @@ class Plotter:
             ax.text(
                 rect.get_x() + rect.get_width() / 2.0,
                 1.05 * height,
-                '%.3f' % height,
-                ha='center',
-                va='bottom',
+                "%.3f" % height,
+                ha="center",
+                va="bottom",
             )
 
     @staticmethod
@@ -619,7 +619,7 @@ class Plotter:
 
             # generate subplots
             nplots = len(dat)
-            colorVals = Plotter.gencolors(nplots, 'summer_r')
+            colorVals = Plotter.gencolors(nplots, "summer_r")
             fig, ax = plt.subplots(nrows=nplots, ncols=1, sharex=True)
             for i in range(nplots):
                 dat_i = dat[i]
@@ -631,15 +631,15 @@ class Plotter:
                     color=colorVals[i],
                     width=w,
                     yerr=std_i,
-                    error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                    align='center',
+                    error_kw={"ecolor": "b", "elinewidth": 6, "capsize": 10},
+                    align="center",
                     alpha=opacity,
-                    edgecolor='k',
+                    edgecolor="k",
                 )
                 ax[i].set_ylabel(ylabel[i])
                 ax[i].xaxis.grid(True)
                 ax[i].yaxis.grid(True)
-                ax[i].autoscale(enable=True, axis='x', tight=True)
+                ax[i].autoscale(enable=True, axis="x", tight=True)
                 if std_i is not None:
                     topVals = [d + s for d, s in zip(dat_i, std_i)]
                     ax[i].set_ylim(0, max(topVals))  # cap error bars at 0
@@ -656,18 +656,18 @@ class Plotter:
             rects = ax.bar(
                 index,
                 dat,
-                color='y',
+                color="y",
                 width=w,
                 yerr=std,
-                error_kw={'ecolor': 'b', 'elinewidth': 6, 'capsize': 10},
-                align='center',
+                error_kw={"ecolor": "b", "elinewidth": 6, "capsize": 10},
+                align="center",
                 alpha=opacity,
-                edgecolor='k',
+                edgecolor="k",
             )
             ax.set_ylabel(ylabel)
             ax.xaxis.grid(True)
             ax.yaxis.grid(True)
-            ax.autoscale(enable=True, axis='x', tight=True)
+            ax.autoscale(enable=True, axis="x", tight=True)
             if std is not None:
                 topVals = [d + s for d, s in zip(dat, std)]
                 ax.set_ylim(0, max(topVals))  # cap error bars at 0
@@ -720,12 +720,12 @@ class Plotter:
 
         # generate colors
         ncolors = len(dat)
-        colorVals = Plotter.gencolors(ncolors, 'jet')
+        colorVals = Plotter.gencolors(ncolors, "jet")
 
         # generate plot
         fig = plt.figure()
         fig.canvas.set_window_title(figtitle)
-        ax = fig.add_subplot(111, projection='3d')
+        ax = fig.add_subplot(111, projection="3d")
         opacity = 0.25
 
         # plot 3d bars
@@ -739,10 +739,10 @@ class Plotter:
                 dz[i],
                 color=colorVals[cc[i]],
                 alpha=opacity,
-                zsort='average',
-                edgecolor='k',
+                zsort="average",
+                edgecolor="k",
             )
-            ax.text(xpos[i], ypos[i], zpos[i], '%.3f' % dz[i], ha='center', va='bottom')
+            ax.text(xpos[i], ypos[i], zpos[i], "%.3f" % dz[i], ha="center", va="bottom")
 
         # plot errorbars
         if std is not None:
@@ -762,10 +762,10 @@ class Plotter:
                     color=colorVals[cc[i]],
                     alpha=1,
                     linewidth=8,
-                    marker='o',
+                    marker="o",
                     markersize=12,
-                    markeredgecolor='k',
-                    markerfacecolor='k',
+                    markeredgecolor="k",
+                    markerfacecolor="k",
                 )
 
         plt.title(title)
@@ -778,7 +778,7 @@ class Plotter:
             ticksy = np.arange(0.5, lx, 1)
             plt.yticks(ticksy, yticklabels)
 
-        plt.autoscale(enable=True, axis='both')
+        plt.autoscale(enable=True, axis="both")
         plt.grid()
         plt.show()
 
@@ -798,7 +798,7 @@ class Plotter:
         # ... generate 3D surface plot
         step = 1
         opacity = 1
-        ax1 = fig.add_subplot(121, projection='3d')
+        ax1 = fig.add_subplot(121, projection="3d")
         norm = colors.Normalize(vmin=np.min(zdat_notnan), vmax=np.max(zdat_notnan))
         cs1 = ax1.plot_surface(
             xdat,
@@ -807,7 +807,7 @@ class Plotter:
             rstride=step,
             cstride=step,
             linewidth=0,
-            cmap=cmx.get_cmap('jet'),
+            cmap=cmx.get_cmap("jet"),
             norm=norm,
             alpha=opacity,
             antialiased=True,
@@ -819,18 +819,18 @@ class Plotter:
         ax1.xaxis.grid(True)
         ax1.yaxis.grid(True)
         ax1.zaxis.grid(True)
-        ax1.autoscale(enable=True, axis='both', tight=True)
+        ax1.autoscale(enable=True, axis="both", tight=True)
         dummy = Plotter.emptypatch()
         if useFrameAlpha:
-            ax1.legend([dummy], ['Surface plot'], loc=0, framealpha=0.8)
+            ax1.legend([dummy], ["Surface plot"], loc=0, framealpha=0.8)
         else:
-            ax1.legend([dummy], ['Surface plot'], loc=0)
+            ax1.legend([dummy], ["Surface plot"], loc=0)
 
         # ... generate 2D contour plot
         nc = 10  # number of contour lines
         ax2 = fig.add_subplot(122)
-        _cs2 = ax2.contour(xdat, ydat, zdatm, nc, colors='k', linewidths=1)
-        cs2f = ax2.contourf(xdat, ydat, zdatm, nc, cmap=cmx.get_cmap('jet'))
+        _cs2 = ax2.contour(xdat, ydat, zdatm, nc, colors="k", linewidths=1)
+        cs2f = ax2.contourf(xdat, ydat, zdatm, nc, cmap=cmx.get_cmap("jet"))
         fig.colorbar(cs2f, ax=ax2)
         labels = ax2.get_xticklabels()
         for label in labels:  # rotate the xtick labels to avoid bunching
@@ -839,11 +839,11 @@ class Plotter:
         ax2.set_ylabel(ylabel)
         ax2.xaxis.grid(True)
         ax2.yaxis.grid(True)
-        ax2.autoscale(enable=True, axis='both', tight=True)
+        ax2.autoscale(enable=True, axis="both", tight=True)
         if useFrameAlpha:
-            ax2.legend([dummy], ['Contour plot'], loc=0, framealpha=0.8)
+            ax2.legend([dummy], ["Contour plot"], loc=0, framealpha=0.8)
         else:
-            ax2.legend([dummy], ['Contour plot'], loc=0)
+            ax2.legend([dummy], ["Contour plot"], loc=0)
 
         fig.suptitle(title)
         plt.subplots_adjust(wspace=0.5)  # add space to for super title and subplots
@@ -886,7 +886,7 @@ class Plotter:
 
                 # set up colors
                 self.norm = colors.Normalize(vmin=self.vmin, vmax=self.vmax)
-                self.cmap = 'jet'
+                self.cmap = "jet"
                 self.scalarMap = cmx.ScalarMappable(norm=self.norm, cmap=self.cmap)
 
                 # set up figure and slider
@@ -896,10 +896,10 @@ class Plotter:
                 height = 0.03
                 self.fig = plt.figure(figsize=(12, 12))  # adjust figure size
                 self.fig.canvas.set_window_title(figtitle)
-                self.ax = self.fig.add_subplot(111, projection='3d')
+                self.ax = self.fig.add_subplot(111, projection="3d")
                 plt.subplots_adjust(left=left, bottom=2 * bottom)
                 self.sliderax = self.fig.add_axes(
-                    [left, bottom, width, height], facecolor='lightgoldenrodyellow'
+                    [left, bottom, width, height], facecolor="lightgoldenrodyellow"
                 )
                 self.slider = DiscreteSlider(
                     self.sliderax,
@@ -907,16 +907,16 @@ class Plotter:
                     self.vmin,
                     self.vmax,
                     steps=self.steps,
-                    facecolor='k',
+                    facecolor="k",
                     valinit=self.steps[1],
-                    valfmt='',
+                    valfmt="",
                 )
                 self.slider.valtext.set_text(
-                    'Min: %.4f\nMax: %.4f' % (self.steps[0], self.steps[1])
+                    "Min: %.4f\nMax: %.4f" % (self.steps[0], self.steps[1])
                 )  # display slider range
                 slabel = (
-                    'Move BLACK slider to select output range.\n'
-                    'Points shown represent the inputs responsible for the output response.\n'
+                    "Move BLACK slider to select output range.\n"
+                    "Points shown represent the inputs responsible for the output response.\n"
                 )
                 self.sliderax.set_title(slabel)
                 self.slider.on_changed(self.update)
@@ -928,8 +928,8 @@ class Plotter:
                     cmap=cmx.get_cmap(self.cmap),
                     norm=self.norm,
                     ticks=self.steps,  # optional
-                    spacing='proportional',  # discrete levels
-                    orientation='horizontal',
+                    spacing="proportional",  # discrete levels
+                    orientation="horizontal",
                 )
                 for label in self.fig.colorbar.ax.get_xticklabels():
                     label.set_rotation(90)
@@ -989,7 +989,7 @@ class Plotter:
             def __init__(self, *args, **kwargs):
                 """Identical to Slider.__init__, except for the "steps" kwarg.
                 "steps" is a list of discretized values for the slider."""
-                self.steps = kwargs.pop('steps', None)
+                self.steps = kwargs.pop("steps", None)
                 Slider.__init__(self, *args, **kwargs)
 
             def set_val(self, val):
@@ -1016,7 +1016,7 @@ class Plotter:
                 xy = np.array([bottomleft, topleft, topright, bottomright])
                 self.poly.set_xy(xy)
                 self.valtext.set_text(
-                    'Min: %.4f\nMax: %.4f' % (discrete_val_, discrete_val)
+                    "Min: %.4f\nMax: %.4f" % (discrete_val_, discrete_val)
                 )
                 if self.drawon:
                     self.ax.figure.canvas.draw()
@@ -1049,41 +1049,41 @@ class Plotter:
         nbins = 10
         bheights, bedges = np.histogram(err, nbins)
         w = np.diff(bedges)
-        ax1.bar(bedges[:-1], bheights, width=w, color='c', alpha=1, edgecolor='k')
+        ax1.bar(bedges[:-1], bheights, width=w, color="c", alpha=1, edgecolor="k")
         ax1.set_xlabel(xlabel[0])
         ax1.xaxis.grid(True)
         ax1.set_ylabel(ylabel[0])
         ax1.yaxis.grid(True)
         ax1.set_title(title[0])
-        ax1.autoscale(enable=True, axis='x', tight=True)
+        ax1.autoscale(enable=True, axis="x", tight=True)
         err_mu = np.mean(err)
         err_sigma = np.std(err)
         dummy = Plotter.emptypatch()
         if useFrameAlpha:
             ax1.legend(
                 [dummy, dummy],
-                ['Error mean: %f' % err_mu, 'Error std dev: %f' % err_sigma],
+                ["Error mean: %f" % err_mu, "Error std dev: %f" % err_sigma],
                 loc=0,
                 framealpha=0.8,
             )
         else:
             ax1.legend(
                 [dummy, dummy],
-                ['Error mean: %f' % err_mu, 'Error std dev: %f' % err_sigma],
+                ["Error mean: %f" % err_mu, "Error std dev: %f" % err_sigma],
                 loc=0,
             )
 
         # ... plot actual vs. estimate
         minval = min(truth)
         maxval = max(truth)
-        diag_label = 'Estimate = Actual'
+        diag_label = "Estimate = Actual"
         (diag_plot,) = ax2.plot(
-            [minval, maxval], [minval, maxval], color='k', label=diag_label
+            [minval, maxval], [minval, maxval], color="k", label=diag_label
         )
 
         if show_envelope:
             error_tol = error_tol_percent * 0.01
-            env_label = 'Actual +/- ' + str(error_tol_percent) + '%'
+            env_label = "Actual +/- " + str(error_tol_percent) + "%"
             minTruth = min(truth)
             maxTruth = max(truth)
             numPoints = 10
@@ -1094,19 +1094,19 @@ class Plotter:
             under = [(1 - error_tol) * t for t in sparseTruth]
             over = [(1 + error_tol) * t for t in sparseTruth]
             (under_plot,) = ax2.plot(
-                sparseTruth, under, color='g', linestyle=':', label=env_label
+                sparseTruth, under, color="g", linestyle=":", label=env_label
             )
             (_over_plot,) = ax2.plot(
-                sparseTruth, over, color='g', linestyle=':', label=env_label
+                sparseTruth, over, color="g", linestyle=":", label=env_label
             )
-        errbar_label = 'Estimate +/- 1 std dev'
+        errbar_label = "Estimate +/- 1 std dev"
         errbar_plot = ax2.errorbar(
             truth,
             est,
             yerr=std,
-            color='b',
-            fmt='o',
-            ecolor='r',
+            color="b",
+            fmt="o",
+            ecolor="r",
             capthick=2,
             label=errbar_label,
         )
@@ -1115,7 +1115,7 @@ class Plotter:
         ax2.set_ylabel(ylabel[1])
         ax2.yaxis.grid(True)
         ax2.set_title(title[1])
-        ax2.autoscale(enable=True, axis='x', tight=True)
+        ax2.autoscale(enable=True, axis="x", tight=True)
         if useFrameAlpha:
             ax2.legend(
                 [diag_plot, errbar_plot, under_plot],
@@ -1165,7 +1165,7 @@ class Plotter:
             same_yscale = False  # impose same y-scaling for diagonal subplots
 
             # set up colors
-            cmap = 'jet'
+            cmap = "jet"
             if show_cbar:
                 zmin, zmax = zlim
                 norm_global = colors.Normalize(vmin=zmin, vmax=zmax)
@@ -1188,11 +1188,11 @@ class Plotter:
                 ax.bar(
                     x,
                     z,
-                    color='g',
+                    color="g",
                     width=w,
-                    align='center',
+                    align="center",
                     alpha=opacity,
-                    edgecolor='k',
+                    edgecolor="k",
                 )
                 xmin = x[0]
                 xmax = x[-1]
@@ -1263,7 +1263,7 @@ class Plotter:
                 )
 
             # ... add subplot zooming
-            fig.canvas.mpl_connect('button_press_event', Plotter.on_click)
+            fig.canvas.mpl_connect("button_press_event", Plotter.on_click)
 
         else:
 
@@ -1275,7 +1275,7 @@ class Plotter:
             z = zdat[p]
             w = x[1] - x[0]
             ax.bar(
-                x, z, color='g', width=w, align='center', alpha=opacity, edgecolor='k'
+                x, z, color="g", width=w, align="center", alpha=opacity, edgecolor="k"
             )
             xmin = x[0]
             xmax = x[-1]

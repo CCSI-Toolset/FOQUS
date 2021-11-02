@@ -48,7 +48,7 @@ class RSUncertaintyAnalysis(UQRSAnalysis):
     def analyze(self):
         data = self.ensemble
         fnameRS = Common.getLocalFileName(
-            RSAnalyzer.dname, data.getModelName().split()[0], '.rsdat'
+            RSAnalyzer.dname, data.getModelName().split()[0], ".rsdat"
         )
         index = ResponseSurfaces.getEnumValue(self.responseSurface)
         fixedAsVariables = index == ResponseSurfaces.USER
@@ -78,15 +78,15 @@ class RSUncertaintyAnalysis(UQRSAnalysis):
 
     def showResults(self):
         if self.subType == RSUncertaintyAnalysis.ALEATORY_ONLY:
-            mfile = 'matlabrsua.m'
-            sfile = 'rsua_sample'
+            mfile = "matlabrsua.m"
+            sfile = "rsua_sample"
             self.restoreFromArchive(mfile)
             self.restoreFromArchive(sfile)
             RSAnalyzer.plotUA(
                 self.ensemble, self.outputs[0], self.responseSurface, sfile, mfile
             )
         else:
-            mfile = 'matlabaeua.m'
+            mfile = "matlabaeua.m"
             self.restoreFromArchive(mfile)
             RSAnalyzer.plotAEUA(
                 self.ensemble, self.outputs[0], self.responseSurface, mfile

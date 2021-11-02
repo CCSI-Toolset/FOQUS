@@ -115,30 +115,30 @@ def getTimeStamp():
 
 
 def whereInstalled():
-    '''
+    """
     This function returns the path where the FOQUS framework is
     installed this can be used to copy data files from the install
     location to somewhere useful.
-    '''
+    """
     thisFilePath = os.path.abspath(__file__)  # path to this file
     # take off file name, and the session subdirectory before return
     return os.path.dirname(os.path.dirname(thisFilePath))
 
 
 def exePath():
-    '''
+    """
     This returns the path where foqus.py is, in windows installer
     this is the directory where the exe files are.
-    '''
+    """
     return os.path.dirname(os.path.dirname(whereInstalled()))
 
 
 def createDir(reldir):
-    '''
+    """
     Create a new directory in the working director only if it
     doesn't exist.
     reldir: path to new directory relative to the working directory
-    '''
+    """
     wdir = os.path.abspath(os.getcwd())
     dir = os.path.join(wdir, reldir)
     if not os.path.exists(dir):
@@ -146,7 +146,7 @@ def createDir(reldir):
 
 
 def copyFiles(files, fromDir, toDir, overWrite=False):
-    '''
+    """
     Copy a list of files from a directory to another only if the
     files exists in the the first directory.  Will only overwrite
     files if overwrite is true
@@ -154,7 +154,7 @@ def copyFiles(files, fromDir, toDir, overWrite=False):
     fromDir: the directory to copy files from (abs or relative)
     toDir:   the directory to copy files to (abs or relative)
     overWrite: if False don't overwrite existing files
-    '''
+    """
     for name in files:
         fullNameFrom = os.path.join(fromDir, name)
         fullNameTo = os.path.join(toDir, name)
@@ -169,12 +169,12 @@ def copyFiles(files, fromDir, toDir, overWrite=False):
 
 
 def makeWorkingDirStruct(wdir=None):
-    '''
+    """
     This function sets up a working directory with sub directories
     for different things.
 
     wdir: new working directory (if none use current directory)
-    '''
+    """
     try:
         if wdir != None:
             os.chdir(wdir)
@@ -184,7 +184,7 @@ def makeWorkingDirStruct(wdir=None):
         createDir("test")
         createDir("user_plugins")
         createDir("ouu")
-        open("user_plugins/__init__.py", 'a').close()
+        open("user_plugins/__init__.py", "a").close()
     except:
         logging.getLogger("foqus." + __name__).exception(
             "Error creating working directory structure"
@@ -194,9 +194,9 @@ def makeWorkingDirStruct(wdir=None):
 
 
 def makeWorkingDirFiles():
-    '''
+    """
     This functions copies needed files to the working directory.
-    '''
+    """
     wdir = os.path.abspath(os.getcwd())
     try:
         tc = TurbineConfiguration("turbine.cfg")
@@ -236,24 +236,24 @@ def makeWorkingDirFiles():
         )
     # make logging.cfg for hydro
     try:
-        if not os.path.isfile('logging.conf'):
-            with open('logging.conf', 'w') as f:
+        if not os.path.isfile("logging.conf"):
+            with open("logging.conf", "w") as f:
                 f.write(hydro_logging_cfg)
     except:
         logging.getLogger("foqus." + __name__).exception("Couldn't write logging.conf")
 
 
 class session:
-    '''
+    """
     This class stores information for a session.  Includes the
     flowsheet and optimization parameters. It also provides methods
     to load and save information to a file.
-    '''
+    """
 
     def __init__(self, useCurrentWorkingDir=False):
-        '''
+        """
         Initialize the session by calling the new function.
-        '''
+        """
         self.flowsheet = None
         # Get to the general foqus settings through the FOQUS session,
         # but the setting are stored in a seperate file not in the
@@ -264,9 +264,9 @@ class session:
         self.foqusSettings.new_working_dir = self.foqusSettings.working_dir
         self.settingUseCWD = useCurrentWorkingDir
         # Get the log file and location for log file viewer
-        self.currentLog = os.path.join('logs', self.foqusSettings.foqusLogFile)
+        self.currentLog = os.path.join("logs", self.foqusSettings.foqusLogFile)
         try:
-            with open(self.currentLog, 'r') as f:
+            with open(self.currentLog, "r") as f:
                 f.seek(0, 2)
                 self.logSeek = f.tell()
             self.currentLog = os.path.abspath(self.currentLog)
@@ -296,12 +296,12 @@ class session:
     def produceTurbineFOQUSTestInput(self, filename="test_input.json"):
         out = [
             {
-                'Simulation': "FoqusTest",
-                'Input': [self.flowsheet.saveValues()['input']],
-                'Reset': False,
+                "Simulation": "FoqusTest",
+                "Input": [self.flowsheet.saveValues()["input"]],
+                "Reset": False,
             }
         ]
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             json.dump(out, f)
 
     def setRemoteTurbineFreq(self, t):
@@ -313,9 +313,9 @@ class session:
         self.flowsheet.resubMax = t
 
     def new(self, stopConsumers=True):
-        '''
+        """
         Create a new clean session object
-        '''
+        """
         tc = None
         if stopConsumers:
             try:
@@ -359,8 +359,8 @@ class session:
         self.odoeCandList = []  # list of ODOE candidate sets
         self.odoeEvalList = []  # list of ODOE evaluation sets
         self.sdoeFilterResultsList = []  # list of SDOE filter results
-        self.ID = time.strftime('Session_%y%m%d%H%M%S')  # session id
-        self.archiveFolder = os.path.join(os.getcwd(), '%s_files' % self.ID)
+        self.ID = time.strftime("Session_%y%m%d%H%M%S")  # session id
+        self.archiveFolder = os.path.join(os.getcwd(), "%s_files" % self.ID)
         self.newArchiveItemsSinceLastSave = []
         # add the pymodel plugin list to the flowsheet so node can
         # make instances of pymodels to run.  the nodes don't have
@@ -382,27 +382,27 @@ class session:
         self.pymodels.importPlugins()
 
     def loadPlugins(self):
-        '''
+        """
         Search for plugins
-        '''
+        """
         self.surrogateMethods = pluginSearch.plugins(
-            idString='#FOQUS_SURROGATE_PLUGIN',
+            idString="#FOQUS_SURROGATE_PLUGIN",
             pathList=[
-                os.path.join(os.getcwd(), 'user_plugins'),
+                os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(surrogate.__file__),
             ],
         )
         self.optSolvers = pluginSearch.plugins(
-            idString='#FOQUS_OPT_PLUGIN',
+            idString="#FOQUS_OPT_PLUGIN",
             pathList=[
-                os.path.join(os.getcwd(), 'user_plugins'),
+                os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(problem.__file__),
             ],
         )
         self.pymodels = pluginSearch.plugins(
-            idString='#FOQUS_PYMODEL_PLUGIN',
+            idString="#FOQUS_PYMODEL_PLUGIN",
             pathList=[
-                os.path.join(os.getcwd(), 'user_plugins'),
+                os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(pymodel.__file__),
             ],
         )
@@ -412,28 +412,28 @@ class session:
             pass
 
     def saveFlowsheetValues(self, filename, indent=0):
-        '''
+        """
         Save only the values of flowsheet varaibles to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
         the other junk in a sesssion file.  The values file is much
         smaller.
-        '''
-        with open(filename, 'w') as f:
+        """
+        with open(filename, "w") as f:
             if indent <= 0:
-                json.dump(self.flowsheet.saveValues(), f, separators=(',', ':'))
+                json.dump(self.flowsheet.saveValues(), f, separators=(",", ":"))
             else:
                 json.dump(self.flowsheet.saveValues(), f, indent=indent)
 
     def loadFlowsheetValues(self, filename):
-        '''
+        """
         Load only the values of flowsheet varaibles to a json file
         This is mostly for running flowsheets from the command line,
         where you already loaded a session, and you don't need all
         the other junk in a sesssion file.  The values file is much
         smaller.
-        '''
-        with open(filename, 'r') as f:
+        """
+        with open(filename, "r") as f:
             sd = json.load(f)
         self.flowsheet.loadValues(sd)
 
@@ -446,7 +446,7 @@ class session:
         indent=0,
         keepData=True,
     ):
-        '''
+        """
         Save an optimization framework session to a file
         filename: path to a session file to save
             if filename == None no file is saved but the
@@ -457,7 +457,7 @@ class session:
         confidence: Confidence in the qulity of the session
         bkp: save two files so you have a backup to keep tarck of
             all saved versions.
-        '''
+        """
         if bkp == "Settings":
             if self.foqusSettings.backupSession:
                 bkp = True
@@ -496,35 +496,35 @@ class session:
         }
         sd = dict()
         sd["CCSIFileMetaData"] = metaData
-        sd["Type"] = 'FOQUS_Session'
+        sd["Type"] = "FOQUS_Session"
         sd["ID"] = self.ID
         sd["flowsheet"] = self.flowsheet.saveDict(keepData)
-        sd['optProblem'] = self.optProblem.saveDict()
+        sd["optProblem"] = self.optProblem.saveDict()
         sd["surrogateProblem"] = self.surrogateProblem
         sd["surrogateCurrent"] = self.surrogateCurrent
         # Save UQ sim list
         sd["uqSimList"] = []
         for sim in self.uqSimList:
-            sd['uqSimList'].append(sim.saveDict())
+            sd["uqSimList"].append(sim.saveDict())
         sd["uqFilterResultsList"] = []
         for filter in self.uqFilterResultsList:
-            sd['uqFilterResultsList'].append(filter.saveDict())
+            sd["uqFilterResultsList"].append(filter.saveDict())
         # Save SDOE sim list
         sd["sdoeSimList"] = []
         for sim in self.sdoeSimList:
-            sd['sdoeSimList'].append(sim.saveDict())
+            sd["sdoeSimList"].append(sim.saveDict())
         sd["sdoeFilterResultsList"] = []
         for filter in self.sdoeFilterResultsList:
-            sd['sdoeFilterResultsList'].append(filter.saveDict())
+            sd["sdoeFilterResultsList"].append(filter.saveDict())
         # Save ODOE cand list
         sd["odoeCandList"] = []
         for sim in self.odoeCandList:
-            sd['odoeCandList'].append(sim.saveDict())
+            sd["odoeCandList"].append(sim.saveDict())
 
         # Save ODOE eval list
         sd["odoeEvalList"] = []
         for sim in self.odoeEvalList:
-            sd['odoeEvalList'].append(sim.saveDict())
+            sd["odoeEvalList"].append(sim.saveDict())
 
         if filename:
             # write two copies of the file one is backup you can keep
@@ -534,15 +534,15 @@ class session:
                 bkpfilename = os.path.join(
                     bkppath, "{0}.{1}".format(self.name, self.uid)
                 )
-                with open(bkpfilename, 'w') as f:
+                with open(bkpfilename, "w") as f:
                     if indent <= 0:
-                        json.dump(sd, f, separators=(',', ':'))
+                        json.dump(sd, f, separators=(",", ":"))
                     else:
                         json.dump(sd, f, indent=indent)
             # Write the session file
-            with open(filename, 'w') as f:
+            with open(filename, "w") as f:
                 if indent <= 0:
-                    json.dump(sd, f, separators=(',', ':'))
+                    json.dump(sd, f, separators=(",", ":"))
                 else:
                     json.dump(sd, f, indent=indent)
             # set the current file to one just saved
@@ -554,11 +554,11 @@ class session:
         return sd
 
     def load(self, filename, stopConsumers=True):
-        '''
+        """
         Load a session file
         filename: path to a session file to load
-        '''
-        with open(filename, 'r') as f:
+        """
+        with open(filename, "r") as f:
             sd = json.load(f, object_pairs_hook=collections.OrderedDict)
         self.loadDict(sd, filename, stopConsumers=stopConsumers)
         self.currentFile = os.path.abspath(filename)
@@ -566,18 +566,18 @@ class session:
         fullFile = os.path.abspath(filename)
         pathName, baseName = os.path.split(fullFile)
         base, ext = os.path.splitext(baseName)
-        self.ID = sd.get("ID", base + time.strftime('_%y%m%d%H%M%S'))
+        self.ID = sd.get("ID", base + time.strftime("_%y%m%d%H%M%S"))
         dirname = os.path.dirname(os.path.abspath(filename))
         if os.access(dirname, os.W_OK):
-            self.archiveFolder = os.path.join(dirname, '%s_files' % self.ID)
+            self.archiveFolder = os.path.join(dirname, "%s_files" % self.ID)
         else:
-            self.archiveFolder = os.path.join(os.getcwd(), '%s_files' % self.ID)
+            self.archiveFolder = os.path.join(os.getcwd(), "%s_files" % self.ID)
         self.newArchiveItemsSinceLastSave = []
 
     def loadDict(self, sd, filename, stopConsumers=True):
-        '''
+        """
         Load a session from a string
-        '''
+        """
         # Clear session information
         self.new(stopConsumers=stopConsumers)
         # Read metaData information
@@ -605,66 +605,66 @@ class session:
         base, ext = os.path.splitext(baseName)
         self.ID = sd.get("ID", self.ID)
         self.archiveFolder = os.path.join(
-            os.path.dirname(os.path.abspath(filename)), '%s_files' % self.ID
+            os.path.dirname(os.path.abspath(filename)), "%s_files" % self.ID
         )
 
         # Load the surrogate model settings
-        self.surrogateProblem = sd.get('surrogateProblem', {})
+        self.surrogateProblem = sd.get("surrogateProblem", {})
         self.surrogateCurrent = sd.get("surrogateCurrent", None)
         # Load the optimization problem if exists
         self.optProblem = oprob.problem()
         self.optProblem.dat = self
-        p = sd.get('optProblem', None)
+        p = sd.get("optProblem", None)
         if p:
             self.optProblem.loadDict(p)
         # Load UQ Stuff
         self.uqSimList = []
-        if 'uqSimList' in sd:
-            for simDict in sd['uqSimList']:
+        if "uqSimList" in sd:
+            for simDict in sd["uqSimList"]:
                 model = Model()
-                model.loadDict(simDict['model'])
+                model.loadDict(simDict["model"])
                 sim = SampleData(model)
                 sim.setSession(self)
                 sim.loadDict(simDict)
                 self.uqSimList.append(sim)
         self.uqFilterResultsList = []
-        if 'uqFilterResultsList' in sd:
-            for filterDict in sd['uqFilterResultsList']:
+        if "uqFilterResultsList" in sd:
+            for filterDict in sd["uqFilterResultsList"]:
                 filterResults = Results()
                 filterResults.loadDict(filterDict)
                 self.uqFilterResultsList.append(filterResults)
         # Load SDOE Stuff
         self.sdoeSimList = []
-        if 'sdoeSimList' in sd:
-            for simDict in sd['sdoeSimList']:
+        if "sdoeSimList" in sd:
+            for simDict in sd["sdoeSimList"]:
                 model = Model()
-                model.loadDict(simDict['model'])
+                model.loadDict(simDict["model"])
                 sim = SampleData(model)
                 sim.setSession(self)
                 sim.loadDict(simDict)
                 self.sdoeSimList.append(sim)
         self.sdoeFilterResultsList = []
-        if 'sdoeFilterResultsList' in sd:
-            for filterDict in sd['sdoeFilterResultsList']:
+        if "sdoeFilterResultsList" in sd:
+            for filterDict in sd["sdoeFilterResultsList"]:
                 filterResults = Results()
                 filterResults.loadDict(filterDict)
                 self.sdoeFilterResultsList.append(filterResults)
         # Load ODOE Stuff
         self.odoeCandList = []
-        if 'odoeCandList' in sd:
-            for simDict in sd['odoeCandList']:
+        if "odoeCandList" in sd:
+            for simDict in sd["odoeCandList"]:
                 model = Model()
-                model.loadDict(simDict['model'])
+                model.loadDict(simDict["model"])
                 sim = SampleData(model)
                 sim.setSession(self)
                 sim.loadDict(simDict)
                 self.odoeCandList.append(sim)
 
         self.odoeEvalList = []
-        if 'odoeEvalList' in sd:
-            for simDict in sd['odoeEvalList']:
+        if "odoeEvalList" in sd:
+            for simDict in sd["odoeEvalList"]:
                 model = Model()
-                model.loadDict(simDict['model'])
+                model.loadDict(simDict["model"])
                 sim = SampleData(model)
                 sim.setSession(self)
                 sim.loadDict(simDict)
@@ -779,7 +779,7 @@ class session:
 
 
 class generalSettings:
-    '''
+    """
     This class stores foqus general settings that are not
     specific to a particular session.
 
@@ -802,7 +802,7 @@ class generalSettings:
     to use.  If you want to run more than one copy of FOQUS at a
     time it is best to start addtional copies from the command line
     specifying the working directory as a command line option.
-    '''
+    """
 
     def __init__(self):
         self.numRecentFiles = 5
@@ -829,7 +829,7 @@ class generalSettings:
         self.aspenVersion = 2  # 0 = none, 1 = 7.3, 2 = 7.3.2 or higher
         self.turbLiteHome = "C:\\Program Files (x86)\\Turbine\\Lite"
         self.rScriptPath = "C:\\Program Files\\R\\R-3.1.2\\bin\\x64\\Rscript.exe"
-        self.logFormat = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+        self.logFormat = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
         self.logRotate = False
         self.maxLogSize = 5
         self.compactSession = True
@@ -871,9 +871,9 @@ class generalSettings:
         ]
 
     def addRecentlyOpenedFile(self, fname):
-        '''
+        """
         Add fname to the list of recently opened files.
-        '''
+        """
         fname = os.path.abspath(fname)
         if fname in self.recentlyOpenedFiles:
             self.recentlyOpenedFiles.remove(fname)
@@ -882,12 +882,12 @@ class generalSettings:
             self.recentlyOpenedFiles.pop()
 
     def checkRecentlyOpenedFiles(self):
-        '''
+        """
         Check the list of recently owned files for:
         1) files exist
         2) <= number of files to track limit
         3) remove duplicates
-        '''
+        """
         files = []
         for fn in self.recentlyOpenedFiles:
             if len(files) > self.numRecentFiles:
@@ -899,17 +899,17 @@ class generalSettings:
         return files
 
     def getRecentlyOpendFiles(self):
-        '''
+        """
         Just returns the list of files.  This is here in case
         we deside to add some validation step.
-        '''
+        """
         return self.recentlyOpenedFiles
 
     def settingsNormpath(self):
-        '''
+        """
         Make sure all the seperators match and go the right way for
         the OS
-        '''
+        """
         if self.working_dir:
             self.working_dir = os.path.normpath(self.working_dir)
         if self.new_working_dir:
@@ -929,32 +929,32 @@ class generalSettings:
 
     @staticmethod
     def getUserConfigLocation():
-        '''
+        """
         Get a location to store a FOQUS configuration file.  This
         should work with Windows, Linux, OSX, Unix. It may fail on
         other platforms, but who knows what those would be.
         Returns None if it cant get a configuration location.
-        '''
-        if os.name == 'nt':  # Windows
-            return os.path.join(os.environ['APPDATA'], '.foqus.cfg')
+        """
+        if os.name == "nt":  # Windows
+            return os.path.join(os.environ["APPDATA"], ".foqus.cfg")
         else:  # any other OS
-            return os.path.join(os.environ['HOME'], '.foqus.cfg')
+            return os.path.join(os.environ["HOME"], ".foqus.cfg")
 
     def chdir(self):
-        '''
+        """
         Change the working directory to the working directory
         setting and make file structure
-        '''
+        """
         os.chdir(self.working_dir)
         makeWorkingDirStruct()
         makeWorkingDirFiles()
 
     def loadDict(self, sd, sdLocal, useCurrentWorkingDir=False, logging=True):
-        '''
+        """
         Load the settings from a dictionary, and apply them
         some setting changes may require a FOQUS restart though and
         are handeled when FOQUS starts.
-        '''
+        """
         curWdir = os.getcwd()
         for att in self.directCopy:  # reads settings from appdata
             if sd.get(att, None) != None:
@@ -971,9 +971,9 @@ class generalSettings:
         self.checkRecentlyOpenedFiles()
 
     def saveDict(self, newWdir=False):
-        '''
+        """
         Save the settings to a dictionary
-        '''
+        """
         sd = dict()
         for att in self.directCopy:
             sd[att] = copy.deepcopy(self.__dict__[att])
@@ -982,7 +982,7 @@ class generalSettings:
         return sd
 
     def save(self, ignoreWDirSetting=False, newWdir=False):
-        '''
+        """
         Save the setting in json format to a file specified by the
         getUserConfigLocation() function or a settings file in the
         working directory
@@ -993,29 +993,29 @@ class generalSettings:
             this allows FOQUS to create a main settings file if
             it doesn't exist.  Asside from that the
             ignoreWDirSetting argument is pretty useless
-        '''
+        """
         d = self.saveDict(newWdir=newWdir)
         if self.settingsInWDir and not ignoreWDirSetting:
             fn = "foqus.cfg"
         else:
             fn = self.getUserConfigLocation()
-        with open(fn, 'w') as f:
+        with open(fn, "w") as f:
             json.dump(d, f, indent=2)
         LocalExecutionModule.writePsuadePath(self.psuade_path)
 
     def load(self, useCurrentWorkingDir=False, logging=True):
-        '''
+        """
         Load the setting in json format from a file specified by the
         getUserConfigLocation() function
-        '''
+        """
         fn = self.getUserConfigLocation()
         fnLocal = "foqus.cfg"
         if not os.path.exists(fn):
             self.save(ignoreWDirSetting=True)
-        with open(fn, 'r') as f:
+        with open(fn, "r") as f:
             d = json.load(f)
         try:
-            with open(fnLocal, 'r') as f:
+            with open(fnLocal, "r") as f:
                 dLocal = json.load(f)
         except:
             dLocal = {}
@@ -1024,9 +1024,9 @@ class generalSettings:
         )
 
     def applyLogSettings(self):
-        '''
+        """
         Take the log settings from the session and set up logging
-        '''
+        """
         # There are two log files. one for FOQUS and
         # one for Turbine Client
         flog = logging.getLogger("foqus")
@@ -1042,26 +1042,26 @@ class generalSettings:
         if self.foqusLogToFile:
             if self.logRotate:
                 flogFH = logging.handlers.RotatingFileHandler(
-                    filename=os.path.join('logs', self.foqusLogFile),
+                    filename=os.path.join("logs", self.foqusLogFile),
                     maxBytes=self.maxLogSize * 1000000,
                     backupCount=5,
                 )
             else:
                 flogFH = logging.FileHandler(
-                    filename=os.path.join('logs', self.foqusLogFile)
+                    filename=os.path.join("logs", self.foqusLogFile)
                 )
             flogFH.setFormatter(logging.Formatter(self.logFormat))
         # Setting for whether to send Turbine client log msgs to file
         if self.turbLogToFile:
             if self.logRotate:
                 tlogFH = logging.handlers.RotatingFileHandler(
-                    filename=os.path.join('logs', self.turbineLogFile),
+                    filename=os.path.join("logs", self.turbineLogFile),
                     maxBytes=self.maxLogSize * 1000000,
                     backupCount=5,
                 )
             else:
                 tlogFH = logging.FileHandler(
-                    filename=os.path.join('logs', self.turbineLogFile)
+                    filename=os.path.join("logs", self.turbineLogFile)
                 )
             tlogFH.setFormatter(logging.Formatter(self.logFormat))
         # Setting for sending FOQUS log messages to stdout

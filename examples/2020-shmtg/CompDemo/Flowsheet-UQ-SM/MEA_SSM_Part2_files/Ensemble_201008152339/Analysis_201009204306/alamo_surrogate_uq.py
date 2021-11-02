@@ -58,7 +58,7 @@ def getInputData(inFileName):
 # ==================================================
 def genOutputFile(outFileName, outData):
     nLeng = len(outData)
-    outfile = open(outFileName, 'w')
+    outfile = open(outFileName, "w")
     for ind in range(nLeng):
         outfile.write("%d " % (ind + 1))
         outfile.write("%e\n" % outData[ind])
@@ -70,14 +70,14 @@ def genOutputFile(outFileName, outData):
 # Model parameters
 # ==================================================
 in_labels = [
-    'MEA_UPD.GASABSIN',
-    'MEA_UPD.GASINCO2FRXN',
-    'MEA_UPD.SOLVENTABSIN',
-    'MEA_UPD.STRIP_PRES',
-    'X_SOLVENT_CALC.AMINECONC',
-    'X_SOLVENT_CALC.CO2LOADING',
+    "MEA_UPD.GASABSIN",
+    "MEA_UPD.GASINCO2FRXN",
+    "MEA_UPD.SOLVENTABSIN",
+    "MEA_UPD.STRIP_PRES",
+    "X_SOLVENT_CALC.AMINECONC",
+    "X_SOLVENT_CALC.CO2LOADING",
 ]
-labels = ['CO2CAPTURE', 'REB_DUTY', 'SRD']
+labels = ["CO2CAPTURE", "REB_DUTY", "SRD"]
 in_indexes = [3, 4, 14, 15, 16, 17]
 indexes = [5, 6, 1]
 nInputs = 6

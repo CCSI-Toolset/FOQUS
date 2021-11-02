@@ -51,7 +51,7 @@ _dataFilterDialogUI, _dataFilterDialog = uic.loadUiType(
 def _list_item_mime_to_text(mime_data, c=False):
     if mime_data.hasText():
         return mime_data
-    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    data = mime_data.data("application/x-qabstractitemmodeldatalist")
     if not data:
         return mime_data
     ds = QDataStream(data)
@@ -95,9 +95,9 @@ class _DropHandler(QObject):
 
 class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
     def __init__(self, dat, parent=None, results=None):
-        '''
+        """
         Constructor for data filter dialog
-        '''
+        """
         super(dataFilterDialog, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
         self.dat = dat  # all of the session data
@@ -159,9 +159,9 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.updateForm()
 
     def addFilter(self):
-        '''
+        """
         Add a new filter to the results
-        '''
+        """
         # Get the name
         newName, ok = QInputDialog.getText(
             self, "Filter Name", "New filter name:", QLineEdit.Normal
@@ -197,7 +197,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         #                    Each ‘condition’ has the same syntax as that for single filter criteria""")
         #        QMessageBox.setBaseSize(QSize(550, 275))
         # if name supplied and not canceled
-        if ok and newName != '':
+        if ok and newName != "":
             # check if the name is in use
             if newName in self.results.filters:
                 # filter already exists
@@ -211,9 +211,9 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.updateFilterBox(newName)
 
     def updateFilterBox(self, fltr=None):
-        '''
+        """
         Update the list of filters in the combo box
-        '''
+        """
         if fltr == None:
             fltr = self.results.current_filter()
         self.selectFilterBox.blockSignals(True)

@@ -65,9 +65,9 @@ class testNodeVarsSteady(unittest.TestCase):
     def testSaveDict(self):
         var = self.makeVar()
         d = var.saveDict()
-        self.assertAlmostEqual(d['max'], 10.0)
-        self.assertAlmostEqual(d['min'], 1.0)
-        self.assertEqual(d['dtype'], 'float')
+        self.assertAlmostEqual(d["max"], 10.0)
+        self.assertAlmostEqual(d["min"], 1.0)
+        self.assertEqual(d["dtype"], "float")
 
     def testSaveJSON(self):
         var = self.makeVar()
@@ -93,7 +93,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.value = 4.12
-        var.scaling = 'Linear'
+        var.scaling = "Linear"
         var.scale()
         self.assertAlmostEqual(var.scaled, 1.3)
 
@@ -102,7 +102,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.value = 4.12
-        var.scaling = 'Log'
+        var.scaling = "Log"
         var.scale()
         self.assertAlmostEqual(var.scaled, 4.3986, places=3)
 
@@ -111,7 +111,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 0
         var.max = 2
         var.value = 0.2
-        var.scaling = 'Power'
+        var.scaling = "Power"
         var.scale()
         self.assertAlmostEqual(var.scaled, 0.0591, places=3)
 
@@ -120,7 +120,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.value = 4.12
-        var.scaling = 'Log 2'
+        var.scaling = "Log 2"
         var.scale()
         self.assertAlmostEqual(var.scaled, 3.3646, places=3)
 
@@ -129,7 +129,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.value = 4.12
-        var.scaling = 'Power 2'
+        var.scaling = "Power 2"
         var.scale()
         self.assertAlmostEqual(var.scaled, 0.3877, places=3)
 
@@ -138,7 +138,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.scaled = 1.3
-        var.scaling = 'Linear'
+        var.scaling = "Linear"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12)
 
@@ -147,7 +147,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.scaled = 4.3986
-        var.scaling = 'Log'
+        var.scaling = "Log"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)
 
@@ -156,7 +156,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 0
         var.max = 2
         var.scaled = 0.059080120451
-        var.scaling = 'Power'
+        var.scaling = "Power"
         var.unscale()
         self.assertAlmostEqual(var.value, 0.2, places=3)
 
@@ -165,7 +165,7 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.scaled = 3.3646
-        var.scaling = 'Log 2'
+        var.scaling = "Log 2"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)
 
@@ -174,6 +174,6 @@ class testNodeVarsSteady(unittest.TestCase):
         var.min = 1
         var.max = 25
         var.scaled = 0.3877365362129
-        var.scaling = 'Power 2'
+        var.scaling = "Power 2"
         var.unscale()
         self.assertAlmostEqual(var.value, 4.12, places=3)

@@ -55,16 +55,16 @@ except ImportError:
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return snobfit_available
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver (in this case, Snobfit) class. It describes the solver & its properties. Should be called opt and inherit
     optimization.  The are several attributes from the optimization
     base class that should be set for an optimization plug-in:
@@ -79,14 +79,14 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize Snobfit optimization module
         Args:
             dat = foqus session object
-        '''
+        """
         optimization.__init__(self, dat)  # base class __init__
         self.name = "Snobfit"  # Plugin name is actually comming from file
         # name at this point so give file same name
@@ -99,7 +99,7 @@ class opt(optimization):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "<p class=\"hangingindent\">"
+            '<p class="hangingindent">'
             "<p>Developer: WALTRAUD HUYER and ARNOLD NEUMAIER</p>"
             "<p>Algorithm Type: Branch & Local Fit</p>"
             "<p>Optimization Problems handling Capability: Unconstrained Noisy Optimization problems with box bounds, and optional soft constraints</p>"
@@ -137,21 +137,21 @@ class opt(optimization):
         # ******************************************************
 
         self.options.add(
-            name='budget',
+            name="budget",
             default=10000,
             dtype=int,
             desc="Limit on the number of function calls",
         )
 
         self.options.add(
-            name='minfcall',
+            name="minfcall",
             default=500,
             dtype=int,
             desc="Minimum number of function values before considering stopping",
         )
 
         self.options.add(
-            name='nstop',
+            name="nstop",
             default=5,
             dtype=int,
             desc="Number of snobfit calls upto which no improvement is tolerated",
@@ -169,14 +169,14 @@ class opt(optimization):
         )
 
         self.options.add(
-            name='Set Name',
+            name="Set Name",
             default="SNOBFIT",
             dtype=str,
             desc="Name of flowsheet result set to store data",
         )
 
         self.options.add(
-            name='Backup Interval',
+            name="Backup Interval",
             default=0.5,
             dtype=float,
             desc="How often (in hours) to save a backup session while "
@@ -184,13 +184,13 @@ class opt(optimization):
         )
 
     def f(self, x):
-        '''
+        """
         This is the function for the solver to call to get function
         evaluations.  This should run the FOQUS flowsheet also can
         stick in other dignostic output.  Whatever you like.  Since
         only the DFO solvers are made avalable the grad arg can be
         ignored.
-        '''
+        """
         # run the flowsheet at point x.  X is turned into a list there
         # because this function can return there results of multiple
         # evaluations.  If FOQUS is setup right
@@ -250,10 +250,10 @@ class opt(optimization):
 
     #    Embed the snobfit driver within the optimize routine function
     def optimize(self):
-        '''
+        """
         This is the main optimization routine.  This gets called to start
         things up.
-        '''
+        """
         # giving the initalization to the snobfit solver
         xinit = numpy.array([])
 
@@ -288,7 +288,7 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float('inf')  # set inital best values
+        self.bestSoFar = float("inf")  # set inital best values
 
         # self.prob is the optimzation problem. get it ready
         self.prob.iterationNumber = 0

@@ -66,8 +66,8 @@ class turbineLiteDB:
         self.closeConnection()
 
     def connectionString(self):
-        prov = 'Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;'
-        data = 'Data Source={0};'.format(self.dbFile)
+        prov = "Provider=Microsoft.SQLSERVER.CE.OLEDB.4.0;"
+        data = "Data Source={0};".format(self.dbFile)
         return " ".join([prov, data])
 
     def getConnection(self, rc=0):
@@ -94,7 +94,7 @@ class turbineLiteDB:
             self.conn = None
 
     def add_new_application(self, applicationName, rc=0):
-        '''
+        """
         Turbine Consumer Function
         ---
         Add an application type to the TurbineLite database
@@ -102,7 +102,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             sqlstr = "SELECT Name FROM Applications WHERE Name='{0}'".format(
@@ -221,9 +221,9 @@ class turbineLiteDB:
                 self.consumer_register(rc=rc + 1)
 
     def get_job_id(
-        self, simName=None, sessionID=None, consumerID=None, state='submit', rc=0
+        self, simName=None, sessionID=None, consumerID=None, state="submit", rc=0
     ):
-        '''
+        """
         Turbine Consumer Function, get first job with submit status
         and is the foqus application type
         ---
@@ -232,7 +232,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             sqlstr = (
@@ -257,7 +257,7 @@ class turbineLiteDB:
                 jobsID = row[1]
                 simID = row[2].strip("{}")
                 reset = row[3]
-                if not reset or reset == 'false':
+                if not reset or reset == "false":
                     reset = False
                 else:
                     reset = True
@@ -271,9 +271,9 @@ class turbineLiteDB:
                 self.get_job_id(simName, sessionID, consumerID, state, rc=rc + 1)
 
     def jobConsumerID(self, jid, cid=None, rc=0):
-        '''
+        """
         Get or set job consumer ID
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             if cid is None:
@@ -302,7 +302,7 @@ class turbineLiteDB:
                 self.jobConsumerID(jid, cid, rc=rc + 1)
 
     def get_configuration_file(self, simulationId, rc=0):
-        '''
+        """
         Turbine Consumer Function
         ---
         Desc
@@ -310,7 +310,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             sqlstr = (
@@ -322,7 +322,7 @@ class turbineLiteDB:
             self.closeConnection()
             if row is None:
                 return None
-            return row[0].decode('utf-8')
+            return row[0].decode("utf-8")
         except Exception as e:
             self.closeConnection()
             if rc > 1:
@@ -331,7 +331,7 @@ class turbineLiteDB:
                 self.get_configuration_file(simulationId, rc=rc + 1)
 
     def job_prepare(self, jobGuid, jobId, configFile, rc=0):
-        '''
+        """
         Turbine Consumer Function
         ---
         Write input values file to run FOQUS job
@@ -339,7 +339,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             sqlstr = "SELECT Input FROM Processes WHERE Id='{0}'".format(jobGuid)
@@ -347,15 +347,15 @@ class turbineLiteDB:
             row = curs.fetchone()
             self.closeConnection()
             jobPath = "test/{0}".format(jobId)
-            if not os.path.exists('test'):
-                os.makedirs('test')
+            if not os.path.exists("test"):
+                os.makedirs("test")
             if not os.path.exists(jobPath):
                 os.makedirs(jobPath)
             ifile = os.path.join(jobPath, "input_values.json")
             cfile = os.path.join(jobPath, "session.foqus")
             if row is not None:
-                assert configFile is not None, 'Missing configFile'
-                headerStr = "{\"input\":"
+                assert configFile is not None, "Missing configFile"
+                headerStr = '{"input":'
                 footerStr = "}"
                 with open(ifile, "w") as text_file:
                     text_file.write("".join([headerStr, row[0], footerStr]))
@@ -369,7 +369,7 @@ class turbineLiteDB:
                 self.job_prepare(jobGuid, jobId, configFile, rc=rc + 1)
 
     def job_change_status(self, jobGuid, status, rc=0):
-        '''
+        """
         Turbine Consumer Function
         ---
         Change the status of a Turbine FOQUS job
@@ -377,7 +377,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             t = time.strftime("%m/%d/%Y %I:%M %p", time.gmtime())
@@ -385,15 +385,15 @@ class turbineLiteDB:
                 status, jobGuid
             )
             curs.execute(sqlstr)
-            if status == 'setup':
+            if status == "setup":
                 sqlstr = "UPDATE Jobs SET Setup='{0}' WHERE Id='{1}'".format(t, jobGuid)
                 curs.execute(sqlstr)
-            elif status == 'running':
+            elif status == "running":
                 sqlstr = "UPDATE Jobs SET Running='{0}' WHERE Id='{1}'".format(
                     t, jobGuid
                 )
                 curs.execute(sqlstr)
-            elif status in ['success', 'error', 'terminate', 'cancel']:
+            elif status in ["success", "error", "terminate", "cancel"]:
                 sqlstr = "UPDATE Jobs SET Finished='{0}' WHERE Id='{1}'".format(
                     t, jobGuid
                 )
@@ -407,7 +407,7 @@ class turbineLiteDB:
                 self.job_change_status(jobGuid, status, rc=rc + 1)
 
     def job_save_output(self, jobGuid, workingDir, rc=0):
-        '''
+        """
         Turbine Consumer Function
         ---
         Put job output in the databae
@@ -415,7 +415,7 @@ class turbineLiteDB:
         args
 
         return value
-        '''
+        """
         conn, curs = self.getConnection()
         try:
             with open(os.path.join(workingDir, "output.json")) as outfile:

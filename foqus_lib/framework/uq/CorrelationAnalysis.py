@@ -29,7 +29,7 @@ class CorrelationAnalysis(UQAnalysis):
         data = self.ensemble.getValidSamples()
         Common.initFolder(RawDataAnalyzer.dname)
         fname = Common.getLocalFileName(
-            RawDataAnalyzer.dname, data.getModelName().split()[0], '.dat'
+            RawDataAnalyzer.dname, data.getModelName().split()[0], ".dat"
         )
         data.writeToPsuade(fname)
 
@@ -43,7 +43,7 @@ class CorrelationAnalysis(UQAnalysis):
 
     def showResults(self):
         # restore .m file from archive
-        fileName = 'matlabca.m'
+        fileName = "matlabca.m"
         self.restoreFromArchive(fileName)
 
         RawDataAnalyzer.plotCA(self.ensemble, self.outputs[0], fileName)

@@ -37,7 +37,7 @@ class pymodel_pg(pymodel):
     def __init__(self):
         pymodel.__init__(self)
         engs = matlab.engine.find_matlab()
-        if len(engs) == 0 or 'MatlabEngine' not in engs:
+        if len(engs) == 0 or "MatlabEngine" not in engs:
             eng = subprocess.Popen(
                 "matlab -nosplash -minimize -r \"matlab.engine.shareEngine('MatlabEngine')\""
             )

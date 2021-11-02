@@ -75,7 +75,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.ccsidepButton.clicked.connect(self.showCCSIDep)
         self.textBrowser = QTextBrowser(self.tabWidget.widget(0))
         self.webviewLayout.addWidget(self.textBrowser)
-        self.helpPath = os.path.join(helpPath(), 'html')
+        self.helpPath = os.path.join(helpPath(), "html")
         self.showLicense()
         self.execButton.clicked.connect(self.runDebugCode)
         self.stopButton.clicked.connect(self.setStopTrue)
@@ -118,29 +118,29 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         if b is not None:
             b.click()
         else:
-            print('{0} has no button {1}'.format(w, label))
+            print("{0} has no button {1}".format(w, label))
 
     def msgBoxOK(self):
         w = self.getWindow()
         if isinstance(w, QMessageBox):
-            self.pressButton(w, 'OK')
+            self.pressButton(w, "OK")
             return True
         return False
 
     def msgBoxYes(self):
         w = self.getWindow()
         if isinstance(w, QMessageBox):
-            self.pressButton(w, 'Yes')
+            self.pressButton(w, "Yes")
 
     def msgBoxNo(self):
         w = self.getWindow()
         if isinstance(w, QMessageBox):
-            self.pressButton(w, 'No')
+            self.pressButton(w, "No")
 
     def msgBoxCancel(self):
         w = self.getWindow()
         if isinstance(w, QMessageBox):
-            self.pressButton(w, 'Cancel')
+            self.pressButton(w, "Cancel")
 
     def dailogNotModal(self):
         w = self.getWindow()
@@ -158,7 +158,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             )
         if fileName:
             self.clearCode()
-            with open(fileName, 'r') as f:
+            with open(fileName, "r") as f:
                 code = f.read()
             self.pycodeEdit.setPlainText(code)
 
@@ -168,7 +168,7 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         )
         if fileName:
             s = self.pycodeEdit.plainText()
-            with open(fileName, 'r') as f:
+            with open(fileName, "r") as f:
                 f.write(s)
 
     def showContents(self):
@@ -207,17 +207,17 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         self.hideHelp.emit()
 
     def startTimer(self):
-        '''
+        """
         Start the timer to update the log file viewer
-        '''
+        """
         self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.updateLogView)
         self.timer.start(1000)
 
     def stopTimer(self):
-        '''
+        """
         Stop the timer to update the log file viewer
-        '''
+        """
         try:
             self.timer.stop()
             del self.timer
@@ -226,37 +226,37 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
             print("error stopping timer: {0}".format(e))
 
     def clearLogView(self):
-        '''
+        """
         Clear the log text
-        '''
+        """
         self.logView.clear()
 
     def clearCloudLogView(self):
-        '''
+        """
         Clear the Cloud log text
-        '''
+        """
         self.CloudLogView.clear()
         self.showStatus()
 
     def timerCB(self):
-        '''
+        """
         Function called by the timer to ubdate log display.
-        '''
+        """
         if self.logView.isVisible():
             self.updateLogView()
 
     def updateLogView(self, maxRead=1000, delay=1000):
-        '''
+        """
         Update the log viewer text box
         maxRead = the maximum number of lines to read from the log
             at one time
-        '''
+        """
         lr = 0
         if self.timer is not None:
             self.timer.stop()
         try:
             done = False
-            with open(self.dat.currentLog, 'r') as f:
+            with open(self.dat.currentLog, "r") as f:
                 f.seek(0, 2)
                 if self.dat.logSeek > f.tell():
                     self.dat.logSeek = 0
@@ -312,24 +312,24 @@ class helpBrowserDock(_helpBrowserDock, _helpBrowserDockUI):
         d = json.loads(self._cloud_notification.message)
         if "sqs" in d:
             self.widget.append("== SQS Job Queue:")
-            for k, v in d['sqs'].get('Attributes', {}).items():
+            for k, v in d["sqs"].get("Attributes", {}).items():
                 self.widget.append("  %s: %s" % (k, v))
         if "autoscale" in d:
             self.widget.append("== AutoScale:")
-            for group in d['autoscale'].get('AutoScalingGroups', []):
-                self.widget.append("  %s" % (group['AutoScalingGroupName']))
-                for key in ['MinSize', 'MaxSize', 'DesiredCapacity']:
+            for group in d["autoscale"].get("AutoScalingGroups", []):
+                self.widget.append("  %s" % (group["AutoScalingGroupName"]))
+                for key in ["MinSize", "MaxSize", "DesiredCapacity"]:
                     self.widget.append("    %s: %s" % (key, group[key]))
         if "ec2" in d:
             self.widget.append("== EC2:")
-            for reservation in d['ec2'].get('Reservations', []):
-                for inst in reservation['Instances']:
+            for reservation in d["ec2"].get("Reservations", []):
+                for inst in reservation["Instances"]:
                     logging.getLogger("foqus." + __name__).info(inst)
-                    tag_name = 'NO NAME'
-                    for tag in filter(lambda a: a['Key'] == 'Name', inst['Tags']):
-                        tag_name = tag['Value']
+                    tag_name = "NO NAME"
+                    for tag in filter(lambda a: a["Key"] == "Name", inst["Tags"]):
+                        tag_name = tag["Value"]
                     self.widget.append("  %s" % (tag_name))
-                    for key in ['InstanceType', 'Platform', 'State']:
+                    for key in ["InstanceType", "Platform", "State"]:
                         self.widget.append("    %s: %s" % (key, inst[key]))
 
 
@@ -346,11 +346,11 @@ class WebSocketApp(QtCore.QThread):
         assert type(config) is TurbineConfiguration, type(config)
         websocket.enableTrace(True)
         wss_url = config.notification
-        if not wss_url.startswith('wss://'):
+        if not wss_url.startswith("wss://"):
             raise ValueError("Require Web Sockets Secure (wss) protocol")
-        usertok = '%s:%s' % (config.user, config.pwd)
-        token = base64.b64encode(bytes(usertok, 'utf-8')).decode('ascii')
-        header = 'Authorization: Basic {0}'.format(token)
+        usertok = "%s:%s" % (config.user, config.pwd)
+        token = base64.b64encode(bytes(usertok, "utf-8")).decode("ascii")
+        header = "Authorization: Basic {0}".format(token)
         self.ws = websocket.WebSocketApp(
             wss_url,
             header=[header],

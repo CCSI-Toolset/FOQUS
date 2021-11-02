@@ -27,9 +27,9 @@ class saveMetadataDialog(_saveMetadataDialog, _saveMetadataDialogUI):
     sendTag = QtCore.pyqtSignal()
 
     def __init__(self, dat, parent=None):
-        '''
+        """
         Constructor for model setup dialog
-        '''
+        """
         super(saveMetadataDialog, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
         self.cancelButton.clicked.connect(self.reject)

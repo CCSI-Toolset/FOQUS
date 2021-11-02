@@ -172,16 +172,16 @@ class mainWindow(QMainWindow):
         self.mainWidget.addWidget(self.fsettingsFrame)  # 9
         # make a dictionary to look up widget indexes in stacked widget
         self.screenIndex = {
-            'home': 0,
-            'basicData': 1,
-            'flow': 2,
-            'uq': 3,
-            'opt': 4,
-            'ouu': 5,
-            'sdoe': 6,
-            'surrogate': 7,
-            'heatInt': 8,
-            'settings': 9,
+            "home": 0,
+            "basicData": 1,
+            "flow": 2,
+            "uq": 3,
+            "opt": 4,
+            "ouu": 5,
+            "sdoe": 6,
+            "surrogate": 7,
+            "heatInt": 8,
+            "settings": 9,
         }
         ## Create toolboxes for editing nodes and edges in flowsheet
         # node editor
@@ -214,7 +214,7 @@ class mainWindow(QMainWindow):
         self.refresh()
         self.app = None  # Qt application
         self.runningSingle = False
-        self.setWindowIcon(QIcon(self.iconPaths['main']))
+        self.setWindowIcon(QIcon(self.iconPaths["main"]))
         self.show()
         if ts is not None:
             self.tstimer = QtCore.QTimer(self)
@@ -224,36 +224,36 @@ class mainWindow(QMainWindow):
             self.tstimer = None
 
     def clearOldMessages(self):
-        '''
+        """
         This function clears old mesages from the gui
         when loading or creating a new session.
-        '''
+        """
         self.optSetupFrame.clearOld()
         self.surFrame.clearOld()
 
     def setStatus(self, msg):
-        '''
+        """
         Set the mainwindow status bar to display msg
-        '''
+        """
         self.statusBar().showMessage(msg)
 
     def setCursorWaiting(self):
-        '''
+        """
         This changes the mouse cursor to indicate that something
         is processing and it will take some time to finish
-        '''
+        """
         if self.app != None:
             self.app.setOverrideCursor(QtCore.Qt.BusyCursor)
 
     def setCursorNormal(self):
-        '''
+        """
         This sets the mouse cursor back to normal
-        '''
+        """
         if self.app != None:
             self.app.restoreOverrideCursor()
 
     def enable(self, b):
-        '''
+        """
         This function enables or disables forms that allow editing
         of the flowsheet or other session data while something is
         running in another thread.  This is to prevent
@@ -261,75 +261,75 @@ class mainWindow(QMainWindow):
         or flowsheet have been changed in the meantime
         ---args---
         b: bool true to enable false to disable
-        '''
+        """
         pass
 
     def setIconPaths(self):
-        '''
+        """
         Set the location of various icons to make it easier
         to edit later, it may be nice to have them in one place
-        '''
+        """
         self.iconPaths = {
-            'nodeEdit': ':/icons/icons/nodeEditor.svg',
-            'edgeEdit': ':/icons/icons/edgeEditor.svg',
-            'graphEdit': ':icons/icons/graphEditor.svg',
-            'main': ':/icons/icons/icons_exe/foqus_icon.svg',
-            'center': ':/icons/icons/center.svg',
-            'add': ':/icons/icons/add.svg',
-            'new': ':/icons/icons/new.svg',
-            'defaults': ':/icons/icons/defaults.svg',
-            'logout': ':/icons/icons/logout.svg',
-            'exit': ':/icons/icons/exit.svg',
-            'exit48': ':/icons/icons/exit48',
-            'setting': ':/icons/icons/setting.svg',
-            'settings48': ':/icons/icons/settings48.svg',
-            'load': ':/icons/icons/load.svg',
-            'save': ':/icons/icons/save.svg',
-            'select': ':/icons/icons/select.svg',
-            'edit': ':/icons/icons/edit.svg',
-            'addNode': ':/icons/icons/addNode.svg',
-            'addEdge': ':/icons/icons/addEdge.svg',
-            'delete': ':/icons/icons/delete.svg',
-            'run': ':/icons/icons/run.svg',
-            'stop': ':/icons/icons/stop.svg',
-            'up': ':/icons/icons/up.svg',
-            'down': ':/icons/icons/down.svg',
-            'left': ':/icons/icons/left.svg',
-            'right': ':/icons/icons/right.svg',
-            'help': ':/icons/icons/help48.svg',
-            'optimize': ':/icons/icons/opt48.svg',
-            'ouu': ':/icons/icons/ouu48.svg',
-            'uq': ':/icons/icons/uq48.svg',
-            'sdoe': ':/icons/icons/sdoe48.svg',
-            'data': ':/icons/icons/data.svg',
-            'data48': ':/icons/icons/data48.svg',
-            'drm48': ':/icons/icons/drm48.svg',
-            'basicData48': ':/icons/icons/basicData48.svg',
-            'opt_run': ':/icons/icons/opt48_run.svg',
-            'uq_run': ':/icons/icons/uq48_start.svg',
-            'flow': ':/icons/icons/fs48.svg',
-            'home': ':/icons/icons/home48.svg',
-            'dash': ':/icons/icons/dash48.svg',
-            'tear': ':/icons/icons/tear.svg',
-            'model': ':/icons/icons/model.svg',
-            'model48': ':/icons/icons/model48.svg',
-            'surrogate48': ':/icons/icons/surrogate48.svg',
-            'heatEx48': ':icons/icons/heatEx48.svg',
+            "nodeEdit": ":/icons/icons/nodeEditor.svg",
+            "edgeEdit": ":/icons/icons/edgeEditor.svg",
+            "graphEdit": ":icons/icons/graphEditor.svg",
+            "main": ":/icons/icons/icons_exe/foqus_icon.svg",
+            "center": ":/icons/icons/center.svg",
+            "add": ":/icons/icons/add.svg",
+            "new": ":/icons/icons/new.svg",
+            "defaults": ":/icons/icons/defaults.svg",
+            "logout": ":/icons/icons/logout.svg",
+            "exit": ":/icons/icons/exit.svg",
+            "exit48": ":/icons/icons/exit48",
+            "setting": ":/icons/icons/setting.svg",
+            "settings48": ":/icons/icons/settings48.svg",
+            "load": ":/icons/icons/load.svg",
+            "save": ":/icons/icons/save.svg",
+            "select": ":/icons/icons/select.svg",
+            "edit": ":/icons/icons/edit.svg",
+            "addNode": ":/icons/icons/addNode.svg",
+            "addEdge": ":/icons/icons/addEdge.svg",
+            "delete": ":/icons/icons/delete.svg",
+            "run": ":/icons/icons/run.svg",
+            "stop": ":/icons/icons/stop.svg",
+            "up": ":/icons/icons/up.svg",
+            "down": ":/icons/icons/down.svg",
+            "left": ":/icons/icons/left.svg",
+            "right": ":/icons/icons/right.svg",
+            "help": ":/icons/icons/help48.svg",
+            "optimize": ":/icons/icons/opt48.svg",
+            "ouu": ":/icons/icons/ouu48.svg",
+            "uq": ":/icons/icons/uq48.svg",
+            "sdoe": ":/icons/icons/sdoe48.svg",
+            "data": ":/icons/icons/data.svg",
+            "data48": ":/icons/icons/data48.svg",
+            "drm48": ":/icons/icons/drm48.svg",
+            "basicData48": ":/icons/icons/basicData48.svg",
+            "opt_run": ":/icons/icons/opt48_run.svg",
+            "uq_run": ":/icons/icons/uq48_start.svg",
+            "flow": ":/icons/icons/fs48.svg",
+            "home": ":/icons/icons/home48.svg",
+            "dash": ":/icons/icons/dash48.svg",
+            "tear": ":/icons/icons/tear.svg",
+            "model": ":/icons/icons/model.svg",
+            "model48": ":/icons/icons/model48.svg",
+            "surrogate48": ":/icons/icons/surrogate48.svg",
+            "heatEx48": ":icons/icons/heatEx48.svg",
         }
 
     def makeMainToolBar(self):
-        '''
+        """
         Make the big main window toolbar
-        '''
+        """
         # Make toolbar
-        self.toolbarMain = self.addToolBar('Main')
+        self.toolbarMain = self.addToolBar("Main")
         self.toolbarMain.setIconSize(QtCore.QSize(56, 56))
         self.toolbarMain.setToolButtonStyle(QtCore.Qt.ToolButtonTextUnderIcon)
         self.toolbarMain.setMovable(False)
         self.mainToolbarActionGroup = QActionGroup(self)
         # Add the session button to main toolbar
         self.makeSessionMenu()
-        self.homeAction = QAction(QIcon(self.iconPaths['home']), 'Session', self)
+        self.homeAction = QAction(QIcon(self.iconPaths["home"]), "Session", self)
         self.homeAction.setMenu(self.mainMenu)
         self.homeAction.triggered.connect(self.showDash)
         self.homeAction.setCheckable(True)
@@ -341,14 +341,14 @@ class mainWindow(QMainWindow):
         # Basic data action
         if self.showBasicDataTab:
             self.basicDataAction = QAction(
-                QIcon(self.iconPaths['basicData48']), 'Basic Data', self
+                QIcon(self.iconPaths["basicData48"]), "Basic Data", self
             )
             self.basicDataAction.triggered.connect(self.showBasicData)
             self.basicDataAction.setCheckable(True)
             self.mainToolbarActionGroup.addAction(self.basicDataAction)
             self.toolbarMain.addAction(self.basicDataAction)
         # Flowsheet action
-        self.fsEditAction = QAction(QIcon(self.iconPaths['flow']), 'Flowsheet', self)
+        self.fsEditAction = QAction(QIcon(self.iconPaths["flow"]), "Flowsheet", self)
         self.fsEditAction.triggered.connect(self.showFlow)
         self.fsEditAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.fsEditAction)
@@ -364,14 +364,14 @@ class mainWindow(QMainWindow):
         # self.mainToolbarActionGroup.addAction(self.heatIntAction)
         # self.toolbarMain.addAction(self.heatIntAction)
         # UQ setup action
-        self.uqSetupAction = QAction(QIcon(self.iconPaths['uq']), "Uncertainty", self)
+        self.uqSetupAction = QAction(QIcon(self.iconPaths["uq"]), "Uncertainty", self)
         self.uqSetupAction.triggered.connect(self.showUqSetup)
         self.uqSetupAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.uqSetupAction)
         self.toolbarMain.addAction(self.uqSetupAction)
         # Optimization set-up action
         self.optSetupAction = QAction(
-            QIcon(self.iconPaths['optimize']), 'Optimization', self
+            QIcon(self.iconPaths["optimize"]), "Optimization", self
         )
         self.optSetupAction.triggered.connect(self.showOptSetup)
         self.optSetupAction.setCheckable(True)
@@ -379,7 +379,7 @@ class mainWindow(QMainWindow):
         self.toolbarMain.addAction(self.optSetupAction)
         # OUU setup action
         if self.showOuu:
-            self.ouuSetupAction = QAction(QIcon(self.iconPaths['ouu']), 'OUU', self)
+            self.ouuSetupAction = QAction(QIcon(self.iconPaths["ouu"]), "OUU", self)
             self.ouuSetupAction.setToolTip("Optimization Under Uncertainty")
             self.ouuSetupAction.triggered.connect(self.showOuuSetup)
             self.ouuSetupAction.setCheckable(True)
@@ -388,7 +388,7 @@ class mainWindow(QMainWindow):
 
         # SDOE setup action
         if self.showSDOE:
-            self.sdoeSetupAction = QAction(QIcon(self.iconPaths['sdoe']), 'SDoE', self)
+            self.sdoeSetupAction = QAction(QIcon(self.iconPaths["sdoe"]), "SDoE", self)
             self.sdoeSetupAction.setToolTip("Sequential Design of Experiments")
             self.sdoeSetupAction.triggered.connect(self.showSdoeSetup)
             self.sdoeSetupAction.setCheckable(True)
@@ -397,7 +397,7 @@ class mainWindow(QMainWindow):
 
         # Add surrogate model button
         self.surrogateAction = QAction(
-            QIcon(self.iconPaths['surrogate48']), 'Surrogates', self
+            QIcon(self.iconPaths["surrogate48"]), "Surrogates", self
         )
         self.surrogateAction.triggered.connect(self.showSurrogate)
         self.surrogateAction.setCheckable(True)
@@ -405,7 +405,7 @@ class mainWindow(QMainWindow):
         self.toolbarMain.addAction(self.surrogateAction)
         # Setings Action
         self.mainSettingsAction = QAction(
-            QIcon(self.iconPaths['settings48']), 'Settings', self
+            QIcon(self.iconPaths["settings48"]), "Settings", self
         )
         self.mainSettingsAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.mainSettingsAction)
@@ -422,80 +422,80 @@ class mainWindow(QMainWindow):
         self.toolbarMain.addSeparator()
         self.toolbarMain.addWidget(empty2)
         # Help action
-        self.mainHelpAction = QAction(QIcon(self.iconPaths['help']), 'Help', self)
+        self.mainHelpAction = QAction(QIcon(self.iconPaths["help"]), "Help", self)
         self.mainHelpAction.triggered.connect(self.helpToggle)
         self.mainHelpAction.setCheckable(True)
         self.toolbarMain.addAction(self.mainHelpAction)
 
     def makeDrawingToolBar(self):
-        '''
+        """
         Make the toolbar for flowsheet editing
-        '''
-        self.toolbarDrawing = QToolBar('Drawing', self)
+        """
+        self.toolbarDrawing = QToolBar("Drawing", self)
         self.addToolBar(QtCore.Qt.LeftToolBarArea, self.toolbarDrawing)
         self.toolbarDrawing.hide()
         self.drawingToolbarActionGroup = QActionGroup(self)
         self.flowsheetViewActionGroup = QActionGroup(self)
         self.toolbarDrawing.setIconSize(QtCore.QSize(32, 32))
         # Select Action
-        self.selectAction = QAction(QIcon(self.iconPaths['select']), 'Select', self)
+        self.selectAction = QAction(QIcon(self.iconPaths["select"]), "Select", self)
         self.selectAction.triggered.connect(self.flowsheetEditor.setModeSelect)
         self.toolbarDrawing.addAction(self.selectAction)
         self.drawingToolbarActionGroup.addAction(self.selectAction)
         self.selectAction.setCheckable(True)
         self.selectAction.setChecked(True)
         # Add node Action
-        self.addNodeAction = QAction(QIcon(self.iconPaths['addNode']), 'Add Node', self)
+        self.addNodeAction = QAction(QIcon(self.iconPaths["addNode"]), "Add Node", self)
         self.addNodeAction.triggered.connect(self.flowsheetEditor.setModeAddNode)
         self.toolbarDrawing.addAction(self.addNodeAction)
         self.drawingToolbarActionGroup.addAction(self.addNodeAction)
         self.addNodeAction.setCheckable(True)
         # Add Edge Action
-        self.addEdgeAction = QAction(QIcon(self.iconPaths['addEdge']), 'Add Edge', self)
+        self.addEdgeAction = QAction(QIcon(self.iconPaths["addEdge"]), "Add Edge", self)
         self.addEdgeAction.triggered.connect(self.flowsheetEditor.setModeAddEdge)
         self.toolbarDrawing.addAction(self.addEdgeAction)
         self.drawingToolbarActionGroup.addAction(self.addEdgeAction)
         self.addEdgeAction.setCheckable(True)
         # Center Action
         self.centerAction = QAction(
-            QIcon(self.iconPaths['center']), 'Center Flowsheet View', self
+            QIcon(self.iconPaths["center"]), "Center Flowsheet View", self
         )
         self.centerAction.triggered.connect(self.flowsheetEditor.center)
         self.toolbarDrawing.addAction(self.centerAction)
         # Delete Action
         self.deleteAction = QAction(
-            QIcon(self.iconPaths['delete']), 'Delete Selected', self
+            QIcon(self.iconPaths["delete"]), "Delete Selected", self
         )
         self.deleteAction.triggered.connect(self.flowsheetEditor.deleteSelected)
         self.toolbarDrawing.addAction(self.deleteAction)
         # Run flowsheet evaluation action
         self.runAction = QAction(
-            QIcon(self.iconPaths['run']), 'Start Single Flowsheet Evaluation', self
+            QIcon(self.iconPaths["run"]), "Start Single Flowsheet Evaluation", self
         )
         self.runAction.triggered.connect(self.runSim)
         self.toolbarDrawing.addAction(self.runAction)
         # Stop run action
         self.stopAction = QAction(
-            QIcon(self.iconPaths['stop']), 'Stop Single Flowsheet Evaluation', self
+            QIcon(self.iconPaths["stop"]), "Stop Single Flowsheet Evaluation", self
         )
         self.stopAction.triggered.connect(self.stopButton)
         self.toolbarDrawing.addAction(self.stopAction)
         self.stopAction.setEnabled(False)
         # Load default inputs action
         self.loadDefaultsAction = QAction(
-            QIcon(self.iconPaths['defaults']), 'Load default inputs', self
+            QIcon(self.iconPaths["defaults"]), "Load default inputs", self
         )
         self.loadDefaultsAction.triggered.connect(self.loadDefaultInput)
         self.toolbarDrawing.addAction(self.loadDefaultsAction)
         # determine tear stream action
         self.tearAction = QAction(
-            QIcon(self.iconPaths['tear']), 'Determine tear streams', self
+            QIcon(self.iconPaths["tear"]), "Determine tear streams", self
         )
         self.tearAction.triggered.connect(self.tearFlowsheet)
         self.toolbarDrawing.addAction(self.tearAction)
         # Flowsheet settings dialog
         self.fsSettingsAction = QAction(
-            QIcon(self.iconPaths['setting']), 'Flowsheet Settings', self
+            QIcon(self.iconPaths["setting"]), "Flowsheet Settings", self
         )
         self.fsSettingsAction.triggered.connect(self.fsSettings)
         self.toolbarDrawing.addAction(self.fsSettingsAction)
@@ -503,14 +503,14 @@ class mainWindow(QMainWindow):
         self.toolbarDrawing.addSeparator()
         # Add node editor toggle button
         self.toggleNodeEditorAction = QAction(
-            QIcon(self.iconPaths['nodeEdit']), 'Toggle Node Editor', self
+            QIcon(self.iconPaths["nodeEdit"]), "Toggle Node Editor", self
         )
         self.toggleNodeEditorAction.setCheckable(True)
         self.toggleNodeEditorAction.triggered.connect(self.toggleNodePanel)
         self.toolbarDrawing.addAction(self.toggleNodeEditorAction)
         # Add edge editor toggle button
         self.toggleEdgeEditorAction = QAction(
-            QIcon(self.iconPaths['edgeEdit']), 'Toggle Edge Editor', self
+            QIcon(self.iconPaths["edgeEdit"]), "Toggle Edge Editor", self
         )
         self.toggleEdgeEditorAction.setCheckable(True)
         self.toggleEdgeEditorAction.triggered.connect(self.toggleEdgePanel)
@@ -519,79 +519,79 @@ class mainWindow(QMainWindow):
         self.toolbarDrawing.addSeparator()
         # Data/Results browser View
         self.dataBrowserAction = QAction(
-            QIcon(self.iconPaths['data']), 'Results and Filtering', self
+            QIcon(self.iconPaths["data"]), "Results and Filtering", self
         )
         self.dataBrowserAction.triggered.connect(self.showDataBrowser)
         self.toolbarDrawing.addAction(self.dataBrowserAction)
 
     def makeSessionMenu(self):
-        '''
+        """
         Make the menu for the session
-        '''
+        """
         self.mainMenu = QMenu(self)
         # Upload FOQUS session to turbine
         self.addFoqusTurbineAction = QAction(
-            QIcon(self.iconPaths['add']),
-            'Add Current FOQUS Session to Turbine...',
+            QIcon(self.iconPaths["add"]),
+            "Add Current FOQUS Session to Turbine...",
             self,
         )
         self.addFoqusTurbineAction.triggered.connect(self.uploadSession)
         self.mainMenu.addAction(self.addFoqusTurbineAction)
         # Add/update model in Turbine Action
         self.addTurbineModelAction = QAction(
-            QIcon(self.iconPaths['add']), 'Add\\Update Model to Turbine...', self
+            QIcon(self.iconPaths["add"]), "Add\\Update Model to Turbine...", self
         )
         self.addTurbineModelAction.triggered.connect(self.addTurbModel)
         self.mainMenu.addAction(self.addTurbineModelAction)
         # Vectorize a simsinter config file
         self.addSinterFileVectorizeAction = QAction(
-            QIcon(self.iconPaths['add']), 'Vectorize SimSinter File...', self
+            QIcon(self.iconPaths["add"]), "Vectorize SimSinter File...", self
         )
         self.addSinterFileVectorizeAction.triggered.connect(self.SinterFileVectorize)
         self.mainMenu.addAction(self.addSinterFileVectorizeAction)
         # New session Action
         self.newSessionAction = QAction(
-            QIcon(self.iconPaths['new']), 'New Session...', self
+            QIcon(self.iconPaths["new"]), "New Session...", self
         )
         self.newSessionAction.setShortcut(QKeySequence("Ctrl+N"))
         self.newSessionAction.triggered.connect(self.newSession)
         self.mainMenu.addAction(self.newSessionAction)
         # Load session Action
         self.openSessionAction = QAction(
-            QIcon(self.iconPaths['load']), 'Open Session...', self
+            QIcon(self.iconPaths["load"]), "Open Session...", self
         )
 
         self.openSessionAction.setShortcut(QKeySequence("Ctrl+O"))
         self.openSessionAction.triggered.connect(self.loadData)
         # add and update list of recently opened files
-        self.openRecentMainMenu = QMenu('Open Recent', self)
-        self.openRecentMainMenu.setIcon(QIcon(self.iconPaths['load']))
+        self.openRecentMainMenu = QMenu("Open Recent", self)
+        self.openRecentMainMenu.setIcon(QIcon(self.iconPaths["load"]))
         self.mainMenu.addMenu(self.openRecentMainMenu)
         self.updateRecentlyOpened()
         self.mainMenu.addAction(self.openSessionAction)
         # Save session action
         self.saveSessionAction = QAction(
-            QIcon(self.iconPaths['save']), 'Save Session...', self
+            QIcon(self.iconPaths["save"]), "Save Session...", self
         )
         self.saveSessionAction.setShortcut(QKeySequence("Ctrl+S"))
         self.saveSessionAction.triggered.connect(self.saveData)
         self.mainMenu.addAction(self.saveSessionAction)
         # Save session as action
         self.saveAsSessionAction = QAction(
-            QIcon(self.iconPaths['save']), 'Save Session As...', self
+            QIcon(self.iconPaths["save"]), "Save Session As...", self
         )
         self.saveAsSessionAction.triggered.connect(self.saveAsData)
         self.mainMenu.addAction(self.saveAsSessionAction)
         # exit FOQUS action
-        self.exitAction = QAction(QIcon(self.iconPaths['exit']), 'Exit FOQUS...', self)
+        self.exitAction = QAction(QIcon(self.iconPaths["exit"]), "Exit FOQUS...", self)
         self.exitAction.setShortcut(QKeySequence("Ctrl+Q"))
         self.exitAction.triggered.connect(self.close)
         self.mainMenu.addAction(self.exitAction)
 
     def addTurbModel(self):
-        '''
+        """
         Upload a new model to Turbine
-        '''
+        """
         g = gatewayUploadDialog(self.dat, self.dat.flowsheet.turbConfig, self)
         g.waiting.connect(self.setCursorWaiting)
         g.notwaiting.connect(self.setCursorNormal)
@@ -599,15 +599,15 @@ class mainWindow(QMainWindow):
             g.exec_()
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
-                'Error uploading to Turbine file: '
+                "Error uploading to Turbine file: "
             )
         self.setCursorNormal()
         g.destroy()
 
     def SinterFileVectorize(self):
-        '''
+        """
         SimSinter Config File Vectorization
-        '''
+        """
         v = SinterVectorizeDialog(self)
         v.waiting.connect(self.setCursorWaiting)
         v.notwaiting.connect(self.setCursorNormal)
@@ -615,16 +615,16 @@ class mainWindow(QMainWindow):
             v.exec_()
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
-                'Error vectorizing simsinter file: '
+                "Error vectorizing simsinter file: "
             )
         self.setCursorNormal()
         v.destroy()
 
     def sessionDescEdit(self):
-        '''
+        """
         This brings up an editor dialog for the FOQUS session
         description
-        '''
+        """
         d = sessionDescriptionDialog(self, self.dashFrame.sessionDescription())
         ok = d.exec_()
         if ok == QDialog.Accepted:
@@ -632,63 +632,63 @@ class mainWindow(QMainWindow):
             self.updateSession()
 
     def cancelSession(self):
-        '''
+        """
         Cancels changes to session description
-        '''
+        """
         self.dashFrame.setSessionDescription(self.dat.description)
 
     def applyAllChanges(self):
-        '''
+        """
         This calls the applyChanges method on all the screens.
         mostly this is used so that all changes in GUI are applied
         before saving a session
-        '''
+        """
         index = self.mainWidget.currentIndex()
-        if index == self.screenIndex['home']:
+        if index == self.screenIndex["home"]:
             self.updateSession()
-        elif index == self.screenIndex['flow']:
+        elif index == self.screenIndex["flow"]:
             self.applyNodeEdgeChanges()
-        elif index == self.screenIndex['uq']:
+        elif index == self.screenIndex["uq"]:
             # may add something later
             pass
-        elif index == self.screenIndex['opt']:
+        elif index == self.screenIndex["opt"]:
             self.optSetupFrame.applyChanges()
-        elif index == self.screenIndex['surrogate']:
+        elif index == self.screenIndex["surrogate"]:
             self.surFrame.applyChanges()
-        elif index == self.screenIndex['settings']:
+        elif index == self.screenIndex["settings"]:
             self.fsettingsFrame.applyChanges()
 
     def changeScreen(self):
-        '''
+        """
         Hide special tool-bars and commit changes on the current
         screen before showing a different screen in the main window
-        '''
+        """
         index = self.mainWidget.currentIndex()
-        if index == self.screenIndex['home']:
+        if index == self.screenIndex["home"]:
             self.updateSession()
-        elif index == self.screenIndex['flow']:
+        elif index == self.screenIndex["flow"]:
             self.applyNodeEdgeChanges()
             self.hideNodePanel()
             self.hideEdgePanel()
             self.toolbarDrawing.hide()
             self.varBrowse.hide()
-        elif index == self.screenIndex['uq']:
+        elif index == self.screenIndex["uq"]:
             # may add something later
             pass
-        elif index == self.screenIndex['opt']:
+        elif index == self.screenIndex["opt"]:
             self.optSetupFrame.applyChanges()
             self.varBrowse.hide()
-        elif index == self.screenIndex['surrogate']:
+        elif index == self.screenIndex["surrogate"]:
             self.surFrame.applyChanges()
-        elif index == self.screenIndex['settings']:
+        elif index == self.screenIndex["settings"]:
             self.fsettingsFrame.applyChanges()
 
     def applyNodeEdgeChanges(self):
-        '''
+        """
         If the node or edge editor is shown apply whatever changes
         have been made so they are not lost when switching
         screens
-        '''
+        """
         if not self.nodeDock.isHidden():
             self.nodeDock.applyChanges()
         if not self.edgeDock.isHidden():
@@ -700,10 +700,10 @@ class mainWindow(QMainWindow):
         self.hideEdgePanel()
 
     def fsSelectNone(self):
-        '''
+        """
         Hide the node and edge editors if no edege or node is
         selected.
-        '''
+        """
         self.applyNodeEdgeChanges()
         self.hideNodePanel()
         self.hideEdgePanel()
@@ -713,9 +713,9 @@ class mainWindow(QMainWindow):
         self.nodeDock.setNodeName(name)
 
     def showNodePanel(self, name=None):
-        '''
+        """
         If a node is selected show the node editor for it
-        '''
+        """
         self.hideEdgePanel()
         self.nodeDock.updateForm()
         self.nodeDock.show()
@@ -724,7 +724,7 @@ class mainWindow(QMainWindow):
             self.nodeDock.setNodeName(name)
 
     def toggleNodePanel(self):
-        ''' '''
+        """ """
         if self.toggleNodeEditorAction.isChecked():
             self.showNodePanel()
         else:
@@ -737,9 +737,9 @@ class mainWindow(QMainWindow):
             self.hideEdgePanel()
 
     def hideNodePanel(self):
-        '''
+        """
         Hide the node editor
-        '''
+        """
         self.toggleNodeEditorAction.setChecked(False)
         if not self.nodeDock.isHidden():
             self.nodeDock.applyChanges()
@@ -750,9 +750,9 @@ class mainWindow(QMainWindow):
         self.edgeDock.setEdgeIndex(index)
 
     def showEdgePanel(self, index=None):
-        '''
+        """
         If an edge is selected show the edge editor for it
-        '''
+        """
         self.hideNodePanel()
         self.toggleEdgeEditorAction.setChecked(True)
         self.edgeDock.setEdgeIndex(index)
@@ -760,9 +760,9 @@ class mainWindow(QMainWindow):
         self.edgeDock.show()
 
     def hideEdgePanel(self):
-        '''
+        """
         Hide the edge editor
-        '''
+        """
         self.toggleEdgeEditorAction.setChecked(False)
         if not self.edgeDock.isHidden():
             self.edgeDock.applyChanges()
@@ -771,75 +771,75 @@ class mainWindow(QMainWindow):
     def showSettings(self):
         self.changeScreen()
         self.fsettingsFrame.updateForm()
-        self.mainWidget.setCurrentIndex(self.screenIndex['settings'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["settings"])
 
     def showDash(self):
-        '''
+        """
         Show the home screen
-        '''
+        """
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['home'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["home"])
 
     def showFlow(self):
-        '''
+        """
         Show the flowsheet editor
-        '''
+        """
         self.changeScreen()
         self.toolbarDrawing.show()
-        self.mainWidget.setCurrentIndex(self.screenIndex['flow'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["flow"])
 
     def showUqSetup(self):
-        '''
+        """
         Show the UQ screen
-        '''
+        """
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['uq'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["uq"])
 
     def showOptSetup(self):
-        '''
+        """
         Show the optimization screen
-        '''
+        """
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['opt'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["opt"])
         self.optSetupFrame.refreshContents()
 
     def showOuuSetup(self):
-        '''
+        """
         Show the OUU screen
-        '''
+        """
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['ouu'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["ouu"])
 
     def showSdoeSetup(self):
-        '''
+        """
         Show the SDOE screen
-        '''
+        """
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['sdoe'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["sdoe"])
 
     def showSurrogate(self):
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['surrogate'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["surrogate"])
         self.surFrame.refreshContents()
 
     def showHeatInt(self):
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['heatInt'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["heatInt"])
 
     def showDataBrowser(self):
-        '''
+        """
         Show the flowsheet results browser dialog box
-        '''
+        """
         self.dataBrowserDialog.show()
 
     def showBasicData(self):
         self.changeScreen()
-        self.mainWidget.setCurrentIndex(self.screenIndex['basicData'])
+        self.mainWidget.setCurrentIndex(self.screenIndex["basicData"])
 
     def fsSettings(self):
-        '''
+        """
         Show the flowseet settings dialog box
-        '''
+        """
         fss = flowsheetSettingsDialog(self.dat, self)
         fss.exec_()
 
@@ -850,25 +850,25 @@ class mainWindow(QMainWindow):
             self.hideHelp()
 
     def showHelp(self):
-        '''
+        """
         Show the help dock widget
-        '''
+        """
         self.helpDock.showHelp()
         self.helpDock.show()
         self.mainHelpAction.setChecked(True)
 
     def hideHelp(self):
-        '''
+        """
         Hide the help dock
-        '''
+        """
         self.helpDock.hide()
         self.mainHelpAction.setChecked(False)
 
     def closeEvent(self, event):
-        '''
+        """
         Intercept close main window close event
         make sure you really want to quit
-        '''
+        """
         accept = False
         if self.splash:
             self.splash.hide()
@@ -896,7 +896,7 @@ class mainWindow(QMainWindow):
             self.dat.foqusSettings.save(newWdir=True)
         except:
             logging.getLogger("foqus." + __name__).exception(
-                'Failed to save FOQUS settings'
+                "Failed to save FOQUS settings"
             )
 
         # Close any open matplotlib windows
@@ -905,18 +905,18 @@ class mainWindow(QMainWindow):
         plt.close("all")
 
     def showAbout(self):
-        '''
+        """
         Show the about screen.  I just reused the splash
         screen for this.
-        '''
+        """
         if self.splash:
             self.splash.show()
 
     def updateSession(self):
-        '''
+        """
         Synchronize the session data with what is shown in the
         dash window.
-        '''
+        """
         self.dat.name = self.dashFrame.sessionNameEdit.text()
         self.dat.version = self.dashFrame.versionBox.text()
         self.dat.confidence = self.dashFrame.confCombo.currentText()
@@ -933,11 +933,11 @@ class mainWindow(QMainWindow):
             self.edgeDock.updateForm()
 
     def refreshFlowsheet(self):
-        '''
+        """
         Update the flowsheet drawing, usually done if some change
         is made either to the structure or any node or edge
         parameter
-        '''
+        """
         self.flowsheetEditor.createScene()
         if not self.nodeDock.isHidden():
             self.nodeDock.updateForm()
@@ -949,14 +949,14 @@ class mainWindow(QMainWindow):
             self.nodeDock.updateLocation()
 
     def refreshDash(self):
-        if self.dat.currentFile and self.dat.currentFile != '':
+        if self.dat.currentFile and self.dat.currentFile != "":
             self.setWindowTitle(
-                'FOQUS - {0} - Last saved: {1}'.format(
+                "FOQUS - {0} - Last saved: {1}".format(
                     self.dat.currentFile, self.dat.date
                 )
             )
         else:
-            self.setWindowTitle('FOQUS -- [not saved yet]')
+            self.setWindowTitle("FOQUS -- [not saved yet]")
         self.dashFrame.sessionNameEdit.setText(self.dat.name)
         self.dashFrame.idBox.setText(self.dat.uid)
         self.dashFrame.creationTimeBox.setText(self.dat.creationTime)
@@ -978,10 +978,10 @@ class mainWindow(QMainWindow):
         self.dashFrame.changeLogEdit.setPlainText(cltext)
 
     def refresh(self):
-        '''
+        """
         Update all the forms and flowsheet after reloading a file
         or some other change
-        '''
+        """
         self.refreshFlowsheet()
         self.uqSetupFrame.refresh()
         self.surFrame.refreshContents()
@@ -990,11 +990,11 @@ class mainWindow(QMainWindow):
         self.refreshDash()
 
     def newSession(self):
-        '''
+        """
         Creates a new FOQUS session after asking if you are sure.
         The current session is not saved first so changes may be
         lost.
-        '''
+        """
         saveSessionQuestion = QMessageBox()
         saveSessionQuestion.setText(
             "Do you want to save your current session before starting" " a new session?"
@@ -1018,18 +1018,18 @@ class mainWindow(QMainWindow):
         self.clearOldMessages()
 
     def tearFlowsheet(self):
-        '''
+        """
         Find flowsheet tears
-        '''
+        """
         self.setCursorWaiting()
         self.dat.flowsheet.calculationOrder()
         self.refreshFlowsheet()
         self.setCursorNormal()
 
     def loadData(self):
-        '''
+        """
         Load a saved session
-        '''
+        """
         msgBox = QMessageBox()
         msgBox.setText(
             "Do you want to save your current session"
@@ -1063,9 +1063,9 @@ class mainWindow(QMainWindow):
             self.clearOldMessages()
 
     def loadSessionFile(self, filename, saveCurrent=True):
-        '''
+        """
         Load a FOQUS session from given filename
-        '''
+        """
         if filename:
             if saveCurrent:
                 msgBox = QMessageBox()
@@ -1096,9 +1096,9 @@ class mainWindow(QMainWindow):
             self.clearOldMessages()
 
     def saveAsData(self):
-        '''
+        """
         Save a session
-        '''
+        """
         self.applyAllChanges()
         if self.dat.name == "":
             msgBox = QMessageBox()
@@ -1128,8 +1128,8 @@ class mainWindow(QMainWindow):
             fullFile = os.path.abspath(fileName)
             pathName, baseName = os.path.split(fullFile)
             base, ext = os.path.splitext(baseName)
-            self.dat.ID = base + time.strftime('_%y%m%d%H%M%S')
-            pathName = os.path.join(pathName, '%s_files' % self.dat.ID)
+            self.dat.ID = base + time.strftime("_%y%m%d%H%M%S")
+            pathName = os.path.join(pathName, "%s_files" % self.dat.ID)
             self.dat.moveArchive(pathName)
             # Delete new folders from old archive
             #  (Old folders need to be kept for old session)
@@ -1149,7 +1149,7 @@ class mainWindow(QMainWindow):
             return False
 
     def checkNameChars(self):
-        invalidChars = ['\\', '/', '?', '%', '*', ':', '"', '|', '$', '<', '>']
+        invalidChars = ["\\", "/", "?", "%", "*", ":", '"', "|", "$", "<", ">"]
         err = []
         for c in invalidChars:
             if c in self.dat.name:
@@ -1157,10 +1157,10 @@ class mainWindow(QMainWindow):
         return err
 
     def saveData(self):
-        '''
+        """
         Save a session using the current name if it hasn't been
         saved yet call save as.
-        '''
+        """
         if self.dat.currentFile != "" and self.dat.currentFile != None:
             self.applyAllChanges()
             if self.dat.name == "":
@@ -1196,10 +1196,10 @@ class mainWindow(QMainWindow):
             return self.saveAsData()
 
     def stopButton(self):
-        '''
+        """
         This stops a flowsheet run it is just a single run
         to stop optimization or UQ they have their own ways
-        '''
+        """
         if self.runningSingle:
             if self.singleRun is not None:
                 self.singleRun.terminate()
@@ -1218,11 +1218,11 @@ class mainWindow(QMainWindow):
         msgBox.exec_()
 
     def runSim(self, node=None, valList=None, rows=None):
-        '''
+        """
         Start simulation in a separate thread and setup a timer
         to monitor it.  If node is set to a node name only a single
         node given by the name is evaluated
-        '''
+        """
         turb_config = self.dat.flowsheet.turbConfig
         turb_sim_list = self.dat.flowsheet.turbineSimList()
         self.applyNodeEdgeChanges()
@@ -1275,11 +1275,11 @@ class mainWindow(QMainWindow):
         self.timer.start(delay)
 
     def checkSim(self):
-        '''
+        """
         Check if a single simulation is done.  If it is call
         stopSim to read results and finish up. Also update
         the status bar with the elapsed time.
-        '''
+        """
         if self.singleRun is not None:
             if not self.singleRun.is_alive():
                 self.stopSim()
@@ -1306,12 +1306,10 @@ class mainWindow(QMainWindow):
                         # TODO the pylint errors here are most likely true positives
                         # which suggests that this branch is not executed normally
                         # TODO pylint: disable=assignment-from-no-return,unexpected-keyword-arg
-                        res.rlist[
-                            row
-                        ] = res.addFromSavedValues(
-                            setName=r[res.headMap['SetName']],
-                            name=r[res.headMap['ResultName']],
-                            tags=r[res.headMap['Tags']],
+                        res.rlist[row] = res.addFromSavedValues(
+                            setName=r[res.headMap["SetName"]],
+                            name=r[res.headMap["ResultName"]],
+                            tags=r[res.headMap["Tags"]],
                             valDict=gt.res[i],
                             append=False,
                         )
@@ -1332,7 +1330,7 @@ class mainWindow(QMainWindow):
                 self.stopSim()
 
     def stopSim(self):
-        '''
+        """
         If a single simulation has been started with runSim, this
         will stop it and read the results. The simulation can be
         stopped before it is finished; this will put -1 error codes
@@ -1341,7 +1339,7 @@ class mainWindow(QMainWindow):
         terminate anything running in turbine.  It will kill the
         worker thread/process (hopefully) although that may take
         some time.
-        '''
+        """
         self.timer.stop()
         self.stopAction.setEnabled(False)
         # Next will wait for the single run thread to close down all the
@@ -1371,13 +1369,13 @@ class mainWindow(QMainWindow):
 
                 # HACK (JRB):  SETUP DEFAULT VALUES FOR REQUIRED KEYS
                 #
-                for key, value in (('nodeError', {}), ('turbineMessages', {})):
+                for key, value in (("nodeError", {}), ("turbineMessages", {})):
                     if key not in self.singleRun.res[0]:
                         self.singleRun.res[0][key] = value
 
                 self.dat.flowsheet.results.add_result(
-                    set_name='Single_runs',
-                    result_name='single_{}'.format(self.dat.flowsheet.singleCount),
+                    set_name="Single_runs",
+                    result_name="single_{}".format(self.dat.flowsheet.singleCount),
                     time=None,
                     sd=self.singleRun.res[0],
                 )
@@ -1432,9 +1430,9 @@ class mainWindow(QMainWindow):
                 )
 
     def loadDefaultInput(self):
-        '''
+        """
         Return inputs to default values
-        '''
+        """
         msgBox = QMessageBox()
         msgBox.setText("Load Defaults?")
         msgBox.setInformativeText(
@@ -1485,9 +1483,9 @@ class mainWindow(QMainWindow):
         self.index += 1
 
     def updateRecentlyOpened(self):
-        '''
+        """
         Update recent file menu
-        '''
+        """
         if self.dat.currentFile != "":
             self.dat.foqusSettings.addRecentlyOpenedFile(self.dat.currentFile)
         self.openRecentMainMenu.clear()
@@ -1501,10 +1499,10 @@ class mainWindow(QMainWindow):
             self.openRecentMainMenu.addAction(self.openRecentAction[i])
 
     def runTestScript(self, fileName):
-        '''
+        """
         This function is use to automatically run a UI test script
         when FOQUS starts.
-        '''
+        """
         if self.tstimer is not None:
             self.tstimer.stop()
         self.helpDock.loadDbgCode(fileName)

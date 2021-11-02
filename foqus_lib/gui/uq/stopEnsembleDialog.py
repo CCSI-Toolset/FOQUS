@@ -24,9 +24,9 @@ _stopEnsembleDialogUI, _stopEnsembleDialog = uic.loadUiType(
 
 class stopEnsembleDialog(_stopEnsembleDialog, _stopEnsembleDialogUI):
     def __init__(self, dat, parent=None):
-        '''
+        """
         Constructor for model setup dialog
-        '''
+        """
         super(stopEnsembleDialog, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
         self.buttonCode = 0

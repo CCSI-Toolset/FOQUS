@@ -43,7 +43,7 @@ _log = logging.getLogger("foqus." + __name__)
 from collections import OrderedDict
 
 
-if os.name == 'nt':
+if os.name == "nt":
     import win32process
 
     try:
@@ -184,14 +184,14 @@ class ConsumerInfo:
 
 
 class TurbineConfiguration:
-    '''
+    """
     This class stores the information needed to write a turbine
     configuration file it may also store other parameters related to
     turbine. It also contains functions to interact with Turbine.
     I'm trying to move all the Turbine calls to one place to make
     it easier to find any turbine related bugs or add improvements
     as Turbine is update.
-    '''
+    """
 
     resourceNames = {
         "Excel": "spreadsheet",
@@ -212,9 +212,9 @@ class TurbineConfiguration:
     }
 
     def __init__(self, path="turbine.cfg"):
-        '''
+        """
         constructor
-        '''
+        """
         self.path = path
         self.aspenVersion = 2
         # error code of things that may work if retried
@@ -238,8 +238,8 @@ class TurbineConfiguration:
 
     @notification.setter
     def notification(self, url):
-        assert type(url) is str and url.startswith('wss://'), (
-            'Require WebSocket Secure URL:  %s' % url
+        assert type(url) is str and url.startswith("wss://"), (
+            "Require WebSocket Secure URL:  %s" % url
         )
         self.__wss_notification_url = url
 
@@ -258,9 +258,9 @@ class TurbineConfiguration:
         self.tldb = None
 
     def updateSettings(self, altConfig=None):
-        '''
+        """
         try to get updated settings from the foqus settings
-        '''
+        """
         try:
             if self.dat:
                 if self.dat.foqusSettings.runFlowsheetMethod == 0:
@@ -280,9 +280,9 @@ class TurbineConfiguration:
             _log.exception("Could not load FOQUS settings.")
 
     def makeCopy(self):
-        '''
+        """
         Make a copy of the turbine config instance
-        '''
+        """
         newCopy = TurbineConfiguration(self.getFile())
         newCopy.configExt = self.configExt
         newCopy.subDir = self.subDir
@@ -297,8 +297,8 @@ class TurbineConfiguration:
                 [self.getFile()], None
             )
             for i in l:
-                if i['Name'] == simName:
-                    return i['Application']
+                if i["Name"] == simName:
+                    return i["Application"]
             raise TurbineInterfaceEx(
                 code=360,
                 msg="Could not find simulation: {0}".format(simName),
@@ -315,7 +315,7 @@ class TurbineConfiguration:
 
     def startConsumer(self, nodeName, simName):
         _log.debug("Starting simulation consumer...")
-        if self.turbVer != 'Lite':
+        if self.turbVer != "Lite":
             raise TurbineInterfaceEx(code=153)
         if self.checkConsumer(nodeName):
             # consumer already exists so just return it
@@ -325,23 +325,23 @@ class TurbineConfiguration:
         # Consumer will be started so zero the use counter
         self.consumerCountZero(nodeName)
         app = self.getSimApplication(simName)
-        if app == 'ACM' or app == 'AspenPlus':
+        if app == "ACM" or app == "AspenPlus":
             # Start aspen consumer
             if self.aspenVersion == 1:
-                f = '{0}\\Clients\\AspenSinter73ConsumerConsole.exe'.format(
+                f = "{0}\\Clients\\AspenSinter73ConsumerConsole.exe".format(
                     self.turbineLiteHome
                 )
             else:
-                f = '{0}\\Clients\\AspenSinterConsumerConsole.exe'.format(
+                f = "{0}\\Clients\\AspenSinterConsumerConsole.exe".format(
                     self.turbineLiteHome
                 )
-        elif app == 'Excel':
+        elif app == "Excel":
             # Start aspen consumer
-            f = '{0}\\Clients\\ExcelSinterConsumerConsole.exe'.format(
+            f = "{0}\\Clients\\ExcelSinterConsumerConsole.exe".format(
                 self.turbineLiteHome
             )
-        elif app == 'gPROMS' or app == 'GProms':
-            f = '{0}\\Clients\\GPromsSinterConsumerConsole.exe'.format(
+        elif app == "gPROMS" or app == "GProms":
+            f = "{0}\\Clients\\GPromsSinterConsumerConsole.exe".format(
                 self.turbineLiteHome
             )
         else:
@@ -349,8 +349,8 @@ class TurbineConfiguration:
             return None
             _log.debug("  Exe: {0}".format(f))
 
-        sinter_process_log = open('%s_sinter_log.txt' % app, 'a')
-        sinter_process_log.write('starting consumer\n')
+        sinter_process_log = open("%s_sinter_log.txt" % app, "a")
+        sinter_process_log.write("starting consumer\n")
         proc = subprocess.Popen(
             [f],
             stdout=sinter_process_log,
@@ -387,21 +387,21 @@ class TurbineConfiguration:
         return cid
 
     def consumerCountZero(self, nodeName):
-        '''
+        """
         Set the consumer use counter to 0
-        '''
+        """
         self.consumerCountDict[nodeName] = 0
 
     def consumerCount(self, nodeName):
-        '''
+        """
         Get the number of times a consumer has been used
-        '''
+        """
         return self.consumerCountDict.get(nodeName, 0)
 
     def consumerCountInc(self, nodeName):
-        '''
+        """
         Add incriment consumer count
-        '''
+        """
         count = self.consumerCountDict.get(nodeName, None)
         if count == None:
             self.consumerCountZero(nodeName)
@@ -410,9 +410,9 @@ class TurbineConfiguration:
         return self.consumerCountDict[nodeName]
 
     def checkConsumer(self, name):
-        '''
+        """
         Check that the consumer is still running
-        '''
+        """
         ci = self.consumers.get(name, None)
         if ci is None:
             return None
@@ -428,9 +428,9 @@ class TurbineConfiguration:
         return None
 
     def stopConsumer(self, name, maxWait=150):
-        '''
+        """
         Stop the consumer for node name
-        '''
+        """
         ci = self.consumers.get(name, None)
         if ci is not None and ci.location == 1:
             return
@@ -473,9 +473,9 @@ class TurbineConfiguration:
             pass
 
     def stopAllConsumers(self):
-        '''
+        """
         Stop all the consumers that were started by FOQUS
-        '''
+        """
         names = list(self.consumers.keys())
         for name in names:
             self.stopConsumer(name)
@@ -483,37 +483,37 @@ class TurbineConfiguration:
         _pm.clean()
 
     def reloadTurbine(self):
-        '''
+        """
         Turbine Client tends to store some stuff like results of
         authentication and it is hard to change the password and
         try again this reloads turbine so it doesn't store anything
         and you can change the configuration.
-        '''
+        """
         imp.reload(turbine.commands)
         # make sure turbine doesn't change my log settings by telling it
         # the log settings have already been done and not to change them
         turbine.commands._setup_logging.done = True
 
     def checkAddress(self):
-        '''
+        """
         Catch some things to try to make sure the turbine address is
         in the right form I don't expect and ending / or \ so remove
         those.  Maybe could add more checks later
-        '''
-        if self.address[-1] == '/':
+        """
+        if self.address[-1] == "/":
             self.address = self.address[:-1]
-        elif self.address[-1] == '\\':
+        elif self.address[-1] == "\\":
             self.address = self.address[:-1]
 
     def retryFunction(self, maxTries, waitTime, waitPow, function, *args, **kwargs):
-        '''
+        """
         This retries a function maxTries times.  You can ether check
         in even intervals, increase the wait linearly or add a power
         the formula is (waitTime)*(interval number)**(waitPower)
 
         function is the function pointer and args and kwargs are the
         ordered and keyword arguments for the function.
-        '''
+        """
         # Only retry on errors I expect could possibly resolve with time
         # (could be caused by a temprary network/sever problem)
         retryList = self.retryErrors  # actually I gave up on this, there
@@ -541,18 +541,18 @@ class TurbineConfiguration:
         raise e
 
     def getFile(self):
-        '''
+        """
         Return the path to the turbine
         configuration file for this profile.
-        '''
+        """
         return self.path
 
     def readConfigPeek(self, path):
-        '''
+        """
         Peek at the address in a Turbine config file, without
         using the information to update the current Turbine config
         information.
-        '''
+        """
         config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:
@@ -564,13 +564,13 @@ class TurbineConfiguration:
         return address
 
     def readConfig(self, address=True, logging=False):
-        '''
+        """
         FOQUS will write the turbine configuration files.  The user
         name and password are not stored though so this can be used
         to read them from a previously stored file.  Setting address
         to True will also try to read the address from the previous
         configuration file.
-        '''
+        """
         path = self.getFile()
         config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
@@ -584,21 +584,21 @@ class TurbineConfiguration:
                 # args = config.get("Job",  "url")
                 args = config.get("Application", "url")
                 _log.debug('turbine configuration application url="%s"', args)
-                assert args != '', 'Missing Application URL'
-                args = args.split('/')
+                assert args != "", "Missing Application URL"
+                args = args.split("/")
                 self.address = None
                 while self.address is None:
                     item = args.pop()
-                    if item.lower() == 'application':
-                        self.address = '/'.join(args)
+                    if item.lower() == "application":
+                        self.address = "/".join(args)
                         break
                 _log.debug('turbine configuration url="%s"', self.address)
             self.checkAddress()
-            if self.address[-4:] in ['Lite', 'lite', 'LITE']:
+            if self.address[-4:] in ["Lite", "lite", "LITE"]:
                 self.turbVer = "Lite"
             else:
                 self.turbVer = "Remote"
-            if self.address.startswith('http://'):
+            if self.address.startswith("http://"):
                 # as username and password here will stop foqus dead
                 # due to a sys.exit() in turbine client so make sure
                 # that doesn't happen
@@ -610,23 +610,23 @@ class TurbineConfiguration:
             raise TurbineInterfaceEx(code=201, msg=path + " " + str(e))
 
     def writeConfig(self, overwrite=True):
-        '''
+        """
         Write the Turbine configuration file
-        '''
+        """
         path = self.getFile()
         if overwrite == True or not os.path.isfile(path):
             try:
                 config = self.turbineConfigParse()
-                with open(path, 'w') as configfile:
+                with open(path, "w") as configfile:
                     config.write(configfile)
             except Exception as e:
                 raise TurbineInterfaceEx(code=202, msg=" ".join([path, str(e)]))
 
     def turbineConfigParse(self):
-        '''
+        """
         Create a turbine configuration parse object
         (this can be used to write the configuration file)
-        '''
+        """
         self.checkAddress()
         config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
@@ -644,7 +644,7 @@ class TurbineConfiguration:
         config.set("Application", "url", address + "/application/")
         config.set("Authentication", "username", self.user)
         config.set("Authentication", "password", self.pwd)
-        if self.turbVer == 'Remote':
+        if self.turbVer == "Remote":
             config.set("Simulation", "SignedUrl", "True")
         if self.notification:
             config.add_section("Notification")
@@ -652,15 +652,15 @@ class TurbineConfiguration:
         return config
 
     def getApplicationList(self):
-        '''
+        """
         This function gives a list of applications supported
         by the Turbine gateway
-        '''
+        """
         try:
             l = turbine.commands.turbine_application_script.main_list(
                 [self.getFile()], None
             )
-            l = [i['Name'] for i in l]
+            l = [i["Name"] for i in l]
             return l
         except Exception as e:
             raise TurbineInterfaceEx(
@@ -668,15 +668,15 @@ class TurbineConfiguration:
             )
 
     def getSimulationList(self):
-        '''
+        """
         This function provides a list of simulation names for
         simulations stored on Turbine
-        '''
+        """
         try:
             l = turbine.commands.turbine_simulation_script.main_list(
                 [self.getFile()], None
             )
-            l = [i['Name'] for i in l]
+            l = [i["Name"] for i in l]
             return l
         except Exception as e:
             _log.exception("Error getting list of simulation from Turbine")
@@ -688,9 +688,9 @@ class TurbineConfiguration:
             )
 
     def deleteSimulation(self, simName):
-        '''
+        """
         This function deletes a simulation
-        '''
+        """
         try:
             l = turbine.commands.turbine_simulation_script.main_delete(
                 [simName, self.getFile()], None
@@ -722,10 +722,10 @@ class TurbineConfiguration:
             )
 
     def getSinterConfig(self, simName):
-        '''
+        """
         This function gets the SimSinter configuration file for a
         simulation named simName
-        '''
+        """
         r = self.getSimResource(simName, resource="configuration")
         try:
             config = json.loads(r, object_pairs_hook=OrderedDict)
@@ -741,10 +741,10 @@ class TurbineConfiguration:
             )
 
     def getSessionList(self):
-        '''
+        """
         This function provides a list of Turbine session ids
         already created on the gateway
-        '''
+        """
         try:
             l = turbine.commands.turbine_session_script.main_list(
                 [self.getFile()], None
@@ -759,9 +759,9 @@ class TurbineConfiguration:
             )
 
     def getSessionStatus(self, sid):
-        '''
+        """
         This function gets the status of jobs in a session
-        '''
+        """
         try:
             l = turbine.commands.turbine_session_script.main_jobs_status(
                 [sid, self.getFile()], None
@@ -776,9 +776,9 @@ class TurbineConfiguration:
             )
 
     def createSession(self):
-        '''
+        """
         Create a new turbine session ID
-        '''
+        """
         try:
             return turbine.commands.turbine_session_script.create_session(
                 self.turbineConfigParse()
@@ -793,9 +793,9 @@ class TurbineConfiguration:
             )
 
     def createJobsInSession(self, sid, inputData):
-        '''
+        """
         Create jobs on turbine.
-        '''
+        """
         try:
             return json.loads(
                 turbine.commands.turbine_session_script.create_jobs(
@@ -834,11 +834,11 @@ class TurbineConfiguration:
         return sid in l
 
     def killSession(self, sid):
-        '''
+        """
         Terminate or cancel all jobs in a particular session.
         This is useful if you want to kill a whole set of
         simulations
-        '''
+        """
         if sid == "" or not sid:
             return
         try:
@@ -855,10 +855,10 @@ class TurbineConfiguration:
             )
 
     def getCompletedJobGen(self, sid):
-        '''
+        """
         Get a generator that returns jobs that have completed since
         last call.
-        '''
+        """
         postAddress = "".join([self.address, "/session/", str(sid), "/result"])
         try:
             gid = turbine.commands.post_page_by_url(
@@ -876,9 +876,9 @@ class TurbineConfiguration:
         return json.loads(gid)
 
     def getCompletedJobPage(self, sid, gen):
-        '''
+        """
         Make and return a page with finished jobs since last call
-        '''
+        """
         postAddress = "".join(
             [self.address, "/session/", str(sid), "/result/", str(gen)]
         )
@@ -924,9 +924,9 @@ class TurbineConfiguration:
         return json.loads(page)
 
     def getCompletedJobs(self, sid, gen, page, maxJobs=2000):
-        '''
+        """
         Make and return a page with finished jobs since last call
-        '''
+        """
         readAddress = "/".join(
             [self.address, "session", str(sid), "result", str(gen), str(page)]
         )
@@ -960,8 +960,8 @@ class TurbineConfiguration:
         try:
             turbine.commands.delete_page(
                 self.turbineConfigParse(),
-                'Session',
-                subresource="/".join([sid, 'result', gen]),
+                "Session",
+                subresource="/".join([sid, "result", gen]),
             )
         except:
             # I guess I don't really care too much if this fails, but
@@ -971,13 +971,13 @@ class TurbineConfiguration:
             _log.exception("Failed to del generator {} ses {}".format(gen, sid))
 
     def getJobStatus(self, jobID, verbose=False, suppressLog=False):
-        '''
+        """
         Get the status of the job given by jobID
-        '''
+        """
         if verbose:
-            args = ['--verbose', '-j', str(jobID), self.getFile()]
+            args = ["--verbose", "-j", str(jobID), self.getFile()]
         else:
-            args = ['-j', str(jobID), self.getFile()]
+            args = ["-j", str(jobID), self.getFile()]
         try:
             return turbine.commands.turbine_job_script.main(args, None)
         except Exception as e:
@@ -1021,7 +1021,7 @@ class TurbineConfiguration:
         # Check job state (not using this now but may soon)
         if not state:
             res = self.getJobStatus(jobID)
-            state = res['State']
+            state = res["State"]
         # Now we kill the job with a method that depends on the state.
         try:
             turbine.commands.post_page_by_url(
@@ -1051,7 +1051,7 @@ class TurbineConfiguration:
         app=None,
         checkConsumer=True,
     ):
-        '''
+        """
         This function monitors a job submitted to Turbine and
         returns the result when the job is finished.  If a job takes
         too long it is terminated and a simulation error is returned.
@@ -1071,7 +1071,7 @@ class TurbineConfiguration:
                      checking a jobs status in seconds
         sotpFlag: a flag that when set means to stop monitoring and
                   terminate the job
-        '''
+        """
         # if exception is thrown I'll still stick
         # the results here if possible still may be useful
         res = None
@@ -1092,9 +1092,9 @@ class TurbineConfiguration:
         success = False
         comProb = False
         res = None
-        state = 'submit'  # initial state of the job
-        failedStates = ['error', 'expired', 'cancel', 'terminate']
-        succesStates = ['success', 'warning']
+        state = "submit"  # initial state of the job
+        failedStates = ["error", "expired", "cancel", "terminate"]
+        succesStates = ["success", "warning"]
         while True:  # start status checking loop
             # wait checkInt seconds wait before checking first time,
             # probably started the job, and it won't finish instantly
@@ -1123,17 +1123,17 @@ class TurbineConfiguration:
                 state = res.get("State", None)
                 if (
                     not allowWarnings
-                    and state == 'success'
+                    and state == "success"
                     and res.get("Status", 1) == 2
                 ):
-                    state = 'error'
+                    state = "error"
                 failure = state in failedStates
                 success = state in succesStates
                 # Check for the run start time instead of the state just
                 # in case job started and completed between checks
-                if not setupStart and state == 'setup':
+                if not setupStart and state == "setup":
                     setupStart = time.process_time()
-                if not runStart and res.get('Running', False):
+                if not runStart and res.get("Running", False):
                     runStart = time.process_time()
                     _log.info("Job " + str(jobID) + " Started Running")
             except TurbineInterfaceEx as e:
@@ -1255,7 +1255,7 @@ class TurbineConfiguration:
             modelFile = sinterConfData.get("spreadsheet", None)
         elif sinterConfData.get("Type", None) == "FOQUS_Session":
             resourceType = None
-            app = 'foqus'
+            app = "foqus"
             modelFile = (None, app)
         # WHY the undefined-variable errors reported by pylint look like true positive
         # this suggests that the code branches where the underfined variables are used are not run
@@ -1265,27 +1265,29 @@ class TurbineConfiguration:
             # simSinter development
             raise TurbineInterfaceEx(
                 # TODO pylint: disable=undefined-variable
-                code=304, msg="Path: " + sinterConfigPath
+                code=304,
+                msg="Path: " + sinterConfigPath,
             )
         if isinstance(modelFile, dict):
-            modelFile = modelFile.get('file', None)
+            modelFile = modelFile.get("file", None)
             if modelFile is None:
                 # No model file found
                 raise TurbineInterfaceEx(
                     # TODO pylint: disable=undefined-variable
-                    code=304, msg="Path: " + sinterConfigPath
+                    code=304,
+                    msg="Path: " + sinterConfigPath,
                 )
         return modelFile
 
     def sinterConfigGetResource(self, sinterConfigPath, checkExists=True):
-        '''
+        """
         Get the simulation file and resource type by reading sinter
         config file.
-        '''
+        """
         other = None
         if not os.path.isfile(sinterConfigPath):
             raise TurbineInterfaceEx(code=302, msg="Path: " + sinterConfigPath)
-        with open(sinterConfigPath, 'r') as f:
+        with open(sinterConfigPath, "r") as f:
             try:
                 sinterConfData = json.load(f)
             except Exception as e:
@@ -1315,13 +1317,13 @@ class TurbineConfiguration:
         return (modelFile, resourceType, app, other)
 
     def updateResource(self, simName, resourceName, fileName):
-        '''
+        """
         Update a resource on turbine:
         args:
             simName: Name of simulation to update resource of
             resourceName: the resource to update
             fileName: the file to update resource with
-        '''
+        """
         simList = self.getSimulationList()
         if not simName in simList:
             raise TurbineInterfaceEx(code=310, msg=simName)
@@ -1341,7 +1343,7 @@ class TurbineConfiguration:
     def uploadSimulation(
         self, simName, sinterConfigPath, update=True, guid=None, otherResources=[]
     ):
-        '''
+        """
         This function uploads a new simulation to Turbine.  The name
         of the simulation files are set in the sinter configuration
         file.  It is also assumed that the simulation files are in
@@ -1351,7 +1353,7 @@ class TurbineConfiguration:
         exists error.
 
         guid -- optional value to set Simulation.Id
-        '''
+        """
         # Check that the simulation name only contains:
         # letters, numbers, and _
         name = simName
@@ -1421,9 +1423,9 @@ class TurbineConfiguration:
         # upload model file
         try:
             if modelFile != None:
-                if resourceType == 'aspenfile':
+                if resourceType == "aspenfile":
                     resourceType = os.path.split(modelFile)[-1]
-                    _log.debug('resourceType aspenfile specified as %s' % resourceType)
+                    _log.debug("resourceType aspenfile specified as %s" % resourceType)
                 turbine.commands.turbine_simulation_script.main_update(
                     ["-r", resourceType, name, modelFile, self.getFile()]
                 )
@@ -1458,32 +1460,32 @@ class TurbineConfiguration:
         if reloadTurbine:
             self.reloadTurbine()
         cp = self.turbineConfigParse()
-        username = cp.get("Authentication", 'username', raw=True)
-        password = cp.get("Authentication", 'password', raw=True)
+        username = cp.get("Authentication", "username", raw=True)
+        password = cp.get("Authentication", "password", raw=True)
         errList = []
         # Check that user name and password are filled in
         # for TurbineLite I Just use None, None you don't have to enter
         # anything, so for TurbineLite this should pass
-        if not isinstance(username, str) or username == '':
-            if not self.address.startswith('http://'):
-                errList.append('empty username')
-        if not isinstance(password, str) or password == '':
-            if not self.address.startswith('http://'):
-                errList.append('empty password')
+        if not isinstance(username, str) or username == "":
+            if not self.address.startswith("http://"):
+                errList.append("empty username")
+        if not isinstance(password, str) or password == "":
+            if not self.address.startswith("http://"):
+                errList.append("empty password")
         n = None
         # Check URL Formatting to make sure it is as expected
-        sections = ['Application', 'Session', 'Job', 'Simulation', 'Consumer']
+        sections = ["Application", "Session", "Job", "Simulation", "Consumer"]
         for section in sections:
-            url = cp.get(section, 'url')
+            url = cp.get(section, "url")
             scheme, netloc, path, params, query, fragment = urllib.parse.urlparse(url)
-            if scheme != 'https' and scheme != 'http':
-                errList.append('section %s URL should be https or http' % section)
-            if params != '':
-                errList.append('expecting empty params in url %s' % url)
-            if query != '':
-                errList.append('expecting empty query in url %s' % url)
-            if fragment != '':
-                errList.append('expecting empty fragment in url %s' % url)
+            if scheme != "https" and scheme != "http":
+                errList.append("section %s URL should be https or http" % section)
+            if params != "":
+                errList.append("expecting empty params in url %s" % url)
+            if query != "":
+                errList.append("expecting empty query in url %s" % url)
+            if fragment != "":
+                errList.append("expecting empty fragment in url %s" % url)
             if n == None:
                 n = netloc
             if n != netloc:

@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-'''
+"""
 Includes all functionality to read data from file, maintain Psuade location,
 and make local runs
 
@@ -58,7 +58,7 @@ Methods:
     getRunData():
         Returns the results of the run as a SampleData object
 
-'''
+"""
 
 import sys
 import os
@@ -90,7 +90,7 @@ from turbine.commands import _open_config
 
 class LocalExecutionModule(object):
 
-    dname = os.getcwd() + os.path.sep + 'LocalExecutionModule_files'
+    dname = os.getcwd() + os.path.sep + "LocalExecutionModule_files"
 
     runStarted = False
     runComplete = False
@@ -110,7 +110,7 @@ class LocalExecutionModule(object):
 
     @staticmethod
     def readSampleFromPsuadeFile(fileName, returnModelOnly=False):
-        f = open(fileName, 'r')
+        f = open(fileName, "r")
         lines = f.readlines()
         f.close()
 
@@ -149,17 +149,17 @@ class LocalExecutionModule(object):
         inputDistParam2s = []
 
         for line in lines:
-            if line[0] == '#' and 'NAMESHAVENODES' in line:
+            if line[0] == "#" and "NAMESHAVENODES" in line:
                 namesIncludeNodes = True
-            if len(line) > 0 and line[0] != '#':  # Not comment
-                if line.startswith('PSUADE_IO'):
+            if len(line) > 0 and line[0] != "#":  # Not comment
+                if line.startswith("PSUADE_IO"):
                     readData = not readData
                     hasSampleData = True
-                elif line.startswith('INPUT'):
+                elif line.startswith("INPUT"):
                     readInputs = True
-                elif line.startswith('OUTPUT'):
+                elif line.startswith("OUTPUT"):
                     readOutputs = True
-                elif line.startswith('END'):
+                elif line.startswith("END"):
                     if readInputs:
                         readInputs = False
                     elif readOutputs:
@@ -179,9 +179,7 @@ class LocalExecutionModule(object):
                         sampleNum = int(nums[0]) - 1
                         # runState at this point should still be None, so this would cause a runtime error
                         # TODO pylint: disable=unsupported-assignment-operation
-                        runState[sampleNum] = bool(
-                            int(nums[1])
-                        )
+                        runState[sampleNum] = bool(int(nums[1]))
                         # TODO pylint: enable=unsupported-assignment-operation
                         readSampleData = True
                         numValuesRead = 0
@@ -190,34 +188,30 @@ class LocalExecutionModule(object):
                     else:
                         if numValuesRead < numInputs:  # Input value
                             if line.strip() in [
-                                '9.9999999999999997e+34',
-                                '9.9999999999999997e+034',
+                                "9.9999999999999997e+34",
+                                "9.9999999999999997e+034",
                             ]:
-                                line = 'nan'
+                                line = "nan"
                             sampleInputs[numValuesRead] = float(line)
                             numValuesRead = numValuesRead + 1
                         else:  # Output value
                             if line.strip() in [
-                                '9.9999999999999997e+34',
-                                '9.9999999999999997e+034',
+                                "9.9999999999999997e+34",
+                                "9.9999999999999997e+034",
                             ]:
-                                line = 'nan'
+                                line = "nan"
                             sampleOutputs[numValuesRead - numInputs] = float(line)
                             numValuesRead = numValuesRead + 1
                             if numValuesRead - numInputs == numOutputs:
                                 # pylint: disable=unsupported-assignment-operation
-                                inputData[
-                                    sampleNum
-                                ] = sampleInputs
-                                outputData[
-                                    sampleNum
-                                ] = sampleOutputs
+                                inputData[sampleNum] = sampleInputs
+                                outputData[sampleNum] = sampleOutputs
                                 # pylint: enable=unsupported-assignment-operation
                                 readSampleData = False
                 elif readInputs:  # Read inputs
                     stripped = line.strip()
                     values = stripped.split()
-                    if values[0] == 'variable':  # Variable name min max
+                    if values[0] == "variable":  # Variable name min max
                         inputNames = inputNames + [values[2]]
                         inputTypes = inputTypes + [Model.VARIABLE]
                         inputMins = inputMins + [float(values[4])]
@@ -225,32 +219,28 @@ class LocalExecutionModule(object):
                         inputDefaults = inputDefaults + [
                             (float(values[4]) + float(values[5])) / 2
                         ]
-                        inputDists = inputDists + ['U']
+                        inputDists = inputDists + ["U"]
                         inputDistParam1s = inputDistParam1s + [None]
                         inputDistParam2s = inputDistParam2s + [None]
-                    elif values[0] == 'fixed':  # Fixed variable
+                    elif values[0] == "fixed":  # Fixed variable
                         inputNames = inputNames + [values[2]]
                         inputTypes = inputTypes + [Model.FIXED]
                         fixedVal = float(values[4])
                         inputMins = inputMins + [fixedVal]
                         inputMaxs = inputMaxs + [fixedVal]
                         inputDefaults = inputDefaults + [fixedVal]
-                        inputDists = inputDists + ['U']
+                        inputDists = inputDists + ["U"]
                         inputDistParam1s = inputDistParam1s + [None]
                         inputDistParam2s = inputDistParam2s + [None]
                         # Insert input values
                         if hasSampleData:
                             for i in range(len(inputData)):
                                 # pylint: disable=unsubscriptable-object
-                                inputRow = inputData[
-                                    i
-                                ]  
+                                inputRow = inputData[i]
                                 inputRow.insert(len(inputNames) - 1, fixedVal)
                                 # pylint: disable=unsupported-assignment-operation
-                                inputData[
-                                    i
-                                ] = inputRow
-                    elif values[0] == 'PDF':  # Distribution
+                                inputData[i] = inputRow
+                    elif values[0] == "PDF":  # Distribution
                         index = int(values[1]) - 1
                         inputDists[index] = values[2]
                         if len(values) > 3:
@@ -265,21 +255,21 @@ class LocalExecutionModule(object):
 
                 elif readOutputs:  # Read outputs
                     stripped = line.strip()  # Variable name
-                    if stripped.startswith('variable'):
+                    if stripped.startswith("variable"):
                         values = stripped.split()
                         outputNames = outputNames + [values[2]]
                 else:
                     stripped = line.strip()
                     values = stripped.split()
-                    if values[0] == 'sampling':  # Sampling method
+                    if values[0] == "sampling":  # Sampling method
                         sampleMethod = values[2]
-                    elif values[0] == 'driver':  # Driver
-                        if values[2] == 'NONE':
+                    elif values[0] == "driver":  # Driver
+                        if values[2] == "NONE":
                             values[2] = None
                         driverName = values[2]
                         if (
                             values[2] is not None
-                            and values[2] != 'PSUADE_LOCAL'
+                            and values[2] != "PSUADE_LOCAL"
                             and not os.path.exists(driverName)
                         ):
                             # Check if driver exists in same directory as this file
@@ -287,13 +277,13 @@ class LocalExecutionModule(object):
                                 driverName = os.path.join(path, driverName)
                             else:  # Don't set the name because the file does not exist
                                 driverName = None
-                    elif values[0] == 'opt_driver':  # Optimization driver
-                        if values[2] == 'NONE':
+                    elif values[0] == "opt_driver":  # Optimization driver
+                        if values[2] == "NONE":
                             values[2] = None
                         optDriverName = values[2]
                         if (
                             values[2] is not None
-                            and values[2] != 'PSUADE_LOCAL'
+                            and values[2] != "PSUADE_LOCAL"
                             and not os.path.exists(optDriverName)
                         ):
                             # Check if driver exists in same directory as this file
@@ -301,8 +291,8 @@ class LocalExecutionModule(object):
                                 optDriverName = os.path.join(path, optDriverName)
                             else:  # Don't set the name because the file does not exist
                                 optDriverName = None
-                    elif values[0] == 'aux_opt_driver':  # Batch simulation driver
-                        if values[2] == 'NONE':
+                    elif values[0] == "aux_opt_driver":  # Batch simulation driver
+                        if values[2] == "NONE":
                             values[2] = None
                         auxDriverName = values[2]
                         if values[2] is not None and not os.path.exists(auxDriverName):
@@ -311,13 +301,13 @@ class LocalExecutionModule(object):
                                 auxDriverName = os.path.join(path, auxDriverName)
                             else:  # Don't set the name because the file does not exist
                                 auxDriverName = None
-                    elif values[0] == 'num_samples':  # Number of samples
+                    elif values[0] == "num_samples":  # Number of samples
                         numSamples = int(values[2])
-                    elif values[0] == 'analyzer':  # Analysis values
-                        if values[1] == 'rstype':
+                    elif values[0] == "analyzer":  # Analysis values
+                        if values[1] == "rstype":
                             sampleType = values[3]
                             sampleType = ResponseSurfaces.getEnumValue(sampleType)
-                        elif values[1] == 'rs_legendre_order':
+                        elif values[1] == "rs_legendre_order":
                             legendreOrder = int(values[3])
 
         model.setInputNames(inputNames)
@@ -363,7 +353,7 @@ class LocalExecutionModule(object):
             except ValueError:
                 return False
 
-        with open(fileName, 'rt') as csvfile:
+        with open(fileName, "rt") as csvfile:
             # Detect dialect of csv file
             dialect = csv.Sniffer().sniff(csvfile.readline())
             csvfile.seek(0)
@@ -373,7 +363,7 @@ class LocalExecutionModule(object):
             headers = next(reader)
             try:
                 list(map(float, headers))
-                headers = [''] * len(headers)
+                headers = [""] * len(headers)
                 csvfile.seek(0)
             except:  # Headers exist
                 pass
@@ -384,15 +374,15 @@ class LocalExecutionModule(object):
                 if not usePyside or QtWidgets.QApplication.instance() is None:
                     numInputs = int(
                         input(
-                            'How many of the columns are inputs? \nInputs must be on the left.'
+                            "How many of the columns are inputs? \nInputs must be on the left."
                         )
                     )
                 else:
                     numInputs, ok = QtWidgets.QInputDialog.getInt(
                         None,
-                        'Number of inputs',
-                        'How many of the columns are inputs? \n'
-                        'Inputs must be on the left.',
+                        "Number of inputs",
+                        "How many of the columns are inputs? \n"
+                        "Inputs must be on the left.",
                         value=len(headers),
                         min=1,
                         max=len(headers),
@@ -404,16 +394,16 @@ class LocalExecutionModule(object):
             outputVals = []
             runState = []
             for row in reader:
-                while row[-1] == '':
+                while row[-1] == "":
                     row.pop()
-                row = [float(v) if is_number(v) else 'nan' for v in row]
+                row = [float(v) if is_number(v) else "nan" for v in row]
 
                 if not numInputs and not askForNumInputs:
                     numInputs = len(row)
                 inputVals.append(row[:numInputs])
                 outputVals.append(row[numInputs:])
                 if len(headers) > len(row):
-                    outputVals += [float('nan')] * (len(headers) - len(row))
+                    outputVals += [float("nan")] * (len(headers) - len(row))
                     outputVals.append(row)
                     runState.append(0)
                 else:
@@ -469,7 +459,7 @@ class LocalExecutionModule(object):
         data.setNumSamples(len(inputVals))
         data.setSampleMethod(SamplingMethods.MC)
         data.setInputDistributions(
-            ['U'] * numInputs, [None] * numInputs, [None] * numInputs
+            ["U"] * numInputs, [None] * numInputs, [None] * numInputs
         )
         data.setInputData(inputVals)
         if outputVals.size > 0:
@@ -480,7 +470,7 @@ class LocalExecutionModule(object):
     @staticmethod
     def readDataFromSimpleFile(fileName, hasColumnNumbers=True):
 
-        f = open(fileName, 'r')
+        f = open(fileName, "r")
         lines = f.readlines()
         f.close()
 
@@ -488,14 +478,14 @@ class LocalExecutionModule(object):
         lines = [line for line in lines if len(line.strip()) > 0]
 
         # ignore text preceded by '#'
-        c = '#'
+        c = "#"
         lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
 
         # delete lines preceded by 'PSUADE_BEGIN' and 'PSUADE_END'
         lines = [
             line
             for line in lines
-            if not line.startswith(('PSUADE_BEGIN', 'PSUADE_END'))
+            if not line.startswith(("PSUADE_BEGIN", "PSUADE_END"))
         ]
         nlines = len(lines)
 
@@ -547,23 +537,23 @@ class LocalExecutionModule(object):
         else:
             outputData = [[] for i in range(numSamples)]
 
-        f = open(fileName, 'w')
-        f.write(' '.join(map(str, [numSamples, numInputs, numOutputs])))
-        f.write('\n')
+        f = open(fileName, "w")
+        f.write(" ".join(map(str, [numSamples, numInputs, numOutputs])))
+        f.write("\n")
         for i, (inRow, outRow) in enumerate(zip(inputData, outputData), 1):
             if rowLabels:
-                f.write(' '.join(map(str, [i] + inRow + outRow)))
-                f.write('\n')
+                f.write(" ".join(map(str, [i] + inRow + outRow)))
+                f.write("\n")
             else:
-                f.write(' '.join(map(str, inRow + outRow)))
-                f.write('\n')
+                f.write(" ".join(map(str, inRow + outRow)))
+                f.write("\n")
 
         f.close()
 
     @staticmethod
     def readMCMCFile(fileName):
 
-        f = open(fileName, 'r')
+        f = open(fileName, "r")
         lines = f.readlines()
         f.close()
 
@@ -571,14 +561,14 @@ class LocalExecutionModule(object):
         lines = [line for line in lines if len(line.strip()) > 0]
 
         # ignore text preceded by '#'
-        c = '#'
+        c = "#"
         lines = [line.strip().split(c)[0] for line in lines if not line.startswith(c)]
 
         # delete lines preceded by 'PSUADE_BEGIN' and 'PSUADE_END'
         lines = [
             line
             for line in lines
-            if not line.startswith(('PSUADE_BEGIN', 'PSUADE_END'))
+            if not line.startswith(("PSUADE_BEGIN", "PSUADE_END"))
         ]
         nlines = len(lines)
 
@@ -610,26 +600,26 @@ class LocalExecutionModule(object):
 
     @staticmethod
     def saveMCMCFile(fname, numOutputs, numDesign, designIDs, data):
-        f = open(fname, 'w')
-        f.write('%d %d %d' % (len(data), numOutputs, numDesign))
+        f = open(fname, "w")
+        f.write("%d %d %d" % (len(data), numOutputs, numDesign))
         for ID in designIDs:
-            f.write(' %d' % ID)
-        f.write('\n')
+            f.write(" %d" % ID)
+        f.write("\n")
 
         for i, row in enumerate(data):
-            f.write('%d' % (i + 1))
+            f.write("%d" % (i + 1))
             for value in row:
-                f.write(' %g' % value)
-            f.write('\n')
+                f.write(" %g" % value)
+            f.write("\n")
         f.close()
 
     @staticmethod
     def setPsuadePath(forceDialog=False):
         # Returns empty string if cancelled
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             # default location for psuade
             psuadeLoc = (
-                'C:/Program Files (x86)/psuade_project %s/bin/psuade.exe'
+                "C:/Program Files (x86)/psuade_project %s/bin/psuade.exe"
                 % LocalExecutionModule.psuadeVersion
             )
             # on Windows, if psuade is not at its default location, prompt user
@@ -637,10 +627,10 @@ class LocalExecutionModule(object):
                 if not forceDialog:
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setText(
-                        'Location of PSUADE has not been set! Browse to its location on the next screen.'
+                        "Location of PSUADE has not been set! Browse to its location on the next screen."
                     )
                     msgBox.exec_()
-                location = ''
+                location = ""
                 if os.path.exists(psuadeLoc):
                     location = psuadeLoc
                 psuadeLoc, _filterName = QtWidgets.QFileDialog.getOpenFileName(
@@ -651,7 +641,7 @@ class LocalExecutionModule(object):
                 if not compatible:
                     msgBox = QtWidgets.QMessageBox()
                     msgBox.setText(
-                        'PSUADE version must be %s or later! Browse to its location on the next screen.'
+                        "PSUADE version must be %s or later! Browse to its location on the next screen."
                         % LocalExecutionModule.psuadeVersion
                     )
                     msgBox.exec_()
@@ -675,7 +665,7 @@ class LocalExecutionModule(object):
             if not forceDialog:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setText(
-                    'Location of PSUADE has not been set! Browse to its location on the next screen.'
+                    "Location of PSUADE has not been set! Browse to its location on the next screen."
                 )
                 msgBox.exec_()
 
@@ -688,7 +678,7 @@ class LocalExecutionModule(object):
                 if isinstance(psuadeLoc, list):
                     psuadeLoc = psuadeLoc[0]
             else:
-                psuadeLoc = ''
+                psuadeLoc = ""
             if len(psuadeLoc) > 0:
                 _psuadeFile = LocalExecutionModule.writePsuadePath(psuadeLoc)
                 if LocalExecutionModule.session is not None:
@@ -704,22 +694,22 @@ class LocalExecutionModule(object):
                 index = self.sourceModel().index(sourceRow, 0, sourceParent)
                 if self.sourceModel().isDir(index):
                     return True
-                if 'psuade' not in self.sourceModel().fileName(index).lower():
+                if "psuade" not in self.sourceModel().fileName(index).lower():
                     return False
                 fileInfo = self.sourceModel().fileInfo(index)
                 return fileInfo.isExecutable() | fileInfo.isSymLink()
 
     @staticmethod
     def writePsuadePath(psuadeLoc):
-        psuadeFile = os.getcwd() + os.path.sep + 'PSUADEPATH'
-        f = open(psuadeFile, 'w')
-        f.write('%s' % psuadeLoc)
+        psuadeFile = os.getcwd() + os.path.sep + "PSUADEPATH"
+        f = open(psuadeFile, "w")
+        f.write("%s" % psuadeLoc)
         f.close()
         return psuadeFile
 
     @staticmethod
     def getPsuadePath(showErrorIfNotFound=True):
-        fileName = os.getcwd() + os.path.sep + 'PSUADEPATH'
+        fileName = os.getcwd() + os.path.sep + "PSUADEPATH"
         psuadeLoc = None
         if (
             LocalExecutionModule.session is None
@@ -728,8 +718,8 @@ class LocalExecutionModule(object):
             if not usePyside or QtWidgets.QApplication.instance() is None:
                 if showErrorIfNotFound:
                     raise IOError(
-                        'Location of PSUADE has not been set! '
-                        + 'Please put the path into the file %s' % fileName
+                        "Location of PSUADE has not been set! "
+                        + "Please put the path into the file %s" % fileName
                     )
             else:
                 if showErrorIfNotFound:
@@ -740,15 +730,15 @@ class LocalExecutionModule(object):
             if LocalExecutionModule.session:
                 location = LocalExecutionModule.session.foqusSettings.psuade_path
             else:
-                f = open(fileName, 'r')
+                f = open(fileName, "r")
                 location = f.readline().rstrip()
                 f.close()
             if not os.path.exists(location):
                 if not usePyside or QtWidgets.QApplication.instance() is None:
                     if showErrorIfNotFound:
                         raise IOError(
-                            'Location of PSUADE incorrect! '
-                            + 'Please put the correct path into the file %s' % fileName
+                            "Location of PSUADE incorrect! "
+                            + "Please put the correct path into the file %s" % fileName
                         )
                 else:
                     if showErrorIfNotFound:
@@ -761,8 +751,8 @@ class LocalExecutionModule(object):
                     if not usePyside or QtWidgets.QApplication.instance() is None:
                         if showErrorIfNotFound:
                             raise IOError(
-                                'Version of PSUADE must be %s or higher!\nPlease put the correct path into '
-                                'the file %s'
+                                "Version of PSUADE must be %s or higher!\nPlease put the correct path into "
+                                "the file %s"
                                 % (LocalExecutionModule.psuadeVersion, fileName)
                             )
                     else:
@@ -777,17 +767,17 @@ class LocalExecutionModule(object):
             if usePyside and showErrorIfNotFound:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setText(
-                    'Location of PSUADE has not been set! You will need to set it to continue.'
+                    "Location of PSUADE has not been set! You will need to set it to continue."
                 )
                 msgBox.exec_()
             else:
                 raise IOError(
-                    'Location of PSUADE has not been set! You will need to set it to continue.\nPlease put '
-                    'the correct path into the file %s' % fileName
+                    "Location of PSUADE has not been set! You will need to set it to continue.\nPlease put "
+                    "the correct path into the file %s" % fileName
                 )
             return None
 
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             import win32api
 
             psuadeLoc = win32api.GetShortPathName(psuadeLoc)
@@ -796,13 +786,13 @@ class LocalExecutionModule(object):
     @staticmethod
     def getPsuadeExeCompatibility(psuadePath):
         # Check psuade version is 1.7.4 or later
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             import win32api
 
             psuadePath = win32api.GetShortPathName(psuadePath)
 
         p = subprocess.Popen(
-            psuadePath + ' --info',
+            psuadePath + " --info",
             stdin=None,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -817,15 +807,15 @@ class LocalExecutionModule(object):
         lines = out.splitlines()
         compatible = False
         for line in lines:
-            if 'PSUADE version' in line.decode("utf-8"):
+            if "PSUADE version" in line.decode("utf-8"):
                 words = line.split()
                 versionNum = words[-1]
-                nums = versionNum.decode("utf-8").split('.')
-                reqds = LocalExecutionModule.psuadeVersion.split('.')
+                nums = versionNum.decode("utf-8").split(".")
+                reqds = LocalExecutionModule.psuadeVersion.split(".")
                 lastEqual = False
                 for i, (num, reqd) in enumerate(zip(nums, reqds)):
                     lastEqual = False
-                    num = int(re.search('\d+', num).group())
+                    num = int(re.search("\d+", num).group())
                     reqd = int(reqd)
                     if num < reqd:
                         break
@@ -843,7 +833,7 @@ class LocalExecutionModule(object):
     @staticmethod
     def getPsuadeInstalledModules():
 
-        libs = ['MARS', 'TPROS', 'SVM', 'METIS']
+        libs = ["MARS", "TPROS", "SVM", "METIS"]
         foundLibs = dict()
         for lib in libs:
             foundLibs[lib] = False
@@ -852,10 +842,10 @@ class LocalExecutionModule(object):
         psuadePath = LocalExecutionModule.getPsuadePath()
         if psuadePath is None:
             # return foundLibs
-            raise Exception('PSUADE path not set!')
+            raise Exception("PSUADE path not set!")
 
         p = subprocess.Popen(
-            psuadePath + ' --info',
+            psuadePath + " --info",
             stdin=None,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -869,7 +859,7 @@ class LocalExecutionModule(object):
 
         # parse results
         lines = out.splitlines()
-        installedString = 'installed... true'
+        installedString = "installed... true"
         if len(lines) >= 2:
             for line in lines:  # skip first line with version info
                 for lib in libs:
@@ -883,30 +873,30 @@ class LocalExecutionModule(object):
 
     @staticmethod
     def genConfigFile(data, fileName):
-        f = open(fileName, 'w')
-        f.write('[Logging]\n')
-        username = 'testing'
-        password = 'hello'
-        f.write('[Consumer]\n')
-        f.write('[Session]\n')
-        f.write('[Job]\n')
-        f.write('[Simulation]\n')
-        f.write('name=Solid_Absorber_v1\n')
-        f.write('[Application]\n')
+        f = open(fileName, "w")
+        f.write("[Logging]\n")
+        username = "testing"
+        password = "hello"
+        f.write("[Consumer]\n")
+        f.write("[Session]\n")
+        f.write("[Job]\n")
+        f.write("[Simulation]\n")
+        f.write("name=Solid_Absorber_v1\n")
+        f.write("[Application]\n")
 
-        f.write('[PSUADE]\n')
-        f.write('PSUADE=%s\n' % LocalExecutionModule.getPsuadePath())
+        f.write("[PSUADE]\n")
+        f.write("PSUADE=%s\n" % LocalExecutionModule.getPsuadePath())
 
-        f.write('[Authentication]\n')
-        f.write('username=%s\n' % username)
-        f.write('password=%s\n' % password)
+        f.write("[Authentication]\n")
+        f.write("username=%s\n" % username)
+        f.write("password=%s\n" % password)
 
-        f.write('[Inputs]\n')
+        f.write("[Inputs]\n")
         inputNames = data.getInputNames()
         for i in range(data.getNumInputs()):
-            f.write('%s=%d\n' % (inputNames[i], i))
+            f.write("%s=%d\n" % (inputNames[i], i))
 
-        f.write('[Outputs]\n')
+        f.write("[Outputs]\n")
         # richmass = '';
         # richco2 = '';
         # leanmass = '';
@@ -915,52 +905,52 @@ class LocalExecutionModule(object):
 
         outputNames = data.getOutputNames()
         for i in range(data.getNumOutputs()):
-            f.write('var%d=%s\n' % (i + 1, outputNames[i]))
+            f.write("var%d=%s\n" % (i + 1, outputNames[i]))
 
-        f.write('[OutputsOrder]\n')
+        f.write("[OutputsOrder]\n")
         for i in range(data.getNumOutputs()):
-            f.write('%d=var%d\n' % (i, i + 1))
+            f.write("%d=var%d\n" % (i, i + 1))
 
         f.close()
 
     @staticmethod
     def writeSelectedVars(data, filename):
-        outf = open(filename, 'w')
-        outf.write('PSUADE\n')
+        outf = open(filename, "w")
+        outf.write("PSUADE\n")
 
         # Write inputs
-        outf.write('INPUT\n')
-        outf.write('   dimension = %d\n' % data.getNumInputs())
+        outf.write("INPUT\n")
+        outf.write("   dimension = %d\n" % data.getNumInputs())
         names = data.getInputNames()
         mins = data.getInputMins()
         maxs = data.getInputMaxs()
         indices = list(range(data.getNumInputs()))
         for i, name, minimum, maximum in zip(indices, names, mins, maxs):
-            outf.write('   variable %d %s = %e %e\n' % (i + 1, name, minimum, maximum))
+            outf.write("   variable %d %s = %e %e\n" % (i + 1, name, minimum, maximum))
         distributions = data.getInputDistributions()
         for i, dist in zip(indices, distributions):
             distType = dist.getDistributionType()
             distParams = dist.getParameterValues()
             if distType != Distribution.UNIFORM:
                 outf.write(
-                    '   PDF %d %c %e'
+                    "   PDF %d %c %e"
                     % (i + 1, Distribution.getPsuadeName(distType), distParams[0])
                 )
                 if distParams[1] is not None:
-                    outf.write(' %e' % distParams[1])
-                outf.write('\n')
-        outf.write('END\n')
+                    outf.write(" %e" % distParams[1])
+                outf.write("\n")
+        outf.write("END\n")
 
         # Write outputs
-        outf.write('OUTPUT\n')
-        outf.write('   dimension = %d\n' % data.getNumOutputs())
+        outf.write("OUTPUT\n")
+        outf.write("   dimension = %d\n" % data.getNumOutputs())
         names = data.getOutputNames()
         indices = list(range(data.getNumOutputs()))
         for i, name in zip(indices, names):
-            outf.write('   variable %d %s\n' % (i + 1, name))
-        outf.write('END\n')
+            outf.write("   variable %d %s\n" % (i + 1, name))
+        outf.write("END\n")
 
-        outf.write('END\n')
+        outf.write("END\n")
 
     @staticmethod
     def startRun(data):
@@ -970,34 +960,34 @@ class LocalExecutionModule(object):
         LocalExecutionModule.numSamples = data.getNumSamples()
 
         # Remove old files
-        psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
+        psuadeDataFile = os.getcwd() + os.path.sep + "psuadeData"
         if os.path.exists(psuadeDataFile):
             os.remove(psuadeDataFile)
-        psuadeOutFile = os.getcwd() + os.path.sep + 'psuadeOut'
+        psuadeOutFile = os.getcwd() + os.path.sep + "psuadeOut"
         if os.path.exists(psuadeOutFile):
             os.remove(psuadeOutFile)
-        psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
+        psuadeAppsFiles = os.getcwd() + os.path.sep + "psuadeApps_ct.*"
         for f in glob.glob(psuadeAppsFiles):
             os.remove(f)
 
         # Config file
-        LocalExecutionModule.configFile = os.getcwd() + os.path.sep + 'config.txt'
+        LocalExecutionModule.configFile = os.getcwd() + os.path.sep + "config.txt"
         if os.path.exists(LocalExecutionModule.configFile):
             os.remove(LocalExecutionModule.configFile)
         LocalExecutionModule.genConfigFile(data, LocalExecutionModule.configFile)
 
         # Psuade file
-        LocalExecutionModule.psuadeFile = os.getcwd() + os.path.sep + 'psuadeDriver'
+        LocalExecutionModule.psuadeFile = os.getcwd() + os.path.sep + "psuadeDriver"
         data.writeToPsuade(LocalExecutionModule.psuadeFile)
 
         # selectedVars file
-        selectedVarsFile = os.getcwd() + os.path.sep + 'selectedVars'
+        selectedVarsFile = os.getcwd() + os.path.sep + "selectedVars"
         LocalExecutionModule.writeSelectedVars(data, selectedVarsFile)
 
         # Start run
         # print 'Starting run'
-        LocalExecutionModule.stdoutF = open('stdout', 'w')
-        LocalExecutionModule.stderrF = open('stderr', 'w')
+        LocalExecutionModule.stdoutF = open("stdout", "w")
+        LocalExecutionModule.stderrF = open("stderr", "w")
         LocalExecutionModule.runStarted = True
 
         config = _open_config(LocalExecutionModule.configFile)
@@ -1013,16 +1003,16 @@ class LocalExecutionModule(object):
         elif LocalExecutionModule.runComplete:
             return 0
 
-        if not os.path.exists('psuadePath'):
+        if not os.path.exists("psuadePath"):
             return -1
 
         if LocalExecutionModule.runType == Model.LOCAL:
-            print('getting config')
+            print("getting config")
             config = _open_config(LocalExecutionModule.configFile)
         else:
             config = None
         numUnfinished = turbine_psuade_session_script.local_unfinished(
-            config, 'psuadeData'
+            config, "psuadeData"
         )
         if numUnfinished == 0:
             LocalExecutionModule.runComplete = True
@@ -1030,7 +1020,7 @@ class LocalExecutionModule(object):
             LocalExecutionModule.stderrF.close()
 
             # Clean up files
-            psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
+            psuadeAppsFiles = os.getcwd() + os.path.sep + "psuadeApps_ct.*"
             for f in glob.glob(psuadeAppsFiles):
                 os.remove(f)
 
@@ -1041,7 +1031,7 @@ class LocalExecutionModule(object):
             # LocalExecutionModule.stderrF.close()
 
             # Clean up files
-            psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
+            psuadeAppsFiles = os.getcwd() + os.path.sep + "psuadeApps_ct.*"
             for f in glob.glob(psuadeAppsFiles):
                 os.remove(f)
 
@@ -1079,7 +1069,7 @@ class LocalExecutionModule(object):
         if not LocalExecutionModule.runStarted:
             # print 'Run has not started!'
             return None
-        psuadeOutFile = os.getcwd() + os.path.sep + 'psuadeOutFile'
+        psuadeOutFile = os.getcwd() + os.path.sep + "psuadeOutFile"
 
         import shutil
 
@@ -1129,20 +1119,20 @@ if usePyside:
             LocalExecutionModule.numSamples = self.data.getNumSamples()
 
             # Remove old files
-            psuadeDataFile = os.getcwd() + os.path.sep + 'psuadeData'
+            psuadeDataFile = os.getcwd() + os.path.sep + "psuadeData"
             if os.path.exists(psuadeDataFile):
                 os.remove(psuadeDataFile)
-            psuadeOutFile = os.getcwd() + os.path.sep + 'psuadeOut'
+            psuadeOutFile = os.getcwd() + os.path.sep + "psuadeOut"
             if os.path.exists(psuadeOutFile):
                 os.remove(psuadeOutFile)
-            psuadeAppsFiles = os.getcwd() + os.path.sep + 'psuadeApps_ct.*'
+            psuadeAppsFiles = os.getcwd() + os.path.sep + "psuadeApps_ct.*"
             for f in glob.glob(psuadeAppsFiles):
                 os.remove(f)
 
             # Run
             outputStatus = self.data.getEmulatorOutputStatus()
             # print outputStatus
-            emulatorFileName = 'emulatorData'
+            emulatorFileName = "emulatorData"
             self.data.writeToPsuade(emulatorFileName)
             from .RSAnalyzer import (
                 RSAnalyzer,
@@ -1191,7 +1181,7 @@ if usePyside:
                     self.data.setEmulatorOutputStatus(i, Model.CALCULATED)
                     self.numOutputsFinished = self.numOutputsFinished + 1
                     try:
-                        os.remove('psuadeData')
+                        os.remove("psuadeData")
                     except:
                         pass
             self.returnData.setRunState([True] * self.returnData.getNumSamples())

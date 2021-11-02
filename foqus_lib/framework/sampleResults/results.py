@@ -41,16 +41,16 @@ class dataFilter(object):
 
     def saveDict(self):
         sd = {
-            'filterTerm': self.filterTerm,
-            'sortTerm': self.sortTerm,
-            'no_results': self.no_results,
+            "filterTerm": self.filterTerm,
+            "sortTerm": self.sortTerm,
+            "no_results": self.no_results,
         }
         return sd
 
     def loadDict(self, sd):
-        self.filterTerm = sd.get('filterTerm', None)
-        self.sortTerm = sd.get('sortTerm', None)
-        self.no_results = sd.get('no_results', False)
+        self.filterTerm = sd.get("filterTerm", None)
+        self.sortTerm = sd.get("sortTerm", None)
+        self.no_results = sd.get("no_results", False)
         return self
 
 
@@ -103,8 +103,8 @@ def uq_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.' + name for name in sd.getInputNames()]
-    ynames = ['output.' + name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
@@ -117,8 +117,8 @@ def sdoe_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.' + name for name in sd.getInputNames()]
-    ynames = ['output.' + name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
@@ -131,8 +131,8 @@ def odoe_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.' + name for name in sd.getInputNames()]
-    ynames = ['output.' + name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
@@ -145,8 +145,8 @@ def eval_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.' + name for name in sd.getInputNames()]
-    ynames = ['output.' + name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
@@ -176,7 +176,7 @@ def incriment_name(name, exnames):
 
 def search_term_list(st):
     st = st.strip()
-    if st.startswith('['):
+    if st.startswith("["):
         try:
             st = json.loads(st)
         except:
@@ -184,7 +184,7 @@ def search_term_list(st):
                 "Error reading filer sort terms"
             )
             raise Exception(
-                'Error reading sort terms. When using multiple sort'
+                "Error reading sort terms. When using multiple sort"
                 'terms, enclose the column names in "". See log for deatils'
             )
     else:
@@ -193,7 +193,7 @@ def search_term_list(st):
         st = [st]
     ascend = [True] * len(st)
     for i, t in enumerate(st):
-        if t.startswith('-'):
+        if t.startswith("-"):
             st[i] = t[1:]
             ascend[i] = False
     return st, ascend

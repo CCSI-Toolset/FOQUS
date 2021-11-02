@@ -85,57 +85,57 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
     def addMenuActions(self):
         # export csv
-        self.exportCsvAct = QAction('Export to CSV File...', self)
+        self.exportCsvAct = QAction("Export to CSV File...", self)
         self.exportCsvAct.triggered.connect(self.saveResultsToCSV)
         self.expMenu.addAction(self.exportCsvAct)
         # copy to clipboard
-        self.toClipAct = QAction('Copy Data to Clipboard', self)
+        self.toClipAct = QAction("Copy Data to Clipboard", self)
         self.toClipAct.triggered.connect(self.toClipboard)
         self.expMenu.addAction(self.toClipAct)
         # import from csv
-        self.importCsvAct = QAction('Import from CSV file...', self)
+        self.importCsvAct = QAction("Import from CSV file...", self)
         self.importCsvAct.triggered.connect(self.importCSV)
         self.impMenu.addAction(self.importCsvAct)
         # paste from clipboard
-        self.fromClipAct = QAction('Paste Data from Clipboard', self)
+        self.fromClipAct = QAction("Paste Data from Clipboard", self)
         self.fromClipAct.triggered.connect(self.importClip)
         self.impMenu.addAction(self.fromClipAct)
         # copy selected row to flowsheet.
-        self.getRowAct = QAction('Row to Flowsheet', self)
+        self.getRowAct = QAction("Row to Flowsheet", self)
         self.getRowAct.triggered.connect(self.rowToFlow)
         self.editMenu.addAction(self.getRowAct)
         # clear data
-        self.clearDataAct = QAction('Clear All Data', self)
+        self.clearDataAct = QAction("Clear All Data", self)
         self.clearDataAct.triggered.connect(self.clearResults)
         self.editMenu.addAction(self.clearDataAct)
         #
-        self.deleteDataAct = QAction('Delete Rows', self)
+        self.deleteDataAct = QAction("Delete Rows", self)
         self.deleteDataAct.triggered.connect(self.deleteResults)
         self.editMenu.addAction(self.deleteDataAct)
         # Add blank result
-        self.addResultAct = QAction('Add Empty Result', self)
+        self.addResultAct = QAction("Add Empty Result", self)
         self.addResultAct.triggered.connect(self.addEmptyResult)
         self.editMenu.addAction(self.addResultAct)
         # edit Set
-        self.editSetAct = QAction('Edit Set for Selected Rows', self)
+        self.editSetAct = QAction("Edit Set for Selected Rows", self)
         self.editSetAct.triggered.connect(self.editDataSet)
         self.editMenu.addAction(self.editSetAct)
         # hide columns
-        self.hideDataColsAct = QAction('Hide Selected Columns', self)
+        self.hideDataColsAct = QAction("Hide Selected Columns", self)
         self.hideDataColsAct.triggered.connect(self.hideCols)
         self.viewMenu.addAction(self.hideDataColsAct)
         # un-hide columns
-        self.unhideDataColsAct = QAction('Show All Columns', self)
+        self.unhideDataColsAct = QAction("Show All Columns", self)
         self.unhideDataColsAct.triggered.connect(self.unhideCols)
         self.viewMenu.addAction(self.unhideDataColsAct)
         # resize columns
-        self.resizeColumnsAct = QAction('Resize Columns', self)
+        self.resizeColumnsAct = QAction("Resize Columns", self)
         self.resizeColumnsAct.triggered.connect(self.autoResizeCols)
         self.viewMenu.addAction(self.resizeColumnsAct)
 
         # Calculated columns menu
-        self.calcCols = QAction('&Recalculate', self)
-        self.editCalcCol = QAction('&Calculated columns', self)
+        self.calcCols = QAction("&Recalculate", self)
+        self.editCalcCol = QAction("&Calculated columns", self)
         self.calcMenu.addAction(self.editCalcCol)
         self.calcMenu.addAction(self.calcCols)
         self.editCalcCol.triggered.connect(self.showCalcEdit)
@@ -203,9 +203,9 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         rl = self.results
         rows = self.selectedRows()
         name, ok = QInputDialog.getText(
-            self, "Set Name", 'Enter new set name:', QLineEdit.Normal
+            self, "Set Name", "Enter new set name:", QLineEdit.Normal
         )
-        if ok and name != '':
+        if ok and name != "":
             rl.edit_set_name(name, rows, filtered=True)
 
     def importCSV(self):
@@ -282,7 +282,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
         self.filterSelectBox.blockSignals(True)
         self.filterSelectBox.clear()
-        items = [''] + sorted(self.results.filters.keys())
+        items = [""] + sorted(self.results.filters.keys())
         self.filterSelectBox.addItems(items)
         i = -1
         if self.results.current_filter() != None:
@@ -298,7 +298,7 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.results = self.dat.flowsheet.results
 
         filterName = self.filterSelectBox.currentText()
-        if filterName == '':
+        if filterName == "":
             self.results.set_filter(None)
         elif not filterName in self.results.filters:
             print("error")

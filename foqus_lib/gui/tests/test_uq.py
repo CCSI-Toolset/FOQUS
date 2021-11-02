@@ -13,7 +13,7 @@ import pytest
 pytestmark = pytest.mark.gui
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope="class")
 def setup_frame_blank(main_window, flowsheet_session_file, request):
     main_window.loadSessionFile(flowsheet_session_file, saveCurrent=False)
     main_window.uqSetupAction.trigger()
@@ -38,18 +38,18 @@ def _accept_dialog(w):
 
 
 class RSCombinations:
-    poly_linear = 'poly_linear'
-    poly_quadratic = 'poly_quadratic'
+    poly_linear = "poly_linear"
+    poly_quadratic = "poly_quadratic"
 
 
-@pytest.mark.usefixtures('setup_frame_blank')
+@pytest.mark.usefixtures("setup_frame_blank")
 class TestUQ(_HasAttributesSetByFixture):
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def generate_samples(self, qtbot):
         qtbot.focused = self.frame
         with qtbot.waiting_for_modal(handler=_accept_dialog):
-            qtbot.take_screenshot('samples-modal')
-            qtbot.click(button='Add New...')
+            qtbot.take_screenshot("samples-modal")
+            qtbot.click(button="Add New...")
         with qtbot.searching_within(SimSetup) as sim_frame, qtbot.taking_screenshots():
             with qtbot.searching_within(group_box="Choose how to generate samples:"):
                 qtbot.click(radio_button="Choose sampling scheme")
@@ -69,18 +69,18 @@ class TestUQ(_HasAttributesSetByFixture):
         table = self.frame.simulationTable
         assert table.rowCount() == 1
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def run_simulation(self, qtbot):
         with qtbot.focusing_on(self.frame.simulationTable):
             qtbot.select_row(0)
             with qtbot.waiting_for_modal(timeout=90_000):
-                qtbot.using(column='Launch').click()
+                qtbot.using(column="Launch").click()
 
-    @pytest.mark.usefixtures('run_simulation')
+    @pytest.mark.usefixtures("run_simulation")
     def test_after_running_simulation(self, qtbot):
         assert len(self.frame.dat.uqSimList) == 1
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def start_analysis(self, qtbot):
         def has_dialog():
             return self.analysis_dialog is not None
@@ -91,20 +91,20 @@ class TestUQ(_HasAttributesSetByFixture):
 
         qtbot.wait_until(has_dialog, timeout=10_000)
 
-    @pytest.mark.usefixtures('start_analysis')
+    @pytest.mark.usefixtures("start_analysis")
     def test_analysis_dialog(self, qtbot):
         assert self.analysis_dialog is not None
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def setup_analysis_dialog_expert(self, qtbot, start_analysis):
         qtbot.focused = frame = self.analysis_dialog
-        qtbot.click(button='Mode: Wizard (Click for Expert Mode)')
+        qtbot.click(button="Mode: Wizard (Click for Expert Mode)")
         with qtbot.focusing_on(group_box="Analysis"), qtbot.taking_screenshots():
             qtbot.using(combo_box="Select Output under Analysis").set_option(
                 "Rosenbrock.f"
             )
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def run_analyses(self, qtbot, setup_analysis_dialog_expert):
         with qtbot.focusing_on(
             group_box="Ensemble Data Analysis"
@@ -121,21 +121,21 @@ class TestUQ(_HasAttributesSetByFixture):
             run_and_wait()
             qtbot.using(type_combo).set_option("Correlation Analysis")
             run_and_wait()
-            qtbot.using(type_combo).set_option('Sensitivity Analysis ->')
+            qtbot.using(type_combo).set_option("Sensitivity Analysis ->")
             qtbot.using(order_combo).set_option("First-order")
             run_and_wait()
             qtbot.using(order_combo).set_option("Second-order")
             run_and_wait()
         # qtbot.wait(10_000)
 
-    @pytest.mark.usefixtures('run_analyses')
+    @pytest.mark.usefixtures("run_analyses")
     @pytest.mark.skip
     def test_analyses_performed(self, qtbot):
         with qtbot.searching_within(group_box="Analyses Performed"):
             ana_table = qtbot.locate_widget(table=True)
             assert ana_table.rowCount() > 0
 
-    @pytest.fixture(scope='class')
+    @pytest.fixture(scope="class")
     def visualize(self, qtbot, setup_analysis_dialog_expert):
         with qtbot.focusing_on(
             group_box="Ensemble Data Analysis"
@@ -147,22 +147,22 @@ class TestUQ(_HasAttributesSetByFixture):
 
             qtbot.using(viz_1st_combo).set_option("Rosenbrock.x4")
             qtbot.click(viz_button)
-            qtbot.using(viz_1st_combo).set_option('None selected')
-            qtbot.using(viz_2nd_combo).set_option('Rosenbrock.x3')
+            qtbot.using(viz_1st_combo).set_option("None selected")
+            qtbot.using(viz_2nd_combo).set_option("Rosenbrock.x3")
             qtbot.click(viz_button)
-            qtbot.using(viz_1st_combo).set_option('Rosenbrock.x1')
-            qtbot.using(viz_2nd_combo).set_option('Rosenbrock.x5')
+            qtbot.using(viz_1st_combo).set_option("Rosenbrock.x1")
+            qtbot.using(viz_2nd_combo).set_option("Rosenbrock.x5")
             qtbot.click(viz_button)
 
-    @pytest.mark.usefixtures('visualize')
+    @pytest.mark.usefixtures("visualize")
     def test_visualization(self, qtbot):
         assert True
 
     @pytest.fixture(
-        scope='function',
+        scope="function",
         params=[
-            'MARS Ranking',
-            'Sum of Trees',
+            "MARS Ranking",
+            "Sum of Trees",
             # 'Delta Test',  # takes a long time but eventually finishes
             # 'Gaussian Process'  # doesn't seem to finish even after a long time
         ],
@@ -170,7 +170,7 @@ class TestUQ(_HasAttributesSetByFixture):
     def input_importance_method(self, request):
         return request.param
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def calculate_input_importance(
         self, qtbot, setup_analysis_dialog_expert, input_importance_method
     ):
@@ -182,18 +182,18 @@ class TestUQ(_HasAttributesSetByFixture):
             qtbot.using(combo).set_option(input_importance_method)
             qtbot.click(button)
 
-    @pytest.mark.usefixtures('calculate_input_importance')
+    @pytest.mark.usefixtures("calculate_input_importance")
     def test_input_importance(self):
         assert True
 
     @pytest.fixture(
-        scope='function',
+        scope="function",
         params=[
-            ('Polynomial ->', 'Linear Regression'),
+            ("Polynomial ->", "Linear Regression"),
             # ('Polynomial ->', 'Quadratic Regression'),
             # ('Polynomial ->', 'Cubic Regression'),
             # ('Polynomial ->', 'Legendre Polynomial Regression'),
-            ('MARS ->', None),
+            ("MARS ->", None),
             # ('MARS ->', 'MARS with Bagging'),  # this takes a while but eventually converges
             # ('Kriging', None),  # this doesn't seem to converge
             # ('Sum of Trees', None),
@@ -203,7 +203,7 @@ class TestUQ(_HasAttributesSetByFixture):
     def rs_combo_values(self, request):
         return request.param
 
-    @pytest.fixture(scope='function')
+    @pytest.fixture(scope="function")
     def run_rs_validation(self, qtbot, setup_analysis_dialog_expert, rs_combo_values):
         with qtbot.focusing_on(
             group_box="Response Surface (RS) Based Analysis"
@@ -215,6 +215,6 @@ class TestUQ(_HasAttributesSetByFixture):
                 qtbot.using(combo_box="Select RS:", index=1).set_option(rs_subtype)
             qtbot.click(button="Validate")
 
-    @pytest.mark.usefixtures('run_rs_validation')
+    @pytest.mark.usefixtures("run_rs_validation")
     def test_rs_validation(self):
         assert True

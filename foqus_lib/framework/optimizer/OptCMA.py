@@ -58,16 +58,16 @@ except ImportError:
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return cma_available
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver class.  Should be called opt and inherit
     optimization.  The are several attributes from the optimization
     base class that should be set for an optimization plug-in:
@@ -82,12 +82,12 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize CMA-ES optimization module
-        '''
+        """
         optimization.__init__(self, dat)
         self.name = "CMA-ES"
         self.methodDescription = (
@@ -97,7 +97,7 @@ class opt(optimization):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "<p class=\"hangingindent\">"
+            '<p class="hangingindent">'
             "<p><b>Covariance Matrix Adaptation Evolutionary Strategy"
             " (CMA-ES)</b></p>"
             "<p>Developer: Nikolaus Hansen</p>"
@@ -113,13 +113,13 @@ class opt(optimization):
         self.minVars = 2
         self.maxVars = 10000
         self.options.add(
-            name='upper',
+            name="upper",
             default=10.0,
             dtype=float,  # don't need this if default is proper type
             desc="Upper bound on scaled variables (usually 10.0)",
         )
         self.options.add(
-            name='lower',
+            name="lower",
             default=0.0,
             desc="Lower bound on scaled variables (usually 0.0)",
         )
@@ -220,9 +220,9 @@ class opt(optimization):
         )
 
     def optimize(self):
-        '''
+        """
         This is the optimization routine.
-        '''
+        """
         # get the initial guess, flatten arrays and scale inputs
         xinit = self.graph.input.getFlat(self.prob.v, scaled=True)
         # Display a little information to check that things are working
@@ -285,7 +285,7 @@ class opt(optimization):
         # and what the popsize is for debugging mostly
         logging.getLogger("foqus." + __name__).info("Starting optimization")
         logging.getLogger("foqus." + __name__).debug(
-            "popsize = " + str(opts['popsize'])
+            "popsize = " + str(opts["popsize"])
         )
         #
         # Create CMA-ES object either reload pickled CMA-ES object
@@ -293,7 +293,7 @@ class opt(optimization):
         #
         if pickIn != "" and pickIn != None:
             try:
-                with open(pickIn, 'rb') as pf:
+                with open(pickIn, "rb") as pf:
                     es = pickle.load(pf)
                 it = es.result()[4]  # iteration index
                 self.msgQueue.put("Reloaded " + str(it) + " iterations")
@@ -373,7 +373,7 @@ class opt(optimization):
             # information, this will give you some performance info
             # That can be analized later.
             if objRecFile:
-                with open(objRecFile, 'ab') as orf:
+                with open(objRecFile, "ab") as orf:
                     orf.write(
                         "\n{0}, {1}, {2}, {3}, {4}".format(
                             it,
@@ -395,7 +395,7 @@ class opt(optimization):
                 if pickMod and not it % pickMod:  # pickle if its time
                     if pickOut and pickOut != "":  # and file name
                         pickOut2 = pickOut.replace("{n}", str(it).zfill(4))
-                        with open(pickOut2, 'wb') as pf:
+                        with open(pickOut2, "wb") as pf:
                             pickle.dump(es, pf)
             except Exception as e:
                 logging.getLogger("foqus." + __name__).exception(

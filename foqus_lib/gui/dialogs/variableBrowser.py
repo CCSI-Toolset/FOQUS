@@ -26,9 +26,9 @@ _variableBrowserUI, _variableBrowser = uic.loadUiType(
 
 class variableBrowser(_variableBrowser, _variableBrowserUI):
     def __init__(self, dat, parent=None, lock=None):
-        '''
+        """
         Constructor for model setup dialog
-        '''
+        """
         super(variableBrowser, self).__init__(parent=parent)
         self.setupUi(self)  # Create the widgets
         self.dat = dat  # all of the session data
@@ -48,15 +48,15 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
             else:
                 mode = "f"
             if self.format == "node":
-                text = "%s[\"%s\"]" % (mode, vkey)
+                text = '%s["%s"]' % (mode, vkey)
             elif self.format == "optimization":
-                text = "%s[\"%s\"][\"%s\"]" % (mode, nkey, vkey)
+                text = '%s["%s"]["%s"]' % (mode, nkey, vkey)
             self.varText.setText(text)
 
     def refreshVars(self):
-        '''
+        """
         Put the graph node variables into the tree
-        '''
+        """
         vars = dict()
         if self.nodeMask:
             nodes = sorted(self.nodeMask)

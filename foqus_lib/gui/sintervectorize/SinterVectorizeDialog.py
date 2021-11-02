@@ -40,18 +40,18 @@ _SinterVectorizeDialogUI, _SinterVectorizeDialog = uic.loadUiType(
 
 
 class SinterVectorizeDialog(_SinterVectorizeDialog, _SinterVectorizeDialogUI):
-    '''
+    """
         This class provides a dialog box that allows you to vectorize a \
         SinSinter json file.
-    '''
+    """
 
     waiting = QtCore.pyqtSignal()  # signal for start waiting on long task
     notwaiting = QtCore.pyqtSignal()  # signal the task is done
 
     def __init__(self, parent=None):
-        '''
+        """
         Initialize dialog
-        '''
+        """
         super(SinterVectorizeDialog, self).__init__(parent=parent)
         self.setupUi(self)
         # Connect buttons
@@ -59,9 +59,9 @@ class SinterVectorizeDialog(_SinterVectorizeDialog, _SinterVectorizeDialogUI):
         self.buttonBox.rejected.connect(self.reject)
 
     def accept(self):
-        '''
+        """
         Vectorize the SimSinter file
-        '''
+        """
         # Get required text
         json_file = self.sinterfile.toPlainText()
         input_vectors = self.inputvectordetails.toPlainText()
@@ -73,7 +73,7 @@ class SinterVectorizeDialog(_SinterVectorizeDialog, _SinterVectorizeDialogUI):
         self.done(QDialog.Accepted)
 
     def reject(self):
-        '''
+        """
         If cancel just do nothing and close dialog
-        '''
+        """
         self.done(QDialog.Rejected)

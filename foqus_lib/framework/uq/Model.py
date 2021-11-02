@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-'''
+"""
 Methods:
     setName(name):
         Sets the name of the model
@@ -102,7 +102,7 @@ Methods:
 
     getDriverName():
         Gets the filename of the driver or emulator
-'''
+"""
 
 import numbers, json
 import numpy
@@ -141,19 +141,19 @@ class Model:
         self.namesIncludeNodes = False
         self.flowsheetFixed = None
 
-    def saveFile(self, filename='UQModelTest.json'):
-        '''
+    def saveFile(self, filename="UQModelTest.json"):
+        """
         Save the model to a json file
-        '''
+        """
         sd = self.saveDict()
-        with open(filename, 'w') as f:
+        with open(filename, "w") as f:
             json.dump(sd, f, indent=2)
 
     def saveDict(self):
-        '''
+        """
         Put model contents in a dictionary, so it can be easily
         saved in a json file.
-        '''
+        """
         sd = dict()
         sd["name"] = self.name
         sd["driverName"] = self.driverName
@@ -165,11 +165,11 @@ class Model:
         sd["inputTypes"] = self.inputTypes
         sd["inputMins"] = self.inputMins.tolist()
         sd["inputMaxs"] = self.inputMaxs.tolist()
-        sd['inputDists'] = []
+        sd["inputDists"] = []
 
         if self.inputDists:
             for dist in self.inputDists:
-                sd['inputDists'].append(dist.saveDict())
+                sd["inputDists"].append(dist.saveDict())
 
         sd["inputDefaults"] = self.inputDefaults.tolist()
         sd["outputSelections"] = self.outputSelections
@@ -179,15 +179,15 @@ class Model:
         sd["inputsFlowsheetFixed"] = self.flowsheetFixed
         return sd
 
-    def loadFile(self, filename='UQModelTest.json'):
-        with open(filename, 'r') as f:
+    def loadFile(self, filename="UQModelTest.json"):
+        with open(filename, "r") as f:
             sd = json.load(f)
         self.loadDict(sd)
 
     def loadDict(self, sd):
-        '''
+        """
         Load model from a dictionary
-        '''
+        """
         self.setName(sd.get("name", None))
         self.setDriverName(sd.get("driverName", None))
         self.setOptDriverName(sd.get("optDriverName", None))
@@ -199,8 +199,8 @@ class Model:
         self.setInputMins(sd.get("inputMins", None))
         self.setInputMaxs(sd.get("inputMaxs", None))
         self.inputDists = []
-        if 'inputDists' in sd:
-            for distDict in sd['inputDists']:
+        if "inputDists" in sd:
+            for distDict in sd["inputDists"]:
                 distr = Distribution(Distribution.UNIFORM)
                 distr.loadDict(distDict)
                 self.inputDists.append(distr)
@@ -302,7 +302,7 @@ class Model:
         elif all(isinstance(name, str) for name in names):
             self.inputNames = tuple([str(name) for name in names])
         else:
-            raise TypeError('Not all names are strings!')
+            raise TypeError("Not all names are strings!")
 
         self.numInputs = len(self.inputNames)
         self.flowsheetFixed = [False] * self.numInputs
@@ -320,7 +320,7 @@ class Model:
         elif all(isinstance(name, str) for name in names):
             self.outputNames = tuple(names)
         else:
-            raise TypeError('Not all names are strings!')
+            raise TypeError("Not all names are strings!")
 
         self.numOutputs = len(self.outputNames)
         self.emulatorOutputStatus = [Model.NOT_CALCULATED] * self.numOutputs
@@ -330,7 +330,7 @@ class Model:
 
     def setInputTypes(self, types):
         if len(types) != self.numInputs:
-            raise ValueError('Number of types does not match number of inputs!')
+            raise ValueError("Number of types does not match number of inputs!")
         self.inputTypes = tuple(types)
 
     def getInputTypes(self):
@@ -338,7 +338,7 @@ class Model:
 
     def setInputMins(self, mins):
         if len(mins) != self.numInputs:
-            raise ValueError('Number of minimums does not match number of inputs!')
+            raise ValueError("Number of minimums does not match number of inputs!")
         self.inputMins = numpy.array(mins)
 
     def getInputMins(self):
@@ -346,7 +346,7 @@ class Model:
 
     def setInputMaxs(self, maxs):
         if len(maxs) != self.numInputs:
-            raise ValueError('Number of maximums does not match number of inputs!')
+            raise ValueError("Number of maximums does not match number of inputs!")
         self.inputMaxs = numpy.array(maxs)
 
     def getInputMaxs(self):
@@ -379,7 +379,7 @@ class Model:
 
     def setInputDefaults(self, defaults):
         if len(defaults) != self.numInputs:
-            raise ValueError('Number of defaults does not match number of inputs!')
+            raise ValueError("Number of defaults does not match number of inputs!")
         self.inputDefaults = numpy.array(defaults)
 
     def getInputDefaults(self):

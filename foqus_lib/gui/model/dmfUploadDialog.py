@@ -48,7 +48,7 @@ try:
     useDMF = True
 except ImportError:
     logging.getLogger("foqus." + __name__).exception(
-        'Failed to import or launch DMFBrowser'
+        "Failed to import or launch DMFBrowser"
     )
     useDMF = False
 from urllib.request import urlopen
@@ -64,16 +64,16 @@ _dmfUploadDialogUI, _dmfUploadDialog = uic.loadUiType(
 
 
 class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
-    '''
+    """
     This class provides a dialog box that allows you to create,
     upload and update simulations to the DMF.
-    '''
+    """
 
     waiting = QtCore.pyqtSignal()  # signal for start waiting on long task
     notwaiting = QtCore.pyqtSignal()  # signal the task is done
 
     def __init__(self, dat, turbConfig, parent=None):
-        '''Initialize dialog'''
+        """Initialize dialog"""
         super(dmfUploadDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.root = parent
@@ -89,7 +89,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.clearTableButton.clicked.connect(self.clearTable)
         self.okButton.clicked.connect(self.accept)
         self.cancelButton.clicked.connect(self.reject)
-        self.files = [['configuration', ''], ['model', '']]
+        self.files = [["configuration", ""], ["model", ""]]
         self.updateFileTable()
         self.enableSinterConfigGUI(None)
         if platform.system().startswith(WINDOWS):
@@ -109,7 +109,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
     def getDMFRepoProperties(self):
         config = StringIO()
         # Fake properties header to allow working with configParser
-        config.write('[' + PROP_HEADER + ']\n')
+        config.write("[" + PROP_HEADER + "]\n")
         # Get a list of property files for repositories
         repo_props = [
             f
@@ -188,17 +188,17 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.fileTable.resizeColumnsToContents()
 
     def enableSinterConfigGUI(self, b=True):
-        '''
+        """
         Enable or disable the sinter config gui launch button
         should be enabled in sinterConfigGui path is set right and
         you are on windows.  SinterConfigGUI is windows only
-        '''
+        """
         if not b:
             # automatically decide whether to enable it
-            if os.name == 'nt':
+            if os.name == "nt":
                 # Windows only feature
                 exepath = str(self.dat.foqusSettings.simsinter_path)
-                exepath = os.path.join(exepath, 'SinterConfigGUI.exe')
+                exepath = os.path.join(exepath, "SinterConfigGUI.exe")
                 if os.path.isfile(exepath):
                     # only if config points to a file
                     b = True
@@ -209,17 +209,17 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         self.sinterConfigGUIButton.setEnabled(b)
 
     def showSinterConfigGUI(self):
-        '''
+        """
         Run sinter config gui so you can create or edit a
         sinter config file
-        '''
+        """
         # need to find a way to prevent clicking this button several
         # times after this function returns any button clicks that were
         # stored up sent signals.  But they happen after fnction returns
         # so can't figure out how to block them.  launch process in a
         # seperate thread?
         exepath = str(self.dat.foqusSettings.simsinter_path)
-        exepath = os.path.join(exepath, 'SinterConfigGUI.exe')
+        exepath = os.path.join(exepath, "SinterConfigGUI.exe")
         tmp_file = os.path.abspath("temp\\sc_out.txt")
         try:
             sinterConfigPath = self.files[0][1]
@@ -231,7 +231,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         process.wait()
         self.notwaiting.emit()
         try:
-            with open(tmp_file, 'r') as f:
+            with open(tmp_file, "r") as f:
                 fileName = f.readline().strip()
         except:
             fileName = ""
@@ -243,7 +243,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             try:
                 tc = self.dat.flowsheet.turbConfig
                 m, r, a = tc.sinterConfigGetResource(fileName)
-                self.files[0] = ['configuration', fileName]
+                self.files[0] = ["configuration", fileName]
                 self.files[1] = [r, m]
                 self.updateFileTable()
                 self.appEdit.setText(a)
@@ -260,13 +260,13 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         return indx
 
     def accept(self):
-        '''
+        """
         If the okay button is press, use the simulation name and
         sinter configuration file path from the dialog to attempt
         to upload simulation files.  The Turbine configuration file
         is a global setting stored in self.dat.turbineConfFile. I'm
         assuming you will want to use the same gateway for a session
-        '''
+        """
         simulation_keys = ["aspenfile", "spreadsheet", "model"]
         sim_name = self.simNameEdit.currentText()
         sinter_config_path = self.files[0][1]
@@ -316,15 +316,15 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             self.done(QDialog.Accepted)
 
     def reject(self):
-        '''
+        """
         If cancel just do nothing and close dialog
-        '''
+        """
         self.done(QDialog.Rejected)
 
     def browseSinter(self):
-        '''
+        """
         Browse for a Sinter configuration file.
-        '''
+        """
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
             "Open Sinter Configuration File",
@@ -337,7 +337,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             try:
                 tc = self.dat.flowsheet.turbConfig
                 m, r, a = tc.sinterConfigGetResource(fileName)
-                self.files[0] = ['configuration', fileName]
+                self.files[0] = ["configuration", fileName]
                 self.files[1] = [r, m]
                 self.updateFileTable()
                 self.appEdit.setText(a)
@@ -345,9 +345,9 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                 isNewSinterConfFmt = True
             if isNewSinterConfFmt:
                 try:
-                    self.files[0] = ['configuration', fileName]
+                    self.files[0] = ["configuration", fileName]
                     with open(str(fileName), "rb") as f:
-                        scf = json.loads(f.read().decode('utf-8'))
+                        scf = json.loads(f.read().decode("utf-8"))
                         print(scf["model"]["file"])
                         m = scf["model"]["file"]
                         m_path = os.path.join(os.path.dirname(fileName), m)
@@ -364,12 +364,12 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
             if self.simNameEdit.currentText() == "":
                 try:
-                    with open(fileName, 'r') as f:
+                    with open(fileName, "r") as f:
                         sc_json = json.loads(f.read().decode(UTF8))
                         simNameGuess = sc_json[SC_TITLE]
                 except Exception as e:
                     simNameGuess = os.path.basename(fileName)
-                    simNameGuess = simNameGuess.rsplit('.')[0]
+                    simNameGuess = simNameGuess.rsplit(".")[0]
 
                 self.simNameEdit.addItem(simNameGuess)
                 i = self.simNameEdit.findText(simNameGuess)
@@ -377,9 +377,9 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
             self.simNameEdit.setFocus()
 
     def addFile(self):
-        '''
+        """
         Add additional files required for a simulation
-        '''
+        """
         # Browse for a file
         fileNames, filtr = QFileDialog.getOpenFileNames(
             self, "Additional Files", "", "All Files (*)"
@@ -408,7 +408,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
 
     def clearTable(self):
         # Reinitialize
-        self.files = [['configuration', ''], ['model', '']]
+        self.files = [["configuration", ""], ["model", ""]]
         self.simNameEdit.clear()
         self.appEdit.clear()
         self.updateFileTable()
@@ -439,8 +439,8 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
         )
         if ok:
             relpath = relpath.strip()
-            relpath = relpath.strip('\\/')
+            relpath = relpath.strip("\\/")
         for row in rows:
             gh.setCellText(
-                self.fileTable, row, 0, '\\'.join([relpath, self.files[row][0]])
+                self.fileTable, row, 0, "\\".join([relpath, self.files[row][0]])
             )

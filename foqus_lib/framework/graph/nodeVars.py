@@ -136,17 +136,17 @@ class NodeVarList(OrderedDict):
             raise NodeVarListEx(7, msg=varName)
         if not var:
             for i in range(int(size)):
-                self.addVariable(nodeName, varName + '_{0}'.format(i))
-                nodevar = self[nodeName][varName + '_{0}'.format(i)]
+                self.addVariable(nodeName, varName + "_{0}".format(i))
+                nodevar = self[nodeName][varName + "_{0}".format(i)]
                 if ip is True:
                     nodevar.min = float(minval[i])
                     nodevar.max = float(maxval[i])
                     nodevar.value = float(value[i])
                     nodevar.default = float(value[i])
-                    nodevar.ipvname = (nodeName, varName + '_{0}'.format(i))
+                    nodevar.ipvname = (nodeName, varName + "_{0}".format(i))
                 else:
                     nodevar.value = 0
-                    nodevar.opvname = (nodeName, varName + '_{0}'.format(i))
+                    nodevar.opvname = (nodeName, varName + "_{0}".format(i))
 
     def get(self, name, varName=None):
         """
@@ -373,7 +373,7 @@ class NodeVarVectorList(OrderedDict):
                 var.opvname = (nodeName, varName)
             for i in range(int(size)):
                 if nvlist is not None:
-                    var.vector[i] = nvlist[nodeName][varName + '_{0}'.format(i)]
+                    var.vector[i] = nvlist[nodeName][varName + "_{0}".format(i)]
                 else:
                     var.vector[i] = None
             self[nodeName][varName] = var
@@ -395,7 +395,7 @@ class NodeVarVectorList(OrderedDict):
             for var in self[node]:
                 sd[node][var] = OrderedDict()
                 for i in range(len(self[node][var].vector)):
-                    sd[node][var][i] = svals_scalars[node][var + '_{0}'.format(i)]
+                    sd[node][var][i] = svals_scalars[node][var + "_{0}".format(i)]
         return sd
 
     def loadValues(self, sd):
@@ -415,7 +415,7 @@ class NodeVarVectorList(OrderedDict):
                     if type(self[node][var].vector[i]) != dict:
                         self[node][var].vector[i].value = sd[node][var][i]
                     else:
-                        self[node][var].vector[i]['value'] = sd[node][var][i]
+                        self[node][var].vector[i]["value"] = sd[node][var][i]
 
     def saveDict(self, nvl):
         """
@@ -431,14 +431,14 @@ class NodeVarVectorList(OrderedDict):
                 sd_scalars = None
             for var in self[node]:
                 sd[node][var] = self[node][var].saveDict()
-                size = len(sd[node][var]['vector'])
+                size = len(sd[node][var]["vector"])
                 for i in range(int(size)):
                     if sd_scalars is not None:
-                        sd[node][var]['vector'][i] = sd_scalars[node][
-                            var + '_{0}'.format(i)
+                        sd[node][var]["vector"][i] = sd_scalars[node][
+                            var + "_{0}".format(i)
                         ]
                     else:
-                        sd[node][var]['vector'][i] = None
+                        sd[node][var]["vector"][i] = None
         return sd
 
     def loadDict(self, sd):
@@ -452,28 +452,28 @@ class NodeVarVectorList(OrderedDict):
         for node in sd:
             self.addNode(node)
             for var in sd[node]:
-                if sd[node][var]['ipvname'] is None:
+                if sd[node][var]["ipvname"] is None:
                     ip = False
                 else:
                     ip = True
-                size = len(sd[node][var]['vector'])
+                size = len(sd[node][var]["vector"])
 
                 self.addVectorVariable(node, var, ip, size).loadDict(sd[node][var])
-                sd[node][var]['vector'] = dict(sd[node][var]['vector'])
+                sd[node][var]["vector"] = dict(sd[node][var]["vector"])
                 klist = []
                 vlist = []
-                for k, v in sd[node][var]['vector'].items():
+                for k, v in sd[node][var]["vector"].items():
                     klist.append(int(k))
                     vlist.append(v)
-                sd[node][var]['vector'] = dict(zip(klist, vlist))
-                if sd[node][var]['opvname'] is None:
+                sd[node][var]["vector"] = dict(zip(klist, vlist))
+                if sd[node][var]["opvname"] is None:
                     self[node][var].vector = {x: None for x in range(int(size))}
-                    for i in range(len(sd[node][var]['vector'])):
-                        self[node][var].vector[i] = sd[node][var]['vector'][i]
+                    for i in range(len(sd[node][var]["vector"])):
+                        self[node][var].vector[i] = sd[node][var]["vector"][i]
                 else:
                     self[node][var].vector = {x: None for x in range(int(size))}
-                    for i in range(len(sd[node][var]['vector'])):
-                        self[node][var].vector[i] = sd[node][var]['vector'][i]
+                    for i in range(len(sd[node][var]["vector"])):
+                        self[node][var].vector[i] = sd[node][var]["vector"][i]
 
     def createOldStyleDict(self):
         """

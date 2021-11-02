@@ -32,33 +32,33 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     ) = list(range(10))
 
     fullNames = (
-        'Parameter Screening',
-        'Uncertainty Analysis',
-        'Correlation Analysis',
-        'Sensitivity Analysis',
-        'Visualization',
-        'RS Validation',
-        'RS Uncertainty Analysis',
-        'RS Sensitivity Analysis',
-        'Bayesian Inference',
-        'RS Visualization',
+        "Parameter Screening",
+        "Uncertainty Analysis",
+        "Correlation Analysis",
+        "Sensitivity Analysis",
+        "Visualization",
+        "RS Validation",
+        "RS Uncertainty Analysis",
+        "RS Sensitivity Analysis",
+        "Bayesian Inference",
+        "RS Visualization",
     )
 
     codeNames = (
-        'ps',
-        'ua',
-        'ca',
-        'sa',
-        'viz',
-        'rsvalid',
-        'rsua',
-        'rssa',
-        'inf',
-        'rsviz',
+        "ps",
+        "ua",
+        "ca",
+        "sa",
+        "viz",
+        "rsvalid",
+        "rsua",
+        "rssa",
+        "inf",
+        "rsviz",
     )
 
     FIRST_ORDER, SECOND_ORDER, TOTAL_ORDER = list(range(3))
-    sensitivityTypes = ('First-order', 'Second-order', 'Total-order')
+    sensitivityTypes = ("First-order", "Second-order", "Total-order")
 
     @staticmethod
     def getTypeFullName(num):
@@ -82,7 +82,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
         self.ensemble = ensemble
         self.type = analysisType
         self.subType = subType
-        self.ID = time.strftime('Analysis_%y%m%d%H%M%S')
+        self.ID = time.strftime("Analysis_%y%m%d%H%M%S")
         self.setOutputs(outputs)
         self.legendreOrder = 0
         self.lowerThreshold = None
@@ -92,23 +92,23 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
 
     def saveDict(self):
         sd = dict()
-        sd['ID'] = self.ID
-        sd['type'] = self.codeNames[self.type]
-        sd['subType'] = self.subType
-        sd['inputs'] = self.inputs
-        sd['outputs'] = self.outputs
-        sd['legendreOrder'] = self.legendreOrder
-        sd['description'] = self.description
+        sd["ID"] = self.ID
+        sd["type"] = self.codeNames[self.type]
+        sd["subType"] = self.subType
+        sd["inputs"] = self.inputs
+        sd["outputs"] = self.outputs
+        sd["legendreOrder"] = self.legendreOrder
+        sd["description"] = self.description
         return sd
 
     def loadDict(self, sd):
-        self.ID = sd.get('ID', '')
-        self.type = UQAnalysis.getTypeEnumValue(sd.get('type', None))
-        self.subType = sd.get('subType', None)
-        self.inputs = sd.get('inputs', None)
-        self.outputs = sd.get('outputs', None)
-        self.legendreOrder = sd.get('legendreOrder', None)
-        self.description = sd.get('description', None)
+        self.ID = sd.get("ID", "")
+        self.type = UQAnalysis.getTypeEnumValue(sd.get("type", None))
+        self.subType = sd.get("subType", None)
+        self.inputs = sd.get("inputs", None)
+        self.outputs = sd.get("outputs", None)
+        self.legendreOrder = sd.get("legendreOrder", None)
+        self.description = sd.get("description", None)
 
     def setEnsemble(self, ensemble):
         self.ensemble = ensemble
@@ -163,7 +163,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def archiveFile(self, fileName, folderStructure=None):
         if self.ensemble == None:
             raise Exception(
-                'UQAnalysis object does not have an ensemble associated with it'
+                "UQAnalysis object does not have an ensemble associated with it"
             )
             return
         if folderStructure is None:
@@ -176,7 +176,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def restoreFromArchive(self, fileName, folderStructure=None):
         if self.ensemble == None:
             raise Exception(
-                'UQAnalysis object does not have an ensemble associated with it'
+                "UQAnalysis object does not have an ensemble associated with it"
             )
             return
         if folderStructure is None:
@@ -189,7 +189,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def removeArchiveFolder(self, folderStructure=None):
         if self.ensemble == None:
             raise Exception(
-                'UQAnalysis object does not have an ensemble associated with it'
+                "UQAnalysis object does not have an ensemble associated with it"
             )
             return
         if folderStructure is None:
@@ -202,7 +202,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def removeArchiveFile(self, fileName, folderStructure=None):
         if self.ensemble == None:
             raise Exception(
-                'UQAnalysis object does not have an ensemble associated with it'
+                "UQAnalysis object does not have an ensemble associated with it"
             )
             return
         if folderStructure is None:
@@ -215,7 +215,7 @@ class UQAnalysis(object, metaclass=abc.ABCMeta):
     def existsInArchive(self, fileName, folderStructure=None):
         if self.ensemble == None:
             raise Exception(
-                'UQAnalysis object does not have an ensemble associated with it'
+                "UQAnalysis object does not have an ensemble associated with it"
             )
             return
         if folderStructure is None:

@@ -46,17 +46,17 @@ class plugins:
         self.importPlugins()
 
     def importPlugins(self):
-        '''
+        """
         check files in self.pathList to see if they are plugins
-        '''
+        """
         for p in self.pathList:
             if os.path.exists(p):
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:
-                    mname = fname.rsplit('.', 1)  # split off extension
-                    if len(mname) > 1 and mname[1] == 'py':
-                        with open(os.path.join(p, fname), 'r', encoding="utf-8") as f:
+                    mname = fname.rsplit(".", 1)  # split off extension
+                    if len(mname) > 1 and mname[1] == "py":
+                        with open(os.path.join(p, fname), "r", encoding="utf-8") as f:
                             try:
                                 l = self.idString in f.read(self.charLimit)
                             except:

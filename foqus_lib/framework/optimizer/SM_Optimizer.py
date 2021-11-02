@@ -88,16 +88,16 @@ except ImportError:
 
 
 def checkAvailable():
-    '''
+    """
     Plugins should have this function to check availability of any
     additional required software.  If requirements are not available
     plugin will not be available.
-    '''
+    """
     return packages_available
 
 
 class opt(optimization):
-    '''
+    """
     The optimization solver (in this case, SM_Optimizer) class.
     It describes the solver & its properties. Should be called opt and
     inherit optimization.  The are several attributes from the optimization
@@ -113,14 +113,14 @@ class opt(optimization):
     __init()__ call base class init, set attributes, add options
     optimize() run optimization periodically send out results for
         monitoring, and check stop flag
-    '''
+    """
 
     def __init__(self, dat=None):
-        '''
+        """
         Initialize Pyomo_Surrogate optimization module
         Args:
             dat = foqus session object
-        '''
+        """
         optimization.__init__(self, dat)  # base class __init__
 
         # Description of the optimization
@@ -140,95 +140,95 @@ class opt(optimization):
         # creates a dropdown box.
 
         self.options.add(
-            name='Solver source',
-            default='pyomo',
+            name="Solver source",
+            default="pyomo",
             dtype=str,
             desc="Source of math optimization solver (pyomo or gams)",
         )
 
         self.options.add(
-            name='Model type',
-            default='nlp',
+            name="Model type",
+            default="nlp",
             dtype=str,
             desc="Type of math optimization model (used for gams)",
         )
 
         self.options.add(
-            name='Math optimization solver',
-            default='ipopt',
+            name="Math optimization solver",
+            default="ipopt",
             dtype=str,
             desc="Solver to be used for math optimization at each iteration",
         )
 
         self.options.add(
-            name='Math optimizer working - display',
+            name="Math optimizer working - display",
             default=True,
             desc="Display of math optimization solver iterations in terminal anaconda prompt",
         )
 
         self.options.add(
-            name='Solver options',
+            name="Solver options",
             default={
-                'tol': 1e-6,
-                'max_iter': 40,
-                'halt_on_ampl_error': 'yes',
-                'linear_solver': 'ma27',
-                'warm_start_init_point': 'yes',
+                "tol": 1e-6,
+                "max_iter": 40,
+                "halt_on_ampl_error": "yes",
+                "linear_solver": "ma27",
+                "warm_start_init_point": "yes",
             },
             dtype=object,
             desc="Math optimization solver options",
         )
 
         self.options.add(
-            name='Maximum algorithm iterations',
+            name="Maximum algorithm iterations",
             default=10,
             dtype=float,
             desc="Maximum iterations for surrogate based optimization algorithm",
         )
 
         self.options.add(
-            name='Alpha',
+            name="Alpha",
             default=0.8,
             dtype=float,
             desc="Fractional reduction in surrogate modeling space",
         )
 
         self.options.add(
-            name='Number of surrogate modeling samples',
+            name="Number of surrogate modeling samples",
             default=10,
             dtype=float,
             desc="Number of samples for generating modified surrogate model",
         )
 
         self.options.add(
-            name='Bound ratio',
+            name="Bound ratio",
             default=1,
             dtype=float,
             desc="Ratio of upper and lower bounds of decision variables",
         )
 
         self.options.add(
-            name='Multistart',
+            name="Multistart",
             default=True,
             desc="Multistart approach for each iteration's math optimization initialization",
         )
 
         self.options.add(
-            name='Objective value tolerance',
+            name="Objective value tolerance",
             default=1e-03,
             dtype=float,
             desc="Tolerance for deviation from objective function evaluated at optimum, from Aspen Simulation",
         )
 
         self.options.add(
-            name='Inequality constraint tolerance',
+            name="Inequality constraint tolerance",
             default=1e-03,
             dtype=float,
             desc="Tolerance for constraint satisfaction at optimum, from Aspen Simulation",
         )
 
         self.options.add(
-            name='Output variable tolerance',
+            name="Output variable tolerance",
             default=1e-03,
             dtype=float,
             desc="Tolerance for deviation of output variable values at optimum decision variables, calculated from Aspen Simulation, and Surrogate Model",
@@ -239,46 +239,46 @@ class opt(optimization):
         )
 
         self.options.add(
-            name='Set name',
+            name="Set name",
             default="PYOMO_SM",
             dtype=str,
             desc="Name of flowsheet result set to store data",
         )
 
         self.options.add(
-            name='Pyomo surrogate file',
+            name="Pyomo surrogate file",
             default="",
             dtype=str,
             desc="Name of python file containing surrogate based pyomo model",
         )
 
         self.options.add(
-            name='Surrogate model storing file',
+            name="Surrogate model storing file",
             default="",
             dtype=str,
             desc="Name of text file storing surrogate model from each algorithm iteration",
         )
 
         self.options.add(
-            name='Algorithm convergence plots file',
+            name="Algorithm convergence plots file",
             default="",
             dtype=str,
             desc="Name of python file with algorithm convergence plots",
         )
 
         self.options.add(
-            name='Parity plot file',
+            name="Parity plot file",
             default="",
             dtype=str,
             desc="Name of python file with the parity plot for the final surrogate model",
         )
 
     def f(self, x):
-        '''
+        """
         #        This is the function for the solver to call to get function
         #        evaluations.  This should run the FOQUS flowsheet also can
         #        stick in other dignostic output.  Whatever you like.
-        '''
+        """
         #        #run the flowsheet at point x.  X is turned into a list there
         #        #because this function can return there results of multiple
         #        #evaluations.  If FOQUS is setup right
@@ -302,10 +302,10 @@ class opt(optimization):
         return obj, cv, pv
 
     def optimize(self):
-        '''
+        """
         This is the main optimization routine.  This gets called to start
         things up.
-        '''
+        """
 
         # Display a little information to check that things are working
         self.msgQueue.put(
@@ -318,25 +318,25 @@ class opt(optimization):
         self.bestSoFarList = []
 
         # Get user options
-        solversource = self.options['Solver source'].value
-        mathoptsolver = self.options['Math optimization solver'].value
-        mtype = self.options['Model type'].value
-        Maxiter_Algo = self.options['Maximum algorithm iterations'].value
-        alpha = self.options['Alpha'].value
-        num_lhs = self.options['Number of surrogate modeling samples'].value
-        bound_ratio = self.options['Bound ratio'].value
-        multistart = self.options['Multistart'].value
-        tee = self.options['Math optimizer working - display'].value
-        solver_options = self.options['Solver options'].value
-        obj_tolerance = self.options['Objective value tolerance'].value
-        outputvar_tolerance = self.options['Inequality constraint tolerance'].value
-        inequality_tolerance = self.options['Output variable tolerance'].value
-        Saveresults = self.options['Save results'].value
-        SetName = self.options['Set name'].value
-        pyomo_surrogate = self.options['Pyomo surrogate file'].value
-        file_name_SM_stored = self.options['Surrogate model storing file'].value
-        file_name_plots = self.options['Algorithm convergence plots file'].value
-        uq_file = self.options['Parity plot file'].value
+        solversource = self.options["Solver source"].value
+        mathoptsolver = self.options["Math optimization solver"].value
+        mtype = self.options["Model type"].value
+        Maxiter_Algo = self.options["Maximum algorithm iterations"].value
+        alpha = self.options["Alpha"].value
+        num_lhs = self.options["Number of surrogate modeling samples"].value
+        bound_ratio = self.options["Bound ratio"].value
+        multistart = self.options["Multistart"].value
+        tee = self.options["Math optimizer working - display"].value
+        solver_options = self.options["Solver options"].value
+        obj_tolerance = self.options["Objective value tolerance"].value
+        outputvar_tolerance = self.options["Inequality constraint tolerance"].value
+        inequality_tolerance = self.options["Output variable tolerance"].value
+        Saveresults = self.options["Save results"].value
+        SetName = self.options["Set name"].value
+        pyomo_surrogate = self.options["Pyomo surrogate file"].value
+        file_name_SM_stored = self.options["Surrogate model storing file"].value
+        file_name_plots = self.options["Algorithm convergence plots file"].value
+        uq_file = self.options["Parity plot file"].value
 
         # The set name to use when saving evaluations in flowsheet results
         # (to get unique set names in flowsheet results section)
@@ -346,7 +346,7 @@ class opt(optimization):
         # The solver is all setup and ready to go
         start = time.time()  # get start time
         self.userInterupt = False  #
-        self.bestSoFar = float('inf')  # set inital best values
+        self.bestSoFar = float("inf")  # set inital best values
 
         # self.prob is the optimzation problem. get it ready
         self.prob.iterationNumber = 0
@@ -374,11 +374,11 @@ class opt(optimization):
 
         #       Changing simulation variable names to match pyomo names
         for i, n in enumerate(self.simin_names[:]):
-            n1 = n.replace('.', '_')
+            n1 = n.replace(".", "_")
             self.simin_nam[i] = n1
 
         for i, n in enumerate(self.simout_names[:]):
-            n2 = n.replace('.', '_')
+            n2 = n.replace(".", "_")
             self.simout_nam[i] = n2
         #        *******
         #       Importing the user defined surrogate model file
@@ -418,8 +418,8 @@ class opt(optimization):
 
         for i, simvar in enumerate(self.simout_nam):
             if simvar not in self.surrout_names:
-                if 'status' not in simvar:
-                    if 'graph_error' not in simvar:
+                if "status" not in simvar:
+                    if "graph_error" not in simvar:
                         for e in edge_list:
                             l = [c.fromName for c in e.con if c.active]
                             if str(self.simout_names[i]).split(".", 1)[1] not in l:
@@ -438,29 +438,29 @@ class opt(optimization):
             maxv = simin.get(nonsurrin_original).max
             initv = simin.get(nonsurrin_original).value
             self.m.add_component(
-                '{0}'.format(nonsurrin), Var(bounds=(minv, maxv), initialize=initv)
+                "{0}".format(nonsurrin), Var(bounds=(minv, maxv), initialize=initv)
             )
             self.nonsurrin_names_pyomo.append(getattr(self.m, nonsurrin))
 
         for i, nonsurrout in enumerate(self.nonsurrout_names):
             nonsurrout_original = self.nonsurrout_names_original[i]
-            self.m.add_component('{0}'.format(nonsurrout), Var(initialize=0.01))
+            self.m.add_component("{0}".format(nonsurrout), Var(initialize=0.01))
             self.nonsurrout_names_pyomo.append(getattr(self.m, nonsurrout))
 
         #        Obtaining list of FOQUS node input & output variable names
         self.sim_input_vars_original = [
-            'x.' + v for v in self.surrin_names_original + self.nonsurrin_names_original
+            "x." + v for v in self.surrin_names_original + self.nonsurrin_names_original
         ]
         self.sim_output_vars_original = [
-            'f.' + v
+            "f." + v
             for v in self.surrout_names_original + self.nonsurrout_names_original
         ]
         self.sim_input_vars_pyomo = [
-            'self.m.' + str(v)
+            "self.m." + str(v)
             for v in self.surrin_names_pyomo + self.nonsurrin_names_pyomo
         ]
         self.sim_output_vars_pyomo = [
-            'self.m.' + str(v)
+            "self.m." + str(v)
             for v in self.surrout_names_pyomo + self.nonsurrout_names_pyomo
         ]
 
@@ -481,7 +481,7 @@ class opt(optimization):
         for k in self.var_map_dict.keys():
             if k in o[:]:
                 o = re.sub(
-                    r'(?<![a-z]){0}(?![a-z])'.format(k), str(self.var_map_dict[k]), o
+                    r"(?<![a-z]){0}(?![a-z])".format(k), str(self.var_map_dict[k]), o
                 )
 
         self.m.obj = Objective(expr=eval(o))
@@ -492,7 +492,7 @@ class opt(optimization):
                 for k in self.var_map_dict.keys():
                     if k in g[:]:
                         g = re.sub(
-                            r'(?<![a-z]){0}(?![a-z])'.format(k),
+                            r"(?<![a-z]){0}(?![a-z])".format(k),
                             str(self.var_map_dict[k]),
                             g,
                         )
@@ -510,31 +510,31 @@ class opt(optimization):
         # Obtaining decision variable names in "node_var" format
         dvar_names = []
         for v in self.prob.v[:]:
-            v1 = v.replace('.', '_')
+            v1 = v.replace(".", "_")
             dvar_names.append(v1)
 
         #       Solving the optimization problem with user provided options
         if solversource == "gams":
             optimizer = SolverFactory(solversource)
             io_options = dict()
-            io_options['solver'] = mathoptsolver
-            if not os.path.exists('temp'):
-                os.makedirs('temp')
-            with open('temp/' + mathoptsolver + '.opt', "w") as f:
+            io_options["solver"] = mathoptsolver
+            if not os.path.exists("temp"):
+                os.makedirs("temp")
+            with open("temp/" + mathoptsolver + ".opt", "w") as f:
                 for k, v in solver_options.items():
-                    f.write(str(k) + ' ' + str(v) + '\n')
-            io_options['add_options'] = ['gams_model.optfile=1;']
-            io_options['mtype'] = mtype
+                    f.write(str(k) + " " + str(v) + "\n")
+            io_options["add_options"] = ["gams_model.optfile=1;"]
+            io_options["mtype"] = mtype
             # io_options['warmstart'] = Warmstart
             kwds = dict()
-            kwds['io_options'] = io_options
-            kwds['tee'] = tee
-            kwds['keepfiles'] = True
-            kwds['tmpdir'] = 'temp'
+            kwds["io_options"] = io_options
+            kwds["tee"] = tee
+            kwds["keepfiles"] = True
+            kwds["tmpdir"] = "temp"
         else:
             optimizer = SolverFactory(mathoptsolver)
             kwds = dict()
-            kwds['tee'] = tee
+            kwds["tee"] = tee
             optimizer.options = solver_options
 
         solution_time = []
@@ -581,7 +581,7 @@ class opt(optimization):
                     i_optim.append(dvar.value)
                 for sout in surroutvars:
                     o_optim.append(sout.value)
-                if str(r.solver.termination_condition) == 'optimal':
+                if str(r.solver.termination_condition) == "optimal":
                     input_optim[i1] = i_optim
                     output_optim[i1] = o_optim
                     objvals[i1] = self.m.obj()
@@ -590,7 +590,7 @@ class opt(optimization):
                         r.solver.termination_condition
                     )
                     solver_time[i1] = str(r.solver.time)
-                elif str(r.solver.termination_condition) == 'locallyOptimal':
+                elif str(r.solver.termination_condition) == "locallyOptimal":
                     input_optim[i1] = i_optim
                     output_optim[i1] = o_optim
                     objvals[i1] = self.m.obj()
@@ -756,12 +756,12 @@ class opt(optimization):
         #       to optimum decision variables
         #       Storing the values in a dictionary
         foqus_outvars = dict()
-        for nodeName in [k for k in simout.keys() if k != 'graph']:
+        for nodeName in [k for k in simout.keys() if k != "graph"]:
             self.outVars = simout[nodeName]
             for vkey, var in list(
-                (i, k) for (i, k) in self.outVars.items() if i != 'status'
+                (i, k) for (i, k) in self.outVars.items() if i != "status"
             )[:]:
-                vkey = str(nodeName) + '_' + str(vkey)
+                vkey = str(nodeName) + "_" + str(vkey)
                 if vkey in [str(v) for v in self.surrout_names_pyomo]:
                     foqus_outvars[vkey] = var.value
 
@@ -782,7 +782,7 @@ class opt(optimization):
 
         #       Total solution time
         optim_sol_plugin_sim = self.prob.gt.res[0]
-        self.surr_optim_sol_time = optim_sol_plugin_sim['solTime']
+        self.surr_optim_sol_time = optim_sol_plugin_sim["solTime"]
 
         #        Obtaining rigorous simulation and surrogate model based objective
         #        function values (f* and f) at optimum solution
@@ -878,7 +878,7 @@ class opt(optimization):
                 )
 
         #       Store the current iteration surrogate model in a text file
-        with open(os.path.join("user_plugins", file_name_SM_stored), 'w') as f:
+        with open(os.path.join("user_plugins", file_name_SM_stored), "w") as f:
             f.write("Iteration 1 Surrogate Model\n")
             for k in self.m.c.keys():
                 f.write("{0} = 0\n".format(self.m.c[k].body))
@@ -948,16 +948,16 @@ class opt(optimization):
                 instance1, cv1, pv1 = self.f(xf1)
 
                 #                Obtaining the output values corresponding to each sample point
-                for nodeName in [k for k in simout.keys() if k != 'graph']:
+                for nodeName in [k for k in simout.keys() if k != "graph"]:
                     for outVarName in [
                         k
-                        for k in self.prob.gt.res[0]['output'][nodeName]
-                        if k != 'status'
+                        for k in self.prob.gt.res[0]["output"][nodeName]
+                        if k != "status"
                     ]:
-                        surrout_value = self.prob.gt.res[0]['output'][nodeName][
+                        surrout_value = self.prob.gt.res[0]["output"][nodeName][
                             outVarName
                         ]
-                        nodevar = str(nodeName) + '_' + str(outVarName)
+                        nodevar = str(nodeName) + "_" + str(outVarName)
                         if nodevar in [str(v) for v in self.surrout_names_pyomo]:
                             indx = [str(v) for v in self.surrout_names_pyomo].index(
                                 nodevar
@@ -970,12 +970,12 @@ class opt(optimization):
 
             # This is working. It reads and replaces text within alamo.alm itself(r+)
             # Creating Updated ALAMO input file with shrunk surrogate input variable bounds, and new LHS samples
-            with open(os.path.join("alamo", "alamo.alm"), 'r+') as f:
+            with open(os.path.join("alamo", "alamo.alm"), "r+") as f:
                 lines = f.readlines()
-                idx1 = lines.index('BEGIN_DATA\n')
-                idx2 = lines.index('END_DATA\n')
-                idx3 = lines.index('BEGIN_VALDATA\n')
-                idx4 = lines.index('END_VALDATA\n')
+                idx1 = lines.index("BEGIN_DATA\n")
+                idx2 = lines.index("END_DATA\n")
+                idx3 = lines.index("BEGIN_VALDATA\n")
+                idx4 = lines.index("END_VALDATA\n")
 
                 f.seek(0)
                 f.truncate()
@@ -983,32 +983,32 @@ class opt(optimization):
 
                     index = lines.index(line)
 
-                    if 'xmin' in line:
+                    if "xmin" in line:
                         nummin = re.findall(r"\d+\.\d+", line)
                         for i, n in enumerate(nummin):
                             d = surrin_pyomo[i]
                             line = re.sub(nummin[i], "{0}".format(d_lb_upd), line)
 
-                    if 'xmax' in line:
+                    if "xmax" in line:
                         nummax = re.findall(r"\d+\.\d+", line)
                         for i, n in enumerate(nummax):
                             d = surrin_pyomo[i]
                             line = re.sub(nummax[i], "{0}".format(d_ub_upd), line)
 
-                    if 'sampler' in line:
+                    if "sampler" in line:
                         line = re.sub(r"\d+", "1", line)
-                    if 'maxiter' in line:
+                    if "maxiter" in line:
                         line = re.sub(r"\d+", "1", line)
 
-                    if 'initialpoints' in line:
+                    if "initialpoints" in line:
                         line = re.sub(
                             r"\d+", "{0}".format(len(latin_hypercube_samples)), line
                         )
-                    if 'ndata' in line:
+                    if "ndata" in line:
                         line = re.sub(
                             r"\d+", "{0}".format(len(latin_hypercube_samples)), line
                         )
-                    if 'nvaldata' in line:
+                    if "nvaldata" in line:
                         line = re.sub(
                             r"\d+", "{0}".format(len(latin_hypercube_samples)), line
                         )
@@ -1074,8 +1074,8 @@ class opt(optimization):
                         f.write(line)
 
             alamoExe = self.dat.foqusSettings.alamo_path
-            alamoInput = 'alamo.alm'
-            alamoDir = 'alamo'
+            alamoInput = "alamo.alm"
+            alamoDir = "alamo"
             alamoDirFull = os.path.abspath(alamoDir)
             process = subprocess.Popen(
                 [alamoExe, alamoInput],
@@ -1092,7 +1092,7 @@ class opt(optimization):
                 line = process.stdout.readline()
 
             #   alamo.lst gets automatically created after running alamo and this code below accesses the path in which this file gets created
-            alamoOutput = alamoInput.rsplit('.', 1)[0] + '.lst'
+            alamoOutput = alamoInput.rsplit(".", 1)[0] + ".lst"
             alamoOutput = os.path.join(alamoDir, alamoOutput)
             res = SurrogateParser.parseAlamo(alamoOutput)
             self.result = res
@@ -1116,27 +1116,27 @@ class opt(optimization):
                     surrvarin_pyomo.setub(surrin_bounds[i][1])
 
             # *** Obtaining new surrogate model in pyomo format
-            excludeBefore = '[a-zA-Z0-9_\'\".]'
-            excludeAfter = '[0-9a-zA-Z_.(\'\"]'
+            excludeBefore = "[a-zA-Z0-9_'\".]"
+            excludeAfter = "[0-9a-zA-Z_.('\"]"
             eq_list1 = []
-            for eq_str1 in self.result['outputEqns']:
+            for eq_str1 in self.result["outputEqns"]:
                 for i, v in enumerate(self.surrin_names_original):
                     vo1 = str(self.surrin_names_pyomo[i])
                     pat1 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo1.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo1.replace(".", "\\."), excludeAfter
                     )
-                    newForm1 = 'self.m.{0}'.format(str(self.surrin_names_pyomo[i]))
+                    newForm1 = "self.m.{0}".format(str(self.surrin_names_pyomo[i]))
                     eq_str1 = re.sub(pat1, newForm1, eq_str1)
 
-                p1 = re.compile('(=)')
-                eq_str1 = p1.sub('==', eq_str1)
+                p1 = re.compile("(=)")
+                eq_str1 = p1.sub("==", eq_str1)
 
                 for i, v in enumerate(self.surrout_names_original):
                     vo2 = str(self.surrout_names_pyomo[i])
                     pat2 = "(?<!{0}){1}(?!{2})".format(
-                        excludeBefore, vo2.replace('.', '\\.'), excludeAfter
+                        excludeBefore, vo2.replace(".", "\\."), excludeAfter
                     )
-                    newForm2 = 'self.m.{0}'.format(str(self.surrout_names_pyomo[i]))
+                    newForm2 = "self.m.{0}".format(str(self.surrout_names_pyomo[i]))
                     eq_str1 = re.sub(pat2, newForm2, eq_str1)
                 eq_list1.append(eq_str1.strip())
             # *****
@@ -1192,7 +1192,7 @@ class opt(optimization):
                         i_optim.append(dvar.value)
                     for sout in surroutvars:
                         o_optim.append(sout.value)
-                    if str(r.solver.termination_condition) == 'optimal':
+                    if str(r.solver.termination_condition) == "optimal":
                         input_optim[i1] = i_optim
                         output_optim[i1] = o_optim
                         objvals[i1] = self.m.obj()
@@ -1201,7 +1201,7 @@ class opt(optimization):
                             r.solver.termination_condition
                         )
                         solver_time[i1] = str(r.solver.time)
-                    elif str(r.solver.termination_condition) == 'locallyOptimal':
+                    elif str(r.solver.termination_condition) == "locallyOptimal":
                         input_optim[i1] = i_optim
                         output_optim[i1] = o_optim
                         objvals[i1] = self.m.obj()
@@ -1346,12 +1346,12 @@ class opt(optimization):
             #       Obtaining the values of FOQUS surrogate output variables corresponding to optimum decision variables
             #        Storing the values in a dictionary
             foqus_outvars = dict()
-            for nodeName in [k for k in simout.keys() if k != 'graph']:
+            for nodeName in [k for k in simout.keys() if k != "graph"]:
                 self.outVars = simout[nodeName]
                 for vkey, var in list(
-                    (i, k) for (i, k) in self.outVars.items() if i != 'status'
+                    (i, k) for (i, k) in self.outVars.items() if i != "status"
                 )[:]:
-                    vkey = str(nodeName) + '_' + str(vkey)
+                    vkey = str(nodeName) + "_" + str(vkey)
                     if vkey in [str(v) for v in self.surrout_names_pyomo]:
                         foqus_outvars[vkey] = var.value
 
@@ -1371,7 +1371,7 @@ class opt(optimization):
 
             #       Total solution time
             optim_sol_plugin_sim = self.prob.gt.res[0]
-            self.surr_optim_sol_time = optim_sol_plugin_sim['solTime']
+            self.surr_optim_sol_time = optim_sol_plugin_sim["solTime"]
 
             #       Obtaining objective function values
             f_str = instance
@@ -1406,7 +1406,7 @@ class opt(optimization):
                             self.msgQueue.put("Optimization Successful")
                         else:
                             flag = 1
-                            self.msgQueue.put('{0}'.format(cv))
+                            self.msgQueue.put("{0}".format(cv))
                             self.msgQueue.put("Inequality constraints g' not satisfied")
                             self.msgQueue.put("Surrogate Model Improvement Required")
                             self.msgQueue.put("****Proceed to next iteration****\n")
@@ -1415,8 +1415,8 @@ class opt(optimization):
                         self.msgQueue.put("Optimization Successful")
                 else:
                     flag = 2
-                    self.msgQueue.put('{0}'.format(outvar_val_fracdiff))
-                    self.msgQueue.put('{0}'.format(cv))
+                    self.msgQueue.put("{0}".format(outvar_val_fracdiff))
+                    self.msgQueue.put("{0}".format(cv))
                     self.msgQueue.put(
                         "Difference between aspen simulation and surrogate model output var values at optimal solution, outside tolerance bound"
                     )
@@ -1456,12 +1456,12 @@ class opt(optimization):
                     )
 
                 # # ***Generate python file for Parity Plot***
-                with open(os.path.join("user_plugins", uq_file), 'w') as f:
+                with open(os.path.join("user_plugins", uq_file), "w") as f:
                     f.write(
-                        'Input_Data = {0}\n'.format(latin_hypercube_samples.tolist())
+                        "Input_Data = {0}\n".format(latin_hypercube_samples.tolist())
                     )
                     f.write(
-                        'Simulator_Output_Data = {0}\n'.format(
+                        "Simulator_Output_Data = {0}\n".format(
                             latin_hypercube_samples_values.tolist()
                         )
                     )
@@ -1478,10 +1478,10 @@ class opt(optimization):
                             vout = -value(self.m.c[i + 1].body - vout)
                             out.append(vout)
                         SM_outdata.append(out)
-                    f.write('SM_Output_Data = {0}\n'.format(SM_outdata))
+                    f.write("SM_Output_Data = {0}\n".format(SM_outdata))
 
             # Store the current iteration surrogate model in a text file
-            with open(os.path.join("user_plugins", file_name_SM_stored), 'a') as f:
+            with open(os.path.join("user_plugins", file_name_SM_stored), "a") as f:
                 f.write("\nIteration {0} Surrogate Model\n".format(algo_iter))
                 for k in self.m.c.keys():
                     f.write("{0} = 0\n".format(self.m.c[k].body))
@@ -1489,18 +1489,18 @@ class opt(optimization):
         self.msgQueue.put(
             "Total Solution Time for SM Optimizer is {} s".format(sum(solution_time))
         )
-        with open(os.path.join("user_plugins", file_name_plots), 'w') as f:
-            f.write('import matplotlib.pyplot as plt\n')
-            f.write('iterations = {0}\n'.format(list(range(1, algo_iter + 1))))
-            f.write('obj_func_vals = {0}\n'.format(obj_func_vals))
-            f.write('obj_fracdif_vals = {0}\n'.format(obj_fracdif_vals))
-            f.write('y_fracdif_vals = {0}\n'.format(y_fracdif_vals))
+        with open(os.path.join("user_plugins", file_name_plots), "w") as f:
+            f.write("import matplotlib.pyplot as plt\n")
+            f.write("iterations = {0}\n".format(list(range(1, algo_iter + 1))))
+            f.write("obj_func_vals = {0}\n".format(obj_func_vals))
+            f.write("obj_fracdif_vals = {0}\n".format(obj_fracdif_vals))
+            f.write("y_fracdif_vals = {0}\n".format(y_fracdif_vals))
             if len(constrexprs) != 0:
-                f.write('constr_viol_vals = {0}\n'.format(constr_viol_vals))
+                f.write("constr_viol_vals = {0}\n".format(constr_viol_vals))
             f.write(
-                'fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,figsize=(5,15),sharex=True)\n'
+                "fig, (ax1, ax2, ax3, ax4) = plt.subplots(4,figsize=(5,15),sharex=True)\n"
             )
-            f.write('fig.tight_layout()\n')
+            f.write("fig.tight_layout()\n")
             f.write("fig.suptitle('Algorithm Convergence')\n")
             f.write("plt.xticks(iterations)\n")
             f.write("plt.xlabel('Iterations')\n")

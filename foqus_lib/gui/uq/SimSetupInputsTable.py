@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-__author__ = 'ou3'
+__author__ = "ou3"
 
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
@@ -21,7 +21,7 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 class SimSetupInputsTable(InputPriorTable):
     def __init__(self, parent=None):
         super(SimSetupInputsTable, self).__init__(parent)
-        self.typeItems = ['Variable', 'Fixed']
+        self.typeItems = ["Variable", "Fixed"]
 
     def setupLB(self):
         inVarTypes = self.data.getInputTypes()

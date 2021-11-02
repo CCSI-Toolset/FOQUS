@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-__author__ = 'ou3'
+__author__ = "ou3"
 
 from foqus_lib.gui.common.InferenceInputsTable import InferenceInputsTable
 

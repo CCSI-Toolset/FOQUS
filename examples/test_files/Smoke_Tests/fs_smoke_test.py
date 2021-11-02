@@ -16,9 +16,9 @@
 from PyQt5 import QtCore, QtWidgets
 
 MAX_RUN_TIME = 90000  # Maximum time to let script run in ms.
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:  # file to write test results to
-    f.write('Test Results\n')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:  # file to write test results to
+    f.write("Test Results\n")
 timers = {}  # mainly put all timers in a dic so I can easily stop them all
 
 
@@ -53,7 +53,7 @@ def Error_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if Error appears in the title, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'Error' in str(w.windowTitle()):
+        if "Error" in str(w.windowTitle()):
             w.close()
             global errorCount
             global errorTitle
@@ -90,8 +90,8 @@ def Error_okay_text(MainWin=MainWin, getButton=getButton, timers=timers):
     """Close the Error dialog if a, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     try:
-        if 'FOQUS UQ developers' in str(w.text()):
-            getButton(w, 'OK').click()
+        if "FOQUS UQ developers" in str(w.text()):
+            getButton(w, "OK").click()
             global errorCount
             global errorTitle
             global errorFile
@@ -127,41 +127,41 @@ def msg_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click OK when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'OK').click()
-        timers['msg_okay'].stop()
+        getButton(w, "OK").click()
+        timers["msg_okay"].stop()
 
 
 def msg_no(MainWin=MainWin, getButton=getButton, timers=timers):
     """Click No when a msgbox pops up, stops timer once a msgbox pops up"""
     w = MainWin.app.activeWindow()
     if isinstance(w, QtWidgets.QMessageBox):
-        getButton(w, 'No').click()
-        timers['msg_no'].stop()
+        getButton(w, "No").click()
+        timers["msg_no"].stop()
 
 
 def add_UQ_cancel(MainWin=MainWin, getButton=getButton, timers=timers):
     """Cancel adding a UQ ensemble, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
     print(str(type(w)))
-    if 'updateUQModelDialog' in str(type(w)):
-        getButton(w.buttonBox, 'Cancel').click()
-        timers['add_UQ_cancel'].stop()
+    if "updateUQModelDialog" in str(type(w)):
+        getButton(w.buttonBox, "Cancel").click()
+        timers["add_UQ_cancel"].stop()
 
 
 def add_UQ_okay(MainWin=MainWin, getButton=getButton, timers=timers):
     """Press OK in adding a UQ ensemble, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        getButton(w.buttonBox, 'OK').click()
-        timers['add_UQ_okay'].stop()
+    if "updateUQModelDialog" in str(type(w)):
+        getButton(w.buttonBox, "OK").click()
+        timers["add_UQ_okay"].stop()
 
 
 def add_UQ_yes(MainWin=MainWin, getButton=getButton, timers=timers):
     """Press YES in adding a UQ ensemble, stops timer once the window comes up"""
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        getButton(w.buttonBox, 'YES').click()
-        timers['add_UQ_yes'].stop()
+    if "updateUQModelDialog" in str(type(w)):
+        getButton(w.buttonBox, "YES").click()
+        timers["add_UQ_yes"].stop()
 
 
 def uq_sampling_scheme_MC(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
@@ -169,8 +169,8 @@ def uq_sampling_scheme_MC(MainWin=MainWin, getButton=getButton, timers=timers, g
     w = MainWin.app.activeWindow()
     global errorTitle
     errorTitle = "Monte Carlo"
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_MC'].stop()
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_MC"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ----------------------------------------------------------------------
         # Normal Distribution
@@ -179,7 +179,7 @@ def uq_sampling_scheme_MC(MainWin=MainWin, getButton=getButton, timers=timers, g
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Monte Carlo', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Monte Carlo", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(100)
         w.generateSamplesButton.click()
@@ -192,9 +192,9 @@ def uq_sampling_scheme_QMC(MainWin=MainWin, getButton=getButton, timers=timers, 
     """Setup up an enseble sampling scheme with Quasi Monte Carlo, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Quasi Monte Carlo/Lognormal Dist'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_QMC'].stop()
+    errorTitle = "Quasi Monte Carlo/Lognormal Dist"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_QMC"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ---------------------------------------------------------------------- # Isn't working
         # Lognormal Distribution
@@ -205,7 +205,7 @@ def uq_sampling_scheme_QMC(MainWin=MainWin, getButton=getButton, timers=timers, 
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Quasi Monte Carlo', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Quasi Monte Carlo", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(100)
         w.generateSamplesButton.click()
@@ -218,9 +218,9 @@ def uq_sampling_scheme_LH(MainWin=MainWin, getButton=getButton, timers=timers, g
     """Setup up an enseble sampling scheme with Latin Hypercube, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Latin Hypercube/Triangle Distribution'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_LH'].stop()
+    errorTitle = "Latin Hypercube/Triangle Distribution"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_LH"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ----------------------------------------------------------------------
         # Triangle Distribution
@@ -229,7 +229,7 @@ def uq_sampling_scheme_LH(MainWin=MainWin, getButton=getButton, timers=timers, g
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Latin Hypercube', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Latin Hypercube", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(100)
         w.generateSamplesButton.click()
@@ -242,9 +242,9 @@ def uq_sampling_scheme_OA(MainWin=MainWin, getButton=getButton, timers=timers, g
     """Setup up an enseble sampling scheme with Orthogonal Array, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Orthogonal Array/Gamma Distribution'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_OA'].stop()
+    errorTitle = "Orthogonal Array/Gamma Distribution"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_OA"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ----------------------------------------------------------------------
         # Gamma Distribution
@@ -253,7 +253,7 @@ def uq_sampling_scheme_OA(MainWin=MainWin, getButton=getButton, timers=timers, g
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Orthogonal Array', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Orthogonal Array", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(99)
         w.generateSamplesButton.click()
@@ -266,9 +266,9 @@ def uq_sampling_scheme_MD(MainWin=MainWin, getButton=getButton, timers=timers, g
     """Setup up an enseble sampling scheme with Morris Design, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Morris Design/Beta Distribution'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_MD'].stop()
+    errorTitle = "Morris Design/Beta Distribution"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_MD"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ---------------------------------------------------------------------- # Doesn't work
         # Beta Distribution
@@ -279,7 +279,7 @@ def uq_sampling_scheme_MD(MainWin=MainWin, getButton=getButton, timers=timers, g
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("2"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Morris Design', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Morris Design", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(99)
         w.generateSamplesButton.click()
@@ -292,9 +292,9 @@ def uq_sampling_scheme_GMD(MainWin=MainWin, getButton=getButton, timers=timers, 
     """Setup up an enseble sampling scheme with Generalized Morris Design, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Generalized Morris Design/Exponential Distribution'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_GMD'].stop()
+    errorTitle = "Generalized Morris Design/Exponential Distribution"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_GMD"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ---------------------------------------------------------------------- # Doesn't work
         # Exponential Distribution
@@ -304,7 +304,7 @@ def uq_sampling_scheme_GMD(MainWin=MainWin, getButton=getButton, timers=timers, 
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
         items = w.schemesList.findItems(
-            'Generalized Morris Design', QtCore.Qt.MatchExactly
+            "Generalized Morris Design", QtCore.Qt.MatchExactly
         )
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(99)
@@ -318,9 +318,9 @@ def uq_sampling_scheme_GS(MainWin=MainWin, getButton=getButton, timers=timers, g
     """Setup up an enseble sampling scheme with Gradient Sample, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'Gradient Sample/Weibull Distribution'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_GS'].stop()
+    errorTitle = "Gradient Sample/Weibull Distribution"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_GS"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         ### ----------------------------------------------------------------------
         # Weibull Distribution
@@ -329,7 +329,7 @@ def uq_sampling_scheme_GS(MainWin=MainWin, getButton=getButton, timers=timers, g
         w.distTable.cellWidget(0, 7).setItem(0, 1, QtWidgets.QTableWidgetItem("0.5"))
         ### ----------------------------------------------------------------------
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Gradient Sample', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Gradient Sample", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(3)
         w.generateSamplesButton.click()
@@ -344,12 +344,12 @@ def uq_sampling_scheme_METIS(
     """Setup up an enseble sampling scheme with METIS, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'METIS'
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme_METIS'].stop()
+    errorTitle = "METIS"
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme_METIS"].stop()
         w.distTable.cellWidget(1, 1).setCurrentIndex(1)
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('METIS', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("METIS", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(100)
         w.generateSamplesButton.click()
@@ -362,9 +362,9 @@ def filter_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Open the Filters Dialog Box"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme'
-    if 'dataBrowserDialog' in str(type(w)):
-        timers['filter_scheme'].stop()
+    errorTitle = "filter_scheme"
+    if "dataBrowserDialog" in str(type(w)):
+        timers["filter_scheme"].stop()
         w.dataFrame.editFiltersButton.click()
 
 
@@ -375,9 +375,9 @@ def new_filter_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go
     """Adds a new filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'new_filter_scheme'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['new_filter_scheme'].stop()
+    errorTitle = "new_filter_scheme"
+    if "dataFilterDialog" in str(type(w)):
+        timers["new_filter_scheme"].stop()
         w.addFilter()
 
 
@@ -385,10 +385,10 @@ def filter_text_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=g
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme'
+    errorTitle = "filter_text_scheme"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Result")
-        timers['filter_text_scheme'].stop()
+        timers["filter_text_scheme"].stop()
         w.done(1)
 
 
@@ -396,9 +396,9 @@ def add_result_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go
     """Adds the sort term into the dialog box and opens the add new filter box, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'add_result_scheme'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['add_result_scheme'].stop()
+    errorTitle = "add_result_scheme"
+    if "dataFilterDialog" in str(type(w)):
+        timers["add_result_scheme"].stop()
         w.sortCheck.toggle()
         w.enableSortTerm()
         w.sortTermEdit.setText('["-result"]')
@@ -409,9 +409,9 @@ def filter_scheme_2(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Open the Filters Dialog Box"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_2'
-    if 'dataBrowserDialog' in str(type(w)):
-        timers['filter_scheme_2'].stop()
+    errorTitle = "filter_scheme_2"
+    if "dataBrowserDialog" in str(type(w)):
+        timers["filter_scheme_2"].stop()
         w.dataFrame.editFiltersButton.click()
 
 
@@ -422,9 +422,9 @@ def new_filter_scheme_2(MainWin=MainWin, getButton=getButton, timers=timers, go=
     """Adds a new filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'new_filter_scheme_2'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['new_filter_scheme_2'].stop()
+    errorTitle = "new_filter_scheme_2"
+    if "dataFilterDialog" in str(type(w)):
+        timers["new_filter_scheme_2"].stop()
         w.addFilter()
 
 
@@ -432,10 +432,10 @@ def filter_text_scheme_2(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_2'
+    errorTitle = "filter_text_scheme_2"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("ResultAndError")
-        timers['filter_text_scheme_2'].stop()
+        timers["filter_text_scheme_2"].stop()
         w.done(1)
 
 
@@ -443,10 +443,10 @@ def filter_text_scheme_3(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_3'
+    errorTitle = "filter_text_scheme_3"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation")
-        timers['filter_text_scheme_3'].stop()
+        timers["filter_text_scheme_3"].stop()
         w.done(1)
 
 
@@ -454,9 +454,9 @@ def add_result_scheme_2(MainWin=MainWin, getButton=getButton, timers=timers, go=
     """Adds the sort term into the dialog box and opens the add new filter box, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'add_result_scheme_2'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['add_result_scheme_2'].stop()
+    errorTitle = "add_result_scheme_2"
+    if "dataFilterDialog" in str(type(w)):
+        timers["add_result_scheme_2"].stop()
         w.sortTermEdit.setText('["err","-result"]')
         w.addFilter()
 
@@ -465,9 +465,9 @@ def operation_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go)
     """Adds two conditions for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'operation_scheme'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['operation_scheme'].stop()
+    errorTitle = "operation_scheme"
+    if "dataFilterDialog" in str(type(w)):
+        timers["operation_scheme"].stop()
         w.addRuleButton.click()
         w.addOpButton.click()
         w.addRuleButton.click()
@@ -488,10 +488,10 @@ def filter_text_scheme_4(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_4'
+    errorTitle = "filter_text_scheme_4"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation_4")
-        timers['filter_text_scheme_4'].stop()
+        timers["filter_text_scheme_4"].stop()
         w.done(1)
 
 
@@ -499,9 +499,9 @@ def filter_scheme_4(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Adds one condition for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_4'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['filter_scheme_4'].stop()
+    errorTitle = "filter_scheme_4"
+    if "dataFilterDialog" in str(type(w)):
+        timers["filter_scheme_4"].stop()
         w.addRuleButton.click()
         table = w.ruleTable
         row1Items = [table.takeItem(0, 0), table.cellWidget(0, 1), table.takeItem(0, 2)]
@@ -517,10 +517,10 @@ def filter_text_scheme_5(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_5'
+    errorTitle = "filter_text_scheme_5"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation_5")
-        timers['filter_text_scheme_5'].stop()
+        timers["filter_text_scheme_5"].stop()
         w.done(1)
 
 
@@ -528,9 +528,9 @@ def filter_scheme_5(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Adds one condition for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_5'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['filter_scheme_5'].stop()
+    errorTitle = "filter_scheme_5"
+    if "dataFilterDialog" in str(type(w)):
+        timers["filter_scheme_5"].stop()
         w.addRuleButton.click()
         table = w.ruleTable
         row1Items = [table.takeItem(0, 0), table.cellWidget(0, 1), table.takeItem(0, 2)]
@@ -546,10 +546,10 @@ def filter_text_scheme_6(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_6'
+    errorTitle = "filter_text_scheme_6"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation_6")
-        timers['filter_text_scheme_6'].stop()
+        timers["filter_text_scheme_6"].stop()
         w.done(1)
 
 
@@ -557,9 +557,9 @@ def filter_scheme_6(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Adds one condition for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_6'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['filter_scheme_6'].stop()
+    errorTitle = "filter_scheme_6"
+    if "dataFilterDialog" in str(type(w)):
+        timers["filter_scheme_6"].stop()
         w.addRuleButton.click()
         table = w.ruleTable
         row1Items = [table.takeItem(0, 0), table.cellWidget(0, 1), table.takeItem(0, 2)]
@@ -575,10 +575,10 @@ def filter_text_scheme_7(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_7'
+    errorTitle = "filter_text_scheme_7"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation_7")
-        timers['filter_text_scheme_7'].stop()
+        timers["filter_text_scheme_7"].stop()
         w.done(1)
 
 
@@ -586,9 +586,9 @@ def filter_scheme_7(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Adds one condition for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_7'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['filter_scheme_7'].stop()
+    errorTitle = "filter_scheme_7"
+    if "dataFilterDialog" in str(type(w)):
+        timers["filter_scheme_7"].stop()
         w.addRuleButton.click()
         table = w.ruleTable
         row1Items = [table.takeItem(0, 0), table.cellWidget(0, 1), table.takeItem(0, 2)]
@@ -604,10 +604,10 @@ def filter_text_scheme_8(MainWin=MainWin, getButton=getButton, timers=timers, go
     """Sets the new filter name and closes the window, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_text_scheme_8'
+    errorTitle = "filter_text_scheme_8"
     if isinstance(w, QtWidgets.QInputDialog):
         w.setTextValue("Operation_8")
-        timers['filter_text_scheme_8'].stop()
+        timers["filter_text_scheme_8"].stop()
         w.done(1)
 
 
@@ -615,9 +615,9 @@ def filter_scheme_8(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Adds one condition for sorting and adds an additional filter, stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'filter_scheme_8'
-    if 'dataFilterDialog' in str(type(w)):
-        timers['filter_scheme_8'].stop()
+    errorTitle = "filter_scheme_8"
+    if "dataFilterDialog" in str(type(w)):
+        timers["filter_scheme_8"].stop()
         w.addRuleButton.click()
         table = w.ruleTable
         row1Items = [table.takeItem(0, 0), table.cellWidget(0, 1), table.takeItem(0, 2)]
@@ -633,9 +633,9 @@ def fs_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=go):
     """Cycles through all of the , stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'fs_scheme'
-    if 'dataBrowserDialog' in str(type(w)):
-        timers['fs_scheme'].stop()
+    errorTitle = "fs_scheme"
+    if "dataBrowserDialog" in str(type(w)):
+        timers["fs_scheme"].stop()
         w.dataFrame.filterSelectBox.setCurrentIndex(
             1
         )  # This one currently doesn't work
@@ -655,9 +655,9 @@ def apply_filter_scheme(MainWin=MainWin, getButton=getButton, timers=timers, go=
     """Cycles through all of the , stops timer once window comes up"""
     w = MainWin.app.activeWindow()
     global errorTitle
-    errorTitle = 'apply_filter_scheme'
-    if 'dataBrowserDialog' in str(type(w)):
-        timers['apply_filter_scheme'].stop()
+    errorTitle = "apply_filter_scheme"
+    if "dataBrowserDialog" in str(type(w)):
+        timers["apply_filter_scheme"].stop()
         w.dataFrame.filterSelectBox.setCurrentIndex(
             1
         )  # This one currently doesn't work
@@ -700,7 +700,7 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
         if not timers[timer].isActive():
             return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
-    with open(tf, 'a') as f:  # file to write test results to
+    with open(tf, "a") as f:  # file to write test results to
         f.write("ERROR: timer {} didn't stop in alloted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
@@ -708,48 +708,48 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script if too long
-addTimer('msg_okay', msg_okay)  # click OK on mgsbox
-addTimer('msg_no', msg_no)  # click No on msgbox
-addTimer('add_UQ_cancel', add_UQ_cancel)  # click cancel on uq ensemble dialog
-addTimer('add_UQ_okay', add_UQ_okay)  # click okay on uq ensemble dialog
-addTimer('Error_okay', Error_okay)  # click okay on uq ensemble dialog
-addTimer('Error_okay_text', Error_okay_text)  # click okay on uq ensemble dialog
-addTimer('add_UQ_yes', add_UQ_yes)  # click yes on uq ensemble dialog
-addTimer('uq_sampling_scheme_MC', uq_sampling_scheme_MC)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_QMC', uq_sampling_scheme_QMC)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_LH', uq_sampling_scheme_LH)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_OA', uq_sampling_scheme_OA)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_MD', uq_sampling_scheme_MD)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_GMD', uq_sampling_scheme_GMD)  # do sampling scheme dialog
-addTimer('uq_sampling_scheme_GS', uq_sampling_scheme_GS)  # do sampling scheme dialog
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script if too long
+addTimer("msg_okay", msg_okay)  # click OK on mgsbox
+addTimer("msg_no", msg_no)  # click No on msgbox
+addTimer("add_UQ_cancel", add_UQ_cancel)  # click cancel on uq ensemble dialog
+addTimer("add_UQ_okay", add_UQ_okay)  # click okay on uq ensemble dialog
+addTimer("Error_okay", Error_okay)  # click okay on uq ensemble dialog
+addTimer("Error_okay_text", Error_okay_text)  # click okay on uq ensemble dialog
+addTimer("add_UQ_yes", add_UQ_yes)  # click yes on uq ensemble dialog
+addTimer("uq_sampling_scheme_MC", uq_sampling_scheme_MC)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_QMC", uq_sampling_scheme_QMC)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_LH", uq_sampling_scheme_LH)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_OA", uq_sampling_scheme_OA)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_MD", uq_sampling_scheme_MD)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_GMD", uq_sampling_scheme_GMD)  # do sampling scheme dialog
+addTimer("uq_sampling_scheme_GS", uq_sampling_scheme_GS)  # do sampling scheme dialog
 addTimer(
-    'uq_sampling_scheme_METIS', uq_sampling_scheme_METIS
+    "uq_sampling_scheme_METIS", uq_sampling_scheme_METIS
 )  # do sampling scheme dialog
-addTimer('filter_scheme', filter_scheme)  # do analysis scheme dialog
-addTimer('new_filter_scheme', new_filter_scheme)  # do analysis scheme dialog
-addTimer('filter_text_scheme', filter_text_scheme)  # do analysis scheme dialog
-addTimer('add_result_scheme', add_result_scheme)  # do analysis scheme dialog
-addTimer('filter_scheme_2', filter_scheme_2)  # do analysis scheme dialog
-addTimer('new_filter_scheme_2', new_filter_scheme_2)  # do analysis scheme dialog
-addTimer('filter_text_scheme_2', filter_text_scheme_2)  # do analysis scheme dialog
-addTimer('filter_text_scheme_3', filter_text_scheme_3)  # do analysis scheme dialog
-addTimer('add_result_scheme_2', add_result_scheme_2)  # do analysis scheme dialog
-addTimer('operation_scheme', operation_scheme)  # do analysis scheme dialog
-addTimer('filter_text_scheme_4', filter_text_scheme_4)  # do analysis scheme dialog
-addTimer('filter_scheme_4', filter_scheme_4)  # do analysis scheme dialog
-addTimer('filter_text_scheme_5', filter_text_scheme_5)  # do analysis scheme dialog
-addTimer('filter_scheme_5', filter_scheme_5)  # do analysis scheme dialog
-addTimer('filter_text_scheme_6', filter_text_scheme_6)  # do analysis scheme dialog
-addTimer('filter_scheme_6', filter_scheme_6)  # do analysis scheme dialog
-addTimer('filter_text_scheme_7', filter_text_scheme_7)  # do analysis scheme dialog
-addTimer('filter_scheme_7', filter_scheme_7)  # do analysis scheme dialog
-addTimer('filter_text_scheme_8', filter_text_scheme_8)  # do analysis scheme dialog
-addTimer('filter_scheme_8', filter_scheme_8)  # do analysis scheme dialog
-addTimer('apply_filter_scheme', apply_filter_scheme)  # do analysis scheme dialog
-addTimer('fs_scheme', fs_scheme)  # do analysis scheme dialog
+addTimer("filter_scheme", filter_scheme)  # do analysis scheme dialog
+addTimer("new_filter_scheme", new_filter_scheme)  # do analysis scheme dialog
+addTimer("filter_text_scheme", filter_text_scheme)  # do analysis scheme dialog
+addTimer("add_result_scheme", add_result_scheme)  # do analysis scheme dialog
+addTimer("filter_scheme_2", filter_scheme_2)  # do analysis scheme dialog
+addTimer("new_filter_scheme_2", new_filter_scheme_2)  # do analysis scheme dialog
+addTimer("filter_text_scheme_2", filter_text_scheme_2)  # do analysis scheme dialog
+addTimer("filter_text_scheme_3", filter_text_scheme_3)  # do analysis scheme dialog
+addTimer("add_result_scheme_2", add_result_scheme_2)  # do analysis scheme dialog
+addTimer("operation_scheme", operation_scheme)  # do analysis scheme dialog
+addTimer("filter_text_scheme_4", filter_text_scheme_4)  # do analysis scheme dialog
+addTimer("filter_scheme_4", filter_scheme_4)  # do analysis scheme dialog
+addTimer("filter_text_scheme_5", filter_text_scheme_5)  # do analysis scheme dialog
+addTimer("filter_scheme_5", filter_scheme_5)  # do analysis scheme dialog
+addTimer("filter_text_scheme_6", filter_text_scheme_6)  # do analysis scheme dialog
+addTimer("filter_scheme_6", filter_scheme_6)  # do analysis scheme dialog
+addTimer("filter_text_scheme_7", filter_text_scheme_7)  # do analysis scheme dialog
+addTimer("filter_scheme_7", filter_scheme_7)  # do analysis scheme dialog
+addTimer("filter_text_scheme_8", filter_text_scheme_8)  # do analysis scheme dialog
+addTimer("filter_scheme_8", filter_scheme_8)  # do analysis scheme dialog
+addTimer("apply_filter_scheme", apply_filter_scheme)  # do analysis scheme dialog
+addTimer("fs_scheme", fs_scheme)  # do analysis scheme dialog
 
-timers['time_out'].start(MAX_RUN_TIME)  # start max script time timer
+timers["time_out"].start(MAX_RUN_TIME)  # start max script time timer
 
 try:  # Catch any exception and stop all timers before finishing up
     while 1:  # Loop and break and break as convenient way to jump to end
@@ -806,13 +806,13 @@ try:  # Catch any exception and stop all timers before finishing up
             break
         MainWin.centerAction.trigger()
         # Before running start up a timer to close completed run msgbox
-        timers['msg_okay'].start(500)  # timer to push ok on a msgbox if up
+        timers["msg_okay"].start(500)  # timer to push ok on a msgbox if up
         MainWin.runAction.trigger()  # run flowsheet
         while MainWin.singleRun.is_alive():
             if not go():
                 MainWin.singleRun.terminate()
                 break
-        if not timerWait('msg_okay'):
+        if not timerWait("msg_okay"):
             break
         MainWin.uqSetupAction.trigger()
         if not go():
@@ -820,32 +820,32 @@ try:  # Catch any exception and stop all timers before finishing up
 
         # Add the sampling schemes
         ## -----------------Start Error Monitoring----------------------------
-        timers['Error_okay'].start(1000)
-        timers['Error_okay_text'].start(1000)
+        timers["Error_okay"].start(1000)
+        timers["Error_okay_text"].start(1000)
         ## -------------------------------------------------------------------
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_MC'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_MC"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_MC'):
+        if not timerWait("uq_sampling_scheme_MC"):
             break
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_QMC'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_QMC"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_QMC'):
+        if not timerWait("uq_sampling_scheme_QMC"):
             break
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_LH'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_LH"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_LH'):
+        if not timerWait("uq_sampling_scheme_LH"):
             break
 
         #        timers['add_UQ_okay'].start(1000)
@@ -854,20 +854,20 @@ try:  # Catch any exception and stop all timers before finishing up
         #        if not timerWait('add_UQ_okay'): break
         #        if not timerWait('uq_sampling_scheme_OA'): break
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_MD'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_MD"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_MD'):
+        if not timerWait("uq_sampling_scheme_MD"):
             break
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_GMD'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_GMD"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_GMD'):
+        if not timerWait("uq_sampling_scheme_GMD"):
             break
 
         #        timers['add_UQ_okay'].start(1000)
@@ -876,78 +876,78 @@ try:  # Catch any exception and stop all timers before finishing up
         #        if not timerWait('add_UQ_okay'): break
         #        if not timerWait('uq_sampling_scheme_GS'): break
 
-        timers['add_UQ_okay'].start(1000)
-        timers['uq_sampling_scheme_METIS'].start(500)
+        timers["add_UQ_okay"].start(1000)
+        timers["uq_sampling_scheme_METIS"].start(500)
         MainWin.uqSetupFrame.addSimulationButton.click()
-        if not timerWait('add_UQ_okay'):
+        if not timerWait("add_UQ_okay"):
             break
-        if not timerWait('uq_sampling_scheme_METIS'):
+        if not timerWait("uq_sampling_scheme_METIS"):
             break
 
         # Run UQ ensembles
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(0, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(1, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(2, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(3, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(4, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
         try:
             MainWin.uqSetupFrame.simulationTable.cellWidget(5, 3).click()
-            timers['msg_okay'].start(500)  # press okay on ensemble done msgbox
+            timers["msg_okay"].start(500)  # press okay on ensemble done msgbox
             while MainWin.uqSetupFrame.gThread.isAlive():  # while is running
                 if not go():
                     MainWin.uqSetupFrame.gThread.terminate()
                     break
-            if not timerWait('msg_okay'):
+            if not timerWait("msg_okay"):
                 break
         except Exception:
             None
@@ -975,68 +975,68 @@ try:  # Catch any exception and stop all timers before finishing up
         if not go():
             break
 
-        timers['apply_filter_scheme'].start(500)
-        timers['filter_scheme_8'].start(500)
-        timers['filter_text_scheme_8'].start(500)
-        timers['filter_scheme_7'].start(500)
-        timers['filter_text_scheme_7'].start(500)
-        timers['filter_scheme_6'].start(500)
-        timers['filter_text_scheme_6'].start(500)
-        timers['filter_scheme_5'].start(500)
-        timers['filter_text_scheme_5'].start(500)
-        timers['filter_scheme_4'].start(500)
-        timers['filter_text_scheme_4'].start(500)
-        timers['operation_scheme'].start(500)
-        timers['filter_text_scheme_3'].start(500)
-        timers['add_result_scheme_2'].start(500)
-        timers['filter_text_scheme_2'].start(500)
-        timers['add_result_scheme'].start(500)
-        timers['filter_text_scheme'].start(500)
-        timers['new_filter_scheme'].start(500)
-        timers['filter_scheme'].start(500)
-        if not timerWait('filter_scheme'):
+        timers["apply_filter_scheme"].start(500)
+        timers["filter_scheme_8"].start(500)
+        timers["filter_text_scheme_8"].start(500)
+        timers["filter_scheme_7"].start(500)
+        timers["filter_text_scheme_7"].start(500)
+        timers["filter_scheme_6"].start(500)
+        timers["filter_text_scheme_6"].start(500)
+        timers["filter_scheme_5"].start(500)
+        timers["filter_text_scheme_5"].start(500)
+        timers["filter_scheme_4"].start(500)
+        timers["filter_text_scheme_4"].start(500)
+        timers["operation_scheme"].start(500)
+        timers["filter_text_scheme_3"].start(500)
+        timers["add_result_scheme_2"].start(500)
+        timers["filter_text_scheme_2"].start(500)
+        timers["add_result_scheme"].start(500)
+        timers["filter_text_scheme"].start(500)
+        timers["new_filter_scheme"].start(500)
+        timers["filter_scheme"].start(500)
+        if not timerWait("filter_scheme"):
             break
-        if not timerWait('new_filter_scheme'):
+        if not timerWait("new_filter_scheme"):
             break
-        if not timerWait('filter_text_scheme'):
+        if not timerWait("filter_text_scheme"):
             break
-        if not timerWait('add_result_scheme'):
+        if not timerWait("add_result_scheme"):
             break
-        if not timerWait('filter_text_scheme_2'):
+        if not timerWait("filter_text_scheme_2"):
             break
-        if not timerWait('add_result_scheme_2'):
+        if not timerWait("add_result_scheme_2"):
             break
-        if not timerWait('filter_text_scheme_3'):
+        if not timerWait("filter_text_scheme_3"):
             break
-        if not timerWait('operation_scheme'):
+        if not timerWait("operation_scheme"):
             break
-        if not timerWait('filter_text_scheme_4'):
+        if not timerWait("filter_text_scheme_4"):
             break
-        if not timerWait('filter_scheme_4'):
+        if not timerWait("filter_scheme_4"):
             break
-        if not timerWait('filter_text_scheme_5'):
+        if not timerWait("filter_text_scheme_5"):
             break
-        if not timerWait('filter_scheme_5'):
+        if not timerWait("filter_scheme_5"):
             break
-        if not timerWait('filter_text_scheme_6'):
+        if not timerWait("filter_text_scheme_6"):
             break
-        if not timerWait('filter_scheme_6'):
+        if not timerWait("filter_scheme_6"):
             break
-        if not timerWait('filter_text_scheme_7'):
+        if not timerWait("filter_text_scheme_7"):
             break
-        if not timerWait('filter_scheme_7'):
+        if not timerWait("filter_scheme_7"):
             break
-        if not timerWait('filter_text_scheme_8'):
+        if not timerWait("filter_text_scheme_8"):
             break
-        if not timerWait('filter_scheme_8'):
+        if not timerWait("filter_scheme_8"):
             break
-        if not timerWait('apply_filter_scheme'):
+        if not timerWait("apply_filter_scheme"):
             break
 
         ## -----------------Stop Error Monitoring----------------------------
-        if not timerWait('Error_okay'):
+        if not timerWait("Error_okay"):
             break
-        if not timerWait('Error_okay_text'):
+        if not timerWait("Error_okay_text"):
             break
         ## -------------------------------------------------------------------
 
@@ -1049,12 +1049,12 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('ERROR: Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("ERROR: Exception: {0}\n".format(e))
 timersStop()  # make sure all timers are stopped
 
 # Try to close FOQUS
-timers['msg_no'].start(1000)
+timers["msg_no"].start(1000)
 MainWin.close()
-timerWait('msg_no')
+timerWait("msg_no")
 print("Exited Code: fs_smoke_test.py")

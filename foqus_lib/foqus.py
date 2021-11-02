@@ -47,7 +47,7 @@ dat = None
 PyQt5 = None
 
 
-def guiImport(mpl_backend='Qt5Agg'):
+def guiImport(mpl_backend="Qt5Agg"):
     """
     Only import the GUI classes if you want the GUI
     """
@@ -70,7 +70,7 @@ def guiImport(mpl_backend='Qt5Agg'):
         import matplotlib
 
         matplotlib.use(mpl_backend)
-        matplotlib.rcParams['backend'] = mpl_backend
+        matplotlib.rcParams["backend"] = mpl_backend
         loadGUI = True
         guiAvail = True
     except ImportError:
@@ -95,7 +95,7 @@ def makeSplash():
     information
     """
     # Load the splash screen background svg, gonna draw text over
-    pixmap = PyQt5.QtGui.QPixmap(':/icons/icons/ccsiSplash2.svg')
+    pixmap = PyQt5.QtGui.QPixmap(":/icons/icons/ccsiSplash2.svg")
     # Make a painter to add text to
     painter = PyQt5.QtGui.QPainter(pixmap)
     font = painter.font()  # current font for drawing text
@@ -217,7 +217,7 @@ def logException(etype, evalue, etrace):
             msgBox.setWindowTitle("Error")
             msgBox.setText("Unhandled Exception:")
             msgBox.setInformativeText(
-                ''.join(traceback.format_exception(etype, evalue, etrace))
+                "".join(traceback.format_exception(etype, evalue, etrace))
             )
             msgBox.exec_()
     except Exception as e:
@@ -245,7 +245,7 @@ def main(args_to_parse=None):
     # Set up the basic logging stuff here, later after the working
     # directory is set a file handler can be added once a new foqus
     # session is created and the FOQUS settings are read.
-    logFormat = '%(asctime)s - %(levelname)s - %(name)s - %(message)s'
+    logFormat = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     consHand = logging.StreamHandler(stream=sys.stdout)
     consHand.setFormatter(logging.Formatter(logFormat))
     logging.getLogger("foqus").addHandler(consHand)
@@ -256,7 +256,7 @@ def main(args_to_parse=None):
     try:
         turbine.commands._setup_logging.done = True
     except:
-        logging.getLogger("foqus." + __name__).exception('Cannot finde turbine module')
+        logging.getLogger("foqus." + __name__).exception("Cannot finde turbine module")
     app = None  # Qt application if I need to display message boxes.
     ## Setup the command line arguments
     parser = argparse.ArgumentParser()
@@ -371,11 +371,11 @@ def main(args_to_parse=None):
             db = turbineLiteDB()
             db.dbFile = os.path.join(fs.turbLiteHome, "Data/TurbineCompactDatabase.sdf")
             print("terminating consumer {0}".format(args.terminateConsumer))
-            db.consumer_status(args.terminateConsumer, 'terminate')
+            db.consumer_status(args.terminateConsumer, "terminate")
             sys.exit(0)
         except Exception as e:
             logging.getLogger("foqus." + __name__).exception(
-                'Error terminating turbine consumer'
+                "Error terminating turbine consumer"
             )
             sys.exit(1)
     elif args.addTurbineApp:
@@ -395,7 +395,7 @@ def main(args_to_parse=None):
             db.add_new_application(args.addTurbineApp)
             sys.exit(0)
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception('Error adding turbine app')
+            logging.getLogger("foqus." + __name__).exception("Error adding turbine app")
             sys.exit(1)
     if args.consumer:
         nogui = True
@@ -439,17 +439,17 @@ def main(args_to_parse=None):
         else:
             # look for FOQUS configuration file
             try:
-                with open(generalSettings.getUserConfigLocation(), 'r') as f:
+                with open(generalSettings.getUserConfigLocation(), "r") as f:
                     s = f.read()
                 settings = json.loads(s)
-                os.chdir(settings['working_dir'])
+                os.chdir(settings["working_dir"])
             except:
                 # was not able to get working dir from
                 # configuration file
                 if app:
                     # gui is available ask about working dir
                     # and write config file
-                    settings = {'working_dir': None}
+                    settings = {"working_dir": None}
                     msg = PyQt5.QtWidgets.QMessageBox()
                     msg.setText(
                         (
@@ -466,10 +466,10 @@ def main(args_to_parse=None):
                     if msg.exec_():
                         dirs = msg.selectedFiles()
                         settings["working_dir"] = dirs[0]
-                        os.chdir(settings['working_dir'])
+                        os.chdir(settings["working_dir"])
                     else:
                         logging.getLogger("foqus." + __name__).error(
-                            ('No working directory' ' specified. FOQUS will exit')
+                            ("No working directory" " specified. FOQUS will exit")
                         )
                         msg = PyQt5.QtWidgets.QMessageBox()
                         msg.setText(
@@ -481,15 +481,15 @@ def main(args_to_parse=None):
                     # Fall back on current directory if no config and
                     # now GUI for file selector
                     logging.getLogger("foqus." + __name__).error(
-                        'Using current directory as working directory'
+                        "Using current directory as working directory"
                     )
     # Create working directory directory structure if is not in place
     logging.getLogger("foqus." + __name__).debug(
-        'Working directory set to ' + os.getcwd()
+        "Working directory set to " + os.getcwd()
     )
     if not makeWorkingDirStruct():
         logging.getLogger("foqus." + __name__).critical(
-            'Could not setup working directory, exiting'
+            "Could not setup working directory, exiting"
         )
         sys.exit(9)
     # Copy files to working directory if needed. (just heat integration
@@ -604,7 +604,7 @@ def main(args_to_parse=None):
             "TurbineLite Database:\n   {0}".format(db.dbFile)
         )
         # add 'foqus' app to TurbineLite DB if not already there
-        db.add_new_application('foqus')
+        db.add_new_application("foqus")
         # register the consumer in the database
         consumer_uuid = db.consumer_register()
         print("consumer_uuid: {0}".format(consumer_uuid))
@@ -625,9 +625,9 @@ def main(args_to_parse=None):
             onlyConsumer = None
 
         if args.consumer_cleanup_rerun:
-            cleanup = 'submit'
+            cleanup = "submit"
         elif args.consumer_cleanup_error:
-            cleanup = 'error'
+            cleanup = "error"
         else:
             cleanup = False
         if cleanup:
@@ -640,7 +640,7 @@ def main(args_to_parse=None):
                     simName=onlySimName,
                     sessionID=onlySession,
                     consumerID=onlyConsumer,
-                    state='running',
+                    state="running",
                 )
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
@@ -654,7 +654,7 @@ def main(args_to_parse=None):
                     simName=onlySimName,
                     sessionID=onlySession,
                     consumerID=onlyConsumer,
-                    state='setup',
+                    state="setup",
                 )
                 if guid is not None:
                     db.job_change_status(guid, cleanup)
@@ -662,7 +662,7 @@ def main(args_to_parse=None):
             logging.getLogger("foqus." + __name__).info(
                 "FOQUS consumer {0} started, waiting for jobs...".format(consumer_uuid)
             )
-            with open("consumer_uuid.txt", 'w') as f:
+            with open("consumer_uuid.txt", "w") as f:
                 f.write(str(consumer_uuid))
             lastSim = None  # id for last foqus model ran
             i = 0
@@ -673,7 +673,7 @@ def main(args_to_parse=None):
                 if i >= 10:  # check status, if terminate stop
                     i = 0
                     status = db.consumer_status(consumer_uuid)
-                    if status == 'terminate' or status == 'down':
+                    if status == "terminate" or status == "down":
                         terminate = True
                         break
                 guid, jid, simId, reset = db.get_job_id(
@@ -753,7 +753,7 @@ def main(args_to_parse=None):
                             "inputs".format(consumer_uuid, jid),
                             guid,
                         )
-                        with open(ofile, 'w') as f:
+                        with open(ofile, "w") as f:
                             json.dump({"graphError": 50}, f)
                         db.job_save_output(guid, workingDirectory)
                         db.job_change_status(guid, "error")
@@ -762,7 +762,7 @@ def main(args_to_parse=None):
                     while gt.isAlive():
                         gt.join(10)
                         status = db.consumer_status(consumer_uuid)
-                        if status == 'terminate':
+                        if status == "terminate":
                             terminate = True
                             db.job_change_status(guid, "error")
                             gt.terminate()
@@ -868,7 +868,7 @@ def main(args_to_parse=None):
             )
         kat.terminate()
         # kat.join()
-        db.consumer_status(consumer_uuid, 'down')
+        db.consumer_status(consumer_uuid, "down")
     ##
     ## Start GUI, if needed (this is last because some options
     ## automatically disable gui, so I checked for those first

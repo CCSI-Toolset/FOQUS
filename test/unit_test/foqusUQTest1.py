@@ -21,9 +21,9 @@ global TIME_STEP, HAVE_TEXT
 MAX_RUN_TIME = 5000000  # Maximum time to let script run in ms.
 TIME_STEP = 1
 HAVE_TEXT = 1
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:
-    f.write('')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:
+    f.write("")
 timers = {}
 
 if HAVE_TEXT == 1:
@@ -35,12 +35,12 @@ global go
 
 
 def go(MainWin=MainWin):
-    '''
+    """
     Process gui events so that gui can still function(ish) while
     script is running also add delay between calls to GUI stuff to
     make the execution fun to watch.  Also checks the stop flag and
     returns True keep going or False to stop.
-    '''
+    """
     MainWin.app.processEvents()
     time.sleep(0.25)
     return not MainWin.helpDock.stop
@@ -57,25 +57,25 @@ def getButton(w, label):
 
 def addEnsembelCancel(self=self, MainWin=MainWin, getButton=getButton):
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        b = getButton(w.buttonBox, 'Cancel')
+    if "updateUQModelDialog" in str(type(w)):
+        b = getButton(w.buttonBox, "Cancel")
         b.click()
 
 
 def addEnsembelOkay(self=self, MainWin=MainWin, getButton=getButton):
     w = MainWin.app.activeWindow()
-    if 'updateUQModelDialog' in str(type(w)):
-        b = getButton(w.buttonBox, 'OK')
+    if "updateUQModelDialog" in str(type(w)):
+        b = getButton(w.buttonBox, "OK")
         b.click()
 
 
 def uqSamplingScheme(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
     TIME_STEP = 1
     w = MainWin.app.activeWindow()
-    if 'SimSetup' in str(type(w)):
-        timers['uq_sampling_scheme'].stop()
+    if "SimSetup" in str(type(w)):
+        timers["uq_sampling_scheme"].stop()
         w.samplingTabs.setCurrentIndex(1)
-        items = w.schemesList.findItems('Quasi Monte Carlo', QtCore.Qt.MatchExactly)
+        items = w.schemesList.findItems("Quasi Monte Carlo", QtCore.Qt.MatchExactly)
         w.schemesList.setCurrentItem(items[0])
         w.numSamplesBox.setValue(1000)
         w.generateSamplesButton.click()
@@ -85,14 +85,14 @@ def uqSamplingScheme(self=self, MainWin=MainWin, getButton=getButton, timers=tim
 
 def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
     w = MainWin.app.activeWindow()
-    if 'AnalysisDialog' in str(type(w)):
-        timers['rs_analyze'].stop()
+    if "AnalysisDialog" in str(type(w)):
+        timers["rs_analyze"].stop()
         ### set response surface mode
         # w.setWizardRSAnalysisMode(True)
         ### need to check the response surface button
         # w.wizardRS_radio.setChecked(True)
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Performing response surface validation\n')
+            textedit.insertPlainText("      Performing response surface validation\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 w.close()
@@ -108,7 +108,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
         ### RS Viz
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Generating plots for response surfaces\n')
+            textedit.insertPlainText("      Generating plots for response surfaces\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 w.close()
@@ -127,7 +127,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
         ### UA
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Performing uncertainty analysis\n')
+            textedit.insertPlainText("      Performing uncertainty analysis\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 w.close()
@@ -138,7 +138,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
         ### SA
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Performing sensitivity analysis\n')
+            textedit.insertPlainText("      Performing sensitivity analysis\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 w.close()
@@ -161,7 +161,7 @@ def rsAnalyze(self=self, MainWin=MainWin, getButton=getButton, timers=timers):
 
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
-    '''
+    """
     Using timers to push buttons on popups and modal dialogs and
     other things were I need an easy way to make things happen from
     a seperate thread.  Usually where something is blocking the main
@@ -169,15 +169,15 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
     name: string name of timer
     cd is the timer call back function
-    '''
+    """
     timers[name] = QtCore.QTimer(MainWin)
     timers[name].timeout.connect(cb)
 
 
 def timersStop(timers=timers):
-    '''
+    """
     Call stop for all timers to make sure they all stop
-    '''
+    """
     for key, t in timers.items():
         t.stop()
 
@@ -185,16 +185,16 @@ def timersStop(timers=timers):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script for taking too long
-addTimer('msg_okay', MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
-addTimer('msg_no', MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
-addTimer('addUQ_cancel', addEnsembelCancel)  # click cancel on add uq ensemble dialog
-addTimer('addUQ_okay', addEnsembelOkay)  # click cancel on add uq ensemble dialog
-addTimer('uq_sampling_scheme', uqSamplingScheme)
-addTimer('rs_analyze', rsAnalyze)
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script for taking too long
+addTimer("msg_okay", MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
+addTimer("msg_no", MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
+addTimer("addUQ_cancel", addEnsembelCancel)  # click cancel on add uq ensemble dialog
+addTimer("addUQ_okay", addEnsembelOkay)  # click cancel on add uq ensemble dialog
+addTimer("uq_sampling_scheme", uqSamplingScheme)
+addTimer("rs_analyze", rsAnalyze)
 # Start timer to stop script for running too long
 # This won't work it execution of the script is blocked.
-timers['time_out'].start(MAX_RUN_TIME)
+timers["time_out"].start(MAX_RUN_TIME)
 
 try:
     # raise(Exception("Test excpetion handeling"))
@@ -206,13 +206,13 @@ try:
             dialog.show()
             textedit = dialog.textedit
             textedit.insertPlainText(
-                'First move this screen to your upper right hand corner\n'
+                "First move this screen to your upper right hand corner\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
 
         ### Go to main window home
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Entering the home screen\n')
+            textedit.insertPlainText("Entering the home screen\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -224,7 +224,7 @@ try:
 
         ### Enter session name
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Typing in the session name = UQ GUI test\n')
+            textedit.insertPlainText("Typing in the session name = UQ GUI test\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -239,7 +239,7 @@ try:
         ###===========================================
         ### Click flowsheet icon
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Clicking the Flowsheet icon (at the top)\n')
+            textedit.insertPlainText("Clicking the Flowsheet icon (at the top)\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -252,7 +252,7 @@ try:
         ### Click add node button
         if HAVE_TEXT == 1:
             textedit.insertPlainText(
-                '   Clicking the Add Node button (the plus sign on the left panel)\n'
+                "   Clicking the Add Node button (the plus sign on the left panel)\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
@@ -266,7 +266,7 @@ try:
         ### Click at the open space which prompts a name, enter 'Test'
         ### Click add node button
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Entering the name of the node = Test\n')
+            textedit.insertPlainText("      Entering the name of the node = Test\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -281,7 +281,7 @@ try:
         ### toggle the editor button
         if HAVE_TEXT == 1:
             textedit.insertPlainText(
-                '   Toggling the node edit button (the pencil on left panel)\n'
+                "   Toggling the node edit button (the pencil on left panel)\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
@@ -294,7 +294,7 @@ try:
 
         ### click add input (the green + symbol) and enter x1
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Clicking the Input Variables section\n')
+            textedit.insertPlainText("      Clicking the Input Variables section\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -306,7 +306,7 @@ try:
 
         if HAVE_TEXT == 1:
             textedit.insertPlainText(
-                '         Adding 3 input variables: x1, x2 and x3\n'
+                "         Adding 3 input variables: x1, x2 and x3\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
@@ -331,7 +331,7 @@ try:
 
         ### set X1 min to be -pi/2
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('         Changing the input bounds\n')
+            textedit.insertPlainText("         Changing the input bounds\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         if not go():
             break
@@ -374,7 +374,7 @@ try:
         time.sleep(TIME_STEP)
         ### select 'Output Variables'
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Clicking the Output Variable section\n')
+            textedit.insertPlainText("      Clicking the Output Variable section\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -386,7 +386,7 @@ try:
 
         ### setting 'Output Variable' name
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('         Adding the model output = y\n')
+            textedit.insertPlainText("         Adding the model output = y\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -398,7 +398,7 @@ try:
 
         ### select 'Node Script'
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Clicking the node script tab\n')
+            textedit.insertPlainText("   Clicking the node script tab\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -410,7 +410,7 @@ try:
 
         ### enter the function
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('      Adding the simulation model function\n')
+            textedit.insertPlainText("      Adding the simulation model function\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -424,7 +424,7 @@ try:
 
         ### Go to UQ module (click the top icon)
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Clicking the Uncertainty icon (at the top)\n')
+            textedit.insertPlainText("Clicking the Uncertainty icon (at the top)\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -435,17 +435,17 @@ try:
         time.sleep(TIME_STEP)
 
         ### get ready to respond with a 'ok' for uqSetupFrame add simulation
-        timers['addUQ_okay'].start(1000)
+        timers["addUQ_okay"].start(1000)
         ### get ready to respond with selecting MC and sample size 10
         ### the sampling window will be activated after ok to 'Add New'
-        timers['uq_sampling_scheme'].start(1000)
+        timers["uq_sampling_scheme"].start(1000)
 
         ### add simulation in UQ module ('Add New')
         ### again, this trigger selection of flowsheet and sampling scheme/size
         ##  and finally click 'generate samples'
         if HAVE_TEXT == 1:
             textedit.insertPlainText(
-                '   Clicking the Add New button, then select sampling and size\n'
+                "   Clicking the Add New button, then select sampling and size\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
@@ -458,12 +458,12 @@ try:
 
         ### launch jobs in UQ module
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Launching jobs\n')
+            textedit.insertPlainText("   Launching jobs\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
             time.sleep(TIME_STEP)
-        timers['addUQ_okay'].stop()
+        timers["addUQ_okay"].stop()
         w = MainWin.uqSetupFrame.simulationTable.cellWidget(0, 3)
         w.click()
         if not go():
@@ -471,7 +471,7 @@ try:
         time.sleep(TIME_STEP)
 
         ### press 'OK' on msg box that appears when ensemble has been run
-        timers['msg_okay'].start(1000)
+        timers["msg_okay"].start(1000)
         while MainWin.uqSetupFrame.gThread.isAlive():
             if not go():
                 MainWin.uqSetupFrame.gThread.terminate()
@@ -482,31 +482,31 @@ try:
             time.sleep(1)
         if not go():
             break
-        timers['msg_okay'].stop()
+        timers["msg_okay"].stop()
         if not go():
             break
         time.sleep(TIME_STEP)
 
         ### go to analyze screen
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Clicking the Analysis button for ensemble 1\n')
+            textedit.insertPlainText("   Clicking the Analysis button for ensemble 1\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
             time.sleep(TIME_STEP)
-        timers['rs_analyze'].start(1000)
-        timers['msg_okay'].start(1000)
+        timers["rs_analyze"].start(1000)
+        timers["msg_okay"].start(1000)
         w = MainWin.uqSetupFrame.simulationTable.cellWidget(0, 4)
         w.click()
-        timers['rs_analyze'].stop()
-        timers['msg_okay'].stop()
+        timers["rs_analyze"].stop()
+        timers["msg_okay"].stop()
         if not go():
             break
         time.sleep(TIME_STEP)
 
         ### Wait
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('This test will terminate in 30 seconds\n')
+            textedit.insertPlainText("This test will terminate in 30 seconds\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         for ii in range(5000):
             if not go():
@@ -514,11 +514,11 @@ try:
             time.sleep(1)
 
         ### Close FOQUS
-        timers['msg_no'].start(1000)
+        timers["msg_no"].start(1000)
         if HAVE_TEXT == 1:
             dialog.close()
         MainWin.close()
-        timers['msg_no'].stop()
+        timers["msg_no"].stop()
         break
 
 except Exception as e:
@@ -526,7 +526,7 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("Exception: {0}\n".format(e))
     raise (e)
 timersStop()  # make sure all timers are stopped

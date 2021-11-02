@@ -27,7 +27,7 @@ from PyQt5 import QtWidgets
 
 class SampleRefiner:
 
-    dname = os.getcwd() + os.path.sep + 'SampleRefiner_files'
+    dname = os.getcwd() + os.path.sep + "SampleRefiner_files"
 
     @staticmethod
     def adaptiveSample(fname, y, nSamples0, nSamplesNew):
@@ -38,38 +38,38 @@ class SampleRefiner:
 
         # warn user of prohibitively long runtime if nSamples > 1000
         if nSamples > 1000:
-            msg = 'SampleRefiner: Adaptive sampling will take a long time with ensembles with greater than 1000 sample points. Proceed?'
+            msg = "SampleRefiner: Adaptive sampling will take a long time with ensembles with greater than 1000 sample points. Proceed?"
             QtWidgets.QMessageBox.warning(
                 None,
-                'SampleRefiner: Warning of Long Runtime',
+                "SampleRefiner: Warning of Long Runtime",
                 msg,
                 QtWidgets.QMessageBox.Ok,
                 QtWidgets.QMessageBox.Ok,
             )
 
         # write script
-        suffix = '.refine_%d' % (nSamples + nSamplesNew)
+        suffix = ".refine_%d" % (nSamples + nSamplesNew)
         fnameOut = Common.getLocalFileName(SampleRefiner.dname, fname, suffix)
         f = tempfile.SpooledTemporaryFile(mode="wt")
-        if platform.system() == 'Windows':
+        if platform.system() == "Windows":
             import win32api
 
             fname = win32api.GetShortPathName(fname)
-        f.write('load %s\n' % fname)
-        cmd = 'a_refine'
-        f.write('%s\n' % cmd)
-        f.write('%d\n' % y)  # output to use for sample refinement
-        f.write('%d\n' % nSamples0)  # original size of sample
-        f.write('%d\n' % nSamplesNew)  # number of samples to be added
-        if platform.system() == 'Windows':
+        f.write("load %s\n" % fname)
+        cmd = "a_refine"
+        f.write("%s\n" % cmd)
+        f.write("%d\n" % y)  # output to use for sample refinement
+        f.write("%d\n" % nSamples0)  # original size of sample
+        f.write("%d\n" % nSamplesNew)  # number of samples to be added
+        if platform.system() == "Windows":
             head, tail = os.path.split(fnameOut)
             head = win32api.GetShortPathName(head)
             fnameOut = os.path.join(head, tail)
-        f.write('write %s\n' % fnameOut)
+        f.write("write %s\n" % fnameOut)
         nOutputs = SampleData.getNumOutputs(data)
         if nOutputs > 1:
-            f.write('n\n')  # write all outputs
-        f.write('quit\n')
+            f.write("n\n")  # write all outputs
+        f.write("quit\n")
         f.seek(0)
 
         # invoke psuade
@@ -82,7 +82,7 @@ class SampleRefiner:
 
         # check output file
         if not os.path.exists(fnameOut):
-            error = 'SampleRefiner: %s does not exist.' % fnameOut
+            error = "SampleRefiner: %s does not exist." % fnameOut
             Common.showError(error, out)
             return None
 

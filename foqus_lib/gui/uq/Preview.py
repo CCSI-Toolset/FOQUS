@@ -111,12 +111,12 @@ class Preview(_Preview, _PreviewUI):
                 for r in range(inputData.shape[0]):
                     item = self.table.item(r, c)
                     if item is None:
-                        item = QTableWidgetItem('%g' % inputData[r][i])
+                        item = QTableWidgetItem("%g" % inputData[r][i])
                         if r >= inputData.shape[0] - numSamplesAdded:
                             item.setBackground(refinedColor)
                         self.table.setItem(r, c, item)
                     else:
-                        item.setText('%g' % inputData[r][i])
+                        item.setText("%g" % inputData[r][i])
                 c = c + 1
                 if inputType == Model.VARIABLE:
                     item = Preview.listItem(inputNames[i], i)
@@ -132,7 +132,7 @@ class Preview(_Preview, _PreviewUI):
         indices = [0] * len(selected)
         for i, item in enumerate(selected):
             indices[i] = item.getInputIndex() + 1
-        self.data.writeToPsuade('previewData')
+        self.data.writeToPsuade("previewData")
         Common.initFolder(Visualizer.dname)
         # self.setModal(False)
 
@@ -146,8 +146,8 @@ class Preview(_Preview, _PreviewUI):
             newSamples = samples[k:]
 
         # plot
-        cmd = 'iplot1'
-        Visualizer.xScatter('previewData', indices, cmd, newSamples)
+        cmd = "iplot1"
+        Visualizer.xScatter("previewData", indices, cmd, newSamples)
         # self.setModal(False)
 
     def graph2DDist(self):
@@ -158,12 +158,12 @@ class Preview(_Preview, _PreviewUI):
             index.row() for index in self.inputList.selectionModel().selectedIndexes()
         ]
 
-        self.data.writeToPsuade('previewData')
+        self.data.writeToPsuade("previewData")
         Common.initFolder(Visualizer.dname)
         self.setModal(False)
 
-        mfile = RSInferencer.genheatmap('previewData')
-        RSInferencer.infplot_prior(mfile, 'previewData', indices)
+        mfile = RSInferencer.genheatmap("previewData")
+        RSInferencer.infplot_prior(mfile, "previewData", indices)
         self.setModal(True)
         self.unfreeze()
 
@@ -176,7 +176,7 @@ class Preview(_Preview, _PreviewUI):
         for i, item in enumerate(selected):
             indices[i] = item.getInputIndex() + 1
 
-        self.data.writeToPsuade('previewData')
+        self.data.writeToPsuade("previewData")
         Common.initFolder(Visualizer.dname)
         self.setModal(False)
 
@@ -191,6 +191,6 @@ class Preview(_Preview, _PreviewUI):
             newSamples = samples[k:]
 
         # plot
-        cmd = 'iplot2'
-        Visualizer.xScatter('previewData', indices, cmd, newSamples)
+        cmd = "iplot2"
+        Visualizer.xScatter("previewData", indices, cmd, newSamples)
         self.setModal(True)

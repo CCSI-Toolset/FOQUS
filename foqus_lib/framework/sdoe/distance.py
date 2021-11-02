@@ -33,7 +33,7 @@ def compute_dist(
     val = np.inf
 
     if scl is not None:
-        assert scl.shape[0] == ncols, 'SCL should be of dim %d.' % ncols
+        assert scl.shape[0] == ncols, "SCL should be of dim %d." % ncols
         mat = mat / np.repeat(np.reshape(scl, (1, ncols)), N, axis=0)
         val = 10
 

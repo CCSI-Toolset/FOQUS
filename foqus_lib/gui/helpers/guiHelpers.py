@@ -49,7 +49,7 @@ def setTableItem(
     bgColor=QColor(255, 255, 255),
     grayOdd=True,
 ):
-    '''
+    """
     Sets the contents of a cell in a table, and allows adding check
     boxes and pull-down selection boxes in cells.  Can't use check
     box and pull-down together
@@ -61,7 +61,7 @@ def setTableItem(
     check:  if true add a check box to the column
     pullDown:  if is a list make a pulldown box
     json:  use json encoder to write text for a cell
-    '''
+    """
     if grayOdd and row % 2:
         # the first row is 0 (not gray) make rows darker
         red = max(bgColor.red() - 25, 0)
@@ -126,34 +126,34 @@ def setTableItem(
 
 
 def cellPulldownJSON(table, row, col):
-    '''
+    """
     Get the current value in a pull-down cell, will cause exception
     if the is no pull-down in the cell.  Value is decoded with JSON
-    '''
+    """
     return json.loads(table.cellWidget(row, col).currentText())
 
 
 def cellPulldownValue(table, row, col):
-    '''
+    """
     Get the current text in a pull-down cell, will cause exception
     if the is no pull-down in the cell
-    '''
+    """
     return table.cellWidget(row, col).currentText()
 
 
 def cellPulldownIndex(table, row, col):
-    '''
+    """
     Get the current index in a pull-down cell, will cause exception
     if the is no pull-down in the cell
-    '''
+    """
     return table.cellWidget(row, col).currentIndex()
 
 
 def cellPulldownSetIndex(table, row, col, ind):
-    '''
+    """
     Set the index of the selected item in a pull-down cell, will
     cause exception if the is no pull-down in the cell
-    '''
+    """
     table.cellWidget(row, col).setCurrentIndex(ind)
 
 
@@ -189,12 +189,12 @@ def cellPulldownSetItemsJSON(table, row, col, l=[]):
 
 
 def isCellChecked(table, row, col):
-    '''
+    """
     Return a list the first element in True if the box is checked
     and False otherwise. The second element is the text in the cell.
     This will cause an exception if the cell doesn't contain
     a check box.
-    '''
+    """
     state = table.item(row, col).checkState()
     if state == QtCore.Qt.Checked:
         c = True
@@ -214,10 +214,10 @@ def isChecked(table, row, col):
 
 
 def setCellChecked(table, row, col, check=True):
-    '''
+    """
     Set the check box in a cell to True if checked = True or False
     if checked = False.
-    '''
+    """
     if check:
         table.item(row, col).setCheckState(QtCore.Qt.Checked)
     else:
@@ -225,9 +225,9 @@ def setCellChecked(table, row, col, check=True):
 
 
 def setCellText(table, row, col, value):
-    '''
+    """
     Set the cells text
-    '''
+    """
     text = str(value)
     try:
         table.item(row, col).setText(text)
@@ -236,9 +236,9 @@ def setCellText(table, row, col, value):
 
 
 def setCellJSON(table, row, col, value):
-    '''
+    """
     Use json encoder on value then set the cell text to the json
-    '''
+    """
     text = json.dumps(value)
     try:
         table.item(row, col).setText(text)
@@ -247,9 +247,9 @@ def setCellJSON(table, row, col, value):
 
 
 def getCellText(table, row, col):
-    '''
+    """
     Return the text value in the cell
-    '''
+    """
     item = table.item(row, col)
     widget = table.cellWidget(row, col)
     if isinstance(widget, QComboBox):
@@ -263,9 +263,9 @@ def getCellText(table, row, col):
 
 
 def getCellJSON(table, row, col):
-    '''
+    """
     Return the json decoded text from a cell.
-    '''
+    """
     try:
         text = getCellText(table, row, col)
         if text.strip().startswith("."):
@@ -276,9 +276,9 @@ def getCellJSON(table, row, col):
 
 
 def colIndexes(table):
-    '''
+    """
     Make a dictionary of column indexes for the header
-    '''
+    """
     d = dict()
     for col in range(table.columnCount()):
         d[table.horizontalHeaderItem(col).text()] = col

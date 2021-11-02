@@ -645,10 +645,10 @@ class Node:
                     self.outVars[vkey].value = var
                     for vec in self.outVarsVector:
                         if vec in vkey:
-                            idx = int(vkey.split('_')[-1])
+                            idx = int(vkey.split("_")[-1])
                             self.outVars[vkey].value = self.outVarsVector[vec].vector[
                                 idx
-                            ]['value']
+                            ]["value"]
         except PyCodeInterupt as e:
             logging.getLogger("foqus." + __name__).error(
                 "Node script interupt: " + str(e)
@@ -694,9 +694,7 @@ class Node:
                         # WHY pylint erroneously reports this as an error,
                         # because it is not able to take the "is not None" check into account
                         # pylint: disable=unsubscriptable-object
-                        inputSetL2[vkey] = self.altInput[
-                            vkey
-                        ]
+                        inputSetL2[vkey] = self.altInput[vkey]
                         # pylint: enable=unsubscriptable-object
                     else:
                         inputSetL2[vkey] = var.value

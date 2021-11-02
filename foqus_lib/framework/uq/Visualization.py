@@ -28,10 +28,10 @@ class Visualization(UQAnalysis):
         xlist = numpy.array(inputs)
         k = numpy.where(xlist > 0)
         self.x = xlist[k]
-        self.cmd = 'splot'
+        self.cmd = "splot"
         if len(self.x) == 2:
-            self.cmd = 'splot2'
-        outfile = {'splot': 'matlabsp.m', 'splot2': 'matlabsp2.m'}
+            self.cmd = "splot2"
+        outfile = {"splot": "matlabsp.m", "splot2": "matlabsp2.m"}
         self.outfile = outfile[self.cmd]
 
     def analyze(self):
@@ -39,7 +39,7 @@ class Visualization(UQAnalysis):
         Common.initFolder(Visualizer.dname)
 
         fname = Common.getLocalFileName(
-            Visualizer.dname, data.getModelName().split()[0], '.dat'
+            Visualizer.dname, data.getModelName().split()[0], ".dat"
         )
         data.writeToPsuade(fname)
 

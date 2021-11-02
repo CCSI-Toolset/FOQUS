@@ -23,7 +23,7 @@ from .Common import Common
 
 class RSVisualization(UQRSAnalysis):
 
-    psuadeNames = ['rssobol1', 'rssobol2', 'rssoboltsi']
+    psuadeNames = ["rssobol1", "rssobol2", "rssoboltsi"]
 
     def __init__(
         self,
@@ -57,18 +57,18 @@ class RSVisualization(UQRSAnalysis):
         # self.x = xlist[k]
         # rsdim = len(self.x)
         rsdim = len(inputs)
-        self.cmd = 'rs%d' % rsdim
+        self.cmd = "rs%d" % rsdim
 
     def saveDict(self):
         sd = super(RSVisualization, self).saveDict()
-        sd['minVal'] = self.minVal
-        sd['maxVal'] = self.maxVal
+        sd["minVal"] = self.minVal
+        sd["maxVal"] = self.maxVal
         return sd
 
     def loadDict(self, sd):
         super(RSVisualization, self).loadDict(sd)
-        self.minVal = sd.get('minVal', None)
-        self.maxVal = sd.get('maxVal', None)
+        self.minVal = sd.get("minVal", None)
+        self.maxVal = sd.get("maxVal", None)
 
     def analyze(self):
         Common.initFolder(Visualizer.dname)
@@ -77,7 +77,7 @@ class RSVisualization(UQRSAnalysis):
         data = data.getValidSamples()  # filter out samples that have no output results
 
         fname = Common.getLocalFileName(
-            Visualizer.dname, data.getModelName().split()[0], '.dat'
+            Visualizer.dname, data.getModelName().split()[0], ".dat"
         )
         index = ResponseSurfaces.getEnumValue(self.responseSurface)
         fixedAsVariables = index == ResponseSurfaces.USER
@@ -114,8 +114,8 @@ class RSVisualization(UQRSAnalysis):
         return mfile
 
     def showResults(self):
-        cmd = 'rs%d' % len(self.inputs)
-        mfile = 'matlab' + cmd + '.m'
+        cmd = "rs%d" % len(self.inputs)
+        mfile = "matlab" + cmd + ".m"
         self.restoreFromArchive(mfile)
 
         ngrid = 0
@@ -141,6 +141,6 @@ class RSVisualization(UQRSAnalysis):
 
     def getAdditionalInfo(self):
         info = super(RSVisualization, self).getAdditionalInfo()
-        info['Upper Threshold'] = self.maxVal
-        info['Lower Threshold'] = self.minVal
+        info["Upper Threshold"] = self.maxVal
+        info["Lower Threshold"] = self.minVal
         return info

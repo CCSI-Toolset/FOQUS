@@ -16,34 +16,34 @@
 from foqus_lib.framework.uq.Distribution import Distribution
 from .SolventFit import SolventFit as S
 
-xdatfile = 'example/xdat.csv'
-ydatfile = 'example/ydat.csv'
-ytable = [{'rsIndex': -1}]
+xdatfile = "example/xdat.csv"
+ydatfile = "example/ydat.csv"
+ytable = [{"rsIndex": -1}]
 xtable = [
-    {'type': 'Design'},
+    {"type": "Design"},
     {
-        'type': 'Variable',
-        'min': 0,
-        'max': 1,
-        'pdf': Distribution.UNIFORM,
-        'param1': 0,
-        'param2': 1,
+        "type": "Variable",
+        "min": 0,
+        "max": 1,
+        "pdf": Distribution.UNIFORM,
+        "param1": 0,
+        "param2": 1,
     },
     {
-        'type': 'Variable',
-        'min': 0,
-        'max': 1,
-        'pdf': Distribution.UNIFORM,
-        'param1': 0,
-        'param2': 1,
+        "type": "Variable",
+        "min": 0,
+        "max": 1,
+        "pdf": Distribution.UNIFORM,
+        "param1": 0,
+        "param2": 1,
     },
     {
-        'type': 'Variable',
-        'min': 0,
-        'max': 1,
-        'pdf': Distribution.UNIFORM,
-        'param1': 0,
-        'param2': 1,
+        "type": "Variable",
+        "min": 0,
+        "max": 1,
+        "pdf": Distribution.UNIFORM,
+        "param1": 0,
+        "param2": 1,
     },
 ]
 exptable = [

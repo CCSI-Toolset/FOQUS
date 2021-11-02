@@ -38,17 +38,17 @@ def test_results_empty():
     solTime -- Amount of time used to solve graph outputs
     """
     sd = {
-        'solTime': None,
-        'input': dict(),
-        'output': dict(),
-        'graphError': None,
-        'nodeError': {},
-        'nodeSettings': {},
-        'turbineMessages': {},
+        "solTime": None,
+        "input": dict(),
+        "output": dict(),
+        "graphError": None,
+        "nodeError": {},
+        "nodeSettings": {},
+        "turbineMessages": {},
     }
     obj = results.Results()
-    setName = 's3test'
-    name = 'whatever'
+    setName = "s3test"
+    name = "whatever"
     obj.addFromSavedValues(setName, name, valDict=sd)
 
     assert 5 == obj.count_cols()
@@ -57,19 +57,19 @@ def test_results_empty():
 def test_add_result_single():
     """ """
     obj = results.Results()
-    setName = 's3test'
-    name = 'whatever'
+    setName = "s3test"
+    name = "whatever"
     # sd = self.singleRun.res[0]
     sd = {
-        'resub': 0,
-        'nodeError': {},
-        'session': '9f4def1c-d033-4761-9e8d-7ae979d230ae',
-        'turbineMessages': {},
-        'graphError': -3,
-        'Id': u'08e6bf2d-e6e2-4e75-8ce2-8e86a6a0db83',
+        "resub": 0,
+        "nodeError": {},
+        "session": "9f4def1c-d033-4761-9e8d-7ae979d230ae",
+        "turbineMessages": {},
+        "graphError": -3,
+        "Id": u"08e6bf2d-e6e2-4e75-8ce2-8e86a6a0db83",
     }
     obj.add_result(
-        set_name='Single_runs', result_name='single_{}'.format(0), time=None, sd=sd
+        set_name="Single_runs", result_name="single_{}".format(0), time=None, sd=sd
     )
 
     assert 4 == obj.count_cols()
@@ -81,11 +81,11 @@ def test_results_session_broke_result_page():
     graph.solveListValTurbine
     """
     _log = logging.getLogger(__name__)
-    session_id = '9f4def1c-d033-4761-9e8d-7ae979d230ae'
-    result_id = '03ce8184-3f2f-4445-9d4c-7141a28662e8'
+    session_id = "9f4def1c-d033-4761-9e8d-7ae979d230ae"
+    result_id = "03ce8184-3f2f-4445-9d4c-7141a28662e8"
     fname = (
-        'cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)s'
-        % dict(session=session_id, result=result_id, page='1.json')
+        "cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)s"
+        % dict(session=session_id, result=result_id, page="1.json")
     )
 
     with open(fname) as fd:
@@ -93,9 +93,9 @@ def test_results_session_broke_result_page():
         assert 1 == len(page)
 
     # obj = results.Results()
-    setName = 's3test'
-    name = 'whatever'
-    jids = list(map(lambda i: i['Id'], page))
+    setName = "s3test"
+    name = "whatever"
+    jids = list(map(lambda i: i["Id"], page))
     g = Graph()
     # g.solveListValTurbineCreateSession = MagicMock(return_value=session_id)
     g.solveListValTurbineGetGenerator = MagicMock(return_value=result_id)
@@ -114,14 +114,14 @@ def test_results_session_broke_result_page():
 
     g.solveListValTurbine(valueList=[jids], maxSend=20, sid=session_id, jobIds=jids)
 
-    assert g.status['success'] == 0
-    assert g.status['unfinished'] == 0
-    assert g.status['error'] == 1
+    assert g.status["success"] == 0
+    assert g.status["unfinished"] == 0
+    assert g.status["error"] == 1
     assert len(g.res) == 1
-    assert set(map(lambda i: i['Id'], g.res)) == set(jids)
+    assert set(map(lambda i: i["Id"], g.res)) == set(jids)
     i = g.res[0]
-    assert i['session'] == session_id
-    assert i['graphError'] == -3
+    assert i["session"] == session_id
+    assert i["graphError"] == -3
 
 
 def test_results_session_result_page_1():
@@ -130,11 +130,11 @@ def test_results_session_result_page_1():
     graph.solveListValTurbine
     """
     _log = logging.getLogger(__name__)
-    session_id = '6f85fc45-6044-478a-b56e-ac5f820eb861'
-    result_id = 'b6c71dc1-5c93-4526-99ef-07d6af0ba59f'
+    session_id = "6f85fc45-6044-478a-b56e-ac5f820eb861"
+    result_id = "b6c71dc1-5c93-4526-99ef-07d6af0ba59f"
     fname = (
-        'cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)s'
-        % dict(session=session_id, result=result_id, page='1.json')
+        "cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)s"
+        % dict(session=session_id, result=result_id, page="1.json")
     )
 
     with open(fname) as fd:
@@ -142,9 +142,9 @@ def test_results_session_result_page_1():
         assert 3 == len(page)
 
     # obj = results.Results()
-    setName = 's3test'
-    name = 'whatever'
-    jids = [i['Id'] for i in page]
+    setName = "s3test"
+    name = "whatever"
+    jids = [i["Id"] for i in page]
     g = Graph()
     # g.solveListValTurbineCreateSession = MagicMock(return_value=session_id)
     g.solveListValTurbineGetGenerator = MagicMock(return_value=result_id)
@@ -163,21 +163,21 @@ def test_results_session_result_page_1():
 
     g.solveListValTurbine(valueList=[jids], maxSend=20, sid=session_id, jobIds=jids)
 
-    assert g.status['success'] == 3
-    assert g.status['unfinished'] == 0
+    assert g.status["success"] == 3
+    assert g.status["unfinished"] == 0
     assert len(g.res) == 3
     # WHY the items in g.res are set to dicts as a side effect of g.solveListValTurbine(),
     # but pylint can only infer their type based on their initial value of None in this function
     # related: the assignment of the g.res items in g,solveListValTurbine() requires them being None before
     # pylint: disable=unsubscriptable-object
-    assert set([i['Id'] for i in g.res]) == set(jids)
+    assert set([i["Id"] for i in g.res]) == set(jids)
     for i in g.res:
-        assert i['session'] == session_id
-        assert i['graphError'] == 0
+        assert i["session"] == session_id
+        assert i["graphError"] == 0
 
 
-@patch('foqus_lib.framework.graph.graph.Graph.solveListValTurbineGetGeneratorPage')
-@patch('foqus_lib.framework.graph.graph.Graph.solveListValTurbineGeneratorReadPage')
+@patch("foqus_lib.framework.graph.graph.Graph.solveListValTurbineGetGeneratorPage")
+@patch("foqus_lib.framework.graph.graph.Graph.solveListValTurbineGeneratorReadPage")
 def test_results_session_result_page_1_to_9(
     mock_read_generator_page, mock_get_generator_page
 ):
@@ -186,12 +186,12 @@ def test_results_session_result_page_1_to_9(
     graph.solveListValTurbine
     """
     _log = logging.getLogger(__name__)
-    session_id = '6f85fc45-6044-478a-b56e-ac5f820eb861'
-    result_id = 'b6c71dc1-5c93-4526-99ef-07d6af0ba59f'
+    session_id = "6f85fc45-6044-478a-b56e-ac5f820eb861"
+    result_id = "b6c71dc1-5c93-4526-99ef-07d6af0ba59f"
 
     # obj = results.Results()
-    setName = 's3test'
-    name = 'whatever'
+    setName = "s3test"
+    name = "whatever"
     # jids = map(lambda i: i['Id'], page)
     g = Graph()
     # g.solveListValTurbineCreateSession = MagicMock(return_value=session_id)
@@ -210,13 +210,13 @@ def test_results_session_result_page_1_to_9(
     def _get_page(page_num):
         _log.debug("_get_page: %d" % page_num)
         fname = (
-            'cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)d.json'
+            "cloud/aws/test/data/s3/foqus-sessions/anonymous/%(session)s/%(result)s/%(page)d.json"
             % dict(session=session_id, result=result_id, page=page_num)
         )
         try:
             with open(fname) as fd:
                 page = json.load(fd)
-                ijids = [i['Id'] for i in page]
+                ijids = [i["Id"] for i in page]
                 g.turbConfig.createJobsInSession = MagicMock(return_value=ijids)
                 return page
         except IOError:
@@ -234,7 +234,7 @@ def test_results_session_result_page_1_to_9(
     page_num = 0
     for page in mock_read_generator_page.side_effect:
         _log.debug("JIDS: %s" % str(jids))
-        jids += [i['Id'] for i in page]
+        jids += [i["Id"] for i in page]
 
     # RESET Page num
     test_results_session_result_page_1_to_9.page_num = 0
@@ -253,10 +253,10 @@ def test_results_session_result_page_1_to_9(
     g.solveListValTurbine(valueList=[jids], maxSend=20, sid=session_id, jobIds=jids)
 
     _log.debug("Job Status: %s", g.status)
-    assert g.status['success'] == 14
-    assert g.status['unfinished'] == 0
-    assert g.status['finished'] == 16
-    assert g.status['error'] == 2
+    assert g.status["success"] == 14
+    assert g.status["unfinished"] == 0
+    assert g.status["finished"] == 16
+    assert g.status["error"] == 2
 
     # NOTE: Two jobs are None
     assert len(g.res) == 18
@@ -265,6 +265,6 @@ def test_results_session_result_page_1_to_9(
 
     # assert set(map(lambda i: i['Id'], g.res)) == set(jids)
     for i in finished_jobs:
-        _log.debug("ID: %s", i['Id'])
-        assert i['session'] == session_id
-        assert i['graphError'] in [0, -3]
+        _log.debug("ID: %s", i["Id"])
+        assert i["session"] == session_id
+        assert i["graphError"] in [0, -3]

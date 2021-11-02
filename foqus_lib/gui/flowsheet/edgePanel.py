@@ -67,9 +67,9 @@ class edgeDock(_edgeDock, _edgeDockUI):
         self.addConnection()
 
     def applyChanges(self):
-        '''
+        """
         Update the edge with the parameters shown on the form
-        '''
+        """
         if self.edge == None:
             return
         if self.tearBox.isChecked():

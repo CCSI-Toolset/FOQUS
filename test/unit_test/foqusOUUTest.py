@@ -21,19 +21,19 @@ from foqus_lib.gui.uq.InputPriorTable import InputPriorTable
 MAX_RUN_TIME = 5000000  # Maximum time to let script run in ms.
 TIME_STEP = 2
 HAVE_TEXT = 0
-testOutFile = 'ui_test_out.txt'
-with open(testOutFile, 'w') as f:
-    f.write('')
+testOutFile = "ui_test_out.txt"
+with open(testOutFile, "w") as f:
+    f.write("")
 timers = {}
 
 
 def go(MainWin=MainWin):
-    '''
+    """
     Process gui events so that gui can still function(ish) while
     script is running also add delay between calls to GUI stuff to
     make the execution fun to watch.  Also checks the stop flag and
     returns True keep going or False to stop.
-    '''
+    """
     MainWin.app.processEvents()
     time.sleep(0.25)
     return not MainWin.helpDock.stop
@@ -49,7 +49,7 @@ def getButton(w, label):
 
 
 def addTimer(name, cb, MainWin=MainWin, timers=timers):
-    '''
+    """
     Using timers to push buttons on popups and modal dialogs and
     other things were I need an easy way to make things happen from
     a seperate thread.  Usually where something is blocking the main
@@ -57,15 +57,15 @@ def addTimer(name, cb, MainWin=MainWin, timers=timers):
 
     name: string name of timer
     cd is the timer call back function
-    '''
+    """
     timers[name] = QtCore.QTimer(MainWin)
     timers[name].timeout.connect(cb)
 
 
 def timersStop(timers=timers):
-    '''
+    """
     Call stop for all timers to make sure they all stop
-    '''
+    """
     for key, t in timers.items():
         t.stop()
 
@@ -73,12 +73,12 @@ def timersStop(timers=timers):
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
 # or some crazy stuff may happen untill you exit FOQUS.
-addTimer('time_out', MainWin.helpDock.setStopTrue)  # stop script for taking too long
-addTimer('msg_okay', MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
-addTimer('msg_no', MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
+addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script for taking too long
+addTimer("msg_okay", MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
+addTimer("msg_no", MainWin.helpDock.msgBoxNo)  # Click no on a popup message box
 # Start timer to stop script for running too long
 # This won't work it execution of the script is blocked.
-timers['time_out'].start(MAX_RUN_TIME)
+timers["time_out"].start(MAX_RUN_TIME)
 
 try:
     # raise(Exception("Test excpetion handeling"))
@@ -90,13 +90,13 @@ try:
             dialog.show()
             textedit = dialog.textedit
             textedit.insertPlainText(
-                'First move this screen to your upper right hand corner\n'
+                "First move this screen to your upper right hand corner\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
 
         ### Go to main window home
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Entering the home screen\n')
+            textedit.insertPlainText("Entering the home screen\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -108,7 +108,7 @@ try:
 
         ### Enter session name
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Typing in the session name = OUU GUI test\n')
+            textedit.insertPlainText("Typing in the session name = OUU GUI test\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -122,7 +122,7 @@ try:
         ### Go to OUU module (click the top icon)
         ###===========================================
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('Clicking the OUU icon (at the top)\n')
+            textedit.insertPlainText("Clicking the OUU icon (at the top)\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -135,7 +135,7 @@ try:
         ### Enter model file name
         if HAVE_TEXT == 1:
             textedit.insertPlainText(
-                '   Clicking the load model button, enter file name\n'
+                "   Clicking the load model button, enter file name\n"
             )
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
@@ -143,7 +143,7 @@ try:
             time.sleep(TIME_STEP)
         MainWin.ouuSetupFrame.modelFile_radio.setChecked(True)
         ###fname = '/g/g0/chtong/FOQUS/FOQUS/examples/OUU/test_suite/ouu_optdriver.in'
-        fname = '../examples/OUU/test_suite/ouu_optdriver.in'
+        fname = "../examples/OUU/test_suite/ouu_optdriver.in"
         MainWin.ouuSetupFrame.modelFile_edit.setText(fname)
         MainWin.ouuSetupFrame.model = LocalExecutionModule.readSampleFromPsuadeFile(
             fname
@@ -155,7 +155,7 @@ try:
 
         ### Load File
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Reading input file and load input table\n')
+            textedit.insertPlainText("   Reading input file and load input table\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -176,7 +176,7 @@ try:
 
         ### Set Z1 inputs
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Configuring Z1 inputs\n')
+            textedit.insertPlainText("   Configuring Z1 inputs\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -194,7 +194,7 @@ try:
 
         ### Set Z2 inputs
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Configuring Z2 inputs\n')
+            textedit.insertPlainText("   Configuring Z2 inputs\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -214,7 +214,7 @@ try:
 
         ### Set Z4 inputs
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Configuring Z4 inputs\n')
+            textedit.insertPlainText("   Configuring Z4 inputs\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -231,7 +231,7 @@ try:
 
         ### Set second level solver
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Setting second level solver\n')
+            textedit.insertPlainText("   Setting second level solver\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -243,7 +243,7 @@ try:
 
         ### Go to UQ setup tab
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Going into UQ setup tab\n')
+            textedit.insertPlainText("   Going into UQ setup tab\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -255,7 +255,7 @@ try:
 
         ### Set up Z4 sample
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Setting Z4 sample\n')
+            textedit.insertPlainText("   Setting Z4 sample\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -270,7 +270,7 @@ try:
         MainWin.ouuSetupFrame.x4FileBrowse_button.setEnabled(True)
         # MainWin.ouuSetupFrame.x4FileBrowse_button.setChecked(True)
         # fname = '/g/g0/chtong/FOQUS/FOQUS/examples/OUU/test_suite/x4sample.txt'
-        fname = '../examples/OUU/test_suite/x4sample.smp'
+        fname = "../examples/OUU/test_suite/x4sample.smp"
         MainWin.ouuSetupFrame.x4File_edit.setText(fname)
         if not go():
             break
@@ -278,7 +278,7 @@ try:
 
         ### Go to Run tab
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Going into launch tab\n')
+            textedit.insertPlainText("   Going into launch tab\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
@@ -290,18 +290,18 @@ try:
 
         ### optimize
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('   Optimizing\n')
+            textedit.insertPlainText("   Optimizing\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
             if not go():
                 break
             time.sleep(TIME_STEP)
-        timers['msg_okay'].start(1000)
+        timers["msg_okay"].start(1000)
         MainWin.ouuSetupFrame.run_button.click()
-        timers['msg_okay'].stop()
+        timers["msg_okay"].stop()
 
         ### Wait
         if HAVE_TEXT == 1:
-            textedit.insertPlainText('This test will terminate in 30 seconds\n')
+            textedit.insertPlainText("This test will terminate in 30 seconds\n")
             textedit.ensureCursorVisible()  # Scroll the window to the bottom
         for ii in range(30):
             if not go():
@@ -309,11 +309,11 @@ try:
             time.sleep(1)
 
         ### Close FOQUS
-        timers['msg_no'].start(1000)
+        timers["msg_no"].start(1000)
         if HAVE_TEXT == 1:
             dialog.close()
         MainWin.close()
-        timers['msg_no'].stop()
+        timers["msg_no"].stop()
         break
 
 except Exception as e:
@@ -321,7 +321,7 @@ except Exception as e:
     # before reraising it
     print("Exception stopping script")
     timersStop()
-    with open(testOutFile, 'a') as f:
-        f.write('Exception: {0}\n'.format(e))
+    with open(testOutFile, "a") as f:
+        f.write("Exception: {0}\n".format(e))
     raise (e)
 timersStop()  # make sure all timers are stopped

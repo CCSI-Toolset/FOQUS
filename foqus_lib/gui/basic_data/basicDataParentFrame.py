@@ -26,7 +26,7 @@ _basicDataParentFrameUI, _basicDataParentFrame = uic.loadUiType(
 
 
 class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
-    format = '%.5f'  # numeric format for table entries in UQ Toolbox
+    format = "%.5f"  # numeric format for table entries in UQ Toolbox
 
     def __init__(self, parent=None):
         super(basicDataParentFrame, self).__init__(parent)

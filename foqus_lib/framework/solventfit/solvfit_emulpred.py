@@ -18,11 +18,11 @@ import subprocess
 # ---------------------------------------
 # SOLVENTFIT EMULATOR predict function
 # ---------------------------------------
-def pred(modelfile, xdatfile, yhatfile, nsamples='50', transform='1'):
+def pred(modelfile, xdatfile, yhatfile, nsamples="50", transform="1"):
     p = subprocess.Popen(
         [
-            'Rscript',
-            'solvfit_emulpred.R',
+            "Rscript",
+            "solvfit_emulpred.R",
             modelfile,
             xdatfile,
             yhatfile,
@@ -42,8 +42,8 @@ def pred(modelfile, xdatfile, yhatfile, nsamples='50', transform='1'):
 # ---------------------------------------
 # Example usage
 # ---------------------------------------
-rdsfile = 'solvfit_emulator.rds'
-infile = 'example/infile.emulpred'
-outfile = 'outfile.emulpred'
+rdsfile = "solvfit_emulator.rds"
+infile = "example/infile.emulpred"
+outfile = "outfile.emulpred"
 resfile = pred(rdsfile, infile, outfile)
 print(resfile)

@@ -29,7 +29,7 @@ env:
 
 jobs:
   code-formatting:
-    name: Check code formatting (Black)
+    name: Code formatting (Black)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

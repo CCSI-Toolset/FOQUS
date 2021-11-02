@@ -136,8 +136,10 @@ class pymodel_ml_ai(pymodel):
         print(inputs)
         # set output values to be generated from NN surrogate
         outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
+        outidx = 0
         for j in self.outputs:
-            self.outputs[j].value = outputs[j]
+            self.outputs[j].value = outputs[outidx]
+            outidx += 1
 
 
 class Node:

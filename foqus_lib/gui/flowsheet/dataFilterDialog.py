@@ -33,21 +33,30 @@ from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 from PyQt5 import uic
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import QObject, QEvent, QDataStream, QSize, Qt
-from PyQt5.QtWidgets import QApplication, QMessageBox, QSplitter, QInputDialog,\
-    QLineEdit, QAbstractItemView
+from PyQt5.QtWidgets import (
+    QApplication,
+    QMessageBox,
+    QSplitter,
+    QInputDialog,
+    QLineEdit,
+    QAbstractItemView,
+)
+
 mypath = os.path.dirname(__file__)
-_dataFilterDialogUI, _dataFilterDialog = \
-        uic.loadUiType(os.path.join(mypath, "dataFilterDialog_UI.ui"))
+_dataFilterDialogUI, _dataFilterDialog = uic.loadUiType(
+    os.path.join(mypath, "dataFilterDialog_UI.ui")
+)
+
 
 def _list_item_mime_to_text(mime_data, c=False):
     if mime_data.hasText():
         return mime_data
-    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    data = mime_data.data("application/x-qabstractitemmodeldatalist")
     if not data:
         return mime_data
     ds = QDataStream(data)
-    ds.readInt32() # read row (don't need)
-    ds.readInt32() # read col (don't need)
+    ds.readInt32()  # read row (don't need)
+    ds.readInt32()  # read col (don't need)
     value = None
     for i in range(ds.readInt32()):
         if Qt.ItemDataRole(ds.readInt32()) == Qt.DisplayRole:
@@ -85,13 +94,13 @@ class _DropHandler(QObject):
 
 
 class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
-    def __init__(self, dat, parent=None, results = None):
-        '''
-            Constructor for data filter dialog
-        '''
+    def __init__(self, dat, parent=None, results=None):
+        """
+        Constructor for data filter dialog
+        """
         super(dataFilterDialog, self).__init__(parent=parent)
-        self.setupUi(self) # Create the widgets
-        self.dat = dat     # all of the session data
+        self.setupUi(self)  # Create the widgets
+        self.dat = dat  # all of the session data
         if results is None:
             self.results = self.dat.flowsheet.results
         else:
@@ -141,7 +150,7 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
             del self.results.filters[fname]
         if self.results.current_filter() == fname:
             self.results.set_filter(None)
-        self.updateFilterBox( )
+        self.updateFilterBox()
         self.updateForm()
 
     def selectFilter(self, i=None):
@@ -150,68 +159,67 @@ class dataFilterDialog(_dataFilterDialog, _dataFilterDialogUI):
         self.updateForm()
 
     def addFilter(self):
-        '''
-            Add a new filter to the results
-        '''
+        """
+        Add a new filter to the results
+        """
         # Get the name
         newName, ok = QInputDialog.getText(
-            self,
-            "Filter Name",
-            "New filter name:",
-            QLineEdit.Normal)
+            self, "Filter Name", "New filter name:", QLineEdit.Normal
+        )
         msgBox = QMessageBox(self)
         msgBox.setIcon(QMessageBox.Information)
         msgBox.setWindowTitle("Data Filter Instructions")
-        msgBox.setText("""Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
+        msgBox.setText(
+            """Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
         Single Filter Criteria Syntax: c(“column name”) ==,!=,<= or >= “ string_value” or numeric_value
         String value can be a simulation set or result name, or time.
         Numeric values are for simulation graph error, input and output variable values.
         Multiple Filter Criteria Syntax: NumPy Logical Operators.
         For 2 conditions: np.logical_and(condition_1, condition_2), np.logical_or(condition_1, condition_2)
         For more than 2 conditions: np.logical_and.reduce((condition_1, condition_2…)), np.logical_or.reduce((condition_1, condition_2…))
-        Each ‘condition’ has the same syntax as that for single filter criteria""")
-#        msgBox.setInformativeText(text)
+        Each ‘condition’ has the same syntax as that for single filter criteria"""
+        )
+        #        msgBox.setInformativeText(text)
         msgBox.setStandardButtons(QMessageBox.Cancel | QMessageBox.Ok)
         msgBox.setDefaultButton(QMessageBox.Ok)
         msgBox.setFixedSize(500, 500)
-#        msgBox.resize(800, 200)
+        #        msgBox.resize(800, 200)
         msgBox.exec()
-#        QMessageBox.setBaseSize(QSize(550, 275))
-#        QMessageBox.information(
-#                    self, "Data Filter Instructions", """Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
-#                    Single Filter Criteria Syntax: c(“column name”) ==,!=,<= or >= “ string_value” or numeric_value
-#                    String value can be a simulation set or result name, or time.
-#                    Numeric values are for simulation graph error, input and output variable values.
-#                    Multiple Filter Criteria Syntax: NumPy Logical Operators.
-#                    For 2 conditions: np.logical_and(condition_1, condition_2), np.logical_or(condition_1, condition_2)
-#                    For more than 2 conditions: np.logical_and.reduce((condition_1, condition_2…)), np.logical_or.reduce((condition_1, condition_2…))
-#                    Each ‘condition’ has the same syntax as that for single filter criteria""")
-#        QMessageBox.setBaseSize(QSize(550, 275))
+        #        QMessageBox.setBaseSize(QSize(550, 275))
+        #        QMessageBox.information(
+        #                    self, "Data Filter Instructions", """Within Filter Expression, the filter can be applied in Python format to each column of the Flowsheet Results table.
+        #                    Single Filter Criteria Syntax: c(“column name”) ==,!=,<= or >= “ string_value” or numeric_value
+        #                    String value can be a simulation set or result name, or time.
+        #                    Numeric values are for simulation graph error, input and output variable values.
+        #                    Multiple Filter Criteria Syntax: NumPy Logical Operators.
+        #                    For 2 conditions: np.logical_and(condition_1, condition_2), np.logical_or(condition_1, condition_2)
+        #                    For more than 2 conditions: np.logical_and.reduce((condition_1, condition_2…)), np.logical_or.reduce((condition_1, condition_2…))
+        #                    Each ‘condition’ has the same syntax as that for single filter criteria""")
+        #        QMessageBox.setBaseSize(QSize(550, 275))
         # if name supplied and not canceled
-        if ok and newName != '':
+        if ok and newName != "":
             # check if the name is in use
             if newName in self.results.filters:
                 # filter already exists
                 # just do nothing for now
                 QMessageBox.information(
-                    self, "Error", "The filter name already exists.")
+                    self, "Error", "The filter name already exists."
+                )
             else:
                 self.applyChanges(True)
-                self.results.filters[newName] = \
-                    dataFilter()
+                self.results.filters[newName] = dataFilter()
         self.updateFilterBox(newName)
 
     def updateFilterBox(self, fltr=None):
-        '''
-            Update the list of filters in the combo box
-        '''
+        """
+        Update the list of filters in the combo box
+        """
         if fltr == None:
             fltr = self.results.current_filter()
         self.selectFilterBox.blockSignals(True)
         self.selectFilterBox.clear()
         items = list(sorted(self.results.filters.keys()))
-        self.selectFilterBox.addItems(
-            [i for i in items if i not in ["all", "none"]])
+        self.selectFilterBox.addItems([i for i in items if i not in ["all", "none"]])
         i = self.selectFilterBox.findText(fltr)
         if i > 0:
             self.selectFilterBox.setCurrentIndex(i)

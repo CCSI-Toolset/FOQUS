@@ -29,9 +29,9 @@ from .optMessageWindow import *
 import os
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QWidget, QMessageBox, QVBoxLayout
+
 mypath = os.path.dirname(__file__)
-_optMonitorUI, _optMonitor = \
-        uic.loadUiType(os.path.join(mypath, "optMonitor_UI.ui"))
+_optMonitorUI, _optMonitor = uic.loadUiType(os.path.join(mypath, "optMonitor_UI.ui"))
 
 
 class noCloseWidget(QWidget):
@@ -41,17 +41,19 @@ class noCloseWidget(QWidget):
     def closeEvent(self, e):
         e.ignore()
 
+
 class optMonitor(_optMonitor, _optMonitorUI):
     setStatusBar = QtCore.Signal(str)
     updateGraph = QtCore.Signal()
+
     def __init__(self, dat, parent=None):
-        '''
-            Constructor for model set up dialog
-        '''
+        """
+        Constructor for model set up dialog
+        """
         super(optMonitor, self).__init__(parent=parent)
         self.settingsForm = parent
-        self.setupUi(self) # Create the widgets
-        self.dat = dat     # all of the session data
+        self.setupUi(self)  # Create the widgets
+        self.dat = dat  # all of the session data
 
         self.msgSubwindow = optMessageWindow(self)
         self.plotSubwindow = noCloseWidget(self)
@@ -59,14 +61,13 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.coordPlotSubwindow = noCloseWidget(self)
         self.coordPlotSubwindow.setLayout(QVBoxLayout())
 
-        self.plotSubwindow.setMaximumSize(5000,3000)
-        self.coordPlotSubwindow.setMaximumSize(5000,3000)
+        self.plotSubwindow.setMaximumSize(5000, 3000)
+        self.coordPlotSubwindow.setMaximumSize(5000, 3000)
 
         self.mdiArea.addSubWindow(self.plotSubwindow)
         self.plotSubwindow.setWindowTitle("Objective Function Plot")
         self.mdiArea.addSubWindow(self.coordPlotSubwindow)
-        self.coordPlotSubwindow.setWindowTitle(
-            "Best Solution Parallel Coordinate Plot")
+        self.coordPlotSubwindow.setWindowTitle("Best Solution Parallel Coordinate Plot")
         self.mdiArea.addSubWindow(self.msgSubwindow)
         self.msgSubwindow.setWindowTitle("Optimization Solver Messages")
 
@@ -76,17 +77,19 @@ class optMonitor(_optMonitor, _optMonitorUI):
 
         # setup plot the plots
         self.objFig = Figure(
-            figsize=(600,600),
+            figsize=(600, 600),
             dpi=72,
-            facecolor=(1,1,1),
-            edgecolor=(0,0,0),
-            tight_layout = True)
+            facecolor=(1, 1, 1),
+            edgecolor=(0, 0, 0),
+            tight_layout=True,
+        )
         self.coordFig = Figure(
-            figsize=(600,600),
+            figsize=(600, 600),
             dpi=72,
-            facecolor=(1,1,1),
-            edgecolor=(0,0,0),
-            tight_layout = True)
+            facecolor=(1, 1, 1),
+            edgecolor=(0, 0, 0),
+            tight_layout=True,
+        )
         self.objFigAx = self.objFig.add_subplot(211)
         self.objbestFigAx = self.objFig.add_subplot(212)
         self.coordFigAx = self.coordFig.add_subplot(111)
@@ -97,14 +100,14 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.coordPlotSubwindow.layout().addWidget(self.coordCanvas)
         self.coordCanvas.setParent(self.coordPlotSubwindow)
         self.timer = QtCore.QTimer(self)
-        #self.connect(
+        # self.connect(
         #    self.timer,
         #    QtCore.SIGNAL("timeout()"),
         #    self.updateStatus)
         self.timer.timeout.connect(self.updateStatus)
         self.updateDelay = 500
-        self.delayEdit.setText( str(self.updateDelay) )
-        self.delayEdit.textChanged.connect( self.updateDelayChange )
+        self.delayEdit.setText(str(self.updateDelay))
+        self.delayEdit.textChanged.connect(self.updateDelayChange)
         self.opt = None
         self.bestObj = 0
         self.bestCoord = None
@@ -143,8 +146,8 @@ class optMonitor(_optMonitor, _optMonitorUI):
         self.objFigAx.set_ylabel("Objective Value Solver Progression")
         self.objbestFigAx.set_xlabel("Iteration")
         self.objbestFigAx.set_ylabel("Best Objective Function Values")
-        #self.objCanvas.draw()
-        #self.coordCanvas.draw()
+        # self.objCanvas.draw()
+        # self.coordCanvas.draw()
 
     def coordAxSetup(self):
         self.coordFigAx.clear()
@@ -154,50 +157,40 @@ class optMonitor(_optMonitor, _optMonitorUI):
             self.xnames.append(name)
         self.coordFigAx.set_xlabel("Variable")
         self.coordFigAx.set_ylabel("Scaled Value")
-        self.coordFigAx.set_ylim(
-            -0.1,
-            10.1,
-            auto = False)
-        self.coordFigAx.set_xlim(
-            0.75,
-            len(self.xnames) + 0.25,
-            auto = False)
+        self.coordFigAx.set_ylim(-0.1, 10.1, auto=False)
+        self.coordFigAx.set_xlim(0.75, len(self.xnames) + 0.25, auto=False)
         self.coordFigAx.set_yticks(list(range(11)))
         self.coordFigAx.set_xticks(list(range(1, len(self.xnames) + 1)))
-        self.coordFigAx.set_xticklabels(
-            self.xnames,
-            rotation = 'vertical')
-        self.bestX = [11]*len(self.xnames)
-        self.sampLim = [ [11]*len(self.xnames), [11]*len(self.xnames)]
-        self.coordXCoord = list(range(1,(len(self.bestX)+1)))
-        self.coorFigLine1 = self.coordFigAx.plot(
-            self.coordXCoord,
-            self.bestX)
+        self.coordFigAx.set_xticklabels(self.xnames, rotation="vertical")
+        self.bestX = [11] * len(self.xnames)
+        self.sampLim = [[11] * len(self.xnames), [11] * len(self.xnames)]
+        self.coordXCoord = list(range(1, (len(self.bestX) + 1)))
+        self.coorFigLine1 = self.coordFigAx.plot(self.coordXCoord, self.bestX)
         self.coorFigLine2 = self.coordFigAx.plot(
-            self.coordXCoord,
-            self.sampLim[0], 'bo')
+            self.coordXCoord, self.sampLim[0], "bo"
+        )
         self.coorFigLine3 = self.coordFigAx.plot(
-            self.coordXCoord,
-            self.sampLim[1], 'bo')
+            self.coordXCoord, self.sampLim[1], "bo"
+        )
 
     def startOptimization(self):
         self.dat.flowsheet.generateGlobalVariables()
-        pg = self.dat.optSolvers.plugins[self.dat.optProblem.solver].\
-            opt(self.dat)
-        e = self.dat.optProblem.check(
-            self.dat.flowsheet,
-            pg.minVars,
-            pg.maxVars)
+        pg = self.dat.optSolvers.plugins[self.dat.optProblem.solver].opt(self.dat)
+        e = self.dat.optProblem.check(self.dat.flowsheet, pg.minVars, pg.maxVars)
         if not e[0] == 0:
-            QMessageBox.information(self, "Error",
-                "The optimization will not be started there is an error in the set up:\n" + e[1])
+            QMessageBox.information(
+                self,
+                "Error",
+                "The optimization will not be started there is an error in the set up:\n"
+                + e[1],
+            )
             return
         self.dat.save("backupBeforeOpt.json", False)
         self.clearPlots()
         self.objCanvas.draw()
         self.settingsForm.running = True
         self.opt = self.dat.optProblem.run(self.dat)
-        time.sleep(0.5)  #give the optimization function a little time to get started
+        time.sleep(0.5)  # give the optimization function a little time to get started
         self.coordAxSetup()
         self.a = True
         self.timer.start(self.updateDelay)
@@ -214,32 +207,31 @@ class optMonitor(_optMonitor, _optMonitorUI):
         if self.opt.updateGraph:
             self.opt.updateGraph = False
             self.updateGraph.emit()
-        if not self.opt.isAlive(): done = True
+        if not self.opt.isAlive():
+            done = True
         while not self.opt.msgQueue.empty():
             msg = str(self.opt.msgQueue.get(False))
             self.msgSubwindow.msgTextBrowser.append(msg)
         bestChange = False
         itChange = False
         updateStatusLine = False
-        objPoints = [[],[]]
+        objPoints = [[], []]
         while not self.opt.resQueue.empty():
             msg = self.opt.resQueue.get(False)
-#            print(msg)
+            #            print(msg)
             if msg[0] == "BEST":
-                self.iteration+=1
-                self.bestiter = self.iteration 
+                self.iteration += 1
+                self.bestiter = self.iteration
                 self.bestObj = msg[1][0]
                 self.bestX = msg[2]
                 bestChange = True
             elif msg[0] == "SAMP":
                 if self.a:
                     self.samp = np.array(msg[1])
-                    self.sampLim = [
-                        [0]*len(self.xnames),
-                        [10]*len(self.xnames)]
+                    self.sampLim = [[0] * len(self.xnames), [10] * len(self.xnames)]
                     for i in range(len(self.xnames)):
-                        self.sampLim[0][i] = np.min(self.samp[:,i])
-                        self.sampLim[1][i] = np.max(self.samp[:,i])
+                        self.sampLim[0][i] = np.min(self.samp[:, i])
+                        self.sampLim[1][i] = np.max(self.samp[:, i])
                     bestChange = True
             elif msg[0] == "IT":
                 self.iteration = msg[1]
@@ -255,35 +247,46 @@ class optMonitor(_optMonitor, _optMonitorUI):
                 totalErrors = msg[6]
                 updateStatusLine = True
         if bestChange:
-            self.coorFigLine1[0].set_data( self.coordXCoord, self.bestX )
-            self.coorFigLine2[0].set_data( self.coordXCoord, self.sampLim[0])
-            self.coorFigLine3[0].set_data( self.coordXCoord, self.sampLim[1])
+            self.coorFigLine1[0].set_data(self.coordXCoord, self.bestX)
+            self.coorFigLine2[0].set_data(self.coordXCoord, self.sampLim[0])
+            self.coorFigLine3[0].set_data(self.coordXCoord, self.sampLim[1])
             self.coordCanvas.draw()
-            self.objbestFigAx.plot(self.bestiter, self.bestObj, '-bo')
+            self.objbestFigAx.plot(self.bestiter, self.bestObj, "-bo")
             self.objCanvas.draw()
         if itChange:
-            self.objFigAx.plot(objPoints[0], objPoints[1], 'ro')
+            self.objFigAx.plot(objPoints[0], objPoints[1], "ro")
             self.objCanvas.draw()
         if updateStatusLine:
-            self.msgSubwindow.statusLine.setText("".join([
-                "ITERATION ",
-                str(it),
-                ": ",
-                str(itJobsComplete),
-                "/",
-                str(itTotalJobs),
-                "  Err: ",
-                str(itErrors),
-                " TOTAL Complete: ",
-                str(totalRead),
-                " Err:",
-                str(totalErrors)]))
+            self.msgSubwindow.statusLine.setText(
+                "".join(
+                    [
+                        "ITERATION ",
+                        str(it),
+                        ": ",
+                        str(itJobsComplete),
+                        "/",
+                        str(itTotalJobs),
+                        "  Err: ",
+                        str(itErrors),
+                        " TOTAL Complete: ",
+                        str(totalRead),
+                        " Err:",
+                        str(totalErrors),
+                    ]
+                )
+            )
         if done:
             self.timer.stop()
             self.startButton.setEnabled(True)
             self.stopButton.setEnabled(False)
-            self.setStatusBar.emit("Optimization Finished, Elapsed Time: " + hhmmss(math.floor(time.time() - self.timeRunning)))
+            self.setStatusBar.emit(
+                "Optimization Finished, Elapsed Time: "
+                + hhmmss(math.floor(time.time() - self.timeRunning))
+            )
             self.settingsForm.refreshContents()
             self.settingsForm.running = False
         else:
-            self.setStatusBar.emit("Optimization Running, Elapsed Time: " + hhmmss(math.floor(time.time() - self.timeRunning)))
+            self.setStatusBar.emit(
+                "Optimization Running, Elapsed Time: "
+                + hhmmss(math.floor(time.time() - self.timeRunning))
+            )

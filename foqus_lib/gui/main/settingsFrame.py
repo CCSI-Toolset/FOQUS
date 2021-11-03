@@ -219,6 +219,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             stdin=None,
+            universal_newlines=True,
             creationflags=win32process.CREATE_NO_WINDOW)
         self.waiting.emit()
         out, err = proc.communicate()
@@ -241,6 +242,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             stdout = subprocess.PIPE,
             stderr = subprocess.PIPE,
             stdin = None,
+            universal_newlines=True,
             creationflags=win32process.CREATE_NO_WINDOW)
         self.waiting.emit()
         out, err = proc.communicate()

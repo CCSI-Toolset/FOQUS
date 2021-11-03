@@ -8,3 +8,12 @@ version: 2
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
     fail_on_warning: true
+
+python:
+  install:
+    - requirements: requirements-dev.txt
+
+# Build all formats
+formats:
+    - pdf
+    - htmlzip

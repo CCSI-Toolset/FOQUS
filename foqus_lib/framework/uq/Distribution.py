@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-'''
+"""
     Distribution class
 
     ***** Here are all the static methods dealing with the enum value ****
@@ -51,24 +51,64 @@
     setParameterValues(value1, value2 = None):
         Sets the values of the parameters.  Calling with just one parameter
         sets the first parameter and makes the second None.
-'''
+"""
 
 
 import numbers
 
+
 class Distribution:
-    UNIFORM, NORMAL, LOGNORMAL, TRIANGLE, GAMMA, BETA, EXPONENTIAL, WEIBULL, SAMPLE = list(range(9))
-    fullNames = ('Uniform', 'Normal', 'Lognormal', 'Triangle', 'Gamma',
-                 'Beta', 'Exponential', 'Weibull', 'Sample')
-    psuadeNames = ('U', 'N', 'L', 'T', 'G', 'B', 'E', 'W', 'S')
-    firstParamNames = (None, 'Mean', 'Mean', 'Mode', 'Alpha', 'Alpha', 'Lambda', 'Lambda', None)
-    secondParamNames = (None, 'Std Dev', 'Std Dev', 'Width', 'Beta', 'Beta', None, 'k', None)
+    (
+        UNIFORM,
+        NORMAL,
+        LOGNORMAL,
+        TRIANGLE,
+        GAMMA,
+        BETA,
+        EXPONENTIAL,
+        WEIBULL,
+        SAMPLE,
+    ) = list(range(9))
+    fullNames = (
+        "Uniform",
+        "Normal",
+        "Lognormal",
+        "Triangle",
+        "Gamma",
+        "Beta",
+        "Exponential",
+        "Weibull",
+        "Sample",
+    )
+    psuadeNames = ("U", "N", "L", "T", "G", "B", "E", "W", "S")
+    firstParamNames = (
+        None,
+        "Mean",
+        "Mean",
+        "Mode",
+        "Alpha",
+        "Alpha",
+        "Lambda",
+        "Lambda",
+        None,
+    )
+    secondParamNames = (
+        None,
+        "Std Dev",
+        "Std Dev",
+        "Width",
+        "Beta",
+        "Beta",
+        None,
+        "k",
+        None,
+    )
 
     # Here are all the static methods dealing with the enum value
     @staticmethod
     def getFullName(num):
         return Distribution.fullNames[num]
-    
+
     @staticmethod
     def getPsuadeName(num):
         return Distribution.psuadeNames[num]
@@ -88,47 +128,47 @@ class Distribution:
 
     @staticmethod
     def getParameterNames(num):
-        return(Distribution.firstParamNames[num], Distribution.secondParamNames[num])
+        return (Distribution.firstParamNames[num], Distribution.secondParamNames[num])
 
-    #Here are all the methods for the Distribution object
+    # Here are all the methods for the Distribution object
     def __init__(self, distType):
         self.setDistributionType(distType)
         self.firstParamValue = None
         self.secondParamValue = None
 
-    def __repr__(self): #Command prompt behavior
+    def __repr__(self):  # Command prompt behavior
         returnString = "<" + self.getPsuadeName(self.type) + " Distribution instance"
         if self.firstParamValue is not None:
-            returnString = returnString + ' ' + str(self.firstParamValue)
+            returnString = returnString + " " + str(self.firstParamValue)
         if self.secondParamValue is not None:
-            returnString = returnString + ' ' + str(self.secondParamValue)
-        returnString = returnString + '>'
+            returnString = returnString + " " + str(self.secondParamValue)
+        returnString = returnString + ">"
         return returnString
 
     def saveDict(self):
         sd = dict()
-        sd['type'] = self.getPsuadeName(self.type)
-        sd['firstParamValue'] = self.firstParamValue
-        sd['secondParamValue'] = self.secondParamValue
+        sd["type"] = self.getPsuadeName(self.type)
+        sd["firstParamValue"] = self.firstParamValue
+        sd["secondParamValue"] = self.secondParamValue
         return sd
 
     def loadDict(self, sd):
-        self.setDistributionType(sd.get('type','Uniform'))
-        self.firstParamValue = sd.get('firstParamValue', None)
-        self.secondParamValue = sd.get('secondParamValue', None)
+        self.setDistributionType(sd.get("type", "Uniform"))
+        self.firstParamValue = sd.get("firstParamValue", None)
+        self.secondParamValue = sd.get("secondParamValue", None)
 
     def setDistributionType(self, distType):
         if isinstance(distType, numbers.Number):
             self.type = distType
         else:
             self.type = self.getEnumValue(distType)
-        
+
     def getDistributionType(self):
         return self.type
 
     def getParameterValues(self):
         return (self.firstParamValue, self.secondParamValue)
 
-    def setParameterValues(self, value1, value2 = None):
+    def setParameterValues(self, value1, value2=None):
         self.firstParamValue = value1
         self.secondParamValue = value2

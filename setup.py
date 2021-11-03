@@ -23,7 +23,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.10.0dev0"
+default_version = "3.12.0dev0"
 
 try:
     version=subprocess.check_output(
@@ -56,6 +56,7 @@ dist = setup(
     maintainer_email = ver.maintainer_email,
     url = ver.webpage,
     packages = find_packages(),
+    py_modules = ['pytest_qt_extras'],
     package_data={
         '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
             '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},

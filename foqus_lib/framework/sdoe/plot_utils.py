@@ -56,7 +56,7 @@ def load_data(fname, hname):
     # load history
     hf = None
     if hname:
-        hf = load(hname, index='__id')
+        hf = load(hname)
         # make sure headers match
         assert (names == list(hf))
     return df, hf

@@ -1,5 +1,3 @@
-[sec:ouu\_overview]
-
 Reference
 =========
 
@@ -39,7 +37,7 @@ which is characterized by four types of variables:
 
    -  Notation: :math:`Z_3` with dimension :math:`n_3`
 
-   -  Definition: Discrete variables are uncertain variables that have
+   -  Definition: Discrete uncertain variables are random variables that have
       an enumerable set of states (called scenarios) such that each
       state is associated with a finite probability and the sum of
       probabilities for all the scenarios is equal to :math:`1`.
@@ -56,22 +54,24 @@ OUU Objective Functions
 -----------------------
 
 In the presence of uncertainties, OUU seeks to find the optimal solution
-in some statistical sense. For example, an optimization goal may to be
-find the design settings that minimizes the statistical mean of the
-system response. Other popular objective functions are:
+in some statistical sense. In other words, an optimization goal may to be
+find the design settings that minimizes some metric.
+Currently, OUU supports the following three metrics:
+
+#. statistical mean of some selected output;
 
 #. a linear combination of statistical mean and standard deviation of
-   some selected output,
+   some selected output; and
 
-#. probability of exceeding the best value is smaller than some
+#. the probability of exceeding the best value is smaller than some
    percentage at any point in the design space (this is analogous to
    conditional value at risk).
 
 Note that these metrics are defined in the design variable space - that
 is, at each iteration of an OUU algorithm, the selected metric will be
 computed for the decision point under consideration. Since the
-calculation of these statistical metrics requires a sample (possibly
-large), OUU can benefit from parallel computing capabilities (e.g., the
+calculation of these statistical metrics requires a (possibly large) sample,
+OUU can benefit from parallel computing capabilities (e.g., the
 Turbine gateway).
 
 Mathematical Formulations
@@ -79,11 +79,11 @@ Mathematical Formulations
 
 FOQUS supports two types of OUU methods: single-stage OUU and two-stage
 OUU. The main difference between single-stage and two-stage OUU is the
-presence of the recourse (or operational) variables. Strictly speaking,
+presence of the recourse (or operating) variables. Strictly speaking,
 since recourse variables are generally hidden (they are only needed in
 the inner stage and their values are not used in the outer stage of
 two-stage OUU), the distinction between single-stage and two-stage OUU
-is not clear. Nevertheless, for the sake of clarify, we will describe
+is not readily obvious. Nevertheless, for the sake of clarify, we will describe
 details of each formulation separately. The current OUU does not support
 linearly or nonlinearly-constrained optimization.
 
@@ -125,7 +125,7 @@ the continuous uncertain variables.
 Two-Stage Formulation
 ~~~~~~~~~~~~~~~~~~~~~
 
-In this formulation all four types of variables are present. The
+In this formulation, all four types of variables are present. The
 objective function is given by:
 
 .. math::
@@ -153,7 +153,7 @@ becomes:
    \right)
    \end{array}
 
- Let
+Let
 
 .. math:: G(\mathbf{Z_1,Z_3,Z_4}) = \min_{Z_2} F(Z_1,Z_2,Z_3,Z_4).
 
@@ -172,6 +172,8 @@ Then the two-stage equation can be rewritten as:
    \end{array}
 
 which is a single-stage OUU with respect to the :math:`G` function.
+Therefore, :math:`G` can be optimized separately before it is used to minimize :math:`Z_1`,
+thus lending to the two-stage formulation.
 
 OUU User Interface
 ------------------
@@ -185,8 +187,6 @@ Figure [fig:ouu\_screen].
 .. figure:: figs/1_OUUScreen.png
    :alt: Optimization Under Uncertainty Screen
    :name: fig:ouu_screen
-   :width: 6.50000in
-   :height: 4.00000in
 
    Optimization Under Uncertainty Screen
 
@@ -203,7 +203,7 @@ Figure [fig:ouu\_screen].
       process.
 
    -  "Opt: Primary Continuous (Z1)": Continuous parameter for the outer optimization.
-   
+
    -  "Opt: Primary Discrete (Z1d)": Discrete parameter for the outer optimization.
 
    -  "Opt: Recourse (Z2)": Recourse parameter for the inner optimization.

@@ -38,7 +38,7 @@ def save(fnames, results, elapsed_time, irsf=False):
         print('Pareto Front saved to {}'.format(fnames['pf']))
 
     else:
-        write(fnames['cand'], results['best_cand'])
+        write(fnames['cand'], results['best_cand'], index=True)
         print('Candidates saved to {}'.format(fnames['cand']))
         np.save(fnames['dmat'], results['best_dmat'])
         print(('d={}, n={}: best_val={}, elapsed_time={}s'.format(results['design_size'], results['num_restarts'],

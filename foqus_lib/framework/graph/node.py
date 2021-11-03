@@ -693,9 +693,9 @@ class Node:
                     if self.altInput is not None:
                         # WHY pylint erroneously reports this as an error,
                         # because it is not able to take the "is not None" check into account
-                        inputSetL2[vkey] = self.altInput[
-                            vkey
-                        ]  # pylint: disable=unsubscriptable-object
+                        # pylint: disable=unsubscriptable-object
+                        inputSetL2[vkey] = self.altInput[vkey]
+                        # pylint: enable=unsubscriptable-object
                     else:
                         inputSetL2[vkey] = var.value
                 except:

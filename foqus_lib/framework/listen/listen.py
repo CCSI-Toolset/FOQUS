@@ -37,7 +37,8 @@ class foqusListener2(threading.Thread):
     A multiprocessing listener to allow FOQUS to be controlled over a socket
     connection. The main purpose for this adaptive sampling.
     """
-    def __init__(self, dat, host = 'localhost', port=56002):
+
+    def __init__(self, dat, host="localhost", port=56002):
         threading.Thread.__init__(self)
         self.daemon = True
         self.gt = None
@@ -49,7 +50,7 @@ class foqusListener2(threading.Thread):
     def run(self):
         quitListening = False
         while True:
-            #Wait for a connection to be made
+            # Wait for a connection to be made
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
@@ -94,21 +95,24 @@ class foqusListener2(threading.Thread):
                             self.dat.flowsheet.errorStat = 19
                         self.dat.saveFlowsheetValues(msg[1])
                         conn.send([0])
-            if quitListening: break
+            if quitListening:
+                break
         self.listener.close()
+
 
 class foqusListener(threading.Thread):
     """
     A multiprocessing listener to allow FOQUS to be controlled over a socket
     connection. The main purpose for this adaptive sampling.
     """
-    def __init__(self, dat, host = 'localhost', port=56001):
+
+    def __init__(self, dat, host="localhost", port=56001):
 
         threading.Thread.__init__(self)
         self.daemon = True
         self.inputNames = []
         self.outputNames = []
-        self.resStoreSet = 'listener'
+        self.resStoreSet = "listener"
         self.runid = 0
         self.dat = dat
         self.failValue = -111111
@@ -129,10 +133,10 @@ class foqusListener(threading.Thread):
         """Called by Thread when you run start() method"""
         quitListening = False
         # create an input dictionary structure to load values from
-        inpDict = self.dat.flowsheet.saveValues()['input']
+        inpDict = self.dat.flowsheet.saveValues()["input"]
         # Enter loop waiting for requests from client
         while True:
-            #Wait for a connection to be made
+            # Wait for a connection to be made
             conn = self.listener.accept()
             while True:
                 msg = conn.recv()
@@ -155,71 +159,69 @@ class foqusListener(threading.Thread):
                     # Start up a thread to run samples
                     # Run samples either locally or through Turbine
                     if self.dat.foqusSettings.runFlowsheetMethod == 0:
-                        #run local
+                        # run local
+                        self.gt = self.dat.flowsheet.runListAsThread(self.samples)
+                    else:  # run in turbine
                         self.gt = self.dat.flowsheet.runListAsThread(
-                            self.samples)
-                    else: #run in turbine
-                        self.gt = self.dat.flowsheet.runListAsThread(
-                            self.samples, useTurbine=True)
-                    conn.send(['run', len(self.samples)])
+                            self.samples, useTurbine=True
+                        )
+                    conn.send(["run", len(self.samples)])
                 elif msg[0] == "submit":
                     # put a run on the input queue
-                    varVals = msg[1]  #List of variable values
+                    varVals = msg[1]  # List of variable values
                     sampInput = copy.deepcopy(inpDict)
                     vals = self.dat.flowsheet.input.unflatten(
-                        self.inputNames,
-                        varVals,
-                        unScale=self.scaled)
+                        self.inputNames, varVals, unScale=self.scaled
+                    )
                     for nkey in vals:
                         for vkey in vals[nkey]:
                             sampInput[nkey][vkey] = vals[nkey][vkey]
                     self.samples.append(sampInput)
                     runIndex = len(self.samples) - 1
-                    conn.send(['submitted', runIndex])
-                elif msg[0] == 'status':
+                    conn.send(["submitted", runIndex])
+                elif msg[0] == "status":
                     # send run status
-                    conn.send(['status', self.gt.status])
-                elif msg[0] == 'result':
-                    #Store results in FOQUS and send them to client also
+                    conn.send(["status", self.gt.status])
+                elif msg[0] == "result":
+                    # Store results in FOQUS and send them to client also
                     self.gt.join()
                     ret = []
                     stat = []
                     for res in self.gt.res:
                         self.dat.flowsheet.results.addFromSavedValues(
-                            self.resStoreSet,
-                            'res_{0}'.format(self.runid),
-                            None,
-                            res)
+                            self.resStoreSet, "res_{0}".format(self.runid), None, res
+                        )
                         self.runid += 1
-                        stat.append(res['graphError'])
+                        stat.append(res["graphError"])
                         r = []
                         for vn in self.outputNames:
-                            vn = vn.split('.', 1)
+                            vn = vn.split(".", 1)
                             nodeName = vn[0]
                             varName = vn[1]
-                            r.append(res['output'][nodeName][varName])
-                        if res['graphError'] != 0:
+                            r.append(res["output"][nodeName][varName])
+                        if res["graphError"] != 0:
                             for i in range(len(r)):
                                 r[i] = self.failValue
                         ret.append(r)
-                    conn.send(['result', stat, ret])
-                elif msg[0] == 'save':
+                    conn.send(["result", stat, ret])
+                elif msg[0] == "save":
                     # Save the flow sheet
                     self.dat.save()
-                elif msg[0] == 'scaled':
+                elif msg[0] == "scaled":
                     # the default is not scaled input
                     # if you set this before starting workers
                     # you can make set to expect scaled input
                     self.scaled = msg[1]
-                elif msg[0] == 'inputNames':
+                elif msg[0] == "inputNames":
                     # Set the input variables
                     self.setInputs(msg[1])
-                    conn.send(['inputNames', self.inputNames])
-                elif msg[0] == 'outputNames':
+                    conn.send(["inputNames", self.inputNames])
+                elif msg[0] == "outputNames":
                     # Set the output variable names.
                     self.setOutputs(msg[1])
-                    conn.send(['outputNames', self.outputNames])
-            if quitListening: break
+                    conn.send(["outputNames", self.outputNames])
+            if quitListening:
+                break
         # do whatever to finish up
         print("exiting foqus listener")
         self.listener.close()

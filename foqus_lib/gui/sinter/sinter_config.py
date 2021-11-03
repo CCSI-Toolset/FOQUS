@@ -18,20 +18,28 @@ import json
 import logging
 from PyQt5 import uic
 from PyQt5 import QtCore
-from PyQt5.QtWidgets import (QFileDialog, QDialog, QMessageBox,
-                             QAbstractItemView, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QFileDialog,
+    QDialog,
+    QMessageBox,
+    QAbstractItemView,
+    QTableWidgetItem,
+)
 import hashlib
 import foqus_lib.gui.helpers.guiHelpers as gh
 
 _log = logging.getLogger(__name__)
 
 mypath = os.path.dirname(__file__)
-_sinterConfigUI, _sinterConfig = \
-        uic.loadUiType(os.path.join(mypath, "sinter_config.ui"))
+_sinterConfigUI, _sinterConfig = uic.loadUiType(
+    os.path.join(mypath, "sinter_config.ui")
+)
+
 
 class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
-    def __init__(self, parent=None,
-        title="SimSinter Configuration editor", width=800, height=600):
+    def __init__(
+        self, parent=None, title="SimSinter Configuration editor", width=800, height=600
+    ):
         super().__init__(parent=None)
         self.setupUi(self)
         self.actionQuit.triggered.connect(self.close)
@@ -58,7 +66,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.show()
 
     def _add_input_file(self):
-        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        dialog = QFileDialog(self, "Model File", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
             file = os.path.relpath(res)
@@ -68,8 +76,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
             with open(file, "rb") as fp:
                 h = hashlib.sha1(fp.read()).hexdigest()
             gh.setTableItem(self.input_files_table, row, 1, h)
-            gh.setTableItem(self.input_files_table, row, 2, "sha1",
-                pullDown=["sha1"])
+            gh.setTableItem(self.input_files_table, row, 2, "sha1", pullDown=["sha1"])
             self.input_files_table.resizeColumnsToContents()
 
     def _add_blank_input_file(self):
@@ -86,7 +93,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.input_files_table.removeRow(row)
 
     def _model_browse(self):
-        dialog = QFileDialog(self, 'Model File', directory=os.getcwd())
+        dialog = QFileDialog(self, "Model File", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
             self.model_file.setText(os.path.relpath(res))
@@ -96,8 +103,13 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.inputs_table.setRowCount(row + 1)
         for i in range(8):
             if i == 2:
-                gh.setTableItem(self.inputs_table, row, i, "double",
-                    pullDown=["double", "int", "string"])
+                gh.setTableItem(
+                    self.inputs_table,
+                    row,
+                    i,
+                    "double",
+                    pullDown=["double", "int", "string"],
+                )
             else:
                 gh.setTableItem(self.inputs_table, row, i, "")
 
@@ -106,8 +118,13 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.outputs_table.setRowCount(row + 1)
         for i in range(6):
             if i == 2:
-                gh.setTableItem(self.outputs_table, row, i, "double",
-                    pullDown=["double", "int", "string"])
+                gh.setTableItem(
+                    self.outputs_table,
+                    row,
+                    i,
+                    "double",
+                    pullDown=["double", "int", "string"],
+                )
             else:
                 gh.setTableItem(self.outputs_table, row, i, "")
 
@@ -133,7 +150,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
 
     def _save_dialog(self):
         file = "{}{}".format(self.model_file.text().split(".")[0], ".json")
-        dialog = QFileDialog(self, 'Save Config', directory=os.getcwd())
+        dialog = QFileDialog(self, "Save Config", directory=os.getcwd())
         dialog.setAcceptMode(QFileDialog.AcceptSave)
         dialog.selectFile(file)
         if dialog.exec_() == QDialog.Accepted:
@@ -142,7 +159,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         return False
 
     def _load_dialog(self):
-        dialog = QFileDialog(self, 'Load Config', directory=os.getcwd())
+        dialog = QFileDialog(self, "Load Config", directory=os.getcwd())
         if dialog.exec_() == QDialog.Accepted:
             self._load(file=dialog.selectedFiles()[0])
             return True
@@ -169,7 +186,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         self.config_version.setText(d.get("config-version", "1.0"))
         if "model" in d:
             self.model_file.setText(d["model"].get("file", ""))
-            self.model_digest_value.setText(d["model"].get("DigestValue",""))
+            self.model_digest_value.setText(d["model"].get("DigestValue", ""))
         tbl = self.settings_table
         for row in range(tbl.rowCount()):
             if not "settings" in d:
@@ -205,7 +222,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
             gh.setCellText(tbl, row, 7, xd.get("description", ""))
         tbl = self.outputs_table
         tbl.setRowCount(0)
-        for x, xd in  d.get("outputs", {}).items():
+        for x, xd in d.get("outputs", {}).items():
             row = tbl.rowCount()
             self._add_output()
             gh.setCellText(tbl, row, 0, x)
@@ -215,7 +232,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
             units = xd.get("units", "")
             if units is None:
                 units = ""
-            gh.setCellText(tbl, row, 4,units)
+            gh.setCellText(tbl, row, 4, units)
             gh.setCellText(tbl, row, 5, xd.get("description", ""))
 
     def _save(self, file="test.json"):
@@ -255,13 +272,13 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         for row in range(tbl.rowCount()):
             name = gh.getCellText(tbl, row, 0)
             d["inputs"][name] = {}
-            d["inputs"][name]["path"] = [ gh.getCellText(tbl, row, 1)]
-            d["inputs"][name]["type"] =  gh.getCellText(tbl, row, 2)
-            d["inputs"][name]["default"] =  gh.getCellText(tbl, row, 3)
-            d["inputs"][name]["max"] =  gh.getCellText(tbl, row, 4)
-            d["inputs"][name]["min"] =  gh.getCellText(tbl, row, 5)
-            d["inputs"][name]["units"] =  gh.getCellText(tbl, row, 6)
-            d["inputs"][name]["description"] =  gh.getCellText(tbl, row, 7)
+            d["inputs"][name]["path"] = [gh.getCellText(tbl, row, 1)]
+            d["inputs"][name]["type"] = gh.getCellText(tbl, row, 2)
+            d["inputs"][name]["default"] = gh.getCellText(tbl, row, 3)
+            d["inputs"][name]["max"] = gh.getCellText(tbl, row, 4)
+            d["inputs"][name]["min"] = gh.getCellText(tbl, row, 5)
+            d["inputs"][name]["units"] = gh.getCellText(tbl, row, 6)
+            d["inputs"][name]["description"] = gh.getCellText(tbl, row, 7)
             if d["inputs"][name]["units"] == "":
                 d["inputs"][name]["units"] = None
             if d["inputs"][name]["type"] in ["int", "double"]:
@@ -317,7 +334,7 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
             json.dump(d, fp, indent=2)
 
     def _browse_for_working_dir(self):
-        dialog = QFileDialog(self, 'Working Directory', directory=os.getcwd())
+        dialog = QFileDialog(self, "Working Directory", directory=os.getcwd())
         dialog.setFileMode(QFileDialog.DirectoryOnly)
         if dialog.exec_() == QDialog.Accepted:
             res = dialog.selectedFiles()[0]
@@ -331,18 +348,16 @@ class SinterConfigMainWindow(_sinterConfigUI, _sinterConfig):
         Intercept close main window close event, make sure you really want to quit
         """
         msgBox = QMessageBox()
-        msgBox.setText(
-            "Do you want to save the session before exiting?")
-        msgBox.setStandardButtons(QMessageBox.No|QMessageBox.Yes
-                                  |QMessageBox.Cancel)
+        msgBox.setText("Do you want to save the session before exiting?")
+        msgBox.setStandardButtons(QMessageBox.No | QMessageBox.Yes | QMessageBox.Cancel)
         msgBox.setDefaultButton(QMessageBox.No)
         ret = msgBox.exec_()
-        if ret == QMessageBox.No: #close and don't save
+        if ret == QMessageBox.No:  # close and don't save
             event.accept()
-        elif ret == QMessageBox.Yes: #close and save
+        elif ret == QMessageBox.Yes:  # close and save
             if self._save_dialog():
                 event.accept()
             else:
                 event.ignore()
-        else: # Cancel
+        else:  # Cancel
             event.ignore()

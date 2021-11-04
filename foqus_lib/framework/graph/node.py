@@ -82,12 +82,12 @@ class NodeEx(foqusException):
 
 class Node:
     """
-        This class stores information for graph nodes.  It also contains
-        function for running a calculations and simulations associated
-        with a node.  The varaibles associated with nodes are all stored
-        at the graph level, so the parent graph of a node needs to be
-        set before running any calcualtions, so the node knows where
-        to find variables, turbine config info,...
+    This class stores information for graph nodes.  It also contains
+    function for running a calculations and simulations associated
+    with a node.  The varaibles associated with nodes are all stored
+    at the graph level, so the parent graph of a node needs to be
+    set before running any calcualtions, so the node knows where
+    to find variables, turbine config info,...
     """
 
     def __init__(self, x=0, y=0, z=0, parent=None, name=None):
@@ -121,8 +121,8 @@ class Node:
 
     def setGraph(self, gr, name=None):
         """
-            Set the parent graph, node name, location of inputs and
-            location of outputs.
+        Set the parent graph, node name, location of inputs and
+        location of outputs.
         """
         self.gr = gr
         if name != None:
@@ -134,9 +134,9 @@ class Node:
 
     def addTurbineOptions(self):
         """
-            Add options related to how FOQUS deals with Turbine.  These
-            options should only be in nodes that run a model from
-            turbine.
+        Add options related to how FOQUS deals with Turbine.  These
+        options should only be in nodes that run a model from
+        turbine.
         """
         app = self.turbApp
         if app == "Excel":  # excel reset to true by default
@@ -255,18 +255,18 @@ class Node:
 
     def errorLookup(self, i):
         """
-            Give a descriptive error message to go with an integer
-            error code.
+        Give a descriptive error message to go with an integer
+        error code.
         """
         ex = NodeEx()
         return ex.codeString.get(i, "unknown error")
 
     def saveDict(self):
         """
-            Put the contents of a node into a dictionary.  This can be
-            used as part of a method to save a graph to a file or to
-            make a copy of the node, although there are probably better
-            ways to make a copy.
+        Put the contents of a node into a dictionary.  This can be
+        used as part of a method to save a graph to a file or to
+        make a copy of the node, although there are probably better
+        ways to make a copy.
         """
         sd = dict()
         sd["modelType"] = self.modelType
@@ -285,8 +285,8 @@ class Node:
 
     def loadDict(self, sd):
         """
-            Read the node attributes fro a dictionary created by
-            saveDict().
+        Read the node attributes fro a dictionary created by
+        saveDict().
         """
         self.modelType = sd.get("modelType", nodeModelTypes.MODEL_NONE)
         self.x = sd.get("x", 0)
@@ -401,16 +401,18 @@ class Node:
             # Create input vectors, if any
             for name, item in sc["inputs"].items():
                 if "vector" in item:
-                    vector_name = item.get("vector",None)
+                    vector_name = item.get("vector", None)
                     if vector_name not in self.gr.input_vectorlist[self.name]:
-                        self.gr.input_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.input_vectorlist[self.name][
+                            vector_name
+                        ] = NodeVarVector()
                         self.gr.input_vectorlist[self.name][vector_name].dtype = object
             # Add inputs
             for name, item in sc["inputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
                 if "vector" in item:
-                    vector_name = item.get("vector",None)
-                    vector_index = item.get("index",None)
+                    vector_name = item.get("vector", None)
+                    vector_index = item.get("index", None)
                     name = vector_name + "_{0}".format(vector_index)
                 self.gr.input[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
@@ -425,24 +427,29 @@ class Node:
                 )
                 # If the variable is part of a vector, add it to the vector variable
                 if "vector" in item:
-                    self.gr.input_vectorlist[self.name][vector_name].vector[vector_index] =\
-                        self.gr.input[self.name][name]
-                    self.gr.input_vectorlist[self.name][vector_name].ipvname = \
-                        (self.name,name)
-                        
+                    self.gr.input_vectorlist[self.name][vector_name].vector[
+                        vector_index
+                    ] = self.gr.input[self.name][name]
+                    self.gr.input_vectorlist[self.name][vector_name].ipvname = (
+                        self.name,
+                        name,
+                    )
+
             # Create output vectors, if any
             for name, item in sc["outputs"].items():
                 if "vector" in item:
-                    vector_name = item.get("vector",None)
+                    vector_name = item.get("vector", None)
                     if vector_name not in self.gr.output_vectorlist[self.name]:
-                        self.gr.output_vectorlist[self.name][vector_name] = NodeVarVector()
+                        self.gr.output_vectorlist[self.name][
+                            vector_name
+                        ] = NodeVarVector()
                         self.gr.output_vectorlist[self.name][vector_name].dtype = object
             # Add outputs
             for name, item in sc["outputs"].items():
                 dtype = self.stringToType(item.get("type", "float"))
                 if "vector" in item:
-                    vector_name = item.get("vector",None)
-                    vector_index = item.get("index",None)
+                    vector_name = item.get("vector", None)
+                    vector_index = item.get("index", None)
                     name = vector_name + "_{0}".format(vector_index)
                 self.gr.output[self.name][name] = NodeVars(
                     value=item.get("default", 0.0),
@@ -454,11 +461,14 @@ class Node:
                 )
                 # If the variable is part of a vector, add it to the vector variable
                 if "vector" in item:
-                    self.gr.output_vectorlist[self.name][vector_name].vector[vector_index] =\
-                        self.gr.output[self.name][name]
-                    self.gr.output_vectorlist[self.name][vector_name].opvname = \
-                        (self.name,name)
-                
+                    self.gr.output_vectorlist[self.name][vector_name].vector[
+                        vector_index
+                    ] = self.gr.output[self.name][name]
+                    self.gr.output_vectorlist[self.name][vector_name].opvname = (
+                        self.name,
+                        name,
+                    )
+
             # Add an extra output varialbe for simulation status
             # I think this comes out of all simulation run through
             # SimSinter, but its not in the sinter config file.
@@ -489,22 +499,22 @@ class Node:
 
     def loadDefaultValues(self):
         """
-            Change the current input values to their defaults
+        Change the current input values to their defaults
         """
         for key, var in self.inVars.items():
             var.value = var.default
-            
+
         for key, var in self.inVarsVector.items():
             var.value = var.default
 
     def runCalc(self, nanout=False):
         """
-            This function calcualtate the node's output values from
-            the inputs.  First it does the model calculations then
-            any Python post-processing calculations.  The model and
-            or the post-processing calculations can be omitted.  If
-            niether are pressent the model will successfully execute
-            but do nothing.
+        This function calcualtate the node's output values from
+        the inputs.  First it does the model calculations then
+        any Python post-processing calculations.  The model and
+        or the post-processing calculations can be omitted.  If
+        niether are pressent the model will successfully execute
+        but do nothing.
         """
         self.turbineMessages = ""
         self.calcError = -1  # set error code to incomplete
@@ -550,7 +560,7 @@ class Node:
 
     def runModel(self):
         """
-            Run the Model associated with the node.
+        Run the Model associated with the node.
         """
         self.calcError = -1
         if self.modelType == nodeModelTypes.MODEL_NONE:
@@ -585,15 +595,15 @@ class Node:
 
     def resetModel(self):
         """
-            Stop consumer, when the model is run next a new consumer
-            will start up for it.  This is useful if a model fails.
+        Stop consumer, when the model is run next a new consumer
+        will start up for it.  This is useful if a model fails.
         """
         if self.modelType == nodeModelTypes.MODEL_TURBINE:
             self.gr.turbConfig.stopConsumer(self.name)
 
     def runPymodelPlugin(self):
         """
-            Runs a Python node plugin model.
+        Runs a Python node plugin model.
         """
         # create a python model instance if needed
         if not self.pyModel:
@@ -635,8 +645,10 @@ class Node:
                     self.outVars[vkey].value = var
                     for vec in self.outVarsVector:
                         if vec in vkey:
-                            idx = int(vkey.split('_')[-1])
-                            self.outVars[vkey].value = self.outVarsVector[vec].vector[idx]['value']
+                            idx = int(vkey.split("_")[-1])
+                            self.outVars[vkey].value = self.outVarsVector[vec].vector[
+                                idx
+                            ]["value"]
         except PyCodeInterupt as e:
             logging.getLogger("foqus." + __name__).error(
                 "Node script interupt: " + str(e)
@@ -681,7 +693,9 @@ class Node:
                     if self.altInput is not None:
                         # WHY pylint erroneously reports this as an error,
                         # because it is not able to take the "is not None" check into account
-                        inputSetL2[vkey] = self.altInput[vkey]  # pylint: disable=unsubscriptable-object
+                        # pylint: disable=unsubscriptable-object
+                        inputSetL2[vkey] = self.altInput[vkey]
+                        # pylint: enable=unsubscriptable-object
                     else:
                         inputSetL2[vkey] = var.value
                 except:
@@ -701,7 +715,7 @@ class Node:
 
     def runTurbineCalc(self, retry=False):
         """
-            This function runs turbine models
+        This function runs turbine models
         """
         res = None
         altTurb = self.options["Override Turbine Configuration"].value
@@ -892,8 +906,8 @@ class Node:
 
     def createTurbineSession(self, forceNew=True):
         """
-            Create a new Turbine session for grouping
-            simulation results on Turbine.
+        Create a new Turbine session for grouping
+        simulation results on Turbine.
         """
         # Check that a simulation is assigned to this node and that the
         # run type is turbine otherwise return None, this will mean that
@@ -929,8 +943,8 @@ class Node:
 
     def killTurbineSession(self):
         """
-            Tries to kill all turbine jobs associated with this node
-            started by any thread or process.
+        Tries to kill all turbine jobs associated with this node
+        started by any thread or process.
         """
         if self.modelType != nodeModelTypes.MODEL_TURBINE:
             return

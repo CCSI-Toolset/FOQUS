@@ -18,7 +18,7 @@ import pandas as pd
 
 def write(fname, df, index=False):
     if index:
-        index_label = '__id'
+        index_label = "__id"
     else:
         index_label = None
     # write data frame as csv file
@@ -45,7 +45,7 @@ def merge(fnames):
     if len(dfs) == 1:
         return dfs[0]
 
-    df = pd.concat(dfs, join='inner', ignore_index=True)
+    df = pd.concat(dfs, join="inner", ignore_index=True)
     df = df.drop_duplicates()  # remove duplicate rows
     return df
 

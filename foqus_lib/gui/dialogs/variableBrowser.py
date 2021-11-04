@@ -17,19 +17,21 @@ import os
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QTreeWidgetItem
+
 mypath = os.path.dirname(__file__)
-_variableBrowserUI, _variableBrowser = \
-        uic.loadUiType(os.path.join(mypath, "variableBrowser_UI.ui"))
+_variableBrowserUI, _variableBrowser = uic.loadUiType(
+    os.path.join(mypath, "variableBrowser_UI.ui")
+)
 
 
 class variableBrowser(_variableBrowser, _variableBrowserUI):
-    def __init__(self, dat, parent=None, lock = None):
-        '''
-            Constructor for model setup dialog
-        '''
+    def __init__(self, dat, parent=None, lock=None):
+        """
+        Constructor for model setup dialog
+        """
         super(variableBrowser, self).__init__(parent=parent)
-        self.setupUi(self) # Create the widgets
-        self.dat = dat     # all of the session data
+        self.setupUi(self)  # Create the widgets
+        self.dat = dat  # all of the session data
         self.nodeMask = None
         self.refreshButton.clicked.connect(self.refreshVars)
         self.closeButton.clicked.connect(self.close)
@@ -46,15 +48,15 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
             else:
                 mode = "f"
             if self.format == "node":
-                text = "%s[\"%s\"]" % (mode, vkey)
+                text = '%s["%s"]' % (mode, vkey)
             elif self.format == "optimization":
-                text = "%s[\"%s\"][\"%s\"]" % (mode, nkey, vkey)
+                text = '%s["%s"]["%s"]' % (mode, nkey, vkey)
             self.varText.setText(text)
 
     def refreshVars(self):
-        '''
-            Put the graph node variables into the tree
-        '''
+        """
+        Put the graph node variables into the tree
+        """
         vars = dict()
         if self.nodeMask:
             nodes = sorted(self.nodeMask)
@@ -66,20 +68,20 @@ class variableBrowser(_variableBrowser, _variableBrowserUI):
             node = self.dat.flowsheet.nodes[nkey]
             items.append(QTreeWidgetItem(self.treeWidget))
             items[-1].setText(0, nkey)
-            inputItems = QTreeWidgetItem( items[-1] )
+            inputItems = QTreeWidgetItem(items[-1])
             inputItems.setText(0, nkey)
             inputItems.setText(1, "input")
-            outputItems = QTreeWidgetItem( items[-1])
+            outputItems = QTreeWidgetItem(items[-1])
             outputItems.setText(0, nkey)
             outputItems.setText(1, "output")
             for vkey, var in node.inVars.items():
-                vItem = QTreeWidgetItem( inputItems )
+                vItem = QTreeWidgetItem(inputItems)
                 vItem.setText(0, nkey)
                 vItem.setText(1, "input")
                 vItem.setText(2, vkey)
             for vkey, var in node.outVars.items():
-                vItem = QTreeWidgetItem( outputItems )
+                vItem = QTreeWidgetItem(outputItems)
                 vItem.setText(0, nkey)
                 vItem.setText(1, "output")
                 vItem.setText(2, vkey)
-        self.treeWidget.insertTopLevelItems( 0, items )
+        self.treeWidget.insertTopLevelItems(0, items)

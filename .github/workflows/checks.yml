@@ -28,8 +28,28 @@ env:
   PYTEST_ARTIFACTS_PATH: ".pytest-artifacts"
 
 jobs:
+  code-formatting:
+    name: Code formatting (Black)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.8'
+      - name: Install Black
+        # unlike the other jobs, we don't need to install FOQUS and/or all the dev dependencies,
+        # but we still want to specify the Black version to use in requirements-dev.txt for local development
+        # so we extract the relevant line and pass it to a simple `pip install`
+        run: |
+          # we store the version
+          black_requirement="$(grep 'black==' requirements-dev.txt)"
+          pip --no-cache-dir install --progress-bar off "$black_requirement"
+      - name: Run Black to verify that the committed code is formatted
+        run: |
+          black --check .
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
+    needs: [code-formatting]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false

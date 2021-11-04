@@ -21,9 +21,9 @@ John Eslick, Carnegie Mellon University, 2014
 import os
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialogButtonBox, QListWidgetItem
+
 mypath = os.path.dirname(__file__)
-_columnsDialogUI, _columnsDialog = \
-        uic.loadUiType(os.path.join(mypath, "columns_UI.ui"))
+_columnsDialogUI, _columnsDialog = uic.loadUiType(os.path.join(mypath, "columns_UI.ui"))
 
 
 class columnsDialog(_columnsDialog, _columnsDialogUI):
@@ -31,8 +31,7 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
         super(columnsDialog, self).__init__(parent=parent)
         self.setupUi(self)
         self.dat = dat
-        self.buttonBox.button(
-            QDialogButtonBox.Ok).clicked.connect(self.accept)
+        self.buttonBox.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         hm = self.dat.flowsheet.results.columns
         self.items = {}
         for h in hm:
@@ -43,11 +42,11 @@ class columnsDialog(_columnsDialog, _columnsDialogUI):
                 item.setCheckState(QtCore.Qt.Unchecked)
             else:
                 item.setCheckState(QtCore.Qt.Checked)
-            if h.startswith('input.'):
+            if h.startswith("input."):
                 self.inputColumnsList.addItem(item)
-            elif h.startswith('output.'):
+            elif h.startswith("output."):
                 self.outputColumnsList.addItem(item)
-            elif h.startswith('setting.'):
+            elif h.startswith("setting."):
                 self.settingsColumnsList.addItem(item)
             else:
                 self.metadataColumnsList.addItem(item)

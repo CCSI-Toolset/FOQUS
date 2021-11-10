@@ -239,7 +239,11 @@ def criterion(cand,    # candidates
             print('Random start {}'.format(i))
             
             # sample without replacement <nd> indices
-            rand_index = np.random.choice(ncand, nd, replace=False)
+            wts = cand_np[:, idw_np]
+            wts_sum = np.sum(wts)
+            prob = wts / wts_sum
+
+            rand_index = np.random.choice(ncand, nd, replace=False, p=prob)
             # extract the <nd> rows
             rcand = cand_np[rand_index]
             dmat = compute_dmat(rcand, idx_np, idw_np, hist_xs=hist_xs, hist_wt=hist_wt)

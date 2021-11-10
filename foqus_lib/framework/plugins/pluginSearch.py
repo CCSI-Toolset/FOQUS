@@ -32,10 +32,12 @@ import imp
 
 _log = logging.getLogger("foqus." + __name__)
 
-class plugins():
+
+class plugins:
     """
     This class maintains a list of DFO solver plugins
     """
+
     def __init__(self, idString, pathList, charLimit=1150):
         self.idString = idString
         self.pathList = pathList
@@ -44,18 +46,17 @@ class plugins():
         self.importPlugins()
 
     def importPlugins(self):
-        '''
-            check files in self.pathList to see if they are plugins
-        '''
+        """
+        check files in self.pathList to see if they are plugins
+        """
         for p in self.pathList:
             if os.path.exists(p):
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:
-                    mname = fname.rsplit('.', 1) #split off extension
-                    if len(mname) > 1 and mname[1] == 'py':
-                        with open(os.path.join(p, fname), 'r',
-                            encoding="utf-8") as f:
+                    mname = fname.rsplit(".", 1)  # split off extension
+                    if len(mname) > 1 and mname[1] == "py":
+                        with open(os.path.join(p, fname), "r", encoding="utf-8") as f:
                             try:
                                 l = self.idString in f.read(self.charLimit)
                             except:
@@ -65,19 +66,27 @@ class plugins():
                             continue
                         try:
                             if mname[0] in self.plugins:
-                                _log.info("Reloading Plugin: {}".format(
-                                    os.path.join(p, fname)))
-                                self.plugins[mname[0]] = \
-                                    imp.reload(self.plugins[mname[0]])
+                                _log.info(
+                                    "Reloading Plugin: {}".format(
+                                        os.path.join(p, fname)
+                                    )
+                                )
+                                self.plugins[mname[0]] = imp.reload(
+                                    self.plugins[mname[0]]
+                                )
                             else:
-                                logging.getLogger("foqus." + __name__).\
-                                    info("Loading Plugin: " + \
-                                    os.path.join(p, fname))
-                                self.plugins[mname[0]] = \
-                                    importlib.import_module(mname[0])
+                                logging.getLogger("foqus." + __name__).info(
+                                    "Loading Plugin: " + os.path.join(p, fname)
+                                )
+                                self.plugins[mname[0]] = importlib.import_module(
+                                    mname[0]
+                                )
                         except:
-                            _log.exception("Error Loading Plugin: {}".format(
-                                os.path.join(p, fname)))
+                            _log.exception(
+                                "Error Loading Plugin: {}".format(
+                                    os.path.join(p, fname)
+                                )
+                            )
         # Now check that the plugins have what they need to be used
         for pkey, p in list(self.plugins.items()):
             try:

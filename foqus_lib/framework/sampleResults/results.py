@@ -34,22 +34,23 @@ _log = logging.getLogger("foqus.{}".format(__name__))
 
 
 class dataFilter(object):
-
     def __init__(self, no_results=False):
-        self.filterTerm = None        # list of columns to filter by
-        self.sortTerm = None          # list of columns to sort by
+        self.filterTerm = None  # list of columns to filter by
+        self.sortTerm = None  # list of columns to sort by
         self.no_results = no_results  # if true return no matches
 
     def saveDict(self):
-        sd = {'filterTerm': self.filterTerm,
-              'sortTerm': self.sortTerm,
-              'no_results': self.no_results}
+        sd = {
+            "filterTerm": self.filterTerm,
+            "sortTerm": self.sortTerm,
+            "no_results": self.no_results,
+        }
         return sd
 
     def loadDict(self, sd):
-        self.filterTerm = sd.get('filterTerm', None)
-        self.sortTerm = sd.get('sortTerm', None)
-        self.no_results = sd.get('no_results', False)
+        self.filterTerm = sd.get("filterTerm", None)
+        self.sortTerm = sd.get("sortTerm", None)
+        self.no_results = sd.get("no_results", False)
         return self
 
 
@@ -81,7 +82,7 @@ def sd_col_list(sd, time=None):
     columns = ["time", "solution_time", "err"]
     dat = [time, sd["solTime"], sd["graphError"]]
     # input, output, and node settings columns
-    for s in [["input"]*2, ["output"]*2, ["nodeSettings", "setting"]]:
+    for s in [["input"] * 2, ["output"] * 2, ["nodeSettings", "setting"]]:
         for n, d in sd[s[0]].items():
             for v in d:
                 columns.append("{}.{}.{}".format(s[1], n, v))
@@ -102,56 +103,56 @@ def uq_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.'+name for name in sd.getInputNames()]
-    ynames = ['output.'+name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
-        return xnames , xvals
+        return xnames, xvals
 
     else:
-        return xnames+ynames, np.concatenate([xvals, yvals], axis = 1)
+        return xnames + ynames, np.concatenate([xvals, yvals], axis=1)
 
 
 def sdoe_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.'+name for name in sd.getInputNames()]
-    ynames = ['output.'+name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
 
     else:
-        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+        return xnames + ynames, np.concatenate([xvals, yvals], axis=1)
 
 
 def odoe_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.'+name for name in sd.getInputNames()]
-    ynames = ['output.'+name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
 
     else:
-        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+        return xnames + ynames, np.concatenate([xvals, yvals], axis=1)
 
 
 def eval_sd_col_list(sd):
 
     xvals = sd.getInputData()
     yvals = sd.getOutputData()
-    xnames = ['input.'+name for name in sd.getInputNames()]
-    ynames = ['output.'+name for name in sd.getOutputNames()]
+    xnames = ["input." + name for name in sd.getInputNames()]
+    ynames = ["output." + name for name in sd.getOutputNames()]
 
     if len(yvals) == 0:
         return xnames, xvals
 
     else:
-        return xnames+ynames, np.concatenate([xvals, yvals], axis=1)
+        return xnames + ynames, np.concatenate([xvals, yvals], axis=1)
 
 
 def incriment_name(name, exnames):
@@ -160,13 +161,14 @@ def incriment_name(name, exnames):
     unique name by adding an incimenting number at the end.
     """
     if not name in exnames:
-        return name # name is already new
+        return name  # name is already new
     index = 1
     for n in exnames:
         m = re.match(r"^%s_([0-9]+)$" % name, n)
         if m:
             i = int(m.group(1))
-            if i >= index: index = i + 1
+            if i >= index:
+                index = i + 1
         else:
             "".join([name, "_", str(index).zfill(4)])
     return "".join([name, "_", str(index).zfill(4)])
@@ -174,28 +176,30 @@ def incriment_name(name, exnames):
 
 def search_term_list(st):
     st = st.strip()
-    if st.startswith('['):
+    if st.startswith("["):
         try:
             st = json.loads(st)
         except:
             logging.getLogger("foqus." + __name__).exception(
-                "Error reading filer sort terms")
-            raise Exception('Error reading sort terms. When using multiple sort'
-                'terms, enclose the column names in "". See log for deatils')
+                "Error reading filer sort terms"
+            )
+            raise Exception(
+                "Error reading sort terms. When using multiple sort"
+                'terms, enclose the column names in "". See log for deatils'
+            )
     else:
         if st.startswith('"'):
             st = json.loads(st)
         st = [st]
-    ascend = [True]*len(st)
+    ascend = [True] * len(st)
     for i, t in enumerate(st):
-        if t.startswith('-'):
+        if t.startswith("-"):
             st[i] = t[1:]
             ascend[i] = False
     return st, ascend
 
 
 class Results(pd.DataFrame):
-
     @property
     def _constructor(self):
         return Results
@@ -208,7 +212,7 @@ class Results(pd.DataFrame):
         super(Results, self).__init__(*args, **kwargs)
         if "set" not in self.columns:
             self.filters = None  # do this to avoid set column from attribute warn
-            self.filters = {}    # now that atribute exists set to empty dict
+            self.filters = {}  # now that atribute exists set to empty dict
             self.filters["none"] = dataFilter(no_results=True)
             self.filters["all"] = dataFilter()
             self._current_filter = None
@@ -226,8 +230,7 @@ class Results(pd.DataFrame):
 
     def row_to_flow(self, fs, row, filtered=True):
         idx = list(self.get_indexes(filtered=filtered))[row]
-        _log.debug("Row to flowsheet, table row {} dataframe index {}".format(
-            row, idx))
+        _log.debug("Row to flowsheet, table row {} dataframe index {}".format(row, idx))
         for col in self.columns:
             try:
                 (typ, node, var) = col.split(".", 2)
@@ -250,17 +253,19 @@ class Results(pd.DataFrame):
         self.calculated_columns[name] = expr
         c = "calc.{}".format(name)
         if c not in self.columns:
-            self[c] = [np.nan]*self.count_rows(filtered=False)
+            self[c] = [np.nan] * self.count_rows(filtered=False)
 
     def calculate_columns(self):
         def c(key):
             return self.filter_term(key)
+
         for key in self.calculated_columns:
-            self["calc."+key] = eval(self.calculated_columns[key])
+            self["calc." + key] = eval(self.calculated_columns[key])
 
     def calculate_filter_expr(self, expr):
         def c(key):
             return self.filter_term(key)
+
         return np.array(eval(expr), dtype=bool)
 
     def delete_calculation(self, name):
@@ -269,7 +274,7 @@ class Results(pd.DataFrame):
         except:
             pass
         try:
-            self.drop("calc."+name, axis=1, inplace=True)
+            self.drop("calc." + name, axis=1, inplace=True)
         except:
             pass
 
@@ -328,6 +333,7 @@ class Results(pd.DataFrame):
         """
         Save the data to a dict that can be dumped to json
         """
+
         def convertIndex(n):
             try:
                 return int(n.item())
@@ -338,7 +344,8 @@ class Results(pd.DataFrame):
             "__columns": list(self.columns),
             "__indexes": list(map(convertIndex, list(self.index))),
             "__filters": {},
-            "__current_filter": self._current_filter}
+            "__current_filter": self._current_filter,
+        }
         for f in self.filters:
             sd["__filters"][f] = self.filters[f].saveDict()
         for i in self.index:
@@ -370,13 +377,15 @@ class Results(pd.DataFrame):
                 self.loc[i] = sd[str(i)]
         except:
             logging.getLogger("foqus." + __name__).exception(
-                "Error loading stored results")
+                "Error loading stored results"
+            )
         for i in sd.get("__filters", []):
             self.filters[i] = dataFilter().loadDict(sd["__filters"][i])
 
         if "none" not in self.filters:
-            self.filters["none"] = \
-                dataFilter().loadDict({"fstack": [[10, {"term2": 0, "term1": 1, "op": 0}]]})
+            self.filters["none"] = dataFilter().loadDict(
+                {"fstack": [[10, {"term2": 0, "term1": 1, "op": 0}]]}
+            )
         if "all" not in self.filters:
             self.filters["all"] = dataFilter()
         self.calculated_columns = sd.get("calculated_columns", OrderedDict())
@@ -393,8 +402,9 @@ class Results(pd.DataFrame):
         """
         self.add_result(valDict, set_name=setName, result_name=name, time=time)
 
-    def add_result(self, sd, set_name="default", result_name="res", time=None,
-                    empty=False):
+    def add_result(
+        self, sd, set_name="default", result_name="res", time=None, empty=False
+    ):
         """
         Add a set of flowseheet results to the data frame.  If sd is missing
         anything most values will be left NaN and the graph error will be 1001
@@ -407,10 +417,10 @@ class Results(pd.DataFrame):
         if sd is not None:
             columns, dat = sd_col_list(sd, time=time)
         else:
-            columns, dat = (tuple(),tuple())
+            columns, dat = (tuple(), tuple())
         for c in columns:
             if c not in self.columns:
-                self[c] = [np.nan]*self.count_rows(filtered=False)
+                self[c] = [np.nan] * self.count_rows(filtered=False)
         row = self.count_rows(filtered=False)
         self.loc[row, "set"] = set_name
         self.loc[row, "result"] = result_name
@@ -502,9 +512,9 @@ class Results(pd.DataFrame):
         # flat isn't used, just there for compatablility from when there were vector vars.
         df = pd.DataFrame(columns=inputs + outputs)
         for c in inputs:
-            df[c] = self["input."+c]
+            df[c] = self["input." + c]
         for c in outputs:
-            df[c] = self["output."+c]
+            df[c] = self["output." + c]
         df.to_csv(file)
 
     def read_csv(self, *args, **kwargs):
@@ -567,9 +577,9 @@ class Results(pd.DataFrame):
             fltr = self.current_filter()
         if fltr is None or fltr == "all":
             self.sort_index(inplace=True)
-            return list(self.index), [True]*len(self.index)
+            return list(self.index), [True] * len(self.index)
         if fltr == "none" or self.filters[fltr].no_results:
-            return [], [False]*len(self.index)
+            return [], [False] * len(self.index)
         # Swap the name for the actual filter object
         fltr = self.filters[fltr]
         # If a sort term string is provided, sort
@@ -584,7 +594,7 @@ class Results(pd.DataFrame):
                 self.sort_values(by=st, ascending=ascend, inplace=True)
         # now look at the filter columns
         ft = fltr.filterTerm
-        mask = [True]*len(self.index)
+        mask = [True] * len(self.index)
         if ft is None or ft == "" or ft == False:
             return list(self.index), mask
         else:

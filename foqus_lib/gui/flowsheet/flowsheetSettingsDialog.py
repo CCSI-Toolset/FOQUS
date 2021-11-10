@@ -20,22 +20,24 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import os
 from PyQt5 import uic
+
 mypath = os.path.dirname(__file__)
-_flowsheetSettingsDialogUI, _flowsheetSettingsDialog = \
-        uic.loadUiType(os.path.join(mypath, "flowsheetSettingsDialog_UI.ui"))
+_flowsheetSettingsDialogUI, _flowsheetSettingsDialog = uic.loadUiType(
+    os.path.join(mypath, "flowsheetSettingsDialog_UI.ui")
+)
 
 
 class flowsheetSettingsDialog(_flowsheetSettingsDialog, _flowsheetSettingsDialogUI):
-    def __init__(self, dat, parent=None, lock = None):
+    def __init__(self, dat, parent=None, lock=None):
         super(flowsheetSettingsDialog, self).__init__(parent=parent)
-        self.setupUi(self) # Create the widgets
+        self.setupUi(self)  # Create the widgets
         self.gr = dat.flowsheet
-        self.okayButton.clicked.connect( self.accept )
-        self.cancelButton.clicked.connect( self.cancel )
+        self.okayButton.clicked.connect(self.accept)
+        self.cancelButton.clicked.connect(self.cancel)
         # Fill in the form with the current settings
         i = self.tearSolverBox.findText(self.gr.tearSolver)
         self.tearSolverBox.setCurrentIndex(i)
-        self.tearTolEdit.setText(str(self.gr.tearTol) )
+        self.tearTolEdit.setText(str(self.gr.tearTol))
         self.tearItLimitEdit.setText(str(self.gr.tearMaxIt))
         self.wegAccMinEdit.setText(str(self.gr.wegAccMin))
         self.wegAccMaxEdit.setText(str(self.gr.wegAccMax))

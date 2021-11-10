@@ -26,18 +26,20 @@ from PyQt5 import QtCore, QtWidgets, uic
 _log = logging.getLogger("foqus.{}".format(__name__))
 
 mypath = os.path.dirname(__file__)
-_calculatedColumnsUI, _calculatedColumns = \
-        uic.loadUiType(os.path.join(mypath, "calculatedColumns_UI.ui"))
+_calculatedColumnsUI, _calculatedColumns = uic.loadUiType(
+    os.path.join(mypath, "calculatedColumns_UI.ui")
+)
+
 
 def _list_item_mime_to_text(mime_data, c=False):
     if mime_data.hasText():
         return
-    data = mime_data.data('application/x-qabstractitemmodeldatalist')
+    data = mime_data.data("application/x-qabstractitemmodeldatalist")
     if not data:
         return
     ds = QtCore.QDataStream(data)
-    ds.readInt32() # read row (don't need)
-    ds.readInt32() # read col (don't need)
+    ds.readInt32()  # read row (don't need)
+    ds.readInt32()  # read col (don't need)
     value = None
     for i in range(ds.readInt32()):
         if QtCore.Qt.ItemDataRole(ds.readInt32()) == QtCore.Qt.DisplayRole:
@@ -51,6 +53,7 @@ def _list_item_mime_to_text(mime_data, c=False):
         value = '"{}"'.format(value)
     mime_data.setText(value)
 
+
 def _canInsertFromMimeData(data):
     try:
         _list_item_mime_to_text(data, True)
@@ -62,6 +65,7 @@ def _canInsertFromMimeData(data):
         _log.exception("Drop could not convert mime type to text")
         return False
 
+
 class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
     def __init__(self, dat, parent=None):
         super(calculatedColumnsDialog, self).__init__(parent=parent)
@@ -70,7 +74,8 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         cols = self.dat.flowsheet.results.columns
         self.colListWidget.addItems(cols)
         self.comboBox.addItems(
-            list(self.dat.flowsheet.results.calculated_columns.keys()))
+            list(self.dat.flowsheet.results.calculated_columns.keys())
+        )
         self.newButton.clicked.connect(self.add_dialog)
         self.delButton.clicked.connect(self.del_current)
         self.doneButton.clicked.connect(self.close)
@@ -98,14 +103,17 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
         self.refreshContents()
 
     def refreshContents(self):
-        if self._current is None or self._current == "": return
+        if self._current is None or self._current == "":
+            return
         e = self.dat.flowsheet.results.calculated_columns.get(self._current, "")
         self.expressionEdit.setPlainText(e)
 
     def apply_changes(self):
-        if self._current is None or self._current == "": return
+        if self._current is None or self._current == "":
+            return
         self.dat.flowsheet.results.set_calculated_column(
-            self._current, self.expressionEdit.toPlainText())
+            self._current, self.expressionEdit.toPlainText()
+        )
 
     def add_calc(self, name, expr=""):
         self.apply_changes()
@@ -116,10 +124,12 @@ class calculatedColumnsDialog(_calculatedColumnsUI, _calculatedColumns):
 
     def add_dialog(self):
         newName, ok = QtWidgets.QInputDialog.getText(
-            self, "Column Name", "New column name:")
-        if ok and newName != '': # if name supplied and not canceled
+            self, "Column Name", "New column name:"
+        )
+        if ok and newName != "":  # if name supplied and not canceled
             if newName in self.dat.flowsheet.results.calculated_columns:
                 QtWidgets.QMessageBox.information(
-                    self, "Error", "The column already exists.")
+                    self, "Error", "The column already exists."
+                )
             else:
                 self.add_calc(newName)

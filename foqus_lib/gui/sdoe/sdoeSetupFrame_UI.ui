@@ -1323,6 +1323,59 @@ selection-color: rgb(0, 0, 0);</string>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_17">
                <item>
+                <layout class="QHBoxLayout" name="horizontalLayout_21">
+                 <item>
+                  <widget class="QLabel" name="method_static">
+                   <property name="font">
+                    <font>
+                     <weight>75</weight>
+                     <bold>true</bold>
+                    </font>
+                   </property>
+                   <property name="text">
+                    <string>Method:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="fisher_radioButton">
+                   <property name="text">
+                    <string>Fisher</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">method_buttonGroup</string>
+                   </attribute>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="bayesian_radioButton">
+                   <property name="text">
+                    <string>Bayesian</string>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">method_buttonGroup</string>
+                   </attribute>
+                  </widget>
+                 </item>
+                 <item>
+                  <spacer name="horizontalSpacer_14">
+                   <property name="orientation">
+                    <enum>Qt::Horizontal</enum>
+                   </property>
+                   <property name="sizeHint" stdset="0">
+                    <size>
+                     <width>40</width>
+                     <height>20</height>
+                    </size>
+                   </property>
+                  </spacer>
+                 </item>
+                </layout>
+               </item>
+               <item>
                 <layout class="QHBoxLayout" name="horizontalLayout_6">
                  <item>
                   <widget class="QLabel" name="criterion_static">
@@ -1351,6 +1404,9 @@ selection-color: rgb(0, 0, 0);</string>
                    <property name="checked">
                     <bool>true</bool>
                    </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">opt_buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                  <item>
@@ -1364,6 +1420,9 @@ selection-color: rgb(0, 0, 0);</string>
                    <property name="text">
                     <string>I-Opt</string>
                    </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">opt_buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                  <item>
@@ -1377,6 +1436,9 @@ selection-color: rgb(0, 0, 0);</string>
                    <property name="text">
                     <string>D-Opt</string>
                    </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">opt_buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                  <item>
@@ -1390,6 +1452,9 @@ selection-color: rgb(0, 0, 0);</string>
                    <property name="text">
                     <string>A-Opt</string>
                    </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">opt_buttonGroup</string>
+                   </attribute>
                   </widget>
                  </item>
                  <item>
@@ -1478,8 +1543,8 @@ selection-color: rgb(0, 0, 0);</string>
                    </property>
                    <property name="font">
                     <font>
-                     <weight>75</weight>
-                     <bold>true</bold>
+                     <weight>50</weight>
+                     <bold>false</bold>
                     </font>
                    </property>
                    <property name="sizeAdjustPolicy">
@@ -1582,5 +1647,7 @@ selection-color: rgb(0, 0, 0);</string>
   <buttongroup name="eval_buttonGroup"/>
   <buttongroup name="cand_buttonGroup"/>
   <buttongroup name="sdoePages_buttonGroup"/>
+  <buttongroup name="method_buttonGroup"/>
+  <buttongroup name="opt_buttonGroup"/>
  </buttongroups>
 </ui>

@@ -100,7 +100,9 @@ def rseval(rsdata, pdata, cdata, rstypes):
     return outfile
 
 
-def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=None):
+def odoeu(
+    cdata, cfile, pdata, rsdata, rstypes, method, opt, nd, max_iters=100, edata=None
+):
 
     # cdata: SampleData containing the original candidate set
     # cfile: PSUADE sample file containing the original candidates with the mean/std of the selected output
@@ -114,11 +116,17 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # edata: SampleData containing the evaluation set
 
     # parse params
+    methods = ["fisher", "bayesian"]
+    assert method in methods
     opts = ["G", "I", "D", "A"]
     assert opt in opts
     optdict = dict(zip(opts, range(1, len(opts) + 1)))
     opt_index = optdict[opt]
-    cmd = "odoeu_optns"
+    if method == "fisher":
+        cmd = "odoeu_foptn"
+    elif method == "bayesian":
+        cmd = "odoeu_boptn"
+    # cmd = "odoeu_optns"
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]

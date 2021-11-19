@@ -414,12 +414,12 @@ class Results(pd.DataFrame):
         else:
             names = []
         result_name = incriment_name(result_name, names)
-        print(f"sd={sd}")
+        # FIXME #957 print(f"sd={sd}")
         if sd is not None:
             columns, dat = sd_col_list(sd, time=time)
         else:
             columns, dat = (tuple(), tuple())
-        print(f"columns={columns}, dat={dat}")
+        # FIXME #957 print(f"columns={columns}, dat={dat}")
         for c in columns:
             if c not in self.columns:
                 self[c] = [np.nan] * self.count_rows(filtered=False)
@@ -428,7 +428,7 @@ class Results(pd.DataFrame):
         self.loc[row, "result"] = result_name
         if not empty:
             for i, col in enumerate(columns):
-                print(f"i={i}, col={col}, row={row}, dat[i]={dat[i]}")
+                # FIXME #957 print(f"i={i}, col={col}, row={row}, dat[i]={dat[i]}")
                 # if type(dat[i])==list:
                 #     self.loc[row, col] = str(dat[i])
                 # else:

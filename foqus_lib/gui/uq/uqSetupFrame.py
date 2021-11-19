@@ -229,9 +229,9 @@ class checkingThread(QtCore.QThread):
                                         name="uq_{0:06d}".format(sampleNum),
                                         valDict=copied_gt_res[i],
                                     )
-                                    print(
-                                        f"After problematic statement causing issues in uqSetupFrame (numTries={numTries}, i={i})"
-                                    )
+                                    # FIXME #957 print(
+                                    # FIXME #957    f"After problematic statement causing issues in uqSetupFrame (numTries={numTries}, i={i})"
+                                    # FIXME #957 )
                                 r = copied_gt_res[i]
                                 for j, name in enumerate(outputNames):
                                     key = name.split(".", 1)

@@ -1299,7 +1299,7 @@ class QtBot(pytestqt_plugin.QtBot):
 
     @dataclass
     class Options:
-        take_snapshot_on_locate: bool = True
+        take_snapshot_on_locate: bool = False
 
     def __init__(
         self,

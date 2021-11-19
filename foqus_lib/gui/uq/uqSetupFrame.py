@@ -442,9 +442,11 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         # but this would cause a NameError only when the signal callback is run (as opposed to here, where it is defined)
         # this signal is redefined (with all the correct variables) in editSim(),
         # so it's possible that this line here is redundant and could be deleted
+        # TODO pylint: disable=undefined-variable
         self.changeDataSignal.connect(
             lambda data: self.changeDataInSimTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
+        # TODO pylint: enable=undefined-variable
 
         self.infoGroupBox.hide()
 

@@ -22,7 +22,7 @@ from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
 from foqus_lib.framework.uq.Common import Common
 
-dname = os.path.join(os.getcwd(), 'ODOE_files')
+dname = os.path.join(os.getcwd(), "ODOE_files")
 
 
 def writeSample(fname, data):
@@ -45,15 +45,15 @@ def rseval(rsdata, pdata, cdata, rstypes):
     # 'linear', 'quadratic', 'cubic']
 
     # convert the data into psuade files
-    cfile = os.path.join(dname, 'CandidateSet')
-    pfile = os.path.join(dname, 'PriorSample')
-    rsfile = os.path.join(dname, 'RSTrainData')
+    cfile = os.path.join(dname, "CandidateSet")
+    pfile = os.path.join(dname, "PriorSample")
+    rsfile = os.path.join(dname, "RSTrainData")
     cfile = writeSample(cfile, cdata)
     pfile = writeSample(pfile, pdata)
     y = 1
     rsfile = RSAnalyzer.writeRSdata(rsfile, y, rsdata)
 
-    cmd = 'odoeu_rseval'
+    cmd = "odoeu_rseval"
 
     inputNames = rsdata.getInputNames()
     priorNames = pdata.getInputNames()
@@ -61,30 +61,33 @@ def rseval(rsdata, pdata, cdata, rstypes):
     for name in priorNames:
         priorIndices.append(inputNames.index(name) + 1)
 
-    rs_list = ['MARS', 'linear', 'quadratic', 'cubic', 'GP3']
+    rs_list = ["MARS", "linear", "quadratic", "cubic", "GP3"]
 
     # extract the indices of RS types for outputs
     rs_idx = [ResponseSurfaces.getEnumValue(s) for s in rs_list]
     rsdict = dict(zip(rs_list, rs_idx))
 
     # write script
-    f = tempfile.SpooledTemporaryFile(mode='wt')
-    if platform.system() == 'Windows':
+    f = tempfile.SpooledTemporaryFile(mode="wt")
+    if platform.system() == "Windows":
         import win32api
+
         cfile = win32api.GetShortPathName(cfile)
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
-    f.write('load %s\n' % rsfile)
-    f.write('%s\n' % cmd)
-    f.write('y\n')
+    f.write("load %s\n" % rsfile)
+    f.write("%s\n" % cmd)
+    f.write("y\n")
     for i in priorIndices:
-        f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
-    f.write('0\n')                 # 0 to proceed
-    f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
-    f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
-    for rs in rstypes:             # for each output, specify RS index
-        f.write('%d\n' % rsdict[rstypes[rs]])
-    f.write('quit\n')
+        f.write(
+            "%d\n" % i
+        )  # specify random variables, should be consistent with vars in prior
+    f.write("0\n")  # 0 to proceed
+    f.write("%s\n" % pfile)  # file containing the prior sample (psuade sample format)
+    f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
+    for rs in rstypes:  # for each output, specify RS index
+        f.write("%d\n" % rsdict[rstypes[rs]])
+    f.write("quit\n")
     f.seek(0)
 
     # invoke psuade
@@ -92,8 +95,8 @@ def rseval(rsdata, pdata, cdata, rstypes):
     if error:
         return None
 
-    outfile = 'odoeu_rseval.out'
-    assert(os.path.exists(outfile))
+    outfile = "odoeu_rseval.out"
+    assert os.path.exists(outfile)
     return outfile
 
 
@@ -111,15 +114,15 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # edata: SampleData containing the evaluation set
 
     # parse params
-    opts = ['G', 'I', 'D', 'A']
-    assert(opt in opts)
-    optdict = dict(zip(opts, range(1, len(opts)+1)))
+    opts = ["G", "I", "D", "A"]
+    assert opt in opts
+    optdict = dict(zip(opts, range(1, len(opts) + 1)))
     opt_index = optdict[opt]
-    cmd = 'odoeu_optns'
+    cmd = "odoeu_optns"
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
-    assert(99 < max_iters < 1001)
+    assert 99 < max_iters < 1001
 
     # initialize constants
     ncand = cdata.getNumSamples()
@@ -132,22 +135,22 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     for name in priorNames:
         priorIndices.append(inputNames.index(name) + 1)
 
-    rs_list = ['MARS', 'linear', 'quadratic', 'cubic', 'GP3']
+    rs_list = ["MARS", "linear", "quadratic", "cubic", "GP3"]
     # TO DO for Pedro: check in GUI?
     # this checks to see if user is trying to pass an unsupported RS
     for rs in rstypes:
-        assert(rstypes[rs] in rs_list)
-    assert(len(rstypes) == nOutputs)
+        assert rstypes[rs] in rs_list
+    assert len(rstypes) == nOutputs
 
     # extract the indices of RS types for outputs
     rs_idx = [ResponseSurfaces.getEnumValue(s) for s in rs_list]
     rsdict = dict(zip(rs_list, rs_idx))
 
     # convert the data into psuade files
-    pfile = os.path.join(dname, 'PriorSample')
-    rsfile = os.path.join(dname, 'RSTrainData')
+    pfile = os.path.join(dname, "PriorSample")
+    rsfile = os.path.join(dname, "RSTrainData")
     pfile = writeSample(pfile, pdata)
-    efile = os.path.join(dname, 'EvaluationSet')
+    efile = os.path.join(dname, "EvaluationSet")
     if edata is None:
         efile = writeSample(efile, cdata)
     else:
@@ -156,31 +159,38 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     rsfile = RSAnalyzer.writeRSdata(rsfile, y, rsdata)
 
     # write script
-    f = tempfile.SpooledTemporaryFile(mode='wt')
-    if platform.system() == 'Windows':
+    f = tempfile.SpooledTemporaryFile(mode="wt")
+    if platform.system() == "Windows":
         import win32api
+
         pfile = win32api.GetShortPathName(pfile)
         rsfile = win32api.GetShortPathName(rsfile)
         efile = win32api.GetShortPathName(efile)
 
-    f.write('%s\n' % cmd)
-    f.write('y\n')
-    f.write('%d\n' % opt_index)    # choose G, I, D, A
-    f.write('%d\n' % ncand)        # size of the candidate set
-    f.write('%d\n' % nd)           # design size
-    f.write('%d\n' % max_iters)    # max number of iterations, must be greater or equal to 100
-    f.write('n\n')                 # no initial guess
-    f.write('%s\n' % rsfile)       # file containing RS training data (psuade format)
+    f.write("%s\n" % cmd)
+    f.write("y\n")
+    f.write("%d\n" % opt_index)  # choose G, I, D, A
+    f.write("%d\n" % ncand)  # size of the candidate set
+    f.write("%d\n" % nd)  # design size
+    f.write(
+        "%d\n" % max_iters
+    )  # max number of iterations, must be greater or equal to 100
+    f.write("n\n")  # no initial guess
+    f.write("%s\n" % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
-        f.write('%d\n' % i)          # specify random variables, should be consistent with vars in prior
-    f.write('0\n')                 # 0 to proceed
-    f.write('%s\n' % pfile)        # file containing the prior sample (psuade sample format)
-    f.write('%s\n' % cfile)        # file containing the candidate set (psuade sample format)
-    f.write('%s\n' % efile)        # ... evaluate the optimality values on the (same) candidate set
-    for rs in rstypes:             # for each output, specify RS index
-        f.write('%d\n' % rsdict[rstypes[rs]])
+        f.write(
+            "%d\n" % i
+        )  # specify random variables, should be consistent with vars in prior
+    f.write("0\n")  # 0 to proceed
+    f.write("%s\n" % pfile)  # file containing the prior sample (psuade sample format)
+    f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
+    f.write(
+        "%s\n" % efile
+    )  # ... evaluate the optimality values on the (same) candidate set
+    for rs in rstypes:  # for each output, specify RS index
+        f.write("%d\n" % rsdict[rstypes[rs]])
         # TO DO: as we add more RS, may need to port more code from RSAnalyzer.py to handle different RS types
-    f.write('quit\n')
+    f.write("quit\n")
     f.seek(0)
 
     # invoke psuade
@@ -191,11 +201,11 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # parse output
     best_indices = None
     best_optval = None
-    m = re.findall(cmd + r' best selection = (\d+ \d+)', out)
+    m = re.findall(cmd + r" best selection = (\d+ \d+)", out)
     if m:
         best_indices = [i for i in m[0].split()]
-        s = r'\s*'.join([i for i in best_indices])
-        best_optvals = re.findall(s + r'\s*===> output = (\S*)', out)
+        s = r"\s*".join([i for i in best_indices])
+        best_optvals = re.findall(s + r"\s*===> output = (\S*)", out)
 
         best_indices = [int(i) for i in best_indices]
         best_optval = float(best_optvals[0])

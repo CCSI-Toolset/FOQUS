@@ -11,7 +11,7 @@ def test_main_window_opens(qtbot, main_window):
     main_window.close()
 
 
-@pytest.fixture(scope='class')
+@pytest.fixture(scope="class")
 def setup_main_window(qtbot, main_window):
     qtbot.focused = main_window
 
@@ -24,10 +24,9 @@ def _matches_current_index(mw, idx_or_key):
     return mw.mainWidget.currentIndex() == idx
 
 
-@pytest.mark.skip('Check if these tests cause issues')
-@pytest.mark.usefixtures('setup_main_window')
+@pytest.mark.skip("Check if these tests cause issues")
+@pytest.mark.usefixtures("setup_main_window")
 class TestNavigateMainWindow:
-
     def test_home_screen_visible_before_clicking(self, main_window):
         assert _matches_current_index(main_window, "home")
 

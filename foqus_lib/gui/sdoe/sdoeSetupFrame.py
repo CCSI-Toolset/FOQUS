@@ -193,16 +193,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.filesTable.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.filesTable.itemSelectionChanged.connect(self.simSelected)
         self.filesTable.cellChanged.connect(self.simDescriptionChanged)
-
-        self.changeDataSignal.connect(
-            lambda data: self.changeDataInSimTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        # TODO pylint: disable=undefined-variable
+        self.changeDataSignal.connect(lambda data: self.changeDataInSimTable(data, row))
         self.changeCandidateSignal.connect(
             lambda data: self.changeDataInCandTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
         self.changeEvalSignal.connect(
             lambda data: self.changeDataInEvalTable(data, row)
-        )  # TODO pylint: disable=undefined-variable
+        )
+        # TODO pylint: enable=undefined-variable
 
         # Set up Ensemble Aggregation section
         self.aggFilesTable.setEnabled(False)
@@ -355,7 +354,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def createAggData(self):
         cand_agg, hist_agg = self.aggregateEnsembleList()  # these are dfs
-        cand_agg.insert(0, "__id", range(1, cand_agg.shape[0] + 1), True)
+        cand_agg.insert(0, "__id", range(cand_agg.shape[0]), True)
 
         cand_fname = os.path.join(self.dname, "aggregate_candidates.csv")
         df_utils.write(cand_fname, cand_agg)
@@ -370,7 +369,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             hist_agg.insert(
                 0,
                 "__id",
-                range(cand_agg.shape[0] + 1, cand_agg.shape[0] + hist_agg.shape[0] + 1),
+                range(cand_agg.shape[0], cand_agg.shape[0] + hist_agg.shape[0]),
                 True,
             )
             df_utils.write(hist_fname, hist_agg)
@@ -960,7 +959,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         viewButton.setProperty("row", row)
         if newViewButton:
             viewButton.clicked.connect(self.editAgg)
-            self.aggFilesTable.setCellWidget(2, self.viewCol, viewButton)
+            self.aggFilesTable.setCellWidget(0, self.viewCol, viewButton)
 
         candidateData, historyData = self.createAggData()
 

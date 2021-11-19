@@ -178,9 +178,9 @@ class LocalExecutionModule(object):
                         nums = line.split()
                         sampleNum = int(nums[0]) - 1
                         # runState at this point should still be None, so this would cause a runtime error
-                        runState[sampleNum] = bool(
-                            int(nums[1])
-                        )  # TODO pylint: disable=unsupported-assignment-operation
+                        # TODO pylint: disable=unsupported-assignment-operation
+                        runState[sampleNum] = bool(int(nums[1]))
+                        # TODO pylint: enable=unsupported-assignment-operation
                         readSampleData = True
                         numValuesRead = 0
                         sampleInputs = [0] * numInputs
@@ -203,12 +203,10 @@ class LocalExecutionModule(object):
                             sampleOutputs[numValuesRead - numInputs] = float(line)
                             numValuesRead = numValuesRead + 1
                             if numValuesRead - numInputs == numOutputs:
-                                inputData[
-                                    sampleNum
-                                ] = sampleInputs  # pylint: disable=unsupported-assignment-operation
-                                outputData[
-                                    sampleNum
-                                ] = sampleOutputs  # pylint: disable=unsupported-assignment-operation
+                                # pylint: disable=unsupported-assignment-operation
+                                inputData[sampleNum] = sampleInputs
+                                outputData[sampleNum] = sampleOutputs
+                                # pylint: enable=unsupported-assignment-operation
                                 readSampleData = False
                 elif readInputs:  # Read inputs
                     stripped = line.strip()
@@ -237,13 +235,11 @@ class LocalExecutionModule(object):
                         # Insert input values
                         if hasSampleData:
                             for i in range(len(inputData)):
-                                inputRow = inputData[
-                                    i
-                                ]  # pylint: disable=unsubscriptable-object
+                                # pylint: disable=unsubscriptable-object
+                                inputRow = inputData[i]
                                 inputRow.insert(len(inputNames) - 1, fixedVal)
-                                inputData[
-                                    i
-                                ] = inputRow  # pylint: disable=unsupported-assignment-operation
+                                # pylint: disable=unsupported-assignment-operation
+                                inputData[i] = inputRow
                     elif values[0] == "PDF":  # Distribution
                         index = int(values[1]) - 1
                         inputDists[index] = values[2]

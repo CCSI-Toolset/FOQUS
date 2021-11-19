@@ -17,8 +17,12 @@ import pandas as pd
 
 
 def write(fname, df, index=False):
+    if index:
+        index_label = "__id"
+    else:
+        index_label = None
     # write data frame as csv file
-    df.to_csv(fname, index=index)  # do not write row names
+    df.to_csv(fname, index=index, index_label=index_label)  # do not write row names
 
 
 def load(fname, index=None):

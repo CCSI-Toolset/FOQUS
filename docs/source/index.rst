@@ -12,6 +12,7 @@
     chapt_ouu/index
     chapt_surrogates/index
     chapt_sdoe/index
+    chapt_odoe/index
     chapt_HI/index
     chapt_pyomo/index
     chapt_idaes/index

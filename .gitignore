@@ -53,3 +53,5 @@ logging.conf
 logs
 turbine.cfg
 user_plugins
+
+.qt_for_python/

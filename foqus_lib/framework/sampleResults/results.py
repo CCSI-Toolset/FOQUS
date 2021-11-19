@@ -410,7 +410,8 @@ class Results(pd.DataFrame):
         anything most values will be left NaN and the graph error will be 1001
         """
         if len(self["set"]) > 0:
-            names = list(self.loc[self["set"] == set_name].loc[:, "result"])
+            names = list(self[lambda d: d["set"] == set_name]["result"])
+            # names = list(self.loc[self["set"] == set_name].loc[:, "result"])
         else:
             names = []
         result_name = incriment_name(result_name, names)

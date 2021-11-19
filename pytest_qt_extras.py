@@ -1331,12 +1331,12 @@ class QtBot(pytestqt_plugin.QtBot):
     @contextlib.contextmanager
     def options(self, **kwargs):
         prev_opts = self._options
-        _logger.info(f'self._options before entering context: {self._options}')
+        _logger.info(f"self._options before entering context: {self._options}")
         self._options = replace(prev_opts, **kwargs)
-        _logger.info(f'self._options after entering context: {self._options}')
+        _logger.info(f"self._options after entering context: {self._options}")
         yield self._options
         self._options = prev_opts
-        _logger.info(f'self._options upon exiting context: {self._options}')
+        _logger.info(f"self._options upon exiting context: {self._options}")
 
     def _init_signals(self):
         # self._signals[Action][When.BEGIN].connect(lambda a: _logger.info(f'Action started: {a}'))
@@ -1433,7 +1433,7 @@ class QtBot(pytestqt_plugin.QtBot):
         self.slow_down()
         try:
             if self._options.take_snapshot_on_locate:
-                self.take_debug_snapshot(label=f'locate-{args}-{kwargs}')
+                self.take_debug_snapshot(label=f"locate-{args}-{kwargs}")
             res = self.handler.locate(*args, **kwargs)
         except InvalidMatchError as e:
             self.log.error(f"Invalid match for locate({args, kwargs})")

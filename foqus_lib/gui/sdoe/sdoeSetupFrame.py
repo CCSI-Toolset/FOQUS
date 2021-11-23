@@ -778,14 +778,18 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
     def dataInfo(self, data):
         arr = data.getInputData()
-        warningMessage = "{} candidate file info:\n\n".format(data.getModelName())
-        for i in range(data.getNumInputs()):
-            warningMessage += 'Missing values for column "{}": {}/{}\n'.format(
-                data.getInputNames()[i], sum(np.isnan(arr)[:, i]), data.getNumSamples()
-            )
-        msgBox = QMessageBox()
-        msgBox.setText(warningMessage)
-        msgBox.exec_()
+        if np.sum(np.isnan(arr)) > 0:
+            warningMessage = "{} candidate file info:\n\n".format(data.getModelName())
+            for i in range(data.getNumInputs()):
+                warningMessage += 'Missing values for column "{}": {}/{}\n'.format(
+                    data.getInputNames()[i],
+                    sum(np.isnan(arr)[:, i]),
+                    data.getNumSamples(),
+                )
+            msgBox = QMessageBox()
+            msgBox.setText(warningMessage)
+            msgBox.exec_()
+
         return np.sum(np.isnan(arr[:, 0:-1])) > 0
 
     def addDataToSimTable(self, data):

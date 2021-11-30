@@ -34,7 +34,8 @@ jobs:
           - win64
           - macos
         foqus-install-target:
-          - stable
+          # FIXME remove after debugging
+          # - stable
           - master
         examples-release:
           - '3.9.0'

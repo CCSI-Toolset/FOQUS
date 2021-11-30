@@ -9,8 +9,6 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
     types: [ci_run_nightlies]
   workflow_dispatch:
-  # FIXME trigger on pull_request for debugging
-  pull_request:
 
 defaults:
   run:

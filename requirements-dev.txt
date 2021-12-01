@@ -11,6 +11,7 @@ pytest
 ### coverage
 coverage
 pytest-cov
+black==21.5b2
 
 # pytest-qt-extras
 pytest-qt==4.0.*

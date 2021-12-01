@@ -13,11 +13,12 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-__author__ = 'ou3'
+__author__ = "ou3"
 
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
+
 class AnalysisInputsTable(InputPriorTable):
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         super(AnalysisInputsTable, self).__init__(parent)
-        self.typeItems = ['Aleatory', 'Epistemic', 'Fixed']
+        self.typeItems = ["Aleatory", "Epistemic", "Fixed"]

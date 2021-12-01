@@ -24,7 +24,7 @@ A complete set of usage and installation instruction videos for FOQUS are availa
 See our [FAQ](FAQs.md) for frequently asked questions and answers
 
 ## Authors
-See also the list of [contributors](../contributors) who participated in this project.
+See also the list of [contributors](../../graphs/contributors) who participated in this project.
 
 ## Development Practices
 * Code development will be peformed in a forked copy of the repo. Commits will not be 

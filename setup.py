@@ -23,46 +23,64 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.12.0dev0"
+default_version = "3.13.0dev0"
 
 try:
-    version=subprocess.check_output(
-        ## Undo the 'n' here, this is just testing without having to put in a real tag ##
-        ["ngit", "describe", "--tags", "--abbrev=0"]).decode('utf-8').strip()
+    version = (
+        subprocess.check_output(
+            ## Undo the 'n' here, this is just testing without having to put in a real tag ##
+            ["ngit", "describe", "--tags", "--abbrev=0"]
+        )
+        .decode("utf-8")
+        .strip()
+    )
     version = version.replace("-", ".dev", 1)
     version = version.replace("-", "+", 1)
 except:
-    version=default_version
+    version = default_version
 
 # Write the version module
-with open("foqus_lib/version/version.template", 'r') as f:
+with open("foqus_lib/version/version.template", "r") as f:
     verfile = f.read()
 verfile = verfile.format(VERSION=version)
-with open("foqus_lib/version/version.py", 'w') as f:
+with open("foqus_lib/version/version.py", "w") as f:
     f.write(verfile)
 
-#now import version.
+# now import version.
 import foqus_lib.version.version as ver
+
 print("Setting version as {0}".format(ver.version))
 
 dist = setup(
-    name = ver.name,
-    version = ver.version,
-    license = ver.license,
-    description = ver.description,
-    author = ver.author,
-    author_email = ver.support,
-    maintainer = ver.maintainer,
-    maintainer_email = ver.maintainer_email,
-    url = ver.webpage,
-    packages = find_packages(),
-    py_modules = ['pytest_qt_extras'],
+    name=ver.name,
+    version=ver.version,
+    license=ver.license,
+    description=ver.description,
+    author=ver.author,
+    author_email=ver.support,
+    maintainer=ver.maintainer,
+    maintainer_email=ver.maintainer_email,
+    url=ver.webpage,
+    packages=find_packages(),
+    py_modules=["pytest_qt_extras"],
     package_data={
-        '':['*.template', '*.json', '*.dll', '*.so', '*.svg', '*.png',
-            '*.html', '*.gms', '*.gpr', '*.ccs', '*.ico', '*.R']},
+        "": [
+            "*.template",
+            "*.json",
+            "*.dll",
+            "*.so",
+            "*.svg",
+            "*.png",
+            "*.html",
+            "*.gms",
+            "*.gpr",
+            "*.ccs",
+            "*.ico",
+            "*.R",
+        ]
+    },
     include_package_data=True,
-    scripts = [
-        'cloud/aws/foqus_service.py'],
+    scripts=["cloud/aws/foqus_service.py"],
     entry_points={
         "console_scripts": [
             "foqus = foqus_lib.foqus:main",
@@ -91,11 +109,12 @@ dist = setup(
         "tqdm",
         "TurbineClient",
         "winshell; sys_platform == 'win32'",
-        "websocket_client>=1.1.0"
-        ],
+        "websocket_client>=1.1.0",
+    ],
 )
 
-print(f"""
+print(
+    f"""
 
 ==============================================================================
 **Installed FOQUS {ver.version}**
@@ -141,4 +160,5 @@ To start FOQUS run (within this Anaconda env):
 To create a Windows Desktop shortcut for easy start-up of FOQUS,
 run once (within this Anaconda env):
   > foqus --make-shortcut
-""")
+"""
+)

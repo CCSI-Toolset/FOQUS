@@ -25,29 +25,32 @@ def compute_min_dist(mat, scl, hist_xs=None):
     return dmat, min_dist
 
 
-def criterion(cand,     # candidates
-              args,     # scaling factors for included columns
-              nr,       # number of restarts (each restart uses a random set of <nd> points)
-              nd,       # design size <= len(candidates)
-              mode='maximin', hist=None):
+def criterion(
+    cand,  # candidates
+    args,  # scaling factors for included columns
+    nr,  # number of restarts (each restart uses a random set of <nd> points)
+    nd,  # design size <= len(candidates)
+    mode="maximin",
+    hist=None,
+):
 
     mode = mode.lower()
-    assert mode in ['maximin', 'minimax'], 'MODE {} not recognized.'.format(mode)
-    if mode == 'maximin':
+    assert mode in ["maximin", "minimax"], "MODE {} not recognized.".format(mode)
+    if mode == "maximin":
         best_val = -1
         fcn = np.mean
         cond = gt
-    elif mode == 'minimax':
+    elif mode == "minimax":
         best_val = 99999
         fcn = np.max
         cond = lt
 
     # indices of type ...
-    _id_ = args['icol']   # Index
-    idx = args['xcols']  # Input
-    
+    _id_ = args["icol"]  # Index
+    idx = args["xcols"]  # Input
+
     # scaling factors
-    scl = args['scale_factors']
+    scl = args["scale_factors"]
     scl = scl[idx].values
 
     # history, if provided
@@ -62,8 +65,8 @@ def criterion(cand,     # candidates
     t0 = time.time()
     for i in range(nr):
 
-        print('Random start {}'.format(i))
-        
+        print("Random start {}".format(i))
+
         # sample without replacement <nd> indices
         rand_index = np.random.choice(cand.index, nd, replace=False)
         # extract the <nd> rows
@@ -75,20 +78,22 @@ def criterion(cand,     # candidates
         if cond(dist, best_val):
             best_cand = rand_cand
             best_index = rand_index  # for debugging
-            best_val = dist          # for debugging
-            best_dmat = dmat         # used for ranking candidates
+            best_val = dist  # for debugging
+            best_dmat = dmat  # used for ranking candidates
 
         elapsed_time = time.time() - t0
     # best_cand.insert(loc=0, column=id_, value=best_cand.index)
 
-    results = {'best_cand': best_cand,
-               'best_index': best_index,
-               'best_val': best_val,
-               'best_dmat': best_dmat,
-               'dmat_cols': idx,      
-               'mode': mode,
-               'design_size': nd,
-               'num_restarts': nr,
-               'elapsed_time': elapsed_time}
-         
+    results = {
+        "best_cand": best_cand,
+        "best_index": best_index,
+        "best_val": best_val,
+        "best_dmat": best_dmat,
+        "dmat_cols": idx,
+        "mode": mode,
+        "design_size": nd,
+        "num_restarts": nr,
+        "elapsed_time": elapsed_time,
+    }
+
     return results

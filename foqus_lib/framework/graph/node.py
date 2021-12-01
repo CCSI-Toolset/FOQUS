@@ -100,13 +100,21 @@ class pymodel_ml_ai(pymodel):
         self.model = model
         
         for i in range(np.shape(self.model.inputs[0])[1]):
-            input_labels = self.model.layers[1].input_labels[i]
-            input_bounds = self.model.layers[1].input_bounds
-            input_min = self.model.layers[1].input_bounds[input_labels][0]
-            input_max = self.model.layers[1].input_bounds[input_labels][1]
+            try:
+                input_label = self.model.layers[1].input_labels[i]
+            except:
+                input_label = 'x' + str(i+1)
+            try:
+                input_min = self.model.layers[1].input_bounds[input_label][0]
+            except:
+                input_min = 0  # not necessarily a good default
+            try:
+                input_max = self.model.layers[1].input_bounds[input_label][1]
+            except:
+                input_max = 1e5  # not necessarily a good default
             
-            self.inputs[self.model.layers[1].input_labels[i]] = NodeVars(
-                value = 0,  # input_defaults[i],
+            self.inputs[input_label] = NodeVars(
+                value = 0,  # set default value to zero, since this can be changed in the flowsheet
                 vmin = input_min,
                 vmax = input_max,
                 vdflt = 0.0,
@@ -117,12 +125,23 @@ class pymodel_ml_ai(pymodel):
                 dtype = float)
             
         for j in range(np.shape(self.model.outputs[0])[1]):
-            output_labels = self.model.layers[1].output_labels[j]
+            try:
+                output_label = self.model.layers[1].output_labels[j]
+            except:
+                output_label = 'z' + str(j+1)
+            try:
+                output_min = self.model.layers[1].output_bounds[output_label][0]
+            except:
+                output_min = 0  # not necessarily a good default
+            try:
+                output_max = self.model.layers[1].output_bounds[output_label][1]
+            except:
+                output_max = 1e5  # not necessarily a good default
             
-            self.outputs[self.model.layers[1].output_labels[j]] = NodeVars(
-                value = 0,  # output_defaults[i],
-                vmin = 0,
-                vmax = 1E5,
+            self.outputs[output_label] = NodeVars(
+                value = 0,  # set default value to zero, since this can be changed in the flowsheet
+                vmin = output_min,
+                vmax = output_max,
                 vdflt = 0.0,
                 unit = "",
                 vst = "pymodel",
@@ -541,9 +560,13 @@ class Node:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
             os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
-            module = import_module(str(self.modelName))  # contains CustomLayer
-            self.model = load(str(self.modelName) + ".h5",
-                              custom_objects = {'CustomLayer': module.CustomLayer})
+            try:  # see if custom layer script exists
+                module = import_module(str(self.modelName))  # contains CustomLayer
+                self.model = load(str(self.modelName) + ".h5",
+                    custom_objects = {str(self.modelName):
+                                      getattr(module, str(self.modelName))})
+            except:  # try to load model without custom layer
+                self.model = load(str(self.modelName) + ".h5")
             os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model)
             for vkey, v in inst.inputs.items():
@@ -1032,9 +1055,13 @@ class Node:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
             os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
-            module = import_module(str(self.modelName))  # contains CustomLayer
-            self.model = load(str(self.modelName) + ".h5",
-                              custom_objects = {'CustomLayer': module.CustomLayer})
+            try:  # see if custom layer script exists
+                module = import_module(str(self.modelName))  # contains CustomLayer
+                self.model = load(str(self.modelName) + ".h5",
+                    custom_objects = {str(self.modelName):
+                                      getattr(module, str(self.modelName))})
+            except:  # try to load model without custom layer
+                self.model = load(str(self.modelName) + ".h5")
             os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model)
         # set the instance inputs

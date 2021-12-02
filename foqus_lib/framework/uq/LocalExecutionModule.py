@@ -397,6 +397,8 @@ class LocalExecutionModule(object):
                 while row[-1] == "":
                     row.pop()
                 row = [float(v) if is_number(v) else "nan" for v in row]
+                if len(row) < len(headers):
+                    row.append("nan")
 
                 if not numInputs and not askForNumInputs:
                     numInputs = len(row)

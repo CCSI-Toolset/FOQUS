@@ -118,7 +118,7 @@ def odoeu(
     # parse params
     methods = ["fisher", "bayesian"]
     assert method in methods
-    opts = ["G", "I", "D", "A"]
+    opts = ["G", "I", "D", "A", "E"]
     assert opt in opts
     optdict = dict(zip(opts, range(1, len(opts) + 1)))
     opt_index = optdict[opt]
@@ -126,7 +126,6 @@ def odoeu(
         cmd = "odoeu_foptn"
     elif method == "bayesian":
         cmd = "odoeu_boptn"
-    # cmd = "odoeu_optns"
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
@@ -177,12 +176,13 @@ def odoeu(
 
     f.write("%s\n" % cmd)
     f.write("y\n")
-    f.write("%d\n" % opt_index)  # choose G, I, D, A
+    f.write("%d\n" % opt_index)  # choose G, I, D, A, E
     f.write("%d\n" % ncand)  # size of the candidate set
     f.write("%d\n" % nd)  # design size
     f.write(
         "%d\n" % max_iters
     )  # max number of iterations, must be greater or equal to 100
+    f.write("n\n")  # no multi-start optimization
     f.write("n\n")  # no initial guess
     f.write("%s\n" % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
@@ -191,6 +191,7 @@ def odoeu(
         )  # specify random variables, should be consistent with vars in prior
     f.write("0\n")  # 0 to proceed
     f.write("%s\n" % pfile)  # file containing the prior sample (psuade sample format)
+    f.write("n\n")  # no collapsing prior sample into smaller sample
     f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
     f.write(
         "%s\n" % efile

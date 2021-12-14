@@ -1458,6 +1458,16 @@ selection-color: rgb(0, 0, 0);</string>
                   </widget>
                  </item>
                  <item>
+                  <widget class="QRadioButton" name="Eopt_radioButton">
+                   <property name="text">
+                    <string>E-Opt</string>
+                   </property>
+                   <attribute name="buttonGroup">
+                    <string notr="true">opt_buttonGroup</string>
+                   </attribute>
+                  </widget>
+                 </item>
+                 <item>
                   <spacer name="horizontalSpacer_4">
                    <property name="orientation">
                     <enum>Qt::Horizontal</enum>
@@ -1645,8 +1655,8 @@ selection-color: rgb(0, 0, 0);</string>
  <connections/>
  <buttongroups>
   <buttongroup name="eval_buttonGroup"/>
-  <buttongroup name="cand_buttonGroup"/>
   <buttongroup name="sdoePages_buttonGroup"/>
+  <buttongroup name="cand_buttonGroup"/>
   <buttongroup name="method_buttonGroup"/>
   <buttongroup name="opt_buttonGroup"/>
  </buttongroups>

@@ -88,7 +88,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat):
         row = cand[j]
         k = mdpts[i]  # k = {0, ..., nd}
         rcand[k, xcols] = row[xcols]
-        dmat = update_dmat(row, rcand, xcols, wcol, dmat_, k)
+        dmat = update_dmat(row, rcand, xcols, wcol, dmat, k)
         md, mdpts, mties = compute_min_params(dmat)
         if mt0 is not None:
             mties = mt0[i, j]
@@ -249,7 +249,11 @@ def criterion(
             print("Random start {}".format(i))
 
             # sample without replacement <nd> indices
-            rand_index = np.random.choice(ncand, nd, replace=False)
+            wts = cand_np[:, idw_np]
+            wts_sum = np.sum(wts)
+            prob = wts / wts_sum
+
+            rand_index = np.random.choice(ncand, nd, replace=False, p=prob)
             # extract the <nd> rows
             rcand = cand_np[rand_index]
             dmat = compute_dmat(rcand, idx_np, idw_np, hist_xs=hist_xs, hist_wt=hist_wt)

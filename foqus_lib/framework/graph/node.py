@@ -114,7 +114,7 @@ class pymodel_ml_ai(pymodel):
                 input_max = 1e5  # not necessarily a good default
             
             self.inputs[input_label] = NodeVars(
-                value = 0,  # set default value to zero, since this can be changed in the flowsheet
+                value = input_min,
                 vmin = input_min,
                 vmax = input_max,
                 vdflt = 0.0,
@@ -139,7 +139,7 @@ class pymodel_ml_ai(pymodel):
                 output_max = 1e5  # not necessarily a good default
             
             self.outputs[output_label] = NodeVars(
-                value = 0,  # set default value to zero, since this can be changed in the flowsheet
+                value = output_min,
                 vmin = output_min,
                 vmax = output_max,
                 vdflt = 0.0,
@@ -149,15 +149,31 @@ class pymodel_ml_ai(pymodel):
                 tags = [],
                 dtype = float)
 
+        # check if user passed a model for normalized data - FOQUS will automatically scale/un-scale
+        try:  # if attribute exists, user has specified a model form
+            self.normalized = self.model.layers[1].normalized
+        except:  # otherwise user did not pass a normalized model
+            self.normalized = False
+
     def run(self):
         import numpy as np
-        inputs = [self.inputs[i].value for i in self.inputs]
+        if self.normalized is True:  # normalize inputs
+            inputs = [(self.inputs[i].value - self.inputs[i].min) /
+                      (self.inputs[i].max - self.inputs[i].min)
+                      for i in self.inputs]
+        else:  # take actual input values
+            inputs = [self.inputs[i].value for i in self.inputs]
         print(inputs)
         # set output values to be generated from NN surrogate
         outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
         outidx = 0
         for j in self.outputs:
-            self.outputs[j].value = outputs[outidx]
+            if self.normalized is True:  # un-normalize outputs
+                self.outputs[j].value = (outputs[outidx] *
+                                         (self.outputs[j].max - self.outputs[j].min) +
+                                         self.outputs[j].min)
+            else:
+                self.outputs[j].value = outputs[outidx]
             outidx += 1
 
 

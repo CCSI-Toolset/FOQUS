@@ -40,7 +40,9 @@ framework. Largely, Keras models may be split into two types: **Sequential**
 which build linearly connected model layers, and **Functional** which build
 multiple interconnected layers in a complex system. More information on
 Tensorflow Keras model building is described by
-:ref:`(Wu et al. 2020)<Wu_2020>`.
+:ref:`(Wu et al. 2020)<Wu_2020>`. Users may follow the recommended workflow
+to install and use Tensorflow in a Python environment, as described in the
+`(Tensorflow documentation)<https://www.tensorflow.org/install>`.
 
 The ML AI Plugin supports adding neural networks of either type to FOQUS
 nodes; if a custom object is needed, only the Functional API supports
@@ -58,15 +60,20 @@ Currently, FOQUS supports the following custom attributes:
   variable (default: z1, z2, z3, ...)
 - *output_bounds* – list of tuple (pair) objects containing upper and lower
   bounds for each output variable (default: (0, 1E5))
+- *normalized* – Boolean flag for whether the user is passing a normalized
+  neural network model; to use this flag, users must train their models with
+  data in the form below and add all input and output bounds custom attributes
 
 The following code snippet demonstrates the Python syntax to train and save
 a Keras model with custom attributes. The use of Dropout features in training
 is not required, but decreases the risk of overfitting by minimizing the
-number of parameters in large models. Note that the custom object class,
-script containing the class and the NN model file itself must all share the
-same name to import the custom attributes into a FOQUS node. If certain custom
-attributes are not used (for example. *output_bounds* below), users should not
-include them in the custom class definition.
+number of parameters in large models. Similarly, normalizing data often
+results in more accurate models since features are less likely to be blurred
+during fitting. Users may then enter unscaled input values and return unscaled
+output values in the Node Editor. Note that the custom object class script
+containing the class and the NN model file itself must all share the same name
+to import the custom attributes into a FOQUS node. If certain custom attributes
+are not used, users should not include them in the custom class definition.
 
 Users must ensure the proper script name is used in the following places,
 replacing *example_model* with the desired model name:
@@ -77,6 +84,14 @@ replacing *example_model* with the desired model name:
 - Creating the model, *layers = example_model(*
 - Saving the model, *model.save('example_model.h5')*
 - The file names of the .h5 model file and custom class script.
+
+For example, the model name below is 'mea_column_model'. See the example files
+in the examples\other_files\ML_AI_Plugin folder for complete syntax and usage.
+The folder contains a second model with no custom layer to demonstrate the
+plugin defaults. To run the models, copy mea_column_model.h5, mea_column_model.py
+and AR_nocustomlayer.h5 into the working directory folder user_ml_ai_models\.
+The default output values are not calculated, so the node should be run to
+obtain the correct output values for the entered inputs.
 
 .. code:: python
 
@@ -96,14 +111,15 @@ replacing *example_model* with the desired model name:
 
    # custom class to define Keras NN layers and serialize (register) objects
    >>> @tf.keras.utils.register_keras_serializable()  # first non-imports line to include in working directory example_model.py
-   >>> class example_model(tf.keras.layers.Layer):
+   >>> class mea_column_model(tf.keras.layers.Layer):
            # give training parameters default values, and set attribute defaults to None
-   >>>     def __init__(self, n_hidden=1, n_neurons=300,
+   >>>     def __init__(self, n_hidden=1, n_neurons=12,
    >>>                  layer_act='relu', out_act='sigmoid',
    >>>                  input_labels=None, output_labels=None,
-   >>>                  input_bounds=None, **kwargs):
+   >>>                  input_bounds=None, output_bounds=None,
+   >>>                  normalized=False, **kwargs):
 
-   >>>         super(example_model, self).__init__()  # create callable object
+   >>>         super(mea_column_model, self).__init__()  # create callable object
 
            # add attributes from training settings
    >>>         self.n_hidden = n_hidden
@@ -115,6 +131,8 @@ replacing *example_model* with the desired model name:
    >>>         self.input_labels = input_labels
    >>>         self.output_labels = output_labels
    >>>         self.input_bounds = input_bounds
+   >>>         self.output_bounds = output_bounds
+   >>>         self.normalized = True  # FOQUS will read this and adjust accordingly
 
            # create lists to contain new layer objects
    >>>         self.dense_layers = []  # hidden or output layers
@@ -143,7 +161,7 @@ replacing *example_model* with the desired model name:
 
            # attach attributes to class CONFIG
    >>>     def get_config(self):
-   >>>         config = super(example_model, self).get_config()
+   >>>         config = super(mea_column_model, self).get_config()
    >>>         config.update({  # add any custom attributes here
    >>>             'n_hidden': self.n_hidden,
    >>>             'n_neurons': self.n_neurons,
@@ -152,8 +170,10 @@ replacing *example_model* with the desired model name:
    >>>             'input_labels': self.input_labels,
    >>>             'output_labels': self.output_labels,
    >>>             'input_bounds': self.input_bounds,
+   >>>             'output_bounds': self.output_bounds,
+   >>>             'normalized': self.normalized   
    >>>         })
-   >>>         return config  # last line to include in working directory example_model.py
+   >>>         return config
 
 
    # method to create model
@@ -161,17 +181,19 @@ replacing *example_model* with the desired model name:
 
    >>>     inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
 
-   >>>     layers = example_model(  # define the rest of network using our custom class
+   >>>     layers = mea_column_model(  # define the rest of network using our custom class
    >>>         input_labels=xlabels,
    >>>         output_labels=zlabels,
    >>>         input_bounds=xdata_bounds,
+   >>>         output_bounds=zdata_bounds,
+   >>>         normalized=True
    >>>     )
 
    >>>     outputs = layers(inputs)  # use network as function outputs = f(inputs)
 
    >>>     model = tf.keras.Model(inputs=inputs, outputs=outputs)  # create model
 
-   >>>     model.compile(loss='mse', optimizer='SGD', metrics=['mae', 'mse'])
+   >>>     model.compile(loss='mse', optimizer='RMSprop', metrics=['mae', 'mse'])
 
    >>>     model.fit(xdata, zdata, epochs=500, verbose=0)  # train model
 
@@ -180,15 +202,26 @@ replacing *example_model* with the desired model name:
    # Main code
 
    # import data
-   >>> data = pd.read_csv(r'dataset.csv')
+   >>> data = pd.read_csv(r'MEA_carbon_capture_dataset_mimo.csv')
 
    >>> xdata = data.iloc[:, :6]  # here there are 6 input variables/columns
    >>> zdata = data.iloc[:, 6:]  # the rest are output variables/columns
    >>> xlabels = xdata.columns.tolist()  # set labels as a list (default) from pandas
    >>> zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
    >>> xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
+   >>> zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
+   
+   # normalize data
+   >>> xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
+   >>> zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
+   >>> xdata, zdata = np.array(xdata), np.array(zdata)
+   >>> for i in range(len(xdata)):
+   >>>     for j in range(len(xlabels)):
+   >>>         xdata[i, j] = (xdata[i, j] - xmin[j])/(xmax[j] - xmin[j])
+   >>>     for j in range(len(zlabels)):
+   >>>         zdata[i, j] = (zdata[i, j] - zmin[j])/(zmax[j] - zmin[j])
 
-   >>> model_data = np.array(data)  # Keras requires a Numpy array as input
+   >>> model_data = np.concatenate((xdata,zdata), axis=1)  # Keras requires a Numpy array as input
 
    # define x and z data, not used but will add to variable dictionary
    >>> xdata = model_data[:, :-2]
@@ -199,7 +232,7 @@ replacing *example_model* with the desired model name:
    >>> model.summary()
 
    # save model
-   >>> model.save('example_model.h5')
+   >>> model.save('mea_column_model.h5')
 
 After training and saving the model, the files should be placed in the
 working directory folder as shown below; if FOQUS cannot find the custom class
@@ -210,8 +243,8 @@ noted above, only the custom class lines should be included in the script:
    :alt: User Folders Window
    :name: fig.surrogate.pluginfolders
 
-Upon launching FOQUS, the console should include the line highlighted in
-yellow below to show the model file has been successfully loaded:
+Upon launching FOQUS, the console should include the lines boxed in
+red below to show the model files have been successfully loaded:
 
 .. figure:: figs/plugin_console.png
    :alt: User Plugin Folders

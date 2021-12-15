@@ -42,7 +42,7 @@ multiple interconnected layers in a complex system. More information on
 Tensorflow Keras model building is described by
 :ref:`(Wu et al. 2020)<Wu_2020>`. Users may follow the recommended workflow
 to install and use Tensorflow in a Python environment, as described in the
-`(Tensorflow documentation)<https://www.tensorflow.org/install>`.
+Tensorflow documentation: https://www.tensorflow.org/install.
 
 The ML AI Plugin supports adding neural networks of either type to FOQUS
 nodes; if a custom object is needed, only the Functional API supports
@@ -62,7 +62,13 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data in the form below and add all input and output bounds custom attributes
+  data in the form below and add all input and output bounds custom attributes.
+  Normalizing uses the data bounds to scale the data values such that the
+  lower bound becomes 0 and the upper bound becomes 1:
+
+.. math:: x_{norm} = \frac{x_{data} - x_{min}}{x_{max} - x_{min}}
+
+.. math:: z_{norm} = \frac{z_{data} - z_{min}}{z_{max} - z_{min}}
 
 The following code snippet demonstrates the Python syntax to train and save
 a Keras model with custom attributes. The use of Dropout features in training
@@ -86,7 +92,7 @@ replacing *example_model* with the desired model name:
 - The file names of the .h5 model file and custom class script.
 
 For example, the model name below is 'mea_column_model'. See the example files
-in the examples\other_files\ML_AI_Plugin folder for complete syntax and usage.
+in examples >> other_files >> ML_AI_Plugin for complete syntax and usage.
 The folder contains a second model with no custom layer to demonstrate the
 plugin defaults. To run the models, copy mea_column_model.h5, mea_column_model.py
 and AR_nocustomlayer.h5 into the working directory folder user_ml_ai_models\.

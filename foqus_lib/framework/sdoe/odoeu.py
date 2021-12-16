@@ -198,7 +198,9 @@ def odoeu(
             f.write("2\n")
             f.write("1000\n")
         else:
-            f.write("n\n")  # no collapsing prior sample into smaller sample when l.t.e. 1000
+            f.write(
+                "n\n"
+            )  # no collapsing prior sample into smaller sample when l.t.e. 1000
     f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
     f.write(
         "%s\n" % efile

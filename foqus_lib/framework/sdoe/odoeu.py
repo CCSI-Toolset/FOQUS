@@ -134,6 +134,7 @@ def odoeu(
     # initialize constants
     ncand = cdata.getNumSamples()
     nOutputs = rsdata.getNumOutputs()
+    nprior = pdata.getNumSamples()
 
     # extract the indices of random variables
     inputNames = rsdata.getInputNames()
@@ -182,8 +183,8 @@ def odoeu(
     f.write(
         "%d\n" % max_iters
     )  # max number of iterations, must be greater or equal to 100
-    f.write("n\n")  # no multi-start optimization
-    f.write("n\n")  # no initial guess
+    f.write("y\n")  # yes multi-start optimization
+    f.write("5\n")  # 5 starts
     f.write("%s\n" % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
         f.write(
@@ -191,7 +192,13 @@ def odoeu(
         )  # specify random variables, should be consistent with vars in prior
     f.write("0\n")  # 0 to proceed
     f.write("%s\n" % pfile)  # file containing the prior sample (psuade sample format)
-    f.write("n\n")  # no collapsing prior sample into smaller sample
+    if method == "fisher":
+        if nprior > 1000:
+            f.write("y\n")  # collapsing prior sample into smaller sample when g.t. 1000
+            f.write("2\n")
+            f.write("1000\n")
+        else:
+            f.write("n\n")  # no collapsing prior sample into smaller sample when l.t.e. 1000
     f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
     f.write(
         "%s\n" % efile

@@ -32,15 +32,17 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
     xs = weight_mat[:, xcols]
     wt = weight_mat[:, wcol]
 
-    dmat = compute_dist(xs, wt=wt, hist_xs=hist[:, xcols], hist_wt=hist[:, wcol])  # symmetric matrix
+    dmat = compute_dist(
+        xs, wt=wt, hist_xs=hist[:, xcols], hist_wt=hist[:, wcol]
+    )  # symmetric matrix
 
-    #for compatibility with compute_min_params,
-    #if history exists, set history-history distances to some large value
+    # for compatibility with compute_min_params,
+    # if history exists, set history-history distances to some large value
     if hist is not None:
         nhist = len(hist)
-        dmat[-nhist:,-nhist:] = np.max(dmat) 
+        dmat[-nhist:, -nhist:] = np.max(dmat)
 
-    return dmat 
+    return dmat
 
 
 def compute_min_params(dmat):
@@ -79,15 +81,23 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
     #  update - boolean representing whether an update should occur
 
     def update_dmat(row, rcand, xcols, wcol, dmat_, k, val=9999):
-        xs = rcand[:, xcols] if hist is None else np.concatenate((rcand[:, xcols], hist[:, xcols]))
-        weights = rcand[:, wcol] if hist is None else np.concatenate((rcand[:, wcol], hist[:, wcol]))
+        xs = (
+            rcand[:, xcols]
+            if hist is None
+            else np.concatenate((rcand[:, xcols], hist[:, xcols]))
+        )
+        weights = (
+            rcand[:, wcol]
+            if hist is None
+            else np.concatenate((rcand[:, wcol], hist[:, wcol]))
+        )
         m = row[xcols] - xs
         m = np.sum(m ** 2, axis=1)
-        m = m * row[wcol] * weights        
+        m = m * row[wcol] * weights
 
         dmat = np.copy(dmat_)
-        dmat[k, :] = m 
-        dmat[:, k] = m.T 
+        dmat[k, :] = m
+        dmat[:, k] = m.T
         np.fill_diagonal(dmat, val)
         return dmat
 
@@ -104,15 +114,15 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
             mties = mt0[i, j]
         return rcand, dmat, md, mdpts, mties
 
-    #PN: problem: mdpts may contain indices of dmat corresponding to history, causing errors in step(...)
-    #PN: fix by excluding them as candidates that can be swapped out
+    # PN: problem: mdpts may contain indices of dmat corresponding to history, causing errors in step(...)
+    # PN: fix by excluding them as candidates that can be swapped out
 
     # exclude mdpts indices corresponding to history
     mdpts_cand = mdpts[mdpts < len(rcand)]
     n_mdpts = len(mdpts_cand)
 
     # initialize d0 and mt0
-    d0 = np.zeros((n_mdpts, ncand)) 
+    d0 = np.zeros((n_mdpts, ncand))
     mt0 = np.zeros((n_mdpts, ncand))
 
     for pt in np.ndindex(n_mdpts, ncand):
@@ -244,12 +254,14 @@ def criterion(
     cand_np = cand.to_numpy()
     cand_np_ = cand_np.copy()
 
-    #Combine candidates and history before scaling
+    # Combine candidates and history before scaling
     if hist is None:
         cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np)
         hist_np = None
     else:
-        cand_np, _xmin, _xmax = scale_xs(np.concatenate((cand_np, hist.to_numpy())), idx_np)
+        cand_np, _xmin, _xmax = scale_xs(
+            np.concatenate((cand_np, hist.to_numpy())), idx_np
+        )
 
     def step(mwr, cand_np):
         cand_np = scale_y(scale_method, mwr, cand_np, idw_np)
@@ -286,8 +298,17 @@ def criterion(
                 update = False
 
                 rcand_, md_, mdpts_, mties_, dmat_, update_ = update_min_dist(
-                    rcand, cand_np, ncand, idx_np, idw_np, md, mdpts, mties, dmat, hist=hist_np
-                ) 
+                    rcand,
+                    cand_np,
+                    ncand,
+                    idx_np,
+                    idw_np,
+                    md,
+                    mdpts,
+                    mties,
+                    dmat,
+                    hist=hist_np,
+                )
 
                 t = t + 1
 

@@ -101,7 +101,17 @@ def rseval(rsdata, pdata, cdata, rstypes):
 
 
 def odoeu(
-    cdata, cfile, pdata, rsdata, rstypes, method, opt, nd, max_iters=100, edata=None
+    cdata,
+    cfile,
+    pdata,
+    rsdata,
+    rstypes,
+    method,
+    opt,
+    nd,
+    max_iters=100,
+    multi_starts=20,
+    edata=None,
 ):
 
     # cdata: SampleData containing the original candidate set
@@ -113,6 +123,7 @@ def odoeu(
     # 'linear', 'quadratic', 'cubic']
     # nd: int denoting design size
     # max_iters: int denoting maximum number of iterations for the optimization routine [default: 100]
+    # multi_starts: int denoting number of multi-starts for the optimization [default: 20]
     # edata: SampleData containing the evaluation set
 
     # parse params
@@ -184,7 +195,7 @@ def odoeu(
         "%d\n" % max_iters
     )  # max number of iterations, must be greater or equal to 100
     f.write("y\n")  # yes multi-start optimization
-    f.write("5\n")  # 5 starts
+    f.write("%d\n" % multi_starts)  # number of starts
     f.write("%s\n" % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
         f.write(

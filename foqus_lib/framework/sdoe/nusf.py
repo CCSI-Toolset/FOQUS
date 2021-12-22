@@ -127,7 +127,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
 
     for pt in np.ndindex(n_mdpts, ncand):
         i, j = pt
-        _, _, d0[i, j], _, mt0[i, j] = step(pt, rcand, cand, xcols, wcol, mdpts, dmat)
+        _, _, d0[i, j], _, mt0[i, j] = step(pt, rcand, cand, xcols, wcol, mdpts_cand, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
@@ -138,14 +138,14 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
         rcand, dmat, md, mdpts, mties = step(
-            pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0
+            pt, rcand, cand, xcols, wcol, mdpts_cand, dmat, mt0
         )
     elif d0_max == md:
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
             rcand, dmat, md, mdpts, mties = step(
-                pt, rcand, cand, xcols, wcol, mdpts, dmat, mt0
+                pt, rcand, cand, xcols, wcol, mdpts_cand, dmat, mt0
             )
     else:
         update = False

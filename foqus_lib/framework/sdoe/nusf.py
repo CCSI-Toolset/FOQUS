@@ -127,7 +127,9 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
 
     for pt in np.ndindex(n_mdpts, ncand):
         i, j = pt
-        _, _, d0[i, j], _, mt0[i, j] = step(pt, rcand, cand, xcols, wcol, mdpts_cand, dmat)
+        _, _, d0[i, j], _, mt0[i, j] = step(
+            pt, rcand, cand, xcols, wcol, mdpts_cand, dmat
+        )
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)

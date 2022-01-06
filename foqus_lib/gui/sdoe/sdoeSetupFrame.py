@@ -789,6 +789,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             msgBox = QMessageBox()
             msgBox.setText(warningMessage)
             msgBox.exec_()
+            self.filesTable.setColumnHidden(5, False)
+            self.filesTable.setColumnHidden(6, False)
+            self.filesTable.setColumnHidden(7, False)
+            self.filesTable.setColumnHidden(8, False)
+            self.filesTable.setColumnHidden(9, False)
+        else:
+            self.filesTable.setColumnHidden(5, True)
+            self.filesTable.setColumnHidden(6, True)
+            self.filesTable.setColumnHidden(7, True)
+            self.filesTable.setColumnHidden(8, True)
+            self.filesTable.setColumnHidden(9, True)
 
         return np.sum(np.isnan(arr[:, 0:-1])) > 0
 

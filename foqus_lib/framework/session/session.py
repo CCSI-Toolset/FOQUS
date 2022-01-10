@@ -417,7 +417,7 @@ class session:
             pass
 
     def reloadMLAIModels(self):
-        self.pymodels.getMLAIList()
+        self.pymodels_ml_ai.getMLAIList()
 
     def loadMLAIModels(self):
         """

@@ -6,7 +6,7 @@ import tensorflow as tf
 
 # set seed values for reproducibility
 os.environ['PYTHONHASHSEED'] = '0'
-os.environ['CUDA_VISIBLE_DEVICES'] = ''
+os.environ['CUDA_VISIBLE_DEVICES'] = ''  # changing '' to '0' or '-1' may solve import issues
 np.random.seed(46)
 rn.seed(1342)
 tf.random.set_seed(62)

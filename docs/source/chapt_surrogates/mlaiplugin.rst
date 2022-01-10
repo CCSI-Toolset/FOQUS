@@ -17,7 +17,7 @@ launched.
   Section :ref:`tutorial.surrogate.fs`.
 
 - ML_AI – Selecting this model type in the Node Editor displays available
-  neural network models; this tool currently supports Tensorflow Keras
+  neural network models; this tool currently supports TensorFlow Keras
   model files in hierarchical data format 5 (.h5). To use this tool,
   users must train and export a Keras model and place the file in the
   appropriate folder user_ml_ai_plugins in the working directory, as
@@ -30,7 +30,6 @@ launched.
   same manner as Pymodel Plugins, per the workflow in
   Section :ref:`tutorial.surrogate.fs`.
 
-
 Custom Model Attributes
 -----------------------
 
@@ -39,10 +38,16 @@ machine learning library to train complex model within Python's user-friendly
 framework. Largely, Keras models may be split into two types: **Sequential**
 which build linearly connected model layers, and **Functional** which build
 multiple interconnected layers in a complex system. More information on
-Tensorflow Keras model building is described by
+TensorFlow Keras model building is described by
 :ref:`(Wu et al. 2020)<Wu_2020>`. Users may follow the recommended workflow
-to install and use Tensorflow in a Python environment, as described in the
-Tensorflow documentation: https://www.tensorflow.org/install.
+to install and use TensorFlow in a Python environment, as described in the
+TensorFlow documentation: https://www.tensorflow.org/install.
+
+When importing TensorFlow Keras models, users should ensure their Python environment
+contains the same Keras package version used to train the model files. TensorFlow
+offers limited compatibility between versions. The example files include models
+trained with TensorFlow 2.3 and 2.7; users with TensorFlow 2.7 should use the 2.7
+models.
 
 The ML AI Plugin supports adding neural networks of either type to FOQUS
 nodes; if a custom object is needed, only the Functional API supports

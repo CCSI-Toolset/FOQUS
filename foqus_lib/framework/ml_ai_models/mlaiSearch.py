@@ -30,36 +30,44 @@ import imp
 
 _log = logging.getLogger("foqus." + __name__)
 
-class ml_ai_models():
+
+class ml_ai_models:
     """
     This class maintains a list of NN ml_ai models
     """
+
     def __init__(self, pathList):
         self.pathList = pathList
         self.ml_ai_models = {}
         self.getMLAIList()
 
     def getMLAIList(self):
-        '''
-            check files in self.pathList to see if they are ml_ai models
-        '''
+        """
+        check files in self.pathList to see if they are ml_ai models
+        """
         for p in self.pathList:
             if os.path.exists(p):
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:
-                    mname = fname.rsplit('.', 1) #split off extension
-                    if len(mname) > 1 and mname[1] == 'h5':
+                    mname = fname.rsplit(".", 1)  # split off extension
+                    if len(mname) > 1 and mname[1] == "h5":
                         try:
                             if mname[0] in self.ml_ai_models:
-                                _log.info("Reloading ML_AI Model: {}".format(
-                                    os.path.join(p, fname)))
+                                _log.info(
+                                    "Reloading ML_AI Model: {}".format(
+                                        os.path.join(p, fname)
+                                    )
+                                )
                                 self.ml_ai_models[mname[0]] = mname[0]
                             else:
-                                logging.getLogger("foqus." + __name__).\
-                                    info("Loading ML_AI Model: " + \
-                                    os.path.join(p, fname))
+                                logging.getLogger("foqus." + __name__).info(
+                                    "Loading ML_AI Model: " + os.path.join(p, fname)
+                                )
                                 self.ml_ai_models[mname[0]] = mname[0]
                         except:
-                            _log.exception("Error Loading ML_AI Model: {}".format(
-                                os.path.join(p, fname)))
+                            _log.exception(
+                                "Error Loading ML_AI Model: {}".format(
+                                    os.path.join(p, fname)
+                                )
+                            )

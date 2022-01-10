@@ -186,8 +186,8 @@ def makeWorkingDirStruct(wdir=None):
         createDir("user_plugins")
         createDir("user_ml_ai_models")
         createDir("ouu")
-        open("user_plugins/__init__.py", 'a').close()
-        open("user_ml_ai_models/__init__.py", 'a').close()
+        open("user_plugins/__init__.py", "a").close()
+        open("user_ml_ai_models/__init__.py", "a").close()
     except:
         logging.getLogger("foqus." + __name__).exception(
             "Error creating working directory structure"
@@ -287,8 +287,8 @@ class session:
         # Set up a blank FOQUS session
         self.loadPlugins()
         self.loadMLAIModels()
-        self.turbineChkFreq = 10 #frequency to check remote Turbine for
-                                 #results
+        self.turbineChkFreq = 10  # frequency to check remote Turbine for
+        # results
         self.resubMax = 0
         self.new()
 
@@ -420,13 +420,15 @@ class session:
         self.pymodels.getMLAIList()
 
     def loadMLAIModels(self):
-        '''
-            Search for ml_ai_models
-        '''
+        """
+        Search for ml_ai_models
+        """
         self.pymodels_ml_ai = mlaiSearch.ml_ai_models(
-            pathList = [
-                os.path.join(os.getcwd(), 'user_ml_ai_models'),
-                os.path.dirname(surrogate.__file__)])
+            pathList=[
+                os.path.join(os.getcwd(), "user_ml_ai_models"),
+                os.path.dirname(surrogate.__file__),
+            ]
+        )
         try:
             self.flowsheet.pymodels_ml_ai = self.pymodels_ml_ai
         except:

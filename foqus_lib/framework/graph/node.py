@@ -95,15 +95,15 @@ class NodeEx(foqusException):
 class pymodel_ml_ai(pymodel):
     def __init__(self, model):
         pymodel.__init__(self)
-        
+
         # attempt to retrieve required information from loaded model, and set defaults otherwise
         self.model = model
-        
+
         for i in range(np.shape(self.model.inputs[0])[1]):
             try:
                 input_label = self.model.layers[1].input_labels[i]
             except:
-                input_label = 'x' + str(i+1)
+                input_label = "x" + str(i + 1)
             try:
                 input_min = self.model.layers[1].input_bounds[input_label][0]
             except:
@@ -112,23 +112,24 @@ class pymodel_ml_ai(pymodel):
                 input_max = self.model.layers[1].input_bounds[input_label][1]
             except:
                 input_max = 1e5  # not necessarily a good default
-            
+
             self.inputs[input_label] = NodeVars(
-                value = input_min,
-                vmin = input_min,
-                vmax = input_max,
-                vdflt = 0.0,
-                unit = "",
-                vst = "pymodel",
-                vdesc = 'input var ' + str(i+1),
-                tags = [],
-                dtype = float)
-            
+                value=input_min,
+                vmin=input_min,
+                vmax=input_max,
+                vdflt=0.0,
+                unit="",
+                vst="pymodel",
+                vdesc="input var " + str(i + 1),
+                tags=[],
+                dtype=float,
+            )
+
         for j in range(np.shape(self.model.outputs[0])[1]):
             try:
                 output_label = self.model.layers[1].output_labels[j]
             except:
-                output_label = 'z' + str(j+1)
+                output_label = "z" + str(j + 1)
             try:
                 output_min = self.model.layers[1].output_bounds[output_label][0]
             except:
@@ -137,17 +138,18 @@ class pymodel_ml_ai(pymodel):
                 output_max = self.model.layers[1].output_bounds[output_label][1]
             except:
                 output_max = 1e5  # not necessarily a good default
-            
+
             self.outputs[output_label] = NodeVars(
-                value = output_min,
-                vmin = output_min,
-                vmax = output_max,
-                vdflt = 0.0,
-                unit = "",
-                vst = "pymodel",
-                vdesc = 'output var ' + str(j+1),
-                tags = [],
-                dtype = float)
+                value=output_min,
+                vmin=output_min,
+                vmax=output_max,
+                vdflt=0.0,
+                unit="",
+                vst="pymodel",
+                vdesc="output var " + str(j + 1),
+                tags=[],
+                dtype=float,
+            )
 
         # check if user passed a model for normalized data - FOQUS will automatically scale/un-scale
         try:  # if attribute exists, user has specified a model form
@@ -157,10 +159,13 @@ class pymodel_ml_ai(pymodel):
 
     def run(self):
         import numpy as np
+
         if self.normalized is True:  # normalize inputs
-            inputs = [(self.inputs[i].value - self.inputs[i].min) /
-                      (self.inputs[i].max - self.inputs[i].min)
-                      for i in self.inputs]
+            inputs = [
+                (self.inputs[i].value - self.inputs[i].min)
+                / (self.inputs[i].max - self.inputs[i].min)
+                for i in self.inputs
+            ]
         else:  # take actual input values
             inputs = [self.inputs[i].value for i in self.inputs]
         print(inputs)
@@ -169,9 +174,10 @@ class pymodel_ml_ai(pymodel):
         outidx = 0
         for j in self.outputs:
             if self.normalized is True:  # un-normalize outputs
-                self.outputs[j].value = (outputs[outidx] *
-                                         (self.outputs[j].max - self.outputs[j].min) +
-                                         self.outputs[j].min)
+                self.outputs[j].value = (
+                    outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
+                    + self.outputs[j].min
+                )
             else:
                 self.outputs[j].value = outputs[outidx]
             outidx += 1
@@ -585,12 +591,15 @@ class Node:
         elif self.modelType == nodeModelTypes.MODEL_ML_AI:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
+            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
-                self.model = load(str(self.modelName) + ".h5",
-                    custom_objects = {str(self.modelName):
-                                      getattr(module, str(self.modelName))})
+                self.model = load(
+                    str(self.modelName) + ".h5",
+                    custom_objects={
+                        str(self.modelName): getattr(module, str(self.modelName))
+                    },
+                )
             except:  # try to load model without custom layer
                 self.model = load(str(self.modelName) + ".h5")
             os.chdir(cwd)  # reset to original working directory
@@ -1078,18 +1087,21 @@ class Node:
 
     def runPymodelMLAI(self):
         """
-            Runs a Neural Network machine learning/artificial intelligence model.
+        Runs a Neural Network machine learning/artificial intelligence model.
         """
         # create a python model instance if needed
         if not self.pyModel:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), 'user_ml_ai_models'))
+            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
-                self.model = load(str(self.modelName) + ".h5",
-                    custom_objects = {str(self.modelName):
-                                      getattr(module, str(self.modelName))})
+                self.model = load(
+                    str(self.modelName) + ".h5",
+                    custom_objects={
+                        str(self.modelName): getattr(module, str(self.modelName))
+                    },
+                )
             except:  # try to load model without custom layer
                 self.model = load(str(self.modelName) + ".h5")
             os.chdir(cwd)  # reset to original working directory

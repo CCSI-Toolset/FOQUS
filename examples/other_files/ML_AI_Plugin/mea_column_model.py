@@ -5,8 +5,10 @@ import random as rn
 import tensorflow as tf
 
 # set seed values for reproducibility
-os.environ['PYTHONHASHSEED'] = '0'
-os.environ['CUDA_VISIBLE_DEVICES'] = ''  # changing '' to '0' or '-1' may solve import issues
+os.environ["PYTHONHASHSEED"] = "0"
+os.environ[
+    "CUDA_VISIBLE_DEVICES"
+] = ""  # changing "" to "0" or "-1" may solve import issues
 np.random.seed(46)
 rn.seed(1342)
 tf.random.set_seed(62)
@@ -14,11 +16,19 @@ tf.random.set_seed(62)
 # custom class to define Keras NN layers
 @tf.keras.utils.register_keras_serializable()
 class mea_column_model(tf.keras.layers.Layer):
-    def __init__(self, n_hidden=1, n_neurons=12,
-                 layer_act='relu', out_act='sigmoid',
-                 input_labels=None, output_labels=None,
-                 input_bounds=None, output_bounds=None,
-                 normalized=False, **kwargs):
+    def __init__(
+        self,
+        n_hidden=1,
+        n_neurons=12,
+        layer_act="relu",
+        out_act="sigmoid",
+        input_labels=None,
+        output_labels=None,
+        input_bounds=None,
+        output_bounds=None,
+        normalized=False,
+        **kwargs
+    ):
 
         super(mea_column_model, self).__init__()  # create callable object
 
@@ -38,15 +48,14 @@ class mea_column_model(tf.keras.layers.Layer):
         # create lists to contain new layer objects
         self.dense_layers = []  # hidden or output layers
         self.dropout = []  # for large number of neurons, certain neurons
-                           # can be randomly dropped out to reduce overfitting
+        # can be randomly dropped out to reduce overfitting
 
         for layer in range(self.n_hidden):
             self.dense_layers.append(
-                tf.keras.layers.Dense(
-                    self.n_neurons, activation=self.layer_act))
+                tf.keras.layers.Dense(self.n_neurons, activation=self.layer_act)
+            )
 
-        self.dense_layers_out = tf.keras.layers.Dense(
-            2, activation=self.out_act)
+        self.dense_layers_out = tf.keras.layers.Dense(2, activation=self.out_act)
 
     # define network layer connections
     def call(self, inputs):
@@ -63,15 +72,17 @@ class mea_column_model(tf.keras.layers.Layer):
     # attach attributes to class CONFIG
     def get_config(self):
         config = super(mea_column_model, self).get_config()
-        config.update({
-            'n_hidden': self.n_hidden,
-            'n_neurons': self.n_neurons,
-            'layer_act': self.layer_act,
-            'out_act': self.out_act,
-            'input_labels': self.input_labels,
-            'output_labels': self.output_labels,
-            'input_bounds': self.input_bounds,
-            'output_bounds': self.output_bounds,
-            'normalized': self.normalized
-        })
+        config.update(
+            {
+                "n_hidden": self.n_hidden,
+                "n_neurons": self.n_neurons,
+                "layer_act": self.layer_act,
+                "out_act": self.out_act,
+                "input_labels": self.input_labels,
+                "output_labels": self.output_labels,
+                "input_bounds": self.input_bounds,
+                "output_bounds": self.output_bounds,
+                "normalized": self.normalized,
+            }
+        )
         return config

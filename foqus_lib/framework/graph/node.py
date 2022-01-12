@@ -42,6 +42,7 @@ from importlib import import_module
 try:
     # tensorflow should be installed, but is not required for non ML/AI models
     import tensorflow as tf
+
     load = tf.keras.models.load_model
 except:
     pass  # errors will be thrown if tensorflow is called but not installed,

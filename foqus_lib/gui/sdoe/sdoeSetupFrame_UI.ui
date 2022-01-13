@@ -1339,6 +1339,12 @@ selection-color: rgb(0, 0, 0);</string>
                  </item>
                  <item>
                   <widget class="QRadioButton" name="fisher_radioButton">
+                   <property name="font">
+                    <font>
+                     <weight>50</weight>
+                     <bold>false</bold>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Fisher</string>
                    </property>
@@ -1352,6 +1358,12 @@ selection-color: rgb(0, 0, 0);</string>
                  </item>
                  <item>
                   <widget class="QRadioButton" name="bayesian_radioButton">
+                   <property name="font">
+                    <font>
+                     <weight>50</weight>
+                     <bold>false</bold>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Bayesian</string>
                    </property>
@@ -1459,6 +1471,12 @@ selection-color: rgb(0, 0, 0);</string>
                  </item>
                  <item>
                   <widget class="QRadioButton" name="Eopt_radioButton">
+                   <property name="font">
+                    <font>
+                     <weight>50</weight>
+                     <bold>false</bold>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>E-Opt</string>
                    </property>
@@ -1654,10 +1672,10 @@ selection-color: rgb(0, 0, 0);</string>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="eval_buttonGroup"/>
-  <buttongroup name="sdoePages_buttonGroup"/>
   <buttongroup name="cand_buttonGroup"/>
   <buttongroup name="method_buttonGroup"/>
+  <buttongroup name="sdoePages_buttonGroup"/>
+  <buttongroup name="eval_buttonGroup"/>
   <buttongroup name="opt_buttonGroup"/>
  </buttongroups>
 </ui>

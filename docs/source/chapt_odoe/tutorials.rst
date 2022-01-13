@@ -14,7 +14,7 @@ The second example will generate the candidate set and load an existing evaluati
 .. note:: |examples_reminder_text|
 
 .. note::
-   Make sure you have the latest version of PSUADE installed (1.9.0).
+   To run this version of ODoE, make sure you have the latest version of PSUADE installed (1.9.0).
 
 .. toctree::
     :maxdepth: 2

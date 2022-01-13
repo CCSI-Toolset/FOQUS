@@ -6,7 +6,7 @@ Subsequently, details of the ODoE graphical user
 interface will be discussed in the :ref:`odoe_tutorials` section.
 
 .. note::
-   Make sure you have the latest version of PSUADE installed (1.9.0).
+   To run this version of ODoE, make sure you have the latest version of PSUADE installed (1.9.0).
 
 ODoE Variables
 --------------

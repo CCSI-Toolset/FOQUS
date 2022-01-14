@@ -10,7 +10,7 @@ Windows and is used to interface with Excel, Aspen, and gPROMS software.
 
 Other software listed below will enable additional features of FOQUS if available.
 
-Install PSUADE-Lite (current version: 1.8.0)
+Install PSUADE-Lite (current version: 1.9.0)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 PSUADE (Problem Solving environment for Uncertainty Analysis and Design Exploration) is a software

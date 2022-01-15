@@ -36,5 +36,5 @@ runs:
       shell: bash -l {0}
       run: |
         echo '::group::Output of "conda install psuade-lite"'
-        conda install --yes --quiet -c CCSI-Toolset -c conda-forge psuade-lite
+        conda install --yes --quiet -c CCSI-Toolset -c conda-forge psuade-lite=1.8
         echo '::endgroup::'

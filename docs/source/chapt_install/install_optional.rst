@@ -20,7 +20,7 @@ analysis, design optimization, model calibration, and more.
 `PSUADE-Lite <https://github.com/LLNL/psuade-lite>`_ is now available as a Conda package. To install just follow the steps below::
 
   conda activate ccsi-foqus
-  conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite
+  conda install --yes -c conda-forge -c CCSI-Toolset psuade-lite=1.8
   psuade --help  # quickly test that the psuade executable has been installed correctly
 
 The ``psuade`` executable should now be available within the Conda environment's folders, i.e. at the path ``$CONDA_PREFIX/bin/psuade`` (Linux, macOS) or ``%CONDA_PREFIX%\bin\psuade.exe`` (Windows).

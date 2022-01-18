@@ -759,7 +759,7 @@ def main(args_to_parse=None):
                         db.job_change_status(guid, "error")
                         continue
                     gt = dat.flowsheet.runAsThread()
-                    while gt.isAlive():
+                    while gt.is_alive():
                         gt.join(10)
                         status = db.consumer_status(consumer_uuid)
                         if status == "terminate":

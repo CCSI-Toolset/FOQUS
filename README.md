@@ -1,9 +1,16 @@
+# FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
+Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
+
+## Project Status
+<!-- BEGIN Status badges -->
 [![Documentation Status](https://readthedocs.org/projects/foqus/badge/?version=latest)](https://foqus.readthedocs.io/en/latest/?badge=latest)
 [![Tests](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/tests.yml/badge.svg)](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/tests.yml)
 [![Nightlies](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/nightlies.yml/badge.svg)](https://github.com/CCSI-Toolset/FOQUS/actions/workflows/nightlies.yml)
-
-# FOQUS: Framework for Optimization, Quantification of Uncertainty, and Surrogates
-Package includes: FOQUS GUI, Optimization Engine, Turbine Client. *Requires access to a Turbine Gateway installation either locally or on a separate cluster/server. #GAMS is required for heat integration option.*
+[![GitHub contributors](https://img.shields.io/github/contributors/CCSI-Toolset/FOQUS.svg)](https://github.com/CCSI-Toolset/FOQUS/graphs/contributors)
+[![Merged PRs](https://img.shields.io/github/issues-pr-closed-raw/CCSI-Toolset/FOQUS.svg?label=merged+PRs)](https://github.com/CCSI-Toolset/FOQUS/pulls?q=is:pr+is:merged)
+[![Issue stats](http://isitmaintained.com/badge/resolution/CCSI-Toolset/FOQUS.svg)](http://isitmaintained.com/project/CCSI-Toolset/FOQUS)
+[![Downloads](https://pepy.tech/badge/ccsi-foqus)](https://pepy.tech/project/ccsi-foqus)
+<!-- End Status badges -->
 
 ## Getting Started
 

@@ -2197,8 +2197,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = "Evaluations"
+        nImpPts = 0
         dialog = sdoePreview(
-            previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self
+            previewData,
+            hname,
+            self.odoe_dname,
+            usf,
+            nusf,
+            irsf,
+            scatterLabel,
+            nImpPts,
+            self,
         )
         dialog.show()
 
@@ -2501,6 +2510,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             optCriterion = "D"
         elif self.Aopt_radioButton.isChecked():
             optCriterion = "A"
+        elif self.Eopt_radioButton.isChecked():
+            optCriterion = "E"
 
         designSize = self.odoeDesignSize_spin.value()
 

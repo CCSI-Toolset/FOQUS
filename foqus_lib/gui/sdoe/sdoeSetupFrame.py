@@ -2197,8 +2197,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         nusf = None
         irsf = None
         scatterLabel = "Evaluations"
+        nImpPts = 0
         dialog = sdoePreview(
-            previewData, hname, self.odoe_dname, usf, nusf, irsf, scatterLabel, self
+            previewData,
+            hname,
+            self.odoe_dname,
+            usf,
+            nusf,
+            irsf,
+            scatterLabel,
+            nImpPts,
+            self,
         )
         dialog.show()
 
@@ -2488,6 +2497,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         os.makedirs(outdir, exist_ok=True)
 
         # Check user choices in the GUI
+        if self.fisher_radioButton.isChecked():
+            method = "fisher"
+        elif self.bayesian_radioButton.isChecked():
+            method = "bayesian"
+
         if self.Gopt_radioButton.isChecked():
             optCriterion = "G"
         elif self.Iopt_radioButton.isChecked():
@@ -2496,6 +2510,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             optCriterion = "D"
         elif self.Aopt_radioButton.isChecked():
             optCriterion = "A"
+        elif self.Eopt_radioButton.isChecked():
+            optCriterion = "E"
 
         designSize = self.odoeDesignSize_spin.value()
 
@@ -2547,7 +2563,15 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         for nr in range(numRestarts):
             t0 = time.time()
             best_indices, best_optval = odoeu.odoeu(
-                cdata, cfile, pdata, rsdata, rs, optCriterion, designSize, edata=edata
+                cdata,
+                cfile,
+                pdata,
+                rsdata,
+                rs,
+                method,
+                optCriterion,
+                designSize,
+                edata=edata,
             )
             time_list.append(time.time() - t0)
             self.resultMessage += "Results for Run #%d:\n" % (nr + 1)
@@ -2585,6 +2609,7 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         f.write("RS type: %s \n" % rs[0])
         f.write("RS predictions: %s\n\n" % cfile)
 
+        f.write("Statistical Method: %s\n" % method)
         f.write("Optimality type: %s\n" % optCriterion)
         f.write("Design size: %d\n" % designSize)
         f.write("Number of restarts: %d\n\n" % numRestarts)

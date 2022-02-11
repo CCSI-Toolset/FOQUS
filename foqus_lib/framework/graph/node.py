@@ -39,6 +39,7 @@ from foqus_lib.framework.at_dict.at_dict import AtDict
 from PyQt5.QtWidgets import QMessageBox
 from importlib import import_module
 
+# pylint: disable=import-error
 try:
     # tensorflow should be installed, but is not required for non ML/AI models
     import tensorflow as tf
@@ -47,6 +48,7 @@ try:
 except:
     pass  # errors will be thrown if tensorflow is called but not installed,
     #  otherwise no error should be thrown so passing is fine
+# pylint: enable=import-error
 
 
 class NodeOptionSets:

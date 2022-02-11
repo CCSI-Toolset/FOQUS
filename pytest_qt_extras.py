@@ -233,16 +233,10 @@ def replace_with_signal(target, signal, retval=None):
 
     def _proxy_call(*args, **kwargs):
         call_info = CallInfo(
-            callee=func,
-            args=args,
-            kwargs=kwargs,
-            name=name,
-            instance=instance
+            callee=func, args=args, kwargs=kwargs, name=name, instance=instance
         )
 
-        signal.emit(
-            call_info
-        )
+        signal.emit(call_info)
 
         return retval
 
@@ -1524,19 +1518,14 @@ class QtBot(pytestqt_plugin.QtBot):
             )
 
     @contextlib.contextmanager
-    def replacing_with_signal(self,
-            *targets: t.Iterable[t.Union[t.Callable, t.Tuple[type, str]]],
-            **kwargs
-        ):
+    def replacing_with_signal(
+        self, *targets: t.Iterable[t.Union[t.Callable, t.Tuple[type, str]]], **kwargs
+    ):
         signal = self._signals.callProxy
         with contextlib.ExitStack() as stack:
             [
                 stack.enter_context(
-                    replace_with_signal(
-                        target=target,
-                        signal=signal,
-                        **kwargs
-                    )
+                    replace_with_signal(target=target, signal=signal, **kwargs)
                 )
                 for target in targets
             ]

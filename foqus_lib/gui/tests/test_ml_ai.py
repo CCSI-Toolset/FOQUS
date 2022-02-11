@@ -16,8 +16,7 @@ _ = pytest.importorskip("tensorflow", "tensorflow not installed")
 
 
 @pytest.fixture(
-    scope="module",
-    params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
+    scope="module", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
 )
 def flowsheet_session_file(examples_dir: Path, request) -> Path:
     return examples_dir / request.param
@@ -48,26 +47,34 @@ def install_ml_ai_model_files(examples_dir: Path, foqus_working_dir: Path) -> Pa
 
 
 class TestMLAIPluginFlowsheetRun:
-
     @pytest.fixture
-    def focus_flowsheet_tab(self, qtbot: QtBot, main_window, ) -> None:
+    def focus_flowsheet_tab(
+        self,
+        qtbot: QtBot,
+        main_window,
+    ) -> None:
         qtbot.focused = main_window
         with qtbot.wait_signal(main_window.fsEditAction.triggered):
             qtbot.click(button="Flowsheet")
 
-    def test_flowsheet_tab_is_active(self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet):
+    def test_flowsheet_tab_is_active(
+        self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet
+    ):
         assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
 
     @pytest.fixture
-    def active_session(self,
-            main_window: mainWindow,
-            flowsheet_session_file: Path,
-            install_ml_ai_model_files: Path,
-        ) -> FoqusSession:
+    def active_session(
+        self,
+        main_window: mainWindow,
+        flowsheet_session_file: Path,
+        install_ml_ai_model_files: Path,
+    ) -> FoqusSession:
         main_window.loadSessionFile(str(flowsheet_session_file), saveCurrent=False)
         return main_window.dat
 
-    def test_model_flowsheet_is_loaded(self, qtbot: QtBot, focus_flowsheet_tab, active_session: FoqusSession):
+    def test_model_flowsheet_is_loaded(
+        self, qtbot: QtBot, focus_flowsheet_tab, active_session: FoqusSession
+    ):
         assert active_session.flowsheet is not None
 
     @pytest.fixture
@@ -78,11 +85,12 @@ class TestMLAIPluginFlowsheetRun:
         assert len(pymodels_ml_ai.ml_ai_models) > 0
 
     @pytest.fixture
-    def trigger_flowsheet_run_action(self,
-            qtbot: QtBot,
-            active_session,
-            main_window: mainWindow,
-        ):
+    def trigger_flowsheet_run_action(
+        self,
+        qtbot: QtBot,
+        active_session,
+        main_window: mainWindow,
+    ):
         run_action = main_window.runAction
         with qtbot.replacing_with_signal(
             (QtWidgets.QMessageBox, "information"),
@@ -96,9 +104,10 @@ class TestMLAIPluginFlowsheetRun:
     def statusbar_message(self, main_window: mainWindow) -> str:
         return main_window.statusBar().currentMessage()
 
-    def test_flowsheet_run_successful(self,
-            trigger_flowsheet_run_action,
-            statusbar_message: str,
-            text_when_success: str = "Finished Single Simulation... Success"
-        ):
+    def test_flowsheet_run_successful(
+        self,
+        trigger_flowsheet_run_action,
+        statusbar_message: str,
+        text_when_success: str = "Finished Single Simulation... Success",
+    ):
         assert text_when_success in statusbar_message

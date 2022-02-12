@@ -63,6 +63,7 @@ jobs:
           - linux
           - win64
           - macos
+        optional-dependencies: [""]
         include:
           - os: macos
             os-version: macos-10.15
@@ -85,14 +86,10 @@ jobs:
         with:
           activate-environment: ${{ env.FOQUS_CONDA_ENV_NAME_DEV }}
           python-version: ${{ matrix.python-version }}
-      - name: Install optional dependencies
-        if: matrix.optional-dependencies
-        run: |
-          conda install -c conda-forge --name ${{ env.FOQUS_CONDA_ENV_NAME_DEV }} --yes ${{ matrix.optional-dependencies }}
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:
-          pip-install-target: -r requirements-dev.txt
+          pip-install-target: -r requirements-dev.txt ${{ matrix.optional-dependencies }}
       - name: Set common pytest flags
         run:
           echo 'PYTEST_ADDOPTS=--verbose --artifacts-path "$PYTEST_ARTIFACTS_PATH"' >> $GITHUB_ENV

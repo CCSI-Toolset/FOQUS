@@ -24,28 +24,30 @@ def flowsheet_session_file(examples_dir: Path, request) -> Path:
 
 @pytest.fixture(scope="module")
 def models_dir(
-        foqus_working_dir: Path,
-    ) -> Path:
+    foqus_working_dir: Path,
+) -> Path:
 
     return foqus_working_dir / "user_ml_ai_models"
 
 
 @pytest.fixture(scope="module")
 def model_files(
-        models_dir: Path,
-        suffixes: Tuple[str] = (".py", ".h5"),
-    ) -> List[Path]:
+    models_dir: Path,
+    suffixes: Tuple[str] = (".py", ".h5"),
+) -> List[Path]:
     paths = []
     for path in sorted(models_dir.glob("*")):
-        if all([
-            path.is_file(),
-            path.stat().st_size > 0,
-            path.suffix in suffixes,
-            path.name != "__init__.py",
-        ]):
+        if all(
+            [
+                path.is_file(),
+                path.stat().st_size > 0,
+                path.suffix in suffixes,
+                path.name != "__init__.py",
+            ]
+        ):
             paths.append(path)
     return paths
- 
+
 
 def test_model_files_are_present(model_files: List[Path]):
     assert model_files
@@ -83,11 +85,11 @@ class TestMLAIPluginFlowsheetRun:
 
     @pytest.fixture
     def pymodels_ml_ai(
-            self,
-            active_session: FoqusSession,
-            model_files: List[Path],
-            models_dir: Path,
-        ) -> ml_ai_models:
+        self,
+        active_session: FoqusSession,
+        model_files: List[Path],
+        models_dir: Path,
+    ) -> ml_ai_models:
         if not model_files:
             pytest.skip(f"No model files found in directory: {models_dir}")
         return active_session.pymodels_ml_ai

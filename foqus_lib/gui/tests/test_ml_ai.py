@@ -22,12 +22,34 @@ def flowsheet_session_file(examples_dir: Path, request) -> Path:
     return examples_dir / request.param
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="module", autouse=True)
 def models_dir(
     foqus_working_dir: Path,
 ) -> Path:
 
     return foqus_working_dir / "user_ml_ai_models"
+
+
+@pytest.fixture(
+    scope="module",
+    autouse=True,
+)
+def install_ml_ai_model_files(examples_dir: Path, models_dir: Path) -> Path:
+    """
+    This is a module-level fixture with autouse b/c it needs to be created before the main window is instantiated.
+    """
+
+    base_path = examples_dir / "other_files" / "ML_AI_Plugin"
+    ts_models_base_path = base_path / "TensorFlow_2-7_Models"
+
+    models_dir.mkdir(exist_ok=True, parents=False)
+
+    for path in [
+        base_path / "mea_column_model.py",
+        ts_models_base_path / "mea_column_model.h5",
+    ]:
+        shutil.copy2(path, models_dir)
+    yield models_dir
 
 
 @pytest.fixture(scope="module")

@@ -61,7 +61,7 @@ def foqus_working_dir(qtbot_params):
     return Path("/tmp") / "foqus_working_dir"
 
 
-@pytest.fixture(scope="session")
+@pytest.fixture(scope="module")
 def foqus_session(foqus_working_dir, psuade_path):
     from foqus_lib.service.flowsheet import _set_working_dir
     from foqus_lib.framework.session import session

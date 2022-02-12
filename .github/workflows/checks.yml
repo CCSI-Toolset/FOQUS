@@ -64,7 +64,6 @@ jobs:
           - linux
           - win64
           - macos
-        optional-dependencies: [""]
         include:
           - os: macos
             os-version: macos-10.15

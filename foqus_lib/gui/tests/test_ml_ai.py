@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil
-from typing import List
+from typing import List, Tuple
 
 import pytest
 from pytest_qt_extras import QtBot, instrument
@@ -22,28 +22,33 @@ def flowsheet_session_file(examples_dir: Path, request) -> Path:
     return examples_dir / request.param
 
 
-@pytest.fixture(
-    scope="session",
-    autouse=True,
-)
-def install_ml_ai_model_files(examples_dir: Path, foqus_working_dir: Path) -> Path:
-    """
-    This is a session-scoped fixture with autouse b/c it needs to be created before the main window is instantiated.
-    """
+@pytest.fixture(scope="module")
+def models_dir(
+        foqus_working_dir: Path,
+    ) -> Path:
 
-    base_path = examples_dir / "other_files" / "ML_AI_Plugin"
-    ts_models_base_path = base_path / "TensorFlow_2-7_Models"
-    dest_path = foqus_working_dir / "user_ml_ai_models"
+    return foqus_working_dir / "user_ml_ai_models"
 
-    dest_path.mkdir(parents=False, exist_ok=True)
-    for path in [
-        base_path / "mea_column_model.py",
-        ts_models_base_path / "mea_column_model.h5",
-    ]:
-        shutil.copy2(path, dest_path)
-    yield dest_path
 
-    shutil.rmtree(dest_path)
+@pytest.fixture(scope="module")
+def model_files(
+        models_dir: Path,
+        suffixes: Tuple[str] = (".py", ".h5"),
+    ) -> List[Path]:
+    paths = []
+    for path in sorted(models_dir.glob("*")):
+        if all([
+            path.is_file(),
+            path.stat().st_size > 0,
+            path.suffix in suffixes,
+            path.name != "__init__.py",
+        ]):
+            paths.append(path)
+    return paths
+ 
+
+def test_model_files_are_present(model_files: List[Path]):
+    assert model_files
 
 
 class TestMLAIPluginFlowsheetRun:
@@ -67,7 +72,6 @@ class TestMLAIPluginFlowsheetRun:
         self,
         main_window: mainWindow,
         flowsheet_session_file: Path,
-        install_ml_ai_model_files: Path,
     ) -> FoqusSession:
         main_window.loadSessionFile(str(flowsheet_session_file), saveCurrent=False)
         return main_window.dat
@@ -78,7 +82,14 @@ class TestMLAIPluginFlowsheetRun:
         assert active_session.flowsheet is not None
 
     @pytest.fixture
-    def pymodels_ml_ai(self, active_session: FoqusSession) -> ml_ai_models:
+    def pymodels_ml_ai(
+            self,
+            active_session: FoqusSession,
+            model_files: List[Path],
+            models_dir: Path,
+        ) -> ml_ai_models:
+        if not model_files:
+            pytest.skip(f"No model files found in directory: {models_dir}")
         return active_session.pymodels_ml_ai
 
     def test_ml_ai_models_loaded(self, pymodels_ml_ai: ml_ai_models):
@@ -90,6 +101,7 @@ class TestMLAIPluginFlowsheetRun:
         qtbot: QtBot,
         active_session,
         main_window: mainWindow,
+        pymodels_ml_ai,
     ):
         run_action = main_window.runAction
         with qtbot.replacing_with_signal(

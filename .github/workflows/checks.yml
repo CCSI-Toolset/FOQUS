@@ -26,6 +26,7 @@ defaults:
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev
   PYTEST_ARTIFACTS_PATH: ".pytest-artifacts"
+  PYTEST_FOQUS_WORKING_DIR: /tmp/foqus_working_dir
 
 jobs:
   code-formatting:
@@ -97,6 +98,11 @@ jobs:
         if: contains(matrix.os, 'linux')
         run: |
           echo "QT_QPA_PLATFORM=minimal" >> $GITHUB_ENV
+      - name: Copy files to FOQUS working dir
+        run: |
+          _ml_ai_user_dir="$PYTEST_FOQUS_WORKING_DIR"/user_ml_ai_models/
+          mkdir -p "$_ml_ai_user_dir"
+          cp examples/other_files/ML_AI_Plugin/{mea_column_model.py,TensorFlow_2-7_Models/mea_column_model.h5} "$_ml_ai_user_dir"
       - name: Run pytest (default options)
         if: "! matrix.use_coverage"
         run: |

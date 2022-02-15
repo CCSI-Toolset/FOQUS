@@ -5,6 +5,9 @@ design. This chapter presents an overview of these variants.
 Subsequently, details of the ODoE graphical user
 interface will be discussed in the :ref:`odoe_tutorials` section.
 
+.. note::
+   To run this version of ODoE, make sure you have the latest version of PSUADE installed (1.9.0).
+
 ODoE Variables
 --------------
 Suppose a simulation model is available for this study. Let this

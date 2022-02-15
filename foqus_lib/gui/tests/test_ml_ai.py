@@ -128,8 +128,12 @@ class TestMLAIPluginFlowsheetRun:
         pymodels_ml_ai,
     ):
         run_action = main_window.runAction
-        with qtbot.wait_signal(main_window.simCompleted, timeout=2_000):
-            run_action.trigger()
+        with qtbot.replacing_with_signal(
+            (QtWidgets.QMessageBox, "information"),
+            (QtWidgets.QMessageBox, "critical"),
+        ) as signal:
+            with qtbot.wait_signal(signal, timeout=2_000):
+                run_action.trigger()
         return run_action
 
     @pytest.fixture(scope="function")

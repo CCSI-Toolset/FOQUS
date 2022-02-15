@@ -76,6 +76,8 @@ class mainWindow(QMainWindow):
     This is the FOQUS main window class
     """
 
+    simCompleted = QtCore.pyqtSignal(str, bool)
+
     def __init__(
         self,
         title,
@@ -1392,33 +1394,27 @@ class mainWindow(QMainWindow):
             self.runningSingle = False
             self.dat.flowsheet.onlySingleNode = None
             if err == 0:
-                QMessageBox.information(
-                    self,
+                self.simCompleted.emit(
                     "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)),
-                    "The simulation completed successfully.",
+                    True,
                 )
                 self.setStatus(
                     "Finished Single Simulation... Success in "
                     + hhmmss(int(self.dat.flowsheet.solTime))
                 )
             elif err == 100:
-                QMessageBox.information(
-                    self,
+                self.simCompleted.emit(
                     "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                    "The single node simulation completed successfully.",
+                    True,
                 )
                 self.setStatus(
                     "Finished Single Node Simulation... Success in "
                     + hhmmss(int(self.dat.flowsheet.solTime))
                 )
             else:
-                QMessageBox.critical(
-                    self,
+                self.simCompleted.emit(
                     "Error in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                    "The simulation completed with an error "
-                    + str(err)
-                    + ", "
-                    + errText,
+                    False,
                 )
                 self.setStatus(
                     "Error Single Simulation in "

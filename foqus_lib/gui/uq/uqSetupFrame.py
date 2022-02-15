@@ -1138,9 +1138,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("FOQUS Run Finished")
         msgBox.setText("%d of %d runs were successful!" % (numSuccessful, numSamples))
-        result = msgBox.exec_()
         self.refreshFilterData(updateResult=True)
-        return result
 
     # =========================== START Brenda's stuff =========================
 

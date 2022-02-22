@@ -100,7 +100,19 @@ def rseval(rsdata, pdata, cdata, rstypes):
     return outfile
 
 
-def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=None):
+def odoeu(
+    cdata,
+    cfile,
+    pdata,
+    rsdata,
+    rstypes,
+    method,
+    opt,
+    nd,
+    max_iters=100,
+    multi_starts=20,
+    edata=None,
+):
 
     # cdata: SampleData containing the original candidate set
     # cfile: PSUADE sample file containing the original candidates with the mean/std of the selected output
@@ -111,14 +123,20 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # 'linear', 'quadratic', 'cubic']
     # nd: int denoting design size
     # max_iters: int denoting maximum number of iterations for the optimization routine [default: 100]
+    # multi_starts: int denoting number of multi-starts for the optimization [default: 20]
     # edata: SampleData containing the evaluation set
 
     # parse params
-    opts = ["G", "I", "D", "A"]
+    methods = ["fisher", "bayesian"]
+    assert method in methods
+    opts = ["G", "I", "D", "A", "E"]
     assert opt in opts
     optdict = dict(zip(opts, range(1, len(opts) + 1)))
     opt_index = optdict[opt]
-    cmd = "odoeu_optns"
+    if method == "fisher":
+        cmd = "odoeu_foptn"
+    elif method == "bayesian":
+        cmd = "odoeu_boptn"
 
     # TO DO for Pedro: check in GUI?
     # maximum iterations should be in range [100, 1000]
@@ -127,6 +145,7 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
     # initialize constants
     ncand = cdata.getNumSamples()
     nOutputs = rsdata.getNumOutputs()
+    nprior = pdata.getNumSamples()
 
     # extract the indices of random variables
     inputNames = rsdata.getInputNames()
@@ -169,13 +188,14 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
 
     f.write("%s\n" % cmd)
     f.write("y\n")
-    f.write("%d\n" % opt_index)  # choose G, I, D, A
+    f.write("%d\n" % opt_index)  # choose G, I, D, A, E
     f.write("%d\n" % ncand)  # size of the candidate set
     f.write("%d\n" % nd)  # design size
     f.write(
         "%d\n" % max_iters
     )  # max number of iterations, must be greater or equal to 100
-    f.write("n\n")  # no initial guess
+    f.write("y\n")  # yes multi-start optimization
+    f.write("%d\n" % multi_starts)  # number of starts
     f.write("%s\n" % rsfile)  # file containing RS training data (psuade format)
     for i in priorIndices:
         f.write(
@@ -183,6 +203,15 @@ def odoeu(cdata, cfile, pdata, rsdata, rstypes, opt, nd, max_iters=100, edata=No
         )  # specify random variables, should be consistent with vars in prior
     f.write("0\n")  # 0 to proceed
     f.write("%s\n" % pfile)  # file containing the prior sample (psuade sample format)
+    if method == "fisher":
+        if nprior > 1000:
+            f.write("y\n")  # collapsing prior sample into smaller sample when g.t. 1000
+            f.write("2\n")
+            f.write("1000\n")
+        else:
+            f.write(
+                "n\n"
+            )  # no collapsing prior sample into smaller sample when l.t.e. 1000
     f.write("%s\n" % cfile)  # file containing the candidate set (psuade sample format)
     f.write(
         "%s\n" % efile

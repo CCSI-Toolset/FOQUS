@@ -72,8 +72,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         #    self.tableView.hideColumn(i)
 
     def columnSelect(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         cd = columnsDialog(self.dat, self)
         cd.show()
@@ -142,8 +145,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.calcCols.triggered.connect(self.calculate_columns)
 
     def calculate_columns(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
         self.results.calculate_columns()
         self.refreshContents()
 
@@ -152,8 +158,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.calculate_columns()
 
     def rowToFlow(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         rows = self.selectedRows()
         if len(rows) < 1:
@@ -162,8 +171,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.dat.mainWin.refresh()  # pylint: disable=no-member
 
     def refreshContents(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         self.updateFilterBox()
         self.tableView.setModel(dataModel(self.results, self))
@@ -180,8 +192,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
 
     def deleteResults(self):
         """Delete selected rows from the results table."""
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         msgBox = QMessageBox()
         msgBox.setText("Delete selected data?")
@@ -197,8 +212,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.refreshContents()
 
     def editDataSet(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         rl = self.results
         rows = self.selectedRows()
@@ -209,8 +227,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             rl.edit_set_name(name, rows, filtered=True)
 
     def importCSV(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         fileName, filtr = QFileDialog.getOpenFileName(
             self,
@@ -223,8 +244,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.refreshContents()
 
     def addEmptyResult(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         self.results.add_result(
             sd=self.dat.flowsheet.saveValues(), result_name="empty", empty=True
@@ -249,8 +273,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.tableView.setColumnHidden(col, False)
 
     def clearResults(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         msgBox = QMessageBox()
         msgBox.setText("Delete all data?")
@@ -268,8 +295,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.refreshContents()
 
     def editFilters(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         df = dataFilterDialog.dataFilterDialog(self.dat, self, results=self.results)
         df.exec_()
@@ -277,8 +307,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.selectFilter()
 
     def updateFilterBox(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         self.filterSelectBox.blockSignals(True)
         self.filterSelectBox.clear()
@@ -294,8 +327,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.filterSelectBox.blockSignals(False)
 
     def selectFilter(self, i=0):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         filterName = self.filterSelectBox.currentText()
         if filterName == "":
@@ -308,8 +344,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
         self.numRowsBox.setText(str(self.results.count_rows(filtered=True)))
 
     def saveResultsToCSV(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         fileName, filtr = QFileDialog.getSaveFileName(
             self,
@@ -321,8 +360,11 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.results.to_csv(fileName)
 
     def toPsuade(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         fileName, filtr = QFileDialog.getSaveFileName(
             self,
@@ -334,15 +376,21 @@ class dataBrowserFrame(_dataBrowserFrame, _dataBrowserFrameUI):
             self.results.to_psuade(fileName)
 
     def toClipboard(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         clipboard = QApplication.clipboard()
         clipboard.setText(self.results.to_csv(sep="\t"))
 
     def importClip(self):
-        if self.results is None or self.results.empty:
+        if self.results is None:
             self.results = self.dat.flowsheet.results
+        else:
+            if self.results.empty:
+                self.results = self.dat.flowsheet.results
 
         clipboard = QApplication.clipboard()
         s = str(clipboard.text())

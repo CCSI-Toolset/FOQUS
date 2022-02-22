@@ -925,7 +925,7 @@ class FlowsheetControl:
         gt = dat.flowsheet.runAsThread()
         assert isinstance(gt, Graph)
         terminate = False
-        while gt.isAlive():
+        while gt.is_alive():
             gt.join(10)
             status = db.consumer_status()
             if status == "terminate" or self._stop or self._check_job_terminate(jid):

@@ -50,7 +50,7 @@ jobs:
           black --check .
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    # needs: [code-formatting]
+    needs: [code-formatting]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false

@@ -45,9 +45,12 @@ try:
     import tensorflow as tf
 
     load = tf.keras.models.load_model
-except:
-    pass  # errors will be thrown if tensorflow is called but not installed,
-    #  otherwise no error should be thrown so passing is fine
+except ImportError:
+    # if TensorFlow is not available, create a proxy function that will raise
+    # an exception whenever code tries to use `load()` at runtime
+    def load(*args, **kwargs):
+        raise RuntimeError(f"`load()` was called with args={args},"
+                           "kwargs={kwargs} but `tensorflow` is not available")
 # pylint: enable=import-error
 
 
@@ -106,15 +109,33 @@ class pymodel_ml_ai(pymodel):
         for i in range(np.shape(self.model.inputs[0])[1]):
             try:
                 input_label = self.model.layers[1].input_labels[i]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute input_label, using default x"
+                    + str(i + 1) + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load " + "as expected using default attributes.")
                 input_label = "x" + str(i + 1)
             try:
                 input_min = self.model.layers[1].input_bounds[input_label][0]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute input_min, using default 0"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes.")
                 input_min = 0  # not necessarily a good default
             try:
                 input_max = self.model.layers[1].input_bounds[input_label][1]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute input_max, using default 1E5"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes.")
                 input_max = 1e5  # not necessarily a good default
 
             self.inputs[input_label] = NodeVars(
@@ -132,15 +153,33 @@ class pymodel_ml_ai(pymodel):
         for j in range(np.shape(self.model.outputs[0])[1]):
             try:
                 output_label = self.model.layers[1].output_labels[j]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute output_label, using default z"
+                    + str(j + 1) + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes.")
                 output_label = "z" + str(j + 1)
             try:
                 output_min = self.model.layers[1].output_bounds[output_label][0]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute output_min, using default 0"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes.")
                 output_min = 0  # not necessarily a good default
             try:
                 output_max = self.model.layers[1].output_bounds[output_label][1]
-            except:
+            except AttributeError:
+                logging.getLogger("foqus." + __name__).info(
+                    "Model has no attribute output_max, using default 1E5"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes.")
                 output_max = 1e5  # not necessarily a good default
 
             self.outputs[output_label] = NodeVars(
@@ -158,7 +197,13 @@ class pymodel_ml_ai(pymodel):
         # check if user passed a model for normalized data - FOQUS will automatically scale/un-scale
         try:  # if attribute exists, user has specified a model form
             self.normalized = self.model.layers[1].normalized
-        except:  # otherwise user did not pass a normalized model
+        except AttributeError:  # otherwise user did not pass a normalized model
+            logging.getLogger("foqus." + __name__).info(
+                "Model has no attribute normalized, using default False"
+                + ". If attribute should exist, check that "
+                + "Tensorflow Keras model was correctly saved with "
+                + "CustomLayer. Otherwise, this is not an error and model "
+                + "will load as expected using default attributes.")
             self.normalized = False
 
     def run(self):
@@ -604,9 +649,13 @@ class Node:
                         str(self.modelName): getattr(module, str(self.modelName))
                     },
                 )
-            except:  # try to load model without custom layer
+            except ImportError:  # try to load model without custom layer
+                logging.getLogger("foqus." + __name__).info(
+                    "Cannot detect CustomLayer object to import, FOQUS "
+                    + "will import model without custom attributes.")
                 self.model = load(str(self.modelName) + ".h5")
-            os.chdir(cwd)  # reset to original working directory
+            finally:
+                os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model)
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
@@ -1106,9 +1155,13 @@ class Node:
                         str(self.modelName): getattr(module, str(self.modelName))
                     },
                 )
-            except:  # try to load model without custom layer
+            except ImportError:  # try to load model without custom layer
+                logging.getLogger("foqus." + __name__).info(
+                    "Cannot detect CustomLayer object to import, FOQUS "
+                    + "will import model without custom attributes.")
                 self.model = load(str(self.modelName) + ".h5")
-            os.chdir(cwd)  # reset to original working directory
+            finally:
+                os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model)
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():

@@ -49,8 +49,12 @@ except ImportError:
     # if TensorFlow is not available, create a proxy function that will raise
     # an exception whenever code tries to use `load()` at runtime
     def load(*args, **kwargs):
-        raise RuntimeError(f"`load()` was called with args={args},"
-                           "kwargs={kwargs} but `tensorflow` is not available")
+        raise RuntimeError(
+            f"`load()` was called with args={args},"
+            "kwargs={kwargs} but `tensorflow` is not available"
+        )
+
+
 # pylint: enable=import-error
 
 
@@ -112,10 +116,13 @@ class pymodel_ml_ai(pymodel):
             except AttributeError:
                 logging.getLogger("foqus." + __name__).info(
                     "Model has no attribute input_label, using default x"
-                    + str(i + 1) + ". If attribute should exist, check that "
+                    + str(i + 1)
+                    + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load " + "as expected using default attributes.")
+                    + "will load "
+                    + "as expected using default attributes."
+                )
                 input_label = "x" + str(i + 1)
             try:
                 input_min = self.model.layers[1].input_bounds[input_label][0]
@@ -125,7 +132,8 @@ class pymodel_ml_ai(pymodel):
                     + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load as expected using default attributes.")
+                    + "will load as expected using default attributes."
+                )
                 input_min = 0  # not necessarily a good default
             try:
                 input_max = self.model.layers[1].input_bounds[input_label][1]
@@ -135,7 +143,8 @@ class pymodel_ml_ai(pymodel):
                     + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load as expected using default attributes.")
+                    + "will load as expected using default attributes."
+                )
                 input_max = 1e5  # not necessarily a good default
 
             self.inputs[input_label] = NodeVars(
@@ -156,10 +165,12 @@ class pymodel_ml_ai(pymodel):
             except AttributeError:
                 logging.getLogger("foqus." + __name__).info(
                     "Model has no attribute output_label, using default z"
-                    + str(j + 1) + ". If attribute should exist, check that "
+                    + str(j + 1)
+                    + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load as expected using default attributes.")
+                    + "will load as expected using default attributes."
+                )
                 output_label = "z" + str(j + 1)
             try:
                 output_min = self.model.layers[1].output_bounds[output_label][0]
@@ -169,7 +180,8 @@ class pymodel_ml_ai(pymodel):
                     + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load as expected using default attributes.")
+                    + "will load as expected using default attributes."
+                )
                 output_min = 0  # not necessarily a good default
             try:
                 output_max = self.model.layers[1].output_bounds[output_label][1]
@@ -179,7 +191,8 @@ class pymodel_ml_ai(pymodel):
                     + ". If attribute should exist, check that "
                     + "Tensorflow Keras model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
-                    + "will load as expected using default attributes.")
+                    + "will load as expected using default attributes."
+                )
                 output_max = 1e5  # not necessarily a good default
 
             self.outputs[output_label] = NodeVars(
@@ -203,7 +216,8 @@ class pymodel_ml_ai(pymodel):
                 + ". If attribute should exist, check that "
                 + "Tensorflow Keras model was correctly saved with "
                 + "CustomLayer. Otherwise, this is not an error and model "
-                + "will load as expected using default attributes.")
+                + "will load as expected using default attributes."
+            )
             self.normalized = False
 
     def run(self):
@@ -652,7 +666,8 @@ class Node:
             except ImportError:  # try to load model without custom layer
                 logging.getLogger("foqus." + __name__).info(
                     "Cannot detect CustomLayer object to import, FOQUS "
-                    + "will import model without custom attributes.")
+                    + "will import model without custom attributes."
+                )
                 self.model = load(str(self.modelName) + ".h5")
             finally:
                 os.chdir(cwd)  # reset to original working directory
@@ -1158,7 +1173,8 @@ class Node:
             except ImportError:  # try to load model without custom layer
                 logging.getLogger("foqus." + __name__).info(
                     "Cannot detect CustomLayer object to import, FOQUS "
-                    + "will import model without custom attributes.")
+                    + "will import model without custom attributes."
+                )
                 self.model = load(str(self.modelName) + ".h5")
             finally:
                 os.chdir(cwd)  # reset to original working directory

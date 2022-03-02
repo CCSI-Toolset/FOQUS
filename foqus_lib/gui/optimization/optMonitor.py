@@ -207,7 +207,7 @@ class optMonitor(_optMonitor, _optMonitorUI):
         if self.opt.updateGraph:
             self.opt.updateGraph = False
             self.updateGraph.emit()
-        if not self.opt.isAlive():
+        if not self.opt.is_alive():
             done = True
         while not self.opt.msgQueue.empty():
             msg = str(self.opt.msgQueue.get(False))

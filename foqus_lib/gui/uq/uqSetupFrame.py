@@ -199,7 +199,7 @@ class checkingThread(QtCore.QThread):
                     # get lock and copy status dict to keep it from
                     # changing while I am using it.
                     status = copy.copy(gt.status)
-                if not gt.isAlive():
+                if not gt.is_alive():
                     if gt.errorStat == 19:
                         raise Exception("Exception in graph thread (see log)")
                     numSuccessful = status["success"]
@@ -211,7 +211,7 @@ class checkingThread(QtCore.QThread):
                     numSuccessful = status["success"]
                     numUnfinished = status["unfinished"]
                     goagain = True
-                if numUnfinishedPrev != numUnfinished or not gt.isAlive():
+                if numUnfinishedPrev != numUnfinished or not gt.is_alive():
                     numUnfinishedPrev = numUnfinished
                     with gt.resLock:
                         for i in range(len(gt.res)):

@@ -470,7 +470,7 @@ class surrogateFrame(_surrogateFrame, _surrogateFrameUI):
         also stops the timer and resests the start/stop buttons.
         """
         done = False
-        if not self.pg.isAlive():
+        if not self.pg.is_alive():
             done = True
         while not self.pg.msgQueue.empty():
             msg = str(self.pg.msgQueue.get(False))

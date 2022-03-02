@@ -84,7 +84,7 @@ class foqusListener2(threading.Thread):
                         conn.send([1])
                 elif msg[0] == "saveValues":
                     self.gt.join(10)
-                    if self.gt.isAlive():
+                    if self.gt.is_alive():
                         # still waiting but continue so you have a
                         # chance to shutdown the listener if you want
                         conn.send([1, "Still Running"])

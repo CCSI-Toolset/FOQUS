@@ -381,6 +381,11 @@
                  <string>DMF Server</string>
                 </property>
                </item>
+			   <item>
+                <property name="text">
+                 <string>ML_AI</string>
+                </property>
+               </item>
               </widget>
              </item>
              <item>

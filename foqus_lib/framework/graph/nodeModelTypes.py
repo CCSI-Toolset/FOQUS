@@ -27,3 +27,4 @@ class nodeModelTypes:
     MODEL_TURBINE = 2
     MODEL_DMF_LITE = 3
     MODEL_DMF_SERV = 4
+    MODEL_ML_AI = 5

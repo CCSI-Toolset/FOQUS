@@ -1,3 +1,4 @@
+import contextlib
 import os
 from pathlib import Path
 import shutil
@@ -48,31 +49,46 @@ def psuade_path():
     return Path(_psuade_path).resolve()
 
 
-@pytest.fixture(scope="session", params=["UQ/Rosenbrock.foqus"])
+@pytest.fixture(scope="module", params=["UQ/Rosenbrock.foqus"])
 def flowsheet_session_file(examples_dir, request):
     return str(examples_dir / "test_files" / request.param)
 
 
 @pytest.fixture(
-    scope="session",
+    scope="module",
+    autouse=True,
 )
-def foqus_working_dir(qtbot_params):
-    # FIXME use CLI params
-    return Path("/tmp") / "foqus_working_dir"
+def foqus_working_dir(request) -> Path:
+    # FIXME get base dir from env var/CLI config
+    base_dir = Path("/tmp") / "foqus_working_dir"
+    test_module_name = request.node.name
+    d = base_dir / test_module_name
+    d.mkdir(parents=True, exist_ok=True)
+    return d
 
 
-@pytest.fixture(scope="session")
-def foqus_session(foqus_working_dir, psuade_path):
+@contextlib.contextmanager
+def setting_working_dir(dest: Path) -> Path:
     from foqus_lib.service.flowsheet import _set_working_dir
+
+    assert dest.is_dir()
+    initial_working_dir = Path(os.getcwd())
+    try:
+        _set_working_dir(dest)
+        yield dest
+    finally:
+        _set_working_dir(initial_working_dir)
+
+
+@pytest.fixture(scope="module")
+def foqus_session(foqus_working_dir, psuade_path):
     from foqus_lib.framework.session import session
 
-    _set_working_dir(foqus_working_dir)
-    # foqus_working_dir.mkdir(exist_ok=True, parents=True)
-    # reproducing what happens in foqus_lib.focus.main()
-    # os.chdir(foqus_working_dir)
-    session.makeWorkingDirStruct()
-    session.makeWorkingDirFiles()
+    with setting_working_dir(foqus_working_dir) as wdir:
+        session.makeWorkingDirStruct()
+        session.makeWorkingDirFiles()
 
-    dat = session.session(useCurrentWorkingDir=True)
-    dat.foqusSettings.psuade_path = str(psuade_path)
-    return dat
+        dat = session.session(useCurrentWorkingDir=True)
+        dat.foqusSettings.psuade_path = str(psuade_path)
+        yield dat
+    # TODO is there any cleanup to be done, considering that the directory will be changed?

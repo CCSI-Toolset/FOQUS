@@ -33,6 +33,7 @@ from foqus_lib.framework.graph.node import nodeModelTypes
 import foqus_lib.framework.optimizer.problem as oprob
 from foqus_lib.framework.sim.turbineConfiguration import *
 from foqus_lib.framework.plugins import pluginSearch
+from foqus_lib.framework.ml_ai_models import mlaiSearch
 from foqus_lib.framework.surrogate import surrogate
 from foqus_lib.framework.optimizer import problem
 from foqus_lib.framework.pymodel import pymodel
@@ -183,8 +184,10 @@ def makeWorkingDirStruct(wdir=None):
         createDir("temp")
         createDir("test")
         createDir("user_plugins")
+        createDir("user_ml_ai_models")
         createDir("ouu")
         open("user_plugins/__init__.py", "a").close()
+        open("user_ml_ai_models/__init__.py", "a").close()
     except:
         logging.getLogger("foqus." + __name__).exception(
             "Error creating working directory structure"
@@ -283,8 +286,9 @@ class session:
         )
         # Set up a blank FOQUS session
         self.loadPlugins()
+        self.loadMLAIModels()
         self.turbineChkFreq = 10  # frequency to check remote Turbine for
-        # resutls
+        # results
         self.resubMax = 0
         self.new()
 
@@ -362,10 +366,11 @@ class session:
         self.ID = time.strftime("Session_%y%m%d%H%M%S")  # session id
         self.archiveFolder = os.path.join(os.getcwd(), "%s_files" % self.ID)
         self.newArchiveItemsSinceLastSave = []
-        # add the pymodel plugin list to the flowsheet so node can
-        # make instances of pymodels to run.  the nodes don't have
+        # add the pymodel plugin and ml_ai_model lists to the flowsheet so
+        # the node make instances of pymodels to run.  the nodes don't have
         # access to the session object
         self.flowsheet.pymodels = self.pymodels
+        self.flowsheet.pymodels_ml_ai = self.pymodels_ml_ai
 
     def loadSettings(self):
         self.foqusSettings.load(self.settingUseCWD)
@@ -408,6 +413,24 @@ class session:
         )
         try:
             self.flowsheet.pymodels = self.pymodels
+        except:
+            pass
+
+    def reloadMLAIModels(self):
+        self.pymodels_ml_ai.getMLAIList()
+
+    def loadMLAIModels(self):
+        """
+        Search for ml_ai_models
+        """
+        self.pymodels_ml_ai = mlaiSearch.ml_ai_models(
+            pathList=[
+                os.path.join(os.getcwd(), "user_ml_ai_models"),
+                os.path.dirname(surrogate.__file__),
+            ]
+        )
+        try:
+            self.flowsheet.pymodels_ml_ai = self.pymodels_ml_ai
         except:
             pass
 

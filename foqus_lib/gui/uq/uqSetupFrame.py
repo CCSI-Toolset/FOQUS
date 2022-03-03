@@ -1013,7 +1013,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 else:
                     raise Exception("Invalid Run Mode")
             self.checkThread = checkingThread(row, self)
-            self.checkThread.runsFinishedSignal.connect(self.runsFinishedSignal)
+            self.checkThread.runsFinishedSignal.connect(self.runsFinishedSignal.emit)
             self.checkThread.start()
         elif sender.text() == "Stop":
             if self.dat.foqusSettings.runFlowsheetMethod == 1:
@@ -1128,7 +1128,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         dialog = AnalysisDialog(row + 1, sim, self)
 
         self._analysis_dialog = dialog
-        res = dialog.show()
+        res = dialog.open()
 
     def resizeColumns(self):
         self.simulationTable.resizeColumnsToContents()
@@ -1138,7 +1138,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("FOQUS Run Finished")
         msgBox.setText("%d of %d runs were successful!" % (numSuccessful, numSamples))
-        result = msgBox.exec_()
+        result = msgBox.open()
         self.refreshFilterData(updateResult=True)
         return result
 

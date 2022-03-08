@@ -3,7 +3,7 @@
 Install Python
 --------------
 
-Python version 3.6 up through 3.8 is required to run FOQUS.
+Python version 3.7 up through 3.9 is required to run FOQUS.
 
 We recommend using either the `Miniconda <https://docs.conda.io/en/latest/miniconda.html>`_ or
 `Anaconda <https://www.anaconda.com/download/>`_ Python distribution and package management
@@ -17,7 +17,7 @@ ability to create self-contained python environments without any need for admini
 privileges. These separate environments can have different set of packages, isolating version
 dependencies when working with multiple python projects.
 
-If you have a working version of Python 3.6 through 3.8, which you prefer over Anaconda, you can
+If you have a working version of Python 3.7 through 3.9, which you prefer over Anaconda, you can
 skip these steps.
 
 Anaconda or Miniconda Install and Setup

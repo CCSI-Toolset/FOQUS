@@ -15,7 +15,6 @@ black==21.5b2
 
 # pytest-qt-extras
 pytest-qt==4.0.*
-dataclasses;python_version<"3.7"
 python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8

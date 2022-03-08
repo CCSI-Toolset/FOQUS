@@ -23,10 +23,10 @@ jobs:
       fail-fast: false
       matrix:
         python-version:
-          - '3.6'
+          - '3.6'  # TODO remove once support for 3.6 is dropped entirely
           - '3.7'
           - '3.8'
-          # - '3.9'
+          - '3.9'
         os:
           - linux
           - win64

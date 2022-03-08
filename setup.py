@@ -61,6 +61,7 @@ dist = setup(
     maintainer=ver.maintainer,
     maintainer_email=ver.maintainer_email,
     url=ver.webpage,
+    python_requires=">=3.7,<=3.9",
     packages=find_packages(),
     py_modules=["pytest_qt_extras"],
     package_data={

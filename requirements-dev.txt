@@ -2,11 +2,11 @@
 
 # These will override requirements picked up from setup.py below:
 # pinning the pylint version to ensure reproducible behavior and defaults
-pylint==2.6.0
+pylint
 # also pinning the version for astroid (used by pylint to analyze the AST)
 # since there can be significant differences between (non-major) versions,
 # both in terms of behavior and performance
-astroid==2.4.2
+astroid
 pytest
 ### coverage
 coverage

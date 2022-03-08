@@ -50,6 +50,7 @@ jobs:
           - foqus-install-target: stable
             os: win64
             python-version: '3.8'
+            hotfix-command: pip install pywin32==225 && pip show pywin32
 
     steps: 
       - name: Set up Conda

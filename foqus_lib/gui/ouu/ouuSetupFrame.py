@@ -26,6 +26,9 @@ import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 
+from foqus_lib.plugins import PsuadePlugin
+psuade = PsuadePlugin.load_capture_error()
+
 if __name__ == "__main__":
     import imp
 
@@ -221,7 +224,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.input_table.init(self.model, InputPriorTable.OUU)
         self.setFixed_button.setEnabled(True)
         self.setX1_button.setEnabled(True)
-        self.setX1d_button.setEnabled(True)
+        if psuade is not None and psuade.nomad:
+            self.setX1d_button.setEnabled(True)
         self.setX2_button.setEnabled(True)
         self.setX3_button.setEnabled(True)
         self.setX4_button.setEnabled(True)
@@ -248,7 +252,8 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.input_table.init(self.model, InputPriorTable.OUU)
         self.setFixed_button.setEnabled(True)
         self.setX1_button.setEnabled(True)
-        self.setX1d_button.setEnabled(True)
+        if psuade is not None and psuade.nomad:
+            self.setX1d_button.setEnabled(True)
         self.setX2_button.setEnabled(True)
         self.setX3_button.setEnabled(True)
         self.setX4_button.setEnabled(True)

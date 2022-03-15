@@ -16,7 +16,8 @@
 __author__ = "ou3"
 
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-
+from foqus_lib.plugins import PsuadePlugin
+psuade = PsuadePlugin.load_capture_error()
 
 class OUUInputsTable(InputPriorTable):
     def __init__(self, parent=None):
@@ -24,8 +25,9 @@ class OUUInputsTable(InputPriorTable):
         self.typeItems = [
             "Fixed",
             "Opt: Primary Continuous (Z1)",
-            "Opt: Primary Discrete (Z1d)",
             "Opt: Recourse (Z2)",
             "UQ: Discrete (Z3)",
             "UQ: Continuous (Z4)",
         ]
+        if psuade is not None and psuade.nomad:
+            self.typeItems.insert(2, "Opt: Primary Discrete (Z1d)")

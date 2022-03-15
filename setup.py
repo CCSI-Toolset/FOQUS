@@ -100,7 +100,8 @@ dist = setup(
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.13",
+        "PyQt5==5.12.3; sys_platform == 'win32' and python_version >= '3.9'",
+        "PyQt5==5.13; sys_platform != 'win32' or python_version < '3.9'",
         # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues
         # (ImportError: DLL load failed while importing ...)
         # for more information see e.g. https://stackoverflow.com/a/62249872

@@ -1,6 +1,7 @@
 
 [MASTER]
-init-hook="import sys; sys.path.append('.pylint')"
+# https://github.com/PyCQA/pylint/issues/4577
+init-hook="import sys; sys.path.append('.pylint'); import astroid; astroid.context.InferenceContext.max_inferred = 500"
 load-plugins=foqus_transform
 extension-pkg-whitelist=PyQt5
 ignore-patterns=test_*,conftest,

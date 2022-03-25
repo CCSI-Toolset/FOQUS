@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>755</height>
+    <height>849</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -215,6 +215,9 @@ Z4 for continuous UQ inputs (characterized by PDFs)</string>
              </item>
              <item row="0" column="1">
               <widget class="QPushButton" name="setX1d_button">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="text">
                 <string>Discrete (Z1d)</string>
                </property>
@@ -969,8 +972,8 @@ Progress will be shown below. </string>
               <rect>
                <x>0</x>
                <y>0</y>
-               <width>514</width>
-               <height>170</height>
+               <width>98</width>
+               <height>28</height>
               </rect>
              </property>
              <layout class="QGridLayout" name="gridLayout_16"/>

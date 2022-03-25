@@ -24,7 +24,6 @@ class OUUInputsTable(InputPriorTable):
         self.typeItems = [
             "Fixed",
             "Opt: Primary Continuous (Z1)",
-            "Opt: Primary Discrete (Z1d)",
             "Opt: Recourse (Z2)",
             "UQ: Discrete (Z3)",
             "UQ: Continuous (Z4)",

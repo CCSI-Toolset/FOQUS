@@ -1,3 +1,13 @@
+'''
+Test module for FOQUS OUU Tutorial Example 1: `OUU with Discrete Uncertain Parameters Only`
+URL: https://foqus.readthedocs.io/en/stable/chapt_ouu/tutorial.html#example-1-ouu-with-discrete-uncertain-parameters-only
+
+To run the test:
+pytest -k test_ouu [--slowdown-wait=<time_in_ms>]
+
+Author: Devarshi Ghoshal <dghoshal@lbl.gov>
+'''
+
 import time
 import typing
 import os
@@ -13,20 +23,33 @@ from foqus_lib.gui.ouu import nodeToUQModel
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 
+from PyQt5.QtWidgets import QMessageBox
+
 
 @pytest.fixture(scope="class")
 def setup_frame_blank(main_window, request):
+    """
+    Sets up a blank OUU Frame.
+
+    Args:
+        main_window: FOQUS main GUI window. Instance of foqus_lib.gui.main.mainWindow.mainWindow.
+        request: pytest request.
+
+    Returns:
+        ouuSetupFrame: FOQUS OUU UI.
+    """
     main_window.ouuSetupAction.trigger()
     setup_frame: ouuSetupFrame = main_window.ouuSetupFrame
     request.cls.frame = setup_frame
     return setup_frame
+
 
 @pytest.mark.usefixtures("setup_frame_blank")
 class TestOUU():
     frame: ouuSetupFrame = ...
     ###############
     '''
-    simple test to check the very basic test case
+    Simple test to check the very basic test- launching the FOQUS main window.
     '''
     @pytest.fixture(scope="class")
     def launchWindow(self, qtbot):
@@ -38,22 +61,49 @@ class TestOUU():
 
     ################
     '''
-    Fixtures for comprehensive tests
+    Fixtures for comprehensive tests for OUU example 1.
     '''
-    # def __init__(self):
-    #     self.data = None
-    #     self.numInputs = 0
-    #     self.M3 = None
+    @pytest.fixture(scope="class")
+    def model_file(self):
+        model_file_name = os.path.join(os.path.dirname(__file__),
+                                       "../../../examples/tutorial_files/OUU/ouu_optdriver.in")
+        return model_file_name
 
     @pytest.fixture(scope="class")
-    def selectModel(self, qtbot):
+    def model_file_button_label(self):
+        label = "Load Model From File"
+        return label
+
+    @pytest.fixture(scope="class")
+    def ouu_variables(self):
+        ouu_vars = ["Opt: Primary Continuous (Z1)", "Opt: Recourse (Z2)", "UQ: Discrete (Z3)"]
+        # "Opt: Recourse (Z2)", "UQ: Discrete (Z3)", "UQ: Continuous (Z4)"
+        return ouu_vars
+
+    @pytest.fixture(scope="class")
+    def sample_file(self):
+        sample_file_name = os.path.join(os.path.dirname(__file__),
+                                        "../../../examples/tutorial_files/OUU/ex1_x3sample.smp")
+        return sample_file_name
+
+    @pytest.fixture(scope="class")
+    def exec_timeout(self):
+        timeout = 90_000
+        return timeout
+
+    @pytest.fixture(scope="class")
+    def selectModel(self, qtbot, model_file, model_file_button_label):
+        """
+        [Step-1] Select the model from an example file.
+
+        Args:
+            qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
+            model_file: (from fixture) location of the example model file.
+            model_file_button_label: (from fixture) label for the radio button for selecting model file.
+        """
         ouu_frame = self.frame
         qtbot.focused = ouu_frame
-        fname = os.path.join(
-            os.path.dirname(__file__),
-            "../../../examples/tutorial_files/OUU/ouu_optdriver.in",
-        )
-        fname = os.path.abspath(fname)
+        fname = os.path.abspath(model_file)
         ouu_frame.filesDir, _ = os.path.split(fname)
         ouu_frame.modelFile_edit.setText(fname)
         ouu_frame.model = LocalExecutionModule.readSampleFromPsuadeFile(fname).model
@@ -65,122 +115,132 @@ class TestOUU():
         ouu_frame.setX4_button.setEnabled(True)
         ouu_frame.initTabs()
         ouu_frame.setCounts()
-        
 
+        qtbot.click(radio_button=model_file_button_label)
+        
     @pytest.fixture(scope="class")
-    def setVariables(self, qtbot):
-        vars = ["Opt: Primary Continuous (Z1)", "Opt: Recourse (Z2)", "UQ: Discrete (Z3)"]
-        # "Opt: Recourse (Z2)", "UQ: Discrete (Z3)", "UQ: Continuous (Z4)"
+    def setVariables(self, qtbot, ouu_variables):
+        """
+        [Step-2] Set OUU variable types.
+
+        Args:
+            qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
+            ouu_variables: (from fixture) variable types from a dropdown list.
+        """
         with qtbot.focusing_on(table=any):
             rownum = 0
-            for i in range(len(vars)):
+            for i in range(len(ouu_variables)):
                 for _ in range(4):
                     qtbot.select_row(rownum)
-                    qtbot.using(column="Type").set_option(vars[i])
+                    qtbot.using(column="Type").set_option(ouu_variables[i])
                     rownum += 1
 
     @pytest.fixture(scope="class")
     def selectOptimizer(self, qtbot):
+        """
+        [Step-3] Select the optimizer for the test. It should be the default
+        optimizer BOBYQA for this test, will all the default settings.
+
+        Args:
+            qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
+        """
         qtbot.select_tab("Optimization Setup")
-        # with qtbot.focusing_on(group_box="Optimization Solver"):
-        #     combo = qtbot.locate(combo_box=any)
-        #     # optimizer = "Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)"
-        #     # qtbot.using(combo).set_option(vars[i])
-
-
+        with qtbot.focusing_on(group_box="Objective Function for Optimization Under Uncertainty (OUU)"):
+            qtbot.click(radio_button="Mean of G(Z1,Z2,Z3,Z4) with respect to Z3 and Z4")
 
     @pytest.fixture(scope="class")
-    def selectDiscreteRandomVars(self, qtbot):
+    def discreteVars(self, qtbot, sample_file):
+        """
+        [Step-4] Set up the discrete variables from a simple example file. 
+
+        Args:
+            qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
+            sample_file: simple input file from examples.
+
+        Returns:
+            [type]: Discrete random variables (Z3).
+        """
         ouu_frame = self.frame
         qtbot.select_tab("UQ Setup")
 
-        fname = os.path.join(
-            os.path.dirname(__file__),
-            "../../../examples/tutorial_files/OUU/ex1_x3sample.smp",
-        )
-
-        ouu_frame.filesDir, _ = os.path.split(fname)
+        ouu_frame.filesDir, _ = os.path.split(sample_file)
 
         data = LocalExecutionModule.readDataFromSimpleFile(
-                    fname, hasColumnNumbers=False)
+                    sample_file, hasColumnNumbers=False)
+
         data = data[0]
 
-        numInputs = data.shape[1]
-        M3 = len(ouu_frame.input_table.getUQDiscreteVariables()[0])
-        # print(data)
+        with qtbot.focusing_on(group_box=" Discrete Random Variables (Z3)"):
+            ouu_frame.compressSamples_chk.setEnabled(True)
+            ouu_frame.loadTable(ouu_frame.z3_table, data)
 
-        # self.data, self.numInputs, self.M3 = data, numInputs, M3
-
-        # ouu_frame.loadTable(ouu_frame.z3_table, data)
-
-        if numInputs != M3:
-            # have to be an assertion
-            pass
-        else:
-            # ouu_frame.compressSamples_chk.setEnabled(True)
-            with qtbot.focusing_on(group_box=" Discrete Random Variables (Z3)"):
-                ouu_frame.loadTable(ouu_frame.z3_table, data)
-
+        return data
 
     @pytest.fixture(scope="class")
-    def loadRandomVariables(self):
-        ouu_frame = self.frame
-        with qtbot.focusing_on(table=ouu_frame.z3_table):
-            ouu_frame.loadTable(ouu_frame.z3_table, self.data)
+    def launchTest(self, qtbot, exec_timeout):
+        """
+        [Step-5] Final step to run the optimizer and plot the graph. 
 
-
-    @pytest.fixture(scope="class")
-    def launchTest(self, qtbot):
+        Args:
+            qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
+            exec_timeout: timeout to run the optimizer and finish executing the workflow.
+        """
         qtbot.select_tab("Launch/Progress")
 
-        def run_and_wait():
+        with qtbot.waiting_for_modal(timeout=exec_timeout):
                 qtbot.click(button="Run OUU")
-                qtbot.wait_until_called(self.frame.unfreeze)
-
-        run_and_wait()
-        # qtbot.wait_until(has_dialog, timeout=10_000)
-        # run_button = qtbot.locate(button="Run OUU")
-        # qtbot.click(run_button)
-
-        # with qtbot.focusing_on(
-        #     group_box="Progress"
-        # ), qtbot.taking_screenshots():
-        #     # ouu_frame = self.frame
-            
-        # with qtbot.select_tab("Launch/Progress"), qtbot.taking_screenshots():
-        #     qtbot.click(button="Run OUU")
 
 
     ###################
     '''
     Comprehensive tests for OUU tutorial 1
     '''
-    def testModel(self, qtbot, selectModel, setVariables, selectOptimizer, selectDiscreteRandomVars, launchTest):
+    @pytest.mark.usefixtures("selectModel")
+    def testModelSelection(self):
+        """
+        [Test-1] Test that the correct model input file is selected and
+                 the radio button is selected, else the test fails. 
+        """
+        model_file = self.frame.modelFile_edit.text()
+        assert os.path.basename(model_file) == "ouu_optdriver.in"
+        assert self.frame.modelFile_radio.isChecked()
+
+    @pytest.mark.usefixtures("setVariables")
+    def testVariables(self):
+        """
+        [Test-2] Test that the correct variables - Z1, Z2, Z3 - are set. 
+        """
+        fixed_text = self.frame.fixedCount_static.text()
+        x1_text = self.frame.x1Count_static.text()
+        x2_text = self.frame.x2Count_static.text()
+        x3_text = self.frame.x3Count_static.text()
+        x4_text = self.frame.x4Count_static.text()
+        assert (fixed_text == "# Fixed: 0" and
+                x1_text == "# Primary Opt Vars: 4" and
+                x2_text == "# Recourse Opt Vars: 4" and
+                x3_text == "# Discrete RVs: 4" and
+                x4_text == "# Continuous RVs: 0")
+
+    @pytest.mark.usefixtures("selectOptimizer")
+    def testOptimizer(self):
+        """
+        [Test-3] Test that BOBYQA is selected as the optimizer. 
+        """
+        assert self.frame.mean_radio.isChecked()
+        assert self.frame.primarySolver_combo.currentText() == "BOBYQA"
+        assert self.frame.secondarySolver_combo.currentText() == "Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)"
+
+    def testRandomVars(self, discreteVars):
+        """
+        [Test-4] Test that the discrete variables are selected appropriately.
+        """
+        n_inps = discreteVars.shape[1]
+        n_vars = len(self.frame.input_table.getUQDiscreteVariables()[0])
+        assert n_inps == n_vars
+
+    @pytest.mark.usefixtures("launchTest")
+    def testRunOUU(self):
+        """
+        [Test-5] Test that the optimizer launches and finishes.
+        """
         assert True
-
-    # @pytest.mark.usefixtures("selectDiscreteRandomVars")
-    # def testRandomVarSetting(self):
-    #     assert True
-    #     # assert self.numInputs == self.M3
-    #     # with qtbot.searching_within(group_box=" Discrete Random Variables (Z3)"):
-    #     #     var_table = qtbot.locate_widget(table=True)
-    #     #     assert var_table.rowCount() > 0
-
-    # def testRandomVarSetting(self, qtbot, selectDiscreteRandomVars):
-    #     assert self.numInputs == self.M3
-    #     with qtbot.searching_within(group_box="Discrete Random Variables (Z3)"):
-    #         var_table = qtbot.locate_widget(table=True)
-    #         assert var_table.rowCount() > 0
-
-    # @pytest.mark.usefixtures("loadRandomVariables")
-    # def testRandomVarTable(self, qtbot):
-    #     with qtbot.searching_within(group_box="Discrete Random Variables (Z3)"):
-    #         var_table = qtbot.locate_widget(table=True)
-    #         assert var_table.rowCount() > 0
-
-    # @pytest.mark.usefixtures("launchTest")
-    # def testRun(self, qtbot):
-    #     assert True
-    #     # with qtbot.searching_within(group_box="Best So Far"):
-    #     #     sol_table = qtbot.locate_widget(table=True)
-    #     #     assert sol_table.rowCount() > 0

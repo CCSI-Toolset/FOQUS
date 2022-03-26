@@ -94,7 +94,10 @@ class TestOUU():
     @pytest.fixture(scope="class")
     def selectModel(self, qtbot, model_file, model_file_button_label):
         """
-        [Step-1] Select the model from an example file.
+        [Step-1] Select the model from an example file. 
+        TODO: The code below needs to be called through a function in ouuSetupFrame.py.
+              Currently, this is too tightly integrated and can not be reused correctly
+              for the test. Hence, copied and used here directly. 
 
         Args:
             qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.

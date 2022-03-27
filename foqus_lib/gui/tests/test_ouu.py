@@ -1,4 +1,4 @@
-'''
+"""
 Test module for FOQUS OUU Tutorial Example 1: `OUU with Discrete Uncertain Parameters Only`
 URL: https://foqus.readthedocs.io/en/stable/chapt_ouu/tutorial.html#example-1-ouu-with-discrete-uncertain-parameters-only
 
@@ -6,7 +6,7 @@ To run the test:
 pytest -k test_ouu [--slowdown-wait=<time_in_ms>]
 
 Author: Devarshi Ghoshal <dghoshal@lbl.gov>
-'''
+"""
 
 import time
 import typing
@@ -45,28 +45,32 @@ def setup_frame_blank(main_window, request):
 
 
 @pytest.mark.usefixtures("setup_frame_blank")
-class TestOUU():
+class TestOUU:
     frame: ouuSetupFrame = ...
     ###############
-    '''
+    """
     Simple test to check the very basic test- launching the FOQUS main window.
-    '''
+    """
+
     @pytest.fixture(scope="class")
     def launchWindow(self, qtbot):
         qtbot.focused = self.frame
-        
+
     @pytest.mark.usefixtures("launchWindow")
     def test_window(self):
         assert True
 
     ################
-    '''
+    """
     Fixtures for comprehensive tests for OUU example 1.
-    '''
+    """
+
     @pytest.fixture(scope="class")
     def model_file(self):
-        model_file_name = os.path.join(os.path.dirname(__file__),
-                                       "../../../examples/tutorial_files/OUU/ouu_optdriver.in")
+        model_file_name = os.path.join(
+            os.path.dirname(__file__),
+            "../../../examples/tutorial_files/OUU/ouu_optdriver.in",
+        )
         return model_file_name
 
     @pytest.fixture(scope="class")
@@ -76,14 +80,20 @@ class TestOUU():
 
     @pytest.fixture(scope="class")
     def ouu_variables(self):
-        ouu_vars = ["Opt: Primary Continuous (Z1)", "Opt: Recourse (Z2)", "UQ: Discrete (Z3)"]
+        ouu_vars = [
+            "Opt: Primary Continuous (Z1)",
+            "Opt: Recourse (Z2)",
+            "UQ: Discrete (Z3)",
+        ]
         # "Opt: Recourse (Z2)", "UQ: Discrete (Z3)", "UQ: Continuous (Z4)"
         return ouu_vars
 
     @pytest.fixture(scope="class")
     def sample_file(self):
-        sample_file_name = os.path.join(os.path.dirname(__file__),
-                                        "../../../examples/tutorial_files/OUU/ex1_x3sample.smp")
+        sample_file_name = os.path.join(
+            os.path.dirname(__file__),
+            "../../../examples/tutorial_files/OUU/ex1_x3sample.smp",
+        )
         return sample_file_name
 
     @pytest.fixture(scope="class")
@@ -94,10 +104,10 @@ class TestOUU():
     @pytest.fixture(scope="class")
     def selectModel(self, qtbot, model_file, model_file_button_label):
         """
-        [Step-1] Select the model from an example file. 
+        [Step-1] Select the model from an example file.
         TODO: The code below needs to be called through a function in ouuSetupFrame.py.
               Currently, this is too tightly integrated and can not be reused correctly
-              for the test. Hence, copied and used here directly. 
+              for the test. Hence, copied and used here directly.
 
         Args:
             qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
@@ -120,7 +130,7 @@ class TestOUU():
         ouu_frame.setCounts()
 
         qtbot.click(radio_button=model_file_button_label)
-        
+
     @pytest.fixture(scope="class")
     def setVariables(self, qtbot, ouu_variables):
         """
@@ -148,13 +158,15 @@ class TestOUU():
             qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
         """
         qtbot.select_tab("Optimization Setup")
-        with qtbot.focusing_on(group_box="Objective Function for Optimization Under Uncertainty (OUU)"):
+        with qtbot.focusing_on(
+            group_box="Objective Function for Optimization Under Uncertainty (OUU)"
+        ):
             qtbot.click(radio_button="Mean of G(Z1,Z2,Z3,Z4) with respect to Z3 and Z4")
 
     @pytest.fixture(scope="class")
     def discreteVars(self, qtbot, sample_file):
         """
-        [Step-4] Set up the discrete variables from a simple example file. 
+        [Step-4] Set up the discrete variables from a simple example file.
 
         Args:
             qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
@@ -169,7 +181,8 @@ class TestOUU():
         ouu_frame.filesDir, _ = os.path.split(sample_file)
 
         data = LocalExecutionModule.readDataFromSimpleFile(
-                    sample_file, hasColumnNumbers=False)
+            sample_file, hasColumnNumbers=False
+        )
 
         data = data[0]
 
@@ -182,7 +195,7 @@ class TestOUU():
     @pytest.fixture(scope="class")
     def launchTest(self, qtbot, exec_timeout):
         """
-        [Step-5] Final step to run the optimizer and plot the graph. 
+        [Step-5] Final step to run the optimizer and plot the graph.
 
         Args:
             qtbot: pytest_qt_extras QtBot to test/interact with FOQUS GUI.
@@ -191,18 +204,18 @@ class TestOUU():
         qtbot.select_tab("Launch/Progress")
 
         with qtbot.waiting_for_modal(timeout=exec_timeout):
-                qtbot.click(button="Run OUU")
-
+            qtbot.click(button="Run OUU")
 
     ###################
-    '''
+    """
     Comprehensive tests for OUU tutorial 1
-    '''
+    """
+
     @pytest.mark.usefixtures("selectModel")
     def testModelSelection(self):
         """
         [Test-1] Test that the correct model input file is selected and
-                 the radio button is selected, else the test fails. 
+                 the radio button is selected, else the test fails.
         """
         model_file = self.frame.modelFile_edit.text()
         assert os.path.basename(model_file) == "ouu_optdriver.in"
@@ -211,27 +224,32 @@ class TestOUU():
     @pytest.mark.usefixtures("setVariables")
     def testVariables(self):
         """
-        [Test-2] Test that the correct variables - Z1, Z2, Z3 - are set. 
+        [Test-2] Test that the correct variables - Z1, Z2, Z3 - are set.
         """
         fixed_text = self.frame.fixedCount_static.text()
         x1_text = self.frame.x1Count_static.text()
         x2_text = self.frame.x2Count_static.text()
         x3_text = self.frame.x3Count_static.text()
         x4_text = self.frame.x4Count_static.text()
-        assert (fixed_text == "# Fixed: 0" and
-                x1_text == "# Primary Opt Vars: 4" and
-                x2_text == "# Recourse Opt Vars: 4" and
-                x3_text == "# Discrete RVs: 4" and
-                x4_text == "# Continuous RVs: 0")
+        assert (
+            fixed_text == "# Fixed: 0"
+            and x1_text == "# Primary Opt Vars: 4"
+            and x2_text == "# Recourse Opt Vars: 4"
+            and x3_text == "# Discrete RVs: 4"
+            and x4_text == "# Continuous RVs: 0"
+        )
 
     @pytest.mark.usefixtures("selectOptimizer")
     def testOptimizer(self):
         """
-        [Test-3] Test that BOBYQA is selected as the optimizer. 
+        [Test-3] Test that BOBYQA is selected as the optimizer.
         """
         assert self.frame.mean_radio.isChecked()
         assert self.frame.primarySolver_combo.currentText() == "BOBYQA"
-        assert self.frame.secondarySolver_combo.currentText() == "Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)"
+        assert (
+            self.frame.secondarySolver_combo.currentText()
+            == "Use model as optimizer: min_Z2 G(Z1,Z2,Z3,Z4)"
+        )
 
     def testRandomVars(self, discreteVars):
         """

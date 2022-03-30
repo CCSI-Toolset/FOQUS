@@ -23,7 +23,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.13.0dev0"
+default_version = "3.13.0rc0"
 
 try:
     version = (

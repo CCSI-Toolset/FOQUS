@@ -43,7 +43,7 @@ jobs:
         # so we extract the relevant line and pass it to a simple `pip install`
         run: |
           # we store the version
-          black_requirement="$(grep 'black==' requirements-dev.txt)"
+          black_requirement="$(grep '^black.*$' requirements-dev.txt)"
           pip --no-cache-dir install --progress-bar off "$black_requirement"
       - name: Run Black to verify that the committed code is formatted
         run: |

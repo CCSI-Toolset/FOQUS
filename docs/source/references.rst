@@ -40,3 +40,7 @@ E. Jones, T. Oliphant, P. Peterson, et al., "Scipy: Open source scientiﬁc tool
 .. _Bhat_2015:
 
 K. Bhat, B. Sherman, K. Ajayi, B. Ng, J. Eslick, J. Ou, and J.Kress, "Solventﬁt: A calibration tool for solvent-based CO2 capture models," in 2015 CCSI Industry Advisory Board (IAB) Program Review Meeting, (Reston, VA), September 2015.
+
+.. _Wu_2020:
+
+K. Wu, F. Chollet, "Serialization and saving." https://keras.io/guides/serialization_and_saving/, April 2020.

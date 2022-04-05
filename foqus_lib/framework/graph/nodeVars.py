@@ -533,8 +533,8 @@ class NodeVars(object):
             vmax = value
         if vdflt is None:
             vdflt = value
-        self.min = vmin  # maximum value
-        self.max = vmax  # minimum value
+        self.min = vmin  # minimum value
+        self.max = vmax  # maximum value
         self.default = vdflt  # default value
         self.unit = unit  # units of measure
         self.set = vst  # variable set name user or sinter so I know if

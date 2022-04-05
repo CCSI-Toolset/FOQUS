@@ -421,11 +421,14 @@ class InferenceDialog(_InferenceDialog, _InferenceDialogUI):
             expectedCols = mcmcNumDesign + 2 * self.getNumObservedOutputs()
             if numCols != expectedCols:
                 showMessage = True
-                message = "Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)" % (
-                    numCols,
-                    expectedCols,
-                    mcmcNumDesign,
-                    self.getNumObservedOutputs(),
+                message = (
+                    "Number of columns in file (%d) does not match expected (%d for %d design values and average and std dev columns for %d observed outputs)"
+                    % (
+                        numCols,
+                        expectedCols,
+                        mcmcNumDesign,
+                        self.getNumObservedOutputs(),
+                    )
                 )
         else:
             numDesign = designData.shape[1]

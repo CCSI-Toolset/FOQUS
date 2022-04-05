@@ -66,7 +66,7 @@ def test_add_result_single():
         "session": "9f4def1c-d033-4761-9e8d-7ae979d230ae",
         "turbineMessages": {},
         "graphError": -3,
-        "Id": u"08e6bf2d-e6e2-4e75-8ce2-8e86a6a0db83",
+        "Id": "08e6bf2d-e6e2-4e75-8ce2-8e86a6a0db83",
     }
     obj.add_result(
         set_name="Single_runs", result_name="single_{}".format(0), time=None, sd=sd

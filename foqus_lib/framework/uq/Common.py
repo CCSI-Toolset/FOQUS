@@ -66,7 +66,6 @@ class Common(obj):
                 )
                 if out is not None:
                     msgBox.setDetailedText(out)
-                msgBox.exec_()
 
     @staticmethod
     def getPsuadePath():  ### OBSOLETE in this release

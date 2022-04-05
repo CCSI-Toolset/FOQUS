@@ -24,16 +24,40 @@ import os
 import time
 import json
 import math
+import numpy as np
 import subprocess
 import logging
 import traceback
 import re
+from foqus_lib.framework.pymodel.pymodel import *
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 from foqus_lib.framework.at_dict.at_dict import AtDict
+from PyQt5.QtWidgets import QMessageBox
+from importlib import import_module
+
+_logger = logging.getLogger("foqus." + __name__)
+
+# pylint: disable=import-error
+try:
+    # tensorflow should be installed, but is not required for non ML/AI models
+    import tensorflow as tf
+
+    load = tf.keras.models.load_model
+except ImportError:
+    # if TensorFlow is not available, create a proxy function that will raise
+    # an exception whenever code tries to use `load()` at runtime
+    def load(*args, **kwargs):
+        raise ModuleNotFoundError(
+            f"`load()` was called with args={args},"
+            "kwargs={kwargs} but `tensorflow` is not available"
+        )
+
+
+# pylint: enable=import-error
 
 
 class NodeOptionSets:
@@ -41,7 +65,8 @@ class NodeOptionSets:
     NODE_OPTIONS = 1
     TURBINE_OPTIONS = 2
     SINTER_OPTIONS = 3
-    PLUGIN_OPTONS = 4
+    PLUGIN_OPTIONS = 4
+    ML_AI_OPTIONS = 5
 
 
 class PyCodeInterupt(Exception):
@@ -78,6 +103,149 @@ class NodeEx(foqusException):
         self.codeString[27] = "Can't read variable in results (see log)"
         self.codeString[50] = "Node script interupt exception"
         self.codeString[61] = "Unknow type string"
+
+
+class pymodel_ml_ai(pymodel):
+    def __init__(self, model):
+        pymodel.__init__(self)
+
+        # attempt to retrieve required information from loaded model, and set defaults otherwise
+        self.model = model
+
+        for i in range(np.shape(self.model.inputs[0])[1]):
+            try:
+                input_label = self.model.layers[1].input_labels[i]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute input_label, using default x"
+                    + str(i + 1)
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load "
+                    + "as expected using default attributes."
+                )
+                input_label = "x" + str(i + 1)
+            try:
+                input_min = self.model.layers[1].input_bounds[input_label][0]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute input_min, using default 0"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes."
+                )
+                input_min = 0  # not necessarily a good default
+            try:
+                input_max = self.model.layers[1].input_bounds[input_label][1]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute input_max, using default 1E5"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes."
+                )
+                input_max = 1e5  # not necessarily a good default
+
+            self.inputs[input_label] = NodeVars(
+                value=input_min,
+                vmin=input_min,
+                vmax=input_max,
+                vdflt=0.0,
+                unit="",
+                vst="pymodel",
+                vdesc="input var " + str(i + 1),
+                tags=[],
+                dtype=float,
+            )
+
+        for j in range(np.shape(self.model.outputs[0])[1]):
+            try:
+                output_label = self.model.layers[1].output_labels[j]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute output_label, using default z"
+                    + str(j + 1)
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes."
+                )
+                output_label = "z" + str(j + 1)
+            try:
+                output_min = self.model.layers[1].output_bounds[output_label][0]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute output_min, using default 0"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes."
+                )
+                output_min = 0  # not necessarily a good default
+            try:
+                output_max = self.model.layers[1].output_bounds[output_label][1]
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute output_max, using default 1E5"
+                    + ". If attribute should exist, check that "
+                    + "Tensorflow Keras model was correctly saved with "
+                    + "CustomLayer. Otherwise, this is not an error and model "
+                    + "will load as expected using default attributes."
+                )
+                output_max = 1e5  # not necessarily a good default
+
+            self.outputs[output_label] = NodeVars(
+                value=output_min,
+                vmin=output_min,
+                vmax=output_max,
+                vdflt=0.0,
+                unit="",
+                vst="pymodel",
+                vdesc="output var " + str(j + 1),
+                tags=[],
+                dtype=float,
+            )
+
+        # check if user passed a model for normalized data - FOQUS will automatically scale/un-scale
+        try:  # if attribute exists, user has specified a model form
+            self.normalized = self.model.layers[1].normalized
+        except AttributeError:  # otherwise user did not pass a normalized model
+            _logger.info(
+                "Model has no attribute normalized, using default False"
+                + ". If attribute should exist, check that "
+                + "Tensorflow Keras model was correctly saved with "
+                + "CustomLayer. Otherwise, this is not an error and model "
+                + "will load as expected using default attributes."
+            )
+            self.normalized = False
+
+    def run(self):
+        import numpy as np
+
+        if self.normalized is True:  # normalize inputs
+            inputs = [
+                (self.inputs[i].value - self.inputs[i].min)
+                / (self.inputs[i].max - self.inputs[i].min)
+                for i in self.inputs
+            ]
+        else:  # take actual input values
+            inputs = [self.inputs[i].value for i in self.inputs]
+        print(inputs)
+        # set output values to be generated from NN surrogate
+        outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
+        outidx = 0
+        for j in self.outputs:
+            if self.normalized is True:  # un-normalize outputs
+                self.outputs[j].value = (
+                    outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
+                    + self.outputs[j].min
+                )
+            else:
+                self.outputs[j].value = outputs[outidx]
+            outidx += 1
 
 
 class Node:
@@ -469,7 +637,7 @@ class Node:
                         name,
                     )
 
-            # Add an extra output varialbe for simulation status
+            # Add an extra output variable for simulation status
             # I think this comes out of all simulation run through
             # SimSinter, but its not in the sinter config file.
             self.gr.output[self.name]["status"] = NodeVars(
@@ -485,6 +653,31 @@ class Node:
                         desc=item["description"],
                         optSet=NodeOptionSets.SINTER_OPTIONS,
                     )
+        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+            # link to pymodel class for ml/ai models
+            cwd = os.getcwd()
+            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            try:  # see if custom layer script exists
+                module = import_module(str(self.modelName))  # contains CustomLayer
+                self.model = load(
+                    str(self.modelName) + ".h5",
+                    custom_objects={
+                        str(self.modelName): getattr(module, str(self.modelName))
+                    },
+                )
+            except ImportError:  # try to load model without custom layer
+                _logger.info(
+                    "Cannot detect CustomLayer object to import, FOQUS "
+                    + "will import model without custom attributes."
+                )
+                self.model = load(str(self.modelName) + ".h5")
+            finally:
+                os.chdir(cwd)  # reset to original working directory
+            inst = pymodel_ml_ai(self.model)
+            for vkey, v in inst.inputs.items():
+                self.gr.input[self.name][vkey] = v
+            for vkey, v in inst.outputs.items():
+                self.gr.output[self.name][vkey] = v
 
     def upadteSCDefaults(self, outfile=None):
         if outfile is None:
@@ -569,12 +762,12 @@ class Node:
             self.runPymodelPlugin()
         elif self.modelType == nodeModelTypes.MODEL_TURBINE:
             self.runTurbineCalc(retry=self.options["Retry"].value)
+        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+            self.runPymodelMLAI()
         else:
             # This shouldn't happen from the GUI there should
             # be no way to select an unknown model type.
-            logging.getLogger("foqus." + __name__).error(
-                "unknown run type: " + str(self.modelType)
-            )
+            _logger.error("unknown run type: " + str(self.modelType))
             self.calcError = 9
 
     def getValues(self):
@@ -650,22 +843,18 @@ class Node:
                                 idx
                             ]["value"]
         except PyCodeInterupt as e:
-            logging.getLogger("foqus." + __name__).error(
-                "Node script interupt: " + str(e)
-            )
+            _logger.error("Node script interupt: " + str(e))
             if self.calcError == -1:
                 # if no error code set go with 50
                 # otherwise the sim would appear to be successful
                 self.calcError = 50
         except NpCodeEx as e:
-            logging.getLogger("foqus." + __name__).exception(
+            _logger.exception(
                 "Error in node python code: {0}, {1}".format(e.code, e.msg)
             )
             self.calcError = e.code
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception(
-                "Error in node python code"
-            )
+            _logger.exception("Error in node python code")
             self.calcError = 21
 
     def generateInputJSON(self):
@@ -710,7 +899,7 @@ class Node:
             if var.optSet == NodeOptionSets.SINTER_OPTIONS:
                 inputSetL1["Input"][vkey] = var.value
         s = json.dumps(runList, sort_keys=True, indent=2)
-        logging.getLogger("foqus." + __name__).debug("Generated Job JSON:\n" + s)
+        _logger.debug("Generated Job JSON:\n" + s)
         return s
 
     def runTurbineCalc(self, retry=False):
@@ -741,7 +930,7 @@ class Node:
             configProfile.updateSettings()
         else:
             configProfile.updateSettings(altConfig=altTurb)
-            logging.getLogger("foqus." + __name__).debug(
+            _logger.debug(
                 "Alternate Turbine configuration: {0} for node: {1}".format(
                     altTurb, self.name
                 )
@@ -753,7 +942,7 @@ class Node:
         if localRun and maxConsumerUse > 0:
             count = configProfile.consumerCount(self.name)
             if count >= maxConsumerUse:
-                logging.getLogger("foqus." + __name__).debug(
+                _logger.debug(
                     "Max consumer use exceeded restarting consumer {0}".format(
                         self.name
                     )
@@ -772,7 +961,7 @@ class Node:
                 5, 30, 1, configProfile.createJobsInSession, sid, inputData
             )[0]
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception("Failed create job")
+            _logger.exception("Failed create job")
             self.calcError = 5
             configProfile.updateSettings()
             return
@@ -780,15 +969,11 @@ class Node:
         try:
             configProfile.retryFunction(5, 30, 1, configProfile.startSession, sid)
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception(
-                "Failed start job: {0}".format(jobID)
-            )
+            _logger.exception("Failed start job: {0}".format(jobID))
             self.calcError = 8
             configProfile.updateSettings()
             return
-        logging.getLogger("foqus." + __name__).debug(
-            "Started Job: {0} Turbin SID: {1}".format(jobID, sid)
-        )
+        _logger.debug("Started Job: {0} Turbin SID: {1}".format(jobID, sid))
         # Monitor jobs, there are some timeouts if jobs fail to finish
         # in an allowed amount of time they are terminated
         try:
@@ -807,9 +992,7 @@ class Node:
                 app=app,
                 checkConsumer=localRun,
             )
-            logging.getLogger("foqus." + __name__).debug(
-                "Job finished successfully: " + str(jobID)
-            )
+            _logger.debug("Job finished successfully: " + str(jobID))
         except TurbineInterfaceEx as e:
             res = configProfile.res
             if e.code == 351:
@@ -824,38 +1007,34 @@ class Node:
                 self.calcError = 11
             else:
                 self.calcError = 7
-            logging.getLogger("foqus." + __name__).error(
+            _logger.error(
                 "Error while motoring job: {0}, Ex: {1}".format(str(jobID), str(e))
             )
         except Exception as e:
             self.calcError = 10
             res = configProfile.res
-            logging.getLogger("foqus." + __name__).warning(
+            _logger.warning(
                 "Error while motoring job: {0}, Ex: {1}".format(str(jobID), str(e))
             )
         # if error code is not -1 some other error and sim not successful
         readResults = True
         if self.calcError == -1:
-            logging.getLogger("foqus." + __name__).info(
-                "Job " + str(jobID) + " Finished Successfully"
-            )
+            _logger.info("Job " + str(jobID) + " Finished Successfully")
         else:
             # The job failed, don't know why but I'll restart the
             # consumer so that the next run will be less likely to fail.
             if localRun and self.options["Reset on Fail"].value:
-                logging.getLogger("foqus." + __name__).info(
+                _logger.info(
                     "Job failed, stopping consumer for {0}".format(self.modelName)
                 )
                 self.resetModel()
             elif localRun:
-                logging.getLogger("foqus." + __name__).info(
+                _logger.info(
                     "Job failed, will not stop consumer for {0}".format(self.modelName)
                 )
             # Possibly retry the simulation if it failed
             if retry and not self.gr.stop.isSet():
-                logging.getLogger("foqus." + __name__).info(
-                    "Retrying Failed Job " + str(jobID)
-                )
+                _logger.info("Retrying Failed Job " + str(jobID))
                 # rerun this function
                 # reset error code so doesn't automatically think
                 # the retry fails.
@@ -865,13 +1044,9 @@ class Node:
                 # will be read in the retry call if successful
                 readResults = False
             else:
-                logging.getLogger("foqus." + __name__).info(
-                    "Job " + str(jobID) + " Failed will not retry"
-                )
+                _logger.info("Job " + str(jobID) + " Failed will not retry")
         # Even if there was an error try to read output
-        logging.getLogger("foqus." + __name__).debug(
-            "Job " + str(jobID) + " Results:\n" + json.dumps(res)
-        )
+        _logger.debug("Job " + str(jobID) + " Results:\n" + json.dumps(res))
         if res is not None:
             m = res.get("Messages", "")
             if m is None or m == "":
@@ -896,10 +1071,8 @@ class Node:
                     # doesn't match the outputs in the node that's
                     # okay may have deleted a variable.  Simulation may
                     # also have failed before producing any output.
-                    logging.getLogger("foqus." + __name__).exception()
-            logging.getLogger("foqus." + __name__).debug(
-                "Outputs: {0}\n".format("\n".join(outputlog))
-            )
+                    _logger.exception()
+            _logger.debug("Outputs: {0}\n".format("\n".join(outputlog)))
         # reset the turbine config back to whatever is in the settings
         # in case an alternative config was used.
         configProfile.updateSettings()
@@ -925,7 +1098,7 @@ class Node:
                 if self.gr.turbConfig.sessionExists(self.turbSession):
                     return self.turbSession
             except Exception as e:
-                logging.getLogger("foqus." + __name__).exception(
+                _logger.exception(
                     "Failed to check for existence of session while"
                     " creating session, Exception: "
                 )
@@ -934,9 +1107,7 @@ class Node:
         try:
             self.turbSession = self.gr.turbConfig.createSession()
         except Exception as e:
-            logging.getLogger("foqus." + __name__).exception(
-                "Failed to create a new session."
-            )
+            _logger.exception("Failed to create a new session.")
             self.turbSession = 0
             return 0
         return self.turbSession
@@ -956,6 +1127,44 @@ class Node:
         try:
             self.gr.turbConfig.killSession(sid)
         except Exception as e:
-            logging.getLogger("foqus." + __name__).error(
+            _logger.error(
                 "Failed to kill session sid: {0} Exception: {1}".format(sid, str(e))
             )
+
+    def runPymodelMLAI(self):
+        """
+        Runs a Neural Network machine learning/artificial intelligence model.
+        """
+        # create a python model instance if needed
+        if not self.pyModel:
+            # load ml_ai_model and build pymodel class object
+            cwd = os.getcwd()
+            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            try:  # see if custom layer script exists
+                module = import_module(str(self.modelName))  # contains CustomLayer
+                self.model = load(
+                    str(self.modelName) + ".h5",
+                    custom_objects={
+                        str(self.modelName): getattr(module, str(self.modelName))
+                    },
+                )
+            except ImportError:  # try to load model without custom layer
+                _logger.info(
+                    "Cannot detect CustomLayer object to import, FOQUS "
+                    + "will import model without custom attributes."
+                )
+                self.model = load(str(self.modelName) + ".h5")
+            finally:
+                os.chdir(cwd)  # reset to original working directory
+            self.pyModel = pymodel_ml_ai(self.model)
+        # set the instance inputs
+        for vkey, v in self.gr.input[self.name].items():
+            if vkey in self.pyModel.inputs:
+                self.pyModel.inputs[vkey].value = v.value
+        # run the model
+        self.pyModel.setNode(self)
+        self.pyModel.run()
+        # set the node outputs
+        for vkey, v in self.gr.output[self.name].items():
+            if vkey in self.pyModel.outputs:
+                v.value = self.pyModel.outputs[vkey].value

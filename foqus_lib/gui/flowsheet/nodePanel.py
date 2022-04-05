@@ -348,6 +348,9 @@ class nodeDock(_nodeDock, _nodeDockUI):
         elif self.modelTypeBox.currentIndex() == 2:
             # model type is plugin
             return nodeModelTypes.MODEL_PLUGIN
+        elif self.modelTypeBox.currentIndex() == 5:
+            # model type is ml_ai
+            return nodeModelTypes.MODEL_ML_AI
         else:
             # this shouldn't be
             return nodeModelTypes.MODEL_NONE
@@ -367,6 +370,8 @@ class nodeDock(_nodeDock, _nodeDockUI):
             self.modelTypeBox.setCurrentIndex(1)
         elif self.node.modelType == nodeModelTypes.MODEL_PLUGIN:
             self.modelTypeBox.setCurrentIndex(2)
+        elif self.node.modelType == nodeModelTypes.MODEL_ML_AI:
+            self.modelTypeBox.setCurrentIndex(5)
         self.updateSimulationList()
 
     def updateSimulationList(self):
@@ -394,6 +399,13 @@ class nodeDock(_nodeDock, _nodeDockUI):
         elif self.modelTypeBox.currentIndex() == 2:
             # model type is plugin
             sl = sorted(list(self.dat.pymodels.plugins.keys()), key=lambda s: s.lower())
+            self.simNameBox.addItems(sl)
+        elif self.modelTypeBox.currentIndex() == 5:
+            # model type is ml_ai
+            sl = sorted(
+                list(self.dat.pymodels_ml_ai.ml_ai_models.keys()),
+                key=lambda s: s.lower(),
+            )
             self.simNameBox.addItems(sl)
         try:
             i = self.simNameBox.findText(self.node.modelName)

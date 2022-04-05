@@ -26,6 +26,7 @@ defaults:
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev
   PYTEST_ARTIFACTS_PATH: ".pytest-artifacts"
+  PYTEST_FOQUS_WORKING_DIR: /tmp/foqus_working_dir
 
 jobs:
   code-formatting:
@@ -42,7 +43,7 @@ jobs:
         # so we extract the relevant line and pass it to a simple `pip install`
         run: |
           # we store the version
-          black_requirement="$(grep 'black==' requirements-dev.txt)"
+          black_requirement="$(grep '^black.*$' requirements-dev.txt)"
           pip --no-cache-dir install --progress-bar off "$black_requirement"
       - name: Run Black to verify that the committed code is formatted
         run: |
@@ -72,6 +73,8 @@ jobs:
             os-version: windows-2019
           - python-version: "3.8"  # avoid uploading coverage for full matrix
             use_coverage: true
+          - python-version: "3.8"  # this is to avoid installing optional dependencies in all environments
+            optional-dependencies: tensorflow
     env:
       # uncomment this to debug Qt initialization errors
       # QT_DEBUG_PLUGINS: '1'
@@ -86,7 +89,7 @@ jobs:
       - name: Set up FOQUS
         uses: ./.github/actions/setup-foqus
         with:
-          pip-install-target: -r requirements-dev.txt
+          pip-install-target: -r requirements-dev.txt ${{ matrix.optional-dependencies }}
       - name: Set common pytest flags
         run:
           echo 'PYTEST_ADDOPTS=--verbose --artifacts-path "$PYTEST_ARTIFACTS_PATH"' >> $GITHUB_ENV

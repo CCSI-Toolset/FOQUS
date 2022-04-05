@@ -92,7 +92,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
             else np.concatenate((rcand[:, wcol], hist[:, wcol]))
         )
         m = row[xcols] - xs
-        m = np.sum(m ** 2, axis=1)
+        m = np.sum(m**2, axis=1)
         m = m * row[wcol] * weights
 
         dmat = np.copy(dmat_)

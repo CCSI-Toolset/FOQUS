@@ -5,6 +5,7 @@ from functools import singledispatch
 import logging
 from pathlib import Path
 import typing as t
+from types import ModuleType
 import time
 
 try:  # available starting with Python 3.8
@@ -214,46 +215,74 @@ def instrument(target, signal_begin=None, signal_end=None):
     _logger.debug("monkeypatching done")
 
 
-@contextlib.contextmanager
-def replace_with_signal(target, signal, retval=None):
-    mp = MonkeyPatch()
+@dataclass
+class _DialogProxy:
+    window_title: str = ""
+    text: str = ""
 
-    _logger.info(f"replacing target {target} with signal {signal}")
-    if isinstance(target, tuple) and len(target) == 2:
-        owner, name = target
-        instance = None
-    # TODO check if methodtype?
-    else:
-        instance = getattr(target, "__self__", None)
-        owner = instance.__class__
-        name = target.__name__
-    func = getattr(owner, name)
-    assert callable(func), f"{func} must be callable"
-    _logger.debug(dict(target=target, name=name, owner=owner, func=func))
 
-    def _proxy_call(*args, **kwargs):
-        call_info = CallInfo(
-            callee=func, args=args, kwargs=kwargs, name=name, instance=instance
+@dataclass
+class _ModalPatcher:
+
+    dialog_cls: type
+    scope: t.Optional[ModuleType] = None
+
+    def __post_init__(self):
+        if self.scope:
+            assert isinstance(self.scope, ModuleType), (
+                "If given, 'scope' should be a module object, "
+                f"but it is {type(self.scope)} instead"
+            )
+        self._patch = MonkeyPatch()
+
+    def _apply_patch(self, owner: object, name: str, replacement: object):
+        self._patch.setattr(
+            owner,
+            name,
+            replacement,
         )
 
-        signal.emit(call_info)
+    def _replace_entire_class(self, replacement: type):
+        self._apply_patch(
+            owner=self.scope, name=self.dialog_cls.__name__, replacement=replacement
+        )
 
-        return retval
+    def _replace_individual_methods(self, replacement: type, method_names: t.List[str]):
+        for meth_name in method_names:
+            self._apply_patch(
+                owner=self.dialog_cls,
+                name=meth_name,
+                replacement=getattr(replacement, meth_name),
+            )
 
-    mp.setattr(owner, name, _proxy_call)
+    @contextlib.contextmanager
+    def patching(self, dispatch_func: t.Callable):
 
-    patched_info = _WrappedCallable(
-        wrapped=func,
-        name=name,
-        instance=instance,
-        wrapper=_proxy_call,
-    )
+        # TODO: consider if using type(...) to build the class object would make things clearer
+        class tmp(self.dialog_cls):
+            def exec_(inst):
+                return dispatch_func(inst)
 
-    _logger.debug("returning patched object")
-    yield patched_info
-    _logger.debug("start undoing monkeypatching")
-    mp.undo()
-    _logger.debug("monkeypatching done")
+            def exec(inst):
+                return dispatch_func(inst)
+
+            def show(inst):
+                dispatch_func(inst)
+
+            def open(inst):
+                dispatch_func(inst)
+
+        if self.scope is not None:
+            self._replace_entire_class(tmp)
+        else:
+            self._replace_individual_methods(
+                tmp, method_names=["exec_", "exec", "show", "open"]
+            )
+
+        try:
+            yield self
+        finally:
+            self._patch.undo()
 
 
 class _Signals(QtCore.QObject):
@@ -264,7 +293,7 @@ class _Signals(QtCore.QObject):
     actionEnd = QtCore.pyqtSignal(Action)
     locateBegin = QtCore.pyqtSignal(object)
     locateEnd = QtCore.pyqtSignal(object)
-    callProxy = QtCore.pyqtSignal(CallInfo)
+    dialogDisplay = QtCore.pyqtSignal(_DialogProxy)
 
     @property
     def by_type_and_when(self):
@@ -1579,3 +1608,23 @@ class QtBot(pytestqt_plugin.QtBot):
             signal.disconnect(_modal_slot)
 
     waiting_for_modal = intercepting_modal
+
+    @contextlib.contextmanager
+    def waiting_for_dialog(self, timeout=0, dialog_cls=W.QMessageBox) -> _DialogProxy:
+        signal = self._signals.dialogDisplay
+
+        def dispatch(modal: dialog_cls):
+            proxy = _DialogProxy(text=modal.text())
+            print(proxy)
+            signal.emit(proxy)
+            return True
+            # return modal.defaultButton()
+
+        with _ModalPatcher(dialog_cls).patching(dispatch):
+            with self.wait_signal(signal, timeout=timeout) as blocker:
+                pass
+            dialog_info_for_checking: _DialogProxy = blocker.args[0]
+            yield dialog_info_for_checking
+
+    def cleanup(self):
+        self._focus_stack.clear()

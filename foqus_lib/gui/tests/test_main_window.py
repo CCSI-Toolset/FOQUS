@@ -8,4 +8,4 @@ pytestmark = pytest.mark.gui
 
 def test_main_window_opens(qtbot, main_window):
     qtbot.slow_down()
-    main_window.close()
+    assert main_window is not None

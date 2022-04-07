@@ -44,6 +44,13 @@ def setup_frame_blank(main_window, request):
     return setup_frame
 
 
+def _accept_dialog(w):
+    import time
+
+    time.sleep(1)
+    w.buttonBox.accepted.emit()
+
+
 @pytest.mark.usefixtures("setup_frame_blank")
 class TestOUU:
     frame: ouuSetupFrame = ...
@@ -193,7 +200,7 @@ class TestOUU:
         return data
 
     @pytest.fixture(scope="class")
-    def launchTest(self, qtbot, exec_timeout):
+    def runUntilConfirmationDialog(self, qtbot, exec_timeout):
         """
         [Step-5] Final step to run the optimizer and plot the graph.
 
@@ -203,8 +210,11 @@ class TestOUU:
         """
         qtbot.select_tab("Launch/Progress")
 
-        with qtbot.waiting_for_modal(timeout=exec_timeout):
-            qtbot.click(button="Run OUU")
+        qtbot.click(button="Run OUU")
+        with qtbot.waiting_for_dialog(
+            dialog_cls=QtWidgets.QMessageBox, timeout=exec_timeout
+        ) as dialog:
+            yield dialog
 
     ###################
     """
@@ -259,9 +269,9 @@ class TestOUU:
         n_vars = len(self.frame.input_table.getUQDiscreteVariables()[0])
         assert n_inps == n_vars
 
-    @pytest.mark.usefixtures("launchTest")
-    def testRunOUU(self):
+    def testRunOUU(self, runUntilConfirmationDialog):
         """
         [Test-5] Test that the optimizer launches and finishes.
         """
-        assert True
+        dialog = runUntilConfirmationDialog
+        assert "finished" in dialog.text

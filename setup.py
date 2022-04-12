@@ -89,7 +89,7 @@ dist = setup(
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
-    setup_requires=[
+    build_requires=[
         "setuptools<58; sys_platform == 'win32'",
     ],
     install_requires=[

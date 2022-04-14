@@ -285,6 +285,48 @@ class _ModalPatcher:
             self._patch.undo()
 
 
+@contextlib.contextmanager
+def replace_with_signal(target, signal, retval=None):
+    mp = MonkeyPatch()
+
+    _logger.info(f"replacing target {target} with signal {signal}")
+    if isinstance(target, tuple) and len(target) == 2:
+        owner, name = target
+        instance = None
+    # TODO check if methodtype?
+    else:
+        instance = getattr(target, "__self__", None)
+        owner = instance.__class__
+        name = target.__name__
+    func = getattr(owner, name)
+    assert callable(func), f"{func} must be callable"
+    _logger.debug(dict(target=target, name=name, owner=owner, func=func))
+
+    def _proxy_call(*args, **kwargs):
+        call_info = CallInfo(
+            callee=func, args=args, kwargs=kwargs, name=name, instance=instance
+        )
+
+        signal.emit(call_info)
+
+        return retval
+
+    mp.setattr(owner, name, _proxy_call)
+
+    patched_info = _WrappedCallable(
+        wrapped=func,
+        name=name,
+        instance=instance,
+        wrapper=_proxy_call,
+    )
+
+    _logger.debug("returning patched object")
+    yield patched_info
+    _logger.debug("start undoing monkeypatching")
+    mp.undo()
+    _logger.debug("monkeypatching done")
+
+
 class _Signals(QtCore.QObject):
     __instance = None
     callBegin = QtCore.pyqtSignal(CallInfo)
@@ -293,6 +335,7 @@ class _Signals(QtCore.QObject):
     actionEnd = QtCore.pyqtSignal(Action)
     locateBegin = QtCore.pyqtSignal(object)
     locateEnd = QtCore.pyqtSignal(object)
+    callProxy = QtCore.pyqtSignal(CallInfo)
     dialogDisplay = QtCore.pyqtSignal(_DialogProxy)
 
     @property

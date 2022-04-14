@@ -30,24 +30,24 @@ Anaconda or Miniconda Install and Setup
    <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_ for your operating
    system.
 
-3. Create a ccsi-foqus conda environment; this environment will be referred to as "ccsi-foqus" in
+3. Create a ccsi-foqus conda environment; this environment will be referred to as ``ccsi-foqus`` in
    the installation documentation, but you can use any name you like.  If you would like to install
    multiple version of FOQUS (for example a stable version and the latest development version), this
    can be done by running the following command multiple times with different environment names
-   after the `--name` flag in the below command.  In a terminal (or on Windows in the Anaconda
+   after the ``--name`` flag in the below command.  In a terminal (or on Windows in the Anaconda
    Prompt) type::
 
     conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
 
    Then follow the prompts.  This will create a new conda environment with a minimal set of
-   packages.  To use a different version of python, change the version specified after `python=` in
+   packages.  To use a different version of python, change the version specified after ``python=`` in
    the command.
 
-.. note::
-   The command above installs the ``pywin32`` Conda package immediately after creating the Conda environment.
-   The ``pywin32`` package is strictly required to run FOQUS on Windows, and should be installed with Conda from the ``conda-forge`` channel
-   or errors might occur. For other platforms (Linux, macOS), this is not required. However, the ``pywin32`` package itself is still available,
-   and therefore the command above is compatible with all platform for which FOQUS is supported.
+   .. note::
+      The command above installs the ``pywin32`` Conda package immediately after creating the Conda environment.
+      The ``pywin32`` package is strictly required to run FOQUS on Windows, and should be installed with Conda from the ``conda-forge`` channel
+      or errors might occur. For other platforms (Linux, macOS), the ``pywin32`` package is not required. However, the ``pywin32`` package itself is still available,
+      and therefore the command above is compatible with all platforms for which FOQUS is supported.
 
 4. Activate the environment on Linux in a terminal type::
 

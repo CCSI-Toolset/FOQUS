@@ -20,7 +20,7 @@ and processes:
 
 - GitHub is where the `FOQUS source code <https://github.com/CCSI-Toolset/FOQUS>`_ resides.
 
-- We make extensive use of GitHub’s `Issue Tracker <https://github.com/CCSI-Toolset/FOQUS/issues>`_
+- We make extensive use of GitHub's `Issue Tracker <https://github.com/CCSI-Toolset/FOQUS/issues>`_
   , `Pull Requests <https://github.com/CCSI-Toolset/FOQUS/pulls>`_ and `Project Boards
   <https://github.com/orgs/CCSI-Toolset/projects>`_ for managing the development tasks using a
   modified Kanban development process.
@@ -28,8 +28,7 @@ and processes:
 - `ReadTheDocs <https://foqus.readthedocs.io>`_ is used to generate and host our on-line
   documentation.
 
-- `CircleCI <https://circleci.com/gh/CCSI-Toolset/FOQUS>`_ and `AppVeyor
-  <https://www.appveyor.com/>`_ are the Continuous Integration system we use.
+- For Continuous Integration (CI) we use `GitHub Actions <https://github.com/CCSI-Toolset/FOQUS/actions>`_.
 
 - `Anaconda <https://www.anaconda.com/distribution/>`_ for isolating Python runtime and development
   environment.
@@ -44,7 +43,7 @@ will need a copy of the source to work with. Here is rough set of steps to get s
 
 - In a terminal create a conda env in which to work::
 
-    conda create --name ccsi-foqus python=3.8
+    conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
     conda activate ccsi-foqus
 
 - In a terminal, get the FOQUS source::

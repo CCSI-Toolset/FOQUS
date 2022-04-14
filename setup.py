@@ -90,7 +90,6 @@ dist = setup(
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")
     install_requires=[
-        "adodbapi>=2.6.0.7; sys_platform == 'win32'",
         "boto3",
         "cma",
         "matplotlib",
@@ -100,10 +99,7 @@ dist = setup(
         "pandas",
         "psutil",
         "PyQt5==5.13",
-        # pinning pywin32 to version 225 as a workaround for Python 3.8 compatibility issues
-        # (ImportError: DLL load failed while importing ...)
-        # for more information see e.g. https://stackoverflow.com/a/62249872
-        "pywin32==225; sys_platform == 'win32'",
+        "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",

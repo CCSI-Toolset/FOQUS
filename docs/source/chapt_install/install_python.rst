@@ -43,6 +43,12 @@ Anaconda or Miniconda Install and Setup
    packages.  To use a different version of python, change the version specified after `python=` in
    the command.
 
+.. note::
+   The command above installs the ``pywin32`` Conda package immediately after creating the Conda environment.
+   The ``pywin32`` package is strictly required to run FOQUS on Windows, and should be installed with Conda from the ``conda-forge`` channel
+   or errors might occur. For other platforms (Linux, macOS), this is not required. However, the ``pywin32`` package itself is still available,
+   and therefore the command above is compatible with all platform for which FOQUS is supported.
+
 4. Activate the environment on Linux in a terminal type::
 
     conda activate ccsi-foqus

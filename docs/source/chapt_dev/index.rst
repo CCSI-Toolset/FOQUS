@@ -20,7 +20,7 @@ and processes:
 
 - GitHub is where the `FOQUS source code <https://github.com/CCSI-Toolset/FOQUS>`_ resides.
 
-- We make extensive use of GitHub’s `Issue Tracker <https://github.com/CCSI-Toolset/FOQUS/issues>`_
+- We make extensive use of GitHub's `Issue Tracker <https://github.com/CCSI-Toolset/FOQUS/issues>`_
   , `Pull Requests <https://github.com/CCSI-Toolset/FOQUS/pulls>`_ and `Project Boards
   <https://github.com/orgs/CCSI-Toolset/projects>`_ for managing the development tasks using a
   modified Kanban development process.
@@ -28,8 +28,7 @@ and processes:
 - `ReadTheDocs <https://foqus.readthedocs.io>`_ is used to generate and host our on-line
   documentation.
 
-- `CircleCI <https://circleci.com/gh/CCSI-Toolset/FOQUS>`_ and `AppVeyor
-  <https://www.appveyor.com/>`_ are the Continuous Integration system we use.
+- For Continuous Integration (CI) we use `GitHub Actions <https://github.com/CCSI-Toolset/FOQUS/actions>`_.
 
 - `Anaconda <https://www.anaconda.com/distribution/>`_ for isolating Python runtime and development
   environment.

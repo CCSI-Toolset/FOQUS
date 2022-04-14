@@ -37,7 +37,7 @@ Anaconda or Miniconda Install and Setup
    after the `--name` flag in the below command.  In a terminal (or on Windows in the Anaconda
    Prompt) type::
 
-    conda create --name ccsi-foqus python=3.8
+    conda create --name ccsi-foqus -c conda-forge python=3.8 pywin32
 
    Then follow the prompts.  This will create a new conda environment with a minimal set of
    packages.  To use a different version of python, change the version specified after `python=` in

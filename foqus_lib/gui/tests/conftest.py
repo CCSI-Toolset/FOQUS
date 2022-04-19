@@ -46,7 +46,7 @@ def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
         yield _qtbot
     if exceptions:
         pytest.fail(format_captured_exceptions(exceptions))
-    _qtbot.describe()
+    # _qtbot.cleanup()
 
 
 @pytest.fixture(scope="session")
@@ -81,15 +81,22 @@ def main_window(foqus_session, qtbot, main_window_params):
         showSDOE=False,
         ts=False,
     )
-    main_win.closeEvent = lambda *args, **kwargs: None
     print(f"main_win={main_win}")
     main_win.app = QtWidgets.QApplication.instance()
     print(f"main_win.app={main_win.app}")
-    # qtbot.addWidget(main_win)
+    # qtbot.add_widget(main_win)
     qtbot.waitForWindowShown(main_win)
     print(f"main_win.app.activeWindow()={main_win.app.activeWindow()}")
     yield main_win
-    main_win.close()
+
+    def handle_closing_prompt(w: QtWidgets.QMessageBox):
+        return QtWidgets.QMessageBox.No
+
+    with pytest_qt_extras._ModalPatcher(QtWidgets.QMessageBox).patching(
+        handle_closing_prompt
+    ):
+        main_win.close()
+    qtbot.cleanup()
 
 
 @pytest.fixture(scope="class")

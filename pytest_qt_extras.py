@@ -5,6 +5,7 @@ from functools import singledispatch
 import logging
 from pathlib import Path
 import typing as t
+from types import ModuleType
 import time
 
 try:  # available starting with Python 3.8
@@ -214,6 +215,76 @@ def instrument(target, signal_begin=None, signal_end=None):
     _logger.debug("monkeypatching done")
 
 
+@dataclass
+class _DialogProxy:
+    window_title: str = ""
+    text: str = ""
+
+
+@dataclass
+class _ModalPatcher:
+
+    dialog_cls: type
+    scope: t.Optional[ModuleType] = None
+
+    def __post_init__(self):
+        if self.scope:
+            assert isinstance(self.scope, ModuleType), (
+                "If given, 'scope' should be a module object, "
+                f"but it is {type(self.scope)} instead"
+            )
+        self._patch = MonkeyPatch()
+
+    def _apply_patch(self, owner: object, name: str, replacement: object):
+        self._patch.setattr(
+            owner,
+            name,
+            replacement,
+        )
+
+    def _replace_entire_class(self, replacement: type):
+        self._apply_patch(
+            owner=self.scope, name=self.dialog_cls.__name__, replacement=replacement
+        )
+
+    def _replace_individual_methods(self, replacement: type, method_names: t.List[str]):
+        for meth_name in method_names:
+            self._apply_patch(
+                owner=self.dialog_cls,
+                name=meth_name,
+                replacement=getattr(replacement, meth_name),
+            )
+
+    @contextlib.contextmanager
+    def patching(self, dispatch_func: t.Callable):
+
+        # TODO: consider if using type(...) to build the class object would make things clearer
+        class tmp(self.dialog_cls):
+            def exec_(inst):
+                return dispatch_func(inst)
+
+            def exec(inst):
+                return dispatch_func(inst)
+
+            def show(inst):
+                dispatch_func(inst)
+
+            def open(inst):
+                dispatch_func(inst)
+
+        if self.scope is not None:
+            self._replace_entire_class(tmp)
+        else:
+            self._replace_individual_methods(
+                tmp, method_names=["exec_", "exec", "show", "open"]
+            )
+
+        try:
+            yield self
+        finally:
+            self._patch.undo()
+
+
 @contextlib.contextmanager
 def replace_with_signal(target, signal, retval=None):
     mp = MonkeyPatch()
@@ -265,6 +336,7 @@ class _Signals(QtCore.QObject):
     locateBegin = QtCore.pyqtSignal(object)
     locateEnd = QtCore.pyqtSignal(object)
     callProxy = QtCore.pyqtSignal(CallInfo)
+    dialogDisplay = QtCore.pyqtSignal(_DialogProxy)
 
     @property
     def by_type_and_when(self):
@@ -1579,3 +1651,23 @@ class QtBot(pytestqt_plugin.QtBot):
             signal.disconnect(_modal_slot)
 
     waiting_for_modal = intercepting_modal
+
+    @contextlib.contextmanager
+    def waiting_for_dialog(self, timeout=0, dialog_cls=W.QMessageBox) -> _DialogProxy:
+        signal = self._signals.dialogDisplay
+
+        def dispatch(modal: dialog_cls):
+            proxy = _DialogProxy(text=modal.text())
+            print(proxy)
+            signal.emit(proxy)
+            return True
+            # return modal.defaultButton()
+
+        with _ModalPatcher(dialog_cls).patching(dispatch):
+            with self.wait_signal(signal, timeout=timeout) as blocker:
+                pass
+            dialog_info_for_checking: _DialogProxy = blocker.args[0]
+            yield dialog_info_for_checking
+
+    def cleanup(self):
+        self._focus_stack.clear()

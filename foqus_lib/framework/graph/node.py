@@ -288,17 +288,17 @@ class Node:
         self.synced = True
 
     @property
-    def isModelTurbine(self) -> Boolean:
+    def isModelTurbine(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_TURBINE
     @property
-    def isModelNone(self) -> Boolean:
+    def isModelNone(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_NONE
     @property
-    def isModelPlugin(self) -> Boolean:
-        return self.modelType == nodeModelTypes.MODEL_PLUGIN:
+    def isModelPlugin(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_PLUGIN
     @property
-    def isModelML(self) -> Boolean:
-        return self.modelType == nodeModelTypes.MODEL_ML_AI:
+    def isModelML(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_ML_AI
 
     def setGraph(self, gr, name=None):
         """

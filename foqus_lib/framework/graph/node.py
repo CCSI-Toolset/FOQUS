@@ -287,6 +287,19 @@ class Node:
         self.running = False
         self.synced = True
 
+    @property
+    def isModelTurbine(self) -> Boolean:
+        return self.modelType == nodeModelTypes.MODEL_TURBINE
+    @property
+    def isModelNone(self) -> Boolean:
+        return self.modelType == nodeModelTypes.MODEL_NONE
+    @property
+    def isModelPlugin(self) -> Boolean:
+        return self.modelType == nodeModelTypes.MODEL_PLUGIN:
+    @property
+    def isModelML(self) -> Boolean:
+        return self.modelType == nodeModelTypes.MODEL_ML_AI:
+
     def setGraph(self, gr, name=None):
         """
         Set the parent graph, node name, location of inputs and
@@ -472,7 +485,7 @@ class Node:
         o = sd.get("options", None)
         if o:
             self.options.loadDict(o)
-        if self.modelType == nodeModelTypes.MODEL_TURBINE:
+        if self.isModelTurbine:
             self.addTurbineOptions()
         # Below is just to maintain compatibility with older session files
         # It may be deleted at some point in the future
@@ -543,10 +556,10 @@ class Node:
         # clear the pyModel since it may be old now
         self.pyModel = None
         # Now add stuff to the node depending on the model type
-        if self.modelType == nodeModelTypes.MODEL_NONE:
+        if self.isModelNone:
             # no model don't add any variables and do nothing
             return
-        elif self.modelType == nodeModelTypes.MODEL_PLUGIN:
+        elif self.isModelPlugin:
             # python plugin worry about this later
             inst = self.gr.pymodels.plugins[self.modelName].pymodel_pg()
             # the node can have the pymodel instances variables since
@@ -557,7 +570,7 @@ class Node:
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
-        elif self.modelType == nodeModelTypes.MODEL_TURBINE:
+        elif self.isModelTurbine:
             sc = self.gr.turbConfig.getSinterConfig(self.modelName)
             modelTitle = str(sc.get("title", ""))
             modelAuthor = str(sc.get("author", ""))
@@ -653,7 +666,7 @@ class Node:
                         desc=item["description"],
                         optSet=NodeOptionSets.SINTER_OPTIONS,
                     )
-        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+        elif self.isModelML:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
             os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
@@ -756,13 +769,13 @@ class Node:
         Run the Model associated with the node.
         """
         self.calcError = -1
-        if self.modelType == nodeModelTypes.MODEL_NONE:
+        if self.isModelNone:
             pass
-        elif self.modelType == nodeModelTypes.MODEL_PLUGIN:
+        elif self.isModelPlugin:
             self.runPymodelPlugin()
-        elif self.modelType == nodeModelTypes.MODEL_TURBINE:
+        elif self.isModelTurbine:
             self.runTurbineCalc(retry=self.options["Retry"].value)
-        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+        elif self.isModelML:
             self.runPymodelMLAI()
         else:
             # This shouldn't happen from the GUI there should
@@ -791,7 +804,7 @@ class Node:
         Stop consumer, when the model is run next a new consumer
         will start up for it.  This is useful if a model fails.
         """
-        if self.modelType == nodeModelTypes.MODEL_TURBINE:
+        if self.isModelTurbine:
             self.gr.turbConfig.stopConsumer(self.name)
 
     def runPymodelPlugin(self):

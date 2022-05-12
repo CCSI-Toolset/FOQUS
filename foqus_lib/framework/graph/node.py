@@ -290,12 +290,15 @@ class Node:
     @property
     def isModelTurbine(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_TURBINE
+
     @property
     def isModelNone(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_NONE
+
     @property
     def isModelPlugin(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_PLUGIN
+
     @property
     def isModelML(self) -> bool:
         return self.modelType == nodeModelTypes.MODEL_ML_AI

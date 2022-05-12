@@ -22,9 +22,10 @@ import shutil
 class DependencyTracker:
     pass
 
+
 class ModuleDependencyTracker:
-    """ tracks imported python modules
-    """
+    """tracks imported python modules"""
+
     python_modules_available = {}
     python_modules_unavailable = {}
     module = None
@@ -44,7 +45,7 @@ class ModuleDependencyTracker:
             return instance
         instance = cls()
         try:
-            exec('import %s' %(instance.python_module_name))
+            exec("import %s" % (instance.python_module_name))
         except ModuleNotFoundError:
             cls.python_modules_unavailable[instance.python_module_name] = instance
             raise
@@ -70,8 +71,8 @@ class ModuleDependencyTracker:
 
 
 class ExecutableDependencyTracker(DependencyTracker):
-    """ tracks optional executables
-    """
+    """tracks optional executables"""
+
     executable_name = None
 
     @classmethod
@@ -90,12 +91,13 @@ class PsuadeDependencyTracker(ExecutableDependencyTracker):
     if plugin == None:  print("unavailable")
     elif plugin.nomad is False: print("nomand unavailable")
     """
-    executable_name="psuade"
+
+    executable_name = "psuade"
 
     @property
     def nomad(self):
         return False
-        
+
 
 class TensorFlowDependencyTracker(ModuleDependencyTracker):
-    python_module_name='tensorflow'
+    python_module_name = "tensorflow"

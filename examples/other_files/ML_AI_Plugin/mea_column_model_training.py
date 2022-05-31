@@ -36,6 +36,7 @@ class mea_column_model(tf.keras.layers.Layer):
         input_bounds=None,
         output_bounds=None,
         normalized=False,
+        normalization_form="Linear",
         **kwargs
     ):
 
@@ -53,6 +54,7 @@ class mea_column_model(tf.keras.layers.Layer):
         self.input_bounds = input_bounds
         self.output_bounds = output_bounds
         self.normalized = True  # FOQUS will read this and adjust accordingly
+        self.normalization_form = "Linear"  # tells FOQUS which scaling form to use
 
         # create lists to contain new layer objects
         self.dense_layers = []  # hidden or output layers
@@ -92,6 +94,7 @@ class mea_column_model(tf.keras.layers.Layer):
                 "input_bounds": self.input_bounds,
                 "output_bounds": self.output_bounds,
                 "normalized": self.normalized,
+                "normalization_form": self.normalization_form,
             }
         )
         return config
@@ -108,6 +111,7 @@ def create_model(data):
         input_bounds=xdata_bounds,
         output_bounds=zdata_bounds,
         normalized=True,
+        normalization_form="Linear",
     )
 
     outputs = layers(inputs)  # use network as function outputs = f(inputs)
@@ -133,7 +137,11 @@ zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
 xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
 zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
 
-# normalize data
+# normalize data using Linear form
+# users can normalize with any allowed form # manually, and then pass the
+# appropriate flag to FOQUS from the allowed list:
+# ["Linear", "Log", "Power", "Log 2", "Power 2"] - see the documentation for
+# details on the scaling formulations
 xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
 zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
 xdata, zdata = np.array(xdata), np.array(zdata)

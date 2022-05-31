@@ -239,6 +239,14 @@ class pymodel_ml_ai(pymodel):
                     "provide a normalization type for FOQUS to automatically "
                     "scale flowsheet inputs and unscale flowsheet outputs.")
 
+            allowed_norm_forms = ["Linear", "Log", "Power", "Log 2", "Power 2"]
+            if self.normalization_form not in allowed_norm_forms:
+                _logger.info(
+                    "Value {0} not valid for normalization_form, please "
+                    "select the appropriate flag from the following list: "
+                    ).format(self.normalization_form.value)
+                print(allowed_norm_forms)
+
             # chose not to use 'hasattr' below to prevent quiet failures, if
             # users should not try to normalize without setting a form flag
             if self.normalization_form == "Linear":

@@ -225,12 +225,61 @@ class pymodel_ml_ai(pymodel):
     def run(self):
         import numpy as np
 
-        if self.normalized is True:  # normalize inputs
-            inputs = [
-                (self.inputs[i].value - self.inputs[i].min)
-                / (self.inputs[i].max - self.inputs[i].min)
-                for i in self.inputs
-            ]
+        if self.normalized is True:  # scale actual inputs for surrogate inputs
+
+        # select normalization type - should be user defined and must be set.
+        # don't set a default - if users are setting this to True they should
+        # be aware of that FOQUS requires a normalization form flag as well
+            try:
+                self.normalization_form = self.model.layers[1].normalization_form
+            except AttributeError:
+                _logger.info(
+                    "Model has no attribute normalization_form, and existing "
+                    "attribute normalization was set to True. Users must "
+                    "provide a normalization type for FOQUS to automatically "
+                    "scale flowsheet inputs and unscale flowsheet outputs.")
+
+            # chose not to use 'hasattr' below to prevent quiet failures, if
+            # users should not try to normalize without setting a form flag
+            if self.normalization_form == "Linear":
+                inputs = [
+                    (self.inputs[i].value - self.inputs[i].min)
+                    / (self.inputs[i].max - self.inputs[i].min)
+                    for i in self.inputs
+                    ]
+            elif self.normalization_form == "Log":
+                inputs = [
+                    (math.log10(self.inputs[i].value) - math.log10(self.inputs[i].min))
+                    / (math.log10(self.inputs[i].max) - math.log10(self.inputs[i].min))
+                    for i in self.inputs
+                    ]
+            elif self.normalization_form == "Power":
+                inputs = [
+                    (math.pow(10, self.inputs[i].value) - math.pow(10, self.inputs[i].min))
+                    / (math.pow(10, self.inputs[i].max) - math.pow(10, self.inputs[i].min))
+                    for i in self.inputs
+                    ]
+            elif self.normalization_form == "Log 2":
+                # if F = (value - min) / (max - min), then
+                # scaled = log10[9*F + 1]
+                inputs = [
+                    math.log10(
+                        9 * (self.inputs[i].value - self.inputs[i].min)
+                        / (self.inputs[i].max - self.inputs[i].min) + 1
+                        )
+                    for i in self.inputs
+                    ]
+            elif self.normalization_form == "Power 2":
+                # if F = (value - min) / (max - min), then
+                # scaled = (1/9) * (10^F - 1)
+                inputs = [
+                    (1/9) * math.pow(10,
+                                     (self.inputs[i].value - self.inputs[i].min)
+                                     / (self.inputs[i].max - self.inputs[i].min)
+                                     ) - 1
+                    for i in self.inputs
+                    ]
+
         else:  # take actual input values
             inputs = [self.inputs[i].value for i in self.inputs]
         print(inputs)
@@ -238,11 +287,47 @@ class pymodel_ml_ai(pymodel):
         outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
         outidx = 0
         for j in self.outputs:
-            if self.normalized is True:  # un-normalize outputs
-                self.outputs[j].value = (
-                    outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
-                    + self.outputs[j].min
-                )
+
+            if self.normalized is True:  # unscale to obtain actual output values
+
+            # select normalization type - should be user defined and must be set.
+            # don't set a default - if users are setting this to True they should
+            # be aware of that FOQUS requires a normalization form flag as well
+
+                if self.normalization_form == 'Linear':
+                    self.outputs[j].value = (
+                        outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
+                        + self.outputs[j].min
+                        )
+                elif self.normalization_form == "Log":
+                    self.outputs[j].value = (
+                        math.pow(10,
+                                 outputs[outidx] *
+                                 (math.log10(self.outputs[j].max) - math.log10(self.outputs[j].min))
+                                 + math.log10(self.outputs[j].min)
+                                 )
+                        )
+                elif self.normalization_form == "Power":
+                    self.outputs[j].value = (
+                        math.log10(
+                                outputs[outidx] *
+                                (math.pow(10, self.outputs[j].max) - math.pow(10, self.outputs[j].min))
+                                + math.pow(10, self.outputs[j].min)
+                                )
+                        )
+                elif self.normalization_form == "Log 2":
+                    self.outputs[j].value = (
+                        (math.pow(10, outputs[outidx]) - 1) *
+                        (self.outputs[j].max - self.outputs[j].min)/9
+                        + self.outputs[j].min
+                        )
+                elif self.normalization_form == "Power 2":
+                    self.outputs[j].value = (
+                        (math.log10(9 * outputs[outidx]) + 1) *
+                        (self.outputs[j].max - self.outputs[j].min)
+                        + self.outputs[j].min
+                        )
+
             else:
                 self.outputs[j].value = outputs[outidx]
             outidx += 1

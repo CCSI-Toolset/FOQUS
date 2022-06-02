@@ -56,6 +56,34 @@ except ImportError:
             "kwargs={kwargs} but `tensorflow` is not available"
         )
 
+try:
+    # sympy should be installed, but is not required if normalization is not
+    # set to True, or if preset normalization option is used
+    import sympy as sy
+
+    parse = sy.parsing.sympy_parser.parse_expr
+    symbol = sy.Symbol
+    solve = sy.solve
+except ImportError:
+    # if sympy is not available, create proxy functions that will raise
+    # an exception whenever code tries to use a sympy method at runtime
+    def parse(*args, **kwargs):
+        raise ModuleNotFoundError(
+            f"`parse()` was called with args={args},"
+            "kwargs={kwargs} but `sympy` is not available"
+        )
+
+    def symbol(*args, **kwargs):
+        raise ModuleNotFoundError(
+            f"`symbol()` was called with args={args},"
+            "kwargs={kwargs} but `sympy` is not available"
+        )
+
+    def solve(*args, **kwargs):
+        raise ModuleNotFoundError(
+            f"`solve()` was called with args={args},"
+            "kwargs={kwargs} but `sympy` is not available"
+        )
 
 # pylint: enable=import-error
 
@@ -223,23 +251,33 @@ class pymodel_ml_ai(pymodel):
             self.normalized = False
 
     def run(self):
+        # the bulk of this method checks whether model is normalized and if so
+        # how, and then defines input scaling and output unscaling if needed
         import numpy as np
 
-        if self.normalized is True:  # scale actual inputs for surrogate inputs
+        # first, consider if model is not normalized - the simplest case
+        if self.normalized is False:  # no scaling needed
+            inputs = [self.inputs[i].value for i in self.inputs]
 
-        # select normalization type - should be user defined and must be set.
+        # next, consider if model is normalized - must include a method type
+        elif self.normalized is True:  # scale actual inputs
+
+        # select normalization type - users need to explicitly pass a form flag
         # don't set a default - if users are setting this to True they should
         # be aware of that FOQUS requires a normalization form flag as well
-            try:
+            try:  # see if form flag exists and throw useful error if not
                 self.normalization_form = self.model.layers[1].normalization_form
             except AttributeError:
-                _logger.info(
+                _logger.error(
                     "Model has no attribute normalization_form, and existing "
                     "attribute normalization was set to True. Users must "
                     "provide a normalization type for FOQUS to automatically "
                     "scale flowsheet inputs and unscale flowsheet outputs.")
 
-            allowed_norm_forms = ["Linear", "Log", "Power", "Log 2", "Power 2"]
+            # define a list of allowed forms; "Custom" requires norm_function
+            allowed_norm_forms = ["Linear", "Log", "Power",
+                                  "Log 2", "Power 2", "Custom"]
+            # see if form flag is an allowed type and throw useful error if not
             if self.normalization_form not in allowed_norm_forms:
                 raise AttributeError(
                 "Value {} not valid for normalization_form, please ensure the model uses "
@@ -248,7 +286,7 @@ class pymodel_ml_ai(pymodel):
                     )
                 )
 
-            # chose not to use 'hasattr' below to prevent quiet failures, if
+            # chose to prevent quiet failures, and will not use 'hasattr' below
             # users should not try to normalize without setting a form flag
             if self.normalization_form == "Linear":
                 inputs = [
@@ -289,15 +327,92 @@ class pymodel_ml_ai(pymodel):
                     for i in self.inputs
                     ]
 
-        else:  # take actual input values
-            inputs = [self.inputs[i].value for i in self.inputs]
-        print(inputs)
+            elif self.normalization_form == "Custom":
+                # check custom normalization form for requirements
+                try:  # see if function is passed and throw useful error if not
+                    self.normalization_function = self.model.layers[1].normalization_function
+                except AttributeError:
+                    _logger.error(
+                        "Model has no attribute normalization_function, and existing "
+                        "attribute normalization_form was set to Custom. Users must "
+                        "provide a normalization function for FOQUS to automatically "
+                        "scale flowsheet inputs and unscale flowsheet outputs.")
+
+                if type(self.normalization_function) is not str:
+                    raise TypeError(
+                        "Model attribute normalization_function is not a string. "
+                        "Please pass a string for the sympy parser to convert."
+                        )
+                elif 'input_val' not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'input_val', expression must use 'input_val' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                            )
+                        )
+                elif 'input_min' not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'input_min', expression must use 'input_min' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                            )
+                        )
+                elif 'input_max' not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'input_max', expression must use 'input_max' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                            )
+                        )
+
+                try:  # parse function and throw useful error if syntax error
+                    scaling_function = parse(self.normalization_function)
+                except ValueError:
+                    _logger.error(
+                        "Model attribute normalization_function has value {} which"
+                        "is not a valid sympy expression. Please refer to the "
+                        "latest documentation for syntax guidelines and standards: "
+                        "https://docs.sympy.org/latest/index.html".format(
+                            self.normalization_function
+                            )
+                        )
+
+                # use parsed function to scale actual inputs to model inputs
+
+                # create symbols for input value, min and max
+                # we will be substituting numerical entries sequenitally below
+                input_val = symbol('input_val')
+                input_min = symbol('input_min')
+                input_max = symbol('input_max')
+
+                # set scaled input values from custom function
+                for i in self.inputs:
+                    # substitute values for symbols in scaling function
+                    # break it up so it's easier to follow, but could do in one line if desired
+                    scaling_evaluated = scaling_function
+                    scaling_evaluated = scaling_evaluated.subs(input_val, self.inputs[i].value)
+                    scaling_evaluated = scaling_evaluated.subs(input_min, self.inputs[i].min)
+                    scaling_evaluated = scaling_evaluated.subs(input_max, self.inputs[i].max)
+
+                    # set model input value to scaled input value
+                    inputs[i] = scaling_evaluated.evalf()
+
         # set output values to be generated from NN surrogate
         outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
         outidx = 0
         for j in self.outputs:
 
-            if self.normalized is True:  # unscale to obtain actual output values
+            # first, consider if model is not normalized - the simplest case
+            if self.normalized is False:  # no unscaling needed
+                self.outputs[j].value = outputs[outidx]
+
+            # next, consider if model is normalized - must include a method type
+            # at this point any missing arguments or errors would have been caught
+            # so don't need to check for those here as well
+            elif self.normalized is True:  # unscale to obtain actual output values
 
             # select normalization type - should be user defined and must be set.
             # don't set a default - if users are setting this to True they should
@@ -337,8 +452,41 @@ class pymodel_ml_ai(pymodel):
                         + self.outputs[j].min
                         )
 
-            else:
-                self.outputs[j].value = outputs[outidx]
+                elif self.normalization_form == "Custom":
+                    # create symbol for scaled inputs
+                    input_scaled = symbol('input_scaled')
+
+                    # solve for inverse function to return unscaled values
+                    try:  # solve function and throw useful error if error
+                        # the method below write an equation
+                        # input_scaled = func(input_val, input_min, input_max)
+                        # and returns an equation
+                        # input_val = func(input_scaled, input_min, input_max)
+                        # the flag `rational=False` tells sympy not to reduce
+                        # fractions in the expression, which saves memory
+                        unscaling_function = solve(input_scaled - scaling_function,
+                                                   input_val, rational=False)
+                    except ValueError:
+                        _logger.error(
+                            "Model attribute normalization_function has value {} which"
+                            "is not a valid sympy expression. Please refer to the "
+                            "latest documentation for syntax guidelines and standards: "
+                            "https://docs.sympy.org/latest/index.html".format(
+                                self.normalization_function
+                                )
+                            )
+
+                    # use inverse function to unscale model outputs to actual outputs
+                    # set unscaled output values from inverse function
+                    # variable called 'input_val' in expression is scaled output (since we are unscaling)
+                    unscaling_evaluated = unscaling_function
+                    unscaling_evaluated = unscaling_evaluated.subs(input_val, outputs[outidx])
+                    unscaling_evaluated = unscaling_evaluated.subs(input_min, self.inputs[i].min)
+                    unscaling_evaluated = unscaling_evaluated.subs(input_max, self.inputs[i].max)
+
+                    # set actual output value to unscaled output value
+                    self.outputs[j].value = unscaling_evaluated.evalf()
+
             outidx += 1
 
 

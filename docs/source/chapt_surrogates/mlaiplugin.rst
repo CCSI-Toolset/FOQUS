@@ -67,13 +67,119 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data in the form below and add all input and output bounds custom attributes.
-  Normalizing uses the data bounds to scale the data values such that the
-  lower bound becomes 0 and the upper bound becomes 1:
+  data normalized according to a specifc scaling form and add all input and
+  output bounds custom attributes. The section below details scaling options.
+- *normalization_form* - string flag indicating a scaling option for FOQUS to
+  automatically scale flowsheet-level inputs to model inputs, and unscale model
+  outputs to flowsheet-level outputs. The section below details scaling options.
+- *normalization_function* - optional string argument that is required when a
+  'Custom' normalization_form is used. The section below details scaling options.
+
+Data Normalization For Neural Network Models
+--------------------------------------------
+
+In practice, neural networks often tend towards overfitting and blurring of
+features; this is a particular issue with data varying between many orders
+of magnitude. Normalizing the input data using the input bounds reduces error
+in prediction as well the risk of feature loss. The simplest and most common
+approach is to linearly scale the data such that the lower bound becomes 0
+and the upper bound becomes 1:
 
 .. math:: x_{norm} = \frac{x_{data} - x_{min}}{x_{max} - x_{min}}
 
 .. math:: z_{norm} = \frac{z_{data} - z_{min}}{z_{max} - z_{min}}
+
+This scaling approaches generalizes to a common formula:
+
+.. math:: x_{norm} = \frac{f(x_{data}) - f(x_{min})}{f(x_{max}) - f(x_{min})}
+
+.. math:: z_{norm} = \frac{f(z_{data}) - f(z_{min})}{f(z_{max}) - f(z_{min})}
+
+FOQUS supports three scaling methods in this form: linear, base 10 logarithmic
+and base 10 exponential. Additionally, FOQUS supports two modified base 10
+scaling options. Users may write their own normalization functions and pass a string
+for FOQUS to parse internally via SymPy, a Python library for symbolic mathematics.
+It is the responsibility of the user to ensure string objects are valid SymPy
+expressions, and FOQUS will automatically scale and unscale using input and output
+variable bounds. For example, a custom version of 'Log' scaling would take the form below:
+
+.. code:: python
+  >>> ...
+  >>> self.normalized = True
+  >>> self.normalization_form = "Custom"
+  >>> self.normalization_function = "(log(input_val, 10) - log(input_min, 10))/(log(input_max, 10) - log(input_min, 10))"
+
+The line below follows Python standards and not SymPy standards, and would yield the following error message:
+.. code:: python
+  >> self.normalization_function = "(log10(input_val) - log10(input_min))/(log10(input_max) - log10(input_min))"
+  ValueError: Model attribute normalization_function has value
+  (log10(input_val) - log10(input_min))/(log10(input_max) - log10(input_min))
+  which is not a valid SymPy expression. Please refer to the latest documentation
+  for syntax guidelines and standards: https://docs.sympy.org/latest/index.html
+
+Similar detailed messages will appear in the console log for similar errors with specific causes.
+The expression must use 'input_val', 'input_min' and 'input_max' to be recognized by FOQUS. More
+information on SymPy syntax, structure and standards may be found in their latest release
+documentation: https://docs.sympy.org/latest/index.html.
+
+Available scaling options and required flags are summarized in the table below:
+rows - None, Linear, Log, Power, Log 2, Power 2, Custom
+columns - bounds, *normalized*, *normalization_form*, formula, *normulation_function*
+.. list-table:: Data Normalization Options
+  :widths: 15 10 10 20 15
+  :header-rows: 1
+
+  * -
+    - Variable Bounds
+    - *normalized*
+    - *normalization_form*
+    - Scaling Formula
+    - *normalization_function*
+  * - None
+    - Optional (not required)
+    - Must be *False* or absent
+    - Recommend excluding (not required)
+    - :math: `input_scaled = input_val`
+    - Recommend excluding (not required)
+  * - Linear
+    - Required
+    - Must be *True*
+    - 'Linear'
+    - :math: `input_scaled = \frac{input_val - input_min}{input_max - input_min}`
+    - Recommend excluding (not required)
+  * - Log Base 10
+    - Required
+    - Must be *True*
+    - Recommend excluding (not required)
+    - :math: `input_scaled = \frac{\log_{10} {(input_val)} - \log_{10} {(input_min)}}{\log_{10} {(input_max)} - \log_{10} {(input_min)}}`
+    - Recommend excluding (not required)
+  * - Power
+    - Required
+    - Must be *True*
+    - Recommend excluding (not required)
+    - :math: `input_scaled = \frac{10^{input_val} - 10^{input_min}}{10^{input_max} - 10^{input_min}}`
+    - Recommend excluding (not required)
+  * - Log Base 10 Modified
+    - Required
+    - Must be *True*
+    - Recommend excluding (not required)
+    - :math: `input_scaled = \log_{10} {(9 * {\frac{input_val - input_min}{input_max - input_min}} + 1)}`
+    - Recommend excluding (not required)
+  * - Power Modified
+    - Required
+    - Must be *True*
+    - Recommend excluding (not required)
+    - :math: `input_scaled = \frac{1}{9} * {(10^{\frac{input_val - input_min}{input_max - input_min}} - 1)}`
+    - Recommend excluding (not required)
+  * - Custom
+    - Required
+    - Must be *True*
+    - 'Custom'
+    - User-provided Formula
+    - User-provided Formula
+
+Usage Example
+-------------
 
 The following code snippet demonstrates the Python syntax to train and save
 a Keras model with custom attributes. The use of Dropout features in training
@@ -84,7 +190,9 @@ during fitting. Users may then enter unscaled input values and return unscaled
 output values in the Node Editor. Note that the custom object class script
 containing the class and the NN model file itself must all share the same name
 to import the custom attributes into a FOQUS node. If certain custom attributes
-are not used, users should not include them in the custom class definition.
+are not used, it is best if users do not include them in the custom class definition;
+for example, the attribute *normalization_function* is not required in this example
+and therefore is excluded in the code below.
 
 Users must ensure the proper script name is used in the following places,
 replacing *example_model* with the desired model name:

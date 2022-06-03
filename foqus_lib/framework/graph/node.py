@@ -343,26 +343,26 @@ class pymodel_ml_ai(pymodel):
                         "Model attribute normalization_function is not a string. "
                         "Please pass a string for the sympy parser to convert."
                         )
-                elif 'input_val' not in self.normalization_function:
+                elif 'value' not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
-                        " 'input_val', expression must use 'input_val' to "
+                        " 'value', expression must use 'value' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
                             )
                         )
-                elif 'input_min' not in self.normalization_function:
+                elif 'minimum' not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
-                        " 'input_min', expression must use 'input_min' to "
+                        " 'minimum', expression must use 'minimum' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
                             )
                         )
-                elif 'input_max' not in self.normalization_function:
+                elif 'maximum' not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
-                        " 'input_max', expression must use 'input_max' to "
+                        " 'maximum', expression must use 'maximum' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
                             )
@@ -372,8 +372,8 @@ class pymodel_ml_ai(pymodel):
                     scaling_function = parse(self.normalization_function)
                 except ValueError:
                     _logger.error(
-                        "Model attribute normalization_function has value {} which"
-                        "is not a valid sympy expression. Please refer to the "
+                        "Model attribute normalization_function has value {} which "
+                        "is not a valid SymPy expression. Please refer to the "
                         "latest documentation for syntax guidelines and standards: "
                         "https://docs.sympy.org/latest/index.html".format(
                             self.normalization_function
@@ -384,18 +384,18 @@ class pymodel_ml_ai(pymodel):
 
                 # create symbols for input value, min and max
                 # we will be substituting numerical entries sequenitally below
-                input_val = symbol('input_val')
-                input_min = symbol('input_min')
-                input_max = symbol('input_max')
+                value = symbol('value')
+                minimum = symbol('minimum')
+                maximum = symbol('maximum')
 
                 # set scaled input values from custom function
                 for i in self.inputs:
                     # substitute values for symbols in scaling function
                     # break it up so it's easier to follow, but could do in one line if desired
                     scaling_evaluated = scaling_function
-                    scaling_evaluated = scaling_evaluated.subs(input_val, self.inputs[i].value)
-                    scaling_evaluated = scaling_evaluated.subs(input_min, self.inputs[i].min)
-                    scaling_evaluated = scaling_evaluated.subs(input_max, self.inputs[i].max)
+                    scaling_evaluated = scaling_evaluated.subs(value, self.inputs[i].value)
+                    scaling_evaluated = scaling_evaluated.subs(minimum, self.inputs[i].min)
+                    scaling_evaluated = scaling_evaluated.subs(maximum, self.inputs[i].max)
 
                     # set model input value to scaled input value
                     inputs[i] = scaling_evaluated.evalf()
@@ -454,18 +454,18 @@ class pymodel_ml_ai(pymodel):
 
                 elif self.normalization_form == "Custom":
                     # create symbol for scaled inputs
-                    input_scaled = symbol('input_scaled')
+                    scaled = symbol('scaled')
 
                     # solve for inverse function to return unscaled values
                     try:  # solve function and throw useful error if error
                         # the method below write an equation
-                        # input_scaled = func(input_val, input_min, input_max)
+                        # scaled = func(value, minimum, maximum)
                         # and returns an equation
-                        # input_val = func(input_scaled, input_min, input_max)
+                        # value = func(scaled, minimum, maximum)
                         # the flag `rational=False` tells sympy not to reduce
                         # fractions in the expression, which saves memory
-                        unscaling_function = solve(input_scaled - scaling_function,
-                                                   input_val, rational=False)
+                        unscaling_function = solve(scaled - scaling_function,
+                                                   value, rational=False)
                     except ValueError:
                         _logger.error(
                             "Model attribute normalization_function has value {} which"
@@ -478,11 +478,10 @@ class pymodel_ml_ai(pymodel):
 
                     # use inverse function to unscale model outputs to actual outputs
                     # set unscaled output values from inverse function
-                    # variable called 'input_val' in expression is scaled output (since we are unscaling)
                     unscaling_evaluated = unscaling_function
-                    unscaling_evaluated = unscaling_evaluated.subs(input_val, outputs[outidx])
-                    unscaling_evaluated = unscaling_evaluated.subs(input_min, self.inputs[i].min)
-                    unscaling_evaluated = unscaling_evaluated.subs(input_max, self.inputs[i].max)
+                    unscaling_evaluated = unscaling_evaluated.subs(value, outputs[outidx])
+                    unscaling_evaluated = unscaling_evaluated.subs(minimum, self.outputs[j].min)
+                    unscaling_evaluated = unscaling_evaluated.subs(maximum, self.outputs[j].max)
 
                     # set actual output value to unscaled output value
                     self.outputs[j].value = unscaling_evaluated.evalf()

@@ -110,23 +110,27 @@ variable bounds. For example, a custom version of 'Log' scaling following SymPy 
   >>> ...
   >>> self.normalized = True
   >>> self.normalization_form = "Custom"
-  >>> self.normalization_function = "(log(value, 10) - log(minimum, 10))/(log(maximum, 10) - log(minimum, 10))"
+  >>> self.normalization_function = "(log(datavalue, 10) - log(dataminimum, 10))/(log(datamaximum, 10) - log(dataminimum, 10))"
   >>> ...
 
 The line below follows Python syntax and not SymPy syntax, and would yield the following error message:
 
 .. code:: python
 
-  >>> self.normalization_function = "(log10(value) - log10(minimum))/(log10(maximum) - log10(minimum))"
-  "ValueError: Model attribute normalization_function has value (log10(value) - log10(minimum))/(log10(maximum) - log10(minimum)) which is not a valid SymPy expression. Please refer to the latest documentation for syntax guidelines and standards: https://docs.sympy.org/latest/index.html"
+  >>> self.normalization_function = "(log10(datavalue) - log10(dataminimum))/(log10(datamaximum) - log10(dataminimum))"
+  "ValueError: Model attribute normalization_function has value (log10(datavalue) - log10(dataminimum))/(log10(datamaximum) - log10(dataminimum)) which is not a valid SymPy expression. Please refer to the latest documentation for syntax guidelines and standards: https://docs.sympy.org/latest/index.html"
 
+Note that 'value', 'minimum' and 'maximum' are common reserved method names within Python and
+other modules, and such the labels 'datavalue', 'dataminimum' and 'datamaximum' are used instead.
 Detailed messages will appear in the console log for similar errors with specific causes.
 Custom expressions must use 'value', 'minimum' and 'maximum' to be recognized by FOQUS.
 More information on SymPy syntax, structure and standards may be found in their latest release
 documentation: https://docs.sympy.org/latest/index.html.
 
 Note that users must implement desired data normalization during model training, and both of these steps
-occur externally to FOQUS. Available scaling options and required flags are summarized in the table below:
+occur externally to FOQUS. Users should ensure that data normalization results in an accurate neural network
+model without overfitting before loading into FOQUS. Available scaling options and required flags are
+summarized in the table below:
 
 .. list-table:: Data Normalization Options
   :widths: 10 15 10 10 20 15
@@ -142,43 +146,43 @@ occur externally to FOQUS. Available scaling options and required flags are summ
     - Optional (not required)
     - Must be *False* or absent
     - Recommend excluding (not required)
-    - :math:`scaled = value`
+    - :math:`datascaled = datavalue`
     - Recommend excluding (not required)
   * - Linear
     - Required
     - Must be *True*
     - 'Linear'
-    - :math:`scaled = \frac{value - minimum}{maximum - minimum}`
+    - :math:`datascaled = \frac{datavalue - dataminimum}{datamaximum - dataminimum}`
     - Recommend excluding (not required)
   * - Log Base 10
     - Required
     - Must be *True*
     - 'Log'
-    - :math:`scaled = \frac{\log_{10} {(value)} - \log_{10} {(minimum)}}{\log_{10} {(maximum)} - \log_{10} {(minimum)}}`
+    - :math:`datascaled = \frac{\log_{10} {(datavalue)} - \log_{10} {(dataminimum)}}{\log_{10} {(datamaximum)} - \log_{10} {(dataminimum)}}`
     - Recommend excluding (not required)
   * - Power
     - Required
     - Must be *True*
     - 'Power'
-    - :math:`scaled = \frac{10^{value} - 10^{minimum}}{10^{maximum} - 10^{minimum}}`
+    - :math:`datascaled = \frac{10^{datavalue} - 10^{dataminimum}}{10^{datamaximum} - 10^{dataminimum}}`
     - Recommend excluding (not required)
   * - Log Base 10 Modified
     - Required
     - Must be *True*
     - 'Log 2'
-    - :math:`scaled = \log_{10} {(9 * {\frac{value - minimum}{maximum - minimum}} + 1)}`
+    - :math:`datascaled = \log_{10} {(9 * {\frac{datavalue - dataminimum}{datamaximum - dataminimum}} + 1)}`
     - Recommend excluding (not required)
   * - Power Modified
     - Required
     - Must be *True*
     - 'Power 2'
-    - :math:`scaled = \frac{1}{9} * {(10^{\frac{value - minimum}{maximum - minimum}} - 1)}`
+    - :math:`datascaled = \frac{1}{9} * {(10^{\frac{datavalue - dataminimum}{datamaximum - dataminimum}} - 1)}`
     - Recommend excluding (not required)
   * - Custom
     - Required
     - Must be *True*
     - 'Custom'
-    - :math:`scaled = f(value, minimum, maximum)`
+    - :math:`datascaled = f(datavalue, dataminimum, datamaximum)`
     - Must be a String with proper SymPy syntax
 
 Usage Example
@@ -195,7 +199,9 @@ containing the class and the NN model file itself must all share the same name
 to import the custom attributes into a FOQUS node. If certain custom attributes
 are not used, it is best if users do not include them in the custom class definition;
 for example, the attribute *normalization_function* is not required in this example
-and therefore is excluded in the code below.
+and therefore is excluded in the code below. See
+*FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model__training_customnormform.py*
+for an example implementing a custom normalization function.
 
 Users must ensure the proper script name is used in the following places,
 replacing *example_model* with the desired model name:

@@ -14,8 +14,13 @@ rn.seed(1342)
 tf.random.set_seed(62)
 
 # custom class to define Keras NN layers
+# note that this model is identical to mea_column_model in every aspect
+# except for normalization, but needs a unique class name for the Keras
+# registry - otherwise this will throw errors when both are loaded in FOQUS
+
+
 @tf.keras.utils.register_keras_serializable()
-class mea_column_model(tf.keras.layers.Layer):
+class mea_column_model_customnormform(tf.keras.layers.Layer):
     def __init__(
         self,
         n_hidden=1,
@@ -28,10 +33,11 @@ class mea_column_model(tf.keras.layers.Layer):
         output_bounds=None,
         normalized=False,
         normalization_form="Linear",
+        normalization_function=None,
         **kwargs
     ):
 
-        super(mea_column_model, self).__init__()  # create callable object
+        super(mea_column_model_customnormform, self).__init__()  # create callable object
 
         # add attributes from training settings
         self.n_hidden = n_hidden
@@ -46,6 +52,7 @@ class mea_column_model(tf.keras.layers.Layer):
         self.output_bounds = output_bounds
         self.normalized = normalized  # FOQUS will read this and adjust accordingly
         self.normalization_form = normalization_form  # tells FOQUS which scaling form to use
+        self.normalization_function = normalization_function  # tells FOQUS scaling formula to use
 
         # create lists to contain new layer objects
         self.dense_layers = []  # hidden or output layers
@@ -73,7 +80,7 @@ class mea_column_model(tf.keras.layers.Layer):
 
     # attach attributes to class CONFIG
     def get_config(self):
-        config = super(mea_column_model, self).get_config()
+        config = super(mea_column_model_customnormform, self).get_config()
         config.update(
             {
                 "n_hidden": self.n_hidden,
@@ -86,6 +93,7 @@ class mea_column_model(tf.keras.layers.Layer):
                 "output_bounds": self.output_bounds,
                 "normalized": self.normalized,
                 "normalization_form": self.normalization_form,
+                "normalization_function": self.normalization_function,
             }
         )
         return config

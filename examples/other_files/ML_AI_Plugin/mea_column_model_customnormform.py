@@ -37,7 +37,9 @@ class mea_column_model_customnormform(tf.keras.layers.Layer):
         **kwargs
     ):
 
-        super(mea_column_model_customnormform, self).__init__()  # create callable object
+        super(
+            mea_column_model_customnormform, self
+        ).__init__()  # create callable object
 
         # add attributes from training settings
         self.n_hidden = n_hidden
@@ -51,8 +53,12 @@ class mea_column_model_customnormform(tf.keras.layers.Layer):
         self.input_bounds = input_bounds
         self.output_bounds = output_bounds
         self.normalized = normalized  # FOQUS will read this and adjust accordingly
-        self.normalization_form = normalization_form  # tells FOQUS which scaling form to use
-        self.normalization_function = normalization_function  # tells FOQUS scaling formula to use
+        self.normalization_form = (
+            normalization_form  # tells FOQUS which scaling form to use
+        )
+        self.normalization_function = (
+            normalization_function  # tells FOQUS scaling formula to use
+        )
 
         # create lists to contain new layer objects
         self.dense_layers = []  # hidden or output layers

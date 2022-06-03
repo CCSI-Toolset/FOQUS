@@ -34,10 +34,12 @@ def flowsheet_session_file_nocustomlayer(examples_dir: Path, request) -> Path:
 
 
 @pytest.fixture(
-    scope="module", params=["other_files/ML_AI_Plugin/mea_column_model_customnormform.foqus"]
+    scope="module",
+    params=["other_files/ML_AI_Plugin/mea_column_model_customnormform.foqus"],
 )
 def flowsheet_session_file_customnormform(examples_dir: Path, request) -> Path:
     return examples_dir / request.param
+
 
 # -----------------------------------------------------------------------------
 # generic tests to build model directories and import model files
@@ -201,7 +203,9 @@ class TestMLAIPluginFlowsheetRunNoCustomLayer:
         main_window: mainWindow,
         flowsheet_session_file_nocustomlayer: Path,
     ) -> FoqusSession:
-        main_window.loadSessionFile(str(flowsheet_session_file_nocustomlayer), saveCurrent=False)
+        main_window.loadSessionFile(
+            str(flowsheet_session_file_nocustomlayer), saveCurrent=False
+        )
         return main_window.dat
 
     def test_model_flowsheet_is_loaded(
@@ -277,7 +281,9 @@ class TestMLAIPluginFlowsheetRunCustomNormForm:
         main_window: mainWindow,
         flowsheet_session_file_customnormform: Path,
     ) -> FoqusSession:
-        main_window.loadSessionFile(str(flowsheet_session_file_customnormform), saveCurrent=False)
+        main_window.loadSessionFile(
+            str(flowsheet_session_file_customnormform), saveCurrent=False
+        )
         return main_window.dat
 
     def test_model_flowsheet_is_loaded(

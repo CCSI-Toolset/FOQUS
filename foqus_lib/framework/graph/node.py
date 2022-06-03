@@ -56,6 +56,7 @@ except ImportError:
             "kwargs={kwargs} but `tensorflow` is not available"
         )
 
+
 try:
     # sympy should be installed, but is not required if normalization is not
     # set to True, or if preset normalization option is used
@@ -84,6 +85,7 @@ except ImportError:
             f"`solve()` was called with args={args},"
             "kwargs={kwargs} but `sympy` is not available"
         )
+
 
 # pylint: enable=import-error
 
@@ -178,7 +180,7 @@ class pymodel_ml_ai(pymodel):
                 input_max = 1e5  # not necessarily a good default
 
             self.inputs[input_label] = NodeVars(
-                value=(input_min+input_max)/2,
+                value=(input_min + input_max) / 2,
                 vmin=input_min,
                 vmax=input_max,
                 vdflt=0.0,
@@ -226,7 +228,7 @@ class pymodel_ml_ai(pymodel):
                 output_max = 1e5  # not necessarily a good default
 
             self.outputs[output_label] = NodeVars(
-                value=(output_min+output_max)/2,
+                value=(output_min + output_max) / 2,
                 vmin=output_min,
                 vmax=output_max,
                 vdflt=0.0,
@@ -262,9 +264,9 @@ class pymodel_ml_ai(pymodel):
         # next, consider if model is normalized - must include a method type
         elif self.normalized is True:  # scale actual inputs
 
-        # select normalization type - users need to explicitly pass a form flag
-        # don't set a default - if users are setting this to True they should
-        # be aware of that FOQUS requires a normalization form flag as well
+            # select normalization type - users need to explicitly pass a form flag
+            # don't set a default - if users are setting this to True they should
+            # be aware of that FOQUS requires a normalization form flag as well
             try:  # see if form flag exists and throw useful error if not
                 self.normalization_form = self.model.layers[1].normalization_form
             except AttributeError:
@@ -272,17 +274,24 @@ class pymodel_ml_ai(pymodel):
                     "Model has no attribute normalization_form, and existing "
                     "attribute normalization was set to True. Users must "
                     "provide a normalization type for FOQUS to automatically "
-                    "scale flowsheet inputs and unscale flowsheet outputs.")
+                    "scale flowsheet inputs and unscale flowsheet outputs."
+                )
 
             # define a list of allowed forms; "Custom" requires norm_function
-            allowed_norm_forms = ["Linear", "Log", "Power",
-                                  "Log 2", "Power 2", "Custom"]
+            allowed_norm_forms = [
+                "Linear",
+                "Log",
+                "Power",
+                "Log 2",
+                "Power 2",
+                "Custom",
+            ]
             # see if form flag is an allowed type and throw useful error if not
             if self.normalization_form not in allowed_norm_forms:
                 raise AttributeError(
-                "Value {} not valid for normalization_form, please ensure the model uses "
-                "the appropriate flag from the following list and restart FOQUS: {}".format(
-                    str(self.normalization_form), str(allowed_norm_forms)
+                    "Value {} not valid for normalization_form, please ensure the model uses "
+                    "the appropriate flag from the following list and restart FOQUS: {}".format(
+                        str(self.normalization_form), str(allowed_norm_forms)
                     )
                 )
 
@@ -293,80 +302,94 @@ class pymodel_ml_ai(pymodel):
                     (self.inputs[i].value - self.inputs[i].min)
                     / (self.inputs[i].max - self.inputs[i].min)
                     for i in self.inputs
-                    ]
+                ]
             elif self.normalization_form == "Log":
                 inputs = [
                     (math.log10(self.inputs[i].value) - math.log10(self.inputs[i].min))
                     / (math.log10(self.inputs[i].max) - math.log10(self.inputs[i].min))
                     for i in self.inputs
-                    ]
+                ]
             elif self.normalization_form == "Power":
                 inputs = [
-                    (math.pow(10, self.inputs[i].value) - math.pow(10, self.inputs[i].min))
-                    / (math.pow(10, self.inputs[i].max) - math.pow(10, self.inputs[i].min))
+                    (
+                        math.pow(10, self.inputs[i].value)
+                        - math.pow(10, self.inputs[i].min)
+                    )
+                    / (
+                        math.pow(10, self.inputs[i].max)
+                        - math.pow(10, self.inputs[i].min)
+                    )
                     for i in self.inputs
-                    ]
+                ]
             elif self.normalization_form == "Log 2":
                 # if F = (value - min) / (max - min), then
                 # scaled = log10[9*F + 1]
                 inputs = [
                     math.log10(
-                        9 * (self.inputs[i].value - self.inputs[i].min)
-                        / (self.inputs[i].max - self.inputs[i].min) + 1
-                        )
+                        9
+                        * (self.inputs[i].value - self.inputs[i].min)
+                        / (self.inputs[i].max - self.inputs[i].min)
+                        + 1
+                    )
                     for i in self.inputs
-                    ]
+                ]
             elif self.normalization_form == "Power 2":
                 # if F = (value - min) / (max - min), then
                 # scaled = (1/9) * (10^F - 1)
                 inputs = [
-                    (1/9) * math.pow(10,
-                                     (self.inputs[i].value - self.inputs[i].min)
-                                     / (self.inputs[i].max - self.inputs[i].min)
-                                     ) - 1
+                    (1 / 9)
+                    * math.pow(
+                        10,
+                        (self.inputs[i].value - self.inputs[i].min)
+                        / (self.inputs[i].max - self.inputs[i].min),
+                    )
+                    - 1
                     for i in self.inputs
-                    ]
+                ]
 
             elif self.normalization_form == "Custom":
                 # check custom normalization form for requirements
                 try:  # see if function is passed and throw useful error if not
-                    self.normalization_function = self.model.layers[1].normalization_function
+                    self.normalization_function = self.model.layers[
+                        1
+                    ].normalization_function
                 except AttributeError:
                     _logger.error(
                         "Model has no attribute normalization_function, and existing "
                         "attribute normalization_form was set to Custom. Users must "
                         "provide a normalization function for FOQUS to automatically "
-                        "scale flowsheet inputs and unscale flowsheet outputs.")
+                        "scale flowsheet inputs and unscale flowsheet outputs."
+                    )
 
                 if type(self.normalization_function) is not str:
                     raise TypeError(
                         "Model attribute normalization_function is not a string. "
                         "Please pass a string for the sympy parser to convert."
-                        )
-                elif 'datavalue' not in self.normalization_function:
+                    )
+                elif "datavalue" not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
                         " 'datavalue', expression must use 'datavalue' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
-                            )
                         )
-                elif 'dataminimum' not in self.normalization_function:
+                    )
+                elif "dataminimum" not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
                         " 'dataminimum', expression must use 'dataminimum' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
-                            )
                         )
-                elif 'datamaximum' not in self.normalization_function:
+                    )
+                elif "datamaximum" not in self.normalization_function:
                     raise ValueError(
                         "Custom normalization function {} does not reference "
                         " 'datamaximum', expression must use 'datamaximum' to "
                         " refer to unscaled data values.".format(
                             self.normalization_function
-                            )
                         )
+                    )
 
                 try:  # parse function and throw useful error if syntax error
                     scaling_function = parse(self.normalization_function)
@@ -377,16 +400,16 @@ class pymodel_ml_ai(pymodel):
                         "latest documentation for syntax guidelines and standards: "
                         "https://docs.sympy.org/latest/index.html".format(
                             self.normalization_function
-                            )
                         )
+                    )
 
                 # use parsed function to scale actual inputs to model inputs
 
                 # create symbols for input datavalue, datamin and datamax
                 # we will be substituting numerical entries sequenitally below
-                datavalue = symbol('datavalue')
-                dataminimum = symbol('dataminimum')
-                datamaximum = symbol('datamaximum')
+                datavalue = symbol("datavalue")
+                dataminimum = symbol("dataminimum")
+                datamaximum = symbol("datamaximum")
 
                 # set scaled input values from custom function
                 # put substitution in method so list comprehension is cleaner
@@ -394,9 +417,15 @@ class pymodel_ml_ai(pymodel):
                     # substitute values for symbols in scaling function
                     # break it up so it's easier to follow, but could do in one line if desired
                     scaling_evaluated = scaling_function
-                    scaling_evaluated = scaling_evaluated.subs(datavalue, self.inputs[i].value)
-                    scaling_evaluated = scaling_evaluated.subs(dataminimum, self.inputs[i].min)
-                    scaling_evaluated = scaling_evaluated.subs(datamaximum, self.inputs[i].max)
+                    scaling_evaluated = scaling_evaluated.subs(
+                        datavalue, self.inputs[i].value
+                    )
+                    scaling_evaluated = scaling_evaluated.subs(
+                        dataminimum, self.inputs[i].min
+                    )
+                    scaling_evaluated = scaling_evaluated.subs(
+                        datamaximum, self.inputs[i].max
+                    )
 
                     return scaling_evaluated
 
@@ -416,47 +445,46 @@ class pymodel_ml_ai(pymodel):
             # so don't need to check for those here as well
             elif self.normalized is True:  # unscale to obtain actual output values
 
-            # select normalization type - should be user defined and must be set.
-            # don't set a default - if users are setting this to True they should
-            # be aware of that FOQUS requires a normalization form flag as well
+                # select normalization type - should be user defined and must be set.
+                # don't set a default - if users are setting this to True they should
+                # be aware of that FOQUS requires a normalization form flag as well
 
-                if self.normalization_form == 'Linear':
+                if self.normalization_form == "Linear":
                     self.outputs[j].value = (
                         outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
                         + self.outputs[j].min
-                        )
+                    )
                 elif self.normalization_form == "Log":
-                    self.outputs[j].value = (
-                        math.pow(10,
-                                 outputs[outidx] *
-                                 (math.log10(self.outputs[j].max) - math.log10(self.outputs[j].min))
-                                 + math.log10(self.outputs[j].min)
-                                 )
+                    self.outputs[j].value = math.pow(
+                        10,
+                        outputs[outidx]
+                        * (
+                            math.log10(self.outputs[j].max)
+                            - math.log10(self.outputs[j].min)
                         )
+                        + math.log10(self.outputs[j].min),
+                    )
                 elif self.normalization_form == "Power":
-                    self.outputs[j].value = (
-                        math.log10(
-                                outputs[outidx] *
-                                (math.pow(10, self.outputs[j].max) - math.pow(10, self.outputs[j].min))
-                                + math.pow(10, self.outputs[j].min)
-                                )
+                    self.outputs[j].value = math.log10(
+                        outputs[outidx]
+                        * (
+                            math.pow(10, self.outputs[j].max)
+                            - math.pow(10, self.outputs[j].min)
                         )
+                        + math.pow(10, self.outputs[j].min)
+                    )
                 elif self.normalization_form == "Log 2":
-                    self.outputs[j].value = (
-                        (math.pow(10, outputs[outidx]) - 1) *
-                        (self.outputs[j].max - self.outputs[j].min)/9
-                        + self.outputs[j].min
-                        )
+                    self.outputs[j].value = (math.pow(10, outputs[outidx]) - 1) * (
+                        self.outputs[j].max - self.outputs[j].min
+                    ) / 9 + self.outputs[j].min
                 elif self.normalization_form == "Power 2":
-                    self.outputs[j].value = (
-                        (math.log10(9 * outputs[outidx]) + 1) *
-                        (self.outputs[j].max - self.outputs[j].min)
-                        + self.outputs[j].min
-                        )
+                    self.outputs[j].value = (math.log10(9 * outputs[outidx]) + 1) * (
+                        self.outputs[j].max - self.outputs[j].min
+                    ) + self.outputs[j].min
 
                 elif self.normalization_form == "Custom":
                     # create symbol for scaled outputs
-                    datascaled = symbol('datascaled')
+                    datascaled = symbol("datascaled")
 
                     # solve for inverse function to return unscaled values
                     try:  # solve function and throw useful error if error
@@ -466,8 +494,9 @@ class pymodel_ml_ai(pymodel):
                         # datavalue = func(datascaled, dataminimum, datamaximum)
                         # the flag `rational=False` tells sympy not to reduce
                         # fractions in the expression, which saves memory
-                        unscaling_function = solve(datascaled - scaling_function,
-                                                   datavalue, rational=False)[0]
+                        unscaling_function = solve(
+                            datascaled - scaling_function, datavalue, rational=False
+                        )[0]
                     except ValueError:
                         _logger.error(
                             "Model attribute normalization_function has value {} which"
@@ -475,15 +504,21 @@ class pymodel_ml_ai(pymodel):
                             "latest documentation for syntax guidelines and standards: "
                             "https://docs.sympy.org/latest/index.html".format(
                                 self.normalization_function
-                                )
                             )
+                        )
 
                     # use inverse function to unscale model outputs to actual outputs
                     # set unscaled output values from inverse function
                     unscaling_evaluated = unscaling_function
-                    unscaling_evaluated = unscaling_evaluated.subs(datascaled, outputs[outidx])
-                    unscaling_evaluated = unscaling_evaluated.subs(dataminimum, self.outputs[j].min)
-                    unscaling_evaluated = unscaling_evaluated.subs(datamaximum, self.outputs[j].max)
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        datascaled, outputs[outidx]
+                    )
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        dataminimum, self.outputs[j].min
+                    )
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        datamaximum, self.outputs[j].max
+                    )
 
                     # set actual output value to unscaled output value
                     self.outputs[j].value = float(unscaling_evaluated.evalf())

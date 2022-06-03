@@ -54,7 +54,9 @@ class mea_column_model(tf.keras.layers.Layer):
         self.input_bounds = input_bounds
         self.output_bounds = output_bounds
         self.normalized = normalized  # FOQUS will read this and adjust accordingly
-        self.normalization_form = normalization_form  # tells FOQUS which scaling form to use
+        self.normalization_form = (
+            normalization_form  # tells FOQUS which scaling form to use
+        )
 
         # create lists to contain new layer objects
         self.dense_layers = []  # hidden or output layers

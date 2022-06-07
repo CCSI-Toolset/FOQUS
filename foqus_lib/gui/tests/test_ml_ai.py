@@ -3,7 +3,7 @@ import shutil
 from typing import List, Tuple
 
 import pytest
-from pytest_qt_extras import QtBot, instrument
+from pytest_qt_extras import QtBot
 from PyQt5 import QtWidgets
 
 from foqus_lib.gui.main.mainWindow import mainWindow
@@ -19,25 +19,13 @@ _ = pytest.importorskip("tensorflow", reason="tensorflow not installed")
 # fixtures to call correct session files for each test class
 
 
+# use a single FOQUS session and just load models as needed to reduce memory
+# ML AI Plugin will already be selected, just need to select new model names
+
 @pytest.fixture(
     scope="module", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
 )
 def flowsheet_session_file(examples_dir: Path, request) -> Path:
-    return examples_dir / request.param
-
-
-@pytest.fixture(
-    scope="module", params=["other_files/ML_AI_Plugin/AR_nocustomlayer.foqus"]
-)
-def flowsheet_session_file_nocustomlayer(examples_dir: Path, request) -> Path:
-    return examples_dir / request.param
-
-
-@pytest.fixture(
-    scope="module",
-    params=["other_files/ML_AI_Plugin/mea_column_model_customnormform.foqus"],
-)
-def flowsheet_session_file_customnormform(examples_dir: Path, request) -> Path:
     return examples_dir / request.param
 
 
@@ -59,7 +47,8 @@ def models_dir(
 )
 def install_ml_ai_model_files(examples_dir: Path, models_dir: Path) -> Path:
     """
-    This is a module-level fixture with autouse b/c it needs to be created before the main window is instantiated.
+    This is a module-level fixture with autouse b/c it needs to be created
+    before the main window is instantiated.
     """
 
     base_path = examples_dir / "other_files" / "ML_AI_Plugin"
@@ -102,9 +91,7 @@ def test_model_files_are_present(model_files: List[Path]):
 
 
 # ----------------------------------------------------------------------------
-# specific classes to test running each example (main example using the
-# 'Linear' normalization flag, simple example without a custom layer, and
-# a modified example with a custom normalization function form)
+# parent class to run flowsheet, starting from main FOQUS session
 
 
 class TestMLAIPluginFlowsheetRun:
@@ -121,7 +108,8 @@ class TestMLAIPluginFlowsheetRun:
     def test_flowsheet_tab_is_active(
         self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet
     ):
-        assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
+        assert main_window.mainWidget.currentIndex() == \
+            main_window.screenIndex["flow"]
 
     @pytest.fixture
     def active_session(
@@ -129,7 +117,8 @@ class TestMLAIPluginFlowsheetRun:
         main_window: mainWindow,
         flowsheet_session_file: Path,
     ) -> FoqusSession:
-        main_window.loadSessionFile(str(flowsheet_session_file), saveCurrent=False)
+        main_window.loadSessionFile(str(flowsheet_session_file),
+                                    saveCurrent=False)
         return main_window.dat
 
     def test_model_flowsheet_is_loaded(
@@ -151,185 +140,148 @@ class TestMLAIPluginFlowsheetRun:
     def test_ml_ai_models_loaded(self, pymodels_ml_ai: ml_ai_models):
         assert len(pymodels_ml_ai.ml_ai_models) > 0
 
-    @pytest.fixture
-    def trigger_flowsheet_run_action(
-        self,
-        qtbot: QtBot,
-        active_session,
-        main_window: mainWindow,
-        pymodels_ml_ai,
-    ):
-        run_action = main_window.runAction
-        with qtbot.replacing_with_signal(
-            (QtWidgets.QMessageBox, "information"),
-            (QtWidgets.QMessageBox, "critical"),
-        ) as signal:
-            with qtbot.wait_signal(signal, timeout=2_000):
-                run_action.trigger()
-        return run_action
+    # specific classes to test running each example (main example using the
+    # 'Linear' normalization flag, simple example without a custom layer, and
+    # a modified example with a custom normalization function form)
 
-    @pytest.fixture(scope="function")
-    def statusbar_message(self, main_window: mainWindow) -> str:
-        return main_window.statusBar().currentMessage()
+    class TestMEALinearNorm:  # load MEA main example model and run flowsheet
 
-    def test_flowsheet_run_successful(
-        self,
-        trigger_flowsheet_run_action,
-        statusbar_message: str,
-        text_when_success: str = "Finished Single Simulation... Success",
-    ):
-        assert text_when_success in statusbar_message
+        def test_node_box_text(self, active_session):
+            simnode = active_session.mainWin.nodeDock
 
+            # set simulation node node and confirm the updates are correct
+            simnode.setNodeName('test')
+            assert simnode.nodeNameBox.currentText() == 'test'
+            assert simnode.nodeName == 'test'
 
-class TestMLAIPluginFlowsheetRunNoCustomLayer:
-    @pytest.fixture
-    def focus_flowsheet_tab(
-        self,
-        qtbot: QtBot,
-        main_window,
-    ) -> None:
-        qtbot.focused = main_window
-        with qtbot.wait_signal(main_window.fsEditAction.triggered):
-            qtbot.click(button="Flowsheet")
+            # set model type to 5 and confirm it's ML_AI
+            simnode.modelTypeBox.setCurrentIndex(5)
+            assert simnode.modelTypeBox.currentText() == 'ML_AI'
 
-    def test_flowsheet_tab_is_active(
-        self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet
-    ):
-        assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
+            # set sim name and confirm it's the correct model
+            simnode.simNameBox.setCurrentIndex(2)
+            assert simnode.simNameBox.currentText() == 'mea_column_model'
 
-    @pytest.fixture
-    def active_session(
-        self,
-        main_window: mainWindow,
-        flowsheet_session_file_nocustomlayer: Path,
-    ) -> FoqusSession:
-        main_window.loadSessionFile(
-            str(flowsheet_session_file_nocustomlayer), saveCurrent=False
-        )
-        return main_window.dat
+        @pytest.fixture
+        def trigger_flowsheet_run_action(
+            self,
+            qtbot: QtBot,
+            active_session,
+            main_window: mainWindow,
+            pymodels_ml_ai,
+        ):
+            run_action = main_window.runAction
+            with qtbot.replacing_with_signal(
+                (QtWidgets.QMessageBox, "information"),
+                (QtWidgets.QMessageBox, "critical"),
+            ) as signal:
+                with qtbot.wait_signal(signal, timeout=2_000):
+                    run_action.trigger()
+            return run_action
 
-    def test_model_flowsheet_is_loaded(
-        self, qtbot: QtBot, focus_flowsheet_tab, active_session: FoqusSession
-    ):
-        assert active_session.flowsheet is not None
+        @pytest.fixture(scope="function")
+        def statusbar_message(self, main_window: mainWindow) -> str:
+            return main_window.statusBar().currentMessage()
 
-    @pytest.fixture
-    def pymodels_ml_ai(
-        self,
-        active_session: FoqusSession,
-        model_files: List[Path],
-        models_dir: Path,
-    ) -> ml_ai_models:
-        if not model_files:
-            pytest.skip(f"No model files found in directory: {models_dir}")
-        return active_session.pymodels_ml_ai
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message
 
-    def test_ml_ai_models_loaded(self, pymodels_ml_ai: ml_ai_models):
-        assert len(pymodels_ml_ai.ml_ai_models) > 0
+    class TestMEACustomNorm:  # load MEA custom norm model and run flowsheet
 
-    @pytest.fixture
-    def trigger_flowsheet_run_action(
-        self,
-        qtbot: QtBot,
-        active_session,
-        main_window: mainWindow,
-        pymodels_ml_ai,
-    ):
-        run_action = main_window.runAction
-        with qtbot.replacing_with_signal(
-            (QtWidgets.QMessageBox, "information"),
-            (QtWidgets.QMessageBox, "critical"),
-        ) as signal:
-            with qtbot.wait_signal(signal, timeout=2_000):
-                run_action.trigger()
-        return run_action
+        def test_node_box_text(self, active_session):
+            simnode = active_session.mainWin.nodeDock
 
-    @pytest.fixture(scope="function")
-    def statusbar_message(self, main_window: mainWindow) -> str:
-        return main_window.statusBar().currentMessage()
+            # set simulation node node and confirm the updates are correct
+            simnode.setNodeName('test')
+            assert simnode.nodeNameBox.currentText() == 'test'
+            assert simnode.nodeName == 'test'
 
-    def test_flowsheet_run_successful(
-        self,
-        trigger_flowsheet_run_action,
-        statusbar_message: str,
-        text_when_success: str = "Finished Single Simulation... Success",
-    ):
-        assert text_when_success in statusbar_message
+            # set model type to 5 and confirm it's ML_AI
+            simnode.modelTypeBox.setCurrentIndex(5)
+            assert simnode.modelTypeBox.currentText() == 'ML_AI'
 
+            # set sim name and confirm it's the correct model
+            simnode.simNameBox.setCurrentIndex(3)
+            assert simnode.simNameBox.currentText() ==  \
+                'mea_column_model_customnormform'
 
-class TestMLAIPluginFlowsheetRunCustomNormForm:
-    pytest.importorskip("sympy", reason="sympy not installed")
+        @pytest.fixture
+        def trigger_flowsheet_run_action(
+            self,
+            qtbot: QtBot,
+            active_session,
+            main_window: mainWindow,
+            pymodels_ml_ai,
+        ):
+            run_action = main_window.runAction
+            with qtbot.replacing_with_signal(
+                (QtWidgets.QMessageBox, "information"),
+                (QtWidgets.QMessageBox, "critical"),
+            ) as signal:
+                with qtbot.wait_signal(signal, timeout=2_000):
+                    run_action.trigger()
+            return run_action
 
-    @pytest.fixture
-    def focus_flowsheet_tab(
-        self,
-        qtbot: QtBot,
-        main_window,
-    ) -> None:
-        qtbot.focused = main_window
-        with qtbot.wait_signal(main_window.fsEditAction.triggered):
-            qtbot.click(button="Flowsheet")
+        @pytest.fixture(scope="function")
+        def statusbar_message(self, main_window: mainWindow) -> str:
+            return main_window.statusBar().currentMessage()
 
-    def test_flowsheet_tab_is_active(
-        self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet
-    ):
-        assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message
 
-    @pytest.fixture
-    def active_session(
-        self,
-        main_window: mainWindow,
-        flowsheet_session_file_customnormform: Path,
-    ) -> FoqusSession:
-        main_window.loadSessionFile(
-            str(flowsheet_session_file_customnormform), saveCurrent=False
-        )
-        return main_window.dat
+    class TestARNoCustomLayer:  # load AR model and run flowsheet
 
-    def test_model_flowsheet_is_loaded(
-        self, qtbot: QtBot, focus_flowsheet_tab, active_session: FoqusSession
-    ):
-        assert active_session.flowsheet is not None
+        def test_node_box_text(self, active_session):
+            simnode = active_session.mainWin.nodeDock
 
-    @pytest.fixture
-    def pymodels_ml_ai(
-        self,
-        active_session: FoqusSession,
-        model_files: List[Path],
-        models_dir: Path,
-    ) -> ml_ai_models:
-        if not model_files:
-            pytest.skip(f"No model files found in directory: {models_dir}")
-        return active_session.pymodels_ml_ai
+            # set simulation node node and confirm the updates are correct
+            simnode.setNodeName('test')
+            assert simnode.nodeNameBox.currentText() == 'test'
+            assert simnode.nodeName == 'test'
 
-    def test_ml_ai_models_loaded(self, pymodels_ml_ai: ml_ai_models):
-        assert len(pymodels_ml_ai.ml_ai_models) > 0
+            # set model type to 5 and confirm it's ML_AI
+            simnode.modelTypeBox.setCurrentIndex(5)
+            assert simnode.modelTypeBox.currentText() == 'ML_AI'
 
-    @pytest.fixture
-    def trigger_flowsheet_run_action(
-        self,
-        qtbot: QtBot,
-        active_session,
-        main_window: mainWindow,
-        pymodels_ml_ai,
-    ):
-        run_action = main_window.runAction
-        with qtbot.replacing_with_signal(
-            (QtWidgets.QMessageBox, "information"),
-            (QtWidgets.QMessageBox, "critical"),
-        ) as signal:
-            with qtbot.wait_signal(signal, timeout=2_000):
-                run_action.trigger()
-        return run_action
+            # set sim name and confirm it's the correct model
+            simnode.simNameBox.setCurrentIndex(1)
+            assert simnode.simNameBox.currentText() == 'AR_nocustomlayer'
 
-    @pytest.fixture(scope="function")
-    def statusbar_message(self, main_window: mainWindow) -> str:
-        return main_window.statusBar().currentMessage()
+        @pytest.fixture
+        def trigger_flowsheet_run_action(
+            self,
+            qtbot: QtBot,
+            active_session,
+            main_window: mainWindow,
+            pymodels_ml_ai,
+        ):
+            run_action = main_window.runAction
+            with qtbot.replacing_with_signal(
+                (QtWidgets.QMessageBox, "information"),
+                (QtWidgets.QMessageBox, "critical"),
+            ) as signal:
+                with qtbot.wait_signal(signal, timeout=2_000):
+                    run_action.trigger()
+            return run_action
 
-    def test_flowsheet_run_successful(
-        self,
-        trigger_flowsheet_run_action,
-        statusbar_message: str,
-        text_when_success: str = "Finished Single Simulation... Success",
-    ):
-        assert text_when_success in statusbar_message
+        @pytest.fixture(scope="function")
+        def statusbar_message(self, main_window: mainWindow) -> str:
+            return main_window.statusBar().currentMessage()
+
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message

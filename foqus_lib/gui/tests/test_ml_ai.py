@@ -96,7 +96,7 @@ def test_model_files_are_present(model_files: List[Path]):
 
 
 class TestMLAIPluginFlowsheetRun:
-    @pytest.fixture
+    @pytest.fixture(scope="class")
     def focus_flowsheet_tab(
         self,
         qtbot: QtBot,
@@ -111,7 +111,7 @@ class TestMLAIPluginFlowsheetRun:
     ):
         assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
 
-    @pytest.fixture
+    @pytest.fixture(scope="class")
     def active_session(
         self,
         main_window: mainWindow,
@@ -125,7 +125,7 @@ class TestMLAIPluginFlowsheetRun:
     ):
         assert active_session.flowsheet is not None
 
-    @pytest.fixture
+    @pytest.fixture(scope="class")
     def pymodels_ml_ai(
         self,
         active_session: FoqusSession,
@@ -139,47 +139,50 @@ class TestMLAIPluginFlowsheetRun:
     def test_ml_ai_models_loaded(self, pymodels_ml_ai: ml_ai_models):
         assert len(pymodels_ml_ai.ml_ai_models) > 0
 
-    # specific classes to test running each example (main example using the
+    @pytest.fixture(scope="class")
+    def trigger_flowsheet_run_action(
+        self,
+        qtbot: QtBot,
+        active_session,
+        main_window: mainWindow,
+        pymodels_ml_ai,
+    ):
+        run_action = main_window.runAction
+        with qtbot.replacing_with_signal(
+            (QtWidgets.QMessageBox, "information"),
+            (QtWidgets.QMessageBox, "critical"),
+        ) as signal:
+            with qtbot.wait_signal(signal, timeout=2_000):
+                run_action.trigger()
+        return run_action
+
+    @pytest.fixture(scope="class")
+    def statusbar_message(self, main_window: mainWindow) -> str:
+        return main_window.statusBar().currentMessage()
+
+    # specific methods to test running each example (main example using the
     # 'Linear' normalization flag, simple example without a custom layer, and
     # a modified example with a custom normalization function form)
 
-    class TestMEALinearNorm:  # load MEA main example model and run flowsheet
-        def test_node_box_text(self, active_session):
-            simnode = active_session.mainWin.nodeDock
+    @pytest.fixture(scope="class")
+    def simnode(self, active_session):
+        simnode = active_session.mainWin.nodeDock
+        return simnode
 
-            # set simulation node node and confirm the updates are correct
-            simnode.setNodeName("test")
-            assert simnode.nodeNameBox.currentText() == "test"
-            assert simnode.nodeName == "test"
+    def test_sim_and_modeltype(self, active_session, simnode):
+        # set simulation node node and confirm the updates are correct
+        simnode.setNodeName("test")
+        assert simnode.nodeNameBox.currentText() == "test"
+        assert simnode.nodeName == "test"
 
-            # set model type to 5 and confirm it's ML_AI
-            simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == "ML_AI"
+        # set model type to 5 and confirm it's ML_AI
+        simnode.modelTypeBox.setCurrentIndex(5)
+        assert simnode.modelTypeBox.currentText() == "ML_AI"
 
-            # set sim name and confirm it's the correct model
-            simnode.simNameBox.setCurrentIndex(2)
-            assert simnode.simNameBox.currentText() == "mea_column_model"
-
-        @pytest.fixture
-        def trigger_flowsheet_run_action(
-            self,
-            qtbot: QtBot,
-            active_session,
-            main_window: mainWindow,
-            pymodels_ml_ai,
-        ):
-            run_action = main_window.runAction
-            with qtbot.replacing_with_signal(
-                (QtWidgets.QMessageBox, "information"),
-                (QtWidgets.QMessageBox, "critical"),
-            ) as signal:
-                with qtbot.wait_signal(signal, timeout=2_000):
-                    run_action.trigger()
-            return run_action
-
-        @pytest.fixture(scope="function")
-        def statusbar_message(self, main_window: mainWindow) -> str:
-            return main_window.statusBar().currentMessage()
+    def test_load_and_run_mealinearnorm(self, active_session, simnode):
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(2)
+        assert simnode.simNameBox.currentText() == "mea_column_model"
 
         def test_flowsheet_run_successful(
             self,
@@ -189,43 +192,10 @@ class TestMLAIPluginFlowsheetRun:
         ):
             assert text_when_success in statusbar_message
 
-    class TestMEACustomNorm:  # load MEA custom norm model and run flowsheet
-        def test_node_box_text(self, active_session):
-            simnode = active_session.mainWin.nodeDock
-
-            # set simulation node node and confirm the updates are correct
-            simnode.setNodeName("test")
-            assert simnode.nodeNameBox.currentText() == "test"
-            assert simnode.nodeName == "test"
-
-            # set model type to 5 and confirm it's ML_AI
-            simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == "ML_AI"
-
-            # set sim name and confirm it's the correct model
-            simnode.simNameBox.setCurrentIndex(3)
-            assert simnode.simNameBox.currentText() == "mea_column_model_customnormform"
-
-        @pytest.fixture
-        def trigger_flowsheet_run_action(
-            self,
-            qtbot: QtBot,
-            active_session,
-            main_window: mainWindow,
-            pymodels_ml_ai,
-        ):
-            run_action = main_window.runAction
-            with qtbot.replacing_with_signal(
-                (QtWidgets.QMessageBox, "information"),
-                (QtWidgets.QMessageBox, "critical"),
-            ) as signal:
-                with qtbot.wait_signal(signal, timeout=2_000):
-                    run_action.trigger()
-            return run_action
-
-        @pytest.fixture(scope="function")
-        def statusbar_message(self, main_window: mainWindow) -> str:
-            return main_window.statusBar().currentMessage()
+    def test_load_and_run_meacustomnormform(self, active_session, simnode):
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(3)
+        assert simnode.simNameBox.currentText() == "mea_column_model_customnormform"
 
         def test_flowsheet_run_successful(
             self,
@@ -235,43 +205,10 @@ class TestMLAIPluginFlowsheetRun:
         ):
             assert text_when_success in statusbar_message
 
-    class TestARNoCustomLayer:  # load AR model and run flowsheet
-        def test_node_box_text(self, active_session):
-            simnode = active_session.mainWin.nodeDock
-
-            # set simulation node node and confirm the updates are correct
-            simnode.setNodeName("test")
-            assert simnode.nodeNameBox.currentText() == "test"
-            assert simnode.nodeName == "test"
-
-            # set model type to 5 and confirm it's ML_AI
-            simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == "ML_AI"
-
-            # set sim name and confirm it's the correct model
-            simnode.simNameBox.setCurrentIndex(1)
-            assert simnode.simNameBox.currentText() == "AR_nocustomlayer"
-
-        @pytest.fixture
-        def trigger_flowsheet_run_action(
-            self,
-            qtbot: QtBot,
-            active_session,
-            main_window: mainWindow,
-            pymodels_ml_ai,
-        ):
-            run_action = main_window.runAction
-            with qtbot.replacing_with_signal(
-                (QtWidgets.QMessageBox, "information"),
-                (QtWidgets.QMessageBox, "critical"),
-            ) as signal:
-                with qtbot.wait_signal(signal, timeout=2_000):
-                    run_action.trigger()
-            return run_action
-
-        @pytest.fixture(scope="function")
-        def statusbar_message(self, main_window: mainWindow) -> str:
-            return main_window.statusBar().currentMessage()
+    def test_load_and_run_arnocustomlayer(self, active_session, simnode):
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(1)
+        assert simnode.simNameBox.currentText() == "AR_nocustomlayer"
 
         def test_flowsheet_run_successful(
             self,

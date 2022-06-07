@@ -22,6 +22,7 @@ _ = pytest.importorskip("tensorflow", reason="tensorflow not installed")
 # use a single FOQUS session and just load models as needed to reduce memory
 # ML AI Plugin will already be selected, just need to select new model names
 
+
 @pytest.fixture(
     scope="module", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
 )
@@ -108,8 +109,7 @@ class TestMLAIPluginFlowsheetRun:
     def test_flowsheet_tab_is_active(
         self, qtbot: QtBot, main_window, focus_flowsheet_tab: drawFlowsheet
     ):
-        assert main_window.mainWidget.currentIndex() == \
-            main_window.screenIndex["flow"]
+        assert main_window.mainWidget.currentIndex() == main_window.screenIndex["flow"]
 
     @pytest.fixture
     def active_session(
@@ -117,8 +117,7 @@ class TestMLAIPluginFlowsheetRun:
         main_window: mainWindow,
         flowsheet_session_file: Path,
     ) -> FoqusSession:
-        main_window.loadSessionFile(str(flowsheet_session_file),
-                                    saveCurrent=False)
+        main_window.loadSessionFile(str(flowsheet_session_file), saveCurrent=False)
         return main_window.dat
 
     def test_model_flowsheet_is_loaded(
@@ -145,22 +144,21 @@ class TestMLAIPluginFlowsheetRun:
     # a modified example with a custom normalization function form)
 
     class TestMEALinearNorm:  # load MEA main example model and run flowsheet
-
         def test_node_box_text(self, active_session):
             simnode = active_session.mainWin.nodeDock
 
             # set simulation node node and confirm the updates are correct
-            simnode.setNodeName('test')
-            assert simnode.nodeNameBox.currentText() == 'test'
-            assert simnode.nodeName == 'test'
+            simnode.setNodeName("test")
+            assert simnode.nodeNameBox.currentText() == "test"
+            assert simnode.nodeName == "test"
 
             # set model type to 5 and confirm it's ML_AI
             simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == 'ML_AI'
+            assert simnode.modelTypeBox.currentText() == "ML_AI"
 
             # set sim name and confirm it's the correct model
             simnode.simNameBox.setCurrentIndex(2)
-            assert simnode.simNameBox.currentText() == 'mea_column_model'
+            assert simnode.simNameBox.currentText() == "mea_column_model"
 
         @pytest.fixture
         def trigger_flowsheet_run_action(
@@ -192,23 +190,21 @@ class TestMLAIPluginFlowsheetRun:
             assert text_when_success in statusbar_message
 
     class TestMEACustomNorm:  # load MEA custom norm model and run flowsheet
-
         def test_node_box_text(self, active_session):
             simnode = active_session.mainWin.nodeDock
 
             # set simulation node node and confirm the updates are correct
-            simnode.setNodeName('test')
-            assert simnode.nodeNameBox.currentText() == 'test'
-            assert simnode.nodeName == 'test'
+            simnode.setNodeName("test")
+            assert simnode.nodeNameBox.currentText() == "test"
+            assert simnode.nodeName == "test"
 
             # set model type to 5 and confirm it's ML_AI
             simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == 'ML_AI'
+            assert simnode.modelTypeBox.currentText() == "ML_AI"
 
             # set sim name and confirm it's the correct model
             simnode.simNameBox.setCurrentIndex(3)
-            assert simnode.simNameBox.currentText() ==  \
-                'mea_column_model_customnormform'
+            assert simnode.simNameBox.currentText() == "mea_column_model_customnormform"
 
         @pytest.fixture
         def trigger_flowsheet_run_action(
@@ -240,22 +236,21 @@ class TestMLAIPluginFlowsheetRun:
             assert text_when_success in statusbar_message
 
     class TestARNoCustomLayer:  # load AR model and run flowsheet
-
         def test_node_box_text(self, active_session):
             simnode = active_session.mainWin.nodeDock
 
             # set simulation node node and confirm the updates are correct
-            simnode.setNodeName('test')
-            assert simnode.nodeNameBox.currentText() == 'test'
-            assert simnode.nodeName == 'test'
+            simnode.setNodeName("test")
+            assert simnode.nodeNameBox.currentText() == "test"
+            assert simnode.nodeName == "test"
 
             # set model type to 5 and confirm it's ML_AI
             simnode.modelTypeBox.setCurrentIndex(5)
-            assert simnode.modelTypeBox.currentText() == 'ML_AI'
+            assert simnode.modelTypeBox.currentText() == "ML_AI"
 
             # set sim name and confirm it's the correct model
             simnode.simNameBox.setCurrentIndex(1)
-            assert simnode.simNameBox.currentText() == 'AR_nocustomlayer'
+            assert simnode.simNameBox.currentText() == "AR_nocustomlayer"
 
         @pytest.fixture
         def trigger_flowsheet_run_action(

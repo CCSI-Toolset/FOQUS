@@ -193,6 +193,7 @@ class TestMLAIPluginFlowsheetRun:
             assert text_when_success in statusbar_message
 
     def test_load_and_run_meacustomnormform(self, active_session, simnode):
+        pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(3)
         assert simnode.simNameBox.currentText() == "mea_column_model_customnormform"

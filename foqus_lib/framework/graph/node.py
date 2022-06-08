@@ -42,50 +42,96 @@ from importlib import import_module
 _logger = logging.getLogger("foqus." + __name__)
 
 # pylint: disable=import-error
-try:
-    # tensorflow should be installed, but is not required for non ML/AI models
-    import tensorflow as tf
 
-    load = tf.keras.models.load_model
-except ImportError:
-    # if TensorFlow is not available, create a proxy function that will raise
-    # an exception whenever code tries to use `load()` at runtime
-    def load(*args, **kwargs):
-        raise ModuleNotFoundError(
-            f"`load()` was called with args={args},"
-            "kwargs={kwargs} but `tensorflow` is not available"
-        )
+# wrapping try/except optional imports in function for testing purposes
+# try_imports is ignored in normal usage; it is set to False in test module to
+# test exceptions when test environments with packages installed without
+# having to mock missing imports or modify the available package list
 
 
-try:
-    # sympy should be installed, but is not required if normalization is not
-    # set to True, or if preset normalization option is used
-    import sympy as sy
+def attempt_load_tensorflow(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # tensorflow should be installed, but not required for non ML/AI models
+        import tensorflow as tf
 
-    parse = sy.parsing.sympy_parser.parse_expr
-    symbol = sy.Symbol
-    solve = sy.solve
-except ImportError:
-    # if sympy is not available, create proxy functions that will raise
-    # an exception whenever code tries to use a sympy method at runtime
-    def parse(*args, **kwargs):
-        raise ModuleNotFoundError(
-            f"`parse()` was called with args={args},"
-            "kwargs={kwargs} but `sympy` is not available"
-        )
+        load = tf.keras.models.load_model
+    except AssertionError:  # throw warning if manually failed for test
+        # if TensorFlow is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+    except ImportError:  # throw warning if package actually not available
+        # if TensorFlow is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+    return load
 
-    def symbol(*args, **kwargs):
-        raise ModuleNotFoundError(
-            f"`symbol()` was called with args={args},"
-            "kwargs={kwargs} but `sympy` is not available"
-        )
 
-    def solve(*args, **kwargs):
-        raise ModuleNotFoundError(
-            f"`solve()` was called with args={args},"
-            "kwargs={kwargs} but `sympy` is not available"
-        )
+def attempt_load_sympy(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # sympy should be installed, but not required if normalization is not
+        # set to True, or if preset normalization option is used
+        import sympy as sy
 
+        parse = sy.parsing.sympy_parser.parse_expr
+        symbol = sy.Symbol
+        solve = sy.solve
+    except AssertionError:  # throw warning if manually failed for test
+        # if sympy is not available, create proxy functions that will raise
+        # an exception whenever code tries to use a sympy method at runtime
+        def parse(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`parse()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def symbol(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`symbol()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def solve(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`solve()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+    except ImportError:  # throw warning if package actually not available
+        # if sympy is not available, create proxy functions that will raise
+        # an exception whenever code tries to use a sympy method at runtime
+        def parse(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`parse()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def symbol(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`symbol()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def solve(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`solve()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+    return parse, symbol, solve
+
+
+# attempt to load optional dependenices for node script
+load = attempt_load_tensorflow()
+parse, symbol, solve = attempt_load_sympy()
 
 # pylint: enable=import-error
 

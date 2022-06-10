@@ -305,7 +305,7 @@ class pymodel_ml_ai(pymodel):
 
         # first, consider if model is not normalized - the simplest case
         if self.normalized is False:  # no scaling needed
-            inputs = [self.inputs[i].value for i in self.inputs]
+            self.scaled_inputs = [self.inputs[i].value for i in self.inputs]
 
         # next, consider if model is normalized - must include a method type
         elif self.normalized is True:  # scale actual inputs
@@ -344,19 +344,19 @@ class pymodel_ml_ai(pymodel):
             # chose to prevent quiet failures, and will not use 'hasattr' below
             # users should not try to normalize without setting a form flag
             if self.normalization_form == "Linear":
-                inputs = [
+                self.scaled_inputs = [
                     (self.inputs[i].value - self.inputs[i].min)
                     / (self.inputs[i].max - self.inputs[i].min)
                     for i in self.inputs
                 ]
             elif self.normalization_form == "Log":
-                inputs = [
+                self.scaled_inputs = [
                     (math.log10(self.inputs[i].value) - math.log10(self.inputs[i].min))
                     / (math.log10(self.inputs[i].max) - math.log10(self.inputs[i].min))
                     for i in self.inputs
                 ]
             elif self.normalization_form == "Power":
-                inputs = [
+                self.scaled_inputs = [
                     (
                         math.pow(10, self.inputs[i].value)
                         - math.pow(10, self.inputs[i].min)
@@ -370,7 +370,7 @@ class pymodel_ml_ai(pymodel):
             elif self.normalization_form == "Log 2":
                 # if F = (value - min) / (max - min), then
                 # scaled = log10[9*F + 1]
-                inputs = [
+                self.scaled_inputs = [
                     math.log10(
                         9
                         * (self.inputs[i].value - self.inputs[i].min)
@@ -382,7 +382,7 @@ class pymodel_ml_ai(pymodel):
             elif self.normalization_form == "Power 2":
                 # if F = (value - min) / (max - min), then
                 # scaled = (1/9) * (10^F - 1)
-                inputs = [
+                self.scaled_inputs = [
                     (1 / 9)
                     * math.pow(
                         10,
@@ -475,16 +475,16 @@ class pymodel_ml_ai(pymodel):
 
                     return scaling_evaluated
 
-                inputs = [float(sub_symbols(i).evalf()) for i in self.inputs]
+                self.scaled_inputs = [float(sub_symbols(i).evalf()) for i in self.inputs]
 
         # set output values to be generated from NN surrogate
-        outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
+        self.scaled_outputs = self.model.predict(np.array(self.scaled_inputs, ndmin=2))[0]
         outidx = 0
         for j in self.outputs:
 
             # first, consider if model is not normalized - the simplest case
             if self.normalized is False:  # no unscaling needed
-                self.outputs[j].value = outputs[outidx]
+                self.outputs[j].value = self.scaled_outputs[outidx]
 
             # next, consider if model is normalized - must include a method type
             # at this point any missing arguments or errors would have been caught
@@ -497,13 +497,13 @@ class pymodel_ml_ai(pymodel):
 
                 if self.normalization_form == "Linear":
                     self.outputs[j].value = (
-                        outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
+                        self.scaled_outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
                         + self.outputs[j].min
                     )
                 elif self.normalization_form == "Log":
                     self.outputs[j].value = math.pow(
                         10,
-                        outputs[outidx]
+                        self.scaled_outputs[outidx]
                         * (
                             math.log10(self.outputs[j].max)
                             - math.log10(self.outputs[j].min)
@@ -512,7 +512,7 @@ class pymodel_ml_ai(pymodel):
                     )
                 elif self.normalization_form == "Power":
                     self.outputs[j].value = math.log10(
-                        outputs[outidx]
+                        self.scaled_outputs[outidx]
                         * (
                             math.pow(10, self.outputs[j].max)
                             - math.pow(10, self.outputs[j].min)
@@ -520,11 +520,11 @@ class pymodel_ml_ai(pymodel):
                         + math.pow(10, self.outputs[j].min)
                     )
                 elif self.normalization_form == "Log 2":
-                    self.outputs[j].value = (math.pow(10, outputs[outidx]) - 1) * (
+                    self.outputs[j].value = (math.pow(10, self.scaled_outputs[outidx]) - 1) * (
                         self.outputs[j].max - self.outputs[j].min
                     ) / 9 + self.outputs[j].min
                 elif self.normalization_form == "Power 2":
-                    self.outputs[j].value = (math.log10(9 * outputs[outidx]) + 1) * (
+                    self.outputs[j].value = (math.log10(9 * self.scaled_outputs[outidx]) + 1) * (
                         self.outputs[j].max - self.outputs[j].min
                     ) + self.outputs[j].min
 
@@ -546,7 +546,7 @@ class pymodel_ml_ai(pymodel):
                     except ValueError:
                         _logger.error(
                             "Model attribute normalization_function has value {} which"
-                            "is not a valid sympy expression. Please refer to the "
+                            "is not a solvable sympy expression. Please refer to the "
                             "latest documentation for syntax guidelines and standards: "
                             "https://docs.sympy.org/latest/index.html".format(
                                 self.normalization_function
@@ -557,7 +557,7 @@ class pymodel_ml_ai(pymodel):
                     # set unscaled output values from inverse function
                     unscaling_evaluated = unscaling_function
                     unscaling_evaluated = unscaling_evaluated.subs(
-                        datascaled, outputs[outidx]
+                        datascaled, self.scaled_outputs[outidx]
                     )
                     unscaling_evaluated = unscaling_evaluated.subs(
                         dataminimum, self.outputs[j].min

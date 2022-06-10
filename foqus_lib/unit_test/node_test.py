@@ -19,7 +19,10 @@ from foqus_lib.framework.graph.node import (
     pymodel_ml_ai,
 )
 import unittest
+import os
 import pytest
+
+curdir = os.getcwd()
 
 
 class testImports(unittest.TestCase):
@@ -103,7 +106,7 @@ class TestPymodelMLAI:
         load = attempt_load_tensorflow()  # alias for load method
 
         # has no custom layer or normalization
-        model = load("AR_nocustomlayer.h5")
+        model = load(os.path.join(curdir, "AR_nocustomlayer.h5"))
 
         return model
 
@@ -120,7 +123,7 @@ class TestPymodelMLAI:
         # has no custom layer or normalization
         # has a custom layer with a preset normalization option
         model = load(
-            "mea_column_model.h5",
+            os.path.join(curdir, "mea_column_model.h5"),
             custom_objects={"mea_column_model": mea_column_model.mea_column_model},
         )
 
@@ -139,7 +142,7 @@ class TestPymodelMLAI:
         # has no custom layer or normalization
         # has a custom layer with a preset normalization option
         model = load(
-            "mea_column_model_customnormform.h5",
+            os.path.join(curdir, "mea_column_model_customnormform.h5"),
             custom_objects={
                 "mea_column_model_customnormform": mea_column_model_customnormform.mea_column_model_customnormform
             },

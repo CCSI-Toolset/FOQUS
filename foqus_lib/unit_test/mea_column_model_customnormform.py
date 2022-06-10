@@ -2,7 +2,11 @@ import os
 import numpy as np
 import pandas as pd
 import random as rn
+
+# pylint: disable=import-error
 import tensorflow as tf
+
+# pylint: enable=import-error
 
 # set seed values for reproducibility
 os.environ["PYTHONHASHSEED"] = "0"

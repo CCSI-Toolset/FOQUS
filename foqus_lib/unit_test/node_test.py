@@ -58,6 +58,7 @@ class testImports(unittest.TestCase):
             load(None)  # expects HDF5 filepath, should throw load path error
 
     def test_import_sympy_success(self):
+        # skip this test if tensorflow is not available
         pytest.importorskip("sympy", reason="sympy not installed")
 
         # method loaded from node module as * import
@@ -80,9 +81,12 @@ class testImports(unittest.TestCase):
 # method is tested for exception behavior only, not run status (this is handled
 # in the main ML AI test module)
 
+# for maximum coverage/stability, if tensorflow is not available all tests
+# using the fixtures are skipped; if sympy is not available, only tests
+# requiring sympy as skipped on a individual basis
+
 
 class TestPymodelMLAI:
-    pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
     # create fixture for loading ML AI models for testing
     # models are loaded directly from data folder so they don't need to be
@@ -91,6 +95,8 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_1(self):  # no custom layer or normalization
+        # no tests using this fixture should run if tensorflow is not installed
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time as a list, and copies
         # of indiviudal models are modified to test model exceptions
 
@@ -103,6 +109,8 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_2(self):  # custom layer with preset normalization form
+        # no tests using this fixture should run if tensorflow is not installed
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time as a list, and copies
         # of indiviudal models are modified to test model exceptions
 
@@ -120,6 +128,8 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_3(self):  # custom layer with custom normalization form
+        # no tests using this fixture should run if tensorflow is not installed
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time as a list, and copies
         # of indiviudal models are modified to test model exceptions
 
@@ -156,6 +166,7 @@ class TestPymodelMLAI:
         test_pymodel.run()
 
     def test_build_and_run_as_expected_3(self, example_3):
+        # only run if SymPy if available; test run for custom norm example
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture

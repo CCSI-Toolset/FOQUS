@@ -143,12 +143,24 @@ class TestPymodelMLAI:
     # for the scaling tests, the results may be incorrect for bad scaling but
     # the formulas should yield the expected values (which is what is tested here)
 
-    def test_build_and_run_as_expected(self, example_1, example_2, example_3):
+    def test_build_and_run_as_expected_1(self, example_1):
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        for model in [example_1, example_2, example_3]:
-            test_pymodel = pymodel_ml_ai(model)
-            test_pymodel.run()
+        test_pymodel = pymodel_ml_ai(example_1)
+        test_pymodel.run()
+
+    def test_build_and_run_as_expected_2(self, example_2):
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_2)
+        test_pymodel.run()
+
+    def test_build_and_run_as_expected_3(self, example_3):
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel.run()
 
     def test_defaults_no_custom_layer(self, example_1):
         test_pymodel = pymodel_ml_ai(example_1)

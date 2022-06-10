@@ -13,15 +13,16 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-from foqus_lib.framework.graph.node import (attempt_load_tensorflow,
-                                            attempt_load_sympy,
-                                            pymodel_ml_ai)
+from foqus_lib.framework.graph.node import (
+    attempt_load_tensorflow,
+    attempt_load_sympy,
+    pymodel_ml_ai,
+)
 import unittest
 import pytest
 
 
 class testImports(unittest.TestCase):
-
     def test_import_tensorflow_failure(self):
 
         # method loaded from node module as * import
@@ -71,6 +72,7 @@ class testImports(unittest.TestCase):
         with pytest.raises(AttributeError):
             solve(None)  # should fail to find attribute 'free_symbols'
 
+
 # ----------------------------------------------------------------------------
 # The goal of these methods is to test the core functionality of the node build
 # script, focusing only on steps after the node and model type (ML AI = 5)
@@ -95,7 +97,7 @@ class TestPymodelMLAI:
         load = attempt_load_tensorflow()  # alias for load method
 
         # has no custom layer or normalization
-        model = load('AR_nocustomlayer.h5')
+        model = load("AR_nocustomlayer.h5")
 
         return model
 
@@ -109,11 +111,10 @@ class TestPymodelMLAI:
 
         # has no custom layer or normalization
         # has a custom layer with a preset normalization option
-        model = load('mea_column_model.h5',
-                     custom_objects={
-                         'mea_column_model':
-                             mea_column_model
-                             .mea_column_model})
+        model = load(
+            "mea_column_model.h5",
+            custom_objects={"mea_column_model": mea_column_model.mea_column_model},
+        )
 
         return model
 
@@ -127,19 +128,20 @@ class TestPymodelMLAI:
 
         # has no custom layer or normalization
         # has a custom layer with a preset normalization option
-        model = load('mea_column_model_customnormform.h5',
-                     custom_objects={
-                         'mea_column_model_customnormform':
-                             mea_column_model_customnormform
-                             .mea_column_model_customnormform})
+        model = load(
+            "mea_column_model_customnormform.h5",
+            custom_objects={
+                "mea_column_model_customnormform": mea_column_model_customnormform.mea_column_model_customnormform
+            },
+        )
 
         return model
 
-# ----------------------------------------------------------------------------
-# this set of tests builds and runs the pymodel class, and checks functionality
-# these tests are intended to test functionality and calculations, not results,
-# for the scaling tests, the results may be incorrect for bad scaling but
-# the formulas should yield the expected values (which is what is tested here)
+    # ----------------------------------------------------------------------------
+    # this set of tests builds and runs the pymodel class, and checks functionality
+    # these tests are intended to test functionality and calculations, not results,
+    # for the scaling tests, the results may be incorrect for bad scaling but
+    # the formulas should yield the expected values (which is what is tested here)
 
     def test_build_and_run_as_expected(self, example_1, example_2, example_3):
         # test that the loaded models run with no issues without modifications
@@ -156,100 +158,99 @@ class TestPymodelMLAI:
             dummyidx += 1
             d = test_pymodel.inputs[idx].saveDict()
 
-            assert idx == 'x' + str(dummyidx)
-            assert d['min'] == pytest.approx(0, abs=1e-5)
-            assert d['max'] == pytest.approx(1E5, rel=1e-5)
-            assert d['value'] == pytest.approx((d['min'] + d['max']) * 0.5,
-                                               rel=1e-5)
-            assert d['desc'] == 'input var ' + str(dummyidx)
+            assert idx == "x" + str(dummyidx)
+            assert d["min"] == pytest.approx(0, abs=1e-5)
+            assert d["max"] == pytest.approx(1e5, rel=1e-5)
+            assert d["value"] == pytest.approx((d["min"] + d["max"]) * 0.5, rel=1e-5)
+            assert d["desc"] == "input var " + str(dummyidx)
 
         dummyidx = 0
         for idx in test_pymodel.outputs:
             dummyidx += 1
             d = test_pymodel.outputs[idx].saveDict()
 
-            assert idx == 'z' + str(dummyidx)
-            assert d['min'] == pytest.approx(0, abs=1e-5)
-            assert d['max'] == pytest.approx(1E5, rel=1e-5)
-            assert d['value'] == pytest.approx((d['min'] + d['max']) * 0.5,
-                                               rel=1e-5)
-            assert d['desc'] == 'output var ' + str(dummyidx)
+            assert idx == "z" + str(dummyidx)
+            assert d["min"] == pytest.approx(0, abs=1e-5)
+            assert d["max"] == pytest.approx(1e5, rel=1e-5)
+            assert d["value"] == pytest.approx((d["min"] + d["max"]) * 0.5, rel=1e-5)
+            assert d["desc"] == "output var " + str(dummyidx)
 
         assert test_pymodel.normalized is False
 
     def test_no_scaling(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
-        setattr(test_pymodel, 'normalized', False)
+        setattr(test_pymodel, "normalized", False)
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
-        expected_in = [2499.82, 0.191561, 5759.63,
-                       189.973, 0.315366, 0.199638]  # these are actual inputs
+        expected_in = [
+            2499.82,
+            0.191561,
+            5759.63,
+            189.973,
+            0.315366,
+            0.199638,
+        ]  # these are actual inputs
         expected_out = [1.00000, 0.00000]
         expected_soln = [1.00000, 0.00000]  # no scaling gives bad output
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_linear_scaling(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'Linear')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "Linear")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
-        expected_in = [0.500000, 0.500000, 0.500000,
-                       0.500000, 0.500000, 0.500000]
+        expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
         expected_out = [0.649966, 0.0181869]
         expected_soln = [78.5314, 3.28505]  # best scaling for this problem
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log_scaling(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'Log')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "Log")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
-        expected_in = [0.550111, 0.523938, 0.554206,
-                       0.513060, 0.527202, 0.629837]
+        expected_in = [0.550111, 0.523938, 0.554206, 0.513060, 0.527202, 0.629837]
         expected_out = [0.518656, 0.00672531]
         expected_soln = [63.3111, 3.2209]
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power_scaling(self, example_2):
@@ -267,79 +268,73 @@ class TestPymodelMLAI:
             test_model.layers[1].input_bounds[var][1] *= 0.01  # input_max
 
         test_pymodel = pymodel_ml_ai(test_model)
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'Power')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "Power")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         # note that these values can't be compared to the other test results
         # since the input data was scaled down by a factor of 100
-        expected_in = [1.05368e-05, 0.499895, 4.06959e-13,
-                       0.443145, 0.499803, 0.499430]
+        expected_in = [1.05368e-05, 0.499895, 4.06959e-13, 0.443145, 0.499803, 0.499430]
         expected_out = [0.646331, 0.0269324]
         expected_soln = [99.7962, 6.21637]
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log2_scaling(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'Log 2')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "Log 2")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
-        expected_in = [0.740363, 0.740363, 0.740363,
-                       0.740363, 0.740363, 0.740363]
+        expected_in = [0.740363, 0.740363, 0.740363, 0.740363, 0.740363, 0.740363]
         expected_out = [0.411243, 0.00187266]
         expected_soln = [49.43844, 3.20389]
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power2_scaling(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'Power 2')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "Power 2")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
-        expected_in = [-0.648636, -0.648636, -0.648636,
-                       -0.648636, -0.648636, -0.648636]
+        expected_in = [-0.648636, -0.648636, -0.648636, -0.648636, -0.648636, -0.648636]
         expected_out = [0.956094, 0.768611]
         expected_soln = [157.278, 11.6360]
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_custom_scaling(self, example_3):
@@ -351,38 +346,36 @@ class TestPymodelMLAI:
 
         scaled_in = test_pymodel.scaled_inputs
         scaled_out = test_pymodel.scaled_outputs
-        unscaled_out = [test_pymodel.outputs[idx].value
-                        for idx in test_pymodel.outputs]
+        unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
         print()
         print(unscaled_out)
 
-        expected_in = [0.500000, 0.500000, 0.500000,
-                       0.500000, 0.500000, 0.500000]
+        expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
         expected_out = [0.649966, 0.0181869]
         expected_soln = [78.5314, 3.28505]
 
         for i in range(len(scaled_in)):
-            print('i = ', str(i))  # for debugging, fails on last idx printed
+            print("i = ", str(i))  # for debugging, fails on last idx printed
             assert scaled_in[i] == pytest.approx(expected_in[i], rel=1e-5)
         for j in range(len(scaled_out)):
-            print('j = ', str(j))  # for debugging, fails on last idx printed
+            print("j = ", str(j))  # for debugging, fails on last idx printed
             assert scaled_out[j] == pytest.approx(expected_out[j], rel=1e-5)
         for k in range(len(unscaled_out)):
-            print('k = ', str(k))  # for debugging, fails on last idx printed
+            print("k = ", str(k))  # for debugging, fails on last idx printed
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
-# ----------------------------------------------------------------------------
-# this set of tests bulids and runs the pymodel class, and checks exceptions
+    # ----------------------------------------------------------------------------
+    # this set of tests bulids and runs the pymodel class, and checks exceptions
 
     def test_no_norm_form(self, example_2):
         test_pymodel = pymodel_ml_ai(example_2)
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Linear'
+        assert test_pymodel.model.layers[1].normalization_form == "Linear"
 
         # delete the attrbute and check that proper exception is thrown
-        delattr(test_pymodel.model.layers[1], 'normalization_form')
+        delattr(test_pymodel.model.layers[1], "normalization_form")
 
         with pytest.raises(AttributeError):
             test_pymodel.run()
@@ -392,10 +385,10 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Linear'
+        assert test_pymodel.model.layers[1].normalization_form == "Linear"
 
         # set to disallowed value and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_form', 'linear')
+        setattr(test_pymodel.model.layers[1], "normalization_form", "linear")
 
         with pytest.raises(AttributeError):
             test_pymodel.run()
@@ -405,12 +398,14 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # delete the attrbute and check that proper exception is thrown
-        delattr(test_pymodel.model.layers[1], 'normalization_function')
+        delattr(test_pymodel.model.layers[1], "normalization_function")
 
         with pytest.raises(AttributeError):
             test_pymodel.run()
@@ -420,12 +415,14 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to disallowed type and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function', None)
+        setattr(test_pymodel.model.layers[1], "normalization_function", None)
 
         with pytest.raises(TypeError):
             test_pymodel.run()
@@ -435,13 +432,18 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to disallowed value and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function',
-                '(value - dataminimum)/(datamaximum - dataminimum)')
+        setattr(
+            test_pymodel.model.layers[1],
+            "normalization_function",
+            "(value - dataminimum)/(datamaximum - dataminimum)",
+        )
 
         with pytest.raises(ValueError):
             test_pymodel.run()
@@ -451,13 +453,18 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to disallowed value and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function',
-                '(datavalue - minimum)/(datamaximum - minimum)')
+        setattr(
+            test_pymodel.model.layers[1],
+            "normalization_function",
+            "(datavalue - minimum)/(datamaximum - minimum)",
+        )
 
         with pytest.raises(ValueError):
             test_pymodel.run()
@@ -467,13 +474,18 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to disallowed value and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function',
-                '(datavalue - dataminimum)/(maximum - dataminimum)')
+        setattr(
+            test_pymodel.model.layers[1],
+            "normalization_function",
+            "(datavalue - dataminimum)/(maximum - dataminimum)",
+        )
 
         with pytest.raises(ValueError):
             test_pymodel.run()
@@ -486,13 +498,18 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to disallowed value and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function',
-                '(datavalue - dataminimum) * (datamaximum - dataminimum)^(-1)')
+        setattr(
+            test_pymodel.model.layers[1],
+            "normalization_function",
+            "(datavalue - dataminimum) * (datamaximum - dataminimum)^(-1)",
+        )
 
         with pytest.raises(TypeError):
             # the user is presented with a ValueError in the console, but SymPy
@@ -507,14 +524,19 @@ class TestPymodelMLAI:
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
-        assert test_pymodel.model.layers[1].normalization_form == 'Custom'
-        assert test_pymodel.model.layers[1].normalization_function == \
-            '(datavalue - dataminimum)/(datamaximum - dataminimum)'
+        assert test_pymodel.model.layers[1].normalization_form == "Custom"
+        assert (
+            test_pymodel.model.layers[1].normalization_function
+            == "(datavalue - dataminimum)/(datamaximum - dataminimum)"
+        )
 
         # set to nonsolveable form and check that proper exception is thrown
-        setattr(test_pymodel.model.layers[1], 'normalization_function',
-                '(datavalue - dataminimum**datavalue) * ' +
-                ' (datamaximum**datavalue - dataminimum**datavalue)')
+        setattr(
+            test_pymodel.model.layers[1],
+            "normalization_function",
+            "(datavalue - dataminimum**datavalue) * "
+            + " (datamaximum**datavalue - dataminimum**datavalue)",
+        )
         # SymPy can't solve this form, no algorithms are implemented (yet)
         # SymPy is extremely stable, so this is unlikely to happen unless
         # forced (as in this test) - "good practice" norm forms shouldn't fail

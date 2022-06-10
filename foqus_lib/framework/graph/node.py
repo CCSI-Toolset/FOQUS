@@ -64,6 +64,7 @@ def attempt_load_tensorflow(try_imports=True):
                 f"`load()` was called with args={args},"
                 "kwargs={kwargs} but `tensorflow` is not available"
             )
+
     except ImportError:  # throw warning if package actually not available
         # if TensorFlow is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
@@ -72,6 +73,7 @@ def attempt_load_tensorflow(try_imports=True):
                 f"`load()` was called with args={args},"
                 "kwargs={kwargs} but `tensorflow` is not available"
             )
+
     return load
 
 
@@ -105,6 +107,7 @@ def attempt_load_sympy(try_imports=True):
                 f"`solve()` was called with args={args},"
                 "kwargs={kwargs} but `sympy` is not available"
             )
+
     except ImportError:  # throw warning if package actually not available
         # if sympy is not available, create proxy functions that will raise
         # an exception whenever code tries to use a sympy method at runtime
@@ -475,10 +478,14 @@ class pymodel_ml_ai(pymodel):
 
                     return scaling_evaluated
 
-                self.scaled_inputs = [float(sub_symbols(i).evalf()) for i in self.inputs]
+                self.scaled_inputs = [
+                    float(sub_symbols(i).evalf()) for i in self.inputs
+                ]
 
         # set output values to be generated from NN surrogate
-        self.scaled_outputs = self.model.predict(np.array(self.scaled_inputs, ndmin=2))[0]
+        self.scaled_outputs = self.model.predict(np.array(self.scaled_inputs, ndmin=2))[
+            0
+        ]
         outidx = 0
         for j in self.outputs:
 
@@ -497,7 +504,8 @@ class pymodel_ml_ai(pymodel):
 
                 if self.normalization_form == "Linear":
                     self.outputs[j].value = (
-                        self.scaled_outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
+                        self.scaled_outputs[outidx]
+                        * (self.outputs[j].max - self.outputs[j].min)
                         + self.outputs[j].min
                     )
                 elif self.normalization_form == "Log":
@@ -520,13 +528,17 @@ class pymodel_ml_ai(pymodel):
                         + math.pow(10, self.outputs[j].min)
                     )
                 elif self.normalization_form == "Log 2":
-                    self.outputs[j].value = (math.pow(10, self.scaled_outputs[outidx]) - 1) * (
-                        self.outputs[j].max - self.outputs[j].min
-                    ) / 9 + self.outputs[j].min
+                    self.outputs[j].value = (
+                        math.pow(10, self.scaled_outputs[outidx]) - 1
+                    ) * (self.outputs[j].max - self.outputs[j].min) / 9 + self.outputs[
+                        j
+                    ].min
                 elif self.normalization_form == "Power 2":
-                    self.outputs[j].value = (math.log10(9 * self.scaled_outputs[outidx]) + 1) * (
-                        self.outputs[j].max - self.outputs[j].min
-                    ) + self.outputs[j].min
+                    self.outputs[j].value = (
+                        math.log10(9 * self.scaled_outputs[outidx]) + 1
+                    ) * (self.outputs[j].max - self.outputs[j].min) + self.outputs[
+                        j
+                    ].min
 
                 elif self.normalization_form == "Custom":
                     # create symbol for scaled outputs

@@ -104,8 +104,8 @@ class TestPymodelMLAI:
     def example_1(self):  # no custom layer or normalization
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        # the models are all loaded a single time as a list, and copies
-        # of indiviudal models are modified to test model exceptions
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
 
         load = attempt_load_tensorflow()  # alias for load method
 
@@ -118,13 +118,12 @@ class TestPymodelMLAI:
     def example_2(self):  # custom layer with preset normalization form
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        # the models are all loaded a single time as a list, and copies
-        # of indiviudal models are modified to test model exceptions
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
 
         load = attempt_load_tensorflow()  # alias for load method
         from foqus_lib.unit_test import mea_column_model
 
-        # has no custom layer or normalization
         # has a custom layer with a preset normalization option
         model = load(
             os.path.join(modelsdir, "mea_column_model.h5"),
@@ -137,18 +136,17 @@ class TestPymodelMLAI:
     def example_3(self):  # custom layer with custom normalization form
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        # the models are all loaded a single time as a list, and copies
-        # of indiviudal models are modified to test model exceptions
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
 
         load = attempt_load_tensorflow()  # alias for load method
-        from foqus_lib.unit_test import mea_column_model_customnormform
+        from foqus_lib.unit_test import mea_column_model_custom_norm_form
 
-        # has no custom layer or normalization
-        # has a custom layer with a preset normalization option
+        # has a custom layer with a custom normalization option
         model = load(
-            os.path.join(modelsdir, "mea_column_model_customnormform.h5"),
+            os.path.join(modelsdir, "mea_column_model_custom_norm_form.h5"),
             custom_objects={
-                "mea_column_model_customnormform": mea_column_model_customnormform.mea_column_model_customnormform
+                "mea_column_model_custom_norm_form": mea_column_model_custom_norm_form.mea_column_model_custom_norm_form
             },
         )
 

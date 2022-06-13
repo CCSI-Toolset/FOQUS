@@ -25,7 +25,7 @@ tf.random.set_seed(62)
 
 
 @tf.keras.utils.register_keras_serializable()
-class mea_column_model_customnormform(tf.keras.layers.Layer):
+class mea_column_model_custom_norm_form(tf.keras.layers.Layer):
     def __init__(
         self,
         n_hidden=1,
@@ -43,7 +43,7 @@ class mea_column_model_customnormform(tf.keras.layers.Layer):
     ):
 
         super(
-            mea_column_model_customnormform, self
+            mea_column_model_custom_norm_form, self
         ).__init__()  # create callable object
 
         # add attributes from training settings
@@ -91,7 +91,7 @@ class mea_column_model_customnormform(tf.keras.layers.Layer):
 
     # attach attributes to class CONFIG
     def get_config(self):
-        config = super(mea_column_model_customnormform, self).get_config()
+        config = super(mea_column_model_custom_norm_form, self).get_config()
         config.update(
             {
                 "n_hidden": self.n_hidden,

@@ -716,16 +716,16 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.input_table.setCheckedToType(1)
 
     def setX1d(self):
-        self.input_table.setCheckedToType(2)
+        self.input_table.setCheckedToType(-1)
 
     def setX2(self):
-        self.input_table.setCheckedToType(3)
+        self.input_table.setCheckedToType(2)
 
     def setX3(self):
-        self.input_table.setCheckedToType(4)
+        self.input_table.setCheckedToType(3)
 
     def setX4(self):
-        self.input_table.setCheckedToType(5)
+        self.input_table.setCheckedToType(4)
 
     def setCounts(self):
         # update counts

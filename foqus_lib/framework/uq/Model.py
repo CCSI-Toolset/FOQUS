@@ -104,6 +104,7 @@ Methods:
         Gets the filename of the driver or emulator
 """
 
+import collections.abc
 import numbers, json
 import numpy
 
@@ -272,9 +273,8 @@ class Model:
         return self.emulatorOutputStatus
 
     def setEmulatorOutputStatus(self, outputIds, value):
-        import collections
 
-        if isinstance(outputIds, collections.Sequence):  # Check if list or tuple
+        if isinstance(outputIds, collections.abc.Sequence):  # Check if list or tuple
             for outputId in outputIds:
                 self.emulatorOutputStatus[outputId] = value
         else:

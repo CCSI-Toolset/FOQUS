@@ -58,7 +58,8 @@ jobs:
         python-version:
           - '3.7'
           - '3.8'
-          # - '3.9'
+          - '3.9'
+          - '3.10'
         os:
           - linux
           - win64
@@ -125,7 +126,8 @@ jobs:
         python-version:
           - '3.7'
           - '3.8'
-          # - '3.9'
+          - '3.9'
+          - '3.10'
     steps:
       - uses: actions/checkout@v2
       - name: Set up Conda

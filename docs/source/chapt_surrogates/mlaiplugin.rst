@@ -11,16 +11,16 @@ launched.
 - Plugin – Selecting this model type in the Node Editor displays available
   Python model classes, which typically contain initialization and run
   methods to define the model expressions. To use this tool, users must
-  develop a Pymodel script (see the example code below as a guide) and
-  place the file in the appropriate folder user_plugins in the working
-  directory, as shown below. This model type is demonstrated in
+  develop a Pymodel script (see the examples in *FOQUS.foqus_lib.framework.pymodel*)
+  as a guide) and place the file in the appropriate folder *user_plugins* in the
+  working directory, as shown below. This model type is demonstrated in
   Section :ref:`tutorial.surrogate.fs`.
 
 - ML_AI – Selecting this model type in the Node Editor displays available
   neural network models; this tool currently supports TensorFlow Keras
-  model files in hierarchical data format 5 (.h5). To use this tool,
+  model files in Hierarchical Data Format 5 (.h5). To use this tool,
   users must train and export a Keras model and place the file in the
-  appropriate folder user_ml_ai_plugins in the working directory, as
+  appropriate folder *user_ml_ai_plugins* in the working directory, as
   shown below. Optionally, users may save Keras models with custom
   attributes to display on the node, such as variable labels and bounds.
   While training a Keras model with custom attributes is not required to
@@ -34,8 +34,8 @@ Custom Model Attributes
 -----------------------
 
 The high-level neural network library of Keras integrates with TensorFlow's
-machine learning library to train complex model within Python's user-friendly
-framework. Largely, Keras models may be split into two types: **Sequential**
+machine learning library to train complex models within Python's user-friendly
+framework. Keras models may be largely split into two types: **Sequential**
 which build linearly connected model layers, and **Functional** which build
 multiple interconnected layers in a complex system. More information on
 TensorFlow Keras model building is described by
@@ -67,13 +67,126 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data in the form below and add all input and output bounds custom attributes.
-  Normalizing uses the data bounds to scale the data values such that the
-  lower bound becomes 0 and the upper bound becomes 1:
+  data normalized according to a specifc scaling form and add all input and
+  output bounds custom attributes. The section below details scaling options.
+- *normalization_form* - string flag required when *normalization* is *True*
+  indicating a scaling option for FOQUS to automatically scale flowsheet-level
+  inputs to model inputs, and unscale model outputs to flowsheet-level outputs.
+  The section below details scaling options.
+- *normalization_function* - optional string argument that is required when a
+  'Custom' *normalization_form* is used. The section below details scaling options.
+
+Data Normalization For Neural Network Models
+--------------------------------------------
+
+In practice, large neural networks often tend towards overfitting and blurring of
+features; this is a particular issue with data varying between many orders of magnitude.
+Normalizing the input data using the input bounds simplifies internal calculations,
+reduces prediction error and minimizes the risk of feature loss. The simplest and most 
+common approach is to linearly scale the data such that the lower bound becomes 0 and
+the upper bound becomes 1:
 
 .. math:: x_{norm} = \frac{x_{data} - x_{min}}{x_{max} - x_{min}}
 
 .. math:: z_{norm} = \frac{z_{data} - z_{min}}{z_{max} - z_{min}}
+
+This scaling approach generalizes to a common formula:
+
+.. math:: x_{norm} = \frac{f(x_{data}) - f(x_{min})}{f(x_{max}) - f(x_{min})}
+
+.. math:: z_{norm} = \frac{f(z_{data}) - f(z_{min})}{f(z_{max}) - f(z_{min})}
+
+FOQUS supports three scaling methods in this form: linear, base 10 logarithmic
+and base 10 exponential. Additionally, FOQUS supports two modified base 10
+scaling options. Users may also write their own normalization functions and pass a string
+for FOQUS to parse internally via SymPy, a Python library for symbolic mathematics.
+It is the responsibility of the user to ensure string objects are valid SymPy
+expressions, and FOQUS will automatically scale and unscale using input and output
+variable bounds. For example, a custom version of 'Log' scaling following SymPy syntax
+(*not* Python or Latex syntax) would take the form below:
+
+.. code:: python
+
+  >>> ...
+  >>> self.normalized = True
+  >>> self.normalization_form = "Custom"
+  >>> self.normalization_function = "(log(datavalue, 10) - log(dataminimum, 10))/(log(datamaximum, 10) - log(dataminimum, 10))"
+  >>> ...
+
+The line below follows Python syntax and not SymPy syntax, and would yield the following error message:
+
+.. code:: python
+
+  >>> self.normalization_function = "(log10(datavalue) - log10(dataminimum))/(log10(datamaximum) - log10(dataminimum))"
+  "ValueError: Model attribute normalization_function has value (log10(datavalue) - log10(dataminimum))/(log10(datamaximum) - log10(dataminimum)) which is not a valid SymPy expression. Please refer to the latest documentation for syntax guidelines and standards: https://docs.sympy.org/latest/index.html"
+
+Note that 'value', 'minimum' and 'maximum' are common reserved method names within Python and
+other modules, and such the labels 'datavalue', 'dataminimum' and 'datamaximum' are used instead.
+Detailed messages will appear in the console log for similar errors with specific causes.
+Custom expressions must use 'value', 'minimum' and 'maximum' to be recognized by FOQUS.
+More information on SymPy syntax, structure and standards may be found in their latest release
+documentation: https://docs.sympy.org/latest/index.html.
+
+Note that users must implement desired data normalization during model training, and both of these steps
+occur externally to FOQUS. Users should ensure that data normalization results in an accurate neural network
+model without overfitting before loading into FOQUS. Available scaling options and required flags are
+summarized in the table below:
+
+.. list-table:: Data Normalization Options
+  :widths: 10 15 10 10 20 15
+  :header-rows: 1
+
+  * -
+    - Variable Bounds
+    - *normalized*
+    - *normalization_form*
+    - Scaling Formula
+    - *normalization_function*
+  * - None
+    - Optional (not required)
+    - Must be *False* or absent
+    - Recommend excluding (not required)
+    - :math:`datascaled = datavalue`
+    - Recommend excluding (not required)
+  * - Linear
+    - Required
+    - Must be *True*
+    - 'Linear'
+    - :math:`datascaled = \frac{datavalue - dataminimum}{datamaximum - dataminimum}`
+    - Recommend excluding (not required)
+  * - Log Base 10
+    - Required
+    - Must be *True*
+    - 'Log'
+    - :math:`datascaled = \frac{\log_{10} {(datavalue)} - \log_{10} {(dataminimum)}}{\log_{10} {(datamaximum)} - \log_{10} {(dataminimum)}}`
+    - Recommend excluding (not required)
+  * - Power
+    - Required
+    - Must be *True*
+    - 'Power'
+    - :math:`datascaled = \frac{10^{datavalue} - 10^{dataminimum}}{10^{datamaximum} - 10^{dataminimum}}`
+    - Recommend excluding (not required)
+  * - Log Base 10 Modified
+    - Required
+    - Must be *True*
+    - 'Log 2'
+    - :math:`datascaled = \log_{10} {(9 * {\frac{datavalue - dataminimum}{datamaximum - dataminimum}} + 1)}`
+    - Recommend excluding (not required)
+  * - Power Modified
+    - Required
+    - Must be *True*
+    - 'Power 2'
+    - :math:`datascaled = \frac{1}{9} * {(10^{\frac{datavalue - dataminimum}{datamaximum - dataminimum}} - 1)}`
+    - Recommend excluding (not required)
+  * - Custom
+    - Required
+    - Must be *True*
+    - 'Custom'
+    - :math:`datascaled = f(datavalue, dataminimum, datamaximum)`
+    - Must be a String with proper SymPy syntax
+
+Usage Example
+-------------
 
 The following code snippet demonstrates the Python syntax to train and save
 a Keras model with custom attributes. The use of Dropout features in training
@@ -84,7 +197,11 @@ during fitting. Users may then enter unscaled input values and return unscaled
 output values in the Node Editor. Note that the custom object class script
 containing the class and the NN model file itself must all share the same name
 to import the custom attributes into a FOQUS node. If certain custom attributes
-are not used, users should not include them in the custom class definition.
+are not used, it is best if users do not include them in the custom class definition;
+for example, the attribute *normalization_function* is not required in this example
+and therefore is excluded in the code below. See
+*FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model__training_customnormform.py*
+for an example implementing a custom normalization function.
 
 Users must ensure the proper script name is used in the following places,
 replacing *example_model* with the desired model name:
@@ -97,7 +214,7 @@ replacing *example_model* with the desired model name:
 - The file names of the .h5 model file and custom class script.
 
 For example, the model name below is 'mea_column_model'. See the example files
-in examples >> other_files >> ML_AI_Plugin for complete syntax and usage.
+in *FOQUS.examples.other_files.ML_AI_Plugin* for complete syntax and usage.
 The folder contains a second model with no custom layer to demonstrate the
 plugin defaults. To run the models, copy mea_column_model.h5, mea_column_model.py
 and AR_nocustomlayer.h5 into the working directory folder user_ml_ai_models\.
@@ -128,7 +245,8 @@ obtain the correct output values for the entered inputs.
    >>>                  layer_act='relu', out_act='sigmoid',
    >>>                  input_labels=None, output_labels=None,
    >>>                  input_bounds=None, output_bounds=None,
-   >>>                  normalized=False, **kwargs):
+   >>>                  normalized=False, normalization_form='Linear',
+   >>>                  **kwargs):
 
    >>>         super(mea_column_model, self).__init__()  # create callable object
 
@@ -144,6 +262,7 @@ obtain the correct output values for the entered inputs.
    >>>         self.input_bounds = input_bounds
    >>>         self.output_bounds = output_bounds
    >>>         self.normalized = True  # FOQUS will read this and adjust accordingly
+   >>>         self.normalization_form = 'Linear'  # tells FOQUS which scaling form to use
 
            # create lists to contain new layer objects
    >>>         self.dense_layers = []  # hidden or output layers
@@ -182,7 +301,8 @@ obtain the correct output values for the entered inputs.
    >>>             'output_labels': self.output_labels,
    >>>             'input_bounds': self.input_bounds,
    >>>             'output_bounds': self.output_bounds,
-   >>>             'normalized': self.normalized   
+   >>>             'normalized': self.normalized,
+   >>>             'normalization_form': self.normalization_form,   
    >>>         })
    >>>         return config
 
@@ -197,7 +317,8 @@ obtain the correct output values for the entered inputs.
    >>>         output_labels=zlabels,
    >>>         input_bounds=xdata_bounds,
    >>>         output_bounds=zdata_bounds,
-   >>>         normalized=True
+   >>>         normalized=True,
+   >>>         normalization_form='Linear',
    >>>     )
 
    >>>     outputs = layers(inputs)  # use network as function outputs = f(inputs)
@@ -222,7 +343,7 @@ obtain the correct output values for the entered inputs.
    >>> xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
    >>> zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
    
-   # normalize data
+   # normalize data - linear scaling is performed manually before training
    >>> xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
    >>> zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
    >>> xdata, zdata = np.array(xdata), np.array(zdata)

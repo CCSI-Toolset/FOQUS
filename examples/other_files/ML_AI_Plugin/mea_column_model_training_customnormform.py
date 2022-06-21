@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import random as rn
 import tensorflow as tf
+import math
 
 # set seed values for reproducibility
 os.environ["PYTHONHASHSEED"] = "0"
@@ -23,8 +24,13 @@ tf.random.set_seed(62)
 # 5) Back to code at end of file to save, load and test model
 
 # custom class to define Keras NN layers
+# note that this model is identical to mea_column_model in every aspect
+# except for normalization, but needs a unique class name for the Keras
+# registry - otherwise this will throw errors when both are loaded in FOQUS
+
+
 @tf.keras.utils.register_keras_serializable()
-class mea_column_model(tf.keras.layers.Layer):
+class mea_column_model_customnormform(tf.keras.layers.Layer):
     def __init__(
         self,
         n_hidden=1,
@@ -37,10 +43,13 @@ class mea_column_model(tf.keras.layers.Layer):
         output_bounds=None,
         normalized=False,
         normalization_form="Linear",
+        normalization_function=None,
         **kwargs
     ):
 
-        super(mea_column_model, self).__init__()  # create callable object
+        super(
+            mea_column_model_customnormform, self
+        ).__init__()  # create callable object
 
         # add attributes from training settings
         self.n_hidden = n_hidden
@@ -56,6 +65,9 @@ class mea_column_model(tf.keras.layers.Layer):
         self.normalized = normalized  # FOQUS will read this and adjust accordingly
         self.normalization_form = (
             normalization_form  # tells FOQUS which scaling form to use
+        )
+        self.normalization_function = (
+            normalization_function  # tells FOQUS scaling formula to use
         )
 
         # create lists to contain new layer objects
@@ -84,7 +96,7 @@ class mea_column_model(tf.keras.layers.Layer):
 
     # attach attributes to class CONFIG
     def get_config(self):
-        config = super(mea_column_model, self).get_config()
+        config = super(mea_column_model_customnormform, self).get_config()
         config.update(
             {
                 "n_hidden": self.n_hidden,
@@ -97,6 +109,7 @@ class mea_column_model(tf.keras.layers.Layer):
                 "output_bounds": self.output_bounds,
                 "normalized": self.normalized,
                 "normalization_form": self.normalization_form,
+                "normalization_function": self.normalization_function,
             }
         )
         return config
@@ -107,13 +120,14 @@ def create_model(data):
 
     inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
 
-    layers = mea_column_model(  # define the rest of network using our custom class
+    layers = mea_column_model_customnormform(  # define the rest of network using our custom class
         input_labels=xlabels,
         output_labels=zlabels,
         input_bounds=xdata_bounds,
         output_bounds=zdata_bounds,
         normalized=True,
-        normalization_form="Linear",
+        normalization_form="Custom",
+        normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
     )
 
     outputs = layers(inputs)  # use network as function outputs = f(inputs)
@@ -139,11 +153,11 @@ zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
 xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
 zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
 
-# normalize data using Linear form
+# normalize data using Linear form, pass as custom string and parse with SymPy
 # users can normalize with any allowed form # manually, and then pass the
 # appropriate flag to FOQUS from the allowed list:
-# ["Linear", "Log", "Power", "Log 2", "Power 2"] - see the documentation for
-# details on the scaling formulations
+# ["Linear", "Log", "Power", "Log 2", "Power 2", "Custom] - see the
+# documentation for details on the scaling formulations
 xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
 zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
 xdata, zdata = np.array(xdata), np.array(zdata)
@@ -166,4 +180,4 @@ model = create_model(xdata)
 model.summary()
 
 # save model
-model.save("mea_column_model.h5")
+model.save("mea_column_model_customnormform.h5")

@@ -21,8 +21,12 @@ from .df_utils import load
 from .nusf import scale_y
 
 # plot parameters
-fc = {"hist": (0.5, 0.5, 0.5, 0.5), "cand": (0, 0, 1, 0.5), "imp": (1, 0, 0, 0.5)}
-area = {"hist": 40, "cand": 25}
+alpha = {"design": 1, "hist": 1, "cand": 0.5, "imp": 0.5}
+area = {"design": 45, "hist": 25, "cand": 10, "imp": 25}
+fc = {"design": (0, 0, 1, alpha["design"]),
+        "hist": (1, 0, 1, alpha["hist"]), 
+        "cand": (0.5, 0.5, 0.5, alpha["cand"]), 
+        "imp": (1, 0, 0, alpha["imp"])}
 
 
 def plot_hist(
@@ -105,10 +109,18 @@ def plot_candidates(
     if wcol is not None:
         cand_vals = cand[wcol].values
         vals = df[wcol].values
-        area["cand"] = 30 * abs((vals - np.mean(cand_vals)) / np.std(cand_vals)) + 10
+
+        eps_a = 0.1
+        min_cand = np.min(cand_vals)
+        max_cand = np.max(cand_vals)
+        if min_cand < max_cand:
+            alpha["cand"] = eps_a + (1 - eps_a) * (vals - min_cand) / (max_cand - min_cand)
         if hf is not None:
             vals_h = hf[wcol].values
-            area["hist"] = 30 * abs((vals_h - np.mean(vals_h)) / np.std(vals_h)) + 10
+            min_hist = np.min(vals_h)
+            max_hist = np.max(vals_h)
+            if min_hist < max_hist:
+                alpha["hist"] = eps_a + (1 - eps_a) * (vals_h - min_hist) / (max_hist - min_hist)
 
     # process inputs to be shown
     if show is None:
@@ -167,25 +179,33 @@ def plot_candidates(
                 # ... area/alpha can be customized to visualize weighted points (future feature)
                 if nImpPts == 0:
                     ax.scatter(
-                        df[yname], df[xname], s=area["cand"], facecolor=fc["cand"]
+                        df[yname], df[xname], s=area["design"], facecolor=fc["design"]
                     )
                 else:
                     ax.scatter(
-                        df[yname][0:-nImpPts],
-                        df[xname][0:-nImpPts],
-                        s=area["cand"],
-                        facecolor=fc["cand"],
+                        df[yname][0:-nImpPts], df[xname][0:-nImpPts],
+                        s=area["design"],
+                        facecolor=fc["design"]
                     )
                     ax.scatter(
-                        df[yname][-nImpPts:],
-                        df[xname][-nImpPts:],
-                        s=area["cand"],
-                        facecolor=fc["imp"],
+                        df[yname][-nImpPts:], df[xname][-nImpPts:],
+                        s=area["imp"],
+                        facecolor=fc["imp"]
                     )
+
+                ax.scatter(
+                        cand[yname], cand[xname], 
+                        s=area["cand"], 
+                        facecolor=fc["cand"],
+                        alpha=alpha["cand"] 
+                )
 
                 if hf is not None:
                     ax.scatter(
-                        hf[yname], hf[xname], s=area["hist"], facecolor=fc["hist"]
+                        hf[yname], hf[xname], 
+                        s=area["hist"], 
+                        facecolor=fc["hist"],
+                        alpha=alpha["hist"]
                     )
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
@@ -211,9 +231,12 @@ def plot_candidates(
     labels = ["Frequency", scatter_label]
     if nImpPts > 0:
         labels.append("Imputed")
+    labels.append('Candidate data points')
     if hf is not None:
         labels.append("Previous data points")
-    fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
+    leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
+    for lh in leg.legendHandles: 
+        lh.set_alpha(1)
 
     fig.canvas.manager.set_window_title(title)
 

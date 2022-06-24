@@ -11,7 +11,6 @@
 'use strict';
 'use AWS.S3'
 'use AWS.DynamoDB'
-'use uuid'
 const assert = require('assert');
 const log = require("debug")("foqus-sns-update")
 const AWS = require('aws-sdk');
@@ -433,6 +432,7 @@ function sleep(ms) {
  *
  */
 exports.handler = function(event, context, callback) {
+    log(`EVENT: ${JSON.stringify(event)}`);
     for (var j = 0; j < event.Records.length; j++) {
       var message = JSON.parse(event.Records[j].Sns.Message);
       var attrs = event.Records[j].Sns.MessageAttributes;
@@ -442,14 +442,20 @@ exports.handler = function(event, context, callback) {
       if (util.isArray(message) == false) {
           message = [message];
       }
-
+      log(`SNS MessageAttributes: ${j}: ${JSON.stringify(attrs)}`);
       for (var i = 0; i < message.length; i++) {
           log(`Received event: ${j}.${i}: ${JSON.stringify(message[i])}`);
           //await sleep(2000);
           var resource = message[i]['resource'];
           var e = message[i]['event'];
           if (resource == "job") {
+              if (!attrs.username) {
+                  assert.fail(`"MessageAttributes.username not defined: ${attrs.username}"`);
+              }
               var user_name = attrs.username.Value;
+              if (!user_name) {
+                  assert.fail("MessageAttributes.username.Value undefined");
+              }
               if (e == "output") {
                   process_job_event_output(ts, user_name, message[i], callback);
               } else if (e == "status") {

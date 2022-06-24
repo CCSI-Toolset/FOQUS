@@ -9,7 +9,7 @@
 'use strict';
 'use AWS.DynamoDB'
 const AWS = require('aws-sdk');
-const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
+const table_name = process.env.FOQUS_DYNAMO_TABLE_NAME;
 const log = require("debug")("get-session")
 
 // For development/testing purposes
@@ -27,13 +27,13 @@ exports.handler = function(event, context, callback) {
                         event.path.length);
     var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
     /*
-    dynamodb.query({ TableName: tableName,
+    dynamodb.query({ TableName: table_name,
         KeyConditionExpression: '#T = :job AND #C BEGINS_WITH :session',
         ExpressionAttributeNames: {"#T":"Type", "#C":"Composite"},
         ExpressionAttributeValues: { ":job":"Job", ":session":"SessionID="+session_id}
       },
       */
-      dynamodb.query({ TableName: tableName,
+      dynamodb.query({ TableName: table_name,
           KeyConditionExpression: '#T = :job',
           ExpressionAttributeNames: {"#T":"Type"},
           ExpressionAttributeValues: { ":job":"Job", ":sessionid":session_id},

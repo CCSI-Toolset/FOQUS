@@ -151,7 +151,7 @@ def plot_candidates(
     else:  # multiple inputs
 
         # subplot indices
-        sb_indices = np.reshape(range(nshow ** 2), [nshow, nshow])
+        sb_indices = np.reshape(range(nshow**2), [nshow, nshow])
 
         # generate subplots
         fig, axes = plt.subplots(nrows=nshow, ncols=nshow)

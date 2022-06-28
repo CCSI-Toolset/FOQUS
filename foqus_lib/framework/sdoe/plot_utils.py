@@ -119,14 +119,6 @@ def plot_candidates(
             alpha["cand"] = eps_a + (1 - eps_a) * (vals - min_cand) / (
                 max_cand - min_cand
             )
-        if hf is not None:
-            vals_h = hf[wcol].values
-            min_hist = np.min(vals_h)
-            max_hist = np.max(vals_h)
-            if min_hist < max_hist:
-                alpha["hist"] = eps_a + (1 - eps_a) * (vals_h - min_hist) / (
-                    max_hist - min_hist
-                )
 
     # process inputs to be shown
     if show is None:

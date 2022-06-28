@@ -22,11 +22,11 @@ from .nusf import scale_y
 
 # plot parameters
 alpha = {"design": 1, "hist": 1, "cand": 0.5, "imp": 0.5}
-area = {"design": 45, "hist": 25, "cand": 10, "imp": 25}
+area = {"design": 45, "hist": 20, "cand": 20, "imp": 25}
 fc = {
     "design": (0, 0, 1, alpha["design"]),
     "hist": (1, 0, 1, alpha["hist"]),
-    "cand": (0.5, 0.5, 0.5, alpha["cand"]),
+    "cand": (0.2, 0.2, 0.2, alpha["cand"]),
     "imp": (1, 0, 0, alpha["imp"]),
 }
 

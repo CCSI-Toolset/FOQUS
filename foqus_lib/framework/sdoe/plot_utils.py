@@ -110,13 +110,12 @@ def plot_candidates(
 
     if wcol is not None:
         cand_vals = cand[wcol].values
-        vals = df[wcol].values
 
         eps_a = 0.1
         min_cand = np.min(cand_vals)
         max_cand = np.max(cand_vals)
         if min_cand < max_cand:
-            alpha["cand"] = eps_a + (1 - eps_a) * (vals - min_cand) / (
+            alpha["cand"] = eps_a + (1 - eps_a) * (cand_vals - min_cand) / (
                 max_cand - min_cand
             )
 

@@ -231,7 +231,8 @@ def criterion(
 ):
 
     ncand = len(cand)
-    nhist = len(hist)
+    if hist is not None:
+        nhist = len(hist)
     assert nd <= ncand, "Number of designs exceeds number of available candidates."
 
     mode = mode.lower()

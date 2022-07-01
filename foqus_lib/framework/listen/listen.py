@@ -187,6 +187,9 @@ class foqusListener(threading.Thread):
                     self.gt.join()
                     ret = []
                     stat = []
+                    # WHY pylint infers `res` as an unsubscriptable object
+                    # (possibly because of None default value?)
+                    # pylint: disable=unsubscriptable-object
                     for res in self.gt.res:
                         self.dat.flowsheet.results.addFromSavedValues(
                             self.resStoreSet, "res_{0}".format(self.runid), None, res
@@ -203,6 +206,7 @@ class foqusListener(threading.Thread):
                             for i in range(len(r)):
                                 r[i] = self.failValue
                         ret.append(r)
+                    # pylint: enable=unsubscriptable-object
                     conn.send(["result", stat, ret])
                 elif msg[0] == "save":
                     # Save the flow sheet

@@ -188,7 +188,10 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     PV_tuple = ()
     for key in PV:
         if len(PV[key].shape) == 1:
+            # WHY: causes `modified-iterating-dict` in pylint 2.14.1
+            # pylint: disable=modified-iterating-dict
             PV[key] = np.expand_dims(PV[key], axis=0)
+            # pylint: enable=modified-iterating-dict
         PV_tuple += (PV[key],)
     PV_arr = np.concatenate(PV_tuple, axis=0)
     PV_df = pd.DataFrame(data=PV_arr, columns=["Best Input", "Best Response"])

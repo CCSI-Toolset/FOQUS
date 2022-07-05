@@ -150,6 +150,10 @@ exports.handler = function(event, context, callback) {
                               'username': {
                                 DataType: 'String',
                                 StringValue: user_name
+                              },
+                              'application': {
+                                DataType: 'String',
+                                StringValue: obj[index].Application || 'foqus'
                               }
                             },
                             TopicArn: topicArn

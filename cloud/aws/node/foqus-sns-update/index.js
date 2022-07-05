@@ -12,7 +12,6 @@
 'use AWS.S3'
 'use AWS.DynamoDB'
 const assert = require('assert');
-const log = require("debug")("foqus-sns-update")
 const AWS = require('aws-sdk');
 const util = require('util');
 const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
@@ -22,12 +21,12 @@ const log_topic_name = process.env.FOQUS_LOG_TOPIC_NAME;
 
 // TODO: Check Table and skip any items where Finished is already set
 var process_session_event_terminate = function(ts, session_id, callback) {
-    log(`"process_session_event_terminate(${session_id})"`);
+    console.log(`"process_session_event_terminate(${session_id})"`);
     function dynamoUpdateItems(obj) {
-        log(`dynamoUpdateItems:  count=${obj.Count}`);
-        log(`dynamoUpdateItems:  ${JSON.stringify(obj)}`);
+        console.log(`dynamoUpdateItems:  count=${obj.Count}`);
+        console.log(`dynamoUpdateItems:  ${JSON.stringify(obj)}`);
         if (obj.Count == 0) {
-          log("Session contains no jobs");
+          console.log("Session contains no jobs");
           return;
         }
         var params = {
@@ -39,17 +38,17 @@ var process_session_event_terminate = function(ts, session_id, callback) {
         var item = null;
         var promises = [];
         for(var i=0; i<obj.Count; i++) {
-          log(`item:  ${JSON.stringify(obj.Items[i])}`);
+          console.log(`item:  ${JSON.stringify(obj.Items[i])}`);
           item = {State:"terminate"};
           params.Key = { "Id": obj.Items[i].Id, "Type":"Job" };
-          log(`item:  ${JSON.stringify(params)}`);
+          console.log(`item:  ${JSON.stringify(params)}`);
           var response = dynamodb.update(params);
           promises.push(response.promise());
         }
         Promise.all(promises).then(handleDone).catch(handleError);
     };
     function handleError(error) {
-      log(`handleError ${error}`);
+      console.log(`handleError ${error}`);
       callback(error, "ERROR");
     };
     function handleDone() {
@@ -74,7 +73,7 @@ var process_session_event_terminate = function(ts, session_id, callback) {
 //
 var process_job_event_output = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    log('process_job_event_output(username= ' + user_name + ')');
+    console.log('process_job_event_output(username= ' + user_name + ')');
     const s3 = new AWS.S3();
     const e = message['event'];
     const status = message['status'];
@@ -88,7 +87,7 @@ var process_job_event_output = function(ts, user_name, message, callback) {
     // NOTE: ValidationException occurring if leave stringify operation
     // to AWS lib json layer.
     const output = JSON.stringify(output_obj);
-    log(output);
+    console.log(output);
     var params = {
         TableName:tablename,
         Key:{
@@ -108,14 +107,14 @@ var process_job_event_output = function(ts, user_name, message, callback) {
     };
     publish_to_log_topic(e);
     function handleError(error) {
-      log(`handleError ${error.name}`);
+      console.log(`handleError ${error.name}`);
       if ( error instanceof Error ) {
         callback(new Error(`"${typeof(error)}"`), "ValidationException")
       }
       callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
-      log("handleDone");
+      console.log("handleDone");
       callback(null, "Success");
     };
     var response = dynamodb.update(params);
@@ -124,9 +123,15 @@ var process_job_event_output = function(ts, user_name, message, callback) {
       .catch(handleError);
 }
 
+/*
+ * Function: process_job_event_status
+ * process_job_event_output happens before "success", output is saved to
+ * the DynamoDB table under "output", then job event status success is fired
+ * and the DynamoDB item is retrieved and those values are used to store
+ * back in S3.
+ */
 var process_job_event_status = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    const log = require("debug")("foqus-sns-update.process_job_event_status")
     const s3 = new AWS.S3();
     const e = message['event'];
     const status = message['status'];
@@ -139,18 +144,18 @@ var process_job_event_status = function(ts, user_name, message, callback) {
 
     assert.strictEqual(e, "status");
 
-    log(`status=${status} username=${user_name},  job=${job}, session=${session}`);
+    console.log(`status=${status} username=${user_name},  job=${job}, session=${session}`);
     publish_to_log_topic(e);
     function getDynamoJob() {
         // Job is success, put in S3
-        log("getDynamoJob: Get Job Description from dynamodb");
+        console.log("getDynamoJob: Get Job Description from dynamodb");
         var request = dynamodb.get({ TableName: tablename,
               Key: {"Id": job, "Type": "Job" }
           });
         return request.promise().then(putS3);
     };
     function updateDynamoConsumer() {
-        log(`updateDynamoConsumer: Update DynamoDB Consumer=${consumer} with Job=${job}.${status}`);
+        console.log(`updateDynamoConsumer: Update DynamoDB Consumer=${consumer} with Job=${job}.${status}`);
         var params = {
             TableName:tablename,
             Key:{
@@ -175,21 +180,24 @@ var process_job_event_status = function(ts, user_name, message, callback) {
             params.ExpressionAttributeNames["#n"] = "Session";
             params.UpdateExpression = "set #s=:s, #u=:u, #j=:j, #n=:n";
         }
-        log(JSON.stringify(params));
+        console.log(JSON.stringify(params));
         return dynamodb.update(params).promise();
     }
     function putS3(response) {
         // Job is success, put in S3
-        log("putS3: Put Job Description");
+        console.log("putS3: Put Job Description");
         var promise = new Promise(function(resolve, reject){
             if (status=='success' || status=='error' || status=='submit' || status=='setup' || status=='running') {
-              response.Item.Output = response.Item.output;
+              if (response.Item.Output == undefined) {
+                // NOTE: map output to Output ( remove?? )
+                response.Item.Output = response.Item.output;
+              }
               response.Item.Session = response.Item.SessionId;
               delete response.Item.output;
               delete response.Item.SessionId;
               response.Item.State = status;
               if (status == 'error') {
-                log("error: " + error_message);
+                console.log("error: " + error_message);
                 response.Item.Message = error_message;
               }
               if (status == 'success' && response.Item.Output == undefined) {
@@ -197,8 +205,9 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                  * Amazon SNS considers the following situations to indicate failed delivery attempts:
                  * HTTP status codes 100 to 101 and 500 to 599 (inclusive).
                  */
-                log("Reject Invocation and Retry via HTTP 500: Missing Output");
-                throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
+                console.log(`Session ${response.Item.Session}/Job ${response.Item.Id}:  No Output`);
+                //throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
+                response.Item.Message = "Processing Error: No Simulation Output";
               }
 
               var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
@@ -209,11 +218,17 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                  * decided to store Output column as String in DynamoDB and
                  * parse it to JSON before Stringify and store in S3.
                  */
-                response.Item.Output = JSON.parse(response.Item.Output);
+                 try {
+                    response.Item.Output = JSON.parse(response.Item.Output);
+                 }
+                 catch(error) {
+                    console.log(error);
+                    response.Item.Message = "Processing Error: Failed to parse Simulation Output";
+                 }
               }
 
               var content = JSON.stringify(response.Item)
-              log("put3s: " + content);
+              console.log("put3s: " + content);
               if(content == undefined) {
                 throw new Error("s3 object is undefined")
               }
@@ -226,11 +241,11 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 Key: key,
                 Body: content
               };
-              log(`putS3(${params.Bucket}):  ${params.Key}`);
+              console.log(`putS3(${params.Bucket}):  ${params.Key}`);
               var request = s3.putObject(params);
               resolve(request.promise());
             } else {
-              log(`putS3 ignore state ${status}`);
+              console.log(`putS3 ignore state ${status}`);
               resolve();
             }
         });
@@ -243,14 +258,14 @@ var process_job_event_status = function(ts, user_name, message, callback) {
     //         headers: {'Content-Type': 'application/json',}});
     // };
     function handleStatusError(error) {
-      log(`handleStatusError ${error.name} ${error.stack}`);
+      console.log(`handleStatusError ${error.name} ${error.stack}`);
       if ( error instanceof Error ) {
         callback(new Error(`"${typeof(error)}"`), "ValidationException")
       }
       callback(new Error(`"${error.stack}"`), "Error")
     };
     function handleDone() {
-      log("handleDone");
+      console.log("handleDone");
       callback(null, "Success");
     };
 
@@ -278,8 +293,8 @@ var process_job_event_status = function(ts, user_name, message, callback) {
             },
             ReturnValues:"UPDATED_NEW"
         };
-        log(`finished job: job=${job}, status=${status}`);
-        log(JSON.stringify(params));
+        console.log(`finished job: job=${job}, status=${status}`);
+        console.log(JSON.stringify(params));
         var response = dynamodb.update(params);
         response.promise()
           .then(getDynamoJob)
@@ -304,7 +319,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           Key: key,
           Body: content
         };
-        log(`expired job: job=${job}, status=${status}`);
+        console.log(`expired job: job=${job}, status=${status}`);
         var response = s3.putObject(params);
         response.promise()
           .then(putS3)
@@ -335,10 +350,10 @@ var process_job_event_status = function(ts, user_name, message, callback) {
           params.ExpressionAttributeNames["#c"] = "ConsumerId";
           params.UpdateExpression = "set #w=:s, #t=:t, #c=:c";
       } else {
-          log(`status: ${status} consumer: ${consumer}`)
+          console.log(`status: ${status} consumer: ${consumer}`)
           assert.strictEqual(status, "submit");
       }
-      log(`active job: job=${job}, status=${status}`);
+      console.log(`active job: job=${job}, status=${status}`);
       var response = dynamodb.update(params);
       if (status == 'submit') {
           response.promise()
@@ -361,7 +376,7 @@ var publish_to_log_topic = function(message) {
     var sns = new AWS.SNS();
     var request_topic = sns.createTopic({Name: log_topic_name,}, function(err, data) {
             if (err) {
-              log("ERROR: Failed to SNS CREATE TOPIC");
+              console.log("ERROR: Failed to SNS CREATE TOPIC");
             }
     });
     request_topic.on('success', function(response_topic) {
@@ -370,7 +385,7 @@ var publish_to_log_topic = function(message) {
           Message: JSON.stringify(message),
           TopicArn:  topic_arn
         };
-        log(`publish_to_log_topic ${params.Message}`);
+        console.log(`publish_to_log_topic ${params.Message}`);
         sns.publish(params, function(err, data) {
         });
     });
@@ -407,12 +422,12 @@ var process_consumer_event = function(ts, message, callback) {
         },
         ReturnValues:"UPDATED_NEW"
     };
-    log("consumer(msecs=" + msecs + ") event=" + e);
-    log(JSON.stringify(params));
+    console.log("consumer(msecs=" + msecs + ") event=" + e);
+    console.log(JSON.stringify(params));
     dynamodb.update(params, function(err, data) {
-      log("Update: " + data);
+      console.log("Update: " + data);
       if (err) {
-        log(err, err.stack);
+        console.log(err, err.stack);
         callback(null, "Error");
       } else {
         callback(null, "Success");
@@ -432,7 +447,11 @@ function sleep(ms) {
  *
  */
 exports.handler = function(event, context, callback) {
-    log(`EVENT: ${JSON.stringify(event)}`);
+    //console.log(`EVENT: ${JSON.stringify(event)}`);
+    if (!event.Records) {
+      console.log('Finished: No SNS Records');
+      return;
+    }
     for (var j = 0; j < event.Records.length; j++) {
       var message = JSON.parse(event.Records[j].Sns.Message);
       var attrs = event.Records[j].Sns.MessageAttributes;
@@ -442,9 +461,9 @@ exports.handler = function(event, context, callback) {
       if (util.isArray(message) == false) {
           message = [message];
       }
-      log(`SNS MessageAttributes: ${j}: ${JSON.stringify(attrs)}`);
+      console.log(`SNS MessageAttributes: ${j}: ${JSON.stringify(attrs)}`);
       for (var i = 0; i < message.length; i++) {
-          log(`Received event: ${j}.${i}: ${JSON.stringify(message[i])}`);
+          console.log(`Received event: ${j}.${i}: ${JSON.stringify(message[i])}`);
           //await sleep(2000);
           var resource = message[i]['resource'];
           var e = message[i]['event'];
@@ -461,7 +480,7 @@ exports.handler = function(event, context, callback) {
               } else if (e == "status") {
                   process_job_event_status(ts, user_name, message[i], callback);
               } else if (e == "submit") {
-                  log(`submit message for job ${message[i].jobid}`)
+                  console.log(`submit message for job ${message[i].jobid}`)
                   process_job_event_status(ts, user_name, message[i], callback);
               } else {
                 assert.fail(`"Job with unknown event ${e}"`);
@@ -472,16 +491,16 @@ exports.handler = function(event, context, callback) {
               const a = attrs.event.Value.split('.');
               const session_id = a[2];
               const state = a[1];
-              log(`"session ${session_id}:  event ${state}"`)
+              console.log(`"session ${session_id}:  event ${state}"`)
               if (state == "terminate")
                 process_session_event_terminate(ts, session_id, callback);
               else
-                log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
+                console.log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
           }
           else {
-            log("WARNING: NotImplemented skip update resource=" + resource);
+            console.log("WARNING: NotImplemented skip update resource=" + resource);
           }
       }
     }
-    log('Finished');
+    console.log('Finished');
 };

@@ -57,7 +57,38 @@ exports.handler = async (event) => {
           console.log(`"ignore message: status=${job.status} messageid=${messageId}"`);
           continue;
         }
+
+        // SEND OUTPUT
+        console.log('Sending Job Output');
         // MOVE JOB running -> success
+        var job_output = JSON.parse("{}");
+        job_output.resource = "job";
+        job_output.event = "output";
+        job_output.status = "success";
+        job_output.jobid = job.jobid;
+        job_output.instanceid = job.instanceid;
+        job_output.consumer = job.consumer;
+        job_output.sessionid = job.sessionid;
+        job_output.value = JSON.stringify(["Lambda Fake Test Runner"]);
+        var params = {
+          Message: JSON.stringify(job_output),
+          MessageAttributes: {
+            'event': {
+              DataType: 'String',
+              StringValue: "job.output"
+            },
+            'username': {
+              DataType: 'String',
+              StringValue: "boverhof"
+            }
+          },
+          TopicArn: update_topic_arn
+        };
+
+        var promise = sns.publish(params).promise();
+
+        // MOVE JOB running -> success
+        console.log('Sending Job Success');
         var job_finish = JSON.parse("{}");
         job_finish.resource = "job";
         job_finish.event = "status";
@@ -69,12 +100,11 @@ exports.handler = async (event) => {
 
         job_finish.Initialize = job.Initialize;
         job_finish.Input = job.Input;
-        job_finish.Output = [{}]
         job_finish.Reset = job.Reset;
         job_finish.Simulation = job.Simulation;
         job_finish.Visible = job.Visible;
 
-        var params = {
+        params = {
           Message: JSON.stringify(job_finish),
           MessageAttributes: {
             'event': {
@@ -84,13 +114,15 @@ exports.handler = async (event) => {
             'username': {
               DataType: 'String',
               StringValue: "boverhof"
+            },
+            'application': {
+              DataType: 'String',
+              StringValue: "fake-job"
             }
           },
           TopicArn: update_topic_arn
         };
-        //"[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\",
-        //\"status\": \"setup\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]"
-        var promise = sns.publish(params).promise();
+        promise.then(sns.publish(params).promise());
         promises.push(promise);
     }
     return Promise.all(promises);

@@ -81,6 +81,10 @@ exports.handler = async (event) => {
             'username': {
               DataType: 'String',
               StringValue: "boverhof"
+            },
+            'application': {
+              DataType: 'String',
+              StringValue: "fake-job"
             }
           },
           TopicArn: update_topic_arn

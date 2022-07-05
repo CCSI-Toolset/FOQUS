@@ -356,7 +356,7 @@ class dmfUploadDialog(_dmfUploadDialog, _dmfUploadDialogUI):
                         self.files[1] = ["model", m_path]
                     self.updateFileTable()
                     self.appEdit.setText(a)
-                except:
+                except Exception as e:
                     QMessageBox.information(self, "Error", str(e))
                     logging.getLogger("foqus." + __name__).exception(
                         "Error reading sinter config"

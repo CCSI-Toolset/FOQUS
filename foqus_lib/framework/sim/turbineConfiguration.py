@@ -231,6 +231,10 @@ class TurbineConfiguration:
         self.aspenVersion = 2
         self.dat = None
         self.tldb = None
+        # WHY: setting these directly in makeCopy without defining them as attributes here
+        # triggers no-member errors in pylint 2.14.1
+        self.configExt = None
+        self.subDir = None
 
     @property
     def notification(self):

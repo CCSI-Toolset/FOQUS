@@ -56,16 +56,9 @@ def attempt_load_tensorflow(try_imports=True):
         import tensorflow as tf
 
         load = tf.keras.models.load_model
-    except AssertionError:  # throw warning if manually failed for test
-        # if TensorFlow is not available, create a proxy function that will
-        # raise an exception whenever code tries to use `load()` at runtime
-        def load(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`load()` was called with args={args},"
-                "kwargs={kwargs} but `tensorflow` is not available"
-            )
 
-    except ImportError:  # throw warning if package actually not available
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
         # if TensorFlow is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
         def load(*args, **kwargs):
@@ -87,28 +80,9 @@ def attempt_load_sympy(try_imports=True):
         parse = sy.parsing.sympy_parser.parse_expr
         symbol = sy.Symbol
         solve = sy.solve
-    except AssertionError:  # throw warning if manually failed for test
-        # if sympy is not available, create proxy functions that will raise
-        # an exception whenever code tries to use a sympy method at runtime
-        def parse(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`parse()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
 
-        def symbol(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`symbol()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
-
-        def solve(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`solve()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
-
-    except ImportError:  # throw warning if package actually not available
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
         # if sympy is not available, create proxy functions that will raise
         # an exception whenever code tries to use a sympy method at runtime
         def parse(*args, **kwargs):
@@ -319,7 +293,7 @@ class pymodel_ml_ai(pymodel):
             try:  # see if form flag exists and throw useful error if not
                 self.normalization_form = self.model.layers[1].normalization_form
             except AttributeError:
-                _logger.error(
+                raise AttributeError(  # raise to ensure code stops here
                     "Model has no attribute normalization_form, and existing "
                     "attribute normalization was set to True. Users must "
                     "provide a normalization type for FOQUS to automatically "
@@ -403,7 +377,7 @@ class pymodel_ml_ai(pymodel):
                         1
                     ].normalization_function
                 except AttributeError:
-                    _logger.error(
+                    raise AttributeError(
                         "Model has no attribute normalization_function, and existing "
                         "attribute normalization_form was set to Custom. Users must "
                         "provide a normalization function for FOQUS to automatically "
@@ -442,8 +416,8 @@ class pymodel_ml_ai(pymodel):
 
                 try:  # parse function and throw useful error if syntax error
                     scaling_function = parse(self.normalization_function)
-                except ValueError:
-                    _logger.error(
+                except TypeError:
+                    raise ValueError(  # raise to ensure code stops here
                         "Model attribute normalization_function has value {} which "
                         "is not a valid SymPy expression. Please refer to the "
                         "latest documentation for syntax guidelines and standards: "
@@ -451,6 +425,7 @@ class pymodel_ml_ai(pymodel):
                             self.normalization_function
                         )
                     )
+                    assert False
 
                 # use parsed function to scale actual inputs to model inputs
 
@@ -555,8 +530,8 @@ class pymodel_ml_ai(pymodel):
                         unscaling_function = solve(
                             datascaled - scaling_function, datavalue, rational=False
                         )[0]
-                    except ValueError:
-                        _logger.error(
+                    except NotImplementedError:
+                        raise ValueError(  # raise to ensure code stops here
                             "Model attribute normalization_function has value {} which"
                             "is not a solvable sympy expression. Please refer to the "
                             "latest documentation for syntax guidelines and standards: "

@@ -539,9 +539,7 @@ class TestPymodelMLAI:
             "(datavalue - dataminimum) * (datamaximum - dataminimum)^(-1)",
         )
 
-        with pytest.raises(TypeError):
-            # the user is presented with a ValueError in the console, but SymPy
-            # throws a TypeError as well which supercedes it
+        with pytest.raises(ValueError):
             test_pymodel.run()
 
     def test_solve_norm_function(self, example_3):
@@ -569,7 +567,5 @@ class TestPymodelMLAI:
         # SymPy is extremely stable, so this is unlikely to happen unless
         # forced (as in this test) - "good practice" norm forms shouldn't fail
 
-        with pytest.raises(NotImplementedError):
-            # the user is presented with a ValueError in the console, but SymPy
-            # throws a NotImplementedError as well which supercedes it
+        with pytest.raises(ValueError):
             test_pymodel.run()

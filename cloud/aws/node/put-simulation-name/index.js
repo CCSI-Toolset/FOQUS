@@ -64,7 +64,9 @@ exports.handler = function(event, context, callback) {
       config_filename = "acm_sinter.json";
     } else if (app == "aspenplus") {
       config_filename = "aspenplus_sinter.json";
-    } else {
+    } else if (app == "fake-job") {
+      config_filename = "fake-job.json";
+    }else {
         done(new Error(`Unsupported application "${event.body}"`));
         return;
     }

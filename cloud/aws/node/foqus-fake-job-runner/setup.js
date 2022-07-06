@@ -15,6 +15,7 @@ const sqs = new AWS.SQS();
 const sns = new AWS.SNS();
 const queue_name = process.env.FOQUS_JOB_QUEUE;
 const update_topic_arn = process.env.FOQUS_UPDATE_TOPIC_ARN;
+const s3_bucket_name = process.env.SIMULATION_BUCKET_NAME;
 //const log = require("debug")("foqus-fake-job-runner")
 
 console.log('foqus-fake-job-runner loading setup');
@@ -42,9 +43,19 @@ console.log('foqus-fake-job-runner loading setup');
 
 exports.handler = async (event) => {
     let promises = [];
+    function handleDone() {
+      console.log("handleDone");
+      return 1;
+    };
+    function handleError(error) {
+      console.log(`handleError ${error}`);
+      return 0;
+    };
     console.log(JSON.stringify(event));
     for (const { Sns } of event.Records) {
         var messageId = Sns.MessageId;
+        var user_name = Sns.MessageAttributes.username.Value;
+        var application = Sns.MessageAttributes.application.Value;
         var body = Sns.Message;
         console.log('SQS message %s: %j', messageId, body);
         var job = JSON.parse(body);
@@ -73,27 +84,61 @@ exports.handler = async (event) => {
         job_run.Simulation = job.Simulation;
         job_run.Visible = job.Visible;
 
-        var params = {
-          Message: JSON.stringify(job_run),
-          MessageAttributes: {
-            'event': {
-              DataType: 'String',
-              StringValue: "job.running"
-            },
-            'username': {
-              DataType: 'String',
-              StringValue: "boverhof"
-            },
-            'application': {
-              DataType: 'String',
-              StringValue: "fake-job"
-            }
-          },
-          TopicArn: update_topic_arn
+        function handleS3Error(error) {
+          console.log(`handleS3Error ${error.name}`);
+          job_run.status = "error";
+          var promise = new Promise(function(resolve, reject){
+            //resolve(request.promise());
+            var obj = new Object();
+            obj.Body = "{}";
+            resolve(obj);
+          });
+          return promise;
         };
-        //"[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"3494e851-3304-4a41-be47-44083108083b\",
-        //\"status\": \"setup\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]"
-        var promise = sns.publish(params).promise();
+        function publishSNS(s3_file_response) {
+            // NOTE: using curried variable to access JSON request
+            // set in dynamo function.  Like to turn this into a
+            // parameter
+            console.log("S3 DATA");
+            console.log(s3_file_response);
+            var meta_obj = JSON.parse(s3_file_response.Body);
+            console.log(JSON.stringify(meta_obj));
+            var promise = new Promise(function(resolve, reject){
+              var params = {
+                Message: JSON.stringify(job_run),
+                MessageAttributes: {
+                  'event': {
+                    DataType: 'String',
+                    StringValue: `job.${job_run.status}`
+                  },
+                  'username': {
+                    DataType: 'String',
+                    StringValue: user_name
+                  },
+                  'application': {
+                    DataType: 'String',
+                    StringValue: application
+                  }
+                },
+                TopicArn: update_topic_arn
+              };
+              console.log(`SNS Publish: ${JSON.stringify(params)}`);
+              var request = sns.publish(params);
+              resolve(request.promise());
+            });
+            return promise;
+        };
+        // CHECK FOR SIMULATION
+        var client = new AWS.S3();
+        var params = {
+          Bucket: s3_bucket_name,
+          Key: user_name + "/" + job.Simulation + "/meta.json"
+        };
+        var response = client.getObject(params);
+        var promise = response.promise()
+          .catch(handleS3Error)
+          .then(publishSNS)
+          .then(handleDone);
         promises.push(promise);
     }
     return Promise.all(promises);

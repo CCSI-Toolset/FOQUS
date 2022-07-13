@@ -84,7 +84,7 @@ exports.handler = function(event, context, callback) {
             MessageAttributes: {
               'event': {
                 DataType: 'String',
-                StringValue: `"session.${state}.${session_id}"`
+                StringValue: `session.${state}.${session_id}`
               },
               'username': {
                 DataType: 'String',

@@ -56,7 +56,7 @@ exports.handler = function(event, context, callback) {
             for (var i=0; i<data.Items.length; i++) {
                 var item = data.Items[i];
                 if (item.SessionId == session_id) {
-                  log('item: ', item);
+                  log(`item: ${JSON.stringify(item)}`);
                   var obj =  {Id: item.Id,
                     Application: item.Application,
                     SessionId: item.SessionId,

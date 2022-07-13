@@ -18,28 +18,32 @@ const dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
 const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const log_topic_name = process.env.FOQUS_LOG_TOPIC_NAME;
+const s3 = new AWS.S3();
 
-// TODO: Check Table and skip any items where Finished is already set
-var process_session_event_terminate = function(ts, session_id, callback) {
-    console.log(`"process_session_event_terminate(${session_id})"`);
+/* process_session_start:
+ * Check Table and skip any items where Finished is already set
+ *    Parmeters:
+ *      state -- stop,terminate
+ */
+var process_session_stop = function(state, ts, session_id, callback) {
+    console.log(`"process_session_stop(${state}, ${session_id})"`);
     function dynamoUpdateItems(obj) {
         console.log(`dynamoUpdateItems:  count=${obj.Count}`);
         console.log(`dynamoUpdateItems:  ${JSON.stringify(obj)}`);
         if (obj.Count == 0) {
-          console.log("Session contains no jobs");
+          console.log("Session contains no jobs in status submit");
           return;
         }
         var params = {
-          TableName: tablename,
-          UpdateExpression: 'SET #f=:f,  #t=:t, #s=:s',
-          ExpressionAttributeNames: {"#s": 'state', '#f' : 'finished', '#t':'TTL'},
-          ExpressionAttributeValues: {':s': 'terminate', ':f': ts, ':t':Math.floor(Date.now()/1000 + 60*60*12)}
+            TableName: tablename,
+            UpdateExpression: 'SET #t=:t, #s=:s',
+            ExpressionAttributeNames: {"#s": 'State', '#t':'TTL'},
+            ExpressionAttributeValues: {':s': state, ':sid':session_id, ':t':Math.floor(Date.now()/1000 + 60*60*12)},
+            ConditionExpression: 'contains (SessionId, :sid) and (#s in (submit))'
         };
-        var item = null;
         var promises = [];
         for(var i=0; i<obj.Count; i++) {
           console.log(`item:  ${JSON.stringify(obj.Items[i])}`);
-          item = {State:"terminate"};
           params.Key = { "Id": obj.Items[i].Id, "Type":"Job" };
           console.log(`item:  ${JSON.stringify(params)}`);
           var response = dynamodb.update(params);
@@ -57,12 +61,149 @@ var process_session_event_terminate = function(ts, session_id, callback) {
     var params = {
         TableName: tablename,
         KeyConditionExpression: '#T = :job',
-        ExpressionAttributeNames: {"#T":"Type"},
+        ExpressionAttributeNames: {"#T":"Type", "#S":"State"},
         ExpressionAttributeValues: { ":job":"Job", ":sessionid":session_id},
-        FilterExpression: 'contains (SessionId, :sessionid)'
+        FilterExpression: 'contains (SessionId, :sessionid) and (#S in (submit))'
     };
     var promise = dynamodb.query(params).promise();
     promise.then(dynamoUpdateItems)
+      .then(handleDone)
+      .catch(handleError);
+};
+
+/*
+ * process_session_start:  Moves DynamoDB Jobs in session_id
+ *     from stop to submit
+ */
+var process_session_start = function(ts, session_id, callback) {
+    console.log(`process_session_start(${session_id})`);
+    function dynamoUpdateItems(obj) {
+        console.log(`dynamoUpdateItems:  count=${obj.Count}`);
+        console.log(`dynamoUpdateItems:  ${JSON.stringify(obj)}`);
+        if (obj.Count == 0) {
+          console.log("Session contains no jobs");
+          return;
+        }
+        // ONLY job.stop can be moved to job.submit here
+        // process-session-start generates SNS msg for each job.create and one session.start
+        // worker ignores SQS Message with job.stop
+        var params = {
+          TableName: tablename,
+          UpdateExpression: 'SET #t=:t, #s=:s',
+          ExpressionAttributeNames: {"#s": 'State', '#t':'TTL'},
+          ExpressionAttributeValues: {':s': 'submit', ':sid':session_id, ':t':Math.floor(Date.now()/1000 + 60*60*12)},
+          FilterExpression: 'contains (SessionId, :sid) and (#s in (stop))'
+        };
+        var item = null;
+        var promises = [];
+        for(var i=0; i<obj.Count; i++) {
+          console.log(`item:  ${JSON.stringify(obj.Items[i])}`);
+          params.Key = { "Id": obj.Items[i].Id, "Type":"Job" };
+          console.log(`params:  ${JSON.stringify(params)}`);
+          var response = dynamodb.update(params);
+          promises.push(response.promise());
+        }
+        Promise.all(promises).then(handleDone).catch(handleError);
+    };
+    function handleError(error) {
+      console.log(`handleError ${error}`);
+      callback(error, "ERROR");
+    };
+    function handleDone() {
+        callback(null, "SUCCESS");
+    }
+    var params = {
+          TableName: tablename,
+          KeyConditionExpression: '#T = :job',
+          ExpressionAttributeNames: {"#T":"Type", "#S":"State"},
+          ExpressionAttributeValues: { ":job":"Job", ":sessionid":session_id},
+          FilterExpression: 'contains (SessionId, :sessionid) and (#S in (stop))'
+    };
+    var promise = dynamodb.query(params).promise();
+    promise.then(dynamoUpdateItems)
+      .then(handleDone)
+      .catch(handleError);
+};
+
+var process_session_terminate = function(ts, session_id, user_name, callback) {
+    console.log(`"process_session_terminate(${session_id})"`);
+    // dynamoUpdateItemsTerminate:  Move all jobs in session to status terminate
+    function dynamoUpdateItemsTerminate(obj) {
+        console.log(`dynamoUpdateItemsTerminate:  count=${obj.Count}`);
+        console.log(`dynamoUpdateItemsTerminate:  ${JSON.stringify(obj)}`);
+        if (obj.Count == 0) {
+          console.log("Session contains no jobs");
+          return;
+        }
+        var params = {
+          TableName: tablename,
+          UpdateExpression: 'SET #f=:f,  #t=:t, #s=:s',
+          ExpressionAttributeNames: {"#s": 'State', '#f' : 'Finished', '#t':'TTL'},
+          ExpressionAttributeValues: {':s': 'terminate', ':f': ts, ':t':Math.floor(Date.now()/1000 + 60*60*12)},
+          FilterExpression: 'contains (SessionId, :sid) and (#s in (submit, stop, setup, running))'
+        };
+        var promises = [];
+        for(var i=0; i<obj.Count; i++) {
+          console.log(`item:  ${JSON.stringify(obj.Items[i])}`);
+          params.Key = { "Id": obj.Items[i].Id, "Type":"Job" };
+          console.log(`params:  ${JSON.stringify(params)}`);
+          var response = dynamodb.update(params);
+          promises.push(response.promise());
+        }
+        return Promise.all(promises);
+    };
+    // listDeleteS3Objects:  Delete all S3 keys prefixed {session_id}/create
+    function listDeleteS3Objects(obj) {
+        if (obj) {
+          console.log(`listDeleteS3Objects: Number Updated jobs: ${obj.Count}`)
+        }
+        else {
+          console.log(`listDeleteS3Objects: DynamoDB Query returned nothing`);
+        }
+        var promises = [];
+        var promise = null;
+        var params_list = {Bucket: s3_bucket_name, Prefix:`${user_name}/session/create/${session_id}/`};;
+        function deleteObjects(listedObjects) {
+          console.log(`listedObjects: ${JSON.stringify(listedObjects)}`);
+          if (!listedObjects.KeyCount) {
+              return;
+          }
+          var params = {Bucket: s3_bucket_name, Delete:{Objects:[]}};
+          listedObjects.Contents.forEach(({ Key }) => {
+              params.Delete.Objects.push({ Key });
+          });
+          var promise = s3.deleteObjects(params, function(err, data) {
+              if (err) {
+                  console.log(`listDeleteS3Objects(${params.Delete.Objects}), ERROR: ${err}`);
+                  console.log(`listDeleteS3Objects ERROR Stack: ${err.stack}`);
+                  throw new Error(`Failed to s3.deleteObjects Prefix=${params_list.Prefix}`);
+              } else {
+                  console.log(`listDeleteS3Objects: DELETED ${params.Objects}`);
+              }
+          });
+        }
+        promise = s3.listObjectsV2(params_list).promise();
+        promise.then(deleteObjects);
+        return promise;
+    };
+    function handleError(error) {
+      console.log(`handleError ${error}`);
+      callback(error, "ERROR");
+    };
+    function handleDone() {
+        callback(null, "SUCCESS");
+    }
+    var promise = null;
+    var params = {
+        TableName: tablename,
+        KeyConditionExpression: '#T = :job',
+        ExpressionAttributeNames: {"#s": 'State',"#T":"Type"},
+        ExpressionAttributeValues: { ":job":"Job", ":sid":session_id, ":create":"create"},
+        FilterExpression: 'contains (SessionId, :sid) and (#s in (:create, submit, stop, setup, running))'
+    };
+    promise = dynamodb.query(params).promise();
+    promise.then(dynamoUpdateItemsTerminate)
+      .then(listDeleteS3Objects)
       .then(handleDone)
       .catch(handleError);
 };
@@ -74,7 +215,6 @@ var process_session_event_terminate = function(ts, session_id, callback) {
 var process_job_event_output = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
     console.log('process_job_event_output(username= ' + user_name + ')');
-    const s3 = new AWS.S3();
     const e = message['event'];
     const status = message['status'];
     const job = message['jobid'];
@@ -132,7 +272,6 @@ var process_job_event_output = function(ts, user_name, message, callback) {
  */
 var process_job_event_status = function(ts, user_name, message, callback) {
     // ts -- "Timestamp": "2018-05-10T01:47:26.794Z",
-    const s3 = new AWS.S3();
     const e = message['event'];
     const status = message['status'];
     const job = message['jobid'];
@@ -277,11 +416,12 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 "Type":"Job"
             },
             UpdateExpression: "set #w=:w, #s=:s, ConsumerId=:c, #u=:u, #t=:t",
-            ConditionExpressions: 'State NOT IN ("success", "error", "terminate")',
+            ConditionExpression: 'not ( #s in (submit,:e,terminate))',
             ExpressionAttributeValues:{
                 ":w":ts,
                 ":c":consumer,
                 ":u":user_name,
+                ":e":"error",
                 ":s":status,
                 ":t":Math.floor(Date.now()/1000 + 60*60*24)
             },
@@ -400,7 +540,7 @@ var process_consumer_event = function(ts, message, callback) {
     var instance_id = message['instanceid'];
     var update_expr = "set " + e + " = :s, #t=:t";;
     var expr_attr_vals = {":s":ts, ":t":Math.floor(Date.now()/1000 + 60*60*1)};
-    if (instance_id != NaN) {
+    if (isNaN(instance_id)) {
       update_expr = "set " + e + " =:s, instance=:i, #t=:t";
       expr_attr_vals[":i"] = instance_id;
     } else {
@@ -447,17 +587,32 @@ function sleep(ms) {
  *
  */
 exports.handler = function(event, context, callback) {
-    //console.log(`EVENT: ${JSON.stringify(event)}`);
+    console.log(`EVENT: ${JSON.stringify(event)}`);
     if (!event.Records) {
       console.log('Finished: No SNS Records');
       return;
     }
     for (var j = 0; j < event.Records.length; j++) {
-      var message = JSON.parse(event.Records[j].Sns.Message);
       var attrs = event.Records[j].Sns.MessageAttributes;
+      var user_name = attrs.username.Value;
       var ts = event.Records[j].Sns.Timestamp;
-      //log('Received event:', event.Records[j].Sns.Message);
+      if (attrs.event && attrs.event.Value.startsWith('session.')) {
+          const a = attrs.event.Value.split('.');
+          const session_id = a[2];
+          const state = a[1];
+          console.log(`"session ${session_id}:  event ${state}"`)
+          if (state == "kill")
+              process_session_terminate(ts, session_id, user_name, callback);
+          else if (state == "stop")
+              process_session_stop(ts, session_id, callback);
+          else if (state == "start")
+              process_session_start(ts, session_id, callback);
+          else
+              console.log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
+          continue;
+      }
 
+      var message = JSON.parse(event.Records[j].Sns.Message);
       if (util.isArray(message) == false) {
           message = [message];
       }
@@ -471,7 +626,6 @@ exports.handler = function(event, context, callback) {
               if (!attrs.username) {
                   assert.fail(`"MessageAttributes.username not defined: ${attrs.username}"`);
               }
-              var user_name = attrs.username.Value;
               if (!user_name) {
                   assert.fail("MessageAttributes.username.Value undefined");
               }
@@ -487,15 +641,6 @@ exports.handler = function(event, context, callback) {
               }
           } else if (resource == "consumer") {
               process_consumer_event(ts, message[i], callback);
-          } else if (attrs.event && attrs.event.Value.startsWith('session.')) {
-              const a = attrs.event.Value.split('.');
-              const session_id = a[2];
-              const state = a[1];
-              console.log(`"session ${session_id}:  event ${state}"`)
-              if (state == "terminate")
-                process_session_event_terminate(ts, session_id, callback);
-              else
-                console.log(`"WARNING: Not Implemented Session ${attrs.event.Value}"`)
           }
           else {
             console.log("WARNING: NotImplemented skip update resource=" + resource);

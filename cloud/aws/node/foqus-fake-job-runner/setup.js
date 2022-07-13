@@ -87,6 +87,7 @@ exports.handler = async (event) => {
         function handleS3Error(error) {
           console.log(`handleS3Error ${error.name}`);
           job_run.status = "error";
+          job_run.message = `AWS.S3 ${error.name}: Simulation Not Found`;
           var promise = new Promise(function(resolve, reject){
             //resolve(request.promise());
             var obj = new Object();

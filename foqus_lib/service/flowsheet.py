@@ -600,9 +600,22 @@ class FlowsheetControl:
 
             if not ret:
                 continue
-            assert type(ret) is tuple and len(ret) == 2
-            user_name, job_desc = ret
+            assert type(ret) is tuple and len(ret) == 3
+            user_name, msg_attr_session_id, job_desc = ret
             job_id = uuid.UUID(job_desc.get("Id"))
+            session_id = job_desc.get("sessionid")
+            if msg_attr_session_id != session_id:
+                _log.error("run: session IDs mismatch MessageAttributes(%s) and Message(%s)",
+                    msg_attr_session_id, session_id)
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message(
+                    "run: job.submit session IDs mismatch MessageAttributes(%s) and Message(%s)" %(
+                    msg_attr_session_id, session_id)
+                )
+                self._delete_sqs_job()
+                continue
+            session_id = uuid.UUID(sessionid)
+
             # getJobStatus._flowsheet_job_id = str(job_id)
             db.set_user_name(user_name)
             """
@@ -767,6 +780,8 @@ class FlowsheetControl:
         user_name = body["MessageAttributes"].get("username").get("Value")
         _log.info("username: " + user_name)
         db.set_user_name(user_name)
+        session_id = body["MessageAttributes"].get("session").get("Value")
+        _log.info("session: " + session_id)
         job_desc = json.loads(body["Message"])
         _log.info("Job Description: " + body["Message"])
         for key in ["Id", "Input", "Simulation"]:
@@ -844,7 +859,7 @@ class FlowsheetControl:
         with open(os.path.join(CURRENT_JOB_DIR, "current_foqus.json"), "w") as fd:
             json.dump(job_desc, fd)
 
-        return user_name, job_desc
+        return user_name, session_id, job_desc
 
     # @staticmethod
     def setup_foqus(self, db, user_name, job_desc):

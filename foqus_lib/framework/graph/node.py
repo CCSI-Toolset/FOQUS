@@ -985,7 +985,8 @@ class Node:
             cwd = os.getcwd()
             if wd is None:  # no other working directory provided, default
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
-            else:  # use provided wd - this wouldntt happen via the GUI
+            else:  # use provided wd - this wouldn't happen via the GUI
+                self.wd = wd  # so the run method can automatically find wd
                 os.chdir(wd)
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1469,7 +1470,10 @@ class Node:
         if not self.pyModel:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            if not hasattr(self, "wd"):  # no other working directory provided, default
+                os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            else:  # use provided wd - this wouldn't happen via the GUI
+                os.chdir(self.wd)
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(

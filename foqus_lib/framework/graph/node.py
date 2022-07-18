@@ -565,7 +565,7 @@ class Node:
     function for running a calculations and simulations associated
     with a node.  The varaibles associated with nodes are all stored
     at the graph level, so the parent graph of a node needs to be
-    set before running any calcualtions, so the node knows where
+    set before running any calculations, so the node knows where
     to find variables, turbine config info,...
     """
 
@@ -577,7 +577,7 @@ class Node:
         self.calcCount = 0
         self.altInput = None
         self.vis = True  # whether or not to display node
-        self.seq = True  # whether or not to include in calcualtion order
+        self.seq = True  # whether or not to include in calculation order
         self.x = x  # coordinate for drawing graph
         self.y = y  # coordinate for drawing graph
         self.z = z  # coordinate for drawing graph
@@ -1006,7 +1006,7 @@ class Node:
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
 
-    def upadteSCDefaults(self, outfile=None):
+    def updateSCDefaults(self, outfile=None):
         if outfile is None:
             outfile = "{0}.json".format(self.modelName)
         sc = self.gr.turbConfig.getSinterConfig(self.modelName)
@@ -1029,7 +1029,7 @@ class Node:
 
     def runCalc(self, nanout=False):
         """
-        This function calcualtate the node's output values from
+        This function calculates the node's output values from
         the inputs.  First it does the model calculations then
         any Python post-processing calculations.  The model and
         or the post-processing calculations can be omitted.  If

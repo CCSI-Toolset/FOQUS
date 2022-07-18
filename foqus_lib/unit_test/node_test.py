@@ -885,7 +885,12 @@ class TestNode:
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
         # clear the models we want to re-import, if they are already registered
+
+        # if this test runs, tensorflow is available and .keras.utils is too
+        # pylint: disable=import-error
         from tensorflow.keras.utils import get_custom_objects
+
+        # pylint: enable=import-error
 
         for model in ["mea_column_model", "mea_column_model_custom_norm_form"]:
             if str("Custom>" + model) in get_custom_objects().keys():
@@ -897,7 +902,7 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5)
+        node.setSim(newModel="AR_nocustomlayer", newType=5, wd=modelsdir)
 
         inst = pymodel_ml_ai(node.model)
 
@@ -924,7 +929,7 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5)
+        node.setSim(newModel="AR_nocustomlayer", newType=5, wd=modelsdir)
         node.runCalc()  # covers node.runMLAIPlugin()
 
         inst = pymodel_ml_ai(node.model)
@@ -953,7 +958,7 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model", newType=5)
+        node.setSim(newModel="mea_column_model", newType=5, wd=modelsdir)
 
         inst = pymodel_ml_ai(node.model)
 
@@ -980,7 +985,7 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model", newType=5)
+        node.setSim(newModel="mea_column_model", newType=5, wd=modelsdir)
         node.runCalc()  # covers node.runMLAIPlugin()
 
         inst = pymodel_ml_ai(node.model)
@@ -1009,7 +1014,9 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model_custom_norm_form", newType=5)
+        node.setSim(
+            newModel="mea_column_model_custom_norm_form", newType=5, wd=modelsdir
+        )
 
         inst = pymodel_ml_ai(node.model)
 
@@ -1036,7 +1043,9 @@ class TestNode:
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model_custom_norm_form", newType=5)
+        node.setSim(
+            newModel="mea_column_model_custom_norm_form", newType=5, wd=modelsdir
+        )
         node.runCalc()  # covers node.runMLAIPlugin()
 
         inst = pymodel_ml_ai(node.model)

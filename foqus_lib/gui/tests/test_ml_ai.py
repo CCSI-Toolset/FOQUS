@@ -16,7 +16,6 @@ pytestmark = pytest.mark.gui
 _ = pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
 
-
 @pytest.fixture(scope="session")
 def model_files(
     foqus_ml_ai_models_dir: Path,

@@ -52,7 +52,9 @@ def psuade_path():
 @pytest.fixture(
     scope="session",
 )
-def foqus_working_dir(request, tmp_path_factory, name: str = "foqus-working-dir") -> Path:
+def foqus_working_dir(
+    request, tmp_path_factory, name: str = "foqus-working-dir"
+) -> Path:
     d = tmp_path_factory.mktemp(name)
     # exist_ok=False: ensure a new directory is created for every test run
     d.mkdir(parents=True, exist_ok=True)
@@ -64,8 +66,8 @@ def foqus_working_dir(request, tmp_path_factory, name: str = "foqus-working-dir"
 
 @pytest.fixture(scope="session")
 def foqus_ml_ai_models_dir(
-        foqus_working_dir: Path,
-    ) -> Path:
+    foqus_working_dir: Path,
+) -> Path:
 
     return foqus_working_dir / "user_ml_ai_models"
 
@@ -75,9 +77,8 @@ def foqus_ml_ai_models_dir(
     autouse=True,
 )
 def install_ml_ai_model_files(
-        foqus_examples_dir: Path,
-        foqus_ml_ai_models_dir: Path
-    ) -> Path:
+    foqus_examples_dir: Path, foqus_ml_ai_models_dir: Path
+) -> Path:
     """
     This is a session-level fixture with autouse b/c it needs to be created
     before the main window is instantiated.
@@ -116,9 +117,9 @@ def setting_working_dir(dest: Path) -> Path:
 
 @pytest.fixture(scope="session")
 def foqus_session(
-        foqus_working_dir: Path,
-        psuade_path: Path,
-    ):
+    foqus_working_dir: Path,
+    psuade_path: Path,
+):
     "Base FOQUS session object, initialized once per (pytest) session."
     print("starting foqus session")
     from foqus_lib.framework.session import session

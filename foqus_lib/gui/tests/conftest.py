@@ -28,26 +28,6 @@ def configure_logging(request):
     logger.addHandler(console)
 
 
-@pytest.fixture(scope="session")
-def qtbot_params(request):
-    cfg = request.config
-    return {
-        "slowdown_wait": int(cfg.getoption("--slowdown-wait")),
-        "artifacts_path": Path(cfg.getoption("--artifacts-path")).absolute(),
-    }
-
-
-@pytest.fixture(scope="class")
-def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
-    if sys.version_info < (3, 7):
-        pytest.skip("GUI tests are not available for Python 3.6 or lower")
-    _qtbot = pytest_qt_extras.QtBot(request, **qtbot_params)
-    with capture_exceptions() as exceptions:
-        yield _qtbot
-    if exceptions:
-        pytest.fail(format_captured_exceptions(exceptions))
-    # _qtbot.cleanup()
-
 
 @pytest.fixture(scope="session")
 def main_window_params(request):
@@ -60,13 +40,15 @@ def main_window_params(request):
     }
 
 
-@pytest.yield_fixture(scope="class")
-def main_window(foqus_session, qtbot, main_window_params):
+@pytest.fixture(scope="session")
+def main_window(foqus_session, main_window_params):
+    "Main window object, initialized once per pytest session."
     from foqus_lib import foqus
 
     foqus.guiImport(mpl_backend="AGG")
 
     from foqus_lib.gui.main.mainWindow import mainWindow
+    app = QtWidgets.QApplication([])
 
     main_win = mainWindow(
         main_window_params["title"],
@@ -82,10 +64,8 @@ def main_window(foqus_session, qtbot, main_window_params):
         ts=False,
     )
     print(f"main_win={main_win}")
-    main_win.app = QtWidgets.QApplication.instance()
+    main_win.app = app
     print(f"main_win.app={main_win.app}")
-    # qtbot.add_widget(main_win)
-    qtbot.waitForWindowShown(main_win)
     print(f"main_win.app.activeWindow()={main_win.app.activeWindow()}")
     yield main_win
 
@@ -96,7 +76,28 @@ def main_window(foqus_session, qtbot, main_window_params):
         handle_closing_prompt
     ):
         main_win.close()
-    qtbot.cleanup()
+
+
+@pytest.fixture(scope="session")
+def qtbot_params(request):
+    cfg = request.config
+    return {
+        "slowdown_wait": int(cfg.getoption("--slowdown-wait")),
+        "artifacts_path": Path(cfg.getoption("--artifacts-path")).resolve(),
+    }
+
+
+@pytest.fixture(scope="class")
+def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
+    if sys.version_info < (3, 7):
+        pytest.skip("GUI tests are not available for Python 3.6 or lower")
+    _qtbot = pytest_qt_extras.QtBot(request, **qtbot_params)
+    with capture_exceptions() as exceptions:
+        yield _qtbot
+    if exceptions:
+        pytest.fail(format_captured_exceptions(exceptions))
+    _qtbot.cleanup()
+
 
 
 @pytest.fixture(scope="class")

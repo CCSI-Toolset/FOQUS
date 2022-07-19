@@ -55,7 +55,7 @@ def flowsheet_session_file(examples_dir, request):
 
 
 @pytest.fixture(
-    scope="module",
+    scope="session",
     autouse=True,
 )
 def foqus_working_dir(request) -> Path:
@@ -80,8 +80,9 @@ def setting_working_dir(dest: Path) -> Path:
         _set_working_dir(initial_working_dir)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def foqus_session(foqus_working_dir, psuade_path):
+    "Base FOQUS session object, initialized once per (pytest) session."
     from foqus_lib.framework.session import session
 
     with setting_working_dir(foqus_working_dir) as wdir:

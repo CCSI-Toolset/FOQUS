@@ -26,8 +26,8 @@ from foqus_lib import foqus
         "test_files/Optimization/Opt_Test_01.foqus",
     ]
 )
-def input_file(examples_dir, request):
-    return str(examples_dir / request.param)
+def input_file(foqus_examples_dir, request):
+    return str(foqus_examples_dir / request.param)
 
 
 @pytest.fixture

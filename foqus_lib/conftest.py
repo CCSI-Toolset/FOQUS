@@ -36,7 +36,7 @@ def _repo_root():
 
 
 @pytest.fixture(scope="session")
-def examples_dir(_repo_root):
+def foqus_examples_dir(_repo_root):
     _examples_dir = _repo_root / "examples"
     assert _examples_dir.exists()
     return _examples_dir
@@ -49,14 +49,8 @@ def psuade_path():
     return Path(_psuade_path).resolve()
 
 
-@pytest.fixture(scope="module", params=["UQ/Rosenbrock.foqus"])
-def flowsheet_session_file(examples_dir, request):
-    return str(examples_dir / "test_files" / request.param)
-
-
 @pytest.fixture(
     scope="session",
-    autouse=True,
 )
 def foqus_working_dir(request) -> Path:
     # FIXME get base dir from env var/CLI config

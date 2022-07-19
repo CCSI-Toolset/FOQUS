@@ -15,26 +15,7 @@ from foqus_lib.framework.ml_ai_models.mlaiSearch import ml_ai_models
 _ = pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
 
-# -----------------------------------------------------------------------------
-# fixtures to call correct session files for each test class
-
-
-# use a single FOQUS session and just load models as needed to reduce memory
-# ML AI Plugin will already be selected, just need to select new model names
-
-
-@pytest.fixture(
-    scope="module", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
-)
-def flowsheet_session_file(examples_dir: Path, request) -> Path:
-    return examples_dir / request.param
-
-
-# -----------------------------------------------------------------------------
-# generic tests to build model directories and import model files
-
-
-@pytest.fixture(scope="module", autouse=True)
+@pytest.fixture(scope="session")
 def models_dir(
     foqus_working_dir: Path,
 ) -> Path:
@@ -43,16 +24,16 @@ def models_dir(
 
 
 @pytest.fixture(
-    scope="module",
+    scope="session",
     autouse=True,
 )
-def install_ml_ai_model_files(examples_dir: Path, models_dir: Path) -> Path:
+def install_ml_ai_model_files(foqus_examples_dir: Path, models_dir: Path) -> Path:
     """
-    This is a module-level fixture with autouse b/c it needs to be created
+    This is a session-level fixture with autouse b/c it needs to be created
     before the main window is instantiated.
     """
 
-    base_path = examples_dir / "other_files" / "ML_AI_Plugin"
+    base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
     ts_models_base_path = base_path / "TensorFlow_2-7_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
@@ -68,9 +49,10 @@ def install_ml_ai_model_files(examples_dir: Path, models_dir: Path) -> Path:
     yield models_dir
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def model_files(
     models_dir: Path,
+    install_ml_ai_model_files,
     suffixes: Tuple[str] = (".py", ".h5"),
 ) -> List[Path]:
     paths = []
@@ -93,6 +75,12 @@ def test_model_files_are_present(model_files: List[Path]):
 
 # ----------------------------------------------------------------------------
 # parent class to run flowsheet, starting from main FOQUS session
+
+@pytest.fixture(
+    scope="class", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
+)
+def flowsheet_session_file(foqus_examples_dir: Path, request) -> Path:
+    return foqus_examples_dir / request.param
 
 
 class TestMLAIPluginFlowsheetRun:

@@ -77,6 +77,7 @@ def test_model_files_are_present(model_files: List[Path]):
 # ----------------------------------------------------------------------------
 # parent class to run flowsheet, starting from main FOQUS session
 
+
 @pytest.fixture(
     scope="class", params=["other_files/ML_AI_Plugin/mea_column_model.foqus"]
 )

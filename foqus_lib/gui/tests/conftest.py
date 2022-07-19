@@ -28,7 +28,6 @@ def configure_logging(request):
     logger.addHandler(console)
 
 
-
 @pytest.fixture(scope="session")
 def main_window_params(request):
     cfg = request.config
@@ -48,6 +47,7 @@ def main_window(foqus_session, main_window_params):
     foqus.guiImport(mpl_backend="AGG")
 
     from foqus_lib.gui.main.mainWindow import mainWindow
+
     app = QtWidgets.QApplication([])
 
     main_win = mainWindow(
@@ -97,7 +97,6 @@ def qtbot(request, qapp, qtbot_params) -> pytest_qt_extras.QtBot:
     if exceptions:
         pytest.fail(format_captured_exceptions(exceptions))
     _qtbot.cleanup()
-
 
 
 @pytest.fixture(scope="class")

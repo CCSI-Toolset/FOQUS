@@ -52,13 +52,53 @@ def psuade_path():
 @pytest.fixture(
     scope="session",
 )
-def foqus_working_dir(request) -> Path:
-    # FIXME get base dir from env var/CLI config
-    base_dir = Path("/tmp") / "foqus_working_dir"
-    test_module_name = request.node.name
-    d = base_dir / test_module_name
+def foqus_working_dir(request, tmp_path_factory, name: str = "foqus-working-dir") -> Path:
+    d = tmp_path_factory.mktemp(name)
+    # exist_ok=False: ensure a new directory is created for every test run
     d.mkdir(parents=True, exist_ok=True)
-    return d
+    what = "The FOQUS working directory for this test run"
+    print(f"\n{what} will be: {d}")
+    yield d
+    print(f"\n{what} has been: {d}")
+
+
+@pytest.fixture(scope="session")
+def foqus_ml_ai_models_dir(
+        foqus_working_dir: Path,
+    ) -> Path:
+
+    return foqus_working_dir / "user_ml_ai_models"
+
+
+@pytest.fixture(
+    scope="session",
+    autouse=True,
+)
+def install_ml_ai_model_files(
+        foqus_examples_dir: Path,
+        foqus_ml_ai_models_dir: Path
+    ) -> Path:
+    """
+    This is a session-level fixture with autouse b/c it needs to be created
+    before the main window is instantiated.
+    """
+    print("installing ml_ai model files")
+    models_dir = foqus_ml_ai_models_dir
+
+    base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
+    ts_models_base_path = base_path / "TensorFlow_2-7_Models"
+
+    models_dir.mkdir(exist_ok=True, parents=False)
+
+    for path in [
+        base_path / "mea_column_model.py",
+        ts_models_base_path / "mea_column_model.h5",
+        ts_models_base_path / "AR_nocustomlayer.h5",
+        base_path / "mea_column_model_customnormform.py",
+        ts_models_base_path / "mea_column_model_customnormform.h5",
+    ]:
+        shutil.copy2(path, models_dir)
+    yield models_dir
 
 
 @contextlib.contextmanager
@@ -75,8 +115,12 @@ def setting_working_dir(dest: Path) -> Path:
 
 
 @pytest.fixture(scope="session")
-def foqus_session(foqus_working_dir, psuade_path):
+def foqus_session(
+        foqus_working_dir: Path,
+        psuade_path: Path,
+    ):
     "Base FOQUS session object, initialized once per (pytest) session."
+    print("starting foqus session")
     from foqus_lib.framework.session import session
 
     with setting_working_dir(foqus_working_dir) as wdir:

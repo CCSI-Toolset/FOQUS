@@ -12,6 +12,7 @@ from foqus_lib.gui.flowsheet.drawFlowsheet import drawFlowsheet
 from foqus_lib.framework.ml_ai_models.mlaiSearch import ml_ai_models
 
 
+pytestmark = pytest.mark.gui
 _ = pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
 

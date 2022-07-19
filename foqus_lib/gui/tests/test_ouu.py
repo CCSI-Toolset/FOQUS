@@ -26,6 +26,9 @@ from foqus_lib.gui.common.InputPriorTable import InputPriorTable
 from PyQt5.QtWidgets import QMessageBox
 
 
+pytestmark = pytest.mark.gui
+
+
 @pytest.fixture(scope="class")
 def setup_frame_blank(main_window, request):
     """

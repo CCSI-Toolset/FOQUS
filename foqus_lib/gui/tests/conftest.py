@@ -79,11 +79,20 @@ def main_window(foqus_session, main_window_params):
 
 
 @pytest.fixture(scope="session")
-def qtbot_params(request):
+def qtbot_params(request, tmp_path_factory):
     cfg = request.config
+    artifacts = cfg.getoption("--qtbot-artifacts")
+
+    if bool(artifacts):
+        artifacts = Path(artifacts)
+        if not artifacts.absolute():
+            artifacts = tmp_path_factory.mktemp(artifacts)
+    else:
+        artifacts = False
+
     return {
-        "slowdown_wait": int(cfg.getoption("--slowdown-wait")),
-        "artifacts_path": Path(cfg.getoption("--artifacts-path")).resolve(),
+        "slowdown_wait": int(cfg.getoption("--qtbot-slowdown-wait-ms")),
+        "artifacts": artifacts,
     }
 
 

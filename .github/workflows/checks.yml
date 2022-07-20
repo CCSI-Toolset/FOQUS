@@ -91,7 +91,7 @@ jobs:
           pip-install-target: -r requirements-dev.txt ${{ matrix.optional-dependencies }}
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --artifacts-path "${{ env.PYTEST_BASETEMP }}/artifacts" --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Set up GUI test environment (Linux)
         if: contains(matrix.os, 'linux')
         run: |

@@ -3,7 +3,7 @@ Test module for FOQUS OUU Tutorial Example 1: `OUU with Discrete Uncertain Param
 URL: https://foqus.readthedocs.io/en/stable/chapt_ouu/tutorial.html#example-1-ouu-with-discrete-uncertain-parameters-only
 
 To run the test:
-pytest -k test_ouu [--slowdown-wait=<time_in_ms>]
+pytest -k test_ouu [--qtbot-slowdown-wait-ms=<time_in_ms>]
 
 Author: Devarshi Ghoshal <dghoshal@lbl.gov>
 """

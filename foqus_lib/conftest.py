@@ -62,9 +62,8 @@ def psuade_path():
 def foqus_working_dir(
     request, tmp_path_factory, name: str = "foqus-working-dir"
 ) -> Path:
-    d = tmp_path_factory.mktemp(name)
-    # exist_ok=False: ensure a new directory is created for every test run
-    d.mkdir(parents=True, exist_ok=True)
+    d = tmp_path_factory.mktemp(name, numbered=False)
+
     what = "The FOQUS working directory for this test run"
     print(f"\n{what} will be: {d}")
     yield d

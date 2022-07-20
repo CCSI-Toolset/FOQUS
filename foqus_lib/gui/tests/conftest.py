@@ -86,7 +86,7 @@ def qtbot_params(request, tmp_path_factory):
     if bool(artifacts):
         artifacts = Path(artifacts)
         if not artifacts.absolute():
-            artifacts = tmp_path_factory.mktemp(artifacts)
+            artifacts = tmp_path_factory.mktemp(artifacts, numbered=False)
     else:
         artifacts = False
 

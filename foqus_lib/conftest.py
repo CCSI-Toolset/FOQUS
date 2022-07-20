@@ -139,3 +139,20 @@ def foqus_session(
         dat.foqusSettings.psuade_path = str(psuade_path)
         yield dat
     # TODO is there any cleanup to be done, considering that the directory will be changed?
+
+
+def pytest_report_header(config):
+    return f"pytest temporary directory: {config.option.basetemp}"
+
+
+def pytest_terminal_summary(terminalreporter, config):
+    tr = terminalreporter
+    basetemp = config.option.basetemp
+
+    tr.section("FOQUS information")
+
+    tr.write_line(f"pytest temporary directory:\n\t{basetemp}")
+    tr.write_line(f"subdirectories:")
+    for path in Path(basetemp).rglob("*"):
+        if path.is_dir():
+            tr.write_line(f"\t{path}")

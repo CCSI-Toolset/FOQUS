@@ -25,8 +25,7 @@ defaults:
 
 env:
   FOQUS_CONDA_ENV_NAME_DEV: ccsi-foqus-dev
-  PYTEST_ARTIFACTS_PATH: ".pytest-artifacts"
-  PYTEST_FOQUS_WORKING_DIR: /tmp/foqus_working_dir
+  PYTEST_BASETEMP: .pytest
 
 jobs:
   code-formatting:
@@ -92,7 +91,7 @@ jobs:
           pip-install-target: -r requirements-dev.txt ${{ matrix.optional-dependencies }}
       - name: Set common pytest flags
         run:
-          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --artifacts-path "$PYTEST_ARTIFACTS_PATH" --basetemp="$PYTEST_ARTIFACTS_PATH"' >> $GITHUB_ENV
+          echo 'PYTEST_ADDOPTS=--pyargs foqus_lib --verbose --color=yes --artifacts-path "${{ env.PYTEST_BASETEMP }}/artifacts" --basetemp "${{ env.PYTEST_BASETEMP }}"' >> $GITHUB_ENV
       - name: Set up GUI test environment (Linux)
         if: contains(matrix.os, 'linux')
         run: |
@@ -110,8 +109,8 @@ jobs:
         if: always()
         with:
           # TODO decide if we need a separate upload for each Python version
-          name: pytest-artifacts-${{ matrix.os }}-py${{ matrix.python-version }}
-          path: ${{ env.PYTEST_ARTIFACTS_PATH }}
+          name: pytest-dir-${{ matrix.os }}-py${{ matrix.python-version }}
+          path: ${{ env.PYTEST_BASETEMP }}
           retention-days: 7
       - name: Upload coverage report to Codecov
         if: matrix.use_coverage

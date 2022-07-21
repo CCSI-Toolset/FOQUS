@@ -64,10 +64,7 @@ def foqus_working_dir(
 ) -> Path:
     d = tmp_path_factory.mktemp(name, numbered=False)
 
-    what = "The FOQUS working directory for this test run"
-    print(f"\n{what} will be: {d}")
     yield d
-    print(f"\n{what} has been: {d}")
 
 
 @pytest.fixture(scope="session")

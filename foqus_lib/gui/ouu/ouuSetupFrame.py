@@ -680,7 +680,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.objXPoints = []
         self.objYPoints = []
         if "objFigAx" in self.__dict__ and len(self.objFigAx.lines) > 0:
-            self.objFigAx.lines = []
+            self.objFigAx.lines.clear()
             self.objFigAx.relim()
             # self.objFigAx.set_xlim([0.0, 1.0])
             self.objCanvas.draw()

@@ -13,6 +13,11 @@ import pytest
 pytestmark = pytest.mark.gui
 
 
+@pytest.fixture(scope="class", params=["UQ/Rosenbrock.foqus"])
+def flowsheet_session_file(foqus_examples_dir, request):
+    return str(foqus_examples_dir / "test_files" / request.param)
+
+
 @pytest.fixture(scope="class")
 def setup_frame_blank(main_window, flowsheet_session_file, request):
     main_window.loadSessionFile(flowsheet_session_file, saveCurrent=False)

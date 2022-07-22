@@ -1417,7 +1417,7 @@ class QtBot(pytestqt_plugin.QtBot):
         *args,
         focused: W.QWidget = None,
         slowdown_wait=500,
-        artifacts_path=".pytest-artifacts",
+        artifacts: t.Optional[t.Union[bool, Path]] = None,
         **kwargs,
     ):
         super().__init__(*args, **kwargs)
@@ -1430,9 +1430,12 @@ class QtBot(pytestqt_plugin.QtBot):
         self._slowdown_wait = slowdown_wait
         self.annotations = Annotations()
 
-        artifacts_path = Path(artifacts_path)
-        self._screenshots = ArtifactManager(artifacts_path / "screenshots")
-        self._snapshots = ArtifactManager(artifacts_path / "snapshots")
+        self._artifacts = artifacts
+
+        if self._artifacts:
+            artifacts_path = Path(artifacts).resolve()
+            self._screenshots = ArtifactManager(artifacts_path / "screenshots")
+            self._snapshots = ArtifactManager(artifacts_path / "snapshots")
 
         self._signals = _Signals.instance()
         self._init_signals()
@@ -1460,10 +1463,14 @@ class QtBot(pytestqt_plugin.QtBot):
         self.wait(self._slowdown_wait)
 
     def take_screenshot(self, label, **kwargs):
+        if not self._artifacts:
+            return
         shot = Snapshot.from_widget(self.focused, label=label, **kwargs)
         self._screenshots.add(shot)
 
     def take_debug_snapshot(self, label, **kwargs):
+        if not self._artifacts:
+            return
         debug_shot = Snapshot.from_widget(
             self.focused, label=label, annotate=True, hierarchy_info=True, **kwargs
         )
@@ -1477,6 +1484,8 @@ class QtBot(pytestqt_plugin.QtBot):
         take_scr = self.take_screenshot
 
         def take_scr(action: Action, when):
+            if not self._artifacts:
+                return
             widget = action.target
             for_window = Snapshot.from_widget(
                 widget=widget, label=f"{when}-{action.description}"

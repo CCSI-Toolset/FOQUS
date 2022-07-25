@@ -836,7 +836,7 @@ class Node:
         else:
             raise NodeEx(code=61, msg=str(s))
 
-    def setSim(self, newType=None, newModel=None, force=False, ids=None, wd=None):
+    def setSim(self, newType=None, newModel=None, force=False, ids=None):
         """
         Set-up the node to run a simulation with Turbine
         """
@@ -983,11 +983,8 @@ class Node:
         elif self.isModelML:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
-            if wd is None:  # no other working directory provided, default
+            if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
-            else:  # use provided wd - this wouldn't happen via the GUI
-                self.wd = wd  # so the run method can automatically find wd
-                os.chdir(wd)
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(
@@ -1470,10 +1467,8 @@ class Node:
         if not self.pyModel:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
-            if not hasattr(self, "wd"):  # no other working directory provided, default
+            if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
-            else:  # use provided wd - this wouldn't happen via the GUI
-                os.chdir(self.wd)
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(

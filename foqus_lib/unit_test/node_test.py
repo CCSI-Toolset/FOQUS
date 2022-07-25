@@ -27,20 +27,38 @@ from foqus_lib.framework.pymodel.pymodel import pymodel
 from foqus_lib.framework.pymodel import pymodel_test
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 
+from importlib import import_module
+from pathlib import Path
+from typing import List, Tuple
 from collections import OrderedDict
 import unittest
 import os
 import sys
 import pytest
 
-curdir = os.getcwd()
-if "unit_test" in curdir:  # current directory is models directory
-    modelsdir = os.path.join(curdir, "user_ml_ai_models")
-else:  # a different home directory is being used (e.g. CI temp directory)
-    modelsdir = os.path.join(
-        os.path.join(curdir, "foqus_lib"), "unit_test/user_ml_ai_models"
-    )
-sys.path.append(modelsdir)
+
+@pytest.fixture(scope="session")
+def model_files(
+    foqus_ml_ai_models_dir: Path,
+    install_ml_ai_model_files,
+    suffixes: Tuple[str] = (".py", ".h5"),
+) -> List[Path]:
+    paths = []
+    for path in sorted(foqus_ml_ai_models_dir.glob("*")):
+        if all(
+            [
+                path.is_file(),
+                path.stat().st_size > 0,
+                path.suffix in suffixes,
+                path.name != "__init__.py",
+            ]
+        ):
+            paths.append(path)
+    return paths
+
+
+def test_model_files_are_present(model_files: List[Path]):
+    assert model_files
 
 
 class testImports(unittest.TestCase):
@@ -115,7 +133,7 @@ class TestPymodelMLAI:
     # will only need to load each model once and modify attributes from there
 
     @pytest.fixture(scope="function")
-    def example_1(self):  # no custom layer or normalization
+    def example_1(self, model_files):  # no custom layer or normalization
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time, and copies of individual
@@ -123,46 +141,72 @@ class TestPymodelMLAI:
 
         load = attempt_load_tensorflow()  # alias for load method
 
+        # get model files from previously defined model_files pathlist
+        model_h5 = [
+            path for path in model_files if str(path).endswith("AR_nocustomlayer.h5")
+        ]
+
         # has no custom layer or normalization
-        model = load(os.path.join(modelsdir, "AR_nocustomlayer.h5"))
+        model = load(model_h5[0])
 
         return model
 
     @pytest.fixture(scope="function")
-    def example_2(self):  # custom layer with preset normalization form
+    def example_2(self, model_files):  # custom layer with preset normalization form
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
         load = attempt_load_tensorflow()  # alias for load method
-        from foqus_lib.unit_test.user_ml_ai_models import mea_column_model
+
+        # get model files from previously defined model_files pathlist
+        model_h5 = [
+            path for path in model_files if str(path).endswith("mea_column_model.h5")
+        ]
+        model_py = [
+            path for path in model_files if str(path).endswith("mea_column_model.py")
+        ]
+
+        sys.path.append(os.path.dirname(model_py[0]))
+        module = import_module("mea_column_model")
 
         # has a custom layer with a preset normalization option
         model = load(
-            os.path.join(modelsdir, "mea_column_model.h5"),
-            custom_objects={"mea_column_model": mea_column_model.mea_column_model},
+            model_h5[0], custom_objects={"mea_column_model": module.mea_column_model}
         )
 
         return model
 
     @pytest.fixture(scope="function")
-    def example_3(self):  # custom layer with custom normalization form
+    def example_3(self, model_files):  # custom layer with custom normalization form
         # no tests using this fixture should run if tensorflow is not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
         load = attempt_load_tensorflow()  # alias for load method
-        from foqus_lib.unit_test.user_ml_ai_models import (
-            mea_column_model_custom_norm_form,
-        )
 
-        # has a custom layer with a custom normalization option
+        # get model files from previously defined model_files pathlist
+        model_h5 = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform.h5")
+        ]
+        model_py = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform.py")
+        ]
+
+        sys.path.append(os.path.dirname(model_py[0]))
+        module = import_module("mea_column_model_customnormform")
+
+        # has a custom layer with a preset normalization option
         model = load(
-            os.path.join(modelsdir, "mea_column_model_custom_norm_form.h5"),
+            model_h5[0],
             custom_objects={
-                "mea_column_model_custom_norm_form": mea_column_model_custom_norm_form.mea_column_model_custom_norm_form
+                "mea_column_model_customnormform": module.mea_column_model_customnormform
             },
         )
 
@@ -838,7 +882,8 @@ class TestNode:
         # BFB_sinter_config_v6.2.json and BFB_cost_v6.2.3.json
 
         turbdir = os.path.join(
-            modelsdir, "../../../examples/tutorial_files/SimSinter/Tutorial_2"
+            os.path.abspath(__file__),
+            "../../../examples/tutorial_files/SimSinter/Tutorial_2",
         )
         turbpath = os.path.join(turbdir, "Flash_Example_AP.json")
 
@@ -862,7 +907,8 @@ class TestNode:
         # BFB_sinter_config_v6.2.json and BFB_cost_v6.2.3.json
 
         turbdir = os.path.join(
-            modelsdir, "../../../examples/tutorial_files/SimSinter/Tutorial_2"
+            os.path.abspath(__file__),
+            "../../../examples/tutorial_files/SimSinter/Tutorial_2",
         )
         turbpath = os.path.join(turbdir, "Flash_Example_AP.json")
 
@@ -880,29 +926,33 @@ class TestNode:
         node.setSim(newModel="Flash_Example", newType=2)
         node.runCalc  # covers node.runTurbineCalc
 
-    def test_clear_registered_ML_objects(self):
+    # def test_clear_registered_ML_objects(self):
+    #     # skip this test if tensorflow is not available
+    #     pytest.importorskip("tensorflow", reason="tensorflow not installed")
+
+    #     # clear the models we want to re-import, if they are already registered
+
+    #     # if this test runs, tensorflow is available and .keras.utils is too
+    #     # pylint: disable=import-error
+    #     from tensorflow.keras.utils import get_custom_objects
+
+    #     # pylint: enable=import-error
+
+    #     for model in ["mea_column_model", "mea_column_model_customnormform"]:
+    #         if str("Custom>" + model) in get_custom_objects().keys():
+    #             get_custom_objects().pop("Custom>" + model)
+    #         # check that these models are not defined anymore
+    #         assert str("Custom>" + model) not in get_custom_objects().keys()
+
+    def test_setSim_modelMLAI_example1(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-
-        # clear the models we want to re-import, if they are already registered
-
-        # if this test runs, tensorflow is available and .keras.utils is too
-        # pylint: disable=import-error
-        from tensorflow.keras.utils import get_custom_objects
-
-        # pylint: enable=import-error
-
-        for model in ["mea_column_model", "mea_column_model_custom_norm_form"]:
-            if str("Custom>" + model) in get_custom_objects().keys():
-                get_custom_objects().pop("Custom>" + model)
-            # check that these models are not defined anymore
-            assert str("Custom>" + model) not in get_custom_objects().keys()
-
-    def test_setSim_modelMLAI_example1(self, node):
-        # skip this test if tensorflow is not available
-        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5, wd=modelsdir)
+        node.setSim(newModel="AR_nocustomlayer", newType=5)
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
 
@@ -925,12 +975,16 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_runPymodelMLAI_example1(self, node):
+    def test_runPymodelMLAI_example1(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="AR_nocustomlayer", newType=5, wd=modelsdir)
+        node.setSim(newModel="AR_nocustomlayer", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
         inst.run()
@@ -954,11 +1008,15 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_setSim_modelMLAI_example2(self, node):
+    def test_setSim_modelMLAI_example2(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model", newType=5, wd=modelsdir)
+        node.setSim(newModel="mea_column_model", newType=5)
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
 
@@ -981,12 +1039,16 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_runPymodelMLAI_example2(self, node):
+    def test_runPymodelMLAI_example2(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(newModel="mea_column_model", newType=5, wd=modelsdir)
+        node.setSim(newModel="mea_column_model", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
         inst.run()
@@ -1010,13 +1072,15 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_setSim_modelMLAI_example3(self, node):
+    def test_setSim_modelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(
-            newModel="mea_column_model_custom_norm_form", newType=5, wd=modelsdir
-        )
+        node.setSim(newModel="mea_column_model_customnormform", newType=5)
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
 
@@ -1039,14 +1103,16 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_runPymodelMLAI_example3(self, node):
+    def test_runPymodelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
-        node.setSim(
-            newModel="mea_column_model_custom_norm_form", newType=5, wd=modelsdir
-        )
+        node.setSim(newModel="mea_column_model_customnormform", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model)
         inst.run()

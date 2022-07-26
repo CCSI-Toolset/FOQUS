@@ -425,7 +425,6 @@ class pymodel_ml_ai(pymodel):
                             self.normalization_function
                         )
                     )
-                    assert False
 
                 # use parsed function to scale actual inputs to model inputs
 

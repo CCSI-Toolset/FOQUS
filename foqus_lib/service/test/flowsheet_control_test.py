@@ -48,10 +48,11 @@ INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:38
 
 
 def test_floqus_aws_config():
-    output = io.BytesIO(INSTANCE_USERDATA_JSON)
-    urllib.request.urlopen = MagicMock(return_value=output)
-    config = flowsheet.FOQUSAWSConfig()
-    config.get_instance()
+    with patch("urllib.request.urlopen") as urllib.request.urlopen:
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        urllib.request.urlopen = MagicMock(return_value=output)
+        config = flowsheet.FOQUSAWSConfig()
+        config.get_instance()
 
 
 def test_flowsheet_control():

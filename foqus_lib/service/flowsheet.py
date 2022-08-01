@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-"""foqus_service.py
+"""flowsheet.py
 * The AWS Cloud FOQUS service to start FOQUS
 
 Joshua Boverhof, Lawrence Berkeley National Lab
@@ -38,7 +38,6 @@ _instanceid = None
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
 )
-AWS_REGION = "us-east-1"
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = None
@@ -131,7 +130,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
 
     """ Search S3 Bucket for node simulation
     """
-    s3 = boto3.client("s3", region_name=AWS_REGION)
+    s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
     bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
     prefix = "%s/%s/" % (user_name, model_name)
     l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
@@ -296,11 +295,14 @@ class FOQUSJobException(Exception):
 
 class FOQUSAWSConfig:
     """
-    {"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
-     "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
-     "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
-     "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460"
-    }
+{ example:
+  "FOQUS-Update-Topic-Arn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluejobtopicidA63AF7BE-NY5APVGJL24B",
+  "FOQUS-Message-Topic-Arn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluelogtopicid50E21335-PBVQAP0RYZ5D",
+  "FOQUS-Job-Queue-Url": "arn:aws:sqs:us-west-2:387057575688:FoqusCloudUserStack-blueboverhofqueueidEDBC6161-zgo4wkNousqm",
+  "FOQUS-Simulation-Bucket-Name": "arn:aws:s3:::foquscloudstack-bluefoqussimulation99ec6532-170r4pwindi5n",
+  "FOQUS-Session-Bucket-Name": "arn:aws:s3:::foquscloudstack-bluefoqussession99ec6532-170r4pwindi5n",
+  "FOQUS-User": "boverhof"
+}
     """
 
     _inst = None
@@ -309,9 +311,44 @@ class FOQUSAWSConfig:
     def get_instance(cls):
         if cls._inst is not None:
             return cls._inst
-        request = urllib.request.urlopen("http://169.254.169.254/latest/user-data")
-        cls._inst = cls()
-        cls._inst._d = json.load(request)
+        #request = urllib.request.urlopen("http://169.254.169.254/latest/user-data")
+        inst = cls()
+        inst._d = d = dict()
+        try:
+            region = urllib.request.urlopen(
+                "http://169.254.169.254/latest/meta-data/placement/region"
+            ).read()
+            d['region'] = region.decode("ascii")
+            instanceid = urllib.request.urlopen(
+                "http://169.254.169.254/latest/meta-data/instance-id"
+            ).read()
+            d['instanceid'] = instanceid.decode("ascii")
+            tags = urllib.request.urlopen(
+                    "http://169.254.169.254/latest/meta-data/tags/instance"
+            ).read()
+            for tag in tags.decode('ascii').split():
+                value = urllib.request.urlopen(
+                    "http://169.254.169.254/latest/meta-data/tags/instance/%s" %(tag)
+                ).read()
+                d[tag] = value.decode("ascii")
+        except Exception as ex:
+            _log.error("Failed to discover instance-id or tag FoqusUser: %s", repr(ex))
+            raise
+        # Validate 
+        try:
+            inst.get_region()
+            inst.get_user()
+            inst.get_update_topic_arn()
+            inst.get_message_topic_arn()
+            inst.get_job_queue_url()
+            inst.get_simulation_bucket_name()
+            inst.get_session_bucket_name()
+            inst.get_dynamo_table_name()
+        except Exception as ex:
+            _log.error("Missing Tag: %s", repr(ex))
+            raise
+            
+        cls._inst = inst           
         return cls._inst
 
     def __init__(self):
@@ -323,6 +360,12 @@ class FOQUSAWSConfig:
         _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
 
+    def get_region(self):
+        return self._get("region")
+    
+    def get_user(self):
+        return self._get("FOQUS-User")
+    
     def get_update_topic_arn(self):
         return self._get("FOQUS-Update-Topic-Arn")
 
@@ -335,6 +378,9 @@ class FOQUSAWSConfig:
     def get_simulation_bucket_name(self):
         return self._get("FOQUS-Simulation-Bucket-Name")
 
+    def get_session_bucket_name(self):
+        return self._get("FOQUS-Session-Bucket-Name")
+    
     def get_dynamo_table_name(self):
         return self._get("FOQUS-DynamoDB-Table")
 
@@ -364,10 +410,10 @@ class TurbineLiteDB:
     """ """
 
     def __init__(self, close_after=True):
-        self._sns = boto3.client("sns", region_name=AWS_REGION)
         self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
         self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
-        self._user_name = "unknown"
+        self._user_name = FOQUSAWSConfig.get_instance().get_user()
+        self._sns = boto3.client("sns", region_name=FOQUSAWSConfig.get_instance().get_region())
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
@@ -390,7 +436,9 @@ class TurbineLiteDB:
     def __del__(self):
         _log.info("%s.delete", self.__class__.__name__)
 
-    def set_user_name(self, name):
+    def authorize_user_name(self, name):
+        if (name != self._user_name):
+            raise FOQUSJobException("Authorization Failed: Reject job request for user=%s", name)
         self._user_name = name
 
     def connectionString(self):
@@ -538,9 +586,13 @@ class FlowsheetControl:
         self._stop = False
         self._receipt_handle = None
         self._simulation_name = None
-        self._sqs = boto3.client("sqs", region_name=AWS_REGION)
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
-        self._dynamodb = boto3.client("dynamodb", region_name=AWS_REGION)
+        self._sqs = boto3.client("sqs", 
+            region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
+        self._dynamodb = boto3.client("dynamodb", 
+            region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
         self._dynamodb_table_name = (
             FOQUSAWSConfig.get_instance().get_dynamo_table_name()
         )
@@ -586,7 +638,7 @@ class FlowsheetControl:
                 ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
-                _log.exception("verify foqus exception: %s", str(ex))
+                _log.exception("verify foqus exception: %s", repr(ex))
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -595,7 +647,7 @@ class FlowsheetControl:
                 self._delete_sqs_job()
                 continue
             except Exception as ex:
-                _log.exception("pop_job exception: %s", str(ex))
+                _log.exception("pop_job exception: %s", repr(ex))
                 raise
 
             if not ret:
@@ -617,7 +669,7 @@ class FlowsheetControl:
             session_id = uuid.UUID(sessionid)
 
             # getJobStatus._flowsheet_job_id = str(job_id)
-            db.set_user_name(user_name)
+            db.authorize_user_name(user_name)
             """
             TODO: check dynamodb table if job has been stopped or killed
             cannot stop a running job.  If entry is missing job is ignored.
@@ -779,7 +831,7 @@ class FlowsheetControl:
         _log.info("MessageAttributes: " + str(body.get("MessageAttributes")))
         user_name = body["MessageAttributes"].get("username").get("Value")
         _log.info("username: " + user_name)
-        db.set_user_name(user_name)
+        db.authorize_user_name(user_name)
         session_id = body["MessageAttributes"].get("session").get("Value")
         _log.info("session: " + session_id)
         job_desc = json.loads(body["Message"])
@@ -796,7 +848,9 @@ class FlowsheetControl:
 
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         _log.info("Simulation Bucket: " + bucket_name)
-        s3 = boto3.client("s3", region_name=AWS_REGION)
+        s3 = boto3.client("s3", 
+            region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
         simulation_name = job_desc["Simulation"]
         flowsheet_key = "%s/%s/session.foqus" % (user_name, simulation_name)
 

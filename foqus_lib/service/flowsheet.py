@@ -683,7 +683,6 @@ class FlowsheetControl:
         self._kat.start()
         dat = None
         while not self._stop:
-            self.increment_metric_queue_peeks()
             ret = None
             _log.debug("pop job")
             try:
@@ -703,6 +702,7 @@ class FlowsheetControl:
                 _log.exception("pop_job exception: %s", repr(ex))
                 raise
 
+            self.increment_metric_queue_peeks()
             if not ret:
                 continue
 

@@ -625,10 +625,17 @@ class FlowsheetControl:
                     'MetricName': 'count_of_job_finish',
                     'Dimensions': [
                         {
-                            'user_name': FOQUSAWSConfig.get_instance().get_user(),
-                            'instance_id': FOQUSAWSConfig.get_instance().get_instance_id(),
-                            'event': event
+                            'Name':'user_name',
+                            'Value':FOQUSAWSConfig.get_instance().get_user()
                         },
+                        {
+                            'Name':'instance_id',
+                            'Value':FOQUSAWSConfig.get_instance().get_instance_id()
+                        },
+                        {
+                            'Name':'event',
+                            'Value':event
+                        }
                     ],
                     'Value': self._metric_count_of_job_finished_dict[event],
                     'Unit': 'Count'
@@ -646,9 +653,13 @@ class FlowsheetControl:
                     'MetricName': 'count_of_queue_peeks',
                     'Dimensions': [
                         {
-                            'user_name': FOQUSAWSConfig.get_instance().get_user(),
-                            'instance_id': FOQUSAWSConfig.get_instance().get_instance_id()
+                            'Name':'user_name',
+                            'Value':FOQUSAWSConfig.get_instance().get_user()
                         },
+                        {
+                            'Name':'instance_id',
+                            'Value':FOQUSAWSConfig.get_instance().get_instance_id()
+                        }
                     ],
                     'Value': self._metric_count_of_queue_peeks,
                     'Unit': 'Count'

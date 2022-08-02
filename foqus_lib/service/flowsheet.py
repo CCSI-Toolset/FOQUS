@@ -643,9 +643,14 @@ class FlowsheetControl:
             ]
         )
 
-    def increment_metric_queue_peeks(self, reset=False):
-        self._metric_count_of_queue_peeks += 1
-        if reset: self._metric_count_of_queue_peeks = 0
+    def increment_metric_queue_peeks(self, state, reset=False):
+        if reset:
+            self._metric_count_of_queue_peeks = dict()
+        if not self._metric_count_of_queue_peeks.has_key(state):
+            self._metric_count_of_queue_peeks[state] = 0
+        if not reset:
+            self._metric_count_of_queue_peeks[state] += 1
+
         self._cloudwatch.put_metric_data(
             Namespace='foqus-cloud-backend',
             MetricData=[
@@ -659,6 +664,10 @@ class FlowsheetControl:
                         {
                             'Name':'instance_id',
                             'Value':FOQUSAWSConfig.get_instance().get_instance_id()
+                        },
+                        {
+                            'Name':'state',
+                            'Value': state
                         }
                     ],
                     'Value': self._metric_count_of_queue_peeks,
@@ -671,7 +680,7 @@ class FlowsheetControl:
         Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
         _log.debug("main loop flowsheet service")
-        self.increment_metric_queue_peeks(reset=True)
+        self.increment_metric_queue_peeks(state="start", reset=True)
         self._receipt_handle = None
         VisibilityTimeout = 60 * 10
         db = TurbineLiteDB()
@@ -879,11 +888,13 @@ class FlowsheetControl:
             VisibilityTimeout=VisibilityTimeout,
             WaitTimeSeconds=10,
         )
-        self.increment_metric_queue_peeks()
+
         if not response.get("Messages", None):
             _log.info("Job Queue is Empty")
+            self.increment_metric_queue_peeks(state="empty")
             return
 
+        self.increment_metric_queue_peeks(state="start")
         message = response["Messages"][0]
         self._receipt_handle = message["ReceiptHandle"]
         body = json.loads(message["Body"])

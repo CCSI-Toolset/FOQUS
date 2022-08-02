@@ -600,7 +600,7 @@ class FlowsheetControl:
         self._dynamodb_table_name = (
             FOQUSAWSConfig.get_instance().get_dynamo_table_name()
         )
-        self._cloudwatch = boto3.client('cloudwatch'
+        self._cloudwatch = boto3.client('cloudwatch',
             region_name=FOQUSAWSConfig.get_instance().get_region()
         )
 

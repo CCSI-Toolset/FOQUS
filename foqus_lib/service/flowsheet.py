@@ -702,7 +702,6 @@ class FlowsheetControl:
                 _log.exception("pop_job exception: %s", repr(ex))
                 raise
 
-            self.increment_metric_queue_peeks()
             if not ret:
                 continue
 
@@ -880,6 +879,7 @@ class FlowsheetControl:
             VisibilityTimeout=VisibilityTimeout,
             WaitTimeSeconds=10,
         )
+        self.increment_metric_queue_peeks()
         if not response.get("Messages", None):
             _log.info("Job Queue is Empty")
             return

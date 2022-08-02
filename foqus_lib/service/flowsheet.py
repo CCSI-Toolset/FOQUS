@@ -615,7 +615,7 @@ class FlowsheetControl:
         self._stop = True
 
     def increment_metric_job_finished(self, event):
-        if not self._metric_count_of_job_finished_dict.has_key(event):
+        if not event in self._metric_count_of_job_finished_dict:
             self._metric_count_of_job_finished_dict[event] = 0
         self._metric_count_of_job_finished_dict[event] += 1
         self._cloudwatch.put_metric_data(
@@ -646,7 +646,7 @@ class FlowsheetControl:
     def increment_metric_queue_peeks(self, state, reset=False):
         if reset:
             self._metric_count_of_queue_peeks = dict()
-        if not self._metric_count_of_queue_peeks.has_key(state):
+        if not state in self._metric_count_of_queue_peeks:
             self._metric_count_of_queue_peeks[state] = 0
         if not reset:
             self._metric_count_of_queue_peeks[state] += 1
@@ -655,7 +655,7 @@ class FlowsheetControl:
             Namespace='foqus-cloud-backend',
             MetricData=[
                 {
-                    'MetricName': 'count_of_queue_peek',
+                    'MetricName': 'count_of_queue_peeks',
                     'Dimensions': [
                         {
                             'Name':'user_name',
@@ -670,7 +670,7 @@ class FlowsheetControl:
                             'Value': state
                         }
                     ],
-                    'Value': self._metric_count_of_queue_peeks,
+                    'Value': self._metric_count_of_queue_peeks[state],
                     'Unit': 'Count'
                 },
             ]
@@ -680,7 +680,11 @@ class FlowsheetControl:
         Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
         _log.debug("main loop flowsheet service")
-        self.increment_metric_queue_peeks(state="start", reset=True)
+        try:
+            self.increment_metric_queue_peeks(state="start", reset=True)
+        except Exception as ex:
+            _log.error('put metric queue peeks failed: %s', repr(ex))
+            raise
         self._receipt_handle = None
         VisibilityTimeout = 60 * 10
         db = TurbineLiteDB()

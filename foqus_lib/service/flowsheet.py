@@ -655,7 +655,7 @@ class FlowsheetControl:
             Namespace='foqus-cloud-backend',
             MetricData=[
                 {
-                    'MetricName': 'count_of_queue_peeks',
+                    'MetricName': 'count_of_queue_peek',
                     'Dimensions': [
                         {
                             'Name':'user_name',

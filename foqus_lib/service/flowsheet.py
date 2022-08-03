@@ -373,7 +373,10 @@ class FOQUSAWSConfig:
 
     def get_message_topic_arn(self):
         return self._get("FOQUS-Message-Topic-Arn")
-
+    
+    def get_alert_topic_arn(self):
+        return self._get("FOQUS-Alert-Topic-Arn")
+    
     def get_job_queue_url(self):
         return self._get("FOQUS-Job-Queue-Url")
 
@@ -440,8 +443,9 @@ class TurbineLiteDB:
 
     def authorize_user_name(self, name):
         if (name != self._user_name):
-            raise FOQUSJobException("Authorization Failed: Reject job request for user=%s", name)
+            return False
         self._user_name = name
+        return True
 
     def connectionString(self):
         _log.info("%s.connectionString", self.__class__.__name__)
@@ -567,6 +571,26 @@ class TurbineLiteDB:
             )
         )
 
+def _publish_service_error(message=""):
+    """Publish to SNS Message Topic with MessageAttributes 
+    instance and event to filter for alerting.
+    Arguments:
+        message: 
+    """
+    topic_alert_arn = FOQUSAWSConfig.get_instance().get_alert_topic_arn()
+    instance_id = FOQUSAWSConfig.get_instance().get_instance_id()
+    _log.error("publish(%s) service error: %s", topic_alert_arn, message)
+    sns = boto3.client("sns", region_name=FOQUSAWSConfig.get_instance().get_region())
+    attrs = dict(
+        event=dict(DataType="String", StringValue="service.error"),
+        instance=dict(DataType="String", StringValue=instance_id),
+    )
+    d = dict(message=message, instance=instance_id, event="service.error")
+    sns.publish(
+        Message=json.dumps(d), MessageAttributes=attrs, TopicArn=topic_alert_arn
+    )
+    _log.info("published")
+
 
 class FlowsheetControl:
     """API for controlling Flowsheet process
@@ -677,6 +701,14 @@ class FlowsheetControl:
             ]
         )
     def run(self):
+        try:
+            self._run()
+        except Exception as ex:
+            _log.exception("exit: foqus_service unhandled exception")
+            _publish_service_error(repr(ex))
+            raise
+            
+    def _run(self):
         """main loop for running foqus
         Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
@@ -719,23 +751,22 @@ class FlowsheetControl:
             if not ret:
                 continue
 
-            assert type(ret) is tuple and len(ret) == 3
-            user_name, msg_attr_session_id, job_desc = ret
-            job_id = uuid.UUID(job_desc.get("Id"))
-            session_id = job_desc.get("sessionid")
-            if msg_attr_session_id != session_id:
-                _log.error("run: session IDs mismatch MessageAttributes(%s) and Message(%s)",
-                    msg_attr_session_id, session_id)
-                db.job_change_status(job_desc, "error", message=msg)
-                db.add_message(
-                    "run: job.submit session IDs mismatch MessageAttributes(%s) and Message(%s)" %(
-                    msg_attr_session_id, session_id)
-                )
-                self._delete_sqs_job()
-                self.increment_metric_job_finished(event="error.session.mismatch")
-                continue
-
-            session_id = uuid.UUID(sessionid)
+            assert type(ret) is tuple and len(ret) == 2
+            user_name,job_desc = ret
+            job_id = job_desc["Id"]
+            session_id = job_desc["sessionid"]
+            # if msg_attr_session_id != session_id:
+            #     _log.error("run: session IDs mismatch MessageAttributes(%s) and Message(%s)",
+            #         msg_attr_session_id, session_id)
+            #     db.job_change_status(job_desc, "error", message=msg)
+            #     db.add_message(
+            #         "run: job.submit session IDs mismatch MessageAttributes(%s) and Message(%s)" %(
+            #         msg_attr_session_id, session_id)
+            #     )
+            #     self._delete_sqs_job()
+            #     self.increment_metric_job_finished(event="error.session.mismatch")
+            #     continue
+            # session_id = uuid.UUID(sessionid)
 
             """
             TODO: check dynamodb table if job has been stopped or killed
@@ -781,7 +812,7 @@ class FlowsheetControl:
             try:
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
-                _log.exception("setup foqus NotImplementedError: %s", str(ex))
+                _log.exception("setup foqus NotImplementedError")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -791,7 +822,7 @@ class FlowsheetControl:
                 )
                 self._delete_sqs_job()
                 raise
-                _log.exception("setup foqus URLError: %s", str(ex))
+                _log.exception("setup foqus URLError")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -802,7 +833,7 @@ class FlowsheetControl:
                 raise
             except Exception as ex:
                 # TODO:
-                _log.exception("setup foqus exception: %s", str(ex))
+                _log.exception("setup foqus exception")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -817,7 +848,7 @@ class FlowsheetControl:
             try:
                 self.run_foqus(db, job_desc)
             except Exception as ex:
-                _log.exception("run_foqus: %s", str(ex))
+                _log.exception("run_foqus Exception")
                 self.increment_metric_job_finished(event="error.job.run")
                 self.close()
                 raise
@@ -836,12 +867,12 @@ class FlowsheetControl:
         try:
             dat.flowsheet.turbConfig.stopAllConsumers()
         except Exception as ex:
-            _log.exception("reset stop all consumers: %s", str(ex))
+            _log.exception("reset stop all consumers")
             raise
         try:
             dat.flowsheet.turbConfig.closeTurbineLiteDB()
         except Exception as ex:
-            _log.exception("reset close turbineLite DB %s", str(ex))
+            _log.exception("reset close turbineLite")
             raise
 
     def _delete_sqs_job(self):
@@ -912,14 +943,14 @@ class FlowsheetControl:
             self._delete_sqs_job()
             return
         
-        user_name = message_attr.get("username").get("StringValue")
-        _log.info("username: " + user_name)
-        session_id = message_attr.get("session").get("StringValue")
-        _log.info("session: " + session_id)
-        job_id = message_attr.get("job").get("StringValue")
-        _log.info("job: " + job_id)
+        user_name = message_attr.get("username",{}).get("StringValue")
+        _log.info("username: %s", user_name)
+        session_id = message_attr.get("session",{}).get("StringValue")
+        _log.info("session: %s", session_id)
+        job_id = message_attr.get("job",{}).get("StringValue")
+        _log.info("job: %s", job_id)
         if not job_id:
-            _log.error("Reject Job:  No job specified")
+            _log.error("Reject Job:  job unspecified")
             self._delete_sqs_job()
             return
         if not session_id:
@@ -927,19 +958,49 @@ class FlowsheetControl:
             self._delete_sqs_job()
             return
         if not user_name:
-            _log.error("Reject Job:  No user specified")
+            _log.error("Reject Job(%s):  user unspecified", job_id)
             self._delete_sqs_job()
             return
+      
+        try:
+            uuid.UUID(job_id)
+        except ValueError as err:
+            _log.exception("job_id(%s) UUID ValueError", job_id)
+            self._delete_sqs_job()
+            return
+        except TypeError as err:
+            _log.exception("job_id(%s) UUID TypeError", job_id)
+            self._delete_sqs_job()
+            return 
+        
+        try:
+            uuid.UUID(session_id)
+        except ValueError as err:
+            _log.exception("session_id(%s) UUID ValueError", session_id)
+            self._delete_sqs_job()
+            return
+        except TypeError as err:
+            _log.exception("session_id(%s) UUID TypeError", session_id)
+            self._delete_sqs_job()
+            return
+        
+        d = dict(sessionid=session_id, Id=job_id)
+        if not db.authorize_user_name(user_name):
+            db.job_change_status(d, "error",
+                message="Authorization Failed: wrong user(%s)" %(user_name)
+            )
+            self._delete_sqs_job()
+            return        
         
         try:
             job_desc = json.loads(body)
         except Exception as ex:
             _log.error("Reject Job: %s", repr(ex))
-            d = dict(sessionid=session_id, Id=job_id)
             db.job_change_status(d, "invalid", message=repr(ex))
             self._delete_sqs_job()
             return
         
+        job_desc.update(d)
         job_input = job_desc.get("Input", [])
         simulation_name = job_desc.get("Simulation")
         if not simulation_name:
@@ -948,8 +1009,7 @@ class FlowsheetControl:
             db.job_change_status(d, "invalid", message='no simulation specified')
             self._delete_sqs_job()
             return
-        
-        db.authorize_user_name(user_name)        
+               
         sfile,rfile,vfile,ofile = getfilenames(job_id)
         with open(vfile, "w") as fd:
             json.dump(dict(input=job_input), fd)
@@ -1006,11 +1066,6 @@ class FlowsheetControl:
                 user_name,
             )
 
-        # if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
-        #    _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-        #    raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
-        #        user_name, simulation_name), job_desc, user_name)
-
         idx = foqus_keys.index(flowsheet_key)
         _log.info("S3: Download Key %s", flowsheet_key)
         s3.download_file(bucket_name, flowsheet_key, sfile)
@@ -1019,7 +1074,7 @@ class FlowsheetControl:
         with open(os.path.join(CURRENT_JOB_DIR, "current_foqus.json"), "w") as fd:
             json.dump(job_desc, fd)
 
-        return user_name, session_id, job_desc
+        return user_name,job_desc
 
     # @staticmethod
     def setup_foqus(self, db, user_name, job_desc):

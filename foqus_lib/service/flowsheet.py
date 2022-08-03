@@ -523,6 +523,7 @@ class TurbineLiteDB:
             "error",
             "terminate",
             "expired",
+            "invalid"
         ], (
             "Incorrect Job Status %s" % status
         )
@@ -901,33 +902,64 @@ class FlowsheetControl:
         self.increment_metric_queue_peeks(state="start")
         message = response["Messages"][0]
         self._receipt_handle = message["ReceiptHandle"]
-        body = json.loads(message["Body"])
-        _log.info("MessageAttributes: " + str(body.get("MessageAttributes")))
-        user_name = body["MessageAttributes"].get("username").get("Value")
+        body = message["Body"]
+        message_attr = message.get("MessageAttributes")
+        _log.info("RESPONSE: " + str(response))
+        _log.info("MessageAttributes: " + str(message_attr))
+        if message_attr is None:
+            _log.error("Reject: Job has no MessageAttributes")
+            self.increment_metric_job_finished(event="invalid.job")
+            self._delete_sqs_job()
+            return
+        
+        user_name = message_attr.get("username").get("StringValue")
         _log.info("username: " + user_name)
-        db.authorize_user_name(user_name)
-        session_id = body["MessageAttributes"].get("session").get("Value")
+        session_id = message_attr.get("session").get("StringValue")
         _log.info("session: " + session_id)
-        job_desc = json.loads(body["Message"])
-        _log.info("Job Description: " + body["Message"])
-        for key in ["Id", "Input", "Simulation"]:
-            if job_desc.get(key) is None:
-                raise FOQUSJobException(
-                    "Job Description Missing Key %s" % key, job_desc, user_name
-                )
-
-        sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
+        job_id = message_attr.get("job").get("StringValue")
+        _log.info("job: " + job_id)
+        if not job_id:
+            _log.error("Reject Job:  No job specified")
+            self._delete_sqs_job()
+            return
+        if not session_id:
+            _log.error("Reject Job(%s):  session unspecified", job_id)
+            self._delete_sqs_job()
+            return
+        if not user_name:
+            _log.error("Reject Job:  No user specified")
+            self._delete_sqs_job()
+            return
+        
+        try:
+            job_desc = json.loads(body)
+        except Exception as ex:
+            _log.error("Reject Job: %s", repr(ex))
+            d = dict(sessionid=session_id, Id=job_id)
+            db.job_change_status(d, "invalid", message=repr(ex))
+            self._delete_sqs_job()
+            return
+        
+        job_input = job_desc.get("Input", [])
+        simulation_name = job_desc.get("Simulation")
+        if not simulation_name:
+            _log.error("Reject:  Job description has no Simulation")
+            d = dict(sessionid=session_id, Id=job_id)
+            db.job_change_status(d, "invalid", message='no simulation specified')
+            self._delete_sqs_job()
+            return
+        
+        db.authorize_user_name(user_name)        
+        sfile,rfile,vfile,ofile = getfilenames(job_id)
         with open(vfile, "w") as fd:
-            json.dump(dict(input=job_desc["Input"]), fd)
+            json.dump(dict(input=job_input), fd)
 
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         _log.info("Simulation Bucket: " + bucket_name)
         s3 = boto3.client("s3",
             region_name=FOQUSAWSConfig.get_instance().get_region()
         )
-        simulation_name = job_desc["Simulation"]
         flowsheet_key = "%s/%s/session.foqus" % (user_name, simulation_name)
-
         l = s3.list_objects(
             Bucket=bucket_name, Prefix="%s/%s/" % (user_name, simulation_name)
         )

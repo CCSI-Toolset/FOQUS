@@ -28,6 +28,8 @@ from os.path import expanduser
 import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
 from foqus_lib.framework.session.session import generalSettings as FoqusSettings
+from foqus_lib.framework.graph.nodeVars import NodeVarListEx,NodeVarEx
+from foqus_lib.framework.foqusException import foqusException
 from foqus_lib.framework.graph.graph import Graph
 from turbine.commands import turbine_simulation_script
 import logging
@@ -571,7 +573,7 @@ class TurbineLiteDB:
             )
         )
 
-def _publish_service_error(message=""):
+def _publish_service_error(message="", detail=""):
     """Publish to SNS Message Topic with MessageAttributes 
     instance and event to filter for alerting.
     Arguments:
@@ -585,7 +587,7 @@ def _publish_service_error(message=""):
         event=dict(DataType="String", StringValue="service.error"),
         instance=dict(DataType="String", StringValue=instance_id),
     )
-    d = dict(message=message, instance=instance_id, event="service.error")
+    d = dict(message=message, detail=detail, instance=instance_id, event="service.error")
     sns.publish(
         Message=json.dumps(d), MessageAttributes=attrs, TopicArn=topic_alert_arn
     )
@@ -705,7 +707,7 @@ class FlowsheetControl:
             self._run()
         except Exception as ex:
             _log.exception("exit: foqus_service unhandled exception")
-            _publish_service_error(repr(ex))
+            _publish_service_error(message=repr(ex), detail=traceback.format_exc())
             raise
             
     def _run(self):
@@ -847,6 +849,11 @@ class FlowsheetControl:
             self._delete_sqs_job()
             try:
                 self.run_foqus(db, job_desc)
+            except foqusException as ex:
+                _log.exception("run_foqus foqusException")
+                self.increment_metric_job_finished(event="error.job.run")
+                self.close()
+                raise
             except Exception as ex:
                 _log.exception("run_foqus Exception")
                 self.increment_metric_job_finished(event="error.job.run")
@@ -1183,7 +1190,15 @@ class FlowsheetControl:
             return
 
         if gt.res[0]:
-            dat.flowsheet.loadValues(gt.res[0])
+            try:
+                dat.flowsheet.loadValues(gt.res[0])
+            except NodeVarListEx as ex:
+                db.job_change_status(
+                    job_desc,
+                    "error",
+                    message=ex.getCodeString()
+                )
+                raise
         else:
             dat.flowsheet.errorStat = 19
 

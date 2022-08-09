@@ -179,5 +179,5 @@ zdata = model_data[:, -2:]
 model = create_model(xdata)
 model.summary()
 
-# save model
+# save model as H5
 model.save("mea_column_model_customnormform.h5")

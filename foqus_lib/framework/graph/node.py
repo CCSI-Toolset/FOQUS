@@ -984,10 +984,17 @@ class Node:
             cwd = os.getcwd()
             if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+
+            # check which type of file Keras needs to load
+            if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
+                extension = ".h5"
+            else:  # assume it's a folder with no extension
+                extension = ""
+
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(
-                    str(self.modelName) + ".h5",
+                    str(self.modelName) + extension,
                     custom_objects={
                         str(self.modelName): getattr(module, str(self.modelName))
                     },
@@ -997,7 +1004,7 @@ class Node:
                     "Cannot detect CustomLayer object to import, FOQUS "
                     + "will import model without custom attributes."
                 )
-                self.model = load(str(self.modelName) + ".h5")
+                self.model = load(str(self.modelName) + extension)
             finally:
                 os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model)
@@ -1468,10 +1475,17 @@ class Node:
             cwd = os.getcwd()
             if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+
+            # check which type of file Keras needs to load
+            if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
+                extension = ".h5"
+            else:  # assume it's a folder with no extension
+                extension = ""
+
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(
-                    str(self.modelName) + ".h5",
+                    str(self.modelName) + extension,
                     custom_objects={
                         str(self.modelName): getattr(module, str(self.modelName))
                     },
@@ -1481,7 +1495,7 @@ class Node:
                     "Cannot detect CustomLayer object to import, FOQUS "
                     + "will import model without custom attributes."
                 )
-                self.model = load(str(self.modelName) + ".h5")
+                self.model = load(str(self.modelName) + extension)
             finally:
                 os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model)

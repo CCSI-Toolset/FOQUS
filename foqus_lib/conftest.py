@@ -2,7 +2,7 @@ import contextlib
 import os
 from pathlib import Path
 import shutil
-
+import distutils
 
 import pytest
 
@@ -100,8 +100,17 @@ def install_ml_ai_model_files(
         ts_models_base_path / "AR_nocustomlayer.h5",
         base_path / "mea_column_model_customnormform.py",
         ts_models_base_path / "mea_column_model_customnormform.h5",
+        base_path / "mea_column_model_customnormform_savedmodel.py",
+        ts_models_base_path / "mea_column_model_customnormform_savedmodel",
     ]:
-        shutil.copy2(path, models_dir)
+        if os.path.isfile(path):
+            shutil.copy2(path, models_dir)
+        elif os.path.isdir(path):
+            model_folder = str(path).replace(str(ts_models_base_path), "")
+            if model_folder[0] == "\\":
+                model_folder = model_folder[1:]  # exclude leading \\ if present
+            os.mkdir(models_dir / model_folder)
+            shutil.copytree(path, models_dir / model_folder, dirs_exist_ok=True)
     yield models_dir
 
 

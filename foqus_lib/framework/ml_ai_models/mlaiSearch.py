@@ -52,15 +52,23 @@ class ml_ai_models:
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:
-                    if os.path.isfile(os.path.join(p, fname)):  # load a single model file
+                    if os.path.isfile(
+                        os.path.join(p, fname)
+                    ):  # load a single model file
                         mname = fname.rsplit(".", 1)  # split off extension
-                    elif os.path.isdir(os.path.join(p, fname)):  # load a SavedModel folder
+                    elif os.path.isdir(
+                        os.path.join(p, fname)
+                    ):  # load a SavedModel folder
                         mname = [fname, ""]  # convert into length-2 vector
                     # try loading if no extension (folder), or extension is .h5
                     if mname[0] == "__pycache__":  # should exist but not a model file
                         continue
-                    if len(mname) == 2 and (os.path.isdir(os.path.join(p, mname[0])) or mname[1] == "h5"):
-                        if mname[1] == "py":  # skip any Python files containing model classes
+                    if len(mname) == 2 and (
+                        os.path.isdir(os.path.join(p, mname[0])) or mname[1] == "h5"
+                    ):
+                        if (
+                            mname[1] == "py"
+                        ):  # skip any Python files containing model classes
                             continue
                         # if the search makes it here, try loading the model
                         try:

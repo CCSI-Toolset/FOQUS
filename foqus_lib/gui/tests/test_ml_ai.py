@@ -26,8 +26,7 @@ def model_files(
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
         if all(
             [
-                ((path.is_file() and path.suffix in suffixes)
-                 or path.is_dir()),
+                ((path.is_file() and path.suffix in suffixes) or path.is_dir()),
                 path.stat().st_size > 0,
                 path.name != "__init__.py",
             ]
@@ -179,7 +178,10 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(4)
-        assert simnode.simNameBox.currentText() == "mea_column_model_customnormform_savedmodel"
+        assert (
+            simnode.simNameBox.currentText()
+            == "mea_column_model_customnormform_savedmodel"
+        )
 
         def test_flowsheet_run_successful(
             self,

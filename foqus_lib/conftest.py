@@ -113,6 +113,8 @@ def install_ml_ai_model_files(
             model_folder = str(path).replace(str(ts_models_base_path), "")
             if model_folder[0] == "\\":
                 model_folder = model_folder[1:]  # exclude leading \\ if present
+            if model_folder[0] == "/":
+                model_folder = model_folder[1:]  # exclude leading / if present
             model_folder_dir = os.path.join(models_dir, str(model_folder))
             print("model_folder_dir Exists: ", os.path.exists(model_folder_dir))
             print("path: ", path)

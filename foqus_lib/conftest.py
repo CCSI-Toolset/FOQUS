@@ -116,7 +116,7 @@ def install_ml_ai_model_files(
             model_folder_dir = models_dir / model_folder
             model_folder_dir.mkdir(exist_ok=True, parents=False)
             shutil.copytree(path, model_folder_dir, dirs_exist_ok=True)
-    yield models_dir
+    yield models_dir, model_folder_dir
 
 
 @contextlib.contextmanager

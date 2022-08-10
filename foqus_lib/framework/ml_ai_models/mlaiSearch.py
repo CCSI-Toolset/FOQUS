@@ -48,7 +48,7 @@ class ml_ai_models:
         if they are files, try to load supported forms (H5).
         """
         for p in self.pathList:
-            if os.path.exists(p) and "FOQUS-wd" in str(p):
+            if os.path.exists(p) and "user_ml_ai_models" in str(p):
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:

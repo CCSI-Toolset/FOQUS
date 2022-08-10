@@ -108,8 +108,8 @@ def install_ml_ai_model_files(
             model_folder = str(path).replace(str(ts_models_base_path), "")
             if model_folder[0] == "\\":
                 model_folder = model_folder[1:]  # exclude leading \\ if present
-            model_folder_dir = models_dir / model_folder
-            model_folder_dir.mkdir(exist_ok=True, parents=False)
+            model_folder_dir = Path(os.path.join(models_dir, model_folder))
+            model_folder_dir.mkdir(exist_ok=True, parents=True)
             shutil.copytree(path, model_folder_dir, dirs_exist_ok=True)
     yield models_dir
 

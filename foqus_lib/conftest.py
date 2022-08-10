@@ -114,7 +114,17 @@ def install_ml_ai_model_files(
             if model_folder[0] == "\\":
                 model_folder = model_folder[1:]  # exclude leading \\ if present
             model_folder_dir = models_dir / model_folder
-            shutil.copytree(path, model_folder_dir, dirs_exist_ok=True)
+            print("model_folder_dir Exists: ", os.path.exists(model_folder_dir))
+            print("path: ", path)
+            print("models_dir: ", models_dir)
+            print("model_folder_dir: ", model_folder_dir)
+            print("Copying permissions from path to models_dir...")
+            shutil.copystat(path, models_dir)
+            print("Copying via copytree to model_folder_dir should create it,")
+            print("Copying folder contents from path to model_folder_dir...")
+            shutil.copytree(path, model_folder_dir)
+            print("model_folder_dir Exists: ", os.path.exists(model_folder_dir))
+
     yield models_dir, model_folder_dir
 
 

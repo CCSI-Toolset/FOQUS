@@ -114,7 +114,6 @@ def install_ml_ai_model_files(
             if model_folder[0] == "\\":
                 model_folder = model_folder[1:]  # exclude leading \\ if present
             model_folder_dir = models_dir / model_folder
-            model_folder_dir.mkdir(exist_ok=True, parents=False)
             shutil.copytree(path, model_folder_dir, dirs_exist_ok=True)
     yield models_dir, model_folder_dir
 

@@ -1,3 +1,3 @@
 # Declare files that will always have CRLF line endings on checkout.
-examples\other_files\ML_AI_Plugin\TensorFlow_2-7_Models\mea_column_model_customnormform_savedmodel\keras_metadata.pb text eol=crlf
+examples\other_files\ML_AI_Plugin\TensorFlow_2-7_Models\mea_column_model_customnormform_savedmodel\keras_metadata.pb text eol=lf
 

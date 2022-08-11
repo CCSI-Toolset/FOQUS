@@ -106,6 +106,9 @@ def install_ml_ai_model_files(
         ts_models_base_path / "mea_column_model_customnormform.h5",
         base_path / "mea_column_model_customnormform_savedmodel.py",
         ts_models_base_path / "mea_column_model_customnormform_savedmodel",
+        base_path / "mea_column_model_customnormform_json.py",
+        ts_models_base_path / "mea_column_model_customnormform_json.json",
+        ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
     ]:
         if os.path.isfile(path):
             shutil.copy2(path, models_dir)

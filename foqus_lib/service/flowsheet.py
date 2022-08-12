@@ -1154,6 +1154,7 @@ class FlowsheetControl:
         dat = self._dat
         assert isinstance(db, TurbineLiteDB)
         assert isinstance(dat, Session)
+        assert isinstance(dat.flowsheet, Graph)
         exit_code = 0
         sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
         guid = job_desc["Id"]
@@ -1190,6 +1191,7 @@ class FlowsheetControl:
             return
 
         if gt.res[0]:
+            assert type(gt.res) is dict, 'job Output dictionary'
             try:
                 dat.flowsheet.loadValues(gt.res[0])
             except NodeVarListEx as ex:

@@ -741,6 +741,7 @@ class Graph(threading.Thread):
                 )
                 rp += 1
                 for job in jres:
+                    assert type(job) is dict
                     try:
                         i = jobIds.index(job["Id"])
                     except ValueError:
@@ -785,6 +786,7 @@ class Graph(threading.Thread):
                                     "graphError": self.res_fin[i],
                                 }
                             else:
+                                assert type(self.res[i]) is dict
                                 self.res[i]["session"] = turbSession
                                 self.res[i]["Id"] = job["Id"]
                                 self.res_fin[i] = jobErr

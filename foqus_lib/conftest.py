@@ -2,7 +2,7 @@ import contextlib
 import os
 from pathlib import Path
 import shutil
-
+import zipfile
 import pytest
 
 
@@ -105,33 +105,19 @@ def install_ml_ai_model_files(
         base_path / "mea_column_model_customnormform.py",
         ts_models_base_path / "mea_column_model_customnormform.h5",
         base_path / "mea_column_model_customnormform_savedmodel.py",
-        ts_models_base_path / "mea_column_model_customnormform_savedmodel",
+        ts_models_base_path / "mea_column_model_customnormform_savedmodel.zip",
         base_path / "mea_column_model_customnormform_json.py",
         ts_models_base_path / "mea_column_model_customnormform_json.json",
         ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
     ]:
-        if os.path.isfile(path):
-            shutil.copy2(path, models_dir)
-        elif os.path.isdir(path):
-            model_folder = str(path).replace(str(ts_models_base_path), "")
-            if model_folder[0] == "\\":
-                model_folder = model_folder[1:]  # exclude leading \\ if present
-            if model_folder[0] == "/":
-                model_folder = model_folder[1:]  # exclude leading / if present
-            model_folder_dir = os.path.join(models_dir, str(model_folder))
-            print("model_folder_dir Exists: ", os.path.exists(model_folder_dir))
-            print("path: ", path)
-            print("models_dir: ", models_dir)
-            print("model_folder: ", model_folder)
-            print("model_folder_dir: ", model_folder_dir)
-            print("Copying permissions from path to models_dir...")
-            shutil.copystat(path, models_dir)
-            print("Copying via copytree to model_folder_dir should create it,")
-            print("Copying folder contents from path to model_folder_dir...")
-            shutil.copytree(path, model_folder_dir)
-            print("model_folder_dir Exists: ", os.path.exists(model_folder_dir))
+        shutil.copy2(path, models_dir)
+    # unzip the zip file (could be generalized later to more files if needed)
+    with zipfile.ZipFile(
+        models_dir / "mea_column_model_customnormform_savedmodel.zip", "r"
+    ) as zip_ref:
+        zip_ref.extractall(models_dir)
 
-    yield models_dir, model_folder_dir
+    yield models_dir
 
 
 @contextlib.contextmanager

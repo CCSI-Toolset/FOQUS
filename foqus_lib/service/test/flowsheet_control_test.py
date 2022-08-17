@@ -30,6 +30,11 @@ from shutil import copyfile
 from botocore.stub import Stubber
 import os
 
+import pytest
+from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.graph.node import Node
+from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+
 TOP_LEVEL_DIR = os.path.abspath(os.curdir)
 os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
 from .. import flowsheet
@@ -45,6 +50,68 @@ INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:38
  "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460",
  "FOQUS-DynamoDB-Table":"FOQUS_Table"
 }"""
+
+
+class TestNode:
+    # test some specific service-dependent node features
+
+    @pytest.fixture(scope="function")
+    def node(self):
+        # build graph, add node and return node
+        gr = Graph()
+        gr.addNode("testnode")
+        n = Node(parent=gr, name="testnode")
+
+        return n
+
+    def test_setSim_modelTurbine(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
+            )
+        )
+
+        # create config block and upload model files to Turbine
+        node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.writeConfig(overwrite=True)
+        node.gr.turbConfig.uploadSimulation(
+            simName="Flash_Example",
+            sinterConfigPath=os.path.normpath(turbpath),
+            update=True,
+            otherResources=[],
+        )
+
+        # set simulation
+        node.setSim(newModel="Flash_Example", newType=2)
+
+    def test_runTurbineCalc(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
+            )
+        )
+
+        # create config block and upload model files to Turbine
+        node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.writeConfig(overwrite=True)
+        node.gr.turbConfig.uploadSimulation(
+            simName="Flash_Example",
+            sinterConfigPath=os.path.normpath(turbpath),
+            update=True,
+            otherResources=[],
+        )
+
+        # set simulation
+        node.setSim(newModel="Flash_Example", newType=2)
+        node.runCalc  # covers node.runTurbineCalc
+
+    # test generic service-related functionality
 
 
 def test_floqus_aws_config():

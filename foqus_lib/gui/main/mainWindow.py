@@ -1223,24 +1223,42 @@ class mainWindow(QMainWindow):
         to monitor it.  If node is set to a node name only a single
         node given by the name is evaluated
         """
+        logging.getLogger("foqus." + __name__).debug(
+            "Start Simulation"
+        )
         turb_config = self.dat.flowsheet.turbConfig
         turb_sim_list = self.dat.flowsheet.turbineSimList()
         self.applyNodeEdgeChanges()
         if node in self.dat.flowsheet.nodes:
             self.dat.flowsheet.onlySingleNode = node
             self.setStatus("Running Single Node ({0}) Simulation...".format(node))
+            logging.getLogger("foqus." + __name__).debug(
+                "Running Single Node ({0}) Simulation...".format(node)
+            )
         elif valList is not None:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Flowsheet Set...")
+            logging.getLogger("foqus." + __name__).debug(
+                "Running Flowsheet Set: %s", valList
+            )
         else:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Single Flowsheet Simulation...")
+            logging.getLogger("foqus." + __name__).debug(
+                "Running Single Flowsheet Simulation..."
+            )
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
             # run in FOQUS
             if valList is not None:
+                logging.getLogger("foqus." + __name__).debug(
+                    "Local multiRun"
+                )
                 self.multiRun = self.dat.flowsheet.runListAsThread(valList)
                 self.singleRun = None
             else:
+                logging.getLogger("foqus." + __name__).debug(
+                    "Local singleRun"
+                )
                 self.singleRun = self.dat.flowsheet.runAsThread()
                 self.multiRun = None
         elif self.dat.foqusSettings.runFlowsheetMethod == 1:
@@ -1248,11 +1266,17 @@ class mainWindow(QMainWindow):
             # first save a session file (need to upload to turbine)
             self.dat.flowsheet.uploadFlowseetToTurbine(dat=self.dat, reset=False)
             if valList is not None:
+                logging.getLogger("foqus." + __name__).debug(
+                    "FOQUS Cloud multiRun"
+                )
                 self.multiRun = self.dat.flowsheet.runListAsThread(
                     valList, useTurbine=True
                 )
                 self.singleRun = None
             else:
+                logging.getLogger("foqus." + __name__).debug(
+                    "FOQUS Cloud singleRun"
+                )
                 self.singleRun = self.dat.flowsheet.runAsThread(useTurbine=True)
                 self.multiRun = None
         self.refreshFlowsheet()
@@ -1364,6 +1388,9 @@ class mainWindow(QMainWindow):
             self.nodeDock.runButton.setEnabled(True)
             self.nodeDock.stopButton.setEnabled(False)
             if self.singleRun.res[0]:
+                logging.getLogger("foqus." + __name__).debug(
+                    "stopSim SingleRun: {0}".format(self.singleRun.res[0])
+                )
                 self.dat.flowsheet.loadValues(self.singleRun.res[0])
                 # self.dat.flowsheet.results.headersFromGraph()
 

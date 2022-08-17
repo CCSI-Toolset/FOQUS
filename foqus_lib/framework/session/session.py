@@ -50,65 +50,8 @@ from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
 # Before the session class there are a few functions to help set up the
 # FOQUS environment.
 
-hydro_logging_cfg = """
-[loggers]
-keys=root,hydro,logstash
-
-[handlers]
-keys=consoleHandler,fileHandler,logstashHandler, HTTPSHandler
-
-[formatters]
-keys=simpleFormatter,logstashFormatter,jsonFormat
-
-
-[logger_hydro]
-level=DEBUG
-handlers=HTTPSHandler
-propagate=0
-qualname=hydro
-
-[logger_logstash]
-level=INFO
-handlers=HTTPSHandler
-qualname=logstash
-propagate=0
-
-[logger_root]
-handlers=HTTPSHandler
-level=DEBUG
-
-[handler_HTTPSHandler]
-class=FileHandler
-formatter=simpleFormatter
-args=('Z:\HTTPSLog.txt', 'w')
-
-[handler_consoleHandler]
-class=StreamHandler
-formatter=simpleFormatter
-args=(sys.stdout,)
-
-[handler_fileHandler]
-class=FileHandler
-formatter=simpleFormatter
-args=('Z:\HydroLog.txt', 'w')
-
-[handler_logstashHandler]
-class=FileHandler
-formatter=logstashFormatter
-args=('Z:\HydroLogstash.txt', 'w')
-
-[formatter_simpleFormatter]
-format=%(asctime)s - %(name)s - %(levelname)s - %(message)s
-datefmt=
-
-[formatter_logstashFormatter]
-#class=logstash_formatter.LogstashFormatter
-class=logstash_formatter.LogstashFormatterV1
-
-[formatter_jsonFormat]
-format={ "loggerName":"%(name)s", "asciTime":"%(asctime)s", "fileName":"%(filename)s", "logRecordCreationTime":"%(created)f", "functionName":"%(funcName)s", "levelNo":"%(levelno)s", "lineNo":"%(lineno)d", "time":"%(msecs)d", "levelName":"%(levelname)s", "message":"%(message)s", "clientip":"%(clientip)s", "hydroid":"%(hydroid)s"}
-datefmt=
-"""
+DEFAULT_FOQUS_CLOUD_URL="https://b7x9ucxadg.execute-api.us-east-1.amazonaws.com/development/"
+DEFAULT_FOQUS_CLOUD_WEBSOCKET="wss://du6p1udafi.execute-api.us-east-1.amazonaws.com/Development"
 
 
 def getTimeStamp():
@@ -211,10 +154,10 @@ def makeWorkingDirFiles():
     try:
         tc = TurbineConfiguration("turbine_aws.cfg")
         tc.address = (
-            "https://b7x9ucxadg.execute-api.us-east-1.amazonaws.com/development/"
+            DEFAULT_FOQUS_CLOUD_URL
         )
         tc.notification = (
-            "wss://du6p1udafi.execute-api.us-east-1.amazonaws.com/Development"
+            DEFAULT_FOQUS_CLOUD_WEBSOCKET
         )
         tc.turbVer = "Remote"
         tc.writeConfig(overwrite=False)
@@ -237,13 +180,6 @@ def makeWorkingDirFiles():
             + " Exception: "
             + str(e)
         )
-    # make logging.cfg for hydro
-    try:
-        if not os.path.isfile("logging.conf"):
-            with open("logging.conf", "w") as f:
-                f.write(hydro_logging_cfg)
-    except:
-        logging.getLogger("foqus." + __name__).exception("Couldn't write logging.conf")
 
 
 class session:

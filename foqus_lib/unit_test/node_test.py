@@ -875,57 +875,6 @@ class TestNode:
                     v, attribute
                 )
 
-    def test_setSim_modelTurbine(self, node):
-        # manually add turbine model to test
-
-        # examples/test_files/Optimization/Model_Files/
-        # BFB_sinter_config_v6.2.json and BFB_cost_v6.2.3.json
-
-        turbdir = os.path.join(
-            os.path.abspath(__file__),
-            "../../../examples/tutorial_files/SimSinter/Tutorial_3",
-        )
-        turbpath = os.path.join(turbdir, "exceltest.json")
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="exceltest",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="exceltest", newType=2)
-
-    def test_runTurbineCalc(self, node):
-        # manually add turbine model to test
-
-        # examples/test_files/Optimization/Model_Files/
-        # BFB_sinter_config_v6.2.json and BFB_cost_v6.2.3.json
-
-        turbdir = os.path.join(
-            os.path.abspath(__file__),
-            "../../../examples/tutorial_files/SimSinter/Tutorial_3",
-        )
-        turbpath = os.path.join(turbdir, "exceltest.json")
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="exceltest",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="exceltest", newType=2)
-        node.runCalc  # covers node.runTurbineCalc
-
     def test_setSim_modelMLAI_example1(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")

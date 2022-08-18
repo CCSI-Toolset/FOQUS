@@ -34,6 +34,7 @@ import pytest
 from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.node import Node
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
+from foqus_lib.framework.session.session import session
 
 TOP_LEVEL_DIR = os.path.abspath(os.curdir)
 os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
@@ -64,7 +65,81 @@ class TestNode:
 
         return n
 
-    def test_setSim_modelTurbine(self, node):
+    def test_setSim_modelTurbine_xls(self, node):
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        # create config block and upload model files to Turbine
+        node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.dat = session()
+        node.gr.turbConfig.writeConfig(overwrite=True)
+        node.gr.turbConfig.uploadSimulation(
+            simName="exceltest",
+            sinterConfigPath=os.path.normpath(turbpath),
+            update=True,
+            otherResources=[],
+        )
+
+        # set simulation
+        node.setSim(newModel="exceltest", newType=2)
+
+    def test_runTurbineCalc_xls(self, node):
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        # create config block and upload model files to Turbine
+        node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.dat = session()
+        node.gr.turbConfig.writeConfig(overwrite=True)
+        node.gr.turbConfig.uploadSimulation(
+            simName="exceltest",
+            sinterConfigPath=os.path.normpath(turbpath),
+            update=True,
+            otherResources=[],
+        )
+
+        # set simulation
+        node.setSim(newModel="exceltest", newType=2)
+        node.runCalc()  # covers node.runTurbineCalc
+
+    def test_setSim_modelTurbine_sim(self, node):
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -73,9 +148,12 @@ class TestNode:
                 "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
             )
         )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
 
         # create config block and upload model files to Turbine
         node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.dat = session()
         node.gr.turbConfig.writeConfig(overwrite=True)
         node.gr.turbConfig.uploadSimulation(
             simName="Flash_Example",
@@ -87,7 +165,14 @@ class TestNode:
         # set simulation
         node.setSim(newModel="Flash_Example", newType=2)
 
-    def test_runTurbineCalc(self, node):
+    def test_runTurbineCalc_sim(self, node):
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -96,9 +181,12 @@ class TestNode:
                 "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
             )
         )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
 
         # create config block and upload model files to Turbine
         node.gr.turbConfig = TurbineConfiguration()
+        node.gr.turbConfig.dat = session()
         node.gr.turbConfig.writeConfig(overwrite=True)
         node.gr.turbConfig.uploadSimulation(
             simName="Flash_Example",
@@ -109,9 +197,10 @@ class TestNode:
 
         # set simulation
         node.setSim(newModel="Flash_Example", newType=2)
-        node.runCalc  # covers node.runTurbineCalc
+        node.runCalc()  # covers node.runTurbineCalc
 
-    # test generic service-related functionality
+
+# test generic service-related functionality
 
 
 def test_floqus_aws_config():
@@ -146,6 +235,8 @@ def test_flowsheet_control_run():
             "examples/tutorial_files/Flowsheets/Tutorial_1/Simple_flow.foqus",
         )
     )
+    print("dir: ", TOP_LEVEL_DIR)
+    print(orig_simulation_file_path)
     sfile, rfile, vfile, ofile = flowsheet.getfilenames(tp[1]["Id"])
 
     copyfile(orig_simulation_file_path, sfile)

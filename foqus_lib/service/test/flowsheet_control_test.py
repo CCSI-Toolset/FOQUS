@@ -22,8 +22,6 @@ John Eslick, Carnegie Mellon University, 2014
 """
 import io
 import json
-import logging
-import time
 import uuid
 import urllib.request
 from shutil import copyfile
@@ -37,20 +35,6 @@ from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.session.session import session
 
 TOP_LEVEL_DIR = os.path.abspath(os.curdir)
-os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
-from .. import flowsheet
-
-try:
-    from unittest.mock import MagicMock, PropertyMock, patch
-except ImportError:
-    from mock import MagicMock, patch
-
-INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
- "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
- "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
- "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460",
- "FOQUS-DynamoDB-Table":"FOQUS_Table"
-}"""
 
 
 class TestNode:
@@ -66,13 +50,6 @@ class TestNode:
         return n
 
     def test_setSim_modelTurbine_xls(self, node):
-        output = io.BytesIO(INSTANCE_USERDATA_JSON)
-        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
-        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -99,13 +76,6 @@ class TestNode:
         node.setSim(newModel="exceltest", newType=2)
 
     def test_runTurbineCalc_xls(self, node):
-        output = io.BytesIO(INSTANCE_USERDATA_JSON)
-        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
-        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -133,13 +103,6 @@ class TestNode:
         node.runCalc()  # covers node.runTurbineCalc
 
     def test_setSim_modelTurbine_sim(self, node):
-        output = io.BytesIO(INSTANCE_USERDATA_JSON)
-        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
-        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -166,13 +129,6 @@ class TestNode:
         node.setSim(newModel="Flash_Example", newType=2)
 
     def test_runTurbineCalc_sim(self, node):
-        output = io.BytesIO(INSTANCE_USERDATA_JSON)
-        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
-        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
-        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -201,6 +157,20 @@ class TestNode:
 
 
 # test generic service-related functionality
+os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
+from .. import flowsheet
+
+try:
+    from unittest.mock import MagicMock, PropertyMock, patch
+except ImportError:
+    from mock import MagicMock, patch
+
+INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
+ "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
+ "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
+ "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460",
+ "FOQUS-DynamoDB-Table":"FOQUS_Table"
+}"""
 
 
 def test_floqus_aws_config():
@@ -235,8 +205,6 @@ def test_flowsheet_control_run():
             "examples/tutorial_files/Flowsheets/Tutorial_1/Simple_flow.foqus",
         )
     )
-    print("dir: ", TOP_LEVEL_DIR)
-    print(orig_simulation_file_path)
     sfile, rfile, vfile, ofile = flowsheet.getfilenames(tp[1]["Id"])
 
     copyfile(orig_simulation_file_path, sfile)

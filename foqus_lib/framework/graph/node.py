@@ -42,20 +42,73 @@ from importlib import import_module
 _logger = logging.getLogger("foqus." + __name__)
 
 # pylint: disable=import-error
-try:
-    # tensorflow should be installed, but is not required for non ML/AI models
-    import tensorflow as tf
 
-    load = tf.keras.models.load_model
-except ImportError:
-    # if TensorFlow is not available, create a proxy function that will raise
-    # an exception whenever code tries to use `load()` at runtime
-    def load(*args, **kwargs):
-        raise ModuleNotFoundError(
-            f"`load()` was called with args={args},"
-            "kwargs={kwargs} but `tensorflow` is not available"
-        )
+# wrapping try/except optional imports in function for testing purposes
+# try_imports is ignored in normal usage; it is set to False in test module to
+# test exceptions when test environments with packages installed without
+# having to mock missing imports or modify the available package list
 
+
+def attempt_load_tensorflow(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # tensorflow should be installed, but not required for non ML/AI models
+        import tensorflow as tf
+
+        load = tf.keras.models.load_model
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if TensorFlow is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+
+    return load
+
+
+def attempt_load_sympy(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # sympy should be installed, but not required if normalization is not
+        # set to True, or if preset normalization option is used
+        import sympy as sy
+
+        parse = sy.parsing.sympy_parser.parse_expr
+        symbol = sy.Symbol
+        solve = sy.solve
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if sympy is not available, create proxy functions that will raise
+        # an exception whenever code tries to use a sympy method at runtime
+        def parse(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`parse()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def symbol(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`symbol()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+        def solve(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`solve()` was called with args={args},"
+                "kwargs={kwargs} but `sympy` is not available"
+            )
+
+    return parse, symbol, solve
+
+
+# attempt to load optional dependenices for node script
+load = attempt_load_tensorflow()
+parse, symbol, solve = attempt_load_sympy()
 
 # pylint: enable=import-error
 
@@ -150,7 +203,7 @@ class pymodel_ml_ai(pymodel):
                 input_max = 1e5  # not necessarily a good default
 
             self.inputs[input_label] = NodeVars(
-                value=input_min,
+                value=(input_min + input_max) / 2,
                 vmin=input_min,
                 vmax=input_max,
                 vdflt=0.0,
@@ -198,7 +251,7 @@ class pymodel_ml_ai(pymodel):
                 output_max = 1e5  # not necessarily a good default
 
             self.outputs[output_label] = NodeVars(
-                value=output_min,
+                value=(output_min + output_max) / 2,
                 vmin=output_min,
                 vmax=output_max,
                 vdflt=0.0,
@@ -223,28 +276,285 @@ class pymodel_ml_ai(pymodel):
             self.normalized = False
 
     def run(self):
+        # the bulk of this method checks whether model is normalized and if so
+        # how, and then defines input scaling and output unscaling if needed
         import numpy as np
 
-        if self.normalized is True:  # normalize inputs
-            inputs = [
-                (self.inputs[i].value - self.inputs[i].min)
-                / (self.inputs[i].max - self.inputs[i].min)
-                for i in self.inputs
+        # first, consider if model is not normalized - the simplest case
+        if self.normalized is False:  # no scaling needed
+            self.scaled_inputs = [self.inputs[i].value for i in self.inputs]
+
+        # next, consider if model is normalized - must include a method type
+        elif self.normalized is True:  # scale actual inputs
+
+            # select normalization type - users need to explicitly pass a form flag
+            # don't set a default - if users are setting this to True they should
+            # be aware of that FOQUS requires a normalization form flag as well
+            try:  # see if form flag exists and throw useful error if not
+                self.normalization_form = self.model.layers[1].normalization_form
+            except AttributeError:
+                raise AttributeError(  # raise to ensure code stops here
+                    "Model has no attribute normalization_form, and existing "
+                    "attribute normalization was set to True. Users must "
+                    "provide a normalization type for FOQUS to automatically "
+                    "scale flowsheet inputs and unscale flowsheet outputs."
+                )
+
+            # define a list of allowed forms; "Custom" requires norm_function
+            allowed_norm_forms = [
+                "Linear",
+                "Log",
+                "Power",
+                "Log 2",
+                "Power 2",
+                "Custom",
             ]
-        else:  # take actual input values
-            inputs = [self.inputs[i].value for i in self.inputs]
-        print(inputs)
+            # see if form flag is an allowed type and throw useful error if not
+            if self.normalization_form not in allowed_norm_forms:
+                raise AttributeError(
+                    "Value {} not valid for normalization_form, please ensure the model uses "
+                    "the appropriate flag from the following list and restart FOQUS: {}".format(
+                        str(self.normalization_form), str(allowed_norm_forms)
+                    )
+                )
+
+            # chose to prevent quiet failures, and will not use 'hasattr' below
+            # users should not try to normalize without setting a form flag
+            if self.normalization_form == "Linear":
+                self.scaled_inputs = [
+                    (self.inputs[i].value - self.inputs[i].min)
+                    / (self.inputs[i].max - self.inputs[i].min)
+                    for i in self.inputs
+                ]
+            elif self.normalization_form == "Log":
+                self.scaled_inputs = [
+                    (math.log10(self.inputs[i].value) - math.log10(self.inputs[i].min))
+                    / (math.log10(self.inputs[i].max) - math.log10(self.inputs[i].min))
+                    for i in self.inputs
+                ]
+            elif self.normalization_form == "Power":
+                self.scaled_inputs = [
+                    (
+                        math.pow(10, self.inputs[i].value)
+                        - math.pow(10, self.inputs[i].min)
+                    )
+                    / (
+                        math.pow(10, self.inputs[i].max)
+                        - math.pow(10, self.inputs[i].min)
+                    )
+                    for i in self.inputs
+                ]
+            elif self.normalization_form == "Log 2":
+                # if F = (value - min) / (max - min), then
+                # scaled = log10[9*F + 1]
+                self.scaled_inputs = [
+                    math.log10(
+                        9
+                        * (self.inputs[i].value - self.inputs[i].min)
+                        / (self.inputs[i].max - self.inputs[i].min)
+                        + 1
+                    )
+                    for i in self.inputs
+                ]
+            elif self.normalization_form == "Power 2":
+                # if F = (value - min) / (max - min), then
+                # scaled = (1/9) * (10^F - 1)
+                self.scaled_inputs = [
+                    (1 / 9)
+                    * math.pow(
+                        10,
+                        (self.inputs[i].value - self.inputs[i].min)
+                        / (self.inputs[i].max - self.inputs[i].min),
+                    )
+                    - 1
+                    for i in self.inputs
+                ]
+
+            elif self.normalization_form == "Custom":
+                # check custom normalization form for requirements
+                try:  # see if function is passed and throw useful error if not
+                    self.normalization_function = self.model.layers[
+                        1
+                    ].normalization_function
+                except AttributeError:
+                    raise AttributeError(
+                        "Model has no attribute normalization_function, and existing "
+                        "attribute normalization_form was set to Custom. Users must "
+                        "provide a normalization function for FOQUS to automatically "
+                        "scale flowsheet inputs and unscale flowsheet outputs."
+                    )
+
+                if type(self.normalization_function) is not str:
+                    raise TypeError(
+                        "Model attribute normalization_function is not a string. "
+                        "Please pass a string for the sympy parser to convert."
+                    )
+                elif "datavalue" not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'datavalue', expression must use 'datavalue' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                        )
+                    )
+                elif "dataminimum" not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'dataminimum', expression must use 'dataminimum' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                        )
+                    )
+                elif "datamaximum" not in self.normalization_function:
+                    raise ValueError(
+                        "Custom normalization function {} does not reference "
+                        " 'datamaximum', expression must use 'datamaximum' to "
+                        " refer to unscaled data values.".format(
+                            self.normalization_function
+                        )
+                    )
+
+                try:  # parse function and throw useful error if syntax error
+                    scaling_function = parse(self.normalization_function)
+                except TypeError:
+                    raise ValueError(  # raise to ensure code stops here
+                        "Model attribute normalization_function has value {} which "
+                        "is not a valid SymPy expression. Please refer to the "
+                        "latest documentation for syntax guidelines and standards: "
+                        "https://docs.sympy.org/latest/index.html".format(
+                            self.normalization_function
+                        )
+                    )
+
+                # use parsed function to scale actual inputs to model inputs
+
+                # create symbols for input datavalue, datamin and datamax
+                # we will be substituting numerical entries sequenitally below
+                datavalue = symbol("datavalue")
+                dataminimum = symbol("dataminimum")
+                datamaximum = symbol("datamaximum")
+
+                # set scaled input values from custom function
+                # put substitution in method so list comprehension is cleaner
+                def sub_symbols(i):
+                    # substitute values for symbols in scaling function
+                    # break it up so it's easier to follow, but could do in one line if desired
+                    scaling_evaluated = scaling_function
+                    scaling_evaluated = scaling_evaluated.subs(
+                        datavalue, self.inputs[i].value
+                    )
+                    scaling_evaluated = scaling_evaluated.subs(
+                        dataminimum, self.inputs[i].min
+                    )
+                    scaling_evaluated = scaling_evaluated.subs(
+                        datamaximum, self.inputs[i].max
+                    )
+
+                    return scaling_evaluated
+
+                self.scaled_inputs = [
+                    float(sub_symbols(i).evalf()) for i in self.inputs
+                ]
+
         # set output values to be generated from NN surrogate
-        outputs = self.model.predict(np.array(inputs, ndmin=2))[0]
+        self.scaled_outputs = self.model.predict(np.array(self.scaled_inputs, ndmin=2))[
+            0
+        ]
         outidx = 0
         for j in self.outputs:
-            if self.normalized is True:  # un-normalize outputs
-                self.outputs[j].value = (
-                    outputs[outidx] * (self.outputs[j].max - self.outputs[j].min)
-                    + self.outputs[j].min
-                )
-            else:
-                self.outputs[j].value = outputs[outidx]
+
+            # first, consider if model is not normalized - the simplest case
+            if self.normalized is False:  # no unscaling needed
+                self.outputs[j].value = self.scaled_outputs[outidx]
+
+            # next, consider if model is normalized - must include a method type
+            # at this point any missing arguments or errors would have been caught
+            # so don't need to check for those here as well
+            elif self.normalized is True:  # unscale to obtain actual output values
+
+                # select normalization type - should be user defined and must be set.
+                # don't set a default - if users are setting this to True they should
+                # be aware of that FOQUS requires a normalization form flag as well
+
+                if self.normalization_form == "Linear":
+                    self.outputs[j].value = (
+                        self.scaled_outputs[outidx]
+                        * (self.outputs[j].max - self.outputs[j].min)
+                        + self.outputs[j].min
+                    )
+                elif self.normalization_form == "Log":
+                    self.outputs[j].value = math.pow(
+                        10,
+                        self.scaled_outputs[outidx]
+                        * (
+                            math.log10(self.outputs[j].max)
+                            - math.log10(self.outputs[j].min)
+                        )
+                        + math.log10(self.outputs[j].min),
+                    )
+                elif self.normalization_form == "Power":
+                    self.outputs[j].value = math.log10(
+                        self.scaled_outputs[outidx]
+                        * (
+                            math.pow(10, self.outputs[j].max)
+                            - math.pow(10, self.outputs[j].min)
+                        )
+                        + math.pow(10, self.outputs[j].min)
+                    )
+                elif self.normalization_form == "Log 2":
+                    self.outputs[j].value = (
+                        math.pow(10, self.scaled_outputs[outidx]) - 1
+                    ) * (self.outputs[j].max - self.outputs[j].min) / 9 + self.outputs[
+                        j
+                    ].min
+                elif self.normalization_form == "Power 2":
+                    self.outputs[j].value = (
+                        math.log10(9 * self.scaled_outputs[outidx]) + 1
+                    ) * (self.outputs[j].max - self.outputs[j].min) + self.outputs[
+                        j
+                    ].min
+
+                elif self.normalization_form == "Custom":
+                    # create symbol for scaled outputs
+                    datascaled = symbol("datascaled")
+
+                    # solve for inverse function to return unscaled values
+                    try:  # solve function and throw useful error if error
+                        # the method below write an equation
+                        # datascaled = func(datavalue, dataminimum, datamaximum)
+                        # and returns an equation
+                        # datavalue = func(datascaled, dataminimum, datamaximum)
+                        # the flag `rational=False` tells sympy not to reduce
+                        # fractions in the expression, which saves memory
+                        unscaling_function = solve(
+                            datascaled - scaling_function, datavalue, rational=False
+                        )[0]
+                    except NotImplementedError:
+                        raise ValueError(  # raise to ensure code stops here
+                            "Model attribute normalization_function has value {} which"
+                            "is not a solvable sympy expression. Please refer to the "
+                            "latest documentation for syntax guidelines and standards: "
+                            "https://docs.sympy.org/latest/index.html".format(
+                                self.normalization_function
+                            )
+                        )
+
+                    # use inverse function to unscale model outputs to actual outputs
+                    # set unscaled output values from inverse function
+                    unscaling_evaluated = unscaling_function
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        datascaled, self.scaled_outputs[outidx]
+                    )
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        dataminimum, self.outputs[j].min
+                    )
+                    unscaling_evaluated = unscaling_evaluated.subs(
+                        datamaximum, self.outputs[j].max
+                    )
+
+                    # set actual output value to unscaled output value
+                    self.outputs[j].value = float(unscaling_evaluated.evalf())
+
             outidx += 1
 
 
@@ -254,7 +564,7 @@ class Node:
     function for running a calculations and simulations associated
     with a node.  The varaibles associated with nodes are all stored
     at the graph level, so the parent graph of a node needs to be
-    set before running any calcualtions, so the node knows where
+    set before running any calculations, so the node knows where
     to find variables, turbine config info,...
     """
 
@@ -266,7 +576,7 @@ class Node:
         self.calcCount = 0
         self.altInput = None
         self.vis = True  # whether or not to display node
-        self.seq = True  # whether or not to include in calcualtion order
+        self.seq = True  # whether or not to include in calculation order
         self.x = x  # coordinate for drawing graph
         self.y = y  # coordinate for drawing graph
         self.z = z  # coordinate for drawing graph
@@ -286,6 +596,22 @@ class Node:
         ##
         self.running = False
         self.synced = True
+
+    @property
+    def isModelTurbine(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_TURBINE
+
+    @property
+    def isModelNone(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_NONE
+
+    @property
+    def isModelPlugin(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_PLUGIN
+
+    @property
+    def isModelML(self) -> bool:
+        return self.modelType == nodeModelTypes.MODEL_ML_AI
 
     def setGraph(self, gr, name=None):
         """
@@ -472,7 +798,7 @@ class Node:
         o = sd.get("options", None)
         if o:
             self.options.loadDict(o)
-        if self.modelType == nodeModelTypes.MODEL_TURBINE:
+        if self.isModelTurbine:
             self.addTurbineOptions()
         # Below is just to maintain compatibility with older session files
         # It may be deleted at some point in the future
@@ -543,10 +869,10 @@ class Node:
         # clear the pyModel since it may be old now
         self.pyModel = None
         # Now add stuff to the node depending on the model type
-        if self.modelType == nodeModelTypes.MODEL_NONE:
+        if self.isModelNone:
             # no model don't add any variables and do nothing
             return
-        elif self.modelType == nodeModelTypes.MODEL_PLUGIN:
+        elif self.isModelPlugin:
             # python plugin worry about this later
             inst = self.gr.pymodels.plugins[self.modelName].pymodel_pg()
             # the node can have the pymodel instances variables since
@@ -557,7 +883,7 @@ class Node:
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
-        elif self.modelType == nodeModelTypes.MODEL_TURBINE:
+        elif self.isModelTurbine:
             sc = self.gr.turbConfig.getSinterConfig(self.modelName)
             modelTitle = str(sc.get("title", ""))
             modelAuthor = str(sc.get("author", ""))
@@ -653,10 +979,11 @@ class Node:
                         desc=item["description"],
                         optSet=NodeOptionSets.SINTER_OPTIONS,
                     )
-        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+        elif self.isModelML:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            if "user_ml_ai_models" not in os.getcwd():
+                os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(
@@ -679,7 +1006,7 @@ class Node:
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
 
-    def upadteSCDefaults(self, outfile=None):
+    def updateSCDefaults(self, outfile=None):
         if outfile is None:
             outfile = "{0}.json".format(self.modelName)
         sc = self.gr.turbConfig.getSinterConfig(self.modelName)
@@ -702,7 +1029,7 @@ class Node:
 
     def runCalc(self, nanout=False):
         """
-        This function calcualtate the node's output values from
+        This function calculates the node's output values from
         the inputs.  First it does the model calculations then
         any Python post-processing calculations.  The model and
         or the post-processing calculations can be omitted.  If
@@ -756,13 +1083,13 @@ class Node:
         Run the Model associated with the node.
         """
         self.calcError = -1
-        if self.modelType == nodeModelTypes.MODEL_NONE:
+        if self.isModelNone:
             pass
-        elif self.modelType == nodeModelTypes.MODEL_PLUGIN:
+        elif self.isModelPlugin:
             self.runPymodelPlugin()
-        elif self.modelType == nodeModelTypes.MODEL_TURBINE:
+        elif self.isModelTurbine:
             self.runTurbineCalc(retry=self.options["Retry"].value)
-        elif self.modelType == nodeModelTypes.MODEL_ML_AI:
+        elif self.isModelML:
             self.runPymodelMLAI()
         else:
             # This shouldn't happen from the GUI there should
@@ -791,7 +1118,7 @@ class Node:
         Stop consumer, when the model is run next a new consumer
         will start up for it.  This is useful if a model fails.
         """
-        if self.modelType == nodeModelTypes.MODEL_TURBINE:
+        if self.isModelTurbine:
             self.gr.turbConfig.stopConsumer(self.name)
 
     def runPymodelPlugin(self):
@@ -1139,7 +1466,8 @@ class Node:
         if not self.pyModel:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            if "user_ml_ai_models" not in os.getcwd():
+                os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(

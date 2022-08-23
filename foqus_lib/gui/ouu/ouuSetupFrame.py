@@ -680,7 +680,7 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.objXPoints = []
         self.objYPoints = []
         if "objFigAx" in self.__dict__ and len(self.objFigAx.lines) > 0:
-            self.objFigAx.lines = []
+            self.objFigAx.lines.clear()
             self.objFigAx.relim()
             # self.objFigAx.set_xlim([0.0, 1.0])
             self.objCanvas.draw()
@@ -716,16 +716,16 @@ class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):
         self.input_table.setCheckedToType(1)
 
     def setX1d(self):
-        self.input_table.setCheckedToType(2)
+        self.input_table.setCheckedToType(-1)
 
     def setX2(self):
-        self.input_table.setCheckedToType(3)
+        self.input_table.setCheckedToType(2)
 
     def setX3(self):
-        self.input_table.setCheckedToType(4)
+        self.input_table.setCheckedToType(3)
 
     def setX4(self):
-        self.input_table.setCheckedToType(5)
+        self.input_table.setCheckedToType(4)
 
     def setCounts(self):
         # update counts

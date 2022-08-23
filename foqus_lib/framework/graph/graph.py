@@ -940,7 +940,7 @@ class Graph(threading.Thread):
             else:
                 newGr.res_re = resubs
         else:
-            raise ("Must supply runList or jobIds")
+            raise ValueError("Must supply runList or jobIds")
         newGr.status = {
             "unfinished": len(newGr.res),
             "finished": 0,

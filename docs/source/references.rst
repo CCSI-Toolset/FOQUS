@@ -44,3 +44,11 @@ K. Bhat, B. Sherman, K. Ajayi, B. Ng, J. Eslick, J. Ou, and J.Kress, "Solventﬁ
 .. _Wu_2020:
 
 K. Wu, F. Chollet, "Serialization and saving." https://keras.io/guides/serialization_and_saving/, April 2020.
+
+.. _Abadi_2015:
+
+M. Abadi, A. Agarwal, P. Barham, et al., "TensorFlow: An end-to-end open source machine learning platform." https://www.tensorflow.org/, 2015.
+
+.. _Meurer_2017:
+
+A. Meurer, C.P. Smith, M. Paprocki, et al., "SymPy 1.10.1 Documentation." https://docs.sympy.org/latest/index.html, Jan 2017.

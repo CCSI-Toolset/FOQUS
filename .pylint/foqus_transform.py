@@ -43,6 +43,7 @@ def get_pyqtsignal_classdef(context=None):
 PYQTSIGNAL_ATTRIBUTE_NAMES = frozenset(
     [
         "currentIndexChanged",
+        "valueChanged",
     ]
 )
 

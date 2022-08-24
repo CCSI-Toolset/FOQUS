@@ -29,7 +29,7 @@ import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
 from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 from foqus_lib.framework.graph.nodeVars import NodeVarListEx,NodeVarEx
-from foqus_lib.framework.foqusException import foqusException
+from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.graph.graph import Graph
 from turbine.commands import turbine_simulation_script
 import logging
@@ -1127,6 +1127,9 @@ class FlowsheetControl:
         count_turb_apps = 0
         nkey = None
         for i in dat.flowsheet.nodes:
+            # JRB: BUG SETS UP DEFAULTS, probably should happend in loadFlowsheetValues
+            # BUG: https://github.com/CCSI-Toolset/FOQUS/issues/1010
+            dat.flowsheet.addNode(i)
             if dat.flowsheet.nodes[i].turbApp is not None:
                 nkey = i
                 count_turb_apps += 1
@@ -1191,7 +1194,12 @@ class FlowsheetControl:
             return
 
         if gt.res[0]:
-            assert type(gt.res) is dict, 'job Output dictionary'
+            if type(gt.res[0]) is not dict:
+                _log.error('Expecting job Output dictionary: %s', str(gt.res))
+                raise foqusException('Run Flowsheet Bad Output: %s' %(str(gt.res)))
+            _log.debug("ORIGINAL  INPUTS: %s", str(dat.flowsheet.input))
+            _log.debug("GT Thread INPUTS: %s", str(gt.input))
+            _log.debug("GT Thread results: %s", str(gt.res))
             try:
                 dat.flowsheet.loadValues(gt.res[0])
             except NodeVarListEx as ex:

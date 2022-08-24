@@ -70,6 +70,7 @@ from foqus_lib.gui.surrogate.surrogateFrame import *
 from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
 from configparser import *
 
+_log = logging.getLogger("foqus." + __name__)
 
 class mainWindow(QMainWindow):
     """
@@ -108,6 +109,7 @@ class mainWindow(QMainWindow):
         QMainWindow.__init__(self)  # call base constructor
         self.resize(w, h)
         self.setWindowTitle(title)
+        self.timer = None
         self.dat = dat  # This is a session object
         self.dat.mainWin = self
         self.splash = splash
@@ -222,6 +224,38 @@ class mainWindow(QMainWindow):
             self.tstimer.start(2000)
         else:
             self.tstimer = None
+
+    def handleNodeException(self, ex:NodeEx):
+        """
+        Called by child components when a foqusException is
+        encountered.  Updates UI and cancels current run
+        """
+        error_msg = str(ex)
+        self.dat.flowsheet.errorStat = ex.code
+        if self.timer:
+            _log.debug("handleNodeException: timer set, stopSim")
+            self.stopSim()
+            self.refreshFlowsheet()
+            self.stopAction.setEnabled(False)
+            self.runAction.setEnabled(True)
+            self.nodeDock.runButton.setEnabled(True)
+            self.nodeDock.stopButton.setEnabled(False)
+        else:
+            _log.debug("handleNodeException: runSim did not complete")
+            self.refreshFlowsheet()
+            self.stopAction.setEnabled(False)
+            self.runAction.setEnabled(False)
+            self.nodeDock.runButton.setEnabled(False)
+            self.nodeDock.stopButton.setEnabled(False)
+        self.singleRunErrorReport(self.dat.flowsheet)
+
+    def handleNodeSimulationReady(self):
+        _log.debug("handleNodeSimulationReady: Node set to ready")
+        self.refreshFlowsheet()
+        self.stopAction.setEnabled(False)
+        self.runAction.setEnabled(True)
+        self.nodeDock.runButton.setEnabled(True)
+        self.nodeDock.stopButton.setEnabled(False)
 
     def clearOldMessages(self):
         """
@@ -1364,7 +1398,9 @@ class mainWindow(QMainWindow):
         worker thread/process (hopefully) although that may take
         some time.
         """
+        assert self.timer is not None, 'Must Call setupTimer before stopSim'
         self.timer.stop()
+        self.timer = None
         self.stopAction.setEnabled(False)
         # Next will wait for the single run thread to close down all the
         # way and save the results.  This may delay stopping a bit
@@ -1414,47 +1450,83 @@ class mainWindow(QMainWindow):
             self.refreshFlowsheet()
             if not self.dataBrowserDialog.isHidden():
                 self.dataBrowserDialog.dataFrame.refreshContents()
-            err = self.dat.flowsheet.errorStat
-            errText = self.dat.flowsheet.errorLookup(err)
-            self.runningSingle = False
-            self.dat.flowsheet.onlySingleNode = None
-            if err == 0:
-                QMessageBox.information(
-                    self,
-                    "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)),
-                    "The simulation completed successfully.",
-                )
-                self.setStatus(
-                    "Finished Single Simulation... Success in "
-                    + hhmmss(int(self.dat.flowsheet.solTime))
-                )
-            elif err == 100:
-                QMessageBox.information(
-                    self,
-                    "Finished in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                    "The single node simulation completed successfully.",
-                )
-                self.setStatus(
-                    "Finished Single Node Simulation... Success in "
-                    + hhmmss(int(self.dat.flowsheet.solTime))
-                )
-            else:
-                QMessageBox.critical(
-                    self,
-                    "Error in " + hhmmss(int(self.dat.flowsheet.solTime)) + "s",
-                    "The simulation completed with an error "
-                    + str(err)
-                    + ", "
-                    + errText,
-                )
-                self.setStatus(
-                    "Error Single Simulation in "
-                    + hhmmss(int(self.dat.flowsheet.solTime))
-                    + " ... "
-                    + str(err)
-                    + ", "
-                    + errText
-                )
+
+            self.singleRunErrorReport(self.dat.flowsheet)
+
+    def singleRunErrorReport(self, flowsheet:Graph):
+        """
+        runSim sets up onlySingleNode
+        """
+        assert type(flowsheet) is Graph
+        err = flowsheet.errorStat
+        errText = flowsheet.errorLookup(err)
+        self.runningSingle = False
+        flowsheet.onlySingleNode = None
+        if err == 0:
+            QMessageBox.information(
+                self,
+                "Finished in " + hhmmss(int(flowsheet.solTime)),
+                "The simulation completed successfully.",
+            )
+            self.setStatus(
+                "Finished Single Simulation... Success in "
+                + hhmmss(int(flowsheet.solTime))
+            )
+        elif err == 100:
+            QMessageBox.information(
+                self,
+                "Finished in " + hhmmss(int(flowsheet.solTime)) + "s",
+                "The single node simulation completed successfully.",
+            )
+            self.setStatus(
+                "Finished Single Node Simulation... Success in "
+                + hhmmss(int(flowsheet.solTime))
+            )
+        elif err == NodeEx.ERROR_CONFIGURATION_MISSING:
+            QMessageBox.critical(
+                self,
+                "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
+                "This node's assigned model is missing a configuration"
+            )
+            self.setStatus(
+                "No Sinter Configuration"
+                + hhmmss(int(flowsheet.solTime))
+                + " ... "
+                + str(err)
+                + ", "
+                + errText
+            )
+        elif err == NodeEx.ERROR_NODE_FLOWSHEET:
+            QMessageBox.critical(
+                self,
+                "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
+                "A node cannot be set to a flowsheet model"
+            )
+            self.setStatus(
+                "Invalid Assignment of Flowsheet to Node"
+                + hhmmss(int(flowsheet.solTime))
+                + " ... "
+                + str(err)
+                + ", "
+                + errText
+            )
+        else:
+            QMessageBox.critical(
+                self,
+                "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
+                "The simulation completed with an error "
+                + str(err)
+                + ", "
+                + errText,
+            )
+            self.setStatus(
+                "Error Single Simulation in "
+                + hhmmss(int(flowsheet.solTime))
+                + " ... "
+                + str(err)
+                + ", "
+                + errText
+            )
 
     def loadDefaultInput(self):
         """

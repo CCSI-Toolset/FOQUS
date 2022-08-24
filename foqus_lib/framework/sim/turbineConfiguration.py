@@ -57,8 +57,9 @@ import turbine.commands.turbine_session_script
 import turbine.commands.turbine_simulation_script
 import turbine.commands.turbine_job_script
 import turbine.commands
-
-
+from turbine.commands.requests_base import HTTPStatusCode, read_configuration,\
+    get_page_by_url
+from turbine.commands import turbine_session_result_script
 class TurbineInterfaceEx(foqusException):
     """
     This is an exception class for FOQUS interaction with Turbine, it also tries
@@ -762,22 +763,22 @@ class TurbineConfiguration:
                 tb=traceback.format_exc(),
             )
 
-    def getSessionStatus(self, sid):
-        """
-        This function gets the status of jobs in a session
-        """
-        try:
-            l = turbine.commands.turbine_session_script.main_jobs_status(
-                [sid, self.getFile()], None
-            )
-            return l
-        except Exception as e:
-            raise TurbineInterfaceEx(
-                code=0,
-                msg="Error getting session staus. ",
-                e=e,
-                tb=traceback.format_exc(),
-            )
+    # def getSessionStatus(self, sid):
+    #     """
+    #     This function gets the status of jobs in a session
+    #     """
+    #     try:
+    #         l = turbine.commands.turbine_session_script.main_jobs_status(
+    #             [sid, self.getFile()], None
+    #         )
+    #         return l
+    #     except Exception as e:
+    #         raise TurbineInterfaceEx(
+    #             code=0,
+    #             msg="Error getting session staus. ",
+    #             e=e,
+    #             tb=traceback.format_exc(),
+    #         )
 
     def createSession(self):
         """
@@ -863,35 +864,28 @@ class TurbineConfiguration:
         Get a generator that returns jobs that have completed since
         last call.
         """
-        postAddress = "".join([self.address, "/session/", str(sid), "/result"])
-        try:
-            gid = turbine.commands.post_page_by_url(
-                postAddress, self.turbineConfigParse(), section=b"", data=b""
-            )
-        except Exception as e:
-            raise TurbineInterfaceEx(
-                code=0,
-                msg="".join(
-                    ["Failed to get completed job generator posted to: ", postAddress]
-                ),
-                e=e,
-                tb=traceback.format_exc(),
-            )
-        return json.loads(gid)
+        return '00000000-0000-0000-0000-000000000000'
 
     def getCompletedJobPage(self, sid, gen):
         """
         Make and return a page with finished jobs since last call
         """
-        postAddress = "".join(
-            [self.address, "/session/", str(sid), "/result/", str(gen)]
+        cp = self.turbineConfigParse()
+        kw = dict()
+        url,auth,params = read_configuration(
+            cp,
+            turbine.commands.turbine_session_script.SECTION,
+            **kw
         )
         try:
-            _log.debug("Getting results post url: {}".format(postAddress))
-            page = turbine.commands.post_page_by_url(
-                postAddress, self.turbineConfigParse(), section=b"", data=b""
+            _log.debug("Getting results post url: {}".format(url))
+            # page = turbine.commands.post_page_by_url(
+            #     postAddress, self.turbineConfigParse(), section=b"", data=b""
+            # )
+            page = turbine_session_result_script.post_session_result(
+                url, auth, sid, gen
             )
-        except urllib.request.HTTPError as e:
+        except HTTPStatusCode as e:
             if e.code == 404:
                 return -1  # no more jobs to get
             elif e.code == 400:
@@ -903,7 +897,7 @@ class TurbineConfiguration:
                 _log.exception("Failed to get completed job page")
                 raise TurbineInterfaceEx(
                     code=0,
-                    msg="Failed to get job page: {}".format(postAddress),
+                    msg="Failed to get job page: {}".format(url),
                     e=e,
                     tb=traceback.format_exc(),
                 )
@@ -911,7 +905,7 @@ class TurbineConfiguration:
             raise TurbineInterfaceEx(
                 code=0,
                 msg="".join(
-                    ["URLError Failed to get completed job page: ", postAddress]
+                    ["URLError Failed to get completed job page: ", url]
                 ),
                 e=e,
                 tb=traceback.format_exc(),
@@ -920,35 +914,35 @@ class TurbineConfiguration:
             raise TurbineInterfaceEx(
                 code=0,
                 msg="".join(
-                    ["Exception Failed to get completed job page: ", postAddress]
+                    ["Exception Failed to get completed job page: ", url]
                 ),
                 e=e,
                 tb=traceback.format_exc(),
             )
-        return json.loads(page)
+        return int(page)
 
     def getCompletedJobs(self, sid, gen, page, maxJobs=2000):
         """
         Make and return a page with finished jobs since last call
         """
-        readAddress = "/".join(
-            [self.address, "session", str(sid), "result", str(gen), str(page)]
+        kw = dict()
+        if maxJobs > 0:
+            kw['rpp'] = maxJobs
+        cp = self.turbineConfigParse()
+        url,auth,params = read_configuration(
+            cp,
+            turbine.commands.turbine_session_script.SECTION,
+            **kw
         )
+        result_url = "%s%s/result/%s/%s" %(url, str(sid), str(gen), str(page))
+        _log.debug("GET Session Results from URL: {0}".format(result_url))
         try:
-            _log.debug("Getting results from url: {0}".format(readAddress))
-            if maxJobs > 0:
-                jobs = turbine.commands.get_page_by_url(
-                    readAddress, self.turbineConfigParse(), rpp=maxJobs
-                )
-            else:
-                jobs = turbine.commands.get_page_by_url(
-                    readAddress, self.turbineConfigParse()
-                )
+            jobs = get_page_by_url(result_url, auth, **params)
         except Exception as e:
-            _log.exception("Failed to get jobs from: {}".format(readAddress))
+            _log.exception("Failed to get jobs from: {}".format(result_url))
             raise TurbineInterfaceEx(
                 code=0,
-                msg="Failed to get jobs from: {}".format(readAddress),
+                msg="Failed to get jobs from: {}".format(result_url),
                 e=e,
                 tb=traceback.format_exc(),
             )
@@ -996,9 +990,17 @@ class TurbineConfiguration:
 
     def simResourceList(self, sim):
         """Get a list of resources for a simualtion"""
-        simAddress = "{}/Simulation/{}/input".format(self.address, sim)
+        kw = {}
+        cp = self.turbineConfigParse()
+        url,auth,params = read_configuration(
+            cp,
+            turbine.commands.turbine_simulation_script.SECTION,
+            **kw
+        )
+        result_url = "/".join([url, sim, "input"])
+        _log.debug("GET Simulation Inputs from URL: {0}".format(result_url))
         try:
-            r = turbine.commands.get_page_by_url(simAddress, self.turbineConfigParse())
+            r = get_page_by_url(result_url, auth, **params)
             r = json.loads(r)
         except Exception as e:
             _log.exception("Error getting simulation resources")

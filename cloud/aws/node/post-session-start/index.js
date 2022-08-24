@@ -166,7 +166,9 @@ exports.handler = function(event, context, callback) {
                 //promise.then(handleDelete);
                 promises.push(promise);
             }
-            Promise.all(promises).then(function(values) {
+
+            Promise.all(promises)
+              .then(function(values) {
                 // return the result to the caller of the Lambda function
                 for (var i=0 ; i < values.length; i++ ) {
                     var data = values[i];
@@ -223,6 +225,8 @@ exports.handler = function(event, context, callback) {
                         });
                     }
                 }
+            })
+              .then(function() {
                 if (params_delete.Delete.Objects.length == 0) {
                     log("No items to be submitted")
                     assert.strictEqual(id_list.length, 0);
@@ -241,7 +245,7 @@ exports.handler = function(event, context, callback) {
                         done(null, id_list);
                     }
                 });
-            });
+              });
         });
     });
   }

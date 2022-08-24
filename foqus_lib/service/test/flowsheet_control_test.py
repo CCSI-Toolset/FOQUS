@@ -29,141 +29,24 @@ from botocore.stub import Stubber
 import os
 
 import pytest
+import foqus_lib
 from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.node import Node
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.framework.session.session import session
 
-TOP_LEVEL_DIR = os.path.abspath(os.curdir)
-
-
-class TestNode:
-    # test some specific service-dependent node features
-
-    @pytest.fixture(scope="function")
-    def node(self):
-        # build graph, add node and return node
-        gr = Graph()
-        gr.addNode("testnode")
-        n = Node(parent=gr, name="testnode")
-
-        return n
-
-    def test_setSim_modelTurbine_xls(self, node):
-        # manually add turbine model to test
-
-        turbpath = os.path.abspath(
-            os.path.join(
-                TOP_LEVEL_DIR,
-                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
-            )
-        )
-        print("dir: ", TOP_LEVEL_DIR)
-        print(turbpath)
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.dat = session()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="exceltest",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="exceltest", newType=2)
-
-    def test_runTurbineCalc_xls(self, node):
-        # manually add turbine model to test
-
-        turbpath = os.path.abspath(
-            os.path.join(
-                TOP_LEVEL_DIR,
-                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
-            )
-        )
-        print("dir: ", TOP_LEVEL_DIR)
-        print(turbpath)
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.dat = session()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="exceltest",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="exceltest", newType=2)
-        node.runCalc()  # covers node.runTurbineCalc
-
-    def test_setSim_modelTurbine_sim(self, node):
-        # manually add turbine model to test
-
-        turbpath = os.path.abspath(
-            os.path.join(
-                TOP_LEVEL_DIR,
-                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
-            )
-        )
-        print("dir: ", TOP_LEVEL_DIR)
-        print(turbpath)
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.dat = session()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="Flash_Example",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="Flash_Example", newType=2)
-
-    def test_runTurbineCalc_sim(self, node):
-        # manually add turbine model to test
-
-        turbpath = os.path.abspath(
-            os.path.join(
-                TOP_LEVEL_DIR,
-                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
-            )
-        )
-        print("dir: ", TOP_LEVEL_DIR)
-        print(turbpath)
-
-        # create config block and upload model files to Turbine
-        node.gr.turbConfig = TurbineConfiguration()
-        node.gr.turbConfig.dat = session()
-        node.gr.turbConfig.writeConfig(overwrite=True)
-        node.gr.turbConfig.uploadSimulation(
-            simName="Flash_Example",
-            sinterConfigPath=os.path.normpath(turbpath),
-            update=True,
-            otherResources=[],
-        )
-
-        # set simulation
-        node.setSim(newModel="Flash_Example", newType=2)
-        node.runCalc()  # covers node.runTurbineCalc
-
-
-# test generic service-related functionality
-os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
-from .. import flowsheet
-
 try:
     from unittest.mock import MagicMock, PropertyMock, patch
 except ImportError:
     from mock import MagicMock, patch
+
+TOP_LEVEL_DIR = os.path.abspath(os.curdir)
+
+
+# test generic service-related functionality
+
+os.environ["FOQUS_SERVICE_WORKING_DIR"] = "/tmp/foqus_test"
+from .. import flowsheet
 
 INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
  "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
@@ -231,3 +114,167 @@ def test_flowsheet_control_run():
 
     flowsheet.FlowsheetControl.run_foqus = _run_foqus
     fc.run()
+
+
+class TestNode:
+    # test some specific service-dependent node features
+
+    @pytest.fixture(scope="function")
+    def node(self):
+        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+        flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
+        flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
+        # pop_job:  downloads simulation file into working dir
+        tp = ("testuser", dict(Id=str(uuid.uuid4()), Simulation="test"))
+        flowsheet.FlowsheetControl.pop_job = MagicMock(return_value=tp)
+
+        flowsheet.FlowsheetControl._delete_sqs_job = MagicMock(return_value=None)
+
+        fc = flowsheet.FlowsheetControl()
+        print("fc: ", fc)
+        # build graph, add node and return node
+        gr = Graph()
+        gr.addNode("testnode")
+        n = Node(parent=gr, name="testnode")
+
+        return n
+
+    def test_setSim_modelTurbine_xls(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        with patch(
+            "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
+        ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
+            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                return_value=app_list
+            )
+
+            # create config block and upload model files to Turbine
+            node.gr.turbConfig = TurbineConfiguration()
+            node.gr.turbConfig.writeConfig(overwrite=True)
+            node.gr.turbConfig.uploadSimulation(
+                simName="exceltest",
+                sinterConfigPath=os.path.normpath(turbpath),
+                update=True,
+                otherResources=[],
+            )
+
+            # set simulation
+            node.setSim(newModel="exceltest", newType=2)
+
+    def test_runTurbineCalc_xls(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        with patch(
+            "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
+        ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
+            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                return_value=app_list
+            )
+
+            # create config block and upload model files to Turbine
+            node.gr.turbConfig = TurbineConfiguration()
+            node.gr.turbConfig.writeConfig(overwrite=True)
+            node.gr.turbConfig.uploadSimulation(
+                simName="exceltest",
+                sinterConfigPath=os.path.normpath(turbpath),
+                update=True,
+                otherResources=[],
+            )
+
+            # set simulation
+            node.setSim(newModel="exceltest", newType=2)
+            node.gr.turbConfig.dat = session()
+            node.runCalc()  # covers node.runTurbineCalc
+
+    def test_setSim_modelTurbine_sim(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        with patch(
+            "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
+        ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
+            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                return_value=app_list
+            )
+
+            # create config block and upload model files to Turbine
+            node.gr.turbConfig = TurbineConfiguration()
+            node.gr.turbConfig.writeConfig(overwrite=True)
+            node.gr.turbConfig.uploadSimulation(
+                simName="Flash_Example_AP",
+                sinterConfigPath=os.path.normpath(turbpath),
+                update=True,
+                otherResources=[],
+            )
+
+            # set simulation
+            node.setSim(newModel="Flash_Example", newType=2)
+
+    def test_runTurbineCalc_sim(self, node):
+        # manually add turbine model to test
+
+        turbpath = os.path.abspath(
+            os.path.join(
+                TOP_LEVEL_DIR,
+                "examples/tutorial_files/SimSinter/Tutorial_2/Flash_Example_AP.json",
+            )
+        )
+        print("dir: ", TOP_LEVEL_DIR)
+        print(turbpath)
+
+        with patch(
+            "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
+        ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
+            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                return_value=app_list
+            )
+
+            # create config block and upload model files to Turbine
+            node.gr.turbConfig = TurbineConfiguration()
+            node.gr.turbConfig.writeConfig(overwrite=True)
+            node.gr.turbConfig.uploadSimulation(
+                simName="Flash_Example_AP",
+                sinterConfigPath=os.path.normpath(turbpath),
+                update=True,
+                otherResources=[],
+            )
+
+            # set simulation
+            node.setSim(newModel="Flash_Example_AP", newType=2)
+            node.gr.turbConfig.dat = session()
+            node.runCalc()  # covers node.runTurbineCalc

@@ -290,6 +290,7 @@ class TestNode:
                             # set simulation
                             node.setSim(newModel="exceltest", newType=2)
                             node.gr.turbConfig.dat = session()
+                            node.options["Override Turbine Configuration"].value = None
                             node.runCalc()  # covers node.runTurbineCalc
 
     def test_setSim_modelTurbine_sim(self, node):
@@ -443,4 +444,5 @@ class TestNode:
                             # set simulation
                             node.setSim(newModel="Flash_Example_AP", newType=2)
                             node.gr.turbConfig.dat = session()
+                            node.options["Override Turbine Configuration"].value = None
                             node.runCalc()  # covers node.runTurbineCalc

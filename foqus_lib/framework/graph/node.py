@@ -56,16 +56,9 @@ def attempt_load_tensorflow(try_imports=True):
         import tensorflow as tf
 
         load = tf.keras.models.load_model
-    except AssertionError:  # throw warning if manually failed for test
-        # if TensorFlow is not available, create a proxy function that will
-        # raise an exception whenever code tries to use `load()` at runtime
-        def load(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`load()` was called with args={args},"
-                "kwargs={kwargs} but `tensorflow` is not available"
-            )
 
-    except ImportError:  # throw warning if package actually not available
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
         # if TensorFlow is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
         def load(*args, **kwargs):
@@ -87,28 +80,9 @@ def attempt_load_sympy(try_imports=True):
         parse = sy.parsing.sympy_parser.parse_expr
         symbol = sy.Symbol
         solve = sy.solve
-    except AssertionError:  # throw warning if manually failed for test
-        # if sympy is not available, create proxy functions that will raise
-        # an exception whenever code tries to use a sympy method at runtime
-        def parse(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`parse()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
 
-        def symbol(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`symbol()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
-
-        def solve(*args, **kwargs):
-            raise ModuleNotFoundError(
-                f"`solve()` was called with args={args},"
-                "kwargs={kwargs} but `sympy` is not available"
-            )
-
-    except ImportError:  # throw warning if package actually not available
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
         # if sympy is not available, create proxy functions that will raise
         # an exception whenever code tries to use a sympy method at runtime
         def parse(*args, **kwargs):
@@ -342,7 +316,7 @@ class pymodel_ml_ai(pymodel):
             try:  # see if form flag exists and throw useful error if not
                 self.normalization_form = self.model.layers[1].normalization_form
             except AttributeError:
-                _logger.error(
+                raise AttributeError(  # raise to ensure code stops here
                     "Model has no attribute normalization_form, and existing "
                     "attribute normalization was set to True. Users must "
                     "provide a normalization type for FOQUS to automatically "
@@ -426,7 +400,7 @@ class pymodel_ml_ai(pymodel):
                         1
                     ].normalization_function
                 except AttributeError:
-                    _logger.error(
+                    raise AttributeError(
                         "Model has no attribute normalization_function, and existing "
                         "attribute normalization_form was set to Custom. Users must "
                         "provide a normalization function for FOQUS to automatically "
@@ -465,8 +439,8 @@ class pymodel_ml_ai(pymodel):
 
                 try:  # parse function and throw useful error if syntax error
                     scaling_function = parse(self.normalization_function)
-                except ValueError:
-                    _logger.error(
+                except TypeError:
+                    raise ValueError(  # raise to ensure code stops here
                         "Model attribute normalization_function has value {} which "
                         "is not a valid SymPy expression. Please refer to the "
                         "latest documentation for syntax guidelines and standards: "
@@ -578,8 +552,8 @@ class pymodel_ml_ai(pymodel):
                         unscaling_function = solve(
                             datascaled - scaling_function, datavalue, rational=False
                         )[0]
-                    except ValueError:
-                        _logger.error(
+                    except NotImplementedError:
+                        raise ValueError(  # raise to ensure code stops here
                             "Model attribute normalization_function has value {} which"
                             "is not a solvable sympy expression. Please refer to the "
                             "latest documentation for syntax guidelines and standards: "
@@ -613,7 +587,7 @@ class Node:
     function for running a calculations and simulations associated
     with a node.  The varaibles associated with nodes are all stored
     at the graph level, so the parent graph of a node needs to be
-    set before running any calcualtions, so the node knows where
+    set before running any calculations, so the node knows where
     to find variables, turbine config info,...
     """
 
@@ -625,7 +599,7 @@ class Node:
         self.calcCount = 0
         self.altInput = None
         self.vis = True  # whether or not to display node
-        self.seq = True  # whether or not to include in calcualtion order
+        self.seq = True  # whether or not to include in calculation order
         self.x = x  # coordinate for drawing graph
         self.y = y  # coordinate for drawing graph
         self.z = z  # coordinate for drawing graph
@@ -1044,7 +1018,8 @@ class Node:
         elif self.isModelML:
             # link to pymodel class for ml/ai models
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            if "user_ml_ai_models" not in os.getcwd():
+                os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(
@@ -1067,7 +1042,7 @@ class Node:
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
 
-    def upadteSCDefaults(self, outfile=None):
+    def updateSCDefaults(self, outfile=None):
         if outfile is None:
             outfile = "{0}.json".format(self.modelName)
         sc = self.gr.turbConfig.getSinterConfig(self.modelName)
@@ -1090,7 +1065,7 @@ class Node:
 
     def runCalc(self, nanout=False):
         """
-        This function calcualtate the node's output values from
+        This function calculates the node's output values from
         the inputs.  First it does the model calculations then
         any Python post-processing calculations.  The model and
         or the post-processing calculations can be omitted.  If
@@ -1527,7 +1502,8 @@ class Node:
         if not self.pyModel:
             # load ml_ai_model and build pymodel class object
             cwd = os.getcwd()
-            os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
+            if "user_ml_ai_models" not in os.getcwd():
+                os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
             try:  # see if custom layer script exists
                 module = import_module(str(self.modelName))  # contains CustomLayer
                 self.model = load(

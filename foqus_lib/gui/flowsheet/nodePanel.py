@@ -422,7 +422,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         for row in range(table.rowCount()):
             val = gh.getCellJSON(table, row, self.ivCols["Value"])
             gh.setCellJSON(table, row, self.ivCols["Default"], val)
-        self.node.upadteSCDefaults()
+        self.node.updateSCDefaults()
 
     def updateInputVariables(self):
         """

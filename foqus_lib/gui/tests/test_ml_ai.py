@@ -1,5 +1,4 @@
 from pathlib import Path
-import shutil
 from typing import List, Tuple
 
 import pytest

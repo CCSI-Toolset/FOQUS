@@ -1,10 +1,10 @@
 {
   "name": "post-simulation-signed-url",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Create simulation input Signed URL to use for HTTP PUT",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
+    "aws-sdk": "",
     "debug": ">=4.1.1"
   },
   "scripts": {

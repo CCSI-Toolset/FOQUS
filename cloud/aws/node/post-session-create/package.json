@@ -1,7 +1,7 @@
 {
   "name": "post-session-create",
-  "version": "1.0.0",
-  "description": "Creates a new Turbine Session in S3 bucket under user",
+  "version": "2.0.0",
+  "description": "Returns a new GUID for use as a Session resource",
   "main": "index.js",
   "dependencies": {
     "uuid": "^3.2.1"

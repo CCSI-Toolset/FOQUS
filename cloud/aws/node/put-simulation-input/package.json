@@ -1,10 +1,10 @@
 {
   "name": "put-simulation-input",
-  "version": "1.0.0",
-  "description": "Create simulation input resource",
+  "version": "2.0.0",
+  "description": "PUT simulation/{name}/input/{resource}",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
+    "aws-sdk": "",
     "debug": ">=4.1.1"
   },
   "scripts": {

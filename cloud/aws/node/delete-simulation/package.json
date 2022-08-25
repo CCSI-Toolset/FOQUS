@@ -1,10 +1,10 @@
 {
   "name": "delete-simulation",
-  "version": "1.0.0",
-  "description": "Returns array of simulations",
+  "version": "2.0.0",
+  "description": "Delete simulation",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
+    "aws-sdk": "",
     "uuid": "^3.2.1",
     "uuid-validate": ""
   },

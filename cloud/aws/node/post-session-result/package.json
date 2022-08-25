@@ -1,10 +1,10 @@
 {
   "name": "post-session-result",
-  "version": "1.0.0",
-  "description": "Creates a new Turbine Session generator result page in S3 bucket under user, returns page number",
+  "version": "2.0.0",
+  "description": "Creates a Turbine Session result page in S3 bucket under user, returns page number",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
+    "aws-sdk": "",
     "uuid": "^3.2.1",
     "debug": ">=4.1.1",
     "collections": ">=5.1.11"

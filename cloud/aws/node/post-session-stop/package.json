@@ -1,0 +1,19 @@
+{
+  "name": "post-session-kill",
+  "version": "1.0.0",
+  "description": "Kill jobs in Turbine Session",
+  "main": "index.js",
+  "dependencies": {
+    "aws-sdk": "^2.606.0",
+    "uuid": "^3.2.1",
+    "debug": ">=4.1.1"
+  },
+  "scripts": {
+    "setup": "./node_modules/.bin/node-lambda setup",
+    "test": "./node_modules/.bin/node-lambda run --configFile=test.env",
+    "package": "./node_modules/.bin/node-lambda package --configFile=deploy.env",
+    "deploy": "./node_modules/.bin/node-lambda deploy --configFile=deploy.env"
+  },
+  "author": "Joshua Boverhof",
+  "license": "MIT"
+}

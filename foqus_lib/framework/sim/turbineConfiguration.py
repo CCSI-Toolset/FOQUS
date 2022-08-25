@@ -665,8 +665,6 @@ class TurbineConfiguration:
                 [self.getFile()], None
             )
             l = [i["Name"] for i in l]
-            print("application_list: ", l)
-            assert False
             return l
         except Exception as e:
             raise TurbineInterfaceEx(

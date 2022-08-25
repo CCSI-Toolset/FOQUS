@@ -168,23 +168,22 @@ class TestNode:
                     with patch(
                         "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig"
                     ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig:
-                        app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+
+                        app_list = ["ACM", "AspenPlus", "Excel"]
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
                             return_value=app_list
                         )
-                        sim_list = [
-                            "CO2_Compression_0715",
-                            "exceltest",
-                            "Flash_Example",
-                            "Flash_Example_AP",
-                        ]
+
+                        sim_list = ["exceltest", "Flash_Example_AP"]
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
                             return_value=sim_list
                         )
+
                         mainupdate_val = True
                         turbine.commands.turbine_simulation_script.main_update = (
                             MagicMock(return_value=mainupdate_val)
                         )
+
                         f = open(turbpath, "r")
                         sinterconfig_json = json.loads(f.read())
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
@@ -229,44 +228,69 @@ class TestNode:
                     with patch(
                         "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig"
                     ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig:
-                        app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                            return_value=app_list
-                        )
-                        sim_list = [
-                            "CO2_Compression_0715",
-                            "exceltest",
-                            "Flash_Example",
-                            "Flash_Example_AP",
-                        ]
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
-                            return_value=sim_list
-                        )
-                        mainupdate_val = True
-                        turbine.commands.turbine_simulation_script.main_update = (
-                            MagicMock(return_value=mainupdate_val)
-                        )
-                        f = open(turbpath, "r")
-                        sinterconfig_json = json.loads(f.read())
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
-                            return_value=sinterconfig_json
-                        )
-                        f.close()
+                        with patch(
+                            "turbine.commands.turbine_simulation_script.main_list"
+                        ) as turbine.commands.turbine_simulation_script.main_list:
 
-                        # create config block and upload model files to Turbine
-                        node.gr.turbConfig = TurbineConfiguration()
-                        node.gr.turbConfig.writeConfig(overwrite=True)
-                        node.gr.turbConfig.uploadSimulation(
-                            simName="exceltest",
-                            sinterConfigPath=os.path.normpath(turbpath),
-                            update=True,
-                            otherResources=[],
-                        )
+                            app_list = ["Excel"]
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                                return_value=app_list
+                            )
 
-                        # set simulation
-                        node.setSim(newModel="exceltest", newType=2)
-                        node.gr.turbConfig.dat = session()
-                        node.runCalc()  # covers node.runTurbineCalc
+                            sim_list = ["exceltest"]
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                                return_value=sim_list
+                            )
+
+                            mainupdate_val = True
+                            turbine.commands.turbine_simulation_script.main_update = (
+                                MagicMock(return_value=mainupdate_val)
+                            )
+
+                            f = open(turbpath, "r")
+                            sinterconfig_json = json.loads(f.read())
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
+                                return_value=sinterconfig_json
+                            )
+                            f.close()
+
+                            mainlist_list = [
+                                {
+                                    "Application": "Excel",
+                                    "Id": "31054748-f627-45ab-a3eb-d96131635acc",
+                                    "Name": "exceltest",
+                                    "StagedInputs": [
+                                        {
+                                            "Id": "3779977f-2f2d-48c8-a5fc-1290eed8f868",
+                                            "MD5Sum": "B559FFB87D9A122578A550E45DE5E06E13E59C3A",
+                                            "Name": "spreadsheet",
+                                        },
+                                        {
+                                            "Id": "e198ad4e-0003-4373-917b-9f24b2fb78ce",
+                                            "MD5Sum": "A04FC0B4B4DAD3EFDBC50583686EF9B27C4E269F",
+                                            "Name": "configuration",
+                                        },
+                                    ],
+                                },
+                            ]
+                            turbine.commands.turbine_simulation_script.main_list = (
+                                MagicMock(return_value=mainlist_list)
+                            )
+
+                            # create config block and upload model files to Turbine
+                            node.gr.turbConfig = TurbineConfiguration()
+                            node.gr.turbConfig.writeConfig(overwrite=True)
+                            node.gr.turbConfig.uploadSimulation(
+                                simName="exceltest",
+                                sinterConfigPath=os.path.normpath(turbpath),
+                                update=True,
+                                otherResources=[],
+                            )
+
+                            # set simulation
+                            node.setSim(newModel="exceltest", newType=2)
+                            node.gr.turbConfig.dat = session()
+                            node.runCalc()  # covers node.runTurbineCalc
 
     def test_setSim_modelTurbine_sim(self, node):
         # manually add turbine model to test
@@ -292,23 +316,22 @@ class TestNode:
                     with patch(
                         "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig"
                     ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig:
-                        app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+
+                        app_list = ["ACM", "AspenPlus"]
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
                             return_value=app_list
                         )
-                        sim_list = [
-                            "CO2_Compression_0715",
-                            "exceltest",
-                            "Flash_Example",
-                            "Flash_Example_AP",
-                        ]
+
+                        sim_list = ["Flash_Example_AP"]
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
                             return_value=sim_list
                         )
+
                         mainupdate_val = True
                         turbine.commands.turbine_simulation_script.main_update = (
                             MagicMock(return_value=mainupdate_val)
                         )
+
                         f = open(turbpath, "r")
                         sinterconfig_json = json.loads(f.read())
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
@@ -353,41 +376,71 @@ class TestNode:
                     with patch(
                         "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig"
                     ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig:
-                        app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                            return_value=app_list
-                        )
-                        sim_list = [
-                            "CO2_Compression_0715",
-                            "exceltest",
-                            "Flash_Example",
-                            "Flash_Example_AP",
-                        ]
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
-                            return_value=sim_list
-                        )
-                        mainupdate_val = True
-                        turbine.commands.turbine_simulation_script.main_update = (
-                            MagicMock(return_value=mainupdate_val)
-                        )
-                        f = open(turbpath, "r")
-                        sinterconfig_json = json.loads(f.read())
-                        foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
-                            return_value=sinterconfig_json
-                        )
-                        f.close()
+                        with patch(
+                            "turbine.commands.turbine_simulation_script.main_list"
+                        ) as turbine.commands.turbine_simulation_script.main_list:
 
-                        # create config block and upload model files to Turbine
-                        node.gr.turbConfig = TurbineConfiguration()
-                        node.gr.turbConfig.writeConfig(overwrite=True)
-                        node.gr.turbConfig.uploadSimulation(
-                            simName="Flash_Example_AP",
-                            sinterConfigPath=os.path.normpath(turbpath),
-                            update=True,
-                            otherResources=[],
-                        )
+                            app_list = ["ACM", "AspenPlus"]
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                                return_value=app_list
+                            )
 
-                        # set simulation
-                        node.setSim(newModel="Flash_Example_AP", newType=2)
-                        node.gr.turbConfig.dat = session()
-                        node.runCalc()  # covers node.runTurbineCalc
+                            sim_list = ["Flash_Example_AP"]
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                                return_value=sim_list
+                            )
+
+                            mainupdate_val = True
+                            turbine.commands.turbine_simulation_script.main_update = (
+                                MagicMock(return_value=mainupdate_val)
+                            )
+
+                            f = open(turbpath, "r")
+                            sinterconfig_json = json.loads(f.read())
+                            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
+                                return_value=sinterconfig_json
+                            )
+                            f.close()
+
+                            mainlist_list = [
+                                {
+                                    "Application": "AspenPlus",
+                                    "Id": "389d6312-ab13-4b20-88cb-f7bb96c013e3",
+                                    "Name": "Flash_Example_AP",
+                                    "StagedInputs": [
+                                        {
+                                            "Id": "0f0b29bd-a249-4fc2-86f7-2c4570f9201e",
+                                            "MD5Sum": "CF4EEE41C46D28764CCA30932B1C0722BCD01A93",
+                                            "Name": "Flash_Example.bkp",
+                                        },
+                                        {
+                                            "Id": "76b8513d-d847-4902-b67e-7760973b7b42",
+                                            "MD5Sum": "",
+                                            "Name": "aspenfile",
+                                        },
+                                        {
+                                            "Id": "ca123730-134f-415a-8b30-c1955320acb3",
+                                            "MD5Sum": "A59CFCA2624EDC073623649E3BF98221D82DDCF0",
+                                            "Name": "configuration",
+                                        },
+                                    ],
+                                },
+                            ]
+                            turbine.commands.turbine_simulation_script.main_list = (
+                                MagicMock(return_value=mainlist_list)
+                            )
+
+                            # create config block and upload model files to Turbine
+                            node.gr.turbConfig = TurbineConfiguration()
+                            node.gr.turbConfig.writeConfig(overwrite=True)
+                            node.gr.turbConfig.uploadSimulation(
+                                simName="Flash_Example_AP",
+                                sinterConfigPath=os.path.normpath(turbpath),
+                                update=True,
+                                otherResources=[],
+                            )
+
+                            # set simulation
+                            node.setSim(newModel="Flash_Example_AP", newType=2)
+                            node.gr.turbConfig.dat = session()
+                            node.runCalc()  # covers node.runTurbineCalc

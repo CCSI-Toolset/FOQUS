@@ -158,23 +158,35 @@ class TestNode:
         with patch(
             "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
         ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
-            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                return_value=app_list
-            )
+            with patch(
+                "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList"
+            ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList:
+                app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                    return_value=app_list
+                )
+                sim_list = [
+                    "CO2_Compression_0715",
+                    "exceltest",
+                    "Flash_Example",
+                    "Flash_Example_AP",
+                ]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                    return_value=sim_list
+                )
 
-            # create config block and upload model files to Turbine
-            node.gr.turbConfig = TurbineConfiguration()
-            node.gr.turbConfig.writeConfig(overwrite=True)
-            node.gr.turbConfig.uploadSimulation(
-                simName="exceltest",
-                sinterConfigPath=os.path.normpath(turbpath),
-                update=True,
-                otherResources=[],
-            )
+                # create config block and upload model files to Turbine
+                node.gr.turbConfig = TurbineConfiguration()
+                node.gr.turbConfig.writeConfig(overwrite=True)
+                node.gr.turbConfig.uploadSimulation(
+                    simName="exceltest",
+                    sinterConfigPath=os.path.normpath(turbpath),
+                    update=True,
+                    otherResources=[],
+                )
 
-            # set simulation
-            node.setSim(newModel="exceltest", newType=2)
+                # set simulation
+                node.setSim(newModel="exceltest", newType=2)
 
     def test_runTurbineCalc_xls(self, node):
         # manually add turbine model to test
@@ -191,25 +203,37 @@ class TestNode:
         with patch(
             "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
         ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
-            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                return_value=app_list
-            )
+            with patch(
+                "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList"
+            ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList:
+                app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                    return_value=app_list
+                )
+                sim_list = [
+                    "CO2_Compression_0715",
+                    "exceltest",
+                    "Flash_Example",
+                    "Flash_Example_AP",
+                ]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                    return_value=sim_list
+                )
 
-            # create config block and upload model files to Turbine
-            node.gr.turbConfig = TurbineConfiguration()
-            node.gr.turbConfig.writeConfig(overwrite=True)
-            node.gr.turbConfig.uploadSimulation(
-                simName="exceltest",
-                sinterConfigPath=os.path.normpath(turbpath),
-                update=True,
-                otherResources=[],
-            )
+                # create config block and upload model files to Turbine
+                node.gr.turbConfig = TurbineConfiguration()
+                node.gr.turbConfig.writeConfig(overwrite=True)
+                node.gr.turbConfig.uploadSimulation(
+                    simName="exceltest",
+                    sinterConfigPath=os.path.normpath(turbpath),
+                    update=True,
+                    otherResources=[],
+                )
 
-            # set simulation
-            node.setSim(newModel="exceltest", newType=2)
-            node.gr.turbConfig.dat = session()
-            node.runCalc()  # covers node.runTurbineCalc
+                # set simulation
+                node.setSim(newModel="exceltest", newType=2)
+                node.gr.turbConfig.dat = session()
+                node.runCalc()  # covers node.runTurbineCalc
 
     def test_setSim_modelTurbine_sim(self, node):
         # manually add turbine model to test
@@ -226,23 +250,35 @@ class TestNode:
         with patch(
             "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
         ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
-            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                return_value=app_list
-            )
+            with patch(
+                "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList"
+            ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList:
+                app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                    return_value=app_list
+                )
+                sim_list = [
+                    "CO2_Compression_0715",
+                    "exceltest",
+                    "Flash_Example",
+                    "Flash_Example_AP",
+                ]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                    return_value=sim_list
+                )
 
-            # create config block and upload model files to Turbine
-            node.gr.turbConfig = TurbineConfiguration()
-            node.gr.turbConfig.writeConfig(overwrite=True)
-            node.gr.turbConfig.uploadSimulation(
-                simName="Flash_Example_AP",
-                sinterConfigPath=os.path.normpath(turbpath),
-                update=True,
-                otherResources=[],
-            )
+                # create config block and upload model files to Turbine
+                node.gr.turbConfig = TurbineConfiguration()
+                node.gr.turbConfig.writeConfig(overwrite=True)
+                node.gr.turbConfig.uploadSimulation(
+                    simName="Flash_Example_AP",
+                    sinterConfigPath=os.path.normpath(turbpath),
+                    update=True,
+                    otherResources=[],
+                )
 
-            # set simulation
-            node.setSim(newModel="Flash_Example", newType=2)
+                # set simulation
+                node.setSim(newModel="Flash_Example_AP", newType=2)
 
     def test_runTurbineCalc_sim(self, node):
         # manually add turbine model to test
@@ -259,22 +295,34 @@ class TestNode:
         with patch(
             "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList"
         ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList:
-            app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
-            foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
-                return_value=app_list
-            )
+            with patch(
+                "foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList"
+            ) as foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList:
+                app_list = ["ACM", "AspenPlus", "GProms", "Excel"]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getApplicationList = MagicMock(
+                    return_value=app_list
+                )
+                sim_list = [
+                    "CO2_Compression_0715",
+                    "exceltest",
+                    "Flash_Example",
+                    "Flash_Example_AP",
+                ]
+                foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSimulationList = MagicMock(
+                    return_value=sim_list
+                )
 
-            # create config block and upload model files to Turbine
-            node.gr.turbConfig = TurbineConfiguration()
-            node.gr.turbConfig.writeConfig(overwrite=True)
-            node.gr.turbConfig.uploadSimulation(
-                simName="Flash_Example_AP",
-                sinterConfigPath=os.path.normpath(turbpath),
-                update=True,
-                otherResources=[],
-            )
+                # create config block and upload model files to Turbine
+                node.gr.turbConfig = TurbineConfiguration()
+                node.gr.turbConfig.writeConfig(overwrite=True)
+                node.gr.turbConfig.uploadSimulation(
+                    simName="Flash_Example_AP",
+                    sinterConfigPath=os.path.normpath(turbpath),
+                    update=True,
+                    otherResources=[],
+                )
 
-            # set simulation
-            node.setSim(newModel="Flash_Example_AP", newType=2)
-            node.gr.turbConfig.dat = session()
-            node.runCalc()  # covers node.runTurbineCalc
+                # set simulation
+                node.setSim(newModel="Flash_Example_AP", newType=2)
+                node.gr.turbConfig.dat = session()
+                node.runCalc()  # covers node.runTurbineCalc

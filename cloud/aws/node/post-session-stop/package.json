@@ -1,10 +1,10 @@
 {
-  "name": "post-session-kill",
-  "version": "1.0.0",
-  "description": "Kill jobs in Turbine Session",
+  "name": "post-session-stop",
+  "version": "2.0.0",
+  "description": "Attempt to Stop jobs in Session",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
+    "aws-sdk": "",
     "uuid": "^3.2.1",
     "debug": ">=4.1.1"
   },

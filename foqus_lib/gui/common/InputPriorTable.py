@@ -159,19 +159,20 @@ class InputPriorTable(QTableWidget):
                 d = dist[i]  # distribution
                 dtype = d.getDistributionType()  # distribution type
 
-            # change SAMPLE to UNIFORM
             if dtype == Distribution.SAMPLE:
-                # dtype = Distribution.UNIFORM
-                # d = Distribution(dtype)
                 sampleFile, sampleIndex = d.getParameterValues()
-                data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
-                sampleData = data[0]
+                if sampleFile.endswith('.csv'):
+                    data = LocalExecutionModule.readSampleFromCsvFile(sampleFile, False)
+                    sampleData = data.getInputData()
+                else:
+                    data = LocalExecutionModule.readDataFromSimpleFile(sampleFile)
+                    sampleData = data[0]
                 # compute min/max from sample file
                 sdata = sampleData[:, sampleIndex - 1]
                 # TO DO: insert error handling for if sampleData file does not exist or if incorrect # of columns
                 xmin = np.min(sdata)
                 xmax = np.max(sdata)
-                sampleIndex = sampleIndex + 1
+                sampleIndex += 1
             else:
                 xmin = self.lb[i]
                 xmax = self.ub[i]

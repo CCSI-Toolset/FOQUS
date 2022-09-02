@@ -161,7 +161,7 @@ class InputPriorTable(QTableWidget):
 
             if dtype == Distribution.SAMPLE:
                 sampleFile, sampleIndex = d.getParameterValues()
-                if sampleFile.endswith('.csv'):
+                if sampleFile.endswith(".csv"):
                     data = LocalExecutionModule.readSampleFromCsvFile(sampleFile, False)
                     sampleData = data.getInputData()
                 else:

@@ -63,7 +63,7 @@ from turbine.commands.requests_base import (
     read_configuration,
     get_page_by_url,
     post_page_by_url,
-    delete_page
+    delete_page,
 )
 from turbine.commands import turbine_session_result_script
 
@@ -306,9 +306,7 @@ class TurbineConfiguration:
 
     def getSimApplication(self, simName):
         try:
-            l = _tsim.main_list(
-                [self.getFile()], None
-            )
+            l = _tsim.main_list([self.getFile()], None)
             for i in l:
                 if i["Name"] == simName:
                     return i["Application"]
@@ -451,30 +449,22 @@ class TurbineConfiguration:
         if proc != None:
             kw = dict()
             cp = self.turbineConfigParse()
-            url, auth, params = read_configuration(
-                cp, _tcon.SECTION, **kw
-            )
+            url, auth, params = read_configuration(cp, _tcon.SECTION, **kw)
             try:
                 is_stopping = _tcon.post_consumer_stop(url, auth, str(ci.cid))
-                _log.info(
-                    "Stop Consumer {} Requested: {}".format(ci.cid, is_stopping)
-                )
+                _log.info("Stop Consumer {} Requested: {}".format(ci.cid, is_stopping))
                 swt = time.process_time()
                 while proc.poll() is None:
                     # wait for consumer to go down
                     if time.process_time() - swt > maxWait:
                         _log.error(
                             "Error stopping consumer {} "
-                            "Subprocess still running?".format(
-                                ci.cid
-                            )
+                            "Subprocess still running?".format(ci.cid)
                         )
                         break
                     time.sleep(1.0)
             except Exception as e:
-                _log.exception(
-                    "Error stopping consumer {}".format(ci.cid)
-                )
+                _log.exception("Error stopping consumer {}".format(ci.cid))
                 raise TurbineInterfaceEx(
                     code=0,
                     msg="Failed to stop consumer: {0}".format(ci.cid),
@@ -672,9 +662,7 @@ class TurbineConfiguration:
         by the Turbine gateway
         """
         try:
-            l = _tapp.main_list(
-                [self.getFile()], None
-            )
+            l = _tapp.main_list([self.getFile()], None)
             l = [i["Name"] for i in l]
             return l
         except Exception as e:
@@ -688,9 +676,7 @@ class TurbineConfiguration:
         simulations stored on Turbine
         """
         try:
-            l = _tsim.main_list(
-                [self.getFile()], None
-            )
+            l = _tsim.main_list([self.getFile()], None)
             l = [i["Name"] for i in l]
             return l
         except Exception as e:
@@ -707,9 +693,7 @@ class TurbineConfiguration:
         This function deletes a simulation
         """
         try:
-            l = _tsim.main_delete(
-                [simName, self.getFile()], None
-            )
+            l = _tsim.main_delete([simName, self.getFile()], None)
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0, msg="Error deleting simulation", e=e, tb=traceback.format_exc()
@@ -718,9 +702,7 @@ class TurbineConfiguration:
     def getSimResource(self, simName, resource="configuration", fname=None):
         try:
             if fname == None:
-                r = _tsim.main_get(
-                    ["-r", resource, simName, self.getFile()], None
-                )
+                r = _tsim.main_get(["-r", resource, simName, self.getFile()], None)
                 return r
             else:
                 _tsim.main_get(
@@ -761,9 +743,7 @@ class TurbineConfiguration:
         already created on the gateway
         """
         try:
-            l = _tsess.main_list(
-                [self.getFile()]
-            )
+            l = _tsess.main_list([self.getFile()])
             return l
         except Exception as e:
             raise TurbineInterfaceEx(
@@ -795,9 +775,7 @@ class TurbineConfiguration:
         Create a new turbine session ID
         """
         try:
-            return _tsess.create_session(
-                self.turbineConfigParse()
-            )
+            return _tsess.create_session(self.turbineConfigParse())
         except Exception as e:
             _log.exception("Error creating session")
             raise TurbineInterfaceEx(
@@ -813,9 +791,7 @@ class TurbineConfiguration:
         """
         try:
             return json.loads(
-                _tsess.create_jobs(
-                    self.turbineConfigParse(), sid, inputData
-                )
+                _tsess.create_jobs(self.turbineConfigParse(), sid, inputData)
             )
         except Exception as e:
             _log.exception("Error creating jobs in session")
@@ -828,9 +804,7 @@ class TurbineConfiguration:
 
     def startSession(self, sid):
         try:
-            output = _tsess.start_jobs(
-                self.turbineConfigParse(), sid
-            )
+            output = _tsess.start_jobs(self.turbineConfigParse(), sid)
             return json.loads(output)
         except Exception as e:
             _log.exception("Error starting session")
@@ -857,9 +831,7 @@ class TurbineConfiguration:
         if sid == "" or not sid:
             return
         try:
-            _tsess.kill_jobs(
-                self.turbineConfigParse(), sid
-            )
+            _tsess.kill_jobs(self.turbineConfigParse(), sid)
         except Exception as e:
             _log.exception("Error killing session")
             raise TurbineInterfaceEx(
@@ -882,9 +854,7 @@ class TurbineConfiguration:
         """
         cp = self.turbineConfigParse()
         kw = dict()
-        url, auth, params = read_configuration(
-            cp, _tsess.SECTION, **kw
-        )
+        url, auth, params = read_configuration(cp, _tsess.SECTION, **kw)
         try:
             _log.debug("Getting results post url: {}".format(url))
             page = turbine_session_result_script.post_session_result(
@@ -930,9 +900,7 @@ class TurbineConfiguration:
         if maxJobs > 0:
             kw["rpp"] = maxJobs
         cp = self.turbineConfigParse()
-        url, auth, params = read_configuration(
-            cp, _tsess.SECTION, **kw
-        )
+        url, auth, params = read_configuration(cp, _tsess.SECTION, **kw)
         result_url = "%s%s/result/%s/%s" % (url, str(sid), str(gen), str(page))
         _log.debug("GET Session Results from URL: {0}".format(result_url))
         try:
@@ -971,9 +939,7 @@ class TurbineConfiguration:
         """Get a list of resources for a simualtion"""
         kw = {}
         cp = self.turbineConfigParse()
-        url, auth, params = read_configuration(
-            cp, _tsim.SECTION, **kw
-        )
+        url, auth, params = read_configuration(cp, _tsim.SECTION, **kw)
         result_url = "/".join([url, sim, "input"])
         _log.debug("GET Simulation Inputs from URL: {0}".format(result_url))
         try:
@@ -1000,9 +966,7 @@ class TurbineConfiguration:
             state = res["State"]
         kw = dict()
         cp = self.turbineConfigParse()
-        url, auth, params = read_configuration(
-            cp, _tjob.SECTION, **kw
-        )
+        url, auth, params = read_configuration(cp, _tjob.SECTION, **kw)
         try:
             success = _tjob.post_job_terminate(url, auth, jobID)
             _log.info("Terminating Job {}: {}".format(jobID, success))
@@ -1306,9 +1270,7 @@ class TurbineConfiguration:
         if not simName in simList:
             raise TurbineInterfaceEx(code=310, msg=simName)
         try:
-            _tsim.main_update(
-                ["-r", resourceName, simName, fileName, self.getFile()]
-            )
+            _tsim.main_update(["-r", resourceName, simName, fileName, self.getFile()])
         except Exception as e:
             _log.exception("Error updating sim: {}, {}".format(simName, resourceName))
             raise TurbineInterfaceEx(
@@ -1404,9 +1366,7 @@ class TurbineConfiguration:
                 if resourceType == "aspenfile":
                     resourceType = os.path.split(modelFile)[-1]
                     _log.debug("resourceType aspenfile specified as %s" % resourceType)
-                _tsim.main_update(
-                    ["-r", resourceType, name, modelFile, self.getFile()]
-                )
+                _tsim.main_update(["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0,
@@ -1416,9 +1376,7 @@ class TurbineConfiguration:
             )
         for r in otherResources:
             try:
-                _tsim.main_update(
-                    ["-r", r[0], name, r[1], self.getFile()]
-                )
+                _tsim.main_update(["-r", r[0], name, r[1], self.getFile()])
             except Exception as e:
                 raise TurbineInterfaceEx(
                     code=0,

@@ -72,6 +72,7 @@ from configparser import *
 
 _log = logging.getLogger("foqus." + __name__)
 
+
 class mainWindow(QMainWindow):
     """
     This is the FOQUS main window class
@@ -225,7 +226,7 @@ class mainWindow(QMainWindow):
         else:
             self.tstimer = None
 
-    def handleNodeException(self, ex:NodeEx):
+    def handleNodeException(self, ex: NodeEx):
         """
         Called by child components when a foqusException is
         encountered.  Updates UI and cancels current run
@@ -1257,9 +1258,7 @@ class mainWindow(QMainWindow):
         to monitor it.  If node is set to a node name only a single
         node given by the name is evaluated
         """
-        logging.getLogger("foqus." + __name__).debug(
-            "Start Simulation"
-        )
+        logging.getLogger("foqus." + __name__).debug("Start Simulation")
         turb_config = self.dat.flowsheet.turbConfig
         turb_sim_list = self.dat.flowsheet.turbineSimList()
         self.applyNodeEdgeChanges()
@@ -1284,15 +1283,11 @@ class mainWindow(QMainWindow):
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
             # run in FOQUS
             if valList is not None:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Local multiRun"
-                )
+                logging.getLogger("foqus." + __name__).debug("Local multiRun")
                 self.multiRun = self.dat.flowsheet.runListAsThread(valList)
                 self.singleRun = None
             else:
-                logging.getLogger("foqus." + __name__).debug(
-                    "Local singleRun"
-                )
+                logging.getLogger("foqus." + __name__).debug("Local singleRun")
                 self.singleRun = self.dat.flowsheet.runAsThread()
                 self.multiRun = None
         elif self.dat.foqusSettings.runFlowsheetMethod == 1:
@@ -1300,17 +1295,13 @@ class mainWindow(QMainWindow):
             # first save a session file (need to upload to turbine)
             self.dat.flowsheet.uploadFlowseetToTurbine(dat=self.dat, reset=False)
             if valList is not None:
-                logging.getLogger("foqus." + __name__).debug(
-                    "FOQUS Cloud multiRun"
-                )
+                logging.getLogger("foqus." + __name__).debug("FOQUS Cloud multiRun")
                 self.multiRun = self.dat.flowsheet.runListAsThread(
                     valList, useTurbine=True
                 )
                 self.singleRun = None
             else:
-                logging.getLogger("foqus." + __name__).debug(
-                    "FOQUS Cloud singleRun"
-                )
+                logging.getLogger("foqus." + __name__).debug("FOQUS Cloud singleRun")
                 self.singleRun = self.dat.flowsheet.runAsThread(useTurbine=True)
                 self.multiRun = None
         self.refreshFlowsheet()
@@ -1398,7 +1389,7 @@ class mainWindow(QMainWindow):
         worker thread/process (hopefully) although that may take
         some time.
         """
-        assert self.timer is not None, 'Must Call setupTimer before stopSim'
+        assert self.timer is not None, "Must Call setupTimer before stopSim"
         self.timer.stop()
         self.timer = None
         self.stopAction.setEnabled(False)
@@ -1453,7 +1444,7 @@ class mainWindow(QMainWindow):
 
             self.singleRunErrorReport(self.dat.flowsheet)
 
-    def singleRunErrorReport(self, flowsheet:Graph):
+    def singleRunErrorReport(self, flowsheet: Graph):
         """
         runSim sets up onlySingleNode
         """
@@ -1486,7 +1477,7 @@ class mainWindow(QMainWindow):
             QMessageBox.critical(
                 self,
                 "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
-                "This node's assigned model is missing a configuration"
+                "This node's assigned model is missing a configuration",
             )
             self.setStatus(
                 "No Sinter Configuration"
@@ -1500,7 +1491,7 @@ class mainWindow(QMainWindow):
             QMessageBox.critical(
                 self,
                 "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
-                "A node cannot be set to a flowsheet model"
+                "A node cannot be set to a flowsheet model",
             )
             self.setStatus(
                 "Invalid Assignment of Flowsheet to Node"
@@ -1514,10 +1505,7 @@ class mainWindow(QMainWindow):
             QMessageBox.critical(
                 self,
                 "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
-                "The simulation completed with an error "
-                + str(err)
-                + ", "
-                + errText,
+                "The simulation completed with an error " + str(err) + ", " + errText,
             )
             self.setStatus(
                 "Error Single Simulation in "

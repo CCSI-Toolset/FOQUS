@@ -50,8 +50,12 @@ from foqus_lib.framework.surrogate.surrogate import surrogate as junk2
 # Before the session class there are a few functions to help set up the
 # FOQUS environment.
 
-DEFAULT_FOQUS_CLOUD_URL="https://b7x9ucxadg.execute-api.us-east-1.amazonaws.com/development/"
-DEFAULT_FOQUS_CLOUD_WEBSOCKET="wss://du6p1udafi.execute-api.us-east-1.amazonaws.com/Development"
+DEFAULT_FOQUS_CLOUD_URL = (
+    "https://b7x9ucxadg.execute-api.us-east-1.amazonaws.com/development/"
+)
+DEFAULT_FOQUS_CLOUD_WEBSOCKET = (
+    "wss://du6p1udafi.execute-api.us-east-1.amazonaws.com/Development"
+)
 
 
 def getTimeStamp():
@@ -153,12 +157,8 @@ def makeWorkingDirFiles():
         )
     try:
         tc = TurbineConfiguration("turbine_aws.cfg")
-        tc.address = (
-            DEFAULT_FOQUS_CLOUD_URL
-        )
-        tc.notification = (
-            DEFAULT_FOQUS_CLOUD_WEBSOCKET
-        )
+        tc.address = DEFAULT_FOQUS_CLOUD_URL
+        tc.notification = DEFAULT_FOQUS_CLOUD_WEBSOCKET
         tc.turbVer = "Remote"
         tc.writeConfig(overwrite=False)
     except:

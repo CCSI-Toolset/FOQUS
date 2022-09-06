@@ -762,7 +762,7 @@ class TurbineConfiguration:
         """
         try:
             l = _tsess.main_list(
-                [self.getFile()], None
+                [self.getFile()]
             )
             return l
         except Exception as e:

@@ -26,6 +26,7 @@ import logging
 import time
 import uuid
 import urllib.request
+from urllib.parse import urlparse
 from shutil import copyfile
 from botocore.stub import Stubber
 import os
@@ -39,38 +40,78 @@ try:
 except ImportError:
     from mock import MagicMock, patch
 
-INSTANCE_USERDATA_JSON = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
+INSTANCE_USERDATA_BIN = b"""{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
  "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
  "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
  "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460",
- "FOQUS-DynamoDB-Table":"FOQUS_Table"
+ "FOQUS-DynamoDB-Table":"FOQUS_Table",
+ "FOQUS-User":"testuser",
+ "FOQUS-Session-Bucket-Name":"testbucket"
 }"""
+INSTANCE_USERDATA_JSON = """{"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
+ "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
+ "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
+ "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460",
+ "FOQUS-DynamoDB-Table":"FOQUS_Table",
+ "FOQUS-User":"testuser",
+ "FOQUS-Session-Bucket-Name":"testbucket"
+}"""
+TAGS_USERDATA_BIN = b"""FOQUS-Session-Bucket-Name FOQUS-Update-Topic-Arn FOQUS-Message-Topic-Arn FOQUS-Job-Queue-Url FOQUS-Simulation-Bucket-Name FOQUS-DynamoDB-Table FOQUS-User"""
+def _url_open_side_effect(url):
+    print("URL: " + url)
+    up = urlparse(url)
+    args = up.path.split('/')
+    idx = args.index('meta-data')
+    val = None
+    if 'region' in args:
+        val = b'test-region'
+    elif 'instance-id' in args:
+        val = b'i-testing'
+    else:
+        assert args[idx+1] == 'tags', "unexpected URL %s" %(url)
+        assert args[idx+2] == 'instance', "unexpected URL %s" %(url)
+        if len(args) == idx+3:
+            val = TAGS_USERDATA_BIN
+        else:
+            assert len(args) == idx+4, 'unexpect url path length %s' %(url)
+            d = json.loads(INSTANCE_USERDATA_JSON)
+            key = args[idx+3]
+            assert key in d, 'Missing Key in %s, instance-data %s' %(url, str(args))
+            val = d[key].encode('ascii')
+    return io.BytesIO(val)
 
+@patch('urllib.request.urlopen')
+def test_floqus_aws_config(mock_urlopen):
+    #output = io.BytesIO(INSTANCE_USERDATA_JSON)
+    #urllib.request.urlopen = MagicMock(return_value=output)
+    mock_urlopen.side_effect = _url_open_side_effect
+    config = flowsheet.FOQUSAWSConfig.get_instance()
 
-def test_floqus_aws_config():
-    output = io.BytesIO(INSTANCE_USERDATA_JSON)
-    urllib.request.urlopen = MagicMock(return_value=output)
-    config = flowsheet.FOQUSAWSConfig()
-    config.get_instance()
-
-
-def test_flowsheet_control():
-    output = io.BytesIO(INSTANCE_USERDATA_JSON)
-    flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-    flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+@patch('urllib.request.urlopen')
+def test_flowsheet_control(mock_urlopen):
+    #output = io.BytesIO(INSTANCE_USERDATA_JSON)
+    #flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+    #flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+    mock_urlopen.side_effect = _url_open_side_effect
     fc = flowsheet.FlowsheetControl()
 
+def mock_boto_client(*args, **kw):
+    class MockCli:
+        def put_metric_data(self, **kw):
+            print ("IGNORE %s" %kw)
+    return MockCli()
 
-def test_flowsheet_control_run():
-    output = io.BytesIO(INSTANCE_USERDATA_JSON)
-    flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-    flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+@patch('boto3.client')
+@patch('urllib.request.urlopen')
+def test_flowsheet_control_run(mock_urlopen, mock_boto):
+    mock_urlopen.side_effect = _url_open_side_effect
+    mock_boto.side_effect = mock_boto_client
     flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
     flowsheet.TurbineLiteDB.consumer_keepalive = MagicMock(return_value=None)
     # pop_job:  downloads simulation file into working dir
-    tp = ("testuser", dict(Id=str(uuid.uuid4()), Simulation="test"))
+    tp = ("testuser", dict(Id=str(uuid.uuid4()), Simulation="test", sessionid=str(uuid.uuid4())))
     flowsheet.FlowsheetControl.pop_job = MagicMock(return_value=tp)
     orig_simulation_file_path = os.path.abspath(
         os.path.join(

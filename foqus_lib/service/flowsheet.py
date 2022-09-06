@@ -41,7 +41,7 @@ WORKING_DIRECTORY = os.path.abspath(
 )
 DEBUG = False
 CURRENT_JOB_DIR = None
-_log = None
+_log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
 
 
 def _set_working_dir(wdir):
@@ -328,9 +328,8 @@ class FOQUSAWSConfig:
                 "http://169.254.169.254/latest/meta-data/tags/instance"
             ).read()
             for tag in tags.decode("ascii").split():
-                value = urllib.request.urlopen(
-                    "http://169.254.169.254/latest/meta-data/tags/instance/%s" % (tag)
-                ).read()
+                url = "http://169.254.169.254/latest/meta-data/tags/instance/%s" % (tag)
+                value = urllib.request.urlopen(url).read()
                 d[tag] = value.decode("ascii")
         except Exception as ex:
             _log.error("Failed to discover instance-id or tag FoqusUser: %s", repr(ex))
@@ -357,7 +356,7 @@ class FOQUSAWSConfig:
 
     def _get(self, key):
         v = self._d.get(key)
-        assert v, "UserData/MetaData Missing Key: %s" % key
+        assert v, "UserData/MetaData Missing Key(%s): %s" % (key,str(self._d))
         _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
 
@@ -754,6 +753,7 @@ class FlowsheetControl:
                 continue
 
             assert type(ret) is tuple and len(ret) == 2
+            _log.debug("pop_job return:  %s", str(ret))
             user_name, job_desc = ret
             job_id = job_desc["Id"]
             session_id = job_desc["sessionid"]

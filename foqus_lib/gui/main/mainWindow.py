@@ -1295,7 +1295,7 @@ class mainWindow(QMainWindow):
             # first save a session file (need to upload to turbine)
             self.dat.flowsheet.uploadFlowseetToTurbine(dat=self.dat, reset=False)
             if valList is not None:
-                logging.getLogger("foqus." + __name__).debug("FOQUS Cloud multiRun")
+                _log.debug("FOQUS Cloud multiRun")
                 self.multiRun = self.dat.flowsheet.runListAsThread(
                     valList, useTurbine=True
                 )

@@ -1277,7 +1277,7 @@ class mainWindow(QMainWindow):
         else:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Single Flowsheet Simulation...")
-            logging.getLogger("foqus." + __name__).debug(
+            _log.debug(
                 "Running Single Flowsheet Simulation..."
             )
         if self.dat.foqusSettings.runFlowsheetMethod == 0:

@@ -1265,7 +1265,7 @@ class mainWindow(QMainWindow):
         if node in self.dat.flowsheet.nodes:
             self.dat.flowsheet.onlySingleNode = node
             self.setStatus("Running Single Node ({0}) Simulation...".format(node))
-            logging.getLogger("foqus." + __name__).debug(
+            _log.debug(
                 "Running Single Node ({0}) Simulation...".format(node)
             )
         elif valList is not None:

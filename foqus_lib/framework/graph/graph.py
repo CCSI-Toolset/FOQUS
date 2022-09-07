@@ -780,7 +780,7 @@ class Graph(threading.Thread):
                                     "graphError": self.res_fin[i],
                                 }
                             else:
-                                assert type(self.res[i]) is dict
+                                assert isinstance(self.res[i], dict)
                                 self.res[i]["session"] = turbSession
                                 self.res[i]["Id"] = job["Id"]
                                 self.res_fin[i] = jobErr

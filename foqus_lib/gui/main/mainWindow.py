@@ -1301,7 +1301,7 @@ class mainWindow(QMainWindow):
                 )
                 self.singleRun = None
             else:
-                logging.getLogger("foqus." + __name__).debug("FOQUS Cloud singleRun")
+                _log.debug("FOQUS Cloud singleRun")
                 self.singleRun = self.dat.flowsheet.runAsThread(useTurbine=True)
                 self.multiRun = None
         self.refreshFlowsheet()

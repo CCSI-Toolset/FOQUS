@@ -1283,7 +1283,7 @@ class mainWindow(QMainWindow):
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
             # run in FOQUS
             if valList is not None:
-                logging.getLogger("foqus." + __name__).debug("Local multiRun")
+                _log.debug("Local multiRun")
                 self.multiRun = self.dat.flowsheet.runListAsThread(valList)
                 self.singleRun = None
             else:

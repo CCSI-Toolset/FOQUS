@@ -1415,7 +1415,7 @@ class mainWindow(QMainWindow):
             self.nodeDock.runButton.setEnabled(True)
             self.nodeDock.stopButton.setEnabled(False)
             if self.singleRun.res[0]:
-                logging.getLogger("foqus." + __name__).debug(
+                _log.debug(
                     "stopSim SingleRun: {0}".format(self.singleRun.res[0])
                 )
                 self.dat.flowsheet.loadValues(self.singleRun.res[0])

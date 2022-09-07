@@ -1271,7 +1271,7 @@ class mainWindow(QMainWindow):
         elif valList is not None:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Flowsheet Set...")
-            logging.getLogger("foqus." + __name__).debug(
+            _log.debug(
                 "Running Flowsheet Set: %s", valList
             )
         else:

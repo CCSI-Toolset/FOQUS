@@ -735,7 +735,7 @@ class Graph(threading.Thread):
                 )
                 rp += 1
                 for job in jres:
-                    assert type(job) is dict
+                    assert isinstance(job, dict)
                     try:
                         i = jobIds.index(job["Id"])
                     except ValueError:

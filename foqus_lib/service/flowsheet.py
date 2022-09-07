@@ -356,7 +356,7 @@ class FOQUSAWSConfig:
 
     def _get(self, key):
         v = self._d.get(key)
-        assert v, "UserData/MetaData Missing Key(%s): %s" % (key,str(self._d))
+        assert v, "UserData/MetaData Missing Key(%s): %s" % (key, str(self._d))
         _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
 

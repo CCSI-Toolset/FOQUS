@@ -1265,21 +1265,15 @@ class mainWindow(QMainWindow):
         if node in self.dat.flowsheet.nodes:
             self.dat.flowsheet.onlySingleNode = node
             self.setStatus("Running Single Node ({0}) Simulation...".format(node))
-            _log.debug(
-                "Running Single Node ({0}) Simulation...".format(node)
-            )
+            _log.debug("Running Single Node ({0}) Simulation...".format(node))
         elif valList is not None:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Flowsheet Set...")
-            _log.debug(
-                "Running Flowsheet Set: %s", valList
-            )
+            _log.debug("Running Flowsheet Set: %s", valList)
         else:
             self.dat.flowsheet.onlySingleNode = None
             self.setStatus("Running Single Flowsheet Simulation...")
-            _log.debug(
-                "Running Single Flowsheet Simulation..."
-            )
+            _log.debug("Running Single Flowsheet Simulation...")
         if self.dat.foqusSettings.runFlowsheetMethod == 0:
             # run in FOQUS
             if valList is not None:
@@ -1415,9 +1409,7 @@ class mainWindow(QMainWindow):
             self.nodeDock.runButton.setEnabled(True)
             self.nodeDock.stopButton.setEnabled(False)
             if self.singleRun.res[0]:
-                _log.debug(
-                    "stopSim SingleRun: {0}".format(self.singleRun.res[0])
-                )
+                _log.debug("stopSim SingleRun: {0}".format(self.singleRun.res[0]))
                 self.dat.flowsheet.loadValues(self.singleRun.res[0])
                 # self.dat.flowsheet.results.headersFromGraph()
 

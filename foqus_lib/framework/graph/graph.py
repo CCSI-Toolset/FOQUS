@@ -60,7 +60,7 @@ class GraphEx(foqusException):
         self.codeString[19] = "Exception during graph execution (see foqus.log)"
         self.codeString[20] = "Flowsheet thread terminated"
         self.codeString[21] = "Session name required to run a flowsheet in Turbine"
-        self.codeString[40] = "Error connecting to Trubine"
+        self.codeString[40] = "Error connecting to Turbine"
         self.codeString[50] = "Error loading session or inputs"
         self.codeString[100] = "Single Node Calculation Success"
         self.codeString[201] = "Found cycle in tree while finding calculation order"
@@ -191,6 +191,9 @@ class Graph(threading.Thread):
         Give a descriptive error message to go with an
         integer error code.
         """
+        e = NodeEx.GetInstance(i)
+        if e is not None:
+            return str(i)
         e = GraphEx()
         if i == -1:
             return "Graph calculations did not finish"
@@ -628,14 +631,6 @@ class Graph(threading.Thread):
             return None
         return jres
 
-    def solveListValTurbineDelGenerator(self, gid):
-        try:
-            self.turbConfig.retryFunction(
-                5, 20, 2, self.turbConfig.deleteCompletedJobsGen, self.turbSession, gid
-            )
-        except:
-            _log.exception("Error deleting result generator")
-
     def solveListValTurbineReSub(self, inp, oi):
         """
         Resubmit a failed job for another try
@@ -720,12 +715,11 @@ class Graph(threading.Thread):
             _log.debug("Turbine Result Generator Page: {0} {1}".format(page, rp))
             if page is not None and page > rp:
                 jres = self.solveListValTurbineGeneratorReadPage(gid, page, maxRes)
-                _log.debug("JRES: %d" % len(jres))
+                if jres is None:
+                    _log.debug("There are results but exception getting them")
+                    break
                 if len(jres) == maxRes:
                     skipWait = True
-                if jres is None:
-                    # There are results but exception getting them
-                    break
             elif page == -2:
                 # some jobs may be paused.  For now just end loop
                 with self.statLock:
@@ -741,6 +735,7 @@ class Graph(threading.Thread):
                 )
                 rp += 1
                 for job in jres:
+                    assert isinstance(job, dict)
                     try:
                         i = jobIds.index(job["Id"])
                     except ValueError:
@@ -785,6 +780,7 @@ class Graph(threading.Thread):
                                     "graphError": self.res_fin[i],
                                 }
                             else:
+                                assert isinstance(self.res[i], dict)
                                 self.res[i]["session"] = turbSession
                                 self.res[i]["Id"] = job["Id"]
                                 self.res_fin[i] = jobErr
@@ -810,8 +806,6 @@ class Graph(threading.Thread):
                 # Just drop out of the monitoring loop
                 break
         self.jobIds = jobIds
-        # try to delete the results generator.
-        self.solveListValTurbineDelGenerator(gid)
 
     def solveListVal(self, valueList):
         for key, node in self.nodes.items():

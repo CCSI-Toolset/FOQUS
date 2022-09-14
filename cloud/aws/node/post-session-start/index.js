@@ -25,12 +25,56 @@ const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
 const uuidv4 = require('uuid/v4');
 const foqus_update_topic = process.env.FOQUS_UPDATE_TOPIC;
 const s3 = new AWS.S3();
+const sns = new AWS.SNS();
 
 // post-session-start:
 //  1.  Grab oldest S3 File in bucket foqus-sessions/{username}/{session_uuid}/*.json
 //  2.  Send each job to SNS Job Topic
 //  3.  Update DynamoDB TurbineResources table UUID for each job, State=submit, Submit=MS_SINCE_EPOCH
 //  4.  Go back to 1
+
+
+var process_session_event_start = function(topic_arn, session_id, user_name, callback) {
+    console.log(`"process_session_event_start(${session_id})"`);
+    var params = {
+        Message: `session.start.${session_id}`,
+        MessageAttributes: {
+          'event': {
+            DataType: 'String',
+            StringValue: `session.start.${session_id}`
+          },
+          'session': {
+            DataType: 'String',
+            StringValue: session_id
+          },
+          'username': {
+            DataType: 'String',
+            StringValue: user_name
+          }
+        },
+        TopicArn: topic_arn
+    };
+    var promise = sns.publish(params, function(err, data) {
+        if (err) {
+          log("ERROR: Failed to SNS Publish Session Start");
+          log(err, err.stack); // an error occurred
+          callback(null, {
+              statusCode: 500,
+              body: JSON.stringify({
+                event:`session.start.${session_id})`,
+                message: "SNS publish failure"
+              }),
+              headers: {
+                  'Content-Type': 'application/json',
+                  'Access-Control-Allow-Origin': '*'
+              },
+          })
+          return;
+        }
+    }).promise();
+    return promise;
+};
+
 exports.handler = function(event, context, callback) {
   log(`Running index.handler: "${event.httpMethod}"`);
   log("request: " + JSON.stringify(event));
@@ -79,8 +123,6 @@ exports.handler = function(event, context, callback) {
         log("SUCCESS: " + JSON.stringify(response_list.data));
         log("LEN: " + response_list.data.Contents.length);
         log("Create Topic: Name=" + foqus_update_topic);
-
-        var sns = new AWS.SNS();
         var request_topic = sns.createTopic({
             Name: foqus_update_topic,
           }, function(err, data) {
@@ -104,6 +146,7 @@ exports.handler = function(event, context, callback) {
             // Could have multiple S3 objects ( each representing single start )
             var params_delete = {Bucket: s3_bucket_name, Delete:{Objects:[]}};
             var promises = [];
+            promises.push(process_session_event_start(topicArn, session_id, user_name, callback));
             for (var index = 0; index < response_list.data.Contents.length; index++) {
                 var params = {
                   Bucket: s3_bucket_name,
@@ -123,10 +166,16 @@ exports.handler = function(event, context, callback) {
                 //promise.then(handleDelete);
                 promises.push(promise);
             }
-            Promise.all(promises).then(function(values) {
+
+            Promise.all(promises)
+              .then(function(values) {
                 // return the result to the caller of the Lambda function
                 for (var i=0 ; i < values.length; i++ ) {
                     var data = values[i];
+                    if (data.Body == undefined) {
+                      log(`finish process_session_event_start(${data.MessageId})`);
+                      continue;
+                    }
                     var obj = JSON.parse(data.Body.toString('ascii'));
                     log("SESSION(" + session_id + "):  Notify Starting " + obj.length);
                     for (var index=0; index < obj.length; index++) {
@@ -147,9 +196,21 @@ exports.handler = function(event, context, callback) {
                                 DataType: 'String',
                                 StringValue: 'job.submit'
                               },
+                              'session': {
+                                DataType: 'String',
+                                StringValue: session_id
+                              },
+                              'job': {
+                                DataType: 'String',
+                                StringValue: obj[index].Id
+                              },
                               'username': {
                                 DataType: 'String',
                                 StringValue: user_name
+                              },
+                              'application': {
+                                DataType: 'String',
+                                StringValue: obj[index].Application || 'foqus'
                               }
                             },
                             TopicArn: topicArn
@@ -164,6 +225,8 @@ exports.handler = function(event, context, callback) {
                         });
                     }
                 }
+            })
+              .then(function() {
                 if (params_delete.Delete.Objects.length == 0) {
                     log("No items to be submitted")
                     assert.strictEqual(id_list.length, 0);
@@ -182,7 +245,7 @@ exports.handler = function(event, context, callback) {
                         done(null, id_list);
                     }
                 });
-            });
+              });
         });
     });
   }

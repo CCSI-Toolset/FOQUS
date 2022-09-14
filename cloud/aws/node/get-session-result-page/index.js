@@ -8,7 +8,7 @@
  */
 'use strict';
 'use AWS.S3'
-const log = require("debug")("post-session-start")
+const log = require("debug")("get-session-result-page")
 log('Loading function');
 const AWS = require('aws-sdk');
 const path = require('path');

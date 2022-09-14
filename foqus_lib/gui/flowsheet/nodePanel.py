@@ -766,8 +766,20 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.parent().varBrowse.show()
 
     def simSet(self):
+        """TODO:  CleanUP Need to follow references back to the flowsheet
+        in order to trip errors
+        """
         text = self.simNameBox.currentText()
-        self.node.setSim(newType=self.getModelType(), newModel=text)
+        self.parent().setStatus("Setting Simulation %s" % (text))
+        try:
+
+            self.node.setSim(newType=self.getModelType(), newModel=text)
+        except NodeEx as ex:
+            # ERROR Code is posted but Allowing Run button
+            # But should disable it
+            self.parent().handleNodeException(ex)
+        else:
+            self.parent().handleNodeSimulationReady()
         self.updateForm()
 
     def closeEvent(self, event):

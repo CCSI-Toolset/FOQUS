@@ -53,6 +53,7 @@ class foqusException(Exception):
             self.tb = tb
         self.codeString = dict()
         self.setCodeStrings()
+        super(foqusException, self).__init__(msg)
 
     def getCodeString(self):
         """

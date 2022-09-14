@@ -1,6 +1,9 @@
 /**
- * Lambda Function, returns an Array of simulations (UUID).
- * @module get-simulation-list
+ * Lambda Function, attempts to upload to HTTP Body to S3 Simulation Bucket
+ * Returns:
+ * - HTTP 413 Payload Too Large
+ * - HTTP 200 Success
+ * @module put-simulation-input
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
  * @license See LICENSE.md
@@ -77,32 +80,34 @@ exports.handler = function(event, context, callback) {
     };
 
     if (event.queryStringParameters && event.queryStringParameters.SignedUrl) {
-      if (key == "configuration") {
-        log("queryStringParameters SignedUrl: unsupported for configuration files");
-        callback(null, {statusCode:'406', body:'SignedUrl unsupported for configuration files',
-              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
-            });
-        return;
-      }
-      if (key == 'aspenfile') {
-        log("aspenfile resource unsupported, PUT as filename directly");
-        callback(null, {statusCode:'406', body:'aspenfile resource unsupported, PUT as filename directly',
-              headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
-            });
-        return;
-      }
-      params.Expires = 120;
-      params.Key = `${user_name}/${name}/${key}`;
-      //params.ContentType = 'application/json';
-      log("Body is null, return HTTP 302 with S3 Signed URL for Large Files");
-      var s3 = new AWS.S3();
-      var url = s3.getSignedUrl('putObject', params);
-      log("S3 SignedURL: " + url);
-      //var obj = {"SignedUrl":url};
-      callback(null, {statusCode:'302',
-            headers: {'Access-Control-Allow-Origin': '*',
-              'Location': url }
-          });
+      // if (key == "configuration") {
+      //   log("queryStringParameters SignedUrl: unsupported for configuration files");
+      //   callback(null, {statusCode:'406', body:'SignedUrl unsupported for configuration files',
+      //         headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+      //       });
+      //   return;
+      // }
+      // if (key == 'aspenfile') {
+      //   log("aspenfile resource unsupported, PUT as filename directly");
+      //   callback(null, {statusCode:'406', body:'aspenfile resource unsupported, PUT as filename directly',
+      //         headers: {'Access-Control-Allow-Origin': '*', 'Content-Type': 'text/plain'}
+      //       });
+      //   return;
+      // }
+      // params.Expires = 120;
+      // params.Key = `${user_name}/${name}/${key}`;
+      // //params.ContentType = 'application/json';
+      // log("Body is null, return HTTP 302 with S3 Signed URL for Large Files");
+      // var s3 = new AWS.S3();
+      // var url = s3.getSignedUrl('putObject', params);
+      // log("S3 SignedURL: " + url);
+      // //var obj = {"SignedUrl":url};
+      // callback(null, {statusCode:'302',
+      //       headers: {'Access-Control-Allow-Origin': '*',
+      //         'Location': url }
+      //     });
+      // return;
+      done(new Error(`PUT SignedUrl no longer supported "${event.path}"`));
       return;
     }
 

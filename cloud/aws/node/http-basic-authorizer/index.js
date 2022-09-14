@@ -8,11 +8,11 @@
  * @see https://github.com/motdotla/node-lambda-template
  */
 'use strict';
-'use AWS.S3'
 'use AWS.DynamoDB'
 'use uuid'
 const AWS = require('aws-sdk');
-const tableName = "FOQUS_Resources";
+//const table_name = "FOQUS_Resources";
+const table_name = process.env.FOQUS_DYNAMO_TABLE_NAME;
 exports.handler = function(event, context, callback) {
     console.log('Received event:', JSON.stringify(event, null, 2));
     var headers = event.headers;
@@ -51,12 +51,12 @@ exports.handler = function(event, context, callback) {
     */
     var dynamodb = new AWS.DynamoDB.DocumentClient({apiVersion: '2012-08-10'});
     /*
-    dynamodb.scan({ TableName: tableName }, function(err, data) {
+    dynamodb.scan({ TableName: table_name }, function(err, data) {
        if (err) console.log(err);
        else console.log(data);
     });
     */
-    dynamodb.get({ TableName:tableName,
+    dynamodb.get({ TableName:table_name,
        Key:{"Id": user.name, "Type":"User" }
       },
       function(err,data) {

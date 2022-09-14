@@ -52,11 +52,20 @@ if os.name == "nt":
         _log.exception("Problem importing turbineLiteDB")
 
 from foqus_lib.framework.foqusException.foqusException import *
-import turbine.commands.turbine_application_script
-import turbine.commands.turbine_session_script
-import turbine.commands.turbine_simulation_script
-import turbine.commands.turbine_job_script
+import turbine.commands.turbine_application_script as _tapp
+import turbine.commands.turbine_session_script as _tsess
+import turbine.commands.turbine_simulation_script as _tsim
+import turbine.commands.turbine_job_script as _tjob
+import turbine.commands.turbine_consumer_script as _tcon
 import turbine.commands
+from turbine.commands.requests_base import (
+    HTTPStatusCode,
+    read_configuration,
+    get_page_by_url,
+    post_page_by_url,
+    delete_page,
+)
+from turbine.commands import turbine_session_result_script
 
 
 class TurbineInterfaceEx(foqusException):
@@ -297,9 +306,7 @@ class TurbineConfiguration:
 
     def getSimApplication(self, simName):
         try:
-            l = turbine.commands.turbine_simulation_script.main_list(
-                [self.getFile()], None
-            )
+            l = _tsim.main_list([self.getFile()], None)
             for i in l:
                 if i["Name"] == simName:
                     return i["Application"]
@@ -440,30 +447,24 @@ class TurbineConfiguration:
             return
         proc = self.checkConsumer(name)
         if proc != None:
-            postAddress = "{0}/Consumer/{1}/stop".format(self.address, ci.cid)
+            kw = dict()
+            cp = self.turbineConfigParse()
+            url, auth, params = read_configuration(cp, _tcon.SECTION, **kw)
             try:
-                turbine.commands.post_page_by_url(
-                    postAddress, self.turbineConfigParse(), b"", b""
-                )
-                _log.info(
-                    "Terminating Consumer {} posting to {}".format(ci.cid, postAddress)
-                )
+                is_stopping = _tcon.post_consumer_stop(url, auth, str(ci.cid))
+                _log.info("Stop Consumer {} Requested: {}".format(ci.cid, is_stopping))
                 swt = time.process_time()
                 while proc.poll() is None:
                     # wait for consumer to go down
                     if time.process_time() - swt > maxWait:
                         _log.error(
                             "Error stopping consumer {} "
-                            "Subprocess still running?, post: {}".format(
-                                ci.cid, postAddress
-                            )
+                            "Subprocess still running?".format(ci.cid)
                         )
                         break
                     time.sleep(1.0)
             except Exception as e:
-                _log.exception(
-                    "Error stopping consumer {}, post: {}".format(ci.cid, postAddress)
-                )
+                _log.exception("Error stopping consumer {}".format(ci.cid))
                 raise TurbineInterfaceEx(
                     code=0,
                     msg="Failed to stop consumer: {0}".format(ci.cid),
@@ -661,9 +662,7 @@ class TurbineConfiguration:
         by the Turbine gateway
         """
         try:
-            l = turbine.commands.turbine_application_script.main_list(
-                [self.getFile()], None
-            )
+            l = _tapp.main_list([self.getFile()], None)
             l = [i["Name"] for i in l]
             return l
         except Exception as e:
@@ -677,9 +676,7 @@ class TurbineConfiguration:
         simulations stored on Turbine
         """
         try:
-            l = turbine.commands.turbine_simulation_script.main_list(
-                [self.getFile()], None
-            )
+            l = _tsim.main_list([self.getFile()], None)
             l = [i["Name"] for i in l]
             return l
         except Exception as e:
@@ -696,9 +693,7 @@ class TurbineConfiguration:
         This function deletes a simulation
         """
         try:
-            l = turbine.commands.turbine_simulation_script.main_delete(
-                [simName, self.getFile()], None
-            )
+            l = _tsim.main_delete([simName, self.getFile()], None)
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0, msg="Error deleting simulation", e=e, tb=traceback.format_exc()
@@ -707,12 +702,10 @@ class TurbineConfiguration:
     def getSimResource(self, simName, resource="configuration", fname=None):
         try:
             if fname == None:
-                r = turbine.commands.turbine_simulation_script.main_get(
-                    ["-r", resource, simName, self.getFile()], None
-                )
+                r = _tsim.main_get(["-r", resource, simName, self.getFile()], None)
                 return r
             else:
-                turbine.commands.turbine_simulation_script.main_get(
+                _tsim.main_get(
                     ["-r", resource, simName, self.getFile(), "-s", fname], None
                 )
         except Exception as e:
@@ -750,9 +743,7 @@ class TurbineConfiguration:
         already created on the gateway
         """
         try:
-            l = turbine.commands.turbine_session_script.main_list(
-                [self.getFile()], None
-            )
+            l = _tsess.main_list([self.getFile()])
             return l
         except Exception as e:
             raise TurbineInterfaceEx(
@@ -762,31 +753,29 @@ class TurbineConfiguration:
                 tb=traceback.format_exc(),
             )
 
-    def getSessionStatus(self, sid):
-        """
-        This function gets the status of jobs in a session
-        """
-        try:
-            l = turbine.commands.turbine_session_script.main_jobs_status(
-                [sid, self.getFile()], None
-            )
-            return l
-        except Exception as e:
-            raise TurbineInterfaceEx(
-                code=0,
-                msg="Error getting session staus. ",
-                e=e,
-                tb=traceback.format_exc(),
-            )
+    # def getSessionStatus(self, sid):
+    #     """
+    #     This function gets the status of jobs in a session
+    #     """
+    #     try:
+    #         l = turbine.commands.turbine_session_script.main_jobs_status(
+    #             [sid, self.getFile()], None
+    #         )
+    #         return l
+    #     except Exception as e:
+    #         raise TurbineInterfaceEx(
+    #             code=0,
+    #             msg="Error getting session staus. ",
+    #             e=e,
+    #             tb=traceback.format_exc(),
+    #         )
 
     def createSession(self):
         """
         Create a new turbine session ID
         """
         try:
-            return turbine.commands.turbine_session_script.create_session(
-                self.turbineConfigParse()
-            )
+            return _tsess.create_session(self.turbineConfigParse())
         except Exception as e:
             _log.exception("Error creating session")
             raise TurbineInterfaceEx(
@@ -802,9 +791,7 @@ class TurbineConfiguration:
         """
         try:
             return json.loads(
-                turbine.commands.turbine_session_script.create_jobs(
-                    self.turbineConfigParse(), sid, inputData
-                )
+                _tsess.create_jobs(self.turbineConfigParse(), sid, inputData)
             )
         except Exception as e:
             _log.exception("Error creating jobs in session")
@@ -817,9 +804,7 @@ class TurbineConfiguration:
 
     def startSession(self, sid):
         try:
-            output = turbine.commands.turbine_session_script.start_jobs(
-                self.turbineConfigParse(), sid
-            )
+            output = _tsess.start_jobs(self.turbineConfigParse(), sid)
             return json.loads(output)
         except Exception as e:
             _log.exception("Error starting session")
@@ -846,9 +831,7 @@ class TurbineConfiguration:
         if sid == "" or not sid:
             return
         try:
-            turbine.commands.turbine_session_script.kill_jobs(
-                self.turbineConfigParse(), sid
-            )
+            _tsess.kill_jobs(self.turbineConfigParse(), sid)
         except Exception as e:
             _log.exception("Error killing session")
             raise TurbineInterfaceEx(
@@ -863,35 +846,21 @@ class TurbineConfiguration:
         Get a generator that returns jobs that have completed since
         last call.
         """
-        postAddress = "".join([self.address, "/session/", str(sid), "/result"])
-        try:
-            gid = turbine.commands.post_page_by_url(
-                postAddress, self.turbineConfigParse(), section=b"", data=b""
-            )
-        except Exception as e:
-            raise TurbineInterfaceEx(
-                code=0,
-                msg="".join(
-                    ["Failed to get completed job generator posted to: ", postAddress]
-                ),
-                e=e,
-                tb=traceback.format_exc(),
-            )
-        return json.loads(gid)
+        return "00000000-0000-0000-0000-000000000000"
 
     def getCompletedJobPage(self, sid, gen):
         """
         Make and return a page with finished jobs since last call
         """
-        postAddress = "".join(
-            [self.address, "/session/", str(sid), "/result/", str(gen)]
-        )
+        cp = self.turbineConfigParse()
+        kw = dict()
+        url, auth, params = read_configuration(cp, _tsess.SECTION, **kw)
         try:
-            _log.debug("Getting results post url: {}".format(postAddress))
-            page = turbine.commands.post_page_by_url(
-                postAddress, self.turbineConfigParse(), section=b"", data=b""
+            _log.debug("Getting results post url: {}".format(url))
+            page = turbine_session_result_script.post_session_result(
+                url, auth, sid, gen
             )
-        except urllib.request.HTTPError as e:
+        except HTTPStatusCode as e:
             if e.code == 404:
                 return -1  # no more jobs to get
             elif e.code == 400:
@@ -903,76 +872,48 @@ class TurbineConfiguration:
                 _log.exception("Failed to get completed job page")
                 raise TurbineInterfaceEx(
                     code=0,
-                    msg="Failed to get job page: {}".format(postAddress),
+                    msg="Failed to get job page: {}".format(url),
                     e=e,
                     tb=traceback.format_exc(),
                 )
         except urllib.request.URLError as e:
             raise TurbineInterfaceEx(
                 code=0,
-                msg="".join(
-                    ["URLError Failed to get completed job page: ", postAddress]
-                ),
+                msg="".join(["URLError Failed to get completed job page: ", url]),
                 e=e,
                 tb=traceback.format_exc(),
             )
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0,
-                msg="".join(
-                    ["Exception Failed to get completed job page: ", postAddress]
-                ),
+                msg="".join(["Exception Failed to get completed job page: ", url]),
                 e=e,
                 tb=traceback.format_exc(),
             )
-        return json.loads(page)
+        return int(page)
 
     def getCompletedJobs(self, sid, gen, page, maxJobs=2000):
         """
         Make and return a page with finished jobs since last call
         """
-        readAddress = "/".join(
-            [self.address, "session", str(sid), "result", str(gen), str(page)]
-        )
+        kw = dict()
+        if maxJobs > 0:
+            kw["rpp"] = maxJobs
+        cp = self.turbineConfigParse()
+        url, auth, params = read_configuration(cp, _tsess.SECTION, **kw)
+        result_url = "%s%s/result/%s/%s" % (url, str(sid), str(gen), str(page))
+        _log.debug("GET Session Results from URL: {0}".format(result_url))
         try:
-            _log.debug("Getting results from url: {0}".format(readAddress))
-            if maxJobs > 0:
-                jobs = turbine.commands.get_page_by_url(
-                    readAddress, self.turbineConfigParse(), rpp=maxJobs
-                )
-            else:
-                jobs = turbine.commands.get_page_by_url(
-                    readAddress, self.turbineConfigParse()
-                )
+            jobs = get_page_by_url(result_url, auth, **params)
         except Exception as e:
-            _log.exception("Failed to get jobs from: {}".format(readAddress))
+            _log.exception("Failed to get jobs from: {}".format(result_url))
             raise TurbineInterfaceEx(
                 code=0,
-                msg="Failed to get jobs from: {}".format(readAddress),
+                msg="Failed to get jobs from: {}".format(result_url),
                 e=e,
                 tb=traceback.format_exc(),
             )
         return json.loads(jobs)
-
-    def deleteCompletedJobsGen(self, sid, gen):
-        """Delete the generated results
-
-        Args:
-            sid: session guid
-            gen: result generator guid
-        """
-        try:
-            turbine.commands.delete_page(
-                self.turbineConfigParse(),
-                "Session",
-                subresource="/".join([sid, "result", gen]),
-            )
-        except:
-            # I guess I don't really care too much if this fails, but
-            # I would like to fix it if there is a problem with the code
-            # so I will log the failure, and see if there is anything I
-            # can do.
-            _log.exception("Failed to del generator {} ses {}".format(gen, sid))
 
     def getJobStatus(self, jobID, verbose=False, suppressLog=False):
         """
@@ -983,7 +924,7 @@ class TurbineConfiguration:
         else:
             args = ["-j", str(jobID), self.getFile()]
         try:
-            return turbine.commands.turbine_job_script.main(args, None)
+            return _tjob.main(args, None)
         except Exception as e:
             if suppressLog:
                 _log.exception("Error job status")
@@ -996,9 +937,13 @@ class TurbineConfiguration:
 
     def simResourceList(self, sim):
         """Get a list of resources for a simualtion"""
-        simAddress = "{}/Simulation/{}/input".format(self.address, sim)
+        kw = {}
+        cp = self.turbineConfigParse()
+        url, auth, params = read_configuration(cp, _tsim.SECTION, **kw)
+        result_url = "/".join([url, sim, "input"])
+        _log.debug("GET Simulation Inputs from URL: {0}".format(result_url))
         try:
-            r = turbine.commands.get_page_by_url(simAddress, self.turbineConfigParse())
+            r = get_page_by_url(result_url, auth, **params)
             r = json.loads(r)
         except Exception as e:
             _log.exception("Error getting simulation resources")
@@ -1015,23 +960,16 @@ class TurbineConfiguration:
         Kill a job on Turbine, allow you to pass in state of job
         just in case you just checked the job status, it would be
         a waste to check it again right away
-
-        Now for turbine lite, josh says no cancel just call
-        terminate, so I'm going to simplify this to only call
-        terminate
         """
-        # make the cancel and terminate urls
-        termAddress = "{}/Job/{}/terminate".format(self.address, jobID)
-        # Check job state (not using this now but may soon)
         if not state:
             res = self.getJobStatus(jobID)
             state = res["State"]
-        # Now we kill the job with a method that depends on the state.
+        kw = dict()
+        cp = self.turbineConfigParse()
+        url, auth, params = read_configuration(cp, _tjob.SECTION, **kw)
         try:
-            turbine.commands.post_page_by_url(
-                termAddress, self.turbineConfigParse(), section=b"", data=b""
-            )
-            _log.info("Terminating Job {} posting to {}:".format(jobID, termAddress))
+            success = _tjob.post_job_terminate(url, auth, jobID)
+            _log.info("Terminating Job {}: {}".format(jobID, success))
         except Exception as e:
             _log.exception("Error terminating job: {} state: {}".format(jobID, state))
             raise TurbineInterfaceEx(
@@ -1332,9 +1270,7 @@ class TurbineConfiguration:
         if not simName in simList:
             raise TurbineInterfaceEx(code=310, msg=simName)
         try:
-            turbine.commands.turbine_simulation_script.main_update(
-                ["-r", resourceName, simName, fileName, self.getFile()]
-            )
+            _tsim.main_update(["-r", resourceName, simName, fileName, self.getFile()])
         except Exception as e:
             _log.exception("Error updating sim: {}, {}".format(simName, resourceName))
             raise TurbineInterfaceEx(
@@ -1405,7 +1341,7 @@ class TurbineConfiguration:
             if guid:
                 args = ["-s", name, guid, app, self.getFile()]
             try:
-                turbine.commands.turbine_simulation_script.main_create(args)
+                _tsim.main_create(args)
             except Exception as e:
                 raise TurbineInterfaceEx(
                     code=0,
@@ -1416,7 +1352,7 @@ class TurbineConfiguration:
         # Upload the sinter configuration file
         args = ["-r", "configuration", name, sinterConfigPath, self.getFile()]
         try:
-            turbine.commands.turbine_simulation_script.main_update(args)
+            _tsim.main_update(args)
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0,
@@ -1430,9 +1366,7 @@ class TurbineConfiguration:
                 if resourceType == "aspenfile":
                     resourceType = os.path.split(modelFile)[-1]
                     _log.debug("resourceType aspenfile specified as %s" % resourceType)
-                turbine.commands.turbine_simulation_script.main_update(
-                    ["-r", resourceType, name, modelFile, self.getFile()]
-                )
+                _tsim.main_update(["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:
             raise TurbineInterfaceEx(
                 code=0,
@@ -1442,9 +1376,7 @@ class TurbineConfiguration:
             )
         for r in otherResources:
             try:
-                turbine.commands.turbine_simulation_script.main_update(
-                    ["-r", r[0], name, r[1], self.getFile()]
-                )
+                _tsim.main_update(["-r", r[0], name, r[1], self.getFile()])
             except Exception as e:
                 raise TurbineInterfaceEx(
                     code=0,

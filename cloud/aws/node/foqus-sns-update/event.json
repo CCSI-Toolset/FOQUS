@@ -1,274 +1,35 @@
 {
-  "Records": [
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "5513b8b1-34c1-40a5-98a9-13f5b6ac371d",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "{\"Initialize\": false, \"Input\": {}, \"Reset\": false, \"Simulation\": \"OUU\", \"Visible\": false, \"Id\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\", \"resource\": \"job\", \"status\": \"submit\", \"jobid\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\", \"sessionid\": \"9d8494a2-6ba0-4bef-878d-53fdf6ebe8ee\", \"event\": \"status\"}",
-        "Timestamp": "2019-09-18T21:15:53.378014",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
+    "Records": [
+        {
+            "EventSource": "aws:sns",
+            "EventVersion": "1.0",
+            "EventSubscriptionArn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluesnstopicid42AA00AE-5VN5VE85T0O9:b761253c-c227-43d4-8dfd-1e7726dbe46b",
+            "Sns": {
+                "Type": "Notification",
+                "MessageId": "907fdb71-8d4e-5a37-b0b2-804e6cefee7f",
+                "TopicArn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluesnstopicid42AA00AE-5VN5VE85T0O9",
+                "Subject": null,
+                "Message": "{\"resource\":\"job\",\"event\":\"status\",\"status\":\"setup\",\"jobid\":\"9d07d0d3-5e5d-4938-a60b-688291362e32\",\"consumer\":\"00000000-0000-0000-0000-000000000000\",\"sessionid\":\"e6ae02d3-4237-4f6c-b7c3-29a13d1341ed\",\"Initialize\":false,\"Input\":{},\"Reset\":false,\"Simulation\":\"fake-job\",\"Visible\":false}",
+                "Timestamp": "2022-07-06T19:15:45.955Z",
+                "SignatureVersion": "1",
+                "Signature": "OuHb7icRfb1Fkef/FZ1pJ8WAKHi5k3dwEzZvTRpYeQ8eMogHVdcsDGNUKDkagq0digEvyWrDKQMfXNTTaltEq34y78psUF5R1bBl+7tpRgDSB2SAHyt2LmVKkBVA5WDQoJRV8zwTzsrHfhDhTmTsUzF4mfPeTPtM/vm55XdFYToUjSfNm/6UzNSjaJZPKpw1MTyjdPH4+Y6gMmC2yzkori1WJU83JGhbOlMbZ20952ZDkOJ+WByx5ZxMp8sGqTenN4qrtFVVHBnek0QRVbwGVRoWDa4htN4w+YN7ZIQCT/20dIL+G8XYbHtBt4FbA2u4RqMhEGJCRTrqOpOI9nwNLw==",
+                "SigningCertUrl": "https://sns.us-west-2.amazonaws.com/SimpleNotificationService-7ff5318490ec183fbaddaa2a969abfda.pem",
+                "UnsubscribeUrl": "https://sns.us-west-2.amazonaws.com/?Action=Unsubscribe&SubscriptionArn=arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluesnstopicid42AA00AE-5VN5VE85T0O9:b761253c-c227-43d4-8dfd-1e7726dbe46b",
+                "MessageAttributes": {
+                    "application": {
+                        "Type": "String",
+                        "Value": "fake-job"
+                    },
+                    "event": {
+                        "Type": "String",
+                        "Value": "job.setup"
+                    },
+                    "username": {
+                        "Type": "String",
+                        "Value": "boverhof"
+                    }
+                }
+            }
         }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "66d26f40-f099-42fe-a01c-a1fac5917df5",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "{\"Initialize\": false, \"Input\": {}, \"Reset\": false, \"Simulation\": \"OUU\", \"Visible\": false, \"Id\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"resource\": \"job\", \"status\": \"submit\", \"jobid\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"sessionid\": \"9d8494a2-6ba0-4bef-878d-53fdf6ebe8ee\", \"event\": \"status\"}",
-        "Timestamp": "2019-09-18T21:15:53.492007",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "6d4cc506-ea13-4446-92f2-d50c640bd875",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"status\": \"success\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
-        "Timestamp": "2019-09-18T21:15:53.598816",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "1b227a9a-472d-48cd-9e75-f911f852d6a8",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"status\": \"success\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\"}]",
-        "Timestamp": "2019-09-18T21:15:53.700840",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "f8a04866-ef45-4dd1-b13b-b492fbcf4ecd",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"status\": \"setup\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
-        "Timestamp": "2019-09-18T21:15:53.802854",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "896f96df-e476-45f8-a6dc-527042bb4ab3",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"rc\": 0, \"resource\": \"job\", \"event\": \"output\", \"value\": \"DUMMY\", \"jobid\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\"}]",
-        "Timestamp": "2019-09-18T21:15:53.905706",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "5dc890fb-2a55-4a8d-9a16-6a5702d681e1",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"resource\": \"job\", \"event\": \"output\", \"jobid\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"rc\": 0, \"value\": \"DUMMY\"}]",
-        "Timestamp": "2019-09-18T21:15:54.009665",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "8715eac5-7da7-4b9c-a15d-750008a882ee",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"status\": \"setup\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\"}]",
-        "Timestamp": "2019-09-18T21:15:54.109716",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "781f7288-092d-429f-99d7-4ed8aef8cbf6",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"resource\": \"job\", \"event\": \"status\", \"jobid\": \"dcce1a8f-9bd1-4d06-aa64-867941d402db\", \"status\": \"running\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\"}]",
-        "Timestamp": "2019-09-18T21:15:54.218233",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    },
-    {
-      "EventSource": "aws:sns",
-      "EventVersion": "1.0",
-      "EventSubscriptionArn": "arn:dummy:subscription",
-      "Sns": {
-        "Type": "Notification",
-        "MessageId": "09a5c558-3f10-468e-b71a-84a284e24711",
-        "TopicArn": "arn:dummy:FOQUS-Update-Topic",
-        "Subject": "",
-        "Message": "[{\"status\": \"running\", \"resource\": \"job\", \"rc\": 0, \"instanceid\": null, \"consumer\": \"00000000-0000-0000-0000-000000000000\", \"event\": \"status\", \"jobid\": \"299b54a0-469b-4ccc-8173-80c12e9edb21\"}]",
-        "Timestamp": "2019-09-18T21:15:54.318607",
-        "SignatureVersion": "1",
-        "Signature": "",
-        "SigningCertUrl": "",
-        "UnsubscribeUrl": "",
-        "MessageAttributes": {
-          "event": {
-            "Type": "String",
-            "Value": "job.submit"
-          },
-          "username": {
-            "Type": "String",
-            "Value": "test"
-          }
-        }
-      }
-    }
-  ]
+    ]
 }

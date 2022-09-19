@@ -498,6 +498,7 @@ def main(args_to_parse=None):
     ##
     ## create an emptpy FOQUS session
     ##
+    logging.getLogger("foqus." + __name__).debug("Create Flowsheet Session")
     dat = session(useCurrentWorkingDir=True)
     ##
     ## Set some options
@@ -512,6 +513,9 @@ def main(args_to_parse=None):
     ##
     ## Load session file if one was specified on command line
     ##
+    logging.getLogger("foqus." + __name__).debug(
+        "Load Flowsheet Session: %s", args.load
+    )
     try:
         if args.load:
             dat.load(args.load)
@@ -541,6 +545,9 @@ def main(args_to_parse=None):
     ##
     ## Load a set of saved values (only with load session option)
     ##
+    logging.getLogger("foqus." + __name__).debug(
+        "LoadValues Flowsheet: %s", args.loadValues
+    )
     if args.loadValues:
         if not args.load:
             logging.getLogger("foqus." + __name__).error(
@@ -548,6 +555,7 @@ def main(args_to_parse=None):
             )
             sys.exit(12)
         else:
+            logging.getLogger("foqus." + __name__).debug("load values flowsheet")
             try:
                 dat.loadFlowsheetValues(args.loadValues)
             except Exception as e:
@@ -556,6 +564,7 @@ def main(args_to_parse=None):
                 )
                 sys.exit(14)
     ## Run a single flowsheet, optimization, or eventually uq ensemble
+    logging.getLogger("foqus." + __name__).debug("Run Option: %s", args.run)
     if args.run == "opt":
         # run an optimization problem from the command line
         # the optimization should previously have been setup
@@ -770,6 +779,9 @@ def main(args_to_parse=None):
                     if terminate:
                         break
                     if gt.res[0]:
+                        logging.getLogger("foqus." + __name__).debug(
+                            "GT: %s", gt.res[0]
+                        )
                         dat.flowsheet.loadValues(gt.res[0])
                     else:
                         dat.flowsheet.errorStat = 19
@@ -876,6 +888,7 @@ def main(args_to_parse=None):
     if guiAvail and not args.nogui and load_gui:
         # Start graphical interface unless it is not
         # available or nogui flag given
+        logging.getLogger("foqus." + __name__).debug("Starting GUI")
         if args.runUITestScript:
             ts = args.runUITestScript
         else:
@@ -888,6 +901,7 @@ def main(args_to_parse=None):
             showBasicData=args.basic_data,
             ts=ts,
         )
+        logging.getLogger("foqus." + __name__).debug("Exit GUI")
     elif not guiAvail and not args.nogui and load_gui:
         logging.getLogger("foqus." + __name__).error("PyQt5 or Qt not available")
         exit_code = 2

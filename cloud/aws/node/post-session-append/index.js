@@ -24,6 +24,7 @@ const path = require('path');
 const abspath = path.resolve(dirPath);
 const uuidv4 = require('uuid/v4');
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
+const s3_sim_bucket_name = process.env.SIMULATION_BUCKET_NAME;
 const tablename = process.env.FOQUS_DYNAMO_TABLE_NAME;
 
 
@@ -71,29 +72,23 @@ exports.handler = function(event, context, callback) {
         });
         return promise;
     };
-    function putS3() {
-        var promise = new Promise(function(resolve, reject){
-            log(`putS3 items: ${obj.length}`);
-            var content = JSON.stringify(obj);
-            if(content == undefined) {
-                throw new Error("s3 object is undefined")
+    function validateJobs(job_array) {
+      var promise = new Promise(function(resolve, reject){
+          log(`validateJobs items: ${job_array.length}`);
+          for (var i=0; i<job_array.length; i++) {
+            if(!job_array[i].Simulation) {
+                throw new Error(`append validate job failed (index=${i}):  Simulation not specified`)
             }
-            if(content.length == undefined) {
-                throw new Error("s3 object is empty")
+            if(!job_array[i].Input) {
+                throw new Error(`append validate job failed (index=${i}):  Input not specified`)
             }
-            var params = {
-              Bucket: s3_bucket_name,
-              Key: user_name + '/session/create/' + session_id + '/' + milliseconds + '.json',
-              Body: content
-            };
-            log(`putS3(${params.Bucket}):  ${params.Key}`);
-            var request = s3.putObject(params);
-            resolve(request.promise());
-        });
-        return promise;
-    };
-    function writeToDynamo(obj) {
-        log(`writeToDynamo:  count=${obj.length}`);
+          }
+          resolve(job_array);
+      });
+      return promise;
+    }
+    function writeToDynamo(job_array) {
+        log(`writeToDynamo:  count=${job_array.length}`);
         var items = [];
         var params = {
           RequestItems: {
@@ -101,21 +96,21 @@ exports.handler = function(event, context, callback) {
         params["RequestItems"][tablename] = items;
         var item = null;
         var i = 0;
-        for(var i=0; i<obj.length; i++) {
+        for(var i=0; i<job_array.length; i++) {
           var d = new Date(milliseconds+i);
-          id_list.push(obj[i].Id);
-          item = {Id: obj[i].Id,
+          id_list.push(job_array[i].Id);
+          item = {Id: job_array[i].Id,
                   Type: "Job",
                   State: "create",
                   Create: d.toISOString(),
                   SessionId: session_id,
                   User: user_name,
-                  Initialize: obj[i].Initialize,
-                  Input: obj[i].Input,
-                  Reset:obj[i].Reset,
+                  Initialize: job_array[i].Initialize,
+                  Input: job_array[i].Input,
+                  Reset:job_array[i].Reset,
                   TTL: Math.floor(Date.now()/1000 + 60*60*12),
-                  Simulation: obj[i].Simulation,
-                  Application: "foqus"};
+                  Simulation: job_array[i].Simulation,
+                  Application: job_array[i].Application || "foqus"};
 
           items.push({PutRequest: { Item: item } });
         }
@@ -137,9 +132,34 @@ exports.handler = function(event, context, callback) {
         var response = dynamodb.batchWrite(params);
         return response.promise().then(checkForUnprocessedItems);
     }
+    function putS3() {
+        // NOTE: using curried variable to access JSON request
+        // set in dynamo function.  Like to turn this into a
+        // parameter
+        var job_array = obj;
+        var promise = new Promise(function(resolve, reject){
+            log(`putS3 items: ${job_array.length}`);
+            var content = JSON.stringify(job_array);
+            if(content == undefined) {
+                throw new Error("s3 object is undefined")
+            }
+            if(content.length == undefined) {
+                throw new Error("s3 object is empty")
+            }
+            var params = {
+              Bucket: s3_bucket_name,
+              Key: user_name + '/session/create/' + session_id + '/' + milliseconds + '.json',
+              Body: content
+            };
+            log(`putS3(${params.Bucket}):  ${params.Key}`);
+            var request = s3.putObject(params);
+            resolve(request.promise());
+        });
+        return promise;
+    };
     function handleError(error) {
       log(`handleError ${error.name}`);
-      callback(error, {statusCode:'400', body: error.name,
+      callback(null, {statusCode:'400',  body: `Failed to append jobs: ${error}`,
         headers: {'Access-Control-Allow-Origin': '*','Content-Type': 'application/json'}
       });
     };
@@ -150,7 +170,8 @@ exports.handler = function(event, context, callback) {
         });
     }
     var promise = parseBodyJSON(event);
-    promise.then(writeToDynamo)
+    promise.then(validateJobs)
+      .then(writeToDynamo)
       .then(putS3)
       .then(handleDone)
       .catch(handleError);

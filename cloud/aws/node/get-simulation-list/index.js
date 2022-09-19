@@ -57,6 +57,7 @@ exports.handler = function(event, context, callback) {
         var acm_sim_d = new Object();
         var aspenplus_sim_d = new Object();
         var simulation_set = new Set([]);
+        var fake_sim_d = new Object();
         var value = "";
 
         // FIND ALL FLOWSHEETS
@@ -71,6 +72,9 @@ exports.handler = function(event, context, callback) {
             }
             else if (value.endsWith('aspenplus_sinter.json')) {
               aspenplus_sim_d[value.split('/')[1]] = new Set([]);
+            }
+            else if (value.endsWith('fake-job.json')) {
+              fake_sim_d[value.split('/')[1]] = new Set([]);
             }
         }
         if (event.queryStringParameters != null) {
@@ -98,6 +102,11 @@ exports.handler = function(event, context, callback) {
                     aspenplus_sim_d[key].add({Name:value});
                   }
                 }
+                else if (key in fake_sim_d) {
+                  if (value.lastIndexOf('/') != value.length-1) {
+                    fake_sim_d[key].add({Name:value});
+                  }
+                }
             }
           }
         }
@@ -115,6 +124,11 @@ exports.handler = function(event, context, callback) {
           console.log(aspenplus_sim_d[key]);
           simulation_set.add({Name:key, Application:"aspenplus",
             StagedInputs:Array.from(aspenplus_sim_d[key])});
+        }
+        for (var key in fake_sim_d) {
+          console.log(fake_sim_d[key]);
+          simulation_set.add({Name:key, Application:"fake-job",
+            StagedInputs:Array.from(fake_sim_d[key])});
         }
         console.log("SET: " + JSON.stringify(Array.from(simulation_set)));
         var content = JSON.stringify(Array.from(simulation_set));

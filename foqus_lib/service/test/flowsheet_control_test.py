@@ -95,7 +95,7 @@ def _url_open_side_effect(url):
 
 @patch("urllib.request.urlopen")
 def test_floqus_aws_config(mock_urlopen):
-    # output = io.BytesIO(INSTANCE_USERDATA_JSON)
+    # output = io.BytesIO(INSTANCE_USERDATA_BIN)
     # urllib.request.urlopen = MagicMock(return_value=output)
     mock_urlopen.side_effect = _url_open_side_effect
     config = flowsheet.FOQUSAWSConfig.get_instance()
@@ -103,7 +103,7 @@ def test_floqus_aws_config(mock_urlopen):
 
 @patch("urllib.request.urlopen")
 def test_flowsheet_control(mock_urlopen):
-    # output = io.BytesIO(INSTANCE_USERDATA_JSON)
+    # output = io.BytesIO(INSTANCE_USERDATA_BIN)
     # flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
     # flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
     mock_urlopen.side_effect = _url_open_side_effect
@@ -172,7 +172,7 @@ class TestNode:
 
     @pytest.fixture(scope="function")
     def node(self):
-        output = io.BytesIO(INSTANCE_USERDATA_JSON)
+        output = io.BytesIO(INSTANCE_USERDATA_BIN)
         flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
         flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
         flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)

@@ -1,5 +1,6 @@
 /**
- * Lambda Function, returns an Array of simulations (UUID).
+ * Lambda Function, creates empty simulation
+ * with empty configuration file based on Application Type
  * @module get-simulation-list
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
@@ -17,6 +18,10 @@ const path = require('path');
 const abspath = path.resolve(dirPath);
 const s3_bucket_name = process.env.SIMULATION_BUCKET_NAME;
 
+/*  simulation/{name}
+ *  Request Structure:
+ *    JSON BODY { "Application": "acm"|"aspenplus"|"foqus" }
+ */
 exports.handler = function(event, context, callback) {
   console.log(`Running index.handler: "${event.httpMethod}"`);
   console.log("event: " + JSON.stringify(event));
@@ -59,7 +64,9 @@ exports.handler = function(event, context, callback) {
       config_filename = "acm_sinter.json";
     } else if (app == "aspenplus") {
       config_filename = "aspenplus_sinter.json";
-    } else {
+    } else if (app == "fake-job") {
+      config_filename = "fake-job.json";
+    }else {
         done(new Error(`Unsupported application "${event.body}"`));
         return;
     }

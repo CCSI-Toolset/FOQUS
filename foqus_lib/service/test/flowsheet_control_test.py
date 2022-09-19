@@ -42,7 +42,9 @@ try:
 except ImportError:
     from mock import MagicMock, patch
 
-TOP_LEVEL_DIR = os.path.abspath(os.curdir)
+TOP_LEVEL_DIR = os.path.dirname(
+    os.path.dirname(os.path.dirname(os.path.abspath(os.curdir)))
+)
 
 
 # test generic service-related functionality
@@ -167,14 +169,17 @@ def test_flowsheet_control_run(mock_urlopen, mock_boto):
     fc.run()
 
 
+@patch("boto3.client")
+@patch("urllib.request.urlopen")
 class TestNode:
     # test some specific service-dependent node features
 
     @pytest.fixture(scope="function")
-    def node(self):
-        output = io.BytesIO(INSTANCE_USERDATA_BIN)
-        flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
-        flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
+    def node(self, mock_urlopen):
+        mock_urlopen.side_effect = _url_open_side_effect
+        # mock_boto.side_effect = mock_boto_client
+        # flowsheet.FOQUSAWSConfig._inst = flowsheet.FOQUSAWSConfig()
+        # flowsheet.FOQUSAWSConfig._inst._d = json.loads(INSTANCE_USERDATA_JSON)
         flowsheet.TurbineLiteDB.consumer_register = MagicMock(return_value=None)
         flowsheet.TurbineLiteDB.add_message = MagicMock(return_value=None)
         flowsheet.TurbineLiteDB.job_change_status = MagicMock(return_value=None)
@@ -194,7 +199,7 @@ class TestNode:
 
         return n
 
-    def test_setSim_modelTurbine_xls(self, node):
+    def test_setSim_modelTurbine_xls(self, node, mock_urlopen):
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -254,7 +259,7 @@ class TestNode:
                         # set simulation
                         node.setSim(newModel="exceltest", newType=2)
 
-    def test_runTurbineCalc_xls(self, node):
+    def test_runTurbineCalc_xls(self, node, mock_urlopen):
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -339,11 +344,11 @@ class TestNode:
 
                             # set simulation
                             node.setSim(newModel="exceltest", newType=2)
-                            node.gr.turbConfig.dat = session()
+                            node.gr.turbConfig.dat = session(useCurrentWorkingDir=True)
                             node.options["Override Turbine Configuration"].value = None
                             node.runCalc()  # covers node.runTurbineCalc
 
-    def test_setSim_modelTurbine_sim(self, node):
+    def test_setSim_modelTurbine_sim(self, node, mock_urlopen):
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -403,7 +408,7 @@ class TestNode:
                         # set simulation
                         node.setSim(newModel="Flash_Example_AP", newType=2)
 
-    def test_runTurbineCalc_sim(self, node):
+    def test_runTurbineCalc_sim(self, node, mock_urlopen):
         # manually add turbine model to test
 
         turbpath = os.path.abspath(
@@ -493,6 +498,6 @@ class TestNode:
 
                             # set simulation
                             node.setSim(newModel="Flash_Example_AP", newType=2)
-                            node.gr.turbConfig.dat = session()
+                            node.gr.turbConfig.dat = session(useCurrentWorkingDir=True)
                             node.options["Override Turbine Configuration"].value = None
                             node.runCalc()  # covers node.runTurbineCalc

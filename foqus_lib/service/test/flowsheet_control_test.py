@@ -42,9 +42,15 @@ try:
 except ImportError:
     from mock import MagicMock, patch
 
-TOP_LEVEL_DIR = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(os.curdir)))
-)
+TOP_LEVEL_DIR = os.path.abspath(os.curdir)
+# generic way to find main FOQUS level either locally or on CI server
+# use a for loop instead of while to prevent possible infinite loop
+for i in range(0, 10):  # definitely won't need more levels than this
+    if str(TOP_LEVEL_DIR)[-6:] == "\FOQUS":
+        break
+    else:
+        TOP_LEVEL_DIR = os.path.dirname(TOP_LEVEL_DIR)
+print(str(TOP_LEVEL_DIR)[-6:])  # keeping for log in case debugging is required
 
 
 # test generic service-related functionality

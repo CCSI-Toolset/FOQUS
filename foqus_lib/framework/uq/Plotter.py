@@ -588,7 +588,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson:
                     return
-                for _cid, func in self._observers.items():
+                for _cid, func in self.observers.items():
                     func(discrete_val)
 
         p = ChangingPlot()
@@ -1023,7 +1023,7 @@ class Plotter:
                 self.val = discrete_val
                 if not self.eventson:
                     return
-                for _cid, func in self._observers.items():
+                for _cid, func in self.observers.items():
                     func(discrete_val)
 
         p = ChangingPlot()

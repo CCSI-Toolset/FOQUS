@@ -581,7 +581,7 @@ class Plotter:
                 topleft = [discrete_val_, h]
                 bottomright = [discrete_val, 0]
                 topright = [discrete_val, h]
-                xy = np.array([bottomleft, topleft, topright, bottomright])
+                xy = np.array([bottomleft, topleft, topright, bottomright], dtype='object')
                 self.poly.set_xy(xy)
                 if self.drawon:
                     self.ax.figure.canvas.draw()
@@ -1013,7 +1013,7 @@ class Plotter:
                 topleft = [discrete_val_, h]
                 bottomright = [discrete_val, 0]
                 topright = [discrete_val, h]
-                xy = np.array([bottomleft, topleft, topright, bottomright])
+                xy = np.array([bottomleft, topleft, topright, bottomright], dtype='object')
                 self.poly.set_xy(xy)
                 self.valtext.set_text(
                     "Min: %.4f\nMax: %.4f" % (discrete_val_, discrete_val)

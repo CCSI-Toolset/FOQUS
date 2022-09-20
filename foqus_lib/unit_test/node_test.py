@@ -41,15 +41,14 @@ import pytest
 def model_files(
     foqus_ml_ai_models_dir: Path,
     install_ml_ai_model_files,
-    suffixes: Tuple[str] = (".py", ".h5"),
+    suffixes: Tuple[str] = (".py", ".h5", ".json"),
 ) -> List[Path]:
     paths = []
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
         if all(
             [
-                path.is_file(),
+                ((path.is_file() and path.suffix in suffixes) or path.is_dir()),
                 path.stat().st_size > 0,
-                path.suffix in suffixes,
                 path.name != "__init__.py",
             ]
         ):
@@ -65,11 +64,13 @@ class testImports(unittest.TestCase):
     def test_import_tensorflow_failure(self):
 
         # method loaded from node module as * import
-        load = attempt_load_tensorflow(try_imports=False)
+        load, json_load = attempt_load_tensorflow(try_imports=False)
 
-        # check that the returned load function prints the expected warning
+        # check that the returned load functions print the expected warning
         with pytest.raises(ModuleNotFoundError):
             load(None)
+        with pytest.raises(ModuleNotFoundError):
+            json_load(None)
 
     def test_import_sympy_failure(self):
 
@@ -89,12 +90,14 @@ class testImports(unittest.TestCase):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
         # method loaded from node module as * import
-        load = attempt_load_tensorflow(try_imports=True)
+        load, json_load = attempt_load_tensorflow(try_imports=True)
 
         # check that the returned function expects the correct input as a way
         # of confirming that the class (function) type is correct
         with pytest.raises(OSError):
             load(None)  # expects HDF5 filepath, should throw load path error
+        with pytest.raises(TypeError):
+            json_load(None)  # expects JSON object, should throw type error
 
     def test_import_sympy_success(self):
         # skip this test if tensorflow is not available
@@ -139,7 +142,7 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load = attempt_load_tensorflow()  # alias for load method
+        load, json_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
         model_h5 = [
@@ -158,7 +161,7 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load = attempt_load_tensorflow()  # alias for load method
+        load, json_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
         model_h5 = [
@@ -185,7 +188,7 @@ class TestPymodelMLAI:
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
-        load = attempt_load_tensorflow()  # alias for load method
+        load, json_load = attempt_load_tensorflow()  # alias for load methods
 
         # get model files from previously defined model_files pathlist
         model_h5 = [
@@ -212,6 +215,90 @@ class TestPymodelMLAI:
 
         return model
 
+    @pytest.fixture(scope="function")
+    def example_4(self, model_files):  # model saved in SavedModel file format
+        # no tests using this fixture should run if tensorflow is not installed
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        load, json_load = attempt_load_tensorflow()  # alias for load methods
+
+        # get model files from previously defined model_files pathlist
+        model_folder = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_savedmodel")
+        ]
+
+        model_py = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_savedmodel.py")
+        ]
+
+        sys.path.append(os.path.dirname(model_py[0]))
+        module = import_module("mea_column_model_customnormform_savedmodel")
+
+        # has a custom layer with a preset normalization option
+        model = load(
+            model_folder[0],
+            custom_objects={
+                "mea_column_model_customnormform_savedmodel": module.mea_column_model_customnormform_savedmodel
+            },
+        )
+
+        return model
+
+    @pytest.fixture(scope="function")
+    def example_5(self, model_files):  # model saved in json form with h5 weights
+        # no tests using this fixture should run if tensorflow is not installed
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        load, json_load = attempt_load_tensorflow()  # alias for load methods
+
+        # get model files from previously defined model_files pathlist
+        model_json = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_json.json")
+        ]
+        model_weights_h5 = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_json_weights.h5")
+        ]
+        model_py = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_json.py")
+        ]
+
+        sys.path.append(os.path.dirname(model_py[0]))
+        module = import_module("mea_column_model_customnormform_json")
+
+        # load json dictionary, load weights and compile
+        json_path = os.path.join(
+            os.path.dirname(model_py[0]), "mea_column_model_customnormform_json.json"
+        )
+        with open(json_path, "r") as json_file:
+            loaded_json = json_file.read()
+        model = json_load(
+            loaded_json,
+            custom_objects={
+                "mea_column_model_customnormform_json": module.mea_column_model_customnormform_json
+            },
+        )  # load architecture
+        h5_path = os.path.join(
+            os.path.dirname(model_py[0]),
+            "mea_column_model_customnormform_json_weights.h5",
+        )
+        model.load_weights(h5_path)  # load pretrained weights
+
+        return model
+
     # ----------------------------------------------------------------------------
     # this set of tests builds and runs the pymodel class functionality
 
@@ -233,6 +320,22 @@ class TestPymodelMLAI:
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
         test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel.run()
+
+    def test_build_and_run_as_expected_4(self, example_4):
+        # only run if SymPy if available; test run for custom norm SavedModel
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_4)
+        test_pymodel.run()
+
+    def test_build_and_run_as_expected_5(self, example_5):
+        # only run if SymPy if available; test run for custom norm json
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_5)
         test_pymodel.run()
 
     def test_defaults_no_custom_layer(self, example_1):
@@ -1042,6 +1145,134 @@ class TestNode:
         os.chdir(os.path.dirname(model_files[0]))
         # manually add ML AI model to test
         node.setSim(newModel="mea_column_model_customnormform", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model)
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example4(self, node, model_files):
+        # skip this test if tensorflow is not available
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_savedmodel", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model)
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example4(self, node, model_files):
+        # skip this test if tensorflow is not available
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_savedmodel", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model)
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example5(self, node, model_files):
+        # skip this test if tensorflow is not available
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_json", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model)
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example5(self, node, model_files):
+        # skip this test if tensorflow is not available
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_json", newType=5)
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 

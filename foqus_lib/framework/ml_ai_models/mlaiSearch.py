@@ -43,31 +43,66 @@ class ml_ai_models:
 
     def getMLAIList(self):
         """
-        check files in self.pathList to see if they are ml_ai models
+        check files in self.pathList to see if they are ml_ai models.
+        if they are folders, try to load supported forms (SavedModel).
+        if they are files, try to load supported forms (H5).
         """
         for p in self.pathList:
-            if os.path.exists(p):
+            if os.path.exists(p) and "user_ml_ai_models" in str(p):
                 sys.path.append(p)
                 pgfiles = os.listdir(p)
                 for fname in pgfiles:
-                    mname = fname.rsplit(".", 1)  # split off extension
-                    if len(mname) > 1 and mname[1] == "h5":
-                        try:
-                            if mname[0] in self.ml_ai_models:
-                                _log.info(
-                                    "Reloading ML_AI Model: {}".format(
+                    skip = False
+                    if os.path.isfile(
+                        os.path.join(p, fname)
+                    ):  # load a single model file
+                        mname = fname.rsplit(".", 1)  # split off extension
+                    elif os.path.isdir(
+                        os.path.join(p, fname)
+                    ):  # load a SavedModel folder
+                        mname = [fname, ""]  # convert into length-2 vector
+                    # try loading if no extension (folder), or extension is .h5
+                    if mname[0] == "__pycache__":  # should exist but not a model file
+                        skip = True
+                    if len(mname) == 2 and (
+                        os.path.isdir(os.path.join(p, mname[0]))
+                        or mname[1] in ["h5", "json"]
+                    ):
+                        if (
+                            mname[1] == "py"
+                        ):  # skip any Python files containing model classes
+                            skip = True
+                        if (
+                            "_weights" in mname[0] and mname[1] == "h5"
+                        ):  # this is a json weights file, skip it
+                            skip = True
+                        # if the search makes it here, try loading the model
+                        if skip == False:
+                            try:
+                                if mname[0] in self.ml_ai_models:
+                                    _log.info(
+                                        "Reloading ML_AI Model: {}".format(
+                                            os.path.join(p, fname)
+                                        )
+                                    )
+                                    self.ml_ai_models[mname[0]] = mname[0]
+                                else:
+                                    logging.getLogger("foqus." + __name__).info(
+                                        "Loading ML_AI Model: " + os.path.join(p, fname)
+                                    )
+                                    self.ml_ai_models[mname[0]] = mname[0]
+                            except:
+                                _log.exception(
+                                    "Error Loading ML_AI Model: {}".format(
                                         os.path.join(p, fname)
                                     )
                                 )
-                                self.ml_ai_models[mname[0]] = mname[0]
-                            else:
-                                logging.getLogger("foqus." + __name__).info(
-                                    "Loading ML_AI Model: " + os.path.join(p, fname)
-                                )
-                                self.ml_ai_models[mname[0]] = mname[0]
-                        except:
+                    else:  # print warning if not Python or other expected file
+                        if mname != "PSUADEPATH" and (
+                            len(mname) == 2 and mname[1] != "py"
+                        ):
                             _log.exception(
-                                "Error Loading ML_AI Model: {}".format(
+                                "Error Loading File or Folder: {}".format(
                                     os.path.join(p, fname)
                                 )
                             )

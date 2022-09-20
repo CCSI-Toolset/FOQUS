@@ -121,7 +121,7 @@ class Plotter:
     def plotline(xdat, ydat, figtitle, title, xlabel, ylabel):
 
         fig = plt.figure()
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         _ax = fig.add_subplot(111)
         plt.plot(xdat, ydat, color="b", linewidth=2)
         plt.xlabel(xlabel)
@@ -201,7 +201,7 @@ class Plotter:
             ax.autoscale(enable=True, axis="both", tight=True)
             ax.set_title(title[0])
 
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         plt.tight_layout()
         plt.show()
 
@@ -209,7 +209,7 @@ class Plotter:
     def plotscatter3d(xdat, ydat, zdat, figtitle, title, xlabel, ylabel, zlabel):
 
         fig = plt.figure()
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         ax = fig.add_subplot(111, projection="3d")
         ax.scatter(xdat, ydat, zdat, c="m", marker="o")
         ax.set_xlabel(xlabel)
@@ -227,7 +227,7 @@ class Plotter:
     ):
 
         fig = plt.figure()
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
 
         # plot PDF
         if plotcdf:
@@ -308,7 +308,7 @@ class Plotter:
     def plotpdf(xdat, ydat, moments, pdfs, figtitle, title, xlabel, ylabel):
 
         fig = plt.figure()
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
 
         # plot PDF
         ax1 = fig.add_subplot(211)
@@ -456,7 +456,7 @@ class Plotter:
                 width = 0.75
                 height = 0.03
                 self.fig = plt.figure()
-                self.fig.canvas.set_window_title(figtitle)
+                self.fig.canvas.manager.set_window_title(figtitle)
                 self.ax = self.fig.add_subplot(111)
                 plt.subplots_adjust(left=left, bottom=2 * bottom)
                 self.sliderax = self.fig.add_axes(
@@ -581,7 +581,9 @@ class Plotter:
                 topleft = [discrete_val_, h]
                 bottomright = [discrete_val, 0]
                 topright = [discrete_val, h]
-                xy = np.array([bottomleft, topleft, topright, bottomright])
+                xy = np.array(
+                    [bottomleft, topleft, topright, bottomright], dtype="object"
+                )
                 self.poly.set_xy(xy)
                 if self.drawon:
                     self.ax.figure.canvas.draw()
@@ -675,7 +677,7 @@ class Plotter:
             if barlabels:
                 Plotter.autolabel(ax, rects)
 
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         plt.xlabel(xlabel)
         if xticklabels:
             plt.xticks(index, xticklabels, rotation=90)
@@ -724,7 +726,7 @@ class Plotter:
 
         # generate plot
         fig = plt.figure()
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         ax = fig.add_subplot(111, projection="3d")
         opacity = 0.25
 
@@ -793,7 +795,7 @@ class Plotter:
 
         # plot
         fig = plt.figure(figsize=(12, 10))  # adjust figure size
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
 
         # ... generate 3D surface plot
         step = 1
@@ -895,7 +897,7 @@ class Plotter:
                 width = 0.65
                 height = 0.03
                 self.fig = plt.figure(figsize=(12, 12))  # adjust figure size
-                self.fig.canvas.set_window_title(figtitle)
+                self.fig.canvas.manager.set_window_title(figtitle)
                 self.ax = self.fig.add_subplot(111, projection="3d")
                 plt.subplots_adjust(left=left, bottom=2 * bottom)
                 self.sliderax = self.fig.add_axes(
@@ -1013,7 +1015,9 @@ class Plotter:
                 topleft = [discrete_val_, h]
                 bottomright = [discrete_val, 0]
                 topright = [discrete_val, h]
-                xy = np.array([bottomleft, topleft, topright, bottomright])
+                xy = np.array(
+                    [bottomleft, topleft, topright, bottomright], dtype="object"
+                )
                 self.poly.set_xy(xy)
                 self.valtext.set_text(
                     "Min: %.4f\nMax: %.4f" % (discrete_val_, discrete_val)
@@ -1043,7 +1047,7 @@ class Plotter:
 
         # plot
         fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
 
         # ... plot CV error histogram
         nbins = 10
@@ -1289,7 +1293,7 @@ class Plotter:
                 label.set_rotation(90)
 
         fig.suptitle(title)
-        fig.canvas.set_window_title(figtitle)
+        fig.canvas.manager.set_window_title(figtitle)
         #       plt.tight_layout()
 
         if lastplot:

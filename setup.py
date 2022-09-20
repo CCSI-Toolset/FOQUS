@@ -92,7 +92,7 @@ dist = setup(
     install_requires=[
         "boto3",
         "cma",
-        "matplotlib",
+        "matplotlib<3.6",
         "mlrose_hiive==2.1.3",
         "mplcursors",
         "numpy",

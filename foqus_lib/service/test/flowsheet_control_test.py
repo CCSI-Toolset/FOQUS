@@ -205,16 +205,9 @@ class TestNode:
 
         return n
 
-    def test_setSim_modelTurbine_xls(self, node, mock_urlopen):
+    def test_setSim_modelTurbine_xls(self, node, mock_urlopen, foqus_examples_dir):
         # manually add turbine model to test
-
-        turbpath = os.path.abspath(
-            os.path.join(
-                TOP_LEVEL_DIR,
-                "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json",
-            )
-        )
-        print("dir: ", TOP_LEVEL_DIR)
+        turbpath = (foqus_examples_dir / "examples/tutorial_files/SimSinter/Tutorial_3/exceltest.json").resolve()
         print(turbpath)
 
         with patch(
@@ -245,19 +238,17 @@ class TestNode:
                             MagicMock(return_value=mainupdate_val)
                         )
 
-                        f = open(turbpath, "r")
-                        sinterconfig_json = json.loads(f.read())
+                        sinterconfig_json = json.loads(turbpath.read_text())
                         foqus_lib.framework.sim.turbineConfiguration.TurbineConfiguration.getSinterConfig = MagicMock(
                             return_value=sinterconfig_json
                         )
-                        f.close()
 
                         # create config block and upload model files to Turbine
                         node.gr.turbConfig = TurbineConfiguration()
                         node.gr.turbConfig.writeConfig(overwrite=True)
                         node.gr.turbConfig.uploadSimulation(
                             simName="exceltest",
-                            sinterConfigPath=os.path.normpath(turbpath),
+                            sinterConfigPath=os.fspath(turbpath),
                             update=True,
                             otherResources=[],
                         )

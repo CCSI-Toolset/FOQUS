@@ -21,14 +21,10 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 import os
-import time
 import json
 import math
 import numpy as np
-import subprocess
 import logging
-import traceback
-import re
 from foqus_lib.framework.pymodel.pymodel import *
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
@@ -36,7 +32,6 @@ from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 from foqus_lib.framework.at_dict.at_dict import AtDict
-from PyQt5.QtWidgets import QMessageBox
 from importlib import import_module
 
 _logger = logging.getLogger("foqus." + __name__)

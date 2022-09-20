@@ -164,6 +164,7 @@ def pytest_terminal_summary(terminalreporter, config):
 
     tr.write_line(f"pytest temporary directory:\n\t{basetemp}")
     tr.write_line(f"subdirectories:")
-    for path in Path(basetemp).rglob("*"):
-        if path.is_dir():
-            tr.write_line(f"\t{path}")
+    if basetemp is not None:
+        for path in Path(basetemp).rglob("*"):
+            if path.is_dir():
+                tr.write_line(f"\t{path}")

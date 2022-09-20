@@ -25,7 +25,6 @@ from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from foqus_lib.framework.pymodel.pymodel import pymodel
 from foqus_lib.framework.pymodel import pymodel_test
-from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 
 from importlib import import_module
 from pathlib import Path

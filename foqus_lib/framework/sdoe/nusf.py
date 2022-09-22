@@ -19,6 +19,7 @@ from .distance import compute_dist
 import time
 import pandas as pd  # only used for the final output of criterion
 
+
 def compute_dmat(weight_mat, xcols, wcol, hist=None):
     # Inputs:
     #  weight_mat - numpy array of size (N, nx+1) containing scaled weights
@@ -42,13 +43,14 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
 
     return dmat
 
+
 def compute_min_params(dmat):
     # Input:
     #   dmat - numpy array of shape (M, M) where M = N+nh
     # Output:
     #     md - scalar representing min(dmat)
     #  mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md 
+    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
 
     md = np.min(dmat)
     mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
@@ -56,6 +58,7 @@ def compute_min_params(dmat):
     mdpts = np.unique(mdpts.flatten())
 
     return md, mdpts, mties
+
 
 def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, hist):
     # Inputs:
@@ -66,7 +69,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
     #    wcol - integer corresponding to the index of the weight column
     #      md - scalar representing min(dmat)
     #   mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #   mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md 
+    #   mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
     #    dmat - numpy array of shape (M, M) where M = nd+nh
     #    hist - numpy array of shape (nh, nx+1) containing scaled weights
     # Output:
@@ -99,10 +102,10 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
         return dmat_
 
     def step(pt, rcand, cand, mdpts, dmat):
-        i, j = pt #i=mdpts index to remove from rcand; j=cand index to add to rcand
-        rcand_ = rcand.copy() 
-        row = cand[j] 
-        k = mdpts[i] 
+        i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
+        rcand_ = rcand.copy()
+        row = cand[j]
+        k = mdpts[i]
         rcand_[k] = row
         dmat_ = update_dmat(row, rcand_, dmat, k)
         md_, mdpts_, mties_ = compute_min_params(dmat_)
@@ -114,22 +117,24 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
     n_mdpts = len(mdpts_cand)
 
     # initialize d0 and mt0
-    d0 = np.zeros((n_mdpts, ncand)) #min dist when the ith point to remove is replaced with the jth candidate to add
-    mt0 = np.zeros((n_mdpts, ncand)) #number of ties when the ith point to remove is replaced with the jth candidate to add
+    d0 = np.zeros(
+        (n_mdpts, ncand)
+    )  # min dist when the ith point to remove is replaced with the jth candidate to add
+    mt0 = np.zeros(
+        (n_mdpts, ncand)
+    )  # number of ties when the ith point to remove is replaced with the jth candidate to add
 
     for pt in np.ndindex(n_mdpts, ncand):
         i, j = pt
-        _, d0[i, j], _, mt0[i, j], _, _, _ = step(
-            pt, rcand, cand, mdpts_cand, dmat 
-        )
+        _, d0[i, j], _, mt0[i, j], _, _, _ = step(pt, rcand, cand, mdpts_cand, dmat)
 
-    d0_max = np.max(d0) 
+    d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
     update = True
     added = None
     removed = None
 
-    if d0_max > md: #if maximin increased
+    if d0_max > md:  # if maximin increased
         _md = d0_max
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
@@ -139,7 +144,9 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
     elif d0_max == md:
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
-            pt = pts[np.random.choice(nselect)] #take the subset of pts where the corresponding ties is less than mties
+            pt = pts[
+                np.random.choice(nselect)
+            ]  # take the subset of pts where the corresponding ties is less than mties
             rcand, md, mdpts, mties, dmat, added, removed = step(
                 pt, rcand, cand, mdpts_cand, dmat
             )
@@ -149,6 +156,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
         removed = None
 
     return rcand, md, mdpts, mties, dmat, added, removed, update
+
 
 def scale_xs(mat_, xcols):
     # Inputs:
@@ -166,12 +174,13 @@ def scale_xs(mat_, xcols):
     # save xmin, xmax for inverse scaling later
     xmin = np.min(xs, axis=0)
     xmax = np.max(xs, axis=0)
-    #-1 to 1 scaling:
-    # mat[:, xcols] = (xs - xmin) / (xmax - xmin) * 2 - 1 
-    #0 to 1 scaling:
-    mat[:, xcols] = (xs - xmin) / (xmax - xmin) 
+    # -1 to 1 scaling:
+    # mat[:, xcols] = (xs - xmin) / (xmax - xmin) * 2 - 1
+    # 0 to 1 scaling:
+    mat[:, xcols] = (xs - xmin) / (xmax - xmin)
 
     return mat, xmin, xmax
+
 
 def scale_y(scale_method, mwr, mat_, wcol):
     # Inputs:
@@ -189,7 +198,7 @@ def scale_y(scale_method, mwr, mat_, wcol):
         wmin = np.min(wts)
         wmax = np.max(wts)
 
-        #equal weights:
+        # equal weights:
         if wmin != wmax:
             mat[:, wcol] = 1 + (mwr - 1) * (wts - wmin) / (wmax - wmin)
         return mat
@@ -217,12 +226,13 @@ def inv_scale_xs(mat_, xmin, xmax, xcols):
     # inverse-scale the inputs
     mat = mat_.copy()
     xs = mat[:, xcols]
-    #-1 to 1 scaling
-    #mat[:, xcols] = (xs + 1) / 2 * (xmax - xmin) + xmin
-    #0 to 1 scaling
+    # -1 to 1 scaling
+    # mat[:, xcols] = (xs + 1) / 2 * (xmax - xmin) + xmin
+    # 0 to 1 scaling
     mat[:, xcols] = xs * (xmax - xmin) + xmin
 
     return mat
+
 
 def criterion(
     cand,  # candidates
@@ -265,13 +275,13 @@ def criterion(
         )
 
     def step(mwr):
-        cand_np = scale_y(scale_method, mwr, cand_np_, idw_np) 
+        cand_np = scale_y(scale_method, mwr, cand_np_, idw_np)
 
         if hist is None:
             hist_np = None
         else:
             hist_np = cand_np[-nhist:]
-            cand_np = cand_np[:ncand]       
+            cand_np = cand_np[:ncand]
 
         best_cand = []
         best_md = 0
@@ -300,7 +310,16 @@ def criterion(
 
             while update_ and (t < T):
 
-                rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_ = update_min_dist(
+                (
+                    rcand_,
+                    md_,
+                    mdpts_,
+                    mties_,
+                    dmat_,
+                    added_,
+                    removed_,
+                    update_,
+                ) = update_min_dist(
                     rcand,
                     cand_np,
                     ncand,
@@ -319,13 +338,13 @@ def criterion(
                     mdpts = mdpts_
                     mties = mties_
                     dmat = dmat_
-                    if added_: 
+                    if added_:
                         rand_index[removed_] = added_
 
                 t += 1
 
             if (md > best_md) or ((md == best_md) and (mties < best_mties)):
-                best_index = rand_index #
+                best_index = rand_index  #
                 best_cand = rcand
                 best_md = md
                 best_mdpts = mdpts
@@ -371,4 +390,3 @@ def criterion(
         results[mwr] = res
 
     return results
-

@@ -77,7 +77,7 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
     #    dmat - numpy array of shape (M, M) where M = nx+nh
     #  update - boolean representing whether an update should occur
 
-    def update_dmat(row, rcand, dmat_, k, val=9999):
+    def update_dmat(row, rcand, dmat, k, val=9999):
         xs = (
             rcand[:, xcols]
             if hist is None
@@ -88,28 +88,26 @@ def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, his
             if hist is None
             else np.concatenate((rcand[:, wcol], hist[:, wcol]))
         )
-        m = row[xcols] - xs
-        m = np.sum(m**2, axis=1)
+
+        m = np.sum(np.square(row[xcols] - xs), axis=1)
         m = m * row[wcol] * weights
         m[k] = val
 
-        dmat = np.copy(dmat_)
-        dmat[k, :] = m
-        dmat[:, k] = m.T
+        dmat_ = np.copy(dmat)
+        dmat_[k, :] = dmat_[:, k] = m
 
-        return dmat
+        return dmat_
 
-    def step(pt, rcand_, cand, mdpts, dmat_):
+    def step(pt, rcand, cand, mdpts, dmat):
         i, j = pt #i=mdpts index to remove from rcand; j=cand index to add to rcand
-        rcand = rcand_.copy() 
-        dmat = np.copy(dmat_) 
+        rcand_ = rcand.copy() 
         row = cand[j] 
         k = mdpts[i] 
-        rcand[k] = row
-        dmat = update_dmat(row, rcand, dmat, k)
-        md, mdpts, mties = compute_min_params(dmat)
+        rcand_[k] = row
+        dmat_ = update_dmat(row, rcand_, dmat, k)
+        md_, mdpts_, mties_ = compute_min_params(dmat_)
 
-        return rcand, md, mdpts, mties, dmat, j, k
+        return rcand_, md_, mdpts_, mties_, dmat_, j, k
 
     # exclude mdpts indices corresponding to history
     mdpts_cand = mdpts[mdpts < len(rcand)]
@@ -223,11 +221,12 @@ def inv_scale_xs(mat_, xmin, xmax, xcols):
     #mat[:, xcols] = (xs + 1) / 2 * (xmax - xmin) + xmin
     #0 to 1 scaling
     mat[:, xcols] = xs * (xmax - xmin) + xmin
+
     return mat
 
 def criterion(
     cand,  # candidates
-    args,  # maximum number of iterations & mwr values
+    args,  # maximum number of iterations, mwr values, scale method, index types
     nr,  # number of restarts (each restart uses a random set of <nd> points)
     nd,  # design size <= len(candidates)
     mode="maximin",
@@ -250,27 +249,23 @@ def criterion(
     mwr_vals = args["mwr_values"]
     scale_method = args["scale_method"]
 
-    # indices of type ...
-    idx = args["xcols"]  # Input
-    idw = args["wcol"]  # Weight
+    # index types
+    idx_np = [cand.columns.get_loc(i) for i in args["xcols"]]
+    idw_np = cand.columns.get_loc(args["wcol"])
 
-    # np indices
-    idx_np = [cand.columns.get_loc(i) for i in idx]
-    idw_np = cand.columns.get_loc(idw)
-
-    cand_np = cand.to_numpy()
-    cand_np_ = cand_np.copy()
+    cand_np_ = cand.to_numpy()
+    cand_np_unscaled = cand_np_.copy()
 
     # Combine candidates and history before scaling
     if hist is None:
-        cand_np, _xmin, _xmax = scale_xs(cand_np, idx_np)
+        cand_np_, _xmin, _xmax = scale_xs(cand_np_, idx_np)
     else:
-        cand_np, _xmin, _xmax = scale_xs(
-            np.concatenate((cand_np, hist.to_numpy())), idx_np
+        cand_np_, _xmin, _xmax = scale_xs(
+            np.concatenate((cand_np_, hist.to_numpy())), idx_np
         )
 
-    def step(mwr, cand_np):
-        cand_np = scale_y(scale_method, mwr, cand_np, idw_np) 
+    def step(mwr):
+        cand_np = scale_y(scale_method, mwr, cand_np_, idw_np) 
 
         if hist is None:
             hist_np = None
@@ -305,7 +300,6 @@ def criterion(
 
             while update_ and (t < T):
 
-                before = rcand.copy()
                 rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_ = update_min_dist(
                     rcand,
                     cand_np,
@@ -342,7 +336,7 @@ def criterion(
             print("Best minimum distance for this random start: {}".format(best_md))
 
         # no need to inverse-scale; can just use the indices to look up original rows in cand_
-        best_cand_unscaled = cand_np_[best_index]
+        best_cand_unscaled = cand_np_unscaled[best_index]
 
         best_cand = pd.DataFrame(best_cand, index=best_index, columns=list(cand))
         best_cand_unscaled = pd.DataFrame(
@@ -369,7 +363,7 @@ def criterion(
     results = {}
     for mwr in mwr_vals:
         print(">>>>>> mwr={} <<<<<<".format(mwr))
-        res = step(mwr, cand_np)
+        res = step(mwr)
         print("Best NUSF Design in Scaled Coordinates:\n", res["best_cand_scaled"])
         print("Best NUSF Design in Original Coordinates:\n", res["best_cand"])
         print("Best value in Normalized Scale:", res["best_val"])

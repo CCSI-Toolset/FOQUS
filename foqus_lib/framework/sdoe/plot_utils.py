@@ -40,6 +40,7 @@ def plot_hist(
     linewidth=0,  # set to nonzero to show border around bars
     hbars=False,  # set to True for horizontal bars
     cand_rgba=None,
+    hist=None,
 ):
 
     if cand_rgba is not None:
@@ -47,6 +48,10 @@ def plot_hist(
     ns, bins = np.histogram(xs, nbins)
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
+    if hist is not None:
+        ns_hist, bins_hist = np.histogram(hist, nbins)
+        width_hist = bins_hist[1] - bins_hist[0]
+        center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
     if hbars:
         ax.barh(
             center,
@@ -57,6 +62,16 @@ def plot_hist(
             linewidth=linewidth,
             edgecolor="k",
         )
+        if hist is not None:
+            ax.barh(
+                center_hist,
+                ns_hist,
+                align="center",
+                height=width_hist,
+                facecolor=fc["hist"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
         ax.set_ylabel(xname)
     else:
         ax.bar(
@@ -68,6 +83,16 @@ def plot_hist(
             linewidth=linewidth,
             edgecolor="k",
         )
+        if hist is not None:
+            ax.bar(
+                center_hist,
+                ns_hist,
+                align="center",
+                width=width_hist,
+                facecolor=fc["hist"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
         ax.set_xlabel(xname)
 
     ax.grid(show_grids, axis="both")
@@ -137,6 +162,7 @@ def plot_candidates(
             linewidth=0,
             hbars=True,
             cand_rgba=cand_rgba,
+            hist=hf[xname],
         )
 
     else:  # multiple inputs
@@ -166,6 +192,7 @@ def plot_candidates(
                 linewidth=0,
                 hbars=True,
                 cand_rgba=cand_rgba,
+                hist=hf[xname],
             )
 
             for j in range(i + 1, nshow):

@@ -381,8 +381,8 @@ class TestPymodelMLAI:
             0.315366,
             0.199638,
         ]  # these are actual inputs
-        expected_out = [1.00000, 0.00000]
-        expected_soln = [1.00000, 0.00000]  # no scaling gives bad output
+        expected_out = [1.00000, 1.00000]
+        expected_soln = [1.00000, 1.00000]  # no scaling gives bad output
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -404,8 +404,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
-        expected_out = [0.649966, 0.0181869]
-        expected_soln = [78.5314, 3.28505]  # best scaling for this problem
+        expected_out = [0.664945, 0.01849853]
+        expected_soln = [79.44945, 3.28648]  # best scaling for this problem
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -427,8 +427,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.550111, 0.523938, 0.554206, 0.513060, 0.527202, 0.629837]
-        expected_out = [0.518656, 0.00672531]
-        expected_soln = [63.3111, 3.2209]
+        expected_out = [0.5392884, 0.0070636244]
+        expected_soln = [64.56342, 3.22185]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -465,8 +465,8 @@ class TestPymodelMLAI:
         # note that these values can't be compared to the other test results
         # since the input data was scaled down by a factor of 100
         expected_in = [1.05368e-05, 0.499895, 4.06959e-13, 0.443145, 0.499803, 0.499430]
-        expected_out = [0.646331, 0.0269324]
-        expected_soln = [99.7962, 6.21637]
+        expected_out = [0.6696245, 0.023079345]
+        expected_soln = [99.81156, 6.149386]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -488,8 +488,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [0.740363, 0.740363, 0.740363, 0.740363, 0.740363, 0.740363]
-        expected_out = [0.411243, 0.00187266]
-        expected_soln = [49.43844, 3.20389]
+        expected_out = [0.4296973, 0.0021386303]
+        expected_soln = [50.200485, 3.2042003]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -511,8 +511,8 @@ class TestPymodelMLAI:
         unscaled_out = [test_pymodel.outputs[idx].value for idx in test_pymodel.outputs]
 
         expected_in = [-0.648636, -0.648636, -0.648636, -0.648636, -0.648636, -0.648636]
-        expected_out = [0.956094, 0.768611]
-        expected_soln = [157.278, 11.6360]
+        expected_out = [0.75565094, 0.7382201]
+        expected_soln = [151.01542, 11.555694]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed
@@ -538,8 +538,8 @@ class TestPymodelMLAI:
         print(unscaled_out)
 
         expected_in = [0.500000, 0.500000, 0.500000, 0.500000, 0.500000, 0.500000]
-        expected_out = [0.649966, 0.0181869]
-        expected_soln = [78.5314, 3.28505]
+        expected_out = [0.664945, 0.01849853]
+        expected_soln = [79.44945, 3.286483]
 
         for i in range(len(scaled_in)):
             print("i = ", str(i))  # for debugging, fails on last idx printed

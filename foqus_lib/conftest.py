@@ -94,7 +94,7 @@ def install_ml_ai_model_files(
     models_dir = foqus_ml_ai_models_dir
 
     base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
-    ts_models_base_path = base_path / "TensorFlow_2-7_Models"
+    ts_models_base_path = base_path / "TensorFlow_2-10_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
 

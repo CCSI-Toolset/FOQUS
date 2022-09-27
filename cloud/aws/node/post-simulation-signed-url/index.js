@@ -1,5 +1,7 @@
 /**
- * Lambda Function, returns an Array of simulations (UUID).
+ * Lambda Function, POST returns Signed URL to be used to upload
+ *    a file directly to S3.
+ *
  * @module get-simulation-list
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0

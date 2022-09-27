@@ -13,7 +13,7 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-"""foqus_service.py
+"""flowsheet.py
 * The AWS Cloud FOQUS service to start FOQUS
 
 Joshua Boverhof, Lawrence Berkeley National Lab
@@ -28,20 +28,20 @@ from os.path import expanduser
 import urllib.request, urllib.error, urllib.parse
 from foqus_lib.framework.session.session import session as Session
 from foqus_lib.framework.session.session import generalSettings as FoqusSettings
+from foqus_lib.framework.graph.nodeVars import NodeVarListEx, NodeVarEx
+from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.graph.graph import Graph
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
 import botocore.exceptions
 
-_instanceid = None
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
 )
-AWS_REGION = "us-east-1"
 DEBUG = False
 CURRENT_JOB_DIR = None
-_log = None
+_log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
 
 
 def _set_working_dir(wdir):
@@ -131,7 +131,7 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
 
     """ Search S3 Bucket for node simulation
     """
-    s3 = boto3.client("s3", region_name=AWS_REGION)
+    s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
     bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
     prefix = "%s/%s/" % (user_name, model_name)
     l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
@@ -296,10 +296,13 @@ class FOQUSJobException(Exception):
 
 class FOQUSAWSConfig:
     """
-    {"FOQUS-Update-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Update-Topic",
-     "FOQUS-Message-Topic-Arn":"arn:aws:sns:us-east-1:387057575688:FOQUS-Message-Topic",
-     "FOQUS-Job-Queue-Url":"https://sqs.us-east-1.amazonaws.com/387057575688/FOQUS-Gateway-FOQUSJobSubmitQueue-XPNWLF4Q38FD",
-     "FOQUS-Simulation-Bucket-Name":"foqussimulationdevelopment1562016460"
+    { example:
+      "FOQUS-Update-Topic-Arn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluejobtopicidA63AF7BE-NY5APVGJL24B",
+      "FOQUS-Message-Topic-Arn": "arn:aws:sns:us-west-2:387057575688:FoqusCloudStack-bluelogtopicid50E21335-PBVQAP0RYZ5D",
+      "FOQUS-Job-Queue-Url": "arn:aws:sqs:us-west-2:387057575688:FoqusCloudUserStack-blueboverhofqueueidEDBC6161-zgo4wkNousqm",
+      "FOQUS-Simulation-Bucket-Name": "arn:aws:s3:::foquscloudstack-bluefoqussimulation99ec6532-170r4pwindi5n",
+      "FOQUS-Session-Bucket-Name": "arn:aws:s3:::foquscloudstack-bluefoqussession99ec6532-170r4pwindi5n",
+      "FOQUS-User": "boverhof"
     }
     """
 
@@ -309,9 +312,43 @@ class FOQUSAWSConfig:
     def get_instance(cls):
         if cls._inst is not None:
             return cls._inst
-        request = urllib.request.urlopen("http://169.254.169.254/latest/user-data")
-        cls._inst = cls()
-        cls._inst._d = json.load(request)
+        # request = urllib.request.urlopen("http://169.254.169.254/latest/user-data")
+        inst = cls()
+        inst._d = d = dict()
+        try:
+            region = urllib.request.urlopen(
+                "http://169.254.169.254/latest/meta-data/placement/region"
+            ).read()
+            inst.region = region.decode("ascii")
+            instance_id = urllib.request.urlopen(
+                "http://169.254.169.254/latest/meta-data/instance-id"
+            ).read()
+            inst.instance_id = instance_id.decode("ascii")
+            tags = urllib.request.urlopen(
+                "http://169.254.169.254/latest/meta-data/tags/instance"
+            ).read()
+            for tag in tags.decode("ascii").split():
+                url = "http://169.254.169.254/latest/meta-data/tags/instance/%s" % (tag)
+                value = urllib.request.urlopen(url).read()
+                d[tag] = value.decode("ascii")
+        except Exception as ex:
+            _log.error("Failed to discover instance-id or tag FoqusUser: %s", repr(ex))
+            raise
+        # Validate
+        try:
+            inst.get_region()
+            inst.get_user()
+            inst.get_update_topic_arn()
+            inst.get_message_topic_arn()
+            inst.get_job_queue_url()
+            inst.get_simulation_bucket_name()
+            inst.get_session_bucket_name()
+            inst.get_dynamo_table_name()
+        except Exception as ex:
+            _log.error("Missing Tag: %s", repr(ex))
+            raise
+
+        cls._inst = inst
         return cls._inst
 
     def __init__(self):
@@ -319,9 +356,18 @@ class FOQUSAWSConfig:
 
     def _get(self, key):
         v = self._d.get(key)
-        assert v, "UserData Missing Key: %s" % key
+        assert v, "UserData/MetaData Missing Key(%s): %s" % (key, str(self._d))
         _log.debug("FOQUSAWSConfig._get: %s = %s" % (key, v))
         return v
+
+    def get_region(self):
+        return self.region
+
+    def get_instance_id(self):
+        return self.instance_id
+
+    def get_user(self):
+        return self._get("FOQUS-User")
 
     def get_update_topic_arn(self):
         return self._get("FOQUS-Update-Topic-Arn")
@@ -329,11 +375,17 @@ class FOQUSAWSConfig:
     def get_message_topic_arn(self):
         return self._get("FOQUS-Message-Topic-Arn")
 
+    def get_alert_topic_arn(self):
+        return self._get("FOQUS-Alert-Topic-Arn")
+
     def get_job_queue_url(self):
         return self._get("FOQUS-Job-Queue-Url")
 
     def get_simulation_bucket_name(self):
         return self._get("FOQUS-Simulation-Bucket-Name")
+
+    def get_session_bucket_name(self):
+        return self._get("FOQUS-Session-Bucket-Name")
 
     def get_dynamo_table_name(self):
         return self._get("FOQUS-DynamoDB-Table")
@@ -364,10 +416,12 @@ class TurbineLiteDB:
     """ """
 
     def __init__(self, close_after=True):
-        self._sns = boto3.client("sns", region_name=AWS_REGION)
         self._topic_arn = FOQUSAWSConfig.get_instance().get_update_topic_arn()
         self._topic_msg_arn = FOQUSAWSConfig.get_instance().get_message_topic_arn()
-        self._user_name = "unknown"
+        self._user_name = FOQUSAWSConfig.get_instance().get_user()
+        self._sns = boto3.client(
+            "sns", region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
         self.consumer_id = str(uuid.uuid4())
 
     def _sns_notification(self, obj):
@@ -390,8 +444,11 @@ class TurbineLiteDB:
     def __del__(self):
         _log.info("%s.delete", self.__class__.__name__)
 
-    def set_user_name(self, name):
+    def authorize_user_name(self, name):
+        if name != self._user_name:
+            return False
         self._user_name = name
+        return True
 
     def connectionString(self):
         _log.info("%s.connectionString", self.__class__.__name__)
@@ -410,7 +467,7 @@ class TurbineLiteDB:
             job=jobid,
             message=msg,
             consumer=self.consumer_id,
-            instanceid=_instanceid,
+            instanceid=FOQUSAWSConfig.get_instance().get_instance_id(),
             resource="job",
         )
         d.update(kw)
@@ -426,7 +483,7 @@ class TurbineLiteDB:
                 event="running",
                 rc=rc,
                 consumer=self.consumer_id,
-                instanceid=_instanceid,
+                instanceid=FOQUSAWSConfig.get_instance().get_instance_id(),
             )
         )
 
@@ -443,7 +500,7 @@ class TurbineLiteDB:
         _log.info("%s.consumer_register", self.__class__.__name__)
         d = dict(
             resource="consumer",
-            instanceid=_instanceid,
+            instanceid=FOQUSAWSConfig.get_instance().get_instance_id(),
             event="running",
             rc=rc,
             consumer=self.consumer_id,
@@ -473,6 +530,7 @@ class TurbineLiteDB:
             "error",
             "terminate",
             "expired",
+            "invalid",
         ], (
             "Incorrect Job Status %s" % status
         )
@@ -483,7 +541,7 @@ class TurbineLiteDB:
             rc=rc,
             status=status,
             jobid=job_d["Id"],
-            instanceid=_instanceid,
+            instanceid=FOQUSAWSConfig.get_instance().get_instance_id(),
             consumer=self.consumer_id,
             sessionid=job_d.get("sessionid", "unknown"),
         )
@@ -517,6 +575,29 @@ class TurbineLiteDB:
         )
 
 
+def _publish_service_error(message="", detail=""):
+    """Publish to SNS Message Topic with MessageAttributes
+    instance and event to filter for alerting.
+    Arguments:
+        message:
+    """
+    topic_alert_arn = FOQUSAWSConfig.get_instance().get_alert_topic_arn()
+    instance_id = FOQUSAWSConfig.get_instance().get_instance_id()
+    _log.error("publish(%s) service error: %s", topic_alert_arn, message)
+    sns = boto3.client("sns", region_name=FOQUSAWSConfig.get_instance().get_region())
+    attrs = dict(
+        event=dict(DataType="String", StringValue="service.error"),
+        instance=dict(DataType="String", StringValue=instance_id),
+    )
+    d = dict(
+        message=message, detail=detail, instance=instance_id, event="service.error"
+    )
+    sns.publish(
+        Message=json.dumps(d), MessageAttributes=attrs, TopicArn=topic_alert_arn
+    )
+    _log.info("published")
+
+
 class FlowsheetControl:
     """API for controlling Flowsheet process
     from foqus_lib.service.flowsheet import FlowsheetControl;
@@ -531,6 +612,8 @@ class FlowsheetControl:
         _dat -- Session
         _kat -- keepAliveTimer
         """
+        self._metric_count_of_queue_peeks = 0
+        self._metric_count_of_job_finished_dict = dict()
         self._set_working_directory()
         socket.setdefaulttimeout(60)
         self._dat = None
@@ -538,11 +621,18 @@ class FlowsheetControl:
         self._stop = False
         self._receipt_handle = None
         self._simulation_name = None
-        self._sqs = boto3.client("sqs", region_name=AWS_REGION)
         self._queue_url = FOQUSAWSConfig.get_instance().get_job_queue_url()
-        self._dynamodb = boto3.client("dynamodb", region_name=AWS_REGION)
+        self._sqs = boto3.client(
+            "sqs", region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
+        self._dynamodb = boto3.client(
+            "dynamodb", region_name=FOQUSAWSConfig.get_instance().get_region()
+        )
         self._dynamodb_table_name = (
             FOQUSAWSConfig.get_instance().get_dynamo_table_name()
+        )
+        self._cloudwatch = boto3.client(
+            "cloudwatch", region_name=FOQUSAWSConfig.get_instance().get_region()
         )
 
     @classmethod
@@ -555,22 +645,82 @@ class FlowsheetControl:
     def stop(self):
         self._stop = True
 
+    def increment_metric_job_finished(self, event):
+        if not event in self._metric_count_of_job_finished_dict:
+            self._metric_count_of_job_finished_dict[event] = 0
+        self._metric_count_of_job_finished_dict[event] += 1
+        self._cloudwatch.put_metric_data(
+            Namespace="foqus-cloud-backend",
+            MetricData=[
+                {
+                    "MetricName": "count_of_job_finish",
+                    "Dimensions": [
+                        {
+                            "Name": "user_name",
+                            "Value": FOQUSAWSConfig.get_instance().get_user(),
+                        },
+                        {
+                            "Name": "instance_id",
+                            "Value": FOQUSAWSConfig.get_instance().get_instance_id(),
+                        },
+                        {"Name": "event", "Value": event},
+                    ],
+                    "Value": self._metric_count_of_job_finished_dict[event],
+                    "Unit": "Count",
+                },
+            ],
+        )
+
+    def increment_metric_queue_peeks(self, state, reset=False):
+        if reset:
+            self._metric_count_of_queue_peeks = dict()
+        if not state in self._metric_count_of_queue_peeks:
+            self._metric_count_of_queue_peeks[state] = 0
+        if not reset:
+            self._metric_count_of_queue_peeks[state] += 1
+
+        self._cloudwatch.put_metric_data(
+            Namespace="foqus-cloud-backend",
+            MetricData=[
+                {
+                    "MetricName": "count_of_queue_peeks",
+                    "Dimensions": [
+                        {
+                            "Name": "user_name",
+                            "Value": FOQUSAWSConfig.get_instance().get_user(),
+                        },
+                        {
+                            "Name": "instance_id",
+                            "Value": FOQUSAWSConfig.get_instance().get_instance_id(),
+                        },
+                        {"Name": "state", "Value": state},
+                    ],
+                    "Value": self._metric_count_of_queue_peeks[state],
+                    "Unit": "Count",
+                },
+            ],
+        )
+
     def run(self):
+        try:
+            self._run()
+        except Exception as ex:
+            _log.exception("exit: foqus_service unhandled exception")
+            _publish_service_error(message=repr(ex), detail=traceback.format_exc())
+            raise
+
+    def _run(self):
         """main loop for running foqus
         Pop a job off FOQUS-JOB-QUEUE, call setup, then delete the job and call run.
         """
-        global _instanceid
         _log.debug("main loop flowsheet service")
+        try:
+            self.increment_metric_queue_peeks(state="start", reset=True)
+        except Exception as ex:
+            _log.error("put metric queue peeks failed: %s", repr(ex))
+            raise
         self._receipt_handle = None
         VisibilityTimeout = 60 * 10
-        try:
-            _instanceid = urllib.request.urlopen(
-                "http://169.254.169.254/latest/meta-data/instance-id"
-            ).read()
-            _instanceid = _instanceid.decode("ascii")
-        except:
-            _log.error("Failed to discover instance-id")
-
         db = TurbineLiteDB()
         # getJobStatus._db  = db
         _log.debug("Consumer Register")
@@ -586,25 +736,40 @@ class FlowsheetControl:
                 ret = self.pop_job(db, VisibilityTimeout=VisibilityTimeout)
             except FOQUSJobException as ex:
                 job_desc = ex.job_desc
-                _log.exception("verify foqus exception: %s", str(ex))
+                _log.exception("verify foqus exception: %s", repr(ex))
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
                     "job failed in verify: %r" % (ex), job_desc["Id"], exception=msg
                 )
                 self._delete_sqs_job()
+                self.increment_metric_job_finished(event="error.job.verify")
                 continue
             except Exception as ex:
-                _log.exception("pop_job exception: %s", str(ex))
+                _log.exception("pop_job exception: %s", repr(ex))
                 raise
 
             if not ret:
                 continue
+
             assert type(ret) is tuple and len(ret) == 2
+            _log.debug("pop_job return:  %s", str(ret))
             user_name, job_desc = ret
-            job_id = uuid.UUID(job_desc.get("Id"))
-            # getJobStatus._flowsheet_job_id = str(job_id)
-            db.set_user_name(user_name)
+            job_id = job_desc["Id"]
+            session_id = job_desc["sessionid"]
+            # if msg_attr_session_id != session_id:
+            #     _log.error("run: session IDs mismatch MessageAttributes(%s) and Message(%s)",
+            #         msg_attr_session_id, session_id)
+            #     db.job_change_status(job_desc, "error", message=msg)
+            #     db.add_message(
+            #         "run: job.submit session IDs mismatch MessageAttributes(%s) and Message(%s)" %(
+            #         msg_attr_session_id, session_id)
+            #     )
+            #     self._delete_sqs_job()
+            #     self.increment_metric_job_finished(event="error.session.mismatch")
+            #     continue
+            # session_id = uuid.UUID(sessionid)
+
             """
             TODO: check dynamodb table if job has been stopped or killed
             cannot stop a running job.  If entry is missing job is ignored.
@@ -635,6 +800,7 @@ class FlowsheetControl:
                 self._delete_sqs_job()
                 db.job_change_status(job_desc, "expired", message=msg)
                 db.add_message("Job has Expired", jobid=str(job_id))
+                self.increment_metric_job_finished(event="expired.job")
                 continue
 
             """ Job is Finished it is in state (terminate,stop,success,error)
@@ -643,11 +809,12 @@ class FlowsheetControl:
                 _log.info("Job %s will be dequeued and ignored", str(job_id))
                 self._delete_sqs_job()
                 db.add_message("Job State %s" % item["Finished"], jobid=str(job_id))
+                self.increment_metric_job_finished(event="ignore.job.finished")
                 continue
             try:
                 dat = self.setup_foqus(db, user_name, job_desc)
             except NotImplementedError as ex:
-                _log.exception("setup foqus NotImplementedError: %s", str(ex))
+                _log.exception("setup foqus NotImplementedError")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -657,22 +824,26 @@ class FlowsheetControl:
                 )
                 self._delete_sqs_job()
                 raise
-                _log.exception("setup foqus URLError: %s", str(ex))
+                _log.exception("setup foqus URLError")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
                     "job failed in setup URLError", job_desc["Id"], exception=msg
                 )
                 self._delete_sqs_job()
+                self.increment_metric_job_finished(
+                    event="error.job.setup.NotImplementedError"
+                )
                 raise
             except Exception as ex:
                 # TODO:
-                _log.exception("setup foqus exception: %s", str(ex))
+                _log.exception("setup foqus exception")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
                     "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
                 )
+                self.increment_metric_job_finished(event="error.job.setup")
                 self._delete_sqs_job()
                 raise
 
@@ -680,8 +851,14 @@ class FlowsheetControl:
             self._delete_sqs_job()
             try:
                 self.run_foqus(db, job_desc)
+            except foqusException as ex:
+                _log.exception("run_foqus foqusException")
+                self.increment_metric_job_finished(event="error.job.run")
+                self.close()
+                raise
             except Exception as ex:
-                _log.exception("run_foqus: %s", str(ex))
+                _log.exception("run_foqus Exception")
+                self.increment_metric_job_finished(event="error.job.run")
                 self.close()
                 raise
 
@@ -699,12 +876,12 @@ class FlowsheetControl:
         try:
             dat.flowsheet.turbConfig.stopAllConsumers()
         except Exception as ex:
-            _log.exception("reset stop all consumers: %s", str(ex))
+            _log.exception("reset stop all consumers")
             raise
         try:
             dat.flowsheet.turbConfig.closeTurbineLiteDB()
         except Exception as ex:
-            _log.exception("reset close turbineLite DB %s", str(ex))
+            _log.exception("reset close turbineLite")
             raise
 
     def _delete_sqs_job(self):
@@ -756,35 +933,100 @@ class FlowsheetControl:
             VisibilityTimeout=VisibilityTimeout,
             WaitTimeSeconds=10,
         )
+
         if not response.get("Messages", None):
             _log.info("Job Queue is Empty")
+            self.increment_metric_queue_peeks(state="empty")
             return
 
+        self.increment_metric_queue_peeks(state="start")
         message = response["Messages"][0]
         self._receipt_handle = message["ReceiptHandle"]
-        body = json.loads(message["Body"])
-        _log.info("MessageAttributes: " + str(body.get("MessageAttributes")))
-        user_name = body["MessageAttributes"].get("username").get("Value")
-        _log.info("username: " + user_name)
-        db.set_user_name(user_name)
-        job_desc = json.loads(body["Message"])
-        _log.info("Job Description: " + body["Message"])
-        for key in ["Id", "Input", "Simulation"]:
-            if job_desc.get(key) is None:
-                raise FOQUSJobException(
-                    "Job Description Missing Key %s" % key, job_desc, user_name
-                )
+        body = message["Body"]
+        message_attr = message.get("MessageAttributes")
+        _log.info("RESPONSE: " + str(response))
+        _log.info("MessageAttributes: " + str(message_attr))
+        if message_attr is None:
+            _log.error("Reject: Job has no MessageAttributes")
+            self.increment_metric_job_finished(event="invalid.job")
+            self._delete_sqs_job()
+            return
 
-        sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
+        user_name = message_attr.get("username", {}).get("StringValue")
+        _log.info("username: %s", user_name)
+        session_id = message_attr.get("session", {}).get("StringValue")
+        _log.info("session: %s", session_id)
+        job_id = message_attr.get("job", {}).get("StringValue")
+        _log.info("job: %s", job_id)
+        if not job_id:
+            _log.error("Reject Job:  job unspecified")
+            self._delete_sqs_job()
+            return
+        if not session_id:
+            _log.error("Reject Job(%s):  session unspecified", job_id)
+            self._delete_sqs_job()
+            return
+        if not user_name:
+            _log.error("Reject Job(%s):  user unspecified", job_id)
+            self._delete_sqs_job()
+            return
+
+        try:
+            uuid.UUID(job_id)
+        except ValueError as err:
+            _log.exception("job_id(%s) UUID ValueError", job_id)
+            self._delete_sqs_job()
+            return
+        except TypeError as err:
+            _log.exception("job_id(%s) UUID TypeError", job_id)
+            self._delete_sqs_job()
+            return
+
+        try:
+            uuid.UUID(session_id)
+        except ValueError as err:
+            _log.exception("session_id(%s) UUID ValueError", session_id)
+            self._delete_sqs_job()
+            return
+        except TypeError as err:
+            _log.exception("session_id(%s) UUID TypeError", session_id)
+            self._delete_sqs_job()
+            return
+
+        d = dict(sessionid=session_id, Id=job_id)
+        if not db.authorize_user_name(user_name):
+            db.job_change_status(
+                d, "error", message="Authorization Failed: wrong user(%s)" % (user_name)
+            )
+            self._delete_sqs_job()
+            return
+
+        try:
+            job_desc = json.loads(body)
+        except Exception as ex:
+            _log.error("Reject Job: %s", repr(ex))
+            db.job_change_status(d, "invalid", message=repr(ex))
+            self._delete_sqs_job()
+            return
+
+        job_desc.update(d)
+        job_input = job_desc.get("Input", [])
+        simulation_name = job_desc.get("Simulation")
+        if not simulation_name:
+            _log.error("Reject:  Job description has no Simulation")
+            d = dict(sessionid=session_id, Id=job_id)
+            db.job_change_status(d, "invalid", message="no simulation specified")
+            self._delete_sqs_job()
+            return
+
+        sfile, rfile, vfile, ofile = getfilenames(job_id)
         with open(vfile, "w") as fd:
-            json.dump(dict(input=job_desc["Input"]), fd)
+            json.dump(dict(input=job_input), fd)
 
         bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
         _log.info("Simulation Bucket: " + bucket_name)
-        s3 = boto3.client("s3", region_name=AWS_REGION)
-        simulation_name = job_desc["Simulation"]
+        s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
         flowsheet_key = "%s/%s/session.foqus" % (user_name, simulation_name)
-
         l = s3.list_objects(
             Bucket=bucket_name, Prefix="%s/%s/" % (user_name, simulation_name)
         )
@@ -830,11 +1072,6 @@ class FlowsheetControl:
                 job_desc,
                 user_name,
             )
-
-        # if '%s/%s/%s.foqus' %(user_name, simulation_name, simulation_name) not in foqus_keys:
-        #    _log.error("S3 Simulations:  Multiple  %s" %str(foqus_keys))
-        #    raise FOQUSJobException("S3 Bucket Multiple FOQUS Files: %s/%s/%s/*.foqus" %(bucket_name,
-        #        user_name, simulation_name), job_desc, user_name)
 
         idx = foqus_keys.index(flowsheet_key)
         _log.info("S3: Download Key %s", flowsheet_key)
@@ -890,6 +1127,9 @@ class FlowsheetControl:
         count_turb_apps = 0
         nkey = None
         for i in dat.flowsheet.nodes:
+            # JRB: BUG SETS UP DEFAULTS, probably should happend in loadFlowsheetValues
+            # BUG: https://github.com/CCSI-Toolset/FOQUS/issues/1010
+            dat.flowsheet.addNode(i)
             if dat.flowsheet.nodes[i].turbApp is not None:
                 nkey = i
                 count_turb_apps += 1
@@ -917,6 +1157,7 @@ class FlowsheetControl:
         dat = self._dat
         assert isinstance(db, TurbineLiteDB)
         assert isinstance(dat, Session)
+        assert isinstance(dat.flowsheet, Graph)
         exit_code = 0
         sfile, rfile, vfile, ofile = getfilenames(job_desc["Id"])
         guid = job_desc["Id"]
@@ -949,10 +1190,21 @@ class FlowsheetControl:
                 db.add_message("job %s: terminated" % guid, guid)
             else:
                 db.add_message("job %s: terminated" % guid, guid)
+            self.increment_metric_job_finished(event="terminate.job")
             return
 
         if gt.res[0]:
-            dat.flowsheet.loadValues(gt.res[0])
+            if type(gt.res[0]) is not dict:
+                _log.error("Expecting job Output dictionary: %s", str(gt.res))
+                raise foqusException("Run Flowsheet Bad Output: %s" % (str(gt.res)))
+            _log.debug("ORIGINAL  INPUTS: %s", str(dat.flowsheet.input))
+            _log.debug("GT Thread INPUTS: %s", str(gt.input))
+            _log.debug("GT Thread results: %s", str(gt.res))
+            try:
+                dat.flowsheet.loadValues(gt.res[0])
+            except NodeVarListEx as ex:
+                db.job_change_status(job_desc, "error", message=ex.getCodeString())
+                raise
         else:
             dat.flowsheet.errorStat = 19
 
@@ -981,6 +1233,7 @@ class FlowsheetControl:
                 "consumer={0}, job {1} finished, success".format(db.consumer_id, jid),
                 guid,
             )
+            self.increment_metric_job_finished(event="success.job")
         else:
             db.job_change_status(
                 job_desc,
@@ -990,6 +1243,9 @@ class FlowsheetControl:
             db.add_message(
                 "consumer={0}, job {1} finished, error".format(db.consumer_id, jid),
                 guid,
+            )
+            self.increment_metric_job_finished(
+                event="error.flowsheet.%s" % (dat.flowsheet.errorStat)
             )
 
         _log.info("Job {0} finished".format(jid))

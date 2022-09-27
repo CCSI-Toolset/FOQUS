@@ -272,7 +272,7 @@ def plot_weights(xs, wt, wts, title):
     ax2.set_title("Histogram of weights from the candidate set (N={})".format(N))
     ax2.set_xlabel("Candidate weight")
 
-    fig.canvas.set_window_title(title)
+    fig.canvas.manager.set_window_title(title)
 
     return fig
 
@@ -382,7 +382,7 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
         ),
     )
 
-    fig.canvas.set_window_title("Pareto Front")
+    fig.canvas.manager.set_window_title("Pareto Front")
     fig.canvas.mpl_connect("pick_event", onpick)
 
     plt.show()

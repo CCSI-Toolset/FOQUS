@@ -1,8 +1,9 @@
 /**
- * Lambda Function, parses the URL for sessionid/state, and publishes a
- * notification to the update topic with the new session state.
+ * Lambda Function, Moves all submitted jobs to stop.  Stopped jobs remain
+ * on the job queue but will be ignored until moved back to submit or deleted if
+ * moved to terminate.
  *
- * @module post-session-kill
+ * @module post-session-stop
  * @author Joshua Boverhof <jrboverhof@lbl.gov>
  * @version 1.0
  * @license See LICENSE.md
@@ -11,7 +12,7 @@
 'use strict';
 'use AWS.SNS'
 'use uuid'
-const log = require("debug")("post-session-kill")
+const log = require("debug")("post-session-stop")
 const AWS = require('aws-sdk');
 //const s3 = require('s3');
 const fs = require('fs');
@@ -75,9 +76,9 @@ exports.handler = function(event, context, callback) {
         log("SUCCESS: " + JSON.stringify(response_topic.data));
         var obj = {};
         obj.id = session_id;
-        obj.status = "terminate";
+        obj.status = "stop";
         obj.resource = "session";
-        obj.message = "user initiated kill session";
+        obj.message = "user initiated stop session";
         var payload = JSON.stringify(obj);
         var params = {
             Message : payload,

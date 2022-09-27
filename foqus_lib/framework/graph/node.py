@@ -21,14 +21,10 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 import os
-import time
 import json
 import math
 import numpy as np
-import subprocess
 import logging
-import traceback
-import re
 from foqus_lib.framework.pymodel.pymodel import *
 from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
@@ -36,7 +32,6 @@ from collections import OrderedDict
 from foqus_lib.framework.foqusOptions.optionList import optionList
 from foqus_lib.framework.sim.turbineConfiguration import TurbineInterfaceEx
 from foqus_lib.framework.at_dict.at_dict import AtDict
-from PyQt5.QtWidgets import QMessageBox
 from importlib import import_module
 
 _logger = logging.getLogger("foqus." + __name__)
@@ -56,6 +51,7 @@ def attempt_load_tensorflow(try_imports=True):
         import tensorflow as tf
 
         load = tf.keras.models.load_model
+        json_load = tf.keras.models.model_from_json
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
@@ -67,7 +63,13 @@ def attempt_load_tensorflow(try_imports=True):
                 "kwargs={kwargs} but `tensorflow` is not available"
             )
 
-    return load
+        def json_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `tensorflow` is not available"
+            )
+
+    return load, json_load
 
 
 def attempt_load_sympy(try_imports=True):
@@ -107,7 +109,7 @@ def attempt_load_sympy(try_imports=True):
 
 
 # attempt to load optional dependenices for node script
-load = attempt_load_tensorflow()
+load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 
 # pylint: enable=import-error
@@ -136,6 +138,29 @@ class NpCodeEx(Exception):
 
 
 class NodeEx(foqusException):
+    """Refactor so ERROR Codes that are Unique across all
+    foqusException.
+    """
+
+    ERROR_CONFIGURATION_MISSING = 10000
+    ERROR_NODE_FLOWSHEET = 10001
+
+    def __init__(self, code=0, msg="", e=None, tb=None):
+        super(NodeEx, self).__init__(code=code, msg=msg, e=e, tb=tb)
+        self.setCodeStrings()
+
+    @classmethod
+    def GetInstance(cls, code):
+        """Move this to the base class and return
+        the correct Exception based on unique error codes.
+        """
+        if code < cls.ERROR_CONFIGURATION_MISSING:
+            return None
+        inst = NodeEx(code)
+        if code in inst.codeString.keys():
+            return inst
+        return None
+
     def setCodeStrings(self):
         # 100's reserved for python code script errors
         self.codeString[-1] = "Did not finish"
@@ -156,6 +181,10 @@ class NodeEx(foqusException):
         self.codeString[27] = "Can't read variable in results (see log)"
         self.codeString[50] = "Node script interupt exception"
         self.codeString[61] = "Unknow type string"
+        self.codeString[
+            self.ERROR_CONFIGURATION_MISSING
+        ] = "Model Missing Configuration"
+        self.codeString[self.ERROR_NODE_FLOWSHEET] = "Node cannot be set to a flowsheet"
 
 
 class pymodel_ml_ai(pymodel):
@@ -884,7 +913,19 @@ class Node:
             for vkey, v in inst.outputs.items():
                 self.gr.output[self.name][vkey] = v
         elif self.isModelTurbine:
-            sc = self.gr.turbConfig.getSinterConfig(self.modelName)
+            try:
+                sc = self.gr.turbConfig.getSinterConfig(self.modelName)
+            except Exception as ex:
+                _logger.error(
+                    "Turbine: Model %s Missing Sinter Configuration", self.modelName
+                )
+                _logger.exception(ex)
+                self.calcError = NodeEx.ERROR_CONFIGURATION_MISSING
+                raise NodeEx(code=NodeEx.ERROR_CONFIGURATION_MISSING)
+
+            if sc.get("Type") == "FOQUS_Session":
+                self.calcError = NodeEx.ERROR_NODE_FLOWSHEET
+                raise NodeEx(code=NodeEx.ERROR_NODE_FLOWSHEET)
             modelTitle = str(sc.get("title", ""))
             modelAuthor = str(sc.get("author", ""))
             modelDate = str(sc.get("date", ""))
@@ -984,22 +1025,62 @@ class Node:
             cwd = os.getcwd()
             if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
-            try:  # see if custom layer script exists
-                module = import_module(str(self.modelName))  # contains CustomLayer
-                self.model = load(
-                    str(self.modelName) + ".h5",
-                    custom_objects={
-                        str(self.modelName): getattr(module, str(self.modelName))
-                    },
-                )
-            except ImportError:  # try to load model without custom layer
-                _logger.info(
-                    "Cannot detect CustomLayer object to import, FOQUS "
-                    + "will import model without custom attributes."
-                )
-                self.model = load(str(self.modelName) + ".h5")
-            finally:
-                os.chdir(cwd)  # reset to original working directory
+
+            # check which type of file Keras needs to load
+            if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
+                extension = ".h5"
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".json")
+            ):
+                extension = ".json"
+            else:  # assume it's a folder with no extension
+                extension = ""
+
+            if extension != ".json":  # use standard Keras load method
+                try:  # see if custom layer script exists
+                    module = import_module(str(self.modelName))  # contains CustomLayer
+                    self.model = load(
+                        str(self.modelName) + extension,
+                        custom_objects={
+                            str(self.modelName): getattr(module, str(self.modelName))
+                        },
+                    )
+                except (
+                    ImportError,
+                    ModuleNotFoundError,
+                ):  # try to load model without custom layer
+                    _logger.info(
+                        "Cannot detect CustomLayer object to import, FOQUS "
+                        + "will import model without custom attributes."
+                    )
+                    self.model = load(str(self.modelName) + extension)
+                finally:
+                    os.chdir(cwd)  # reset to original working directory
+            else:  # model is a json file, use read method to load dictionary
+                with open(str(self.modelName) + extension, "r") as json_file:
+                    loaded_json = json_file.read()
+                try:  # attempt to load model and weights with custom layer
+                    module = import_module(str(self.modelName))  # contains CustomLayer
+                    self.model = json_load(
+                        loaded_json,
+                        custom_objects={
+                            str(self.modelName): getattr(module, str(self.modelName))
+                        },
+                    )  # load architecture
+                except (
+                    ImportError,
+                    ModuleNotFoundError,
+                ):  # try to load model without custom layer
+                    _logger.info(
+                        "Cannot detect CustomLayer object to import, FOQUS "
+                        + "will import model without custom attributes."
+                    )
+                    self.model = json_load(loaded_json)  # load architecture
+                finally:
+                    self.model.load_weights(
+                        str(self.modelName) + "_weights.h5"
+                    )  # load pretrained weights
+                    os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model)
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
@@ -1468,22 +1549,62 @@ class Node:
             cwd = os.getcwd()
             if "user_ml_ai_models" not in os.getcwd():
                 os.chdir(os.path.join(os.getcwd(), "user_ml_ai_models"))
-            try:  # see if custom layer script exists
-                module = import_module(str(self.modelName))  # contains CustomLayer
-                self.model = load(
-                    str(self.modelName) + ".h5",
-                    custom_objects={
-                        str(self.modelName): getattr(module, str(self.modelName))
-                    },
-                )
-            except ImportError:  # try to load model without custom layer
-                _logger.info(
-                    "Cannot detect CustomLayer object to import, FOQUS "
-                    + "will import model without custom attributes."
-                )
-                self.model = load(str(self.modelName) + ".h5")
-            finally:
-                os.chdir(cwd)  # reset to original working directory
+
+            # check which type of file Keras needs to load
+            if os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".h5")):
+                extension = ".h5"
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".json")
+            ):
+                extension = ".json"
+            else:  # assume it's a folder with no extension
+                extension = ""
+
+            if extension != ".json":  # use standard Keras load method
+                try:  # see if custom layer script exists
+                    module = import_module(str(self.modelName))  # contains CustomLayer
+                    self.model = load(
+                        str(self.modelName) + extension,
+                        custom_objects={
+                            str(self.modelName): getattr(module, str(self.modelName))
+                        },
+                    )
+                except (
+                    ImportError,
+                    ModuleNotFoundError,
+                ):  # try to load model without custom layer
+                    _logger.info(
+                        "Cannot detect CustomLayer object to import, FOQUS "
+                        + "will import model without custom attributes."
+                    )
+                    self.model = load(str(self.modelName) + extension)
+                finally:
+                    os.chdir(cwd)  # reset to original working directory
+            else:  # model is a json file, use read method to load dictionary
+                with open(str(self.modelName) + extension, "r") as json_file:
+                    loaded_json = json_file.read()
+                try:  # attempt to load model and weights with custom layer
+                    module = import_module(str(self.modelName))  # contains CustomLayer
+                    self.model = json_load(
+                        loaded_json,
+                        custom_objects={
+                            str(self.modelName): getattr(module, str(self.modelName))
+                        },
+                    )  # load architecture
+                except (
+                    ImportError,
+                    ModuleNotFoundError,
+                ):  # try to load model without custom layer
+                    _logger.info(
+                        "Cannot detect CustomLayer object to import, FOQUS "
+                        + "will import model without custom attributes."
+                    )
+                    self.model = json_load(loaded_json)  # load architecture
+                finally:
+                    self.model.load_weights(
+                        str(self.modelName) + "_weights.h5"
+                    )  # load pretrained weights
+                    os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model)
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():

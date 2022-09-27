@@ -92,7 +92,7 @@ dist = setup(
     install_requires=[
         "boto3",
         "cma",
-        "matplotlib",
+        "matplotlib<3.6",
         "mlrose_hiive==2.1.3",
         "mplcursors",
         "numpy",
@@ -103,7 +103,7 @@ dist = setup(
         "requests",
         "scipy",
         "tqdm",
-        "TurbineClient",
+        "TurbineClient @ https://github.com/CCSI-Toolset/turb_client/archive/boverhof_08_25_2022.zip",
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],

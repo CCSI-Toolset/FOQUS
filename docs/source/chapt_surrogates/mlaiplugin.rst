@@ -228,9 +228,12 @@ To run the models, copy the appropriate model files or folders ('h5_model.h5',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
 scripts ('model_name.py') into the working directory folder user_ml_ai_models\.
 For example, the model name below is 'mea_column_model' and is saved in H5 format,
-and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-7_Models.mea_column_model.h5*
+and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to
-*FOQUS-wd.user_ml_ai_models*.
+*FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to test the example
+models, some model files are provided in versions 2.3 and 2.7 as well as 2.10. Generally, TensorFlow
+is backwards compatible for models two versions back (e.g. loading models trained in version
+2.3 using version 2.5, or loading models trained in version 2.8 using version 2.10).
 
 To distinguish between H5 models and json models with H5 weight files, FOQUS requires the
 convention ('model1.h5', 'model1.py') and ('model2.json', 'model2_weights.h5', 'model2.py')

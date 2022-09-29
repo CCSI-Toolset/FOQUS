@@ -11,6 +11,7 @@
  */
 'use strict';
 'use AWS.SNS'
+'use uuid'
 const log = require("debug")("post-session-stop")
 const AWS = require('aws-sdk');
 //const s3 = require('s3');

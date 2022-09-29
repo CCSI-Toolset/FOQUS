@@ -2,8 +2,7 @@ import contextlib
 import os
 from pathlib import Path
 import shutil
-
-
+import zipfile
 import pytest
 
 
@@ -71,6 +70,8 @@ def foqus_working_dir(
 def foqus_ml_ai_models_dir(
     foqus_working_dir: Path,
 ) -> Path:
+    # skip this test if tensorflow is not available
+    pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
     return foqus_working_dir / "user_ml_ai_models"
 
@@ -86,11 +87,14 @@ def install_ml_ai_model_files(
     This is a session-level fixture with autouse b/c it needs to be created
     before the main window is instantiated.
     """
+    # skip this test if tensorflow is not available
+    pytest.importorskip("tensorflow", reason="tensorflow not installed")
+
     print("installing ml_ai model files")
     models_dir = foqus_ml_ai_models_dir
 
     base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
-    ts_models_base_path = base_path / "TensorFlow_2-7_Models"
+    ts_models_base_path = base_path / "TensorFlow_2-10_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
 
@@ -100,8 +104,19 @@ def install_ml_ai_model_files(
         ts_models_base_path / "AR_nocustomlayer.h5",
         base_path / "mea_column_model_customnormform.py",
         ts_models_base_path / "mea_column_model_customnormform.h5",
+        base_path / "mea_column_model_customnormform_savedmodel.py",
+        ts_models_base_path / "mea_column_model_customnormform_savedmodel.zip",
+        base_path / "mea_column_model_customnormform_json.py",
+        ts_models_base_path / "mea_column_model_customnormform_json.json",
+        ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
     ]:
         shutil.copy2(path, models_dir)
+    # unzip the zip file (could be generalized later to more files if needed)
+    with zipfile.ZipFile(
+        models_dir / "mea_column_model_customnormform_savedmodel.zip", "r"
+    ) as zip_ref:
+        zip_ref.extractall(models_dir)
+
     yield models_dir
 
 
@@ -149,6 +164,7 @@ def pytest_terminal_summary(terminalreporter, config):
 
     tr.write_line(f"pytest temporary directory:\n\t{basetemp}")
     tr.write_line(f"subdirectories:")
-    for path in Path(basetemp).rglob("*"):
-        if path.is_dir():
-            tr.write_line(f"\t{path}")
+    if basetemp is not None:
+        for path in Path(basetemp).rglob("*"):
+            if path.is_dir():
+                tr.write_line(f"\t{path}")

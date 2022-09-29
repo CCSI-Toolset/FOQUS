@@ -18,11 +18,17 @@ launched.
 
 - ML_AI – Selecting this model type in the Node Editor displays available
   neural network models; this tool currently supports TensorFlow Keras
-  model files in Hierarchical Data Format 5 (.h5). To use this tool,
-  users must train and export a Keras model and place the file in the
-  appropriate folder *user_ml_ai_plugins* in the working directory, as
-  shown below. Optionally, users may save Keras models with custom
-  attributes to display on the node, such as variable labels and bounds.
+  model files saved in Hierarchical Data Format 5 (.h5), the standard
+  Keras SavedModel format (folder containing .pb data files), or serialized
+  to an architecture dictionary (.json) with separately saved model weights
+  (.h5). The examples folder contains demonstrative training and class scripts
+  for models containing no custom layer (see below for more information on adding
+  custom layers), a custom layer with a preset normalization option and a custom
+  layer with a custom normalization function, as well as models saved in all
+  supported file formats. To use this tool, users must train and export a Keras
+  model and place the file in the appropriate folder *user_ml_ai_plugins* in the
+  working directory, as shown below. Optionally, users may save Keras models with
+  custom   attributes to display on the node, such as variable labels and bounds.
   While training a Keras model with custom attributes is not required to
   use the plugin tool, users must provide the necessary class script
   if the Keras model does contain a custom object (see below for further
@@ -213,13 +219,29 @@ replacing *example_model* with the desired model name:
 - Saving the model, *model.save('example_model.h5')*
 - The file names of the .h5 model file and custom class script.
 
-For example, the model name below is 'mea_column_model'. See the example files
-in *FOQUS.examples.other_files.ML_AI_Plugin* for complete syntax and usage.
-The folder contains a second model with no custom layer to demonstrate the
-plugin defaults. To run the models, copy mea_column_model.h5, mea_column_model.py
-and AR_nocustomlayer.h5 into the working directory folder user_ml_ai_models\.
-The default output values are not calculated, so the node should be run to
-obtain the correct output values for the entered inputs.
+See the example files in *FOQUS.examples.other_files.ML_AI_Plugin* for complete syntax
+and usage. The folder contains a second model with no custom layer to demonstrate the
+plugin defaults. The default output values are not calculated, so the node should be run
+to obtain the correct output values for the entered inputs.
+
+To run the models, copy the appropriate model files or folders ('h5_model.h5',
+'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
+scripts ('model_name.py') into the working directory folder user_ml_ai_models\.
+For example, the model name below is 'mea_column_model' and is saved in H5 format,
+and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
+and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to
+*FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to test the example
+models, some model files are provided in versions 2.3 and 2.7 as well as 2.10. Generally, TensorFlow
+is backwards compatible for models two versions back (e.g. loading models trained in version
+2.3 using version 2.5, or loading models trained in version 2.8 using version 2.10).
+
+To distinguish between H5 models and json models with H5 weight files, FOQUS requires the
+convention ('model1.h5', 'model1.py') and ('model2.json', 'model2_weights.h5', 'model2.py')
+when naming model files. Users should note that defining network layers and training the
+network is independent of saved file format, and only the code after `model.summary()`
+in the script below will change. See the three 'training_customnormform' example scripts
+for specific syntax to save Keras models as each file format.
+
 
 .. code:: python
 

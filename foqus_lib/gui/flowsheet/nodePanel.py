@@ -768,11 +768,11 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.parent().varBrowse.show()
 
     def simSet(self):
-        """ TODO:  CleanUP Need to follow references back to the flowsheet
+        """TODO:  CleanUP Need to follow references back to the flowsheet
         in order to trip errors
         """
         text = self.simNameBox.currentText()
-        self.parent().setStatus("Setting Simulation %s" %(text))
+        self.parent().setStatus("Setting Simulation %s" % (text))
         try:
 
             self.node.setSim(newType=self.getModelType(), newModel=text)

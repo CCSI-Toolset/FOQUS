@@ -11,7 +11,7 @@
 'use AWS.DynamoDB'
 console.log('Loading function');
 const AWS = require('aws-sdk');
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 var validate = require('uuid-validate');
 
 /*

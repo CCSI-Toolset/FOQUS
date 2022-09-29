@@ -5,8 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "",
-    "uuid": "^3.2.1",
-    "debug": ">=4.1.1",
+    "uuid": "^8.3.2",
+    "debug": ">=4.3.4",
     "collections": ">=5.1.11"
   },
   "scripts": {

@@ -7,8 +7,8 @@
  * @see https://github.com/motdotla/node-lambda-template
  */
 'use strict';
-'use uuid'
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
+
 exports.handler = function(event, context, callback) {
   const done = (err, res) => callback(null, {
       statusCode: err ? '400' : '200',

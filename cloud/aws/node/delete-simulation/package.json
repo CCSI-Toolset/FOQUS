@@ -5,8 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "",
-    "uuid": "^3.2.1",
-    "uuid-validate": ""
+    "uuid": "^8.3.2",
+    "uuid-validate": ">=0.0.3"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

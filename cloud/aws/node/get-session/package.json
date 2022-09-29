@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "aws-sdk": "",
-    "debug": ">=4.1.1"
+    "debug": ">=4.3.4"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

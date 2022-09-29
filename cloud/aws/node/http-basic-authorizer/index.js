@@ -9,7 +9,6 @@
  */
 'use strict';
 'use AWS.DynamoDB'
-'use uuid'
 const AWS = require('aws-sdk');
 //const table_name = "FOQUS_Resources";
 const table_name = process.env.FOQUS_DYNAMO_TABLE_NAME;
@@ -139,12 +138,6 @@ var generateDeny = function(principalId, resource) {
     return generatePolicy(principalId, 'Deny', resource);
 }
 
-function decodeBase64(str) {
-  return new Buffer(str, 'base64').toString();
-}
-
-
-
 var credentialsRegExp = /^ *(?:[Bb][Aa][Ss][Ii][Cc]) +([A-Za-z0-9\-\._~\+\/]+=*) *$/;
 
 /**
@@ -188,7 +181,7 @@ function userFromBasicAuthString(header) {
  */
 
 function decodeBase64(str) {
-  return new Buffer(str, 'base64').toString();
+  return new Buffer.from(str, 'base64').toString();
 }
 
 /**

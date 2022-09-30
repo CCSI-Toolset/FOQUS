@@ -50,7 +50,7 @@ def plot_hist(
     center = (bins[1:] + bins[:-1]) / 2
     if hist is not None:
         ns_hist, bins_hist = np.histogram(hist, nbins)
-        width_hist = bins_hist[1] - bins_hist[0]
+        _width_hist = bins_hist[1] - bins_hist[0]
         center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
     if hbars:
         ax.barh(
@@ -58,7 +58,7 @@ def plot_hist(
             ns,
             align="center",
             height=width,
-            facecolor=fc["cand"],
+            facecolor=fc["design"],
             linewidth=linewidth,
             edgecolor="k",
         )
@@ -67,7 +67,7 @@ def plot_hist(
                 center_hist,
                 ns_hist,
                 align="center",
-                height=width_hist,
+                height=width,
                 facecolor=fc["hist"],
                 linewidth=linewidth,
                 edgecolor="k",
@@ -79,7 +79,7 @@ def plot_hist(
             ns,
             align="center",
             width=width,
-            facecolor=fc["cand"],
+            facecolor=fc["design"],
             linewidth=linewidth,
             edgecolor="k",
         )
@@ -88,7 +88,7 @@ def plot_hist(
                 center_hist,
                 ns_hist,
                 align="center",
-                width=width_hist,
+                width=width,
                 facecolor=fc["hist"],
                 linewidth=linewidth,
                 edgecolor="k",
@@ -160,7 +160,7 @@ def plot_candidates(
             xname,
             show_grids=True,
             linewidth=0,
-            hbars=True,
+            hbars=False,
             cand_rgba=cand_rgba,
             hist=hf[xname],
         )
@@ -190,7 +190,7 @@ def plot_candidates(
                 xname,
                 show_grids=True,
                 linewidth=0,
-                hbars=True,
+                hbars=False,
                 cand_rgba=cand_rgba,
                 hist=hf[xname],
             )
@@ -256,12 +256,15 @@ def plot_candidates(
                 else:
                     _ax = remove_xticklabels(ax)
 
-    labels = ["Frequency", scatter_label]
+    labels = [scatter_label]
+    if hf is not None:
+        labels.append("Previous data")
+    labels.append(scatter_label)
     if nImpPts > 0:
         labels.append("Imputed")
     labels.append("Candidate data points")
     if hf is not None:
-        labels.append("Previous data points")
+        labels.append("Previous data")
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)

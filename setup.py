@@ -103,7 +103,7 @@ dist = setup(
         "requests",
         "scipy",
         "tqdm",
-        "TurbineClient @ https://github.com/CCSI-Toolset/turb_client/archive/boverhof_08_25_2022.zip",
+        "TurbineClient>=4.0.2",
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],

@@ -259,14 +259,22 @@ def plot_candidates(
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
                 if hf is not None:
-                    xdelta = (max(max(df[yname]), max(hf[yname])) -
-                              min(min(df[yname]), min(hf[yname]))) / 20
-                    ydelta = (max(max(df[xname]), max(hf[xname])) -
-                              min(min(df[xname]), min(hf[xname]))) / 20
-                    ax.set_xlim(min(min(df[yname]), min(hf[yname])) - xdelta,
-                                max(max(df[yname]), max(hf[yname])) + xdelta)
-                    ax.set_ylim(min(min(df[xname]), min(hf[xname])) - ydelta,
-                                max(max(df[xname]), max(hf[xname])) + ydelta)
+                    xdelta = (
+                        max(max(df[yname]), max(hf[yname]))
+                        - min(min(df[yname]), min(hf[yname]))
+                    ) / 20
+                    ydelta = (
+                        max(max(df[xname]), max(hf[xname]))
+                        - min(min(df[xname]), min(hf[xname]))
+                    ) / 20
+                    ax.set_xlim(
+                        min(min(df[yname]), min(hf[yname])) - xdelta,
+                        max(max(df[yname]), max(hf[yname])) + xdelta,
+                    )
+                    ax.set_ylim(
+                        min(min(df[xname]), min(hf[xname])) - ydelta,
+                        max(max(df[xname]), max(hf[xname])) + ydelta,
+                    )
                 else:
                     xdelta = (max(df[yname]) - min(df[yname])) / 20
                     ydelta = (max(df[xname]) - min(df[xname])) / 20

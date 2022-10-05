@@ -219,13 +219,14 @@ def plot_candidates(
                         facecolor=fc["imp"],
                     )
 
-                ax.scatter(
-                    cand[yname],
-                    cand[xname],
-                    s=area["cand"],
-                    facecolor=fc["cand"],
-                    alpha=alpha["cand"],
-                )
+                if cand is not None:
+                    ax.scatter(
+                        cand[yname],
+                        cand[xname],
+                        s=area["cand"],
+                        facecolor=fc["cand"],
+                        alpha=alpha["cand"],
+                    )
 
                 if hf is not None:
                     ax.scatter(
@@ -262,7 +263,8 @@ def plot_candidates(
     labels.append(scatter_label)
     if nImpPts > 0:
         labels.append("Imputed")
-    labels.append("Candidate data points")
+    if cand is not None:
+        labels.append("Candidate data points")
     if hf is not None:
         labels.append("Previous data")
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")

@@ -42,7 +42,6 @@ def plot_hist(
     cand_rgba=None,
     hist=None,
 ):
-
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
     ns, bins = np.histogram(xs, nbins)
@@ -129,7 +128,6 @@ def remove_yticklabels(ax):
 def plot_candidates(
     df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0
 ):
-
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
 
@@ -154,6 +152,10 @@ def plot_candidates(
         fig = plt.figure()
         ax = fig.add_subplot(111)
         xname = show[0]
+        if hf is not None:
+            hist = hf[xname]
+        else:
+            hist = None
         _ax = plot_hist(
             ax,
             df[xname],
@@ -162,7 +164,7 @@ def plot_candidates(
             linewidth=0,
             hbars=False,
             cand_rgba=cand_rgba,
-            hist=hf[xname],
+            hist=hist,
         )
 
     else:  # multiple inputs
@@ -183,6 +185,10 @@ def plot_candidates(
             k = sb_indices[i][i]
             ax = A[k]
             xname = show[i]
+            if hf is not None:
+                hist = hf[xname]
+            else:
+                hist = None
             # ... plot histogram for diagonal subplot
             _ax = plot_hist(
                 ax,
@@ -192,7 +198,7 @@ def plot_candidates(
                 linewidth=0,
                 hbars=False,
                 cand_rgba=cand_rgba,
-                hist=hf[xname],
+                hist=hist,
             )
 
             for j in range(i + 1, nshow):
@@ -238,11 +244,15 @@ def plot_candidates(
                     )
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
-                if cand is not None:
-                    xdelta = (max(cand[yname]) - min(cand[yname])) / 20
-                    ydelta = (max(cand[xname]) - min(cand[xname])) / 20
-                    ax.set_xlim((min(cand[yname]) - xdelta, max(cand[yname]) + xdelta))
-                    ax.set_ylim((min(cand[xname]) - ydelta, max(cand[xname]) + ydelta))
+                if hf is not None:
+                    xdelta = (max(max(df[yname]), max(hf[yname])) -
+                              min(min(df[yname]), min(hf[yname]))) / 20
+                    ydelta = (max(max(df[xname]), max(hf[xname])) -
+                              min(min(df[xname]), min(hf[xname]))) / 20
+                    ax.set_xlim(min(min(df[yname]), min(hf[yname])) - xdelta,
+                                max(max(df[yname]), max(hf[yname])) + xdelta)
+                    ax.set_ylim(min(min(df[xname]), min(hf[xname])) - ydelta,
+                                max(max(df[xname]), max(hf[xname])) + ydelta)
                 else:
                     xdelta = (max(df[yname]) - min(df[yname])) / 20
                     ydelta = (max(df[xname]) - min(df[xname])) / 20
@@ -270,7 +280,6 @@ def plot_candidates(
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)
-
     fig.canvas.manager.set_window_title(title)
 
     return fig
@@ -283,7 +292,7 @@ def plot_weights(xs, wt, wts, title):
     #    wts - numpy array of shape (N,) containing weights from all candidates
 
     # generate subplots
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=False)
 
     # the top subplot shows the min distance for only best designs
     from .distance import compute_dist

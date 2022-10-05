@@ -41,6 +41,7 @@ def plot_hist(
     hbars=False,  # set to True for horizontal bars
     cand_rgba=None,
     hist=None,
+    y_limit=None,
 ):
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
@@ -93,6 +94,8 @@ def plot_hist(
                 edgecolor="k",
             )
         ax.set_xlabel(xname)
+        if y_limit is not None:
+            ax.set_ylim(0, y_limit)
 
     ax.grid(show_grids, axis="both")
     return ax
@@ -176,6 +179,16 @@ def plot_candidates(
         fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
         A = axes.flat
 
+        # histogram y-axis limit
+        hist_max_list = []
+        for i in range(nshow):
+            ns, _bins = np.histogram(df[show[i]], 20)
+            hist_max_list.append(max(ns))
+            if hf is not None:
+                ns, _bins = np.histogram(hf[show[i]], 20)
+                hist_max_list.append(max(ns))
+        hist_max = max(hist_max_list)
+
         for i in range(nshow):
             for j in range(i):
                 # ... delete the unused (lower-triangular) axes
@@ -199,6 +212,7 @@ def plot_candidates(
                 hbars=False,
                 cand_rgba=cand_rgba,
                 hist=hist,
+                y_limit=hist_max,
             )
 
             for j in range(i + 1, nshow):

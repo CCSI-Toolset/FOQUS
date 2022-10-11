@@ -23,7 +23,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.15.0dev0"
+default_version = "3.16.dev0"
 
 try:
     version = (
@@ -98,12 +98,12 @@ dist = setup(
         "numpy",
         "pandas",
         "psutil",
-        "PyQt5==5.12.*",
+        "PyQt5==5.15.7",
         "pywin32; sys_platform == 'win32'",
         "requests",
         "scipy",
         "tqdm",
-        "TurbineClient @ https://github.com/CCSI-Toolset/turb_client/archive/boverhof_08_25_2022.zip",
+        "TurbineClient>=4.0.2",
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],

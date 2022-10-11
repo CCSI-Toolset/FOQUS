@@ -127,10 +127,13 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     assert turb_app in ["acm", "aspenplus"], (
         'unknown turbine application "%s"' % turb_app
     )
-    _log.debug('Turbine Node Key="%s", Model="%s", Application="%s"', 
-        nkey, model_name, turb_app
+    _log.debug(
+        'Turbine Node Key="%s", Model="%s", Application="%s"',
+        nkey,
+        model_name,
+        turb_app,
     )
-    
+
     """ Search S3 Bucket for node simulation
     """
     s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
@@ -1129,9 +1132,6 @@ class FlowsheetControl:
         count_turb_apps = 0
         nkey = None
         for i in dat.flowsheet.nodes:
-            # JRB: BUG SETS UP DEFAULTS, probably should happend in loadFlowsheetValues
-            # BUG: https://github.com/CCSI-Toolset/FOQUS/issues/1010
-            #dat.flowsheet.addNode(i)
             if dat.flowsheet.nodes[i].turbApp is not None:
                 nkey = i
                 count_turb_apps += 1
@@ -1198,17 +1198,17 @@ class FlowsheetControl:
             if type(gt.res[0]) is not dict:
                 _log.error("Expecting job Output dictionary: %s", str(gt.res))
                 raise foqusException("Run Flowsheet Bad Output: %s" % (str(gt.res)))
-            
+
             # NOTE: Nodes need empty entries to pass loadValues
             # else get an exception
             if len(dat.flowsheet.input_vectorlist) == 0:
-                for k in gt.res[0]['input_vectorvals']:
+                for k in gt.res[0]["input_vectorvals"]:
                     dat.flowsheet.input_vectorlist.addNode(k)
-                    
+
             if len(dat.flowsheet.output_vectorlist) == 0:
-                for k in gt.res[0]['input_vectorvals']:
-                    dat.flowsheet.output_vectorlist.addNode(k) 
-                    
+                for k in gt.res[0]["input_vectorvals"]:
+                    dat.flowsheet.output_vectorlist.addNode(k)
+
             try:
                 dat.flowsheet.loadValues(gt.res[0])
             except NodeVarListEx as ex:

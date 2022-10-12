@@ -222,7 +222,7 @@ are located in: **examples/test_files/Optimization/Model_Files/**
 #. If “SinterConfigGUI” was launched from FOQUS, the path to the
    configuration file is automatically passed to FOQUS. The next step in
    FOQUS is to click **OK** in the Add/Update Turbine Model window.
-   FOQUS may then be used to upload it to the Turbine gateway. If
-   “SinterConfigGUI” was not launched from FOQUS (e.g., it was launched
+   FOQUS may then be used to upload it to TurbineLite or AWS FOQUS Cloud. 
+   If “SinterConfigGUI” was not launched from FOQUS (e.g., it was launched
    from the Start menu), the configuration file name must be entered in
    FOQUS manually.

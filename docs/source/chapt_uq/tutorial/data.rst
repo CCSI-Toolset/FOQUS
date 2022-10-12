@@ -13,8 +13,8 @@ Filtering
 ~~~~~~~~~
 
 Filtering involves selecting out samples whose values of a certain input
-or output fall into a certain range. Typically, when runs are returned
-from the Turbine gateway, there could be simulations that failed to
+or output fall into a certain range. When runs are returned
+from the Turbine Web API there often are simulations that failed to
 converge in Aspen, thus the simulation samples corresponding to these
 failed runs should be excluded from analysis. Follow the steps below to
 filter out the samples due to failed runs:
@@ -22,9 +22,8 @@ filter out the samples due to failed runs:
 #. Click Load from File on the UQ window (Figure :ref:`fig:uqt_data_filter`).
 
 #. Select the file “gmoat5012_9levels.res” in the examples\UQ folder.
-   This file is an actual simulation ensemble that has already been run
-   on the Turbine gateway. To find this file, the user may need to
-   change the file filter to “All files.”
+   This file is an actual simulation ensemble that has already been run. 
+   To find this file, the user may need to change the file filter to “All files.”
 
 #. Select the Filtering tab.
 

@@ -49,13 +49,13 @@ Options in the **Settings, FOQUS** tab are described below.
    session file can be useful for debugging.
 
 #. **FOQUS Flowsheet Run Method** enables the user to select between
-   running simulations on the same computer as FOQUS, or on a remote
-   Turbine gateway. Running simulations remotely allows parallel
+   running simulations on the same computer as FOQUS, or on the AWS 
+   FOQUS Cloud. Running simulations remotely on the cloud allows parallel
    execution. The default setting is "Local". If the user switches from
    "Local" to "Remote", a warning message will appear. The user will be
    informed that the models that have been uploaded to the Local Turbine
-   may not be available in the Remote Turbine Gateway. Therefore, the
-   user may need to upload these models into Turbine again in order to
+   may not be available in the AWS FOQUS Cloud. Therefore, the
+   user may need to upload these models into the Cloud in order to
    run the models remotely.
 
 #. **Working Directory** is the path to the FOQUS working directory. The

@@ -119,7 +119,6 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, (
         "DAT Flowsheet nodes turbApp is %s" % dat.flowsheet.nodes[nkey].turbApp
     )
-
     node = dat.flowsheet.nodes[nkey]
     turb_app = node.turbApp[0]
     model_name = node.modelName
@@ -127,6 +126,12 @@ def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     turb_app = turb_app.lower()
     assert turb_app in ["acm", "aspenplus"], (
         'unknown turbine application "%s"' % turb_app
+    )
+    _log.debug(
+        'Turbine Node Key="%s", Model="%s", Application="%s"',
+        nkey,
+        model_name,
+        turb_app,
     )
 
     """ Search S3 Bucket for node simulation
@@ -593,7 +598,7 @@ def _publish_service_error(message="", detail=""):
         message=message, detail=detail, instance=instance_id, event="service.error"
     )
     sns.publish(
-        Message=json.dumps(d), MessageAttributes=attrs, TopicArn=topic_alert_arn
+        Message=json.dumps(d), MessageAttributes=attrs, TargetArn=topic_alert_arn
     )
     _log.info("published")
 
@@ -1127,9 +1132,6 @@ class FlowsheetControl:
         count_turb_apps = 0
         nkey = None
         for i in dat.flowsheet.nodes:
-            # JRB: BUG SETS UP DEFAULTS, probably should happend in loadFlowsheetValues
-            # BUG: https://github.com/CCSI-Toolset/FOQUS/issues/1010
-            dat.flowsheet.addNode(i)
             if dat.flowsheet.nodes[i].turbApp is not None:
                 nkey = i
                 count_turb_apps += 1
@@ -1177,7 +1179,6 @@ class FlowsheetControl:
                     message="terminate flowsheet: status=%s stop=%s"
                     % (status, self._stop),
                 )
-                # gt.terminate()
                 break
 
         if terminate:
@@ -1197,9 +1198,17 @@ class FlowsheetControl:
             if type(gt.res[0]) is not dict:
                 _log.error("Expecting job Output dictionary: %s", str(gt.res))
                 raise foqusException("Run Flowsheet Bad Output: %s" % (str(gt.res)))
-            _log.debug("ORIGINAL  INPUTS: %s", str(dat.flowsheet.input))
-            _log.debug("GT Thread INPUTS: %s", str(gt.input))
-            _log.debug("GT Thread results: %s", str(gt.res))
+
+            # NOTE: Nodes need empty entries to pass loadValues
+            # else get an exception
+            if len(dat.flowsheet.input_vectorlist) == 0:
+                for k in gt.res[0]["input_vectorvals"]:
+                    dat.flowsheet.input_vectorlist.addNode(k)
+
+            if len(dat.flowsheet.output_vectorlist) == 0:
+                for k in gt.res[0]["input_vectorvals"]:
+                    dat.flowsheet.output_vectorlist.addNode(k)
+
             try:
                 dat.flowsheet.loadValues(gt.res[0])
             except NodeVarListEx as ex:

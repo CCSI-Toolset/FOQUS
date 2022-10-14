@@ -37,11 +37,11 @@ def plot_hist(
     xname,
     nbins=20,
     show_grids=True,  # set to True to show grid lines
-    linewidth=0,  # set to nonzero to show border around bars
+    linewidth=1,  # set to nonzero to show border around bars
     hbars=False,  # set to True for horizontal bars
     cand_rgba=None,
     hist=None,
-    y_limit=None,
+    x_limit=None,
 ):
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
@@ -58,7 +58,7 @@ def plot_hist(
             ns,
             align="center",
             height=width,
-            facecolor=fc["design"],
+            facecolor=fc["cand"],
             linewidth=linewidth,
             edgecolor="k",
         )
@@ -73,13 +73,18 @@ def plot_hist(
                 edgecolor="k",
             )
         ax.set_ylabel(xname)
+        ax.set_xlabel("Frequency")
+
+        if x_limit is not None:
+            ax.set_xlim(0, 1.1 * x_limit)
+
     else:
         ax.bar(
             center,
             ns,
             align="center",
             width=width,
-            facecolor=fc["design"],
+            facecolor=fc["cand"],
             linewidth=linewidth,
             edgecolor="k",
         )
@@ -94,8 +99,9 @@ def plot_hist(
                 edgecolor="k",
             )
         ax.set_xlabel(xname)
-        if y_limit is not None:
-            ax.set_ylim(0, y_limit)
+        ax.set_ylabel("Frequency")
+        if x_limit is not None:
+            ax.set_ylim(0, 1.1 * x_limit)
 
     ax.grid(show_grids, axis="both")
     return ax
@@ -131,6 +137,8 @@ def remove_yticklabels(ax):
 def plot_candidates(
     df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0
 ):
+    if cand is not None:
+        fc["cand"] = fc["design"]
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
 
@@ -164,7 +172,7 @@ def plot_candidates(
             df[xname],
             xname,
             show_grids=True,
-            linewidth=0,
+            linewidth=1,
             hbars=False,
             cand_rgba=cand_rgba,
             hist=hist,
@@ -208,11 +216,11 @@ def plot_candidates(
                 df[xname],
                 xname,
                 show_grids=True,
-                linewidth=0,
-                hbars=False,
+                linewidth=1,
+                hbars=True,
                 cand_rgba=cand_rgba,
                 hist=hist,
-                y_limit=hist_max,
+                x_limit=hist_max,
             )
 
             for j in range(i + 1, nshow):
@@ -314,7 +322,7 @@ def plot_weights(xs, wt, wts, title):
     #    wts - numpy array of shape (N,) containing weights from all candidates
 
     # generate subplots
-    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=False)
+    fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
     # the top subplot shows the min distance for only best designs
     from .distance import compute_dist

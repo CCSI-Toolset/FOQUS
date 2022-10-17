@@ -42,6 +42,7 @@ def plot_hist(
     cand_rgba=None,
     hist=None,
     x_limit=None,
+    design=False,
 ):
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
@@ -53,15 +54,26 @@ def plot_hist(
         _width_hist = bins_hist[1] - bins_hist[0]
         center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
     if hbars:
-        ax.barh(
-            center,
-            ns,
-            align="center",
-            height=width,
-            facecolor=fc["cand"],
-            linewidth=linewidth,
-            edgecolor="k",
-        )
+        if design:
+            ax.barh(
+                center,
+                ns,
+                align="center",
+                height=width,
+                facecolor=fc["design"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        else:
+            ax.barh(
+                center,
+                ns,
+                align="center",
+                height=width,
+                facecolor=fc["cand"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
         if hist is not None:
             ax.barh(
                 center_hist,
@@ -79,15 +91,26 @@ def plot_hist(
             ax.set_xlim(0, 1.1 * x_limit)
 
     else:
-        ax.bar(
-            center,
-            ns,
-            align="center",
-            width=width,
-            facecolor=fc["cand"],
-            linewidth=linewidth,
-            edgecolor="k",
-        )
+        if design:
+            ax.bar(
+                center,
+                ns,
+                align="center",
+                width=width,
+                facecolor=fc["design"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        else:
+            ax.bar(
+                center,
+                ns,
+                align="center",
+                width=width,
+                facecolor=fc["cand"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
         if hist is not None:
             ax.bar(
                 center_hist,
@@ -138,7 +161,10 @@ def plot_candidates(
     df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0
 ):
     if cand is not None:
-        fc["cand"] = fc["design"]
+        design = True
+    else:
+        design = False
+
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
 
@@ -176,6 +202,7 @@ def plot_candidates(
             hbars=False,
             cand_rgba=cand_rgba,
             hist=hist,
+            design=design
         )
 
     else:  # multiple inputs
@@ -221,6 +248,7 @@ def plot_candidates(
                 cand_rgba=cand_rgba,
                 hist=hist,
                 x_limit=hist_max,
+                design=design
             )
 
             for j in range(i + 1, nshow):
@@ -229,25 +257,25 @@ def plot_candidates(
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                if nImpPts == 0:
-                    ax.scatter(
-                        df[yname], df[xname], s=area["design"], facecolor=fc["design"]
-                    )
-                else:
-                    ax.scatter(
-                        df[yname][0:-nImpPts],
-                        df[xname][0:-nImpPts],
-                        s=area["design"],
-                        facecolor=fc["design"],
-                    )
-                    ax.scatter(
-                        df[yname][-nImpPts:],
-                        df[xname][-nImpPts:],
-                        s=area["imp"],
-                        facecolor=fc["imp"],
-                    )
+                if design:
+                    if nImpPts == 0:
+                        ax.scatter(
+                            df[yname], df[xname], s=area["design"], facecolor=fc["design"]
+                        )
+                    else:
+                        ax.scatter(
+                            df[yname][0:-nImpPts],
+                            df[xname][0:-nImpPts],
+                            s=area["design"],
+                            facecolor=fc["design"],
+                        )
+                        ax.scatter(
+                            df[yname][-nImpPts:],
+                            df[xname][-nImpPts:],
+                            s=area["imp"],
+                            facecolor=fc["imp"],
+                        )
 
-                if cand is not None:
                     ax.scatter(
                         cand[yname],
                         cand[xname],
@@ -255,6 +283,24 @@ def plot_candidates(
                         facecolor=fc["cand"],
                         alpha=alpha["cand"],
                     )
+                else:
+                    if nImpPts == 0:
+                        ax.scatter(
+                            df[yname], df[xname], s=area["cand"], facecolor=fc["cand"]
+                        )
+                    else:
+                        ax.scatter(
+                            df[yname][0:-nImpPts],
+                            df[xname][0:-nImpPts],
+                            s=area["cand"],
+                            facecolor=fc["cand"],
+                        )
+                        ax.scatter(
+                            df[yname][-nImpPts:],
+                            df[xname][-nImpPts:],
+                            s=area["imp"],
+                            facecolor=fc["imp"],
+                        )
 
                 if hf is not None:
                     ax.scatter(
@@ -338,7 +384,7 @@ def plot_weights(xs, wt, wts, title):
     ax1.set_ylabel("Min distance")
 
     # the bottom subplot shows a histogram of ALL the weights from the candidate set
-    ax2 = plot_hist(ax2, wts, "Weight", show_grids=False, linewidth=1)
+    ax2 = plot_hist(ax2, wts, "Weight", show_grids=False, linewidth=1, design=True)
     N = wts.shape[0]
     ax2.set_title("Histogram of weights from the candidate set (N={})".format(N))
     ax2.set_xlabel("Candidate weight")

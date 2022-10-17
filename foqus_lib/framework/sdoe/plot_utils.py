@@ -202,7 +202,7 @@ def plot_candidates(
             hbars=False,
             cand_rgba=cand_rgba,
             hist=hist,
-            design=design
+            design=design,
         )
 
     else:  # multiple inputs
@@ -248,7 +248,7 @@ def plot_candidates(
                 cand_rgba=cand_rgba,
                 hist=hist,
                 x_limit=hist_max,
-                design=design
+                design=design,
             )
 
             for j in range(i + 1, nshow):
@@ -260,7 +260,10 @@ def plot_candidates(
                 if design:
                     if nImpPts == 0:
                         ax.scatter(
-                            df[yname], df[xname], s=area["design"], facecolor=fc["design"]
+                            df[yname],
+                            df[xname],
+                            s=area["design"],
+                            facecolor=fc["design"],
                         )
                     else:
                         ax.scatter(

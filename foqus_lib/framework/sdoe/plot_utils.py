@@ -46,13 +46,14 @@ def plot_hist(
 ):
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
+
     ns, bins = np.histogram(xs, nbins)
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
     if hist is not None:
         ns_hist, bins_hist = np.histogram(hist, nbins)
         _width_hist = bins_hist[1] - bins_hist[0]
-        center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
+        _center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
     if hbars:
         if design:
             ax.barh(
@@ -76,13 +77,14 @@ def plot_hist(
             )
         if hist is not None:
             ax.barh(
-                center_hist,
+                center,
                 ns_hist,
                 align="center",
                 height=width,
                 facecolor=fc["hist"],
                 linewidth=linewidth,
                 edgecolor="k",
+                left=ns,
             )
         ax.set_ylabel(xname)
         ax.set_xlabel("Frequency")
@@ -113,13 +115,14 @@ def plot_hist(
             )
         if hist is not None:
             ax.bar(
-                center_hist,
+                center,
                 ns_hist,
                 align="center",
                 width=width,
                 facecolor=fc["hist"],
                 linewidth=linewidth,
                 edgecolor="k",
+                bottom=ns,
             )
         ax.set_xlabel(xname)
         ax.set_ylabel("Frequency")

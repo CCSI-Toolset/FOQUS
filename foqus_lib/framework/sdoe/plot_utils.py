@@ -14,6 +14,7 @@
 #
 ###############################################################################
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 import matplotlib.cm as cm
 import mplcursors
@@ -88,9 +89,10 @@ def plot_hist(
             )
         ax.set_ylabel(xname)
         ax.set_xlabel("Frequency")
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
         if x_limit is not None:
-            ax.set_xlim(0, 1.1 * x_limit)
+            ax.set_xlim(0, int(np.ceil(1.1 * x_limit)))
 
     else:
         if design:
@@ -126,8 +128,10 @@ def plot_hist(
             )
         ax.set_xlabel(xname)
         ax.set_ylabel("Frequency")
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
         if x_limit is not None:
-            ax.set_ylim(0, 1.1 * x_limit)
+            ax.set_ylim(0, int(np.ceil(1.1 * x_limit)))
 
     ax.grid(show_grids, axis="both")
     return ax
@@ -217,13 +221,14 @@ def plot_candidates(
         fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
         A = axes.flat
 
-        # histogram y-axis limit
+        # histogram x-axis limit
         hist_max_list = []
         for i in range(nshow):
             ns, _bins = np.histogram(df[show[i]], 20)
             hist_max_list.append(max(ns))
             if hf is not None:
-                ns, _bins = np.histogram(hf[show[i]], 20)
+                cdf = np.concatenate([df[show[i]], hf[show[i]]], axis=0)
+                ns, _bins = np.histogram(cdf, 20)
                 hist_max_list.append(max(ns))
         hist_max = max(hist_max_list)
 

@@ -39,7 +39,7 @@ Install Turbine and SimSinter (Windows Only)
 
 * After the install the Turbine Web API Service Will start automatically when Windows starts, but it
   will not start directly after the install. Do one of these two things (only after install):
-  
+
   * Restart computer, or
   * Start the "Turbine Web API service":
 
@@ -64,10 +64,7 @@ Download ALAMO and request a license from the `ALAMO download page
 Install NLopt
 ^^^^^^^^^^^^^
 
-NLopt is an optional optimization library, which can be used by FOQUS. NLopt is not available to be installed with pip, but can be installed with conda as follows::
-
-  conda activate ccsi-foqus
-  conda install -c conda-forge nlopt
+NLopt is an optional optimization library, which can be used by FOQUS. NLopt is included in the conda psuade-lite 1.9.0 package.
 
 For more information, see the `NLopt Installation Instructions <https://nlopt.readthedocs.io/en/latest/>`_.
 
@@ -79,7 +76,7 @@ optimization. The python package can be installed with pip with::
 
     conda activate ccsi-foqus
     pip install SQSnobFit
-    
+
 The plugin has been developed for FOQUS versions 2.1 and greater. For further details on the
 available versions and installation, see the `SQSnobFit PyPI package page
 <https://pypi.org/project/SQSnobFit/>`_.
@@ -92,7 +89,7 @@ Comment out or remove the following code lines just below ``def minimize(...)`` 
 
     if budget <= 0:
       budget = 100000
-    
+
 Then replace::
 
     return Result(fbest, xbest), objfunc.get_history()
@@ -111,7 +108,7 @@ R is a software toolbox for statistical computing and graphics. R version 3.1+ i
 ACOSSO and BSS-ANOVA surrogate models and the Basic Data's SolventFit model.
 
 * Follow instructions from the `R website <http://cran.r-project.org/>`_ to download and install R.
-  
+
 * Open R and type the following to install and load the prerequisite packages::
 
     install.packages('quadprog')

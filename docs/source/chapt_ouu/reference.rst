@@ -71,8 +71,7 @@ Note that these metrics are defined in the design variable space - that
 is, at each iteration of an OUU algorithm, the selected metric will be
 computed for the decision point under consideration. Since the
 calculation of these statistical metrics requires a (possibly large) sample,
-OUU can benefit from parallel computing capabilities (e.g., the
-Turbine gateway).
+OUU can benefit from parallel computing capabilities of the AWS FOQUS Cloud.
 
 Mathematical Formulations
 -------------------------

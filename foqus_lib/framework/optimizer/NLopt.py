@@ -13,9 +13,9 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #
 ###############################################################################
-""" # FOQUS_OPT_PLUGIN
+""" #FOQUS_OPT_PLUGIN
 
-Optimization plugins need to have the string "# FOQUS_OPT_PLUGIN" near the
+Optimization plugins need to have the string "#FOQUS_OPT_PLUGIN" near the
 begining of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the optimization class.
 

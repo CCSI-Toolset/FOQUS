@@ -52,3 +52,7 @@ M. Abadi, A. Agarwal, P. Barham, et al., "TensorFlow: An end-to-end open source 
 .. _Meurer_2017:
 
 A. Meurer, C.P. Smith, M. Paprocki, et al., "SymPy 1.10.1 Documentation." https://docs.sympy.org/latest/index.html, Jan 2017.
+
+.. _Marcel_2010:
+
+S. Marcel, Y. Rodriguez, "Torchvision the machine-vision package of torch."" In Proceedings of the 18th ACM international conference on Multimedia (pp. 1485-1488). October 2010.

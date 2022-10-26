@@ -21,20 +21,22 @@ launched.
   model files saved in Hierarchical Data Format 5 (.h5), the standard
   Keras SavedModel format (folder containing .pb data files), or serialized
   to an architecture dictionary (.json) with separately saved model weights
-  (.h5). The examples folder contains demonstrative training and class scripts
-  for models containing no custom layer (see below for more information on adding
-  custom layers), a custom layer with a preset normalization option and a custom
-  layer with a custom normalization function, as well as models saved in all
-  supported file formats. To use this tool, users must train and export a Keras
-  model and place the file in the appropriate folder *user_ml_ai_plugins* in the
-  working directory, as shown below. Optionally, users may save Keras models with
-  custom   attributes to display on the node, such as variable labels and bounds.
-  While training a Keras model with custom attributes is not required to
-  use the plugin tool, users must provide the necessary class script
-  if the Keras model does contain a custom object (see below for further
-  information on creating custom objects). This model type is used in the
-  same manner as Pymodel Plugins, per the workflow in
-  Section :ref:`tutorial.surrogate.fs`.
+  (.h5). Additionally, this tool supports PyTorch models saved in the standard
+  format (.pt). The examples folder contains demonstrative training and class
+  scripts for models containing no custom layer (see below for more information
+  on adding custom layers), a custom layer with a preset normalization option
+  and a custom layer with a custom normalization function, as well as models
+  saved in all supported file formats. To use this tool, users must train and
+  export a machine leanring model and place the file in the appropriate folder
+  *user_ml_ai_plugins* in the working directory, as shown below. Optionally,
+  users may save Keras models with custom attributes to display on the node,
+  such as variable labels and bounds. While training a Keras model with custom
+  attributes is not required to use the plugin tool, users must provide the
+  necessary class script if the Keras model does contain a custom object (see
+  below for further information on creating custom objects). PyTorch models do
+  not have this requirement and the class script does not need to exist in the
+  plugins folder. This model type is used in the same manner as Pymodel Plugins,
+  per the workflow in Section :ref:`tutorial.surrogate.fs`.
 
 Custom Model Attributes
 -----------------------
@@ -44,10 +46,10 @@ machine learning library to train complex models within Python's user-friendly
 framework. Keras models may be largely split into two types: **Sequential**
 which build linearly connected model layers, and **Functional** which build
 multiple interconnected layers in a complex system. More information on
-TensorFlow Keras model building is described by
-:ref:`(Wu et al. 2020)<Wu_2020>`. Users may follow the recommended workflow
-to install and use TensorFlow in a Python environment, as described in the
-TensorFlow documentation: https://www.tensorflow.org/install.
+TensorFlow Keras model building is described by :ref:`(Wu et al. 2020)<Wu_2020>`.
+Users may follow the recommended workflow to install and use TensorFlow in a
+Python environment, as described in the TensorFlow documentation:
+https://www.tensorflow.org/install.
 
 When importing TensorFlow Keras models, users should ensure their Python environment
 contains the same Keras package version used to train the model files. TensorFlow
@@ -60,6 +62,17 @@ nodes; if a custom object is needed, only the Functional API supports
 serializing custom attributes. If a model is saved with a custom input layer
 as shown below, FOQUS will automatically read and import the custom attributes
 into the Node Editor.
+
+PyTorch offers an optimized tensor library for deep learning. While Keras connects
+dependent layers sequentially or simultaneously, PyTorch more explicitly uses prior
+layers as functional inputs for later layers in the neural network. Similar to the
+built-in "custom object" registration feature in Keras, PyTorch allows the creation
+of custom layers while defining the "forward" advancement method that builds the
+network prior to training. Users may obtain a great deal of usage standards and best practices information as described
+in the PyTorch documentation: https://pytorch.org/docs/stable/index.html.
+
+The examples files located in *FOQUS.examples.other_files.ML_AI_Plugin* show how users
+may train new models or re-save loaded models with a custom layer.
 
 Currently, FOQUS supports the following custom attributes:
 
@@ -195,9 +208,10 @@ Usage Example
 -------------
 
 The following code snippet demonstrates the Python syntax to train and save
-a Keras model with custom attributes. The use of Dropout features in training
-is not required, but decreases the risk of overfitting by minimizing the
-number of parameters in large models. Similarly, normalizing data often
+a Keras model with custom attributes; users should refer to the examples folder
+for usage of non-Keras neural network trainers. The use of Dropout features in
+training is not required, but decreases the risk of overfitting by minimizing
+the number of parameters in large models. Similarly, normalizing data often
 results in more accurate models since features are less likely to be blurred
 during fitting. Users may then enter unscaled input values and return unscaled
 output values in the Node Editor. Note that the custom object class script
@@ -226,21 +240,23 @@ to obtain the correct output values for the entered inputs.
 
 To run the models, copy the appropriate model files or folders ('h5_model.h5',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
-scripts ('model_name.py') into the working directory folder user_ml_ai_models\.
+scripts ('model_name.py') into the working directory folder 'user_ml_ai_models'.
+As mentioned earlier, PyTorch models only require the model file ('pt_model.pt').
 For example, the model name below is 'mea_column_model' and is saved in H5 format,
 and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to
-*FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to test the example
-models, some model files are provided in versions 2.3 and 2.7 as well as 2.10. Generally, TensorFlow
-is backwards compatible for models two versions back (e.g. loading models trained in version
-2.3 using version 2.5, or loading models trained in version 2.8 using version 2.10).
+*FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to
+test the exampleodels, some model files are provided in versions 2.3 and 2.7 as well as
+2.10. Generally, TensorFlows backwards compatible for models two versions back (e.g.
+loading models trained in version.3 using version 2.5, or loading models trained in
+version 2.8 using version 2.10 is supported).
 
 To distinguish between H5 models and json models with H5 weight files, FOQUS requires the
 convention ('model1.h5', 'model1.py') and ('model2.json', 'model2_weights.h5', 'model2.py')
 when naming model files. Users should note that defining network layers and training the
 network is independent of saved file format, and only the code after `model.summary()`
-in the script below will change. See the three 'training_customnormform' example scripts
-for specific syntax to save Keras models as each file format.
+in the script below will change. See the 'training_customnormform' example scripts
+for specific syntax to save models as each Keras file format and non-Keras file type.
 
 
 .. code:: python

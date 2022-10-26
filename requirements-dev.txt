@@ -5,7 +5,7 @@
 pylint==2.14.1
 # also pinning the version for astroid (used by pylint to analyze the AST)
 # since there can be significant differences between (non-major) versions,
-# both in terms of behavior and performance
+# both in terms of behavior and performance 
 astroid==2.11.6
 pytest
 ### coverage

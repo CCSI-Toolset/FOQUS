@@ -95,6 +95,7 @@ def install_ml_ai_model_files(
 
     base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
     ts_models_base_path = base_path / "TensorFlow_2-10_Models"
+    other_models_base_path = base_path / "Other_MLAI_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
 
@@ -109,6 +110,7 @@ def install_ml_ai_model_files(
         base_path / "mea_column_model_customnormform_json.py",
         ts_models_base_path / "mea_column_model_customnormform_json.json",
         ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
+        other_models_base_path / "mea_column_model_customnormform_pytorch.pt",
     ]:
         shutil.copy2(path, models_dir)
     # unzip the zip file (could be generalized later to more files if needed)

@@ -91,14 +91,19 @@ class TestPluginFlowsheetRun:
         return active_session.pymodels
 
     def test_plugin_models_loaded(self, pymodels: plugins):
-        print("Length: ", len(pymodels.plugins))
-        print(pymodels.plugins)
         assert len(pymodels.plugins) > 0
         plugin_list = ["heat_integration", "pymodel_test", "steam_cycle"]
-        assert [key for key in pymodels.plugins.keys()] == plugin_list
+
+        # the list orders may not match, so need to check them against each other
+        # check that the expected plugins are loaded
+        for key in plugin_list:
+            assert key in pymodels.plugins.keys()
+        # check that no extra plugins are loaded that shouldn't be
+        for key in pymodels.plugins.keys():
+            assert key in plugin_list
 
 
-# it would be nice to have a GUI test for this too, leaving the commented code here for now
+# it would be nice to have a GUI test for this too, leaving the commented code here for future reference
 
 # @pytest.fixture(scope="class")
 # def trigger_flowsheet_run_action(

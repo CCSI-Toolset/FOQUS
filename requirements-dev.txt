@@ -5,7 +5,7 @@
 pylint==2.14.1
 # also pinning the version for astroid (used by pylint to analyze the AST)
 # since there can be significant differences between (non-major) versions,
-# both in terms of behavior and performance 
+# both in terms of behavior and performance
 astroid==2.11.6
 pytest
 ### coverage
@@ -14,7 +14,7 @@ pytest-cov
 black==22.3.0
 
 # pytest-qt-extras
-pytest-qt==4.0.*
+pytest-qt==4.2.*
 python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8

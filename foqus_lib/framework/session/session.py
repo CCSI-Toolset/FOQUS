@@ -326,22 +326,24 @@ class session:
         """
         Search for plugins
         """
+        prefix = "#s?FOQUS_"
         self.surrogateMethods = pluginSearch.plugins(
-            idString="# FOQUS_SURROGATE_PLUGIN",
+            # \s? matches 0 or 1 whitespace characters
+            idString="#\s?FOQUS_SURROGATE_PLUGIN",
             pathList=[
                 os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(surrogate.__file__),
             ],
         )
         self.optSolvers = pluginSearch.plugins(
-            idString="# FOQUS_OPT_PLUGIN",
+            idString="#\s?FOQUS_OPT_PLUGIN",
             pathList=[
                 os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(problem.__file__),
             ],
         )
         self.pymodels = pluginSearch.plugins(
-            idString="# FOQUS_PYMODEL_PLUGIN",
+            idString="#\s?FOQUS_PYMODEL_PLUGIN",
             pathList=[
                 os.path.join(os.getcwd(), "user_plugins"),
                 os.path.dirname(pymodel.__file__),

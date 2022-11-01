@@ -14,6 +14,7 @@
 #
 ###############################################################################
 import matplotlib.pyplot as plt
+from matplotlib.ticker import MaxNLocator
 import numpy as np
 import matplotlib.cm as cm
 import mplcursors
@@ -37,38 +38,100 @@ def plot_hist(
     xname,
     nbins=20,
     show_grids=True,  # set to True to show grid lines
-    linewidth=0,  # set to nonzero to show border around bars
+    linewidth=1,  # set to nonzero to show border around bars
     hbars=False,  # set to True for horizontal bars
     cand_rgba=None,
+    hist=None,
+    x_limit=None,
+    design=False,
 ):
-
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
+
     ns, bins = np.histogram(xs, nbins)
     width = bins[1] - bins[0]
     center = (bins[1:] + bins[:-1]) / 2
+    if hist is not None:
+        ns_hist, bins_hist = np.histogram(hist, nbins)
+        _width_hist = bins_hist[1] - bins_hist[0]
+        _center_hist = (bins_hist[1:] + bins_hist[:-1]) / 2
     if hbars:
-        ax.barh(
-            center,
-            ns,
-            align="center",
-            height=width,
-            facecolor=fc["cand"],
-            linewidth=linewidth,
-            edgecolor="k",
-        )
+        if design:
+            ax.barh(
+                center,
+                ns,
+                align="center",
+                height=width,
+                facecolor=fc["design"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        else:
+            ax.barh(
+                center,
+                ns,
+                align="center",
+                height=width,
+                facecolor=fc["cand"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        if hist is not None:
+            ax.barh(
+                center,
+                ns_hist,
+                align="center",
+                height=width,
+                facecolor=fc["hist"],
+                linewidth=linewidth,
+                edgecolor="k",
+                left=ns,
+            )
         ax.set_ylabel(xname)
+        ax.set_xlabel("Frequency")
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+        if x_limit is not None:
+            ax.set_xlim(0, int(np.ceil(1.1 * x_limit)))
+
     else:
-        ax.bar(
-            center,
-            ns,
-            align="center",
-            width=width,
-            facecolor=fc["cand"],
-            linewidth=linewidth,
-            edgecolor="k",
-        )
+        if design:
+            ax.bar(
+                center,
+                ns,
+                align="center",
+                width=width,
+                facecolor=fc["design"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        else:
+            ax.bar(
+                center,
+                ns,
+                align="center",
+                width=width,
+                facecolor=fc["cand"],
+                linewidth=linewidth,
+                edgecolor="k",
+            )
+        if hist is not None:
+            ax.bar(
+                center,
+                ns_hist,
+                align="center",
+                width=width,
+                facecolor=fc["hist"],
+                linewidth=linewidth,
+                edgecolor="k",
+                bottom=ns,
+            )
         ax.set_xlabel(xname)
+        ax.set_ylabel("Frequency")
+        ax.yaxis.set_major_locator(MaxNLocator(integer=True))
+
+        if x_limit is not None:
+            ax.set_ylim(0, int(np.ceil(1.1 * x_limit)))
 
     ax.grid(show_grids, axis="both")
     return ax
@@ -104,6 +167,10 @@ def remove_yticklabels(ax):
 def plot_candidates(
     df, hf, show, title, scatter_label, cand, cand_rgba=None, wcol=None, nImpPts=0
 ):
+    if cand is not None:
+        design = True
+    else:
+        design = False
 
     if cand_rgba is not None:
         fc["cand"] = cand_rgba
@@ -129,14 +196,20 @@ def plot_candidates(
         fig = plt.figure()
         ax = fig.add_subplot(111)
         xname = show[0]
+        if hf is not None:
+            hist = hf[xname]
+        else:
+            hist = None
         _ax = plot_hist(
             ax,
             df[xname],
             xname,
             show_grids=True,
-            linewidth=0,
-            hbars=True,
+            linewidth=1,
+            hbars=False,
             cand_rgba=cand_rgba,
+            hist=hist,
+            design=design,
         )
 
     else:  # multiple inputs
@@ -148,6 +221,17 @@ def plot_candidates(
         fig, axes = plt.subplots(nrows=nshow, ncols=nshow)
         A = axes.flat
 
+        # histogram x-axis limit
+        hist_max_list = []
+        for i in range(nshow):
+            ns, _bins = np.histogram(df[show[i]], 20)
+            hist_max_list.append(max(ns))
+            if hf is not None:
+                cdf = np.concatenate([df[show[i]], hf[show[i]]], axis=0)
+                ns, _bins = np.histogram(cdf, 20)
+                hist_max_list.append(max(ns))
+        hist_max = max(hist_max_list)
+
         for i in range(nshow):
             for j in range(i):
                 # ... delete the unused (lower-triangular) axes
@@ -157,15 +241,22 @@ def plot_candidates(
             k = sb_indices[i][i]
             ax = A[k]
             xname = show[i]
+            if hf is not None:
+                hist = hf[xname]
+            else:
+                hist = None
             # ... plot histogram for diagonal subplot
             _ax = plot_hist(
                 ax,
                 df[xname],
                 xname,
                 show_grids=True,
-                linewidth=0,
+                linewidth=1,
                 hbars=True,
                 cand_rgba=cand_rgba,
+                hist=hist,
+                x_limit=hist_max,
+                design=design,
             )
 
             for j in range(i + 1, nshow):
@@ -174,25 +265,28 @@ def plot_candidates(
                 yname = show[j]
                 # ... plot scatter for off-diagonal subplot
                 # ... area/alpha can be customized to visualize weighted points (future feature)
-                if nImpPts == 0:
-                    ax.scatter(
-                        df[yname], df[xname], s=area["design"], facecolor=fc["design"]
-                    )
-                else:
-                    ax.scatter(
-                        df[yname][0:-nImpPts],
-                        df[xname][0:-nImpPts],
-                        s=area["design"],
-                        facecolor=fc["design"],
-                    )
-                    ax.scatter(
-                        df[yname][-nImpPts:],
-                        df[xname][-nImpPts:],
-                        s=area["imp"],
-                        facecolor=fc["imp"],
-                    )
+                if design:
+                    if nImpPts == 0:
+                        ax.scatter(
+                            df[yname],
+                            df[xname],
+                            s=area["design"],
+                            facecolor=fc["design"],
+                        )
+                    else:
+                        ax.scatter(
+                            df[yname][0:-nImpPts],
+                            df[xname][0:-nImpPts],
+                            s=area["design"],
+                            facecolor=fc["design"],
+                        )
+                        ax.scatter(
+                            df[yname][-nImpPts:],
+                            df[xname][-nImpPts:],
+                            s=area["imp"],
+                            facecolor=fc["imp"],
+                        )
 
-                if cand is not None:
                     ax.scatter(
                         cand[yname],
                         cand[xname],
@@ -200,6 +294,24 @@ def plot_candidates(
                         facecolor=fc["cand"],
                         alpha=alpha["cand"],
                     )
+                else:
+                    if nImpPts == 0:
+                        ax.scatter(
+                            df[yname], df[xname], s=area["cand"], facecolor=fc["cand"]
+                        )
+                    else:
+                        ax.scatter(
+                            df[yname][0:-nImpPts],
+                            df[xname][0:-nImpPts],
+                            s=area["cand"],
+                            facecolor=fc["cand"],
+                        )
+                        ax.scatter(
+                            df[yname][-nImpPts:],
+                            df[xname][-nImpPts:],
+                            s=area["imp"],
+                            facecolor=fc["imp"],
+                        )
 
                 if hf is not None:
                     ax.scatter(
@@ -211,11 +323,23 @@ def plot_candidates(
                     )
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
-                if cand is not None:
-                    xdelta = (max(cand[yname]) - min(cand[yname])) / 20
-                    ydelta = (max(cand[xname]) - min(cand[xname])) / 20
-                    ax.set_xlim((min(cand[yname]) - xdelta, max(cand[yname]) + xdelta))
-                    ax.set_ylim((min(cand[xname]) - ydelta, max(cand[xname]) + ydelta))
+                if hf is not None:
+                    xdelta = (
+                        max(max(df[yname]), max(hf[yname]))
+                        - min(min(df[yname]), min(hf[yname]))
+                    ) / 20
+                    ydelta = (
+                        max(max(df[xname]), max(hf[xname]))
+                        - min(min(df[xname]), min(hf[xname]))
+                    ) / 20
+                    ax.set_xlim(
+                        min(min(df[yname]), min(hf[yname])) - xdelta,
+                        max(max(df[yname]), max(hf[yname])) + xdelta,
+                    )
+                    ax.set_ylim(
+                        min(min(df[xname]), min(hf[xname])) - ydelta,
+                        max(max(df[xname]), max(hf[xname])) + ydelta,
+                    )
                 else:
                     xdelta = (max(df[yname]) - min(df[yname])) / 20
                     ydelta = (max(df[xname]) - min(df[xname])) / 20
@@ -230,17 +354,19 @@ def plot_candidates(
                 else:
                     _ax = remove_xticklabels(ax)
 
-    labels = ["Frequency", scatter_label]
+    labels = [scatter_label]
+    if hf is not None:
+        labels.append("Previous data")
+    labels.append(scatter_label)
     if nImpPts > 0:
         labels.append("Imputed")
     if cand is not None:
         labels.append("Candidate data points")
     if hf is not None:
-        labels.append("Previous data points")
+        labels.append("Previous data")
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)
-
     fig.canvas.manager.set_window_title(title)
 
     return fig
@@ -269,7 +395,7 @@ def plot_weights(xs, wt, wts, title):
     ax1.set_ylabel("Min distance")
 
     # the bottom subplot shows a histogram of ALL the weights from the candidate set
-    ax2 = plot_hist(ax2, wts, "Weight", show_grids=False, linewidth=1)
+    ax2 = plot_hist(ax2, wts, "Weight", show_grids=False, linewidth=1, design=True)
     N = wts.shape[0]
     ax2.set_title("Histogram of weights from the candidate set (N={})".format(N))
     ax2.set_xlabel("Candidate weight")

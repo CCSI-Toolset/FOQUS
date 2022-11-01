@@ -34,6 +34,15 @@ def model_files(
     return paths
 
 
+@pytest.fixture(scope="session")
+def expected_plugin_keys() -> List[str]:
+    return [
+        "heat_integration",
+        "pymodel_test",
+        "steam_cycle",
+    ]
+
+
 def test_model_files_are_present(model_files: List[Path]):
     assert model_files
 
@@ -90,7 +99,7 @@ class TestPluginFlowsheetRun:
             pytest.skip(f"No model files found in directory: {foqus_plugin_models_dir}")
         return active_session.pymodels
 
-    def test_plugin_models_loaded(self, pymodels: plugins):
+    def test_plugin_models_loaded(self, pymodels: plugins, expected_plugin_keys):
         assert len(pymodels.plugins) > 0
         plugin_list = ["heat_integration", "pymodel_test", "steam_cycle"]
 

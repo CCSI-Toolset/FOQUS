@@ -62,7 +62,9 @@ class plugins:
                             try:
                                 text_to_search_in = f.read(self.charLimit)
                                 pattern = self.idString
-                                instances_found_in_text = list(re.findall(pattern, text_to_search_in))
+                                instances_found_in_text = list(
+                                    re.findall(pattern, text_to_search_in)
+                                )
                                 is_found = bool(instances_found_in_text)
                             except:
                                 _log.exception("error reading py file")

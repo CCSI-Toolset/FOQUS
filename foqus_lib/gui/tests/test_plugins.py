@@ -101,15 +101,8 @@ class TestPluginFlowsheetRun:
 
     def test_plugin_models_loaded(self, pymodels: plugins, expected_plugin_keys):
         assert len(pymodels.plugins) > 0
-        plugin_list = ["heat_integration", "pymodel_test", "steam_cycle"]
-
-        # the list orders may not match, so need to check them against each other
-        # check that the expected plugins are loaded
-        for key in plugin_list:
-            assert key in pymodels.plugins.keys()
-        # check that no extra plugins are loaded that shouldn't be
-        for key in pymodels.plugins.keys():
-            assert key in plugin_list
+        # sort both lists before comparing to ensure order matches
+        assert sorted(pymodels.plugins.keys()) == sorted(expected_plugin_keys)
 
 
 # it would be nice to have a GUI test for this too, leaving the commented code here for future reference

@@ -296,9 +296,7 @@ class nodeDock(_nodeDock, _nodeDockUI):
         self.updateNodeList()
         if self.nodeName != "":
             self.calcErrorBox.setText(str(self.node.calcError))
-            self.errorMessageText.setText(
-                self.node.errorLookup(self.node.calcError)
-            )
+            self.errorMessageText.setText(self.node.errorLookup(self.node.calcError))
             self.updateLocation()
             self.updateModelType()
             self.pyCode.setPlainText(self.node.pythonCode)

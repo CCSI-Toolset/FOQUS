@@ -498,9 +498,7 @@ def main(args_to_parse=None):
     ##
     ## create an emptpy FOQUS session
     ##
-    logging.getLogger("foqus." + __name__).debug(
-        "Create Flowsheet Session"
-    )
+    logging.getLogger("foqus." + __name__).debug("Create Flowsheet Session")
     dat = session(useCurrentWorkingDir=True)
     ##
     ## Set some options
@@ -557,9 +555,7 @@ def main(args_to_parse=None):
             )
             sys.exit(12)
         else:
-            logging.getLogger("foqus." + __name__).debug(
-                "load values flowsheet"
-            )            
+            logging.getLogger("foqus." + __name__).debug("load values flowsheet")
             try:
                 dat.loadFlowsheetValues(args.loadValues)
             except Exception as e:
@@ -568,9 +564,7 @@ def main(args_to_parse=None):
                 )
                 sys.exit(14)
     ## Run a single flowsheet, optimization, or eventually uq ensemble
-    logging.getLogger("foqus." + __name__).debug(
-        "Run Option: %s", args.run
-    )
+    logging.getLogger("foqus." + __name__).debug("Run Option: %s", args.run)
     if args.run == "opt":
         # run an optimization problem from the command line
         # the optimization should previously have been setup
@@ -894,9 +888,7 @@ def main(args_to_parse=None):
     if guiAvail and not args.nogui and load_gui:
         # Start graphical interface unless it is not
         # available or nogui flag given
-        logging.getLogger("foqus." + __name__).debug(
-            "Starting GUI"
-        )
+        logging.getLogger("foqus." + __name__).debug("Starting GUI")
         if args.runUITestScript:
             ts = args.runUITestScript
         else:
@@ -909,9 +901,7 @@ def main(args_to_parse=None):
             showBasicData=args.basic_data,
             ts=ts,
         )
-        logging.getLogger("foqus." + __name__).debug(
-            "Exit GUI"
-        )
+        logging.getLogger("foqus." + __name__).debug("Exit GUI")
     elif not guiAvail and not args.nogui and load_gui:
         logging.getLogger("foqus." + __name__).error("PyQt5 or Qt not available")
         exit_code = 2

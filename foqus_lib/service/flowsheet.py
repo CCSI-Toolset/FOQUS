@@ -574,26 +574,6 @@ class TurbineLiteDB:
             )
         )
 
-def _publish_service_error(message="", detail=""):
-    """Publish to SNS Message Topic with MessageAttributes 
-    instance and event to filter for alerting.
-    Arguments:
-        message: 
-    """
-    topic_alert_arn = FOQUSAWSConfig.get_instance().get_alert_topic_arn()
-    instance_id = FOQUSAWSConfig.get_instance().get_instance_id()
-    _log.error("publish(%s) service error: %s", topic_alert_arn, message)
-    sns = boto3.client("sns", region_name=FOQUSAWSConfig.get_instance().get_region())
-    attrs = dict(
-        event=dict(DataType="String", StringValue="service.error"),
-        instance=dict(DataType="String", StringValue=instance_id),
-    )
-    d = dict(message=message, detail=detail, instance=instance_id, event="service.error")
-    sns.publish(
-        Message=json.dumps(d), MessageAttributes=attrs, TopicArn=topic_alert_arn
-    )
-    _log.info("published")
-
 
 def _publish_service_error(message="", detail=""):
     """Publish to SNS Message Topic with MessageAttributes
@@ -1101,7 +1081,7 @@ class FlowsheetControl:
         with open(os.path.join(CURRENT_JOB_DIR, "current_foqus.json"), "w") as fd:
             json.dump(job_desc, fd)
 
-        return user_name,job_desc
+        return user_name, job_desc
 
     # @staticmethod
     def setup_foqus(self, db, user_name, job_desc):

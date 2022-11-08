@@ -14,7 +14,7 @@ pytest-cov
 black==22.3.0
 
 # pytest-qt-extras
-pytest-qt==4.0.*
+pytest-qt==4.2.*
 python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8

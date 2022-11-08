@@ -12,7 +12,6 @@
  */
 'use strict';
 'use AWS.S3'
-'use uuid'
 const assert = require('assert');
 const log = require("debug")("post-session-start")
 const AWS = require('aws-sdk');
@@ -22,7 +21,7 @@ const dirPath = "./tmp";
 const path = require('path');
 const abspath = path.resolve(dirPath);
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const foqus_update_topic = process.env.FOQUS_UPDATE_TOPIC;
 const s3 = new AWS.S3();
 const sns = new AWS.SNS();

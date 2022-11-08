@@ -1,10 +1,10 @@
 {
   "name": "foqus-sns-update",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "Central Message Processor for front and backends",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0"
+    "aws-sdk": ""
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

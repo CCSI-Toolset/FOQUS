@@ -14,7 +14,6 @@
 'use strict';
 'use AWS.S3'
 'use AWS.DynamoDB'
-'use uuid'
 const assert = require('assert');
 const log = require("debug")("dynamo-stream-trigger")
 const AWS = require('aws-sdk');

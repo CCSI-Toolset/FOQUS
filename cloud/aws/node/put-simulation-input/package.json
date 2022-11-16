@@ -1,11 +1,11 @@
 {
   "name": "put-simulation-input",
-  "version": "1.0.0",
-  "description": "Create simulation input resource",
+  "version": "2.0.0",
+  "description": "PUT simulation/{name}/input/{resource}",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
-    "debug": ">=4.1.1"
+    "aws-sdk": "",
+    "debug": ">=4.3.4"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

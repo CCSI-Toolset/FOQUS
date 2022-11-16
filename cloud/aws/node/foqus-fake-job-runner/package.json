@@ -1,12 +1,11 @@
 {
   "name": "foqus-fake-job-runner",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "for testing, Grabs job off SQS, sends job update notifications",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
-    "uuid": "^3.2.1",
-    "debug": ">=4.1.1"
+    "aws-sdk": "",
+    "debug": ">=4.3.4"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

@@ -1,11 +1,11 @@
 {
   "name": "http-basic-authorizer",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Basic HTTP Custom Authorizer",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
-    "debug": ">=4.1.1"
+    "aws-sdk": "",
+    "debug": ">=4.3.4"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

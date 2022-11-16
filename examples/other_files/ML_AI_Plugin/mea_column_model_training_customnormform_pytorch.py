@@ -3,7 +3,6 @@ import pandas as pd
 import random as rn
 import torch
 import torch.nn as nn
-import math
 
 # set seed values for reproducibility
 np.random.seed(46)

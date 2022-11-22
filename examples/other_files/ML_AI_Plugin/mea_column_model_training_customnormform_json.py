@@ -3,7 +3,6 @@ import numpy as np
 import pandas as pd
 import random as rn
 import tensorflow as tf
-import math
 
 # set seed values for reproducibility
 os.environ["PYTHONHASHSEED"] = "0"

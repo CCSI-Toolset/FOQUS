@@ -1,12 +1,12 @@
 {
   "name": "delete-simulation",
-  "version": "1.0.0",
-  "description": "Returns array of simulations",
+  "version": "2.0.0",
+  "description": "Delete simulation",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0",
-    "uuid": "^3.2.1",
-    "uuid-validate": ""
+    "aws-sdk": "",
+    "uuid": "^8.3.2",
+    "uuid-validate": ">=0.0.3"
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

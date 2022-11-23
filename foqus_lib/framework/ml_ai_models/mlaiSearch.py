@@ -45,7 +45,7 @@ class ml_ai_models:
         """
         check files in self.pathList to see if they are ml_ai models.
         if they are folders, try to load supported forms (SavedModel).
-        if they are files, try to load supported forms (H5).
+        if they are files, try to load supported forms (H5, JSON, PT).
         """
         for p in self.pathList:
             if os.path.exists(p) and "user_ml_ai_models" in str(p):
@@ -66,7 +66,7 @@ class ml_ai_models:
                         skip = True
                     if len(mname) == 2 and (
                         os.path.isdir(os.path.join(p, mname[0]))
-                        or mname[1] in ["h5", "json"]
+                        or mname[1] in ["h5", "json", "pt"]
                     ):
                         if (
                             mname[1] == "py"

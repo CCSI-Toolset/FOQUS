@@ -9,7 +9,6 @@
  * @see https://github.com/motdotla/node-lambda-template
  */
 'use strict';
-'use uuid'
 const AWS = require('aws-sdk');
 const sqs = new AWS.SQS();
 const sns = new AWS.SNS();

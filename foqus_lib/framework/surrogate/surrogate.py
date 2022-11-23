@@ -254,7 +254,7 @@ class surrogate(threading.Thread):
         lines = []  # Join lines into a string at end (it's faster)
         # The first comment is needed for FOQUS to identify file as
         # a Python flowsheet model plugin.
-        lines.append("#FOQUS_PYMODEL_PLUGIN")
+        lines.append("# FOQUS_PYMODEL_PLUGIN")
         # Some comments just for users lookin into the file
         lines.append("#")
         lines.append("# {0} surrogate export".format(method))

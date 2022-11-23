@@ -1247,7 +1247,7 @@ class FlowsheetControl:
             db.job_change_status(
                 job_desc,
                 "error",
-                message="Flowsheet errorStat: %s" % dat.flowsheet.errorStat,
+                message="Flowsheet Error: %s" %str(dat.flowsheet.ex),
             )
             db.add_message(
                 "consumer={0}, job {1} finished, error".format(db.consumer_id, jid),

@@ -879,7 +879,7 @@ class Graph(threading.Thread):
             except Exception as e:
                 self.setErrorCode(19)
                 self.ex = sys.exc_info()
-                _log.exception("Exception in graph thread")
+                _log.exception("Exception in graph thread: %s" %(self.ex))
         else:
             _log.debug("run: Running flowsheet(s) through turbine")
             # in this case run should produce the same results but

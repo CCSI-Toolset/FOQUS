@@ -49,6 +49,13 @@ def foqus_examples_dir(_repo_root):
 
 
 @pytest.fixture(scope="session")
+def foqus_pymodels_dir(_repo_root):
+    _pymodels_dir = _repo_root / "foqus_lib" / "framework" / "pymodel"
+    assert _pymodels_dir.exists()
+    return _pymodels_dir
+
+
+@pytest.fixture(scope="session")
 def psuade_path():
     _psuade_path = shutil.which("psuade")
     assert _psuade_path is not None
@@ -64,6 +71,44 @@ def foqus_working_dir(
     d = tmp_path_factory.mktemp(name, numbered=False)
 
     yield d
+
+
+@pytest.fixture(scope="session")
+def foqus_plugin_models_dir(
+    foqus_working_dir: Path,
+) -> Path:
+
+    return foqus_working_dir / "user_plugins"
+
+
+@pytest.fixture(
+    scope="session",
+    autouse=True,
+)
+def install_plugin_model_files(
+    foqus_pymodels_dir: Path, foqus_plugin_models_dir: Path
+) -> Path:
+    """
+    This is a session-level fixture with autouse b/c it needs to be created
+    before the main window is instantiated.
+    """
+
+    print("installing plugin model files")
+    models_dir = foqus_plugin_models_dir
+
+    base_path = foqus_pymodels_dir
+
+    models_dir.mkdir(exist_ok=True, parents=False)
+
+    # use Python-only plugins for testing (no MATLAB/GAMS/IDAES/etc imports)
+    for path in [
+        base_path / "heat_integration.py",
+        base_path / "pymodel_test.py",
+        base_path / "steam_cycle.py",
+    ]:
+        shutil.copy2(path, models_dir)
+
+    yield models_dir
 
 
 @pytest.fixture(scope="session")
@@ -95,6 +140,7 @@ def install_ml_ai_model_files(
 
     base_path = foqus_examples_dir / "other_files" / "ML_AI_Plugin"
     ts_models_base_path = base_path / "TensorFlow_2-10_Models"
+    other_models_base_path = base_path / "Other_MLAI_Models"
 
     models_dir.mkdir(exist_ok=True, parents=False)
 
@@ -109,6 +155,7 @@ def install_ml_ai_model_files(
         base_path / "mea_column_model_customnormform_json.py",
         ts_models_base_path / "mea_column_model_customnormform_json.json",
         ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
+        other_models_base_path / "mea_column_model_customnormform_pytorch.pt",
     ]:
         shutil.copy2(path, models_dir)
     # unzip the zip file (could be generalized later to more files if needed)

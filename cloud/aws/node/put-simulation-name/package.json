@@ -1,10 +1,10 @@
 {
   "name": "put-simulation-name",
-  "version": "1.0.0",
-  "description": "Create new simulation",
+  "version": "2.0.0",
+  "description": "PUT simulation/{name}",
   "main": "index.js",
   "dependencies": {
-    "aws-sdk": "^2.606.0"
+    "aws-sdk": ""
   },
   "scripts": {
     "setup": "./node_modules/.bin/node-lambda setup",

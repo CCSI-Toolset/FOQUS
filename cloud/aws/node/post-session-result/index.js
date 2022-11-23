@@ -11,9 +11,8 @@
  */
 'use strict';
 'use AWS.S3'
-'use uuid'
 const log = require("debug")("post-session-result")
-const uuidv4 = require('uuid/v4');
+const { v4: uuidv4 } = require('uuid');
 const AWS = require('aws-sdk');
 const tableName = process.env.FOQUS_DYNAMO_TABLE_NAME;
 const s3_bucket_name = process.env.SESSION_BUCKET_NAME;

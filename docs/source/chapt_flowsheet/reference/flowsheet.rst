@@ -7,7 +7,7 @@ The meta-flowsheet defines connections between simulations. The
 flowsheet defines the order that simulations are performed and what data
 is transferred between them. Simulations are represented as nodes in the
 flowsheet. These simulations may be links to external simulation
-software through the Turbine gateway, or custom simulations or
+software through the SimSinter/Turbine, or custom simulations or
 simulation wrappers written in Python. Directed edges in the flowsheet
 connect nodes. The edges also specify which variables in the simulations
 are equivalent.

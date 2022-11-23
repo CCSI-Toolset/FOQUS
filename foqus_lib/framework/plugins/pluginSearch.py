@@ -29,6 +29,7 @@ import os
 import importlib
 import logging
 import imp
+import re
 
 _log = logging.getLogger("foqus." + __name__)
 
@@ -57,12 +58,18 @@ class plugins:
                     mname = fname.rsplit(".", 1)  # split off extension
                     if len(mname) > 1 and mname[1] == "py":
                         with open(os.path.join(p, fname), "r", encoding="utf-8") as f:
+                            is_found = None
                             try:
-                                l = self.idString in f.read(self.charLimit)
+                                text_to_search_in = f.read(self.charLimit)
+                                pattern = self.idString
+                                instances_found_in_text = list(
+                                    re.findall(pattern, text_to_search_in)
+                                )
+                                is_found = bool(instances_found_in_text)
                             except:
                                 _log.exception("error reading py file")
-                                l = False
-                        if not l:
+                                is_found = False
+                        if not is_found:
                             continue
                         try:
                             if mname[0] in self.plugins:

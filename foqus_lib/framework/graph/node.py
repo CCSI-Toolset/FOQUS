@@ -108,9 +108,45 @@ def attempt_load_sympy(try_imports=True):
     return parse, symbol, solve
 
 
+def attempt_load_pytorch(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # tensorflow should be installed, but not required for non ML/AI models
+        import torch
+
+        torch_load = torch.jit.load
+        torch_tensor = torch.tensor
+        torch_float = torch.float
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if TensorFlow is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def torch_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `torch` is not available"
+            )
+
+        def torch_tensor(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `torch` is not available"
+            )
+
+        def torch_float(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `torch` is not available"
+            )
+
+    return torch_load, torch_tensor, torch_float
+
+
 # attempt to load optional dependenices for node script
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
+torch_load, torch_tensor, torch_float = attempt_load_pytorch()
 
 # pylint: enable=import-error
 
@@ -188,15 +224,65 @@ class NodeEx(foqusException):
 
 
 class pymodel_ml_ai(pymodel):
-    def __init__(self, model):
+    def __init__(self, model, trainer):
         pymodel.__init__(self)
+        self.model = model  # attach it to self so we can call it in the run method
+        self.trainer = trainer  # attach it to self so we can call it in the run method
 
+        # determine the ML model type
+        if self.trainer == "keras":
+            # set the custom layer object
+            custom_layer = self.model.layers[1]
+            # set the model input and output sizes
+            model_input_size = np.shape(self.model.inputs[0])[1]
+            model_output_size = np.shape(self.model.outputs[0])[1]
+
+        elif self.trainer == "torch":
+            # find the custom layer object, if it exists - there's probably a more direct way to do this
+            for attribute in dir(self.model):
+                # assuming that a custom layer would define input labels
+                # at a minimum, it should be safe to expect this
+                if hasattr(getattr(self.model, attribute), "input_labels"):
+                    # there should only be one custom layer in the model
+                    # since it is used to hold attributes, not network data
+                    custom_layer = getattr(self.model, attribute)
+
+            # find the model input and output sizes
+            named_layers = dict(
+                self.model.named_modules()
+            )  # dictionary of neural network layers
+            # assuming the layers are in order, we don't want to include the custom layer or "blank" key
+            if "" in list(named_layers.keys()):
+                named_layers.pop("")
+            for name, layer in named_layers.items():
+                if layer == custom_layer:  # exclude the custom layer
+                    named_layers.pop(name)
+                    break  # stop the loop to prevent a size-change error
+            # now, get the model input/output sizes from the first and last layers
+            named_layers_keys = list(named_layers.keys())
+            model_input_size = named_layers[
+                named_layers_keys[0]
+            ].in_features  # first layer has model inputs
+            model_output_size = named_layers[
+                named_layers_keys[-1]
+            ].out_features  # last layer has model outputs
+
+        else:  # this shouldn't occur, adding failsafe just in case
+            raise AttributeError(
+                "Unknown file type: " + self.trainer + ", this "
+                "should not have occurred. Please contact the "
+                "FOQUS developers if this error occurs; the "
+                "trainer should be set internally to `keras` or "
+                "`torch` and should not be able to take any other value."
+            )
+
+        self.custom_layer = (
+            custom_layer  # attach it to self so we can call it in the run method
+        )
         # attempt to retrieve required information from loaded model, and set defaults otherwise
-        self.model = model
-
-        for i in range(np.shape(self.model.inputs[0])[1]):
+        for i in range(model_input_size):
             try:
-                input_label = self.model.layers[1].input_labels[i]
+                input_label = self.custom_layer.input_labels[i]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute input_label, using default x"
@@ -209,7 +295,7 @@ class pymodel_ml_ai(pymodel):
                 )
                 input_label = "x" + str(i + 1)
             try:
-                input_min = self.model.layers[1].input_bounds[input_label][0]
+                input_min = self.custom_layer.input_bounds[input_label][0]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute input_min, using default 0"
@@ -220,7 +306,7 @@ class pymodel_ml_ai(pymodel):
                 )
                 input_min = 0  # not necessarily a good default
             try:
-                input_max = self.model.layers[1].input_bounds[input_label][1]
+                input_max = self.custom_layer.input_bounds[input_label][1]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute input_max, using default 1E5"
@@ -243,9 +329,9 @@ class pymodel_ml_ai(pymodel):
                 dtype=float,
             )
 
-        for j in range(np.shape(self.model.outputs[0])[1]):
+        for j in range(model_output_size):
             try:
-                output_label = self.model.layers[1].output_labels[j]
+                output_label = self.custom_layer.output_labels[j]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute output_label, using default z"
@@ -257,7 +343,7 @@ class pymodel_ml_ai(pymodel):
                 )
                 output_label = "z" + str(j + 1)
             try:
-                output_min = self.model.layers[1].output_bounds[output_label][0]
+                output_min = self.custom_layer.output_bounds[output_label][0]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute output_min, using default 0"
@@ -268,7 +354,7 @@ class pymodel_ml_ai(pymodel):
                 )
                 output_min = 0  # not necessarily a good default
             try:
-                output_max = self.model.layers[1].output_bounds[output_label][1]
+                output_max = self.custom_layer.output_bounds[output_label][1]
             except AttributeError:
                 _logger.info(
                     "Model has no attribute output_max, using default 1E5"
@@ -293,7 +379,7 @@ class pymodel_ml_ai(pymodel):
 
         # check if user passed a model for normalized data - FOQUS will automatically scale/un-scale
         try:  # if attribute exists, user has specified a model form
-            self.normalized = self.model.layers[1].normalized
+            self.normalized = self.custom_layer.normalized
         except AttributeError:  # otherwise user did not pass a normalized model
             _logger.info(
                 "Model has no attribute normalized, using default False"
@@ -320,7 +406,7 @@ class pymodel_ml_ai(pymodel):
             # don't set a default - if users are setting this to True they should
             # be aware of that FOQUS requires a normalization form flag as well
             try:  # see if form flag exists and throw useful error if not
-                self.normalization_form = self.model.layers[1].normalization_form
+                self.normalization_form = self.custom_layer.normalization_form
             except AttributeError:
                 raise AttributeError(  # raise to ensure code stops here
                     "Model has no attribute normalization_form, and existing "
@@ -402,9 +488,9 @@ class pymodel_ml_ai(pymodel):
             elif self.normalization_form == "Custom":
                 # check custom normalization form for requirements
                 try:  # see if function is passed and throw useful error if not
-                    self.normalization_function = self.model.layers[
-                        1
-                    ].normalization_function
+                    self.normalization_function = (
+                        self.custom_layer.normalization_function
+                    )
                 except AttributeError:
                     raise AttributeError(
                         "Model has no attribute normalization_function, and existing "
@@ -486,9 +572,25 @@ class pymodel_ml_ai(pymodel):
                 ]
 
         # set output values to be generated from NN surrogate
-        self.scaled_outputs = self.model.predict(np.array(self.scaled_inputs, ndmin=2))[
-            0
-        ]
+        if self.trainer == "keras":
+            self.scaled_outputs = self.model.predict(
+                np.array(self.scaled_inputs, ndmin=2)
+            )[0]
+        elif self.trainer == "torch":
+            self.scaled_outputs = (
+                self.model(torch_tensor(self.scaled_inputs, dtype=torch_float))
+                .detach()
+                .numpy()
+            )
+        else:  # this shouldn't occur, adding failsafe just in case
+            raise AttributeError(
+                "Unknown file type: " + self.trainer + ", this "
+                "should not have occurred. Please contact the "
+                "FOQUS developers if this error occurs; the "
+                "trainer should be set internally to `keras` or "
+                "`torch` and should not be able to take any other value."
+            )
+
         outidx = 0
         for j in self.outputs:
 
@@ -1033,10 +1135,16 @@ class Node:
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
                 extension = ".json"
+            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
+                extension = ".pt"  # this is for PyTorch models
             else:  # assume it's a folder with no extension
                 extension = ""
 
-            if extension != ".json":  # use standard Keras load method
+            if extension == ".pt":  # use Pytorch loading syntax
+                # attempt to unserialize using torch.jit.load command
+                self.model = torch_load(str(self.modelName) + extension)
+                trainer = "torch"
+            elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
                     self.model = load(
@@ -1045,6 +1153,7 @@ class Node:
                             str(self.modelName): getattr(module, str(self.modelName))
                         },
                     )
+                    trainer = "keras"
                 except (
                     ImportError,
                     ModuleNotFoundError,
@@ -1054,6 +1163,7 @@ class Node:
                         + "will import model without custom attributes."
                     )
                     self.model = load(str(self.modelName) + extension)
+                    trainer = "keras"
                 finally:
                     os.chdir(cwd)  # reset to original working directory
             else:  # model is a json file, use read method to load dictionary
@@ -1067,6 +1177,7 @@ class Node:
                             str(self.modelName): getattr(module, str(self.modelName))
                         },
                     )  # load architecture
+                    trainer = "keras"
                 except (
                     ImportError,
                     ModuleNotFoundError,
@@ -1076,12 +1187,13 @@ class Node:
                         + "will import model without custom attributes."
                     )
                     self.model = json_load(loaded_json)  # load architecture
+                    trainer = "keras"
                 finally:
                     self.model.load_weights(
                         str(self.modelName) + "_weights.h5"
                     )  # load pretrained weights
                     os.chdir(cwd)  # reset to original working directory
-            inst = pymodel_ml_ai(self.model)
+            inst = pymodel_ml_ai(self.model, trainer)
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
             for vkey, v in inst.outputs.items():
@@ -1557,10 +1669,16 @@ class Node:
                 os.path.join(os.getcwd(), str(self.modelName) + ".json")
             ):
                 extension = ".json"
+            elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
+                extension = ".pt"  # this is for PyTorch models
             else:  # assume it's a folder with no extension
                 extension = ""
 
-            if extension != ".json":  # use standard Keras load method
+            if extension == ".pt":  # use Pytorch loading syntax
+                # attempt to unserialize using torch.jit.load command
+                self.model = torch_load(str(self.modelName) + extension)
+                trainer = "torch"
+            elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
                     self.model = load(
@@ -1569,6 +1687,7 @@ class Node:
                             str(self.modelName): getattr(module, str(self.modelName))
                         },
                     )
+                    trainer = "keras"
                 except (
                     ImportError,
                     ModuleNotFoundError,
@@ -1578,6 +1697,7 @@ class Node:
                         + "will import model without custom attributes."
                     )
                     self.model = load(str(self.modelName) + extension)
+                    trainer = "keras"
                 finally:
                     os.chdir(cwd)  # reset to original working directory
             else:  # model is a json file, use read method to load dictionary
@@ -1591,6 +1711,7 @@ class Node:
                             str(self.modelName): getattr(module, str(self.modelName))
                         },
                     )  # load architecture
+                    trainer = "keras"
                 except (
                     ImportError,
                     ModuleNotFoundError,
@@ -1600,12 +1721,13 @@ class Node:
                         + "will import model without custom attributes."
                     )
                     self.model = json_load(loaded_json)  # load architecture
+                    trainer = "keras"
                 finally:
                     self.model.load_weights(
                         str(self.modelName) + "_weights.h5"
                     )  # load pretrained weights
                     os.chdir(cwd)  # reset to original working directory
-            self.pyModel = pymodel_ml_ai(self.model)
+            self.pyModel = pymodel_ml_ai(self.model, trainer)
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():
             if vkey in self.pyModel.inputs:

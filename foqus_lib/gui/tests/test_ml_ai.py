@@ -19,7 +19,13 @@ pytestmark = pytest.mark.gui
 def model_files(
     foqus_ml_ai_models_dir: Path,
     install_ml_ai_model_files,
-    suffixes: Tuple[str] = (".py", ".h5", ".json", ".pt"),
+    suffixes: Tuple[str] = (
+        ".py",
+        ".h5",
+        ".json",
+        ".pt",
+        ".pkl",
+    ),
 ) -> List[Path]:
     paths = []
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
@@ -196,6 +202,7 @@ class TestMLAIPluginFlowsheetRun:
 
     def test_load_and_run_meacustomnormformjson(self, active_session, simnode):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip("json", reason="json not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(4)
@@ -219,6 +226,25 @@ class TestMLAIPluginFlowsheetRun:
         assert (
             simnode.simNameBox.currentText()
             == "mea_column_model_customnormform_pytorch"
+        )
+
+        def test_flowsheet_run_successful(
+            self,
+            trigger_flowsheet_run_action,
+            statusbar_message: str,
+            text_when_success: str = "Finished Single Simulation... Success",
+        ):
+            assert text_when_success in statusbar_message
+
+    def test_load_and_run_meacustomnormformscikitlearn(self, active_session, simnode):
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip("pickle", reason="pickle not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # set sim name and confirm it's the correct model
+        simnode.simNameBox.setCurrentIndex(7)
+        assert (
+            simnode.simNameBox.currentText()
+            == "mea_column_model_customnormform_scikitlearn"
         )
 
         def test_flowsheet_run_successful(

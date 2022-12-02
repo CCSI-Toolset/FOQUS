@@ -17,6 +17,7 @@ from foqus_lib.framework.graph.node import (
     attempt_load_tensorflow,
     attempt_load_sympy,
     attempt_load_pytorch,
+    attempt_load_pickle,
     pymodel_ml_ai,
     Node,
     NodeEx,
@@ -41,7 +42,7 @@ import pytest
 def model_files(
     foqus_ml_ai_models_dir: Path,
     install_ml_ai_model_files,
-    suffixes: Tuple[str] = (".py", ".h5", ".json", ".pt"),
+    suffixes: Tuple[str] = (".py", ".h5", ".json", ".pt", ".pkl"),
 ) -> List[Path]:
     paths = []
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
@@ -98,6 +99,17 @@ class testImports(unittest.TestCase):
         with pytest.raises(ModuleNotFoundError):
             torch_float(None)
 
+    def test_import_pickle_failure(self):
+        # this is a pretty common package, so this probably would never occur
+        # but it's good to test the exception anyways
+
+        # method loaded from node module as * import
+        pickle_load = attempt_load_pickle(try_imports=False)
+
+        # check that the returned functions print the expected warnings
+        with pytest.raises(ModuleNotFoundError):
+            pickle_load(None)
+
     def test_import_tensorflow_success(self):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
@@ -113,7 +125,7 @@ class testImports(unittest.TestCase):
             json_load(None)  # expects JSON object, should throw type error
 
     def test_import_sympy_success(self):
-        # skip this test if tensorflow is not available
+        # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
 
         # method loaded from node module as * import
@@ -143,6 +155,18 @@ class testImports(unittest.TestCase):
             torch_tensor(None)  # should fail to infer dtype of 'None' object
         with pytest.raises(TypeError):
             torch_float(None)  # should fail to call torch.dtype object
+
+    def test_import_pickle_success(self):
+        # skip this test if pickle is not available
+        pytest.importorskip("pickle", reason="pickle not installed")
+
+        # method loaded from node module as * import
+        pickle_load = attempt_load_pickle(try_imports=True)
+
+        # check that the returned functions expect the correct input as a way
+        # of confirming that the class (function) types are correct
+        with pytest.raises(TypeError):
+            pickle_load(None)  # should fail to find 'read' and 'readline' attributes
 
 
 # ----------------------------------------------------------------------------
@@ -349,12 +373,31 @@ class TestPymodelMLAI:
             if str(path).endswith("mea_column_model_customnormform_pytorch.pt")
         ]
 
-        for path in model_files:
-            assert os.path.exists(path)
-            print(path)
-        assert os.path.exists(model_pt[0])
         # has a custom layer with a custom normalization option
         model = torch_load(str(model_pt[0]))
+
+        return model
+
+    @pytest.fixture(scope="function")
+    def example_7(self, model_files):  # custom layer with custom normalization form
+        # no tests using this fixture should run if pickle and sklearn are not installed
+        pytest.importorskip("pickle", reason="pickle not installed")
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        pickle_load = attempt_load_pickle()  # alias for load method
+
+        # get model files from previously defined model_files pathlist
+        model_pkl = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_scikitlearn.pkl")
+        ]
+
+        # has a custom layer with a custom normalization option
+        with open(model_pkl[0], "rb") as file:
+            model = pickle_load(file)
 
         return model
 
@@ -406,6 +449,15 @@ class TestPymodelMLAI:
         test_pymodel = pymodel_ml_ai(example_6, trainer="torch")
         test_pymodel.run()
 
+    def test_build_and_run_as_expected_7(self, example_7):
+        # only run if pickle and sklearn are available; test run for custom norm example
+        pytest.importorskip("pickle", reason="pickle not installed")
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_7, trainer="sklearn")
+        test_pymodel.run()
+
     def test_build_invalid_trainer_type(self, example_1):
         # note, this should never happen since users can never set this value
         with pytest.raises(
@@ -414,8 +466,8 @@ class TestPymodelMLAI:
             "notavalidtype, this should not have occurred. "
             "Please contact the FOQUS developers if this error "
             "occurs; the trainer should be set internally to "
-            "`keras` or `torch` and should not be able to take "
-            "any other value.",
+            "`keras`, 'torch' or `sklearn` and should not be "
+            "able to take any other value.",
         ):
             test_pymodel = pymodel_ml_ai(example_1, trainer="notavalidtype")
 
@@ -430,8 +482,8 @@ class TestPymodelMLAI:
             "notavalidtype, this should not have occurred. "
             "Please contact the FOQUS developers if this error "
             "occurs; the trainer should be set internally to "
-            "`keras` or `torch` and should not be able to take "
-            "any other value.",
+            "`keras`, 'torch' or `sklearn` and should not be "
+            "able to take any other value.",
         ):
             test_pymodel.run()
 
@@ -1206,6 +1258,8 @@ class TestNode:
     def test_setSim_modelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1237,6 +1291,8 @@ class TestNode:
     def test_runPymodelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1270,6 +1326,8 @@ class TestNode:
     def test_setSim_modelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1301,6 +1359,8 @@ class TestNode:
     def test_runPymodelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1334,6 +1394,8 @@ class TestNode:
     def test_setSim_modelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1365,6 +1427,8 @@ class TestNode:
     def test_runPymodelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1374,6 +1438,142 @@ class TestNode:
         os.chdir(curdir)
 
         inst = pymodel_ml_ai(node.model, trainer="keras")
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example6(self, node, model_files):
+        # skip this test if torch is not available
+        pytest.importorskip("torch", reason="torch not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_pytorch", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="torch")
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example6(self, node, model_files):
+        # skip this test if torch is not available
+        pytest.importorskip("torch", reason="torch not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_pytorch", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="torch")
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example7(self, node, model_files):
+        # skip this test if pickle is not available
+        pytest.importorskip("pickle", reason="pickle not installed")
+        # skip this test if sklearn is not available
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_scikitlearn", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="sklearn")
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example7(self, node, model_files):
+        # skip this test if pickle is not available
+        pytest.importorskip("pickle", reason="pickle not installed")
+        # skip this test if sklearn is not available
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_scikitlearn", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="sklearn")
         inst.run()
 
         for attribute in [

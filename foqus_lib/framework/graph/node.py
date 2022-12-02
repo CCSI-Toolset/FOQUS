@@ -55,7 +55,7 @@ def attempt_load_tensorflow(try_imports=True):
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
-        # if TensorFlow is not available, create a proxy function that will
+        # if tensorFlow is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
         def load(*args, **kwargs):
             raise ModuleNotFoundError(
@@ -111,7 +111,7 @@ def attempt_load_sympy(try_imports=True):
 def attempt_load_pytorch(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
-        # tensorflow should be installed, but not required for non ML/AI models
+        # torch should be installed, but not required for non ML/AI models
         import torch
 
         torch_load = torch.jit.load
@@ -120,7 +120,7 @@ def attempt_load_pytorch(try_imports=True):
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
-        # if TensorFlow is not available, create a proxy function that will
+        # if torch is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
         def torch_load(*args, **kwargs):
             raise ModuleNotFoundError(
@@ -143,10 +143,32 @@ def attempt_load_pytorch(try_imports=True):
     return torch_load, torch_tensor, torch_float
 
 
+def attempt_load_pickle(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # pickle should be installed, but not required for non ML/AI models
+        import pickle
+
+        pickle_load = pickle.load
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if pickle is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def pickle_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `pickle` is not available"
+            )
+
+    return pickle_load
+
+
 # attempt to load optional dependenices for node script
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
+pickle_load = attempt_load_pickle()
 
 # pylint: enable=import-error
 
@@ -267,13 +289,20 @@ class pymodel_ml_ai(pymodel):
                 named_layers_keys[-1]
             ].out_features  # last layer has model outputs
 
+        elif self.trainer == "sklearn":
+            # set the custom layer object
+            custom_layer = self.model.custom
+            # set the model input and output sizes
+            model_input_size = self.model.n_features_in_
+            model_output_size = self.model.n_outputs_
+
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras` or "
-                "`torch` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, 'torch' or "
+                "`sklearn` and should not be able to take any other value."
             )
 
         self.custom_layer = (
@@ -288,7 +317,7 @@ class pymodel_ml_ai(pymodel):
                     "Model has no attribute input_label, using default x"
                     + str(i + 1)
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load "
                     + "as expected using default attributes."
@@ -300,7 +329,7 @@ class pymodel_ml_ai(pymodel):
                 _logger.info(
                     "Model has no attribute input_min, using default 0"
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load as expected using default attributes."
                 )
@@ -311,7 +340,7 @@ class pymodel_ml_ai(pymodel):
                 _logger.info(
                     "Model has no attribute input_max, using default 1E5"
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load as expected using default attributes."
                 )
@@ -337,7 +366,7 @@ class pymodel_ml_ai(pymodel):
                     "Model has no attribute output_label, using default z"
                     + str(j + 1)
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load as expected using default attributes."
                 )
@@ -348,7 +377,7 @@ class pymodel_ml_ai(pymodel):
                 _logger.info(
                     "Model has no attribute output_min, using default 0"
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load as expected using default attributes."
                 )
@@ -359,7 +388,7 @@ class pymodel_ml_ai(pymodel):
                 _logger.info(
                     "Model has no attribute output_max, using default 1E5"
                     + ". If attribute should exist, check that "
-                    + "Tensorflow Keras model was correctly saved with "
+                    + "machine learning model was correctly saved with "
                     + "CustomLayer. Otherwise, this is not an error and model "
                     + "will load as expected using default attributes."
                 )
@@ -384,7 +413,7 @@ class pymodel_ml_ai(pymodel):
             _logger.info(
                 "Model has no attribute normalized, using default False"
                 + ". If attribute should exist, check that "
-                + "Tensorflow Keras model was correctly saved with "
+                + "machine learning model was correctly saved with "
                 + "CustomLayer. Otherwise, this is not an error and model "
                 + "will load as expected using default attributes."
             )
@@ -582,13 +611,17 @@ class pymodel_ml_ai(pymodel):
                 .detach()
                 .numpy()
             )
+        elif self.trainer == "sklearn":
+            self.scaled_outputs = self.model.predict(
+                np.array(self.scaled_inputs, ndmin=2)
+            )[0]
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras` or "
-                "`torch` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, 'torch' or "
+                "`sklearn` and should not be able to take any other value."
             )
 
         outidx = 0
@@ -1137,6 +1170,10 @@ class Node:
                 extension = ".json"
             elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
                 extension = ".pt"  # this is for PyTorch models
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
+            ):
+                extension = ".pkl"  # this is for Sci Kit Learn models
             else:  # assume it's a folder with no extension
                 extension = ""
 
@@ -1144,6 +1181,12 @@ class Node:
                 # attempt to unserialize using torch.jit.load command
                 self.model = torch_load(str(self.modelName) + extension)
                 trainer = "torch"
+            elif (
+                extension == ".pkl"
+            ):  # use importlib/pickle loading syntax for SciKitLearn models
+                with open(str(self.modelName) + extension, "rb") as file:
+                    self.model = pickle_load(file)
+                trainer = "sklearn"
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1164,8 +1207,6 @@ class Node:
                     )
                     self.model = load(str(self.modelName) + extension)
                     trainer = "keras"
-                finally:
-                    os.chdir(cwd)  # reset to original working directory
             else:  # model is a json file, use read method to load dictionary
                 with open(str(self.modelName) + extension, "r") as json_file:
                     loaded_json = json_file.read()
@@ -1192,7 +1233,7 @@ class Node:
                     self.model.load_weights(
                         str(self.modelName) + "_weights.h5"
                     )  # load pretrained weights
-                    os.chdir(cwd)  # reset to original working directory
+            os.chdir(cwd)  # reset to original working directory
             inst = pymodel_ml_ai(self.model, trainer)
             for vkey, v in inst.inputs.items():
                 self.gr.input[self.name][vkey] = v
@@ -1671,6 +1712,10 @@ class Node:
                 extension = ".json"
             elif os.path.exists(os.path.join(os.getcwd(), str(self.modelName) + ".pt")):
                 extension = ".pt"  # this is for PyTorch models
+            elif os.path.exists(
+                os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
+            ):
+                extension = ".pkl"  # this is for Sci Kit Learn models
             else:  # assume it's a folder with no extension
                 extension = ""
 
@@ -1678,6 +1723,12 @@ class Node:
                 # attempt to unserialize using torch.jit.load command
                 self.model = torch_load(str(self.modelName) + extension)
                 trainer = "torch"
+            elif (
+                extension == ".pkl"
+            ):  # use importlib/pickle loading syntax for SciKitLearn models
+                with open(str(self.modelName) + extension, "rb") as file:
+                    self.model = pickle_load(file)
+                trainer = "sklearn"
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1698,8 +1749,6 @@ class Node:
                     )
                     self.model = load(str(self.modelName) + extension)
                     trainer = "keras"
-                finally:
-                    os.chdir(cwd)  # reset to original working directory
             else:  # model is a json file, use read method to load dictionary
                 with open(str(self.modelName) + extension, "r") as json_file:
                     loaded_json = json_file.read()
@@ -1726,7 +1775,7 @@ class Node:
                     self.model.load_weights(
                         str(self.modelName) + "_weights.h5"
                     )  # load pretrained weights
-                    os.chdir(cwd)  # reset to original working directory
+            os.chdir(cwd)  # reset to original working directory
             self.pyModel = pymodel_ml_ai(self.model, trainer)
         # set the instance inputs
         for vkey, v in self.gr.input[self.name].items():

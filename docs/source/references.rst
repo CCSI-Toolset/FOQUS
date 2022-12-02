@@ -55,4 +55,8 @@ A. Meurer, C.P. Smith, M. Paprocki, et al., "SymPy 1.10.1 Documentation." https:
 
 .. _Marcel_2010:
 
-S. Marcel, Y. Rodriguez, "Torchvision the machine-vision package of torch."" In Proceedings of the 18th ACM international conference on Multimedia (pp. 1485-1488). October 2010.
+S. Marcel, Y. Rodriguez, "Torchvision the machine-vision package of torch."" In Proceedings of the 18th ACM international conference on Multimedia (pp. 1485-1488), October 2010.
+
+.. _Buitinck_2013:
+
+L. Buitinck, G. Louppe, M.Blondel, et al., "API design for machine learning software: experiences from the scikit-learn project." European Conference on Machine Learning and Principles and Practices of Knowledge Discovery in Databases, September 2013.

@@ -1244,14 +1244,14 @@ class FlowsheetControl:
             )
             self.increment_metric_job_finished(event="success.job")
         else:
-            msg = 'Unknown'
+            msg = "Unknown"
             if gt.ex:
-                exc_type,exc_value,exc_tb = gt.ex
+                exc_type, exc_value, exc_tb = gt.ex
                 msg = traceback.format_exception(exc_type, exc_value, exc_tb)
             db.job_change_status(
                 job_desc,
                 "error",
-                message="Flowsheet Error: %s" %(msg),
+                message="Flowsheet Error: %s" % (msg),
             )
             db.add_message(
                 "consumer={0}, job {1} finished, error".format(db.consumer_id, jid),

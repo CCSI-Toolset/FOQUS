@@ -64,9 +64,9 @@ jobs:
           conda install --yes -c CCSI-Toolset -c conda-forge psuade-lite=1.9
           echo '::endgroup::'
           echo '::group::Output of pip install/list/show'
-          pip install --progress-bar off --ignore-installed "$pip_install_target"
+          pip install --progress-bar off "$pip_install_target"
           pip list
-          pip show ccsi-foqus PyQt5
+          pip show ccsi-foqus PyQt5 pywin32
           echo '::endgroup::'
       - name: Apply hotfix commands
         if: matrix.hotfix-command

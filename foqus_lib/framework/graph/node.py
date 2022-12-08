@@ -148,6 +148,7 @@ def attempt_load_sklearn(try_imports=True):
         assert try_imports  # if False will auto-trigger exceptions
         # sklearn should be installed, but not required for non ML/AI models
         import sklearn
+        import pickle
 
         pickle_load = pickle.load
 

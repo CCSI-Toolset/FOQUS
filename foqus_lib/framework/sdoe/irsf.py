@@ -21,7 +21,6 @@ import time
 
 
 def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
-    _hist = hist
     inp_x = cand[args["idx"]]
     xcols = list(inp_x.columns)
     norm_x = unitscale_cand(inp_x)
@@ -33,16 +32,22 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     ymin = inp_y.to_numpy().min(axis=0)
     ymax = inp_y.to_numpy().max(axis=0)
 
+    if hist is not None:
+        hist_x = hist[args["idx"]]
+        norm_hist_x = unitscale_cand(hist_x)
+        hist_y = hist[args["idy"]]
+        norm_hist_y = unitscale_cand(hist_y)
+
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
     if test:
         t0 = time.time()
         design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(
-            norm_x, args["max_iterations"], nd, nr, mode
+            norm_x, args["max_iterations"], nd, nr, mode, hist=norm_hist_x
         )
         print("X space Best value in Normalized Scale: ", best_X)
         t1 = time.time() - t0
         design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(
-            norm_y, args["max_iterations"], nd, nr, mode
+            norm_y, args["max_iterations"], nd, nr, mode, hist=norm_hist_y
         )
         print("Y space Best value in Normalized Scale: ", best_Y)
 
@@ -99,12 +104,12 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     # the boundary points for the Pareto Front.
     # Possible to parallelize: search for X and Y at the same time
     design_X, best_X, mdpts_X, mties_X, dist_mat_X = criterion_X(
-        norm_x, args["max_iterations"], nd, nr, mode
+        norm_x, args["max_iterations"], nd, nr, mode, hist=norm_hist_x
     )
     print("X space Best value in Normalized Scale: ", best_X)
 
     design_Y, best_Y, mdpts_Y, mties_Y, dist_mat_Y = criterion_X(
-        norm_y, args["max_iterations"], nd, nr, mode
+        norm_y, args["max_iterations"], nd, nr, mode, hist=norm_hist_y
     )
     print("Y space Best value in Normalized Scale: ", best_Y)
 
@@ -712,7 +717,10 @@ def CombPF(PFnew, PFcur, N):
     return PFcomb
 
 
-def X_min_dist(dmat):  # numpy array of shape (N, ncols) and type 'float'
+def X_min_dist(dmat, hist=None):  # numpy array of shape (N, ncols) and type 'float'
+
+    if hist is not None:
+        dmat = np.concatenate((dmat, hist), axis=0)
 
     N, ncols = dmat.shape
     dist_mat = np.full((N, N), np.nan)
@@ -732,7 +740,10 @@ def X_min_dist(dmat):  # numpy array of shape (N, ncols) and type 'float'
     return dist_mat, min_dist, md, mdpts, mties
 
 
-def update_min_dist(cand_rand, md, mdpts1, mties, Xdist_mat, cand):
+def update_min_dist(cand_rand, md, mdpts1, mties, Xdist_mat, cand, hist):
+    if hist is not None:
+        cand_rand = np.concatenate((cand_rand, hist), axis=0)
+
     ndes = int(np.shape(cand_rand)[0])
     npt = int(np.shape(cand_rand)[1])
     ncand = int(np.shape(cand)[0])
@@ -809,17 +820,17 @@ def criterion_X(
     numpt,  # number of points (design size N)
     numdes,  # number of random start (startnum)
     mode,
+    hist=None,
 ):
 
     _mode = mode.lower()
     candid = np.asarray(cand)
-
     best_md = 0.0
     best_mties = 0.0
     for i in range(numdes):
         rand_index = random.sample(range(len(candid)), numpt)
         cand_rand = np.asarray(itemgetter(*rand_index)(candid))
-        Xdist_mat, min_dist, md, mdpts, mties = X_min_dist(cand_rand)
+        Xdist_mat, min_dist, md, mdpts, mties = X_min_dist(cand_rand, hist=hist)
         update = True
         nit = 0
 
@@ -832,7 +843,7 @@ def criterion_X(
                 up_mties,
                 up_Xdist_mat,
                 new_update,
-            ) = update_min_dist(cand_rand, md, mdpts, mties, Xdist_mat, cand)
+            ) = update_min_dist(cand_rand, md, mdpts, mties, Xdist_mat, cand, hist)
             nit = nit + 1
             if new_update:
                 cand_rand = up_cand_rand

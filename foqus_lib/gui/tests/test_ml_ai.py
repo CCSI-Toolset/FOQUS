@@ -202,7 +202,6 @@ class TestMLAIPluginFlowsheetRun:
 
     def test_load_and_run_meacustomnormformjson(self, active_session, simnode):
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
-        pytest.importorskip("json", reason="json not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(4)
@@ -238,7 +237,6 @@ class TestMLAIPluginFlowsheetRun:
 
     def test_load_and_run_meacustomnormformscikitlearn(self, active_session, simnode):
         pytest.importorskip("sklearn", reason="sklearn not installed")
-        pytest.importorskip("pickle", reason="pickle not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(7)

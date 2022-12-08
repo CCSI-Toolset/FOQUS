@@ -143,22 +143,22 @@ def attempt_load_pytorch(try_imports=True):
     return torch_load, torch_tensor, torch_float
 
 
-def attempt_load_pickle(try_imports=True):
+def attempt_load_sklearn(try_imports=True):
     try:
         assert try_imports  # if False will auto-trigger exceptions
-        # pickle should be installed, but not required for non ML/AI models
-        import pickle
+        # sklearn should be installed, but not required for non ML/AI models
+        import sklearn
 
         pickle_load = pickle.load
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
-        # if pickle is not available, create a proxy function that will
+        # if sklearn is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
         def pickle_load(*args, **kwargs):
             raise ModuleNotFoundError(
                 f"`load()` was called with args={args},"
-                "kwargs={kwargs} but `pickle` is not available"
+                "kwargs={kwargs} but `sklearn` is not available"
             )
 
     return pickle_load
@@ -168,7 +168,7 @@ def attempt_load_pickle(try_imports=True):
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
-pickle_load = attempt_load_pickle()
+pickle_load = attempt_load_sklearn()
 
 # pylint: enable=import-error
 

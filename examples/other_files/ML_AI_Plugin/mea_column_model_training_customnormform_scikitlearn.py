@@ -1,9 +1,7 @@
 import numpy as np
 import pandas as pd
-import random as rn
 from sklearn.neural_network import MLPRegressor
 import pickle
-from pathlib import Path
 from types import SimpleNamespace
 
 # Example follows the sequence below:

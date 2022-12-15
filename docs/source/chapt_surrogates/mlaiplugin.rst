@@ -22,7 +22,8 @@ launched.
   Keras SavedModel format (folder containing .pb data files), or serialized
   to an architecture dictionary (.json) with separately saved model weights
   (.h5). Additionally, this tool supports PyTorch models saved in the standard
-  format (.pt). The examples folder contains demonstrative training and class
+  format (.pt) and Scikit-learn models serialized in the standard Python pickle
+  format (.pkl). The examples folder contains demonstrative training and class
   scripts for models containing no custom layer (see below for more information
   on adding custom layers), a custom layer with a preset normalization option
   and a custom layer with a custom normalization function, as well as models
@@ -33,10 +34,10 @@ launched.
   such as variable labels and bounds. While training a Keras model with custom
   attributes is not required to use the plugin tool, users must provide the
   necessary class script if the Keras model does contain a custom object (see
-  below for further information on creating custom objects). PyTorch models do
-  not have this requirement and the class script does not need to exist in the
-  plugins folder. This model type is used in the same manner as Pymodel Plugins,
-  per the workflow in Section :ref:`tutorial.surrogate.fs`.
+  below for further information on creating custom objects). PyTorch and
+  Scikit-learn models do not have this requirement and the class script does not
+  need to exist in the plugins folder. This model type is used in the same manner
+  as Pymodel Plugins, per the workflow in Section :ref:`tutorial.surrogate.fs`.
 
 Custom Model Attributes
 -----------------------
@@ -68,8 +69,20 @@ dependent layers sequentially or simultaneously, PyTorch more explicitly uses pr
 layers as functional inputs for later layers in the neural network. Similar to the
 built-in "custom object" registration feature in Keras, PyTorch allows the creation
 of custom layers while defining the "forward" advancement method that builds the
-network prior to training. Users may obtain a great deal of usage standards and best practices information as described
-in the PyTorch documentation: https://pytorch.org/docs/stable/index.html.
+network prior to training. Users may obtain a great deal of usage standards and best
+practices information as described in the PyTorch documentation:
+https://pytorch.org/docs/stable/index.html.
+
+Scikit-learn offers a machine learning library for predictive data analysis for a
+wide range of classification and regression problems, including neural networks. To
+train deep learning neural networks, the package utilizes a multi-layer regressor
+that optimizes squared-loss using LBFGS or stochastic gradient descent algorithms.
+These models offer less flexibility than TensorFlow Keras or Torch models, while
+providing a much simpler syntax for generating and leveraging neural networks. Users
+may find further information on the Scikit-learn package in the documentation:
+https://scikit-learn.org/stable/index.html and further information on deep learning
+capabilities as well:
+https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegressor.html#sklearn.neural_network.MLPRegressor.
 
 The examples files located in *FOQUS.examples.other_files.ML_AI_Plugin* show how users
 may train new models or re-save loaded models with a custom layer.
@@ -241,7 +254,8 @@ to obtain the correct output values for the entered inputs.
 To run the models, copy the appropriate model files or folders ('h5_model.h5',
 'saved_model/', 'json_model.json', 'json_model_weights.h5') and any custom layer
 scripts ('model_name.py') into the working directory folder 'user_ml_ai_models'.
-As mentioned earlier, PyTorch models only require the model file ('pt_model.pt').
+As mentioned earlier, PyTorch and Scikit-learn models only require the model file
+('pt_model.pt' or 'skl_model.pkl').
 For example, the model name below is 'mea_column_model' and is saved in H5 format,
 and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.mea_column_model.h5*
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to

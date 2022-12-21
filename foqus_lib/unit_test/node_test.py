@@ -16,6 +16,8 @@
 from foqus_lib.framework.graph.node import (
     attempt_load_tensorflow,
     attempt_load_sympy,
+    attempt_load_pytorch,
+    attempt_load_sklearn,
     pymodel_ml_ai,
     Node,
     NodeEx,
@@ -40,7 +42,7 @@ import pytest
 def model_files(
     foqus_ml_ai_models_dir: Path,
     install_ml_ai_model_files,
-    suffixes: Tuple[str] = (".py", ".h5", ".json"),
+    suffixes: Tuple[str] = (".py", ".h5", ".json", ".pt", ".pkl"),
 ) -> List[Path]:
     paths = []
     for path in sorted(foqus_ml_ai_models_dir.glob("*")):
@@ -84,6 +86,30 @@ class testImports(unittest.TestCase):
         with pytest.raises(ModuleNotFoundError):
             solve(None)
 
+    def test_import_pytorch_failure(self):
+
+        # method loaded from node module as * import
+        torch_load, torch_tensor, torch_float = attempt_load_pytorch(try_imports=False)
+
+        # check that the returned functions print the expected warnings
+        with pytest.raises(ModuleNotFoundError):
+            torch_load(None)
+        with pytest.raises(ModuleNotFoundError):
+            torch_tensor(None)
+        with pytest.raises(ModuleNotFoundError):
+            torch_float(None)
+
+    def test_import_sklearn_failure(self):
+        # this is a pretty common package, so this probably would never occur
+        # but it's good to test the exception anyways
+
+        # method loaded from node module as * import
+        pickle_load = attempt_load_sklearn(try_imports=False)
+
+        # check that the returned functions print the expected warnings
+        with pytest.raises(ModuleNotFoundError):
+            pickle_load(None)
+
     def test_import_tensorflow_success(self):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
@@ -99,7 +125,7 @@ class testImports(unittest.TestCase):
             json_load(None)  # expects JSON object, should throw type error
 
     def test_import_sympy_success(self):
-        # skip this test if tensorflow is not available
+        # skip this test if sympy is not available
         pytest.importorskip("sympy", reason="sympy not installed")
 
         # method loaded from node module as * import
@@ -113,6 +139,34 @@ class testImports(unittest.TestCase):
             symbol(None)  # should fail to create symbol from non-string
         with pytest.raises(AttributeError):
             solve(None)  # should fail to find attribute 'free_symbols'
+
+    def test_import_pytorch_success(self):
+        # skip this test if torch is not available
+        pytest.importorskip("torch", reason="torch not installed")
+
+        # method loaded from node module as * import
+        torch_load, torch_tensor, torch_float = attempt_load_pytorch(try_imports=True)
+
+        # check that the returned functions expect the correct input as a way
+        # of confirming that the class (function) types are correct
+        with pytest.raises(AttributeError):
+            torch_load(None)  # should fail to find attribute 'read'
+        with pytest.raises(RuntimeError):
+            torch_tensor(None)  # should fail to infer dtype of 'None' object
+        with pytest.raises(TypeError):
+            torch_float(None)  # should fail to call torch.dtype object
+
+    def test_import_sklearn_success(self):
+        # skip this test if sklearn is not available
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+
+        # method loaded from node module as * import
+        pickle_load = attempt_load_sklearn(try_imports=True)
+
+        # check that the returned functions expect the correct input as a way
+        # of confirming that the class (function) types are correct
+        with pytest.raises(TypeError):
+            pickle_load(None)  # should fail to find 'read' and 'readline' attributes
 
 
 # ----------------------------------------------------------------------------
@@ -182,8 +236,9 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_3(self, model_files):  # custom layer with custom normalization form
-        # no tests using this fixture should run if tensorflow is not installed
+        # no tests using this fixture should run if tensorflow and sympy are not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -216,8 +271,9 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_4(self, model_files):  # model saved in SavedModel file format
-        # no tests using this fixture should run if tensorflow is not installed
+        # no tests using this fixture should run if tensorflow and sympy are not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -239,7 +295,7 @@ class TestPymodelMLAI:
         sys.path.append(os.path.dirname(model_py[0]))
         module = import_module("mea_column_model_customnormform_savedmodel")
 
-        # has a custom layer with a preset normalization option
+        # has a custom layer with a custom normalization option
         model = load(
             model_folder[0],
             custom_objects={
@@ -251,8 +307,9 @@ class TestPymodelMLAI:
 
     @pytest.fixture(scope="function")
     def example_5(self, model_files):  # model saved in json form with h5 weights
-        # no tests using this fixture should run if tensorflow is not installed
+        # no tests using this fixture should run if tensorflow and sympy are not installed
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
         # the models are all loaded a single time, and copies of individual
         # models are modified to test model exceptions
 
@@ -298,47 +355,149 @@ class TestPymodelMLAI:
 
         return model
 
+    @pytest.fixture(scope="function")
+    def example_6(self, model_files):  # custom layer with custom normalization form
+        # no tests using this fixture should run if torch and sympy are not installed
+        pytest.importorskip("torch", reason="torch not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        (
+            torch_load,
+            torch_tensor,
+            torch_float,
+        ) = attempt_load_pytorch()  # alias for load methods
+
+        # get model files from previously defined model_files pathlist
+        model_pt = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_pytorch.pt")
+        ]
+
+        # has a custom layer with a custom normalization option
+        model = torch_load(str(model_pt[0]))
+
+        return model
+
+    @pytest.fixture(scope="function")
+    def example_7(self, model_files):  # custom layer with custom normalization form
+        # no tests using this fixture should run if sklearn and sympy are not installed
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # the models are all loaded a single time, and copies of individual
+        # models are modified to test model exceptions
+
+        pickle_load = attempt_load_sklearn()  # alias for load method
+
+        # get model files from previously defined model_files pathlist
+        model_pkl = [
+            path
+            for path in model_files
+            if str(path).endswith("mea_column_model_customnormform_scikitlearn.pkl")
+        ]
+
+        # has a custom layer with a custom normalization option
+        with open(model_pkl[0], "rb") as file:
+            model = pickle_load(file)
+
+        return model
+
     # ----------------------------------------------------------------------------
     # this set of tests builds and runs the pymodel class functionality
 
     def test_build_and_run_as_expected_1(self, example_1):
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        test_pymodel = pymodel_ml_ai(example_1)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_1, trainer="keras")
         test_pymodel.run()
 
     def test_build_and_run_as_expected_2(self, example_2):
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         test_pymodel.run()
 
     def test_build_and_run_as_expected_3(self, example_3):
-        # only run if SymPy if available; test run for custom norm example
+        # only run if TensorFlow and SymPy are available; test run for custom norm example
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
         test_pymodel.run()
 
     def test_build_and_run_as_expected_4(self, example_4):
-        # only run if SymPy if available; test run for custom norm SavedModel
+        # only run if TensorFlow and SymPy are available; test run for custom norm SavedModel
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        test_pymodel = pymodel_ml_ai(example_4)
+        test_pymodel = pymodel_ml_ai(example_4, trainer="keras")
         test_pymodel.run()
 
     def test_build_and_run_as_expected_5(self, example_5):
-        # only run if SymPy if available; test run for custom norm json
+        # only run if TensorFlow and SymPy are available; test run for custom norm json
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         pytest.importorskip("sympy", reason="sympy not installed")
         # test that the loaded models run with no issues without modifications
         # as in subsequent tests, an alias is created to preserve the fixture
-        test_pymodel = pymodel_ml_ai(example_5)
+        test_pymodel = pymodel_ml_ai(example_5, trainer="keras")
         test_pymodel.run()
 
+    def test_build_and_run_as_expected_6(self, example_6):
+        # only run if PyTorch and SymPy are available; test run for custom norm example
+        pytest.importorskip("torch", reason="torch not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_6, trainer="torch")
+        test_pymodel.run()
+
+    def test_build_and_run_as_expected_7(self, example_7):
+        # only run if sklearn and SymPy are available; test run for custom norm example
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # test that the loaded models run with no issues without modifications
+        # as in subsequent tests, an alias is created to preserve the fixture
+        test_pymodel = pymodel_ml_ai(example_7, trainer="sklearn")
+        test_pymodel.run()
+
+    def test_build_invalid_trainer_type(self, example_1):
+        # note, this should never happen since users can never set this value
+        with pytest.raises(
+            AttributeError,
+            match="Unknown file type: "
+            "notavalidtype, this should not have occurred. "
+            "Please contact the FOQUS developers if this error "
+            "occurs; the trainer should be set internally to "
+            "`keras`, 'torch' or `sklearn` and should not be "
+            "able to take any other value.",
+        ):
+            test_pymodel = pymodel_ml_ai(example_1, trainer="notavalidtype")
+
+    def test_run_invalid_trainer_type(self, example_1):
+        # note, this should never happen since users can never set this value
+        # and the error tested above will be detected and raised first
+        test_pymodel = pymodel_ml_ai(example_1, trainer="keras")  # valid type
+        test_pymodel.trainer = "notavalidtype"  # now change it and run
+        with pytest.raises(
+            AttributeError,
+            match="Unknown file type: "
+            "notavalidtype, this should not have occurred. "
+            "Please contact the FOQUS developers if this error "
+            "occurs; the trainer should be set internally to "
+            "`keras`, 'torch' or `sklearn` and should not be "
+            "able to take any other value.",
+        ):
+            test_pymodel.run()
+
     def test_defaults_no_custom_layer(self, example_1):
-        test_pymodel = pymodel_ml_ai(example_1)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_1, trainer="keras")
 
         dummyidx = 0
         for idx in test_pymodel.inputs:
@@ -365,7 +524,8 @@ class TestPymodelMLAI:
         assert test_pymodel.normalized is False
 
     def test_no_scaling(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel, "normalized", False)
         test_pymodel.run()
 
@@ -395,7 +555,8 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_linear_scaling(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Linear")
         test_pymodel.run()
 
@@ -418,7 +579,8 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log_scaling(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log")
         test_pymodel.run()
 
@@ -441,6 +603,7 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power_scaling(self, example_2):
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
         # For this example, the inputs values for some variables are large per
         # the expected_in in the no_scaling test above, and attempting to scale
         # by 10^value breaks the intepreter with a math overflow error
@@ -454,7 +617,7 @@ class TestPymodelMLAI:
             test_model.layers[1].input_bounds[var][0] *= 0.01  # input_min
             test_model.layers[1].input_bounds[var][1] *= 0.01  # input_max
 
-        test_pymodel = pymodel_ml_ai(test_model)
+        test_pymodel = pymodel_ml_ai(test_model, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Power")
         test_pymodel.run()
 
@@ -479,7 +642,8 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_log2_scaling(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Log 2")
         test_pymodel.run()
 
@@ -502,7 +666,8 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_power2_scaling(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
         setattr(test_pymodel.model.layers[1], "normalization_form", "Power 2")
         test_pymodel.run()
 
@@ -525,10 +690,11 @@ class TestPymodelMLAI:
             assert unscaled_out[k] == pytest.approx(expected_soln[k], rel=1e-5)
 
     def test_custom_scaling(self, example_3):
-        # only run if SymPy if available; checks custom form of linear scaling
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
         pytest.importorskip("sympy", reason="sympy not installed")
 
-        test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
         test_pymodel.run()
 
         scaled_in = test_pymodel.scaled_inputs
@@ -555,7 +721,8 @@ class TestPymodelMLAI:
     # this set of tests bulids and runs the pymodel class and checks exceptions
 
     def test_no_norm_form(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -568,7 +735,8 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_disallowed_norm_form(self, example_2):
-        test_pymodel = pymodel_ml_ai(example_2)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        test_pymodel = pymodel_ml_ai(example_2, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -581,7 +749,10 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_norm_function(self, example_3):
-        test_pymodel = pymodel_ml_ai(example_3)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
+        pytest.importorskip("sympy", reason="sympy not installed")
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -598,7 +769,10 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_nonstring_norm_function(self, example_3):
-        test_pymodel = pymodel_ml_ai(example_3)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
+        pytest.importorskip("sympy", reason="sympy not installed")
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -615,7 +789,10 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_datavalue_reference(self, example_3):
-        test_pymodel = pymodel_ml_ai(example_3)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
+        pytest.importorskip("sympy", reason="sympy not installed")
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -636,7 +813,10 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_dataminimum_reference(self, example_3):
-        test_pymodel = pymodel_ml_ai(example_3)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
+        pytest.importorskip("sympy", reason="sympy not installed")
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -657,7 +837,10 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_no_datamaximum_reference(self, example_3):
-        test_pymodel = pymodel_ml_ai(example_3)
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks custom form of linear scaling
+        pytest.importorskip("sympy", reason="sympy not installed")
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -678,10 +861,11 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_parse_norm_function(self, example_3):
-        # only run if SymPy if available; checks syntax of passed norm function
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks syntax of passed norm function
         pytest.importorskip("sympy", reason="sympy not installed")
 
-        test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -702,10 +886,11 @@ class TestPymodelMLAI:
             test_pymodel.run()
 
     def test_solve_norm_function(self, example_3):
-        # only run if SymPy if available; checks solve of passed norm function
+        pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # only run if SymPy is available; checks solve of passed norm function
         pytest.importorskip("sympy", reason="sympy not installed")
 
-        test_pymodel = pymodel_ml_ai(example_3)
+        test_pymodel = pymodel_ml_ai(example_3, trainer="keras")
 
         # check that fixture contained expected attributes
         assert test_pymodel.normalized is True  # flag to check norm form
@@ -987,7 +1172,7 @@ class TestNode:
         node.setSim(newModel="AR_nocustomlayer", newType=5)
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
 
         for attribute in [
             "dtype",
@@ -1019,7 +1204,7 @@ class TestNode:
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
         inst.run()
 
         for attribute in [
@@ -1051,7 +1236,7 @@ class TestNode:
         node.setSim(newModel="mea_column_model", newType=5)
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
 
         for attribute in [
             "dtype",
@@ -1083,7 +1268,7 @@ class TestNode:
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
         inst.run()
 
         for attribute in [
@@ -1108,6 +1293,8 @@ class TestNode:
     def test_setSim_modelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1115,7 +1302,7 @@ class TestNode:
         node.setSim(newModel="mea_column_model_customnormform", newType=5)
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
 
         for attribute in [
             "dtype",
@@ -1139,6 +1326,8 @@ class TestNode:
     def test_runPymodelMLAI_example3(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1147,7 +1336,7 @@ class TestNode:
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
         inst.run()
 
         for attribute in [
@@ -1172,6 +1361,8 @@ class TestNode:
     def test_setSim_modelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1179,7 +1370,7 @@ class TestNode:
         node.setSim(newModel="mea_column_model_customnormform_savedmodel", newType=5)
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
 
         for attribute in [
             "dtype",
@@ -1203,6 +1394,8 @@ class TestNode:
     def test_runPymodelMLAI_example4(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1211,7 +1404,7 @@ class TestNode:
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
         inst.run()
 
         for attribute in [
@@ -1236,6 +1429,8 @@ class TestNode:
     def test_setSim_modelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1243,7 +1438,7 @@ class TestNode:
         node.setSim(newModel="mea_column_model_customnormform_json", newType=5)
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
 
         for attribute in [
             "dtype",
@@ -1267,6 +1462,8 @@ class TestNode:
     def test_runPymodelMLAI_example5(self, node, model_files):
         # skip this test if tensorflow is not available
         pytest.importorskip("tensorflow", reason="tensorflow not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
         # change directories
         curdir = os.getcwd()
         os.chdir(os.path.dirname(model_files[0]))
@@ -1275,7 +1472,143 @@ class TestNode:
         node.runCalc()  # covers node.runMLAIPlugin()
         os.chdir(curdir)
 
-        inst = pymodel_ml_ai(node.model)
+        inst = pymodel_ml_ai(node.model, trainer="keras")
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example6(self, node, model_files):
+        # skip this test if torch is not available
+        pytest.importorskip("torch", reason="torch not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_pytorch", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="torch")
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example6(self, node, model_files):
+        # skip this test if torch is not available
+        pytest.importorskip("torch", reason="torch not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_pytorch", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="torch")
+        inst.run()
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_setSim_modelMLAI_example7(self, node, model_files):
+        # skip this test if sklearn is not available
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_scikitlearn", newType=5)
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="sklearn")
+
+        for attribute in [
+            "dtype",
+            "min",
+            "max",
+            "default",
+            "unit",
+            "set",
+            "desc",
+            "tags",
+        ]:
+            for vkey, v in inst.inputs.items():
+                assert getattr(node.gr.input[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+            for vkey, v in inst.outputs.items():
+                assert getattr(node.gr.output[node.name][vkey], attribute) == getattr(
+                    v, attribute
+                )
+
+    def test_runPymodelMLAI_example7(self, node, model_files):
+        # skip this test if sklearn is not available
+        pytest.importorskip("sklearn", reason="sklearn not installed")
+        # skip this test if sympy is not available
+        pytest.importorskip("sympy", reason="sympy not installed")
+        # change directories
+        curdir = os.getcwd()
+        os.chdir(os.path.dirname(model_files[0]))
+        # manually add ML AI model to test
+        node.setSim(newModel="mea_column_model_customnormform_scikitlearn", newType=5)
+        node.runCalc()  # covers node.runMLAIPlugin()
+        os.chdir(curdir)
+
+        inst = pymodel_ml_ai(node.model, trainer="sklearn")
         inst.run()
 
         for attribute in [

@@ -1286,21 +1286,22 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         types = [s.strip() for s in config["INPUT"]["types"].split(",")]
 
+        if hfile == "":
+            hname = None
+        else:
+            hname = hfile
+
         if self.type == "IRSF":
             pf = self.analysis[row].results[1]["pareto_front"]
             results = self.analysis[row].results
             cand = load(cfile)
             irsf = {"cand": cand}
-            plot_pareto(pf, results, irsf["cand"])
+            plot_pareto(pf, results, irsf["cand"], hname)
             return
 
         fullName = self.analysis[row].fnames["cand"]
         dirname, filename = os.path.split(fullName)
 
-        if hfile == "":
-            hname = None
-        else:
-            hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         if self.type == "NUSF":
             scale_method = config["SF"]["scale_method"]

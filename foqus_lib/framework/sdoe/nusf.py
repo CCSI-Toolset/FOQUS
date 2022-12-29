@@ -15,7 +15,7 @@
 ###############################################################################
 import numpy as np
 from scipy.stats import rankdata
-from .distance import compute_dist
+from .distance import compute_dist, compute_min_params
 import time
 import pandas as pd  # only used for the final output of criterion
 

@@ -126,7 +126,7 @@ def run(config_file, nd, test=False):
 
     if sf_method == "irsf":
         args = {
-            "max_iterations": 1000,
+            "max_iterations": 10,
             "ws": np.linspace(0.1, 0.9, 5),
             "icol": id_,
             "idx": idx,

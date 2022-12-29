@@ -46,7 +46,7 @@ def plot_hist(
     design=False,
 ):
     if cand_rgba is not None:
-        fc["cand"] = cand_rgba
+        fc["design"] = cand_rgba
 
     ns, bins = np.histogram(xs, nbins)
     width = bins[1] - bins[0]
@@ -173,7 +173,7 @@ def plot_candidates(
         design = False
 
     if cand_rgba is not None:
-        fc["cand"] = cand_rgba
+        fc["design"] = cand_rgba
 
     if wcol is not None:
         cand_vals = cand[wcol].values
@@ -450,7 +450,12 @@ def plot(
     plt.show()
 
 
-def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
+def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering labels
+    if hname:
+        hf = load(hname)
+    else:
+        hf = None
+
     def onpick(event):  # Define nested function onpick
         if event.artist != points:
             return True
@@ -461,7 +466,7 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
 
         for _subplotnum, dataind in enumerate(event.ind):
             df = results[dataind + 1]["des"]
-            hf = None
+
             show = None
             title = "Design %s, Input Distance: %s, " "Response Distance: %s" % (
                 dataind + 1,

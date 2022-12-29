@@ -1,8 +1,9 @@
 
-from .distance import compute_dist
+from .distance import compute_dist, compute_min_params
 import numpy as np
 import pandas as pd
 import time
+
 
 def unit_scale(xs):
     xmin = np.min(xs, axis=0)
@@ -11,12 +12,15 @@ def unit_scale(xs):
 
     return scaled, xmin, xmax
 
+
 def inv_unit_scale(scaled, xmin, xmax):
     xs = scaled * (xmax - xmin) + xmin
 
     return xs
 
-def compute_dmat(cand, hist=None, val=np.inf): #Pedro: this is almost identical to NUSF's compute_dmat; something to consider if code needs to be refactored
+
+# Pedro: this is almost identical to NUSF's compute_dmat; something to consider if code needs to be refactored
+def compute_dmat(cand, hist=None, val=np.inf):
     # Inputs:
     #  cand - numpy array of size (N, nx)
     #  hist - numpy array of shape (nh, nx)
@@ -35,22 +39,9 @@ def compute_dmat(cand, hist=None, val=np.inf): #Pedro: this is almost identical 
 
     return dmat
 
-def compute_min_params(dmat): ##Pedro: this is identical to NUSF's compute_min_params; something to consider if code needs to be refactored
-    # Input:
-    #   dmat - numpy array of shape (M, M) where M = N+nh
-    # Output:
-    #     md - scalar representing min(dmat)
-    #  mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
 
-    md = np.min(dmat)
-    mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
-    mties = mdpts.shape[0]  # number of points returned
-    mdpts = np.unique(mdpts.flatten())
-
-    return md, mdpts, mties
-
-def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf): #Pedro: this is almost identical to NUSF's update_min_dist; something to consider if code needs to be refactored
+# Pedro: this is almost identical to NUSF's update_min_dist; something to consider if code needs to be refactored
+def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf):
 
     def update_dmat(row, rcand, dmat, k, val=np.inf):
         xs = rcand if hist is None else np.concatenate((rcand, hist))
@@ -79,8 +70,10 @@ def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf
     n_mdpts = len(mdpts_cand)
 
     # initialize d0 and mt0
-    d0 = np.zeros((n_mdpts, ncand))  # min dist when the ith point to remove is replaced with the jth candidate to add
-    mt0 = np.zeros((n_mdpts, ncand))  # number of ties when the ith point to remove is replaced with the jth candidate to add
+    d0 = np.zeros((n_mdpts, ncand))
+    # min dist when the ith point to remove is replaced with the jth candidate to add
+    mt0 = np.zeros((n_mdpts, ncand))
+    # number of ties when the ith point to remove is replaced with the jth candidate to add
 
     for pt in np.ndindex(n_mdpts, ncand):
         i, j = pt
@@ -126,12 +119,14 @@ def CombPF(PFnew, PFcur=None):
 
     for s in range(dnew):
         combined_pf = checkon2xy(
-            PFnew[0][s * N : (s + 1) * N, :], PFnew[1][s * N : (s + 1) * N, :], PFnew[2][s, :],  
+            PFnew[0][s * N: (s + 1) * N, :], PFnew[1][s * N: (s + 1) * N, :], PFnew[2][s, :],
             combined_pf[0], combined_pf[1], combined_pf[2])
 
     return combined_pf
 
-def criterion_X( #Pedro: this is almost identical to NUSF's criterion; something to consider if code needs to be refactored
+
+# Pedro: this is almost identical to NUSF's criterion; something to consider if code needs to be refactored
+def criterion_X(
     cand,  # candidates
     maxit,  # maximum iterations
     nr,  # number of restarts (each restart uses a random set of <nd> points)
@@ -191,7 +186,8 @@ def criterion_X( #Pedro: this is almost identical to NUSF's criterion; something
 
     return best_cand, best_md, best_mdpts, best_mties, best_dmat
 
-def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf): #
+
+def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     g1 = newpt[0] > curpf[:, 0]
     g2 = newpt[1] > curpf[:, 1]
 
@@ -231,6 +227,7 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf): #
 
     return newpfdesX, newpfdesY, newpf
 
+
 def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np.inf):  
 
     # to do: add checks on hist_x, hist_y (both [don't] exist, same number of points)
@@ -245,12 +242,16 @@ def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np
         dmat_y[-nhist:, -nhist:] = np.max(dmat_y)
 
     dmat_xy = (wt / mpdx) * dmat_x + ((1 - wt) / mpdy) * dmat_y
-    dmat_xy[-nhist:, -nhist:] = np.max(dmat_xy)
+
+    if hist_x is not None and hist_y is not None:
+        dmat_xy[-nhist:, -nhist:] = np.max(dmat_xy)
+
     np.fill_diagonal(dmat_xy, val)
 
     md, mdpts, mties = compute_min_params(dmat_xy)
 
     return dmat_xy, dmat_x, dmat_y, md, mdpts, mties
+
 
 def update_min_xydist(
     des_x,
@@ -360,6 +361,7 @@ def update_min_xydist(
 
     return des_x, des_y, md, mdpts_cand, mties, dmat_xy, dmat_x, dmat_y, PF_des_x, PF_des_y, PF_mat, added, removed, update
 
+
 def irsf_tex(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
@@ -411,6 +413,7 @@ def irsf_tex(
 
     return des_x, des_y, md, mdpts, mties, dmat_xy, dmat_x, dmat_y, PF_des_x, PF_des_y, PF_mat
 
+
 def criterion_irsf(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
@@ -420,7 +423,7 @@ def criterion_irsf(
     maxit,  # maximum iteration
     nr,  # number of random start (startnum)
     nd,  # number of points (design size N)
-    mode,  # Pedro: will this be used eventually?
+    mode,
     hist_x,
     hist_y
 ):
@@ -450,6 +453,7 @@ def criterion_irsf(
     _mode = mode
 
     return PF_des_x, PF_des_y, PF_mat
+
 
 def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     cand_x = cand[args["idx"]]
@@ -485,7 +489,6 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     t1 = time.time() - t0
     _, best_Y, _, _, _ = criterion_X(cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm)
     print("Y space Best value in Normalized Scale: ", best_Y)
-    t2 = time.time() - t1
 
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
     if test:
@@ -494,9 +497,9 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         _ = criterion_irsf(cand_x_norm, cand_y_norm,
                 best_X, best_Y, 0.5, args["max_iterations"],
                 nr, nd, mode, hist_x_norm, hist_y_norm)
-        t3 = time.time() - t0
+        t2 = time.time() - t0
 
-        return {"t1": t1, "t2": t2, "t3": t3}
+        return {"t1": t1, "t2": t2}
 
     # Otherwise IRSF for real
     # This is the most important function call of IRSF. For each weight value, its calling 'criterion_irsf' function
@@ -518,7 +521,7 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         combined_pf = CombPF([PFxdes[i], PFydes[i], PFmdvals[i]], combined_pf)
 
     ParetoX, ParetoY = {}, {}
-    sort_idx = np.argsort(combined_pf[2], axis=0)[:,0]
+    sort_idx = np.argsort(combined_pf[2], axis=0)[:, 0]
 
     for i, idx in enumerate(sort_idx):
         ParetoX[i] = combined_pf[0][(idx*nd) + np.arange(nd), :]
@@ -539,9 +542,10 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         results[i+1] = {
             "pareto_front": PV_df,
             "design": i + 1,
-            "des": design_df, #Pedro: this is really the only thing that changes during the loop;
-                                        #I'm not sure how this function is used elsewhere, but consider modifying its usage elsewhere
-                                        #so we don't have duplicated outputs (PV_df, etc.)
+            "des": design_df,  # Pedro: this is really the only thing that changes during the loop;
+                               # I'm not sure how this function is used elsewhere, but consider
+                               # modifying its usage elsewhere
+                               # so we don't have duplicated outputs (PV_df, etc.)
             "mode": mode,
             "design_size": nd,
             "num_restarts": nr,

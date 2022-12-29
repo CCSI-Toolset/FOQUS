@@ -50,3 +50,19 @@ def compute_dist(
     np.fill_diagonal(dmat, val)
 
     return dmat
+
+
+def compute_min_params(dmat):
+    # Input:
+    #   dmat - numpy array of shape (M, M) where M = N+nh
+    # Output:
+    #     md - scalar representing min(dmat)
+    #  mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
+    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
+
+    md = np.min(dmat)
+    mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
+    mties = mdpts.shape[0]  # number of points returned
+    mdpts = np.unique(mdpts.flatten())
+
+    return md, mdpts, mties

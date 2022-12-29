@@ -1,4 +1,3 @@
-
 from .distance import compute_dist, compute_min_params
 import numpy as np
 import pandas as pd
@@ -42,7 +41,6 @@ def compute_dmat(cand, hist=None, val=np.inf):
 
 # Pedro: this is almost identical to NUSF's update_min_dist; something to consider if code needs to be refactored
 def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf):
-
     def update_dmat(row, rcand, dmat, k, val=np.inf):
         xs = rcand if hist is None else np.concatenate((rcand, hist))
 
@@ -119,8 +117,13 @@ def CombPF(PFnew, PFcur=None):
 
     for s in range(dnew):
         combined_pf = checkon2xy(
-            PFnew[0][s * N: (s + 1) * N, :], PFnew[1][s * N: (s + 1) * N, :], PFnew[2][s, :],
-            combined_pf[0], combined_pf[1], combined_pf[2])
+            PFnew[0][s * N : (s + 1) * N, :],
+            PFnew[1][s * N : (s + 1) * N, :],
+            PFnew[2][s, :],
+            combined_pf[0],
+            combined_pf[1],
+            combined_pf[2],
+        )
 
     return combined_pf
 
@@ -162,8 +165,16 @@ def criterion_X(
 
         while update_ and (it < maxit):
 
-            rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_ = update_min_dist(
-                rcand, cand, ncand, md, mdpts, mties, dmat, hist=hist)
+            (
+                rcand_,
+                md_,
+                mdpts_,
+                mties_,
+                dmat_,
+                added_,
+                removed_,
+                update_,
+            ) = update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist=hist)
 
             if update_:
                 rcand = rcand_
@@ -177,7 +188,7 @@ def criterion_X(
             it += 1
 
         if (md > best_md) or ((md == best_md) and (mties < best_mties)):
-            best_index = rand_index 
+            best_index = rand_index
             best_cand = rcand
             best_md = md
             best_mdpts = mdpts
@@ -203,9 +214,13 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     eq1 = newpt[0] == curpf[:, 0]
     eq2 = newpt[1] == curpf[:, 1]
 
-    cond1 = (np.multiply(g1, ge2) + np.multiply(g2, ge1)) == 0  # PN: should be able to simplify this
+    cond1 = (
+        np.multiply(g1, ge2) + np.multiply(g2, ge1)
+    ) == 0  # PN: should be able to simplify this
     cond1 = cond1.flatten()
-    cond2 = np.sum(np.multiply(l1, le2) + np.multiply(l2, le1) + np.multiply(eq1, eq2))  # PN: and this
+    cond2 = np.sum(
+        np.multiply(l1, le2) + np.multiply(l2, le1) + np.multiply(eq1, eq2)
+    )  # PN: and this
 
     if np.any(cond1):
         n_desX = len(newdesX)
@@ -213,8 +228,8 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
         idxs_des = np.array([i * n_desX + np.arange(n_desX) for i in idxs]).flatten()
 
         newpf = curpf[idxs]
-        newpfdesX = curpfdesX[idxs_des] 
-        newpfdesY = curpfdesY[idxs_des] 
+        newpfdesX = curpfdesX[idxs_des]
+        newpfdesY = curpfdesY[idxs_des]
     else:
         newpf = np.empty((0, len(newpt)))
         newpfdesX = np.empty((0, np.shape(newdesX)[1]))
@@ -228,7 +243,7 @@ def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     return newpfdesX, newpfdesY, newpf
 
 
-def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np.inf):  
+def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np.inf):
 
     # to do: add checks on hist_x, hist_y (both [don't] exist, same number of points)
     dmat_x = compute_dmat(cand_x, hist_x, val)
@@ -272,14 +287,14 @@ def update_min_xydist(
     PF_mat,
     hist_x=None,
     hist_y=None,
-    val=np.inf):
-    
+    val=np.inf,
+):
+
     # to do: check that hist_x and hist_y both (don't) exist
 
-    def update_dmat_xy(row_x, row_y, 
-            des_x, des_y, 
-            dmat_xy, dmat_x, dmat_y, 
-            k, val=np.inf):
+    def update_dmat_xy(
+        row_x, row_y, des_x, des_y, dmat_xy, dmat_x, dmat_y, k, val=np.inf
+    ):
 
         xs = des_x if hist_x is None else np.concatenate((des_x, hist_x))
         m_x = np.sum(np.square(row_x - xs), axis=1)
@@ -298,7 +313,9 @@ def update_min_xydist(
 
         return dmat_xy_, dmat_x_, dmat_y_
 
-    def step(pt, des_x, des_y, cand_x, cand_y, mdpts, dmat_xy, dmat_x, dmat_y, val=np.inf):
+    def step(
+        pt, des_x, des_y, cand_x, cand_y, mdpts, dmat_xy, dmat_x, dmat_y, val=np.inf
+    ):
 
         i, j = pt  # i=mdpts index to remove from rcand; j=cand index to add to rcand
 
@@ -310,7 +327,8 @@ def update_min_xydist(
         des_x_[k] = row_x
         des_y_[k] = row_y
         dmat_xy_, dmat_x_, dmat_y_ = update_dmat_xy(
-            row_x, row_y, des_x_, des_y_, dmat_xy, dmat_x, dmat_y, k, val)
+            row_x, row_y, des_x_, des_y_, dmat_xy, dmat_x, dmat_y, k, val
+        )
 
         md_, mdpts_, mties_ = compute_min_params(dmat_xy_)
 
@@ -328,13 +346,16 @@ def update_min_xydist(
     for pt in np.ndindex(n_mdpts, ncand):
         i, j = pt
         des_x_, des_y_, d0[i, j], _, mt0[i, j], _, dmat_x_, dmat_y_, _, _ = step(
-                pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y)
+            pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
+        )
 
         new_pt = np.array([np.min(dmat_x_), np.min(dmat_y_)])
-        PF_des_x, PF_des_y, PF_mat = checkon2xy(des_x_, des_y_, new_pt, PF_des_x, PF_des_y, PF_mat)
+        PF_des_x, PF_des_y, PF_mat = checkon2xy(
+            des_x_, des_y_, new_pt, PF_des_x, PF_des_y, PF_mat
+        )
 
     d0_max = np.max(d0)
-    pts = np.argwhere(d0 == d0_max)            
+    pts = np.argwhere(d0 == d0_max)
     update = True
     added = None
     removed = None
@@ -342,24 +363,57 @@ def update_min_xydist(
     if d0_max > md:
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
-        des_x, des_y, md, mdpts_cand, mties, dmat_xy, dmat_x, dmat_y, added, removed = step(
-                pt, des_x, des_y, 
-                cand_x, cand_y, mdpts_cand,
-                dmat_xy, dmat_x, dmat_y)       
+        (
+            des_x,
+            des_y,
+            md,
+            mdpts_cand,
+            mties,
+            dmat_xy,
+            dmat_x,
+            dmat_y,
+            added,
+            removed,
+        ) = step(pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y)
     elif d0_max == md:
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
-            des_x, des_y, md, mdpts_cand, mties, dmat_xy, dmat_x, dmat_y, added, removed = step(
-                pt, des_x, des_y, 
-                cand_x, cand_y, mdpts_cand,
-                dmat_xy, dmat_x, dmat_y)  
+            (
+                des_x,
+                des_y,
+                md,
+                mdpts_cand,
+                mties,
+                dmat_xy,
+                dmat_x,
+                dmat_y,
+                added,
+                removed,
+            ) = step(
+                pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
+            )
     else:
         update = False
         added = None
-        removed = None        
+        removed = None
 
-    return des_x, des_y, md, mdpts_cand, mties, dmat_xy, dmat_x, dmat_y, PF_des_x, PF_des_y, PF_mat, added, removed, update
+    return (
+        des_x,
+        des_y,
+        md,
+        mdpts_cand,
+        mties,
+        dmat_xy,
+        dmat_x,
+        dmat_y,
+        PF_des_x,
+        PF_des_y,
+        PF_mat,
+        added,
+        removed,
+        update,
+    )
 
 
 def irsf_tex(
@@ -371,16 +425,17 @@ def irsf_tex(
     maxit,
     nd,  # number of points (design size N)
     hist_x=None,
-    hist_y=None
+    hist_y=None,
 ):
 
-    rand_index = np.random.choice(len(cand_x), nd) 
+    rand_index = np.random.choice(len(cand_x), nd)
 
-    des_x = cand_x[rand_index] 
-    des_y = cand_y[rand_index] 
+    des_x = cand_x[rand_index]
+    des_y = cand_y[rand_index]
 
     dmat_xy, dmat_x, dmat_y, md, mdpts, mties = XY_min_dist(
-        des_x, des_y, mpdx, mpdy, wt, hist_x, hist_y)
+        des_x, des_y, mpdx, mpdy, wt, hist_x, hist_y
+    )
     PF_des_x = des_x
     PF_des_y = des_y
     PF_mat = np.array([[np.min(dmat_x), np.min(dmat_y)]])
@@ -389,15 +444,39 @@ def irsf_tex(
     while update_ & (nit < maxit):
 
         (
-            des_x_, des_y_, md_, mdpts_, mties_,
-            dmat_xy_, dmat_x_, dmat_y_,
-            PF_des_x, PF_des_y, PF_mat,
-            added_, removed_, update_,
+            des_x_,
+            des_y_,
+            md_,
+            mdpts_,
+            mties_,
+            dmat_xy_,
+            dmat_x_,
+            dmat_y_,
+            PF_des_x,
+            PF_des_y,
+            PF_mat,
+            added_,
+            removed_,
+            update_,
         ) = update_min_xydist(  # Assume that this function takes care of history
-            des_x, des_y, cand_x, cand_y, md, mdpts, mties,
-            dmat_xy, dmat_x, dmat_y, mpdx, mpdy, wt,
-            PF_des_x, PF_des_y, PF_mat,
-            hist_x, hist_y
+            des_x,
+            des_y,
+            cand_x,
+            cand_y,
+            md,
+            mdpts,
+            mties,
+            dmat_xy,
+            dmat_x,
+            dmat_y,
+            mpdx,
+            mpdy,
+            wt,
+            PF_des_x,
+            PF_des_y,
+            PF_mat,
+            hist_x,
+            hist_y,
         )
 
         nit = nit + 1
@@ -411,7 +490,19 @@ def irsf_tex(
             dmat_x = dmat_x_
             dmat_y = dmat_y_
 
-    return des_x, des_y, md, mdpts, mties, dmat_xy, dmat_x, dmat_y, PF_des_x, PF_des_y, PF_mat
+    return (
+        des_x,
+        des_y,
+        md,
+        mdpts,
+        mties,
+        dmat_xy,
+        dmat_x,
+        dmat_y,
+        PF_des_x,
+        PF_des_y,
+        PF_mat,
+    )
 
 
 def criterion_irsf(
@@ -425,16 +516,36 @@ def criterion_irsf(
     nd,  # number of points (design size N)
     mode,
     hist_x,
-    hist_y
+    hist_y,
 ):
 
     (
-        _, _, md, _, mties, _, _, _, PF_des_x, PF_des_y, PF_mat,
+        _,
+        _,
+        md,
+        _,
+        mties,
+        _,
+        _,
+        _,
+        PF_des_x,
+        PF_des_y,
+        PF_mat,
     ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
 
-    for i in range(nr-1):
+    for i in range(nr - 1):
         (
-            _, _, md_, _, mties_, _, _, _, PF_des_x_, PF_des_y_, PF_mat_,
+            _,
+            _,
+            md_,
+            _,
+            mties_,
+            _,
+            _,
+            _,
+            PF_des_x_,
+            PF_des_y_,
+            PF_mat_,
         ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
         if (md_ > md) or (md_ == md) and (mties_ < mties):
             md = md_
@@ -442,8 +553,8 @@ def criterion_irsf(
 
         for s in range(PF_mat_.shape[0]):
             PF_des_x, PF_des_y, PF_mat = checkon2xy(
-                PF_des_x_[s * nd: (s + 1) * nd, :],
-                PF_des_y_[s * nd: (s + 1) * nd, :],
+                PF_des_x_[s * nd : (s + 1) * nd, :],
+                PF_des_y_[s * nd : (s + 1) * nd, :],
                 PF_mat_[s, :],
                 PF_des_x,
                 PF_des_y,
@@ -484,19 +595,33 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         hist_y_norm = None
 
     t0 = time.time()
-    _, best_X, _, _, _ = criterion_X(cand_x_norm, args["max_iterations"], nr, nd, mode, hist_x_norm)
+    _, best_X, _, _, _ = criterion_X(
+        cand_x_norm, args["max_iterations"], nr, nd, mode, hist_x_norm
+    )
     print("X space Best value in Normalized Scale: ", best_X)
     t1 = time.time() - t0
-    _, best_Y, _, _, _ = criterion_X(cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm)
+    _, best_Y, _, _, _ = criterion_X(
+        cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm
+    )
     print("Y space Best value in Normalized Scale: ", best_Y)
 
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight
     if test:
         t0 = time.time()
         print("Weight: ", round(0.5, 1))
-        _ = criterion_irsf(cand_x_norm, cand_y_norm,
-                best_X, best_Y, 0.5, args["max_iterations"],
-                nr, nd, mode, hist_x_norm, hist_y_norm)
+        _ = criterion_irsf(
+            cand_x_norm,
+            cand_y_norm,
+            best_X,
+            best_Y,
+            0.5,
+            args["max_iterations"],
+            nr,
+            nd,
+            mode,
+            hist_x_norm,
+            hist_y_norm,
+        )
         t2 = time.time() - t0
 
         return {"t1": t1, "t2": t2}
@@ -509,9 +634,18 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     for i in range(len(args["ws"])):
         print("Weight: ", round(args["ws"][i], 1))
         PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(
-                cand_x_norm, cand_y_norm,
-                best_X, best_Y, args["ws"][i], args["max_iterations"],
-                nr, nd, mode, hist_x_norm, hist_y_norm)
+            cand_x_norm,
+            cand_y_norm,
+            best_X,
+            best_Y,
+            args["ws"][i],
+            args["max_iterations"],
+            nr,
+            nd,
+            mode,
+            hist_x_norm,
+            hist_y_norm,
+        )
         # Reverse scaling
         PFxdes[i] = inv_unit_scale(PFxdes[i], xmin, xmax)
         PFydes[i] = inv_unit_scale(PFydes[i], ymin, ymax)
@@ -524,8 +658,8 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     sort_idx = np.argsort(combined_pf[2], axis=0)[:, 0]
 
     for i, idx in enumerate(sort_idx):
-        ParetoX[i] = combined_pf[0][(idx*nd) + np.arange(nd), :]
-        ParetoY[i] = combined_pf[1][(idx*nd) + np.arange(nd), :]
+        ParetoX[i] = combined_pf[0][(idx * nd) + np.arange(nd), :]
+        ParetoY[i] = combined_pf[1][(idx * nd) + np.arange(nd), :]
     ParetoVal = combined_pf[2][sort_idx]
 
     PV_df = pd.DataFrame(data=ParetoVal, columns=["Best Input", "Best Response"])
@@ -534,18 +668,19 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     results = {}
 
     for i, idx in enumerate(sort_idx):
-        pareto_x = combined_pf[0][(idx*nd) + np.arange(nd), :]
-        pareto_y = combined_pf[1][(idx*nd) + np.arange(nd), :]
-        design_df = pd.DataFrame(data=np.concatenate((pareto_x, pareto_y), axis=1),
-                                 columns=xcols+ycols)
+        pareto_x = combined_pf[0][(idx * nd) + np.arange(nd), :]
+        pareto_y = combined_pf[1][(idx * nd) + np.arange(nd), :]
+        design_df = pd.DataFrame(
+            data=np.concatenate((pareto_x, pareto_y), axis=1), columns=xcols + ycols
+        )
 
-        results[i+1] = {
+        results[i + 1] = {
             "pareto_front": PV_df,
             "design": i + 1,
             "des": design_df,  # Pedro: this is really the only thing that changes during the loop;
-                               # I'm not sure how this function is used elsewhere, but consider
-                               # modifying its usage elsewhere
-                               # so we don't have duplicated outputs (PV_df, etc.)
+            # I'm not sure how this function is used elsewhere, but consider
+            # modifying its usage elsewhere
+            # so we don't have duplicated outputs (PV_df, etc.)
             "mode": mode,
             "design_size": nd,
             "num_restarts": nr,
@@ -553,4 +688,3 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         }
 
     return results
-

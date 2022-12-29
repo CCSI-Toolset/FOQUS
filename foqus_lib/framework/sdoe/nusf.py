@@ -44,22 +44,6 @@ def compute_dmat(weight_mat, xcols, wcol, hist=None):
     return dmat
 
 
-def compute_min_params(dmat):
-    # Input:
-    #   dmat - numpy array of shape (M, M) where M = N+nh
-    # Output:
-    #     md - scalar representing min(dmat)
-    #  mdpts - numpy array of shape (K, ) representing indices where 'md' occurs
-    #  mties - scalar representing the number of index pairs (i, j) where i < j and dmat[i, j] == md
-
-    md = np.min(dmat)
-    mdpts = np.argwhere(np.triu(dmat) == md)  # check upper triangular matrix
-    mties = mdpts.shape[0]  # number of points returned
-    mdpts = np.unique(mdpts.flatten())
-
-    return md, mdpts, mties
-
-
 def update_min_dist(rcand, cand, ncand, xcols, wcol, md, mdpts, mties, dmat, hist):
     # Inputs:
     #   rcand - numpy array of size (nd, nx+1) containing currently subset of scaled weights

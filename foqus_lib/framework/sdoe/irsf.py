@@ -116,7 +116,7 @@ def CombPF(PFnew, PFcur=None):
     N = int(len(PFnew[0]) / dnew)
 
     for s in range(dnew):
-        combined_pf = checkon2xy(
+        combined_pf = update_pareto_front(
             PFnew[0][s * N : (s + 1) * N, :],
             PFnew[1][s * N : (s + 1) * N, :],
             PFnew[2][s, :],
@@ -198,7 +198,7 @@ def criterion_X(
     return best_cand, best_md, best_mdpts, best_mties, best_dmat
 
 
-def checkon2xy(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
+def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
     g1 = newpt[0] > curpf[:, 0]
     g2 = newpt[1] > curpf[:, 1]
 
@@ -350,7 +350,7 @@ def update_min_xydist(
         )
 
         new_pt = np.array([np.min(dmat_x_), np.min(dmat_y_)])
-        PF_des_x, PF_des_y, PF_mat = checkon2xy(
+        PF_des_x, PF_des_y, PF_mat = update_pareto_front(
             des_x_, des_y_, new_pt, PF_des_x, PF_des_y, PF_mat
         )
 
@@ -552,7 +552,7 @@ def criterion_irsf(
             mties = mties_
 
         for s in range(PF_mat_.shape[0]):
-            PF_des_x, PF_des_y, PF_mat = checkon2xy(
+            PF_des_x, PF_des_y, PF_mat = update_pareto_front(
                 PF_des_x_[s * nd : (s + 1) * nd, :],
                 PF_des_y_[s * nd : (s + 1) * nd, :],
                 PF_mat_[s, :],

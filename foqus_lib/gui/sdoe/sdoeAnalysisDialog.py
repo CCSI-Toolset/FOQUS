@@ -1323,7 +1323,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             nusf = None
             irsf = None
 
-        scatterLabel = "Design Points"
+        scatterLabel = "Design points"
         nImpPts = 0
         dialog = sdoePreview(
             sdoeData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self

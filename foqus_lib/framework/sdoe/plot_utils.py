@@ -25,7 +25,7 @@ from .nusf import scale_y
 alpha = {"design": 1, "hist": 1, "cand": 0.5, "imp": 0.5}
 area = {"design": 45, "hist": 20, "cand": 20, "imp": 25}
 fc = {
-    "design": (0, 0, 1, alpha["design"]),
+    "design": (0, 1, 1, alpha["design"]),
     "hist": (1, 0, 1, alpha["hist"]),
     "cand": (0.2, 0.2, 0.2, alpha["cand"]),
     "imp": (1, 0, 0, alpha["imp"]),
@@ -272,6 +272,7 @@ def plot_candidates(
                             df[xname],
                             s=area["design"],
                             facecolor=fc["design"],
+                            zorder=10,
                         )
                     else:
                         ax.scatter(
@@ -279,12 +280,14 @@ def plot_candidates(
                             df[xname][0:-nImpPts],
                             s=area["design"],
                             facecolor=fc["design"],
+                            zorder=10,
                         )
                         ax.scatter(
                             df[yname][-nImpPts:],
                             df[xname][-nImpPts:],
                             s=area["imp"],
                             facecolor=fc["imp"],
+                            zorder=5,
                         )
 
                     ax.scatter(
@@ -311,6 +314,7 @@ def plot_candidates(
                             df[xname][-nImpPts:],
                             s=area["imp"],
                             facecolor=fc["imp"],
+                            zorder=5,
                         )
 
                 if hf is not None:
@@ -320,6 +324,7 @@ def plot_candidates(
                         s=area["hist"],
                         facecolor=fc["hist"],
                         alpha=alpha["hist"],
+                        zorder=7.5,
                     )
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
@@ -356,14 +361,14 @@ def plot_candidates(
 
     labels = [scatter_label]
     if hf is not None:
-        labels.append("Previous data")
+        labels.append("Previous data points")
     labels.append(scatter_label)
     if nImpPts > 0:
-        labels.append("Imputed")
+        labels.append("Imputed points")
     if cand is not None:
         labels.append("Candidate data points")
     if hf is not None:
-        labels.append("Previous data")
+        labels.append("Previous data points")
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)

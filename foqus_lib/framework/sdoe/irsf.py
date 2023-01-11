@@ -117,8 +117,8 @@ def CombPF(PFnew, PFcur=None):
 
     for s in range(dnew):
         combined_pf = update_pareto_front(
-            PFnew[0][s * N : (s + 1) * N, :],
-            PFnew[1][s * N : (s + 1) * N, :],
+            PFnew[0][s * N: (s + 1) * N, :],
+            PFnew[1][s * N: (s + 1) * N, :],
             PFnew[2][s, :],
             combined_pf[0],
             combined_pf[1],
@@ -239,7 +239,6 @@ def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
         newpf = np.append(newpf, [newpt], axis=0)
         newpfdesX = np.append(newpfdesX, newdesX, axis=0)
         newpfdesY = np.append(newpfdesY, newdesY, axis=0)
-
     return newpfdesX, newpfdesY, newpf
 
 
@@ -553,8 +552,8 @@ def criterion_irsf(
 
         for s in range(PF_mat_.shape[0]):
             PF_des_x, PF_des_y, PF_mat = update_pareto_front(
-                PF_des_x_[s * nd : (s + 1) * nd, :],
-                PF_des_y_[s * nd : (s + 1) * nd, :],
+                PF_des_x_[s * nd: (s + 1) * nd, :],
+                PF_des_y_[s * nd: (s + 1) * nd, :],
                 PF_mat_[s, :],
                 PF_des_x,
                 PF_des_y,

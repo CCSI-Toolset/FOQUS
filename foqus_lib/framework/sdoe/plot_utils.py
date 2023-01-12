@@ -272,6 +272,7 @@ def plot_candidates(
                             df[xname],
                             s=area["design"],
                             facecolor=fc["design"],
+                            edgecolor='black',
                             zorder=10,
                         )
                     else:
@@ -280,6 +281,7 @@ def plot_candidates(
                             df[xname][0:-nImpPts],
                             s=area["design"],
                             facecolor=fc["design"],
+                            edgecolor='black',
                             zorder=10,
                         )
                         ax.scatter(

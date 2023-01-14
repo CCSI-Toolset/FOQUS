@@ -1,4 +1,4 @@
-from distance import compute_dist, compute_min_params
+from .distance import compute_dist, compute_min_params
 import numpy as np
 import pandas as pd
 import time

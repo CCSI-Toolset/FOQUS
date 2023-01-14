@@ -472,7 +472,7 @@ def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering la
             return True
 
         for _subplotnum, dataind in enumerate(event.ind):
-            df = results[dataind + 1]["des"]
+            df = results["des"][dataind + 1]
 
             show = None
             title = "Design %s, Input Distance: %s, " "Response Distance: %s" % (

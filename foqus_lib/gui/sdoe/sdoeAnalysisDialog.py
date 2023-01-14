@@ -896,10 +896,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         new_analysis = SdoeAnalysisData()
         new_analysis.sf_method = "irsf"
         new_analysis.optimality = "maximin"
-        new_analysis.d = results[1]["design_size"]
-        new_analysis.nr = results[1]["num_restarts"]
+        new_analysis.d = results["design_size"]
+        new_analysis.nr = results["num_restarts"]
         new_analysis.runtime = elapsed_time
-        new_analysis.designs = results[1]["num_designs"]
+        new_analysis.designs = results["num_designs"]
         new_analysis.config_file = config_file
         new_analysis.fnames = fnames
         new_analysis.results = results
@@ -1292,7 +1292,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             hname = hfile
 
         if self.type == "IRSF":
-            pf = self.analysis[row].results[1]["pareto_front"]
+            pf = self.analysis[row].results["pareto_front"]
             results = self.analysis[row].results
             cand = load(cfile)
             irsf = {"cand": cand}

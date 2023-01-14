@@ -659,7 +659,15 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     PV_df = pd.DataFrame(data=ParetoVal, columns=["Best Input", "Best Response"])
     PV_df.insert(0, "Design", PV_df.index + 1)
 
-    results = {}
+    results = {
+        "pareto_front": PV_df,
+        "design_id": {},
+        "des": {},
+        "mode": mode,
+        "design_size": nd,
+        "num_restarts": nr,
+        "num_designs": len(PV_df),
+    }
 
     for i, idx in enumerate(sort_idx):
         pareto_x = combined_pf[0][(idx * nd) + np.arange(nd), :]
@@ -668,17 +676,7 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
             data=np.concatenate((pareto_x, pareto_y), axis=1), columns=xcols + ycols
         )
 
-        results[i + 1] = {
-            "pareto_front": PV_df,
-            "design": i + 1,
-            "des": design_df,  # Pedro: this is really the only thing that changes during the loop;
-            # I'm not sure how this function is used elsewhere, but consider
-            # modifying its usage elsewhere
-            # so we don't have duplicated outputs (PV_df, etc.)
-            "mode": mode,
-            "design_size": nd,
-            "num_restarts": nr,
-            "num_designs": len(PV_df),
-        }
+        results["design_id"][i+1] = i + 1
+        results["des"][i+1] = design_df
 
     return results

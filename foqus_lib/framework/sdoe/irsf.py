@@ -1,4 +1,4 @@
-from .distance import compute_dist, compute_min_params
+from distance import compute_dist, compute_min_params
 import numpy as np
 import pandas as pd
 import time
@@ -138,17 +138,13 @@ def criterion_X(
     hist=None,
 ):
 
-    mode = mode.lower()
+    _mode = mode.lower()
 
     ncand = len(cand)
-
-    if hist is not None:
-        nhist = len(hist)
 
     best_cand = []
     best_md = 0
     best_mties = 0
-    best_index = []
 
     for i in range(nr):
 
@@ -188,7 +184,6 @@ def criterion_X(
             it += 1
 
         if (md > best_md) or ((md == best_md) and (mties < best_mties)):
-            best_index = rand_index
             best_cand = rcand
             best_md = md
             best_mdpts = mdpts

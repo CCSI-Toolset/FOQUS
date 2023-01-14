@@ -199,8 +199,10 @@ def run(config_file, nd, test=False):
                 "des": os.path.join(outdir, "irsf_{}.csv".format(suffix)),
                 "pf": os.path.join(outdir, "irsf_{}.csv".format(suffix_pareto)),
             }
-            sub_results = {"pareto_front": results["pareto_front"],
-                           "des": results["des"][design]}
+            sub_results = {
+                "pareto_front": results["pareto_front"],
+                "des": results["des"][design],
+            }
 
             save(fnames[design], sub_results, elapsed_time, irsf=True)
 

@@ -676,7 +676,7 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
             data=np.concatenate((pareto_x, pareto_y), axis=1), columns=xcols + ycols
         )
 
-        results["design_id"][i+1] = i + 1
-        results["des"][i+1] = design_df
+        results["design_id"][i + 1] = i + 1
+        results["des"][i + 1] = design_df
 
     return results

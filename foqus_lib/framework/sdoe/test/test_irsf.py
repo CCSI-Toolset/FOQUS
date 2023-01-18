@@ -25,12 +25,12 @@ from foqus_lib.framework.sdoe import irsf
 
 def test_inv_scale_cand():
     cand = np.array([[1, 1, 1], [2, 2, 2], [3, 3, 3]])
-    norm_cand = irsf.unitscale_cand(cand)
+    norm_cand = irsf.unit_scale(cand)
 
     xmin = cand.min(axis=0)
     xmax = cand.max(axis=0)
-    norm_cand_reversed = irsf.Inv_scale_cand(norm_cand, xmin, xmax)
+    norm_cand_reversed = irsf.inv_unit_scale(norm_cand, xmin, xmax)
 
     assert np.array_equal(
         cand, norm_cand_reversed
-    ), "Inv_scale_cand function not working properly."
+    ), "inv_unit_scale function not working properly."

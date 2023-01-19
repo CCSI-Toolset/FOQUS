@@ -453,10 +453,10 @@ class TurbineConfiguration:
             try:
                 is_stopping = _tcon.post_consumer_stop(url, auth, str(ci.cid))
                 _log.info("Stop Consumer {} Requested: {}".format(ci.cid, is_stopping))
-                swt = time.process_time()
+                swt = time.time()
                 while proc.poll() is None:
                     # wait for consumer to go down
-                    if time.process_time() - swt > maxWait:
+                    if time.time() - swt > maxWait:
                         _log.error(
                             "Error stopping consumer {} "
                             "Subprocess still running?".format(ci.cid)

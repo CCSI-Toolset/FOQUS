@@ -6,9 +6,9 @@ We now consider some details for each of these steps:
 1.
 In the **Design Setup** box, click on the **Load Existing Set** button to select the file(s) for the construction of the design. Several files can be selected and added to the box listing the chosen files.
 
-.. figure:: figs/1U_starting_screen.png
+.. figure:: figs/3-SS1.png
    :alt: Home Screen
-   :name: fig.sdoe_home
+   :name: fig.3-SS1
    
    SDOE Home Screen
    
@@ -23,15 +23,15 @@ Both the **Candidate** and **Previous Data** files should be .csv files that hav
 3.
 Click on the **View** button to open the **Preview Inputs** pop-up widow, to see the list of columns contained in each file. The left hand side displays the first few rows of input combinations from the file. Select the columns that you wish to see graphically in the right hand box , and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
 
-.. figure:: figs/2_view_candidates.png
+.. figure:: figs/3-SS2.png
    :alt: SDOE preview of inputs
-   :name: fig.2_preview_inputs
+   :name: fig.3-SS2
    
    SDOE view candidate set inputs
 
-.. figure:: figs/3_plot_candidates.png
+.. figure:: figs/3-SS3.png
    :alt: SDOE plot of inputs
-   :name: fig.3_scatterplot_inputs
+   :name: fig.3-SS3
 
    SDOE plot of candidate set inputs
 
@@ -40,11 +40,11 @@ The plot shows histograms of each of the inputs on the diagonals to provide a vi
 4.
 Once the data have been verified for both the **Candidate** and **Previous Data** files (if a Previous Data file has been included), click on the **Continue** button to make the **Design Construction** window active.
 
-.. figure:: figs/4U_ensemble_aggregate.png
+.. figure:: figs/3-SS4.png
    :alt: Home Screen
-   :name: fig.4_ensemble_aggregate
+   :name: fig.3-SS4
    
-   SDOE Ensemble Aggregation
+   SDOE Design Construction
 
 5.
 If more than one **Candidate** file was specified, then the **aggregate_candidates.csv** file that was created will have combined these files into a single file. Similarly if more than one **Previous Data** file was specified, then the **aggregate_previousData.csv** file will have been created with all runs from all these files. If only a single file was selected for either the  **Candidate** and **Previous Data** files, then their corresponding aggregated files will be the same as the original.
@@ -55,10 +55,10 @@ If more than one **Candidate** file was specified, then the **aggregate_candidat
 6.
 Once the data have been verified as the desired set to be used for the design construction, then click on the **Uniform Space Filling** button at the bottom right corner of the **Design Construction** window, then select **Open SDoE Dialog**. This opens the second SDoE window, which allows for specific design choices to be made.
 
-.. figure:: figs/5U_second_window.png
+.. figure:: figs/3-SS5.png
    :alt: SDOE second window
-   :name: fig.5U_second_window
-
+   :name: fig.3-SS5
+   
    SDOE second window
 
 
@@ -90,9 +90,9 @@ Finally, the **Min** and **Max** columns in the box allow the range of values fo
 10.
 Once the design choices have been made, click on the **Estimate Runtime** button. This performs a small number of iterations of the search algorithm to calibrate the timing for constructing and evaluating the designs. The time taken to generate a design is a function of the size of the candidate set, the size of the design, as well as the dimension of the input space. The slider below **Estimate Runtime** now indicates an estimate of the time to construct all of the designs across the range of the **Min Design Size** and **Max Design Size** specified. The smallest **Number of Random Starts** is 10^3 = 1000, and is generally too small to produce a good design, but this will run very quickly and so might be useful for a demonstration. However, it would generally be unwise to use a design generated from this small a set of random starts for an actual experiment. Powers of 10 can be chosen with an **Estimated Runtime** provided below the slider.
 
-.. figure:: figs/6U_after_test_SDOE.png
+.. figure:: figs/3-SS6.png
    :alt: SDOE second window
-   :name: fig.6U_after_test_SDOE
+   :name: fig.3-SS6
 
    SDOE second window after clicking Estimate Runtime
 
@@ -105,41 +105,41 @@ Once the slider has been set to the desired **Number of Random Starts**, click o
 12.
 When the SDOE module has completed the design creation process, the left window **Created Designs** will be populated with files containing the results. The column entries summarize the key features of each of the designs, including **Optimality Method** (whether minimax or maximin was selected), **Design Size** (d, the number of runs in the created design), **# of Random Starts**, **Runtime** (number of seconds needed to create the design), **Criterion Value** (the value obtained for the minimax or maximin criterion for the saved design).
 
-.. figure:: figs/7U_completed_designs.png
+.. figure:: figs/3-SS7.png
    :alt: SDOE second window
-   :name: fig.7U_completed_designs
-
+   :name: fig.3-SS7
+   
    SDOE Created Designs
 
 13.
 To see details of the design, the **View** button at the right hand side of each design row can be selected to show a table of the design, as well as a pairwise scatterplot of any subset of the input columns for the chosen design. The table and plot of the design are similar in characteristics to their counterparts described above for the candidate set. Candidate points and previous data are still shown in gray and pink, respectively, while the newly selected design points are shown in blue.
 
-.. figure:: figs/8_view_design.png
+.. figure:: figs/3-SS8.png
    :alt: SDOE second window
-   :name: fig.8_view_design
+   :name: fig.3-SS8
 
    SDOE table of created design
    
-.. figure:: figs/9_plot_design.png
+.. figure:: figs/3-SS9.png
    :alt: SDOE second window
-   :name: fig.9_plot_design
+   :name: fig.3-SS9
 
    SDOE pairwise plot of created design
    
 14.
 To access the file with the generated design, go to the **SDOE_files** folder, and a separate folder will have been created for each of the designs. In the example shown, 5 folders were created for the designs of size 4, 5, 6, 7 and 8, respectively. In each folder, there is a file containing the design, with a name that summarizes some of the key information about the design. For example, **candidates_d6_n10000_w+G+lldg+L** contains the design created using the candidate set called candidates.csv, with d=6 runs, based on n=10000 random starts, and based on the 4 inputs W, G, lldg and L.
 
-.. figure:: figs/10_SDOE_directory.png
+.. figure:: figs/3-SS10.png
    :alt: SDOE second window
-   :name: fig.10_SDOE_directory
+   :name: fig.3-SS10
 
    SDOE directory
 
 When one of the design files is opened it contains the details of each of the runs in the design, with the input factor levels that should be selected for that run. If an index column was included in the design, the index value will also be shown.
 
-.. figure:: figs/11_design_file.png
+.. figure:: figs/3-SS11.png
    :alt: SDOE second window
-   :name: fig.11_design_file
+   :name: fig.3-SS11
 
    SDOE file containing a created design
    

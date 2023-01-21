@@ -6,9 +6,9 @@ We now consider some details for each of these steps for the second type of desi
 1.
 In the **Design Setup** box, click on the **Load Existing Set** button to select the file(s) to be used for the construction of the design. Several files can be selected and added to the box listing the chosen files.
 
-.. figure:: figs/1N_starting_screen.png
+.. figure:: figs/4-SS1.png
    :alt: Home Screen
-   :name: fig.sdoeN_home
+   :name: fig.4-SS1
    
    SDOE Home Screen
    
@@ -22,9 +22,9 @@ Both the **Candidate** and **Previous Data** files should be .csv files that hav
 3.
 Click on the **View** button to open the **Preview Inputs** pop-up window, to see the list of columns contained in each file. The left hand side displays the first few rows of input combinations from the file. Select the columns that you wish to see graphically in the right hand box. We will select columns X1, X2, and Values (use the shift, control, or command key to select multiple columns), and then click on **Plot SDOE** to see a scatterplot matrix of the data. 
 
-.. figure:: figs/3N_plot_candidates.png
+.. figure:: figs/4-SS2.png
    :alt: SDOE plot of inputs
-   :name: fig.3N_scatterplot_inputs
+   :name: fig.4-SS2
 
    SDOE plot of candidate set inputs
    
@@ -44,9 +44,9 @@ There are options to view the aggregated files for both the candidate and previo
 6.
 Once the data have been verified as the desired set to be used for the design construction, click on the **Non-Uniform Space Filling** button at the bottom right corner of the **Design Construction** window, then select **Open SDoE Dialog**. This opens the second SDOE window, which allows for specific design choices to be made.
 
-.. figure:: figs/5N_second_window.png
+.. figure:: figs/4-SS3.png
    :alt: SDOE second window
-   :name: fig.5_second_window
+   :name: fig.4-SS3
 
    SDOE second window
 
@@ -70,9 +70,9 @@ Next, there are options for the values of the Maximum Weight Ratio (**MWR**) to 
 
 The user can specify up to 5 **MWR** values, where for each of the **MWR** boxes, there is a set of choices that range from 2 to 60. This range should provide considerably flexibility in choosing how unequal the spacing will be throughout the design space.
 
-.. figure:: figs/9N_MWR_box.png
+.. figure:: figs/4-SS4.png
    :alt: MWR box
-   :name: fig.9N_MWR_box
+   :name: fig.4-SS4
 
    Choice of MWR Value and Columns
 
@@ -99,18 +99,18 @@ Finally, the **Min** and **Max** columns in the box allow the range of values fo
 10.
 Once the design choices have been made, click on the **Estimate Runtime** button. This generates a small number of iterations of the search algorithm to calibrate the timing for constructing and evaluating the designs. The time taken to generate a design is a function of the size of the candidate set, the size of the design, as well as the dimension of the input space. 
 
-.. figure:: figs/10N_Test_SDOE.png
+.. figure:: figs/4-SS5.png
    :alt: Test SDOE
-   :name: fig.10N_Test_SDOE
+   :name: fig.4-SS5
 
    Test SDOE timing
 
 .. note::
    The number of random starts looks very different from what was done with the Uniform Space Filling Design. In that case, the number of random starts was offered in powers of 10. In this case, since a more sophisticated search algorithm is being used, each random start  takes longer to run, but generally many fewer starts are needed. There is set of choices for the number of random starts, which ranges from 10 to 1000. Producing a sample design for demonstration purposes with a small number of random starts (say 10 to 30) should work adequately, but recall that the choice of **Number of Random Starts** involves a trade-off between the quality of the design generated and the time to generate the design. The larger the chosen number of random starts, the better the design is likely to be. However, there are diminishing gains for increasingly large numbers of random starts. If running the actual experiment is expensive, it is generally recommended to choose as large a number of random starts as possible for the available time frame, to maximize the  quality of the design generated.
 
-.. figure:: figs/10N_Test_SDOE_choices.png
+.. figure:: figs/4-SS6.png
    :alt: Test SDOE
-   :name: fig.10N_Test_SDOE_choices
+   :name: fig.4-SS6
 
    Number of Random Start choices
 
@@ -121,9 +121,9 @@ Once the slider has been set to the desired **Number of Random Starts**, click o
 When the SDOE module has completed the design creation process, the left window **Created Designs** will be populated with files containing the results. The column entries summarize the key features of each of the designs, including **MWR**, **Design Size** (d, the number of runs in the created design),
 **# of Random Starts, n**, **Runtime** (number of seconds needed to create the design), **Criterion Value** (the value obtained for the maximin criterion for the saved design). Note that the criterion values are specific to the MWR value chosen, and hence should not be considered comparable across different values.
 
-.. figure:: figs/12N_completed_designs.png
+.. figure:: figs/4-SS7.png
    :alt: SDOE second window
-   :name: fig.12N_completed_designs
+   :name: fig.4-SS7
 
    SDOE Created Designs
 
@@ -145,19 +145,19 @@ Hence for the NUSF designs, it is critical to use the **View** option to look at
 
 First, we describe the information that is contained in the CDBW plot. There are two portions to the plot. The lower section shows a histogram of the weights in the candidate set. Note that the range of values goes from 1 to the MWR value selected. For the figure below, we are looking at a design created with a MWR value of 5. The shape of the histogram shows what values were available to be selected from the candidate set. The top portion of the plot, has a vertical line for each of the design points selected (in this case 15 vertical lines for 15 design points). The location of each vertical line shows the weight for the selected design point.  
 
-.. figure:: figs/NUSFex1-graph1.png
+.. figure:: figs/4-SS8.png
    :alt: Home Screen
-   :name: fig.basics-NUSFex1-graph1
+   :name: fig.4-SS8
    
-   A sample Closest Distance by Weight (CDBW) plot for a 15-run design with MWR value of 5
+   A sample Closest Distance by Weight (CDBW) plot for a 6-run design with MWR value of 5
    
 Second, a pairwise scatter plot of the design is provided to see how the design points fill the input space. Since the spread of the points throughout the design space is intentionally non-uniform, it is helpful to see how the distribution matches up with the specified weights provided in the candidate set. Recall that larger values of MWR lead to designs that are less evenly distributed, while MWR values that approach 1 will become closer to uniform.
 
-.. figure:: figs/NUSFex1-graph2.png
+.. figure:: figs/4-SS9.png
    :alt: Home Screen
-   :name: fig.basics-NUSFex1-graph2
+   :name: fig.4-SS9
    
-   A sample pairwise scatterplot for the constructed design with 15 runs and a MWR value of 5
+   A sample pairwise scatterplot for the constructed design with 6 runs and a MWR value of 5
    
 When **Previous Data** points have been incorporated into the design, the plots will show how the overall collection of points fill the input space. When examining the scatterplots, it is important to assess (a) whether the increase in concentration of points is located in the desired region?, (b) is the degree of non-uniformity what was desired?, (c) how close the design points have been placed to the edges of the region?, (d) are there holes in the design space that are unacceptably large?, and (e) does a larger design show a worthwhile improvement in the density of points to justify the additional expense? 
 

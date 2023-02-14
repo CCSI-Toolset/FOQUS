@@ -2,6 +2,8 @@
 
 Tutorial 2: Creating a Flowsheet with Linked Simulations
 ========================================================
+.. note::
+    This tutorial utilizes SimSinter and Turbine, two optional software packages that integrate with FOQUS to run Aspen and Excel models. The installation instructions are located at :ref:`Install Turbine and SimSinter (Windows Only)<chapt_install/install_optional:Install Turbine and SimSinter (Windows Only)>`.
 
 This tutorial is referenced by other tutorials. **Save the flowsheet in
 a convenient location for future use.**

@@ -14,20 +14,19 @@
 #
 ###############################################################################
 """
-Tests for sdoe/usf
+Tests for sdoe/distance
 
 See LICENSE.md for license and copyright details.
 """
 
 import numpy as np
-from foqus_lib.framework.sdoe import usf
+from foqus_lib.framework.sdoe import distance
 
 
-def test_compute_min_dist():
+def test_compute_dist():
     mat = np.array([[1, 1], [2, 2], [3, 3]])
     scl = np.array([2.0, 2.0])
-    dmat, min_dist = usf.compute_min_dist(mat, scl, hist_xs=None)
+    dmat = distance.compute_dist(mat, scl, hist_xs=None)
     assert np.array_equal(
         np.array([[10.0, 0.5, 2.0], [0.5, 10.0, 0.5], [2.0, 0.5, 10.0]]), dmat
     )
-    assert np.array_equal(np.array([0.5, 0.5, 0.5]), min_dist)

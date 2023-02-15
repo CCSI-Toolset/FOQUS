@@ -23,12 +23,9 @@ import numpy as np
 from foqus_lib.framework.sdoe import usf
 
 
-def test_josh():
+def test_compute_min_dist():
     mat = np.array([[1, 1], [2, 2], [3, 3]])
     scl = np.array([2.0, 2.0])
     results = usf.compute_min_dist(mat, scl, hist_xs=None)
-    #norm_cand_reversed = usf.Inv_scale_cand(norm_cand, xmin, xmax)
-
     assert np.array_equal(np.array([[10.0, 0.5, 2.0], [ 0.5, 10.0, 0.5], [2.0, 0.5, 10.0]]), results[0])
     assert np.array_equal(np.array([0.5, 0.5, 0.5]), results[1])
-    #print("RESULTS: ", results)

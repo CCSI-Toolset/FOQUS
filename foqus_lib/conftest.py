@@ -116,7 +116,7 @@ def foqus_ml_ai_models_dir(
     foqus_working_dir: Path,
 ) -> Path:
     # skip this test if tensorflow is not available
-    pytest.importorskip("tensorflow", reason="tensorflow not installed")
+    #pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
     return foqus_working_dir / "user_ml_ai_models"
 
@@ -133,7 +133,7 @@ def install_ml_ai_model_files(
     before the main window is instantiated.
     """
     # skip this test if tensorflow is not available
-    pytest.importorskip("tensorflow", reason="tensorflow not installed")
+    #pytest.importorskip("tensorflow", reason="tensorflow not installed")
 
     print("installing ml_ai model files")
     models_dir = foqus_ml_ai_models_dir

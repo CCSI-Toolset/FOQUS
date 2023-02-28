@@ -574,14 +574,10 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         hist_y_norm = None
 
     t0 = time.time()
-    best_X = criterion_X(
-        cand_x_norm, args["max_iterations"], nr, nd, mode, hist_x_norm
-    )
+    best_X = criterion_X(cand_x_norm, args["max_iterations"], nr, nd, mode, hist_x_norm)
     print("X space Best value in Normalized Scale: ", best_X)
     t1 = time.time() - t0
-    best_Y = criterion_X(
-        cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm
-    )
+    best_Y = criterion_X(cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm)
     print("Y space Best value in Normalized Scale: ", best_Y)
 
     # if testing, T1 is for X only search, and T2 for PF search with 0.5 weight

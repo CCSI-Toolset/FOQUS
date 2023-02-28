@@ -698,7 +698,7 @@ background: qlineargradient(spread:pad, x1: 0, y1: 0.5, x2: 1, y2: 0.5, stop: 0 
                 import traceback
 
                 traceback.print_exc()
-                QtGui.QMessageBox.critical(
+                QMessageBox.critical(
                     self,
                     "Incorrect format",
                     "File does not have the correct format! Please consult the users manual about the format.",

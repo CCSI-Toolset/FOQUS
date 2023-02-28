@@ -2,6 +2,7 @@ from .distance import compute_dist, compute_min_params
 import numpy as np
 import pandas as pd
 import time
+import itertools
 
 
 def unit_scale(xs):
@@ -142,7 +143,6 @@ def criterion_X(
 
     ncand = len(cand)
 
-    best_cand = []
     best_md = 0
     best_mties = 0
 
@@ -184,13 +184,10 @@ def criterion_X(
             it += 1
 
         if (md > best_md) or ((md == best_md) and (mties < best_mties)):
-            best_cand = rcand
             best_md = md
-            best_mdpts = mdpts
             best_mties = mties
-            best_dmat = dmat
 
-    return best_cand, best_md, best_mdpts, best_mties, best_dmat
+    return best_md
 
 
 def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
@@ -267,6 +264,7 @@ def update_min_xydist(
     des_y,
     cand_x,
     cand_y,
+    ncand_samples,
     md,
     mdpts,
     mties,
@@ -337,7 +335,9 @@ def update_min_xydist(
 
     d0 = np.zeros((n_mdpts, ncand))
     mt0 = np.zeros((n_mdpts, ncand))
-    for pt in np.ndindex(n_mdpts, ncand):
+    for pt in itertools.product(
+        range(n_mdpts), np.random.choice(ncand, ncand_samples, False)
+    ):
         i, j = pt
         des_x_, des_y_, d0[i, j], _, mt0[i, j], _, dmat_x_, dmat_y_, _, _ = step(
             pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
@@ -413,6 +413,7 @@ def update_min_xydist(
 def irsf_tex(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
+    ncand_samples,
     mpdx,
     mpdy,
     wt,
@@ -457,6 +458,7 @@ def irsf_tex(
             des_y,
             cand_x,
             cand_y,
+            ncand_samples,
             md,
             mdpts,
             mties,
@@ -502,6 +504,7 @@ def irsf_tex(
 def criterion_irsf(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
+    ncand_samples,
     mpdx,
     mpdy,
     wt,
@@ -513,34 +516,14 @@ def criterion_irsf(
     hist_y,
 ):
 
-    (
-        _,
-        _,
-        md,
-        _,
-        mties,
-        _,
-        _,
-        _,
-        PF_des_x,
-        PF_des_y,
-        PF_mat,
-    ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
+    (_, _, md, _, mties, _, _, _, PF_des_x, PF_des_y, PF_mat,) = irsf_tex(
+        cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
+    )
 
     for i in range(nr - 1):
-        (
-            _,
-            _,
-            md_,
-            _,
-            mties_,
-            _,
-            _,
-            _,
-            PF_des_x_,
-            PF_des_y_,
-            PF_mat_,
-        ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
+        (_, _, md_, _, mties_, _, _, _, PF_des_x_, PF_des_y_, PF_mat_,) = irsf_tex(
+            cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
+        )
         if (md_ > md) or (md_ == md) and (mties_ < mties):
             md = md_
             mties = mties_
@@ -569,6 +552,8 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     ycols = list(cand_y.columns)
     cand_y = cand_y.to_numpy()
 
+    ncand_samples = args["ncand_samples"]
+
     if hist is not None:
         ncand = len(cand_x)
         hist_x = hist[args["idx"]].to_numpy()
@@ -589,12 +574,12 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         hist_y_norm = None
 
     t0 = time.time()
-    _, best_X, _, _, _ = criterion_X(
+    best_X = criterion_X(
         cand_x_norm, args["max_iterations"], nr, nd, mode, hist_x_norm
     )
     print("X space Best value in Normalized Scale: ", best_X)
     t1 = time.time() - t0
-    _, best_Y, _, _, _ = criterion_X(
+    best_Y = criterion_X(
         cand_y_norm, args["max_iterations"], nr, nd, mode, hist_y_norm
     )
     print("Y space Best value in Normalized Scale: ", best_Y)
@@ -606,6 +591,7 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         _ = criterion_irsf(
             cand_x_norm,
             cand_y_norm,
+            ncand_samples,
             best_X,
             best_Y,
             0.5,
@@ -630,6 +616,7 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(
             cand_x_norm,
             cand_y_norm,
+            ncand_samples,
             best_X,
             best_Y,
             args["ws"][i],

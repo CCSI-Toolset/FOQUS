@@ -62,6 +62,7 @@ def run(config_file, nd, test=False):
 
     mode = config["METHOD"]["mode"]
     nr = int(config["METHOD"]["number_random_starts"])
+    ncand_samples = int(config["METHOD"]["ncand_samples"])
 
     hfile = config["INPUT"]["history_file"]
     cfile = config["INPUT"]["candidate_file"]
@@ -131,6 +132,7 @@ def run(config_file, nd, test=False):
             "icol": id_,
             "idx": idx,
             "idy": [x for x, t in zip(include, types) if t == "Response"],
+            "ncand_samples": ncand_samples,
         }
         from .irsf import criterion
 

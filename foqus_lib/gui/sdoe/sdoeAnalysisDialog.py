@@ -180,6 +180,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
 
         # MWR combo boxes
         self.MWR1_comboBox.addItems(
@@ -616,6 +618,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write("design_size = %d\n" % self.designSize_spin.value())
         elif self.type == "IRSF":
             f.write("design_size = %d\n" % self.designSizeIRSF_spin.value())
+            f.write("ncand_samples = %d\n" % self.ncand_samplesIRSF_spin.value())
 
         if test:
             if self.type == "USF":

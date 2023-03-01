@@ -22,6 +22,8 @@ def compute_dist(
     wt=None,  # [nusf] numpy array of shape (N,) and type 'float'
     hist_xs=None,  # numpy array of shape (M, nx) and type 'float'
     hist_wt=None,  # [nusf] numpy array of shape (M,) and type 'float'
+    val=np.inf,
+    return_sqrt=False,
 ):
 
     if hist_xs is not None:
@@ -29,8 +31,6 @@ def compute_dist(
 
     N, ncols = mat.shape
     dmat = np.full((N, N), np.nan)
-
-    val = np.inf
 
     if scl is not None:
         assert scl.shape[0] == ncols, "SCL should be of dim %d." % ncols
@@ -46,6 +46,9 @@ def compute_dist(
             wt = np.concatenate((wt, hist_wt), axis=0)  # might not need axis = 0
         dmat = np.multiply(dmat, np.outer(wt, wt))
         val = 9999
+
+    if return_sqrt:
+        dmat = np.sqrt(dmat)
 
     np.fill_diagonal(dmat, val)
 

@@ -183,6 +183,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
         self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
 
+        # If Monte Carlo sampling is not used, we hide ncand_samples spinBox and its label
+        self.ncand_samplesIRSF_spin.hide()
+        self.ncand_samplesIRSF_static.hide()
+
         # MWR combo boxes
         self.MWR1_comboBox.addItems(
             [

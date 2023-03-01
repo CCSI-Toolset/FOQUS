@@ -62,7 +62,6 @@ def run(config_file, nd, test=False):
 
     mode = config["METHOD"]["mode"]
     nr = int(config["METHOD"]["number_random_starts"])
-    ncand_samples = int(config["METHOD"]["ncand_samples"])
 
     hfile = config["INPUT"]["history_file"]
     cfile = config["INPUT"]["candidate_file"]
@@ -126,6 +125,7 @@ def run(config_file, nd, test=False):
         from .usf import criterion
 
     if sf_method == "irsf":
+        ncand_samples = int(config["METHOD"]["ncand_samples"])
         args = {
             "max_iterations": 1000,
             "ws": np.linspace(0.1, 0.9, 5),

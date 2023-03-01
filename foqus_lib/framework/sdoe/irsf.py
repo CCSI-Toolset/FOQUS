@@ -14,9 +14,7 @@ def unit_scale(xs):
 
 
 def inv_unit_scale(scaled, xmin, xmax):
-    xs = scaled * (xmax - xmin) + xmin
-
-    return xs
+    return scaled * (xmax - xmin) + xmin
 
 
 # Pedro: this is almost identical to NUSF's compute_dmat; something to consider if code needs to be refactored
@@ -28,9 +26,9 @@ def compute_dmat(cand, hist=None, val=np.inf):
     #  dmat - numpy array of shape (N+nh, N+nh)
 
     if hist is None:
-        dmat = compute_dist(cand)
+        dmat = compute_dist(cand, val=val, return_sqrt=True)
     else:
-        dmat = compute_dist(cand, hist_xs=hist)
+        dmat = compute_dist(cand, hist_xs=hist, val=val, return_sqrt=True)
         # if history exists, set history-history distances to some large value
         nhist = len(hist)
         dmat[-nhist:, -nhist:] = np.max(dmat)
@@ -41,11 +39,11 @@ def compute_dmat(cand, hist=None, val=np.inf):
 
 
 # Pedro: this is almost identical to NUSF's update_min_dist; something to consider if code needs to be refactored
-def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf):
+def update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=None, val=np.inf):
     def update_dmat(row, rcand, dmat, k, val=np.inf):
         xs = rcand if hist is None else np.concatenate((rcand, hist))
 
-        m = np.sum(np.square(row - xs), axis=1)
+        m = np.sqrt(np.sum(np.square(row - xs), axis=1))
         m[k] = val
 
         dmat_ = np.copy(dmat)
@@ -68,26 +66,28 @@ def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf
     mdpts_cand = mdpts[mdpts < len(rcand)]
     n_mdpts = len(mdpts_cand)
 
+    # 02/28: removed ncand as input param; calculated below now
+    n_cand = len(cand)
     # initialize d0 and mt0
-    d0 = np.zeros((n_mdpts, ncand))
+    d0 = np.zeros((n_mdpts, n_cand))
     # min dist when the ith point to remove is replaced with the jth candidate to add
-    mt0 = np.zeros((n_mdpts, ncand))
+    mt0 = np.zeros((n_mdpts, n_cand))
     # number of ties when the ith point to remove is replaced with the jth candidate to add
 
-    for pt in np.ndindex(n_mdpts, ncand):
+    for pt in np.ndindex(n_mdpts, n_cand):
         i, j = pt
         _, d0[i, j], _, mt0[i, j], _, _, _ = step(pt, rcand, cand, mdpts_cand, dmat)
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
-    update = True
-    added = None
-    removed = None
+    update_ = True
+    added_ = None
+    removed_ = None
 
     if d0_max > md:  # if maximin increased
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
-        rcand, md, mdpts, mties, dmat, added, removed = step(
+        rcand_, md_, mdpts_, mties_, dmat_, added_, removed_ = step(
             pt, rcand, cand, mdpts_cand, dmat
         )
     elif d0_max == md:
@@ -96,15 +96,62 @@ def update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist, val=np.inf
             pt = pts[
                 np.random.choice(nselect)
             ]  # take the subset of pts where the corresponding ties is less than mties
-            rcand, md, mdpts, mties, dmat, added, removed = step(
+            rcand_, md_, mdpts_, mties_, dmat_, added_, removed_ = step(
                 pt, rcand, cand, mdpts_cand, dmat
             )
+        else:
+            return rcand, md, mdpts, mties, dmat, None, None, False
     else:
-        update = False
-        added = None
-        removed = None
+        update_ = False
+        added_ = None
+        removed_ = None
+        return rcand, md, mdpts, mties, dmat, None, None, False
 
-    return rcand, md, mdpts, mties, dmat, added, removed, update
+    return rcand_, md_, mdpts_, mties_, dmat_, added_, removed_, update_
+
+
+def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
+    g1 = newpt[0] > curpf[:, 0]
+    g2 = newpt[1] > curpf[:, 1]
+
+    ge1 = newpt[0] >= curpf[:, 0]
+    ge2 = newpt[1] >= curpf[:, 1]
+
+    l1 = np.logical_not(ge1)
+    l2 = np.logical_not(ge2)
+
+    le1 = np.logical_not(g1)
+    le2 = np.logical_not(g2)
+
+    eq1 = newpt[0] == curpf[:, 0]
+    eq2 = newpt[1] == curpf[:, 1]
+
+    cond1 = (
+        np.multiply(g1, ge2) + np.multiply(g2, ge1)
+    ) == 0  # PN: should be able to simplify this
+    cond1 = cond1.flatten()
+    cond2 = np.sum(
+        np.multiply(l1, le2) + np.multiply(l2, le1) + np.multiply(eq1, eq2)
+    )  # PN: and this
+
+    if np.any(cond1):
+        n_desX = len(newdesX)
+        idxs = np.where(cond1)[0]
+        idxs_des = np.array([i * n_desX + np.arange(n_desX) for i in idxs]).flatten()
+
+        newpf = curpf[idxs]
+        newpfdesX = curpfdesX[idxs_des]
+        newpfdesY = curpfdesY[idxs_des]
+    else:
+        newpf = np.empty((0, len(newpt)))
+        newpfdesX = np.empty((0, np.shape(newdesX)[1]))
+        newpfdesY = np.empty((0, np.shape(newdesY)[1]))
+
+    if cond2 == 0:
+        newpf = np.append(newpf, [newpt], axis=0)
+        newpfdesX = np.append(newpfdesX, newdesX, axis=0)
+        newpfdesY = np.append(newpfdesY, newdesY, axis=0)
+    return newpfdesX, newpfdesY, newpf
 
 
 def CombPF(PFnew, PFcur=None):
@@ -170,7 +217,7 @@ def criterion_X(
                 added_,
                 removed_,
                 update_,
-            ) = update_min_dist(rcand, cand, ncand, md, mdpts, mties, dmat, hist=hist)
+            ) = update_min_dist(rcand, cand, md, mdpts, mties, dmat, hist=hist)
 
             if update_:
                 rcand = rcand_
@@ -188,50 +235,6 @@ def criterion_X(
             best_mties = mties
 
     return best_md
-
-
-def update_pareto_front(newdesX, newdesY, newpt, curpfdesX, curpfdesY, curpf):
-    g1 = newpt[0] > curpf[:, 0]
-    g2 = newpt[1] > curpf[:, 1]
-
-    ge1 = newpt[0] >= curpf[:, 0]
-    ge2 = newpt[1] >= curpf[:, 1]
-
-    l1 = np.logical_not(ge1)
-    l2 = np.logical_not(ge2)
-
-    le1 = np.logical_not(g1)
-    le2 = np.logical_not(g2)
-
-    eq1 = newpt[0] == curpf[:, 0]
-    eq2 = newpt[1] == curpf[:, 1]
-
-    cond1 = (
-        np.multiply(g1, ge2) + np.multiply(g2, ge1)
-    ) == 0  # PN: should be able to simplify this
-    cond1 = cond1.flatten()
-    cond2 = np.sum(
-        np.multiply(l1, le2) + np.multiply(l2, le1) + np.multiply(eq1, eq2)
-    )  # PN: and this
-
-    if np.any(cond1):
-        n_desX = len(newdesX)
-        idxs = np.where(cond1)[0]
-        idxs_des = np.array([i * n_desX + np.arange(n_desX) for i in idxs]).flatten()
-
-        newpf = curpf[idxs]
-        newpfdesX = curpfdesX[idxs_des]
-        newpfdesY = curpfdesY[idxs_des]
-    else:
-        newpf = np.empty((0, len(newpt)))
-        newpfdesX = np.empty((0, np.shape(newdesX)[1]))
-        newpfdesY = np.empty((0, np.shape(newdesY)[1]))
-
-    if cond2 == 0:
-        newpf = np.append(newpf, [newpt], axis=0)
-        newpfdesX = np.append(newpfdesX, newdesX, axis=0)
-        newpfdesY = np.append(newpfdesY, newdesY, axis=0)
-    return newpfdesX, newpfdesY, newpf
 
 
 def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np.inf):
@@ -252,7 +255,7 @@ def XY_min_dist(cand_x, cand_y, mpdx, mpdy, wt, hist_x=None, hist_y=None, val=np
     if hist_x is not None and hist_y is not None:
         dmat_xy[-nhist:, -nhist:] = np.max(dmat_xy)
 
-    np.fill_diagonal(dmat_xy, val)
+    # np.fill_diagonal(dmat_xy, val) #Pedro: check that this is not necessary
 
     md, mdpts, mties = compute_min_params(dmat_xy)
 
@@ -281,6 +284,8 @@ def update_min_xydist(
     hist_y=None,
     val=np.inf,
 ):
+    # If monte carlo sampling, we would use ncand_samples
+    _ncand_samples = ncand_samples
 
     # to do: check that hist_x and hist_y both (don't) exist
 
@@ -289,13 +294,13 @@ def update_min_xydist(
     ):
 
         xs = des_x if hist_x is None else np.concatenate((des_x, hist_x))
-        m_x = np.sum(np.square(row_x - xs), axis=1)
+        m_x = np.sqrt(np.sum(np.square(row_x - xs), axis=1))
         m_x[k] = val
         dmat_x_ = np.copy(dmat_x)
         dmat_x_[k, :] = dmat_x_[:, k] = m_x
 
         ys = des_y if hist_y is None else np.concatenate((des_y, hist_y))
-        m_y = np.sum(np.square(row_y - ys), axis=1)
+        m_y = np.sqrt(np.sum(np.square(row_y - ys), axis=1))
         m_y[k] = val
         dmat_y_ = np.copy(dmat_y)
         dmat_y_[k, :] = dmat_y_[:, k] = m_y
@@ -335,9 +340,13 @@ def update_min_xydist(
 
     d0 = np.zeros((n_mdpts, ncand))
     mt0 = np.zeros((n_mdpts, ncand))
-    for pt in itertools.product(
-        range(n_mdpts), np.random.choice(ncand, ncand_samples, False)
-    ):
+
+    # before:
+    for pt in itertools.product(range(n_mdpts), range(ncand)):
+        # with Monte Carlo sampling:
+        # for pt in itertools.product(
+        #     range(n_mdpts), np.random.choice(ncand, ncand_samples, False)
+        # ):
         i, j = pt
         des_x_, des_y_, d0[i, j], _, mt0[i, j], _, dmat_x_, dmat_y_, _, _ = step(
             pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
@@ -350,30 +359,45 @@ def update_min_xydist(
 
     d0_max = np.max(d0)
     pts = np.argwhere(d0 == d0_max)
-    update = True
-    added = None
-    removed = None
+    update_ = True
+    added_ = None
+    removed_ = None
 
     if d0_max > md:
         k = np.random.randint(pts.shape[0])
         pt = pts[k]
         (
-            des_x,
-            des_y,
-            md,
-            mdpts_cand,
-            mties,
-            dmat_xy,
-            dmat_x,
-            dmat_y,
-            added,
-            removed,
+            des_x_,
+            des_y_,
+            md_,
+            mdpts_cand_,
+            mties_,
+            dmat_xy_,
+            dmat_x_,
+            dmat_y_,
+            added_,
+            removed_,
         ) = step(pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y)
     elif d0_max == md:
         nselect = np.argwhere(mt0[pts[:, 0], pts[:, 1]] < mties).flatten()
         if nselect.size > 0:
             pt = pts[np.random.choice(nselect)]
             (
+                des_x_,
+                des_y_,
+                md_,
+                mdpts_cand_,
+                mties_,
+                dmat_xy_,
+                dmat_x_,
+                dmat_y_,
+                added_,
+                removed_,
+            ) = step(
+                pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
+            )
+        else:
+            return (
                 des_x,
                 des_y,
                 md,
@@ -382,31 +406,50 @@ def update_min_xydist(
                 dmat_xy,
                 dmat_x,
                 dmat_y,
-                added,
-                removed,
-            ) = step(
-                pt, des_x, des_y, cand_x, cand_y, mdpts_cand, dmat_xy, dmat_x, dmat_y
+                PF_des_x,
+                PF_des_y,
+                PF_mat,
+                None,
+                None,
+                False,
             )
+            # Pedro: if Monte Carlo sampling is used, then return True in the last index instead
+            # to allow for a longer search
     else:
-        update = False
-        added = None
-        removed = None
+        return (
+            des_x,
+            des_y,
+            md,
+            mdpts_cand,
+            mties,
+            dmat_xy,
+            dmat_x,
+            dmat_y,
+            PF_des_x,
+            PF_des_y,
+            PF_mat,
+            None,
+            None,
+            False,
+        )
+        # Pedro: if Monte Carlo sampling is used, then return True in the last index instead
+        # to allow for a longer search
 
     return (
-        des_x,
-        des_y,
-        md,
-        mdpts_cand,
-        mties,
-        dmat_xy,
-        dmat_x,
-        dmat_y,
+        des_x_,
+        des_y_,
+        md_,
+        mdpts_cand_,
+        mties_,
+        dmat_xy_,
+        dmat_x_,
+        dmat_y_,
         PF_des_x,
         PF_des_y,
         PF_mat,
-        added,
-        removed,
-        update,
+        added_,
+        removed_,
+        update_,
     )
 
 
@@ -520,11 +563,13 @@ def criterion_irsf(
         cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
     )
 
+    md = None
+
     for i in range(nr - 1):
         (_, _, md_, _, mties_, _, _, _, PF_des_x_, PF_des_y_, PF_mat_,) = irsf_tex(
             cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
         )
-        if (md_ > md) or (md_ == md) and (mties_ < mties):
+        if (md is None) or ((md_ > md) or (md_ == md) and (mties_ < mties)):
             md = md_
             mties = mties_
 

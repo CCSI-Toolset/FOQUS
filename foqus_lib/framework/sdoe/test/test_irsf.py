@@ -23,6 +23,7 @@ import pytest
 import numpy as np
 import pandas as pd
 from foqus_lib.framework.sdoe import irsf
+from importlib import resources
 
 
 @pytest.mark.skip
@@ -41,9 +42,8 @@ def test_inv_scale_cand():
 
 def test_criterion():
 
-    df = pd.read_csv(
-        "/Users/sfhome/Desktop/CCI_Spring_2023/foqus/CCSI-Toolset/FOQUS/foqus_lib/framework/sdoe/test/candidates_irsf.csv"
-    )
+    with resources.path(__package__, "candidates_irsf.csv") as p:
+        df = pd.read_csv(p)
     print(df.head())
     args = {
         "icol": "__id",

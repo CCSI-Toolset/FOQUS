@@ -676,12 +676,8 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     for i in range(len(args["ws"])):
         combined_pf = CombPF([PFxdes[i], PFydes[i], PFmdvals[i]], combined_pf)
 
-    ParetoX, ParetoY = {}, {}
     sort_idx = np.argsort(combined_pf[2], axis=0)[:, 0]
 
-    for i, idx in enumerate(sort_idx):
-        ParetoX[i] = combined_pf[0][(idx * nd) + np.arange(nd), :]
-        ParetoY[i] = combined_pf[1][(idx * nd) + np.arange(nd), :]
     ParetoVal = combined_pf[2][sort_idx]
 
     PV_df = pd.DataFrame(data=ParetoVal, columns=["Best Input", "Best Response"])

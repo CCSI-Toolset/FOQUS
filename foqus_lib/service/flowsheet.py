@@ -920,17 +920,6 @@ class FlowsheetControl:
                 )
                 self._delete_sqs_job()
                 raise
-                _log.exception("setup foqus URLError")
-                msg = traceback.format_exc()
-                db.job_change_status(job_desc, "error", message=msg)
-                db.add_message(
-                    "job failed in setup URLError", job_desc["Id"], exception=msg
-                )
-                self._delete_sqs_job()
-                self.increment_metric_job_finished(
-                    event="error.job.setup.NotImplementedError"
-                )
-                raise
             except foqusException as ex:
                 # TODO:
                 _log.exception("setup foqus exception: job fails, continue running")
@@ -941,6 +930,7 @@ class FlowsheetControl:
                 )
                 self.increment_metric_job_finished(event="error.job.setup")
                 self._delete_sqs_job()
+                continue
             except Exception as ex:
                 # TODO:
                 _log.exception("setup foqus exception:  fatal error")
@@ -1284,9 +1274,6 @@ class FlowsheetControl:
                     job_desc, "error", message="Error in job setup: %s" % ex
                 )
                 
-
-        
-        
         return dat
 
     def run_foqus(self, db, job_desc):

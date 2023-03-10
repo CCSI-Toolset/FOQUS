@@ -291,6 +291,7 @@ class TurbineConfiguration:
             self.reloadTurbine()
         except:
             _log.exception("Could not load FOQUS settings.")
+            raise RuntimeError("Failed to load FOQUS Settings")
 
     def makeCopy(self):
         """
@@ -577,6 +578,7 @@ class TurbineConfiguration:
         configuration file.
         """
         path = self.getFile()
+        _log.debug('turbine configuration="%s"', path)
         config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:

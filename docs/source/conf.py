@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-# IDAES documentation build configuration file
+# FOQUS documentation build configuration file
 #
 # This file is execfile()d with the current directory set to its
 # containing dir.
@@ -67,7 +67,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "FOQUS"
-copyright = "2012 - 2022 by CCSI Team All rights reserved."
+copyright = "2012 - 2023 by CCSI Team All rights reserved."
 author = "CCSI"
 
 # The version info for the project you're documenting, acts as replacement for

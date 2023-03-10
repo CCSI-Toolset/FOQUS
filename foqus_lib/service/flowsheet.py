@@ -38,7 +38,6 @@ import botocore.exceptions
 
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
-)
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")
@@ -1132,7 +1131,9 @@ class FlowsheetControl:
         count_turb_apps = 0
         nkey = None
         for i in dat.flowsheet.nodes:
+            _log.debug("Process Flowsheet node %s", i)
             if dat.flowsheet.nodes[i].turbApp is not None:
+                _log.debug("turbApp node %s", dat.flowsheet.nodes[i].turbApp)
                 nkey = i
                 count_turb_apps += 1
         if count_turb_apps > 1:

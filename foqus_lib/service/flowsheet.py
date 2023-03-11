@@ -1223,7 +1223,7 @@ class FlowsheetControl:
         dat.loadFlowsheetValues(vfile)
         _log.debug("Process Flowsheet nodes")
         count_turb_apps = 0
-        nkey = None
+        turb_app_nkey = None
         foqus_user_plugins = []
         for i in dat.flowsheet.nodes:
             node = dat.flowsheet.nodes[i]
@@ -1233,12 +1233,12 @@ class FlowsheetControl:
                 if turb_app == 'foqus-user-plugin':
                     foqus_user_plugins.append(i)
                     continue
-                nkey = i
+                turb_app_nkey = i
                 count_turb_apps += 1
                 
         user_plugin_dir = os.path.join(WORKING_DIRECTORY, "user_plugins")
-        for nkey in foqus_user_plugins:
-            _setup_foqus_user_plugin(dat, nkey, user_name=user_name, 
+        for i in foqus_user_plugins:
+            _setup_foqus_user_plugin(dat, i, user_name=user_name, 
                                      user_plugin_dir=user_plugin_dir)
         
         pymodels = pluginSearch.plugins(
@@ -1251,14 +1251,14 @@ class FlowsheetControl:
         dat.pymodels = pymodels
         dat.flowsheet.pymodels = pymodels
         # Check if Plugin Available
-        for nkey in foqus_user_plugins:
+        for i in foqus_user_plugins:
             #node = dat.flowsheet.nodes[i]
-            if nkey not in pymodels.plugins:
+            if i not in pymodels.plugins:
                 for key in pymodels.plugins: _log.debug("PLUGIN: %s" %(key))
-                if nkey in pymodels.check_available_error_d:
-                    msg = pymodels.check_available_error_d.get(nkey)
-                    raise foqusException("FOQUS User Plugin %s:  Failed to load on check available: %s" %(nkey,msg))
-                raise foqusException("FOQUS User Plugin %s:  Failed to load" %(nkey))
+                if i in pymodels.check_available_error_d:
+                    msg = pymodels.check_available_error_d.get(i)
+                    raise foqusException("FOQUS User Plugin %s:  Failed to load on check available: %s" %(i,msg))
+                raise foqusException("FOQUS User Plugin %s:  Failed to load" %(i))
         
         if count_turb_apps > 1:
             self.close()
@@ -1267,7 +1267,7 @@ class FlowsheetControl:
             )
         if count_turb_apps:
             try:
-                _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+                _setup_flowsheet_turbine_node(dat, turb_app_nkey, user_name=user_name)
             except AssertionError as ex:
                 _log.error("Job Setup Failure: %s", str(ex))
                 db.job_change_status(

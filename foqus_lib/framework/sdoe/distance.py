@@ -1,5 +1,5 @@
-#################################################################################
-# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+###############################################################################
+# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,7 +11,8 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#################################################################################
+#
+###############################################################################
 import numpy as np
 
 
@@ -25,7 +26,12 @@ def compute_dist(
 
     if hist_xs is not None:
         mat = np.concatenate((mat, hist_xs), axis=0)
-
+    if mat.ndim != 2:
+        raise ValueError("ndims must be 2")
+    if mat.shape[0] <= 2:
+        raise ValueError("At least 2 points needed")
+    if not np.all(np.isfinite(mat)):
+        raise ValueError("All entries in the array must be finite")
     N, ncols = mat.shape
     dmat = np.full((N, N), np.nan)
 

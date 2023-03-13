@@ -1233,7 +1233,7 @@ class FlowsheetControl:
         dat.loadFlowsheetValues(vfile)
         _log.debug("Process Flowsheet nodes")
         count_turb_apps = 0
-        nkey = None
+        turb_app_nkey = None
         foqus_user_plugins = []
         for i in dat.flowsheet.nodes:
             node = dat.flowsheet.nodes[i]
@@ -1243,7 +1243,7 @@ class FlowsheetControl:
                 if turb_app == "foqus-user-plugin":
                     foqus_user_plugins.append(i)
                     continue
-                nkey = i
+                turb_app_nkey = i
                 count_turb_apps += 1
 
         user_plugin_dir = os.path.join(WORKING_DIRECTORY, "user_plugins")
@@ -1251,7 +1251,6 @@ class FlowsheetControl:
             _setup_foqus_user_plugin(
                 dat, nkey, user_name=user_name, user_plugin_dir=user_plugin_dir
             )
-
         pymodels = pluginSearch.plugins(
             idString="#\s?FOQUS_PYMODEL_PLUGIN",
             pathList=[
@@ -1274,7 +1273,6 @@ class FlowsheetControl:
                         % (nkey, msg)
                     )
                 raise foqusException("FOQUS User Plugin %s:  Failed to load" % (nkey))
-
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError(
@@ -1282,7 +1280,7 @@ class FlowsheetControl:
             )
         if count_turb_apps:
             try:
-                _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+                _setup_flowsheet_turbine_node(dat, turb_app_nkey, user_name=user_name)
             except AssertionError as ex:
                 _log.error("Job Setup Failure: %s", str(ex))
                 db.job_change_status(

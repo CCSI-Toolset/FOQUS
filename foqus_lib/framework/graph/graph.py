@@ -870,11 +870,13 @@ class Graph(threading.Thread):
             try:
                 # run a single simulation or a list of simulations
                 if not self.runList:
+                    _log.debug("run: solve single simulation")
                     self.solve()
                     with self.resLock:
                         self.res[0] = self.saveValues()
                         self.res_fin[0] = self.errorStat
                 else:
+                    _log.debug("run: solve list simulations")
                     self.solveListVal(self.runList)
             except Exception as e:
                 self.setErrorCode(19)
@@ -978,14 +980,14 @@ class Graph(threading.Thread):
         more than one tear they are converged simultaneously.
         I know that is probably not best but it is easy for now
         """
-        for key, node in self.nodes.items():
-            if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
-                _log.debug("DMF will sync node {}".format(key))
-                node.synced = False
-            elif node.modelType == nodeModelTypes.MODEL_DMF_SERV:
-                node.synced = False
-            else:
-                pass  # Doesn't matter synced is a DMF thing
+        # for key, node in self.nodes.items():
+        #     if node.modelType == nodeModelTypes.MODEL_DMF_LITE:
+        #         _log.debug("DMF will sync node {}".format(key))
+        #         node.synced = False
+        #     elif node.modelType == nodeModelTypes.MODEL_DMF_SERV:
+        #         node.synced = False
+        #     else:
+        #         pass  # Doesn't matter synced is a DMF thing
         tstart = time.time()
         self.setAsNotRun()
         self.setErrorCode(0)
@@ -997,6 +999,7 @@ class Graph(threading.Thread):
         # the graph but only evaluates a single node.
         if self.onlySingleNode in list(self.nodes.keys()):
             name = self.onlySingleNode
+            _log.debug("solve: onlySingleNode %s", name)
             if self.runNode(name) != 0:
                 self.setErrorCode(1)
             else:
@@ -1007,8 +1010,10 @@ class Graph(threading.Thread):
             self.solTime = time.time() - tstart
             return self.solTime
         elif self.onlySingleNode != None:
+            _log.error("solve: onlySingleNode not in node keys")
             self.setErrorCode(4)
             return
+        
         # Take the pre and post solve nodes out of the calculation order
         fs_sub = []
         for nkey, node in self.nodes.items():
@@ -1023,14 +1028,17 @@ class Graph(threading.Thread):
                 fs_sub.append(nkey)
         # Run presove nodes in order
         for nkey in self.pre_solve_nodes:
+            _log.debug("solve: run pre-solve node %s", nkey)
             node = self.nodes[nkey]
             node.runCalc()
             if node.calcError != 0:
+                _log.debug("solve: pre-solve calcError %d", node.calcError)
                 self.setErrorCode(16)
                 self.solTime = time.time() - tstart
                 return self.solTime
         # Run graph, order is based on tree with tears removed
         order = self.calculationOrder(subNodes=fs_sub)
+        _log.debug('solve: runGraph')
         self.runGraph(order)
         # Check if there are any tears if no tears we are done
         solveTear = False
@@ -1039,11 +1047,13 @@ class Graph(threading.Thread):
                 solveTear = True
                 break
         if not solveTear:
-            # no tears flowsheet done run post solve nodes
+            _log.debug('solve: no tears flowsheet done run post solve nodes')
             for nkey in self.post_solve_nodes:
+                _log.debug("solve: run post-solve node %s", nkey)
                 node = self.nodes[nkey]
                 node.runCalc()
                 if node.calcError != 0:
+                    _log.debug("solve: post-solve calcError %d", node.calcError)
                     self.setErrorCode(17)
                     self.solTime = time.time() - tstart
                     return self.solTime
@@ -1089,15 +1099,18 @@ class Graph(threading.Thread):
                     self.setErrorCode(errCode)
                     self.solTime = time.time() - tstart
                     return self.solTime
-        # No errors so far and flowsheet converged, run post nodes
+        _log.debug('solve: No errors so far and flowsheet converged, run post nodes')
         for nkey in self.post_solve_nodes:
+            _log.debug("solve: run post-solve node %s", nkey)
             node = self.nodes[nkey]
             node.runCalc()
             if node.calcError != 0:
+                _log.debug("solve: post-solve calcError %d", node.calcError)
                 self.setErrorCode(17)
                 self.solTime = time.time() - tstart
                 return self.solTime
-        # pre, flowsheet, post all done return success
+        
+        _log.debug('solve: pre, flowsheet, post all done return success')
         self.setErrorCode(0)
         self.solTime = time.time() - tstart
         return self.solTime
@@ -1340,13 +1353,18 @@ class Graph(threading.Thread):
         for namelst in order:
             for name in namelst:
                 if self.stop.isSet():
+                    _log.error('runGraph(%s): error 20 stop is set', name)
                     self.setErrorCode(20)
                     return
-                elif self.runNode(name) != 0:
+                calcError = self.runNode(name)
+                if calcError != 0:
+                    _log.error('runGraph(%s): calcError=%d', name, calcError)
                     self.setErrorCode(1)
                     return
+                
                 for e in self.edges:
                     if e.start == name and e.tear == False and e.active == True:
+                        _log.debug('runGraph(%s): transfer edge', name)
                         e.transferInformation(self)
 
     def runNode(self, name):

@@ -108,6 +108,7 @@ def scrub_empty_string_values_for_dynamo(db):
         else:
             scrub_empty_string_values_for_dynamo(v)
 
+
 def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
     assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, (
         "DAT Flowsheet nodes turbApp is %s" % dat.flowsheet.nodes[nkey].turbApp
@@ -117,9 +118,7 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
     model_name = node.modelName
     assert turb_app is not None
     turb_app = turb_app.lower()
-    assert turb_app == "foqus-user-plugin", (
-        'unknown foqus-user-plugin: "%s"' % turb_app
-    )
+    assert turb_app == "foqus-user-plugin", 'unknown foqus-user-plugin: "%s"' % turb_app
     _log.debug(
         'Turbine Node Key="%s", Model="%s", Application="%s"',
         nkey,
@@ -132,12 +131,12 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
     except OSError as e:
         if e.errno != errno.EEXIST:
             raise
-            
+
     s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
     bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
     prefix = "%s/%s/" % (user_name, model_name)
     l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
-    
+
     assert (
         "Contents" in l
     ), 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' % (
@@ -149,11 +148,11 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
     key_plugin_filename = None
     s3_key_list = [i["Key"] for i in l["Contents"]]
     _log.debug("Node model %s staged-input files %s" % (model_name, s3_key_list))
-    
+
     for k in s3_key_list:
         if k.endswith("/foqus-user-plugin.json"):
             key_sinter_filename = k
-        elif  k.endswith("/%s.py" %(model_name)):
+        elif k.endswith("/%s.py" % (model_name)):
             assert key_plugin_filename is None, "detected multiple plugin files"
             key_plugin_filename = k
 
@@ -171,7 +170,7 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
         model_name,
         str(s3_key_list),
     )
-   
+
     entry_list = [
         i for i in l["Contents"] if i["Key"] != prefix and i["Key"].startswith(prefix)
     ]
@@ -197,7 +196,8 @@ def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
             'model="%s" key="%s" staged-in file="%s"'
             % (model_name, key, target_file_path)
         )
-        
+
+
 def _setup_flowsheet_turbine_node(dat, nkey, user_name):
     """From s3 download all simulation files into AspenSinterComsumer cache directory '{working_directory\test\{simulation_guid}'.  If
     Simulation does not exist create one.  If Simulation does exist just s3 download all simulation files into the above cache directory.
@@ -1240,17 +1240,18 @@ class FlowsheetControl:
             if node.turbApp is not None:
                 turb_app = node.turbApp[0]
                 turb_app = turb_app.lower()
-                if turb_app == 'foqus-user-plugin':
+                if turb_app == "foqus-user-plugin":
                     foqus_user_plugins.append(i)
                     continue
                 nkey = i
                 count_turb_apps += 1
-                
+
         user_plugin_dir = os.path.join(WORKING_DIRECTORY, "user_plugins")
         for nkey in foqus_user_plugins:
-            _setup_foqus_user_plugin(dat, nkey, user_name=user_name, 
-                                     user_plugin_dir=user_plugin_dir)
-        
+            _setup_foqus_user_plugin(
+                dat, nkey, user_name=user_name, user_plugin_dir=user_plugin_dir
+            )
+
         pymodels = pluginSearch.plugins(
             idString="#\s?FOQUS_PYMODEL_PLUGIN",
             pathList=[
@@ -1262,14 +1263,18 @@ class FlowsheetControl:
         dat.flowsheet.pymodels = pymodels
         # Check if Plugin Available
         for nkey in foqus_user_plugins:
-            #node = dat.flowsheet.nodes[i]
+            # node = dat.flowsheet.nodes[i]
             if nkey not in pymodels.plugins:
-                for key in pymodels.plugins: _log.debug("PLUGIN: %s" %(key))
+                for key in pymodels.plugins:
+                    _log.debug("PLUGIN: %s" % (key))
                 if nkey in pymodels.check_available_error_d:
                     msg = pymodels.check_available_error_d.get(nkey)
-                    raise foqusException("FOQUS User Plugin %s:  Failed to load on check available: %s" %(nkey,msg))
-                raise foqusException("FOQUS User Plugin %s:  Failed to load" %(nkey))
-        
+                    raise foqusException(
+                        "FOQUS User Plugin %s:  Failed to load on check available: %s"
+                        % (nkey, msg)
+                    )
+                raise foqusException("FOQUS User Plugin %s:  Failed to load" % (nkey))
+
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError(
@@ -1283,7 +1288,7 @@ class FlowsheetControl:
                 db.job_change_status(
                     job_desc, "error", message="Error in job setup: %s" % ex
                 )
-                
+
         return dat
 
     def run_foqus(self, db, job_desc):

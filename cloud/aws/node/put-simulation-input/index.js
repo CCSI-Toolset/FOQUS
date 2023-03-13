@@ -143,7 +143,11 @@ exports.handler = function(event, context, callback) {
         }
       }
       else if (obj.filetype == "sinterconfig" && obj["filetype-version"] == "0.3") {
-        if (obj.model.file.endsWith('.acmf') && obj.application.name == "Aspen Custom Modeler")
+        var app_name = obj.application.name;
+        app_name = app_name.toLowerCase();
+        if (obj.model.file.endsWith('.py') && app_name == "foqus-user-plugin")
+          params.Key = user_name + "/" + name + "/" + app_name + ".json";
+        else if (obj.model.file.endsWith('.acmf') && app_name == "Aspen Custom Modeler")
           params.Key = user_name + "/" + name + "/acm_sinter.json";
         else if (obj.model.file.endsWith('.bkp'))
           params.Key = user_name + "/" + name + "/aspenplus_sinter.json";

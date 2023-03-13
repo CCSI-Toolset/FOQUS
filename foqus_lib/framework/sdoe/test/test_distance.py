@@ -51,7 +51,7 @@ def test_distance_with_failures(arr: np.ndarray):
 
     if arr.ndim != 2:
         expected_failure = pytest.raises(ValueError, match=".*ndims must be 2.*")
-    elif n_points <= 2:
+    elif n_points < 2:
         expected_failure = pytest.raises(
             ValueError, match=".*At least 2 points needed.*"
         )

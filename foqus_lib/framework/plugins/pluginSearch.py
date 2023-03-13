@@ -99,7 +99,7 @@ class plugins:
                             )
         # Now check that the plugins have what they need to be used
         for pkey, p in list(self.plugins.items()):
-            _log.debug("check plugin available: %s" %(pkey))
+            _log.debug("check plugin available: %s" % (pkey))
             try:
                 av = p.checkAvailable()
             except Exception as ex:
@@ -109,5 +109,3 @@ class plugins:
             if not av:
                 del self.plugins[pkey]
                 _log.info("Removing plugin, due to missing dependency: " + pkey)
-        
-

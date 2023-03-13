@@ -1,7 +1,4 @@
-from ast import Assert
-from unittest import result
 import numpy as np
-from pandas import array
 import pytest
 from foqus_lib.framework.sdoe import distance
 from hypothesis.extra.numpy import arrays as arrays_strat, array_shapes

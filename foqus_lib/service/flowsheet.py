@@ -947,6 +947,16 @@ class FlowsheetControl:
             self._delete_sqs_job()
             try:
                 self.run_foqus(db, job_desc)
+            except foqusException as ex:
+                _log.exception("run_foqus foqusException")
+                self.increment_metric_job_finished(event="error.job.run")
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message(
+                    "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
+                )
+                self.close()
+                raise
             except Exception as ex:
                 _log.exception("run_foqus Exception")
                 self.increment_metric_job_finished(event="error.job.run")

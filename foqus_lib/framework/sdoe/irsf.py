@@ -567,16 +567,36 @@ def criterion_irsf(
     hist_y,
 ):
 
-    (_, _, md, _, mties, _, _, _, PF_des_x, PF_des_y, PF_mat,) = irsf_tex(
-        cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
-    )
+    (
+        _,
+        _,
+        md,
+        _,
+        mties,
+        _,
+        _,
+        _,
+        PF_des_x,
+        PF_des_y,
+        PF_mat,
+    ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
 
     md = None
 
     for i in range(nr - 1):
-        (_, _, md_, _, mties_, _, _, _, PF_des_x_, PF_des_y_, PF_mat_,) = irsf_tex(
-            cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
-        )
+        (
+            _,
+            _,
+            md_,
+            _,
+            mties_,
+            _,
+            _,
+            _,
+            PF_des_x_,
+            PF_des_y_,
+            PF_mat_,
+        ) = irsf_tex(cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y)
         if (md is None) or ((md_ > md) or (md_ == md) and (mties_ < mties)):
             md = md_
             mties = mties_

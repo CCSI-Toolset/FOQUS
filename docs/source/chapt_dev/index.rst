@@ -58,6 +58,31 @@ will need a copy of the source to work with. Here is rough set of steps to get s
     pip install -r requirements-dev.txt  # This will pick up both user and developer required packages.
     foqus  # Start the app
 
+Pre-commit hooks (optional, but recommended)
+--------------------------------------------
+
+`Pre-commit hooks <https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks>`_ are scripts that are automatically run by Git "client-side" (i.e. on a developer's local machine)
+whenever ``git commit`` is run. If the pre-commit scripts terminates with an error, the commit will be interrupted,
+requiring the developer to address the failure before being able to complete the commit.
+
+.. note:: This is different (and complementary to) "server-side" checks, i.e. scripts that check the code on the side of the Git remote
+   *after* the code is committed and pushed, such as the Continuous Integration (CI) suite triggered whenever a commit is pushed to an open PR
+   in the FOQUS GitHub repository.
+
+Pre-commit checks are especially useful to ensure that the code is formatted correctly *before* it is pushed to the FOQUS GitHub repository, which otherwise typically would
+cause the developer to 1) be notified by the failing CI check that the code wasn't formatted; 2) run the formatter manually; 3) create a new commit with the formatting changes; 4)
+push the formatted code again.
+
+FOQUS uses the `pre-commit <https://pre-commit.com/>`_ framework to manage a few hooks that are useful for FOQUS developers.
+
+The ``pre-commit`` command is already installed as part of FOQUS's developer dependencies.
+However, the pre-commit *checks* (i.e. the actual scripts that Git will be running) must be installed (using ``pre-commit install``) as a separate step whenever the FOQUS repository is cloned:
+
+   .. code-block:: shell
+
+     pre-commit install
+
+For more information, refer to the `pre-commit "Quick Start" page <https://pre-commit.com/#quick-start>`_.
 
 Run Tests
 ---------

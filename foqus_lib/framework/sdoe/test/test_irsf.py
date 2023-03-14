@@ -59,6 +59,6 @@ def test_criterion():
     # result = irsf.criterion(cand=cand, args=args,nr=nr, nd=nd, mode=mode, hist=None)
 
     # with pytest.raises(ValueError):
-    result = irsf.criterion(cand=df, args=args, nr=nr, nd=nd, mode=mode, hist=None)
+    result = irsf.criterion(cand=df, args=args, nr=nr, nd=nd, mode=mode, hist=hist)
 
-    assert result["pareto_front"] is not None
+    assert result.get("pareto_front") is not None

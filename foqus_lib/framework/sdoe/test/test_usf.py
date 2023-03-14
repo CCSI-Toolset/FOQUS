@@ -31,6 +31,6 @@ def test_criterion():
     mode = "maximin"
     hist = None
 
-    result = usf.criterion(cand=cand, args=args, nr=nr, nd=nd, mode=mode, hist=None)
+    result = usf.criterion(cand=cand, args=args, nr=nr, nd=nd, mode=mode, hist=hist)
 
     assert result.get("best_cand") is not None

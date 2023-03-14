@@ -621,7 +621,6 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             f.write("design_size = %d\n" % self.designSize_spin.value())
         elif self.type == "IRSF":
             f.write("design_size = %d\n" % self.designSizeIRSF_spin.value())
-            f.write("ncand_samples = %d\n" % self.ncand_samplesIRSF_spin.value())
 
         if test:
             if self.type == "USF":

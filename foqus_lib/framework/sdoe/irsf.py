@@ -281,7 +281,6 @@ def update_min_xydist(
     des_y,
     cand_x,
     cand_y,
-    ncand_samples,
     md,
     mdpts,
     mties,
@@ -298,8 +297,6 @@ def update_min_xydist(
     hist_y=None,
     val=np.inf,
 ):
-    # If monte carlo sampling, we would use ncand_samples
-    _ncand_samples = ncand_samples
 
     # to do: check that hist_x and hist_y both (don't) exist
 
@@ -470,7 +467,6 @@ def update_min_xydist(
 def irsf_tex(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
-    ncand_samples,
     mpdx,
     mpdy,
     wt,
@@ -515,7 +511,6 @@ def irsf_tex(
             des_y,
             cand_x,
             cand_y,
-            ncand_samples,
             md,
             mdpts,
             mties,
@@ -561,7 +556,6 @@ def irsf_tex(
 def criterion_irsf(
     cand_x,  # input space candidate
     cand_y,  # response space candidate
-    ncand_samples,
     mpdx,
     mpdy,
     wt,
@@ -574,14 +568,14 @@ def criterion_irsf(
 ):
 
     (_, _, md, _, mties, _, _, _, PF_des_x, PF_des_y, PF_mat,) = irsf_tex(
-        cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
+        cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
     )
 
     md = None
 
     for i in range(nr - 1):
         (_, _, md_, _, mties_, _, _, _, PF_des_x_, PF_des_y_, PF_mat_,) = irsf_tex(
-            cand_x, cand_y, ncand_samples, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
+            cand_x, cand_y, mpdx, mpdy, wt, maxit, nd, hist_x, hist_y
         )
         if (md is None) or ((md_ > md) or (md_ == md) and (mties_ < mties)):
             md = md_
@@ -610,8 +604,6 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
     cand_y = cand[args["idy"]]
     ycols = list(cand_y.columns)
     cand_y = cand_y.to_numpy()
-
-    ncand_samples = args["ncand_samples"]
 
     if hist is not None:
         ncand = len(cand_x)
@@ -646,7 +638,6 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         _ = criterion_irsf(
             cand_x_norm,
             cand_y_norm,
-            ncand_samples,
             best_X,
             best_Y,
             0.5,
@@ -671,7 +662,6 @@ def criterion(cand, args, nr, nd, mode="maximin", hist=None, test=False):
         PFxdes[i], PFydes[i], PFmdvals[i] = criterion_irsf(
             cand_x_norm,
             cand_y_norm,
-            ncand_samples,
             best_X,
             best_Y,
             args["ws"][i],

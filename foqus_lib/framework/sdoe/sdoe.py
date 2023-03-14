@@ -124,14 +124,12 @@ def run(config_file, nd, test=False):
         from .usf import criterion
 
     if sf_method == "irsf":
-        ncand_samples = int(config["METHOD"]["ncand_samples"])
         args = {
             "max_iterations": 1000,
             "ws": np.linspace(0.1, 0.9, 5),
             "icol": id_,
             "idx": idx,
             "idy": [x for x, t in zip(include, types) if t == "Response"],
-            "ncand_samples": ncand_samples,
         }
         from .irsf import criterion
 

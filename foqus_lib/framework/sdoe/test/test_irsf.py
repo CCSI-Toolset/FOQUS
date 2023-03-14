@@ -37,7 +37,6 @@ def test_inv_scale_cand():
     ), "inv_unit_scale function not working properly."
 
 
-
 def test_criterion():
 
     with resources.path(__package__, "candidates_irsf.csv") as p:

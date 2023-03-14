@@ -60,5 +60,5 @@ def test_criterion():
 
     # with pytest.raises(ValueError):
     result = irsf.criterion(cand=df, args=args, nr=nr, nd=nd, mode=mode, hist=None)
-    for design in result:
-        assert result[design].get("pareto_front") is not None
+
+    assert result["pareto_front"] is not None

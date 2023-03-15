@@ -173,7 +173,7 @@ def CombPF(PFnew, PFcur=None):
     if PFcur is None:
         return PFnew
 
-    combined_pf = PFcur.copy()
+    combined_pf = PFcur
     dnew = len(PFnew[2])
     N = int(len(PFnew[0]) / dnew)
 

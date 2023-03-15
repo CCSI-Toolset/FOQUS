@@ -29,5 +29,8 @@ sphinx_rtd_theme
 # docutils<0.16,>=0.10 constraint
 docutils<0.16
 
+# manage pre-commit hooks
+pre-commit
+
 # Pick up requirements from setup.py
 -e .

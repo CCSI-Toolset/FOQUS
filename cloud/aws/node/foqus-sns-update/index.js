@@ -347,6 +347,8 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                 console.log(`Session ${response.Item.Session}/Job ${response.Item.Id}:  No Output`);
                 //throw new Error("Reject Invocation and Retry via HTTP 500: Missing Output")
                 response.Item.Message = "Processing Error: No Simulation Output";
+                console.log("Processing Error: No Simulation Output")
+                reject(request.promise());
               }
 
               var key = `${user_name}/session/${session}/finished/${milliseconds}/${status}/${job}.json`;
@@ -363,6 +365,7 @@ var process_job_event_status = function(ts, user_name, message, callback) {
                  catch(error) {
                     console.log(error);
                     response.Item.Message = "Processing Error: Failed to parse Simulation Output";
+                    reject(request.promise());
                  }
               }
 

@@ -20,6 +20,7 @@ python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8
 singledispatchmethod;python_version<"3.8"
+hypothesis 
 
 sphinx
 sphinx_rtd_theme

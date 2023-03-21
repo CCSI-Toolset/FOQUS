@@ -28,15 +28,13 @@ from importlib import resources
 @pytest.mark.skip
 def test_inv_scale_cand():
     cand = np.array([[1, 1, 1], [2, 2, 2], [3, 3, 3]])
-    norm_cand = irsf.unitscale_cand(cand)
+    norm_cand, xmin, xmax = irsf.unit_scale(cand)
 
-    xmin = cand.min(axis=0)
-    xmax = cand.max(axis=0)
-    norm_cand_reversed = irsf.Inv_scale_cand(norm_cand, xmin, xmax)
+    norm_cand_reversed = irsf.inv_unit_scale(norm_cand, xmin, xmax)
 
     assert np.array_equal(
         cand, norm_cand_reversed
-    ), "Inv_scale_cand function not working properly."
+    ), "inv_unit_scale function not working properly."
 
 
 def test_criterion():
@@ -61,6 +59,6 @@ def test_criterion():
     # result = irsf.criterion(cand=cand, args=args,nr=nr, nd=nd, mode=mode, hist=None)
 
     # with pytest.raises(ValueError):
-    result = irsf.criterion(cand=df, args=args, nr=nr, nd=nd, mode=mode, hist=None)
-    for design in result:
-        assert result[design].get("pareto_front") is not None
+    result = irsf.criterion(cand=df, args=args, nr=nr, nd=nd, mode=mode, hist=hist)
+
+    assert result.get("pareto_front") is not None

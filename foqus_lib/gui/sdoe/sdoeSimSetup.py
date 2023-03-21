@@ -615,10 +615,10 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         # this should in any case result in a runtime error,
         # which suggests that this code is not executed
         dialog = sdoePreview(  # TODO pylint: disable=no-value-for-parameter
-            previewData, hname, dirname, nusf, scatterLabel, nImpPts, self
+            previewData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self
         )
         dialog.show()
 
-    ### Return data
+    # Return data
     def getData(self):
         return self.runData

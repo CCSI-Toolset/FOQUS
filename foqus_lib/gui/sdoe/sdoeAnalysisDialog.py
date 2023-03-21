@@ -179,6 +179,12 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.maxDesignSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
+
+        # If Monte Carlo sampling is not used, we hide ncand_samples spinBox and its label
+        self.ncand_samplesIRSF_spin.hide()
+        self.ncand_samplesIRSF_static.hide()
 
         # MWR combo boxes
         self.MWR1_comboBox.addItems(
@@ -895,10 +901,10 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         new_analysis = SdoeAnalysisData()
         new_analysis.sf_method = "irsf"
         new_analysis.optimality = "maximin"
-        new_analysis.d = results[1]["design_size"]
-        new_analysis.nr = results[1]["num_restarts"]
+        new_analysis.d = results["design_size"]
+        new_analysis.nr = results["num_restarts"]
         new_analysis.runtime = elapsed_time
-        new_analysis.designs = results[1]["num_designs"]
+        new_analysis.designs = results["num_designs"]
         new_analysis.config_file = config_file
         new_analysis.fnames = fnames
         new_analysis.results = results
@@ -1285,21 +1291,22 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         include = [s.strip() for s in config["INPUT"]["include"].split(",")]
         types = [s.strip() for s in config["INPUT"]["types"].split(",")]
 
+        if hfile == "":
+            hname = None
+        else:
+            hname = hfile
+
         if self.type == "IRSF":
-            pf = self.analysis[row].results[1]["pareto_front"]
+            pf = self.analysis[row].results["pareto_front"]
             results = self.analysis[row].results
             cand = load(cfile)
             irsf = {"cand": cand}
-            plot_pareto(pf, results, irsf["cand"])
+            plot_pareto(pf, results, irsf["cand"], hname)
             return
 
         fullName = self.analysis[row].fnames["cand"]
         dirname, filename = os.path.split(fullName)
 
-        if hfile == "":
-            hname = None
-        else:
-            hname = hfile
         sdoeData = LocalExecutionModule.readSampleFromCsvFile(fullName, False)
         if self.type == "NUSF":
             scale_method = config["SF"]["scale_method"]
@@ -1321,7 +1328,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             nusf = None
             irsf = None
 
-        scatterLabel = "Design Points"
+        scatterLabel = "Design points"
         nImpPts = 0
         dialog = sdoePreview(
             sdoeData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self

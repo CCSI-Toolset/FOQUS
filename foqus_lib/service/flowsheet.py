@@ -30,6 +30,8 @@ from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 from foqus_lib.framework.graph.nodeVars import NodeVarListEx, NodeVarEx
 from foqus_lib.framework.foqusException.foqusException import *
 from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.plugins import pluginSearch
+from foqus_lib.framework.pymodel import pymodel
 from turbine.commands import turbine_simulation_script
 import logging
 import logging.config
@@ -104,6 +106,95 @@ def scrub_empty_string_values_for_dynamo(db):
             db[k] = "NULL"
         else:
             scrub_empty_string_values_for_dynamo(v)
+
+
+def _setup_foqus_user_plugin(dat, nkey, user_name, user_plugin_dir):
+    assert len(dat.flowsheet.nodes[nkey].turbApp) == 2, (
+        "DAT Flowsheet nodes turbApp is %s" % dat.flowsheet.nodes[nkey].turbApp
+    )
+    node = dat.flowsheet.nodes[nkey]
+    turb_app = node.turbApp[0]
+    model_name = node.modelName
+    assert turb_app is not None
+    turb_app = turb_app.lower()
+    assert turb_app == "foqus-user-plugin", 'unknown foqus-user-plugin: "%s"' % turb_app
+    _log.debug(
+        'Turbine Node Key="%s", Model="%s", Application="%s"',
+        nkey,
+        model_name,
+        turb_app,
+    )
+    model_user_plugin_dir = os.path.join(user_plugin_dir, model_name)
+    try:
+        os.makedirs(model_user_plugin_dir)
+    except OSError as e:
+        if e.errno != errno.EEXIST:
+            raise
+
+    s3 = boto3.client("s3", region_name=FOQUSAWSConfig.get_instance().get_region())
+    bucket_name = FOQUSAWSConfig.get_instance().get_simulation_bucket_name()
+    prefix = "%s/%s/" % (user_name, model_name)
+    l = s3.list_objects(Bucket=bucket_name, Prefix=prefix)
+
+    assert (
+        "Contents" in l
+    ), 'Node %s failure: S3 Bucket %s is missing simulation files for "%s"' % (
+        nkey,
+        bucket_name,
+        prefix,
+    )
+    key_sinter_filename = None
+    key_plugin_filename = None
+    s3_key_list = [i["Key"] for i in l["Contents"]]
+    _log.debug("Node model %s staged-input files %s" % (model_name, s3_key_list))
+
+    for k in s3_key_list:
+        if k.endswith("/foqus-user-plugin.json"):
+            key_sinter_filename = k
+        elif k.endswith("/%s.py" % (model_name)):
+            assert key_plugin_filename is None, "detected multiple plugin files"
+            key_plugin_filename = k
+
+    assert (
+        key_sinter_filename is not None
+    ), "Flowsheet node=%s simulation=%s sinter configuration not in %s" % (
+        nkey,
+        model_name,
+        str(s3_key_list),
+    )
+    assert (
+        key_plugin_filename is not None
+    ), "Flowsheet node=%s simulation=%s model file not in %s" % (
+        nkey,
+        model_name,
+        str(s3_key_list),
+    )
+
+    entry_list = [
+        i for i in l["Contents"] if i["Key"] != prefix and i["Key"].startswith(prefix)
+    ]
+    for entry in entry_list:
+        _log.debug("s3 staged input: %s", entry)
+        key = entry["Key"]
+        etag = entry.get("ETag", "").strip('"')
+        target_file_path = None
+        assert key.startswith(prefix)
+        if key == key_sinter_filename:
+            target_file_path = os.path.join(model_user_plugin_dir, key.split("/")[-1])
+            s3.download_file(bucket_name, key, target_file_path)
+        elif key == key_plugin_filename:
+            target_file_path = os.path.join(user_plugin_dir, key.split("/")[-1])
+            s3.download_file(bucket_name, key, target_file_path)
+        else:
+            args = [i for i in key[len(prefix) :].split("/") if i]
+            args.insert(0, model_user_plugin_dir)
+            target_file_path = os.path.join(*args)
+            s3.download_file(bucket_name, key, target_file_path)
+
+        _log.debug(
+            'model="%s" key="%s" staged-in file="%s"'
+            % (model_name, key, target_file_path)
+        )
 
 
 def _setup_flowsheet_turbine_node(dat, nkey, user_name):
@@ -828,20 +919,20 @@ class FlowsheetControl:
                 )
                 self._delete_sqs_job()
                 raise
-                _log.exception("setup foqus URLError")
+            except foqusException as ex:
+                # TODO:
+                _log.exception("setup foqus exception: job fails, continue running")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
-                    "job failed in setup URLError", job_desc["Id"], exception=msg
+                    "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
                 )
+                self.increment_metric_job_finished(event="error.job.setup")
                 self._delete_sqs_job()
-                self.increment_metric_job_finished(
-                    event="error.job.setup.NotImplementedError"
-                )
-                raise
+                continue
             except Exception as ex:
                 # TODO:
-                _log.exception("setup foqus exception")
+                _log.exception("setup foqus exception:  fatal error")
                 msg = traceback.format_exc()
                 db.job_change_status(job_desc, "error", message=msg)
                 db.add_message(
@@ -855,14 +946,14 @@ class FlowsheetControl:
             self._delete_sqs_job()
             try:
                 self.run_foqus(db, job_desc)
-            except foqusException as ex:
-                _log.exception("run_foqus foqusException")
-                self.increment_metric_job_finished(event="error.job.run")
-                self.close()
-                raise
             except Exception as ex:
                 _log.exception("run_foqus Exception")
                 self.increment_metric_job_finished(event="error.job.run")
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message(
+                    "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
+                )
                 self.close()
                 raise
 
@@ -1103,7 +1194,7 @@ class FlowsheetControl:
         _log.debug("setup foqus")
         db.job_change_status(job_desc, "setup")
         configContent = db.get_configuration_file(simulation_name)
-        logging.getLogger("foqus." + __name__).info("Job {0} is submitted".format(jid))
+        logging.getLogger("foqus." + __name__).info("Job {0} is submitted".format(guid))
 
         reset = job_desc.get("Reset", False)
         assert type(reset) is bool, "Bad type for reset %s" % type(reset)
@@ -1120,7 +1211,9 @@ class FlowsheetControl:
             _log.debug("Reset Flowsheet")
             self.close()
             self._dat = dat = Session(useCurrentWorkingDir=True)
+            _log.debug("New Session Created: next load")
             dat.load(sfile, stopConsumers=True)
+            _log.debug("Session load finished")
             self._simulation_name = simulation_name
         else:
             _log.debug("No Reset Flowsheet")
@@ -1129,11 +1222,48 @@ class FlowsheetControl:
         dat.loadFlowsheetValues(vfile)
         _log.debug("Process Flowsheet nodes")
         count_turb_apps = 0
-        nkey = None
+        turb_app_nkey = None
+        foqus_user_plugins = []
         for i in dat.flowsheet.nodes:
-            if dat.flowsheet.nodes[i].turbApp is not None:
-                nkey = i
+            node = dat.flowsheet.nodes[i]
+            if node.turbApp is not None:
+                turb_app = node.turbApp[0]
+                turb_app = turb_app.lower()
+                if turb_app == "foqus-user-plugin":
+                    foqus_user_plugins.append(i)
+                    continue
+                turb_app_nkey = i
                 count_turb_apps += 1
+
+        user_plugin_dir = os.path.join(WORKING_DIRECTORY, "user_plugins")
+        for i in foqus_user_plugins:
+            _setup_foqus_user_plugin(
+                dat, i, user_name=user_name, user_plugin_dir=user_plugin_dir
+            )
+
+        pymodels = pluginSearch.plugins(
+            idString="#\s?FOQUS_PYMODEL_PLUGIN",
+            pathList=[
+                user_plugin_dir,
+                os.path.dirname(pymodel.__file__),
+            ],
+        )
+        dat.pymodels = pymodels
+        dat.flowsheet.pymodels = pymodels
+        # Check if Plugin Available
+        for i in foqus_user_plugins:
+            # node = dat.flowsheet.nodes[i]
+            if i not in pymodels.plugins:
+                for key in pymodels.plugins:
+                    _log.debug("PLUGIN: %s" % (key))
+                if i in pymodels.check_available_error_d:
+                    msg = pymodels.check_available_error_d.get(i)
+                    raise foqusException(
+                        "FOQUS User Plugin %s:  Failed to load on check available: %s"
+                        % (i, msg)
+                    )
+                raise foqusException("FOQUS User Plugin %s:  Failed to load" % (i))
+
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError(
@@ -1141,12 +1271,13 @@ class FlowsheetControl:
             )
         if count_turb_apps:
             try:
-                _setup_flowsheet_turbine_node(dat, nkey, user_name=user_name)
+                _setup_flowsheet_turbine_node(dat, turb_app_nkey, user_name=user_name)
             except AssertionError as ex:
                 _log.error("Job Setup Failure: %s", str(ex))
                 db.job_change_status(
                     job_desc, "error", message="Error in job setup: %s" % ex
                 )
+
         return dat
 
     def run_foqus(self, db, job_desc):

@@ -101,6 +101,16 @@ C:\tools\Anaconda3\envs\foqus;C:\tools\Anaconda3\envs\foqus\Library\mingw-w64\bi
 Open a powershell terminal and copy the path from above to set the machine system PATH environment variable to allow the `foqus_service.py` to run as a Windows Service.
 ```
 PS C:\Users\Administrator\Desktop> $P1 = "C:\ProgramData\Anaconda3\envs\foqus;C:\ProgramData\Anaconda3\envs\foqus\Library\mingw-w64\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\usr\bin;C:\ProgramData\Anaconda3\envs\foqus\Library\bin;C:\ProgramData\Anaconda3\envs\foqus\Scripts;C:\ProgramData\Anaconda3\envs\foqus\bin;C:\ProgramData\Anaconda3\condabin;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Amazon\cfn-bootstrap;C:\Program Files (x86)\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\Tools\Binn;C:\Program Files\Microsoft SQL Server\110\DTS\Binn;C:\Program Files (x86)\Common Files\AspenTech Shared"
+
+PS C:\Users\Administrator\Desktop> $P1 =
+"C:\tools\Anaconda3\envs\foqus;C:\tools\Anaconda3\envs\foqus\Library\mingw-w64\bin;C:\tools\Anaconda3\envs\foqus\Library\usr\bin;C:\tools\Anaconda3\envs\foqus\Library\bin;C:\tools\Anaconda3\envs\foqus\Scripts;C:\tools\Anaconda3\envs\foqus\bin;C:\tools\Anaconda3\envs\foqus\condabin"
+
+$P2 = "C:\tools\Anaconda3;C:\tools\Anaconda3\Library\mingw-w64\bin;C:\tools\Anaconda3\Library\usr\bin;C:\tools\Anaconda3\Library\bin;C:\tools\Anaconda3\Scripts;C:\tools\Anaconda3\bin;C:\tools\Anaconda3\condabin"
+
+
+$P3 = "C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0;C:\Program Files\Amazon\cfn-bootstrap;C:\ProgramData\chocolatey\bin;C:\Users\Administrator\AppData\Local\Microsoft\WindowsApps"
+
+[Environment]::SetEnvironmentVariable('path', "$P1;$P2;$P3", 'Machine');
 ```
 Second, add several Anaconda3 Library paths.
 ```

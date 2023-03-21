@@ -27,7 +27,12 @@ def compute_dist(
 
     if hist_xs is not None:
         mat = np.concatenate((mat, hist_xs), axis=0)
-
+    if mat.ndim != 2:
+        raise ValueError("ndims must be 2")
+    if mat.shape[0] < 2:
+        raise ValueError("At least 2 points needed")
+    if not np.all(np.isfinite(mat)):
+        raise ValueError("All entries in the array must be finite")
     N, ncols = mat.shape
     dmat = np.full((N, N), np.nan)
 

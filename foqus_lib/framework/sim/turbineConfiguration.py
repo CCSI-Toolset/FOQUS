@@ -206,7 +206,7 @@ class TurbineConfiguration:
         "ACM": "aspenfile",
         "GProms": "model",
         "AspenPlus": "aspenfile",
-        "FOQUS-User-Plugin":"plugin"
+        "FOQUS-User-Plugin": "plugin",
     }
     appExtensions = {
         ".xls": "Excel",
@@ -218,7 +218,7 @@ class TurbineConfiguration:
         ".bkp": "AspenPlus",
         ".apw": "AspenPlus",
         ".apwz": "AspenPlus",
-        ".py": "FOQUS-User-Plugin"
+        ".py": "FOQUS-User-Plugin",
     }
 
     def __init__(self, path="turbine.cfg"):

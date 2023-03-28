@@ -37,6 +37,7 @@ import botocore.exceptions
 
 WORKING_DIRECTORY = os.path.abspath(
     os.environ.get("FOQUS_SERVICE_WORKING_DIR", "\\ProgramData\\foqus_service")
+)
 DEBUG = False
 CURRENT_JOB_DIR = None
 _log = logging.getLogger("foqus.foqus_lib.service.flowsheet")

@@ -35,7 +35,7 @@ def test_criterion():
     mode = "maximin"
     hist = None
 
-    result = nusf.criterion(cand=cand, args=args, nr=nr, nd=nd, mode=mode, hist=None)
+    result = nusf.criterion(cand=cand, args=args, nr=nr, nd=nd, mode=mode, hist=hist)
 
     for mwr in args["mwr_values"]:
         assert result[mwr].get("best_cand") is not None

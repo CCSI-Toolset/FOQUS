@@ -29,6 +29,7 @@ import importlib
 import logging
 import imp
 import re
+import traceback
 
 _log = logging.getLogger("foqus." + __name__)
 
@@ -43,12 +44,14 @@ class plugins:
         self.pathList = pathList
         self.charLimit = charLimit
         self.plugins = {}
+        self.check_available_error_d = None
         self.importPlugins()
 
     def importPlugins(self):
         """
         check files in self.pathList to see if they are plugins
         """
+        self.check_available_error_d = dict()
         for p in self.pathList:
             if os.path.exists(p):
                 sys.path.append(p)
@@ -95,9 +98,12 @@ class plugins:
                             )
         # Now check that the plugins have what they need to be used
         for pkey, p in list(self.plugins.items()):
+            _log.debug("check plugin available: %s" % (pkey))
             try:
                 av = p.checkAvailable()
-            except:
+            except Exception as ex:
+                _log.exception("Exception Plugin checkAvailable")
+                self.check_available_error_d[pkey] = traceback.format_exc()
                 av = False
             if not av:
                 del self.plugins[pkey]

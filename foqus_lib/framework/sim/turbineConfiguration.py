@@ -292,6 +292,7 @@ class TurbineConfiguration:
             self.reloadTurbine()
         except:
             _log.exception("Could not load FOQUS settings.")
+            raise RuntimeError("Failed to load FOQUS Settings")
 
     def makeCopy(self):
         """
@@ -454,10 +455,10 @@ class TurbineConfiguration:
             try:
                 is_stopping = _tcon.post_consumer_stop(url, auth, str(ci.cid))
                 _log.info("Stop Consumer {} Requested: {}".format(ci.cid, is_stopping))
-                swt = time.process_time()
+                swt = time.time()
                 while proc.poll() is None:
                     # wait for consumer to go down
-                    if time.process_time() - swt > maxWait:
+                    if time.time() - swt > maxWait:
                         _log.error(
                             "Error stopping consumer {} "
                             "Subprocess still running?".format(ci.cid)
@@ -578,6 +579,7 @@ class TurbineConfiguration:
         configuration file.
         """
         path = self.getFile()
+        _log.debug('turbine configuration="%s"', path)
         config = configparser.ConfigParser()
         config.optionxform = str  # makes options case sensitive
         try:

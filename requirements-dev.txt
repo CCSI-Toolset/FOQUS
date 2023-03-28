@@ -27,7 +27,7 @@ sphinx_rtd_theme
 
 # Remove this when botocore (pulled in by boto3 in setup.py) relaxes their
 # docutils<0.16,>=0.10 constraint
-docutils<0.16
+docutils
 
 # manage pre-commit hooks
 pre-commit

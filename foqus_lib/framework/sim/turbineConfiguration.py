@@ -206,6 +206,7 @@ class TurbineConfiguration:
         "ACM": "aspenfile",
         "GProms": "model",
         "AspenPlus": "aspenfile",
+        "FOQUS-User-Plugin": "plugin",
     }
     appExtensions = {
         ".xls": "Excel",
@@ -217,6 +218,7 @@ class TurbineConfiguration:
         ".bkp": "AspenPlus",
         ".apw": "AspenPlus",
         ".apwz": "AspenPlus",
+        ".py": "FOQUS-User-Plugin",
     }
 
     def __init__(self, path="turbine.cfg"):
@@ -1364,9 +1366,9 @@ class TurbineConfiguration:
         # upload model file
         try:
             if modelFile != None:
-                if resourceType == "aspenfile":
+                if resourceType in ["aspenfile", "plugin"]:
                     resourceType = os.path.split(modelFile)[-1]
-                    _log.debug("resourceType aspenfile specified as %s" % resourceType)
+                    _log.debug("Upload resourceType=%s", resourceType)
                 _tsim.main_update(["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:
             raise TurbineInterfaceEx(

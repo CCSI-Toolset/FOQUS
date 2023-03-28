@@ -123,9 +123,9 @@ In this example, the user will generate a new candidate set.
 #. Click on the **Confirm Design Setup** button and under the **Output Setup** section, select
    **MARS** in the **Response Surface** dropdown menu.
 
-   .. figure:: figs/10_ODoE_outputSetup.png
+   .. figure:: figs/10b_ODoE_outputSetup.png
       :alt: ODoE Output Setup - MARS
-      :name: fig.ODoE_outputSetup2
+      :name: fig.ODoE_outputSetup2_1
 
       ODoE Output Setup - MARS
 
@@ -149,13 +149,13 @@ In this example, the user will generate a new candidate set.
    **RS Predictions on Candidates**. The user can edit the **mean** and **standard deviation**
    columns in this table as needed.
 
-   .. figure:: figs/13_ODoE_RSConfirmed.png
+   .. figure:: figs/13b_ODoE_RSConfirmed.png
       :alt: ODoE Response Surface Confirmed and Predictions Generated
-      :name: fig.ODoE_RSConfirmed2
+      :name: fig.ODoE_RSConfirmed2_1
 
       ODoE Response Surface Confirmed and Predictions Generated
 
-#. Under ODoE Setup select the **Optimality Criterion** (in this case G-Opt), **Design Size**
+#. Under ODoE Setup select the **Method** (in this case Fisher), the **Optimality Criterion** (in this case G-Opt), **Design Size**
    (in this case 2) and **Number of Restarts** (in this case 3).
 
    The choice of optimality criterion to use for design construction is driven by the objectives of the

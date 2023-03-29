@@ -462,12 +462,12 @@ class Plotter:
                     [left, bottom, width, height], facecolor="lightgoldenrodyellow"
                 )
                 value = self.steps[1]
-                self.slider = DiscreteSlider(
+                self.slider = Slider(
                     self.sliderax,
                     xlabel,
                     self.xmin,
                     self.xmax,
-                    steps=self.steps,
+                    valstep=self.steps,
                     facecolor="k",
                     valinit=value,
                     valfmt="%f",
@@ -902,12 +902,12 @@ class Plotter:
                 self.sliderax = self.fig.add_axes(
                     [left, bottom, width, height], facecolor="lightgoldenrodyellow"
                 )
-                self.slider = DiscreteSlider(
+                self.slider = Slider(
                     self.sliderax,
                     vlabel,
                     self.vmin,
                     self.vmax,
-                    steps=self.steps,
+                    valstep=self.steps,
                     facecolor="k",
                     valinit=self.steps[1],
                     valfmt="",

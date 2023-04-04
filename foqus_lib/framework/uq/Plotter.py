@@ -550,48 +550,6 @@ class Plotter:
             def show(self):
                 plt.show()
 
-        class DiscreteSlider(Slider):
-            """A matplotlib slider widget with customized discrete steps."""
-
-            def __init__(self, *args, **kwargs):
-                """Identical to Slider.__init__, except for the "steps" kwarg.
-                "steps" is a list of discretized values for the slider."""
-                self.steps = kwargs.pop("steps", None)
-                Slider.__init__(self, *args, **kwargs)
-
-            def set_val(self, val):
-                # Find the closest step to continuous slider value
-                x = [np.abs(s - val) for s in self.steps]
-                (k,) = np.where(x == np.min(x))
-                discrete_val = self.steps[k + 3]
-                if k > 0:
-                    discrete_val_ = self.steps[k - 3]
-                else:
-                    discrete_val_ = self.steps[0]
-                    discrete_val = self.steps[6]
-                # We can't just call Slider.set_val(self, discrete_val), because this
-                # will prevent the slider from updating properly (it will get stuck at
-                # the first step and not "slide"). Instead, we'll keep track of the
-                # the continuous value as self.val and pass in the discrete value to
-                # everything else.
-                _w = discrete_val - discrete_val_
-                h = 1
-                bottomleft = [discrete_val_, 0]
-                topleft = [discrete_val_, h]
-                bottomright = [discrete_val, 0]
-                topright = [discrete_val, h]
-                xy = np.array(
-                    [bottomleft, topleft, topright, bottomright], dtype="object"
-                )
-                self.poly.set_xy(xy)
-                if self.drawon:
-                    self.ax.figure.canvas.draw()
-                self.val = discrete_val
-                if not self.eventson:
-                    return
-                for _cid, func in self.observers.items():
-                    func(discrete_val)
-
         p = ChangingPlot()
         p.show()
 
@@ -983,51 +941,6 @@ class Plotter:
 
             def show(self):
                 plt.show()
-
-        class DiscreteSlider(Slider):
-            """A matplotlib slider widget with customized discrete steps."""
-
-            def __init__(self, *args, **kwargs):
-                """Identical to Slider.__init__, except for the "steps" kwarg.
-                "steps" is a list of discretized values for the slider."""
-                self.steps = kwargs.pop("steps", None)
-                Slider.__init__(self, *args, **kwargs)
-
-            def set_val(self, val):
-                # Find the closest step to continuous slider value
-                x = [np.abs(s - val) for s in self.steps]
-                (k,) = np.where(x == np.min(x))
-                discrete_val = self.steps[k]
-                if k > 0:
-                    discrete_val_ = self.steps[k - 1]
-                else:
-                    discrete_val_ = self.steps[0]
-                    discrete_val = self.steps[1]
-                # We can't just call Slider.set_val(self, discrete_val), because this
-                # will prevent the slider from updating properly (it will get stuck at
-                # the first step and not "slide"). Instead, we'll keep track of the
-                # the continuous value as self.val and pass in the discrete value to
-                # everything else.
-                _w = discrete_val - discrete_val_
-                h = 1
-                bottomleft = [discrete_val_, 0]
-                topleft = [discrete_val_, h]
-                bottomright = [discrete_val, 0]
-                topright = [discrete_val, h]
-                xy = np.array(
-                    [bottomleft, topleft, topright, bottomright], dtype="object"
-                )
-                self.poly.set_xy(xy)
-                self.valtext.set_text(
-                    "Min: %.4f\nMax: %.4f" % (discrete_val_, discrete_val)
-                )
-                if self.drawon:
-                    self.ax.figure.canvas.draw()
-                self.val = discrete_val
-                if not self.eventson:
-                    return
-                for _cid, func in self.observers.items():
-                    func(discrete_val)
 
         p = ChangingPlot()
         p.show()

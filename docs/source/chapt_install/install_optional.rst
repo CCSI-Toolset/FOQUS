@@ -31,7 +31,7 @@ Install Turbine and SimSinter (Windows Only)
 .. note::
   You will need to install Turbine and SimSinter in order to run FOQUS locally with Aspen and Excel. The Turbine installation will install the Turbine Web API Windows Service and applications that manage Aspen and Excel processes. The SimSinter installation will install the SinterConfigGUI application and libraries for interacting with Aspen and Excel through COM Server interfaces. The programs "SimSinter" and "TurbineLite" should appear on the local installed programs list.
 
-* Install `Microsoft SQL Server Compact 4.0 <https://www.microsoft.com/en-us/download/details.aspx?id=17876>`_.
+* Install `Microsoft SQL Server Compact 4.0 <https://www.microsoft.com/en-us/download/details.aspx?id=30709>`_.
 
 * Download and install the latest releases of `SimSinter
   <https://github.com/CCSI-Toolset/SimSinter/releases/>`_ and `TurbineLite

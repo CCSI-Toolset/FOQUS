@@ -39,23 +39,30 @@ def setup_frame_blank(main_window, flowsheet_session_file, request):
     request.cls.frame = setup_frame
     return setup_frame
 
+
 @pytest.mark.usefixtures("setup_frame_blank")
-class TestSDOE():
-    def test_smoke(self, qtbot, load_data):
+class TestSDOE:
+    def test_smoke(self, qtbot, load_simulation):
         qtbot.wait(10_000)
 
     @pytest.fixture(scope="class")
-    def load_data(self, setup_frame_blank):
+    def load_simulation(self, setup_frame_blank, foqus_examples_dir):
+        "Reproduce sdoeSetupFrame.loadSimulation() bypassing the file picker dialog"
+
         frame = setup_frame_blank
-        fileName =  "/Users/sfhome/Desktop/CCI_Spring_2023/foqus/CCSI-Toolset/FOQUS/examples/tutorial_files/SDOE/SDOE_Ex1_Candidates.csv"
-        data = LocalExecutionModule.readSampleFromCsvFile(fileName, True)
+        fileName = str(
+            foqus_examples_dir / "tutorial_files/SDOE/SDOE_Ex1_Candidates.csv"
+        )
+        data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
+        data_info = frame.dataInfo(data)
         data.setSession(frame.dat)
-        frame.dat.odoeEvalList.append(data)
-        
+        frame.dat.sdoeSimList.append(data)
+
         res = Results()
-        res.eval_add_result(data)
-        shutil.copy(fileName, frame.odoe_dname)
+        res.sdoe_add_result(data)
+        frame.dat.sdoeFilterResultsList.append(res)
+        shutil.copy(fileName, frame.dname)
 
         # Update table
-        frame.updateEvalTable()
-
+        frame.updateSimTable()
+        frame.dataTabs.setEnabled(True)

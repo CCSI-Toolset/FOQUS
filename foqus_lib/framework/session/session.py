@@ -770,7 +770,10 @@ class generalSettings:
         self.working_dir = ""
         self.new_working_dir = ""
         self.simsinter_path = "C:/Program Files (x86)/CCSI/SimSinter"
-        self.psuade_path = shutil.which("psuade") or "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
+        self.psuade_path = (
+            shutil.which("psuade")
+            or "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
+        )
         self.turbConfig = "turbine.cfg"
         self.turbConfigCluster = "turbine_aws.cfg"
         self.alamo_path = ""

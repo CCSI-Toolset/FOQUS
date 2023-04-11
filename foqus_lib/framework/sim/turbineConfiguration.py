@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 """ turbineConfiguration.py
 
 * This class contains Turbine configuration profiles and  functions for
@@ -207,6 +206,7 @@ class TurbineConfiguration:
         "ACM": "aspenfile",
         "GProms": "model",
         "AspenPlus": "aspenfile",
+        "FOQUS-User-Plugin": "plugin",
     }
     appExtensions = {
         ".xls": "Excel",
@@ -218,6 +218,7 @@ class TurbineConfiguration:
         ".bkp": "AspenPlus",
         ".apw": "AspenPlus",
         ".apwz": "AspenPlus",
+        ".py": "FOQUS-User-Plugin",
     }
 
     def __init__(self, path="turbine.cfg"):
@@ -1365,9 +1366,9 @@ class TurbineConfiguration:
         # upload model file
         try:
             if modelFile != None:
-                if resourceType == "aspenfile":
+                if resourceType in ["aspenfile", "plugin"]:
                     resourceType = os.path.split(modelFile)[-1]
-                    _log.debug("resourceType aspenfile specified as %s" % resourceType)
+                    _log.debug("Upload resourceType=%s", resourceType)
                 _tsim.main_update(["-r", resourceType, name, modelFile, self.getFile()])
         except Exception as e:
             raise TurbineInterfaceEx(

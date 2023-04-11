@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 import tempfile
 import platform
 import re
@@ -192,14 +191,19 @@ def run(config_file, nd, test=False):
 
     if sf_method == "irsf":
         fnames = {}
-        for design in range(1, results[1]["num_designs"] + 1):
+        for design in range(1, results["num_designs"] + 1):
             suffix = "design{}_d{}_n{}_{}".format(design, nd, nr, "+".join(include))
             suffix_pareto = "paretoFront_d{}_n{}_{}".format(nd, nr, "+".join(include))
             fnames[design] = {
                 "des": os.path.join(outdir, "irsf_{}.csv".format(suffix)),
                 "pf": os.path.join(outdir, "irsf_{}.csv".format(suffix_pareto)),
             }
-            save(fnames[design], results[design], elapsed_time, irsf=True)
+            sub_results = {
+                "pareto_front": results["pareto_front"],
+                "des": results["des"][design],
+            }
+
+            save(fnames[design], sub_results, elapsed_time, irsf=True)
 
     return fnames, results, elapsed_time
 

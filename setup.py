@@ -1,6 +1,6 @@
 #!/usr/bin/env python
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -12,8 +12,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 from setuptools import setup, find_packages
 import sys
 import os
@@ -23,7 +22,7 @@ import shutil
 # default_version is the version if "git describe --tags" falls through
 # Addtional package info is set in foqus_lib/version/version.template.
 # The version module, just makes it a bit easier for FOQUS to pull package info
-default_version = "3.17.dev0"
+default_version = "3.18.dev0"
 
 try:
     version = (
@@ -103,7 +102,7 @@ dist = setup(
         "requests",
         "scipy",
         "tqdm",
-        "TurbineClient>=4.0.2",
+        "TurbineClient ~= 4.0, >= 4.0.3",
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
     ],

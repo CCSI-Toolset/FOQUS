@@ -1,3 +1,17 @@
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#################################################################################
 import contextlib
 import os
 from pathlib import Path
@@ -115,7 +129,6 @@ def install_plugin_model_files(
 def foqus_ml_ai_models_dir(
     foqus_working_dir: Path,
 ) -> Path:
-
     return foqus_working_dir / "user_ml_ai_models"
 
 
@@ -130,7 +143,6 @@ def install_ml_ai_model_files(
     This is a session-level fixture with autouse b/c it needs to be created
     before the main window is instantiated.
     """
-
     print("installing ml_ai model files")
     models_dir = foqus_ml_ai_models_dir
 

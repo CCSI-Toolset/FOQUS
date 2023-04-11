@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 """flowsheet.py
 * The AWS Cloud FOQUS service to start FOQUS
 
@@ -1247,10 +1246,11 @@ class FlowsheetControl:
                 count_turb_apps += 1
 
         user_plugin_dir = os.path.join(WORKING_DIRECTORY, "user_plugins")
-        for nkey in foqus_user_plugins:
+        for i in foqus_user_plugins:
             _setup_foqus_user_plugin(
-                dat, nkey, user_name=user_name, user_plugin_dir=user_plugin_dir
+                dat, i, user_name=user_name, user_plugin_dir=user_plugin_dir
             )
+
         pymodels = pluginSearch.plugins(
             idString="#\s?FOQUS_PYMODEL_PLUGIN",
             pathList=[
@@ -1261,18 +1261,19 @@ class FlowsheetControl:
         dat.pymodels = pymodels
         dat.flowsheet.pymodels = pymodels
         # Check if Plugin Available
-        for nkey in foqus_user_plugins:
+        for i in foqus_user_plugins:
             # node = dat.flowsheet.nodes[i]
-            if nkey not in pymodels.plugins:
+            if i not in pymodels.plugins:
                 for key in pymodels.plugins:
                     _log.debug("PLUGIN: %s" % (key))
-                if nkey in pymodels.check_available_error_d:
-                    msg = pymodels.check_available_error_d.get(nkey)
+                if i in pymodels.check_available_error_d:
+                    msg = pymodels.check_available_error_d.get(i)
                     raise foqusException(
                         "FOQUS User Plugin %s:  Failed to load on check available: %s"
-                        % (nkey, msg)
+                        % (i, msg)
                     )
-                raise foqusException("FOQUS User Plugin %s:  Failed to load" % (nkey))
+                raise foqusException("FOQUS User Plugin %s:  Failed to load" % (i))
+
         if count_turb_apps > 1:
             self.close()
             raise RuntimeError(

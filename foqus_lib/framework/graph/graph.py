@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 """graph.py
 
 * This is the main class for storing directed graphs
@@ -1013,7 +1012,7 @@ class Graph(threading.Thread):
             _log.error("solve: onlySingleNode not in node keys")
             self.setErrorCode(4)
             return
-        
+
         # Take the pre and post solve nodes out of the calculation order
         fs_sub = []
         for nkey, node in self.nodes.items():
@@ -1038,7 +1037,7 @@ class Graph(threading.Thread):
                 return self.solTime
         # Run graph, order is based on tree with tears removed
         order = self.calculationOrder(subNodes=fs_sub)
-        _log.debug('solve: runGraph')
+        _log.debug("solve: runGraph")
         self.runGraph(order)
         # Check if there are any tears if no tears we are done
         solveTear = False
@@ -1047,7 +1046,7 @@ class Graph(threading.Thread):
                 solveTear = True
                 break
         if not solveTear:
-            _log.debug('solve: no tears flowsheet done run post solve nodes')
+            _log.debug("solve: no tears flowsheet done run post solve nodes")
             for nkey in self.post_solve_nodes:
                 _log.debug("solve: run post-solve node %s", nkey)
                 node = self.nodes[nkey]
@@ -1099,7 +1098,7 @@ class Graph(threading.Thread):
                     self.setErrorCode(errCode)
                     self.solTime = time.time() - tstart
                     return self.solTime
-        _log.debug('solve: No errors so far and flowsheet converged, run post nodes')
+        _log.debug("solve: No errors so far and flowsheet converged, run post nodes")
         for nkey in self.post_solve_nodes:
             _log.debug("solve: run post-solve node %s", nkey)
             node = self.nodes[nkey]
@@ -1109,8 +1108,8 @@ class Graph(threading.Thread):
                 self.setErrorCode(17)
                 self.solTime = time.time() - tstart
                 return self.solTime
-        
-        _log.debug('solve: pre, flowsheet, post all done return success')
+
+        _log.debug("solve: pre, flowsheet, post all done return success")
         self.setErrorCode(0)
         self.solTime = time.time() - tstart
         return self.solTime
@@ -1353,18 +1352,18 @@ class Graph(threading.Thread):
         for namelst in order:
             for name in namelst:
                 if self.stop.isSet():
-                    _log.error('runGraph(%s): error 20 stop is set', name)
+                    _log.error("runGraph(%s): error 20 stop is set", name)
                     self.setErrorCode(20)
                     return
                 calcError = self.runNode(name)
                 if calcError != 0:
-                    _log.error('runGraph(%s): calcError=%d', name, calcError)
+                    _log.error("runGraph(%s): calcError=%d", name, calcError)
                     self.setErrorCode(1)
                     return
-                
+
                 for e in self.edges:
                     if e.start == name and e.tear == False and e.active == True:
-                        _log.debug('runGraph(%s): transfer edge', name)
+                        _log.debug("runGraph(%s): transfer edge", name)
                         e.transferInformation(self)
 
     def runNode(self, name):

@@ -1692,5 +1692,28 @@ class QtBot(pytestqt_plugin.QtBot):
             dialog_info_for_checking: _DialogProxy = blocker.args[0]
             yield dialog_info_for_checking
 
+    @contextlib.contextmanager
+    def file_selection(
+        self,
+        path: Path,
+        target: t.Tuple[type, str] = (W.QFileDialog, "getOpenFileName"),
+    ):
+        def _file_dialog_replacement(
+            parent: W.QWidget,
+            caption: str = "",
+            dir: str = "",
+            filter: str = "",
+            selectedFilter: str = "",
+            **kwargs,
+        ) -> t.Tuple[str, str]:
+            return str(path), selectedFilter
+
+        mp = MonkeyPatch()
+        try:
+            mp.setattr(*target, _file_dialog_replacement)
+            yield path
+        finally:
+            mp.undo()
+
     def cleanup(self):
         self._focus_stack.clear()

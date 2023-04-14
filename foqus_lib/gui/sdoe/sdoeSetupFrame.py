@@ -272,6 +272,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmRS_button.clicked.connect(self.confirmRS)
         self.restarts_comboBox.setMinimumContentsLength(4)
         self.runOdoe_button.clicked.connect(self.runOdoe)
+        # set in launchSdoe
+        self._analysis_dialog = None
 
     # Check if SDoE or ODoE
     def checkMode(self):
@@ -1051,11 +1053,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         from .sdoeAnalysisDialog import sdoeAnalysisDialog
 
-        dialog = sdoeAnalysisDialog(
+        dialog = self._analysis_dialog = sdoeAnalysisDialog(
             candidateData, dname, analysis, historyData, type, self
         )
-        dialog.exec_()
-        dialog.deleteLater()
+        dialog.open()
+        # dialog.deleteLater()
 
     def initUQToolBox(self):
 

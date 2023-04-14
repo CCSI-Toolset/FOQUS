@@ -20,6 +20,7 @@ from foqus_lib.framework.uq.LocalExecutionModule import *
 
 from foqus_lib.gui.sdoe.sdoeSetupFrame import sdoeSetupFrame
 from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.gui.sdoe.sdoeAnalysisDialog import sdoeAnalysisDialog
 
 import pytest
 
@@ -42,27 +43,29 @@ def setup_frame_blank(main_window, flowsheet_session_file, request):
 
 @pytest.mark.usefixtures("setup_frame_blank")
 class TestSDOE:
-    def test_smoke(self, qtbot, load_simulation):
-        qtbot.wait(10_000)
+    @property
+    def analysis_dialog(self) -> typing.Union[None, sdoeAnalysisDialog]:
+        return self.__class__.frame._analysis_dialog
+
+    def test_run_sdoe(self, qtbot, start_analysis):
+        assert self.analysis_dialog is not None
+        qtbot.focused = self.analysis_dialog
+        qtbot.click(button="Estimate Runtime")
+        qtbot.wait(1000)
+        qtbot.using(spin_box="Number of Random Starts: n = 10^").enter_value(2)
+        qtbot.wait(1000)
+        qtbot.click(button="Run SDoE")
 
     @pytest.fixture(scope="class")
-    def load_simulation(self, setup_frame_blank, foqus_examples_dir):
-        "Reproduce sdoeSetupFrame.loadSimulation() bypassing the file picker dialog"
+    def start_analysis(self, qtbot, foqus_examples_dir):
+        def has_dialog():
+            return self.analysis_dialog is not None
 
-        frame = setup_frame_blank
-        fileName = str(
+        qtbot.focused = self.frame
+        with qtbot.file_selection(
             foqus_examples_dir / "tutorial_files/SDOE/SDOE_Ex1_Candidates.csv"
-        )
-        data = LocalExecutionModule.readSampleFromCsvFile(fileName, False)
-        data_info = frame.dataInfo(data)
-        data.setSession(frame.dat)
-        frame.dat.sdoeSimList.append(data)
-
-        res = Results()
-        res.sdoe_add_result(data)
-        frame.dat.sdoeFilterResultsList.append(res)
-        shutil.copy(fileName, frame.dname)
-
-        # Update table
-        frame.updateSimTable()
-        frame.dataTabs.setEnabled(True)
+        ):
+            qtbot.click(button="Load Existing\n Set")
+        qtbot.click(button="Continue")
+        qtbot.click(button="Open SDoE Dialog")
+        qtbot.wait_until(has_dialog, timeout=10_000)

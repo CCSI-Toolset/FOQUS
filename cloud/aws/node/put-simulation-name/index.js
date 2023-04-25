@@ -66,7 +66,9 @@ exports.handler = function(event, context, callback) {
       config_filename = "aspenplus_sinter.json";
     } else if (app == "fake-job") {
       config_filename = "fake-job.json";
-    }else {
+    } else if (app == "foqus-user-plugin") {
+      config_filename = "foqus-user-plugin.json";
+    } else {
         done(new Error(`Unsupported application "${event.body}"`));
         return;
     }

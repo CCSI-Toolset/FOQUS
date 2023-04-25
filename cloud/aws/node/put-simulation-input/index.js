@@ -121,6 +121,7 @@ exports.handler = function(event, context, callback) {
         return;
       }
       if (obj.filetype == "sinterconfig" && obj.aspenfile != undefined) {
+        log(`configuration - sinterconfig v0.1:  model=${obj.aspenfile}`);
         if (obj.aspenfile.endsWith('.acmf'))
           params.Key = user_name + "/" + name + "/acm_sinter.json";
         else if (obj.aspenfile.endsWith('.bkp'))
@@ -132,6 +133,7 @@ exports.handler = function(event, context, callback) {
         }
       }
       else if (obj.filetype == "sinterconfig" && obj["config-version"] == "0.2") {
+        log(`configuration - sinterconfig v0.2:  model=${obj.model.file} application=${app_name}`);
         if (obj.model.file.endsWith('.acmf'))
           params.Key = user_name + "/" + name + "/acm_sinter.json";
         else if (obj.model.file.endsWith('.bkp'))
@@ -143,7 +145,12 @@ exports.handler = function(event, context, callback) {
         }
       }
       else if (obj.filetype == "sinterconfig" && obj["filetype-version"] == "0.3") {
-        if (obj.model.file.endsWith('.acmf') && obj.application.name == "Aspen Custom Modeler")
+        var app_name = obj.application.name;
+        app_name = app_name.toLowerCase();
+        log(`configuration - sinterconfig v0.3:  model=${obj.model.file} application=${app_name}`);
+        if (obj.model.file.endsWith('.py') && app_name == "foqus-user-plugin")
+          params.Key = user_name + "/" + name + "/" + app_name + ".json";
+        else if (obj.model.file.endsWith('.acmf') && app_name == "aspen custom modeler")
           params.Key = user_name + "/" + name + "/acm_sinter.json";
         else if (obj.model.file.endsWith('.bkp'))
           params.Key = user_name + "/" + name + "/aspenplus_sinter.json";
@@ -154,6 +161,7 @@ exports.handler = function(event, context, callback) {
         }
       }
       else if (obj.filetype == "FOQUS_Session" || obj.Type == "FOQUS_Session") {
+        log(`configuration - foqus session:  filetype=${obj.filetype} application=${obj.Type}`);
         params.Key = user_name + "/" + name + "/session.foqus";
       }
       else {

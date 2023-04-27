@@ -74,7 +74,7 @@ def main_window(foqus_session, main_window_params):
         showOpt=False,
         showOuu=True,
         showBasicData=False,
-        showSDOE=False,
+        showSDOE=True,
         ts=False,
     )
     print(f"main_win={main_win}")

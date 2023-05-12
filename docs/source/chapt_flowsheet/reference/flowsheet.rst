@@ -246,8 +246,8 @@ The columns in the input variable list are:
 -  **Param2** is the second parameter of a parametric distribution the
    exact meaning depends on the selected distribution.
 
-The minimum and maximum values for are not enforced when running
-simulations are not enforced. A value can be given outside the range.
+The minimum and maximum values are not enforced when running
+simulations. A value can be given outside the range.
 Optimization and UQ features make use of these values to set upper and
 lower bounds on decision variables or sampling. The distribution
 information is used when setting up sampling for UQ. In the future, this

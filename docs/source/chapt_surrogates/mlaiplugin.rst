@@ -261,8 +261,8 @@ and the files *FOQUS.examples.other_files.ML_AI_Plugin.TensorFlow_2-10_Models.me
 and *FOQUS.examples.other_files.ML_AI_Plugin.mea_column_model.py* should be copied to
 *FOQUS-wd.user_ml_ai_models*. For users with older versions of TensorFlow who wish to
 test the exampleodels, some model files are provided in versions 2.3 and 2.7 as well as
-2.10. Generally, TensorFlows backwards compatible for models two versions back (e.g.
-loading models trained in version.3 using version 2.5, or loading models trained in
+2.10. Generally, TensorFlow is backwards compatible for models two versions back (i.e.,
+loading models trained in version 2.3 using version 2.5, or loading models trained in
 version 2.8 using version 2.10 is supported).
 
 To distinguish between H5 models and json models with H5 weight files, FOQUS requires the

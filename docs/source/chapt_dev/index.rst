@@ -99,7 +99,8 @@ Building the Docs locally
 To build a local copy of the documentation::
 
     cd FOQUS/docs
-    make clean html
+    make clean
+    make html
 
 Then open the file ``FOQUS/docs/build/html/index.html`` to view the results.
 

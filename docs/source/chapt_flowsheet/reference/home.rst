@@ -18,7 +18,7 @@ FOQUS flowsheet information and settings are stored in a session. The session sc
 
   A. **Session** displays the Session window, which contains a description of the session that is currently open. **Session** has a drop-down menu that displays the Session menu.
   B. **Flowsheet** displays the meta-flowsheet editing window.
-  C. **Uncertainty** displays the interface for PSAUDE and UQ visualization.
+  C. **Uncertainty** displays the interface for PSUADE and UQ visualization.
   D. **Optimization** displays the simulation-based optimization interface.
   E. **OUU** displays the optimization under uncertainty interface.
   F. **Surrogates** displays the surrogate model generation window.

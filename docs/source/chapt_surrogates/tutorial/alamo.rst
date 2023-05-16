@@ -51,7 +51,7 @@ Flowsheet Setup
    Flowsheet Setup
 
 The **Node Editor** displays (Figure :ref:`fig.tut.sur.nodeEdit.Input`).
-Thefirst step to setting up the node for this problem is to add input
+The first step to setting up the node for this problem is to add input
 and output variables to the node.
 
 6. If the input variables table is not displayed as shown in Figure
@@ -107,7 +107,7 @@ Creating Initial Samples
 
 There are two ways to start an ALAMO run: (1) generate a set of initial
 data, (2) use ALAMO’s adaptive sampling with no initial data and let
-ALAMO generates its own samples. Adaptive sampling can be used with
+ALAMO generate its own samples. Adaptive sampling can be used with
 initial data to generate more points if needed. In this case, initial
 data is provided and adaptive sampling is used.
 
@@ -397,9 +397,9 @@ included in Table :ref:`tutorial.alamo.table`.
    |                                   | combinations of powers to be      |
    |                                   | considered as basis functions.    |
    +-----------------------------------+-----------------------------------+
-   |                                   | Use or not of exp, log, sin, and  |
-   |                                   | cos functions as basis functions  |
-   |                                   | in the model.                     |
+   | EXPFCNS, LOGFCNS, SINFCNS,        | Use or not of exp, log, sin, cos, |
+   | COSFCNS, LINFCNS, CONSTANT        | linear, and constant functions as |
+   |                                   | basis functions in the model.     |
    +-----------------------------------+-----------------------------------+
    | RATIOPOWER                        | Vector of ratio combinations of   |
    |                                   | powers to be considered in the    |
@@ -473,13 +473,13 @@ included in Table :ref:`tutorial.alamo.table`.
    |                                   | problems. This must be a          |
    |                                   | nonnegative scalar.               |
    +-----------------------------------+-----------------------------------+
-   | Linear error                      | If true, a linear objective       |
+   | LINEARERROR                       | If true, a linear objective       |
    |                                   | function is used when solving the |
    |                                   | mixed integer optimization        |
    |                                   | problems; otherwise, a quadratic  |
    |                                   | objective function is used.       |
    +-----------------------------------+-----------------------------------+
-   |                                   | Specify whether constraint        |
+   | CONREG                            | Specify whether constraint        |
    |                                   | regression is used or not, if     |
    |                                   | true bounds on output variables   |
    |                                   | are enforced.                     |

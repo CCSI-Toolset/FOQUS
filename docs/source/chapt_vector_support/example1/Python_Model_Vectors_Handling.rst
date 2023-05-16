@@ -162,7 +162,7 @@ Note that in order to specify different bounds and values for each vector
 element, the user can provide a list with values specific to the elements.
 For this example, if the node needs to be simulated for different values of
 each vector element, when prompted for the values, the user can enter the list
-[val_0, val_1, .. val_5] in the interface, where val_0, val_1.. val_5 are
+[val_0, val_1, ..., val_5] in the interface, where val_0, val_1, ..., val_5 are
 distinctly specified values for each element by the user.
 
 4. The output vector variables are constructed in a similar manner, as the

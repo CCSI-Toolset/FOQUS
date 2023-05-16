@@ -67,21 +67,13 @@ However, if the user is interested, the finished flowsheet is available in: **ex
 
    a. Click **+** above the **Input Variables** table.
 
-   b. Enter x1 in the variable **Name** dialog box.
+   b. Enter x1 in the variable **Name** dialog box. Enter 1 for the variable
+      size, -2 for the min, 2 for the max, and 1 for the value.
 
    c. Click **+** above the **Input Variables** table.
 
-   d. Enter x2 in the variable **Name** dialog box.
-
-   e. Enter -2 and 2 for the **Min** and **Max** of x1 in the **Input
-      Variables** table.
-
-   f. Enter -1 and 4 for the **Min** and **Max** of x2 in the **Input
-      Variables** table.
-
-   g. Enter 1 for the value of x1.
-
-   h. Enter 4 for the value of x2.
+   d. Enter x2 in the variable **Name** dialog box. Enter 1 for the variable
+      size, -1 for the min, 4 for the max, and 4 for the value.
 
 .. figure:: ../figs/simple_flow_1.svg
    :alt: Flowsheet, Input Variables

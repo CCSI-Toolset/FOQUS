@@ -1,3 +1,17 @@
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#################################################################################
 import contextlib
 from dataclasses import dataclass, field, asdict, is_dataclass
 import enum
@@ -1677,6 +1691,29 @@ class QtBot(pytestqt_plugin.QtBot):
                 pass
             dialog_info_for_checking: _DialogProxy = blocker.args[0]
             yield dialog_info_for_checking
+
+    @contextlib.contextmanager
+    def file_selection(
+        self,
+        path: Path,
+        target: t.Tuple[type, str] = (W.QFileDialog, "getOpenFileName"),
+    ):
+        def _file_dialog_replacement(
+            parent: W.QWidget,
+            caption: str = "",
+            dir: str = "",
+            filter: str = "",
+            selectedFilter: str = "",
+            **kwargs,
+        ) -> t.Tuple[str, str]:
+            return str(path), selectedFilter
+
+        mp = MonkeyPatch()
+        try:
+            mp.setattr(*target, _file_dialog_replacement)
+            yield path
+        finally:
+            mp.undo()
 
     def cleanup(self):
         self._focus_stack.clear()

@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 """session.py
 
 * Some functions to setup FOQUS environment
@@ -771,7 +770,10 @@ class generalSettings:
         self.working_dir = ""
         self.new_working_dir = ""
         self.simsinter_path = "C:/Program Files (x86)/CCSI/SimSinter"
-        self.psuade_path = "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
+        self.psuade_path = (
+            shutil.which("psuade")
+            or "C:/Program Files (x86)/psuade_project 1.7.5/bin/psuade.exe"
+        )
         self.turbConfig = "turbine.cfg"
         self.turbConfigCluster = "turbine_aws.cfg"
         self.alamo_path = ""

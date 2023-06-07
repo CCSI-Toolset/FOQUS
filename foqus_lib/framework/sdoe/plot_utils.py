@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 import numpy as np
@@ -25,7 +24,7 @@ from .nusf import scale_y
 alpha = {"design": 1, "hist": 1, "cand": 0.5, "imp": 0.5}
 area = {"design": 45, "hist": 20, "cand": 20, "imp": 25}
 fc = {
-    "design": (0, 0, 1, alpha["design"]),
+    "design": (0, 1, 1, alpha["design"]),
     "hist": (1, 0, 1, alpha["hist"]),
     "cand": (0.2, 0.2, 0.2, alpha["cand"]),
     "imp": (1, 0, 0, alpha["imp"]),
@@ -46,7 +45,7 @@ def plot_hist(
     design=False,
 ):
     if cand_rgba is not None:
-        fc["cand"] = cand_rgba
+        fc["design"] = cand_rgba
 
     ns, bins = np.histogram(xs, nbins)
     width = bins[1] - bins[0]
@@ -173,7 +172,7 @@ def plot_candidates(
         design = False
 
     if cand_rgba is not None:
-        fc["cand"] = cand_rgba
+        fc["design"] = cand_rgba
 
     if wcol is not None:
         cand_vals = cand[wcol].values
@@ -272,6 +271,8 @@ def plot_candidates(
                             df[xname],
                             s=area["design"],
                             facecolor=fc["design"],
+                            edgecolor="black",
+                            zorder=10,
                         )
                     else:
                         ax.scatter(
@@ -279,12 +280,15 @@ def plot_candidates(
                             df[xname][0:-nImpPts],
                             s=area["design"],
                             facecolor=fc["design"],
+                            edgecolor="black",
+                            zorder=10,
                         )
                         ax.scatter(
                             df[yname][-nImpPts:],
                             df[xname][-nImpPts:],
                             s=area["imp"],
                             facecolor=fc["imp"],
+                            zorder=5,
                         )
 
                     ax.scatter(
@@ -311,6 +315,7 @@ def plot_candidates(
                             df[xname][-nImpPts:],
                             s=area["imp"],
                             facecolor=fc["imp"],
+                            zorder=5,
                         )
 
                 if hf is not None:
@@ -320,6 +325,7 @@ def plot_candidates(
                         s=area["hist"],
                         facecolor=fc["hist"],
                         alpha=alpha["hist"],
+                        zorder=7.5,
                     )
 
                 # Setting axis limits to min and max values of the candidate set plus some padding
@@ -356,14 +362,14 @@ def plot_candidates(
 
     labels = [scatter_label]
     if hf is not None:
-        labels.append("Previous data")
+        labels.append("Previous data points")
     labels.append(scatter_label)
     if nImpPts > 0:
-        labels.append("Imputed")
+        labels.append("Imputed points")
     if cand is not None:
         labels.append("Candidate data points")
     if hf is not None:
-        labels.append("Previous data")
+        labels.append("Previous data points")
     leg = fig.legend(labels=labels, loc="lower left", fontsize="xx-large")
     for lh in leg.legendHandles:
         lh.set_alpha(1)
@@ -450,7 +456,12 @@ def plot(
     plt.show()
 
 
-def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
+def plot_pareto(pf, results, cand, hname):  # Plot Pareto front with hovering labels
+    if hname:
+        hf = load(hname)
+    else:
+        hf = None
+
     def onpick(event):  # Define nested function onpick
         if event.artist != points:
             return True
@@ -460,8 +471,8 @@ def plot_pareto(pf, results, cand):  # Plot Pareto front with hovering labels
             return True
 
         for _subplotnum, dataind in enumerate(event.ind):
-            df = results[dataind + 1]["des"]
-            hf = None
+            df = results["des"][dataind + 1]
+
             show = None
             title = "Design %s, Input Distance: %s, " "Response Distance: %s" % (
                 dataind + 1,

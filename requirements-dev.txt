@@ -12,6 +12,7 @@ pytest
 coverage
 pytest-cov
 black==22.3.0
+addheader==0.3.2
 
 # pytest-qt-extras
 pytest-qt==4.2.*
@@ -19,13 +20,17 @@ python-slugify
 oyaml
 # singledispatchmethod needed for < 3.8
 singledispatchmethod;python_version<"3.8"
+hypothesis 
 
 sphinx
 sphinx_rtd_theme
 
 # Remove this when botocore (pulled in by boto3 in setup.py) relaxes their
 # docutils<0.16,>=0.10 constraint
-docutils<0.16
+docutils
+
+# manage pre-commit hooks
+pre-commit
 
 # Pick up requirements from setup.py
 -e .

@@ -37,7 +37,7 @@ jobs:
           - '3.9.0'
         include:
           - os: macos
-            os-version: macos-10.15
+            os-version: macos-12
           - os: linux
             os-version: ubuntu-20.04
           - os: win64

@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 """flowsheet.py
 * The AWS Cloud FOQUS service to start FOQUS
 
@@ -947,6 +946,16 @@ class FlowsheetControl:
             self._delete_sqs_job()
             try:
                 self.run_foqus(db, job_desc)
+            except foqusException as ex:
+                _log.exception("run_foqus foqusException")
+                self.increment_metric_job_finished(event="error.job.run")
+                msg = traceback.format_exc()
+                db.job_change_status(job_desc, "error", message=msg)
+                db.add_message(
+                    "job failed in setup: %r" % (ex), job_desc["Id"], exception=msg
+                )
+                self.close()
+                raise
             except Exception as ex:
                 _log.exception("run_foqus Exception")
                 self.increment_metric_job_finished(event="error.job.run")

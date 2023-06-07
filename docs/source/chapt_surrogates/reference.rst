@@ -15,7 +15,7 @@ The following surrogate modeling tools are currently available:
 
 -  ACOSSO – Adaptive COmponent Selection and Shrinkage Operator is a
    regularization method for simultaneous model fitting and variable
-   selection based in nonparametric regression methods. ACCOSSO is
+   selection based in nonparametric regression methods. ACOSSO is
    suitable for approximating models with many inputs and no sharp
    changes.
 

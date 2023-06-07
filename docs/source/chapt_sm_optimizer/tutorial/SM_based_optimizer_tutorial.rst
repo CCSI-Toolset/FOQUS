@@ -7,13 +7,13 @@ Flash Optimization
 **Problem Statement**: An Ethanol-CO2 mixture at 50 mol %, enters a flash column at 100 kg/hr, 25 0C and 100 bars.
 The optimum flash column pressure needs to be determined such that maximum revenue can be obtained based on the CO2
 obtained in the vapor stream, and Ethanol obtained in the liquid stream. The optimization is subject to a purity constraint,
-specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The system is shown in Figure 2.
+specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The system is shown in Figure 1.
 
 .. figure:: ../figs/flash_system.png
-   :alt: Figure 2: Ethanol-CO2 Flash System
+   :alt: Figure 1: Ethanol-CO2 Flash System
    :name: fig.flash.system
 
-   Figure 2: Ethanol-CO2 Flash System
+   Figure 1: Ethanol-CO2 Flash System
 
 **Instructions**
 
@@ -25,29 +25,29 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
 
     .. note:: |examples_reminder_text|
 
-    Figure 3 and 4 represent the FOQUS node with loaded simulation. Finally, run the flowsheet simulation.
+    Figures 2 and 3 represent the FOQUS node with loaded simulation. Finally, run the flowsheet simulation.
 
     .. figure:: ../figs/flash_input_variables.png
-       :alt: Figure 3: Input variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
+       :alt: Figure 2: Input variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
        :name: fig.flash.input.variables
 
-       Figure 3: Input variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
+       Figure 2: Input variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
 
     .. figure:: ../figs/flash_output_variables.png
-       :alt: Figure 4: Output variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
+       :alt: Figure 3: Output variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
        :name: fig.flash.output.variables
 
-       Figure 4: Output variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
+       Figure 3: Output variables of the Ethanol-CO2 Flash Simulation Node in FOQUS
 
     Step 1.2 - 	Generate a simulation ensemble by selecting ‘FLASH.PRES’ as a variable with bounds 1-10 bar
     (in this case, keep the other variables fixed). Select Latin Hypercube Sampling with 20 points, and after the samples are generated,
-    launch the simulations. Figure 5 represents the simulation ensemble generation.
+    launch the simulations. Figure 4 represents the simulation ensemble generation.
 
     .. figure:: ../figs/sim_ensemble_generation.png
-       :alt: Figure 5: Simulation ensemble generation
+       :alt: Figure 4: Simulation ensemble generation
        :name: fig.sim.ensemble.generation
 
-       Figure 5: Simulation ensemble generation
+       Figure 4: Simulation ensemble generation
 
     For more details on this, refer to the documentation: https://foqus.readthedocs.io/en/latest/chapt_uq/tutorial/sim.html
 
@@ -55,68 +55,68 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
 
     Step 2.1 - 	Select Data Set: In the surrogate modeling module, select ALAMO as the tool and under ‘Data’ tab, ensure that the dataset
     corresponds to the correct UQ Simulation Ensemble. If there are multiple data sets, add filters to select the appropriate set.
-    Figure 6 represents the data selection in the surrogates tab.
+    Figure 5 represents the data selection in the surrogates tab.
 
     .. figure:: ../figs/sm_generation_data.png
-       :alt: Figure 6: Select data for surrogate model generation
+       :alt: Figure 5: Select data for surrogate model generation
        :name: fig.sm.generation.data
 
-       Figure 6: Select data for surrogate model generation
+       Figure 5: Select data for surrogate model generation
 
     Note: If a particular simulation ensemble needs to be used from the UQ module for generating the surrogate model, add a data filter,
     referring to the instructions in the documentation:
     https://foqus.readthedocs.io/en/latest/chapt_uq/tutorial/data.html
 
     Step 2.2 - 	ALAMO input/output variables: Under ‘Variables’ tab, select ‘FLASH.PRES’ as the surrogate model input variable, and
-    ‘FLASH.CARBOLIQ’, ‘FLASH.CARBOVAP’, ‘FLASH.ETHANLIQ’, ‘FLASH.ETHANVAP’ as the surrogate model output variables. Figure 7 represents
+    ‘FLASH.CARBOLIQ’, ‘FLASH.CARBOVAP’, ‘FLASH.ETHANLIQ’, ‘FLASH.ETHANVAP’ as the surrogate model output variables. Figure 6 represents
     surrogate model variables selection.
 
     .. figure:: ../figs/sm_var_select.png
-       :alt: Figure 7: Select variables for surrogate model generation
+       :alt: Figure 6: Select variables for surrogate model generation
        :name: fig.sm.var.select
 
-       Figure 7: Select variables for surrogate model generation
+       Figure 6: Select variables for surrogate model generation
 
     Step 2.3 - 	ALAMO Settings: Under ‘Method Settings’, to select the data set to be used to develop the surrogate models,
     an Initial Data Filter can be applied to the full data set, if there are no filters, simply select “all”. In this case, we select “uq2” filter.
-    In Figure 8 and 9, the settings 3 to 9 values are default in FOQUS. The settings 10 to 22 have been selected to explore several basis functions
+    In Figures 7 and 8, the settings 3 to 9 values are default in FOQUS. The settings 10 to 22 have been selected to explore several basis functions
     and obtain the best model possible, while minimizing the size of the model (selecting Bayesian Inference Criteria as the modeler). The rest of the
     settings are kept as their default values. For more information about the best settings to be used in ALAMO, please see the following documentation:
     https://foqus.readthedocs.io/en/latest/chapt_surrogates/tutorial/alamo.html
 
     .. figure:: ../figs/alamo_settings.png
-       :alt: Figure 8: Select appropriate method settings for surrogate model generation
+       :alt: Figure 7: Select appropriate method settings for surrogate model generation
        :name: fig.alamo.settings
 
-       Figure 8: Select appropriate method settings for surrogate model generation
+       Figure 7: Select appropriate method settings for surrogate model generation
 
     .. figure:: ../figs/alamo_settings_cont.png
-        :alt: Figure 9: Select appropriate method settings for surrogate model generation continued
+        :alt: Figure 8: Select appropriate method settings for surrogate model generation continued
         :name: fig.alamo.settings.cont
 
-        Figure 9: Select appropriate method settings for surrogate model generation continued
+        Figure 8: Select appropriate method settings for surrogate model generation continued
 
     Note that setting number 42 is the name of the python file that gets created after ALAMO runs. It contains the Pyomo model for optimization,
     based on the ALAMO generated surrogate model. This python file is accessed by the SM based optimizer.
 
-    Step 2.4 - Under ‘Execution’, run ALAMO, as shown in figure 10:
+    Step 2.4 - Under ‘Execution’, run ALAMO, as shown in Figure 9:
 
     .. figure:: ../figs/run_alamo.png
-       :alt: Figure 10: Run ALAMO to generate surrogate model
+       :alt: Figure 9: Run ALAMO to generate surrogate model
        :name: fig.run.alamo
 
-       Figure 10: Run ALAMO to generate surrogate model
+       Figure 9: Run ALAMO to generate surrogate model
 
 **Step 3 - 	Mathematical Optimization:**
 
     Step 3.1 - 	Problem Setup - select optimization variables: In the Optimization module, select ‘FLASH.PRES’ as the decision variable.
-    Keep the other input variables fixed, as shown in figure 11.
+    Keep the other input variables fixed, as shown in Figure 10.
 
     .. figure:: ../figs/select_optim_vars.png
-       :alt: Figure 11: Select optimization variables
+       :alt: Figure 10: Select optimization variables
        :name: fig.select.optim.vars
 
-       Figure 11: Select optimization variables
+       Figure 10: Select optimization variables
 
     Step 3.2 - 	Problem Setup - objective function and additional flowsheet constraints declaration: The objective is to maximize the separation
     process, therefore, we assume that the selling price of the vapor and liquid are $5/kg and $30/kg, respectively. Additionally, the CO2 vapor
@@ -125,20 +125,20 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
     Under the inequality constraints section/box expression, enter ``-f.FLASH.CARBOVAP/(f.FLASH.CARBOVAP + f.FLASH.ETHANVAP) + 0.985``
 
     .. figure:: ../figs/obj_func_constraint.png
-       :alt: Figure 12: Add objective function and constraints to the solver
+       :alt: Figure 11: Add objective function and constraints to the solver
        :name: fig.obj.func.constraint
 
-       Figure 12: Add objective function and constraints to the solver
+       Figure 11: Add objective function and constraints to the solver
 
     Step 3.3 - 	Optimization solver settings: Under the solver tab, select “SM_Optimizer”
 
     .. figure:: ../figs/sm_optimizer_options.png
-       :alt: Figure 13: Select appropriate solver options
+       :alt: Figure 12: Select appropriate solver options
        :name: fig.sm.optimizer.options
 
-       Figure 13: Select appropriate solver options
+       Figure 12: Select appropriate solver options
 
-    Figure 13 shows the solver options. solver options 1 to 11 are algorithm specific.
+    Figure 12 shows the solver options. solver options 1 to 11 are algorithm specific.
 
     Solver option 1 selects the source of mathematical optimization solver. It can either be “gams” or “pyomo”. It is preferred to keep it at the default setting, “pyomo”.
 
@@ -172,13 +172,13 @@ specifying that the CO2 mass % in the vapor phase should be at least 98.5 %. The
 
     Step 3.4	Under the Run tab, click on ‘start’.
     The main details for each iteration get displayed on the message window as the solver runs, the details are divided by section (i.e. step 3, step 4, step 5, etc.).
-    After the final iteration, once the optimization is successful, the results get displayed as shown in the figure 14 below:
+    After the final iteration, once the optimization is successful, the results get displayed as shown in the Figure 13 below:
 
     .. figure:: ../figs/sm_optim_run.png
-       :alt: Figure 14: Start the optimization and check results in the message window
+       :alt: Figure 13: Start the optimization and check results in the message window
        :name: fig.sm.optim.run
 
-       Figure 14: Start the optimization and check results in the message window
+       Figure 13: Start the optimization and check results in the message window
 
    **Result Analysis:**
 
@@ -197,13 +197,13 @@ MEA Carbon Capture System Optimization
 --------------------------------------
 
 .. figure:: ../figs/mea_ccs.png
-   :alt: Figure 15: MEA Carbon Capture System
+   :alt: Figure 14: MEA Carbon Capture System
    :name: fig.mea.ccs
 
-   Figure 15: MEA Carbon Capture System
+   Figure 14: MEA Carbon Capture System
 
    **Problem Statement:**
-   An MEA solvent based carbon capture system is set up in Aspen Plus v10, as shown in figure 15, with a design specification of carbon capture rate 90 %.
+   An MEA solvent based carbon capture system is set up in Aspen Plus v10, as shown in Figure 14, with a design specification of carbon capture rate 90 %.
    The flue gas flowrate to the absorber is 2266.1 kg/hr with 17.314 % by mass CO2. It is sought to minimize the specific reboiler duty associated with the regenerator,
    by varying the CO2 loading in the lean solvent entering the absorber.
 

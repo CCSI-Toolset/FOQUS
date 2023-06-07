@@ -12,9 +12,9 @@ A step-by-step guide for using the SDOE module to create an Input-Response Space
 1.
 In the **Design Setup** box, click on the **Load Existing Set** button to select the file(s) to be used for the construction of the design. Several files can be selected and added to the box listing the chosen files.
 
-.. figure:: figs/irsfb-0101-page1start.png
+.. figure:: figs/5-SS1.png
    :alt: Home Screen IRSF
-   :name: fig.irsfb-home
+   :name: fig.5-SS1
    
    SDOE Module Home Screen
 
@@ -40,9 +40,9 @@ Both the **Candidate** and **Previous Data** files should be .csv files that hav
 3. 
 Click on the **View** button to open the **Preview Inputs** pop-up window, to see the list of columns contained in each file. The left-hand side displays the first few rows of input combinations and responses from the file. Select the columns that you wish to see graphically in the right-hand box, and then click **Plot SDOE** to see a scatterplot matrix of the data.
 
-.. figure:: figs/irsfb-0102a-candsetpreview.png
+.. figure:: figs/5-SS3.png
    :alt: View Candidate Set
-   :name: fig.irsfb-candsetview
+   :name: fig.5-SS3
    
    Viewing Candidate Set
 
@@ -57,9 +57,9 @@ If more than one **Candidate** file was specified, then the **aggregate_candidat
 To view the aggregated files for both the candidate and previous data files (if provided), click View, which lies in the right-most column of the Output Directory row. Once selected, this has a similar interface as that shown in step 3. If both types of files have been provided, a single plot of the combined candidate and previous data files will be displayed. In this plot, the points representing the candidate locations and points of already collected data from the previous data file are shown in different colors. 
 
 
-.. figure:: figs/irsfb-0102b-page1after.png
+.. figure:: figs/5-SS4.png
    :alt: Home Page Design Construction Window
-   :name: fig.irsfb-page1after
+   :name: fig.5-SS4
    
    SDOE Design Construction Window
 
@@ -69,9 +69,9 @@ To view the aggregated files for both the candidate and previous data files (if 
 6. 
 Once the data have been verified as the desired set to be used for the design construction, click on **Input-Response Space Filling** from the **Design Method** drop-down menu in the **Design Construction** window. This opens the second SDOE window, which allows for specific design choices to be made.
 
-.. figure:: figs/irsfb-0103-page2full.png
+.. figure:: figs/5-SS5.png
    :alt: Second Page Design Choices
-   :name: fig.irsfb-page2full
+   :name: fig.5-SS5
    
    SDOE Second Page
 
@@ -94,18 +94,18 @@ Finally, the **Min** and **Max** columns in the box allow the range of values fo
 10. 
 Once the design choices have been made, click on the **Estimate Runtime** button. This generates a small number of iterations of the search algorithm to calibrate the timing for constructing and evaluating the designs. The time taken to generate a design is a function of the size of the candidate set, the size of the design, as well as the dimensions of the input space and response space.
 
-.. figure:: figs/irsfb-0104a-numrandstarts.png
+.. figure:: figs/5-SS6.png
    :alt: SDOE Progress Box
-   :name: fig.irsfb-numrandstarts
+   :name: fig.5-SS6
    
    Number of Random Starts
 
 .. note::
    The number of random starts looks very different from what was done with the Uniform Space Filling Design. In that case, the number of random starts was offered in powers of 10. In this case, similar to Non-Uniform Space-Filling, since a more sophisticated search algorithm is being used, each random start takes longer to run, but generally many fewer starts are needed. There is a set of choices for the number of random starts, which ranges from 5 to 500. Producing a sample design for demonstration purposes with a small number of random starts (say 5 to 30) should work adequately, but recall that the choice of **Number of Random Starts** involves a trade-off between the quality of the design generated and the time to generate the design. The larger the chosen number of random starts, the better the design is likely to be. However, there are diminishing gains for increasingly large numbers of random starts. If running the actual experiment is expensive, it is generally recommended to choose as large a number of random starts as possible for the available time frame, to maximize the quality of the design generated.
 
-.. figure:: figs/irsfb-0104b-nrs-dropdown-menu.png
+.. figure:: figs/5-SS7.png
    :alt: NRS Dropdown Menu
-   :name: fig.irsfb-nrs-dropdown-menu
+   :name: fig.5-SS7
    
    Choosing the Number of Random Starts
 
@@ -115,9 +115,9 @@ Once the slider has been set to the desired **Number of Random Starts**, click o
 12. 
 When the SDOE module has completed the design creation process, the left window **Created Designs** will be populated with a single file containing all results. The column entries summarize the key features of the collection of designs, including **Design Size** (d, the number of runs in each of the created designs), **# of Random Starts** (n), **Runtime** (number of seconds needed to create the designs), **# of Designs** (the number of designs found on the Pareto front). Clicking the **View** button in the **Plot SDOE** column gives a view of the Pareto front, with options to examine each of the created designs individually.  
 
-.. figure:: figs/irsfb-0105-createddesigns-partial.png
+.. figure:: figs/5-SS8.png
    :alt: Partial View of Created Designs Window
-   :name: fig.irsfb-createddesigns-partial
+   :name: fig.5-SS8
    
    Created Designs Window
 
@@ -126,15 +126,15 @@ To view each of the designs on the Pareto front, click **View**. The plot given 
 
 Click on any circle in the plot to see a pairwise scatterplot of that individual design. These created-design pairwise scatterplots are similar in characteristics to their counterparts for the candidate set. It is helpful to examine the plots to compare their properties to those sought by the experimenter. A final choice should be made based on what is needed for the goals of the study. 
 
-.. figure:: figs/irsfb-0106-paretofront.png
+.. figure:: figs/5-SS9.png
    :alt: Pareto Front Plot
-   :name: fig.irsfb-paretofront
+   :name: fig.5-SS9
    
    Viewing a Pareto Front
 
-.. figure:: figs/irsfb-0107b-bluedesign-middle.png
+.. figure:: figs/5-SS10.png
    :alt: Design Scatterplot Blue
-   :name: fig.irsfb-bluedesign-middle
+   :name: fig.5-SS10
    
    Viewing the Pairwise Scatterplot of a Created Design
 

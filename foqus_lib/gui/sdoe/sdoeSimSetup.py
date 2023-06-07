@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 import os
 import copy
 import tempfile
@@ -616,10 +615,10 @@ class sdoeSimSetup(_sdoeSimSetup, _SimSetupUI):
         # this should in any case result in a runtime error,
         # which suggests that this code is not executed
         dialog = sdoePreview(  # TODO pylint: disable=no-value-for-parameter
-            previewData, hname, dirname, nusf, scatterLabel, nImpPts, self
+            previewData, hname, dirname, usf, nusf, irsf, scatterLabel, nImpPts, self
         )
         dialog.show()
 
-    ### Return data
+    # Return data
     def getData(self):
         return self.runData

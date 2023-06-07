@@ -1,5 +1,5 @@
-###############################################################################
-# FOQUS Copyright (c) 2012 - 2021, by the software owners: Oak Ridge Institute
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
 # for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
 # Livermore National Security, LLC., The Regents of the University of
 # California, through Lawrence Berkeley National Laboratory, Battelle Memorial
@@ -11,8 +11,7 @@
 # Please see the file LICENSE.md for full copyright and license information,
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
-#
-###############################################################################
+#################################################################################
 import platform
 import os
 import logging
@@ -273,6 +272,8 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
         self.confirmRS_button.clicked.connect(self.confirmRS)
         self.restarts_comboBox.setMinimumContentsLength(4)
         self.runOdoe_button.clicked.connect(self.runOdoe)
+        # set in launchSdoe
+        self._analysis_dialog = None
 
     # Check if SDoE or ODoE
     def checkMode(self):
@@ -1052,11 +1053,11 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
 
         from .sdoeAnalysisDialog import sdoeAnalysisDialog
 
-        dialog = sdoeAnalysisDialog(
+        dialog = self._analysis_dialog = sdoeAnalysisDialog(
             candidateData, dname, analysis, historyData, type, self
         )
-        dialog.exec_()
-        dialog.deleteLater()
+        dialog.open()
+        # dialog.deleteLater()
 
     def initUQToolBox(self):
 

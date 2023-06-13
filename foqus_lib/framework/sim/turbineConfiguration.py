@@ -103,7 +103,11 @@ class TurbineInterfaceEx(foqusException):
             elif isinstance(e, socket.error):
                 if e.errno == 10054:
                     self.code = 3
-                elif hasattr(e, "reason") and hasattr(e.reason, "errno") and e.reason.errno == 10060:
+                elif (
+                    hasattr(e, "reason")
+                    and hasattr(e.reason, "errno")
+                    and e.reason.errno == 10060
+                ):
                     # connection timeout
                     self.code = 2
                 else:
@@ -381,7 +385,6 @@ class TurbineConfiguration:
             time.sleep(2)
             cid = db.consumer_id(proc.pid)
             if cid is not None:
-
                 break
         if cid is not None:
             self.consumers[nodeName] = ConsumerInfo(cid, 0, proc)

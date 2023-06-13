@@ -103,7 +103,7 @@ class TurbineInterfaceEx(foqusException):
             elif isinstance(e, socket.error):
                 if e.errno == 10054:
                     self.code = 3
-                elif e.reason.errno == 10060:
+                elif hasattr(e, "reason") and hasattr(e.reason, "errno") and e.reason.errno == 10060:
                     # connection timeout
                     self.code = 2
                 else:

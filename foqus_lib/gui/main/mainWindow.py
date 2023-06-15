@@ -1496,7 +1496,11 @@ class mainWindow(QMainWindow):
             QMessageBox.critical(
                 self,
                 "Error in " + hhmmss(int(flowsheet.solTime)) + "s",
-                "The simulation completed with an error " + str(err) + ", " + errText,
+                "The simulation completed with an error "
+                + str(err)
+                + ", "
+                + errText
+                + ".\n\nFor more details see the Log Viewer in Help.",
             )
             self.setStatus(
                 "Error Single Simulation in "

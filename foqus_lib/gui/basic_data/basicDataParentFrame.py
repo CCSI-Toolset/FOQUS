@@ -18,6 +18,8 @@ import os
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+
 mypath = os.path.dirname(__file__)
 _basicDataParentFrameUI, _basicDataParentFrame = uic.loadUiType(
     os.path.join(mypath, "basicDataParentFrame_UI.ui")
@@ -33,6 +35,14 @@ class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
         self.setupUi(self)
         self.dmfGroup.hide()
         self.solventFitFrame.init(parent=self)
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session,
+    ) -> basicDataParentFrame:
+    frame = basicDataParentFrame(parent=window)
+    return frame
 
 
 if __name__ == "__main__":

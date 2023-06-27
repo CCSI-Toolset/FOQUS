@@ -22,6 +22,8 @@ import os
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
 
+from foqus_lib.gui.mainWindow import mainWindow
+
 mypath = os.path.dirname(__file__)
 _dashFrameUI, _dashFrame = uic.loadUiType(os.path.join(mypath, "Dash_UI.ui"))
 
@@ -135,3 +137,15 @@ class dashFrame(_dashFrame, _dashFrameUI):
 
     def html(self):
         return self.textEdit.toHtml()
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session,
+    ) -> dashFrame:
+    frame = dashFrame(parent=window)
+    buttons = frame.buttonBox
+    buttons.rejected.connect(window.cancelSession)
+    buttons.button(QtWidgets.QDialogButtonBox.Help).clicked.connect(window.showHelp)
+
+    return frame

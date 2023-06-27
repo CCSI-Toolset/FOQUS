@@ -85,6 +85,18 @@ dist = setup(
             "foqus = foqus_lib.foqus:main",
             "foqusPSUADEClient = foqus_lib.gui.ouu.foqusPSUADEClient:main",
         ],
+        "foqus.plugins": [
+            "home = foqus_lib.gui.main.Dash",
+            "basicData = foqus_lib.gui.basic_data.basicDataParentFrame",
+            # "flow = flowsheetEditor",
+            # "uq = uqSetupFrame",
+            # "opt = optSetupFrame",
+            # "ouu = ouuSetupFrame",
+            # "sdoe = sdoeSetupFrame",
+            # "surrogate = surrogateFrame",
+            # "heatInt = heatIntegrationFrame",
+            # "settings = settingsFrame",
+        ]
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")

@@ -511,7 +511,7 @@ class SampleData(object):
         return self.inputData
 
     def setOutputData(self, data):
-        if data == []:
+        if not isinstance(data, numpy.ndarray) and data == []:
             self.outputData = []
             return
         temp = numpy.array(data, dtype=float, ndmin=2)

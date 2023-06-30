@@ -93,6 +93,7 @@ dist = setup(
         "cma",
         "matplotlib<3.6",
         "mlrose_hiive==2.1.3",
+        "joblib<1.3",  # CCSI-Toolset/FOQUS#1154
         "mplcursors",
         "numpy",
         "pandas",

@@ -45,7 +45,7 @@ def rank(fnames):
 
     # retrieve ranked list
     cand = load(fnames["cand"])
-    ranked_cand = cand.loc[reversed(permutation)]
+    ranked_cand = cand.loc[permutation]
 
     # save the output
     fname, ext = os.path.splitext(fnames["cand"])

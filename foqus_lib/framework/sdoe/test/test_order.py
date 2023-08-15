@@ -142,7 +142,7 @@ def test_rank():
     fnames = {"cand": str(cand_fn), "dmat": str(dmat_fn)}
 
     # Make the actual call
-    fname_ranked = order.rank(fnames, ga_max_attempts=5)
+    fname_ranked = order.rank(fnames)
 
     # Ranked results as a dataframe
     ret_ranked_df = df_utils.load(fname_ranked)

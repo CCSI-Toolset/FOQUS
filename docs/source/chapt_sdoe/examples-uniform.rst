@@ -9,7 +9,7 @@ For this first example, the goal is to construct a simple space-filling design w
    :alt: Home Screen
    :name: fig.6-SS1
    
-   Ex 1 Ensemble Selection
+   Ex 1 Design Setup
    
 2. Next, by selecting **View** and then **Plot** it is possible to see the grid of points that will be used as the candidate points. In this case, the range for each of the inputs, X1 and X2, has been chosen to be between -1 and 1.
 
@@ -91,65 +91,65 @@ In this example, we consider a more realistic scenario of a sequential design of
 
 1. After selecting the **SDOE** tab in FOQUS, click on **Load Existing Set** and select the candidate file, **Candidate Points 8perc**. 
 
-.. figure:: figs/Ex3_view1.png
+.. figure:: figs/8-SS1.png
    :alt: Home Screen
-   :name: fig.Ex3_view1
+   :name: fig.8-SS1
    
-   Ex 3 Ensemble Selection window
+   Ex 3 Design Setup window
    
 2. To see the range of each input and how the viable region of interest is captured with the candidate set, select **View** and then plot. In this case we have chosen to just show the 5 input factors in the pairwise scatterplot.
 
-.. figure:: figs/Ex3_candidate_plot.png
+.. figure:: figs/8-SS2.png
    :alt: Home Screen
-   :name: fig.Ex3_candidate_plot
+   :name: fig.8-SS2
    
    Ex 3 plot of viable input space as defined by candidate set
    
 3. After clicking **Continue** in the **Design Setup** box, and then **Uniform Space Filling** from the **Design Construction** box, the **Generate Design** box will appear on the right side of the second window. Here, select the options desired for the experiment to be run. For the illustrated figure, we selected a **Minimax** design with 3 potential sizes: 10, 11, 12. We specified that the column **__id** will be used as the Index, **G, lldg, CapturePerc, L, SteamFlow** will define the 5 factors to be used as inputs. We unclicked the **Include?** box for **CO2 captured** since we do not want to use it in the design construction, and also unclicked the **Include?** box for **Test No.** as we already have an index column with **__id**.
 
-.. figure:: figs/Ex3_setup.png
+.. figure:: figs/8-SS3.png
    :alt: Home Screen
-   :name: fig.Ex3_setup
+   :name: fig.8-SS3
    
-   Ex 3 set-up window for first stage
+   Ex 3 generate design window for first stage
    
 4. After clicking **Estimate Runtime** and selecting the number of random starts to be used, click **Run SDOE**. After the module has created the requested designs, they can be viewed and compared.
 
-.. figure:: figs/Ex3_created_designs.png
+.. figure:: figs/8-SS4.png
    :alt: Home Screen
-   :name: fig.Ex3_created_designs
+   :name: fig.8-SS4
    
    Ex 3 10,11,12 run designs created for first stage
    
 5. By clicking **View** and then **Plot**, the designs can be viewed. Suppose that the experimenter decides to use the 12 run design in the initial phase, then this would be the design that would be implemented and data collected for these 12 input combinations.
 
-.. figure:: figs/Ex3_12run_design.png
+.. figure:: figs/8-SS5.png
    :alt: Home Screen
-   :name: fig.Ex3_12run_design
+   :name: fig.8-SS5
    
    Ex 3 chosen experiment for first stage
    
 6. After these runs have been collected, the experimenter wants to collect additional runs. In this case, return to the first SDOE module window, and load in the candidate set (which can be changed to reflect any knowledge gained during the first phase, such as undesirable regions or new combinations to include). The completed experiment should also be included as a **Previous Data** file, by going to the **SDOE_files** folder and selecting the file containing the appropriate design. Note that all candidate file(s) and previous data file(s) used together must contain all the same column names, with the exception of the **__id** column since it is automatically created later on. 
 
-.. figure:: figs/Ex3_ensemble_w_history.png
+.. figure:: figs/8-SS6.png
    :alt: Home Screen
-   :name: fig.Ex3_ensemble_w_history
+   :name: fig.8-SS6
    
-   Ex 3 ensemble selection box for second stage
+   Ex 3 design setup box for second stage
    
 7. After clicking **Continue** in the **Design Setup** box, and then **Uniform Space Filling** from the **Design Construction** box, the **Generate Design** box will appear on the right side of the second window. Here, select the options desired for the experiment to be run. For the illustrated figure, we selected a **Minimax** design with a design size of 6 (to use the remaining available budget). We again specified that the column **__id** will be used as the Index, **G, lldg, CapturePerc, L, SteamFlow** will define the same 5 factors to be used as inputs, and we uncheck the unneeded columns **Test No.** and **CO2 captured**. 
 
-.. figure:: figs/Ex3_setup_round2.png
+.. figure:: figs/8-SS7.png
    :alt: Home Screen
-   :name: fig.Ex3_setup_round2
+   :name: fig.8-SS7
    
-   Ex 3 setup box for second stage
+   Ex 3 generate design box for second stage
    
 8. After clicking **Estimate Runtime** and selecting the number of random starts to be used, click **Run SDOE**. After the module has created the requested design, it can be viewed. After selecting **View** and then **Plot**, the experimenter can see the new design with the previous data runs included. This provides a good plot to allow the complete sequence of two experiments to be examined as a combined set of runs. Note that the first and second stages are shown in different colors. The first stage is shown in pink while the second is shown in blue. Candidate points not part of either stage are in gray. 
 
-.. figure:: figs/Ex3_6run_round2.png
+.. figure:: figs/8-SS8.png
    :alt: Home Screen
-   :name: fig.Ex3_6run_round2
+   :name: fig.8-SS8
    
-   Ex 3 setup box for second stage  
+   Ex 3 chosen experiment for second stage  
 

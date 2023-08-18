@@ -3,7 +3,7 @@ Example USF-1: Constructing Uniform Space Filling minimax and maximin designs fo
 
 For this first example, the goal is to construct a simple space-filling design with between 8 and 10 runs in a 2-dimensional space based on a regular unconstrained square region populated with a grid of candidate points. 
 
-1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load from File**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. 
+1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load Existing Set**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. 
 
 .. figure:: figs/Ex1_1_load_candidate.png
    :alt: Home Screen
@@ -19,7 +19,7 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Candidate Grid
    
-3. Next, click on **Continue** to advance to the **Ensemble Aggregation** Window, and then select **Uniform Space Filling** and click on **Open SDoE Dialog** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, uncheck the column called **Label**. This will mean that the design is not constructed using this as an input.  There should be an **_id** column automatically created containing unique identifiers to identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
+3. Next, click on **Continue** to advance to the **Design Construction** Window, and then select **Uniform Space Filling** and click on **Open SDoE Dialog** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, uncheck the column called **Label**. This will mean that the design is not constructed using this as an input.  There should be an **_id** column automatically created containing unique identifiers to identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
 
 .. figure:: figs/Ex1U_3_mM_choices.png
    :alt: Home Screen
@@ -27,9 +27,9 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Minimax design choices
    
-4. Once the choices for the design have been specified, click on the **Run SDOE** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran the minimum number of random starts (10^3=1000), it is estimated that the code would take 4 seconds to create the three designs (of size 8, 9 and 10). If we chose 10^4=10000 runs, then the code is estimated to take 44 seconds. It is estimated that 10^5=100000 random starts would take 7 minutes and 11 seconds, while 10^6=1 million random starts would take approximately 1 hour, 12 minutes. In this case, we selected to create designs based on 100000 random starts, since this was a suitable balance between timeliness and giving the algorithm a chance to find the best possible designs. Hence, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**.  
+4. Once the choices for the design have been specified, click on the **Estimate Runtime** button to estimate the time taken for creating the designs. For the computer on which this example was developed, if we ran the minimum number of random starts (10^3=1000), it is estimated that the code would take 2 seconds to create the three designs (of size 8, 9 and 10). If we chose 10^4=10000 runs, then the code is estimated to take 24 seconds. It is estimated that 10^5=100000 random starts would take 4 minutes and 1 second, while 10^6=1 million random starts would take approximately 41 minutes and 29 seconds. In this case, we selected to create designs based on 100000 random starts, since this was a suitable balance between timeliness and giving the algorithm a chance to find the best possible designs. Hence, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**.  
 
-5. Since we are also interested in examining maximin designs for the same scenario, we click on the **Reload Design Specifications** button in the **Created Design** window to repopulate the right window with the same choices that we made for all of the design options.
+5. Since we are also interested in examining maximin designs for the same scenario, we click on the **Go Back to Generate Design** button in the **Created Designs** window to repopulate the right window with the same choices that we made for all of the design options.
 
 .. figure:: figs/Ex1_4_mM_created_designs.png
    :alt: Home Screen
@@ -37,7 +37,7 @@ For this first example, the goal is to construct a simple space-filling design w
    
    Ex 1 Minimax created designs
    
-6. After changing the  **Optimality Method Selection** to **maximin**, click on **Test SDOE**, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**. After waiting for the prescribed time, the **Created Designs** window will have 6 created designs - three that are minimax designs and three that are maximin designs.
+6. After changing the  **Optimality Method Selection** to **maximin**, click on **Estimate Runtime**, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**. After waiting for the prescribed time, the **Created Designs** window will have 6 created designs - three that are minimax designs and three that are maximin designs.
 
 .. figure:: figs/Ex1_5_all_created_designs.png
    :alt: Home Screen

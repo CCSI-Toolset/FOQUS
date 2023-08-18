@@ -5,25 +5,25 @@ For this first example, the goal is to construct a simple space-filling design w
 
 1. From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load Existing Set**, and select the SDOE_Ex1_Candidates.csv file from examples folder. This identifies the possible input combinations from which the design will be constructed. The more possible candidates that can be provided to the search algorithm used to construct the design, the better the design might be for the specified criterion. 
 
-.. figure:: figs/Ex1_1_load_candidate.png
+.. figure:: figs/6-SS1.png
    :alt: Home Screen
-   :name: fig.Ex1_1_load_candidate
+   :name: fig.6-SS1
    
    Ex 1 Ensemble Selection
    
 2. Next, by selecting **View** and then **Plot** it is possible to see the grid of points that will be used as the candidate points. In this case, the range for each of the inputs, X1 and X2, has been chosen to be between -1 and 1.
 
-.. figure:: figs/Ex1_2_candidate_grid.png
+.. figure:: figs/6-SS2.png
    :alt: Home Screen
-   :name: fig.Ex1_2_candidate_grid
+   :name: fig.6-SS2
    
    Ex 1 Candidate Grid
    
 3. Next, click on **Continue** to advance to the **Design Construction** Window, and then select **Uniform Space Filling** and click on **Open SDoE Dialog** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, select **minimax** for the **Optimality Method Selection**. Change the **Min Design Size** and **Max Design Size** to 8 and 10, respectively. This will construct 3 minimax designs of size 8, 9 and 10. Next, uncheck the column called **Label**. This will mean that the design is not constructed using this as an input.  There should be an **_id** column automatically created containing unique identifiers to identify which runs from the candidate set were chosen for the final designs. Since the ranges of each of X1 and X2 are the bounds that we want to use for creating this design, we do not need to change the entries in **Min** and **Max**.
 
-.. figure:: figs/Ex1U_3_mM_choices.png
+.. figure:: figs/6-SS3.png
    :alt: Home Screen
-   :name: fig.Ex1U_3_mM_choices
+   :name: fig.6-SS3
    
    Ex 1 Minimax design choices
    
@@ -31,17 +31,17 @@ For this first example, the goal is to construct a simple space-filling design w
 
 5. Since we are also interested in examining maximin designs for the same scenario, we click on the **Go Back to Generate Design** button in the **Created Designs** window to repopulate the right window with the same choices that we made for all of the design options.
 
-.. figure:: figs/Ex1_4_mM_created_designs.png
+.. figure:: figs/6-SS4.png
    :alt: Home Screen
-   :name: fig.Ex1_4_mM_created_designs
+   :name: fig.6-SS4
    
    Ex 1 Minimax created designs
    
 6. After changing the  **Optimality Method Selection** to **maximin**, click on **Estimate Runtime**, select 10^5 for the **Number of Random Starts**, and then click **Run SDOE**. After waiting for the prescribed time, the **Created Designs** window will have 6 created designs - three that are minimax designs and three that are maximin designs.
 
-.. figure:: figs/Ex1_5_all_created_designs.png
+.. figure:: figs/6-SS5.png
    :alt: Home Screen
-   :name: fig.Ex1_5_all_created_designs
+   :name: fig.6-SS5
    
    Ex 1 Created designs
    

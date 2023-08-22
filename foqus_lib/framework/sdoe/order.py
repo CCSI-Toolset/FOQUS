@@ -13,16 +13,13 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 """
-Candidate ordering by TSP Optimization
-
-Code adopted from:
-https://mlrose.readthedocs.io/en/stable/source/tutorial2.html
-
+Candidate ordering by TSP Optimization using python-tsp
+https://pypi.org/project/python-tsp/
 """
 import logging
 import os
 import numpy as np
-import mlrose_hiive as mlrose
+from python_tsp.exact import solve_tsp_dynamic_programming
 from .df_utils import load, write
 
 _log = logging.getLogger("foqus." + __name__)
@@ -40,26 +37,15 @@ def mat2tuples(mat):
     return lte
 
 
-def rank(fnames, ga_max_attempts=25):
+def rank(fnames):
     """return fnames ranked"""
     dist_mat = np.load(fnames["dmat"])
-    dist_list = mat2tuples(dist_mat)
 
-    # define fitness function object
-    fitness_dists = mlrose.TravellingSales(distances=dist_list)
-
-    # define optimization problem object
-    n_len = dist_mat.shape[0]
-    problem_fit = mlrose.TSPOpt(length=n_len, fitness_fn=fitness_dists, maximize=False)
-
-    # solve problem using the genetic algorithm
-    best_state = mlrose.genetic_alg(
-        problem_fit, mutation_prob=0.2, max_attempts=ga_max_attempts, random_state=2
-    )[0]
+    permutation, _distance = solve_tsp_dynamic_programming(dist_mat)
 
     # retrieve ranked list
     cand = load(fnames["cand"])
-    ranked_cand = cand.loc[best_state]
+    ranked_cand = cand.loc[permutation]
 
     # save the output
     fname, ext = os.path.splitext(fnames["cand"])

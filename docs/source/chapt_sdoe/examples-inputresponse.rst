@@ -64,7 +64,7 @@ There are also choices for which columns to include in the design construction. 
 Next, we must confirm that each row has the correct **Type** indicated. The index column has the type **Index**. The two input columns **X1** and **X2** have type **Input**. The response variable **Y** currently has the type **Input** which must be changed to **Response** before moving forward with creating an input-response space filling design. 
 
 4. 
-Once the choices for the design have been specified, click on the **Estimate Runtime** button to estimate the time required for creating the designs. For the computer on which this example was developed, if we ran 10 random starts, it is estimated that the algorithm would take 4 minutes and 49 seconds to generate the designs and identify those on the Pareto front. Note that the timing changes linearly, so using 20 random starts would take twice as long as using 10 random starts. Recall that the choice of the number of random starts involves a trade-off between getting the designs created quickly and the quality of the designs. For many applications, we would expect that using at least 20 random starts would produce designs that are of good quality. For this example, we select to run 20 random starts, which is projected to take 9 minutes and 38 seconds. 
+Once the choices for the design have been specified, click on the **Estimate Runtime** button to estimate the time required for creating the designs. For the computer on which this example was developed, if we ran 10 random starts, it is estimated that the algorithm would take 2 minutes and 50 seconds to generate the designs and identify those on the Pareto front. Note that the timing changes linearly, so using 20 random starts would take twice as long as using 10 random starts. Recall that the choice of the number of random starts involves a trade-off between getting the designs created quickly and the quality of the designs. For many applications, we would expect that using at least 20 random starts would produce designs that are of good quality. For this example we select to run 50 random starts, which is projected to take 13 minutes and 10 seconds. 
 
 .. figure:: figs/irsf-e133-nrsbox.png
    :alt: Number of Random Starts Box
@@ -101,12 +101,12 @@ As we explained in the Basics section, a Pareto front is made up of a collection
 Once the Pareto front has been examined, experimenters should further explore by **clicking on one of the color-coded design points within the plot to view that design**. Once a point is selected, a pairwise scatterplot of the chosen design will open, with the scatterplots and histograms being of the same color as the design point on the Pareto front for ease of comparison between designs. Multiple designs can be open simultaneously. 
 
 7. 
-To get a better understanding of the different designs located on the Pareto front, we will examine three: one from the left end, one from the right end, and one from the middle. The three designs we will choose are Design 1 (purple), Design 11 (red), and Design 7 (green), as shown on the Pareto front plot above. 
+To get a better understanding of the different designs located on the Pareto front, we will examine three: one from the left end, one from the right end, and one from the middle. The three designs we will choose are Design 1 (purple), Design 15 (red), and Design 10 (green), as shown on the Pareto front plot above. 
 
-From the values on the axes in Figure 10 for each of the three design points, we can determine, even before viewing the individual designs, several important facts. We know that Design 1 (purple) is the best design if we want the objectively-best space-filling in the response space, and don’t mind poor space-filling in the input space. Similarly, we know that Design 11 (red) is the best design if we want the objectively-best space-filling in the input space, and don’t mind poor space-filling in the response space. We also know Design 7 (green) will offer a compromise, with moderate space-filling in both spaces. Design 7, or another compromise design along the Pareto front, is a good choice if we hope to balance space-filling in the input and response spaces. 
+From the values on the axes in Figure 10 for each of the three design points, we can determine, even before viewing the individual designs, several important facts. We know that Design 1 (purple) is the best design if we want the objectively-best space-filling in the response space, and don’t mind poor space-filling in the input space. Similarly, we know that Design 15 (red) is the best design if we want the objectively-best space-filling in the input space, and don’t mind poor space-filling in the response space. We also know Design 10 (green) will offer a compromise, with moderate space-filling in both spaces. Design 10, or another compromise design along the Pareto front, is a good choice if we hope to balance space-filling in the input and response spaces. 
 
 .. note:: 
-   The design with the best space-filling in the input space overall, here Design 11 (red), is the same as a regular uniform space-filling design. 
+   The design with the best space-filling in the input space overall, here Design 15 (red), is the same as a regular uniform space-filling design. 
 
 .. figure:: figs/irsf-e136-design1purple.png
    :alt: Design 1 Purple
@@ -118,23 +118,23 @@ From the values on the axes in Figure 10 for each of the three design points, we
    :alt: Design 11 Red
    :name: fig.irsf-e136-design11red
    
-   Figure 12: Pairwise Scatterplot of Design 11
+   Figure 12: Pairwise Scatterplot of Design 15
    
 .. figure:: figs/irsf-e136-design7lime.png
    :alt: Design 7 Lime
    :name: fig.irsf-e136-design7lime
    
-   Figure 13: Pairwise Scatterplot of Design 7
+   Figure 13: Pairwise Scatterplot of Design 10
 
-To determine how well a design fills the response space, we will look at the histogram for the response, Y, in the bottom-right for each of the designs and see how evenly spread the values appear. If we had a two- or higher-dimensional response space, we would examine the scatterplot(s) for the response variables for even spacing. We can confirm that Design 1 (purple) does have the best space-filling in the response space of the three. The values of the response are evenly spread throughout the space, with no large gaps. By contrast, Design 11 (red) has many holes and gaps in the response space.
+To determine how well a design fills the response space, we will look at the histogram for the response, Y, in the bottom-right for each of the designs and see how evenly spread the values appear. If we had a two- or higher-dimensional response space, we would examine the scatterplot(s) for the response variables for even spacing. We can confirm that Design 1 (purple) does have the best space-filling in the response space of the three. The values of the response are evenly spread throughout the space, with no large gaps. By contrast, Design 15 (red) has many holes and gaps in the response space.
 
-Even though the criterion value for response space-filling in Design 7 (green) is less than half that of Design 1 (purple), the response space-filling in Design 7 seems to fill the space fairly well. The differences in criterion values provide a useful summary of the trade-offs but it is important to also examine the scatterplots directly for a more intuitive illustration of what these trade-offs will look like in practice. 
+Even though the criterion value for response space-filling in Design 10 (green) is less than Design 1 (purple), the response space-filling in Design 10 seems to fill the space fairly well. The differences in criterion values provide a useful summary of the trade-offs but it is important to also examine the scatterplots directly for a more intuitive illustration of what these trade-offs will look like in practice. 
 
 To examine input space-filling, we will now look at the scatterplot of the input variables, X1 and X2, located in the top-middle. If we had more than two input variables, we would look at a combination of pairwise scatterplots. It would be a bit harder to determine how well the space-filling of a given design appeared, so in that case, we rely more heavily on the position of the design on the Pareto front. 
 
-Here, Design 11 (red) definitely has the best input space-filling. The design points are spread apart with no large holes or gaps, covering the entire space well. The input space-filling in Design 1 (purple) has many large holes, and even that in Design 7 (green) has a few holes. 
+Here, Design 15 (red) definitely has the best input space-filling. The design points are spread apart with no large holes or gaps, covering the entire space well. The input space-filling in Design 1 (purple) has many large holes, and even that in Design 10 (green) has a hole or two. 
 
-With this variety of space-filling designs, plus the 8 more located on the Pareto front, it’s easy to see there are many “best” designs for any given weighting of input and response space-filling. The Input-Response Space-Filling design tool gives the experimenter the flexibility to consider each design on the Pareto front to find the compromise between input and output space-filling to best fit the experimental objectives.
+With this variety of space-filling designs, plus the 12 more located on the Pareto front, it’s easy to see there are many “best” designs for any given weighting of input and response space-filling. The Input-Response Space-Filling design tool gives the experimenter the flexibility to consider each design on the Pareto front to find the compromise between input and output space-filling to best fit the experimental objectives.
 
 8. 
-In the case of this example, we were hoping to find a design with good space-filling in both spaces. Design 7 (green) is an excellent candidate for this, though to be thorough we should also examine Designs 6 and 8, and even 4, 5, and 9, to see how these other “best” designs balance space-filling uniquely in the two spaces. 
+In the case of this example, we were hoping to find a design with good space-filling in both spaces. Design 10 (green) is an excellent candidate for this, though to be thorough we should also examine more designs along the Pareto front. In particular, Designs 4, 6, 7, and 11, and even 2, 3, and 13, should be explored to see how these other “best” designs balance space-filling uniquely in the two spaces. 

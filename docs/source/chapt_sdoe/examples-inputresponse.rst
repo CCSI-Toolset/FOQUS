@@ -29,33 +29,33 @@ Here is the process for generating IRSF designs for this problem:
 1.
 From the FOQUS main screen, click the **SDOE** button. On the top left side, select **Load Existing Set**, and select the “irsf-example1-candset.csv” file from the examples folder.
 
-.. figure:: figs/irsf-e101-firstpage.png
+.. figure:: figs/11-SS3.png
    :alt: SDOE First Page
-   :name: fig.irsf-e101-firstpage
+   :name: fig.11-SS3
    
    Figure 3: SDOE Module First Page
 
 2. 
 Next, by selecting **View** and then **Plot**, it is possible to see the grid of points that will be used as the candidate points. In this case, the range for each of the inputs, X1 and X2, has been chosen to be between 0 and 1. The range of the response, Y, is from -5 to 21. 
 
-.. figure:: figs/irsf-e120-viewcandset.png
+.. figure:: figs/11-SS4.png
    :alt: SDOE First Page
-   :name: fig.irsf-e120-viewcandset
+   :name: fig.11-SS4
    
    Figure 4: Pairwise Scatterplots of the Candidate Set
 
-.. figure:: figs/irsf-e102-dcboxselected.png
+.. figure:: figs/11-SS5.png
    :alt: SDOE First Page With Right-hand Size
-   :name: fig.irsf-e102-dcboxselected
+   :name: fig.11-SS5
    
    Figure 5: Choose Design Method on the Right-Hand Side
    
 3. 
 Next, click on **Continue** to advance to the **Design Construction** Window, and then click on **Input-Response Space Filling (IRSF)** to advance to the second SDOE screen, where particular choices about the design can be made. On the second screen, the first choice for **Optimality Method Selection** is automatic, since the input-response space filling designs only use the **Maximin** criterion. We next select the **Design Size**, where here we have decided to construct a design with 10 runs. The choice of design size is typically based on the budget of the experiment.
 
-.. figure:: figs/irsf-e131-designchoices.png
+.. figure:: figs/11-SS6.png
    :alt: SDOE Design Choices
-   :name: fig.irsf-e131-designchoices
+   :name: fig.11-SS6
    
    Figure 6: Generate Design Box for Making Design Selections
 
@@ -66,24 +66,24 @@ Next, we must confirm that each row has the correct **Type** indicated. The inde
 4. 
 Once the choices for the design have been specified, click on the **Estimate Runtime** button to estimate the time required for creating the designs. For the computer on which this example was developed, if we ran 10 random starts, it is estimated that the algorithm would take 2 minutes and 50 seconds to generate the designs and identify those on the Pareto front. Note that the timing changes linearly, so using 20 random starts would take twice as long as using 10 random starts. Recall that the choice of the number of random starts involves a trade-off between getting the designs created quickly and the quality of the designs. For many applications, we would expect that using at least 20 random starts would produce designs that are of good quality. For this example we select to run 50 random starts, which is projected to take 13 minutes and 10 seconds. 
 
-.. figure:: figs/irsf-e133-nrsbox.png
+.. figure:: figs/11-SS7.png
    :alt: Number of Random Starts Box
-   :name: fig.irsf-e133-nrsbox
+   :name: fig.11-SS7
    
    Figure 7: Number of Random Starts
 
-.. figure:: figs/irsf-e132-nrschoices.png
+.. figure:: figs/11-SS8.png
    :alt: Number of Random Start Choices
-   :name: fig.irsf-e132-nrschoices
+   :name: fig.11-SS8
    
    Figure 8: Choices for Number of Random Starts
 
 5. 
 Once the algorithm has generated the designs, the left box called **Created Designs** populates with the Pareto front of designs that we have created. The Pareto front will populate a single row of the Created Designs box, and will display some useful information such as the **Number of Designs** found on the Pareto front, **Number of Random Starts** used, and the **Runtime**. If another design search is run afterwards, that Pareto front will populate the next row, and so on.  
 
-.. figure:: figs/irsf-e134-createddesign.png
+.. figure:: figs/11-SS9.png
    :alt: Created Design
-   :name: fig.irsf-e134-createddesign
+   :name: fig.11-SS9
    
    Figure 9: Created Designs
 
@@ -92,9 +92,9 @@ To examine the Pareto front and each of the designs on the Pareto front, select 
 
 As we explained in the Basics section, a Pareto front is made up of a collection of objectively best designs for different weightings of space-filling in the response and space-filling in the input spaces. A design that is on the Pareto front cannot be improved along one criterion of interest (space-filling in the response or space-filling in the input space) without worsening along the other criterion; if a design is located on the Pareto front, there exists no other design that is the same or better in both dimensions. Thus, it may be confusing to some users that this Pareto front below shows some pairs of designs connected by a vertical line, indicating one should outperform the other in the vertical dimension (space-filling in the response). However, this is simply a result of rounding in the horizontal dimension. The true values are in fact different by a small amount in space-filling in the input space.   
 
-.. figure:: figs/irsf-e135-paretofront.png
+.. figure:: figs/11-SS10.png
    :alt: Pareto Front
-   :name: fig.irsf-e135-paretofront
+   :name: fig.11-SS10
    
    Figure 10: Pareto Front of Created Designs
 
@@ -108,21 +108,21 @@ From the values on the axes in Figure 10 for each of the three design points, we
 .. note:: 
    The design with the best space-filling in the input space overall, here Design 15 (red), is the same as a regular uniform space-filling design. 
 
-.. figure:: figs/irsf-e136-design1purple.png
+.. figure:: figs/11-SS11.png
    :alt: Design 1 Purple
-   :name: fig.irsf-e136-design1purple
+   :name: fig.11-SS11
    
    Figure 11: Pairwise Scatterplot of Design 1
 
-.. figure:: figs/irsf-e136-design11red.png
-   :alt: Design 11 Red
-   :name: fig.irsf-e136-design11red
+.. figure:: figs/11-SS12.png
+   :alt: Design 15 Red
+   :name: fig.11-SS12
    
    Figure 12: Pairwise Scatterplot of Design 15
    
-.. figure:: figs/irsf-e136-design7lime.png
-   :alt: Design 7 Lime
-   :name: fig.irsf-e136-design7lime
+.. figure:: figs/11-SS13.png
+   :alt: Design 10 Green
+   :name: fig.11-SS13
    
    Figure 13: Pairwise Scatterplot of Design 10
 

@@ -143,6 +143,7 @@ class keras_nn(tf.keras.layers.Layer):
         )
         return config
 
+
 def checkAvailable():
     """Plug-ins should have this function to check availability of any
     additional required software.  If requirements are not available
@@ -188,11 +189,11 @@ class surrogateMethod(surrogate):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "The high-level neural network library of Keras integrates with TensorFlow’s" 
-            "machine learning library to train complex models within Python’s user-friendly framework." 
+            "The high-level neural network library of Keras integrates with TensorFlow’s"
+            "machine learning library to train complex models within Python’s user-friendly framework."
             "Keras models may be largely split into two types: Sequential which build linearly connected"
-            "model layers, and Functional which build multiple interconnected layers in a complex system." 
-            "More information on TensorFlow Keras model building is described by (Wu et al. 2020)." 
+            "model layers, and Functional which build multiple interconnected layers in a complex system."
+            "More information on TensorFlow Keras model building is described by (Wu et al. 2020)."
             "Users may follow the recommended workflow to install and use TensorFlow in a Python environment,"
             "as described in the TensorFlow documentation: https://www.tensorflow.org/install."
             '<p class="keras_nn</p>"</html>'
@@ -232,7 +233,7 @@ class surrogateMethod(surrogate):
             "on specific data for each variable.",
             validValues=["All", "None"],
         )
-        
+
         self.options.add(
             name="n_hidden",
             section="DATA Settings",
@@ -241,7 +242,7 @@ class surrogateMethod(surrogate):
             desc="Number of hidden layers",
             hint="Number of hidden layers",
         )
-        
+
         self.options.add(
             name="n_neurons",
             section="DATA Settings",
@@ -259,7 +260,7 @@ class surrogateMethod(surrogate):
             hint="Layer activation function",
             validValues=["relu", "sigmoid"],
         )
-        
+
         self.options.add(
             name="out_act",
             section="DATA Settings",
@@ -269,16 +270,18 @@ class surrogateMethod(surrogate):
             hint="Output activation function",
             validValues=["relu", "sigmoid"],
         )
-                
+
         self.options.add(
             name="input_file",
             section="DATA Settings",
             dtype=str,
-            default=str(Path(__file__).with_name("MEA_carbon_capture_dataset_mimo.csv")),
+            default=str(
+                Path(__file__).with_name("MEA_carbon_capture_dataset_mimo.csv")
+            ),
             desc="Input file",
             hint="Input file path",
         )
-        
+
         self.options.add(
             name="input_labels",
             section="DATA Settings",
@@ -287,7 +290,7 @@ class surrogateMethod(surrogate):
             desc="comma separated",
             hint="Input columns",
         )
-        
+
         self.options.add(
             name="output_labels",
             section="DATA Settings",
@@ -296,7 +299,7 @@ class surrogateMethod(surrogate):
             desc="comma separated",
             hint="Output columns",
         )
-        
+
         self.options.add(
             name="numpy_seed",
             section="DATA Settings",
@@ -305,7 +308,7 @@ class surrogateMethod(surrogate):
             desc="Seed for numpy",
             hint="Seed for numpy",
         )
-        
+
         self.options.add(
             name="random_seed",
             section="DATA Settings",
@@ -314,7 +317,7 @@ class surrogateMethod(surrogate):
             desc="Seed for random",
             hint="Seed for random",
         )
-        
+
         self.options.add(
             name="tensorflow_seed",
             section="DATA Settings",
@@ -323,7 +326,7 @@ class surrogateMethod(surrogate):
             desc="Seed for tensorflow",
             hint="Seed for tensorflow",
         )
-        
+
         self.options.add(
             name="epoch",
             section="DATA Settings",
@@ -332,7 +335,7 @@ class surrogateMethod(surrogate):
             desc="Number of epochs",
             hint="Number of epochs",
         )
-        
+
         self.options.add(
             name="verbose",
             section="DATA Settings",
@@ -341,7 +344,7 @@ class surrogateMethod(surrogate):
             desc="Verbose setting",
             hint="Takes only 0 or 1",
         )
-        
+
     def run(self):
         """
         This function overloads the Thread class function,
@@ -355,18 +358,18 @@ class surrogateMethod(surrogate):
         np_seed = self.options["numpy_seed"].value
         rn_seed = self.options["random_seed"].value
         tf_seed = self.options["tensorflow_seed"].value
-        
+
         epochs_count = self.options["epoch"].value
-        verbose_setting = self.options["verbose"].value 
-        
+        verbose_setting = self.options["verbose"].value
+
         # np.random.seed(46)
         # rn.seed(1342)
         # tf.random.set_seed(62)
-        
+
         np.random.seed(np_seed)
         rn.seed(rn_seed)
         tf.random.set_seed(tf_seed)
-        
+
         self.msgQueue.put("Starting training process")
 
         # Example follows the sequence below:
@@ -377,11 +380,11 @@ class surrogateMethod(surrogate):
         #    attributes to CustomLayer class object
         # 4) Back to create_model() to compile and train model
         # 5) Back to code at end of file to save, load and test model
-        
+
         # import data
-        #data = pd.read_csv(r"/Users/sfhome/Desktop/CCI_Spring_2023/foqus/CCSI-Toolset/FOQUS/examples/other_files/ML_AI_Plugin/MEA_carbon_capture_dataset_mimo.csv")
+        # data = pd.read_csv(r"/Users/sfhome/Desktop/CCI_Spring_2023/foqus/CCSI-Toolset/FOQUS/examples/other_files/ML_AI_Plugin/MEA_carbon_capture_dataset_mimo.csv")
         current_directory = os.path.dirname(__file__)
-        
+
         input_file = str(self.options["input_file"].value)
 
         # data = pd.read_csv(current_directory + os.path.sep + input_file)
@@ -389,17 +392,17 @@ class surrogateMethod(surrogate):
         # define these two after xlabels and zlabels
         # xdata = data.iloc[:, :6]  # there are 6 input variables/columns
         # zdata = data.iloc[:, 6:]  # the rest are output variables/columns
-        
+
         # xlabels = xdata.columns.tolist()  # set labels as a list (default) from pandas
         # zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
-        
+
         xlabels = str(self.options["input_labels"].value).split(",")
         zlabels = str(self.options["output_labels"].value).split(",")
-        
-        #tried the below code that didn't work
+
+        # tried the below code that didn't work
         xdata = data.loc[:, xlabels]  # there are 6 input variables/columns
         zdata = data.loc[:, zlabels]  # the rest are output variables/columns
-        
+
         xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
         zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
 
@@ -424,14 +427,14 @@ class surrogateMethod(surrogate):
         # define x and z data, not used but will add to variable dictionary
         xdata = model_data[:, :-2]
         zdata = model_data[:, -2:]
-        
+
         # method to create model
         def create_model(data):
 
             inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
 
             layers = keras_nn(  # define the rest of network using our custom class
-                #add our 4 options
+                # add our 4 options
                 input_labels=xlabels,
                 output_labels=zlabels,
                 input_bounds=xdata_bounds,
@@ -446,14 +449,16 @@ class surrogateMethod(surrogate):
 
             model.compile(loss="mse", optimizer="RMSprop", metrics=["mae", "mse"])
 
-            model.fit(xdata, zdata, epochs=epochs_count, verbose=verbose_setting)  # train model
+            model.fit(
+                xdata, zdata, epochs=epochs_count, verbose=verbose_setting
+            )  # train model
 
             return model
 
         # create model
         model = create_model(xdata)
         model.summary()
-        #self.msgQueue.put(model)
+        # self.msgQueue.put(model)
 
         self.msgQueue.put("Training complete")
         # save model as H5

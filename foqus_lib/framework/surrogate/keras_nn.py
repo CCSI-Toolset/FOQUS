@@ -62,7 +62,7 @@ from foqus_lib.framework.session.session import exePath
 from multiprocessing.connection import Client
 
 import random as rn
-import tensorflow as tf
+import tensorflow as tf  # pylint: disable=import-error
 
 # custom class to define Keras NN layers
 @tf.keras.utils.register_keras_serializable()

@@ -18,6 +18,14 @@ from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
 import pytest
 
 
+try:
+    import tensorflow
+except ModuleNotFoundError:
+    tensorflow_available = False
+else:
+    tensorflow_available = True
+
+
 pytestmark = pytest.mark.gui
 
 
@@ -52,6 +60,7 @@ class TestFrame:
     #         # "ACOSSO",
     #     ]
     # )
+    @pytest.mark.skipif(not tensorflow_available, reason="tensorflow not available")
     def test_run_surrogate(
         self, qtbot, frame, main_window: mainWindow, name: str = "keras_nn"
     ):

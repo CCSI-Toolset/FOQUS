@@ -17,9 +17,17 @@
 
 import numpy as np
 import pandas as pd
-from sklearn.neural_network import MLPRegressor
-import pickle
-from types import SimpleNamespace
+import matplotlib.pyplot as plt
+
+# Data preprocessing
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.model_selection import train_test_split
+
+# Neural Net modules
+from keras import Input
+from keras.models import Model
+from keras.layers import Dense
+from keras.callbacks import EarlyStopping
 
 def finite_difference(m1, m2, y1, y2, n_x):
     """
@@ -68,9 +76,77 @@ def finite_difference(m1, m2, y1, y2, n_x):
 
     return mid_m, dy_dm
 
+def predict_gradients(midpoints, gradients_midpoints, x, n_m, n_x):
+    """
+    Train MLP regression model with data normalization on gradients at 
+    midpoints to predict gradients at sample point.
+    """
+    # split and normalize data
+    print("Splitting data into training and test sets...")
+    X_train, X_test, y_train, y_test = train_test_split(midpoints,
+                                                        gradients_midpoints,
+                                                        test_size=0.2,
+                                                        random_state=123)
+    print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
+
+    # use minMax scaler
+    print("Normalizing data...")
+    min_max_scaler = MinMaxScaler()
+    X_train = min_max_scaler.fit_transform(X_train)
+    X_test = min_max_scaler.transform(X_test)
+
+    print("Training gradient prediction model...")    
+    inputs = Input(shape=X_train.shape[1])  # input node, layer for x1, x2, ...
+    h1 = Dense(6, activation='relu')(inputs)
+    h2 = Dense(6, activation='relu')(h1)
+    outputs = Dense(n_x, activation='linear')(h2) # output node, layer for dy/dx1, dy/dx2, ...
+    model = Model(inputs=inputs, outputs=outputs)
+    model.summary() # see what your model looks like
+    
+    # compile the model
+    model.compile(optimizer='rmsprop', loss='mse', metrics=['mae'])
+
+    # early stopping callback
+    es = EarlyStopping(monitor='val_loss',
+                       mode='min',
+                       patience=50,
+                       restore_best_weights = True)
+
+    # fit the model!
+    # attach it to a new variable called 'history' in case
+    # to look at the learning curves
+    history = model.fit(X_train, y_train,
+                        validation_data = (X_test, y_test),
+                        callbacks=[es],
+                        epochs=100,
+                        batch_size=50,
+                        verbose=1)
+    if len(history.history['loss']) == 100:
+        print("Successfully completed, 100 epochs run.")
+    else:
+        print("Validation loss stopped improving after ",
+              len(history.history['loss']),
+              "epochs. Successfully completed after early stopping.")
+
+    history_dict = history.history
+    loss_values = history_dict['loss'] # you can change this
+    val_loss_values = history_dict['val_loss'] # you can also change this
+    epochs = range(1, len(loss_values) + 1) # range of X (no. of epochs)
+    plt.plot(epochs, loss_values, 'bo', label='Training loss')
+    plt.plot(epochs, val_loss_values, 'orange', label='Validation loss')
+    plt.title('Training and validation loss')
+    plt.xlabel('Epochs')
+    plt.ylabel('Loss')
+    plt.legend()
+    plt.show()
+
+    gradients = model.predict(x)  # predict against original sample points
+
+    return gradients
+
 def generate_gradients(xy_data, n_x):
     """
-    This method implements finite difference approximation and MLP regression 
+    This method implements finite difference approximation and NN regression 
     to estimate the first-order derivatives of a given dataset with columns 
     (x1, x2, ...., xN, y1, y2, ..., yM) where N is the number of input 
     variables and M is the number of output variables. The method takes an
@@ -109,7 +185,7 @@ def generate_gradients(xy_data, n_x):
 
     # get midpoint gradients for one pair of samples at a time and save
     for m in range(n_m-1):  # we have (n_m - 1) adjacent sample pairs
-        print(m+1, " of ", n_m-1)
+        print("Midpoint gradient ", m+1, " of ", n_m-1, " generated.")
         midpoints[m], gradients_midpoints[m] = finite_difference(
             m1 = x[m,:],
             m2 = x[m+1,:],
@@ -117,8 +193,18 @@ def generate_gradients(xy_data, n_x):
             y2 = y[m+1][0],  # each entry in y is an array somehow
             n_x = n_x
             )
+    print("Midpoint gradient generation complete.")
+    print()
 
-    return midpoints, gradients_midpoints
+    # leverage NN regression to predict gradients at sample points
+    gradients = predict_gradients(
+        midpoints=midpoints, 
+        gradients_midpoints=gradients_midpoints,
+        x=x,
+        n_m=n_m,
+        n_x=n_x,)
+
+    return gradients
 
 if __name__ == "__main__":
     data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
@@ -126,5 +212,8 @@ if __name__ == "__main__":
     data_array = data_array[:, :-1]  # take only one output column
     n_x = 6
 
-    midpoints, gradients = generate_gradients(xy_data=data_array, n_x=n_x)
+    gradients = generate_gradients(xy_data=data_array, n_x=n_x)
     print("Gradient generation complete.")
+
+    pd.DataFrame(gradients).to_csv("gradients.csv")
+    print("Gradients written to gradients.csv")

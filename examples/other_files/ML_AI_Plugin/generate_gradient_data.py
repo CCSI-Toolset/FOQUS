@@ -24,10 +24,23 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 
 # Neural Net modules
+import tensorflow as tf
 from tensorflow.keras import Input
 from tensorflow.keras.models import Model
 from tensorflow.keras.layers import Dense
 from tensorflow.keras.callbacks import EarlyStopping
+
+import os
+import random as rn
+
+# set seed values for reproducibility
+os.environ["PYTHONHASHSEED"] = "0"
+os.environ[
+    "CUDA_VISIBLE_DEVICES"
+] = ""  # changing "" to "0" or "-1" may solve import issues
+np.random.seed(46)
+rn.seed(1342)
+tf.random.set_seed(62)
 
 
 def finite_difference(m1, m2, y1, y2, n_x):
@@ -78,16 +91,37 @@ def finite_difference(m1, m2, y1, y2, n_x):
     return mid_m, dy_dm
 
 
-def predict_gradients(midpoints, gradients_midpoints, x, n_m, n_x):
+def predict_gradients(
+    midpoints,
+    gradients_midpoints,
+    x,
+    n_m,
+    n_x,
+    show_plots=True,
+    optimize_training=False,
+):
     """
     Train MLP regression model with data normalization on gradients at
     midpoints to predict gradients at sample point.
+
+    Setting random_state to an integer and shuffle to False, along with the
+    fixed seeds in the import section at the top of this file, will ensure
+    reproducible results each time the file is run. However, calling the model
+    training multiple times on the same data in the same file run will produce
+    different results due to randomness in the random_state instance that is
+    generated. Therefore, the training is performed for a preset list of model
+    settings and the best option is selected.
     """
-    # split and normalize data
-    print("Splitting data into training and test sets...")
+    # split into X_train and X_test
+    # always split into X_train, X_test first THEN apply minmax scaler
+    print("Normalizing data...")
     X_train, X_test, y_train, y_test = train_test_split(
-        midpoints, gradients_midpoints, test_size=0.2, random_state=123
-    )
+        midpoints,
+        gradients_midpoints,
+        test_size=0.2,
+        random_state=42,  # for reproducibility
+        shuffle=False,
+    )  # for reproducibility
     print(X_train.shape, X_test.shape, y_train.shape, y_test.shape)
 
     # use minMax scaler
@@ -97,62 +131,135 @@ def predict_gradients(midpoints, gradients_midpoints, x, n_m, n_x):
     X_test = min_max_scaler.transform(X_test)
 
     print("Training gradient prediction model...")
-    inputs = Input(shape=X_train.shape[1])  # input node, layer for x1, x2, ...
-    h1 = Dense(6, activation="relu")(inputs)
-    h2 = Dense(6, activation="relu")(h1)
-    outputs = Dense(n_x, activation="linear")(
-        h2
-    )  # output node, layer for dy/dx1, dy/dx2, ...
-    model = Model(inputs=inputs, outputs=outputs)
-    model.summary()  # see what your model looks like
+    best_loss = 1e30  # insanely high value that will for sure be beaten
+    best_model = None
+    best_settings = None
+    progress = 0
 
-    # compile the model
-    model.compile(optimizer="rmsprop", loss="mse", metrics=["mae"])
-
-    # early stopping callback
-    es = EarlyStopping(
-        monitor="val_loss", mode="min", patience=50, restore_best_weights=True
-    )
-
-    # fit the model!
-    # attach it to a new variable called 'history' in case
-    # to look at the learning curves
-    history = model.fit(
-        X_train,
-        y_train,
-        validation_data=(X_test, y_test),
-        callbacks=[es],
-        epochs=100,
-        batch_size=50,
-        verbose=1,
-    )
-    if len(history.history["loss"]) == 100:
-        print("Successfully completed, 100 epochs run.")
+    if optimize_training:
+        optimizers = ["Adam", "rmsprop"]
+        activations = ["relu", "sigmoid"]
+        act_outs = ["linear", "relu"]
+        num_neurons = [6, 12]
+        num_hidden_layers = [2, 8]
     else:
-        print(
-            "Validation loss stopped improving after ",
-            len(history.history["loss"]),
-            "epochs. Successfully completed after early stopping.",
-        )
+        optimizers = [
+            "Adam",
+        ]
+        activations = [
+            "relu",
+        ]
+        act_outs = [
+            "linear",
+        ]
+        num_neurons = [
+            6,
+        ]
+        num_hidden_layers = [
+            2,
+        ]
 
-    history_dict = history.history
-    loss_values = history_dict["loss"]  # you can change this
-    val_loss_values = history_dict["val_loss"]  # you can also change this
-    epochs = range(1, len(loss_values) + 1)  # range of X (no. of epochs)
-    plt.plot(epochs, loss_values, "bo", label="Training loss")
-    plt.plot(epochs, val_loss_values, "orange", label="Validation loss")
-    plt.title("Training and validation loss")
-    plt.xlabel("Epochs")
-    plt.ylabel("Loss")
-    plt.legend()
-    plt.show()
+    for optimizer in optimizers:
+        for activation in activations:
+            for act_out in act_outs:
+                for neuron in num_neurons:
+                    for num_hidden_layer in num_hidden_layers:
+                        progress += 1
+                        if optimize_training:
+                            print(
+                                "Trying ",
+                                optimizer,
+                                "solver with ",
+                                activation,
+                                "on hidden nodes, ",
+                                act_out,
+                                "on output node with ",
+                                neuron,
+                                "neurons per node and ",
+                                num_hidden_layer,
+                                "hidden layers",
+                            )
+                        inputs = Input(
+                            shape=X_train.shape[1]
+                        )  # input node, layer for x1, x2, ...
+                        h = Dense(neuron, activation=activation)(inputs)
+                        for num in range(num_hidden_layer):
+                            h = Dense(neuron, activation=activation)(h)
+                        outputs = Dense(n_x, activation=act_out)(
+                            h
+                        )  # output node, layer for dy/dx1, dy/dx2, ...
+                        model = Model(inputs=inputs, outputs=outputs)
+                        # model.summary() # see what your model looks like
 
-    gradients = model.predict(x)  # predict against original sample points
+                        # compile the model
+                        model.compile(optimizer=optimizer, loss="mse", metrics=["mae"])
+
+                        # early stopping callback
+                        es = EarlyStopping(
+                            monitor="val_loss",
+                            mode="min",
+                            patience=50,
+                            restore_best_weights=True,
+                        )
+
+                        # fit the model!
+                        # attach it to a new variable called 'history' in case
+                        # to look at the learning curves
+                        history = model.fit(
+                            X_train,
+                            y_train,
+                            validation_data=(X_test, y_test),
+                            callbacks=[es],
+                            epochs=100,
+                            batch_size=50,
+                            verbose=0,
+                        )
+                        if len(history.history["loss"]) == 100:
+                            print("Successfully completed, 100 epochs run.")
+                        else:
+                            print(
+                                "Validation loss stopped improving after ",
+                                len(history.history["loss"]),
+                                "epochs. Successfully completed after early stopping.",
+                            )
+                        print("Loss: ", sum(history.history["loss"]))
+                        if optimize_training:
+                            print("Progress: ", 100 * progress / 32, "%")
+
+                        if sum(history.history["loss"]) < best_loss:
+                            best_loss = sum(history.history["loss"])
+                            best_model = model
+                            best_history = history
+                            best_settings = [
+                                optimizer,
+                                activation,
+                                act_out,
+                                neuron,
+                                num_hidden_layer,
+                            ]
+
+    if optimize_training:
+        print("The best settings are: ", best_settings)
+
+    if show_plots:
+        history_dict = best_history.history
+        loss_values = history_dict["loss"]  # you can change this
+        val_loss_values = history_dict["val_loss"]  # you can also change this
+        epochs = range(1, len(loss_values) + 1)  # range of X (no. of epochs)
+        plt.plot(epochs, loss_values, "bo", label="Training loss")
+        plt.plot(epochs, val_loss_values, "orange", label="Validation loss")
+        plt.title("Training and validation loss")
+        plt.xlabel("Epochs")
+        plt.ylabel("Loss")
+        plt.legend()
+        plt.show()
+
+    gradients = best_model.predict(x)  # predict against original sample points
 
     return gradients
 
 
-def generate_gradients(xy_data, n_x):
+def generate_gradients(xy_data, n_x, show_plots=True, optimize_training=False):
     """
     This method implements finite difference approximation and NN regression
     to estimate the first-order derivatives of a given dataset with columns
@@ -181,37 +288,46 @@ def generate_gradients(xy_data, n_x):
     # split data into inputs and outputs
     x = xy_data[:, :n_x]  # there are n_x input variables/columns
     y = xy_data[:, n_x:]  # the rest are output variables/columns
+    n_y = np.shape(y)[1]  # save number of outputs
     n_m = np.shape(y)[0]  # save number of samples
 
-    # estimate first-order gradients using finite difference approximation
-    # this will account for all input variables, but will be for the midpoints
-    # between the sample points, i.e. len(y) - len(dy_midpoints) = 1.
-    # in both midpoints and gradients_midpoints, each column corresponds to an
-    # input variable xi and each row corresponds to a point between two samples
-    midpoints = np.empty((n_m - 1, n_x))
-    gradients_midpoints = np.empty((n_m - 1, n_x))
+    gradients = []  # empty list to hold gradient arrays for multiple outputs
 
-    # get midpoint gradients for one pair of samples at a time and save
-    for m in range(n_m - 1):  # we have (n_m - 1) adjacent sample pairs
-        print("Midpoint gradient ", m + 1, " of ", n_m - 1, " generated.")
-        midpoints[m], gradients_midpoints[m] = finite_difference(
-            m1=x[m, :],
-            m2=x[m + 1, :],
-            y1=y[m][0],  # each entry in y is an array somehow
-            y2=y[m + 1][0],  # each entry in y is an array somehow
-            n_x=n_x,
+    for output in range(n_y):
+        print("Generating gradients for output ", output, ":")
+        # estimate first-order gradients using finite difference approximation
+        # this will account for all input variables, but will be for the midpoints
+        # between the sample points, i.e. len(y) - len(dy_midpoints) = 1.
+        # in both midpoints and gradients_midpoints, each column corresponds to an
+        # input variable xi and each row corresponds to a point between two samples
+        midpoints = np.empty((n_m - 1, n_x))
+        gradients_midpoints = np.empty((n_m - 1, n_x))
+
+        # get midpoint gradients for one pair of samples at a time and save
+        for m in range(n_m - 1):  # we have (n_m - 1) adjacent sample pairs
+            print("Midpoint gradient ", m + 1, " of ", n_m - 1, " generated.")
+            midpoints[m], gradients_midpoints[m] = finite_difference(
+                m1=x[m, :],
+                m2=x[m + 1, :],
+                y1=y[m][output],  # each entry in y is an array somehow
+                y2=y[m + 1][output],  # each entry in y is an array somehow
+                n_x=n_x,
+            )
+        print("Midpoint gradient generation complete.")
+        print()
+
+        # leverage NN regression to predict gradients at sample points
+        gradients.append(
+            predict_gradients(
+                midpoints=midpoints,
+                gradients_midpoints=gradients_midpoints,
+                x=x,
+                n_m=n_m,
+                n_x=n_x,
+                show_plots=show_plots,
+                optimize_training=optimize_training,
+            )
         )
-    print("Midpoint gradient generation complete.")
-    print()
-
-    # leverage NN regression to predict gradients at sample points
-    gradients = predict_gradients(
-        midpoints=midpoints,
-        gradients_midpoints=gradients_midpoints,
-        x=x,
-        n_m=n_m,
-        n_x=n_x,
-    )
 
     return gradients
 
@@ -219,11 +335,19 @@ def generate_gradients(xy_data, n_x):
 if __name__ == "__main__":
     data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
     data_array = np.array(data, ndmin=2)
-    data_array = data_array[:, :-1]  # take only one output column
     n_x = 6
 
-    gradients = generate_gradients(xy_data=data_array, n_x=n_x)
+    gradients = generate_gradients(
+        xy_data=data_array, n_x=n_x, show_plots=False, optimize_training=True
+    )
     print("Gradient generation complete.")
 
-    pd.DataFrame(gradients).to_csv("gradients.csv")
-    print("Gradients written to gradients.csv")
+    for output in range(len(gradients)):
+        pd.DataFrame(gradients[output]).to_csv(
+            "gradients_output" + str(output) + ".csv"
+        )
+        print(
+            "Gradients for output ",
+            str(output),
+            " written to gradients_output" + str(output) + ".csv",
+        )

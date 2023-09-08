@@ -181,7 +181,7 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
         self.designSize_spin.setMaximum(len(candidateData.getInputData()))
         self.designSizeIRSF_spin.setMaximum(len(candidateData.getInputData()))
         self.ncand_samplesIRSF_spin.setRange(1, len(candidateData.getInputData()))
-        self.ncand_samplesIRSF_spin.setValue(0.1 * len(candidateData.getInputData()))
+        self.ncand_samplesIRSF_spin.setValue(int(0.1 * len(candidateData.getInputData())))
 
         # If Monte Carlo sampling is not used, we hide ncand_samples spinBox and its label
         self.ncand_samplesIRSF_spin.hide()

@@ -2576,11 +2576,17 @@ class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):
             )
             time_list.append(time.time() - t0)
             self.resultMessage += "Results for Run #%d:\n" % (nr + 1)
-            self.resultMessage += "Best Design(s): %s\n" % best_indices
-            self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (
-                optCriterion,
-                best_optval,
-            )
+            if best_indices is not None:
+                self.resultMessage += "Best Design(s): %s\n" % best_indices
+            else:
+                self.resultMessage += "Best Design(s): Not Found\n"
+            if best_optval is not None:
+                self.resultMessage += "Best %s-Optimality Value: %f\n\n" % (
+                    optCriterion,
+                    best_optval,
+                )
+            else:
+                self.resultMessage += "Best %s-Optimality Value: Not Found\n\n"
 
         # Save results to text file
         resultsFile = os.path.join(outdir, "odoe_results.txt")

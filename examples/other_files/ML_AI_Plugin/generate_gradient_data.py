@@ -50,7 +50,7 @@ def finite_difference(m1, m2, y1, y2, n_x):
     variables x and exactly one output variable y. y1 is the value of y1 at m1,
     and y2 is the value of y at m2.
 
-    The total graident is calculated via chain rule assuming a multivariate
+    The total gradient is calculated via chain rule assuming a multivariate
     function y(x1, x2, x3, ...). In the notation below, D/D denotes a total
     derivative and d/d denotes a partial derivative. Total derivatives are
     functions of all (x1, x2, x3, ...) whereas partial derivatives are

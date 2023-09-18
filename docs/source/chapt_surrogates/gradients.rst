@@ -16,10 +16,11 @@ columns. Multiple outputs are supported, as long as they are the rightmost colum
 the variable columns may have string (text) headings or data may start in row 1. The method
 produces a CSV file for each output variable containing gradients with respect to each input
 variable (columns), for each sample point (rows). After navigating to the FOQUS directory
-"examples/other_files/ML_AI_Plugin", the code below sets up and calls the gradient generation
-method on the example dataset "MEA_carbon_capture_dataset_mimo.csv":
+*examples/other_files/ML_AI_Plugin*, the code below sets up and calls the gradient generation
+method on the example dataset *MEA_carbon_capture_dataset_mimo.csv*:
 
 .. code:: python
+
   # required imports
   >>> import pandas as pd
   >>> import numpy as np
@@ -64,7 +65,7 @@ where *m_1.5* is the midpoint between sample points *m_2* and *m_1*. As a result
 calculates gradients at the points between the sample points, not the actual sample points.
 
 3. Train an MLP model on the calculated midpoint and midpoint-gradient values. After normalizing the data
-via linear scaling (see :ref:`chapt_surrogates.mlaiplugin.Data Normalization For Neural Network Models`),
+via linear scaling (see :ref:`mlaiplugin.datanorm`),
 the algorithm leverages a small neural network model to generate gradient data for the actual
 sampe points. Passing the argument *optimize_training=True* will train models using the optimizers
 *Adam* or *RMSProp*, with activation functions *ReLu* or *Sigmoid* on hidden layers, using a *Linear*

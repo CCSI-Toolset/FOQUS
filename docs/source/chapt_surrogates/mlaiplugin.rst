@@ -1,3 +1,5 @@
+.. _mlaiplugin:
+
 Machine Learning & Artificial Intelligence Flowsheet Model Plugins
 ==================================================================
 
@@ -107,6 +109,8 @@ Currently, FOQUS supports the following custom attributes:
   The section below details scaling options.
 - *normalization_function* - optional string argument that is required when a
   'Custom' *normalization_form* is used. The section below details scaling options.
+
+.. _mlaiplugin.datanorm:
 
 Data Normalization For Neural Network Models
 --------------------------------------------

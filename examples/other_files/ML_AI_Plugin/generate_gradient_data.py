@@ -262,8 +262,9 @@ def predict_gradients(
     return gradients
 
 
-def generate_gradients(xy_data, n_x, show_plots=True, optimize_training=False,
-                       use_simple_diff=False):
+def generate_gradients(
+    xy_data, n_x, show_plots=True, optimize_training=False, use_simple_diff=False
+):
     """
     This method implements finite difference approximation and NN regression
     to estimate the first-order derivatives of a given dataset with columns
@@ -343,7 +344,11 @@ if __name__ == "__main__":
     n_x = 6
 
     gradients = generate_gradients(
-        xy_data=data_array, n_x=n_x, show_plots=False, optimize_training=True, use_simple_diff=True,
+        xy_data=data_array,
+        n_x=n_x,
+        show_plots=False,
+        optimize_training=True,
+        use_simple_diff=True,
     )
     print("Gradient generation complete.")
 

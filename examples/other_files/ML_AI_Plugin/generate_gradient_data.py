@@ -43,7 +43,7 @@ rn.seed(1342)
 tf.random.set_seed(62)
 
 
-def finite_difference(m1, m2, y1, y2, n_x):
+def finite_difference(m1, m2, y1, y2, n_x, use_simple_diff=False):
     """
     Calculate the first-order gradient between provided sample points m1 and
     m2, where each point is assumed to be a vector with one or more input
@@ -80,11 +80,14 @@ def finite_difference(m1, m2, y1, y2, n_x):
     dy_dm = [None] * n_x  # initialize dy vector, this is dy_dm(midpoints)
 
     for i in range(n_x):  # for each input xi
-        dy_dm[i] = sum(
-            diff(y2, y1, m2[j], m1[j])
-            * diff(m2[j], m1[j], m2[i], m1[i])  # dy/dxj  # dxj/dxi
-            for j in range(n_x)
-        )  # for each input xj
+        if use_simple_diff:
+            dy_dm[i] = diff(y2, y1, m2[i], m1[i])
+        else:  # use chain rule
+            dy_dm[i] = sum(
+                diff(y2, y1, m2[j], m1[j])
+                * diff(m2[j], m1[j], m2[i], m1[i])  # dy/dxj  # dxj/dxi
+                for j in range(n_x)
+            )  # for each input xj
 
         mid_m[i] = m2[i] - m1[i]
 
@@ -259,7 +262,8 @@ def predict_gradients(
     return gradients
 
 
-def generate_gradients(xy_data, n_x, show_plots=True, optimize_training=False):
+def generate_gradients(xy_data, n_x, show_plots=True, optimize_training=False,
+                       use_simple_diff=False):
     """
     This method implements finite difference approximation and NN regression
     to estimate the first-order derivatives of a given dataset with columns
@@ -312,6 +316,7 @@ def generate_gradients(xy_data, n_x, show_plots=True, optimize_training=False):
                 y1=y[m][output],  # each entry in y is an array somehow
                 y2=y[m + 1][output],  # each entry in y is an array somehow
                 n_x=n_x,
+                use_simple_diff=use_simple_diff,
             )
         print("Midpoint gradient generation complete.")
         print()
@@ -338,7 +343,7 @@ if __name__ == "__main__":
     n_x = 6
 
     gradients = generate_gradients(
-        xy_data=data_array, n_x=n_x, show_plots=False, optimize_training=True
+        xy_data=data_array, n_x=n_x, show_plots=False, optimize_training=True, use_simple_diff=True,
     )
     print("Gradient generation complete.")
 

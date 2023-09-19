@@ -35,6 +35,7 @@ method on the example dataset *MEA_carbon_capture_dataset_mimo.csv*:
   >>>   n_x=n_x,
   >>>   show_plots=False,  # flag to plot regression results during gradient training
   >>>   optimize_training=True  # will try many regression settings and pick the best result
+  >>>   use_simple_diff=True  # flag to use simple partials instead of chain rule formula; defaults to False if not passed
   >>>   )
   >>> print("Gradient generation complete.")
 

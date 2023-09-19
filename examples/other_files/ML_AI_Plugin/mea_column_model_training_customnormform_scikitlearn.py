@@ -79,7 +79,7 @@ for i in range(len(xdata)):
 
 model_data = np.concatenate(
     (xdata, zdata), axis=1
-)  # PyTorch requires a Numpy array as input
+)  # SciKit Learn requires a Numpy array as input
 
 # define x and z data, not used but will add to variable dictionary
 xdata = model_data[:, :-2]

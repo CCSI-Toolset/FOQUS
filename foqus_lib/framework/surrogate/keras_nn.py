@@ -79,7 +79,7 @@ class keras_nn(tf.keras.layers.Layer):
         output_bounds=None,
         normalized=False,
         normalization_form="Linear",
-        **kwargs
+        **kwargs,
     ):
 
         super().__init__()  # create callable object

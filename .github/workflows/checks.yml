@@ -47,9 +47,19 @@ jobs:
       - name: Run Black to verify that the committed code is formatted
         run: |
           black --check .
+  spell-check:
+    name: Check Spelling
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Run Spell Checker
+        uses: crate-ci/typos@master
+        with: 
+          config: ./.github/workflows/typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
-    needs: [code-formatting]
+    needs: [code-formatting, spell-check]
     runs-on: ${{ matrix.os-version }}
     strategy:
       fail-fast: false

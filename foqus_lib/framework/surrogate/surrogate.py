@@ -20,6 +20,9 @@ import os
 import foqus_lib.framework.uq.SurrogateParser
 import json
 
+from typing import Tuple
+import pandas as pd
+
 
 class surrogate(threading.Thread):
     """
@@ -233,6 +236,19 @@ class surrogate(threading.Thread):
             self.graph = dat.flowsheet
         else:
             self.graph = None
+
+    def getSelectedInputOutputData(self, query: str = 'set == "Flowsheet"') -> Tuple[pd.DataFrame, pd.DataFrame]:
+        "Return a 2-ple of dataframes containing data for the currently selected input and output data"
+        input_vars, output_vars = list(self.input), list(self.output)
+        if not input_vars and output_vars:
+            pass
+            # TODO add warning
+        res = (
+            self.graph.results
+            .query(query)
+        )
+        df = res.exportVars(inputs=input_vars, outputs=output_vars)
+        return df[input_vars], df[output_vars]
 
     def terminate(self):
         """

@@ -361,6 +361,11 @@ class surrogateMethod(surrogate):
 
         epochs_count = self.options["epoch"].value
         verbose_setting = self.options["verbose"].value
+        self.msgQueue.put(f"{self.input=}")
+        self.msgQueue.put(f"{self.output=}")
+        input_data, output_data = self.getSelectedInputOutputData()
+        self.msgQueue.put(f"{input_data.columns=}")
+        self.msgQueue.put(f"{output_data.columns=}")
 
         # np.random.seed(46)
         # rn.seed(1342)

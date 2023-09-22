@@ -38,6 +38,8 @@ import time
 import shutil
 import re
 import math
+import io
+import contextlib
 
 try:
     import win32api  # used to get short file name for alamo sim exe
@@ -377,10 +379,13 @@ class surrogateMethod(surrogate):
 
             return model
 
-        # create model
-        model = create_model(xdata)
-        model.summary()
-        # self.msgQueue.put(model)
+        with contextlib.redirect_stdout(io.StringIO()) as stdout_buffer:
+            # create model
+            model = create_model()
+            model.summary()
+        training_output: str = stdout_buffer.getvalue()
+        print(training_output)
+        self.msgQueue.put(training_output)
 
         self.msgQueue.put("Training complete")
         # save model as H5

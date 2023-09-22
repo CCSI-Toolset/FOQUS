@@ -18,16 +18,6 @@ Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
 begining of the file (see pluginSearch.plugins() for exact character count of
 text).  They also need to have a .py extension and inherit the surrogate class.
 
-* This is an example of a surrogate model builder plugin for FOQUS,
-  it uses the ALAMO surrogate model builder program ref:
-
-  Cozad, A., N. V. Sahinidis and D. C. Miller, Automatic Learning of
-      Algebraic Models for Optimization, AIChE Journal, accepted, 2014.
-
-* A setting of this plugin is the location of the ALAMO executable
-
-John Eslick, Carnegie Mellon University, 2014
-
 """
 
 
@@ -199,27 +189,7 @@ class surrogateMethod(surrogate):
             '<p class="keras_nn</p>"</html>'
         )
         self.alamoDir = "keras_nn"
-        self.inputCols = [
-            ("FGIN (kg/hr)", float, 1.0),
-            ("FGIN_CO2MASSFRAC", float, 1.0),
-            ("SOLVENTIN (kg/hr)", float, 1.0),
-            ("STRIPPER_PRESSURE (kPa)", float, 1.0),
-            ("SOLVENTAMINECONC", float, 1.0),
-            ("SOLVENTCO2LOADING", float, 1.0),
-            ("CO2CAPTUREPERC", float, 1.0),
-            ("SRD (MJ/kg CO2)", float, 1.0),
-        ]
 
-        self.outputCols = [
-            ("FGIN (kg/hr)", float, 1.0),
-            ("FGIN_CO2MASSFRAC", float, 1.0),
-            ("SOLVENTIN (kg/hr)", float, 1.0),
-            ("STRIPPER_PRESSURE (kPa)", float, 1.0),
-            ("SOLVENTAMINECONC", float, 1.0),
-            ("SOLVENTCO2LOADING", float, 1.0),
-            ("CO2CAPTUREPERC", float, 1.0),
-            ("SRD (MJ/kg CO2)", float, 1.0),
-        ]
         self.updateVarCols()
         # include a Section called DATA Settings
         # Check the ALAMOSettings_v2.xlsx with hints and new labels
@@ -269,35 +239,6 @@ class surrogateMethod(surrogate):
             desc="Output activation function",
             hint="Output activation function",
             validValues=["relu", "sigmoid"],
-        )
-
-        self.options.add(
-            name="input_file",
-            section="DATA Settings",
-            dtype=str,
-            default=str(
-                Path(__file__).with_name("MEA_carbon_capture_dataset_mimo.csv")
-            ),
-            desc="Input file",
-            hint="Input file path",
-        )
-
-        self.options.add(
-            name="input_labels",
-            section="DATA Settings",
-            dtype=str,
-            default="FGIN (kg/hr),FGIN_CO2MASSFRAC,SOLVENTIN (kg/hr),STRIPPER_PRESSURE (kPa),SOLVENTAMINECONC,SOLVENTCO2LOADING",
-            desc="comma separated",
-            hint="Input columns",
-        )
-
-        self.options.add(
-            name="output_labels",
-            section="DATA Settings",
-            dtype=str,
-            default="CO2CAPTUREPERC,SRD (MJ/kg CO2)",
-            desc="comma separated",
-            hint="Output columns",
         )
 
         self.options.add(
@@ -386,27 +327,11 @@ class surrogateMethod(surrogate):
         # 4) Back to create_model() to compile and train model
         # 5) Back to code at end of file to save, load and test model
 
-        # import data
-        # data = pd.read_csv(r"/Users/sfhome/Desktop/CCI_Spring_2023/foqus/CCSI-Toolset/FOQUS/examples/other_files/ML_AI_Plugin/MEA_carbon_capture_dataset_mimo.csv")
-        current_directory = os.path.dirname(__file__)
+        xlabels = list(input_data.columns)
+        zlabels = list(output_data.columns)
 
-        input_file = str(self.options["input_file"].value)
-
-        # data = pd.read_csv(current_directory + os.path.sep + input_file)
-        data = pd.read_csv(input_file)
-        # define these two after xlabels and zlabels
-        # xdata = data.iloc[:, :6]  # there are 6 input variables/columns
-        # zdata = data.iloc[:, 6:]  # the rest are output variables/columns
-
-        # xlabels = xdata.columns.tolist()  # set labels as a list (default) from pandas
-        # zlabels = zdata.columns.tolist()  #    is a set of IndexedDataSeries objects
-
-        xlabels = str(self.options["input_labels"].value).split(",")
-        zlabels = str(self.options["output_labels"].value).split(",")
-
-        # tried the below code that didn't work
-        xdata = data.loc[:, xlabels]  # there are 6 input variables/columns
-        zdata = data.loc[:, zlabels]  # the rest are output variables/columns
+        xdata = input_data
+        zdata = output_data
 
         xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
         zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds

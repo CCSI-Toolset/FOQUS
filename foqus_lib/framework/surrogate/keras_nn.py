@@ -388,5 +388,5 @@ class surrogateMethod(surrogate):
         self.msgQueue.put(training_output)
 
         self.msgQueue.put("Training complete")
-        # save model as H5
-        model.save("keras_nn.h5")
+        # save model as native Keras
+        model.save("keras_nn.keras")

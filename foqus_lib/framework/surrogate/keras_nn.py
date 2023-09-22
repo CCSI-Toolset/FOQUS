@@ -350,18 +350,10 @@ class surrogateMethod(surrogate):
             for j in range(len(zlabels)):
                 zdata[i, j] = (zdata[i, j] - zmin[j]) / (zmax[j] - zmin[j])
 
-        model_data = np.concatenate(
-            (xdata, zdata), axis=1
-        )  # Keras requires a Numpy array as input
-
-        # define x and z data, not used but will add to variable dictionary
-        xdata = model_data[:, :-2]
-        zdata = model_data[:, -2:]
-
         # method to create model
-        def create_model(data):
+        def create_model():
 
-            inputs = tf.keras.Input(shape=(np.shape(data)[1],))  # create input layer
+            inputs = tf.keras.Input(shape=(np.shape(xdata)[1],))  # create input layer
 
             layers = keras_nn(  # define the rest of network using our custom class
                 # add our 4 options

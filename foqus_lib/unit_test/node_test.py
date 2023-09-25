@@ -175,7 +175,9 @@ class testImports(unittest.TestCase):
         # check that the returned functions expect the correct input as a way
         # of confirming that the class (function) types are correct
         with pytest.raises(TypeError):
-            skl_pickle_load(None)  # should fail to find 'read' and 'readline' attributes
+            skl_pickle_load(
+                None
+            )  # should fail to find 'read' and 'readline' attributes
 
     def test_import_smt_success(self):
         # skip this test if smt is not available
@@ -187,7 +189,9 @@ class testImports(unittest.TestCase):
         # check that the returned functions expect the correct input as a way
         # of confirming that the class (function) types are correct
         with pytest.raises(TypeError):
-            smt_pickle_load(None)  # should fail to find 'read' and 'readline' attributes
+            smt_pickle_load(
+                None
+            )  # should fail to find 'read' and 'readline' attributes
 
 
 # ----------------------------------------------------------------------------

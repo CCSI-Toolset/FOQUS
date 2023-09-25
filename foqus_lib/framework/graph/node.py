@@ -651,10 +651,7 @@ class pymodel_ml_ai(pymodel):
             )[0]
         elif self.trainer == "smt":
             self.scaled_outputs = self.model.evaluate(
-                np.reshape(
-                    np.array(self.scaled_inputs, ndmin=2),
-                    (self.model._n_x, 1)
-                    )
+                np.reshape(np.array(self.scaled_inputs, ndmin=2), (self.model._n_x, 1))
             )
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
@@ -1226,22 +1223,28 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                pickle_loaded = False  # use a flag so we don't overload the model unnecessarily
-                try: # try Scikitlearn first
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
                     if not pickle_loaded:
                         with open(str(self.modelName) + extension, "rb") as file:
                             self.model = skl_pickle_load(file)
                         pickle_loaded = True
                 except ModuleNotFoundError as e:
-                    _logger.info(e)  # will print that sklearn is not installed but won't just fail
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
 
-                try: # try SMT next
+                try:  # try SMT next
                     if not pickle_loaded:
                         with open(str(self.modelName) + extension, "rb") as file:
                             self.model = smt_pickle_load(file)
                         pickle_loaded = True
                 except ModuleNotFoundError as e:
-                    _logger.info(e)  # will print that sklearn is not installed but won't just fail
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
 
                 # now check which model type was unpickled
                 if "sklearn" in str(type(self.model)):
@@ -1793,22 +1796,28 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                pickle_loaded = False  # use a flag so we don't overload the model unnecessarily
-                try: # try Scikitlearn first
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
                     if not pickle_loaded:
                         with open(str(self.modelName) + extension, "rb") as file:
                             self.model = skl_pickle_load(file)
                         pickle_loaded = True
                 except ModuleNotFoundError as e:
-                    _logger.info(e)  # will print that sklearn is not installed but won't just fail
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
 
-                try: # try SMT next
+                try:  # try SMT next
                     if not pickle_loaded:
                         with open(str(self.modelName) + extension, "rb") as file:
                             self.model = smt_pickle_load(file)
                         pickle_loaded = True
                 except ModuleNotFoundError as e:
-                    _logger.info(e)  # will print that sklearn is not installed but won't just fail
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
 
                 # now check which model type was unpickled
                 if "sklearn" in str(type(self.model)):

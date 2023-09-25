@@ -272,10 +272,7 @@ class TestMLAIPluginFlowsheetRun:
         pytest.importorskip("sympy", reason="sympy not installed")
         # set sim name and confirm it's the correct model
         simnode.simNameBox.setCurrentIndex(8)
-        assert (
-            simnode.simNameBox.currentText()
-            == "mea_column_model_smt"
-        )
+        assert simnode.simNameBox.currentText() == "mea_column_model_smt"
 
         def test_flowsheet_run_successful(
             self,

@@ -40,25 +40,29 @@ def create_model(x_train, z_train, grad_train):
     # we have x_train = (n_m, n_x), z_train = (n_m, n_y) and grad_train = (n_y, n_m, n_x)
     n_m, n_x = np.shape(x_train)
     _, n_y = np.shape(z_train)
-    
+
     # check dimensions using grad_train
     assert np.shape(grad_train) == (n_y, n_m, n_x)
-    
+
     # reshape arrays
     X = np.reshape(x_train, (n_x, n_m))
     Y = np.reshape(z_train, (n_y, n_m))
     J = np.reshape(grad_train, (n_y, n_x, n_m))
-    
+
     # set up and train model
 
     # Train neural net
-    model = Model.initialize(X.shape[0], Y.shape[0], deep=2, wide=6)  # 2 hidden layers with 6 neurons each
+    model = Model.initialize(
+        X.shape[0], Y.shape[0], deep=2, wide=6
+    )  # 2 hidden layers with 6 neurons each
     model.train(
         X=X,  # input data
         Y=Y,  # output data
         J=J,  # gradient data
         num_iterations=25,  # number of optimizer iterations per mini-batch
-        mini_batch_size=int(np.floor(n_m/5)), # used to divide data into training batches (use for large data sets)
+        mini_batch_size=int(
+            np.floor(n_m / 5)
+        ),  # used to divide data into training batches (use for large data sets)
         num_epochs=20,  # number of passes through data
         alpha=0.15,  # learning rate that controls optimizer step size
         beta1=0.99,  # tuning parameter to control ADAM optimization
@@ -79,6 +83,7 @@ def create_model(x_train, z_train, grad_train):
 
     return model
 
+
 # Main code
 
 # import data
@@ -95,7 +100,7 @@ zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
 
 xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
 zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
-xdata, zdata = np.array(xdata), np.array(zdata) # (n_m, n_x) and (n_m, n_y)
+xdata, zdata = np.array(xdata), np.array(zdata)  # (n_m, n_x) and (n_m, n_y)
 gdata = np.stack([np.array(grad0_data), np.array(grad1_data)])  # (2, n_m, n_x)
 
 model_data = np.concatenate(
@@ -110,7 +115,7 @@ zdata = model_data[:, -2:]
 model = create_model(x_train=xdata, z_train=zdata, grad_train=gdata)
 
 with open("mea_column_model_smt.pkl", "wb") as file:
-     pickle.dump(model, file)
+    pickle.dump(model, file)
 
 # load model as pickle format
 with open("mea_column_model_smt.pkl", "rb") as file:

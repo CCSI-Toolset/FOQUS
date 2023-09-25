@@ -109,9 +109,9 @@ zdata = model_data[:, -2:]
 # create model
 model = create_model(x_train=xdata, z_train=zdata, grad_train=gdata)
 
-with open("mea_column_model_customnormform_smt.pkl", "wb") as file:
+with open("mea_column_model_smt.pkl", "wb") as file:
      pickle.dump(model, file)
 
 # load model as pickle format
-with open("mea_column_model_customnormform_smt.pkl", "rb") as file:
+with open("mea_column_model_smt.pkl", "rb") as file:
     loaded_model = pickle.load(file)

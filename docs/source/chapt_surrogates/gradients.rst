@@ -1,3 +1,5 @@
+.. _gengrad:
+
 Gradient Generation to Support Gradient-Enhanced Neural Networks
 ================================================================
 

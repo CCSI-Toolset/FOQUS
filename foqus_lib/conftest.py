@@ -165,6 +165,7 @@ def install_ml_ai_model_files(
         ts_models_base_path / "mea_column_model_customnormform_json_weights.h5",
         other_models_base_path / "mea_column_model_customnormform_pytorch.pt",
         other_models_base_path / "mea_column_model_customnormform_scikitlearn.pkl",
+        other_models_base_path / "mea_column_model_smt.pkl",
     ]:
         shutil.copy2(path, models_dir)
     # unzip the zip file (could be generalized later to more files if needed)

@@ -84,7 +84,7 @@ https://scikit-learn.org/stable/modules/generated/sklearn.neural_network.MLPRegr
 
 Surrogate Modeling Toolbox is an open-source Python package supporting a number of surrogate
 modeling methods, including gradient-enhanced neural network (GENN) models. GENN models train
-parameteres by minimizing a modified Least Squares Estimator which accounts for partial derivative predictions, leading to better accuracy on fewer training points compared to non-gradient-enhanced models. Gradient methods are applicable when training use cases where
+parameters by minimizing a modified Least Squares Estimator which accounts for partial derivative predictions, leading to better accuracy on fewer training points compared to non-gradient-enhanced models. Gradient methods are applicable when training use cases where
 system data is generally known, such as continuous physics-based problems like aerodynamics.
 If gradient data is not known, users may run a gradient generation tool provided within FOQUS and can consults the tool documentation here: :ref:`gengrad`. Users may find further information on GENN models within Surrogate Modeling Toolbox in
 the documentation: https://smt.readthedocs.io/en/stable/_src_docs/surrogate_models/genn.html.
@@ -104,7 +104,7 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data normalized according to a specifc scaling form and add all input and
+  data normalized according to a specific scaling form and add all input and
   output bounds custom attributes. The section below details scaling options.
 - *normalization_form* - string flag required when *normalization* is *True*
   indicating a scaling option for FOQUS to automatically scale flowsheet-level

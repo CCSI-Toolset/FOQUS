@@ -36,6 +36,20 @@ if os.name == "nt":
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QInputDialog, QFileDialog
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> "settingsFrame":
+    window.fsettingsFrame = frame = settingsFrame(session, window)
+    frame.waiting.connect(window.setCursorWaiting)
+    frame.notwaiting.connect(window.setCursorNormal)
+    return frame
+
+
 mypath = os.path.dirname(__file__)
 _settingsFrameUI, _settingsFrame = uic.loadUiType(
     os.path.join(mypath, "settingsFrame_UI.ui")

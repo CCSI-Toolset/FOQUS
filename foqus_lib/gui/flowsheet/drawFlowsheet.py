@@ -39,6 +39,10 @@ import math
 import types
 
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
 class fsScene(QGraphicsScene):
     """
     Class for viewing and editing a flowsheet.
@@ -604,3 +608,18 @@ class drawFlowsheet(QGraphicsView):
         connected to a deleted node.
         """
         self.scene().deleteSelected()
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> drawFlowsheet:
+    window.flowsheetEditor = ne = drawFlowsheet(session, window)
+
+    ne.nodeSelected.connect(window.setNodePanel)
+    ne.edgeSelected.connect(window.setEdgePanel)
+    ne.updateEdgeEdit.connect(window.applyAndUpdateEdgeEdit)
+    ne.updateFS.connect(window.refreshFlowsheet)
+    ne.updateFSPos.connect(window.refreshNodeCoord)
+
+    return ne

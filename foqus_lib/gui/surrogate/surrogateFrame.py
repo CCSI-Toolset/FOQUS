@@ -35,10 +35,23 @@ from PyQt5.QtWidgets import QMessageBox, QFileDialog, QTableWidget
 from PyQt5.QtGui import QColor
 from PyQt5 import uic
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
 mypath = os.path.dirname(__file__)
 _surrogateFrameUI, _surrogateFrame = uic.loadUiType(
     os.path.join(mypath, "surrogateFrame_UI.ui")
 )
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> "surrogateFrame":
+    window.surFrame = frame = surrogateFrame(session, window)
+    frame.setStatusBar.connect(window.setStatus)
+    return frame
 
 
 class surrogateFrame(_surrogateFrame, _surrogateFrameUI):

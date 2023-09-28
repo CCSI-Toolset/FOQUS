@@ -68,8 +68,32 @@ from foqus_lib.gui.help.helpBrowser import *
 from foqus_lib.gui.surrogate.surrogateFrame import *
 from foqus_lib.gui.heatIntegration.heatIntegrationFrame import *
 from configparser import *
+try:
+    from importlib import metadata
+except ModuleNotFoundError:
+    import importlib_metadata as metadata
+from typing import Dict
+from types import ModuleType
 
 _log = logging.getLogger("foqus." + __name__)
+
+
+def _load_gui_plugins(group_name: str = "foqus.plugins.gui") -> Dict[str, ModuleType]:
+    eps_by_group = metadata.entry_points()
+    foqus_eps = eps_by_group[group_name]
+    module_by_name = {}
+
+    for ep in foqus_eps:
+        try:
+            mod = ep.load()
+        except ImportError as e:
+            _log.exception("module %r for plugin %r could not be imported", ep.value, ep.name)
+        else:
+            module_by_name[ep.name] = mod
+
+    if not module_by_name:
+        _log.error("No plugins loaded from entry_point group %r", group_name)
+    return module_by_name
 
 
 class mainWindow(QMainWindow):
@@ -123,6 +147,33 @@ class mainWindow(QMainWindow):
         )
         self.mainWidget = QStackedWidget(self)
         self.setCentralWidget(self.mainWidget)
+
+        self.frames = self._load_frames_from_plugins(session=self.dat)
+        self._install_frame_widgets(frames=self.frames, container=self.mainWidget)
+        ## Create toolboxes for editing nodes and edges in flowsheet
+        self._install_dock_widgets(session=self.dat)
+        ## Center the flowsheet view on flowsheet
+        # self.flowsheetEditor.center()
+        ## Create a variable browser dialog browser
+        self.varBrowse = variableBrowser(self.dat, self)
+        ## Create the toolbar and menu bar for mainwindow
+        #   (there is no menu anymore)
+        self.makeMainToolBar()
+        self.makeDrawingToolBar()
+        # Update the main window set a few things and show the window
+        self.refresh()
+        self.app = None  # Qt application
+        self.runningSingle = False
+        self.setWindowIcon(QIcon(self.iconPaths["main"]))
+        self.show()
+        if ts is not None:
+            self.tstimer = QtCore.QTimer(self)
+            self.tstimer.timeout.connect(lambda: self.runTestScript(ts))
+            self.tstimer.start(2000)
+        else:
+            self.tstimer = None
+
+    def _create_frames_old(self) -> None:
         ### Create the main window widgets for stacked widget
         #  Create the flowsheet editor/viewer
         self.flowsheetEditor = drawFlowsheet(self.dat, self)
@@ -185,45 +236,56 @@ class mainWindow(QMainWindow):
             "heatInt": 8,
             "settings": 9,
         }
-        ## Create toolboxes for editing nodes and edges in flowsheet
+
+    def _load_frames_from_plugins(self, session, register_func_name: str = "foqus_register_gui"):
+        module_by_name = _load_gui_plugins()
+        frames = {}
+        for name, module in module_by_name.items():
+            register_func = getattr(module, register_func_name, None)
+            if register_func is None:
+                _log.warning("function %r is not defined for plugin %r", register_func_name, name)
+                continue
+            try:
+                frame = register_func(window=self, session=session)
+            except Exception as e:
+                _log.exception("An error occurred while calling %r for plugin %r", register_func, name)
+            else:
+                frames[name] = frame
+        _log.info("Created %d frames", len(frames))
+        return frames
+
+    def _install_frame_widgets(self, frames: dict, container: QWidget) -> None:
+        self.screenIndex = idx_by_name = collections.defaultdict(lambda *args: -1)
+        for idx, (name, frame) in enumerate(frames.items()):
+            _log.debug("Installing frame widget %s for %r", frame, name)
+            container.addWidget(frame)
+            idx_by_name[name] = idx
+        _log.info("Installed %d frame widgets", len(self.screenIndex))
+
+    def _install_dock_widgets(self, session) -> None:
         # node editor
-        self.nodeDock = nodeDock(self.dat, self)
+        from foqus_lib.gui.flowsheet.nodePanel import nodeDock
+        self.nodeDock = nodeDock(session, self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.nodeDock)
         self.nodeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
         self.nodeDock.waiting.connect(self.setCursorWaiting)
         self.nodeDock.notwaiting.connect(self.setCursorNormal)
         self.nodeDock.hide()
+        from foqus_lib.gui.flowsheet.edgePanel import edgeDock
         # Edge editor
-        self.edgeDock = edgeDock(self.dat, self)
+        self.edgeDock = edgeDock(session, self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.edgeDock)
         self.edgeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
         self.edgeDock.hide()
         ##create help dock widget
-        self.helpDock = helpBrowserDock(self, self.dat)
+        from foqus_lib.gui.help.helpBrowser import helpBrowserDock
+        self.helpDock = helpBrowserDock(self, session)
         self.helpDock.hideHelp.connect(self.hideHelp)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.helpDock)
         self.helpDock.hide()
         self.helpDock.showAbout.connect(self.showAbout)
-        ## Center the flowsheet view on flowsheet
-        self.flowsheetEditor.center()
-        ## Create a variable browser dialog browser
-        self.varBrowse = variableBrowser(self.dat, self)
-        ## Create the toolbar and menu bar for mainwindow
-        #   (there is no menu anymore)
-        self.makeMainToolBar()
-        self.makeDrawingToolBar()
-        # Update the main window set a few things and show the window
-        self.refresh()
-        self.app = None  # Qt application
-        self.runningSingle = False
-        self.setWindowIcon(QIcon(self.iconPaths["main"]))
-        self.show()
-        if ts is not None:
-            self.tstimer = QtCore.QTimer(self)
-            self.tstimer.timeout.connect(lambda: self.runTestScript(ts))
-            self.tstimer.start(2000)
-        else:
-            self.tstimer = None
+        # data browser dialog
+        self.dataBrowserDialog = dataBrowserDialog(self.dat, self)
 
     def handleNodeException(self, ex: NodeEx):
         """

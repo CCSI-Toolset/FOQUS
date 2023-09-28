@@ -53,10 +53,25 @@ from PyQt5.QtGui import QCursor
 
 from PyQt5 import uic
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
+
 mypath = os.path.dirname(__file__)
 _sdoeSetupFrameUI, _sdoeSetupFrame = uic.loadUiType(
     os.path.join(mypath, "sdoeSetupFrame_UI.ui")
 )
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> "sdoeSetupFrame":
+    window.sdoeSetupFrame = frame = sdoeSetupFrame(session, window)
+    return frame
+
+
 
 
 class sdoeSetupFrame(_sdoeSetupFrame, _sdoeSetupFrameUI):

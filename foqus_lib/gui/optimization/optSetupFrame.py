@@ -44,9 +44,9 @@ _optSetupFrameUI, _optSetupFrame = uic.loadUiType(
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session: session,
-    ) -> "optSetupFrame":
+    window: mainWindow,
+    session: session,
+) -> "optSetupFrame":
     window.optSetupFrame = frame = optSetupFrame(session, window)
     frame.setStatusBar.connect(window.setStatus)
     frame.updateGraph.connect(window.refreshFlowsheet)

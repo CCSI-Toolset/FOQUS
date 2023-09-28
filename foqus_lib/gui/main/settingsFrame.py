@@ -41,9 +41,9 @@ from foqus_lib.framework.session.session import session
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session: session,
-    ) -> "settingsFrame":
+    window: mainWindow,
+    session: session,
+) -> "settingsFrame":
     window.fsettingsFrame = frame = settingsFrame(session, window)
     frame.waiting.connect(window.setCursorWaiting)
     frame.notwaiting.connect(window.setCursorNormal)

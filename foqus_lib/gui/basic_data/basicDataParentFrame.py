@@ -38,9 +38,9 @@ class basicDataParentFrame(_basicDataParentFrame, _basicDataParentFrameUI):
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session,
-    ) -> basicDataParentFrame:
+    window: mainWindow,
+    session,
+) -> basicDataParentFrame:
     frame = basicDataParentFrame(parent=window)
     return frame
 

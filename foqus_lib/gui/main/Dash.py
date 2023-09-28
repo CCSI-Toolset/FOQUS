@@ -140,9 +140,9 @@ class dashFrame(_dashFrame, _dashFrameUI):
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session,
-    ) -> dashFrame:
+    window: mainWindow,
+    session,
+) -> dashFrame:
     frame = window.dashFrame = dashFrame(parent=window)
     buttons = frame.buttonBox
     buttons.rejected.connect(window.cancelSession)

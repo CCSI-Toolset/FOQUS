@@ -97,7 +97,7 @@ dist = setup(
             "heatInt = foqus_lib.gui.heatIntegration.heatIntegrationFrame",
             "settings = foqus_lib.gui.main.settingsFrame",
             "dataBrowser = foqus_lib.gui.flowsheet.dataBrowserDialog",
-        ]
+        ],
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).
     # requirements.txt should stay empty (other than the "-e .")

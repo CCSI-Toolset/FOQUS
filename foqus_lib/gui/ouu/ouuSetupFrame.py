@@ -66,9 +66,9 @@ _ouuSetupFrameUI, _ouuSetupFrame = uic.loadUiType(
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session: session,
-    ) -> "ouuSetupFrame":
+    window: mainWindow,
+    session: session,
+) -> "ouuSetupFrame":
     window.ouuSetupFrame = frame = ouuSetupFrame(session, window)
     return frame
 

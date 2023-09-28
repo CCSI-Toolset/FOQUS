@@ -46,9 +46,9 @@ _surrogateFrameUI, _surrogateFrame = uic.loadUiType(
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session: session,
-    ) -> "surrogateFrame":
+    window: mainWindow,
+    session: session,
+) -> "surrogateFrame":
     window.surFrame = frame = surrogateFrame(session, window)
     frame.setStatusBar.connect(window.setStatus)
     return frame

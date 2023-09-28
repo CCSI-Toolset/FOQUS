@@ -50,6 +50,7 @@ from foqus_lib.gui.dialogs.variableBrowser import variableBrowser
 from foqus_lib.gui.flowsheet.dataBrowserDialog import dataBrowserDialog
 
 from configparser import *
+
 try:
     from importlib import metadata
 except ModuleNotFoundError:
@@ -69,7 +70,9 @@ def _load_gui_plugins(group_name: str = "foqus.plugins.gui") -> Dict[str, Module
         try:
             mod = ep.load()
         except ImportError as e:
-            _log.exception("module %r for plugin %r could not be imported", ep.value, ep.name)
+            _log.exception(
+                "module %r for plugin %r could not be imported", ep.value, ep.name
+            )
         else:
             module_by_name[ep.name] = mod
 
@@ -219,18 +222,26 @@ class mainWindow(QMainWindow):
             "settings": 9,
         }
 
-    def _load_frames_from_plugins(self, session, register_func_name: str = "foqus_register_gui"):
+    def _load_frames_from_plugins(
+        self, session, register_func_name: str = "foqus_register_gui"
+    ):
         module_by_name = _load_gui_plugins()
         frames = {}
         for name, module in module_by_name.items():
             register_func = getattr(module, register_func_name, None)
             if register_func is None:
-                _log.warning("function %r is not defined for plugin %r", register_func_name, name)
+                _log.warning(
+                    "function %r is not defined for plugin %r", register_func_name, name
+                )
                 continue
             try:
                 frame = register_func(window=self, session=session)
             except Exception as e:
-                _log.exception("An error occurred while calling %r for plugin %r", register_func, name)
+                _log.exception(
+                    "An error occurred while calling %r for plugin %r",
+                    register_func,
+                    name,
+                )
             else:
                 frames[name] = frame
         _log.info("Created %d frames", len(frames))
@@ -247,6 +258,7 @@ class mainWindow(QMainWindow):
     def _install_dock_widgets(self, session) -> None:
         # node editor
         from foqus_lib.gui.flowsheet.nodePanel import nodeDock
+
         self.nodeDock = nodeDock(session, self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.nodeDock)
         self.nodeDock.redrawFlowsheet.connect(self.refreshFlowsheet)
@@ -254,6 +266,7 @@ class mainWindow(QMainWindow):
         self.nodeDock.notwaiting.connect(self.setCursorNormal)
         self.nodeDock.hide()
         from foqus_lib.gui.flowsheet.edgePanel import edgeDock
+
         # Edge editor
         self.edgeDock = edgeDock(session, self)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.edgeDock)
@@ -261,6 +274,7 @@ class mainWindow(QMainWindow):
         self.edgeDock.hide()
         ##create help dock widget
         from foqus_lib.gui.help.helpBrowser import helpBrowserDock
+
         self.helpDock = helpBrowserDock(self, session)
         self.helpDock.hideHelp.connect(self.hideHelp)
         self.addDockWidget(QtCore.Qt.RightDockWidgetArea, self.helpDock)

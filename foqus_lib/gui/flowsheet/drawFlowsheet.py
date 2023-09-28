@@ -611,9 +611,9 @@ class drawFlowsheet(QGraphicsView):
 
 
 def foqus_register_gui(
-        window: mainWindow,
-        session: session,
-    ) -> drawFlowsheet:
+    window: mainWindow,
+    session: session,
+) -> drawFlowsheet:
     window.flowsheetEditor = ne = drawFlowsheet(session, window)
 
     ne.nodeSelected.connect(window.setNodePanel)

@@ -54,10 +54,22 @@ from PyQt5.QtGui import QCursor, QColor
 
 from PyQt5 import uic
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
 mypath = os.path.dirname(__file__)
 _uqSetupFrameUI, _uqSetupFrame = uic.loadUiType(
     os.path.join(mypath, "uqSetupFrame_UI.ui")
 )
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ):
+    window.uqSetupFrame = frame = uqSetupFrame(session, window)
+    return frame
 
 
 class checkingThread(QtCore.QThread):

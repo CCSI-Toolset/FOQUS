@@ -43,11 +43,19 @@ from PyQt5.QtWidgets import (
     QMenu,
     QAction,
     QToolBar,
+    QMessageBox,
+    QFileDialog,
+    QDialog,
 )
 from PyQt5.QtGui import QIcon, QKeySequence
 from foqus_lib.gui import icons_rc
 from foqus_lib.gui.dialogs.variableBrowser import variableBrowser
 from foqus_lib.gui.flowsheet.dataBrowserDialog import dataBrowserDialog
+from foqus_lib.gui.flowsheet.flowsheetSettingsDialog import flowsheetSettingsDialog
+from foqus_lib.gui.main.saveMetadataDialog import saveMetadataDialog
+from foqus_lib.gui.model.gatewayUploadDialog import gatewayUploadDialog
+from foqus_lib.gui.sintervectorize.SinterVectorizeDialog import SinterVectorizeDialog
+from foqus_lib.gui.main.sessionDescriptionEdit import sessionDescriptionDialog
 
 from configparser import *
 

@@ -85,17 +85,18 @@ dist = setup(
             "foqus = foqus_lib.foqus:main",
             "foqusPSUADEClient = foqus_lib.gui.ouu.foqusPSUADEClient:main",
         ],
-        "foqus.plugins": [
+        "foqus.plugins.gui": [
             "home = foqus_lib.gui.main.Dash",
             "basicData = foqus_lib.gui.basic_data.basicDataParentFrame",
-            # "flow = flowsheetEditor",
-            # "uq = uqSetupFrame",
-            # "opt = optSetupFrame",
-            # "ouu = ouuSetupFrame",
-            # "sdoe = sdoeSetupFrame",
-            # "surrogate = surrogateFrame",
-            # "heatInt = heatIntegrationFrame",
-            # "settings = settingsFrame",
+            "flow = foqus_lib.gui.flowsheet.drawFlowsheet",
+            "uq = foqus_lib.gui.uq.uqSetupFrame",
+            "opt = foqus_lib.gui.optimization.optSetupFrame",
+            "ouu = foqus_lib.gui.ouu.ouuSetupFrame",
+            "sdoe = foqus_lib.gui.sdoe.sdoeSetupFrame",
+            "surrogate = foqus_lib.gui.surrogate.surrogateFrame",
+            "heatInt = foqus_lib.gui.heatIntegration.heatIntegrationFrame",
+            "settings = foqus_lib.gui.main.settingsFrame",
+            "dataBrowser = foqus_lib.gui.flowsheet.dataBrowserDialog",
         ]
     },
     # Required packages needed in the users env go here (non-versioned strongly preferred).

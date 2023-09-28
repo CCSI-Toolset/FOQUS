@@ -34,10 +34,23 @@ from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QDialog
 from PyQt5.QtGui import QColor
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
 mypath = os.path.dirname(__file__)
 _optSetupFrameUI, _optSetupFrame = uic.loadUiType(
     os.path.join(mypath, "optSetupFrame_UI.ui")
 )
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> "optSetupFrame":
+    window.optSetupFrame = frame = optSetupFrame(session, window)
+    frame.setStatusBar.connect(window.setStatus)
+    frame.updateGraph.connect(window.refreshFlowsheet)
+    return frame
 
 
 class optSetupFrame(_optSetupFrame, _optSetupFrameUI):

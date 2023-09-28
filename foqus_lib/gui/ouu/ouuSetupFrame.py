@@ -55,10 +55,22 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 
+from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.session.session import session
+
+
 mypath = os.path.dirname(__file__)
 _ouuSetupFrameUI, _ouuSetupFrame = uic.loadUiType(
     os.path.join(mypath, "ouuSetupFrame.ui")
 )
+
+
+def foqus_register_gui(
+        window: mainWindow,
+        session: session,
+    ) -> "ouuSetupFrame":
+    window.ouuSetupFrame = frame = ouuSetupFrame(session, window)
+    return frame
 
 
 class ouuSetupFrame(_ouuSetupFrame, _ouuSetupFrameUI):

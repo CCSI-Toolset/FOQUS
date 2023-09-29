@@ -219,7 +219,7 @@ def timerWait(timer, sleep=0.25, n=40, go=go, timers=timers, tf=testOutFile):
             return True
     timers[timer].stop()  # Timer never did it's thing so just shut it down
     with open(tf, "a") as f:  # file to write test results to
-        f.write("ERROR: timer {} didn't stop in alloted time\n".format(timer))
+        f.write("ERROR: timer {} didn't stop in allotted time\n".format(timer))
     return False  # return False to stop script.  Something is wrong
 
 

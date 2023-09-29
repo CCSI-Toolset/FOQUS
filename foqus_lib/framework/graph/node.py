@@ -149,26 +149,52 @@ def attempt_load_sklearn(try_imports=True):
         import sklearn
         import pickle
 
-        pickle_load = pickle.load
+        skl_pickle_load = pickle.load
 
     # throw warning if manually failed for test or if package actually not available
     except (AssertionError, ImportError, ModuleNotFoundError):
         # if sklearn is not available, create a proxy function that will
         # raise an exception whenever code tries to use `load()` at runtime
-        def pickle_load(*args, **kwargs):
+        def skl_pickle_load(*args, **kwargs):
             raise ModuleNotFoundError(
                 f"`load()` was called with args={args},"
                 "kwargs={kwargs} but `sklearn` is not available"
             )
 
-    return pickle_load
+    return skl_pickle_load
+
+
+def attempt_load_smt(try_imports=True):
+    try:
+        assert try_imports  # if False will auto-trigger exceptions
+        # smt should be installed, but not required for non ML/AI models
+        import smt
+        import pickle
+
+        smt_pickle_load = pickle.load
+
+    # throw warning if manually failed for test or if package actually not available
+    except (AssertionError, ImportError, ModuleNotFoundError):
+        # if smt is not available, create a proxy function that will
+        # raise an exception whenever code tries to use `load()` at runtime
+        def smt_pickle_load(*args, **kwargs):
+            raise ModuleNotFoundError(
+                f"`load()` was called with args={args},"
+                "kwargs={kwargs} but `smt` is not available"
+            )
+
+    return smt_pickle_load
 
 
 # attempt to load optional dependenices for node script
+
+# pickle is loaded identically twice so that sklearn and smt can load or fail
+# independently of each other
 load, json_load = attempt_load_tensorflow()
 parse, symbol, solve = attempt_load_sympy()
 torch_load, torch_tensor, torch_float = attempt_load_pytorch()
-pickle_load = attempt_load_sklearn()
+skl_pickle_load = attempt_load_sklearn()
+smt_pickle_load = attempt_load_smt()
 
 # pylint: enable=import-error
 
@@ -296,13 +322,21 @@ class pymodel_ml_ai(pymodel):
             model_input_size = self.model.n_features_in_
             model_output_size = self.model.n_outputs_
 
+        elif self.trainer == "smt":
+            # set the custom layer object
+            custom_layer = self.model.custom
+            # set the model input and output sizes
+            model_input_size = self.model._n_x
+            model_output_size = self.model._n_y
+
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras`, 'torch' or "
-                "`sklearn` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, `torch`, "
+                "`sklearn` or `smt` and should not be able to take any other "
+                "value."
             )
 
         self.custom_layer = (
@@ -615,13 +649,18 @@ class pymodel_ml_ai(pymodel):
             self.scaled_outputs = self.model.predict(
                 np.array(self.scaled_inputs, ndmin=2)
             )[0]
+        elif self.trainer == "smt":
+            self.scaled_outputs = self.model.evaluate(
+                np.reshape(np.array(self.scaled_inputs, ndmin=2), (self.model._n_x, 1))
+            )
         else:  # this shouldn't occur, adding failsafe just in case
             raise AttributeError(
                 "Unknown file type: " + self.trainer + ", this "
                 "should not have occurred. Please contact the "
                 "FOQUS developers if this error occurs; the "
-                "trainer should be set internally to `keras`, 'torch' or "
-                "`sklearn` and should not be able to take any other value."
+                "trainer should be set internally to `keras`, `torch`, "
+                "`sklearn` or `smt` and should not be able to take any other "
+                "value."
             )
 
         outidx = 0
@@ -1173,7 +1212,7 @@ class Node:
             elif os.path.exists(
                 os.path.join(os.getcwd(), str(self.modelName) + ".pkl")
             ):
-                extension = ".pkl"  # this is for Sci Kit Learn models
+                extension = ".pkl"  # this is for Sci Kit Learn and SMT models
             else:  # assume it's a folder with no extension
                 extension = ""
 
@@ -1184,9 +1223,41 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                with open(str(self.modelName) + extension, "rb") as file:
-                    self.model = pickle_load(file)
-                trainer = "sklearn"
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = skl_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                try:  # try SMT next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = smt_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                # now check which model type was unpickled
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
+                    trainer = "sklearn"
+                elif "smt" in model_type_name:
+                    trainer = "smt"
+                else:  # unsupported model type was unpickled
+                    raise AttributeError(
+                        f"Unknown model type: {model_type_name!r}. Only "
+                        "sklearn MLPRegressor and smt GENN (Model) objects are "
+                        "currently supported."
+                    )
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer
@@ -1726,9 +1797,41 @@ class Node:
             elif (
                 extension == ".pkl"
             ):  # use importlib/pickle loading syntax for SciKitLearn models
-                with open(str(self.modelName) + extension, "rb") as file:
-                    self.model = pickle_load(file)
-                trainer = "sklearn"
+                pickle_loaded = (
+                    False  # use a flag so we don't overload the model unnecessarily
+                )
+                try:  # try Scikitlearn first
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = skl_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                try:  # try SMT next
+                    if not pickle_loaded:
+                        with open(str(self.modelName) + extension, "rb") as file:
+                            self.model = smt_pickle_load(file)
+                        pickle_loaded = True
+                except ModuleNotFoundError as e:
+                    _logger.info(
+                        e
+                    )  # will print that sklearn is not installed but won't just fail
+
+                # now check which model type was unpickled
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
+                    trainer = "sklearn"
+                elif "smt" in model_type_name:
+                    trainer = "smt"
+                else:  # unsupported model type was unpickled
+                    raise AttributeError(
+                        f"Unknown model type: {model_type_name!r}. Only "
+                        "sklearn MLPRegressor and smt GENN (Model) objects are "
+                        "currently supported."
+                    )
             elif extension != ".json":  # use standard Keras load method
                 try:  # see if custom layer script exists
                     module = import_module(str(self.modelName))  # contains CustomLayer

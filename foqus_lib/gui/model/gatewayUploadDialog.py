@@ -24,8 +24,7 @@ import subprocess
 import sys
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QInputDialog, QLineEdit,
-                             QMessageBox)
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 

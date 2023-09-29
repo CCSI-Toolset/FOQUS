@@ -22,8 +22,14 @@ import subprocess
 import sys
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QInputDialog, QLineEdit,
-                             QMessageBox, QTextEdit)
+from PyQt5.QtWidgets import (
+    QDialog,
+    QFileDialog,
+    QInputDialog,
+    QLineEdit,
+    QMessageBox,
+    QTextEdit,
+)
 
 import foqus_lib.framework.sintervectorize.SinterFileVectorize as sv
 import foqus_lib.gui.helpers.guiHelpers as gh

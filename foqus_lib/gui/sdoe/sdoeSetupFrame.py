@@ -23,9 +23,18 @@ import pandas as pd
 from PyQt5 import QtCore, QtGui, uic
 from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QCheckBox,
-                             QDialog, QMenu, QMessageBox, QPushButton, QStyle,
-                             QStyledItemDelegate, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QCheckBox,
+    QDialog,
+    QMenu,
+    QMessageBox,
+    QPushButton,
+    QStyle,
+    QStyledItemDelegate,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.sdoe import df_utils, odoeu, sdoe

@@ -35,11 +35,15 @@ from typing import List, Tuple
 import pytest
 
 from foqus_lib.framework.graph.graph import Graph
-from foqus_lib.framework.graph.node import (Node, NodeEx, attempt_load_pytorch,
-                                            attempt_load_sklearn,
-                                            attempt_load_sympy,
-                                            attempt_load_tensorflow,
-                                            pymodel_ml_ai)
+from foqus_lib.framework.graph.node import (
+    Node,
+    NodeEx,
+    attempt_load_pytorch,
+    attempt_load_sklearn,
+    attempt_load_sympy,
+    attempt_load_tensorflow,
+    pymodel_ml_ai,
+)
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
 from foqus_lib.framework.pymodel import pymodel_test
 from foqus_lib.framework.pymodel.pymodel import pymodel

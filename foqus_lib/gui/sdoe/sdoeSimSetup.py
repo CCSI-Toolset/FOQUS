@@ -21,8 +21,7 @@ import tempfile
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QApplication, QComboBox, QMessageBox,
-                             QStackedLayout)
+from PyQt5.QtWidgets import QApplication, QComboBox, QMessageBox, QStackedLayout
 
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.uq.Common import Common

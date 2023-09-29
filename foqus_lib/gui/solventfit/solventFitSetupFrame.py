@@ -19,9 +19,16 @@ import sys
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import (QApplication, QCheckBox, QFileDialog, QLabel,
-                             QMainWindow, QMessageBox, QTableWidgetItem,
-                             QVBoxLayout)
+from PyQt5.QtWidgets import (
+    QApplication,
+    QCheckBox,
+    QFileDialog,
+    QLabel,
+    QMainWindow,
+    QMessageBox,
+    QTableWidgetItem,
+    QVBoxLayout,
+)
 
 from foqus_lib.framework.solventfit.SolventFit import SolventFit
 from foqus_lib.framework.uq.Common import *

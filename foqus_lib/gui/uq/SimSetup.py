@@ -20,13 +20,21 @@ import sys
 import tempfile
 
 import numpy
+
 # from SimSetup_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QComboBox,
-                             QDialogButtonBox, QFileDialog, QListWidgetItem,
-                             QMessageBox, QStackedLayout)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QComboBox,
+    QDialogButtonBox,
+    QFileDialog,
+    QListWidgetItem,
+    QMessageBox,
+    QStackedLayout,
+)
 
 from foqus_lib.framework.uq.Common import Common
 from foqus_lib.framework.uq.Distribution import Distribution

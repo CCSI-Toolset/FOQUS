@@ -27,13 +27,21 @@ import foqus_lib.gui.helpers.guiHelpers as gh
 
 try:
     # pylint: disable=import-error
-    from dmf_lib.common.common import (DMF_HOME, DMF_LITE_REPO_NAME,
-                                       PROP_HEADER, PROPERTIES_EXT,
-                                       REPO_PROPERTIES_UNIX_PATH,
-                                       REPO_PROPERTIES_WIN_PATH,
-                                       REQUESTS_TIMEOUT, SC_TITLE,
-                                       SHARE_LOGIN_EXT, UNIX_PATH_SEPARATOR,
-                                       UTF8, WIN_PATH_SEPARATOR, WINDOWS)
+    from dmf_lib.common.common import (
+        DMF_HOME,
+        DMF_LITE_REPO_NAME,
+        PROP_HEADER,
+        PROPERTIES_EXT,
+        REPO_PROPERTIES_UNIX_PATH,
+        REPO_PROPERTIES_WIN_PATH,
+        REQUESTS_TIMEOUT,
+        SC_TITLE,
+        SHARE_LOGIN_EXT,
+        UNIX_PATH_SEPARATOR,
+        UTF8,
+        WIN_PATH_SEPARATOR,
+        WINDOWS,
+    )
     from dmf_lib.common.methods import Common
     from dmf_lib.dialogs.select_repo_dialog import SelectRepoDialog
     from dmf_lib.dialogs.status_dialog import StatusDialog
@@ -49,8 +57,7 @@ from io import StringIO
 from urllib.request import urlopen
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QInputDialog, QLineEdit,
-                             QMessageBox)
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
 
 mypath = os.path.dirname(__file__)
 _dmfUploadDialogUI, _dmfUploadDialog = uic.loadUiType(

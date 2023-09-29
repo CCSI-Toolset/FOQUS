@@ -22,8 +22,7 @@ import time
 
 import matplotlib
 import numpy as np
-from matplotlib.backends.backend_qt5agg import \
-    FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QMessageBox, QVBoxLayout, QWidget

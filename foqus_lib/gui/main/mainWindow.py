@@ -31,8 +31,15 @@ from configparser import *
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QIcon, QKeySequence
-from PyQt5.QtWidgets import (QAction, QActionGroup, QMainWindow, QMenu,
-                             QStackedWidget, QToolBar, QWidget)
+from PyQt5.QtWidgets import (
+    QAction,
+    QActionGroup,
+    QMainWindow,
+    QMenu,
+    QStackedWidget,
+    QToolBar,
+    QWidget,
+)
 
 from foqus_lib.framework import optimizer
 from foqus_lib.framework.graph.graph import *

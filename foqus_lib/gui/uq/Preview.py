@@ -18,8 +18,14 @@ import sys
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QDialogButtonBox,
-                             QFileDialog, QListWidgetItem, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QDialogButtonBox,
+    QFileDialog,
+    QListWidgetItem,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.Model import Model

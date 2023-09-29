@@ -26,8 +26,7 @@ from io import StringIO
 
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import (QAbstractItemView, QInputDialog, QLineEdit,
-                             QMessageBox)
+from PyQt5.QtWidgets import QAbstractItemView, QInputDialog, QLineEdit, QMessageBox
 
 import foqus_lib.gui.helpers.guiHelpers as gh
 from foqus_lib.framework.graph.node import *

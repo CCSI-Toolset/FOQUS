@@ -23,6 +23,7 @@ Keith Beattie, Lawrence Berkeley National Labs, 2020
 import argparse
 import json
 import logging
+
 # Imports
 import signal
 import sys
@@ -60,6 +61,7 @@ def guiImport(mpl_backend="Qt5Agg"):
         import PyQt5
         import PyQt5.QtCore
         import PyQt5.QtGui
+
         # QtWidgets, QtGui, and QtCore are used in this module,
         # but they might not be available in PyQt5 without importing them first
         # in most circumstances, they will be already imported
@@ -361,8 +363,10 @@ def main(args_to_parse=None):
         sys.exit(makeShortcut())
     if args.terminateConsumer:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import (keepAliveTimer,
-                                                               turbineLiteDB)
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -378,8 +382,10 @@ def main(args_to_parse=None):
             sys.exit(1)
     elif args.addTurbineApp:
         try:
-            from foqus_lib.framework.sim.turbineLiteDB import (keepAliveTimer,
-                                                               turbineLiteDB)
+            from foqus_lib.framework.sim.turbineLiteDB import (
+                keepAliveTimer,
+                turbineLiteDB,
+            )
 
             fs = generalSettings()  # foqus settings
             fs.load(logging=False)
@@ -595,8 +601,7 @@ def main(args_to_parse=None):
         listener.start()
         listener.join()
     elif args.consumer:
-        from foqus_lib.framework.sim.turbineLiteDB import (keepAliveTimer,
-                                                           turbineLiteDB)
+        from foqus_lib.framework.sim.turbineLiteDB import keepAliveTimer, turbineLiteDB
 
         load_gui = False
         # Make ctrl-c do nothing but and SIGINT donothing but interrupt

@@ -16,8 +16,13 @@ import os
 import platform
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QAbstractItemView, QDialog, QDialogButtonBox,
-                             QFileDialog, QListWidgetItem)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QDialog,
+    QDialogButtonBox,
+    QFileDialog,
+    QListWidgetItem,
+)
 
 from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.uq.Common import Common

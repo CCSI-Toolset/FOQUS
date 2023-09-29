@@ -20,6 +20,7 @@ import subprocess
 import tempfile
 
 import numpy as np
+
 # from PySide import QtCore, QtGui
 from PyQt5 import QtCore, QtGui
 from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min

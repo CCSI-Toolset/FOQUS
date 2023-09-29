@@ -33,6 +33,7 @@ from foqus_lib.framework.graph.graph import *
 from foqus_lib.framework.graph.node import nodeModelTypes
 from foqus_lib.framework.ml_ai_models import mlaiSearch
 from foqus_lib.framework.optimizer import problem
+
 # these are just imported so py2exe will pick them up since they
 # are used only in plugins
 from foqus_lib.framework.optimizer.optimization import optimization as junk

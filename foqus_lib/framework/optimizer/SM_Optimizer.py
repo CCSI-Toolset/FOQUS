@@ -60,8 +60,17 @@ try:
     # add direct imports (in addition to existing wildcard import)
     # to make pylint happy without affecting the existing runtime behavior
     import pyutilib.subprocess.GlobalData
-    from pyomo.environ import (ConcreteModel, Constraint, ConstraintList,
-                               Objective, PositiveReals, Var, exp, log, value)
+    from pyomo.environ import (
+        ConcreteModel,
+        Constraint,
+        ConstraintList,
+        Objective,
+        PositiveReals,
+        Var,
+        exp,
+        log,
+        value,
+    )
     from pyomo.opt import SolverFactory
 
     pyutilib.subprocess.GlobalData.DEFINE_SIGNAL_HANDLERS_DEFAULT = False

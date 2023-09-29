@@ -19,8 +19,14 @@ from datetime import datetime
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QCheckBox,
-                             QMessageBox, QPushButton, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QAbstractItemView,
+    QApplication,
+    QCheckBox,
+    QMessageBox,
+    QPushButton,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load

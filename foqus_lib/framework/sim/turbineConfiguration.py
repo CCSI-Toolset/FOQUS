@@ -57,9 +57,13 @@ import turbine.commands.turbine_job_script as _tjob
 import turbine.commands.turbine_session_script as _tsess
 import turbine.commands.turbine_simulation_script as _tsim
 from turbine.commands import turbine_session_result_script
-from turbine.commands.requests_base import (HTTPStatusCode, delete_page,
-                                            get_page_by_url, post_page_by_url,
-                                            read_configuration)
+from turbine.commands.requests_base import (
+    HTTPStatusCode,
+    delete_page,
+    get_page_by_url,
+    post_page_by_url,
+    read_configuration,
+)
 
 from foqus_lib.framework.foqusException.foqusException import *
 

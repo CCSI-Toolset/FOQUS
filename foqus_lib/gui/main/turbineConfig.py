@@ -22,8 +22,10 @@ import os
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QDialog, QFileDialog, QMessageBox
 
-from foqus_lib.framework.sim.turbineConfiguration import (TurbineConfiguration,
-                                                          TurbineInterfaceEx)
+from foqus_lib.framework.sim.turbineConfiguration import (
+    TurbineConfiguration,
+    TurbineInterfaceEx,
+)
 
 mypath = os.path.dirname(__file__)
 _turbineConfigUI, _turbineConfigFrame = uic.loadUiType(

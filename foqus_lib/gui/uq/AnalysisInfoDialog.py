@@ -17,8 +17,14 @@ from collections import OrderedDict
 
 from PyQt5 import QtCore
 from PyQt5.QtGui import QFont
-from PyQt5.QtWidgets import (QDialog, QGridLayout, QLabel, QPushButton,
-                             QTableWidget, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QDialog,
+    QGridLayout,
+    QLabel,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.uq.Distribution import Distribution
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces

@@ -21,9 +21,19 @@ import numpy
 from PyQt5 import QtCore, QtGui, uic
 from PyQt5.QtCore import QCoreApplication, QEvent, QRect, QSize
 from PyQt5.QtGui import QColor, QCursor
-from PyQt5.QtWidgets import (QApplication, QButtonGroup, QDialog, QInputDialog,
-                             QMenu, QMessageBox, QProgressBar, QPushButton,
-                             QStyle, QStyledItemDelegate, QTableWidgetItem)
+from PyQt5.QtWidgets import (
+    QApplication,
+    QButtonGroup,
+    QDialog,
+    QInputDialog,
+    QMenu,
+    QMessageBox,
+    QProgressBar,
+    QPushButton,
+    QStyle,
+    QStyledItemDelegate,
+    QTableWidgetItem,
+)
 
 from foqus_lib.framework.sampleResults.results import Results
 from foqus_lib.framework.uq.Common import *

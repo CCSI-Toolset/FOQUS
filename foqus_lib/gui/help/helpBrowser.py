@@ -34,8 +34,7 @@ from typing import Optional
 
 import websocket
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import (QDialog, QFileDialog, QMainWindow, QMessageBox,
-                             QTextBrowser)
+from PyQt5.QtWidgets import QDialog, QFileDialog, QMainWindow, QMessageBox, QTextBrowser
 
 from foqus_lib.framework.sim.turbineConfiguration import TurbineConfiguration
 from foqus_lib.gui.pysyntax_hl.pysyntax_hl import *

@@ -17,8 +17,7 @@ import platform
 
 import numpy as np
 from PyQt5 import uic
-from PyQt5.QtWidgets import (QDialog, QDialogButtonBox, QFileDialog,
-                             QListWidgetItem)
+from PyQt5.QtWidgets import QDialog, QDialogButtonBox, QFileDialog, QListWidgetItem
 
 from foqus_lib.framework.uq.LocalExecutionModule import *
 

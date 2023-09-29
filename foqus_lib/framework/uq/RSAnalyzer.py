@@ -1601,8 +1601,7 @@ class RSAnalyzer:
         # apply this function for initializing the prior bounds
         # make sure parameters are passed in as floats
 
-        from scipy.stats import (beta, expon, gamma, lognorm, norm, triang,
-                                 weibull_min)
+        from scipy.stats import beta, expon, gamma, lognorm, norm, triang, weibull_min
 
         if pdf == Distribution.NORMAL:
             # norm.pdf(x) = exp(-x**2/2)/sqrt(2*pi)

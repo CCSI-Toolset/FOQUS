@@ -1135,8 +1135,9 @@ if usePyside:
             # print outputStatus
             emulatorFileName = "emulatorData"
             self.data.writeToPsuade(emulatorFileName)
-            from .RSAnalyzer import \
-                RSAnalyzer  # importing at top creates circular import
+            from .RSAnalyzer import (
+                RSAnalyzer,
+            )  # importing at top creates circular import
 
             LocalExecutionModule.runStarted = True
             Common.initFolder(RSAnalyzer.dname)

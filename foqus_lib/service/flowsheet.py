@@ -45,8 +45,7 @@ from foqus_lib.framework.graph.graph import Graph
 from foqus_lib.framework.graph.nodeVars import NodeVarEx, NodeVarListEx
 from foqus_lib.framework.plugins import pluginSearch
 from foqus_lib.framework.pymodel import pymodel
-from foqus_lib.framework.session.session import \
-    generalSettings as FoqusSettings
+from foqus_lib.framework.session.session import generalSettings as FoqusSettings
 from foqus_lib.framework.session.session import session as Session
 
 WORKING_DIRECTORY = os.path.abspath(

@@ -36,7 +36,7 @@ def go(sleep=0.25, MainWin=MainWin):
 
 
 def getButton(w, label):
-    """Get a buttom in window w labeled label"""
+    """Get a button in window w labeled label"""
     blist = w.buttons()
     for b in blist:
         if b.text().replace("&", "") == label:

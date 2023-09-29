@@ -40,7 +40,7 @@ def go(sleep=0.25, MainWin=MainWin, stopFlag=MainWin.helpDock.stop):
 
 
 def getButton(w, label):
-    """Get a buttom in window w labeled label, this could probably be better"""
+    """Get a button in window w labeled label, this could probably be better"""
     if isinstance(label, str):
         try:
             blist = w.buttons()

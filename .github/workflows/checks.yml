@@ -56,7 +56,7 @@ jobs:
       - name: Run Spell Checker
         uses: crate-ci/typos@master
         with: 
-          config: ./.github/workflows/typos.toml
+          config: .typos.toml
   pytest:
     name: pytest (py${{ matrix.python-version }}/${{ matrix.os }})
     needs: [code-formatting, spell-check]

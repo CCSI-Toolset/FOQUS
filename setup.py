@@ -118,6 +118,7 @@ dist = setup(
         "TurbineClient ~= 4.0, >= 4.0.3",
         "winshell; sys_platform == 'win32'",
         "websocket_client>=1.1.0",
+        "importlib_metadata; python_version < '3.8'",
     ],
 )
 

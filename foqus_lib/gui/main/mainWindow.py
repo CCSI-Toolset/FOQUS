@@ -437,7 +437,7 @@ class mainWindow(QMainWindow):
         self.surrogateAction.setCheckable(True)
         self.mainToolbarActionGroup.addAction(self.surrogateAction)
         self.toolbarMain.addAction(self.surrogateAction)
-        # Setings Action
+        # Settings Action
         self.mainSettingsAction = QAction(
             QIcon(self.iconPaths["settings48"]), "Settings", self
         )

@@ -19,15 +19,16 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import numpy as np
-import pandas as pd
-import re
-from io import StringIO
-import json
 import datetime
+import json
 import logging
+import re
 import time
 from collections import OrderedDict
+from io import StringIO
+
+import numpy as np
+import pandas as pd
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 

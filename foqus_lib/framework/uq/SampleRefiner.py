@@ -13,15 +13,17 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 import subprocess
 import tempfile
-import platform
-from .SamplingMethods import SamplingMethods
-from .SampleData import SampleData
+
+from PyQt5 import QtWidgets
+
 from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
 from .Plotter import Plotter
-from PyQt5 import QtWidgets
+from .SampleData import SampleData
+from .SamplingMethods import SamplingMethods
 
 
 class SampleRefiner:

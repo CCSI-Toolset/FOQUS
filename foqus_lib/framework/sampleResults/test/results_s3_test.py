@@ -23,8 +23,9 @@ See LICENSE.md for license and copyright details.
 import json
 import logging
 import time
-from .. import results
+
 from ...graph.graph import Graph
+from .. import results
 
 try:
     from unittest.mock import MagicMock, patch

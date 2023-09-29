@@ -12,10 +12,12 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from operator import lt, gt
-import numpy as np
-from .distance import compute_dist
 import time
+from operator import gt, lt
+
+import numpy as np
+
+from .distance import compute_dist
 
 
 def compute_min_dist(mat, scl, hist_xs=None):

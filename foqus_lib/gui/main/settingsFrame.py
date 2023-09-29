@@ -16,25 +16,25 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from foqus_lib.gui.main.turbineConfig import *
-from foqus_lib.framework.uq.LocalExecutionModule import *
-
-import os
 import logging
-import time
-import re
-from io import StringIO
-import shutil
+import os
 import pickle  # not sure why this is here probably remove
-from pprint import pprint
+import re
+import shutil
 import subprocess
+import time
 import xml.etree.ElementTree as ET
+from io import StringIO
+from pprint import pprint
+
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.gui.main.turbineConfig import *
 
 if os.name == "nt":
     import win32process
 
 from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QMessageBox, QInputDialog, QFileDialog
+from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
 
 mypath = os.path.dirname(__file__)
 _settingsFrameUI, _settingsFrame = uic.loadUiType(

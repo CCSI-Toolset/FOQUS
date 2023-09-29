@@ -25,17 +25,19 @@ text).  They also need to have a .py extension and inherit the optimization clas
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import time  # Some of these things are left over from CMA-ES
 import copy  # too lazy to sort out which I really need in here
 import csv
+import logging
+import math
+import os
 import pickle
 import queue
 import sys
-import logging
-import math
-import numpy
-import os
+import time  # Some of these things are left over from CMA-ES
 import traceback
+
+import numpy
+
 from foqus_lib.framework.optimizer.optimization import optimization
 
 # Check that the NLopt module is available and import it if possible.

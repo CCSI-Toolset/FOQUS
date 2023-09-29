@@ -22,6 +22,10 @@ from pathlib import Path
 import configparser
 import json
 
+import pytest
+
+from foqus_lib.framework.sdoe import plot_utils
+
 
 @mock.patch("foqus_lib.framework.sdoe.plot_utils.plt")
 def test_plot(fake_plt: mock.MagicMock):

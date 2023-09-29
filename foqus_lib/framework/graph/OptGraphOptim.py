@@ -12,11 +12,13 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import numpy
-import time
 import math
-from foqus_lib.framework.graph.node import *
+import time
+
+import numpy
+
 from foqus_lib.framework.graph.edge import *
+from foqus_lib.framework.graph.node import *
 
 
 class optimObj:

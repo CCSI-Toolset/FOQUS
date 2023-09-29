@@ -21,25 +21,27 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import queue
-import foqus_lib.framework.sampleResults.results as resultList
-import multiprocessing.dummy as multiprocessing
-import numpy
-import math
-import time
-import csv
 import copy
-import threading
+import csv
 import logging
+import math
+import multiprocessing.dummy as multiprocessing
+import queue
 import sys
+import threading
+import time
 from collections import OrderedDict
+
+import numpy
+import pandas
+
+import foqus_lib.framework.sampleResults.results as resultList
+from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
 from foqus_lib.framework.graph.node import *  # Node, input var and output var classes
 from foqus_lib.framework.graph.nodeModelTypes import nodeModelTypes
-from foqus_lib.framework.graph.edge import *  # Edge and variable connection classes
+from foqus_lib.framework.graph.nodeVars import *
 from foqus_lib.framework.graph.OptGraphOptim import *  # Objective function calculation class
 from foqus_lib.framework.sim.turbineConfiguration import *
-from foqus_lib.framework.graph.nodeVars import *
-import pandas
 
 _log = logging.getLogger("foqus." + __name__)
 

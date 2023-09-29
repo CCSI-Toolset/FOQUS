@@ -22,23 +22,19 @@ pytest -k test_ouu [--qtbot-slowdown-wait-ms=<time_in_ms>]
 Author: Devarshi Ghoshal <dghoshal@lbl.gov>
 """
 
+import os
 import time
 import typing
-import os
 
-from PyQt5 import QtWidgets, QtCore
 import pytest
-
-from foqus_lib.gui.ouu.ouuSetupFrame import ouuSetupFrame
-from foqus_lib.gui.ouu import foqusPSUADEClient
-from foqus_lib.gui.ouu.OUUInputsTable import OUUInputsTable
-from foqus_lib.gui.ouu import nodeToUQModel
+from PyQt5 import QtCore, QtWidgets
+from PyQt5.QtWidgets import QMessageBox
 
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-
-from PyQt5.QtWidgets import QMessageBox
-
+from foqus_lib.gui.ouu import foqusPSUADEClient, nodeToUQModel
+from foqus_lib.gui.ouu.OUUInputsTable import OUUInputsTable
+from foqus_lib.gui.ouu.ouuSetupFrame import ouuSetupFrame
 
 pytestmark = pytest.mark.gui
 

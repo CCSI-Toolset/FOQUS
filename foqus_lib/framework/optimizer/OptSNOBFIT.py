@@ -12,7 +12,9 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import time, copy
+import copy
+import time
+
 import numpy
 
 snobfit_available = True

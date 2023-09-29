@@ -13,13 +13,14 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 import subprocess
 import tempfile
-import platform
+
+from .Common import Common
+from .LocalExecutionModule import LocalExecutionModule
 from .Model import Model
 from .SampleData import SampleData
-from .LocalExecutionModule import LocalExecutionModule
-from .Common import Common
 
 
 class DataProcessor:

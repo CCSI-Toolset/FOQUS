@@ -12,19 +12,18 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import os
 from pathlib import Path
 from typing import List, Tuple
-import os
 
 import pytest
-from pytest_qt_extras import QtBot
 from PyQt5 import QtWidgets
 
-from foqus_lib.gui.main.mainWindow import mainWindow
+from foqus_lib.framework.plugins.pluginSearch import plugins
 from foqus_lib.framework.session import session as FoqusSession
 from foqus_lib.gui.flowsheet.drawFlowsheet import drawFlowsheet
-from foqus_lib.framework.plugins.pluginSearch import plugins
-
+from foqus_lib.gui.main.mainWindow import mainWindow
+from pytest_qt_extras import QtBot
 
 pytestmark = pytest.mark.gui
 

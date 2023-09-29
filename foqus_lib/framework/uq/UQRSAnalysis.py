@@ -12,9 +12,10 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
 import abc  # abstract base class
+import os
 from collections import OrderedDict
+
 from .ResponseSurfaces import ResponseSurfaces
 from .UQAnalysis import UQAnalysis
 

@@ -25,21 +25,15 @@ import os
 
 _log = logging.getLogger("foqus.{}".format(__name__))
 
-from foqus_lib.framework.sampleResults.results import *
-import foqus_lib.gui.helpers.guiHelpers as gh
-from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
-
 from PyQt5 import uic
+from PyQt5.QtCore import QDataStream, QEvent, QObject, QSize, Qt
 from PyQt5.QtGui import QColor
-from PyQt5.QtCore import QObject, QEvent, QDataStream, QSize, Qt
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMessageBox,
-    QSplitter,
-    QInputDialog,
-    QLineEdit,
-    QAbstractItemView,
-)
+from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QInputDialog,
+                             QLineEdit, QMessageBox, QSplitter)
+
+import foqus_lib.gui.helpers.guiHelpers as gh
+from foqus_lib.framework.sampleResults.results import *
+from foqus_lib.gui.flowsheet.calculatedColumns import calculatedColumnsDialog
 
 mypath = os.path.dirname(__file__)
 _dataFilterDialogUI, _dataFilterDialog = uic.loadUiType(

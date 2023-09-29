@@ -12,50 +12,42 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
 import os
-import numpy
 import shutil
+import sys
 import textwrap
 
-from foqus_lib.framework.uq.SampleData import *
-from foqus_lib.framework.uq.Model import *
-from foqus_lib.framework.uq.SamplingMethods import *
-from foqus_lib.framework.uq.ParameterScreening import *
-from foqus_lib.framework.uq.Visualization import *
-from foqus_lib.framework.uq.UncertaintyAnalysis import *
-from foqus_lib.framework.uq.CorrelationAnalysis import *
-from foqus_lib.framework.uq.SensitivityAnalysis import *
-from foqus_lib.framework.uq.RSValidation import *
-from foqus_lib.framework.uq.RSUncertaintyAnalysis import *
-from foqus_lib.framework.uq.RSSensitivityAnalysis import *
-from foqus_lib.framework.uq.RSVisualization import *
-from foqus_lib.framework.uq.ResponseSurfaces import *
-from foqus_lib.framework.uq.RawDataAnalyzer import *
-from foqus_lib.framework.uq.RSAnalyzer import *
-from foqus_lib.framework.uq.Visualizer import Visualizer
-from foqus_lib.framework.uq.Common import *
-from .AnalysisInfoDialog import *
-from .InferenceDialog import *
-from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from . import RSCombos
-
+import numpy
 # from AnalysisDialog_UI import Ui_Dialog
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import (
-    QApplication,
-    QMessageBox,
-    QFileDialog,
-    QCheckBox,
-    QTableWidgetItem,
-    QAbstractItemView,
-    QGridLayout,
-    QDialog,
-    QLabel,
-    QPushButton,
-)
 from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (QAbstractItemView, QApplication, QCheckBox,
+                             QDialog, QFileDialog, QGridLayout, QLabel,
+                             QMessageBox, QPushButton, QTableWidgetItem)
+
+from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.CorrelationAnalysis import *
+from foqus_lib.framework.uq.Model import *
+from foqus_lib.framework.uq.ParameterScreening import *
+from foqus_lib.framework.uq.RawDataAnalyzer import *
+from foqus_lib.framework.uq.ResponseSurfaces import *
+from foqus_lib.framework.uq.RSAnalyzer import *
+from foqus_lib.framework.uq.RSSensitivityAnalysis import *
+from foqus_lib.framework.uq.RSUncertaintyAnalysis import *
+from foqus_lib.framework.uq.RSValidation import *
+from foqus_lib.framework.uq.RSVisualization import *
+from foqus_lib.framework.uq.SampleData import *
+from foqus_lib.framework.uq.SamplingMethods import *
+from foqus_lib.framework.uq.SensitivityAnalysis import *
+from foqus_lib.framework.uq.UncertaintyAnalysis import *
+from foqus_lib.framework.uq.Visualization import *
+from foqus_lib.framework.uq.Visualizer import Visualizer
+from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+
+from . import RSCombos
+from .AnalysisInfoDialog import *
+from .InferenceDialog import *
 
 mypath = os.path.dirname(__file__)
 _AnalysisDialogUI, _AnalysisDialog = uic.loadUiType(

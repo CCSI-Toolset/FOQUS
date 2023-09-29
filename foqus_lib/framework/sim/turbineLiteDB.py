@@ -17,10 +17,11 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import time
-import uuid
 import os
 import threading
+import time
+import uuid
+
 import adodbapi
 import adodbapi.apibase
 

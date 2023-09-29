@@ -12,8 +12,8 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
 import logging
+import os
 
 from PyQt5 import QtCore, uic
 

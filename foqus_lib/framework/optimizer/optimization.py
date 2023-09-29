@@ -19,16 +19,18 @@
 John Eslick, Carnegie Mellon University, 2014
 """
 
-import queue
-import logging
-import threading
 import copy
-from foqus_lib.framework.foqusOptions.optionList import optionList
-from .problem import *
-import sys
-import os
 import importlib
+import logging
+import os
+import queue
+import sys
+import threading
 import traceback
+
+from foqus_lib.framework.foqusOptions.optionList import optionList
+
+from .problem import *
 
 
 class optimization(threading.Thread):

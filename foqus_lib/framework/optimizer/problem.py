@@ -20,15 +20,16 @@ John Eslick, Carnegie Mellon University, 2014
 """
 
 import copy
-import time
-import math
 import csv
 import json
 import logging
+import math
 import operator
-from foqus_lib.framework.foqusOptions.optionList import optionList
-from foqus_lib.framework.at_dict.at_dict import AtDict
+import time
 from functools import reduce
+
+from foqus_lib.framework.at_dict.at_dict import AtDict
+from foqus_lib.framework.foqusOptions.optionList import optionList
 
 
 class objectiveFunction(object):

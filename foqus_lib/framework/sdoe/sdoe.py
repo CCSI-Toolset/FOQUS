@@ -12,21 +12,22 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import tempfile
+import configparser
+import os
 import platform
 import re
+import tempfile
+import time
 
-from .df_utils import load, write
-import configparser, time, os
 import numpy as np
 import pandas as pd
 
 from foqus_lib.framework.uq.Common import Common
-from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
 from foqus_lib.framework.uq.LocalExecutionModule import LocalExecutionModule
-
-
 from foqus_lib.framework.uq.ResponseSurfaces import ResponseSurfaces
+from foqus_lib.framework.uq.RSAnalyzer import RSAnalyzer
+
+from .df_utils import load, write
 
 
 def save(fnames, results, elapsed_time, irsf=False):

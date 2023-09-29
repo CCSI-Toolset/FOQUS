@@ -16,6 +16,7 @@
 John Eslick, Carnegie Mellon University, 2013
 """
 import os
+
 from PyQt5 import uic
 
 mypath = os.path.dirname(__file__)

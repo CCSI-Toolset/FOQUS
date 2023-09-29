@@ -18,8 +18,9 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-import os
 import logging
+import os
+
 from PyQt5 import QtCore, QtWidgets, uic
 
 _log = logging.getLogger("foqus.{}".format(__name__))

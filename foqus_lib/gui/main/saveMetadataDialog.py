@@ -13,7 +13,8 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
-from PyQt5 import uic, QtCore
+
+from PyQt5 import QtCore, uic
 
 mypath = os.path.dirname(__file__)
 _saveMetadataDialogUI, _saveMetadataDialog = uic.loadUiType(

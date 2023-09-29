@@ -12,18 +12,17 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import shutil
 import time
 import typing
-import shutil
-from PyQt5 import QtWidgets, QtCore
-from foqus_lib.framework.uq.LocalExecutionModule import *
-
-from foqus_lib.gui.sdoe.sdoeSetupFrame import sdoeSetupFrame
-from foqus_lib.framework.sampleResults.results import Results
-from foqus_lib.gui.sdoe.sdoeAnalysisDialog import sdoeAnalysisDialog
-from foqus_lib.gui.sdoe.sdoePreview import sdoePreview
 
 import pytest
+from PyQt5 import QtCore, QtWidgets
+
+from foqus_lib.framework.sampleResults.results import Results
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.gui.sdoe.sdoeAnalysisDialog import sdoeAnalysisDialog
+from foqus_lib.gui.sdoe.sdoePreview import sdoePreview
 
 pytestmark = pytest.mark.gui
 

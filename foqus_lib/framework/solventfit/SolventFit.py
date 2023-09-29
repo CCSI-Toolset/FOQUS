@@ -12,16 +12,17 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
 import csv
-import subprocess
-import numpy as np
+import os
 import platform
+import subprocess
 
-from foqus_lib.framework.uq.Distribution import *
+import numpy as np
+
 from foqus_lib.framework.uq.Common import *
-from foqus_lib.framework.uq.RSInference import RSInferencer
+from foqus_lib.framework.uq.Distribution import *
 from foqus_lib.framework.uq.Plotter import Plotter
+from foqus_lib.framework.uq.RSInference import RSInferencer
 
 
 class SolventFit:

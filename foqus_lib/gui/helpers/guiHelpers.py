@@ -19,12 +19,13 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
+import copy
+import json
+
+import numpy
 from PyQt5 import QtCore
 from PyQt5.QtGui import QColor
-from PyQt5.QtWidgets import QTableWidgetItem, QComboBox
-import numpy
-import json
-import copy
+from PyQt5.QtWidgets import QComboBox, QTableWidgetItem
 
 
 def setColHeaderIntem(table, col, text=None):

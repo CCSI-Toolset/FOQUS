@@ -17,26 +17,16 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from PyQt5 import QtCore
-from PyQt5.QtGui import (
-    QColor,
-    QFont,
-    QPen,
-    QBrush,
-    QPainter,
-    QPainterPath,
-    QPainterPathStroker,
-)
-from PyQt5.QtWidgets import (
-    QGraphicsScene,
-    QGraphicsView,
-    QInputDialog,
-    QLineEdit,
-    QMessageBox,
-)
-from foqus_lib.framework.graph import *
 import math
 import types
+
+from PyQt5 import QtCore
+from PyQt5.QtGui import (QBrush, QColor, QFont, QPainter, QPainterPath,
+                         QPainterPathStroker, QPen)
+from PyQt5.QtWidgets import (QGraphicsScene, QGraphicsView, QInputDialog,
+                             QLineEdit, QMessageBox)
+
+from foqus_lib.framework.graph import *
 
 
 class fsScene(QGraphicsScene):

@@ -18,8 +18,10 @@ https://pypi.org/project/python-tsp/
 """
 import logging
 import os
+
 import numpy as np
 from python_tsp.exact import solve_tsp_dynamic_programming
+
 from .df_utils import load, write
 
 _log = logging.getLogger("foqus." + __name__)

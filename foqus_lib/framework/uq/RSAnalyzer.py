@@ -12,24 +12,26 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import copy
 import math
 import os
+import platform
+import re
 import subprocess
 import tempfile
-import platform
-import copy
-import re
+
 import numpy as np
 from scipy import stats
+
+from .Common import Common
+from .Distribution import Distribution
+from .LocalExecutionModule import LocalExecutionModule
 from .Model import Model
+from .Plotter import Plotter
+from .RawDataAnalyzer import RawDataAnalyzer
+from .ResponseSurfaces import ResponseSurfaces
 from .SampleData import SampleData
 from .SamplingMethods import SamplingMethods
-from .Distribution import Distribution
-from .Common import Common
-from .LocalExecutionModule import LocalExecutionModule
-from .ResponseSurfaces import ResponseSurfaces
-from .RawDataAnalyzer import RawDataAnalyzer
-from .Plotter import Plotter
 
 
 class RSAnalyzer:
@@ -1599,7 +1601,8 @@ class RSAnalyzer:
         # apply this function for initializing the prior bounds
         # make sure parameters are passed in as floats
 
-        from scipy.stats import norm, lognorm, triang, gamma, beta, expon, weibull_min
+        from scipy.stats import (beta, expon, gamma, lognorm, norm, triang,
+                                 weibull_min)
 
         if pdf == Distribution.NORMAL:
             # norm.pdf(x) = exp(-x**2/2)/sqrt(2*pi)

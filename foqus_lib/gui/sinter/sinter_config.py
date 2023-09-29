@@ -12,19 +12,15 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import os
+import hashlib
 import json
 import logging
-from PyQt5 import uic
-from PyQt5 import QtCore
-from PyQt5.QtWidgets import (
-    QFileDialog,
-    QDialog,
-    QMessageBox,
-    QAbstractItemView,
-    QTableWidgetItem,
-)
-import hashlib
+import os
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import (QAbstractItemView, QDialog, QFileDialog,
+                             QMessageBox, QTableWidgetItem)
+
 import foqus_lib.gui.helpers.guiHelpers as gh
 
 _log = logging.getLogger(__name__)

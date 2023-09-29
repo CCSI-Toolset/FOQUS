@@ -12,12 +12,14 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-from foqus_lib.framework.graph.nodeVars import *
+import copy
+import json
 import traceback
 import unittest
-import copy
+
 import numpy
-import json
+
+from foqus_lib.framework.graph.nodeVars import *
 
 
 class testNodeVarListSteady(unittest.TestCase):

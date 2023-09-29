@@ -13,8 +13,10 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 from unittest import result
+
 import numpy as np
 import pandas as pd
+
 from foqus_lib.framework.sdoe import usf
 
 

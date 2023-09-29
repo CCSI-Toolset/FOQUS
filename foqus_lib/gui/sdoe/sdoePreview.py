@@ -19,6 +19,7 @@ from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as Navigatio
 
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.sdoe import plot_utils
+from foqus_lib.framework.uq.Model import Model
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt

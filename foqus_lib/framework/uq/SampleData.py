@@ -129,14 +129,16 @@ Methods:
         Writes SampleData data to a csv file that can be read in by Excel
 """
 
-import os
-import numpy
 import copy
+import os
 import time
-from .Model import Model
+
+import numpy
+
 from .Distribution import Distribution
-from .SamplingMethods import SamplingMethods
+from .Model import Model
 from .ResponseSurfaces import ResponseSurfaces
+from .SamplingMethods import SamplingMethods
 from .UQAnalysis import UQAnalysis
 
 
@@ -288,7 +290,8 @@ class SampleData(object):
                             testFile,
                         )
                     elif type == UQAnalysis.RS_UNCERTAINTY:
-                        from .RSUncertaintyAnalysis import RSUncertaintyAnalysis
+                        from .RSUncertaintyAnalysis import \
+                            RSUncertaintyAnalysis
 
                         anal = RSUncertaintyAnalysis(
                             self,
@@ -300,7 +303,8 @@ class SampleData(object):
                             analDict["xprior"],
                         )
                     elif type == UQAnalysis.RS_SENSITIVITY:
-                        from .RSSensitivityAnalysis import RSSensitivityAnalysis
+                        from .RSSensitivityAnalysis import \
+                            RSSensitivityAnalysis
 
                         anal = RSSensitivityAnalysis(
                             self,

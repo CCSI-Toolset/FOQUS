@@ -13,14 +13,15 @@
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
 import os
+import platform
 import subprocess
 import tempfile
-import platform
-from .Model import Model
-from .SampleData import SampleData
+
 from .Common import Common
 from .LocalExecutionModule import LocalExecutionModule
+from .Model import Model
 from .Plotter import Plotter
+from .SampleData import SampleData
 
 
 class RawDataAnalyzer:
@@ -394,8 +395,9 @@ class RawDataAnalyzer:
         ftitle = "%s Sensitivity Analysis on Ensemble Data" % figtitle[cmd]
         ptitle = "%s for %s" % (title[cmd], outVarName)
         if cmd == "ie":
-            import numpy as np  # numpy used here only
             import math  # math used here only
+
+            import numpy as np  # numpy used here only
 
             L = len(dat)
             M = int(math.sqrt(L))

@@ -18,10 +18,11 @@
 
 John Eslick, Carnegie Mellon University, 2014
 """
-from PyQt5 import QtCore
 import json
 import logging
+
 import numpy as np
+from PyQt5 import QtCore
 
 
 class dataModel(QtCore.QAbstractTableModel):

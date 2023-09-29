@@ -12,18 +12,22 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
-import os, re
 import math
-from .nodeToUQModel import nodeToUQModel
-from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
-from foqus_lib.framework.listen import listen
-from multiprocessing.connection import Client
+import os
+import re
 import shutil
+import sys
+from multiprocessing.connection import Client
 
 import matplotlib
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import \
+    FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
+
+from foqus_lib.framework.listen import listen
+from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
+
+from .nodeToUQModel import nodeToUQModel
 
 if __name__ == "__main__":
     import imp
@@ -34,26 +38,18 @@ if __name__ == "__main__":
     f, filename, desc = imp.find_module("foqus_lib", ["c:\\CCSI\\foqus"])
     foqus_lib = imp.load_module("foqus_lib", f, filename, desc)
 
+from PyQt5 import QtCore, uic
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import (QApplication, QComboBox, QFileDialog, QGroupBox,
+                             QMessageBox, QRadioButton, QTableWidgetItem,
+                             QVBoxLayout)
+
+from foqus_lib.framework.ouu.OUU import OUU
 from foqus_lib.framework.uq.Common import *
 from foqus_lib.framework.uq.LocalExecutionModule import *
-
 # from foqus_lib.gui.uq.Preview import *
 # from InputPriorTable import InputPriorTable
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
-from foqus_lib.framework.ouu.OUU import OUU
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtGui import QCursor
-from PyQt5.QtWidgets import (
-    QApplication,
-    QFileDialog,
-    QMessageBox,
-    QTableWidgetItem,
-    QRadioButton,
-    QComboBox,
-    QGroupBox,
-    QVBoxLayout,
-)
 
 mypath = os.path.dirname(__file__)
 _ouuSetupFrameUI, _ouuSetupFrame = uic.loadUiType(

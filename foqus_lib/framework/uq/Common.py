@@ -12,19 +12,19 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
-import sys
+import io
+import logging
 import os
+import platform
 import re
 import shutil
 import subprocess
+import sys
 import tempfile
 import time
-import platform
-import logging
-import io
 
 try:
-    from PyQt5 import QtGui, QtCore, QtWidgets
+    from PyQt5 import QtCore, QtGui, QtWidgets
 
     usePyside = True
 except:

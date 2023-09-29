@@ -27,11 +27,11 @@ import xml.etree.ElementTree as ET
 from io import StringIO
 from pprint import pprint
 
-from foqus_lib.framework.uq.LocalExecutionModule import *
-from foqus_lib.gui.main.turbineConfig import *
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
+
+from foqus_lib.framework.uq.LocalExecutionModule import *
+from foqus_lib.gui.main.turbineConfig import *
 
 if os.name == "nt":
     import win32process

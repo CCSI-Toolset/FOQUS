@@ -22,12 +22,6 @@ from multiprocessing.connection import Client
 import matplotlib
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 from matplotlib.figure import Figure
-
-from foqus_lib.framework.listen import listen
-from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
-
-from .nodeToUQModel import nodeToUQModel
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (
@@ -41,13 +35,17 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
 )
 
+from foqus_lib.framework.listen import listen
 from foqus_lib.framework.ouu.OUU import OUU
 from foqus_lib.framework.uq.Common import *
+from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 from foqus_lib.framework.uq.LocalExecutionModule import *
 
 # from foqus_lib.gui.uq.Preview import *
 # from InputPriorTable import InputPriorTable
 from foqus_lib.gui.common.InputPriorTable import InputPriorTable
+
+from .nodeToUQModel import nodeToUQModel
 
 mypath = os.path.dirname(__file__)
 _ouuSetupFrameUI, _ouuSetupFrame = uic.loadUiType(

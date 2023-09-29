@@ -43,10 +43,9 @@ import sys
 import threading
 import time
 import traceback
+from multiprocessing.connection import Client
 
 import numpy as np
-
-from multiprocessing.connection import Client
 
 from foqus_lib.framework.listen import listen
 from foqus_lib.framework.session.session import exePath
@@ -60,6 +59,7 @@ try:
     import win32process
 except:
     pass
+
 
 def checkAvailable():
     """Plug-ins should have this function to check availability of any

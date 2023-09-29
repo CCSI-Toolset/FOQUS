@@ -36,10 +36,6 @@ import time
 import traceback
 import urllib.parse
 import urllib.request
-
-import foqus_lib.framework.sim.process_management as _pm
-
-_log = logging.getLogger("foqus." + __name__)
 from collections import OrderedDict
 
 import turbine.commands
@@ -57,7 +53,10 @@ from turbine.commands.requests_base import (
     read_configuration,
 )
 
+import foqus_lib.framework.sim.process_management as _pm
 from foqus_lib.framework.foqusException.foqusException import *
+
+_log = logging.getLogger("foqus." + __name__)
 
 if os.name == "nt":
     import win32process

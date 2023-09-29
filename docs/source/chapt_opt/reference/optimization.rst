@@ -173,7 +173,7 @@ Python expressions.
 
 #. The **Penalty Factor** contains the coefficient :math:`a` used in calculating
    the penalty for a constraint violation, see Equations
-   :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
+   :eq:`eq.linear.constraint` to :eq:`eq.step.constraint`.
 
 #. The **Form** column contains a selection of different methods to
    calculate a constraint penalty.
@@ -186,10 +186,10 @@ Python expressions.
    The variables are provided without the sample index.
 
 The calculations for each type of constraint penalty are given in
-Equations :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
+Equations :eq:`eq.linear.constraint` to :eq:`eq.step.constraint`.
 
 .. math::
-   :label: eq.linear.constriant
+   :label: eq.linear.constraint
 
    \text{Linear penalty form:  }p_i =
    \begin{cases}
@@ -198,7 +198,7 @@ Equations :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
    \end{cases}
 
 .. math::
-   :label: eq.quadratic.constriant
+   :label: eq.quadratic.constraint
 
    \text{Quadratic penalty form:  }p_i =
    \begin{cases}
@@ -207,7 +207,7 @@ Equations :eq:`eq.linear.constriant` to :eq:`eq.step.constriant`.
    \end{cases}
 
 .. math::
-   :label: eq.step.constriant
+   :label: eq.step.constraint
 
    \text{Step penalty form:  }p_i =
    \begin{cases}

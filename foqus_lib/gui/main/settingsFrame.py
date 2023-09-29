@@ -235,7 +235,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that "
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))
@@ -261,7 +261,7 @@ class settingsFrame(_settingsFrame, _settingsFrameUI):
             mess = (
                 "Failed to start Turbine Web Service API.  If the "
                 "reason given below is not clear the likely cause is that"
-                "FOQUS does not have permision to start/stop the services."
+                "FOQUS does not have permission to start/stop the services."
             )
             details = "Details:\n{0}\n{1}".format(out, err)
             QMessageBox.information(self, "Information", "\n\n".join([mess, details]))

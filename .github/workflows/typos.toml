@@ -1,8 +1,0 @@
-[files]
-extend-exclude = ["*.smp", "*.ui", "*.html", "*.css", "*.js", "*.svg", "*.foqus", "*.bkp", "*.acmf", "*.for", "*.his", "*.def", "*.ads", "*.pt", "*.pkl"]
-# we are checking .py, .sh, .txt, .md, .ini, .in, No extension, .json, .R,
-# .emulpred, .calibpred, .yml, .dat, .filtered, .gPJ, .c, .m, .psuade, .opt, .pb, .rst, .bat, .ps1, 
-
-[default.extend-words]
-# Ignore IDAES
-IDAES = "IDAES"

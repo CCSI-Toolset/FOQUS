@@ -1,0 +1,22 @@
+[files]
+extend-exclude = [
+    "*.smp",
+    "*.ui",
+    "*.html",
+    "*.css",
+    "*.js",
+    "*.svg",
+    "*.foqus",
+    "*.bkp",
+    "*.acmf",
+    "*.for",
+    "*.his",
+    "*.def",
+    "*.ads",
+    "*.pt",
+    "*.pkl",
+]
+
+[default.extend-words]
+# Ignore IDAES
+IDAES = "IDAES"

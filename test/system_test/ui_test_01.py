@@ -188,7 +188,7 @@ def time_out():
 
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
-# or some crazy stuff may happen untill you exit FOQUS.
+# or some crazy stuff may happen until you exit FOQUS.
 addTimer("time_out", time_out)  # stop script if too long
 addTimer("msg_okay", msg_okay)  # click OK on mgsbox
 addTimer("msg_no", msg_no)  # click No on msgbox

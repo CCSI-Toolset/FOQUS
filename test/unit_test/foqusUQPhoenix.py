@@ -212,7 +212,7 @@ def timersStop(timers=timers):
 
 # make the timers that will be needed just start and stop as needed
 # need to make sure that when this script exits all timers are stopped
-# or some crazy stuff may happen untill you exit FOQUS.
+# or some crazy stuff may happen until you exit FOQUS.
 addTimer("time_out", MainWin.helpDock.setStopTrue)  # stop script for taking too long
 addTimer("msg_okay", MainWin.helpDock.msgBoxOK)  # click okay on a pop up message box
 addTimer("msg_no", MainWin.helpDock.msgBoxNo)  # Click no on a popup message box

@@ -150,15 +150,17 @@ def load_data(fname, hname):
 
 
 def remove_xticklabels(ax):
-    labels = [item.get_text() for item in ax.get_xticklabels()]
-    no_labels = [""] * len(labels)
+    ticks_loc = ax.get_xticks().tolist()
+    no_labels = [""] * len(ticks_loc)
+    ax.set_xticks(ticks_loc)
     ax.set_xticklabels(no_labels)
     return ax
 
 
 def remove_yticklabels(ax):
-    labels = [item.get_text() for item in ax.get_yticklabels()]
-    no_labels = [""] * len(labels)
+    ticks_loc = ax.get_yticks().tolist()
+    no_labels = [""] * len(ticks_loc)
+    ax.set_yticks(ticks_loc)
     ax.set_yticklabels(no_labels)
     return ax
 

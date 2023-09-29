@@ -2,7 +2,7 @@ Efficient Implementation of Experimental Run Order
 ==================================================
   
 Once designs have been created, it is often important to optimize the run order to efficiently reach equilibrium and 
-allow for the maximum number of runs to be implemented within a constrainted budget or time period. While statisticians 
+allow for the maximum number of runs to be implemented within a constrained budget or time period. While statisticians 
 generally recommend using a randomized order for the experimental runs, it can sometimes mean the difference of a small 
 randomized experiment versus a larger non-randomized experiment. 
 

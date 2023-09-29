@@ -99,7 +99,7 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data normalized according to a specifc scaling form and add all input and
+  data normalized according to a specific scaling form and add all input and
   output bounds custom attributes. The section below details scaling options.
 - *normalization_form* - string flag required when *normalization* is *True*
   indicating a scaling option for FOQUS to automatically scale flowsheet-level

@@ -22,7 +22,7 @@ FOQUS** tab.
 
 Options in the **Settings, FOQUS** tab are described below.
 
-#. **Save settings to working directoy**, when checkbox is selected the
+#. **Save settings to working directory**, when checkbox is selected the
    settings file will be read from the specified working directory. This
    setting is useful for running multiple copies of FOQUS to ensure the
    settings do not conflict. When starting additional copies of FOQUS,

@@ -28,15 +28,6 @@ from foqus_lib.framework.uq.flowsheetToUQModel import flowsheetToUQModel
 
 from .nodeToUQModel import nodeToUQModel
 
-if __name__ == "__main__":
-    import imp
-
-    # f, filename, desc = imp.find_module('foqus_lib', ['c:\\Users\\ou3.THE-LAB\\Documents\\CCSI\\foqus\\'])
-    # f, filename, desc = imp.find_module('foqus_lib', ['/g/g12/ou3/ccsi/foqus/'])
-    # f, filename, desc = imp.find_module('foqus_lib', ['/g/g19/ng30/ts6/foqus/'])
-    f, filename, desc = imp.find_module("foqus_lib", ["c:\\CCSI\\foqus"])
-    foqus_lib = imp.load_module("foqus_lib", f, filename, desc)
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtGui import QCursor
 from PyQt5.QtWidgets import (

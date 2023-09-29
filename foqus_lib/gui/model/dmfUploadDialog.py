@@ -23,6 +23,12 @@ import os
 import platform
 import subprocess
 
+from io import StringIO
+from urllib.request import urlopen
+
+from PyQt5 import QtCore, uic
+from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
+
 import foqus_lib.gui.helpers.guiHelpers as gh
 
 try:
@@ -53,11 +59,6 @@ except ImportError:
         "Failed to import or launch DMFBrowser"
     )
     useDMF = False
-from io import StringIO
-from urllib.request import urlopen
-
-from PyQt5 import QtCore, uic
-from PyQt5.QtWidgets import QDialog, QFileDialog, QInputDialog, QLineEdit, QMessageBox
 
 mypath = os.path.dirname(__file__)
 _dmfUploadDialogUI, _dmfUploadDialog = uic.loadUiType(

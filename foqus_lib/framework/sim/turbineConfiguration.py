@@ -42,14 +42,6 @@ import foqus_lib.framework.sim.process_management as _pm
 _log = logging.getLogger("foqus." + __name__)
 from collections import OrderedDict
 
-if os.name == "nt":
-    import win32process
-
-    try:
-        from . import turbineLiteDB
-    except Exception:
-        _log.exception("Problem importing turbineLiteDB")
-
 import turbine.commands
 import turbine.commands.turbine_application_script as _tapp
 import turbine.commands.turbine_consumer_script as _tcon
@@ -66,6 +58,14 @@ from turbine.commands.requests_base import (
 )
 
 from foqus_lib.framework.foqusException.foqusException import *
+
+if os.name == "nt":
+    import win32process
+
+    try:
+        from . import turbineLiteDB
+    except Exception:
+        _log.exception("Problem importing turbineLiteDB")
 
 
 class TurbineInterfaceEx(foqusException):

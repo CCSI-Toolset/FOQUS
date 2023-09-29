@@ -30,11 +30,11 @@ from pprint import pprint
 from foqus_lib.framework.uq.LocalExecutionModule import *
 from foqus_lib.gui.main.turbineConfig import *
 
-if os.name == "nt":
-    import win32process
-
 from PyQt5 import QtCore, uic
 from PyQt5.QtWidgets import QFileDialog, QInputDialog, QMessageBox
+
+if os.name == "nt":
+    import win32process
 
 mypath = os.path.dirname(__file__)
 _settingsFrameUI, _settingsFrame = uic.loadUiType(

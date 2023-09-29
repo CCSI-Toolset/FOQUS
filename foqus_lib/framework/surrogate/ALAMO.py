@@ -46,11 +46,6 @@ import traceback
 
 import numpy as np
 
-try:
-    import win32api  # used to get short file name for alamo sim exe
-    import win32process
-except:
-    pass
 from multiprocessing.connection import Client
 
 from foqus_lib.framework.listen import listen
@@ -60,6 +55,11 @@ from foqus_lib.framework.session.session import exePath
 from foqus_lib.framework.surrogate.surrogate import surrogate
 from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
 
+try:
+    import win32api  # used to get short file name for alamo sim exe
+    import win32process
+except:
+    pass
 
 def checkAvailable():
     """Plug-ins should have this function to check availability of any

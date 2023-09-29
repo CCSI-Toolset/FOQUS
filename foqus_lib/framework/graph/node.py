@@ -1247,13 +1247,14 @@ class Node:
                     )  # will print that sklearn is not installed but won't just fail
 
                 # now check which model type was unpickled
-                if "sklearn" in str(type(self.model)):
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
                     trainer = "sklearn"
-                elif "smt" in str(type(self.model)):
+                elif "smt" in model_type_name:
                     trainer = "smt"
                 else:  # unsupported model type was unpickled
                     raise AttributeError(
-                        "Unknown model type: " + str(type(self.model)) + ". Only "
+                        f"Unknown model type: {model_type_name!r}. Only "
                         "sklearn MLPRegressor and smt GENN (Model) objects are "
                         "currently supported."
                     )
@@ -1820,13 +1821,14 @@ class Node:
                     )  # will print that sklearn is not installed but won't just fail
 
                 # now check which model type was unpickled
-                if "sklearn" in str(type(self.model)):
+                model_type_name = str(type(self.model))
+                if "sklearn" in model_type_name:
                     trainer = "sklearn"
-                elif "smt" in str(type(self.model)):
+                elif "smt" in model_type_name:
                     trainer = "smt"
                 else:  # unsupported model type was unpickled
                     raise AttributeError(
-                        "Unknown model type: " + str(type(self.model)) + ". Only "
+                        f"Unknown model type: {model_type_name!r}. Only "
                         "sklearn MLPRegressor and smt GENN (Model) objects are "
                         "currently supported."
                     )

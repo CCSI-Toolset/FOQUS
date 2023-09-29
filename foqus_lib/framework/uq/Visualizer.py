@@ -438,7 +438,7 @@ class Visualizer:
         if rsIndex == ResponseSurfaces.USER and userRegressionFile is not None:
             f.write("1\n")  # number of basis functions
             f.write("%s\n" % userRegressionFile)  # surrogate file
-            f.write("y\n")  # apply auxillary arg (output index)
+            f.write("y\n")  # apply auxiliary arg (output index)
             outVarNames = data.getOutputNames()
             outName = outVarNames[y - 1]
             outName = Common.getUserRegressionOutputName(

@@ -498,7 +498,7 @@ class RSInferencer(
                 if platform.system() == "Windows":
                     driverFile = win32api.GetShortPathName(driverFile)
                 f.write("%s\n" % driverFile)  # driver file
-                f.write("y\n")  # apply auxillary arg (output index)
+                f.write("y\n")  # apply auxiliary arg (output index)
                 arg = userRegressionArgs[i]
                 if isinstance(arg, int):
                     formatString = "%d\n"

@@ -1,3 +1,5 @@
+.. _mlaiplugin:
+
 Machine Learning & Artificial Intelligence Flowsheet Model Plugins
 ==================================================================
 
@@ -99,7 +101,7 @@ Currently, FOQUS supports the following custom attributes:
   bounds for each output variable (default: (0, 1E5))
 - *normalized* – Boolean flag for whether the user is passing a normalized
   neural network model; to use this flag, users must train their models with
-  data normalized according to a specifc scaling form and add all input and
+  data normalized according to a specific scaling form and add all input and
   output bounds custom attributes. The section below details scaling options.
 - *normalization_form* - string flag required when *normalization* is *True*
   indicating a scaling option for FOQUS to automatically scale flowsheet-level
@@ -107,6 +109,8 @@ Currently, FOQUS supports the following custom attributes:
   The section below details scaling options.
 - *normalization_function* - optional string argument that is required when a
   'Custom' *normalization_form* is used. The section below details scaling options.
+
+.. _mlaiplugin.datanorm:
 
 Data Normalization For Neural Network Models
 --------------------------------------------

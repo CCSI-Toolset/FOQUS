@@ -362,11 +362,11 @@ class gatewayUploadDialog(_gatewayUploadDialog, _gatewayUploadDialogUI):
         # if selected and drop the indexes for those rows
         if 0 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for configuration"
+                self, "Warning", "Won't set relative path for configuration"
             )
         if 1 in rows:
             QMessageBox.information(
-                self, "Warning", "Won't set releative path for model"
+                self, "Warning", "Won't set relative path for model"
             )
         rows.discard(0)
         rows.discard(1)

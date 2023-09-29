@@ -22,3 +22,6 @@ extend-exclude = [
 [default.extend-words]
 # Ignore IDAES
 IDAES = "IDAES"
+FO = "FO"  # TODO: probably an abbreviation?
+sur = "sur"  # abbreviation for 'surrogate'
+nd = "nd"  # used as a variable name in sdoeAnalysisDialog

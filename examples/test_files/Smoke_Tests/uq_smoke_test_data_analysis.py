@@ -354,7 +354,7 @@ try:  # Catch any exception and stop all timers before finishing up
             break
         # assert abs(self.flowsheet.output["Rosenbrock"]["f"] - 126859) < 1e-8
         # assert self.flowsheet.errorStat==0
-        ## Try out controling UQ ensemble add
+        ## Try out controlling UQ ensemble add
         MainWin.uqSetupAction.trigger()
         if not go():
             break

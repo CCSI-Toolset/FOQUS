@@ -14,14 +14,17 @@
 #################################################################################
 import os
 
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
 from foqus_lib.framework.uq.Model import Model
 from foqus_lib.framework.sdoe import plot_utils
-
-# from Preview_UI import Ui_Dialog
 
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
     QListWidgetItem,
     QAbstractItemView,
     QApplication,
@@ -141,14 +144,58 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         irsf = self.irsf
         scatterLabel = self.scatterLabel
         nImpPts = self.nImpPts
-        plot_utils.plot(
-            fname,
-            scatterLabel,
-            hname=hname,
-            show=show,
-            usf=usf,
-            nusf=nusf,
-            irsf=irsf,
-            nImpPts=nImpPts,
-        )
-        self.setModal(True)
+
+        if nusf:
+            fig1, fig2 = plot_utils.plot(
+                fname,
+                scatterLabel,
+                hname=hname,
+                show=show,
+                usf=usf,
+                nusf=nusf,
+                irsf=irsf,
+                nImpPts=nImpPts,
+            )
+
+            dialog1 = Window(fig1, self)
+            dialog1.show()
+
+            dialog2 = Window(fig2, self)
+            dialog2.show()
+
+        else:
+            fig = plot_utils.plot(
+                fname,
+                scatterLabel,
+                hname=hname,
+                show=show,
+                usf=usf,
+                nusf=nusf,
+                irsf=irsf,
+                nImpPts=nImpPts,
+            )
+
+            dialog = Window(fig, self)
+            dialog.show()
+
+
+class Window(QDialog):
+    def __init__(self, figure, parent=None):
+        super(Window, self).__init__(parent)
+
+        # a figure instance to plot on
+        self.figure = figure
+
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas = FigureCanvas(self.figure)
+
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # set the layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)

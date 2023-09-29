@@ -16,6 +16,9 @@ import os
 from datetime import datetime
 import configparser
 
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+
 from foqus_lib.framework.sdoe import order, sdoe
 from foqus_lib.framework.sdoe.df_utils import load
 from foqus_lib.framework.sdoe.plot_utils import plot_pareto
@@ -25,6 +28,8 @@ from .sdoePreview import sdoePreview
 from PyQt5 import uic
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
+    QDialog,
+    QVBoxLayout,
     QApplication,
     QMessageBox,
     QCheckBox,
@@ -1301,7 +1306,9 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             results = self.analysis[row].results
             cand = load(cfile)
             irsf = {"cand": cand}
-            plot_pareto(pf, results, irsf["cand"], hname)
+            fig = plot_pareto(pf, results, irsf["cand"], hname)
+            dialog = Window(fig, self)
+            dialog.show()
             return
 
         fullName = self.analysis[row].fnames["cand"]
@@ -1546,3 +1553,25 @@ class SdoeAnalysisData:
         self.config_file = config_file
         self.fnames = fnames
         self.results = results
+
+
+class Window(QDialog):
+    def __init__(self, figure, parent=None):
+        super(Window, self).__init__(parent)
+
+        # a figure instance to plot on
+        self.figure = figure
+
+        # this is the Canvas Widget that displays the `figure`
+        # it takes the `figure` instance as a parameter to __init__
+        self.canvas = FigureCanvas(self.figure)
+
+        # this is the Navigation widget
+        # it takes the Canvas widget and a parent
+        self.toolbar = NavigationToolbar(self.canvas, self)
+
+        # set the layout
+        layout = QVBoxLayout()
+        layout.addWidget(self.toolbar)
+        layout.addWidget(self.canvas)
+        self.setLayout(layout)

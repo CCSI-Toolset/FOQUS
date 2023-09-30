@@ -229,14 +229,13 @@ class surrogateMethod(surrogate):
         and is called when you run start() to start a new thread.
         """
         # current_directory = os.path.dirname(__file__)
-        
+
         self.msgQueue.put(f"input vars: {self.input}")
         self.msgQueue.put(f"output vars: {self.output}")
         input_data, output_data = self.getSelectedInputOutputData()
         self.msgQueue.put(f"input data columns: {input_data.columns}")
         self.msgQueue.put(f"output data columns: {output_data.columns}")
 
-        
         self.msgQueue.put("Starting training process")
 
         # method to create model
@@ -307,5 +306,5 @@ class surrogateMethod(surrogate):
         with open("mea_column_model_customnormform_scikitlearn.pkl", "rb") as file:
             loaded_model = pickle.load(file)
             self.msgQueue.put(loaded_model)
-        
+
         self.msgQueue.put("Training complete")

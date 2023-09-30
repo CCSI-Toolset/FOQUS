@@ -88,7 +88,7 @@ class mea_column_model_customnormform_pytorch(nn.Module):
         normalized=False,
         normalization_form="Linear",
         normalization_function=None,
-        **kwargs
+        **kwargs,
     ):
 
         super(
@@ -285,7 +285,6 @@ class surrogateMethod(surrogate):
         input_data, output_data = self.getSelectedInputOutputData()
         self.msgQueue.put(f"input data columns: {input_data.columns}")
         self.msgQueue.put(f"output data columns: {output_data.columns}")
-
 
         # Example follows the sequence below:
         # 1) Code at end of file to import data and create model

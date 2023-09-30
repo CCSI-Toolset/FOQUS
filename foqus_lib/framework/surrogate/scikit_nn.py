@@ -1,0 +1,311 @@
+#################################################################################
+# FOQUS Copyright (c) 2012 - 2023, by the software owners: Oak Ridge Institute
+# for Science and Education (ORISE), TRIAD National Security, LLC., Lawrence
+# Livermore National Security, LLC., The Regents of the University of
+# California, through Lawrence Berkeley National Laboratory, Battelle Memorial
+# Institute, Pacific Northwest Division through Pacific Northwest National
+# Laboratory, Carnegie Mellon University, West Virginia University, Boston
+# University, the Trustees of Princeton University, The University of Texas at
+# Austin, URS Energy & Construction, Inc., et al.  All rights reserved.
+#
+# Please see the file LICENSE.md for full copyright and license information,
+# respectively. This file is also available online at the URL
+# "https://github.com/CCSI-Toolset/FOQUS".
+#################################################################################
+""" #FOQUS_SURROGATE_PLUGIN
+
+Surrogate plugins need to have the string "#FOQUS_SURROGATE_PLUGIN" near the
+begining of the file (see pluginSearch.plugins() for exact character count of
+text).  They also need to have a .py extension and inherit the surrogate class.
+
+"""
+
+
+from contextlib import nullcontext
+from tokenize import String
+from pathlib import Path
+import numpy as np
+import pandas as pd
+import threading
+import queue
+import logging
+import subprocess
+import os
+import sys
+import copy
+import traceback
+import time
+import shutil
+import re
+import math
+
+try:
+    import win32api  # used to get short file name for alamo sim exe
+    import win32process
+except:
+    pass
+# from foqus_lib.framework.graph.graph import Graph
+from foqus_lib.framework.surrogate.surrogate import surrogate
+from foqus_lib.framework.uq.SurrogateParser import SurrogateParser
+from foqus_lib.framework.listen import listen
+from foqus_lib.framework.session.session import exePath
+from multiprocessing.connection import Client
+
+import random as rn
+from sklearn.neural_network import MLPRegressor
+import pickle
+from types import SimpleNamespace
+
+# define network layer connections
+def call(self, inputs):
+
+    x = inputs  # single input layer, input defined in create_model()
+    for layer in self.dense_layers:  # hidden layers
+        x = layer(x)  # h1 = f(input), h2 = f(h1), ... using act func
+    for layer in self.dropout:  # no dropout layers used in this example
+        x = layer(x)
+    x = self.dense_layers_out(x)  # single output layer, output = f(h_last)
+
+    return x
+
+
+# attach attributes to class CONFIG
+
+
+def checkAvailable():
+    """Plug-ins should have this function to check availability of any
+    additional required software.  If requirements are not available
+    plug-in will not be available.
+    """
+    # I don't really check anything for now the ALAMO exec location is
+    # just a setting of the plug-in, you may or may not need GAMS or
+    # MATLAB
+    return True
+
+
+class surrogateMethod(surrogate):
+    metaDataJsonString = """
+    "CCSIFileMetaData":{
+        "ID":"uuid",
+        "CreationTime":"",
+        "ModificationTime":"",
+        "ChangeLog":[],
+        "DisplayName":"",
+        "OriginalFilename":"",
+        "Application":"foqus_surogate_plugin",
+        "Description":"scikit_nn model training FOQUS Plugin",
+        "MIMEType":"application/ccsi+foqus",
+        "Confidence":"testing",
+        "Parents":[],
+        "UpdateMetadata":True,
+        "Version":""}
+    """
+    name = "scikit_nn-model-training"
+
+    def __init__(self, dat=None):
+        """
+        scikit_nn interface constructor
+        """
+        surrogate.__init__(self, dat)
+        self.name = "scikit_nn"
+        self.ex = None
+        # still working on hanging indent for references
+        self.methodDescription = (
+            "<html>\n<head>"
+            ".hangingindent {\n"
+            "    margin-left: 22px ;\n"
+            "    text-indent: -22px ;\n"
+            "}\n"
+            "</head>\n"
+            "The high-level neural network library of Keras integrates with TensorFlow’s"
+            "machine learning library to train complex models within Python’s user-friendly framework."
+            "Keras models may be largely split into two types: Sequential which build linearly connected"
+            "model layers, and Functional which build multiple interconnected layers in a complex system."
+            "More information on TensorFlow Keras model building is described by (Wu et al. 2020)."
+            "Users may follow the recommended workflow to install and use TensorFlow in a Python environment,"
+            "as described in the TensorFlow documentation: https://www.tensorflow.org/install."
+            '<p class="scikit_nn</p>"</html>'
+        )
+        self.alamoDir = "scikit_nn"
+        self.updateVarCols()
+        # include a Section called DATA Settings
+        # Check the ALAMOSettings_v2.xlsx with hints and new labels
+        self.options.add(
+            name="Initial Data Filter",
+            section="DATA Settings",
+            default="All",
+            dtype=str,
+            desc="Filter to be applied to the initial data set.",
+            hint="Data filters help the user to generate models based"
+            "on specific data for each variable.",
+            validValues=["All", "None"],
+        )
+
+        self.options.add(
+            name="n_hidden",
+            section="DATA Settings",
+            dtype=int,
+            default=1,
+            desc="Number of hidden layers",
+            hint="Number of hidden layers",
+        )
+
+        self.options.add(
+            name="n_neurons",
+            section="DATA Settings",
+            dtype=int,
+            default=12,
+            desc="Number of neurons",
+            hint="Number of neurons",
+        )
+        self.options.add(
+            name="layer_act",
+            section="DATA Settings",
+            dtype=str,
+            default="relu",
+            desc="Layer activation function",
+            hint="Layer activation function",
+            validValues=["relu", "sigmoid"],
+        )
+
+        self.options.add(
+            name="out_act",
+            section="DATA Settings",
+            dtype=str,
+            default="sigmoid",
+            desc="Output activation function",
+            hint="Output activation function",
+            validValues=["relu", "sigmoid"],
+        )
+
+        self.options.add(
+            name="numpy_seed",
+            section="DATA Settings",
+            dtype=int,
+            default=46,
+            desc="Seed for numpy",
+            hint="Seed for numpy",
+        )
+
+        self.options.add(
+            name="random_seed",
+            section="DATA Settings",
+            dtype=int,
+            default=1342,
+            desc="Seed for random",
+            hint="Seed for random",
+        )
+
+        self.options.add(
+            name="tensorflow_seed",
+            section="DATA Settings",
+            dtype=int,
+            default=62,
+            desc="Seed for tensorflow",
+            hint="Seed for tensorflow",
+        )
+
+        self.options.add(
+            name="epoch",
+            section="DATA Settings",
+            dtype=int,
+            default=500,
+            desc="Number of epochs",
+            hint="Number of epochs",
+        )
+
+        self.options.add(
+            name="verbose",
+            section="DATA Settings",
+            dtype=int,
+            default=0,
+            desc="Verbose setting",
+            hint="Takes only 0 or 1",
+        )
+
+    def run(self):
+        """
+        This function overloads the Thread class function,
+        and is called when you run start() to start a new thread.
+        """
+        # current_directory = os.path.dirname(__file__)
+        
+        self.msgQueue.put(f"input vars: {self.input}")
+        self.msgQueue.put(f"output vars: {self.output}")
+        input_data, output_data = self.getSelectedInputOutputData()
+        self.msgQueue.put(f"input data columns: {input_data.columns}")
+        self.msgQueue.put(f"output data columns: {output_data.columns}")
+
+        
+        self.msgQueue.put("Starting training process")
+
+        # method to create model
+        def create_model(x_train, z_train):
+
+            mlp = MLPRegressor(
+                solver="lbfgs",
+                activation="relu",
+                hidden_layer_sizes=[12] * 3,  # 3 hidden layers, each with 12 neurons
+                max_iter=10000,
+            )
+            model = mlp.fit(x_train, z_train)
+            model.custom = SimpleNamespace(
+                input_labels=xlabels,
+                output_labels=zlabels,
+                input_bounds=xdata_bounds,
+                output_bounds=zdata_bounds,
+                normalized=True,
+                normalization_form="Custom",
+                normalization_function="(datavalue - dataminimum)/(datamaximum - dataminimum)",
+            )
+
+            return model
+
+        # Main code
+
+        # import data
+        # data = pd.read_csv(r"MEA_carbon_capture_dataset_mimo.csv")
+
+        xlabels = list(input_data.columns)
+        zlabels = list(output_data.columns)
+
+        xdata = input_data
+        zdata = output_data
+
+        xdata_bounds = {i: (xdata[i].min(), xdata[i].max()) for i in xdata}  # x bounds
+        zdata_bounds = {j: (zdata[j].min(), zdata[j].max()) for j in zdata}  # z bounds
+
+        # normalize data using Linear form, pass as custom string and parse with SymPy
+        # users can normalize with any allowed form # manually, and then pass the
+        # appropriate flag to FOQUS from the allowed list:
+        # ["Linear", "Log", "Power", "Log 2", "Power 2", "Custom] - see the
+        # documentation for details on the scaling formulations
+        xmax, xmin = xdata.max(axis=0), xdata.min(axis=0)
+        zmax, zmin = zdata.max(axis=0), zdata.min(axis=0)
+        xdata, zdata = np.array(xdata), np.array(zdata)
+        for i in range(len(xdata)):
+            for j in range(len(xlabels)):
+                xdata[i, j] = (xdata[i, j] - xmin[j]) / (xmax[j] - xmin[j])
+            for j in range(len(zlabels)):
+                zdata[i, j] = (zdata[i, j] - zmin[j]) / (zmax[j] - zmin[j])
+
+        model_data = np.concatenate(
+            (xdata, zdata), axis=1
+        )  # PyTorch requires a Numpy array as input
+
+        # define x and z data, not used but will add to variable dictionary
+        xdata = model_data[:, :-2]
+        zdata = model_data[:, -2:]
+
+        # create model
+        model = create_model(x_train=xdata, z_train=zdata)
+
+        with open("mea_column_model_customnormform_scikitlearn.pkl", "wb") as file:
+            pickle.dump(model, file)
+
+        # load model as pickle format
+        with open("mea_column_model_customnormform_scikitlearn.pkl", "rb") as file:
+            loaded_model = pickle.load(file)
+            self.msgQueue.put(loaded_model)
+        
+        self.msgQueue.put("Training complete")

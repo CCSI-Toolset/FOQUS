@@ -31,7 +31,7 @@ def test_plot(fake_plt: mock.MagicMock):
 
     plot_utils.plot(fname=fname, scatter_label=scatter_label)
 
-    assert fake_plt.show.call_count > 0
+    assert fake_plt.figure.called
 
 
 def copy_from_package(file_name: str) -> None:

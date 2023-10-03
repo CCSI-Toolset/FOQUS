@@ -30,9 +30,9 @@ def test_plot(fake_plt: mock.MagicMock):
     copy_from_package(fname)
     scatter_label = "something"
 
-    plot_utils.plot(fname=fname, scatter_label=scatter_label)
+    fig = plot_utils.plot(fname=fname, scatter_label=scatter_label)
 
-    assert plt.gcf().number > 0
+    assert fig is not None
 
 
 def copy_from_package(file_name: str) -> None:

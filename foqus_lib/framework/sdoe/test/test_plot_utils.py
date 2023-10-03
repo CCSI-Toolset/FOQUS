@@ -12,6 +12,7 @@
 # respectively. This file is also available online at the URL
 # "https://github.com/CCSI-Toolset/FOQUS".
 #################################################################################
+import matplotlib.pyplot as plt
 import pytest
 from foqus_lib.framework.sdoe import plot_utils
 from unittest import mock
@@ -31,7 +32,7 @@ def test_plot(fake_plt: mock.MagicMock):
 
     plot_utils.plot(fname=fname, scatter_label=scatter_label)
 
-    assert fake_plt.figure.called
+    assert plt.gcf().number > 0
 
 
 def copy_from_package(file_name: str) -> None:

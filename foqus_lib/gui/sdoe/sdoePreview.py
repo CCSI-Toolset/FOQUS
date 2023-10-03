@@ -25,6 +25,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import (
     QDialog,
     QVBoxLayout,
+    QHBoxLayout,
     QListWidgetItem,
     QAbstractItemView,
     QApplication,
@@ -146,7 +147,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         nImpPts = self.nImpPts
 
         if nusf:
-            fig1, fig2 = plot_utils.plot(
+            fig, fig2 = plot_utils.plot(
                 fname,
                 scatterLabel,
                 hname=hname,
@@ -156,13 +157,6 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 irsf=irsf,
                 nImpPts=nImpPts,
             )
-
-            dialog1 = Window(fig1, self)
-            dialog1.show()
-
-            dialog2 = Window(fig2, self)
-            dialog2.show()
-
         else:
             fig = plot_utils.plot(
                 fname,
@@ -174,28 +168,44 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 irsf=irsf,
                 nImpPts=nImpPts,
             )
+            fig2 = None
 
-            dialog = Window(fig, self)
-            dialog.show()
+        dialog = Window(fig, fig2, self)
+        dialog.show()
 
 
 class Window(QDialog):
-    def __init__(self, figure, parent=None):
+    def __init__(self, figure, second_fig, parent=None):
         super(Window, self).__init__(parent)
 
         # a figure instance to plot on
         self.figure = figure
+        if second_fig is not None:
+            self.second_fig = second_fig
 
         # this is the Canvas Widget that displays the `figure`
         # it takes the `figure` instance as a parameter to __init__
         self.canvas = FigureCanvas(self.figure)
+        if second_fig is not None:
+            self.second_canvas = FigureCanvas(self.second_fig)
 
         # this is the Navigation widget
         # it takes the Canvas widget and a parent
         self.toolbar = NavigationToolbar(self.canvas, self)
+        if second_fig is not None:
+            self.second_toolbar = NavigationToolbar(self.second_canvas, self)
 
         # set the layout
         layout = QVBoxLayout()
         layout.addWidget(self.toolbar)
         layout.addWidget(self.canvas)
-        self.setLayout(layout)
+        if second_fig is not None:
+            main_layout = QHBoxLayout()
+            second_layout = QVBoxLayout()
+            second_layout.addWidget(self.second_toolbar)
+            second_layout.addWidget(self.second_canvas)
+            main_layout.addLayout(layout)
+            main_layout.addLayout(second_layout)
+            self.setLayout(main_layout)
+        else:
+            self.setLayout(layout)

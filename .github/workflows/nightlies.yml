@@ -34,6 +34,7 @@ jobs:
           - win64
           - macos
         foqus-install-target:
+          - stable
           - branch
         examples-release:
           - '3.9.0'

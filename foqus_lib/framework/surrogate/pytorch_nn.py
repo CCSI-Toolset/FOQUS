@@ -352,6 +352,7 @@ class surrogateMethod(surrogate):
         # save model as PT format
         model_scripted = torch.jit.script(model)
         model_scripted.save("mea_column_model_customnormform_pytorch.pt")
+        self.msgQueue.put(model)
         self.msgQueue.put("Training complete")
 
 

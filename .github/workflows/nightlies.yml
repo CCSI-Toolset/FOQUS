@@ -34,8 +34,7 @@ jobs:
           - win64
           - macos
         foqus-install-target:
-          - stable
-          - master
+          - branch
         examples-release:
           - '3.9.0'
         include:
@@ -47,8 +46,8 @@ jobs:
             os-version: windows-2019
           - foqus-install-target: stable
             pip-install-target: ccsi-foqus
-          - foqus-install-target: master
-            pip-install-target: https://github.com/CCSI-Toolset/FOQUS/archive/master.zip
+          - foqus-install-target: branch
+            pip-install-target: https://github.com/lbianchi-lbl/FOQUS/archive/issue-1172.zip
           - foqus-install-target: stable
             os: win64
             python-version: '3.8'

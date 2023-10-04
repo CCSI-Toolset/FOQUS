@@ -11,6 +11,7 @@ on:
   workflow_dispatch:
   # FIXME remove before merging
   push:
+  pull_request:
 
 defaults:
   run:

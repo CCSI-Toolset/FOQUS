@@ -9,6 +9,8 @@ on:
     # e.g. `gh repos/CCSI-Toolset/FOQUS/dispatches -F event_type=ci_run_nightlies`
     types: [ci_run_nightlies]
   workflow_dispatch:
+  # FIXME remove before merging
+  push:
 
 defaults:
   run:

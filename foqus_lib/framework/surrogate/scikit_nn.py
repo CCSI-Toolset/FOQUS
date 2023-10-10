@@ -52,7 +52,7 @@ from foqus_lib.framework.session.session import exePath
 from multiprocessing.connection import Client
 
 import random as rn
-from sklearn.neural_network import MLPRegressor
+from sklearn.neural_network import MLPRegressor  # pylint: disable=import-error
 import pickle
 from types import SimpleNamespace
 

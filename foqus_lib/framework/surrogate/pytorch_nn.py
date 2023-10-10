@@ -52,7 +52,7 @@ from foqus_lib.framework.session.session import exePath
 from multiprocessing.connection import Client
 
 import random as rn
-import torch
+import torch  # pylint: disable=import-error
 import torch.nn as nn  # pylint: disable=import-error
 
 # custom class to define Keras NN layers

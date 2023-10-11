@@ -1226,7 +1226,7 @@ class Plotter:
 
         if event.button == 1:
             # On left click, zoom in
-            axlist = event.canvas.figure.axes
+            axlist = event.canvas.fig1.axes
             # if any one of the subplots are already zoomed in, ignore
             for axis in axlist:
                 try:
@@ -1239,7 +1239,7 @@ class Plotter:
             if ax.get_geometry() != (1, 1, 1):
                 ax._geometry = ax.get_geometry()
                 ax.change_geometry(1, 1, 1)
-                for axis in event.canvas.figure.axes:
+                for axis in event.canvas.fig1.axes:
                     # hide all the other axes...
                     if axis is not ax:
                         axis.set_visible(False)
@@ -1249,7 +1249,7 @@ class Plotter:
             if ax.get_geometry() == (1, 1, 1):
                 nrows, ncols, num = ax._geometry
                 ax.change_geometry(nrows, ncols, num)
-                for axis in event.canvas.figure.axes:
+                for axis in event.canvas.fig1.axes:
                     axis.set_visible(True)
             else:
                 return  # no subplots to unzoom, so return

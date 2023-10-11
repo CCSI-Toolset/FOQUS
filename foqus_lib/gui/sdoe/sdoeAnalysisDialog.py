@@ -1308,6 +1308,8 @@ class sdoeAnalysisDialog(_sdoeAnalysisDialog, _sdoeAnalysisDialogUI):
             irsf = {"cand": cand}
             fig = plot_pareto(pf, results, irsf["cand"], hname)
             dialog = Window(fig, self)
+            title = "SDoE (IRSF) Pareto Front"
+            dialog.setWindowTitle(title)
             dialog.show()
             return
 

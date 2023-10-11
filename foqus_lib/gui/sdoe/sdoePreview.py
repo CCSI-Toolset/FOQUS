@@ -147,7 +147,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
         nImpPts = self.nImpPts
 
         if nusf:
-            fig, fig2 = plot_utils.plot(
+            fig1, fig2 = plot_utils.plot(
                 fname,
                 scatterLabel,
                 hname=hname,
@@ -158,7 +158,7 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
                 nImpPts=nImpPts,
             )
         else:
-            fig = plot_utils.plot(
+            fig1 = plot_utils.plot(
                 fname,
                 scatterLabel,
                 hname=hname,
@@ -170,42 +170,50 @@ class sdoePreview(_sdoePreview, _sdoePreviewUI):
             )
             fig2 = None
 
-        dialog = Window(fig, fig2, self)
+        dialog = Window(fig1, fig2, self)
+        if nusf:
+            title = "SDoE (NUSF) Weights and Designs Visualization"
+        elif usf:
+            title = "SDoE (USF) Designs Visualization"
+        else:
+            title = "SDoE Candidates Visualization"
+
+        dialog.setWindowTitle(title)
         dialog.show()
 
 
 class Window(QDialog):
-    def __init__(self, figure, second_fig, parent=None):
+    def __init__(self, fig1, fig2, parent=None):
         super(Window, self).__init__(parent)
 
         # a figure instance to plot on
-        self.figure = figure
-        if second_fig is not None:
-            self.second_fig = second_fig
+        self.fig1 = fig1
+        if fig2 is not None:
+            self.fig2 = fig2
 
         # this is the Canvas Widget that displays the `figure`
         # it takes the `figure` instance as a parameter to __init__
-        self.canvas = FigureCanvas(self.figure)
-        if second_fig is not None:
-            self.second_canvas = FigureCanvas(self.second_fig)
+        self.canvas1 = FigureCanvas(self.fig1)
+        if fig2 is not None:
+            self.canvas2 = FigureCanvas(self.fig2)
 
         # this is the Navigation widget
         # it takes the Canvas widget and a parent
-        self.toolbar = NavigationToolbar(self.canvas, self)
-        if second_fig is not None:
-            self.second_toolbar = NavigationToolbar(self.second_canvas, self)
+        self.toolbar1 = NavigationToolbar(self.canvas1, self)
+        if fig2 is not None:
+            self.toolbar2 = NavigationToolbar(self.canvas2, self)
 
         # set the layout
-        layout = QVBoxLayout()
-        layout.addWidget(self.toolbar)
-        layout.addWidget(self.canvas)
-        if second_fig is not None:
+        layout1 = QVBoxLayout()
+        layout1.addWidget(self.toolbar1)
+        layout1.addWidget(self.canvas1)
+        if fig2 is not None:
             main_layout = QHBoxLayout()
-            second_layout = QVBoxLayout()
-            second_layout.addWidget(self.second_toolbar)
-            second_layout.addWidget(self.second_canvas)
-            main_layout.addLayout(layout)
-            main_layout.addLayout(second_layout)
+            layout2 = QVBoxLayout()
+            layout2.addWidget(self.toolbar2)
+            layout2.addWidget(self.canvas2)
+            main_layout.addLayout(layout2)
+            main_layout.addLayout(layout1)
             self.setLayout(main_layout)
         else:
-            self.setLayout(layout)
+            self.setLayout(layout1)

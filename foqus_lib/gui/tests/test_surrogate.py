@@ -21,10 +21,9 @@ import pytest
 pytestmark = pytest.mark.gui
 
 
-@pytest.fixture(scope="class", params=["UQ/Rosenbrock.foqus"])
+@pytest.fixture(scope="class", params=["tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus"])
 def flowsheet_session_file(foqus_examples_dir, request):
-    return str(foqus_examples_dir / "test_files" / request.param)
-
+    return str(foqus_examples_dir / request.param)
 
 @pytest.fixture(scope="class")
 def frame(main_window, flowsheet_session_file, qtbot, request) -> surrogateFrame:

@@ -68,6 +68,12 @@ class TestFrame:
             "Execution",
         ]:
             qtbot.select_tab(tab)
+        qtbot.select_tab("Variables")
+        with qtbot.focusing_on(group_box="Input Variables"):
+            qtbot.click(button="Select All")
+        with qtbot.focusing_on(group_box="Output Variables"):
+            qtbot.click(button="Select All")
+        qtbot.select_tab("Execution")
         run_button, stop_button = qtbot.locate(button=any, index=[0, 1])
         run_button.click()
 

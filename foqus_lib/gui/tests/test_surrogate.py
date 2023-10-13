@@ -21,9 +21,12 @@ import pytest
 pytestmark = pytest.mark.gui
 
 
-@pytest.fixture(scope="class", params=["tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus"])
+@pytest.fixture(
+    scope="class", params=["tutorial_files/Flowsheets/Tutorial_4/Simple_flow.foqus"]
+)
 def flowsheet_session_file(foqus_examples_dir, request):
     return str(foqus_examples_dir / request.param)
+
 
 @pytest.fixture(scope="class")
 def frame(main_window, flowsheet_session_file, qtbot, request) -> surrogateFrame:
@@ -51,10 +54,15 @@ class TestFrame:
             ("pytorch_nn", "torch.nn"),
             ("scikit_nn", "sklearn.neural_network"),
             # "ACOSSO",
-        ]
+        ],
     )
     def test_run_surrogate(
-        self, qtbot, frame, main_window: mainWindow, name: str, required_import: str,
+        self,
+        qtbot,
+        frame,
+        main_window: mainWindow,
+        name: str,
+        required_import: str,
     ):
         qtbot.focused = frame
         pytest.importorskip(required_import, reason=f"{required_import} not available")

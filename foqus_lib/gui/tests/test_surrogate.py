@@ -18,14 +18,6 @@ from foqus_lib.gui.surrogate.surrogateFrame import surrogateFrame
 import pytest
 
 
-try:
-    import tensorflow
-except ModuleNotFoundError:
-    tensorflow_available = False
-else:
-    tensorflow_available = True
-
-
 pytestmark = pytest.mark.gui
 
 
@@ -53,18 +45,20 @@ class TestFrame:
     # fish: Job 1, 'pytest --pyargs foqus_lib -m gu…' terminated by signal SIGSEGV (Address boundary error)
     # initially thought it was related with pytest.mark.parametrize being used,
     # but it's happening even after commenting it out
-    # @pytest.mark.parametrize(
-    #     "name",
-    #     [
-    #         "keras_nn",
-    #         # "ACOSSO",
-    #     ]
-    # )
-    @pytest.mark.skipif(not tensorflow_available, reason="tensorflow not available")
+    @pytest.mark.parametrize(
+        "name,required_import",
+        [
+            ("keras_nn", "tensorflow.keras"),
+            ("pytorch_nn", "torch.nn"),
+            ("scikit_nn", "sklearn.neural_network"),
+            # "ACOSSO",
+        ]
+    )
     def test_run_surrogate(
-        self, qtbot, frame, main_window: mainWindow, name: str = "keras_nn"
+        self, qtbot, frame, main_window: mainWindow, name: str, required_import: str,
     ):
         qtbot.focused = frame
+        pytest.importorskip(required_import, reason=f"{required_import} not available")
 
         qtbot.using(combo_box="Tool:").set_option(name)
 

@@ -157,13 +157,11 @@ class surrogateMethod(surrogate):
             "    text-indent: -22px ;\n"
             "}\n"
             "</head>\n"
-            "The high-level neural network library of Keras integrates with TensorFlow’s"
-            "machine learning library to train complex models within Python’s user-friendly framework."
-            "Keras models may be largely split into two types: Sequential which build linearly connected"
-            "model layers, and Functional which build multiple interconnected layers in a complex system."
-            "More information on TensorFlow Keras model building is described by (Wu et al. 2020)."
-            "Users may follow the recommended workflow to install and use TensorFlow in a Python environment,"
-            "as described in the TensorFlow documentation: https://www.tensorflow.org/install."
+            "Pytorch is a machine learning framework based on the Torch library. "
+            "The framework represents data using tensors, multidimensional arrays on which "
+            "computations are performed and used to build deep learning neural networks. "
+            "Users may follow the recommended workflow to install and use Pytorch, "
+            "as described in the Pytorch documentation: https://pytorch.org/docs/stable/index.html."
             '<p class="pytorch_nn</p>"</html>'
         )
         self.alamoDir = "pytorch_nn"

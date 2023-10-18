@@ -182,11 +182,11 @@ class surrogateMethod(surrogate):
             "}\n"
             "</head>\n"
             "The high-level neural network library of Keras integrates with TensorFlow’s"
-            "machine learning library to train complex models within Python’s user-friendly framework."
-            "Keras models may be largely split into two types: Sequential which build linearly connected"
-            "model layers, and Functional which build multiple interconnected layers in a complex system."
-            "More information on TensorFlow Keras model building is described by (Wu et al. 2020)."
-            "Users may follow the recommended workflow to install and use TensorFlow in a Python environment,"
+            " machine learning library to train complex models within Python’s user-friendly framework. "
+            "Keras models may be largely split into two types: Sequential which build linearly connected "
+            "model layers, and Functional which build multiple interconnected layers in a complex system. "
+            "More information on TensorFlow Keras model building is described by (Wu et al. 2020). "
+            "Users may follow the recommended workflow to install and use TensorFlow in a Python environment, "
             "as described in the TensorFlow documentation: https://www.tensorflow.org/install."
             '<p class="keras_nn</p>"</html>'
         )
